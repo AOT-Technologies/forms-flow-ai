@@ -1,8 +1,8 @@
 # maven build
 FROM maven:3.6.1-jdk-11-slim AS MAVEN_TOOL_CHAIN
-COPY /forms-flow-bpm/pom-docker.xml /tmp/pom.xml
-COPY /forms-flow-bpm/src /tmp/src/
-COPY /forms-flow-bpm/settings-docker.xml /usr/share/maven/ref/
+COPY ./forms-flow-bpm/pom-docker.xml /tmp/pom.xml
+COPY ./forms-flow-bpm/src /tmp/src/
+COPY ./forms-flow-bpm/settings-docker.xml /usr/share/maven/ref/
 RUN mkdir -p /tmp
 WORKDIR /tmp/
 RUN mvn -s /usr/share/maven/ref/settings-docker.xml clean package

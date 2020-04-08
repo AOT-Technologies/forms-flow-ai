@@ -9,7 +9,7 @@ services:
     ports:
       - '8000:8080'
     env_file:
-      - forms-flow-web/.env
+      - forms-flow-bpm/.env
     environment:
       - KEYCLOAK_URL=${KEYCLOAK_URL}
       - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM}

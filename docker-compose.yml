@@ -8,6 +8,8 @@ services:
       dockerfile: Dockerfile
     ports:
       - '8000:8080'
+    env_file:
+      - forms-flow-web/.env
     environment:
       - KEYCLOAK_URL=${KEYCLOAK_URL}
       - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM}
@@ -38,20 +40,20 @@ services:
   mongo:
     image: mongo:4.1
     restart: always
-    volumes:
-      - mdb-data:/data/db
+    ports:
+      - "27018:27017"
     env_file:
       - forms-flow-io/.env    
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
-    ports:
-      - "27018:27017"
     healthcheck:
       test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --quiet) -eq 1
       interval: 10s
       start_period: 30s
+    volumes:
+      - mdb-data:/data/db
 
   forms-flow-io:
     build:

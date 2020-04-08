@@ -3,17 +3,29 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
 import { getSubmissions, selectRoot, selectError, SubmissionGrid, Errors } from 'react-formio';
+
 import Loading from '../../../../containers/Loading';
+import { OPERATIONS, CLIENT } from '../../../../constants/constants';
 
 const List = class extends Component {
   componentWillMount() {
     this.props.getSubmissions(1);
   }
 
+  getOperations(userRoles){
+    let operations = []
+    if(userRoles.includes(CLIENT)){
+      operations.push(OPERATIONS.view, OPERATIONS.editSubmission)
+    }else{
+      operations.push(OPERATIONS.view, OPERATIONS.editSubmission, OPERATIONS.deleteSubmission)
+    }
+    return operations;
+  }
+
   render() {
     const { match: { params: { formId } } } = this.props
-    const { form, submissions, isLoading, onAction, getSubmissions, errors } = this.props
-
+    const { form, submissions, isLoading, onAction, getSubmissions, errors, userRoles } = this.props
+    const operations = this.getOperations(userRoles)
     if (isLoading) {
       return (
         <Loading />
@@ -24,7 +36,7 @@ const List = class extends Component {
       <div>
         <header>
           <h4 className="text-capitalize">{form.title}</h4>
-          <Link className="btn btn-primary btn-sm form-btn pull-right" to={`/${formId}`}>
+          <Link className="btn btn-primary btn-sm form-btn pull-right" to={`/form/${formId}`}>
             <i className='fa fa-plus' aria-hidden='true'></i> New {form.title}
           </Link>
         </header>
@@ -36,6 +48,7 @@ const List = class extends Component {
             form={form}
             onAction={onAction}
             getSubmissions={getSubmissions}
+            operations={operations}
           />
         </section>
       </div>
@@ -54,7 +67,8 @@ const mapStateToProps = (state, ownProps) => {
     errors: [
       selectError('submissions', state),
       selectError('form', state)
-    ]
+    ],
+    userRoles: localStorage.getItem('UserRoles')
   };
 };
 
@@ -65,13 +79,13 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       switch (action) {
         case 'view':
         case 'row':
-          dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}`));
+          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`));
           break;
         case 'edit':
-          dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}/edit`));
+          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`));
           break;
         case 'delete':
-          dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}/delete`));
+          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/delete`));
           break;
         default:
       }

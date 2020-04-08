@@ -62,7 +62,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
           dispatch(resetSubmissions('submission'));
-          dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}`))
+          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
         }
       }));
     }

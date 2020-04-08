@@ -6,8 +6,8 @@ import Item from './Item/index'
 const Form = () => (
   <div>
     <Switch>
-      <Route exact path="/:formId/submission" component={List} />
-      <Route path="/:formId/submission/:submissionId" component={Item} />
+      <Route exact path="/form/:formId/submission" component={List} />
+      <Route path="/form/:formId/submission/:submissionId" component={Item} />
     </Switch>
   </div>
 )

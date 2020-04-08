@@ -1,0 +1,20 @@
+{
+  "short_name": "REACT_KEYCLOAK PWA",
+  "name": "REACT_KEYCLOAK Web App",
+  "icons": [
+    {
+      "src": "icons-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "icons-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#222",
+  "theme_color": "#222",
+  "display": "standalone"
+}

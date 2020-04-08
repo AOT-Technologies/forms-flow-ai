@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch) => {
       newForm.submissionAccess = SUBMISSION_ACCESS;
       dispatch(saveForm('form', newForm, (err, form) => {
         if (!err) {
-          dispatch(push(`/${form._id}`))
+          dispatch(push(`/form/${form._id}`))
         }
       }))
     }

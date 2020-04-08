@@ -15,7 +15,6 @@ const View = class extends Component {
       options,
       form: {form, isActive, url}
     } = this.props;
-
     if (isActive) {
       return <Loading />;
     }

@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(deleteSubmission('submission', ownProps.match.params.submissionId, ownProps.match.params.formId, (err) => {
         if (!err) {
           dispatch(resetSubmissions('submissions'));
-          dispatch(push(`/${ownProps.match.params.formId}/submission`));
+          dispatch(push(`/form/${ownProps.match.params.formId}/submission`));
         }
       }));
     },

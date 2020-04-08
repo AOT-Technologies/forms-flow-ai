@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import { Provider } from "react-redux";
-import { Route } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import { ConnectedRouter } from 'connected-react-router';
 import Form from "../components/Form";
 import NavBar from '../containers/NavBar';
@@ -10,11 +10,11 @@ const App = ({ store, history }) => (
   <div>
     <Provider store={store}>
       <ConnectedRouter  history={history}>
-        {/* <Switch> */}
-          <NavBar/>
-          <Route path="/" component={Form}/>
-          {/* <Route exact path="/" component={Form} /> */}
-        {/* </Switch> */}
+        <NavBar/>
+        <Switch>
+          <Route path="/form"><Form/></Route>
+          <Route path="/"><Redirect to="/form"/></Route>
+        </Switch>
       </ConnectedRouter >
     </Provider>
   </div>

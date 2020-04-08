@@ -1,0 +1,27 @@
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0
+                        http://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+    <!-- Maven Settings for Docker Build -->
+    <!--
+    <servers>
+		<server>
+			<id>camunda-bpm-ee</id>
+			<username>xxxxxx</username>
+			<password>xxxxxx</password>
+		</server>
+    </servers>
+	-->
+	
+    <!-- default profile -->
+    <profiles>
+        <profile>
+          <id>defaultProfile</id>
+          <activation>
+            <activeByDefault>true</activeByDefault>
+          </activation>
+        </profile>
+    </profiles> 
+
+</settings>

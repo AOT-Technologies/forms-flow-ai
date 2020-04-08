@@ -1,0 +1,10 @@
+{
+  "realm": "forms.io",
+  "auth-server-url": "http://iam.aot-technologies.com/auth/",
+  "ssl-required": "external",
+  "resource": "formio_react",
+  "clientId": "formio_react",
+  "public-client": true,
+  "confidential-port": 0,
+  "ignore-oauth-query-parameter":true
+}

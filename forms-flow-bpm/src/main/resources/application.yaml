@@ -1,0 +1,88 @@
+# Set variables
+
+keycloak.url: ${KEYCLOAK_URL}
+keycloak.url.realm: ${KEYCLOAK_URL_REALM}
+keycloak.clientId: ${KEYCLOAK_CLIENTID}
+keycloak.clientSecret: ${KEYCLOAK_CLIENTSECRET}
+
+spring.datasource:
+  jdbc-url: ${JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+  username: ${JDBC_USER:sa}
+  password: ${JDBC_PASSWORD:sa}
+  driverClassName: ${JDBC_DRIVER:org.h2.Driver}
+#spring.h2.console.enabled: true
+
+
+spring:
+  jersey:
+    application-path: /engine-rest
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}
+  main:
+    allow-bean-definition-overriding: true
+ 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+ 
+info:
+  app:
+    name: "Camunda"
+    description: "Forms Process Engine"
+    version: "7.11.3"
+  java:
+    version: "11"
+ 
+# Redis Session Cache not yet in use
+#  session:
+#    store-type: ${SESSION_STORE_TYPE:none}
+#    redis.flush-mode: immediate
+#  redis:
+#    host: ${REDIS_HOST:localhost}
+#    port: ${REDIS_PORT:6379}
+
+camunda.bpm:
+  history-level: audit
+  authorization:
+    enabled: true
+  filter:
+    create: All tasks
+
+server:
+  port: 8080
+  servlet.context-path: /camunda
+
+security:
+  oauth2:
+    client:
+      client-id: ${keycloak.clientId}
+      client-secret: ${keycloak.clientSecret}
+      accessTokenUri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/token
+      userAuthorizationUri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/auth
+      scope: openid profile email
+      grant-type: authorization_code implicit refresh_token password client_credentials
+    resource:
+      userInfoUri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/userinfo
+
+logging.level.org.springframework.security: DEBUG
+
+plugin.identity.keycloak.rest:
+  userNameClaim: preferred_username
+  authorityPrefix: "ROLE_"
+  authorityAttributeName: groupIds
+
+plugin.identity.keycloak:
+  keycloakIssuerUrl: ${keycloak.url}/auth/realms/${keycloak.url.realm}
+  keycloakAdminUrl: ${keycloak.url}/auth/admin/realms/${keycloak.url.realm}
+  clientId: ${keycloak.clientId}
+  clientSecret: ${keycloak.clientSecret}
+  useEmailAsCamundaUserId: false
+  useUsernameAsCamundaUserId: true
+  useGroupPathAsCamundaGroupId: true
+  administratorGroupName: camunda-admin
+  disableSSLCertificateValidation: true

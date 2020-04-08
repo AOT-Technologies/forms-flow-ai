@@ -1,0 +1,22 @@
+import React from "react";
+import ReactDOM from "react-dom";
+import App from "./components/App";
+import HttpService from "./services/HttpService";
+import StoreService from "./services/StoreService";
+import UserService from "./services/UserService";
+
+import { Formio} from 'react-formio';
+import {AppConfig} from './config';
+
+import './styles.scss';
+
+const store = StoreService.configureStore();
+const history = StoreService.history;
+
+Formio.setProjectUrl(AppConfig.projectUrl);
+Formio.setBaseUrl(AppConfig.apiUrl);
+
+const renderApp = () => ReactDOM.render(<App {...{ store, history }} />, document.getElementById("app"));
+
+UserService.initKeycloak(renderApp);
+HttpService.configure();

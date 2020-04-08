@@ -1,0 +1,164 @@
+$white:    #fff;
+$gray-100: #f8f9fa;
+$gray-200: #e9ecef;
+$gray-300: #dee2e6;
+$gray-400: #ced4da;
+$gray-500: #adb5bd;
+$gray-600: #868e96;
+$gray-700: #495057;
+$gray-800: #373a3c;
+$gray-900: #212529;
+$black:    #000;
+
+$blue:    #2780E3;
+$indigo:  #6610f2;
+$purple:  #613d7c;
+$pink:    #e83e8c;
+$red:     #FF0039;
+$orange:  #F2661F;
+$yellow:  #BED32B;
+$green:   #3FB618;
+$teal:    #20c997;
+$cyan:    #9954BB;
+$lightblue: lighten($blue, 20%);
+
+$primary:       $blue;
+$secondary:     $orange;
+$success:       $green;
+$info:          $lightblue;
+$warning:       $yellow;
+$danger:        $red;
+$light:         $gray-100;
+$dark:          $gray-800;
+
+
+@import "~bootstrap/scss/bootstrap.scss";
+$fa-font-path: '~font-awesome/fonts';
+$bcgov-font-path: "/node_modules/@bcgov/bootstrap-theme/dist/fonts/";
+@import '~font-awesome/scss/font-awesome';
+@import '~formiojs/dist/formio.full.min.css';
+@import "~@bcgov/bootstrap-theme/dist/scss/bootstrap-theme";
+@import "~@bcgov/bootstrap-theme/dist/scss/common";
+@import "~@bcgov/bootstrap-theme/dist/css/bootstrap-theme.min.css";
+.logo {
+  height: 1.9em;
+}
+h4{
+  font-size: 1.2rem;
+}
+#main {
+  margin-top: 30px;
+}
+
+
+
+body{
+  font-size: 15px;
+  font-family: sans-serif;
+}
+
+.loader {
+  position: absolute;
+  margin: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+}
+.btn{
+  margin-right: 1px;
+}
+// .formio-component-preflightAssessment .nav-tabs{
+//   margin-bottom: 2rem;
+// }
+.input-group{
+  .input-group-addon{
+    position: absolute;
+    right: 5px;
+    top: 7px;
+  }
+  .radio-inline{
+    margin-left: 20px;
+
+    label{
+      margin-right: 2rem;
+    }
+  }
+}
+// .detail-view{
+//   padding: 3rem 5rem 0 1rem;
+// }
+// .list-inline{
+//   float: right;
+// }
+// .formio-component-preFlightContent p{
+//   margin-bottom: 9px;
+// }
+.well{
+  border: 1px solid #eeeeee;
+  padding: 1rem;
+  background-color: #f8f8f8bf;
+}
+.formio-component-panel{
+  border:1px solid#eeeeee;
+
+  .panel-heading{
+    background-color: #eeeeee;
+    padding: 10px 0 10px 10px;
+
+    .panel-title i{
+      font-size: 12px;
+    }
+  }
+  .panel-body{
+    padding: 1.5rem 2rem 1.5rem 2rem;
+  }
+}
+// .container {
+//   font-family: Arial;
+//   text-align: left;
+//   max-width: 95% !important;
+// }
+.page-item.active .page-link
+{
+  color: black !important;
+  background-color: #ffff !important;
+  border-color: #56595d !important;
+}
+h5, .h5
+{
+  font-size: 16px !important;
+}
+.bg-default
+{
+  background-color:#38598a;
+  border: #38598a;
+  color:white !important;
+}
+.text-muted {
+  color: #ffff !important;
+}
+.panel-heading
+{
+    background-color: #38598a;
+    border: #38598a;
+    color: white !important;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0;
+    margin-bottom: 8px;
+}
+.formio-error-wrapper, .has-error {
+  color:red;
+  background-color: #fff;
+  border-color:red;
+
+  label {
+    color: red;
+  }
+}
+.formio-errors .error{
+  color: red;
+}
+.is-invalid{
+  background-color: #ffd1d1;
+}

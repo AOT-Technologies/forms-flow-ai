@@ -2,7 +2,7 @@
 FROM node:12.2.0-alpine
 
 # set working directory
-WORKDIR /forms-flow-web/app
+WORKDIR /app
 
 # add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH

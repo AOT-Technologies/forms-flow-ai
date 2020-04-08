@@ -3,8 +3,8 @@ version: "3.7"
 services:
   camunda:
     build:
-      context: ./
-      dockerfile: forms-flow-bpm/Dockerfile
+      context: ./forms-flow-bpm/
+      dockerfile: Dockerfile
     ports:
       - '8000:8080'
     environment:
@@ -18,8 +18,8 @@ services:
   react_formio_app:
     container_name: react_formio_app
     build:
-      context: .
-      dockerfile: forms-flow-web/Dockerfile
+      context: ./forms-flow-web/
+      dockerfile: Dockerfile
     volumes:
       - '.:/app'
       - '/app/node_modules'
@@ -55,8 +55,8 @@ services:
 
   formio:
     build:
-      context: .
-      dockerfile: forms-flow-io/Dockerfile
+      context: ./forms-flow-io/
+      dockerfile: Dockerfile
     # The app will restart until Mongo is listening
     restart: always
     links:

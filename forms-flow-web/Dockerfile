@@ -2,10 +2,10 @@
 FROM node:12.2.0-alpine
 
 # set working directory
-WORKDIR /app
+WORKDIR /forms-flow-bpm/app
 
 # add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+ENV PATH /forms-flow-bpm/app/node_modules/.bin:$PATH
 
 RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh

@@ -4,8 +4,8 @@
 
 # Use Node image, maintained by Docker:
 # hub.docker.com/r/_/node/
-FROM node:lts-alpine3.10
-WORKDIR /app
+FROM node:12.2.0-alpine
+WORKDIR /forms-flow-io/app
 
 # "bcrypt" requires python/make/g++, all must be installed in alpine
 # (note: using pinned versions to ensure immutable build environment)

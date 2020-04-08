@@ -1,22 +1,30 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import App from "./components/App";
-import HttpService from "./services/HttpService";
-import StoreService from "./services/StoreService";
-import UserService from "./services/UserService";
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import { ConnectedRouter } from 'connected-react-router'
+import store, { history } from './store'
+import { initAuth, Formio, Components } from 'react-formio';
+import App from './App'
 
-import { Formio} from 'react-formio';
+import components from './components';
 import {AppConfig} from './config';
 
-import './styles.scss';
-
-const store = StoreService.configureStore();
-const history = StoreService.history;
+import './styles.scss'
 
 Formio.setProjectUrl(AppConfig.projectUrl);
 Formio.setBaseUrl(AppConfig.apiUrl);
+Components.setComponents(components);
 
-const renderApp = () => ReactDOM.render(<App {...{ store, history }} />, document.getElementById("app"));
+// Initialize the current user
+store.dispatch(initAuth());
 
-UserService.initKeycloak(renderApp);
-HttpService.configure();
+render(
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
+      <div>
+        <App />
+      </div>
+    </ConnectedRouter>
+  </Provider>,
+  document.getElementById('root')
+)

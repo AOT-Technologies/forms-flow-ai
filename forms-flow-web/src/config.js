@@ -1,7 +1,7 @@
-let PROJECT_URL = process.env.REACT_APP_API_PROJECT_URL || 'http://localhost:3001';
-let API_URL = process.env.REACT_APP_API_SERVER_URL || 'http://localhost:3001';
+let PROJECT_URL = 'http://localhost:3001';
+let API_URL = 'http://localhost:3001';
 
-let query = {};
+var query = {};
 window.location.search.substr(1).split('&').forEach(function(item) {
   query[item.split('=')[0]] = item.split('=')[1] && decodeURIComponent(item.split('=')[1]);
 });
@@ -14,7 +14,7 @@ export const AppConfig = {
   apiUrl: API_URL
 };
 
-/*export const AuthConfig = {
+export const AuthConfig = {
   anonState: '/auth',
   authState: '/',
   login: {
@@ -23,4 +23,4 @@ export const AppConfig = {
   register: {
     form: 'user/register'
   }
-};*/
+};

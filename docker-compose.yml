@@ -1,5 +1,6 @@
 # Author: Gurumoorthy Mohan
 version: "3.7"
+
 services:
   camunda:
     build:
@@ -15,8 +16,7 @@ services:
     networks:
       - camunda-network
 
-  react_formio_app:
-    container_name: react_formio_app
+  forms-flow-web:
     build:
       context: ./forms-flow-web/
       dockerfile: Dockerfile
@@ -53,7 +53,7 @@ services:
       interval: 10s
       start_period: 30s
 
-  formio:
+  forms-flow-io:
     build:
       context: ./forms-flow-io/
       dockerfile: Dockerfile

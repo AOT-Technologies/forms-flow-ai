@@ -55,6 +55,35 @@ export const OPERATIONS = {
       return true;
     },
     title: 'Delete Form'
+  },
+  view: {
+    action: 'view',
+    buttonType: 'warning',
+    icon: 'list',
+    permissionsResolver: function permissionsResolver() {
+      return true;
+    },
+
+    title: 'View'
+  },
+  editSubmission: {
+    action: 'edit',
+    buttonType: 'secondary',
+    icon: 'edit',
+    permissionsResolver: function permissionsResolver() {
+      return true;
+    },
+
+    title: 'Edit'
+  },
+  deleteSubmission: {
+    action: 'delete',
+    buttonType: 'danger',
+    icon: 'trash',
+    permissionsResolver: function permissionsResolver() {
+      return true;
+    },
+    // title: 'Delete'
   }
 };
 

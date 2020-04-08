@@ -3,8 +3,10 @@ import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { Link } from 'react-router-dom'
 import { indexForms, selectRoot, selectError, Errors, FormGrid } from 'react-formio';
+
 import Loading from "../../containers/Loading";
 import {OPERATIONS, CLIENT, STAFF_DESIGNER, STAFF_REVIEWER} from "../../constants/constants"
+
 const List = class extends Component {
   componentWillMount() {
     this.props.getForms(1);
@@ -23,8 +25,8 @@ const List = class extends Component {
       <div>
         <header>
           <h3>Forms</h3>
-          {userRoles.includes(STAFF_DESIGNER) ?<Link to="/create">
-            <button className="btn btn-primary btn-sm form-btn pull-right"><i className="fa fa-plus"></i> Create Form</button>
+          {userRoles.includes(STAFF_DESIGNER) ?<Link to="/form/create">
+            <button className="btn btn-primary pull-right"><i className="fa fa-plus"></i> Create Form</button>
           </Link>:null}
         </header>
         <section className="mt-5">
@@ -68,19 +70,18 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(indexForms('forms', page, query))
     },
     onAction: (form, action) => {
-      console.log('Delete',action)
       switch (action) {
         case 'view':
-          dispatch(push(`/${form._id}`));
+          dispatch(push(`/form/${form._id}`));
           break;
         case 'submission':
-            dispatch(push(`/${form._id}/submission`));
+            dispatch(push(`/form/${form._id}/submission`));
           break;
         case 'edit':
-            dispatch(push(`/${form._id}/edit`));
+            dispatch(push(`/form/${form._id}/edit`));
           break;
         case 'delete':
-            dispatch(push(`/${form._id}/delete`));
+            dispatch(push(`/form/${form._id}/delete`));
           break;
         default:
       }

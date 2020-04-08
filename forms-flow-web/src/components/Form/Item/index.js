@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import React, { Component } from 'react'
 import View from './View'
 import Edit from './Edit'
@@ -6,16 +6,25 @@ import Delete from './Delete'
 import Submission from './Submission/index'
 import { connect } from 'react-redux'
 import { getForm } from 'react-formio'
-/*import {STAFF_REVIEWER, CLIENT} from '../../../constants/constants'*/
+import {STAFF_REVIEWER, CLIENT, STAFF_DESIGNER} from '../../../constants/constants'
+/*import { Styles} from "./List.css";*/
 
-/*const user = localStorage.getItem('UserRoles');*/
-/*const SubmissionRoute = ({ component: Component, ...rest }) => (
+let user = '';
+
+const SubmissionRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={(props) => (
     user.includes(STAFF_REVIEWER) || user.includes(CLIENT)
       ? <Component {...props} />
       : <Redirect exact to='/' />
   )} />
-);*/
+);
+const FormActionRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={(props) => (
+    user.includes(STAFF_DESIGNER)
+      ? <Component {...props} />
+      : <Redirect exact to='/' />
+  )} />
+);
 
 const Item = class extends Component{
   constructor() {
@@ -37,45 +46,14 @@ const Item = class extends Component{
   }
 
   render() {
-    // const userRoles = UserService.KeycloakData.realmAccess.roles;
-    /*const {match: {params: {formId}}} = this.props;*/
+    user = this.props.userRoles;
     return (
       <div>
-        {/* <ul className="nav nav-tabs mb-4">
-          <li className="nav-item">
-            <Link className="nav-link" to="/form">
-              <i className="fa fa-chevron-left"></i>
-            </Link>
-          </li>
-          {userRoles.includes("client")?<li className="nav-item">
-            <Link className="nav-link" to={`/form/${formId}`}>
-              <i className="fa fa-pencil"></i> Enter Data
-            </Link>
-          </li>
-          : null}
-          {userRoles.includes("staff_reviewer")?<li className="nav-item">
-            <Link className="nav-link" to={`/form/${formId}/submission`}>
-              <i className="fa fa-list-alt"></i> View Data
-            </Link>
-          </li> : null}
-          {userRoles.includes("staff_designer")? <li className="nav-item">
-            <Link className="nav-link" to={`/form/${formId}/edit`}>
-              <i className="fa fa-edit"></i> Edit Form
-            </Link>
-          </li> : null}
-
-          {userRoles.includes("administrator")? <li className="nav-item">
-            <Link className="nav-link" to={`/form/${formId}/delete`}>
-              <i className="fa fa-trash"></i> Delete Form
-            </Link>
-          </li> : null}
-        </ul> */}
         <Switch>
-          <Route exact path="/:formId" component={View} />
-          <Route path="/:formId/edit" component={Edit} />
-          <Route path="/:formId/delete" component={Delete} />
-          <Route path="/:formId/submission" component={Submission}/>
-          {/*<Route path="/form/:formId/submission" component={Submission} />*/}
+          <Route exact path="/form/:formId" component={View} />
+          <FormActionRoute path="/form/:formId/edit" component={Edit}/>
+          <FormActionRoute path="/form/:formId/delete" component={Delete}/>
+          <SubmissionRoute path="/form/:formId/submission" component={Submission}/>
         </Switch>
       </div>
     )
@@ -83,7 +61,9 @@ const Item = class extends Component{
 }
 
 const mapStateToProps = () => {
-  return {};
+  return {
+    userRoles:localStorage.getItem('UserRoles')
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {

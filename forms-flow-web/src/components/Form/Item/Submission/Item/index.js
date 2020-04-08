@@ -33,19 +33,19 @@ const Item = class extends Component {
         {(path.indexOf("delete") < 0) ?
           <ul className="nav nav-tabs">
             <li className="nav-item">
-              <Link className="nav-link" to={`/${formId}/submission`}>
+              <Link className="nav-link" to={`/form/${formId}/submission`}>
                 <i className="fa fa-chevron-left"></i>
               </Link>
             </li>
             {(path.indexOf("edit") > 0) ?
               <li className="nav-item">
-                <Link className="nav-link" to={`/${formId}/submission/${submissionId}`}>
+                <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}`}>
                   <i className="fa fa-eye"></i> View
             </Link>
               </li>
               :
               <li className="nav-item">
-                <Link className="nav-link" to={`/${formId}/submission/${submissionId}/edit`}>
+                <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}/edit`}>
                   <i className="fa fa-edit"></i> Edit
             </Link>
               </li>
@@ -55,9 +55,9 @@ const Item = class extends Component {
           null
         }
         <Switch>
-          <Route exact path="/:formId/submission/:submissionId" component={View} />
-          <Route path="/:formId/submission/:submissionId/edit" component={Edit} />
-          <Route path="/:formId/submission/:submissionId/delete" component={Delete} />
+          <Route exact path="/form/:formId/submission/:submissionId" component={View} />
+          <Route path="/form/:formId/submission/:submissionId/edit" component={Edit} />
+          <Route path="/form/:formId/submission/:submissionId/delete" component={Delete} />
         </Switch>
       </div>
     )

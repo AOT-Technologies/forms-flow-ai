@@ -1,29 +1,37 @@
 import { Route, Switch, Redirect } from 'react-router-dom'
-import React from 'react'
+import React, { Component } from 'react'
 import List from './List';
 import Create from './Create';
-import Item from './Item/index'
+import Item from './Item/index';
+import { STAFF_DESIGNER } from '../../constants/constants';
 
-const user = localStorage.getItem('UserRoles');
+let user = '';
 
 const CreateFormRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={(props) => (
-    user.includes('staff_designer')
+    user.includes(STAFF_DESIGNER)
       ? <Component {...props} />
       : <Redirect exact to='/' />
   )} />
 )
 
-const Form = (props) => (
-  <div className="container" id="main">
-    <Switch>
-      <Route exact path="/" component={List} />
-      <CreateFormRoute exact path="/create" component={Create}/>
-      {/* <Route exact path="/form/create" component={Create} /> */}
-      <Route path="/:formId" component={Item} />
-    </Switch>
-  </div>
-)
+class Form extends Component{
+  componentDidMount(){
+    user = localStorage.getItem('UserRoles');
+  }
+
+  render(){
+    return(
+      <div className="container" id="main">
+     <Switch>
+       <Route exact path="/form" component={List} />
+       <CreateFormRoute exact path="/form/create" component={Create}/>
+       <Route path="/form/:formId" component={Item} />
+     </Switch>
+   </div>
+    )
+  }
+}
 
 export default Form
 

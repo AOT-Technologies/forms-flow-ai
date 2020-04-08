@@ -1,6 +1,5 @@
 import Keycloak from "keycloak-js";
 import {ROLES, USER_RESOURCE_FORM_ID} from '../constants/constants';
-
 const _kc = new Keycloak('/keycloak.json');
 const jwt = require('jsonwebtoken');
 
@@ -19,6 +18,9 @@ const initKeycloak = (onAuthenticatedCallback) => {
     .then((authenticated) => {
       if (authenticated) {
         // debugger;
+        // if (window.location.pathname !== '/'){
+        //   window.location.replace(`${window.location.origin}/`)
+        // }
         localStorage.setItem('UserRoles',KeycloakData.realmAccess.roles);
 
         let role = [];
@@ -51,6 +53,11 @@ const initKeycloak = (onAuthenticatedCallback) => {
 const doLogin = _kc.login;
 
 const doLogout = _kc.logout;
+const userLogout = ()=>{
+  localStorage.clear();
+  sessionStorage.clear();
+  doLogout()
+}
 
 const getToken = () => _kc.token;
 
@@ -68,7 +75,7 @@ const KeycloakData = _kc;
 export default {
   initKeycloak,
   doLogin,
-  doLogout,
+  userLogout,
   getToken,
   updateToken,
   KeycloakData,

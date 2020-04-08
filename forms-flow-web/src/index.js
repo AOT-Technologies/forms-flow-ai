@@ -7,6 +7,7 @@ import UserService from "./services/UserService";
 
 import { Formio} from 'react-formio';
 import {AppConfig} from './config';
+import * as serviceWorker from './serviceWorker';
 
 import './styles.scss';
 
@@ -18,5 +19,6 @@ Formio.setBaseUrl(AppConfig.apiUrl);
 
 const renderApp = () => ReactDOM.render(<App {...{ store, history }} />, document.getElementById("app"));
 
+serviceWorker.register();
 UserService.initKeycloak(renderApp);
 HttpService.configure();

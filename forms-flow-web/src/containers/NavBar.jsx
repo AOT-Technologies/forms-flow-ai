@@ -18,7 +18,7 @@ const NavBar = () => {
                         <Nav.Link as={Link} to='/' className="nav-item nav-link"><i className="fa fa-home" style={{ fontSize: '20px', color: '#ffff' }}></i></Nav.Link>
                     </Nav>
                     <Nav >
-                        <Nav.Link onClick={UserService.doLogout} className="nav-item nav-link" style={{ color: '#ffff' }}><i className="fa fa-power-off" aria-hidden="true"></i> Logout</Nav.Link>
+                        <Nav.Link onClick={UserService.userLogout} className="nav-item nav-link" style={{ color: '#ffff' }}><i className="fa fa-power-off" aria-hidden="true"></i> Logout</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
                 </section>

@@ -2,23 +2,72 @@
 version: "3.7"
 
 services:
-  camunda:
+   camunda:
     build:
       context: ./forms-flow-bpm/
       dockerfile: Dockerfile
     ports:
       - '8000:8080'
-    env_file:
-      - forms-flow-bpm/.env
     environment:
-      - KEYCLOAK_URL=${KEYCLOAK_URL}
-      - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM}
-      - KEYCLOAK_CLIENTID=${KEYCLOAK_CLIENTID}
-      - KEYCLOAK_CLIENTSECRET=${KEYCLOAK_CLIENTSECRET}
+      - KEYCLOAK_URL=https://iam.aot-technologies.com
+      - KEYCLOAK_URL_REALM=forms-flow-ai
+      - KEYCLOAK_CLIENTID=forms-flow-bpm
+      - KEYCLOAK_CLIENTSECRET=3dd8d977-f9e0-43b8-9b56-72ad8349b3ea
     networks:
       - camunda-network
 
+  forms-flow-web:
+    build:
+      context: ./forms-flow-web/
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    ports:
+      - '3000:3000'
+    tty: true
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_CLIENT_ID=5e8320431481d01ecad8645a
+      - REACT_APP_STAFF_REVIEWER_ID=5e8320431481d0bee4d8645b
+      - REACT_APP_STAFF_DESIGNER_ID=5e81f077bc3e94933a25fc13
+      - REACT_APP_USER_RESOURCE_FORM_ID=5e81f07abc3e944bff25fc16
+      - REACT_APP_API_SERVER_URL=http://207.216.46.125:3001
+      - REACT_APP_API_PROJECT_URL=http://207.216.46.125:3001
+    
+  mongo:
+    image: mongo:4.1
+    restart: always
+    ports:
+      - "27018:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    volumes:
+      - mdb-data:/data/db
 
+  forms-flow-io:
+    build:
+      context: ./forms-flow-io/
+      dockerfile: Dockerfile
+    # The app will restart until Mongo is listening
+    restart: always
+    links:
+      - mongo
+    ports:
+      - "3001:3001"
+    # The application wants to download things to the local directory
+    # TODO: really wish I could mount this as read-only
+    volumes:
+      - ./:/app:rw
+    environment:
+      DEBUG: formio:*
+      NODE_CONFIG: '{"mongo": "mongodb://mongo:27017/formio"}'
+      ROOT_EMAIL: admin@example.com
+      ROOT_PASSWORD: CHANGEME
+    stdin_open: true  # -i
+    tty: true         # -t
 
 networks:
   camunda-network:

@@ -5,6 +5,8 @@
 # Use Node image, maintained by Docker:
 # hub.docker.com/r/_/node/
 FROM node:12.2.0-alpine
+
+# set working directory
 WORKDIR /forms-flow-io/app
 
 # "bcrypt" requires python/make/g++, all must be installed in alpine
@@ -24,8 +26,8 @@ ENV NPM_PACKAGES=/.npm-packages \
 RUN echo "prefix = $NPM_PACKAGES" >> ~/.npmrc
 
 # Include details of the required dependencies
-COPY ./forms-flow-io/package.json $NPM_PACKAGES/
-COPY ./forms-flow-io/package-lock.json $NPM_PACKAGES/
+COPY ./package.json $NPM_PACKAGES/
+COPY ./package-lock.json $NPM_PACKAGES/
 
 # Use "Continuous Integration" to install as-is from package-lock.json
 RUN npm ci --prefix=$NPM_PACKAGES

@@ -2,7 +2,7 @@
 version: "3.7"
 
 services:
-   camunda:
+  camunda:
     build:
       context: ./forms-flow-bpm/
       dockerfile: Dockerfile

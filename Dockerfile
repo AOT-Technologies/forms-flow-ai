@@ -49,7 +49,7 @@ ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/camund
 #
 
 # Base image
-FROM node:12.2.0-alpine
+FROM node:lts-alpine3.10
 
 # set working directory
 WORKDIR /forms-flow-io/app
@@ -98,6 +98,9 @@ ENTRYPOINT [ "node", "main.js" ]
 #
 #Stage 3: forms-flow-web
 #
+
+# Base image
+FROM node:12.2.0-alpine
 
 # Set working directory
 WORKDIR /forms-flow-web/app

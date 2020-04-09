@@ -4,7 +4,7 @@ version: "3.7"
 services:
   camunda:
     build:
-      context: ./forms-flow-bpm/
+      context: ./
       dockerfile: Dockerfile
     ports:
       - '8000:8080'
@@ -30,7 +30,7 @@ services:
 
   forms-flow-io:
     build:
-      context: ./forms-flow-io/
+      context: ./
       dockerfile: Dockerfile
     # The app will restart until Mongo is listening
     restart: always
@@ -49,6 +49,26 @@ services:
       ROOT_PASSWORD: CHANGEME
     stdin_open: true  # -i
     tty: true         # -t
+
+  forms-flow-web:
+    container_name: forms-flow-ai
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    ports:
+      - '3000:3000'
+    tty: true
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_CLIENT_ID=5e8de2b47998f98b2a35554c
+      - REACT_APP_STAFF_REVIEWER_ID=5e8de2b47998f941c835554d
+      - REACT_APP_STAFF_DESIGNER_ID=5e8dc065a616c3864ab3a17b
+      - REACT_APP_USER_RESOURCE_FORM_ID=5e8dc068a616c36c24b3a17e
+      - REACT_APP_API_SERVER_URL=http://207.216.46.125:3001
+      - REACT_APP_API_PROJECT_URL=http://207.216.46.125:3001
 
 networks:
   camunda-network:

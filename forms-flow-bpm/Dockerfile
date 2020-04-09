@@ -1,9 +1,5 @@
 # maven build
 FROM maven:3.6.1-jdk-11-slim AS MAVEN_TOOL_CHAIN
-
-# set working directory
-WORKDIR /forms-flow-bpm/app
-
 COPY pom-docker.xml /tmp/pom.xml
 COPY src /tmp/src/
 COPY settings-docker.xml /usr/share/maven/ref/

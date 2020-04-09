@@ -27,6 +27,7 @@ const List = class extends Component {
           <h3>Forms</h3>
           {userRoles.includes(STAFF_DESIGNER) ?<Link to="/form/create">
             <button className="btn btn-primary pull-right"><i className="fa fa-plus"></i> Create Form</button>
+            <br></br>
           </Link>:null}
         </header>
         <section className="mt-5">

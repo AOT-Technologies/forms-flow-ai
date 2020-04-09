@@ -1,5 +1,5 @@
 import Keycloak from "keycloak-js";
-import {ROLES, USER_RESOURCE_FORM_ID} from '../constants/constants';
+import {ROLES, USER_RESOURCE_FORM_ID,Keycloak_Client} from '../constants/constants';
 const _kc = new Keycloak('/keycloak.json');
 const jwt = require('jsonwebtoken');
 
@@ -21,11 +21,11 @@ const initKeycloak = (onAuthenticatedCallback) => {
         // if (window.location.pathname !== '/'){
         //   window.location.replace(`${window.location.origin}/`)
         // }
-        localStorage.setItem('UserRoles',KeycloakData.realmAccess.roles);
-
+        const UserRoles=KeycloakData.resourceAccess[Keycloak_Client].roles
+        localStorage.setItem('UserRoles',UserRoles);
         let role = [];
-        for (let i = 0; i < KeycloakData.realmAccess.roles.length; i++) {
-          const roledata = ROLES.find(x => x.title === KeycloakData.realmAccess.roles[i]);
+        for (let i = 0; i < UserRoles.length; i++) {
+          const roledata = ROLES.find(x => x.title === UserRoles[i]);
           if(roledata){
             role = role.concat(roledata.id)
           }

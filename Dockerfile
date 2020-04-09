@@ -14,7 +14,7 @@
 FROM maven:3.6.1-jdk-11-slim AS MAVEN_TOOL_CHAIN
 
 # Set working directory
-WORKDIR /app
+WORKDIR /app/forms-flow-bpm
 
 # setup folder structure
 COPY /forms-flow-bpm/pom-docker.xml /tmp/pom.xml
@@ -40,7 +40,7 @@ COPY --from=MAVEN_TOOL_CHAIN /tmp/target/camunda-bpm-identity-keycloak-examples-
 RUN chmod a+rwx -R /app
 
 #Start Camunda
-WORKDIR /app/forms-flow-io
+
 VOLUME /tmp
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/camunda-bpm-identity-keycloak-examples-sso-kubernetes.jar"]
 
@@ -53,7 +53,7 @@ ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/camund
 FROM node:lts-alpine3.10
 
 # set working directory
-WORKDIR /app
+WORKDIR /app/forms-flow-io
 
 # "bcrypt" requires python/make/g++, all must be installed in alpine
 # (note: using pinned versions to ensure immutable build environment)
@@ -89,7 +89,7 @@ RUN ln -sf $NPM_PACKAGES/node_modules node_modules
 #   DEBUG=formio:*
 ENV DEBUG=""
 
-WORKDIR /app/forms-flow-io
+
 # This will initialize the application based on
 # some questions to the user (login email, password, etc.)
 ENTRYPOINT [ "node", "main.js" ]
@@ -103,7 +103,7 @@ ENTRYPOINT [ "node", "main.js" ]
 FROM node:12.2.0-alpine
 
 # Set working directory
-WORKDIR /app
+WORKDIR /app/forms-flow-web
 
 # Add `/app/node_modules/.bin` to $PATH
 ENV PATH /app/node_modules/.bin:$PATH
@@ -120,7 +120,6 @@ COPY /forms-flow-web/. /forms-flow-web/app
 RUN npm install --silent
 #RUN npm install react-scripts@3.0.1 -g --silent
 
-WORKDIR /app/forms-flow-web
 # Start app
 CMD ["npm", "start"]
 

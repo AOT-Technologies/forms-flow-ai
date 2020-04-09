@@ -5,7 +5,7 @@ services:
 
   forms-flow-bpm:
     build:
-      context: ./
+      context: ./forms-flow-bpm/
       dockerfile: Dockerfile
     ports:
       - '8000:8080'
@@ -31,7 +31,7 @@ services:
 
   forms-flow-io:
     build:
-      context: ./
+      context: ./forms-flow-io/
       dockerfile: Dockerfile
     # The app will restart until Mongo is listening
     restart: always
@@ -54,7 +54,7 @@ services:
   forms-flow-web:
     container_name: forms-flow-ai
     build:
-      context: ./
+      context: ./forms-flow-web/
       dockerfile: Dockerfile
     volumes:
       - '.:/app'

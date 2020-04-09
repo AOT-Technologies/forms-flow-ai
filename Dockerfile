@@ -44,38 +44,8 @@ WORKDIR /forms-flow-bpm/app
 VOLUME /tmp
 ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/camunda-bpm-identity-keycloak-examples-sso-kubernetes.jar"]
 
-
 #
-#Stage 2: forms-flow-web
-#
-
-# Base image
-FROM node:12.2.0-alpine
-
-# Set working directory
-WORKDIR /forms-flow-web/app
-
-# Add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
-
-RUN apk update && apk upgrade && \
-    apk add --no-cache bash git openssh
-
-# Install and cache app dependencies
-COPY /forms-flow-web/package.json /forms-flow-web/app/package.json
-
-# Bundle app source
-COPY /forms-flow-web/. /forms-flow-web/app
-
-RUN npm install --silent
-#RUN npm install react-scripts@3.0.1 -g --silent
-
-# Start app
-CMD ["npm", "start"]
-
-
-#
-#Stage 3: forms-flow-io
+#Stage 2: forms-flow-io
 #
 
 # set working directory
@@ -122,6 +92,33 @@ ENV DEBUG=""
 ENTRYPOINT [ "node", "main.js" ]
 
 
+#
+#Stage 3: forms-flow-web
+#
+
+# Base image
+FROM node:12.2.0-alpine
+
+# Set working directory
+WORKDIR /forms-flow-web/app
+
+# Add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
+
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh
+
+# Install and cache app dependencies
+COPY /forms-flow-web/package.json /forms-flow-web/app/package.json
+
+# Bundle app source
+COPY /forms-flow-web/. /forms-flow-web/app
+
+RUN npm install --silent
+#RUN npm install react-scripts@3.0.1 -g --silent
+
+# Start app
+CMD ["npm", "start"]
 
 
 

@@ -71,7 +71,7 @@ services:
       - REACT_APP_API_PROJECT_URL=http://207.216.46.125:3001
 
 networks:
-  camunda-network:
+  forms-flow-bpm-network:
     driver: "bridge"
 
 volumes:

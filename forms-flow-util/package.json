@@ -2,8 +2,8 @@
   "name": "aot-formio-export",
   "version": "1.2.0",
   "description": "AOT Formio Export",
-  "main": "lib/@aot-technologies/formio-export.js",
- "directories": {
+  "main": "lib/aot-formio-export.js",
+  "directories": {
     "lib": "lib",
     "test": "test"
   },
@@ -11,7 +11,7 @@
     "build": "webpack --env dev && webpack --env build && npm run test",
     "dev": "webpack --progress --colors --watch --env dev",
     "publishConfig": {
-      "registry":"https://npm.pkg.github.com/"
+      "registry": "https://npm.pkg.github.com/"
     },
     "test": "mocha --require jsdom-global/register --require babel-core/register --colors ./test/*.spec.js",
     "test:watch": "mocha --require jsdom-global/register --require babel-core/register --colors -w ./test/*.spec.js"
@@ -51,6 +51,6 @@
   "dependencies": {
     "js-html2pdf": "^1.1.4",
     "lodash": "^4.17.15",
-    "moment": "^2.20.1"
+    "moment": "^2.24.0"
   }
 }

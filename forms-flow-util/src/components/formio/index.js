@@ -103,7 +103,14 @@ const FormioComponent = {
             c.components[i].hidden = hidden;
           }
           break;
+        case 'container':
+          for (let i in c.components) {
 
+            let hidden = !(component.conditional.show === 'true' && componentValue === componentShouldBe);
+
+            c.components[i].hidden = hidden;
+          }
+          break;
         default:
           c.hidden = !(component.conditional.show === 'true' && componentValue === componentShouldBe);
           break;

@@ -1,9 +1,7 @@
 import FormioExport from 'aot-formio-export';
-/*import UserService from "./UserService";*/
 import moment from "moment";
 
 const getPdf = (formResponse, submissionData, callback) => {
-  console.log(FormioExport);
     let component = formResponse;
 
     let hasSubmission = submissionData !== null;
@@ -21,7 +19,7 @@ const getPdf = (formResponse, submissionData, callback) => {
       data: submission,
       config: { // pdf export configuration
         download: willDownload, // should the pdf file be downloaded once rendered
-        filename: `${component.title}-download.pdf`, // the pdf file name
+        filename: `${component.title}-${Date.now()}.pdf`, // the pdf file name
         margin: 10, // the pdf file margins
         html2canvas: {
           scale: 5, // scale factor for rendering the canvas (overall resolution of the canvas image)
@@ -37,7 +35,6 @@ const getPdf = (formResponse, submissionData, callback) => {
    meta: {
         generatedOn: moment(submissionData.modified).format("DD-MM-YYYY hh:mm:ss"),
         generatedBy: submissionData.owner
-
       }
 
     };

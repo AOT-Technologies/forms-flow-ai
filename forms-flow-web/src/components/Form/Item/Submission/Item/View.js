@@ -26,6 +26,7 @@ const View = class extends Component {
     return (
       <div className="detail-view">
         <h3 className="h3-form">View { form.title } Submission
+        <br></br>
         <Button className="btn btn-primary btn-sm form-btn pull-right" onClick={()=>PdfDownloadService.getPdf(form,submission)}><i class="fa fa-print" aria-hidden="true"></i> Print As PDF</Button></h3>
 
         <Errors errors={errors} />

@@ -21,7 +21,7 @@ const initKeycloak = (onAuthenticatedCallback) => {
         // if (window.location.pathname !== '/'){
         //   window.location.replace(`${window.location.origin}/`)
         // }
-        const UserRoles=KeycloakData.resourceAccess[Keycloak_Client].roles
+        const UserRoles=KeycloakData.resourceAccess[Keycloak_Client].roles;
         localStorage.setItem('UserRoles',UserRoles);
         let role = [];
         for (let i = 0; i < UserRoles.length; i++) {

@@ -1,7 +1,8 @@
-export const CLIENT = 'client';
-export const STAFF_DESIGNER = 'staff_designer';
-export const STAFF_REVIEWER = 'staff_reviewer';
+export const CLIENT = 'rpas-client';
+export const STAFF_DESIGNER = 'rpas-formdesigner';
+export const STAFF_REVIEWER = 'rpas-reviewer';
 export const USER_RESOURCE_FORM_ID = process.env.REACT_APP_USER_RESOURCE_FORM_ID || '5e78bdd7a054f922bc82d065';
+export const Keycloak_Client="forms-flow-web"
 //TODO UPDATE THIS TO FORMIO ROLE IDS
 // console.log(process.env);
 export const ROLES = [{

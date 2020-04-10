@@ -1,5 +1,5 @@
 import chai from 'chai';
-import FormioExport from '../lib/@aot-technologies/formio-export.js';
+import FormioExport from '../lib/aot-formio-export';
 
 import form from './samples/form.json';
 import submission from './samples/submission.json';

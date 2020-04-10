@@ -1,4 +1,4 @@
-export const CLIENT = 'rpas_client';
+export const CLIENT = 'rpas-client';
 export const STAFF_DESIGNER = 'rpas-formdesigner';
 export const STAFF_REVIEWER = 'rpas-reviewer';
 export const USER_RESOURCE_FORM_ID = process.env.REACT_APP_USER_RESOURCE_FORM_ID || '5e78bdd7a054f922bc82d065';

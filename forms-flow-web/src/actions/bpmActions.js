@@ -15,7 +15,6 @@ export const sendEmailNotification = (data) => dispatch => {
 }
 
 export const serviceActionError = (data) => dispatch => {
-  console.log('data', data)
   dispatch({
     type: ACTION_CONSTANTS.ERROR,
     payload: 'Error Handling Message'

@@ -5,15 +5,12 @@ import { setUserToken, sendEmailNotification, serviceActionError } from '../../a
 import Token from "../token/tokenService"
 
 export const getUserToken = (data, ...rest) => {
-  console.log(rest);
   const done = rest.length ? rest[0] :  ()=>{};
   return dispatch => {
     httpPOSTRequestWithoutToken(API.GET_BPM_TOKEN,data).then(res => {
       if (res.data) {
-        console.log(res.data);
         //TODO update refresh token logic
         const token=`${res.data.access_token}`;
-        console.log("token", token);
         Token.setBpmToken(token);
         dispatch(setUserToken(res.data))
         done(null,res);

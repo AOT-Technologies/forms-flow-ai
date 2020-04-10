@@ -9,13 +9,11 @@ export const httpGETRequest = (url, data) => {
 }
 
 export const httpPOSTRequest = (url, data) => {
-  console.log(data, Token.getBpmToken());
   const token = `Bearer ${Token.getBpmToken()}`;
   return axios.post(url, data, { headers: { Authorization: token } }) // TODO get this dynamic from url
 }
 
 export const httpPOSTRequestWithoutToken = (url, data) => {
-  console.log(data)
   const config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
@@ -25,6 +23,5 @@ export const httpPOSTRequestWithoutToken = (url, data) => {
 }
 
 export const httpGETRequestToken = (url, token) => {
-  console.log('token')
   return axios.get(url, { headers: { Authorization: token } }) // TODO get this dynamic from url
 }

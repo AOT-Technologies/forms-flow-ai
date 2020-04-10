@@ -12,12 +12,11 @@ RUN apk update && apk upgrade && \
 
 # install and cache app dependencies
 COPY package.json /forms-flow-web/app/package.json
+COPY forms-flow-util/package.json /forms-flow-web/forms-flow-util/package.json
 RUN npm install --silent
 #RUN npm install react-scripts@3.0.1 -g --silent
 
 COPY . /forms-flow-web/app/
-COPY ../forms-flow-util/. /forms-flow-web/forms-flow-util/
-ls -lrt ../forms-flow-util
 
 # start app
 CMD ["npm", "start", "--prefix", "/forms-flow-web/app"]

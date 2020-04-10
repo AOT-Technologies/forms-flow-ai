@@ -4,10 +4,10 @@
 
 # Use Node image, maintained by Docker:
 # hub.docker.com/r/_/node/
-FROM node:lts-alpine3.10
+FROM node:12.2.0-alpine
 
 # set working directory
-WORKDIR /app
+WORKDIR /forms-flow-io/app
 
 # "bcrypt" requires python/make/g++, all must be installed in alpine
 # (note: using pinned versions to ensure immutable build environment)
@@ -41,6 +41,8 @@ RUN ln -sf $NPM_PACKAGES/node_modules node_modules
 #   DEBUG=formio:db (see index.js for more)
 #   DEBUG=formio:*
 ENV DEBUG=""
+
+COPY . /forms-flow-io/app/
 
 # This will initialize the application based on
 # some questions to the user (login email, password, etc.)

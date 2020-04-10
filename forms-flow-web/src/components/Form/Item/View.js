@@ -5,6 +5,9 @@ import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors
 import {push} from 'connected-react-router';
 import Loading from '../../../containers/Loading';
 
+import {getUserToken, triggerEmailNotification} from "../../../apiManager/services/bpmServices";
+import {BPM_USER_DETAILS} from "../../../apiManager/constants/apiConstants";
+
 const View = class extends Component {
   render() {
     const {
@@ -61,10 +64,21 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
           dispatch(resetSubmissions('submission'));
-          dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}`))
+          //TODO update this
+          dispatch(getUserToken(BPM_USER_DETAILS,(err,res)=>{
+            if(!err){
+              dispatch(triggerEmailNotification({
+                  variables: {
+                    to : {value: submission.owner}
+                  }
+                }
+              ));
+              dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}`))
+            }
+          }));
         }
       }));
-    }
+    },
   }
 }
 

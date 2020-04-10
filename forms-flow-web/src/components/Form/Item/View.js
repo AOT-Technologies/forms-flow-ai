@@ -16,8 +16,7 @@ const View = class extends Component {
       onSubmit,
       errors,
       options,
-      form: {form, isActive, url},
-      bpmLoginFetch
+      form: {form, isActive, url}
     } = this.props;
     if (isActive) {
       return <Loading />;
@@ -26,7 +25,6 @@ const View = class extends Component {
     return (
       <div>
         <h3>New { form.title }</h3>
-        <button className="btn btn-primary pull-right" onClick={()=>bpmLoginFetch()}> Signin </button>
         <Errors errors={errors} />
         <hr />
         <Form
@@ -66,33 +64,21 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
           dispatch(resetSubmissions('submission'));
+          //TODO update this
           dispatch(getUserToken(BPM_USER_DETAILS,(err,res)=>{
             if(!err){
               dispatch(triggerEmailNotification({
                   variables: {
-                    to : {value: "abhilash.kr@aot-technologies.com"}
+                    to : {value: submission.owner}
                   }
                 }
               ));
+              dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}`))
             }
           }));
-
-          dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}`))
         }
       }));
     },
-    bpmLoginFetch: () => {
-      dispatch(getUserToken(BPM_USER_DETAILS,(err,res)=>{
-        if(!err){
-          dispatch(triggerEmailNotification({
-              variables: {
-                to : {value: "abhilash.kr@aot-technologies.com"}
-              }
-            }
-          ));
-        }
-      }));
-    }
   }
 }
 

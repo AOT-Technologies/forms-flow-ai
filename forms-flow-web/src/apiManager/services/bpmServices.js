@@ -30,21 +30,19 @@ export const getUserToken = (data, ...rest) => {
 };
 
 export const  triggerEmailNotification= (data, ...rest) => {
-  console.log("email",data);
   const done = rest.length ? rest[0] :  ()=>{};
   return dispatch => {
     httpPOSTRequest(API.SEND_EMAIL_NOTIFICATION,data).then(res => {
-      console.log('trigger Email', res)
-      if (res) {
-        dispatch(sendEmailNotification(res))
-        done(null,res);
+      if (res.data) {
+        dispatch(sendEmailNotification(res.data))
+        done(null,res.data);
       } else {
         dispatch(serviceActionError(res))
         done('Error Posting data');
       }
     }).catch((error) => {
-      console.log(error)
       dispatch(serviceActionError(error))
+      done(error);
     })
   }
 };

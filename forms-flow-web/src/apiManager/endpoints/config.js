@@ -5,7 +5,7 @@ const URL_CONFIG = {
   devUrl:'/camunda/engine-rest/process-definition/key/'
 }
 
-const BASE_API_URL = URL_CONFIG.devUrl;
+const BASE_API_URL = URL_CONFIG.dev;
 const BASE_TOKEN_URL = URL_CONFIG.devToken // todo update to devToken; issue of cors
 
 export default {

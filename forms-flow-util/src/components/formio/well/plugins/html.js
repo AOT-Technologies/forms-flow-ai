@@ -4,12 +4,12 @@ import FormioExportUtils from '../../../../utils';
 export default (element, component) => {
   if (component && component.components) {
     let componentElement = FormioExportUtils.createElement('div', {
-      class: `formio-component ${component.type}-component card`,
+      class: '',
       id: Math.random().toString(36).substring(7)
     });
 
     let valueElement = FormioExportUtils.createElement('div', {
-      class: 'component-value card-body'
+      class: 'card card-body'
     });
 
     _.forEach(component.components, (c) => {

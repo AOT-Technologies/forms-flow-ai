@@ -70,9 +70,26 @@ services:
       - REACT_APP_USER_RESOURCE_FORM_ID=5e8dc068a616c36c24b3a17e
       - REACT_APP_API_SERVER_URL=http://207.216.46.125:3001
       - REACT_APP_API_PROJECT_URL=http://207.216.46.125:3001
+    networks:
+      - forms-flow-web-network
+
+  nginx:
+    image: nginx:1.15-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./:/var/www
+      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - ./forms-flow-web/certs:/etc/nginx/certs
+    restart: unless-stopped
+    tty: true
+    networks:
+      - forms-flow-web-network
 
 networks:
   forms-flow-bpm-network:
+  forms-flow-web-network:
     driver: "bridge"
 
 volumes:

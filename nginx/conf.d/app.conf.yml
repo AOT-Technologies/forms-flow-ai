@@ -1,0 +1,30 @@
+server {
+   listen 443 ssl;
+   server_name  ~^(www\.)?(.+)$;
+   client_max_body_size 20M;
+   ssl_certificate /etc/nginx/certs/fullchain.pem;
+   ssl_certificate_key /etc/nginx/certs/privkey.pem;
+
+   location / {
+     proxy_set_header    Host $host;
+     proxy_set_header    X-Real-IP $remote_addr;
+     proxy_set_header    X-Forwarded-For $proxy_add_x_forwarded_for;
+     proxy_set_header    X-Forwarded-Proto $scheme;
+     proxy_pass          http://207.216.46.125:3000;
+     proxy_read_timeout  90;
+     proxy_redirect      http://207.216.46.125:3000 https://$host;
+   }
+}
+server {
+    listen 443 ssl;
+    server_name  ~^207.216.46.125(.+)$;
+    client_max_body_size 20M;
+    ssl_certificate /etc/nginx/certs/fullchain.pem;
+    ssl_certificate_key /etc/nginx/certs/privkey.pem;
+
+    location / {
+      proxy_buffering off;
+      proxy_set_header Host $http_host;
+      proxy_pass http://207.216.46.125:3001;
+    }
+}

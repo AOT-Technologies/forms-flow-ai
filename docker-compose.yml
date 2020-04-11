@@ -81,7 +81,7 @@ services:
     volumes:
       - ./:/var/www
       - ./nginx/conf.d/:/etc/nginx/conf.d/
-      - ./forms-flow-web/certs:/etc/nginx/certs
+      - /home/dev/certs/app1.aot-technologies.com:/etc/nginx/certs
     restart: unless-stopped
     tty: true
     networks:

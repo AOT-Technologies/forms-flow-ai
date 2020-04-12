@@ -50,8 +50,6 @@ services:
       ROOT_PASSWORD: CHANGEME
     stdin_open: true  # -i
     tty: true         # -t
-    networks:
-      - forms-flow-web-network
 
   forms-flow-web:
     container_name: forms-flow-ai

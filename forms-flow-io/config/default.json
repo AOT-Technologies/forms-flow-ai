@@ -4,7 +4,7 @@
   "host": "207.216.46.125",
   "protocol": "http",
   "allowedOrigins": ["*"],
-  "domain": "http://localhost:3001",
+  "domain": "http://207.216.46.125:3001",
   "basePath": "",
   "mongo": "mongodb://localhost:27017/formioapp",
   "mongoConfig": "",

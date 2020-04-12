@@ -6,7 +6,7 @@
   "allowedOrigins": ["*"],
   "domain": "http://207.216.46.125:3001",
   "basePath": "",
-  "mongo": "mongodb://localhost:27017/formioapp",
+  "mongo": "mongodb://207.216.46.125:27017/formioapp",
   "mongoConfig": "",
   "mongoSA": "",
   "mongoSecret": "aot-admin",

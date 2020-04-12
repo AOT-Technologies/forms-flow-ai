@@ -1,5 +1,5 @@
-let PROJECT_URL = process.env.REACT_APP_API_PROJECT_URL || 'https://localhost:3001';
-let API_URL = process.env.REACT_APP_API_SERVER_URL || 'https://localhost:3001';
+let PROJECT_URL = process.env.REACT_APP_API_PROJECT_URL || 'http://207.216.46.125:3001';
+let API_URL = process.env.REACT_APP_API_SERVER_URL || 'http://207.216.46.125:3001';
 
 let query = {};
 window.location.search.substr(1).split('&').forEach(function(item) {

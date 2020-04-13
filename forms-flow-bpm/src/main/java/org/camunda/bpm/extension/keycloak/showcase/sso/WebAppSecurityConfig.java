@@ -16,6 +16,15 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.context.request.RequestContextListener;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.apache.catalina.Context;
+import org.apache.catalina.connector.Connector;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 /**
  * Camunda Web application SSO configuration for usage with
@@ -24,6 +33,7 @@ import org.springframework.web.context.request.RequestContextListener;
 @ConditionalOnMissingClass("org.springframework.test.context.junit4.SpringJUnit4ClassRunner")
 @Configuration
 @EnableOAuth2Sso
+@EnableAutoConfiguration(exclude = { DataSourceAutoConfiguration.class,WebMvcAutoConfiguration.class })
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 15)
 public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
 
@@ -47,6 +57,32 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
 				.logoutSuccessHandler(keycloakLogoutHandler)
 		;
 	}
+        
+        @Bean
+        public ServletWebServerFactory servletContainer() {
+        	TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory() {
+            		@Override
+            		protected void postProcessContext(Context context) {
+                		SecurityConstraint securityConstraint = new SecurityConstraint();
+                		securityConstraint.setUserConstraint("CONFIDENTIAL");
+                		SecurityCollection collection = new SecurityCollection();
+                		collection.addPattern("/*");
+                		securityConstraint.addCollection(collection);
+                		context.addConstraint(securityConstraint);
+            		}
+        	};
+        	tomcat.addAdditionalTomcatConnectors(getHttpConnector());
+        	return tomcat;
+       	}
+
+    	private Connector getHttpConnector() {
+        	Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
+        	connector.setScheme("http");
+        	connector.setPort(8080);
+       		connector.setSecure(false);
+        	connector.setRedirectPort(8081);
+        	return connector;
+    	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Bean

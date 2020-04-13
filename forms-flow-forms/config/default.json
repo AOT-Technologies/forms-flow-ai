@@ -1,10 +1,10 @@
 {
   "port": 3001,
   "appPort": 8080,
-  "host": "207.216.46.125",
+  "host": "localhost",
   "protocol": "http",
   "allowedOrigins": ["*"],
-  "domain": "http://207.216.46.125:3001",
+  "domain": "http://localhost:3001",
   "basePath": "",
   "mongo": "mongodb://localhost:27017/formioapp",
   "mongoConfig": "",

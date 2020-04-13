@@ -1,4 +1,4 @@
-import {ROLES, USER_RESOURCE_FORM_ID,Keycloak_Client,_kc} from '../constants/constants';
+import {ROLES, USER_RESOURCE_FORM_ID, Keycloak_Client, _kc} from '../constants/constants';
 const jwt = require('jsonwebtoken');
 
 /**

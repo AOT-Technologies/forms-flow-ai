@@ -8,7 +8,7 @@ services:
       context: ./forms-flow-bpm/
       dockerfile: Dockerfile
     ports:
-      - '8000:8443'
+      - '8000:8080'
     environment:
       - KEYCLOAK_URL=${KEYCLOAK_URL}
       - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM}

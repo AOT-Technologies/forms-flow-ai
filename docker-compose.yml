@@ -46,8 +46,8 @@ services:
     environment:
       DEBUG: formio:*
       NODE_CONFIG: '{"mongo": "mongodb://mongo:27017/formio"}'
-      ROOT_EMAIL: admin@example.com
-      ROOT_PASSWORD: CHANGEME
+      ROOT_EMAIL: ${ROOT_EMAIL}
+      ROOT_PASSWORD: ${ROOT_PASSWORD}
     stdin_open: true  # -i
     tty: true         # -t
 
@@ -68,7 +68,7 @@ services:
       - REACT_APP_STAFF_DESIGNER_ID=${REACT_APP_STAFF_DESIGNER_ID}
       - REACT_APP_USER_RESOURCE_FORM_ID=${REACT_APP_USER_RESOURCE_FORM_ID}
       - REACT_APP_API_SERVER_URL=${REACT_APP_API_SERVER_URL}
-      - REACT_APP_API_PROJECT_URL=${REACT_APP_API_SERVER_URL}
+      - REACT_APP_API_PROJECT_URL=${REACT_APP_API_PROJECT_URL}
     networks:
       - forms-flow-web-network
 

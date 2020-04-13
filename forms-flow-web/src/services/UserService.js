@@ -1,6 +1,4 @@
-import Keycloak from "keycloak-js";
-import {ROLES, USER_RESOURCE_FORM_ID,Keycloak_Client} from '../constants/constants';
-const _kc = new Keycloak('/keycloak.json');
+import {ROLES, USER_RESOURCE_FORM_ID,Keycloak_Client,_kc} from '../constants/constants';
 const jwt = require('jsonwebtoken');
 
 /**

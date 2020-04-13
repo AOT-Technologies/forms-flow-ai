@@ -24,5 +24,5 @@ services:
       - REACT_APP_KEYCLOAK_JSON_DEV=/keycloak.json
       - REACT_APP_KEYCLOAK_JSON_PROD=/keycloak-prod.json
       - REACT_APP_KEYCLOAK_CLIENT=forms-flow-web
-      - REACT_APP_BPM_API_BASE=http://207.216.46.125:8000/camunda/engine-rest/process-definition/key/
+      - REACT_APP_BPM_API_BASE=http://207.216.46.125:8000
 

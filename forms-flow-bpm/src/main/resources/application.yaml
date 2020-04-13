@@ -54,13 +54,7 @@ camunda.bpm:
     create: All tasks
 
 server:
-  port: 8081
-  ssl:
-    key-store: file:/certs/keystore.ks
-    key-store-password: password
-    key-store-type: pkcs12
-    key-alias: tomcat
-    key-password: password
+  port: 8080
   servlet.context-path: /camunda
 
 security:

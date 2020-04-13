@@ -14,8 +14,6 @@ services:
       - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM}
       - KEYCLOAK_CLIENTID=${KEYCLOAK_CLIENTID}
       - KEYCLOAK_CLIENTSECRET=${KEYCLOAK_CLIENTSECRET}
-    volumes:
-      - /home/dev/certs/bpm1.aot-technologies.com:/certs
     networks:
       - forms-flow-bpm-network
 

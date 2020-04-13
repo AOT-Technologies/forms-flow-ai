@@ -21,4 +21,8 @@ services:
       - REACT_APP_USER_RESOURCE_FORM_ID=5e8dc068a616c36c24b3a17e
       - REACT_APP_API_SERVER_URL=http://207.216.46.125:3001
       - REACT_APP_API_PROJECT_URL=http://207.216.46.125:3001
+      - REACT_APP_KEYCLOAK_JSON_DEV=/keycloak.json
+      - REACT_APP_KEYCLOAK_JSON_PROD=/keycloak-prod.json
+      - REACT_APP_KEYCLOAK_CLIENT=forms-flow-web
+      - REACT_APP_BPM_API_BASE=http://207.216.46.125:8000/camunda/engine-rest/process-definition/key/
 

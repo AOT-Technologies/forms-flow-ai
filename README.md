@@ -37,7 +37,7 @@ The fastest way to run this library locally is to use [Docker](https://docker.co
 Importing and Exporting Forms
 -----------------------------
 
-/forms-flow-web/README.md
+Refer [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#forms-flow-web)
 
 
 Nginx configurations for the App for HTTPS

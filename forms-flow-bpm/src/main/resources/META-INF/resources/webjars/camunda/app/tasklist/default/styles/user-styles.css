@@ -1,0 +1,441 @@
+body {
+  padding: 40px;
+}
+
+.ui.form .inline.field > .selection.dropdown, .ui.form .inline.fields .field > .selection.dropdown {
+    width: 100% !important;
+}
+@media only screen and (max-width: 767px) {
+    .ui.selection.dropdown .menu {
+/*      max-height: 8.01428571rem; /* + 1.335714285 to 9.349999995rem */
+/*      max-height: 9.349999995rem; /* Adds a half */
+        max-height: 16.02857142rem; /* Double size */
+    }
+}
+@media only screen and (min-width: 768px) {
+    .ui.selection.dropdown .menu {
+/*         max-height: 10.68571429rem; /* + 1.3357142863 to 12.0214285763rem */
+      max-height: 12.0214285763rem;
+    }
+}
+@media only screen and (min-width: 992px) {
+    .ui.selection.dropdown .menu {
+      max-height: 16.02857143rem; /* + 1.3357142858 to 17.3642857158rem */
+    }
+}
+@media only screen and (min-width: 1920px) {
+    .ui.selection.dropdown .menu {
+        max-height: 21.37142857rem; /* + 1.3357142856 to 22.7071428556rem */
+    }
+}
+.flex-master {
+   display: flex;
+   flex-direction: column;
+   flex-wrap: nowrap;
+   flex-grow: 1;
+   height: 100%;
+ }
+
+ .page-header {
+   flex: 0 0 auto;
+   /* no grow no shrink */
+   background: #535353;
+   color: white;
+   padding: 0px;
+   font-size: 3em;
+   font-weight: bold;
+   margin: 10px !important;
+ }
+
+ .page-content {
+   /* grow and shrink vertically */
+   flex: 1 1 auto;
+
+   /* new horizontal flex container */
+   display: flex;
+   flex-direction: row;
+
+   /* IMPORTANT: Required for FireFox
+      to ensure vertical sizing is constrained.
+      Not sure why this is required - it should
+      be inherited.
+   */
+   overflow: auto;
+ }
+
+ .sidebar-left {
+   /* should stay fixed except for resizing  */
+   flex: 0 0 auto;
+
+   width: 350px;
+   background: none;
+   padding: 0px;
+   overflow: auto;
+   -webkit-overflow-scrolling: touch;
+ }
+
+ .splitter {
+   /* should stay fixed size */
+   flex: 0 0 auto;
+
+   width: 5px;
+   cursor: col-resize;
+   background: #f5f5f5;
+ }
+
+ .main-content {
+   /* grow & shrink horizontally */
+   flex: 1 1 auto;
+   overflow:auto;
+   background: white;
+   padding: 5px;
+   -webkit-overflow-scrolling: touch;
+ }
+ .md-stepper-horizontal {
+ 	display:table;
+ 	width:100%;
+ 	margin:0 auto;
+ 	background-color:#FFFFFF;
+ 	box-shadow: 0 3px 8px -6px rgba(0,0,0,.50);
+ }
+ .md-stepper-horizontal .md-step {
+ 	display:table-cell;
+ 	position:relative;
+ 	padding:10px;
+ }
+ .md-stepper-horizontal .md-step:hover,
+ .md-stepper-horizontal .md-step:active {
+ 	background-color:rgba(0,0,0,0.04);
+ }
+ .md-stepper-horizontal .md-step:active {
+ 	border-radius: 15% / 75%;
+ }
+ .md-stepper-horizontal .md-step:first-child:active {
+ 	border-top-left-radius: 0;
+ 	border-bottom-left-radius: 0;
+ }
+ .md-stepper-horizontal .md-step:last-child:active {
+ 	border-top-right-radius: 0;
+ 	border-bottom-right-radius: 0;
+ }
+ .md-stepper-horizontal .md-step:hover .md-step-circle {
+ 	background-color:#757575;
+ }
+ .md-stepper-horizontal .md-step:first-child .md-step-bar-left,
+ .md-stepper-horizontal .md-step:last-child .md-step-bar-right {
+ 	display:none;
+ }
+ .md-stepper-horizontal .md-step .md-step-circle {
+ 	width:30px;
+ 	height:30px;
+ 	margin:0 auto;
+ 	background-color:#999999;
+ 	border-radius: 50%;
+ 	text-align: center;
+ 	line-height:30px;
+ 	font-size: 16px;
+ 	font-weight: 600;
+ 	color:#FFFFFF;
+ }
+ .md-stepper-horizontal.green .md-step.active .md-step-circle {
+ 	background-color:#00AE4D;
+ }
+ .md-stepper-horizontal.orange .md-step.active .md-step-circle {
+ 	background-color:#F96302;
+ }
+ .md-stepper-horizontal .md-step.active .md-step-circle {
+ 	background-color: rgb(33,150,243);
+ }
+  .md-stepper-horizontal .md-step.done .md-step-circle:before {
+  	font-weight:100;
+  }
+ .md-stepper-horizontal .md-step.done .md-step-circle {
+ 	background-color: #1f9322;
+ }
+ .md-stepper-horizontal .md-step.done .md-step-circle *,
+ .md-stepper-horizontal .md-step.editable .md-step-circle * {
+ 	display:block;
+ }
+ .md-stepper-horizontal .md-step.editable .md-step-circle:before {
+ 	font-weight:100;
+ }
+ .md-stepper-horizontal .md-step .md-step-title {
+ 	margin-top:5px;
+ 	font-size:14px;
+ 	font-weight:600;
+ }
+ .md-stepper-horizontal .md-step .md-step-title,
+ .md-stepper-horizontal .md-step .md-step-optional {
+ 	text-align: center;
+ 	color:rgba(0,0,0,.26);
+ }
+ .md-stepper-horizontal .md-step.active .md-step-title {
+ 	font-weight: 600;
+ 	color:rgba(0,0,0,.87);
+ }
+ .md-stepper-horizontal .md-step.active.done .md-step-title,
+ .md-stepper-horizontal .md-step.active.editable .md-step-title {
+ 	font-weight:600;
+ }
+ .md-stepper-horizontal .md-step .md-step-optional {
+ 	font-size:12px;
+ }
+ .md-stepper-horizontal .md-step.active .md-step-optional {
+ 	color:rgba(0,0,0,.54);
+ }
+ .md-stepper-horizontal .md-step .md-step-bar-left,
+ .md-stepper-horizontal .md-step .md-step-bar-right {
+ 	position:absolute;
+ 	top:25px !important;
+ 	height:1px;
+ 	border-top:1px solid #DDDDDD;
+ }
+ .md-stepper-horizontal .md-step .md-step-bar-right {
+ 	right:0;
+ 	left:50%;
+ 	margin-left:20px;
+ }
+ .md-stepper-horizontal .md-step .md-step-bar-left {
+ 	left:0;
+ 	right:50%;
+ 	margin-right:20px;
+ }
+ .boxShadow(@level: 1){
+     & when (@level = 1) {
+         box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+     }
+     & when (@level = 2) {
+         box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+     }
+     & when (@level = 3) {
+         box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+     }
+     & when (@level = 4) {
+         box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+     }
+     & when (@level = 5) {
+         box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+     }
+ }
+
+ .container {
+   display: inline-block;
+   margin-left: 20px;
+ }
+
+ .treemenu {
+   float: left;
+   width: 450px;
+   max-height: 100%;
+   overflow: auto;
+
+   &.boxed {
+     background: #fff;
+     border-radius: .35rem;
+     .boxShadow();
+
+     .ui {
+       &.styled {
+         &.accordion {
+           > .title:not(:first-child) {
+             border-top: 1px solid rgba(39,41,43,.15);
+           }
+         }
+       }
+     }
+   }
+ }
+ .ui {
+   &.styled {
+     &.accordion,
+     &.accordion .accordion {
+       background: inherit;
+       box-shadow: none;
+       padding: 0;
+       margin: 0;
+
+       .accordion .title, .title {
+         border-top: none;
+         margin-left: 0;
+         padding: .35em 0;
+         margin: 0;
+         color: rgba(0, 0, 0, 0.8);
+         font-size: 1.3em;
+       }
+
+       .accordion .content, .content {
+         margin-left: 1.75rem;
+         padding: 0;
+
+         .subtitle {
+           margin: 0 1.75rem 0 0;
+           padding: .35em 0;
+           color: rgba(0, 0, 0, 0.5);
+           font-size: 0.9rem;
+
+           &.hide {
+             display: none;
+           }
+         }
+       }
+     }
+   }
+ }
+ .headercollapsible {
+   background-color: #f8f8f9;
+   color: black;
+   cursor: pointer;
+   padding: 10px;
+   width: 100%;
+   border-top: 1px solid #d4d4d5;
+   border-left: 1px solid #d4d4d5;
+   border-right: 1px solid #d4d4d5;
+   border-bottom: 1px solid #d4d4d5;
+   text-align: left;
+   outline: none;
+   font-size: 15px;
+   font-weight: bold;
+   border-radius: .28571429rem .28571429rem 0 0;
+   max-height: 118px;
+ }
+
+ .headercollapsible.active, .headercollapsible:hover {
+   background-color: #f8f8f9;
+ }
+
+ .headercollapsible:after {
+   content: '\002B';
+   color: black;
+   font-weight: bold;
+   float: right;
+   margin-left: 5px;
+ }
+
+ .headercollapsible.active:after {
+   content: "\2212";
+ }
+
+ .headercollapsible:focus {
+   background-color: none !important;
+   border: 1px solid #d4d4d5;
+ }
+
+ .headercollapsibleContent {
+   padding: 0px 1px 0.5px 1px;
+   max-height: 0;
+   overflow: hidden;
+   transition: max-height 0.2s ease-out;
+   background-color: #d4d4d5;
+   max-height: 118px;
+ }
+ [cam-tasklist-task] .tab-content {
+   padding-top : 10px !important;
+ }
+
+ .ui.message .header {
+ font-size: 15px !important;
+ }
+
+ .ui.form .field > label {
+ font-size: 13px;
+ font-weight: 600;
+ }
+ .data-format {
+ color: #59564f;
+ font-weight: 500;
+ font-size: 12px;
+ padding-bottom: 10px;
+ white-space: pre-wrap;
+ }
+.ui.form .inline.field > .selection.dropdown, .ui.form .inline.fields .field > .selection.dropdown {
+    width: 100% !important;
+}
+
+.customdatepicker table {
+position:relative;
+}
+
+.customaccordian {
+     box-shadow: none !important;
+ }
+
+ .countermsg {
+      text-align: right;
+      font-size: 11px;
+      font-weight: bold;
+ }
+ .errormsg {
+       color: red;
+       font-size: 12px;
+       padding-left: 10px;
+       padding-bottom: 5px;
+ }
+ .requiredMark {
+        color: red;
+        font-size: 12px;
+        padding-left: 2px;
+        padding-bottom: 5px;
+ }
+ .ui.message {
+    padding : 10px;
+ }
+
+ .mandatorylabel {
+   font-size: 13px;
+ }
+
+ .customselect {
+    padding-bottom : 15px;
+ }
+ .ui.form {
+     font-size: 13px;
+ }
+ .ui.compact.message {
+    width: 100%
+ }
+ .ui.form .inline.field > label, .ui.form .inline.field > p, .ui.form .inline.fields .field > label, .ui.form .inline.fields .field > p, .ui.form .inline.fields > label {
+    font-size: 13px;
+ }
+ .ui.checkbox .box, .ui.checkbox label {
+  font-size: 13px;
+ }
+ .cd-popup {
+   position: absolute;
+   left: 0;
+   top: 0;
+   height: 100%;
+   width: 100%;
+   opacity: 0;
+   visibility: hidden;
+   transition: opacity 0.3s 0s, visibility 0s 0.3s;
+ }
+
+ .cd-popup.is-visible {
+   opacity: 1;
+   visibility: visible;
+   transition: opacity 0.3s 0s, visibility 0s 0s;
+ }
+
+ .cd-popup-container {
+   position : relative;
+   max-width: 260px;
+   margin-left: auto;
+   margin-right: auto;
+   top: 50%;
+   background: #FFF;
+   border-radius: .25em .25em .4em .4em;
+   text-align: center;
+   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+ }
+
+i.small.icon, i.small.icons {
+    line-height: 1;
+    font-size: 15px !important;
+}
+
+.custom-panel-scrollbar {
+    max-height: 600px;
+    overflow: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+}

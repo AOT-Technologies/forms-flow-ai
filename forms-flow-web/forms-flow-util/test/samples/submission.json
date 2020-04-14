@@ -1,0 +1,8 @@
+{
+  "_id": "<submission id>",
+  "owner": "<submission owner>",
+  "modified": "1970-01-01T00:00:00.000Z",
+  "data": {
+    "component": "component_value"
+  }
+}

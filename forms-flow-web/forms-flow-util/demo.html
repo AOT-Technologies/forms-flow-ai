@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Title</title>
+
+		<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'>
+		<link rel='stylesheet' href='https://unpkg.com/formiojs@latest/dist/formio.full.min.css'>
+		<script src='https://unpkg.com/formiojs@latest/dist/formio.full.min.js'></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+		<script src="./lib/@aot-technologies/formio-export.min.js"></script>
+
+	</head>
+	<body>
+
+		<div>Xxxxxxx</div>
+
+
+		<script>
+          let component = {
+            type: 'form',
+            title: 'Example',
+            display: 'form',
+            components: [
+              {
+                type: 'textfield',
+                key: 'name',
+                label: 'Name',
+                input: true
+              },
+              {
+                type: 'number',
+                key: 'age',
+                label: 'Age',
+                input: true
+              }
+            ]
+          };
+
+          let submission = {
+            _id: '<submission id>',
+            owner: '<owner id>',
+            modified: '1970-01-01T00:00:00.000Z',
+            data: {
+              name: 'John Doe',
+              age: 25
+            }
+          };
+
+          let options = {
+            ignoreLayout: true
+          }
+
+          let exporter = new FormioExport(component, submission, options);
+
+          exporter.toHtml().then((html) => {
+            document.body.appendChild(html);
+          });
+
+          let config = {
+            download: false,
+            filename: 'example.pdf'
+          };
+
+          exporter.toPdf(config).then((pdf) => {
+            // download the pdf file
+            pdf.save();
+            // get the datauri string
+            let datauri = pdf.output('datauristring');
+          })
+		</script>
+
+	</body>
+</html>

@@ -1,0 +1,108 @@
+<form role="form" name="form">
+  
+  	<head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+     	<link rel="stylesheet" href="styles/font-awesome.min.css" />
+		<link rel="stylesheet" type="text/css" href="styles/semantic.min.css" />
+		<script src="scripts/jquery-2.1.4.min.js"></script> 
+		<script src="scripts/semantic.min.js"></script>
+ 	    <link rel="stylesheet" href="styles/user-styles.css">
+ 	    <script src="scripts/user-custom-scripts.js"></script> 
+ 	    
+<script cam-script type="text/form-script">
+  
+    inject(['$rootScope', function($rootScope) {
+      $scope.userName = $rootScope.authentication.name;
+    }]);
+  
+	
+  </script>
+<script>
+$(document).ready(function() {
+ setTimeout(function(){
+   $('.ui.accordion').accordion({ exclusive: false });
+   $('.ui.buttons .button').on('click', function() {
+		$(this).addClass('positive')
+		   .siblings()
+		   .removeClass('positive');
+	    $('.treemenu').toggleClass('boxed');
+	});
+	$('.label.ui.dropdown').dropdown();
+	$('.ui.checkbox').checkbox();
+	$('.ui.dropdown').dropdown();
+	$('.no.label.ui.dropdown')
+	   .dropdown({
+	   useLabels: false
+	 });
+	 $('.ui.button').on('click', function () {
+	   $('.ui.dropdown')
+	     .dropdown('restore defaults')
+	 });
+	
+  }, 500);
+});
+</script>
+<script cam-script type="text/form-script">
+		camForm.on('submit', function(evt) {
+		$scope.mandatoryFields = ["decision"];
+        $scope.stopSubmit = false;
+		for (var i = 0; i < $scope.mandatoryFields.length; i++) {
+    		var fieldValue = document.getElementById($scope.mandatoryFields[i]).value;
+			if(fieldValue == "" || fieldValue == "none" || fieldValue == undefined) {
+				 $scope.stopSubmit = true;
+				 document.getElementById($scope.mandatoryFields[i]+'_err').style.display = "block";
+			}
+		}
+		if($scope.stopSubmit == true) {
+			evt.submitPrevented = true;
+			inject(['Notifications', '$timeout', function(Notifications, $timeout) {
+        		$timeout(function() {
+            	Notifications.clearAll();
+        		});
+    		}]);
+			$('input[type=submit]').prop('disabled', false);
+		} else if($scope.stopSubmit == false && confirmCheck==null){
+      		evt.submitPrevented = true;
+      		showConfirmation(); 
+    	} else if($scope.stopSubmit == false && confirmCheck==true){
+      		confirmCheck=null;
+    	}
+});
+</script>
+</head>
+  <div class="ui form attached fluid segment custom-panel-scrollbar">
+<section class="field">
+     <table><tbody><tr><td nowrap><label for="decision" class="mandatorylabel">Action Taken</label></td><td><p class="requiredMark">*</p></td><td><div id="decision_err" class="errormsg" style="display:none;">Please fill out this field to proceed.</div></td></tr></tbody></table>
+	  <div class="ui fluid search selection dropdown">
+	     <input type="hidden" id="decision"  name="decision" cam-variable-name="decision" cam-variable-type="String">
+	     <i class="dropdown icon"></i>
+	       <div class="default text">Select an Option</div>
+	         <div class="menu">
+	           <div class="item" data-value="none">Select an Option</div>
+	           <div class="item" data-value="approve">Approve</div>
+	           <div class="item" data-value="reject">Reject</div>
+	        </div>
+	     </div>
+   </section>
+
+<div class="inline field">
+    <label>Additional Information</label>
+    <textarea id="additional_details" cam-variable-name="additional_details" cam-variable-type="String" rows="4" maxlength="3000"></textarea>
+     <div id="additional_details_count" class="countermsg"/>
+  </div>
+</div>
+ <div class="cd-popup modal-backdrop" role="alert">
+  <div class="cd-popup-container">
+     <p style="padding-top: 8%">Are you sure?</p>
+     <div style="padding-bottom: 3%">
+      <button class="btn btn-default" onclick="confirmCheck = null; $('.cd-popup').removeClass('is-visible')"> No </button>
+      <button class="ng-binding btn btn-primary" type="submit" onclick="confirmCheck = true; $('.cd-popup').removeClass('is-visible')" ng-click="complete()"> Yes </button>
+    </div>
+  </div>
+</div>
+  <script>
+$(document).ready(function() {
+	$('#additional_details_count').text($('#additional_details').val().length+'/'+$('#additional_details').attr('maxlength'));
+});
+</script> 
+</form>

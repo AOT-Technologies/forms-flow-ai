@@ -98,7 +98,7 @@ x-jwt-token:{{token}}
 
 "template":{{exported JSON}}
 ```
-
+NOTE: The JSON will have information about users with associated roles and forms. 
 ## Project setups
 ```
 npm install

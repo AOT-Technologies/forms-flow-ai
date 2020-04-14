@@ -16,7 +16,7 @@
 
 ## Project Setup
 
-### Step 1 : Make sure you've set up the Keycloak 
+## Step 1 : Make sure you've set up the Keycloak 
 
 1. Login to keycloak
 2. Select your realm --> Go to clients tab --> create a new service account enabled client 
@@ -27,7 +27,7 @@
     
  NOTE: The default admin group "camunda-admin" has been referenced in application.yaml, and this needs to be available for use.
  
-### Step 2 : Environment Configuration
+## Step 2 : Environment Configuration
 
 1. Keycloak variables (Security)
     * KEYCLOAK_URL
@@ -40,17 +40,17 @@
     * JDBC_PASSWORD
     * JDBC_DRIVER
 
-### Step 3 : Build and Deploy
+## Step 3 : Build and Deploy
 
    Use the following set of commands to build and run the application
       docker-compose build
       docker-compse up
       
-### Step 4 : Verify the application status
+## Step 4 : Verify the application status
 
    The application should be up and available for use at port defaulted to 8000 in application.yaml http://localhost:8000/camunda/
    
-### Step 5 : Process Deployment
+## Step 5 : Process Deployment
 
    REST service /camunda/engine-rest/deployment/create will be used for deployment of process.
    CURL commands are leveraged for this action. 
@@ -63,14 +63,35 @@
    
 Post successful deployment of process, it is ready for use.
    
-   ### Step 6 : Service Account Setup in Camunda
+## Step 6 : Service Account Setup in Camunda
    
-    For service account based rengine-rest accessibility i.e. process instance creation. Ensure to setup the service account  "service-account-forms-flow-bpm" in necessary services.
+    For service account based rengine-rest accessibility i.e. process instance creation. Ensure to setup the service account  `service-account-forms-flow-bpm` in necessary services.
    
-   
+## Step 7 : HTTP/HTTPS Setup
 
+### Enable SSL:
 
+  
+    1. Generate domain specific pem format and convert into pkcs12 using below commands.
+ ```       
+         openssl pkcs12 -export -out bpm1.pkcs12 -in combined.pem
+         keytool -genkey -keyalg RSA -alias tomcat -keystore truststore.ks
+         keytool -delete -alias tomcat -keystore truststore.ks
 
+         keytool -import -v -trustcacerts -alias tomcat -file fullchain.pem -keystore truststore.ks
+         keytool -genkey -keyalg RSA -alias tomcat -keystore keystore.ks
 
+         keytool -v -importkeystore -srckeystore bpm1.pkcs12 -srcstoretype PKCS12 -destkeystore keystore.ks -des
+ ```      
+      2. Place the generated keystore.ks file and place in cert path ~/certs/keystore.ks. 
+         
+       NOTE: This configuration can be found in /forms-flow-bpm/src/mai/resources
+       
+  
+### DISABLE SSL:
+     
+      Comment `server.ssl` block, and change the port to `8080` in application.yaml present in path /forms-flow-bpm/src/mai/resources
+         
+      NOTE: Accordingly, change the service port of `forms-flow-bpm` to `8000:8080` in docker-compose.yml present in root path.
 
 

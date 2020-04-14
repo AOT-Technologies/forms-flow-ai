@@ -88,7 +88,7 @@ npm start / docker-compose up
 --Use the token in the result header for the following steps
 
 2. Export
--request GET Form-IO-API-URL/expot
+-request GET Form-IO-API-URL/export
 x-jwt-token:{{token}}
 
 --Use the exported JSON for import

@@ -7,6 +7,13 @@ export const setUserToken = (data) => dispatch => {
   })
 }
 
+export const setUserRole = (data) => dispatch => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_USER_ROLES,
+    payload: data
+  })
+}
+
 export const sendEmailNotification = (data) => dispatch => {
   dispatch({
     type: ACTION_CONSTANTS.SEND_EMAIL_NOTIFICATION,

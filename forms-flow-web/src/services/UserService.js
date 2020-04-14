@@ -21,6 +21,7 @@ const initKeycloak = (onAuthenticatedCallback) => {
         // }
         const UserRoles=KeycloakData.resourceAccess[Keycloak_Client].roles;
         localStorage.setItem('UserRoles',UserRoles);
+
         let role = [];
         for (let i = 0; i < UserRoles.length; i++) {
           const roledata = ROLES.find(x => x.title === UserRoles[i]);

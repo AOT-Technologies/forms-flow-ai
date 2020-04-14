@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import {selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors} from 'react-formio';
 import {push} from 'connected-react-router';
 import Loading from '../../../../../containers/Loading'
-import {triggerEmailNotification} from "../../../../../apiManager/services/bpmServices";
+import {getUserToken, triggerEmailNotification} from "../../../../../apiManager/services/bpmServices";
+import {BPM_USER_DETAILS} from "../../../../../apiManager/constants/apiConstants";
 
 const Edit = class extends Component {
   render() {
@@ -63,13 +64,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
           dispatch(resetSubmissions('submission'));
-          dispatch(triggerEmailNotification({
+          dispatch(getUserToken(BPM_USER_DETAILS,(err,res)=>{
+            if(!err){
+              dispatch(triggerEmailNotification({
                   variables: {
                     to : {value: submission.owner}
                   }
                 }
               ));
-          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`));
+              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`));
+            }
+          }));
         }
       }));
     }

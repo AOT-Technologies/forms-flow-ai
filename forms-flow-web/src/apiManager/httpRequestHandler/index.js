@@ -1,14 +1,14 @@
 import axios from 'axios'
 
-import UserService from "../../services/UserService";
+import Token from '../token/tokenService'
 const qs = require('querystring');
 
 export const httpGETRequest = (url, data) => {
-  return axios.get(url, { params: data, headers: { Authorization: UserService.getToken() } }) // TODO get this dynamic from url
+  return axios.get(url, { params: data, headers: { Authorization: Token.getBpmToken() } }) // TODO get this dynamic from url
 }
 
 export const httpPOSTRequest = (url, data) => {
-  const token = `Bearer ${UserService.getToken()}`;
+  const token = `Bearer ${Token.getBpmToken()}`;
   return axios.post(url, data, { headers: { Authorization: token } }) // TODO get this dynamic from url
 }
 

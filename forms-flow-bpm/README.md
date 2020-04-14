@@ -5,10 +5,10 @@
 * [Project setup](#project-setup)
     * [Step 1 : Make sure you've set up the Keycloak](#keycloak-configuration)
     * [Step 2 : Environment Configuration](#environment-configuration)
-    * [Step 3 : Build and Deploy](#Build and Deploy)
-    * [Step 4 : Verify the application status](#Verify the application status)
-    * [Step 5 : Process Deployment](#Process Deployment)
-    * [Step 6 : Service Account Setup in Camunda](#Service Account Setup in Camunda)
+    * [Step 3 : Build and Deploy](#build-and-deploy)
+    * [Step 4 : Verify the application status](#verify-the-application-status)
+    * [Step 5 : Process Deployment](#process-deployment)
+    * [Step 6 : Service Account Setup in Camunda](#service-account-setup-in-camunda)
     
 ## Prerequisites
 

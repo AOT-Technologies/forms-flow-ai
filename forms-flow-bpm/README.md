@@ -2,17 +2,19 @@
 
 ## Table of contents
 * [Prerequisites](#prerequisites)
-    * [Keycloak Configuration](#keycloak-configuration)
-    * [Environment Configuration](#environment-configuration)
 * [Project setup](#project-setup)
-
-## Table of contents
-* [Prerequisites](#pre-requisites)
-* [Project setup](#project-setups)
-
+    * [Step 1 : Make sure you've set up the Keycloak](#keycloak-configuration)
+    * [Step 2 : Environment Configuration](#environment-configuration)
+    * [Step 3 : Build and Deploy](#Build and Deploy)
+    * [Step 4 : Verify the application status](#Verify the application status)
+    * [Step 5 : Process Deployment](#Process Deployment)
+    * [Step 6 : Service Account Setup in Camunda](#Service Account Setup in Camunda)
+    
 ## Prerequisites
 
-- based on camunda version `7.12.0` , Spring boot 2.2.6.RELEASE and PostgreSQL (latest)
+- based on camunda version `7.12.0` , Keycloak, Spring boot 2.2.6.RELEASE and PostgreSQL (latest)
+
+## Project Setup
 
 ### Step 1 : Make sure you've set up the Keycloak 
 
@@ -25,7 +27,7 @@
     
  NOTE: The default admin group "camunda-admin" has been provided in application.yaml, and this gets created durring container startup.
  
-### Step 2 : Environment Variables
+### Step 2 : Environment Configuration
 
 1. Keycloak variables (Security)
     * KEYCLOAK_URL

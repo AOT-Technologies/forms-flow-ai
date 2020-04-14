@@ -25,7 +25,7 @@
     * query-users
     * view-users
     
- NOTE: The default admin group "camunda-admin" has been provided in application.yaml, and this gets created durring container startup.
+ NOTE: The default admin group "camunda-admin" has been referenced in application.yaml, and this needs to be available for use.
  
 ### Step 2 : Environment Configuration
 

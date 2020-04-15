@@ -1,6 +1,5 @@
 import {  httpPOSTRequest, httpPOSTRequestWithoutToken } from '../httpRequestHandler'
 import API from '../endpoints'
-
 import { setUserToken, sendEmailNotification, serviceActionError } from '../../actions/bpmActions'
 import Token from "../token/tokenService"
 

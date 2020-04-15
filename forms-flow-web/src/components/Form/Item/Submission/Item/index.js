@@ -1,11 +1,11 @@
 import { Link, Route, Switch } from 'react-router-dom'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { getSubmission } from "react-formio";
+
 import View from './View'
 import Edit from './Edit'
 import Delete from './Delete'
-import { getSubmission } from "react-formio";
-// import {Styles} from "./index.css";
 
 const Item = class extends Component {
   constructor() {

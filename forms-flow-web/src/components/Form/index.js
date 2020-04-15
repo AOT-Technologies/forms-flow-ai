@@ -1,5 +1,8 @@
 import { Route, Switch, Redirect } from 'react-router-dom'
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { selectRoot } from 'react-formio'
+
 import List from './List';
 import Create from './Create';
 import Item from './Item/index';
@@ -16,11 +19,9 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
 )
 
 class Form extends Component{
-  componentDidMount(){
-    user = localStorage.getItem('UserRoles');
-  }
 
   render(){
+    user = this.props.user;
     return(
       <div className="container" id="main">
      <Switch>
@@ -33,6 +34,10 @@ class Form extends Component{
   }
 }
 
-export default Form
+const mapStatetoProps=(state)=>{
+  return{
+    user: selectRoot('user',state).roles||[]
+  }
+}
 
-
+export default connect(mapStatetoProps)(Form);

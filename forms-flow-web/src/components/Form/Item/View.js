@@ -3,8 +3,8 @@ import { Component } from 'react';
 import { connect } from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors } from 'react-formio';
 import {push} from 'connected-react-router';
-import Loading from '../../../containers/Loading';
 
+import Loading from '../../../containers/Loading';
 import {getUserToken, triggerEmailNotification} from "../../../apiManager/services/bpmServices";
 import {BPM_USER_DETAILS} from "../../../apiManager/constants/apiConstants";
 

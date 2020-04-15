@@ -1,4 +1,5 @@
 import Keycloak from "keycloak-js";
+
 export const CLIENT = process.env.REACT_APP_CLIENT_ROLE;
 export const STAFF_DESIGNER = process.env.REACT_APP_STAFF_DESIGNER_ROLE;
 export const STAFF_REVIEWER = process.env.REACT_APP_STAFF_REVIEWER_ROLE;
@@ -16,7 +17,7 @@ export const ROLES = [{
   }, {
     id: process.env.REACT_APP_STAFF_DESIGNER_ID,
     title: STAFF_DESIGNER
-  } //administrator
+  }
 ];
 
 export const OPERATIONS = {
@@ -85,7 +86,6 @@ export const OPERATIONS = {
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    // title: 'Delete'
   }
 };
 

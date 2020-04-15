@@ -13,14 +13,3 @@ export const AppConfig = {
   projectUrl: PROJECT_URL,
   apiUrl: API_URL
 };
-
-/*export const AuthConfig = {
-  anonState: '/auth',
-  authState: '/',
-  login: {
-    form: 'user/login'
-  },
-  register: {
-    form: 'user/register'
-  }
-};*/

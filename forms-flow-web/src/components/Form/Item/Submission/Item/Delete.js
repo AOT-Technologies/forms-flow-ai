@@ -1,8 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Confirm from '../../../../../containers/Confirm';
 import {deleteSubmission, resetSubmissions, selectError, Errors} from 'react-formio';
 import {push, goBack} from 'connected-react-router';
+
+import Confirm from '../../../../../containers/Confirm';
 
 const Delete = props => (
   <div>
@@ -10,7 +11,6 @@ const Delete = props => (
     <Confirm {...props} />
   </div>
 )
-
 
 const mapStateToProps = (state) => {
   return {

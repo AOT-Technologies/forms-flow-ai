@@ -36,13 +36,16 @@ NOTE: There are two methods for running this application. Using docker container
 }
 }
 
---Use the token in the result header for the following steps
+--Use the token from x-jwt-token header in the result header for the following steps
 
 2. Get authorization role IDS
 - request GET Form-IO-API-URL/role
     x-jwt-token:{{token}}
+  
+   Update appropriate role env values: REACT_APP_CLIENT_ID(client role _id),REACT_APP_STAFF_REVIEWER_ID(reviewer role    _id),REACT_APP_STAFF_DESIGNER_ID(Administrator role _id)
 
-- To get Form-IO User Form_ID
+
+- To get Form-IO User Form_ID for env variable REACT_APP_USER_RESOURCE_FORM_ID
 
 1. Get User Form_ID
 - request GET Form-IO-API-URL/user

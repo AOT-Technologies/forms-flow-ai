@@ -42,11 +42,11 @@ NOTE: There are two methods for running this application. Using docker container
 - request GET Form-IO-API-URL/role
     x-jwt-token:{{token}}
 
-- To get Form-IO Form_ID
+- To get Form-IO User Form_ID
 
-1. Get FormId
-- request GET Form-IO-API-URL/form
-   Form_ID = "_id" from the result
+1. Get User Form_ID
+- request GET Form-IO-API-URL/user
+   use Form_ID = "_id" from the result
 
 
 ### Keycloak Configuration

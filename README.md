@@ -60,7 +60,7 @@ Additional Configurations
 - SSL Nginx configurations
   ------------------------
    - Create hostnames and secure them using the appropriate certificates
-     - Generate certificates
+     - Generate certificates as below and place in the appropriate server paths
          - forms-flow-web hostname fullchain.pem
          - forms-flow-web hostname privkey.pem
          - forms-flow-forms hostname fullchain.pem
@@ -68,12 +68,12 @@ Additional Configurations
          - forms-flow-bpm hostname fullchain.pem
          - forms-flow-bpm hostname privkey.pem
   - Open /nginx/conf.d/app.conf
-      - Update the paths accordingly in the app.conf
-        - Update the localhost to the server address apply the certificates for the below URLs
-          - Example given in the current configuration:
-            - http://localhost:3000
-            - http://localhost:3001
-            - https://localhost:8000
-              - Note 'https' for localhost:8000, camunda should be started securely (config yml: /forms-flow-bpm/src/main/resources/application.yaml)
+  - Update the paths accordingly in the app.conf
+     - Update the localhost to the server address apply the certificates for the below URLs
+       - Example given in the current configuration:
+         - http://localhost:3000
+         - http://localhost:3001
+         - https://localhost:8000
+           - Note 'https' for localhost:8000, camunda should be started securely (config yml: /forms-flow-bpm/src/main/resources/application.yaml)
   - Once applied change the hostnames in the Keycloak server for forms-flow-web and forms-flow-bpm
   - Also change values for REACT_APP_API_SERVER_URL and REACT_APP_API_PROJECT_URL with the hostname in .env file

@@ -20,5 +20,5 @@ Formio.setBaseUrl(AppConfig.apiUrl);
 const renderApp = () => ReactDOM.render(<App {...{ store, history }} />, document.getElementById("app"));
 
 serviceWorker.register();
-UserService.initKeycloak(renderApp);
+UserService.initKeycloak(renderApp, store);
 HttpService.configure();

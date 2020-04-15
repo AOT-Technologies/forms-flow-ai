@@ -24,12 +24,12 @@ The fastest way to run this library locally is to use [Docker](https://docker.co
  - [Install Docker](https://docs.docker.com/v17.12/install/)
  - Clone the github repository
  
-Prerequisites
--------------
+- Prerequisites
+  -------------
 [Keycloak Configuration](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#keycloak-configuration)
  
-Environment Variables Setup
----------------------------
+- Environment Variables Setup
+  ---------------------------
 Set the appropriate environment variables given in the sample.env file and create a .env file in root folder 
    - postgres db is used for camunda server
    - mongo db is used for forms-flow-forms server
@@ -40,8 +40,8 @@ Set the appropriate environment variables given in the sample.env file and creat
    - Change the REACT_APP_API_PROJECT_URL and REACT_APP_API_SERVER_URL with http://localhost:3001
    - Change the REACT_APP_BPM_API_BASE with https://localhost:8000
 
-Running the Application
------------------------
+- Running the Application
+  -----------------------
  - Open up your terminal and navigate to the root folder of this project
  - Type the following in your terminal
     ```
@@ -58,8 +58,8 @@ Refer [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/ma
 
 Additional COnfigurations
 -------------------------
-SSL Nginx configurations
-------------------------
+- SSL Nginx configurations
+  ------------------------
   - Create hostnames and secure them using the appropriate certificates
   - Open /nginx/conf.d/app.conf
   - Update the ip address to your server and apply the certificates for the below URLs

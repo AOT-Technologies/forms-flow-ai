@@ -1,13 +1,11 @@
 import Keycloak from "keycloak-js";
-export const CLIENT = process.env.REACT_APP_CLIENT_NAME;
-export const STAFF_DESIGNER = process.env.REACT_APP_STAFF_DESIGNER_NAME;
-export const STAFF_REVIEWER = process.env.REACT_APP_STAFF_REVIEWER_NAME;
+export const CLIENT = process.env.REACT_APP_CLIENT_ROLE;
+export const STAFF_DESIGNER = process.env.REACT_APP_STAFF_DESIGNER_ROLE;
+export const STAFF_REVIEWER = process.env.REACT_APP_STAFF_REVIEWER_ROLE;
 export const USER_RESOURCE_FORM_ID = process.env.REACT_APP_USER_RESOURCE_FORM_ID;
 export const Keycloak_Client = process.env.REACT_APP_KEYCLOAK_CLIENT || 'forms-flow-web';
 export const  _kc = new Keycloak(process.env.REACT_APP_KEYCLOAK_JSON ||'/keycloak.json');
 
-//TODO UPDATE THIS TO FORMIO ROLE IDS
-// console.log(process.env);
 export const ROLES = [{
     id: process.env.REACT_APP_CLIENT_ID,
     title: CLIENT

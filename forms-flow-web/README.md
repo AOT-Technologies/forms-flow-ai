@@ -38,7 +38,7 @@ NOTE: There are two methods for running this application. Using docker container
 
 --Use the token in the result header for the following steps
 
-2. Get authorization roles
+2. Get authorization role IDS
 - request GET Form-IO-API-URL/role
     x-jwt-token:{{token}}
 

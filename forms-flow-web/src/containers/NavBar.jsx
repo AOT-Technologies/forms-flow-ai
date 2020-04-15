@@ -9,7 +9,7 @@ const NavBar = () => {
             <Navbar className="navbar">
                 <section className="container">
                 <Navbar.Brand>
-                    <img className="img-fluid d-none d-md-block" src="/AOT-logo.png" width="300"  alt="B.C. Government Logo" />
+                    <img className="img-fluid d-none d-md-block" src="/AOT-logo.png" width="300"  alt="AOT Logo" />
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">

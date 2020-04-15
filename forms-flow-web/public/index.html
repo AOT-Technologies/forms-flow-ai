@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#536878">
+    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+    <link rel="apple-touch-icon" href="icons-192.png">
+    <title>Formio App</title>
+
+  </head>
+  <body>
+    <div id="app">
+    </div>
+    <script>
+        if ('serviceWorker' in navigator) {
+          window.addEventListener('load', function() {
+            navigator.serviceWorker.register('%PUBLIC_URL%/worker.js').then(function(registration) {
+              console.log('Worker registration successful', registration.scope);
+            }, function(err) {
+              console.log('Worker registration failed', err);
+            }).catch(function(err) {
+              console.log(err);
+            });
+          });
+        } else {
+          console.log('Service Worker is not supported by browser.');
+        }
+      </script>
+  </body>
+</html>

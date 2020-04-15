@@ -3,11 +3,10 @@ import { Component } from 'react';
 import { connect } from 'react-redux'
 import {selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors} from 'react-formio';
 import {push} from 'connected-react-router';
-import Loading from '../../../../../containers/Loading'
-import PdfDownloadService from "../../../../../services/PdfDownloadService"
-
 import {Button} from "react-bootstrap";
 
+import Loading from '../../../../../containers/Loading'
+import PdfDownloadService from "../../../../../services/PdfDownloadService"
 
 const View = class extends Component {
   render() {

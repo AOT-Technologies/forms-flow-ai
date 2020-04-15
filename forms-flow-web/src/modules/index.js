@@ -1,6 +1,7 @@
 import {combineReducers} from "redux";
 import {connectRouter} from "connected-react-router";
 import { form, forms, submission, submissions } from 'react-formio';
+
 import user from "./userDetailReducer";
 
 const createRootReducer = (history) => combineReducers({

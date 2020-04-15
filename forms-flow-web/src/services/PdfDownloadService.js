@@ -47,17 +47,6 @@ const getPdf = (formResponse, submissionData, callback) => {
       exporter.toPdf(options.config).then(callback);
     }
 }
-/*function pdfCallback(pdfObject) {
-  var number_of_pages = pdfObject.internal.getNumberOfPages()
-  var pdf_pages = pdfObject.internal.pages
-  var myFooter = "Footer info"
-  for (var i = 1; i < pdf_pages.length; i++) {
-      // We are telling our pdfObject that we are now working on this page
-      pdfObject.setPage(i)
-      // The 10,200 value is only for A4 landscape. You need to define your own for other page sizes
-      pdfObject.text(myFooter, 10, 200)
-  }
-}*/
 export default {
   getPdf
 }

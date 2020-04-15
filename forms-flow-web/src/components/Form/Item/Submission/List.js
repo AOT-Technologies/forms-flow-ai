@@ -68,7 +68,7 @@ const mapStateToProps = (state, ownProps) => {
       selectError('submissions', state),
       selectError('form', state)
     ],
-    userRoles: localStorage.getItem('UserRoles')
+    userRoles: selectRoot('user',state).roles||[]
   };
 };
 

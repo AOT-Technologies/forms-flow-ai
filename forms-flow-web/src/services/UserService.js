@@ -1,5 +1,6 @@
 import {ROLES, USER_RESOURCE_FORM_ID, Keycloak_Client, _kc} from '../constants/constants';
 import {setUserRole} from "../actions/bpmActions";
+
 const jwt = require('jsonwebtoken');
 
 /**
@@ -16,13 +17,8 @@ const initKeycloak = (onAuthenticatedCallback, store) => {
   })
     .then((authenticated) => {
       if (authenticated) {
-        // debugger;
-        // if (window.location.pathname !== '/'){
-        //   window.location.replace(`${window.location.origin}/`)
-        // }
         const UserRoles=KeycloakData.resourceAccess[Keycloak_Client].roles;
         store.dispatch(setUserRole(UserRoles));
-        localStorage.setItem('UserRoles',UserRoles);
 
         let role = [];
         for (let i = 0; i < UserRoles.length; i++) {
@@ -54,6 +50,10 @@ const initKeycloak = (onAuthenticatedCallback, store) => {
 const doLogin = _kc.login;
 
 const doLogout = _kc.logout;
+
+/**
+ * Logout function
+ */
 const userLogout = ()=>{
   localStorage.clear();
   sessionStorage.clear();

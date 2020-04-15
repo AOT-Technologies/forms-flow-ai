@@ -1,16 +1,18 @@
 import { Route, Switch, Redirect } from 'react-router-dom'
 import React, { Component } from 'react'
+import { getForm, selectRoot } from 'react-formio'
+import { connect } from 'react-redux'
+
+import {STAFF_REVIEWER, CLIENT, STAFF_DESIGNER} from '../../../constants/constants'
 import View from './View'
 import Edit from './Edit'
 import Delete from './Delete'
 import Submission from './Submission/index'
-import { connect } from 'react-redux'
-import { getForm } from 'react-formio'
-import {STAFF_REVIEWER, CLIENT, STAFF_DESIGNER} from '../../../constants/constants'
-/*import { Styles} from "./List.css";*/
 
 let user = '';
-
+/**
+ * Protected route to form submissions
+ */
 const SubmissionRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={(props) => (
     user.includes(STAFF_REVIEWER) || user.includes(CLIENT)
@@ -18,6 +20,9 @@ const SubmissionRoute = ({ component: Component, ...rest }) => (
       : <Redirect exact to='/' />
   )} />
 );
+/**
+ * Protected route for form deletion
+ */
 const FormActionRoute = ({ component: Component, ...rest }) => (
   <Route {...rest} render={(props) => (
     user.includes(STAFF_DESIGNER)
@@ -60,9 +65,9 @@ const Item = class extends Component{
   }
 }
 
-const mapStateToProps = () => {
+const mapStateToProps = (state) => {
   return {
-    userRoles:localStorage.getItem('UserRoles')
+    userRoles:selectRoot('user',state).roles||[]
   };
 };
 

@@ -4,7 +4,7 @@ import {routerMiddleware} from "connected-react-router";
 import {applyMiddleware, compose, createStore} from "redux";
 import axiosMiddleware from "redux-axios-middleware";
 import logger from "redux-logger";
-// import rootReducer from "../modules";
+
 import createRootReducer from "../modules";
 import HttpService from "./HttpService";
 

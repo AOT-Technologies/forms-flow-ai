@@ -8,7 +8,7 @@
     * [Environment Variables Setup](#environment-variables-setup)
     * [Running the Application](#running-the-application)
 * [Managing forms](#managing-forms)
-* [Additional COnfigurations](#additional-configurations)
+* [Additional Configurations](#additional-configurations)
     * [SSL Nginx configurations](#ssl-nginx-configurations)
 
 Technologies Used
@@ -60,12 +60,20 @@ Additional Configurations
 - SSL Nginx configurations
   ------------------------
   - Create hostnames and secure them using the appropriate certificates
+  - Generate certificates
+   - forms-flow-web hostname fullchain.pem
+   - forms-flow-web hostname privkey.pem
+   - forms-flow-forms hostname fullchain.pem
+   - forms-flow-forms hostname privkey.pem
+   - forms-flow-bpm hostname fullchain.pem
+   - forms-flow-bpm hostname privkey.pem
   - Open /nginx/conf.d/app.conf
-  - Update the ip address to your server and apply the certificates for the below URLs
-    - Example given in the current configuration:
-      - http://localhost:3000 - app1.aot-technologies.com
-      - http://localhost:3001 - forms1.aot-technologies.com
-      - https://localhost:8000 - bpm1.aot-technologies.com
-        - Note 'https' for localhost:8000, camunda should be started securely (config yml: /forms-flow-bpm/src/main/resources/application.yaml)
+   - Update the paths accordingly in the app.conf
+     - Update the localhost to the server address apply the certificates for the below URLs
+       - Example given in the current configuration:
+         - http://localhost:3000
+         - http://localhost:3001
+         - https://localhost:8000
+           - Note 'https' for localhost:8000, camunda should be started securely (config yml: /forms-flow-bpm/src/main/resources/application.yaml)
   - Once applied change the hostnames in the Keycloak server for forms-flow-web and forms-flow-bpm
   - Also change values for REACT_APP_API_SERVER_URL and REACT_APP_API_PROJECT_URL with the hostname in .env file

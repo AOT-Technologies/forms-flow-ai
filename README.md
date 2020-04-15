@@ -69,10 +69,10 @@ Additional Configurations
          - forms-flow-bpm hostname privkey.pem
   - Open /nginx/conf.d/app.conf
   - Update the paths accordingly in the app.conf
-     - Update the localhost to the server address apply the certificates for the below URLs
+     - Update the localhost to the server IP address for the below URLs
          - http://localhost:3000
          - http://localhost:3001
          - https://localhost:8000
-           - Note 'https' for localhost:8000, camunda should be started securely (config yml: /forms-flow-bpm/src/main/resources/application.yaml)
+           - Note 'https' for localhost:8000, camunda should be started securely (config yml: /forms-flow-bpm/src/main/resources/application.yaml contains the keystore.ks configurations)
   - Once applied change the hostnames in the Keycloak server for forms-flow-web and forms-flow-bpm
   - Also change values for REACT_APP_API_SERVER_URL and REACT_APP_API_PROJECT_URL with the hostname in .env file

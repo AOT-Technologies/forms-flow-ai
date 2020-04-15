@@ -27,6 +27,8 @@ The fastest way to run this library locally is to use [Docker](https://docker.co
    - Prerequisites
      -------------
       - [Keycloak Configuration](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#keycloak-configuration)
+      - [Camunda Keystore Setup](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#keycloak-configuration#http-https-setup)
+         - Camunda should be started securely and keystore.ks configurations should be configured in the config yml: /forms-flow-bpm/src/main/resources/application.yaml
 
    - Environment Variables Setup
      ---------------------------
@@ -73,6 +75,6 @@ Additional Configurations
          - http://localhost:3000
          - http://localhost:3001
          - https://localhost:8000
-           - NOTE: 'https' for localhost:8000, camunda should be started securely (config yml: /forms-flow-bpm/src/main/resources/application.yaml contains the keystore.ks configurations)
+           - NOTE: 'https' for localhost:8000
   - Once applied change the hostnames in the Keycloak server for forms-flow-web and forms-flow-bpm
   - Also change values for REACT_APP_API_SERVER_URL and REACT_APP_API_PROJECT_URL with the hostname in .env file

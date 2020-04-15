@@ -16,6 +16,9 @@ services:
     environment:
       - NODE_ENV=development
       # Form-IO-Roles
+      - REACT_APP_CLIENT_NAME = 'rpas-client'
+      - REACT_APP_STAFF_DESIGNER_NAME = 'rpas-formdesigner'
+      - REACT_APP_STAFF_REVIEWER_NAME = 'rpas-reviewer'
 
       - REACT_APP_CLIENT_ID=5e8de2b47998f98b2a35554c                  # Form-IO-Client-Id
       - REACT_APP_STAFF_REVIEWER_ID=5e8de2b47998f941c835554d          # Form-IO-Reviewer-Id
@@ -34,5 +37,4 @@ services:
       - REACT_APP_BPM_TOKEN_API=https://iam.aot-technologies.com/auth/realms/forms-flow-ai/protocol/openid-connect/token  # EMAIL TOKEN URL
       - REACT_APP_BPM_CLIENT_ID=3dd8d977-f9e0-43b8-9b56-72ad8349b3ea  # Secret Key for email
       - REACT_APP_KEYCLOAK_BPM_CLIENT=forms-flow-bpm                  # Keycloak-client-name for email
-      - REACT_APP_CLIENT_HOSTNAME=https://app1.aot-technologies.com
 

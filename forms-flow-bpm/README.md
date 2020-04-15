@@ -3,13 +3,13 @@
 ## Table of contents
 * [Prerequisites](#prerequisites)
 * [Project setup](#project-setup)
-    * [Step 1 : Make sure you've set up the Keycloak](#keycloak-configuration)
-    * [Step 2 : Environment Configuration](#environment-configuration)
-    * [Step 3 : HTTP/HTTPS Setup](#hTTP/HTTPS-setup)
-    * [Step 4 : Build and Deploy](#build-and-deploy)
-    * [Step 5 : Verify the application status](#verify-the-application-status)
-    * [Step 6 : Process Deployment](#process-deployment)
-    * [Step 7 : Service Account Setup in Camunda](#service-account-setup-in-camunda)
+    * [Step 1 : Make sure you've set up the Keycloak](#step-1-:-make-sure-you've-set-up-the-keycloak)
+    * [Step 2 : Environment Configuration](#step-2-:-environment-configuration)
+    * [Step 3 : HTTP/HTTPS Setup](#step-3-:-http/https-setup)
+    * [Step 4 : Build and Deploy](#step-4-:-build-and-deploy)
+    * [Step 5 : Verify the application status](#step-5-:-verify-the-application-status)
+    * [Step 6 : Process Deployment](#step-6-:-process-deployment)
+    * [Step 7 : Service Account Setup in Camunda](#step-7-:-service-account-setup-in-camunda)
     
 ## Prerequisites
 

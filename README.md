@@ -1,6 +1,12 @@
 # Forms Flow.AI
 `Forms Flow.AI` is an open source solution framework that is being developed by [AOT Technologies](https://www.aot-technologies.com/) that helps organizations to configure and deploy electronic forms along with related role based access, workflows and analytics in a short period of time.  This containerized devOps friendly solution can be easily deployed on-prem or on the public cloud secured with existing identity and access management systems owned by organizations. Solution uses an open source forms engine which allows staff users to self-create forms and attach to predefined or custom workflows. Solution includes capabilities to extract data for analytics, SLA tracking and lifecycle management of application submissions.
 
+## Table of contents
+* [Technologies Used](#technologies used)
+    * [Environment Configuration](#environment-configuration)
+    * [Keycloak Configuration](#keycloak-configuration)
+* [Project setup](#project-setup)
+
 Technologies Used
 ------------------
 

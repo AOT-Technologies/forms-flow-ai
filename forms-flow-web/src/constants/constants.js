@@ -1,22 +1,20 @@
 import Keycloak from "keycloak-js";
-export const CLIENT = 'rpas-client';
-export const STAFF_DESIGNER = 'rpas-formdesigner';
-export const STAFF_REVIEWER = 'rpas-reviewer';
-export const USER_RESOURCE_FORM_ID = process.env.REACT_APP_USER_RESOURCE_FORM_ID || '5e78bdd7a054f922bc82d065';
+export const CLIENT = process.env.REACT_APP_CLIENT_ROLE;
+export const STAFF_DESIGNER = process.env.REACT_APP_STAFF_DESIGNER_ROLE;
+export const STAFF_REVIEWER = process.env.REACT_APP_STAFF_REVIEWER_ROLE;
+export const USER_RESOURCE_FORM_ID = process.env.REACT_APP_USER_RESOURCE_FORM_ID;
 export const Keycloak_Client = process.env.REACT_APP_KEYCLOAK_CLIENT || 'forms-flow-web';
 export const  _kc = new Keycloak(process.env.REACT_APP_KEYCLOAK_JSON ||'/keycloak.json');
 
-//TODO UPDATE THIS TO FORMIO ROLE IDS
-// console.log(process.env);
 export const ROLES = [{
-    id: process.env.REACT_APP_CLIENT_ID || '5e86d9f71563fb59d4232342',
+    id: process.env.REACT_APP_CLIENT_ID,
     title: CLIENT
   },
   {
-    id: process.env.REACT_APP_STAFF_REVIEWER_ID || '5e86d9f71563fb59d4232343',
+    id: process.env.REACT_APP_STAFF_REVIEWER_ID,
     title: STAFF_REVIEWER
   }, {
-    id: process.env.REACT_APP_STAFF_DESIGNER_ID || '5e86d8161563fb59d4232331',
+    id: process.env.REACT_APP_STAFF_DESIGNER_ID,
     title: STAFF_DESIGNER
   } //administrator
 ];

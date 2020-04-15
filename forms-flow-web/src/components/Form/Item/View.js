@@ -70,7 +70,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
               {
                 "variables": {
                 "category" : {"value" : "task_notification"},
-                "formurl" : {"value" : `${process.env.REACT_APP_CLIENT_HOSTNAME}/form/${ownProps.match.params.formId}/submission/${submission._id}`}
+                "formurl" : {"value" : `${window.location.origin}/form/${ownProps.match.params.formId}/submission/${submission._id}`}
                   }
                 }
               ));

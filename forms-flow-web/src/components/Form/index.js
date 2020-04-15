@@ -1,5 +1,5 @@
 import { Route, Switch, Redirect } from 'react-router-dom'
-import React, { Component } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import { selectRoot } from 'react-formio'
 
@@ -18,25 +18,22 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
   )} />
 )
 
-class Form extends Component{
-
-  render(){
-    user = this.props.user;
-    return(
-      <div className="container" id="main">
-     <Switch>
-       <Route exact path="/form" component={List} />
-       <CreateFormRoute exact path="/form/create" component={Create}/>
-       <Route path="/form/:formId" component={Item} />
-     </Switch>
-   </div>
-    )
-  }
+const Form = (props) => {
+  user = props.user;
+  return (
+    <div className="container" id="main">
+      <Switch>
+        <Route exact path="/form" component={List} />
+        <CreateFormRoute exact path="/form/create" component={Create} />
+        <Route path="/form/:formId" component={Item} />
+      </Switch>
+    </div>
+  )
 }
 
-const mapStatetoProps=(state)=>{
-  return{
-    user: selectRoot('user',state).roles||[]
+const mapStatetoProps = (state) => {
+  return {
+    user: selectRoot('user', state).roles || []
   }
 }
 

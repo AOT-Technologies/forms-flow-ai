@@ -3,21 +3,21 @@
 ## Table of contents
 * [Prerequisites](#prerequisites)
 * [Project setup](#project-setup)
-    * [Step 1 : Make sure you've set up the Keycloak](#keycloak-configuration)
-    * [Step 2 : Environment Configuration](#environment-configuration)
-    * [Step 3 : HTTP/HTTPS Setup](#hTTP/HTTPS-setup)
-    * [Step 4 : Build and Deploy](#build-and-deploy)
-    * [Step 5 : Verify the application status](#verify-the-application-status)
-    * [Step 6 : Process Deployment](#process-deployment)
-    * [Step 7 : Service Account Setup in Camunda](#service-account-setup-in-camunda)
-    
+  * [Step 1 : Make sure you have set up the Keycloak](#make-sure-you-have-set-up-the-keycloak)
+  * [Step 2 : Environment Configuration](#environment-configuration)
+  * [Step 3 : HTTP-HTTPS Setup](#http-https-setup)
+  * [Step 4 : Build and Deploy](#build-and-deploy)
+  * [Step 5 : Verify the application status](#verify-the-application-status)
+  * [Step 6 : Process Deployment](#process-deployment)
+  * [Step 7 : Service Account Setup in Camunda](#service-account-setup-in-camunda)
+
 ## Prerequisites
 
 - based on camunda version `7.12.0` , Keycloak, Spring boot 2.2.6.RELEASE and PostgreSQL (latest)
 
 ## Project Setup
 
-## Step 1 : Make sure you've set up the Keycloak 
+## Make sure you have set up the Keycloak 
 
 1. Login to keycloak
 2. Select your realm --> Go to clients tab --> create a new service account enabled client 
@@ -28,7 +28,7 @@
     
  NOTE: The default admin group "camunda-admin" has been referenced in application.yaml, and this needs to be available for use.
  
-## Step 2 : Environment Configuration
+## Environment Configuration
 
 1. Keycloak variables (Security)
     * KEYCLOAK_URL
@@ -41,7 +41,7 @@
     * JDBC_PASSWORD
     * JDBC_DRIVER
     
-## Step 3 : HTTP/HTTPS Setup
+## HTTP-HTTPS Setup
 
 ### Enable SSL:
 
@@ -68,17 +68,17 @@
          
       NOTE: Accordingly, change the service port of `forms-flow-bpm` to `8000:8080` in docker-compose.yml present in root path.
 
-## Step 4 : Build and Deploy
+## Build and Deploy
 
    Use the following set of commands to build and run the application
       docker-compose build
       docker-compse up
       
-## Step 5 : Verify the application status
+## Verify the application status
 
    The application should be up and available for use at port defaulted to 8000 in application.yaml http://localhost:8000/camunda/
    
-## Step 6 : Process Deployment
+## Process Deployment
 
    REST service /camunda/engine-rest/deployment/create will be used for deployment of process.
    CURL commands are leveraged for this action. 
@@ -91,9 +91,7 @@
    
 Post successful deployment of process, it is ready for use.
    
-## Step 7 : Service Account Setup in Camunda
+## Service Account Setup in Camunda
    
     For service account based rengine-rest accessibility i.e. process instance creation. Ensure to setup the service account  `service-account-forms-flow-bpm` in necessary services.
    
-
-

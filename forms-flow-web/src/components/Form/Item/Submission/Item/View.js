@@ -3,11 +3,10 @@ import { Component } from 'react';
 import { connect } from 'react-redux'
 import {selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors} from 'react-formio';
 import {push} from 'connected-react-router';
-import Loading from '../../../../../containers/Loading'
-import PdfDownloadService from "../../../../../services/PdfDownloadService"
-
 import {Button} from "react-bootstrap";
 
+import Loading from '../../../../../containers/Loading'
+import PdfDownloadService from "../../../../../services/PdfDownloadService"
 
 const View = class extends Component {
   render() {
@@ -26,7 +25,7 @@ const View = class extends Component {
     return (
       <div className="detail-view mt-2">
         <h3 className="h3-form">View { form.title } Submission
-        <Button className="btn btn-primary btn-sm form-btn pull-right" onClick={()=>PdfDownloadService.getPdf(form,submission)}><i class="fa fa-print" aria-hidden="true"></i> Print As PDF</Button></h3>
+        <Button className="btn btn-primary btn-sm form-btn pull-right" onClick={()=>PdfDownloadService.getPdf(form,submission)}><i className="fa fa-print" aria-hidden="true"></i> Print As PDF</Button></h3>
 
         <Errors errors={errors} />
         <Form

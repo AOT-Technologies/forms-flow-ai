@@ -61,7 +61,7 @@ const mapStateToProps = (state) => {
   return {
     forms: selectRoot('forms', state),
     errors: selectError('forms', state),
-    userRoles: localStorage.getItem('UserRoles')
+    userRoles: selectRoot('user',state).roles||[]
   }
 }
 

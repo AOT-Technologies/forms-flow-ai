@@ -2,112 +2,71 @@
 
 ## Table of contents
 * [Prerequisites](#prerequisites)
-    * [Environment Configuration](#environment-configuration)
-    * [Keycloak Configuration](#keycloak-configuration)
 * [Project setup](#project-setup)
-
-# **forms-flow-io**
-
-## Table of contents
-* [Prerequisites](#pre-requisites)
-* [Project setup](#project-setups)
+    * [Step 1 : Environment Configuration](#environment-configuration)
+    * [Step 2 : Keycloak Configuration](#keycloak-configuration)
+    * [Step 3 : Build and Deploy](#build-and-deploy)
+    
 
 ## Prerequisites
 
 - based on React version >= 16.3 and `create-react-app`
+## Project setup
 
 ### Environment Configuration
 
-```
-- Create a .env file in root folder with sample.env data (skip this step for docker)
-- Change .env data with your values (for npm)/ modify docker-compose.yml (for docker)
-- To get Form-IO Role IDs
 
-1. Login
+NOTE: There are two methods for running this application. Using docker container or run locally using npm 
 
--request POST Form-IO-API-URL/user/login
-{
-"data": {
-"email": {{email}},
-"password": {{password}}
-}
-}
+    Using docker
+-   Modify docker-compose.yml in the root folder with relevant data
 
---Use the token in the result header for the following steps
+    Using npm
+-   Create a .env file in root folder with sample.env data
+-   Change .env data with relevant data
 
-2.  Role
-    -request GET Form-IO-API-URL/role
-    x-jwt-token:{{token}}
+- To get Form-IO authorization IDs use the follwing steps 
+  - Get token
+    - request POST http://localhost:3001/user/login
+    {
+    "data": {
+    "email": {{email}},
+    "password": {{password}}
+    }
+    }
+    - Use the token from x-jwt-token header in the result header for the following steps
 
-- To get Form-IO Form_ID
+  - Get authorization role IDS
+    - request GET Form-IO-API-URL/role
+        x-jwt-token:{{token}}
+    - Update appropriate role env values: REACT_APP_CLIENT_ID(client role _id),REACT_APP_STAFF_REVIEWER_ID(reviewer role    _id),REACT_APP_STAFF_DESIGNER_ID(Administrator role _id)
 
-1. FORM
-   --request GET Form-IO-API-URL/form
-   Form_ID = "_id" from the result
-```
+- To get Form-IO User Form_ID for env variable REACT_APP_USER_RESOURCE_FORM_ID
+  - Get User Form_ID
+    - request GET Form-IO-API-URL/user
+      use Form_ID = "_id" from the result
+
 
 ### Keycloak Configuration
 
-```
--Update KeyCloak Info (public/keycloak.json)
+- Update KeyCloak Info (public/keycloak.json)
 
-1. Login to keycloak
-2. Select your realm --> clients tab --> client Id --> Installation --> Formatoption(Keycloak OIDC JSON)
-3. Copy above JSON and update  public/keycloak.json
-```
+  - Login to keycloak
+  - Select your realm -->Go to clients tab --> Click on your client Id --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
+  - Copy the JSON data and update  public/keycloak.json
 
-## Project setup
 
-```
-npm install / docker-compose build
-```
+## Build and Deploy
 
-### Compiles and hot-reloads for development
+For docker
+- docker-compose build
+- docker-compose up
 
-```
-npm start / docker-compose up
-```
+For direct 
+- npm install
+- npm start 
 
-# **To run formio server (forms-flow-io)**
 
-## Pre-requisites
 
-### Export-Import JSON:
-
-```
-1. Login
-
--request POST Form-IO-API-URL/user/login
-{
-    "data": {
-        "email": {{email}},
-        "password": {{password}}
-    }
-}
-
---Use the token in the result header for the following steps
-
-2. Export
--request GET Form-IO-API-URL/export
-x-jwt-token:{{token}}
-
---Use the exported JSON for import
-
-3. Import
--request POST Form-IO-API-URL/import
-
-"template":{{exported JSON}}
-```
-NOTE: The JSON will have information about users with associated roles and forms. 
-## Project setups
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-
-```
-npm start
-```
 
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Nav, Navbar } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+
 import UserService from '../services/UserService';
 
 const NavBar = () => {
@@ -9,8 +10,8 @@ const NavBar = () => {
             <Navbar className="navbar">
                 <section className="container">
                 <Navbar.Brand>
-                    <img className="img-fluid d-none d-md-block" src="/bcid-logo-rev-en.svg" width="177" height="44" alt="B.C. Government Logo" />
-                    <img className="img-fluid d-md-none" src="/bcid-symbol-rev.svg" width="63" height="44" alt="B.C. Government Logo" />
+                    <img className="img-fluid d-none d-md-block" src="/AOT-logo.png" width="250"  alt="AOT Logo" />
+                    <img className="img-fluid d-md-none" src="AOT-simple-logo.png" width="40" alt="AOT Logo"></img>
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">

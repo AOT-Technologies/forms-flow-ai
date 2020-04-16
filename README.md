@@ -19,36 +19,38 @@ Technologies Used
 
 Running the application in Docker Environment
 ---------------------------------------------
-The fastest way to run this library locally is to use [Docker](https://docker.com).
+The fastest way to run this library locally is to use [Docker](https://docker.com)
 
- [Install Docker](https://docs.docker.com/v17.12/install/)
- Clone the github repository
+ [Install Docker](https://docs.docker.com/v17.12/install/), clone this github repository and follow the instructions below
  
    - Prerequisites
      -------------
-      - [Keycloak Configuration](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#keycloak-configuration)
-      - [Camunda Keystore Setup](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-bpm#http-https-setup)
+      - Keycloak Configuration
+         - [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#keycloak-configuration)
+         - [forms-flow-idm](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-idm#keycloak-configuration)
+      - Camunda Keystore Setup - [Refer](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-bpm#http-https-setup)
          - Camunda should be started securely and keystore.ks configurations should be configured in the config yml: /forms-flow-bpm/src/main/resources/application.yaml
 
    - Environment Variables Setup
      ---------------------------
-     - Set the appropriate environment variables given in the sample.env file and create a .env file in root folder 
+     - Set the appropriate environment variables given in the sample.env file and create a .env file in the projects root folder 
       - postgres db is used for camunda server
       - mongo db is used for forms-flow-forms server
-      - Keycloak configuraions has to be done prior and the secrets has to be configured in the KEYCLOAK section
-      - UserId's secrets from Keycloak has to be configured in the forms-flow-web section
-      - Camunda UserId's from Keycloak has to be configured in the forms-flow-bpm section
-      - Default username and password has to be configured in the forms-flow-forms section
+      - Keycloak configuraions has to be done prior and the secrets has to be configured in the **Environment Variables for KEYCLOAK** section
+      - Roles names from Keycloak has to be configured in the **Environment Variables for forms-flow-web** section
+      - Role Id's and URL from forms-flow-forms has to be configured in the **Environment Variables for forms-flow-web** section - [Refer section](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#environment-configuration) for setup
+      - Camunda UserId's from Keycloak URLs has to be configured in the **Environment Variables for forms-flow-bpm** section
+      - Default username and password for admin has to be configured in the **Environment Variables for forms-flow-forms** section
       - Change the REACT_APP_API_PROJECT_URL and REACT_APP_API_SERVER_URL with http://localhost:3001
       - Change the REACT_APP_BPM_API_BASE with https://localhost:8000
 
    - Running the Application
      -----------------------
       - Open up your terminal and navigate to the root folder of this project
-      - Type the following in your terminal
+      - Start the application using the command
             ```docker-compose up --build
             ```
-       - The following applications will be started and can be accessed in your browser for additional configurations.
+       - The following applications will be started and can be accessed in your browser.
          - http://localhost:3000 - forms-flow-web
          - http://localhost:3001 - forms-flow-forms
          - https://localhost:8000 - forms-flow-bpm

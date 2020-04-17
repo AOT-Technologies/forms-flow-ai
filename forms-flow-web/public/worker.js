@@ -1,6 +1,6 @@
 const CACHE_NAME = "FORMS-FLOW-WEB";
 // Set this to true for production
-const doCache = false;
+const doCache = true;
 
 const urlsToCache = [
   "/",

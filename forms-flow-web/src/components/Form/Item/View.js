@@ -7,6 +7,7 @@ import { push } from 'connected-react-router';
 import Loading from '../../../containers/Loading';
 import { getUserToken, triggerNotification, getProcess } from "../../../apiManager/services/bpmServices";
 import { BPM_USER_DETAILS } from "../../../apiManager/constants/apiConstants";
+import PROCESS from "../../../apiManager/constants/processConstants";
 
 const View = class extends Component {
   render() {
@@ -63,8 +64,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
           dispatch(resetSubmissions('submission'));
-          //TODO update this
-          let data = getProcess(1,ownProps.match.params.formId, submission._id)
+          //TODO update this get process type matching to form
+          const data = getProcess(PROCESS.EmailNotification, ownProps.match.params.formId, submission._id);
           dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
             if (!err) {
               dispatch(triggerNotification(data));

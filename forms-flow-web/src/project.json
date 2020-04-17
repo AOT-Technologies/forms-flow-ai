@@ -1,0 +1,906 @@
+{
+  "title": "Forms Flow ai",
+  "version": "1.0.0",
+  "description": "",
+  "name": "Forms flow ai",
+  "roles": {
+    "administrator": {
+      "title": "Administrator",
+      "description": "A role for Administrative Users.",
+      "admin": true,
+      "default": false
+    },
+    "authenticated": {
+      "title": "Authenticated",
+      "description": "A role for Authenticated Users.",
+      "admin": false,
+      "default": false
+    },
+    "anonymous": {
+      "title": "Anonymous",
+      "description": "A role for Anonymous Users.",
+      "admin": false,
+      "default": true
+    },
+    "staffReviewer": {
+      "title": "Staff Reviewer",
+      "description": "A person who can view all form submissions.",
+      "admin": false,
+      "default": false
+    },
+    "client": {
+      "title": "Client",
+      "description": "A person who can do form submission.",
+      "admin": false,
+      "default": false
+    }
+  },
+  "forms": {
+    "userLogin": {
+      "title": "User Login",
+      "type": "form",
+      "name": "userLogin",
+      "path": "user/login",
+      "tags": [],
+      "components": [
+        {
+          "type": "email",
+          "persistent": true,
+          "unique": false,
+          "protected": false,
+          "defaultValue": "",
+          "suffix": "",
+          "prefix": "",
+          "placeholder": "Enter your email address",
+          "key": "email",
+          "lockKey": true,
+          "label": "Email",
+          "inputType": "email",
+          "tableView": true,
+          "input": true
+        },
+        {
+          "type": "password",
+          "persistent": true,
+          "protected": true,
+          "suffix": "",
+          "prefix": "",
+          "placeholder": "Enter your password.",
+          "key": "password",
+          "lockKey": true,
+          "label": "Password",
+          "inputType": "password",
+          "tableView": false,
+          "input": true
+        },
+        {
+          "type": "button",
+          "theme": "primary",
+          "disableOnInvalid": true,
+          "action": "submit",
+          "block": false,
+          "rightIcon": "",
+          "leftIcon": "",
+          "size": "md",
+          "key": "submit",
+          "tableView": false,
+          "label": "Submit",
+          "input": true
+        }
+      ],
+      "access": [
+        {
+          "roles": [
+            "anonymous"
+          ],
+          "type": "read_all"
+        }
+      ],
+      "submissionAccess": [
+        {
+          "roles": [
+            "anonymous"
+          ],
+          "type": "create_own"
+        }
+      ]
+    },
+    "userRegister": {
+      "title": "User Register",
+      "type": "form",
+      "name": "userRegister",
+      "path": "user/register",
+      "tags": [],
+      "components": [
+        {
+          "type": "email",
+          "persistent": true,
+          "unique": false,
+          "protected": false,
+          "defaultValue": "",
+          "suffix": "",
+          "prefix": "",
+          "placeholder": "Enter your email address",
+          "key": "email",
+          "lockKey": true,
+          "label": "Email",
+          "inputType": "email",
+          "tableView": true,
+          "input": true
+        },
+        {
+          "type": "password",
+          "persistent": true,
+          "protected": true,
+          "suffix": "",
+          "prefix": "",
+          "placeholder": "Enter your password.",
+          "key": "password",
+          "lockKey": true,
+          "label": "Password",
+          "inputType": "password",
+          "tableView": false,
+          "input": true
+        },
+        {
+          "theme": "primary",
+          "disableOnInvalid": true,
+          "action": "submit",
+          "block": false,
+          "rightIcon": "",
+          "leftIcon": "",
+          "size": "md",
+          "key": "submit",
+          "label": "Submit",
+          "input": true,
+          "type": "button"
+        }
+      ],
+      "access": [
+        {
+          "roles": [
+            "anonymous"
+          ],
+          "type": "read_all"
+        }
+      ],
+      "submissionAccess": [
+        {
+          "roles": [
+            "anonymous"
+          ],
+          "type": "create_own"
+        }
+      ]
+    }
+  },
+  "actions": {
+    "userSave": {
+      "title": "Save Submission",
+      "name": "save",
+      "form": "user",
+      "settings": {},
+      "priority": 11,
+      "method": [
+        "create",
+        "update"
+      ],
+      "handler": [
+        "before"
+      ]
+    },
+    "adminSave": {
+      "title": "Save Submission",
+      "name": "save",
+      "form": "admin",
+      "settings": {},
+      "priority": 11,
+      "method": [
+        "create",
+        "update"
+      ],
+      "handler": [
+        "before"
+      ]
+    },
+    "userLogin": {
+      "title": "Login",
+      "name": "login",
+      "form": "userLogin",
+      "condition": {},
+      "settings": {
+        "resources": [
+          "user",
+          "admin"
+        ],
+        "username": "email",
+        "password": "password"
+      },
+      "priority": 2,
+      "method": [
+        "create"
+      ],
+      "handler": [
+        "before"
+      ]
+    },
+    "userRegisterSave": {
+      "title": "Save Submission",
+      "name": "save",
+      "form": "userRegister",
+      "settings": {
+        "resource": "user",
+        "fields": {
+          "email": "email",
+          "password": "password"
+        }
+      },
+      "priority": 10,
+      "method": [
+        "create"
+      ],
+      "handler": [
+        "before"
+      ]
+    },
+    "userRegisterLogin": {
+      "title": "Login",
+      "name": "login",
+      "form": "userRegister",
+      "settings": {
+        "resources": [
+          "user"
+        ],
+        "username": "email",
+        "password": "password"
+      },
+      "priority": 2,
+      "method": [
+        "create"
+      ],
+      "handler": [
+        "before"
+      ]
+    },
+    "authenticatedRole": {
+      "title": "Role Assignment",
+      "name": "role",
+      "form": "user",
+      "settings": {
+        "role": "authenticated",
+        "type": "add",
+        "association": "new"
+      },
+      "priority": 1,
+      "method": [
+        "create"
+      ],
+      "handler": [
+        "after"
+      ]
+    },
+    "adminRole": {
+      "title": "Role Assignment",
+      "name": "role",
+      "form": "admin",
+      "settings": {
+        "role": "administrator",
+        "type": "add",
+        "association": "new"
+      },
+      "priority": 1,
+      "method": [
+        "create"
+      ],
+      "handler": [
+        "after"
+      ]
+    },
+    "user:role": {
+      "title": "Assign Employee Role",
+      "name": "role",
+      "form": "user",
+      "settings": {
+        "association": "new",
+        "role": "staffReviewer",
+        "type": "add"
+      },
+      "priority": 1,
+      "method": [
+        "create"
+      ],
+      "handler": [
+        "after"
+      ]
+    },
+    "userRegister:role": {
+      "title": "Role Assignment",
+      "name": "role",
+      "form": "userRegister",
+      "condition": {},
+      "settings": {
+        "association": "existing",
+        "type": "add",
+        "role": "staffReviewer"
+      },
+      "priority": 1,
+      "method": [
+        "create"
+      ],
+      "handler": [
+        "after"
+      ]
+    },
+
+    "staffReviewer:save": {
+      "title": "Save Submission",
+      "name": "save",
+      "form": "staffReviewer",
+      "priority": 10,
+      "method": [
+        "create",
+        "update"
+      ],
+      "handler": [
+        "before"
+      ]
+    },
+    "staffReviewer:role": {
+      "title": "Role Assignment",
+      "name": "role",
+      "form": "staffReviewer",
+      "settings": {
+        "association": "new",
+        "type": "add",
+        "role": "staffReviewer"
+      },
+      "priority": 1,
+      "method": [
+        "create"
+      ],
+      "handler": [
+        "after"
+      ]
+    },
+
+    "client:save": {
+      "title": "Save Submission",
+      "name": "save",
+      "form": "client",
+      "priority": 10,
+      "method": [
+        "create",
+        "update"
+      ],
+      "handler": [
+        "before"
+      ]
+    },
+    "client:role": {
+      "title": "Role Assignment",
+      "name": "role",
+      "form": "client",
+      "settings": {
+        "association": "new",
+        "type": "add",
+        "role": "client"
+      },
+      "priority": 1,
+      "method": [
+        "create"
+      ],
+      "handler": [
+        "after"
+      ]
+    }
+  },
+  "resources": {
+    "user": {
+      "title": "User",
+      "type": "resource",
+      "name": "user",
+      "path": "user",
+      "display": "form",
+      "tags": [],
+      "components": [
+        {
+          "type": "email",
+          "persistent": true,
+          "unique": false,
+          "protected": false,
+          "defaultValue": "",
+          "suffix": "",
+          "prefix": "",
+          "placeholder": "Enter your email address",
+          "key": "email",
+          "label": "Email",
+          "inputType": "email",
+          "tableView": true,
+          "input": true
+        },
+        {
+          "type": "password",
+          "persistent": true,
+          "protected": true,
+          "suffix": "",
+          "prefix": "",
+          "placeholder": "Enter your password.",
+          "key": "password",
+          "label": "Password",
+          "inputType": "password",
+          "tableView": false,
+          "input": true
+        },
+        {
+          "type": "button",
+          "theme": "primary",
+          "disableOnInvalid": true,
+          "action": "submit",
+          "block": false,
+          "rightIcon": "",
+          "leftIcon": "",
+          "size": "md",
+          "key": "submit",
+          "tableView": false,
+          "label": "Submit",
+          "input": true
+        }
+      ],
+      "access": [
+        {
+          "roles": [
+            "anonymous",
+            "authenticated",
+            "administrator"
+          ],
+          "type": "read_all"
+        }
+      ],
+      "submissionAccess": [
+        {
+          "roles": [
+            "administrator"
+          ],
+          "type": "create_all"
+        },
+        {
+          "roles": [
+            "administrator"
+          ],
+          "type": "read_all"
+        },
+        {
+          "roles": [
+            "administrator"
+          ],
+          "type": "update_all"
+        },
+        {
+          "roles": [
+            "administrator"
+          ],
+          "type": "delete_all"
+        },
+        {
+          "roles": [],
+          "type": "create_own"
+        },
+        {
+          "roles": [],
+          "type": "read_own"
+        },
+        {
+          "roles": [],
+          "type": "update_own"
+        },
+        {
+          "roles": [],
+          "type": "delete_own"
+        }
+      ]
+    },
+    "admin": {
+      "title": "Admin",
+      "type": "resource",
+      "name": "admin",
+      "path": "admin",
+      "tags": [],
+      "components": [
+        {
+          "type": "email",
+          "persistent": true,
+          "unique": false,
+          "protected": false,
+          "defaultValue": "",
+          "suffix": "",
+          "prefix": "",
+          "placeholder": "Enter your email address",
+          "key": "email",
+          "label": "Email",
+          "inputType": "email",
+          "tableView": true,
+          "input": true
+        },
+        {
+          "type": "password",
+          "persistent": true,
+          "protected": true,
+          "suffix": "",
+          "prefix": "",
+          "placeholder": "Enter your password.",
+          "key": "password",
+          "label": "Password",
+          "inputType": "password",
+          "tableView": false,
+          "input": true
+        },
+        {
+          "type": "button",
+          "theme": "primary",
+          "disableOnInvalid": true,
+          "action": "submit",
+          "block": false,
+          "rightIcon": "",
+          "leftIcon": "",
+          "size": "md",
+          "key": "submit",
+          "tableView": false,
+          "label": "Submit",
+          "input": true
+        }
+      ],
+      "access": [
+        {
+          "roles": [
+            "anonymous",
+            "authenticated",
+            "administrator"
+          ],
+          "type": "read_all"
+        }
+      ],
+      "submissionAccess": [
+        {
+          "roles": [
+            "administrator"
+          ],
+          "type": "create_all"
+        },
+        {
+          "roles": [
+            "administrator"
+          ],
+          "type": "read_all"
+        },
+        {
+          "roles": [
+            "administrator"
+          ],
+          "type": "update_all"
+        },
+        {
+          "roles": [
+            "administrator"
+          ],
+          "type": "delete_all"
+        },
+        {
+          "roles": [],
+          "type": "create_own"
+        },
+        {
+          "roles": [],
+          "type": "read_own"
+        },
+        {
+          "roles": [],
+          "type": "update_own"
+        },
+        {
+          "roles": [],
+          "type": "delete_own"
+        }
+      ]
+    },
+    "staffReviewer": {
+      "title": "Staff Reviewer",
+      "type": "resource",
+      "name": "staffReviewer",
+      "path": "staffreviewer",
+      "display": "form",
+      "tags": [
+        "common"
+      ],
+      "components": [
+        {
+          "autofocus": false,
+          "input": true,
+          "tableView": true,
+          "inputType": "email",
+          "label": "Email",
+          "key": "email",
+          "placeholder": "Enter your email address",
+          "prefix": "",
+          "suffix": "",
+          "defaultValue": "",
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "kickbox": {
+            "enabled": false
+          },
+          "type": "email",
+          "lockKey": true,
+          "source": "5e78bdd7a054f922bc82d065",
+          "labelPosition": "top",
+          "inputFormat": "plain",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "properties": {}
+        },
+        {
+          "autofocus": false,
+          "input": true,
+          "tableView": false,
+          "inputType": "password",
+          "label": "Password",
+          "key": "password",
+          "placeholder": "Enter your password.",
+          "prefix": "",
+          "suffix": "",
+          "protected": true,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "type": "password",
+          "lockKey": true,
+          "source": "5e78bdd7a054f922bc82d065",
+          "labelPosition": "top",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "properties": {},
+          "tabindex": "admin@example.com"
+        },
+        {
+          "autofocus": false,
+          "input": true,
+          "label": "Submit",
+          "tableView": false,
+          "key": "submit",
+          "size": "md",
+          "leftIcon": "",
+          "rightIcon": "",
+          "block": false,
+          "action": "submit",
+          "disableOnInvalid": false,
+          "theme": "primary",
+          "type": "button"
+        }
+      ],
+      "access": [
+        {
+          "roles": [
+            "administrator",
+            "authenticated",
+            "anonymous",
+            "client",
+            "staffReviewer"
+          ],
+          "type": "read_all"
+        }
+      ],
+      "submissionAccess": [
+        {
+          "roles": [],
+          "type": "create_all"
+        },
+        {
+          "roles": [
+            "staffReviewer"
+          ],
+          "type": "read_all"
+        },
+        {
+          "roles": [
+            "staffReviewer"
+          ],
+          "type": "update_all"
+        },
+        {
+          "roles": [
+            "staffReviewer"
+          ],
+          "type": "delete_all"
+        },
+        {
+          "roles": [
+            "staffReviewer",
+            "client"
+          ],
+          "type": "create_own"
+        },
+        {
+          "roles": [
+            "staffReviewer",
+            "client"
+          ],
+          "type": "read_own"
+        },
+        {
+          "roles": [
+            "staffReviewer",
+            "client"
+          ],
+          "type": "update_own"
+        },
+        {
+          "roles": [
+            "staffReviewer",
+            "client"
+          ],
+          "type": "delete_own"
+        }
+      ]
+    },
+    "client": {
+      "title": "Client",
+      "type": "resource",
+      "name": "client",
+      "path": "client",
+      "display": "form",
+      "tags": [
+        "common"
+      ],
+      "components": [
+        {
+          "autofocus": false,
+          "input": true,
+          "tableView": true,
+          "inputType": "email",
+          "label": "Email",
+          "key": "email",
+          "placeholder": "Enter your email address",
+          "prefix": "",
+          "suffix": "",
+          "defaultValue": "",
+          "protected": false,
+          "unique": false,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "kickbox": {
+            "enabled": false
+          },
+          "type": "email",
+          "lockKey": true,
+          "source": "5e78bdd7a054f91afa82d066",
+          "labelPosition": "top",
+          "inputFormat": "plain",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "properties": {}
+        },
+        {
+          "autofocus": false,
+          "input": true,
+          "tableView": false,
+          "inputType": "password",
+          "label": "Password",
+          "key": "password",
+          "placeholder": "Enter your password.",
+          "prefix": "",
+          "suffix": "",
+          "protected": true,
+          "persistent": true,
+          "hidden": false,
+          "clearOnHide": true,
+          "type": "password",
+          "lockKey": true,
+          "source": "5e78bdd7a054f91afa82d066",
+          "labelPosition": "top",
+          "tags": [],
+          "conditional": {
+            "show": "",
+            "when": null,
+            "eq": ""
+          },
+          "properties": {},
+          "tabindex": "admin@example.com"
+        },
+        {
+          "autofocus": false,
+          "input": true,
+          "label": "Submit",
+          "tableView": false,
+          "key": "submit",
+          "size": "md",
+          "leftIcon": "",
+          "rightIcon": "",
+          "block": false,
+          "action": "submit",
+          "disableOnInvalid": false,
+          "theme": "primary",
+          "type": "button"
+        }
+      ],
+      "access": [
+        {
+          "roles": [
+            "administrator",
+            "authenticated",
+            "anonymous",
+            "client",
+            "staffReviewer"
+          ],
+          "type": "read_all"
+        }
+      ],
+      "submissionAccess": [
+        {
+          "roles": [],
+          "type": "create_all"
+        },
+        {
+          "roles": [
+            "staffReviewer"
+          ],
+          "type": "read_all"
+        },
+        {
+          "roles": [
+            "staffReviewer"
+          ],
+          "type": "update_all"
+        },
+        {
+          "roles": [
+            "staffReviewer"
+          ],
+          "type": "delete_all"
+        },
+        {
+          "roles": [
+            "staffReviewer",
+            "client"
+          ],
+          "type": "create_own"
+        },
+        {
+          "roles": [
+            "staffReviewer",
+            "client"
+          ],
+          "type": "read_own"
+        },
+        {
+          "roles": [
+            "staffReviewer",
+            "client"
+          ],
+          "type": "update_own"
+        },
+        {
+          "roles": [
+            "staffReviewer",
+            "client"
+          ],
+          "type": "delete_own"
+        }
+      ]
+    }
+  }
+}

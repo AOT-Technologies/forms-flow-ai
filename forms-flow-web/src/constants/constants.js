@@ -22,7 +22,7 @@ export const ROLES = [{
 
 export const OPERATIONS = {
   insert: {
-    action: 'view',
+    action: 'insert',
     buttonType: 'primary',
     icon: 'pencil',
     permissionsResolver: function permissionsResolver() {

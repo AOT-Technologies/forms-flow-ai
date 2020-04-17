@@ -72,7 +72,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     onAction: (form, action) => {
       switch (action) {
-        case 'viewSubmission':
+        case 'insert':
           dispatch(push(`/form/${form._id}`));
           break;
         case 'submission':

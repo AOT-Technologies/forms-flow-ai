@@ -2,6 +2,7 @@ import {  httpPOSTRequest, httpPOSTRequestWithoutToken } from '../httpRequestHan
 import API from '../endpoints'
 import { setUserToken, sendEmailNotification, serviceActionError } from '../../actions/bpmActions'
 import Token from "../token/tokenService"
+import PROCESS from "../constants/processConstants";
 
 export const getUserToken = (data, ...rest) => {
   const done = rest.length ? rest[0] :  ()=>{};
@@ -25,11 +26,11 @@ export const getUserToken = (data, ...rest) => {
   }
 };
 
-export const getProcess = (processId,formId, submissionId) => {
-  switch(processId){
-    case 1 : 
+export const getProcess = (processType,formId, submissionId) => {
+  switch(processType){
+    case PROCESS.EmailNotification :
       return {
-        process: 'EmailNotification',
+        process: PROCESS.EmailNotification,
         service: sendEmailNotification,
         req: {
           "variables": {
@@ -38,9 +39,9 @@ export const getProcess = (processId,formId, submissionId) => {
           }
         }
       }
-    case 2 :
+    case PROCESS.OneStepApproval :
       return{
-        process:'onestepapproval',
+        process:PROCESS.OneStepApproval
       }
     default: return null
   }

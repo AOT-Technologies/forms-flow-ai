@@ -1,7 +1,7 @@
 import React from 'react';
 import { Component } from 'react';
 import { connect } from 'react-redux'
-import {selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors} from 'react-formio';
+import {selectRoot, Form, selectError, Errors} from 'react-formio';
 import {push} from 'connected-react-router';
 import {Button} from "react-bootstrap";
 
@@ -58,20 +58,6 @@ const mapStateToProps = (state) => {
   }
 }
 
-// const mapDispatchToProps = (dispatch, ownProps) => {
-//   return {
-//     onSubmit: (submission) => {
-//       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
-//         if (!err) {
-//           dispatch(resetSubmissions('submission'));
-//           dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
-//         }
-//       }));
-//     }
-//   }
-// }
-
 export default connect(
-  mapStateToProps,
-//   mapDispatchToProps
+  mapStateToProps
 )(Preview)

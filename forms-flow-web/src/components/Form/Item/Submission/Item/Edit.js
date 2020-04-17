@@ -5,8 +5,9 @@ import {selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors}
 import {push} from 'connected-react-router';
 
 import Loading from '../../../../../containers/Loading'
-import {getUserToken, triggerNotification} from "../../../../../apiManager/services/bpmServices";
+import {getProcess, getUserToken, triggerNotification} from "../../../../../apiManager/services/bpmServices";
 import {BPM_USER_DETAILS} from "../../../../../apiManager/constants/apiConstants";
+import PROCESS from "../../../../../apiManager/constants/processConstants";
 
 const Edit = class extends Component {
   render() {
@@ -66,14 +67,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         if (!err) {
           dispatch(resetSubmissions('submission'));
           dispatch(getUserToken(BPM_USER_DETAILS,(err,res)=>{
+            //TODO update this get process type matching to form
+            const data = getProcess(PROCESS.EmailNotification, ownProps.match.params.formId, submission._id);
             if(!err){
-              dispatch(triggerNotification({
-                  "variables": {
-                    "category" : {"value" : "task_notification"},
-                    "formurl" : {"value" : `${window.location.origin}/form/${ownProps.match.params.formId}/submission/${submission._id}`}
-                  }
-                }
-              ));
+              dispatch(triggerNotification(data));
               dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`));
             }
           }));

@@ -1,45 +1,64 @@
-var CACHE_NAME = "REACT_KEYCLOAK";
+var CACHE_NAME = "FORMS-FLOW-WEB";
+// Set this to true for production
+var doCache = true;
+
 var urlsToCache = [
   "/",
+  "/form",
   "/static/js",
   "/static/js/bundle.js",
   "/manifest.json",
   "/favicon.ico",
   "/icons-192.png",
-  "/static/js/0.chunk.js",
   "/static/js/main.chunk.js",
+  "/static/js/0.chunk.js",
   "/keycloak.json",
   "/static/js/0.chunk.js.map",
-  "/bcid-logo-rev-en.svg ",
-  "/bcid-symbol-rev.svg",
-  "/spinner.gif"
+  "/spinner.gif",
+  "/AOT-logo.png",
+  "/AOT-simple-logo.png",
 ];
-
 // Install a service worker
 self.addEventListener("install", event => {
+  if(doCache)
+  {
   // Perform install steps
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
       console.log("Opened cache");
-      return cache.addAll(urlsToCache, {
-        mode: "no-cors"
-      });
+      return cache.addAll(urlsToCache);
     })
   );
+  }
 });
 
-// Cache and return requests
-self.addEventListener("fetch", event => {
+
+self.addEventListener('fetch', function(event) {
+  if(doCache)
+  {
   event.respondWith(
-    caches.match(event.request).then(function(response) {
-      // Cache hit - return response
-      if (response) {
-        return response;
+    caches.match(event.request)
+      .then(function(response) {
+        // Cache hit - return response
+        if (response) {
+          return response;
+        }
+        return fetch(event.request);
       }
-      return fetch(event.request);
-    })
+    )
   );
+    }
 });
+
+
+// self.addEventListener('fetch', function(event) {
+//   console.log(event.request.url);
+//   event.respondWith(
+//       caches.match(event.request).then(function(response) {
+//           return response || fetch(event.request,{ mode: 'no-cors' });
+//       })
+//   );
+// });
 
 // Update a service worker
 self.addEventListener("activate", event => {

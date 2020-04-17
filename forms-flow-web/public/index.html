@@ -3,17 +3,26 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="forms-flow-web">
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#536878">
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
     <link rel="apple-touch-icon" href="icons-192.png">
+    <link rel="preconnect" href="https://iam.aot-technologies.com">
     <title>Formio App</title>
 
   </head>
   <body>
     <div id="app">
+      <div><header><nav class="navbar">
+        <section class="container">
+          <span class="navbar-brand">
+            <img class="img-fluid d-none d-md-block" src="/AOT-logo.png" height="40" width="250" alt="AOT Logo">
+          </span>
+</section></nav></header>
+    </div>
     </div>
     <script>
         if ('serviceWorker' in navigator) {
@@ -30,5 +39,6 @@
           console.log('Service Worker is not supported by browser.');
         }
       </script>
+      <noscript>This website requires JavaScript.</noscript>
   </body>
 </html>

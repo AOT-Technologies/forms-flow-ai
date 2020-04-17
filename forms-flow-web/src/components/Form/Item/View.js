@@ -2,11 +2,11 @@ import React from 'react';
 import { Component } from 'react';
 import { connect } from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors } from 'react-formio';
-import {push} from 'connected-react-router';
+import { push } from 'connected-react-router';
 
 import Loading from '../../../containers/Loading';
-import {getUserToken, triggerEmailNotification} from "../../../apiManager/services/bpmServices";
-import {BPM_USER_DETAILS} from "../../../apiManager/constants/apiConstants";
+import { getUserToken, triggerNotification, getProcess } from "../../../apiManager/services/bpmServices";
+import { BPM_USER_DETAILS } from "../../../apiManager/constants/apiConstants";
 
 const View = class extends Component {
   render() {
@@ -16,21 +16,21 @@ const View = class extends Component {
       onSubmit,
       errors,
       options,
-      form: {form, isActive, url}
+      form: { form, isActive, url }
     } = this.props;
     if (isActive) {
       return <Loading />;
     }
     return (
       <div>
-        <h3>New { form.title }</h3>
+        <h3>New {form.title}</h3>
         <Errors errors={errors} />
         <hr />
         <Form
           form={form}
           submission={submission}
           url={url}
-          options={{...options}}
+          options={{ ...options }}
           hideComponents={hideComponents}
           onSubmit={onSubmit}
         />
@@ -50,7 +50,7 @@ const mapStateToProps = (state) => {
       noAlerts: false,
       i18n: {
         en: {
-          error:"Please fix the errors before submitting again.",
+          error: "Please fix the errors before submitting again.",
         },
       }
     },
@@ -64,16 +64,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         if (!err) {
           dispatch(resetSubmissions('submission'));
           //TODO update this
-          dispatch(getUserToken(BPM_USER_DETAILS,(err,res)=>{
-            if(!err){
-              dispatch(triggerEmailNotification(
-              {
-                "variables": {
-                "category" : {"value" : "task_notification"},
-                "formurl" : {"value" : `${window.location.origin}/form/${ownProps.match.params.formId}/submission/${submission._id}`}
-                  }
-                }
-              ));
+          let data = getProcess(1,ownProps.match.params.formId, submission._id)
+          dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
+            if (!err) {
+              dispatch(triggerNotification(data));
               dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}`))
             }
           }));
@@ -82,6 +76,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     },
   }
 }
+
+
 
 export default connect(
   mapStateToProps,

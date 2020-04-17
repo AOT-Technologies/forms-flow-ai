@@ -25,12 +25,34 @@ export const getUserToken = (data, ...rest) => {
   }
 };
 
-export const  triggerEmailNotification= (data, ...rest) => {
+export const getProcess = (processId,formId, submissionId) => {
+  switch(processId){
+    case 1 : 
+      return {
+        process: 'EmailNotification',
+        service: sendEmailNotification,
+        req: {
+          "variables": {
+            "category": { "value": "task_notification" },
+            "formurl": { "value": `${window.location.origin}/form/${formId}/submission/${submissionId}` }
+          }
+        }
+      }
+    case 2 :
+      return{
+        process:'onestepapproval',
+      }
+    default: return null
+  }
+}
+
+export const  triggerNotification= (data, ...rest) => {
   const done = rest.length ? rest[0] :  ()=>{};
+  let url = API.SEND_NOTIFICATION+`${data.process}/start`
   return dispatch => {
-    httpPOSTRequest(API.SEND_EMAIL_NOTIFICATION,data).then(res => {
+    httpPOSTRequest(url,data.req).then(res => {
       if (res.data) {
-        dispatch(sendEmailNotification(res.data))
+        dispatch(data.service(res.data))
         done(null,res.data);
       } else {
         dispatch(serviceActionError(res))

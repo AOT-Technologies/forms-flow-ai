@@ -8,6 +8,7 @@ import View from './View'
 import Edit from './Edit'
 import Delete from './Delete'
 import Submission from './Submission/index'
+import Preview from './Preview'
 
 let user = '';
 /**
@@ -56,6 +57,7 @@ const Item = class extends Component{
       <div>
         <Switch>
           <Route exact path="/form/:formId" component={View} />
+          <FormActionRoute path="/form/:formId/preview" component={Preview}/>
           <FormActionRoute path="/form/:formId/edit" component={Edit}/>
           <FormActionRoute path="/form/:formId/delete" component={Delete}/>
           <SubmissionRoute path="/form/:formId/submission" component={Submission}/>

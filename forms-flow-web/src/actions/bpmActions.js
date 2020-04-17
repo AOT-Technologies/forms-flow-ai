@@ -13,6 +13,12 @@ export const setUserRole = (data) => dispatch => {
     payload: data
   })
 }
+export const setUserDetails = (data) => dispatch => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_USER_DETAILS,
+    payload: data
+  })
+}
 
 export const sendEmailNotification = (data) => dispatch => {
   dispatch({

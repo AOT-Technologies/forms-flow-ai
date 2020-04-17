@@ -5,7 +5,7 @@ import {selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors}
 import {push} from 'connected-react-router';
 
 import Loading from '../../../../../containers/Loading'
-import {getUserToken, triggerEmailNotification} from "../../../../../apiManager/services/bpmServices";
+import {getUserToken, triggerNotification} from "../../../../../apiManager/services/bpmServices";
 import {BPM_USER_DETAILS} from "../../../../../apiManager/constants/apiConstants";
 
 const Edit = class extends Component {
@@ -67,7 +67,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(resetSubmissions('submission'));
           dispatch(getUserToken(BPM_USER_DETAILS,(err,res)=>{
             if(!err){
-              dispatch(triggerEmailNotification({
+              dispatch(triggerNotification({
                   "variables": {
                     "category" : {"value" : "task_notification"},
                     "formurl" : {"value" : `${window.location.origin}/form/${ownProps.match.params.formId}/submission/${submission._id}`}

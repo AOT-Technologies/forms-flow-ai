@@ -1,5 +1,5 @@
-import {ROLES, USER_RESOURCE_FORM_ID, Keycloak_Client, _kc} from '../constants/constants';
-import {setUserRole} from "../actions/bpmActions";
+import { ROLES, USER_RESOURCE_FORM_ID, Keycloak_Client, _kc } from '../constants/constants';
+import { setUserRole, setUserToken, setUserDetails } from "../actions/bpmActions";
 
 const jwt = require('jsonwebtoken');
 
@@ -19,7 +19,8 @@ const initKeycloak = (onAuthenticatedCallback, store) => {
       if (authenticated) {
         const UserRoles=KeycloakData.resourceAccess[Keycloak_Client].roles;
         store.dispatch(setUserRole(UserRoles));
-
+        store.dispatch(setUserToken(KeycloakData.token));
+        
         let role = [];
         for (let i = 0; i < UserRoles.length; i++) {
           const roledata = ROLES.find(x => x.title === UserRoles[i]);
@@ -27,6 +28,7 @@ const initKeycloak = (onAuthenticatedCallback, store) => {
             role = role.concat(roledata.id)
           }
         }
+        _kc.loadUserInfo().then(res=>store.dispatch(setUserDetails(res)))
         const email= KeycloakData.tokenParsed.email || 'external';
         const FORMIO_TOKEN = jwt.sign({
           form: {

@@ -50,7 +50,7 @@ const List = class extends Component {
       operations.push(OPERATIONS.insert,OPERATIONS.submission);
     }
     if(userRoles.includes(STAFF_DESIGNER)){
-      operations.push(OPERATIONS.edit, OPERATIONS.delete);
+      operations.push(OPERATIONS.viewForm, OPERATIONS.edit, OPERATIONS.delete);
     }
     return operations;
   }
@@ -61,7 +61,7 @@ const mapStateToProps = (state) => {
   return {
     forms: selectRoot('forms', state),
     errors: selectError('forms', state),
-    userRoles: selectRoot('user',state).roles||[]
+    userRoles: selectRoot('user',state).roles||[],
   }
 }
 
@@ -72,7 +72,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     onAction: (form, action) => {
       switch (action) {
-        case 'view':
+        case 'viewSubmission':
           dispatch(push(`/form/${form._id}`));
           break;
         case 'submission':
@@ -83,6 +83,9 @@ const mapDispatchToProps = (dispatch) => {
           break;
         case 'delete':
             dispatch(push(`/form/${form._id}/delete`));
+          break;
+        case 'viewForm':
+            dispatch(push(`/form/${form._id}/preview`));
           break;
         default:
       }

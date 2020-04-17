@@ -26,7 +26,7 @@ const mapDispatchToProps = (dispatch) => {
 
       if (!err) {
         // TODO: Display a save success message here.
-        dispatch(push(`/`));
+        dispatch(push(`/form/${form._id}/preview`))
       }
     }))
   }

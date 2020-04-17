@@ -50,6 +50,16 @@ export const OPERATIONS = {
 
     title: 'Edit Form'
   },
+  viewForm: {
+    action: 'viewForm',
+    buttonType: 'warning',
+    icon: 'eye',
+    permissionsResolver: function permissionsResolver() {
+      return true;
+    },
+
+    title: 'View Form'
+  },
   delete: {
     action: 'delete',
     buttonType: 'danger',
@@ -60,7 +70,7 @@ export const OPERATIONS = {
     title: 'Delete Form'
   },
   view: {
-    action: 'view',
+    action: 'viewSubmission',
     buttonType: 'warning',
     icon: 'list',
     permissionsResolver: function permissionsResolver() {

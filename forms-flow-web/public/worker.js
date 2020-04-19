@@ -1,4 +1,4 @@
-const CACHE_NAME = "FORMS-FLOW-WEB";
+const CACHE_NAME = "FORMS-FLOW-AI-WEB";
 // Set this to true for production
 const doCache = true;
 
@@ -24,23 +24,22 @@ self.addEventListener("install", event => {
   if(doCache)
   {
   // Perform install steps
+  console.log('Attempting to install service worker and cache static assets');
   event.waitUntil(
-    caches.open(CACHE_NAME).then(function(cache) {
+    caches.open(CACHE_NAME).then((cache) =>{
       console.log("Opened cache");
-      cache.addAll(urlsToCache.map(function(urlsToCache) {
+      cache.addAll(urlsToCache.map((urlsToCache)=> {
         return new Request(urlsToCache, { mode: 'no-cors' });
-      })).then(function() {
-        console.log('All resources have been fetched and cached.');
-      });
+      })).then(() => console.log('All resources have been fetched and cached.'));
     })
   );
   }
 });
 
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request)
-      .then(function(response) {
+      .then((response)=> {
 // Cache hit - return response
           if (response) {
             return response;
@@ -51,19 +50,9 @@ self.addEventListener('fetch', function(event) {
   );
 });
 
-
-// self.addEventListener('fetch', function(event) {
-//   console.log(event.request.url);
-//   event.respondWith(
-//       caches.match(event.request).then(function(response) {
-//           return response || fetch(event.request,{ mode: 'no-cors' });
-//       })
-//   );
-// });
-
 // Update a service worker
 self.addEventListener("activate", event => {
-  var cacheWhitelist = ["REACT_KEYCLOAK"];
+  const cacheWhitelist = [CACHE_NAME];
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
@@ -75,4 +64,12 @@ self.addEventListener("activate", event => {
       );
     })
   );
+});
+
+
+self.addEventListener('message',  (event)=> {
+  console.log("message",event.data.action);
+  if (event.data.action === 'skipWaiting') {
+    self.skipWaiting();
+  }
 });

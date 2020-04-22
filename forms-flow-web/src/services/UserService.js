@@ -1,6 +1,5 @@
 import { ROLES, USER_RESOURCE_FORM_ID, Keycloak_Client, _kc } from '../constants/constants';
 import { setUserRole, setUserToken, setUserDetails } from "../actions/bpmActions";
-import { getTaskList } from '../actions/taskActions'
 
 const jwt = require('jsonwebtoken');
 

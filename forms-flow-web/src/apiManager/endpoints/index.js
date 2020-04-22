@@ -1,9 +1,9 @@
-import {BASE_API_URL, BPM_TOKEN_URL} from './config';
+import {BPM_BASE_URL, BPM_TOKEN_URL, PROCESS_BASE_API} from './config';
 
 const API = {
-  BASE_API_URL: process.env.REACT_APP_BPM_API_BASE+'/camunda',
   GET_BPM_TOKEN: BPM_TOKEN_URL,
-  SEND_NOTIFICATION: BASE_API_URL
+  SEND_NOTIFICATION: PROCESS_BASE_API,
+  GET_TASK_API: BPM_BASE_URL+'/history/task',
 }
 //TODO update the process to read from json/API
 

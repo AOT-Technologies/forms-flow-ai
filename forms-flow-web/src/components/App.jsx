@@ -8,26 +8,13 @@ import Tasks from './Tasks';
 import Form from "../components/Form";
 import NavBar from '../containers/NavBar';
 import { STAFF_REVIEWER } from "../constants/constants";
-import { fetchTaskList } from "../apiManager/services/taskServices"
-import { BPM_USER_DETAILS } from '../apiManager/constants/apiConstants'
-import { getUserToken } from '../apiManager/services/bpmServices'
 
 class App extends Component{
   constructor(){
     super();
     this.user=[];
   }
-  
-  componentDidMount(){
-    if(this.user.includes(STAFF_REVIEWER)){
-      getUserToken(BPM_USER_DETAILS, (err, res) => {
-        if (!err) {
-          fetchTaskList();
-        }
-      })
-    }
-  }
-  
+
   ListRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={(props) => (
       this.user.includes(STAFF_REVIEWER)

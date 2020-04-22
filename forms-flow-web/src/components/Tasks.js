@@ -1,6 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
+import { getUserToken } from '../apiManager/services/bpmServices'
+import { BPM_USER_DETAILS } from '../apiManager/constants/apiConstants'
 import { fetchTaskList } from '../apiManager/services/taskServices'
 
 const Tasks = (props) =>{
@@ -13,5 +15,16 @@ const mapStateToProps=(state)=>{
         tasks:state.tasks.tasksList
     }
 }
+const mapDispatchToProps=(dispatch)=>{
+    return{
+        getTasks:dispatch(
+            getUserToken(BPM_USER_DETAILS,(err,res)=>{
+                if(!err){
+                    dispatch(fetchTaskList(res.data.access_token))
+                }
+            })
+        )
+    }
+}
 
-export default connect(mapStateToProps)(Tasks);
+export default connect(mapStateToProps,mapDispatchToProps)(Tasks);

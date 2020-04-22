@@ -134,7 +134,7 @@ export default () => (
             </div>
           <div>
             <BootstrapTable bordered={ false } pagination={ paginationFactory(options)}
-              { ...props.baseProps }
+              { ...props.baseProps } noDataIndication={() => <div className="text-center">No Lists Found</div>}
             />
             
             <br />

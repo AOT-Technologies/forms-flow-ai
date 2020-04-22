@@ -1,18 +1,16 @@
+import React from 'react'
+import { connect } from 'react-redux'
 import BootstrapTable from 'react-bootstrap-table-next';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import { Dropdown } from 'react-bootstrap';
-import React from 'react'
 
+import { getUserToken } from '../../apiManager/services/bpmServices'
+import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants'
+import { fetchTaskList, getTaskCount } from '../../apiManager/services/taskServices'
 
 const { SearchBar } = Search;
 
-const tasks = [
-  { taskName: "Task1", formName: "Form 1", taskStatus: "Claimed", submitedBy: "Robert", dueDate: "Set due date", actions: "View" },
-  { taskName: "Task2", formName: "Form 2", taskStatus: "Approved", submitedBy: "Victor", dueDate: "Set due date", actions: "View" },
-  { taskName: "Task3", formName: "Form 1", taskStatus: "Rejected", submitedBy: "Berlin", dueDate: "Set due date", actions: "View" },
-  { taskName: "Task4", formName: "Form 1", taskStatus: "Claim Now", submitedBy: "Jasper", dueDate: "Set due date", actions: "View" },
-];
 const columns = [{
   dataField: 'taskName',
   text: 'Task Name'
@@ -65,58 +63,91 @@ const customTotal = (from, to, size) => (
   </span>
 );
 
-const options = {
-  paginationSize: 4,
-  pageStartIndex: 0,
-  alwaysShowAllBtns: true, // Always show next and previous button
-  withFirstAndLast: false, // Hide the going to First and Last page button
-  hideSizePerPage: true, // Hide the sizePerPage dropdown always
-  // hidePageListOnlyOnePage: true, // Hide the pagination list when only one page
-  firstPageText: 'First',
-  prePageText: 'Previous',
-  nextPageText: 'Next',
-  lastPageText: 'Last',
-  nextPageTitle: 'First page',
-  prePageTitle: 'Pre page',
-  firstPageTitle: 'Next page',
-  lastPageTitle: 'Last page',
-  showTotal: false,
-  paginationTotalRenderer: customTotal,
-  disablePageTitle: true,
-  sizePerPageList: [{
-    text: '5', value: 5
-  }, {
-    text: '10', value: 10
-  }, {
-    text: 'All', value: tasks.length
-  }] // A numeric array is also available. the purpose of above example is custom the text
-};
+const listTasks = (tasks) => {
+  let data = [];
+  if (tasks.length > 0) {
+    tasks.map(task=>{
+      data.push({
+        taskName: task.name, formName: task.taskDefinitionKey, taskStatus: "Claimed", submitedBy: task.assignee, dueDate: "Set due date", actions: "View"
+      })
+    })
+    return data
+  } else {
+    return data = []
+  }
+}
 
+const Tasks = (props) => {
+  const options = {
+    paginationSize: 4,
+    pageStartIndex: 0,
+    alwaysShowAllBtns: true, // Always show next and previous button
+    withFirstAndLast: false, // Hide the going to First and Last page button
+    hideSizePerPage: true, // Hide the sizePerPage dropdown always
+    // hidePageListOnlyOnePage: true, // Hide the pagination list when only one page
+    firstPageText: 'First',
+    prePageText: 'Previous',
+    nextPageText: 'Next',
+    lastPageText: 'Last',
+    nextPageTitle: 'First page',
+    prePageTitle: 'Pre page',
+    firstPageTitle: 'Next page',
+    lastPageTitle: 'Last page',
+    showTotal: false,
+    paginationTotalRenderer: customTotal,
+    disablePageTitle: true,
+    sizePerPageList: [{
+      text: '5', value: 5
+    }, {
+      text: '10', value: 10
+    }, {
+      text: 'All', value: props.tasks.length
+    }] // A numeric array is also available. the purpose of above example is custom the text
+  };
 
-export default () => (
-  <ToolkitProvider
-    keyField="id"
-    data={tasks}
-    columns={columns}
-    search
-  >
-    {
-      props => (
-        <div className="container"><br></br><div className="row"><h3 className="col-md-6">Tasks</h3>
-          <div className="col-md-6 btn-group">
-            <SearchBar {...props.searchProps} />
+  return (
+    <ToolkitProvider
+      keyField="id"
+      data={listTasks(props.tasks)}
+      columns={columns}
+      search
+    >
+      {
+        props => (
+          <div className="container"><br></br><div className="row"><h3 className="col-md-6">Tasks</h3>
+            <div className="col-md-6 btn-group">
+              <SearchBar {...props.searchProps} />
+            </div>
           </div>
-        </div>
-          <div>
+            <div>
             <BootstrapTable bordered={false} pagination={paginationFactory(options)}
               {...props.baseProps} noDataIndication={() => <div className="text-center">No Lists Found</div>}
             />
-
-            <br />
+              <br />
+            </div>
           </div>
-        </div>
-      )
-    }
-  </ToolkitProvider>
+        )
+      }
+    </ToolkitProvider>
+  )
+};
 
-);
+const mapStateToProps = (state) => {
+  return {
+    tasks: state.tasks.tasksList
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getTasks: dispatch(
+      getUserToken(BPM_USER_DETAILS, (err, res) => {
+        if (!err) {
+          dispatch(fetchTaskList())
+          dispatch(getTaskCount())
+        }
+      })
+    )
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Tasks);

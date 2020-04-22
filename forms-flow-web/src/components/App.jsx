@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { ConnectedRouter } from 'connected-react-router';
 
-import Tasks from './Tasks'; 
+import Tasks from './Task/Task.js'; 
 import Form from "../components/Form";
 import NavBar from '../containers/NavBar';
 import { STAFF_REVIEWER } from "../constants/constants";

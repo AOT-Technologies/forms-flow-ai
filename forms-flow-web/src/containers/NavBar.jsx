@@ -5,10 +5,10 @@ import { connect } from 'react-redux';
 import { selectRoot } from 'react-formio'
 
 import UserService from '../services/UserService';
-/*import { STAFF_REVIEWER } from '../constants/constants';*/
+import { STAFF_REVIEWER } from '../constants/constants';
 
 const NavBar = (props) => {
-    /*const userRoles = props.userRoles;*/
+    const userRoles = props.userRoles;
     return (
         <header>
             <Navbar className="navbar">
@@ -21,10 +21,10 @@ const NavBar = (props) => {
                     <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
                         <Nav className="mr-auto">
                             <Nav.Link as={Link} to='/' className="nav-item nav-link"><i className="fa fa-home" style={{ fontSize: '20px', color: '#ffff' }}></i></Nav.Link>
- {/*                            {userRoles && userRoles.includes(STAFF_REVIEWER) ?
+ {userRoles && userRoles.includes(STAFF_REVIEWER) ?
                                 <Nav.Link as={Link} to='/tasks' className="nav-item nav-link"><i className="fa fa-tasks" style={{ fontSize: '15px', color: '#ffff' }}></i></Nav.Link>
                                 :
-                                null}*/}
+                                null}
                         </Nav>
                         <Nav >
                             <Nav.Link onClick={UserService.userLogout} className="nav-item nav-link" style={{ color: '#ffff' }}><i className="fa fa-power-off" aria-hidden="true"></i> Logout</Nav.Link>

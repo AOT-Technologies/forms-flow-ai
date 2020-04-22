@@ -61,14 +61,24 @@ services:
   forms-flow-forms-db:
     image: mongo:4.1
     restart: always
+    hostname: forms-flow-forms-db
     ports:
       - "27018:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      MONGO_REPLICA_SET_NAME: ${MONGO_REPLICA_SET_NAME}
     volumes:
-      - mdb-data:/data/db
+      - /home/dev/mongodb/data/db/:/data/db/
+      - /home/dev/mongodb/data/log/:/var/log/mongodb/
+      - /home/dev/mongodb/mongod.conf:/etc/mongod.conf
+      - /home/dev/mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+    command: [ "--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all"]
+    healthcheck:
+            test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo --quiet) -eq 1
+            interval: 10s
+            start_period: 30s
     networks:
       - forms-flow-forms-network
 
@@ -88,7 +98,7 @@ services:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio"}'
+      NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio?replicaSet=rs0"}'
       ROOT_EMAIL: ${ROOT_EMAIL}
       ROOT_PASSWORD: ${ROOT_PASSWORD}
     stdin_open: true  # -i

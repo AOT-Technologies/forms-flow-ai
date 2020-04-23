@@ -7,17 +7,18 @@ import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 
 import { getUserToken } from '../../apiManager/services/bpmServices'
 import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants'
-import { fetchTaskList, getTaskCount } from '../../apiManager/services/taskServices'
+import { fetchTaskList, getTaskCount, claimTask, unClaimTask } from '../../apiManager/services/taskServices'
 import { columns, getoptions } from './table'
+import Loading from '../../containers/Loading'
 
 const { SearchBar } = Search;
 
-const listTasks = (tasks) => {
+const listTasks = (props) => {
   let data = [];
-  if (tasks.length > 0) {
-    tasks.map(task=>{
+  if (props.tasks.length > 0) {
+    props.tasks.map(task=>{
       data.push({
-        taskName: task.name, formName: task.taskDefinitionKey, taskStatus: "Claimed", submitedBy: task.assignee, dueDate: "Set due date", actions: "View"
+        taskName: task.name, formName: task.taskDefinitionKey, taskStatus:"Claimed", submitedBy: task.assignee, dueDate: "Set due date", actions: "View"
       })
     })
     return data
@@ -27,10 +28,15 @@ const listTasks = (tasks) => {
 }
 
 const Tasks = (props) => {
+  if(props.isLoading){
+    return (
+      <Loading />
+    );
+  }
   return (
     <ToolkitProvider
       keyField="id"
-      data={listTasks(props.tasks)}
+      data={listTasks(props)}
       columns={columns}
       search
     >
@@ -56,6 +62,7 @@ const Tasks = (props) => {
 
 const mapStateToProps = (state) => {
   return {
+    isLoading:state.tasks.isLoading,
     tasks: state.tasks.tasksList,
     tasksCount:state.tasks.tasksCount
   }
@@ -69,7 +76,24 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(getTaskCount())
         }
       })
-    )
+    ),
+    onClaim:(id)=>{
+      console.log("Claim")
+      dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
+        if (!err) {
+          dispatch(claimTask(id))
+        }
+      })
+      )
+    },
+    onUnclaim:(id)=>{
+      dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
+        if (!err) {
+          dispatch(unClaimTask(id))
+        }
+      })
+      )
+    }
   }
 }
 

@@ -10,7 +10,7 @@ export const columns = [{
   {
     dataField: 'taskStatus',
     text: 'Task Status',
-    formatter: buttonFormatter,
+    formatter: buttonFormatter
   }, {
     dataField: 'submitedBy',
     text: 'Submitted By'
@@ -82,30 +82,3 @@ export const columns = [{
         }] // A numeric array is also available. the purpose of above example is custom the text
       }
   }
-
-//   const options = {
-//     paginationSize: 4,
-//     pageStartIndex: 0,
-//     alwaysShowAllBtns: true, // Always show next and previous button
-//     withFirstAndLast: false, // Hide the going to First and Last page button
-//     hideSizePerPage: true, // Hide the sizePerPage dropdown always
-//     // hidePageListOnlyOnePage: true, // Hide the pagination list when only one page
-//     firstPageText: 'First',
-//     prePageText: 'Previous',
-//     nextPageText: 'Next',
-//     lastPageText: 'Last',
-//     nextPageTitle: 'First page',
-//     prePageTitle: 'Pre page',
-//     firstPageTitle: 'Next page',
-//     lastPageTitle: 'Last page',
-//     showTotal: false,
-//     paginationTotalRenderer: customTotal,
-//     disablePageTitle: true,
-//     sizePerPageList: [{
-//       text: '5', value: 5
-//     }, {
-//       text: '10', value: 10
-//     }, {
-//       text: 'All', value: props.tasks.length
-//     }] // A numeric array is also available. the purpose of above example is custom the text
-//   };

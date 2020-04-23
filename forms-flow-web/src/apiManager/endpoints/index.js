@@ -5,7 +5,7 @@ const API = {
   SEND_NOTIFICATION: PROCESS_BASE_API,
   GET_TASK_API: BPM_BASE_URL+'/history/task',
   GET_TASK_COUNT: BPM_BASE_URL+'/history/task/count',
-  // CLAIM_TASK:BPM_BASE_URL+`/task/${id}/claim`
+  TASK_ACTION_API: BPM_BASE_URL+`/task`
 }
 //TODO update the process to read from json/API
 

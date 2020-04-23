@@ -1,67 +1,112 @@
 import BootstrapTable from 'react-bootstrap-table-next';
+import filterFactory, { textFilter,selectFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
-import { Dropdown } from 'react-bootstrap';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import React from 'react'
 
-
-const { SearchBar } = Search;
-
 const tasks = [
-    { taskName: "Task1", formName: "Form 1", taskStatus: "Claimed",submitedBy:"Robert",dueDate:"Set due date" ,actions:"View"},
-    { taskName: "Task2", formName: "Form 2", taskStatus: "Approved",submitedBy:"Victor",dueDate:"Set due date" ,actions:"View"},
-    { taskName: "Task3", formName: "Form 1", taskStatus: "Rejected",submitedBy:"Berlin",dueDate:"Set due date",actions:"View" },
-    { taskName: "Task4", formName: "Form 1", taskStatus: "Claim Now",submitedBy:"Jasper",dueDate:"Set due date" ,actions:"View"},
+    { id: 12435, taskTitle: "Form 1", taskStatus: "Assigned",taskOwner:"Vinaya",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"},
+    { id: 346457, taskTitle: "Form 2", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Victor",dueDate:"Set due date" ,form:"Membership Form"},
+    { id: 354623, taskTitle: "Form 1", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Berlin",dueDate:"Set due date",form:"Membership Form" },
+    { id: 235346, taskTitle: "Form 1", taskStatus: "Assigned",taskOwner:"David",submittedBy:"Jasper",dueDate:"Set due date" ,form:"Membership Form"},
+    { id: 124355, taskTitle: "Form 1", taskStatus: "Assigned to me",taskOwner:"",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"}, 
+   
+];
+const selectOptions = [
+  { value: 'Assigned', label: 'Assigned' },
+  { value: 'Completed', label: 'Completed' },
+  { value: 'Assigned to me', label: 'Assigned to me' }
 ];
 const columns = [{
-  dataField: 'taskName',
-  text: 'Task Name'
+  dataField: 'id',
+  text: 'Task Id',
+  formatter:linkSubmisionId,
+  width: "60" ,
+  sort:true,
+  filter: textFilter({
+    placeholder: 'Submission Id',  // custom the input placeholder
+    caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+    
+  })
 }, {
-  dataField: 'formName',
-  text: 'Form Name'
+  dataField: 'taskTitle',
+  text: 'Task Title',
+  sort:true,
+  filter: textFilter({
+    placeholder: 'Task Title',  // custom the input placeholder
+    caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+    
+  })
 }, 
 {
-    dataField: 'taskStatus',
-    text: 'Task Status',
-    formatter:buttonFormatter,
-  },{
-  dataField: 'submitedBy',
-  text: 'Submitted By'
+    dataField: 'taskOwner',
+    text: 'Task Owner',
+    sort:true,
+    filter: textFilter({
+      placeholder: 'Task Owner',  // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      
+    })
+  },
+  {
+  dataField: 'taskStatus',
+  text: 'Task Status',
+  sort:true,
+  formatter:buttonFormatter,
+  filter: selectFilter({
+    options: selectOptions,
+    placeholder: 'All',
+    defaultValue: '2', // default filtering value
+    caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+  })
+},
+{
+  dataField: 'submittedBy',
+  text: 'Primary Applicant',
+  filter: textFilter({
+    placeholder: 'Submitted By',  // custom the input placeholder
+    caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+    
+  })
 },
 {
     dataField: 'dueDate',
     text: 'Due Date',
-    formatter:linkButton,
+    formatter:linkDueDate,
+    sort:true,
+    style: {'whiteSpace': 'nowrap'} 
   },
   {
-    dataField: 'actions',
-    text: 'Actions',
-    formatter:viewButton,
+    dataField: 'form',
+    text: 'Application Type',
+    filter: textFilter({
+      placeholder: 'Application Type',  // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      
+    })
   }];
-  function linkButton()
+  function linkDueDate()
   {
-    return  <button type="button"  className="btn btn-link">Set due date</button>
+    return  <a href="#"  className="btn-link">Set due date</a>
   }
-  function viewButton(cell, row)
+  function linkSubmisionId(cell)
   {
-    return <button className="btn btn-primary btn-sm">view</button>;
+    return  <a href="#" className="btn-link">{cell}</a>
   }
+  
   function buttonFormatter(cell, row){
-      if(cell==="Claimed")
+      if(cell==="Assigned")
       {
-        return <button className="btn btn-primary btn-sm">Claimed</button>;
+        return <label className="text-primary font-weight-bold text-uppercase">{cell}</label>;
       }
-      else if(cell==="Approved")
+      else if(cell==="Completed")
       {
-        return <button className="btn btn-success btn-sm">Approved</button>;
+        return <label className="text-success font-weight-bold text-uppercase">{cell}</label>;
       }
-      else if(cell==="Rejected")
+      else if(cell==="Assigned to me")
       {
-        return <button className="btn btn-danger btn-sm">Rejected</button>;
-      }
-      else if(cell==="Claim Now")
-      {
-        return <button className="btn btn-outline-primary btn-sm">Claim Now</button>;
+        return <button className="btn btn-outline-primary btn-sm">{cell}</button>;
       }
       
 }
@@ -72,33 +117,25 @@ const customTotal = (from, to, size) => (
   );
   
   const options = {
-    paginationSize: 4,
-    pageStartIndex: 0,
+    expandRowBgColor: 'rgb(173,216,230)',
+    pageStartIndex: 1,
      alwaysShowAllBtns: true, // Always show next and previous button
      withFirstAndLast: false, // Hide the going to First and Last page button
      hideSizePerPage: true, // Hide the sizePerPage dropdown always
     // hidePageListOnlyOnePage: true, // Hide the pagination list when only one page
-    firstPageText: 'First',
-    prePageText: 'Previous',
-    nextPageText: 'Next',
-    lastPageText: 'Last',
-    nextPageTitle: 'First page',
-    prePageTitle: 'Pre page',
-    firstPageTitle: 'Next page',
-    lastPageTitle: 'Last page',
-    showTotal: false,
+    paginationSize: 7,  // the pagination bar size.
+    prePageText: '<<',
+    nextPageText: '>>',
+    showTotal: true,
     paginationTotalRenderer: customTotal,
     disablePageTitle: true,
-    sizePerPageList: [{
-      text: '5', value: 5
-    }, {
-      text: '10', value: 10
-    }, {
-      text: 'All', value: tasks.length
-    }] // A numeric array is also available. the purpose of above example is custom the text
+    sizePerPage:5
   };
 
-
+  const defaultSortedBy = [{
+    dataField: "name",
+    order: "asc"  // or desc
+}];
 export default () => (
     <ToolkitProvider
       keyField="id"
@@ -109,31 +146,18 @@ export default () => (
       {
         props => (
           
-            <div className="container"><br></br><div className="row"><h3 className="col-md-6">Tasks</h3>
-            <div className="col-md-6 btn-group">
-            {/* <Dropdown> 
-                <Dropdown.Toggle id="dropdown-forms">
-                    Dropdown Button
-                </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        <Dropdown.Item>All Forms</Dropdown.Item>
-                    </Dropdown.Menu>
-            </Dropdown>
-            <Dropdown>
-            <Dropdown.Toggle  id="dropdown-tasks">
-                Dropdown Button
-            </Dropdown.Toggle>
-
-            <Dropdown.Menu>
-                <Dropdown.Item >All Task</Dropdown.Item>
-            </Dropdown.Menu>
-            </Dropdown> */}
-            <SearchBar { ...props.searchProps} />
-            {/* <SearchBar { ...props.searchProps.placeholder = 'Search forms'} /> */}
+            <div className="container"><br></br><div className="row"><h3 className="col-md-2">Tasks</h3>
+            <div className="col-md-2 btn-group">
+            <select className="form-control">
+              <option>All Tasks</option>
+              <option>Assigned Tasks</option>
+              <option>Completed Tasks</option>
+            </select>
             </div>
             </div>
+            <br></br>
           <div>
-            <BootstrapTable bordered={ false } pagination={ paginationFactory(options)}
+            <BootstrapTable  filter={ filterFactory() } pagination={ paginationFactory(options)} defaultSorted={defaultSortedBy} 
               { ...props.baseProps } noDataIndication={() => <div className="text-center">No Lists Found</div>}
             />
             

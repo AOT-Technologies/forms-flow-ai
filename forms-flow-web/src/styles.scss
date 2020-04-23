@@ -141,3 +141,29 @@ h5, .h5
 .is-invalid{
   background-color: #ffd1d1;
 }
+.nav-dropdown{
+  .dropdown-menu{
+    width: 15rem;
+    height: 14rem;
+    padding: 15px 20px 0 20px;
+    right: 0;
+    top: 2rem;
+    left: auto;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+  .dropdown-toggle{
+    color: white !important;
+    a{
+      text-decoration: none;
+    }
+  }
+  .userIcon{
+    padding: 0 0 0 0;
+    font-size: 2rem;
+    float: right;
+    color: #1264b6e0;
+  }
+}
+.nav-dropdown :hover{
+  text-decoration: none !important;
+}

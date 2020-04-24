@@ -34,7 +34,7 @@ const NavBar = (props) => {
                         <Nav className="mr-auto">
                             <Nav.Link as={Link} to='/' className="nav-item nav-link"><i className="fa fa-home" style={{ fontSize: '20px', color: '#ffff' }}></i></Nav.Link>
                             {userRoles && userRoles.includes(STAFF_REVIEWER) ?
-                                <Nav.Link as={Link} to='/tasks' className="nav-item nav-link"><i className="fa fa-tasks" style={{ fontSize: '15px', color: '#ffff' }}></i></Nav.Link>
+                                <Nav.Link as={Link} to='/task' className="nav-item nav-link"><i className="fa fa-tasks" style={{ fontSize: '15px', color: '#ffff' }}></i></Nav.Link>
                                 :
                                 null}
                         </Nav>

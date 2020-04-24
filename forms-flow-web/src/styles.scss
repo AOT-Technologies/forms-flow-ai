@@ -167,3 +167,13 @@ h5, .h5
 .nav-dropdown :hover{
   text-decoration: none !important;
 }
+.nav-tabs .nav-link.active{
+  color: #4D4D4D;
+  background-color: #f5f5f5;
+  border-color: 1px solid #f5f5f5 !important;
+}
+.nav-link{
+  a{
+    color: black;
+  }
+}

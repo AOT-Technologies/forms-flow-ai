@@ -1,9 +1,10 @@
+import React from 'react'
+import { Link } from 'react-router-dom'
 import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory, { textFilter,selectFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
-import React from 'react'
 
 const tasks = [
     { id: 12435, taskTitle: "Form 1", taskStatus: "Assigned",taskOwner:"Vinaya",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"},
@@ -92,7 +93,7 @@ const columns = [{
   }
   function linkSubmisionId(cell)
   {
-    return  <a href="#" className="btn-link">{cell}</a>
+    return <Link to='/task/task-detail'className="btn-link">{cell}</Link>  
   }
   
   function buttonFormatter(cell, row){

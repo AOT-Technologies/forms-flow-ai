@@ -8,6 +8,7 @@ import Tasks from './Task/Task.js';
 import Form from "../components/Form";
 import NavBar from '../containers/NavBar';
 import { STAFF_REVIEWER } from "../constants/constants";
+require('typeface-nunito-sans')
 
 class App extends Component{
   constructor(){

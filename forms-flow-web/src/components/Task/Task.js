@@ -6,11 +6,11 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import React from 'react'
 
 const tasks = [
-    { id: 12435, taskTitle: "Form 1", taskStatus: "Assigned",taskOwner:"Vinaya",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"},
-    { id: 346457, taskTitle: "Form 2", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Victor",dueDate:"Set due date" ,form:"Membership Form"},
-    { id: 354623, taskTitle: "Form 1", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Berlin",dueDate:"Set due date",form:"Membership Form" },
-    { id: 235346, taskTitle: "Form 1", taskStatus: "Assigned",taskOwner:"David",submittedBy:"Jasper",dueDate:"Set due date" ,form:"Membership Form"},
-    { id: 124355, taskTitle: "Form 1", taskStatus: "Assigned to me",taskOwner:"",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"}, 
+    { id: 12435, applicationId:53465475, taskTitle: "Form 1", taskStatus: "Assigned",taskOwner:"Vinaya",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"},
+    { id: 346457, applicationId:4565708, taskTitle: "Form 2", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Victor",dueDate:"Set due date" ,form:"Membership Form"},
+    { id: 354623, applicationId:7756446, taskTitle: "Form 1", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Berlin",dueDate:"Set due date",form:"Membership Form" },
+    { id: 235346, applicationId:2434626, taskTitle: "Form 1", taskStatus: "Assigned",taskOwner:"David",submittedBy:"Jasper",dueDate:"Set due date" ,form:"Membership Form"},
+    { id: 124355, applicationId:5674534, taskTitle: "Form 1", taskStatus: "Assigned to me",taskOwner:"",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"}, 
    
 ];
 const selectOptions = [
@@ -25,7 +25,7 @@ const columns = [{
   width: "60" ,
   sort:true,
   filter: textFilter({
-    placeholder: 'Submission Id',  // custom the input placeholder
+    placeholder: 'Task Id',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
     
   })
@@ -57,26 +57,30 @@ const columns = [{
   filter: selectFilter({
     options: selectOptions,
     placeholder: 'All',
-    defaultValue: '2', // default filtering value
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
   })
 },
 {
-  dataField: 'submittedBy',
-  text: 'Primary Applicant',
+  dataField: 'applicationId',
+  text: 'Application Id',
+  sort:true,
+  style: {'whiteSpace': 'nowrap'} ,
   filter: textFilter({
-    placeholder: 'Submitted By',  // custom the input placeholder
+    placeholder: 'Application Id',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
     
   })
 },
 {
-    dataField: 'dueDate',
-    text: 'Due Date',
-    formatter:linkDueDate,
-    sort:true,
-    style: {'whiteSpace': 'nowrap'} 
-  },
+  dataField: 'submittedBy',
+  text: 'Primary Applicant',
+  style: {'whiteSpace': 'nowrap'} ,
+  filter: textFilter({
+    placeholder: 'Primary Applicant',  // custom the input placeholder
+    caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+    
+  })
+},
   {
     dataField: 'form',
     text: 'Application Type',
@@ -85,7 +89,14 @@ const columns = [{
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       
     })
-  }];
+  },
+  {
+    dataField: 'dueDate',
+    text: 'Due Date',
+    formatter:linkDueDate,
+    sort:true,
+    style: {'whiteSpace': 'nowrap'} 
+  },];
   function linkDueDate()
   {
     return  <a href="#"  className="btn-link">Set due date</a>
@@ -146,7 +157,7 @@ export default () => (
       {
         props => (
           
-            <div className="container"><br></br><div className="row"><h3 className="col-md-2">Tasks</h3>
+            <div className="container"><br></br><div className="row"><img src="~public/assets/Images/clipboard.svg"></img><h3 className="col-md-2">Tasks</h3>
             <div className="col-md-2 btn-group">
             <select className="form-control">
               <option>All Tasks</option>

@@ -40,6 +40,9 @@ $bcgov-font-path: "/node_modules/@bcgov/bootstrap-theme/dist/fonts/";
 @import "~@bcgov/bootstrap-theme/dist/scss/common";
 @import "~@bcgov/bootstrap-theme/dist/css/bootstrap-theme.min.css";
 
+.container, .container-sm, .container-md, .container-lg, .container-xl {
+  max-width: 1350px;
+}
 .logo {
   height: 1.9em;
 }
@@ -50,7 +53,7 @@ h4{
   margin-top: 30px;
 }
 body{
-  font-size: 15px;
+  font-size: 16px;
   font-family: Nunito Sans,SemiBold;
 }
 
@@ -203,4 +206,14 @@ padding: 0rem 0rem;
   padding: 0rem 0rem;
   font-size: 16px;
   
+}
+.nav-tabs .nav-link.active{
+  color: #4D4D4D;
+  background-color: #f5f5f5;
+  border-color: 1px solid #f5f5f5 !important;
+}
+.nav-link{
+  a{
+    color: black;
+  }
 }

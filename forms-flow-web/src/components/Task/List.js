@@ -1,4 +1,5 @@
 import BootstrapTable from 'react-bootstrap-table-next';
+import { Link } from 'react-router-dom'
 import filterFactory, { textFilter,selectFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
@@ -22,7 +23,8 @@ const columns = [{
   dataField: 'id',
   text: 'Task Id',
   formatter:linkSubmisionId,
-  width: "60" ,
+  style: {'width': '10px'} ,
+  className:'task-table-header',
   sort:true,
   filter: textFilter({
     placeholder: 'Task Id',  // custom the input placeholder
@@ -64,7 +66,6 @@ const columns = [{
   dataField: 'applicationId',
   text: 'Application Id',
   sort:true,
-  style: {'whiteSpace': 'nowrap'} ,
   filter: textFilter({
     placeholder: 'Application Id',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
@@ -103,7 +104,7 @@ const columns = [{
   }
   function linkSubmisionId(cell)
   {
-    return  <a href="#" className="btn-link">{cell}</a>
+    return <Link to='/task/task-detail'className="btn-link">{cell}</Link>  
   }
   
   function buttonFormatter(cell, row){
@@ -157,7 +158,10 @@ export default () => (
       {
         props => (
           
-            <div className="container"><br></br><div className="row"><img src="~public/assets/Images/clipboard.svg"></img><h3 className="col-md-2">Tasks</h3>
+            <div className="container"><br></br><div className="row">
+            <div className="col-md-1"></div>
+            <img src="/clipboard.svg" width="30" height="30" alt="task"></img>
+            <h3 className="col-md-2 task-head">Tasks(5)</h3>
             <div className="col-md-2 btn-group">
             <select className="form-control">
               <option>All Tasks</option>

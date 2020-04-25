@@ -1,0 +1,56 @@
+.review-box{
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    border: 1px solid #ECECEC;
+    border-radius: 5px;
+    opacity: 1;
+    min-height: 207px;
+    padding: 26px 25px;
+    a{
+        color: #015FBB !important;
+    }
+}
+.review-section{
+    border-left: 1px solid #ECECEC;
+    height: 285px;
+    padding: 14.5px 0 13.5px 67.5px;
+}
+.btn-wrapper {
+    button{
+        color: white !important;
+        font-size: 14px !important;
+        width: 94px;
+        height: 40px;
+    }
+}
+.task-head
+{
+    font-weight: bold;
+    font-size:30px;
+}
+.caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 2px;
+    vertical-align: middle;
+    border-top: 4px dashed;
+    border-top: 4px solid \9;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    }
+    
+    .dropup, .dropdown {
+    position: relative;
+    }
+    
+    .dropup .caret, .navbar-fixed-bottom .dropdown .caret {
+    border-top: 0;
+    border-bottom: 4px dashed;
+    border-bottom: 4px solid \9;
+    content: "";
+    }
+.pagination
+{
+    margin: 0px;
+    float: right;
+}

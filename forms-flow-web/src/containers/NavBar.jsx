@@ -35,7 +35,7 @@ const NavBar = (props) => {
                         <Nav className="mr-auto">
                             <Nav.Link as={Link} to='/' style={{ fontSize: '15px', color: '#ffff' }}>Forms</Nav.Link>
                             {userRoles && userRoles.includes(STAFF_REVIEWER) ?
-                                <Nav.Link as={Link} to='/tasks'  style={{ fontSize: '15px', color: '#ffff' }}>Tasks</Nav.Link>
+                                <Nav.Link as={Link} to='/task'  style={{ fontSize: '15px', color: '#ffff' }}>Tasks</Nav.Link>
                                 :
                                 null}
                         </Nav>

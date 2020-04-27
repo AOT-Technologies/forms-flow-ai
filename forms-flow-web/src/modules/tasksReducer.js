@@ -15,7 +15,7 @@ export default (state = initialState, action)=> {
       return {...state, tasksList: action.payload};
       break;
     case ACTION_CONSTANTS.TASKS_COUNT:
-      return {...state, tasksCount: action.payload};
+      return {...state, tasksCount: action.payload.count};
       break;
     default:
       return state;

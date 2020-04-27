@@ -10,7 +10,7 @@ const Task = () => {
     <div className="container" id="main">
       <Switch>
         <Route exact path="/task" component={List} />
-        <Route path="/task/task-detail"><View/></Route>
+        <Route path="/task/:id"><View/></Route>
       </Switch>
     </div>
   )

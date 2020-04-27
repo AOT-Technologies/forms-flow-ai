@@ -2,18 +2,23 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Tabs, Tab } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import { selectRoot, Form, selectError } from 'react-formio';
-import { push } from 'connected-react-router';
+import {selectRoot, Form, selectError, Errors} from 'react-formio';
 
 import Details from './Details'
+import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants'
+import { getUserToken } from '../../apiManager/services/bpmServices'
+import { getTaskDetail } from '../../apiManager/services/taskServices'
+import { setLoader } from '../../actions/taskActions'
+import Loading from '../../containers/Loading'
 
 class View extends Component {
     render() {
-        // const {
-        //     options,
-        //     form: { form },
-        //     submission: { submission }
-        // } = this.props;
+        const { detail, form, submission, hideComponents, options } = this.props;
+        if (this.props.isLoading) {
+            return (
+                <Loading />
+            );
+        }
         return (
             <div className="container">
                 <br></br>
@@ -25,7 +30,7 @@ class View extends Component {
                         <img src="/clipboard.svg" alt="Task" />
                     </span>
                     <h3 className="ml-3 mt-2">
-                        <span>Tasks / Verify Member (536673)</span>
+                        <span>Tasks / {`${detail.taskDefinitionKey} (${detail.id})`}</span>
                     </h3>
                 </div>
                 <br />
@@ -38,16 +43,16 @@ class View extends Component {
                             <h4 className="col-md-8">Membership Form</h4>
                             <span className="col-md-4">
                                 <button className="btn pull-right" style={{ color: "#003366", border: "1px solid #036" }}>
-                                    <i class="fa fa-print" aria-hidden="true"></i> Print as PDF
+                                    <i className="fa fa-print" aria-hidden="true"></i> Print as PDF
                                 </button>
                             </span>
-
-                           
                             {/* <Form
                                 form={form}
                                 submission={submission}
-                                options={{ ...options }}
-                            /> */}
+                                hideComponents={hideComponents}
+                                options={{...options}}
+                                /> */}
+
                         </div>
                         <section className="row" style={{ display: "block" }}>
                             <p className="col-md-12" style={{ textAlign: "end" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
@@ -68,22 +73,32 @@ class View extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        // form: selectRoot('form', state),
-        // submission: selectRoot('submission', state),
-        // options: {
-        //     readOnly: true,
-        // },
-        // errors: [
-        //     selectError('submission', state),
-        //     selectError('form', state)
-        // ],
-    }
-}
-const mapDispatchToProps = (dispatch, ownProps) => {
-    return {
-        // getForm:
-        //     dispatch(push(`form/5e9442e5b54a922044bab49b/submission/5ea2d9c0eec4fc0b0c3223a6`))
+        detail: state.tasks.taskDetail,
+        isLoading: state.tasks.isLoading,
+        form: selectRoot('form', state),
+        submission: selectRoot('submission', state),
+        options: {
+            readOnly: true,
+        },
+        errors: [
+            selectError('submission', state),
+            selectError('form', state)
+        ],
     }
 }
 
-export default connect(mapStateToProps,mapDispatchToProps)(View)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getTask: dispatch(
+            getUserToken(BPM_USER_DETAILS, (err, res) => {
+                dispatch(setLoader(true))
+                let id = window.location.pathname.split("/")[2]
+                if (!err) {
+                    dispatch(getTaskDetail(id))
+                }
+            })
+        )
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(View)

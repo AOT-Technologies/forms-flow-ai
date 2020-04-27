@@ -12,7 +12,7 @@ const Review = () =>{
                 <section className="row">
                     <h5 className="col-md-6">Membership form</h5>
                     <span className="col-md-3"></span>
-                    <Link className="col-md-3">View form</Link>
+                    <Link className="col-md-3" to="#">View form</Link>
                 </section>
                 <section>
                     <p>
@@ -20,7 +20,7 @@ const Review = () =>{
                     </p>
                 </section>
                 <section className="btn-wrapper">
-                    <Link>Set due date</Link>
+                    <Link to="#">Set due date</Link>
                     <span>
                     <button className="btn pull-right" style={{backgroundColor:"#43893E"}}>Approve</button>
                     <button className="btn pull-right" style={{border: "1px solid #D9534F", backgroundColor:"#CB2E25"}}>Reject</button>

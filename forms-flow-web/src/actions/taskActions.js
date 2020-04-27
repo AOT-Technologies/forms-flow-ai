@@ -19,6 +19,12 @@ export const setTaskCount = (data) => dispatch =>{
         payload:data
     })
 }
+export const setTaskDetail = (data) => dispatch =>{
+    dispatch({
+        type:ACTION_CONSTANTS.TASK_DETAIL,
+        payload:data
+    })
+}
 
 export const serviceActionError = (data) => dispatch => {
     dispatch({

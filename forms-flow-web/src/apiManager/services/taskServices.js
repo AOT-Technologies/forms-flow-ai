@@ -1,6 +1,6 @@
 import {  httpGETRequest, httpPOSTRequest } from '../httpRequestHandler'
 import API from '../endpoints'
-import { setTaskList, setTaskCount, serviceActionError, setLoader } from '../../actions/taskActions'
+import { setTaskList, setTaskCount, serviceActionError, setLoader, setTaskDetail } from '../../actions/taskActions'
 
 export const fetchTaskList = () =>{
     return dispatch => {
@@ -32,6 +32,20 @@ export const getTaskCount = () =>{
           dispatch(serviceActionError(error))
         })
       }
+}
+
+export const getTaskDetail = (id) =>{
+  return dispatch=>{
+    httpGETRequest(API.TASK_ACTION_API+`/${id}`).then(res=>{
+      if(res.status === 200){
+        dispatch(setTaskDetail(res.data))
+        dispatch(setLoader(false))
+      }
+    })
+    .catch(error=>{
+      dispatch(serviceActionError(error))
+    })
+  }
 }
 
 export const claimTask = (id,user)=>{

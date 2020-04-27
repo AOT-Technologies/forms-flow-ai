@@ -3,7 +3,8 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 const initialState = {
   isLoading:true,
   tasksList:[],
-  tasksCount:0
+  tasksCount:0,
+  taskDetail:[]
 }
 
 export default (state = initialState, action)=> {
@@ -16,6 +17,9 @@ export default (state = initialState, action)=> {
       break;
     case ACTION_CONSTANTS.TASKS_COUNT:
       return {...state, tasksCount: action.payload.count};
+      break;
+    case ACTION_CONSTANTS.TASK_DETAIL:
+      return {...state, taskDetail: action.payload};
       break;
     default:
       return state;

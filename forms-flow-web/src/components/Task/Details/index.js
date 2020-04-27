@@ -1,22 +1,20 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 import View from './View'
 import Review from './Review'
 
-class Details extends Component {
 
-    render() {
+const Details=()=>{
         return (
-            <div className="row" style={{marginTop:'26.5px'}}>
+            <div className="row" style={{ marginTop: '26.5px' }}>
                 <div className="col-md-6">
-                    <View/>
+                    <View />
                 </div>
                 <div className="col-md-6">
-                    <Review/>
+                    <Review />
                 </div>
             </div>
         )
-    }
 }
 
 export default Details;

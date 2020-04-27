@@ -38,7 +38,8 @@ fieldset[disabled] .btn-primary.active{
   background-repeat: no-repeat;
   background-position: center center;
   width: 200px;
-  margin: 3px 2px;
+  background-size: contain;
+  margin: 3px 10px 3px 10px;
 }
 
 [cam-widget-header] {
@@ -66,7 +67,7 @@ aside li.active>a {
   content: "Process Engine";
   display: inline-flex;
   color: #fff;
-  font-size: 35px;
+  font-size: 30px;
   padding: 7px;
   line-height: 36px;
 }

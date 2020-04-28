@@ -13,4 +13,4 @@ oc process -f formio-mongodb-dc.yaml
 
  oc describe sa gh-actions
  
- 
+ git update-index --chmod=+x script.sh

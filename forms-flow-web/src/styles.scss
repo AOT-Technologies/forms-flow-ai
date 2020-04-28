@@ -43,6 +43,11 @@ $bcgov-font-path: "/node_modules/@bcgov/bootstrap-theme/dist/fonts/";
 .container, .container-sm, .container-md, .container-lg, .container-xl {
   max-width: 1350px;
 }
+.container
+{
+  padding-left: 0px;
+  padding-right: 0px;
+}
 .logo {
   height: 1.9em;
 }
@@ -104,8 +109,7 @@ body{
 }
 .page-item.active .page-link
 {
-  color: black !important;
-  background-color: #ffff !important;
+  background-color: #036 !important;
   border-color: #56595d !important;
 }
 h5, .h5
@@ -174,11 +178,19 @@ h5, .h5
 .navbar-nav
 {
   padding-left: 70px !important;
+  padding-right: 10px;
 }
 .navbar-light .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .nav-link:focus
 {
   text-decoration: none;
    border-bottom: 1px solid #fcba19;
+}
+.active {
+  display: block;
+  width: 100%;
+  height:100%;
+  color: white;
+  background-color: blue;
 }
 .nav-user-role
 {
@@ -216,4 +228,7 @@ padding: 0rem 0rem;
   a{
     color: black;
   }
+}
+.active{
+  background-color: white;
 }

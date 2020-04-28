@@ -26,6 +26,7 @@
 {
     font-weight: bold;
     font-size:30px;
+    margin-left: 10px !important
 }
 .caret {
     display: inline-block;
@@ -51,6 +52,29 @@
     }
 .pagination
 {
-    margin: 0px;
+    margin-right: 60px;
     float: right;
+}
+.icon-seach {
+    font-family: Nunito Sans,SemiBold, FontAwesome;
+  }
+  .react-bootstrap-table th.sortable
+{
+    vertical-align: sub;
+}
+.div-border
+{
+    border: 1px solid #e3e2e2;
+    
+}
+.react-bootstrap-table-pagination-total
+{
+    margin-left: 20px;
+}
+.task-count
+{
+    font-size: 20px;
+    margin-top: 7px;
+    margin-left: 1px !important;
+    margin-right: 25px !important;
 }

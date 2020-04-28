@@ -33,15 +33,20 @@ const NavBar = (props) => {
                     <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
                     
                         <Nav className="mr-auto">
-                            <Nav.Link as={Link} to='/' style={{ fontSize: '15px', color: '#ffff' }}>Forms</Nav.Link>
+                            <Nav.Link as={Link} to='/' style={{ fontSize: '20px', color: '#ffff' }} activeclassname="active">Forms</Nav.Link>
                             {userRoles && userRoles.includes(STAFF_REVIEWER) ?
-                                <Nav.Link as={Link} to='/task'  style={{ fontSize: '15px', color: '#ffff' }}>Tasks</Nav.Link>
+                                <Nav.Link as={Link} to='/task'  style={{ fontSize: '20px', color: '#ffff' }} activeclassname="active">Tasks</Nav.Link>
                                 :
                                 null}
                         </Nav>
                         <Nav>
-                            <NavDropdown title={`Hi ${user.given_name ? user.given_name : ''}`} className="nav-dropdown" id="basic-nav-dropdown">
-                            <NavDropdown.Item><img className="float-right" src="/assets/Images/user.svg"></img></NavDropdown.Item>
+                            <NavDropdown style={{ fontSize: '18px'}} title={<div className="pull-left">
+                            Hi {user.given_name ? user.given_name : ''} &nbsp;
+                        <img className="thumbnail-image" 
+                            src="/assets/Images/user.svg" 
+                            alt="user pic"
+                        /></div>}  className="nav-dropdown" id="basic-nav-dropdown">
+                            <NavDropdown.Item><img className="float-right" src="/assets/Images/user.svg" alt="userimage"></img></NavDropdown.Item>
                             <br></br>
                             <NavDropdown.Header className="nav-user-name">{user.name}</NavDropdown.Header>
                             <NavDropdown.Header  className="nav-user-email">{user.email}</NavDropdown.Header>

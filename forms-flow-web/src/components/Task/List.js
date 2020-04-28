@@ -11,7 +11,7 @@ const tasks = [
     { id: 346457, applicationId:4565708, taskTitle: "Form 2", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Victor",dueDate:"Set due date" ,form:"Membership Form"},
     { id: 354623, applicationId:7756446, taskTitle: "Form 1", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Berlin",dueDate:"Set due date",form:"Membership Form" },
     { id: 235346, applicationId:2434626, taskTitle: "Form 1", taskStatus: "Assigned",taskOwner:"David",submittedBy:"Jasper",dueDate:"Set due date" ,form:"Membership Form"},
-    { id: 124355, applicationId:5674534, taskTitle: "Form 1", taskStatus: "Assigned to me",taskOwner:"",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"}, 
+    { id: 124355, applicationId:5674534, taskTitle: "Form 1", taskStatus: "Assign to me",taskOwner:"",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"}, 
    
 ];
 const selectOptions = [
@@ -23,22 +23,21 @@ const columns = [{
   dataField: 'id',
   text: 'Task Id',
   formatter:linkSubmisionId,
-  style: {'width': '10px'} ,
   className:'task-table-header',
   sort:true,
   filter: textFilter({
-    placeholder: 'Task Id',  // custom the input placeholder
+    placeholder: "\uf002 Task Id",  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-    
+    className:"icon-seach"
   })
 }, {
   dataField: 'taskTitle',
   text: 'Task Title',
   sort:true,
   filter: textFilter({
-    placeholder: 'Task Title',  // custom the input placeholder
+    placeholder: '\uf002 Task Title',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-    
+    className:"icon-seach"
   })
 }, 
 {
@@ -46,9 +45,9 @@ const columns = [{
     text: 'Task Owner',
     sort:true,
     filter: textFilter({
-      placeholder: 'Task Owner',  // custom the input placeholder
+      placeholder: '\uf002 Task Owner',  // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-      
+      className:"icon-seach"
     })
   },
   {
@@ -67,9 +66,9 @@ const columns = [{
   text: 'Application Id',
   sort:true,
   filter: textFilter({
-    placeholder: 'Application Id',  // custom the input placeholder
+    placeholder: '\uf002 Id',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-    
+    className:"icon-seach"
   })
 },
 {
@@ -77,18 +76,18 @@ const columns = [{
   text: 'Primary Applicant',
   style: {'whiteSpace': 'nowrap'} ,
   filter: textFilter({
-    placeholder: 'Primary Applicant',  // custom the input placeholder
+    placeholder: '\uf002 Name',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-    
+    className:"icon-seach"
   })
 },
   {
     dataField: 'form',
     text: 'Application Type',
     filter: textFilter({
-      placeholder: 'Application Type',  // custom the input placeholder
+      placeholder: '\uf002 Application Type',  // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-      
+      className:"icon-seach"
     })
   },
   {
@@ -96,15 +95,14 @@ const columns = [{
     text: 'Due Date',
     formatter:linkDueDate,
     sort:true,
-    style: {'whiteSpace': 'nowrap'} 
   },];
   function linkDueDate()
   {
-    return  <a href="#"  className="btn-link">Set due date</a>
+    return  <a href="#">Set due date</a>
   }
   function linkSubmisionId(cell)
   {
-    return <Link to='/task/task-detail'className="btn-link">{cell}</Link>  
+    return <Link to='/task/task-detail'>{cell}</Link>  
   }
   
   function buttonFormatter(cell, row){
@@ -116,18 +114,23 @@ const columns = [{
       {
         return <label className="text-success font-weight-bold text-uppercase">{cell}</label>;
       }
-      else if(cell==="Assigned to me")
+      else if(cell==="Assign to me")
       {
         return <button className="btn btn-outline-primary btn-sm">{cell}</button>;
       }
       
 }
-const customTotal = (from, to, size) => (
+let total=0;
+const customTotal1 = (from, to, size) => 
+(
+  total= {size}
+  );
+const customTotal = (from, to, size) => 
+(
     <span className="react-bootstrap-table-pagination-total">
       Showing { from } to { to } of { size } Results
     </span>
   );
-  
   const options = {
     expandRowBgColor: 'rgb(173,216,230)',
     pageStartIndex: 1,
@@ -139,11 +142,11 @@ const customTotal = (from, to, size) => (
     prePageText: '<<',
     nextPageText: '>>',
     showTotal: true,
+    Total:total,
     paginationTotalRenderer: customTotal,
     disablePageTitle: true,
     sizePerPage:5
   };
-
   const defaultSortedBy = [{
     dataField: "name",
     order: "asc"  // or desc
@@ -161,7 +164,7 @@ export default () => (
             <div className="container"><br></br><div className="row">
             <div className="col-md-1"></div>
             <img src="/clipboard.svg" width="30" height="30" alt="task"></img>
-            <h3 className="col-md-2 task-head">Tasks(5)</h3>
+            <h3 className="task-head row">Tasks<div className="col-md-1 task-count row">({total})</div></h3>
             <div className="col-md-2 btn-group">
             <select className="form-control">
               <option>All Tasks</option>
@@ -171,8 +174,8 @@ export default () => (
             </div>
             </div>
             <br></br>
-          <div>
-            <BootstrapTable  filter={ filterFactory() } pagination={ paginationFactory(options)} defaultSorted={defaultSortedBy} 
+          <div className="div-border">
+            <BootstrapTable   filter={ filterFactory() } pagination={ paginationFactory(options)} defaultSorted={defaultSortedBy} 
               { ...props.baseProps } noDataIndication={() => <div className="text-center">No Lists Found</div>}
             />
             

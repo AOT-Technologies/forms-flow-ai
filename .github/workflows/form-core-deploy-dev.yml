@@ -6,9 +6,8 @@ name: form-core-deploy-dev
 # events but only for the master branch
 on:
   push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+    branches: [ devops ]
+
 env:
   IMAGE_NAME: formio-core-api
   TAG_NAME: dev

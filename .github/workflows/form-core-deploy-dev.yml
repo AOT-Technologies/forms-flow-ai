@@ -39,3 +39,15 @@ jobs:
       - name: Build image
         run: docker build . --file Dockerfile --tag image
         working-directory: ./forms-flow-forms
+        
+      - name: Log into registry
+        run: echo "${{ secrets.OPENSHIFT_TOKEN }}" | docker login ${{ secrets.OPENSHIFT_REGISTRY }} -u ${{ secrets.OPENSHIFT_SA_NAME}} --password-stdin
+
+      - name: Push image
+        working-directory: ./forms-flow-forms
+        run: |
+          IMAGE_ID=${{ secrets.OPENSHIFT_REGISTRY }}/${{ secrets.OPENSHIFT_REPOSITORY }}/$IMAGE_NAME
+          echo IMAGE_ID=$IMAGE_ID
+          # docker push $IMAGE_ID:latest
+          docker tag image $IMAGE_ID:latest
+          docker push $IMAGE_ID:latest 

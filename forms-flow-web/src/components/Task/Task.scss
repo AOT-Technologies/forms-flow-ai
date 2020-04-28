@@ -28,6 +28,14 @@
     font-size:30px;
     margin-left: 10px !important
 }
+.order,.react-bootstrap-table-sort-order
+{
+    float: right;
+}
+.react-bootstrap-table th>.react-bootstrap-table-sort-order>.caret
+{
+    margin: 0px;
+}
 .caret {
     display: inline-block;
     width: 0;
@@ -40,10 +48,13 @@
     border-left: 4px solid transparent;
     }
     
-    .dropup, .dropdown {
-    position: relative;
+    // .dropup, .dropdown {
+    // position: relative;
+    // }
+    .dropdown {
+    left: 8px; 
+     top: 6px;
     }
-    
     .dropup .caret, .navbar-fixed-bottom .dropdown .caret {
     border-top: 0;
     border-bottom: 4px dashed;
@@ -57,6 +68,8 @@
 }
 .icon-seach {
     font-family: Nunito Sans,SemiBold, FontAwesome;
+    font-size: 14px;
+    color: #E2E2E2;
   }
   .react-bootstrap-table th.sortable
 {
@@ -77,4 +90,23 @@
     margin-top: 7px;
     margin-left: 1px !important;
     margin-right: 25px !important;
+}
+.div-no-task
+{
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
+.lbl-no-task
+{
+    font-size: 21px;
+    font-weight: bold;
+}
+.lbl-no-task-desc
+{
+    font-size: 15px;
+}
+.div-no-task-list
+{
+    margin-top: 15%;
+    margin-bottom: 20%;
 }

@@ -38,7 +38,7 @@ class View extends Component {
                             <h4 className="col-md-8">Membership Form</h4>
                             <span className="col-md-4">
                                 <button className="btn pull-right" style={{ color: "#003366", border: "1px solid #036" }}>
-                                    <i class="fa fa-print" aria-hidden="true"></i> Print as PDF
+                                    <i className="fa fa-print" aria-hidden="true"></i> Print as PDF
                                 </button>
                             </span>
 

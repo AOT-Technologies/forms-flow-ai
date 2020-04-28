@@ -56,11 +56,11 @@ class NavBar extends Component {
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                         <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
                             <Nav className="mr-auto">
-                                <Link to="/" className={`nav-link ${this.state.isFormActive? "active":""}`} style={{ fontSize: '20px', color: '#ffff' }} onClick={()=>this.setActiveMenu('form')}>
+                                <Link to="/" className={`main-nav nav-link ${this.state.isFormActive? "active":""}`} onClick={()=>this.setActiveMenu('form')}>
                                     Forms
                                 </Link>
                                 {userRoles && userRoles.includes(STAFF_REVIEWER) ?
-                                     <Link to="/task" className={`nav-link ${this.state.isTaskActive? "active":""}`} style={{ fontSize: '20px', color: '#ffff' }} onClick={()=>this.setActiveMenu('task')}>
+                                     <Link to="/task" className={`main-nav nav-link ${this.state.isTaskActive? "active":""}`} style={{ fontSize: '20px', color: '#ffff' }} onClick={()=>this.setActiveMenu('task')}>
                                          Task
                                     </Link>
                                     :

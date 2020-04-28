@@ -180,17 +180,11 @@ h5, .h5
   padding-left: 70px !important;
   padding-right: 10px;
 }
-.navbar-light .navbar-nav .nav-link:hover, .navbar-light .navbar-nav .nav-link:focus
+.main-nav
 {
-  text-decoration: none;
-  border-bottom: 1px solid #fcba19;
-}
-.active {
-  display: block;
-  width: 100%;
-  height:100%;
-  color: white;
-  background-color: blue;
+  text-decoration: none !important;
+  color: #ffff !important;
+  font-size: 20px !important;
 }
 .nav-user-role
 {

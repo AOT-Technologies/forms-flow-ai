@@ -3,9 +3,13 @@ import { Link } from 'react-router-dom'
 import filterFactory, { textFilter,selectFilter } from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider, { Search } from 'react-bootstrap-table2-toolkit';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
-import React from 'react'
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
+import React from 'react';
+import Nodata from './nodata';
 
+let isTaskAvailable=false;
+let total=0;
+let idFilter;let titleFilter;let statusFilter;let ownerFilter; let appidFilter; let submittedFilter;let apptypeFilter;
 const tasks = [
     { id: 12435, applicationId:53465475, taskTitle: "Form 1", taskStatus: "Assigned",taskOwner:"Vinaya",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"},
     { id: 346457, applicationId:4565708, taskTitle: "Form 2", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Victor",dueDate:"Set due date" ,form:"Membership Form"},
@@ -14,10 +18,17 @@ const tasks = [
     { id: 124355, applicationId:5674534, taskTitle: "Form 1", taskStatus: "Assign to me",taskOwner:"",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"}, 
    
 ];
+    if(tasks.length>0)
+      {
+      isTaskAvailable=true;
+      total= tasks.length;
+      }
+    else
+    isTaskAvailable=false;
 const selectOptions = [
   { value: 'Assigned', label: 'Assigned' },
   { value: 'Completed', label: 'Completed' },
-  { value: 'Assigned to me', label: 'Assigned to me' }
+  { value: 'Assign to me', label: 'Assign to me' }
 ];
 const columns = [{
   dataField: 'id',
@@ -28,7 +39,10 @@ const columns = [{
   filter: textFilter({
     placeholder: "\uf002 Task Id",  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-    className:"icon-seach"
+    className:"icon-seach",
+    getFilter: (filter) => {
+      idFilter = filter;
+    }
   })
 }, {
   dataField: 'taskTitle',
@@ -37,7 +51,10 @@ const columns = [{
   filter: textFilter({
     placeholder: '\uf002 Task Title',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-    className:"icon-seach"
+    className:"icon-seach",
+    getFilter: (filter) => {
+      titleFilter = filter;
+    }
   })
 }, 
 {
@@ -47,7 +64,10 @@ const columns = [{
     filter: textFilter({
       placeholder: '\uf002 Task Owner',  // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-      className:"icon-seach"
+      className:"icon-seach",
+      getFilter: (filter) => {
+        ownerFilter = filter;
+      }
     })
   },
   {
@@ -59,6 +79,9 @@ const columns = [{
     options: selectOptions,
     placeholder: 'All',
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+    getFilter: (filter) => {
+      statusFilter = filter;
+    }
   })
 },
 {
@@ -68,7 +91,10 @@ const columns = [{
   filter: textFilter({
     placeholder: '\uf002 Id',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-    className:"icon-seach"
+    className:"icon-seach",
+    getFilter: (filter) => {
+      appidFilter = filter;
+    }
   })
 },
 {
@@ -78,7 +104,10 @@ const columns = [{
   filter: textFilter({
     placeholder: '\uf002 Name',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-    className:"icon-seach"
+    className:"icon-seach",
+    getFilter: (filter) => {
+      submittedFilter = filter;
+    }
   })
 },
   {
@@ -87,7 +116,10 @@ const columns = [{
     filter: textFilter({
       placeholder: '\uf002 Application Type',  // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-      className:"icon-seach"
+      className:"icon-seach",
+      getFilter: (filter) => {
+        apptypeFilter = filter;
+      }
     })
   },
   {
@@ -108,23 +140,27 @@ const columns = [{
   function buttonFormatter(cell, row){
       if(cell==="Assigned")
       {
-        return <label className="text-primary font-weight-bold text-uppercase">{cell}</label>;
+        return <label className="text-primary font-weight-bold text-uppercase" style={{'font-size':'15px'}}>{cell}</label>;
       }
       else if(cell==="Completed")
       {
-        return <label className="text-success font-weight-bold text-uppercase">{cell}</label>;
+        return <label className="text-success font-weight-bold text-uppercase" style={{'font-size':'15px'}}>{cell}</label>;
       }
       else if(cell==="Assign to me")
       {
-        return <button className="btn btn-outline-primary btn-sm">{cell}</button>;
+        return <button className="btn btn-outline-primary btn-sm" style={{'font-size':'15px'}}>{cell}</button>;
       }
       
 }
-let total=0;
-const customTotal1 = (from, to, size) => 
-(
-  total= {size}
-  );
+const clearFilter = () => {
+  idFilter('');
+  titleFilter('');
+  statusFilter('');
+  ownerFilter('');
+  appidFilter('');
+  submittedFilter('');
+  apptypeFilter('');
+};
 const customTotal = (from, to, size) => 
 (
     <span className="react-bootstrap-table-pagination-total">
@@ -151,39 +187,62 @@ const customTotal = (from, to, size) =>
     dataField: "name",
     order: "asc"  // or desc
 }];
-export default () => (
-    <ToolkitProvider
-      keyField="id"
-      data={ tasks }
-      columns={ columns }
-      search
-    >
-      {
-        props => (
-          
-            <div className="container"><br></br><div className="row">
-            <div className="col-md-1"></div>
-            <img src="/clipboard.svg" width="30" height="30" alt="task"></img>
-            <h3 className="task-head row">Tasks<div className="col-md-1 task-count row">({total})</div></h3>
-            <div className="col-md-2 btn-group">
-            <select className="form-control">
-              <option>All Tasks</option>
-              <option>Assigned Tasks</option>
-              <option>Completed Tasks</option>
+// This is my custom search component
+const TaskSearch = (props) => {
+  let input;
+  const statusFilter = () => {
+    props.onSearch(input.value);
+  };
+  return (
+    <div>
+      <select className="form-control" ref={ n => input = n } onChange={ statusFilter }>
+              <option value=" ">All tasks</option>
+              <option value="Assigned">Assigned tasks</option>
+              <option value="Completed">Completed tasks</option>
             </select>
-            </div>
-            </div>
-            <br></br>
-          <div className="div-border">
-            <BootstrapTable   filter={ filterFactory() } pagination={ paginationFactory(options)} defaultSorted={defaultSortedBy} 
-              { ...props.baseProps } noDataIndication={() => <div className="text-center">No Lists Found</div>}
-            />
-            
-            <br />
-          </div>
-          </div>
-        )
-      }
-    </ToolkitProvider>
-    
-);
+    </div>
+  );
+  
+};
+
+const TaskList = (props)=>
+{
+  return ( isTaskAvailable
+  ?<ToolkitProvider 
+  keyField="id"
+  data={ tasks }
+  columns={ columns }
+  search
+>
+  {
+    props => (
+      
+        <div className="container"><br></br><div className="row">
+        <div className="col-md-1"></div>
+        <img src="/clipboard.svg" width="30" height="30" alt="task"></img>
+        <h3 className="task-head row">Tasks<div className="col-md-1 task-count row">({total})</div></h3>
+        <div className="col-md-2 btn-group">
+        <TaskSearch { ...props.searchProps } />
+        </div>
+        </div>
+        <br></br>
+      <div className="div-border">
+        <BootstrapTable   filter={ filterFactory() } pagination={ paginationFactory(options)} defaultSorted={defaultSortedBy} 
+          { ...props.baseProps } noDataIndication={() =>  <div className="div-no-task">
+          <label className="lbl-no-task"> No tasks found </label>
+          <br></br>
+              <label className="lbl-no-task-desc"> Please change the selected filters to view tasks </label>
+              <br></br>
+              <a href="#" onClick={clearFilter}>Clear all filters</a>
+              </div>}
+        />
+        
+        <br />
+      </div>
+      </div>
+    )
+  }
+</ToolkitProvider>
+  :<Nodata/>)
+}
+export default (TaskList);

@@ -9,8 +9,12 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 import { getUserToken } from '../../apiManager/services/bpmServices'
 import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants'
 import { fetchTaskList, getTaskCount, claimTask, unClaimTask } from '../../apiManager/services/taskServices'
-import { columns, getoptions, defaultSortedBy } from './table'
+import { columns, getoptions, defaultSortedBy, TaskSearch, clearFilter } from './table'
 import Loading from '../../containers/Loading'
+import Nodata from './nodata';
+
+let isTaskAvailable = false;
+let total = 0;
 
 const listTasks = (props) => {
   let data = [];
@@ -34,38 +38,51 @@ const listTasks = (props) => {
 }
 
 const Tasks = (props) => {
+  if (props.tasksCount > 0) {
+    isTaskAvailable = true;
+    total = props.tasksCount;
+  }
+  else {
+    isTaskAvailable = false;
+  }
   if (props.isLoading) {
     return (
       <Loading />
     );
   }
   return (
-    <ToolkitProvider keyField="id" data={listTasks(props)} columns={columns} search>
-      {
-        props => (
-          <div className="container"><br></br>
-            <div className="row">
-              <div className="col-md-1"></div>
-              <img src="/clipboard.svg" width="30" height="30" alt="task"></img>
-              <h3 className="col-md-2 task-head">Tasks({props.tasksCount})</h3>
-              <div className="col-md-2 btn-group">
-                <select className="form-control">
-                  <option>All Tasks</option>
-                  <option>Assigned Tasks</option>
-                  <option>Completed Tasks</option>
-                </select>
+    isTaskAvailable ?
+      <ToolkitProvider keyField="id" data={listTasks(props)} columns={columns} search>
+        {
+          props => (
+            <div className="container"><br></br>
+              <div className="row">
+                <div className="col-md-1"></div>
+                <img src="/clipboard.svg" width="30" height="30" alt="task"></img>
+                <h3 className="task-head row">Tasks<div className="col-md-1 task-count row">({props.tasksCount})</div></h3>
+                <div className="col-md-2 btn-group">
+                  <TaskSearch {...props.searchProps} />
+                </div>
+              </div>
+              <br />
+              <div className="div-border">
+                <BootstrapTable filter={filterFactory()} pagination={paginationFactory(getoptions(props.tasksCount))} defaultSorted={defaultSortedBy}
+                  {...props.baseProps} noDataIndication={() => <div className="div-no-task">
+                    <label className="lbl-no-task"> No tasks found </label>
+                    <br></br>
+                    <label className="lbl-no-task-desc"> Please change the selected filters to view tasks </label>
+                    <br></br>
+                    <a href=" " onClick={clearFilter}>Clear all filters</a>
+                  </div>}
+                />
+                <br />
               </div>
             </div>
-            <div>
-              <BootstrapTable filter={filterFactory()} pagination={paginationFactory(getoptions(props.tasksCount))} defaultSorted={defaultSortedBy}
-                {...props.baseProps} noDataIndication={() => <div className="text-center">No Lists Found</div>}
-              />
-              <br />
-            </div>
-          </div>
-        )
-      }
-    </ToolkitProvider>
+          )
+        }
+      </ToolkitProvider>
+      :
+      <Nodata />
   )
 };
 

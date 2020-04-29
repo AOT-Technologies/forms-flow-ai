@@ -2,10 +2,29 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 
+let idFilter,titleFilter,statusFilter,ownerFilter,appidFilter,submittedFilter,apptypeFilter;
+
 export const defaultSortedBy = [{
   dataField: "name",
   order: "asc"  // or desc
 }];
+
+export const TaskSearch = (props) => {
+  let input;
+  const statusFilter = () => {
+    props.onSearch(input.value);
+  };
+  return (
+    <div>
+      <select className="form-control" ref={ n => input = n } onChange={ statusFilter }>
+              <option value=" ">All tasks</option>
+              <option value="Assigned">Assigned tasks</option>
+              <option value="Completed">Completed tasks</option>
+            </select>
+    </div>
+  );
+  
+};
 
 const selectOptions = [
   { value: 'Assigned', label: 'Assigned' },
@@ -14,106 +33,136 @@ const selectOptions = [
 ];
 
 function linkDueDate(cell) {
-  return <a href="#" className="btn-link">{cell}</a>
+  return <a href=" ">{cell}</a>
 }
 function linkSubmisionId(cell) {
-  return <Link to={`/task/${cell}`} className="btn-link">{cell}</Link>
+  return <Link to={`/task/${cell}`}>{cell}</Link>
 }
 
-function buttonFormatter(cell, row) {
-  if (cell === "Claimed") {
-    return <button className="btn btn-primary btn-sm">Claimed</button>;
+function buttonFormatter(cell, row){
+  if(cell==="Assigned")
+  {
+    return <label className="text-primary font-weight-bold text-uppercase">{cell}</label>;
   }
-  else if (cell === "Approved") {
-    return <button className="btn btn-success btn-sm">Approved</button>;
+  else if(cell==="Completed")
+  {
+    return <label className="text-success font-weight-bold text-uppercase task-btn">{cell}</label>;
   }
-  else if (cell === "Rejected") {
-    return <button className="btn btn-danger btn-sm">Rejected</button>;
+  else if(cell==="Assign to me")
+  {
+    return <button className="btn btn-outline-primary btn-sm">{cell}</button>;
   }
-  else if (cell === "Claim Now") {
-    return <button className="btn btn-outline-primary btn-sm">Claim Now</button>;
-  }
+  
 }
+
+export const clearFilter = () => {
+  idFilter('');
+  titleFilter('');
+  statusFilter('');
+  ownerFilter('');
+  appidFilter('');
+  submittedFilter('');
+  apptypeFilter('');
+};
 
 export const columns = [{
   dataField: 'id',
   text: 'Task Id',
-  formatter: linkSubmisionId,
-  style: { 'width': '10px' },
-  className: 'task-table-header',
-  sort: true,
+  formatter:linkSubmisionId,
+  className:'task-table-header',
+  sort:true,
   filter: textFilter({
-    placeholder: 'Task Id',  // custom the input placeholder
+    placeholder: "\uf002 Task Id",  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-
+    className:"icon-seach",
+    getFilter: (filter) => {
+      idFilter = filter;
+    }
   })
 }, {
   dataField: 'taskTitle',
   text: 'Task Title',
-  sort: true,
+  sort:true,
   filter: textFilter({
-    placeholder: 'Task Title',  // custom the input placeholder
+    placeholder: '\uf002 Task Title',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-
+    className:"icon-seach",
+    getFilter: (filter) => {
+      titleFilter = filter;
+    }
   })
-},
+}, 
 {
-  dataField: 'taskOwner',
-  text: 'Task Owner',
-  sort: true,
-  filter: textFilter({
-    placeholder: 'Task Owner',  // custom the input placeholder
-    caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-
-  })
-},
-{
+    dataField: 'taskOwner',
+    text: 'Task Owner',
+    sort:true,
+    filter: textFilter({
+      placeholder: '\uf002 Task Owner',  // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      className:"icon-seach",
+      getFilter: (filter) => {
+        ownerFilter = filter;
+      }
+    })
+  },
+  {
   dataField: 'taskStatus',
   text: 'Task Status',
-  sort: true,
-  formatter: buttonFormatter,
+  sort:true,
+  formatter:buttonFormatter,
   filter: selectFilter({
     options: selectOptions,
     placeholder: 'All',
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+    getFilter: (filter) => {
+      statusFilter = filter;
+    }
   })
 },
 {
   dataField: 'applicationId',
   text: 'Application Id',
-  sort: true,
+  sort:true,
   filter: textFilter({
-    placeholder: 'Application Id',  // custom the input placeholder
+    placeholder: '\uf002 Id',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-
+    className:"icon-seach",
+    getFilter: (filter) => {
+      appidFilter = filter;
+    }
   })
 },
 {
   dataField: 'submittedBy',
   text: 'Primary Applicant',
-  style: { 'whiteSpace': 'nowrap' },
+  style: {'whiteSpace': 'nowrap'} ,
   filter: textFilter({
-    placeholder: 'Primary Applicant',  // custom the input placeholder
+    placeholder: '\uf002 Name',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-
+    className:"icon-seach",
+    getFilter: (filter) => {
+      submittedFilter = filter;
+    }
   })
 },
-{
-  dataField: 'form',
-  text: 'Application Type',
-  filter: textFilter({
-    placeholder: 'Application Type',  // custom the input placeholder
-    caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-
-  })
-},
-{
-  dataField: 'dueDate',
-  text: 'Due Date',
-  formatter: linkDueDate,
-  sort: true,
-  style: { 'whiteSpace': 'nowrap' }
-},];
+  {
+    dataField: 'form',
+    text: 'Application Type',
+    filter: textFilter({
+      placeholder: '\uf002 Application Type',  // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      className:"icon-seach",
+      getFilter: (filter) => {
+        apptypeFilter = filter;
+      }
+    })
+  },
+  {
+    dataField: 'dueDate',
+    text: 'Due Date',
+    formatter:linkDueDate,
+    sort:true,
+  },];
 
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">
@@ -134,6 +183,7 @@ export const getoptions = (count) => {
     prePageText: '<<',
     nextPageText: '>>',
     showTotal: true,
+    Total:count,
     paginationTotalRenderer: customTotal,
     disablePageTitle: true,
     sizePerPage: 5

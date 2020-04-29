@@ -1,3 +1,5 @@
+
+oc process -f formio-mongodb-secret.yaml |oc create -f -
 oc process -f formio-mongodb-dc.yaml
 
  oc process -f formio-mongodb-dc.yaml |oc create -f -
@@ -14,3 +16,8 @@ oc process -f formio-mongodb-dc.yaml
  oc describe sa gh-actions
  
  git update-index --chmod=+x script.sh
+
+
+oc tag formio-core-api:latest formio-core-api:dev
+
+oc process -f formio.core-dc.yaml |oc create -f -

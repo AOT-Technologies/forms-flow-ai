@@ -36,7 +36,6 @@ const listTasks = (props) => {
     return data = []
   }
 }
-
 const Tasks = (props) => {
   if (props.tasksCount > 0) {
     isTaskAvailable = true;
@@ -59,7 +58,7 @@ const Tasks = (props) => {
               <div className="row">
                 <div className="col-md-1"></div>
                 <img src="/clipboard.svg" width="30" height="30" alt="task"></img>
-                <h3 className="task-head row">Tasks<div className="col-md-1 task-count row">({props.tasksCount})</div></h3>
+                <h3 className="task-head row">Tasks<div className="col-md-1 task-count row">({total})</div></h3>
                 <div className="col-md-2 btn-group">
                   <TaskSearch {...props.searchProps} />
                 </div>
@@ -67,12 +66,12 @@ const Tasks = (props) => {
               <br />
               <div className="div-border">
                 <BootstrapTable filter={filterFactory()} pagination={paginationFactory(getoptions(props.tasksCount))} defaultSorted={defaultSortedBy}
-                  {...props.baseProps} noDataIndication={() => <div className="div-no-task">
+                  {...props.baseProps}  noDataIndication={() => <div className="div-no-task">
                     <label className="lbl-no-task"> No tasks found </label>
                     <br></br>
                     <label className="lbl-no-task-desc"> Please change the selected filters to view tasks </label>
                     <br></br>
-                    <a href=" " onClick={clearFilter}>Clear all filters</a>
+                    <label className="lbl-clear"  onClick={clearFilter}>Clear all filters</label>
                   </div>}
                 />
                 <br />

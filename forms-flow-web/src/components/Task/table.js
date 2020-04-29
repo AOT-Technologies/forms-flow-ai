@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
+import { setLoader } from '../../actions/taskActions';
 
 let idFilter,titleFilter,statusFilter,ownerFilter,appidFilter,submittedFilter,apptypeFilter;
 
@@ -35,7 +36,7 @@ function linkDueDate(cell) {
   return <a href=" ">{cell}</a>
 }
 function linkSubmisionId(cell) {
-  return <Link to={`/task/${cell}`}>{cell}</Link>
+  return <Link to={`/task/${cell}`} onClick={()=>{setLoader(true)}}>{cell}</Link>
 }
 
 function buttonFormatter(cell, row){

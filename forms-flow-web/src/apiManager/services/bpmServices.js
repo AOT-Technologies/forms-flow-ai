@@ -1,6 +1,6 @@
 import {  httpPOSTRequest, httpPOSTRequestWithoutToken } from '../httpRequestHandler'
 import API from '../endpoints'
-import { setUserToken, sendEmailNotification, serviceActionError } from '../../actions/bpmActions'
+import { setUserToken, sendEmailNotification, sendOneStepApproval, serviceActionError } from '../../actions/bpmActions'
 import Token from "../token/tokenService"
 import PROCESS from "../constants/processConstants";
 
@@ -39,9 +39,17 @@ export const getProcess = (processType,formId, submissionId) => {
           }
         }
       }
-    case PROCESS.OneStepApproval :
-      return{
-        process:PROCESS.OneStepApproval
+      case PROCESS.OneStepApproval :
+        return{
+          process:PROCESS.OneStepApproval,
+          service: sendOneStepApproval,
+          req: {
+            "variables": {
+              "formurl": { "value": `${window.location.origin}/form/${formId}/submission/${submissionId}` },
+              "submissionid":{"value":{submissionId}},
+              "formid":{"value":{formId}}
+            },
+          }
       }
     default: return null
   }

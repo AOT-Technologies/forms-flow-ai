@@ -68,7 +68,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(resetSubmissions('submission'));
           dispatch(getUserToken(BPM_USER_DETAILS,(err,res)=>{
             //TODO update this get process type matching to form
-            const data = getProcess(PROCESS.EmailNotification, ownProps.match.params.formId, submission._id);
+            const data = getProcess(PROCESS.OneStepApproval, ownProps.match.params.formId, submission._id);
             if(!err){
               dispatch(triggerNotification(data));
               dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`));

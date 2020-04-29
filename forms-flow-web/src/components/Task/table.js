@@ -6,19 +6,18 @@ import { setLoader } from '../../actions/taskActions';
 let idFilter,titleFilter,statusFilter,ownerFilter,appidFilter,submittedFilter,apptypeFilter;
 
 export const defaultSortedBy = [{
-  dataField: "name",
+  dataField: "id",
   order: "asc"  // or desc
 }];
-
 export const TaskSearch = (props) => {
   let input;
-  const statusFilter = () => {
+  const changeStatusFilter = () => {
     props.onSearch(input.value);
   };
   return (
     <div>
-      <select className="form-control" ref={ n => input = n } onChange={ statusFilter }>
-              <option value=" ">All tasks</option>
+      <select className="form-control" ref={ n => input = n } onChange={ changeStatusFilter }>
+              <option defaultValue  value=" ">All tasks</option>
               <option value="Assigned">Assigned tasks</option>
               <option value="Completed">Completed tasks</option>
             </select>
@@ -181,8 +180,8 @@ export const getoptions = (count) => {
     hideSizePerPage: true, // Hide the sizePerPage dropdown always
     // hidePageListOnlyOnePage: true, // Hide the pagination list when only one page
     paginationSize: 7,  // the pagination bar size.
-    prePageText: '<<',
-    nextPageText: '>>',
+    prePageText: '«',
+    nextPageText: '»',
     showTotal: true,
     Total:count,
     paginationTotalRenderer: customTotal,

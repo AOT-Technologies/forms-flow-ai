@@ -80,7 +80,7 @@ class NavBar extends Component {
                                     <NavDropdown.Header className="nav-user-role">{this.getUserRole(userRoles)}</NavDropdown.Header>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Header className="nav-logout" onClick={UserService.userLogout}>
-                                        <img src="/assets/Images/logout.svg" alt="" />Logout
+                                        <img src="/assets/Images/logout.svg" alt="" /><label className="lbl-logout">Logout</label> 
                                 </NavDropdown.Header>
 
                                 </NavDropdown>

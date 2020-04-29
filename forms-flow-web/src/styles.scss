@@ -190,7 +190,7 @@ h5, .h5
 {
 color:#003366;
 font-Size:15px;
-font-weight: 600;
+font-weight: bold;
 padding: 0rem 0rem;
 }
 .nav-user-email
@@ -229,4 +229,32 @@ padding: 0rem 0rem;
 .active{
   border-bottom: 1px solid #fcba19;
   background-color: transparent;
+}
+.lbl-logout{
+  font-size: 16px;
+  color: #373A3C;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.dropdown-menu:before {
+  position: absolute;
+  top: -7px;
+  right: 9px; 
+  display: inline-block;
+  border-right: 7px solid transparent;
+  border-bottom: 7px solid #ccc;
+  border-left: 7px solid transparent;
+  border-bottom-color: rgba(0, 0, 0, 0.2);
+  content: '';
+}
+
+.dropdown-menu:after {
+  position: absolute;
+  top: -6px;
+  right: 10px; 
+  display: inline-block;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid #ffffff;
+  border-left: 6px solid transparent;
+  content: '';
 }

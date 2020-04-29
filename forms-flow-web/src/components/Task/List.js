@@ -15,7 +15,12 @@ const tasks = [
     { id: 346457, applicationId:4565708, taskTitle: "Form 2", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Victor",dueDate:"Set due date" ,form:"Membership Form"},
     { id: 354623, applicationId:7756446, taskTitle: "Form 1", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Berlin",dueDate:"Set due date",form:"Membership Form" },
     { id: 235346, applicationId:2434626, taskTitle: "Form 1", taskStatus: "Assigned",taskOwner:"David",submittedBy:"Jasper",dueDate:"Set due date" ,form:"Membership Form"},
-    { id: 124355, applicationId:5674534, taskTitle: "Form 1", taskStatus: "Assign to me",taskOwner:"",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"}, 
+    { id: 144575, applicationId:5674534, taskTitle: "Form 1", taskStatus: "Assign to me",taskOwner:"",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"},
+    { id: 6467, applicationId:53465475, taskTitle: "Form 1", taskStatus: "Assigned",taskOwner:"Vinaya",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"},
+    { id: 6854, applicationId:4565708, taskTitle: "Form 2", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Victor",dueDate:"Set due date" ,form:"Membership Form"},
+    { id: 65444, applicationId:7756446, taskTitle: "Form 1", taskStatus: "Completed",taskOwner:"Vinaya",submittedBy:"Berlin",dueDate:"Set due date",form:"Membership Form" },
+    { id: 86577, applicationId:2434626, taskTitle: "Form 1", taskStatus: "Assigned",taskOwner:"David",submittedBy:"Jasper",dueDate:"Set due date" ,form:"Membership Form"},
+    { id: 45657658, applicationId:5674534, taskTitle: "Form 1", taskStatus: "Assign to me",taskOwner:"",submittedBy:"Robert",dueDate:"Set due date" ,form:"Membership Form"},  
    
 ];
     if(tasks.length>0)
@@ -140,15 +145,15 @@ const columns = [{
   function buttonFormatter(cell, row){
       if(cell==="Assigned")
       {
-        return <label className="text-primary font-weight-bold text-uppercase" style={{'font-size':'15px'}}>{cell}</label>;
+        return <label className="text-primary font-weight-bold text-uppercase">{cell}</label>;
       }
       else if(cell==="Completed")
       {
-        return <label className="text-success font-weight-bold text-uppercase" style={{'font-size':'15px'}}>{cell}</label>;
+        return <label className="text-success font-weight-bold text-uppercase task-btn">{cell}</label>;
       }
       else if(cell==="Assign to me")
       {
-        return <button className="btn btn-outline-primary btn-sm" style={{'font-size':'15px'}}>{cell}</button>;
+        return <button className="btn btn-outline-primary btn-sm">{cell}</button>;
       }
       
 }

@@ -24,11 +24,12 @@ const listTasks = (props) => {
         id: task.id,
         applicationId: 53465475,//to do 
         taskTitle: task.taskDefinitionKey,
-        taskStatus: "Claimed",//to do 
+        taskStatus: "Assigned",//to do 
         taskOwner: (task.owner || "---"),
         submittedBy: (task.assignee || "---"),
         dueDate: (task.due || "Set due date"),
-        form: task.name
+        form: task.name,
+        userId:props.userDetail.sub
       })
     })
     return data
@@ -89,7 +90,8 @@ const mapStateToProps = (state) => {
   return {
     isLoading: state.tasks.isLoading,
     tasks: state.tasks.tasksList,
-    tasksCount: state.tasks.tasksCount
+    tasksCount: state.tasks.tasksCount,
+    userDetail: state.user.userDetail
   }
 }
 const mapDispatchToProps = (dispatch) => {

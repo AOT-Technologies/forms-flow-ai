@@ -49,9 +49,11 @@ export const getTaskDetail = (id) =>{
 }
 
 export const claimTask = (id,user)=>{
+  // console.log("Claimed",id,user)
   return dispatch=>{
     httpPOSTRequest(API.TASK_ACTION_API+`/${id}/claim`,{userId:user}).then(res=>{
       if(res.status === 204){
+        dispatch(setLoader(true))
         dispatch(fetchTaskList())
       }
     }).catch(error=>{

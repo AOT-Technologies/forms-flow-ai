@@ -26,6 +26,12 @@ export const sendEmailNotification = (data) => dispatch => {
     payload: data
   })
 }
+export const sendOneStepApproval = (data) => dispatch => {
+  dispatch({
+    type: ACTION_CONSTANTS.SEND_ONE_STEP_APPROVAL,
+    payload: data
+  })
+}
 
 export const serviceActionError = (data) => dispatch => {
   dispatch({

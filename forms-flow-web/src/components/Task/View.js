@@ -12,6 +12,7 @@ import { setLoader } from '../../actions/taskActions'
 import Loading from '../../containers/Loading'
 
 class View extends Component {
+    
     render() {
         const { detail, form, submission, hideComponents, options } = this.props;
         if (this.props.isLoading) {
@@ -30,7 +31,7 @@ class View extends Component {
                         <img src="/clipboard.svg" alt="Task" />
                     </span>
                     <h3 className="ml-3 mt-2">
-                        <span>Tasks / {`${detail.taskDefinitionKey} (${detail.id})`}</span>
+                        <span><Link to="/task" style={{textDecoration:"none",color:"#494949"}}>Tasks</Link> / {`${detail.taskDefinitionKey} (${detail.id})`}</span>
                     </h3>
                 </div>
                 <br />
@@ -91,7 +92,6 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getTask: dispatch(
             getUserToken(BPM_USER_DETAILS, (err, res) => {
-                dispatch(setLoader(true))
                 let id = window.location.pathname.split("/")[2]
                 if (!err) {
                     dispatch(getTaskDetail(id))

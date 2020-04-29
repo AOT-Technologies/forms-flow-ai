@@ -72,7 +72,7 @@ const Tasks = (props) => {
                     <br></br>
                     <label className="lbl-no-task-desc"> Please change the selected filters to view tasks </label>
                     <br></br>
-                    <a href=" " onClick={clearFilter}>Clear all filters</a>
+                    <a href="" onClick={clearFilter}>Clear all filters</a>
                   </div>}
                 />
                 <br />

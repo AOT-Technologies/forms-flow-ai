@@ -7,7 +7,7 @@
 FROM node:12.2.0-alpine
 
 # set working directory
-WORKDIR /forms-flow-forms/app
+WORKDIR /app
 
 # "bcrypt" requires python/make/g++, all must be installed in alpine
 # (note: using pinned versions to ensure immutable build environment)
@@ -37,12 +37,14 @@ RUN npm ci --prefix=$NPM_PACKAGES
 #          See docker-compose.yml for instructions
 RUN ln -sf $NPM_PACKAGES/node_modules node_modules
 
+RUN chmod 777 /.npm-packages && chmod 777 /app
+
 # Set this to inspect more from the application. Examples:
 #   DEBUG=formio:db (see index.js for more)
 #   DEBUG=formio:*
 ENV DEBUG=""
 
-COPY . /forms-flow-forms/app/
+COPY . /app
 
 # This will initialize the application based on
 # some questions to the user (login email, password, etc.)

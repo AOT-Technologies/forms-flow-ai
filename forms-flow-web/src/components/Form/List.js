@@ -6,6 +6,7 @@ import { indexForms, selectRoot, selectError, Errors, FormGrid } from 'react-for
 
 import Loading from "../../containers/Loading";
 import {OPERATIONS, CLIENT, STAFF_DESIGNER, STAFF_REVIEWER} from "../../constants/constants"
+import '../Form/List.scss'
 
 const List = class extends Component {
   componentWillMount() {

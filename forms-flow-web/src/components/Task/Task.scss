@@ -75,11 +75,6 @@
 {
     vertical-align: sub;
 }
-.div-border
-{
-    // border: 1px solid #e3e2e2;
-    
-}
 .react-bootstrap-table-pagination-total
 {
     margin-left: 20px;
@@ -132,4 +127,18 @@
 .page-item.active .page-link
 {
     color:#ffff !important;
+}
+.task-header
+{
+    margin-left: 0px !important;
+}
+.table th, .table td
+{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.filter-label
+{
+    display: flex !important;
 }

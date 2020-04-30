@@ -55,8 +55,7 @@ const Tasks = (props) => {
         {
           props => (
             <div className="container"><br></br>
-              <div className="row">
-                <div className="col-md-1"></div>
+              <div className="row task-header">
                 <img src="/clipboard.svg" width="30" height="30" alt="task"></img>
                 <h3 className="task-head row">Tasks<div className="col-md-1 task-count row">({total})</div></h3>
                 <div className="col-md-2 btn-group">
@@ -64,7 +63,7 @@ const Tasks = (props) => {
                 </div>
               </div>
               <br />
-              <div className="div-border">
+              <div>
                 <BootstrapTable filter={filterFactory()} pagination={paginationFactory(getoptions(props.tasksCount))} defaultSorted={defaultSortedBy}
                   {...props.baseProps}  noDataIndication={() => <div className="div-no-task">
                     <label className="lbl-no-task"> No tasks found </label>

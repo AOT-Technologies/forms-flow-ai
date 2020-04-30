@@ -175,10 +175,9 @@ h5, .h5
 .nav-dropdown :hover{
   text-decoration: none !important;
 }
-.navbar-nav
+.nav-custom-tab
 {
-  padding-left: 70px !important;
-  padding-right: 10px;
+  padding-left: 60px !important;
 }
 .main-nav
 {
@@ -198,6 +197,9 @@ padding: 0rem 0rem;
   font-size: 14px;
   padding: 0rem 0rem;
   color: #373A3C;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .nav-user-name
 {
@@ -257,4 +259,17 @@ padding: 0rem 0rem;
   border-bottom: 6px solid #ffffff;
   border-left: 6px solid transparent;
   content: '';
+}
+.lbl-app-nanme
+{
+  font-size: 20px;
+  color: #ffff ;
+  margin-bottom:0px;
+  font-weight: bold;
+  margin-left: 20px;
+}
+.app-name
+{
+  color:#fcba19;
+  margin: 0;
 }

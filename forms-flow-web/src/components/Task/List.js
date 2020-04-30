@@ -29,7 +29,7 @@ const listTasks = (props) => {
         submittedBy: "---",
         dueDate: (task.due || "Set due date"),
         form: '---',
-        userName:props.userDetail.name
+        userName:props.userDetail.preferred_username
       })
     })
     return data

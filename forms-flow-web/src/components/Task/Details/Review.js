@@ -2,7 +2,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-const Review = (props) => {
+import { completeTask } from '../../../apiManager/services/taskServices'
+
+const Review = (props) => { 
     return (
         <div className="review-section">
             <header style={{ display: "inline-flex" }}>
@@ -26,11 +28,13 @@ const Review = (props) => {
                 </section>
                 <section className="review-status">
                     <label>Review Status</label>
-                    <select className="ml-5">
-                        <option value="" disabled selected>Set review status</option>
-                        <option value="Approve">Approve</option>
-                        <option value="Reject">Reject</option>
-                        <option value="Send Back">Send Back</option>
+                    <select className="ml-5" defaultValue="0" 
+                        onChange={(e)=>completeTask(props.detail.id,e.target.value)} 
+                        disabled={(props.detail.assignee === props.userName?true:false)}>
+                        <option value="0" disabled>Set review status</option>
+                        <option value="approve">Approve</option>
+                        <option value="reject">Reject</option>
+                        <option value="sendback">Send Back</option>
                     </select>
                 </section>
             </section>
@@ -39,7 +43,8 @@ const Review = (props) => {
 }
 const mapStateToProps = (state) => {
     return {
-        detail: state.tasks.taskDetail
+        detail: state.tasks.taskDetail,
+        userName: state.user.userDetail.preferred_username
     }
 }
 

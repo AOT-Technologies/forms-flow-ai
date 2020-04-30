@@ -8,7 +8,7 @@ import Details from './Details'
 import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants'
 import { getUserToken } from '../../apiManager/services/bpmServices'
 import { getTaskDetail } from '../../apiManager/services/taskServices'
-import { setLoader } from '../../actions/taskActions'
+// import { setLoader } from '../../actions/taskActions'
 import Loading from '../../containers/Loading'
 
 class View extends Component {
@@ -31,7 +31,7 @@ class View extends Component {
                         <img src="/clipboard.svg" alt="Task" />
                     </span>
                     <h3 className="ml-3 mt-2">
-                        <span><Link to="/task" style={{textDecoration:"none",color:"#494949"}}>Tasks</Link> / {`${detail.taskDefinitionKey} (${detail.id})`}</span>
+                        <span>Tasks / {`${detail.name} (${detail.id})`}</span>
                     </h3>
                 </div>
                 <br />
@@ -41,7 +41,7 @@ class View extends Component {
                     </Tab>
                     <Tab eventKey="form" title="Form" id="form">
                         <div className="row mt-4">
-                            <h4 className="col-md-8">Membership Form</h4>
+                            <h4 className="col-md-8">{detail.name}</h4>
                             <span className="col-md-4">
                                 <button className="btn pull-right" style={{ color: "#003366", border: "1px solid #036" }}>
                                     <i className="fa fa-print" aria-hidden="true"></i> Print as PDF

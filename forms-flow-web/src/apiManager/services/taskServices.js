@@ -74,3 +74,20 @@ export const unClaimTask = (id)=>{
     })
   }
 }
+export const completeTask=(id,process)=>{
+  const data={
+    "variables": {
+      "action": {
+        "value":  process
+        }
+  }
+  }
+  // return dispatch=>{
+  //   httpPOSTRequest(API.TASK_ACTION_API+`/${id}/complete`,data).then(res=>{
+  //     dispatch(fetchTaskList())
+  //   }).catch(error=>{
+  //     console.log('Error',error)
+  //     dispatch(serviceActionError(error))
+  //   })
+  // }
+}

@@ -44,7 +44,7 @@ function linkSubmisionId(cell) {
 function buttonFormatter(cell, row) {
   if (cell === "Assigned") {
     // return <label className="text-primary font-weight-bold text-uppercase">{cell}</label>;
-    return <button className="btn btn-primary btn-sm" onClick={() => claimTask(row.id,row.userId)}>Claim</button>
+    return <button className="btn btn-primary btn-sm" onClick={() => claimTask(row.id,row.userName)}>Claim</button>
   }
   else if (cell === "Completed") {
     return <label className="text-success font-weight-bold text-uppercase task-btn">{cell}</label>;

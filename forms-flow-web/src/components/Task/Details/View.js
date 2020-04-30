@@ -16,22 +16,27 @@ const View = (props) => {
                 <tr>
                     <td className="border-0">Task Title</td>
                     <td className="border-0">:</td>
-                    <td className="border-0">{task.taskDefinitionKey}</td>
+                    <td className="border-0">{task.name}</td>
                 </tr>
                 <tr>
                     <td className="border-0">Task Owner</td>
                     <td className="border-0">:</td>
-                    <td className="border-0">{task.owner||"---"}</td>
+                    <td className="border-0">{task.assignee||"---"}</td>
                 </tr>
                 <tr>
                     <td className="border-0">Primary Applicant</td>
                     <td className="border-0">:</td>
-                    <td className="border-0">{task.assignee||"---"}</td>
+                    <td className="border-0">---</td>
                 </tr>
                 <tr>
                     <td className="border-0">Submitted On</td>
                     <td className="border-0">:</td>
                     <td className="border-0">{moment(task.created).format('DD-MMM-YYYY')}</td>
+                </tr>
+                <tr>
+                    <td className="border-0">Due date</td>
+                    <td className="border-0">:</td>
+                    <td className="border-0">{(task.due?moment(task.due).format('DD-MMM-YYYY'):<a href=" ">Set due date</a>)}</td>
                 </tr>
             </tbody>
         </Table>

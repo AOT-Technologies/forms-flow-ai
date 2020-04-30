@@ -4,7 +4,7 @@ import { setTaskList, setTaskCount, serviceActionError, setLoader, setTaskDetail
 
 export const fetchTaskList = () =>{
     return dispatch => {
-      httpGETRequest(API.GET_TASK_API).then(res => {
+      httpPOSTRequest(API.GET_TASK_API,{"taskVariables":[]}).then(res => {
           if (res.data) {
             dispatch(setTaskList(res.data))
             dispatch(setLoader(false))
@@ -20,7 +20,7 @@ export const fetchTaskList = () =>{
 }
 export const getTaskCount = () =>{
     return dispatch => {
-      httpGETRequest(API.GET_TASK_COUNT).then(res => {
+      httpPOSTRequest(API.GET_TASK_COUNT,{"taskVariables":[]}).then(res => {
           if (res.data) {
             dispatch(setTaskCount(res.data))
           } else {

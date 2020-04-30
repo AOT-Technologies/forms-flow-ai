@@ -23,13 +23,13 @@ const listTasks = (props) => {
       data.push({
         id: task.id,
         applicationId: 53465475,//to do 
-        taskTitle: task.taskDefinitionKey,
+        taskTitle: task.name,
         taskStatus: "Assigned",//to do 
-        taskOwner: (task.owner || "---"),
-        submittedBy: (task.assignee || "---"),
+        taskOwner: (task.assignee || "---"),
+        submittedBy: "---",
         dueDate: (task.due || "Set due date"),
-        form: task.name,
-        userId:props.userDetail.sub
+        form: '---',
+        userName:props.userDetail.name
       })
     })
     return data

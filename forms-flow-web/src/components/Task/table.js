@@ -38,20 +38,27 @@ function linkDueDate(cell) {
   return <a href=" ">{cell}</a>
 }
 function linkSubmisionId(cell) {
-  return <Link to={`/task/${cell}`} onClick={() => { setLoader(true) }}>{cell}</Link>
+  return <Link to={`/task/${cell}`} onClick={() => { setLoader(true) }} title={cell}>{cell}</Link>
 }
 
 function buttonFormatter(cell, row) {
   if (cell === "Assigned") {
-    // return <label className="text-primary font-weight-bold text-uppercase">{cell}</label>;
-    return <button className="btn btn-primary btn-sm" onClick={() => claimTask(row.id,row.userName)}>Claim</button>
-  }
-  else if (cell === "Completed") {
-    return <label className="text-success font-weight-bold text-uppercase task-btn">{cell}</label>;
-  }
-  else if (cell === "Assign to me") {
-    return <button className="btn btn-outline-primary btn-sm">{cell}</button>;
-  }
+    return (
+      <div>
+        {row.userName === row.taskOwner ?
+
+          <label className="text-primary font-weight-bold text-uppercase">{cell}</label>
+          :
+          <Link to="#">Unassigned</Link>
+        }
+      </div>
+    )
+  }else if (cell === "Completed") {
+  return <label className="text-success font-weight-bold text-uppercase task-btn">{cell}</label>;
+}
+else if (cell === "Assign to me") {
+  return <button className="btn btn-outline-primary btn-sm">{cell}</button>;
+}
 
 }
 
@@ -135,7 +142,6 @@ export const columns = [{
 {
   dataField: 'submittedBy',
   text: 'Primary Applicant',
-  style: { 'whiteSpace': 'nowrap' },
   filter: textFilter({
     placeholder: '\uf002 Name',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE

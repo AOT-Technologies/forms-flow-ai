@@ -26,7 +26,7 @@ const Preview = class extends Component {
         <h3 className="h3-form">View { form.title }
         <Button className="btn btn-primary btn-sm form-btn pull-right" onClick={()=>{dispatch(push(`/form/${form._id}/edit`))}}>
             <i className="fa fa-pencil" aria-hidden="true"></i>
-             Edit Form
+            &nbsp;&nbsp;Edit Form
         </Button>
         </h3>
 

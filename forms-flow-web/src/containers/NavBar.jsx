@@ -55,7 +55,8 @@ class NavBar extends Component {
                         </Navbar.Brand>
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                         <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
-                            <Nav className="mr-auto">
+                        <label className="lbl-app-nanme">FormsFlow</label><label className="lbl-app-nanme app-name">.AI</label>
+                            <Nav className="mr-auto nav-custom-tab">
                                 <Link to="/" className={`main-nav nav-link ${this.state.isFormActive? "active-tab":""}`} onClick={()=>this.setActiveMenu('form')}>
                                     Forms
                                 </Link>
@@ -76,7 +77,7 @@ class NavBar extends Component {
                                     <NavDropdown.Item><img className="float-right" src="/assets/Images/user.svg" alt="userimage"></img></NavDropdown.Item>
                                     <br></br>
                                     <NavDropdown.Header className="nav-user-name">{user.name}</NavDropdown.Header>
-                                    <NavDropdown.Header className="nav-user-email">{user.email}</NavDropdown.Header>
+                                    <NavDropdown.Header className="nav-user-email" title={user.email}>{user.email}</NavDropdown.Header>
                                     <NavDropdown.Header className="nav-user-role">{this.getUserRole(userRoles)}</NavDropdown.Header>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Header className="nav-logout" onClick={UserService.userLogout}>

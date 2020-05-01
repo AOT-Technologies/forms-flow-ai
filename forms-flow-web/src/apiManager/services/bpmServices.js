@@ -26,6 +26,7 @@ export const getUserToken = (data, ...rest) => {
 };
 
 export const  triggerEmailNotification= (data, ...rest) => {
+  console.log("email api",API.SEND_EMAIL_NOTIFICATION, data);
   const done = rest.length ? rest[0] :  ()=>{};
   return dispatch => {
     httpPOSTRequest(API.SEND_EMAIL_NOTIFICATION,data).then(res => {

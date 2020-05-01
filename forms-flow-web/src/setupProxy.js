@@ -1,3 +1,4 @@
+/*
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const bpmUrl= process.env.REACT_APP_BPM_API_BASE;
 console.log("bpmUrl proxy",bpmUrl, process.env.REACT_APP_BPM_API_BASE);
@@ -7,3 +8,4 @@ module.exports = function(app) {
       changeOrigin: true
     }))
 };
+*/

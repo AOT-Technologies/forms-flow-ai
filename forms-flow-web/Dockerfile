@@ -15,7 +15,7 @@ RUN apk update && apk upgrade && \
 COPY package-lock.json /app/package-lock.json
 COPY package.json /app/package.json
 COPY forms-flow-util/package.json /app/forms-flow-util/package.json
-RUN npm install --silent
+RUN npm install
 #RUN npm install react-scripts@3.0.1 -g --silent
 COPY . /app/
 RUN npm run build

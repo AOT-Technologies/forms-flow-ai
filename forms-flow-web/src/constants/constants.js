@@ -7,6 +7,9 @@ export const USER_RESOURCE_FORM_ID = process.env.REACT_APP_USER_RESOURCE_FORM_ID
 export const Keycloak_Client = process.env.REACT_APP_KEYCLOAK_CLIENT || 'forms-flow-web';
 export const  _kc = new Keycloak(process.env.REACT_APP_KEYCLOAK_JSON ||'/keycloak.json');
 
+console.log("env ...", process.env);
+console.log("bpm", process.env.REACT_APP_BPM_API_BASE);
+
 export const ROLES = [{
     id: process.env.REACT_APP_CLIENT_ID,
     title: CLIENT

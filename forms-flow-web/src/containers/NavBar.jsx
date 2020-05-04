@@ -69,14 +69,14 @@ class NavBar extends Component {
                             </Nav>
                             <Nav>
                                 <NavDropdown style={{ fontSize: '18px' }} title={<div className="pull-left">
-                                    Hi {user.given_name ? user.given_name : ''} &nbsp;
+                                    Hi {user.given_name || user.name || user.preferred_username || ''} &nbsp;
                                     <img className="thumbnail-image"
                                         src="/assets/Images/user.svg"
                                         alt="user pic"
                                     /></div>} className="nav-dropdown" id="basic-nav-dropdown">
-                                    <NavDropdown.Item><img className="float-right" src="/assets/Images/user.svg" alt="userimage"></img></NavDropdown.Item>
+                                    <NavDropdown.Item><img className="float-right" src="/assets/Images/user.svg" alt="userimage"/></NavDropdown.Item>
                                     <br></br>
-                                    <NavDropdown.Header className="nav-user-name">{user.name}</NavDropdown.Header>
+                                    <NavDropdown.Header className="nav-user-name">{user.name || user.preferred_username}</NavDropdown.Header>
                                     <NavDropdown.Header className="nav-user-email" title={user.email}>{user.email}</NavDropdown.Header>
                                     <NavDropdown.Header className="nav-user-role">{this.getUserRole(userRoles)}</NavDropdown.Header>
                                     <NavDropdown.Divider />

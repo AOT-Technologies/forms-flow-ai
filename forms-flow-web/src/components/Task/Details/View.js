@@ -27,8 +27,9 @@ const View = (props) => {
                 <tr>
                     <td className="border-0">Task Status</td>
                     <td className="border-0">:</td>
-                    <td className="border-0">{task.status||"Assigned"}
+                    <td className="border-0">{task.status||task.assignee?"Assigned":"---" }
                     {task.assignee === props.userName ? <Link className="ml-3" to="#">Unassgin</Link>:null}
+                    {!task.assignee ? <Link className="ml-3" to="#">Assign to me</Link>:null}
                     </td>
                 </tr>
                 <tr>

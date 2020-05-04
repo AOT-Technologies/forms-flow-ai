@@ -17,24 +17,24 @@ let isTaskAvailable = false;
 let total = 0;
 
 const listTasks = (props) => {
-  let data = [];
+  console.log("tasksss",props.tasks);
   if (props.tasks.length > 0) {
-    props.tasks.map(task => {
-      data.push({
+    const data= props.tasks.map(task => {
+      return {
         id: task.id,
         applicationId: 53465475,//to do
         taskTitle: task.name,
-        taskStatus: "Assigned",//to do
-        taskOwner: (task.assignee || "---"),
+        taskStatus: task.status||task.assignee?"Assigned":"---",//to do
+        taskAssignee: (task.assignee || "---"),
         submittedBy: "---",
         dueDate: (task.due || "Set due date"),
         form: '---',
         userName:props.userDetail.preferred_username
-      })
-    })
+      };
+    });
     return data;
   } else {
-    return data = []
+    return [];
   }
 }
 const Tasks = (props) => {
@@ -55,7 +55,7 @@ const Tasks = (props) => {
       <ToolkitProvider keyField="id" data={listTasks(props)} columns={columns} search>
         {
           props => (
-            <div className="container"><br></br>
+            <div className="container"><br/>
               <div className="main-header">
                 <img src="/clipboard.svg" width="30" height="30" alt="task"/>
                 <h3 className="task-head">Tasks<div className="col-md-1 task-count">({total})</div></h3>
@@ -68,9 +68,9 @@ const Tasks = (props) => {
                 <BootstrapTable filter={filterFactory()} pagination={paginationFactory(getoptions(props.tasksCount))} defaultSorted={defaultSortedBy}
                   {...props.baseProps}  noDataIndication={() => <div className="div-no-task">
                     <label className="lbl-no-task"> No tasks found </label>
-                    <br></br>
+                    <br/>
                     <label className="lbl-no-task-desc"> Please change the selected filters to view tasks </label>
-                    <br></br>
+                    <br/>
                     <label className="lbl-clear"  onClick={clearFilter}>Clear all filters</label>
                   </div>}
                 />

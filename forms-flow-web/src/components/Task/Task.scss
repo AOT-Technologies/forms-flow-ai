@@ -45,7 +45,14 @@
 {
     font-weight: bold;
     font-size:30px;
-    margin-left: 10px !important
+    margin-left: 10px !important;
+    display: flex;
+}
+.task-head-details
+{
+    font-weight: bold;
+    font-size:30px;
+    margin-left: 10px !important;
 }
 .order,.react-bootstrap-table-sort-order
 {
@@ -150,6 +157,7 @@
 .task-header
 {
     margin-left: 0px !important;
+    display: flex;
 }
 .table th, .table td
 {

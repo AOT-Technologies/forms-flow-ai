@@ -35,8 +35,8 @@ const List = class extends Component {
     return (
       <div>
         <header>
-          <h4 className="text-capitalize">{form.title}</h4>
-          <Link className="btn btn-primary btn-sm form-btn pull-right" to={`/form/${formId}`}>
+          <h4 className="text-capitalize forms-head">{form.title}</h4>
+          <Link className="btn btn-primary form-btn pull-right" to={`/form/${formId}`}>
             <i className='fa fa-plus' aria-hidden='true'></i> New {form.title}
           </Link>
         </header>
@@ -88,6 +88,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/delete`));
           break;
         default:
+
       }
     },
   };

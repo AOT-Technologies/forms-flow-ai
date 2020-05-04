@@ -25,7 +25,7 @@ const List = class extends Component {
     return (
       <div>
         <header>
-          <h3>Forms</h3>
+          <h3 class="forms-head">Forms</h3>
           {userRoles.includes(STAFF_DESIGNER) ?<Link to="/form/create">
             <button className="btn btn-primary pull-right"><i className="fa fa-plus"></i> Create Form</button>
             <br></br>

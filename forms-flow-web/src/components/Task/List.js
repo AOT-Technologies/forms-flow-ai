@@ -18,13 +18,14 @@ let total = 0;
 
 const listTasks = (props) => {
   let data = [];
+  console.log("tasks",props.tasks);
   if (props.tasks.length > 0) {
     props.tasks.map(task => {
       data.push({
         id: task.id,
-        applicationId: 53465475,//to do 
+        applicationId: 53465475,//to do
         taskTitle: task.name,
-        taskStatus: "Assigned",//to do 
+        taskStatus: "Assigned",//to do
         taskOwner: (task.assignee || "---"),
         submittedBy: "---",
         dueDate: (task.due || "Set due date"),
@@ -32,7 +33,7 @@ const listTasks = (props) => {
         userName:props.userDetail.preferred_username
       })
     })
-    return data
+    return data;
   } else {
     return data = []
   }
@@ -57,7 +58,7 @@ const Tasks = (props) => {
           props => (
             <div className="container"><br></br>
               <div className="row task-header">
-                <img src="/clipboard.svg" width="30" height="30" alt="task"></img>
+                <img src="/clipboard.svg" width="30" height="30" alt="task"/>
                 <h3 className="task-head row">Tasks<div className="col-md-1 task-count row">({total})</div></h3>
                 <div className="col-md-2 btn-group">
                   <TaskSearch {...props.searchProps} />

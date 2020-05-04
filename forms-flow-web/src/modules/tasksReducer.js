@@ -11,16 +11,12 @@ export default (state = initialState, action)=> {
   switch (action.type) {
     case ACTION_CONSTANTS.IS_LOADING:
       return {...state, isLoading: action.payload};
-      break;
     case ACTION_CONSTANTS.LIST_TASKS:
       return {...state, tasksList: action.payload};
-      break;
     case ACTION_CONSTANTS.TASKS_COUNT:
       return {...state, tasksCount: action.payload.count};
-      break;
     case ACTION_CONSTANTS.TASK_DETAIL:
       return {...state, taskDetail: action.payload};
-      break;
     default:
       return state;
   }

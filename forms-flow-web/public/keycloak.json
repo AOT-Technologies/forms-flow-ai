@@ -1,5 +1,5 @@
 {
-  "realm": "forms-flow-ai",
+  "realm": "forms-flow-ai-old",
   "auth-server-url": "https://iam.aot-technologies.com/auth/",
   "ssl-required": "external",
   "resource": "forms-flow-web",

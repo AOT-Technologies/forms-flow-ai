@@ -2,6 +2,7 @@ import React from 'react'
 import { Table } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import { Link } from 'react-router-dom'
 
 const View = (props) => {
     const task = props.detail;
@@ -26,7 +27,7 @@ const View = (props) => {
                 <tr>
                     <td className="border-0">Task Status</td>
                     <td className="border-0">:</td>
-                    <td className="border-0">{task.status||"Assigned"}</td>
+                    <td className="border-0">{task.status||"Assigned"} <Link className="ml-3" to="#">Unassgin</Link></td>
                 </tr>
                 <tr>
                     <td className="border-0">Primary Applicant</td>

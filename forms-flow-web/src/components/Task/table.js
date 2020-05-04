@@ -100,11 +100,11 @@ export const columns = [{
   })
 },
 {
-  dataField: 'taskOwner',
-  text: 'Task Owner',
+  dataField: 'taskAssignee',
+  text: 'Task Assignee',
   sort: true,
   filter: textFilter({
-    placeholder: '\uf002 Task Owner',  // custom the input placeholder
+    placeholder: '\uf002 Task Assignee',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
     className: "icon-seach",
     getFilter: (filter) => {

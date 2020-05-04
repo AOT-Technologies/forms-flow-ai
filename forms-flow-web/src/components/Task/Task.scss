@@ -161,3 +161,10 @@
 {
     display: flex !important;
 }
+.review-status{
+    margin-top: 2rem;
+    select:disabled {
+        color: rgb(170, 170, 170);
+        cursor: not-allowed;
+    }
+}

@@ -41,6 +41,20 @@ const Edit = class extends Component {
   }
 }
 
+function doProcessActions(submission, ownProps) {
+  return (dispatch, getState) => {
+    let user=getState().user.userDetail
+    dispatch(resetSubmissions('submission'));
+    const data = getProcess(PROCESS.EmailNotification, ownProps.match.params.formId, submission._id,"edit",user);
+    dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
+      if (!err) {
+        dispatch(triggerNotification(data));
+        dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}`))
+      }
+    }));
+  }
+}
+
 const mapStateToProps = (state) => {
   return {
     form: selectRoot('form', state),
@@ -65,15 +79,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onSubmit: (submission) => {
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
-          dispatch(resetSubmissions('submission'));
-          dispatch(getUserToken(BPM_USER_DETAILS,(err,res)=>{
-            //TODO update this get process type matching to form
-            const data = getProcess(PROCESS.OneStepApproval, ownProps.match.params.formId, submission._id);
-            if(!err){
-              dispatch(triggerNotification(data));
-              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`));
-            }
-          }));
+          dispatch(doProcessActions(submission, ownProps))
         }
       }));
     }

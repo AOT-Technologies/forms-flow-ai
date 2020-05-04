@@ -19,9 +19,14 @@ const View = (props) => {
                     <td className="border-0">{task.name}</td>
                 </tr>
                 <tr>
-                    <td className="border-0">Task Owner</td>
+                    <td className="border-0">Task Assignee</td>
                     <td className="border-0">:</td>
                     <td className="border-0">{task.assignee||"---"}</td>
+                </tr>
+                <tr>
+                    <td className="border-0">Task Status</td>
+                    <td className="border-0">:</td>
+                    <td className="border-0">{task.status||"Assigned"}</td>
                 </tr>
                 <tr>
                     <td className="border-0">Primary Applicant</td>

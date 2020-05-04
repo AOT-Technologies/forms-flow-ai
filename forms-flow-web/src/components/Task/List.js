@@ -17,7 +17,6 @@ let isTaskAvailable = false;
 let total = 0;
 
 const listTasks = (props) => {
-  console.log("tasksss",props.tasks);
   if (props.tasks.length > 0) {
     const data= props.tasks.map(task => {
       return {

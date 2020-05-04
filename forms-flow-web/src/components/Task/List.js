@@ -28,7 +28,9 @@ const listTasks = (props) => {
         submittedBy: "---",
         dueDate: (task.due || "Set due date"),
         form: '---',
-        userName:props.userDetail.preferred_username
+        userName:props.userDetail.preferred_username,
+        assignToMeFn:props.onClaim,
+        unAssignFn:props.onUnclaim
       };
     });
     return data;
@@ -102,10 +104,10 @@ const mapDispatchToProps = (dispatch) => {
         }
       })
     ),
-    onClaim: (id) => {
+    onClaim: (id,userName) => {
       dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {
-          dispatch(claimTask(id))
+          dispatch(claimTask(id,userName))
         }
       })
       )

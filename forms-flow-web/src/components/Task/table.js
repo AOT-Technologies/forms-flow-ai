@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import {textFilter, selectFilter} from 'react-bootstrap-table2-filter';
 
 import {setLoader} from '../../actions/taskActions'
-import {claimTask} from '../../apiManager/services/taskServices'
+/*import {claimTask} from '../../apiManager/services/taskServices'*/
 
 let idFilter, titleFilter, statusFilter, ownerFilter, appidFilter, submittedFilter, apptypeFilter;
 
@@ -49,14 +49,15 @@ function buttonFormatter(cell, row) {
     return (
       <div>
         {row.userName === row.taskAssignee ?
-          <Link to="#">Unassign</Link> : <label className="text-primary font-weight-bold text-uppercase">{cell}</label>
+          <Link onClick={() => row.unAssignFn(row.id)}>Unassign</Link> :
+          <label className="text-primary font-weight-bold text-uppercase">{cell}</label>
         }
       </div>
     )
   } else if (cell === "Completed") {
     return <label className="text-success font-weight-bold text-uppercase task-btn">{cell}</label>;
   } else {
-    return <Link to="#">Assign to me</Link>;
+    return <Link onClick={() => row.assignToMeFn(row.id,row.userName)}>Assign to me</Link>;
   }
 
 }
@@ -176,7 +177,7 @@ const customTotal = (from, to, size) => (
 );
 
 export const getoptions = (count) => {
-  return  {
+  return {
     expandRowBgColor: 'rgb(173,216,230)',
     pageStartIndex: 1,
     alwaysShowAllBtns: true, // Always show next and previous button

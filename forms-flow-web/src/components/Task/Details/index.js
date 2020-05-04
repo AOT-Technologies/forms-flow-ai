@@ -1,11 +1,11 @@
 import React from 'react'
 
 import View from './View'
-import Review from './Review'
+import Review from './Review';
 
 
 const Details=()=>{
-        return (
+  return (
             <div className="row" style={{ marginTop: '26.5px',fontWeight:"500px" }}>
                 <div className="col-md-6">
                     <View />
@@ -14,7 +14,7 @@ const Details=()=>{
                     <Review />
                 </div>
             </div>
-        )
+  );
 }
 
 export default Details;

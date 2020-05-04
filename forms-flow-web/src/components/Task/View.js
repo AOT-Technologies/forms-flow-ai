@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 import { Tabs, Tab } from 'react-bootstrap'
 import { connect } from 'react-redux'
-import {selectRoot, Form, selectError, Errors} from 'react-formio';
+import {selectRoot, selectError} from 'react-formio';
 
 import Details from './Details'
 import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants'
@@ -10,11 +10,11 @@ import { getUserToken } from '../../apiManager/services/bpmServices'
 import { getTaskDetail } from '../../apiManager/services/taskServices'
 // import { setLoader } from '../../actions/taskActions'
 import Loading from '../../containers/Loading'
+import {setLoader} from "../../actions/taskActions";
 
 class View extends Component {
-    
-    render() {
-        const { detail, form, submission, hideComponents, options } = this.props;
+  render() {
+        const { detail } = this.props;
         if (this.props.isLoading) {
             return (
                 <Loading />
@@ -22,7 +22,7 @@ class View extends Component {
         }
         return (
             <div className="container">
-                <br></br>
+                <br/>
                 <div className="row">
                     <Link to="/task">
                         <img src="/back.svg" alt="back" />
@@ -35,7 +35,7 @@ class View extends Component {
                     </h3>
                 </div>
                 <br />
-                <Tabs defaultActiveKey="details">
+                <Tabs id="task-details" defaultActiveKey="details">
                     <Tab eventKey="details" title="Details" id="details">
                         <Details />
                     </Tab>
@@ -44,7 +44,7 @@ class View extends Component {
                             <h4 className="col-md-8">{detail.name}</h4>
                             <span className="col-md-4">
                                 <button className="btn pull-right" style={{ color: "#003366", border: "1px solid #036" }}>
-                                    <i className="fa fa-print" aria-hidden="true"></i> Print as PDF
+                                    <i className="fa fa-print" aria-hidden="true"/> Print as PDF
                                 </button>
                             </span>
                             {/* <Form
@@ -94,7 +94,8 @@ const mapDispatchToProps = (dispatch) => {
             getUserToken(BPM_USER_DETAILS, (err, res) => {
                 let id = window.location.pathname.split("/")[2]
                 if (!err) {
-                    dispatch(getTaskDetail(id))
+                  dispatch(setLoader(true));
+                  dispatch(getTaskDetail(id))
                 }
             })
         )

@@ -64,8 +64,9 @@ export const claimTask = (id,user)=>{
 }
 export const unClaimTask = (id)=>{
   return dispatch=>{
-    httpPOSTRequest(`${API.TASK_ACTION_API}+/${id}/unclaim`).then(res=>{
+    httpPOSTRequest(`${API.TASK_ACTION_API}/${id}/unclaim`).then(res=>{
       if(res.status === 204){
+        dispatch(setLoader(true))
         dispatch(fetchTaskList())
       }
     }).catch(error=>{

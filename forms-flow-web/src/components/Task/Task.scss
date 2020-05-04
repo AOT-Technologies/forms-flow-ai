@@ -73,12 +73,12 @@
     border-right: 4px solid transparent;
     border-left: 4px solid transparent;
     }
-    
+
     // .dropup, .dropdown {
     // position: relative;
     // }
     .dropdown {
-    left: 8px; 
+    left: 8px;
      top: 6px;
     }
     .dropup .caret, .navbar-fixed-bottom .dropdown .caret {
@@ -138,7 +138,7 @@
 .lbl-clear
 {
     font-size: 15px;
-    color:#015FBB; 
+    color:#015FBB;
     cursor: pointer;
     text-decoration: underline;
 }
@@ -154,11 +154,12 @@
 {
     color:#ffff !important;
 }
-.task-header
+.main-header
 {
     margin-left: 0px !important;
     display: flex;
 }
+
 .table th, .table td
 {
     white-space: nowrap;

@@ -33,14 +33,22 @@ const List = class extends Component {
     }
 
     return (
-      <div>
-        <header>
-          <h4 className="text-capitalize forms-head">{form.title}</h4>
-          <Link className="btn btn-primary form-btn pull-right" to={`/form/${formId}`}>
-            <i className='fa fa-plus' aria-hidden='true'></i> New {form.title}
+      <div className="container"><br/>
+        <div className="row">
+          <Link to="/form">
+            <img src="/back.svg" alt="back" />
           </Link>
-        </header>
-        <br></br>
+          <span className="ml-3">
+                        <img src="/forms.svg" alt="Task" />
+                    </span>
+          <h3>
+            <span className="task-head-details">Forms /</span> {form.title}
+          </h3>
+        </div>
+        <Link className="btn btn-primary form-btn pull-right" to={`/form/${formId}`}>
+            <i className='fa fa-plus' aria-hidden='true'></i> New {form.title}
+        </Link>
+        <br/>
         <section className="mt-5">
           <Errors errors={errors} />
           <SubmissionGrid

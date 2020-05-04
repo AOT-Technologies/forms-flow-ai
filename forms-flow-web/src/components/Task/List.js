@@ -56,8 +56,8 @@ const Tasks = (props) => {
         {
           props => (
             <div className="container"><br></br>
-              <div className="task-header">
-                <img src="/clipboard.svg" width="30" height="30" alt="task"></img>
+              <div className="main-header">
+                <img src="/clipboard.svg" width="30" height="30" alt="task"/>
                 <h3 className="task-head">Tasks<div className="col-md-1 task-count">({total})</div></h3>
                 <div className="col-md-2 btn-group">
                   <TaskSearch {...props.searchProps} />

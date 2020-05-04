@@ -62,7 +62,7 @@ class NavBar extends Component {
                                 </Link>
                                 {userRoles && userRoles.includes(STAFF_REVIEWER) ?
                                      <Link to="/task" className={`main-nav nav-link ${this.state.isTaskActive? "active-tab":""}`} style={{ fontSize: '20px', color: '#ffff' }} onClick={()=>this.setActiveMenu('task')}>
-                                         Task
+                                         Tasks
                                     </Link>
                                     :
                                     null}
@@ -81,7 +81,7 @@ class NavBar extends Component {
                                     <NavDropdown.Header className="nav-user-role">{this.getUserRole(userRoles)}</NavDropdown.Header>
                                     <NavDropdown.Divider />
                                     <NavDropdown.Header className="nav-logout" onClick={UserService.userLogout}>
-                                        <img src="/assets/Images/logout.svg" alt="" /><label className="lbl-logout">Logout</label> 
+                                        <img src="/assets/Images/logout.svg" alt="" /><label className="lbl-logout">Logout</label>
                                 </NavDropdown.Header>
 
                                 </NavDropdown>

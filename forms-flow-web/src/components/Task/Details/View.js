@@ -27,7 +27,9 @@ const View = (props) => {
                 <tr>
                     <td className="border-0">Task Status</td>
                     <td className="border-0">:</td>
-                    <td className="border-0">{task.status||"Assigned"} <Link className="ml-3" to="#">Unassgin</Link></td>
+                    <td className="border-0">{task.status||"Assigned"}
+                    {task.assignee === props.userName ? <Link className="ml-3" to="#">Unassgin</Link>:null}
+                    </td>
                 </tr>
                 <tr>
                     <td className="border-0">Primary Applicant</td>
@@ -51,7 +53,8 @@ const View = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        detail: state.tasks.taskDetail
+        detail: state.tasks.taskDetail,
+        userName:state.user.userDetail.preferred_username
     }
 }
 

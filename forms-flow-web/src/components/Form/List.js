@@ -23,14 +23,15 @@ const List = class extends Component {
     }
 
     return (
-      <div>
-        <header>
-          <h3 class="forms-head">Forms</h3>
-          {userRoles.includes(STAFF_DESIGNER) ?<Link to="/form/create">
-            <button className="btn btn-primary pull-right"><i className="fa fa-plus"></i> Create Form</button>
-            <br></br>
-          </Link>:null}
-        </header>
+      <div className="container"><br/>
+        <div className="main-header">
+          <img src="/forms.svg" width="30" height="30" alt="form"/>
+          <h3 className="forms-head">Forms</h3>
+        </div>
+        {!userRoles.includes(STAFF_DESIGNER) ?<Link to="/form/create">
+          <button className="btn btn-primary pull-right"><i className="fa fa-plus"></i> Create Form</button>
+          <br/>
+        </Link>:null}
         <section className="mt-5">
           <Errors errors={errors} />
           <FormGrid

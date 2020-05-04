@@ -49,7 +49,7 @@ function buttonFormatter(cell, row) {
 
           <label className="text-primary font-weight-bold text-uppercase">{cell}</label>
           :
-          <Link to="#">Unassigned</Link>
+          <Link to="#">Unassign</Link>
         }
       </div>
     )

@@ -36,7 +36,7 @@ export const getTaskCount = () =>{
 
 export const getTaskDetail = (id) =>{
   return dispatch=>{
-    httpGETRequest(API.TASK_ACTION_API+`/${id}`).then(res=>{
+    httpGETRequest(`${API.TASK_ACTION_API}/${id}`).then(res=>{
       if(res.status === 200){
         dispatch(setTaskDetail(res.data))
         dispatch(setLoader(false))
@@ -51,7 +51,7 @@ export const getTaskDetail = (id) =>{
 export const claimTask = (id,user)=>{
   // console.log("Claimed",id,user)
   return dispatch=>{
-    httpPOSTRequest(API.TASK_ACTION_API+`/${id}/claim`,{userId:user}).then(res=>{
+    httpPOSTRequest(`${API.TASK_ACTION_API}/${id}/claim`,{userId:user}).then(res=>{
       if(res.status === 204){
         dispatch(setLoader(true))
         dispatch(fetchTaskList())
@@ -64,7 +64,7 @@ export const claimTask = (id,user)=>{
 }
 export const unClaimTask = (id)=>{
   return dispatch=>{
-    httpPOSTRequest(API.TASK_ACTION_API+`/${id}/unclaim`).then(res=>{
+    httpPOSTRequest(`${API.TASK_ACTION_API}+/${id}/unclaim`).then(res=>{
       if(res.status === 204){
         dispatch(fetchTaskList())
       }
@@ -74,20 +74,20 @@ export const unClaimTask = (id)=>{
     })
   }
 }
-export const completeTask=(id,process)=>{
+export const completeTask=(id,reviewStatus)=>{
   const data={
     "variables": {
       "action": {
-        "value":  process
+        "value":  reviewStatus
         }
+   }
   }
+  return dispatch=>{
+    httpPOSTRequest(`${API.TASK_ACTION_API}/${id}/complete`,data).then(res=>{
+      dispatch(fetchTaskList())
+    }).catch(error=>{
+      console.log('Error',error)
+      dispatch(serviceActionError(error))
+    })
   }
-  // return dispatch=>{
-  //   httpPOSTRequest(API.TASK_ACTION_API+`/${id}/complete`,data).then(res=>{
-  //     dispatch(fetchTaskList())
-  //   }).catch(error=>{
-  //     console.log('Error',error)
-  //     dispatch(serviceActionError(error))
-  //   })
-  // }
 }

@@ -1,4 +1,5 @@
 $white:    #fff;
+$grey:     #6c757d;
 $gray-100: #f8f9fa;
 $gray-200: #e9ecef;
 $gray-300: #dee2e6;
@@ -23,7 +24,7 @@ $cyan:    #9954BB;
 $lightblue: lighten($blue, 20%);
 
 $primary:       $blue;
-$secondary:     $orange;
+$secondary:     $grey;
 $success:       $green;
 $info:          $lightblue;
 $warning:       $yellow;

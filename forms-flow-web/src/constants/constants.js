@@ -32,7 +32,7 @@ export const OPERATIONS = {
   },
   submission: {
     action: 'submission',
-    buttonType: 'warning',
+    buttonType: 'primary',
     icon: 'list-alt',
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -42,7 +42,7 @@ export const OPERATIONS = {
   },
   edit: {
     action: 'edit',
-    buttonType: 'secondary',
+    buttonType: 'primary',
     icon: 'edit',
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -52,7 +52,7 @@ export const OPERATIONS = {
   },
   viewForm: {
     action: 'viewForm',
-    buttonType: 'warning',
+    buttonType: 'primary',
     icon: 'eye',
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -62,7 +62,7 @@ export const OPERATIONS = {
   },
   delete: {
     action: 'delete',
-    buttonType: 'danger',
+    buttonType: 'primary',
     icon: 'trash',
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -71,7 +71,7 @@ export const OPERATIONS = {
   },
   view: {
     action: 'viewSubmission',
-    buttonType: 'warning',
+    buttonType: 'primary',
     icon: 'list',
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -81,7 +81,7 @@ export const OPERATIONS = {
   },
   editSubmission: {
     action: 'edit',
-    buttonType: 'secondary',
+    buttonType: 'primary',
     icon: 'edit',
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -91,11 +91,12 @@ export const OPERATIONS = {
   },
   deleteSubmission: {
     action: 'delete',
-    buttonType: 'danger',
+    buttonType: 'primary',
     icon: 'trash',
     permissionsResolver: function permissionsResolver() {
       return true;
     },
+    title: 'Delete'
   }
 };
 

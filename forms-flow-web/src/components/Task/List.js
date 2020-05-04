@@ -17,23 +17,25 @@ let isTaskAvailable = false;
 let total = 0;
 
 const listTasks = (props) => {
-  let data = [];
   if (props.tasks.length > 0) {
-    props.tasks.map(task => {
-      data.push({
+    const data= props.tasks.map(task => {
+      return {
         id: task.id,
-        applicationId: 53465475,//to do 
-        taskTitle: task.taskDefinitionKey,
-        taskStatus: "Claimed",//to do 
-        taskOwner: (task.owner || "---"),
-        submittedBy: (task.assignee || "---"),
+        applicationId: 53465475,//to do
+        taskTitle: task.name,
+        taskStatus: task.status||task.assignee?"Assigned":"---",//to do
+        taskAssignee: (task.assignee || "---"),
+        submittedBy: "---",
         dueDate: (task.due || "Set due date"),
-        form: task.name
-      })
-    })
-    return data
+        form: '---',
+        userName:props.userDetail.preferred_username,
+        assignToMeFn:props.onClaim,
+        unAssignFn:props.onUnclaim
+      };
+    });
+    return data;
   } else {
-    return data = []
+    return [];
   }
 }
 const Tasks = (props) => {
@@ -54,10 +56,10 @@ const Tasks = (props) => {
       <ToolkitProvider keyField="id" data={listTasks(props)} columns={columns} search>
         {
           props => (
-            <div className="container"><br></br>
-              <div className="row task-header">
-                <img src="/clipboard.svg" width="30" height="30" alt="task"></img>
-                <h3 className="task-head row">Tasks<div className="col-md-1 task-count row">({total})</div></h3>
+            <div className="container"><br/>
+              <div className="main-header">
+                <img src="/clipboard.svg" width="30" height="30" alt="task"/>
+                <h3 className="task-head">Tasks<div className="col-md-1 task-count">({total})</div></h3>
                 <div className="col-md-2 btn-group">
                   <TaskSearch {...props.searchProps} />
                 </div>
@@ -67,9 +69,9 @@ const Tasks = (props) => {
                 <BootstrapTable filter={filterFactory()} pagination={paginationFactory(getoptions(props.tasksCount))} defaultSorted={defaultSortedBy}
                   {...props.baseProps}  noDataIndication={() => <div className="div-no-task">
                     <label className="lbl-no-task"> No tasks found </label>
-                    <br></br>
+                    <br/>
                     <label className="lbl-no-task-desc"> Please change the selected filters to view tasks </label>
-                    <br></br>
+                    <br/>
                     <label className="lbl-clear"  onClick={clearFilter}>Clear all filters</label>
                   </div>}
                 />
@@ -88,7 +90,8 @@ const mapStateToProps = (state) => {
   return {
     isLoading: state.tasks.isLoading,
     tasks: state.tasks.tasksList,
-    tasksCount: state.tasks.tasksCount
+    tasksCount: state.tasks.tasksCount,
+    userDetail: state.user.userDetail
   }
 }
 const mapDispatchToProps = (dispatch) => {
@@ -101,10 +104,10 @@ const mapDispatchToProps = (dispatch) => {
         }
       })
     ),
-    onClaim: (id) => {
+    onClaim: (id,userName) => {
       dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {
-          dispatch(claimTask(id))
+          dispatch(claimTask(id,userName))
         }
       })
       )

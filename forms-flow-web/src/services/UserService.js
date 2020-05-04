@@ -20,12 +20,12 @@ const initKeycloak = (onAuthenticatedCallback, store) => {
         const UserRoles=KeycloakData.resourceAccess[Keycloak_Client].roles;
         store.dispatch(setUserRole(UserRoles));
         store.dispatch(setUserToken(KeycloakData.token));
-        
+
         let role = [];
         for (let i = 0; i < UserRoles.length; i++) {
-          const roledata = ROLES.find(x => x.title === UserRoles[i]);
-          if(roledata){
-            role = role.concat(roledata.id)
+          const roleData = ROLES.find(x => x.title === UserRoles[i]);
+          if(roleData){
+            role = role.concat(roleData.id)
           }
         }
         _kc.loadUserInfo().then(res=>store.dispatch(setUserDetails(res)))

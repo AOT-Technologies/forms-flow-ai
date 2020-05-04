@@ -26,7 +26,7 @@ export const getUserToken = (data, ...rest) => {
   }
 };
 
-export const getProcess = (processType,formId, submissionId) => {
+export const getProcess = (processType,formId, submissionId, action, user) => {
   switch(processType){
     case PROCESS.EmailNotification :
       return {
@@ -35,7 +35,11 @@ export const getProcess = (processType,formId, submissionId) => {
         req: {
           "variables": {
             "category": { "value": "task_notification" },
-            "formurl": { "value": `${window.location.origin}/form/${formId}/submission/${submissionId}` }
+            "formurl": { "value": `${window.location.origin}/form/${formId}/submission/${submissionId}` },
+            "submitter_name":{"value":user.name},
+            "submitter_email":{"value":user.email},
+            "submitted_datetime":{"value":new Date().toLocaleString()},
+            "action":{"value":action}
           }
         }
       }

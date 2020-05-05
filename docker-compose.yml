@@ -11,7 +11,7 @@ services:
       PGDATA: /data/postgres
       POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-       - postgres:/data/postgres
+      - ./postgres:/data/postgres
     ports:
       - "5432:5432"
     networks:
@@ -26,7 +26,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     volumes:
-       - pgadmin:/root/.pgadmin
+      - ./pgadmin:/root/.pgadmin
     ports:
       - "${PGADMIN_PORT}:80"
     networks:
@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
     networks:
       - forms-flow-bpm-network
-
+        
   forms-flow-bpm:
     build:
       context: ./forms-flow-bpm/
@@ -61,14 +61,24 @@ services:
   forms-flow-forms-db:
     image: mongo:4.1
     restart: always
+    hostname: forms-flow-forms-db
     ports:
       - "27018:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      MONGO_REPLICA_SET_NAME: ${MONGO_REPLICA_SET_NAME}
     volumes:
-      - mdb-data:/data/db
+      - ./mongodb/data/db/:/data/db/
+      - ./mongodb/data/log/:/var/log/mongodb/
+      - ./mongodb/mongod.conf:/etc/mongod.conf
+      - ./mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+    command: [ "--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all"]
+    healthcheck:
+            test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo --quiet) -eq 1
+            interval: 10s
+            start_period: 30s
     networks:
       - forms-flow-forms-network
 
@@ -88,7 +98,7 @@ services:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio"}'
+      NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio?replicaSet=rs0"}'
       ROOT_EMAIL: ${ROOT_EMAIL}
       ROOT_PASSWORD: ${ROOT_PASSWORD}
     stdin_open: true  # -i

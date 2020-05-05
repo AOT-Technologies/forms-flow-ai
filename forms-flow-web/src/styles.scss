@@ -319,7 +319,27 @@ margin-right: 3px;
 {
   height: auto !important;
 }
-.table-bordered thead th, .table-bordered thead td
+.main-header
+{
+    margin-left: 0px !important;
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    height: 35px;
+}
+.task-head
+{
+    font-weight: bold;
+    font-size:30px;
+    margin-left: 10px !important;
+    display: flex;
+}
+.task-head-details
+{
+    font-weight: bold;
+    font-size:30px;
+    margin-left: 10px !important;
+}.table-bordered thead th, .table-bordered thead td
 {
   background-color: #F2F2F2 !important;
 }

@@ -339,21 +339,9 @@ margin-right: 3px;
     font-weight: bold;
     font-size:30px;
     margin-left: 10px !important;
-}.table-bordered thead th, .table-bordered thead td
-{
-  background-color: #F2F2F2 !important;
 }
-.navbar-dark.navbar-toggler {
-  border-color:white;
-} 
 .btn-right
 {
     float: right;
     margin-left: auto;
-}
-select option:hover {
-  box-shadow: 0 0 10px 100px #000 inset;
-}
-.modal-dialog {
-  margin: 8.75rem auto !important;
 }

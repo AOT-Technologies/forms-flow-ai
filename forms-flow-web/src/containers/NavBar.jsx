@@ -58,10 +58,12 @@ class NavBar extends Component {
                         <label className="lbl-app-nanme">FormsFlow</label><label className="lbl-app-nanme app-name">.AI</label>
                             <Nav className="mr-auto nav-custom-tab">
                                 <Link to="/" className={`main-nav nav-link ${this.state.isFormActive? "active-tab":""}`} onClick={()=>this.setActiveMenu('form')}>
+                                <img className="nav-icons" src="/form_white.svg" width="22" height="22" alt="form"/>
                                     Forms
                                 </Link>
                                 {userRoles && userRoles.includes(STAFF_REVIEWER) ?
-                                     <Link to="/task" className={`main-nav nav-link ${this.state.isTaskActive? "active-tab":""}`} style={{ fontSize: '20px', color: '#ffff' }} onClick={()=>this.setActiveMenu('task')}>
+                                     <Link to="/task" className={`main-nav nav-link ${this.state.isTaskActive? "active-tab":""}`}  onClick={()=>this.setActiveMenu('task')}>
+                                         <img className="nav-icons" src="/task_white.svg" width="22" height="22" alt="task"/>
                                          Tasks
                                     </Link>
                                     :

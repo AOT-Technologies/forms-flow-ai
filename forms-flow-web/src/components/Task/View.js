@@ -22,8 +22,7 @@ class View extends Component {
         }
         return (
             <div className="container">
-                <br/>
-                <div className="row">
+                <div className="main-header">
                     <Link to="/task">
                         <img src="/back.svg" alt="back" />
                     </Link>

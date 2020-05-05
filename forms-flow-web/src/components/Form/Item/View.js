@@ -3,6 +3,7 @@ import { Component } from 'react';
 import { connect } from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors } from 'react-formio';
 import { push } from 'connected-react-router';
+import { Link } from 'react-router-dom'
 
 import Loading from '../../../containers/Loading';
 import { getUserToken, triggerNotification, getProcess } from "../../../apiManager/services/bpmServices";
@@ -23,10 +24,19 @@ const View = class extends Component {
       return <Loading />;
     }
     return (
-      <div>
-        <h3>New {form.title}</h3>
+      <div className="container">
+        <div className="main-header">
+          <Link to="/form">
+            <img src="/back.svg" alt="back" />
+          </Link>
+          <span className="ml-3">
+                        <img src="/form.svg" alt="Forms" />
+                    </span>
+          <h3>
+            <span className="task-head-details">Forms /</span> New {form.title}
+          </h3>
+        </div>
         <Errors errors={errors} />
-        <hr />
         <Form
           form={form}
           submission={submission}

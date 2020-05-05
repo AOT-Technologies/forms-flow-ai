@@ -31,7 +31,7 @@ const List = class extends Component {
           <i className="fa fa-plus"></i> Create Form
         </Link>:null}
         </div>
-        <section>
+        <section className="list-forms">
           <Errors errors={errors} />
           <FormGrid
             forms={forms}

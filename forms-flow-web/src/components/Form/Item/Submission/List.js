@@ -49,7 +49,7 @@ const List = class extends Component {
         </Link>
         </div>
         
-        <section>
+        <section className="list-forms">
           <Errors errors={errors} />
           <SubmissionGrid
             submissions={submissions}

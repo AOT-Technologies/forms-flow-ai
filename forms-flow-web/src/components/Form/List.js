@@ -55,7 +55,6 @@ const List = class extends Component {
     }
     return operations;
   }
-
 }
 
 const mapStateToProps = (state) => {

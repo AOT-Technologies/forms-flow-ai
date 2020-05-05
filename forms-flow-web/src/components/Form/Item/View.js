@@ -53,9 +53,8 @@ const View = class extends Component {
 function doProcessActions(submission, ownProps) {
   return (dispatch, getState) => {
     let user=getState().user.userDetail
-    let form=getState().form.form;
     dispatch(resetSubmissions('submission'));
-    const data = getProcess(PROCESS.OneStepApproval, form, submission._id,"new",user);
+    const data = getProcess(PROCESS.EmailNotification, ownProps.match.params.formId, submission._id,"new",user);
     dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
       if (!err) {
         dispatch(triggerNotification(data));

@@ -2,10 +2,20 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { saveForm, selectForm, FormEdit, Errors, selectError } from 'react-formio';
 import {push} from "connected-react-router";
+import { Link } from 'react-router-dom'
 
 const Edit = props => (
-  <div>
-    <h2>Edit {props.form.title} Form</h2>
+          <div className="container">
+      <div className="main-header">
+      <Link to="/form">
+            <img src="/back.svg" alt="back" />
+          </Link>
+          <span className="ml-3">
+                        <img src="/form.svg" alt="Forms" />
+                    </span>
+        <h3 className="task-head">Edit {props.form.title} Form</h3>
+      </div>
+
     <hr />
     <Errors errors={props.errors} />
     <FormEdit {...props} />

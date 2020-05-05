@@ -25,8 +25,10 @@ const Edit = class extends Component {
     }
 
     return (
-      <div className="detail-view">
-        <h3 className="h3-form">Edit { form.title } Submission</h3>
+      <div className="container">
+      <div className="main-header">
+        <h3 className="task-head">Edit { form.title } Submission</h3>
+      </div>
         <Errors errors={errors} />
         <Form
           form={form}

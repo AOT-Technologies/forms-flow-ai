@@ -11,10 +11,12 @@ export const fetchTaskList = () =>{
           } else {
             console.log('Error',res);
             dispatch(serviceActionError(res))
+            dispatch(setLoader(false))
           }
         }).catch((error) => {
           console.log('Error',error);
           dispatch(serviceActionError(error))
+          dispatch(setLoader(false))
         })
       }
 }
@@ -44,6 +46,7 @@ export const getTaskDetail = (id) =>{
     })
     .catch(error=>{
       dispatch(serviceActionError(error))
+      dispatch(setLoader(false))
     })
   }
 }

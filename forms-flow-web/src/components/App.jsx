@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { ConnectedRouter } from 'connected-react-router';
 
-import Task from './Task'; 
 import Form from "../components/Form";
 import NavBar from '../containers/NavBar';
 import { STAFF_REVIEWER } from "../constants/constants";
@@ -34,7 +33,6 @@ class App extends Component{
         <NavBar/>
         <Switch>
           <Route path="/form"><Form/></Route>
-          <this.ListRoute path="/task" component={Task}/>
           <Route path="/"><Redirect to="/form"/></Route>
         </Switch>
       </ConnectedRouter >

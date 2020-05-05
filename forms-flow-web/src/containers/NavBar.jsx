@@ -8,29 +8,6 @@ import UserService from '../services/UserService';
 import { STAFF_REVIEWER, STAFF_DESIGNER } from '../constants/constants';
 
 class NavBar extends Component {
-    constructor() {
-        super();
-        this.state = {
-            isFormActive: true,
-            isTaskActive:false
-        }
-    }
-    componentDidMount(){
-        let path = window.location.pathname;
-        let str = path.split('/');
-        this.setActiveMenu(str[1])
-    }
-    setActiveMenu=(path)=>{
-        let data = {...this.state};
-        if(path==="form"){
-            data.isFormActive=true
-            data.isTaskActive=false
-        }else if(path==="task"){
-            data.isFormActive=false
-            data.isTaskActive=true
-        }
-        this.setState(data)
-    }
     getUserRole = (userRoles) => {
         let role = '';
         if (userRoles.includes(STAFF_REVIEWER)) {
@@ -75,17 +52,10 @@ class NavBar extends Component {
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" className="navbar-dark custom-toggler" />
                         <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
                             <Nav className="mr-auto nav-custom-tab">
-                                <Link to="/" className={`main-nav nav-link ${this.state.isFormActive? "active-tab":""}`} onClick={()=>this.setActiveMenu('form')}>
+                                <Link to="/" className="main-nav nav-link active-tab">
                                 <img className="nav-icons" src="/form_white.svg" width="22" height="22" alt="form"/>
                                     Forms
                                 </Link>
-                                {userRoles && userRoles.includes(STAFF_REVIEWER) ?
-                                     <Link to="/task" className={`main-nav nav-link ${this.state.isTaskActive? "active-tab":""}`}  onClick={()=>this.setActiveMenu('task')}>
-                                         <img className="nav-icons" src="/task_white.svg" width="22" height="22" alt="task"/>
-                                         Tasks
-                                    </Link>
-                                    :
-                                    null}
                             </Nav>
                             </Navbar.Collapse>
                             <Nav className="d-none d-md-block">

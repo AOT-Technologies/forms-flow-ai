@@ -44,7 +44,7 @@ function doProcessActions(submission, ownProps) {
   return (dispatch, getState) => {
     let user=getState().user.userDetail
     dispatch(resetSubmissions('submission'));
-    const data = getProcess(PROCESS.EmailNotification, ownProps.match.params.formId, submission._id,"new",user);
+    const data = getProcess(PROCESS.OneStepApproval, ownProps.match.params.formId, submission._id,"new",user);
     dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
       if (!err) {
         dispatch(triggerNotification(data));

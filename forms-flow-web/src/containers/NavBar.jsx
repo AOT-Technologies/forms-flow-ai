@@ -25,7 +25,7 @@ class NavBar extends Component {
         if(path==="form"){
             data.isFormActive=true
             data.isTaskActive=false
-        }else{
+        }else if(path==="task"){
             data.isFormActive=false
             data.isTaskActive=true
         }

@@ -28,7 +28,7 @@ const List = class extends Component {
           <img src="/forms.svg" width="30" height="30" alt="form"/>
           <h3 className="forms-head">Forms</h3>
         </div>
-        {!userRoles.includes(STAFF_DESIGNER) ?<Link to="/form/create">
+        {userRoles.includes(STAFF_DESIGNER) ?<Link to="/form/create">
           <button className="btn btn-primary pull-right"><i className="fa fa-plus"></i> Create Form</button>
           <br/>
         </Link>:null}

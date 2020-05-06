@@ -4,7 +4,7 @@
   "host": "localhost",
   "protocol": "http",
   "allowedOrigins": ["*"],
-  "domain": "http://localhost:3001",
+  "domain": "https://formio-core-api-dev.pathfinder.gov.bc.ca",
   "basePath": "",
   "mongo": "mongodb://localhost:27017/formioapp",
   "mongoConfig": "",

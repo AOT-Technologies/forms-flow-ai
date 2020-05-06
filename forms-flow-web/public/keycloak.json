@@ -1,6 +1,6 @@
 {
-  "realm": "forms-flow-ai",
-  "auth-server-url": "https://iam.aot-technologies.com/auth/",
+  "realm": "p8jhnzlo",
+  "auth-server-url": "https://sso-dev.pathfinder.gov.bc.ca/auth",
   "ssl-required": "external",
   "resource": "forms-flow-web",
   "public-client": true,

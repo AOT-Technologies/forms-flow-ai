@@ -51,7 +51,9 @@ export const getProcess = (processType,formId, submissionId, action, user) => {
             "variables": {
               "formurl": { "value": `${window.location.origin}/form/${formId}/submission/${submissionId}` },
               "submissionid":{"value":{submissionId}},
-              "formid":{"value":{formId}}
+              "formid":{"value":{formId}},
+              "submission_date":{"value":new Date().toLocaleDateString()},
+              "task_status":{"value":"New"}
             },
           }
       }

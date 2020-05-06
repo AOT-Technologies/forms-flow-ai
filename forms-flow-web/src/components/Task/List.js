@@ -21,14 +21,15 @@ const listTasks = (props) => {
     const data= props.tasks.map(task => {
       return {
         id: task.id,
-        applicationId: 53465475,//to do
+        applicationId: "",//to do
         taskTitle: task.name,
         taskStatus: task.status||task.assignee?"Assigned":"---",//to do
-        taskAssignee: (task.assignee || "---"),
+        taskAssignee: task.assignee,
         submittedBy: "---",
         dueDate: (task.due || "Set due date"),
         form: '---',
         userName:props.userDetail.preferred_username,
+        deleteReason:task.deleteReason,
         assignToMeFn:props.onClaim,
         unAssignFn:props.onUnclaim
       };

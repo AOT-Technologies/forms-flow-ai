@@ -3,9 +3,8 @@ import {Link} from 'react-router-dom'
 import {textFilter, selectFilter} from 'react-bootstrap-table2-filter';
 
 import {setLoader} from '../../actions/taskActions'
-/*import {claimTask} from '../../apiManager/services/taskServices'*/
 
-let idFilter, titleFilter, statusFilter, ownerFilter, appidFilter, submittedFilter, apptypeFilter;
+let titleFilter, statusFilter, ownerFilter, appidFilter, submittedFilter, apptypeFilter;
 
 export const defaultSortedBy = [{
   dataField: "name",
@@ -21,6 +20,7 @@ export const TaskSearch = (props) => {
     <div>
       <select className="form-control" ref={n => input = n} onChange={statusFilter}>
         <option value=" ">All tasks</option>
+        <option value="New">New tasks</option>
         <option value="Assigned">Assigned tasks</option>
         <option value="Completed">Completed tasks</option>
       </select>
@@ -29,9 +29,9 @@ export const TaskSearch = (props) => {
 };
 
 const selectOptions = [
-  {value: 'Assigned', label: 'Assigned'},
-  {value: 'Completed', label: 'Completed'},
-  {value: 'Assigned to me', label: 'Assigned to me'}
+  {value: 'New', label: 'New'},
+  {value: 'In-Progress', label: 'In-Progress'},
+  {value: 'Completed', label: 'Completed'}
 ];
 
 function linkDueDate(cell) {
@@ -43,25 +43,29 @@ function linkSubmision(cell,row) {
 }
 
 function buttonFormatter(cell, row) {
-  if (cell === "Assigned") {
-    return (
-      <div>
-        {row.userName === row.taskAssignee ?
-          <Link onClick={() => row.unAssignFn(row.id)}>Unassign</Link> :
-          <label className="text-primary font-weight-bold text-uppercase">{cell}</label>
-        }
-      </div>
-    )
-  } else if (cell === "Completed") {
-    return <label className="text-success font-weight-bold text-uppercase task-btn">{cell}</label>;
-  } else {
+  if(row.deleteReason === "completed"){
+    return <label className="text-success font-weight-bold text-uppercase task-btn">Completed</label>;
+  }else if(cell === "Assigned"){
+    return <label className="text-secondary font-weight-bold text-uppercase">In Progress</label>
+  }else{
+    return <label className="text-primary font-weight-bold text-uppercase task-btn">New</label>;
+  }
+}
+
+function linkTaskAssignee(cell,row){
+  if(cell){
+    return  <div>
+            {cell}
+           {row.userName === row.taskAssignee ?
+             <p className="mb-0" onClick={() => row.unAssignFn(row.id)}>Unassign</p> : null}
+         </div>;
+  }else {
     return <Link onClick={() => row.assignToMeFn(row.id,row.userName)}>Assign to me</Link>;
   }
 
 }
 
 export const clearFilter = () => {
-  idFilter('');
   titleFilter('');
   statusFilter('');
   ownerFilter('');
@@ -88,6 +92,7 @@ export const columns = [
   {
     dataField: 'taskAssignee',
     text: 'Task Assignee',
+    formatter:linkTaskAssignee,
     sort: true,
     filter: textFilter({
       placeholder: '\uf002 Task Assignee',  // custom the input placeholder
@@ -127,7 +132,7 @@ export const columns = [
   },
   {
     dataField: 'submittedBy',
-    text: 'Primary Applicant',
+    text: 'Applicant',
     filter: textFilter({
       placeholder: '\uf002 Name',  // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
@@ -139,7 +144,7 @@ export const columns = [
   },
   {
     dataField: 'form',
-    text: 'Application Type',
+    text: 'Application Name',
     filter: textFilter({
       placeholder: '\uf002 Application Type',  // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE

@@ -8,6 +8,16 @@ import { getUserToken } from '../../../apiManager/services/bpmServices'
 import { claimTask, unClaimTask } from '../../../apiManager/services/taskServices'
 import { setLoader } from '../../../actions/taskActions'
 
+const taskStatus =(task)=>{
+    if(task.deleteReason === "completed"){
+        return <label className="text-success font-weight-bold text-uppercase task-btn">Completed</label>;
+      }else if(task.assignee){
+        return <label className="text-secondary font-weight-bold text-uppercase">In Progress</label>
+      }else{
+        return <label className="text-primary font-weight-bold text-uppercase task-btn">New</label>;
+      }
+}
+
 const View = (props) => {
     const task = props.detail;
     return (
@@ -21,31 +31,30 @@ const View = (props) => {
                 <tr>
                     <td className="border-0">Task Assignee</td>
                     <td className="border-0">:</td>
-                    <td className="border-0">{task.assignee || "---"}</td>
-                </tr>
-                <tr>
-                    <td className="border-0">Task Status</td>
-                    <td className="border-0">:</td>
-                    {task.status || task.assignee ?
-                        <td className="border-0 d-inline-flex">Assigned
-                        {task.assignee === props.userName ?
+                    {task.assignee ?
+                        <td className="border-0 d-inline-flex">
+                            {task.assignee}
+                            {task.assignee === props.userName ?
                                 <p className="mb-0 ml-3" onClick={() => props.onUnclaim(task.id)}>
-                                    Unassgin
+                                    Unassign
                                 </p>
-                            : null}
+                                : null}
                         </td>
                         :
                         <td className="border-0">
-                            {!task.assignee ?
-                                <p className="mb-0" onClick={() => props.onClaim(task.id, props.userName)}>
-                                    Assign to me
-                                </p>
-                                : null}
+                            <p className="mb-0" onClick={() => props.onClaim(task.id, props.userName)}>
+                                Assign to me
+                            </p>
                         </td>
                     }
                 </tr>
                 <tr>
-                    <td className="border-0">Primary Applicant</td>
+                    <td className="border-0">Task Status</td>
+                    <td className="border-0">:</td>
+                    <td className="border-0">{taskStatus(task)}</td>
+                </tr>
+                <tr>
+                    <td className="border-0">Applicant</td>
                     <td className="border-0">:</td>
                     <td className="border-0">---</td>
                 </tr>

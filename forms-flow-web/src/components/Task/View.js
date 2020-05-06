@@ -54,13 +54,6 @@ class View extends Component {
                                 /> */}
 
                         </div>
-                        <section className="row" style={{ display: "block" }}>
-                            <p className="col-md-12" style={{ textAlign: "end" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                            <span className="btn-wrapper pull-right">
-                                <button className="btn" style={{ border: "1px solid #D9534F", backgroundColor: "#CB2E25" }}>Reject</button>
-                                <button className="btn" style={{ backgroundColor: "#43893E" }}>Approve</button>
-                            </span>
-                        </section>
                     </Tab>
                     <Tab eventKey="history" title="History" disabled>
                         <h1>History</h1>

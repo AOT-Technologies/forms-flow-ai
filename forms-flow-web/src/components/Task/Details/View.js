@@ -5,7 +5,7 @@ import moment from 'moment'
 
 import { BPM_USER_DETAILS } from '../../../apiManager/constants/apiConstants'
 import { getUserToken } from '../../../apiManager/services/bpmServices'
-import { claimTask, unClaimTask } from '../../../apiManager/services/taskServices'
+import {claimTask, getTaskDetail, unClaimTask} from '../../../apiManager/services/taskServices'
 import { setLoader } from '../../../actions/taskActions'
 
 const taskStatus =(task)=>{
@@ -54,6 +54,11 @@ const View = (props) => {
                     <td className="border-0">{taskStatus(task)}</td>
                 </tr>
                 <tr>
+                  <td className="border-0">Application Id</td>
+                  <td className="border-0">:</td>
+                  <td className="border-0">{task.id}</td>{/*TODO update*/}
+                </tr>
+                <tr>
                     <td className="border-0">Applicant</td>
                     <td className="border-0">:</td>
                     <td className="border-0">---</td>
@@ -83,18 +88,30 @@ const mapDispatchToProps = (dispatch) => {
     return {
         onClaim: (id, userName) => {
             dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
-                dispatch(setLoader(true))
                 if (!err) {
-                    dispatch(claimTask(id, userName))
+                  dispatch(setLoader(true));
+                  dispatch(claimTask(id,userName,(err, res)=>{
+                    if(!err)
+                      dispatch(getTaskDetail(id))
+                    else{
+                      dispatch(setLoader(false));
+                    }
+                  }))
                 }
             })
             )
         },
         onUnclaim: (id) => {
             dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
-                dispatch(setLoader(true))
                 if (!err) {
-                    dispatch(unClaimTask(id))
+                  dispatch(setLoader(true));
+                  dispatch(unClaimTask(id,(err, res)=>{
+                    if(!err)
+                      dispatch(getTaskDetail(id));
+                    else{
+                      dispatch(setLoader(false));
+                    }
+                  }))
                 }
             })
             )

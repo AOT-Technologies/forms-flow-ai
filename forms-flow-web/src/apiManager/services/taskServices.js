@@ -66,34 +66,34 @@ export const getTaskSubmissionDetails = (id) =>{
   }
 }
 
-export const claimTask = (id,user)=>{
+export const claimTask = (id,user, ...rest)=>{
   // console.log("Claimed",id,user)
+  const done = rest.length ? rest[0] :  ()=>{};
   return dispatch=>{
     httpPOSTRequest(`${API.TASK_ACTION_API}/${id}/claim`,{userId:user}).then(res=>{
       if(res.status === 204){
         //TODO REMOVE
-        dispatch(setLoader(true))
-        dispatch(fetchTaskList())
-        dispatch(getTaskDetail(id))
+        done(null,res.data);
       }
     }).catch(error=>{
       console.log('Error',error)
       dispatch(serviceActionError(error))
+      done(error);
     })
   }
 }
-export const unClaimTask = (id)=>{
+export const unClaimTask = (id, ...rest)=>{
+  const done = rest.length ? rest[0] :  ()=>{};
   return dispatch=>{
     httpPOSTRequest(`${API.TASK_ACTION_API}/${id}/unclaim`).then(res=>{
       if(res.status === 204){
         //TODO REMOVE
-        dispatch(setLoader(true))
-        dispatch(fetchTaskList())
-        dispatch(getTaskDetail(id))
+        done(null,res.data);
       }
     }).catch(error=>{
       console.log('Error',error)
-      dispatch(serviceActionError(error))
+      dispatch(serviceActionError(error));
+      done(error);
     })
   }
 }

@@ -12,6 +12,7 @@ import { fetchTaskList, getTaskCount, claimTask, unClaimTask } from '../../apiMa
 import { columns, getoptions, defaultSortedBy, TaskSearch, clearFilter } from './table'
 import Loading from '../../containers/Loading'
 import Nodata from './nodata';
+import {setLoader} from "../../actions/taskActions";
 
 let isTaskAvailable = false;
 let total = 0;
@@ -100,6 +101,7 @@ const mapDispatchToProps = (dispatch) => {
     getTasks: dispatch(
       getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {
+          dispatch(setLoader(true));
           dispatch(getTaskCount())
           dispatch(fetchTaskList())
         }
@@ -108,7 +110,14 @@ const mapDispatchToProps = (dispatch) => {
     onClaim: (id,userName) => {
       dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {
-          dispatch(claimTask(id,userName))
+          dispatch(setLoader(true));
+          dispatch(claimTask(id,userName,(err, res)=>{
+            if(!err)
+            dispatch(fetchTaskList());
+            else{
+              dispatch(setLoader(false));
+            }
+          }))
         }
       })
       )
@@ -116,7 +125,14 @@ const mapDispatchToProps = (dispatch) => {
     onUnclaim: (id) => {
       dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {
-          dispatch(unClaimTask(id))
+          dispatch(setLoader(true));
+          dispatch(unClaimTask(id,(err, res)=>{
+            if(!err)
+              dispatch(fetchTaskList());
+            else{
+              dispatch(setLoader(false));
+            }
+          }))
         }
       })
       )

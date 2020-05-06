@@ -43,7 +43,7 @@ function linkSubmision(cell,row) {
 }
 
 function linkSubmisionId(cell) {
-  return <label title={cell}>{cell}</label>
+  return <label className='text-truncate w-100' title={cell}>{cell}</label>
 }
 
 function buttonFormatter(cell, row) {
@@ -126,7 +126,6 @@ export const columns = [
     dataField: 'applicationId',
     text: 'Application Id',
     formatter: linkSubmisionId,
-    className: 'task-table-header',
     sort: true,
     filter: textFilter({
       placeholder: '\uf002 Id',  // custom the input placeholder

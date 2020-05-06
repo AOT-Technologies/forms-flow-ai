@@ -24,7 +24,7 @@ const listTasks = (props) => {
         id: task.id,
         applicationId: task.id,//to do update to application/submission id
         taskTitle: task.name,
-        taskStatus: task.status||task.assignee?"Assigned":"---",//to do
+        taskStatus: task.deleteReason === "completed"?'Completed': task.assignee?"Assigned":"New",//todo update ,
         taskAssignee: task.assignee,
         submittedBy: "---",
         dueDate: (task.due || "Set due date"),
@@ -53,6 +53,15 @@ const Tasks = (props) => {
       <Loading />
     );
   }
+  const getNoDataIndicationContent = () => {
+    return (<div className="div-no-task">
+      <label className="lbl-no-task"> No tasks found </label>
+      <br/>
+      <label className="lbl-no-task-desc"> Please change the selected filters to view tasks </label>
+      <br/>
+      <label className="lbl-clear"  onClick={clearFilter}>Clear all filters</label>
+    </div>)
+  }
   return (
     isTaskAvailable ?
       <ToolkitProvider keyField="id" data={listTasks(props)} columns={columns} search>
@@ -69,13 +78,7 @@ const Tasks = (props) => {
               <br />
               <div>
                 <BootstrapTable filter={filterFactory()} pagination={paginationFactory(getoptions(props.tasksCount))} defaultSorted={defaultSortedBy}
-                  {...props.baseProps}  noDataIndication={() => <div className="div-no-task">
-                    <label className="lbl-no-task"> No tasks found </label>
-                    <br/>
-                    <label className="lbl-no-task-desc"> Please change the selected filters to view tasks </label>
-                    <br/>
-                    <label className="lbl-clear"  onClick={clearFilter}>Clear all filters</label>
-                  </div>}
+                  {...props.baseProps}  noDataIndication={() => getNoDataIndicationContent()}
                 />
                 <br />
               </div>
@@ -85,7 +88,7 @@ const Tasks = (props) => {
       </ToolkitProvider>
       :
       <Nodata />
-  )
+  );
 };
 
 const mapStateToProps = (state) => {

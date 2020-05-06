@@ -47,8 +47,7 @@ function linkSubmisionId(cell) {
 }
 
 function buttonFormatter(cell, row) {
-  if(row.deleteReason === "completed"){
-  //if(cell === "completed"){
+  if(cell === "Completed"){
     return <label className="text-success font-weight-bold text-uppercase task-btn">Completed</label>;
   }else if(cell === "Assigned"){
     return <label className="text-info font-weight-bold text-uppercase">In Progress</label>
@@ -61,7 +60,7 @@ function linkTaskAssignee(cell,row){
   if(cell){
     return  <div>
             {cell}
-           {row.userName === row.taskAssignee ?
+           {row.userName === row.taskAssignee && row.deleteReason !== "completed"?
              <p className="mb-0" onClick={() => row.unAssignFn(row.id)}>Unassign</p> : null}
          </div>;
   }else {

@@ -34,7 +34,7 @@ const View = (props) => {
                     {task.assignee ?
                         <td className="border-0 d-inline-flex">
                             {task.assignee}
-                            {task.assignee === props.userName ?
+                            {task.assignee === props.userName && props.detail.deleteReason !== "completed" ?
                                 <p className="mb-0 ml-3" onClick={() => props.onUnclaim(task.id)}>
                                     Unassign
                                 </p>

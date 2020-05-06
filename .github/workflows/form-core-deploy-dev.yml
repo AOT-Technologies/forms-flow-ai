@@ -7,6 +7,8 @@ name: form-core-deploy-dev
 on:
   push:
     branches: [ master ]
+    paths:
+      - "forms-flow-forms/**"
 
 env:
   IMAGE_NAME: formio-core-api

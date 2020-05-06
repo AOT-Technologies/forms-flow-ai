@@ -21,7 +21,7 @@ const listTasks = (props) => {
     const data= props.tasks.map(task => {
       return {
         id: task.id,
-        applicationId: "",//to do
+        applicationId: task.id,//to do update to application/submission id
         taskTitle: task.name,
         taskStatus: task.status||task.assignee?"Assigned":"---",//to do
         taskAssignee: task.assignee,

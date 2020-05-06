@@ -42,6 +42,10 @@ function linkSubmision(cell,row) {
   return <Link to={`/task/${row.id}`} onClick={() => {setLoader(true)}} title={cell}>{cell}</Link>
 }
 
+function linkSubmisionId(cell) {
+  return <label title={cell}>{cell}</label>
+}
+
 function buttonFormatter(cell, row) {
   if(row.deleteReason === "completed"){
   //if(cell === "completed"){
@@ -121,6 +125,8 @@ export const columns = [
   {
     dataField: 'applicationId',
     text: 'Application Id',
+    formatter: linkSubmisionId,
+    className: 'task-table-header',
     sort: true,
     filter: textFilter({
       placeholder: '\uf002 Id',  // custom the input placeholder

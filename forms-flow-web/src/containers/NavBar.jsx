@@ -47,15 +47,33 @@ class NavBar extends Component {
         const { user, userRoles } = this.props;
         return (
             <header>
-                <Navbar className="navbar">
+                <Navbar expand="lg">
                     <section className="container">
-                        <Navbar.Brand>
+                        <Navbar.Brand className="d-flex">
                             <img className="img-fluid d-none d-md-block" src="/AOT-logo.png" width="250" alt="AOT Logo" />
                             <img className="img-fluid d-md-none" src="/AOT-simple-logo.png" width="40" alt="AOT Logo"></img>
+                            <label className="lbl-app-nanme">FormsFlow</label><label className="lbl-app-nanme app-name">.AI</label>
+                       {/* for small screen */}
+                       <Nav className="d-md-none custom-profile">
+                                <NavDropdown style={{ fontSize: '18px' }} title={<div className="pull-left">
+                                    <img className="thumbnail-image"
+                                        src="/assets/Images/user.svg"
+                                        alt="user pic"
+                                    /></div>} className="nav-dropdown" id="basic-nav-dropdown">
+                                    
+                                    <NavDropdown.Header className="nav-user-name">{user.name || user.preferred_username}</NavDropdown.Header>
+                                    <NavDropdown.Header className="nav-user-email" title={user.email}>{user.email}</NavDropdown.Header>
+                                    <NavDropdown.Header className="nav-user-role">{this.getUserRole(userRoles)}</NavDropdown.Header>
+                                    <NavDropdown.Divider />
+                                    <NavDropdown.Header className="nav-logout" onClick={UserService.userLogout}>
+                                        <img src="/assets/Images/logout.svg" alt="" /><label className="lbl-logout">Logout</label>
+                                </NavDropdown.Header>
+
+                                </NavDropdown>
+                            </Nav>
                         </Navbar.Brand>
-                        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                        <Navbar.Toggle aria-controls="responsive-navbar-nav" className="navbar-dark custom-toggler" />
                         <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
-                        <label className="lbl-app-nanme">FormsFlow</label><label className="lbl-app-nanme app-name">.AI</label>
                             <Nav className="mr-auto nav-custom-tab">
                                 <Link to="/" className={`main-nav nav-link ${this.state.isFormActive? "active-tab":""}`} onClick={()=>this.setActiveMenu('form')}>
                                 <img className="nav-icons" src="/form_white.svg" width="22" height="22" alt="form"/>
@@ -69,7 +87,8 @@ class NavBar extends Component {
                                     :
                                     null}
                             </Nav>
-                            <Nav>
+                            </Navbar.Collapse>
+                            <Nav className="d-none d-md-block">
                                 <NavDropdown style={{ fontSize: '18px' }} title={<div className="pull-left">
                                     Hi {user.given_name || user.name || user.preferred_username || ''} &nbsp;
                                     <img className="thumbnail-image"
@@ -88,7 +107,8 @@ class NavBar extends Component {
 
                                 </NavDropdown>
                             </Nav>
-                        </Navbar.Collapse>
+                            
+                        
                     </section>
                 </Navbar>
             </header>

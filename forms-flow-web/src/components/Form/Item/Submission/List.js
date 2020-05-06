@@ -49,7 +49,7 @@ const List = class extends Component {
         </Link>
         </div>
         
-        <section>
+        <section className="custom-grid">
           <Errors errors={errors} />
           <SubmissionGrid
             submissions={submissions}

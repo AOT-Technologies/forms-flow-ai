@@ -73,6 +73,8 @@ body{
 }
 .btn{
   margin-right: 5px;
+  margin-top: 1px;
+  margin-bottom: 1px;
 }
 .input-group{
   .input-group-addon{
@@ -261,6 +263,45 @@ padding: 0rem 0rem;
   border-left: 6px solid transparent;
   content: '';
 }
+.custom-profile
+{
+  position: absolute;
+  margin-left: 210px;
+  padding-bottom: 10px;
+  z-index: 10;
+}
+.d-md-none{
+  .dropup, .dropright, .dropdown, .dropleft
+  {
+    position: initial;
+  }
+  .nav-dropdown .dropdown-menu
+  {
+    position: absolute;
+  }
+  .dropdown-menu:before {
+    position: absolute;
+    top: -6px;
+    right: 4px;
+    display: inline-block;
+    border-right: 7px solid transparent;
+    border-bottom: 7px solid #ccc;
+    border-left: 7px solid transparent;
+    border-bottom-color: rgba(0, 0, 0, 0.2);
+    content: '';
+  }
+
+  .dropdown-menu:after {
+    position: absolute;
+    top: -5px;
+    right: 5px;
+    display: inline-block;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid #ffffff;
+    border-left: 6px solid transparent;
+    content: '';
+  }
+}
 .lbl-app-nanme
 {
   font-size: 20px;
@@ -282,4 +323,16 @@ margin-right: 3px;
 .nav-dropdown .dropdown-menu
 {
   height: auto !important;
+}
+.table-bordered thead th, .table-bordered thead td
+{
+  background-color: #F2F2F2 !important;
+}
+.navbar-dark.navbar-toggler {
+  border-color:white;
+} 
+.btn-right
+{
+    float: right;
+    margin-left: auto;
 }

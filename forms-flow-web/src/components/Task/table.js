@@ -38,10 +38,8 @@ function linkDueDate(cell) {
   return <a href=" ">{cell}</a>
 }
 
-function linkSubmisionId(cell) {
-  return <Link to={`/task/${cell}`} onClick={() => {
-    setLoader(true)
-  }} title={cell}>{cell}</Link>
+function linkSubmision(cell,row) {
+  return <Link to={`/task/${row.id}`} onClick={() => {setLoader(true)}} title={cell}>{cell}</Link>
 }
 
 function buttonFormatter(cell, row) {
@@ -72,23 +70,11 @@ export const clearFilter = () => {
   apptypeFilter('');
 };
 
-export const columns = [{
-  dataField: 'id',
-  text: 'Task Id',
-  formatter: linkSubmisionId,
-  className: 'task-table-header',
-  sort: true,
-  filter: textFilter({
-    placeholder: "\uf002 Task Id",  // custom the input placeholder
-    caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-    className: "icon-seach",
-    getFilter: (filter) => {
-      idFilter = filter;
-    }
-  })
-}, {
+export const columns = [
+{
   dataField: 'taskTitle',
   text: 'Task Title',
+  formatter:linkSubmision,
   sort: true,
   filter: textFilter({
     placeholder: '\uf002 Task Title',  // custom the input placeholder

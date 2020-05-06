@@ -58,6 +58,7 @@ export const claimTask = (id,user)=>{
       if(res.status === 204){
         dispatch(setLoader(true))
         dispatch(fetchTaskList())
+        dispatch(getTaskDetail(id))
       }
     }).catch(error=>{
       console.log('Error',error)
@@ -71,6 +72,7 @@ export const unClaimTask = (id)=>{
       if(res.status === 204){
         dispatch(setLoader(true))
         dispatch(fetchTaskList())
+        dispatch(getTaskDetail(id))
       }
     }).catch(error=>{
       console.log('Error',error)
@@ -88,7 +90,7 @@ export const completeTask=(id,reviewStatus)=>{
   }
   return dispatch=>{
     httpPOSTRequest(`${API.TASK_ACTION_API}/${id}/complete`,data).then(res=>{
-      dispatch(fetchTaskList())
+      dispatch(getTaskDetail(id))
     }).catch(error=>{
       console.log('Error',error)
       dispatch(serviceActionError(error))

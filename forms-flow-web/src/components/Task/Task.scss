@@ -163,12 +163,20 @@
     height: 35px;
 }
 
-.table th, .table td
-{
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+.table{
+    th, td
+    {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    p{
+        color: rgb(26, 90, 150);
+        text-decoration: underline;
+        background-color: transparent;
+        cursor: pointer;
+    }
+} 
 .filter-label
 {
     display: flex !important;

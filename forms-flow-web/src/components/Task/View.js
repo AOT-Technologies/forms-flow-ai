@@ -30,7 +30,7 @@ class View extends Component {
                         <img src="/clipboard.svg" alt="Task" />
                     </span>
                     <h3>
-                        <span className="task-head-details">Tasks /</span> {`${detail.name} (${detail.id})`}
+                        <span className="task-head-details">Tasks /</span> {`${detail.name}`}
                     </h3>
                 </div>
                 <br />

@@ -37,7 +37,7 @@ class Review extends Component {
                             <option value="reject">Reject</option>
                             <option value="sendback">Send Back</option>
                         </select>
-                        <br />
+                        
                         {(this.props.detail.assignee && this.props.detail.assignee === this.props.userName) ?
                             <button
                                 className="btn btn-primary pull-right"

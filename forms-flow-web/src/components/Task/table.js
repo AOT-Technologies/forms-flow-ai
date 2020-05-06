@@ -30,7 +30,7 @@ export const TaskSearch = (props) => {
 
 const selectOptions = [
   {value: 'New', label: 'New'},
-  {value: 'In-Progress', label: 'In-Progress'},
+  {value: 'Assigned', label: 'In-Progress'},
   {value: 'Completed', label: 'Completed'}
 ];
 
@@ -44,9 +44,10 @@ function linkSubmision(cell,row) {
 
 function buttonFormatter(cell, row) {
   if(row.deleteReason === "completed"){
+  //if(cell === "completed"){
     return <label className="text-success font-weight-bold text-uppercase task-btn">Completed</label>;
   }else if(cell === "Assigned"){
-    return <label className="text-secondary font-weight-bold text-uppercase">In Progress</label>
+    return <label className="text-info font-weight-bold text-uppercase">In Progress</label>
   }else{
     return <label className="text-primary font-weight-bold text-uppercase task-btn">New</label>;
   }

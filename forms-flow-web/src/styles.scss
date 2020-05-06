@@ -74,7 +74,7 @@ body{
 .btn{
   margin-right: 5px;
   margin-top: 1px;
-  margin-bottom: 1px;
+  margin-bottom: 7px;
 }
 .input-group{
   .input-group-addon{
@@ -335,4 +335,7 @@ margin-right: 3px;
 {
     float: right;
     margin-left: auto;
+}
+select option:hover {
+  box-shadow: 0 0 10px 100px #000 inset;
 }

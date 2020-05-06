@@ -31,7 +31,7 @@ class Review extends Component {
                     <section className="review-status">
                         <label>Review Status</label>
                         <select className="ml-5" defaultValue={this.state.status} onChange={(e) => this.handleChange(e)}
-                            disabled={(this.props.detail.assignee === null) || (this.props.detail.assignee === this.props.userName ? false : true)}>
+                            disabled={(this.props.detail.assignee === null ) || (this.props.detail.assignee === this.props.userName && this.props.detail.deleteReason !== "completed"? false : true)}>
                             <option value=" " disabled>Set review status</option>
                             <option value="approve">Approve</option>
                             <option value="reject">Reject</option>

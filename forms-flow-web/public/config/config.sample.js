@@ -1,4 +1,4 @@
-export default {
+window['_env_'] =  {
   // To define project level configuration  possible values development,test, production
   "NODE_ENV": "development",
   //Environment Variables for forms-flow-web
@@ -22,8 +22,6 @@ export default {
   "REACT_APP_API_SERVER_URL": "http: //localhost:3001",
   // Form-IO API-PROJECT-URL
   "REACT_APP_API_PROJECT_URL": "http: //localhost:3001",
-  // If need to change Keycloak.json Path
-  "REACT_APP_KEYCLOAK_JSON": "/keycloak.json",
   // Keycloak-client-name for web
   "REACT_APP_KEYCLOAK_CLIENT": "forms-flow-web",
   ////Environment Variables for forms-flow-bpm////

@@ -12,7 +12,8 @@ import { fetchTaskList, getTaskCount, claimTask, unClaimTask, getTaskSubmissionD
 import { columns, getoptions, defaultSortedBy, TaskSearch, clearFilter } from './table'
 import Loading from '../../containers/Loading'
 import Nodata from './nodata';
-import { setLoader, setTaskList } from "../../actions/taskActions";
+import {setLoader, setTaskDetail, setTaskList} from "../../actions/taskActions";
+import moment from 'moment';
 
 let isTaskAvailable = false;
 let total = 0;
@@ -29,6 +30,7 @@ const listTasks = (props) => {
         submittedBy: "---",
         dueDate: (task.due || "Set due date"),
         form: '---',
+        submissionDate: task.submission_date? moment(task.submission_date).format('DD-MMM-YYYY') : '---',
         userName:props.userDetail.preferred_username,
         deleteReason:task.deleteReason,
         assignToMeFn:props.onClaim,
@@ -121,7 +123,7 @@ const mapDispatchToProps = (dispatch) => {
             }))
         }
       })
-    ),
+      ),
     onClaim: (id,userName) => {
       dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {

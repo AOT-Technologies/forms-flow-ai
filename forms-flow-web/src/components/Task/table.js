@@ -2,8 +2,6 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import {textFilter, selectFilter} from 'react-bootstrap-table2-filter';
 
-import {setLoader} from '../../actions/taskActions'
-
 let titleFilter, statusFilter, ownerFilter, appidFilter, submittedFilter, apptypeFilter;
 
 export const defaultSortedBy = [{
@@ -39,7 +37,7 @@ function linkDueDate(cell) {
 }
 
 function linkSubmision(cell,row) {
-  return <Link to={`/task/${row.id}`} onClick={() => {setLoader(true)}} title={cell}>{cell}</Link>
+  return <Link to={`/task/${row.id}`} title={cell}>{cell}</Link>
 }
 
 function linkSubmisionId(cell) {

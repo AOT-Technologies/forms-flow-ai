@@ -12,7 +12,7 @@ class Review extends Component {
       status: props.detail.action||" "
     }
   }
-  
+
   UNSAFE_componentWillReceiveProps(nextProps) {
     if (nextProps.detail.action !== this.state.status) {
       this.setState({ status: nextProps.detail.action });

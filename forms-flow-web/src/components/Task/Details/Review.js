@@ -6,10 +6,16 @@ import {getUserToken} from '../../../apiManager/services/bpmServices'
 import {completeTask} from '../../../apiManager/services/taskServices'
 
 class Review extends Component {
-  constructor() {
+  constructor(props) {
     super();
     this.state = {
-      status: " "
+      status: props.detail.action||" "
+    }
+  }
+  
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (nextProps.detail.action !== this.state.status) {
+      this.setState({ status: nextProps.detail.action });
     }
   }
 
@@ -33,9 +39,9 @@ class Review extends Component {
             <div className="row col-md-12">
               <div className="col-md-4"><label>Review Status</label></div>
               <div className="col-md-6">
-                <select defaultValue={this.state.status} onChange={(e) => this.handleChange(e)}
+                <select value={this.state.status} onChange={(e) => this.handleChange(e)}
                         disabled={(this.props.detail.assignee === null) || (!(this.props.detail.assignee === this.props.userName && this.props.detail.deleteReason !== "completed"))}>
-                  <option value=" " disabled>Set review status {this.state.status}</option>
+                  <option value=" " disabled>Set review status</option>
                   <option value="approve">Approve</option>
                   <option value="reject">Reject</option>
                   <option value="sendback">Send Back</option>

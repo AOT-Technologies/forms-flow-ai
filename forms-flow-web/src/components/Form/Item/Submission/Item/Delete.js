@@ -32,12 +32,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }
       }));
     },
-    onNo: () => {
-      dispatch(goBack());
-    }
   };
 }
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps

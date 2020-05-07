@@ -2,11 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { Link } from 'react-router-dom'
-import { indexForms, selectRoot, selectError, Errors, FormGrid } from 'react-formio';
+import { indexForms, selectRoot, selectError, Errors, FormGrid,deleteForm, resetForms, } from 'react-formio';
 
 import Loading from "../../containers/Loading";
 import {OPERATIONS, CLIENT, STAFF_DESIGNER, STAFF_REVIEWER} from "../../constants/constants"
 import '../Form/List.scss'
+import {setFormDeleteStatus} from '../../actions/formActions'
+import Confirm from '../../containers/Confirm';
 
 const List = class extends Component {
   componentWillMount() {
@@ -24,6 +26,12 @@ const List = class extends Component {
 
     return (
       <div className="container">
+            <Confirm modalOpen={this.props.modalOpen}
+      message={`Are you sure you wish to delete the form ?`}
+      onNo={() =>this.props.onNo()}
+      onYes={() =>this.props.onYes(this.props.formId)}
+      >
+      </Confirm>
         <div className="main-header">
           <img src="/form.svg" width="30" height="30" alt="form"/>
           <h3 className="task-head">Forms</h3>
@@ -63,6 +71,8 @@ const mapStateToProps = (state) => {
     forms: selectRoot('forms', state),
     errors: selectError('forms', state),
     userRoles: selectRoot('user',state).roles||[],
+    modalOpen: selectRoot('formDelete',state).formDelete.modalOpen,
+    formId: selectRoot('formDelete',state).formDelete.formId,
   }
 }
 
@@ -83,13 +93,26 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(push(`/form/${form._id}/edit`));
           break;
         case 'delete':
-            dispatch(push(`/form/${form._id}/delete`));
+            const formDetails={modalOpen:true,formId:form._id}
+            //dispatch(push(`/form/${form._id}/delete`));
+            dispatch(setFormDeleteStatus(formDetails))
           break;
         case 'viewForm':
             dispatch(push(`/form/${form._id}/preview`));
           break;
         default:
       }
+    },
+    onYes: (formId) => {
+      dispatch(deleteForm('submission', formId,  (err) => {
+        if (!err) {
+          dispatch(resetForms('forms'));
+        }
+      }));
+    },
+    onNo: () => {
+      const formDetails={modalOpen:false,formId:""}
+      dispatch(setFormDeleteStatus(formDetails))
     }
   }
 };

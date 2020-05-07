@@ -2,10 +2,13 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { getSubmissions, selectRoot, selectError, SubmissionGrid, Errors } from 'react-formio';
+import { getSubmissions, selectRoot, selectError, SubmissionGrid, Errors,deleteSubmission, resetSubmissions } from 'react-formio';
 
 import Loading from '../../../../containers/Loading';
 import { OPERATIONS, CLIENT } from '../../../../constants/constants';
+import Confirm from '../../../../containers/Confirm';
+import {setFormSubmissionDeleteStatus} from '../../../../actions/formActions'
+
 
 const List = class extends Component {
   componentWillMount() {
@@ -34,6 +37,12 @@ const List = class extends Component {
 
     return (
       <div className="container">
+      <Confirm modalOpen={this.props.modalOpen}
+      message= "Are you sure you wish to delete this submission?"
+      onNo={() =>this.props.onNo()}
+      onYes={() =>this.props.onYes(this.props.formId,this.props.submissionId)}
+      >
+      </Confirm>
         <div className="main-header">
           <Link to="/form">
             <img src="/back.svg" alt="back" />
@@ -67,7 +76,6 @@ const List = class extends Component {
 const mapStateToProps = (state, ownProps) => {
   const form = selectRoot('form', state);
   const submissions = selectRoot('submissions', state);
-
   return {
     form: form.form,
     submissions: submissions,
@@ -76,10 +84,12 @@ const mapStateToProps = (state, ownProps) => {
       selectError('submissions', state),
       selectError('form', state)
     ],
-    userRoles: selectRoot('user',state).roles||[]
+    userRoles: selectRoot('user',state).roles||[],
+    modalOpen: selectRoot('formDelete',state).formSubMissionDelete.modalOpen,
+    formId: selectRoot('formDelete',state).formSubMissionDelete.formId,
+    submissionId: selectRoot('formDelete',state).formSubMissionDelete.submissionId
   };
 };
-
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     getSubmissions: (page, query) => dispatch(getSubmissions('submissions', page, query, ownProps.match.params.formId)),
@@ -93,12 +103,25 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`));
           break;
         case 'delete':
-          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/delete`));
+          const submissionDetails={modalOpen:true,formId:ownProps.match.params.formId,submissionId:submission._id}
+          //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/delete`));
+         dispatch(setFormSubmissionDeleteStatus(submissionDetails))
           break;
         default:
 
       }
     },
+    onYes: (formId,submissionId) => {
+      dispatch(deleteSubmission('submission', formId,submissionId,  (err) => {
+        if (!err) {
+          dispatch(resetSubmissions('submissions'));
+        }
+      }));
+    },
+    onNo: () => {
+      const submissionDetails={modalOpen:false,submissionId:"",formId:""}
+      dispatch(setFormSubmissionDeleteStatus(submissionDetails))
+    }
   };
 };
 

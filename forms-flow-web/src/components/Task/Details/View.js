@@ -14,13 +14,16 @@ import {
 import {setLoader, setTaskSubmissionDetail} from '../../../actions/taskActions'
 
 const taskStatus =(task)=>{
-    if(task.deleteReason === "completed"){
-        return <label className="text-success font-weight-bold text-uppercase task-btn">{task.task_status||'Completed'}</label>;
-      }else if(task.assignee){
-        return <label className="text-secondary font-weight-bold text-uppercase">{task.task_status||'In-Progress'}</label>
-      }else{
-        return <label className="text-primary font-weight-bold text-uppercase task-btn">{task.task_status||'NEW'}</label>;
-      }
+    switch(task.task_status){
+        case "Completed" :
+            return <label className="text-success font-weight-bold text-uppercase task-btn">{task.task_status||'Completed'}</label>;
+        case "In-Progess":
+            return <label className="text-info font-weight-bold text-uppercase">{task.task_status||'In-Progress'}</label>
+        case "New":
+            return <label className="text-primary font-weight-bold text-uppercase task-btn">{task.task_status||'New'}</label>;
+        default:
+            return <label className="text-primary font-weight-bold text-uppercase task-btn">{task.task_status||'New'}</label>;
+    }
 }
 
 const View = (props) => {
@@ -71,7 +74,7 @@ const View = (props) => {
                 <tr>
                     <td className="border-0">Submitted On</td>
                     <td className="border-0">:</td>
-                    <td className="border-0">{moment(task.created).format('DD-MMM-YYYY')}</td>
+                    <td className="border-0">{moment(task.submission_date).format('DD-MMM-YYYY')}</td>
                 </tr>
                 <tr>
                     <td className="border-0">Due date</td>

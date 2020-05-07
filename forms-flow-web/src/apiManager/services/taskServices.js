@@ -2,12 +2,15 @@ import {  httpGETRequest, httpPOSTRequest } from '../httpRequestHandler'
 import API from '../endpoints'
 import { setTaskList, setTaskCount, serviceActionError, setLoader, setTaskDetail } from '../../actions/taskActions'
 import {taskSubmissionFormatter} from './formatterService'
-export const fetchTaskList = () =>{
+
+export const fetchTaskList = (...rest) =>{
+  const done = rest.length ? rest[0] :  ()=>{};
     return dispatch => {
       httpPOSTRequest(API.GET_TASK_API,{"taskVariables":[]}).then(res => {
           if (res.data) {
             dispatch(setTaskList(res.data))
             dispatch(setLoader(false))
+            done(null,res.data);
           } else {
             console.log('Error',res);
             dispatch(serviceActionError(res))
@@ -17,6 +20,7 @@ export const fetchTaskList = () =>{
           console.log('Error',error);
           dispatch(serviceActionError(error))
           dispatch(setLoader(false))
+          done(error);
         })
       }
 }

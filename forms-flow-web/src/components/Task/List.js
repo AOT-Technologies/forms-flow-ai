@@ -8,7 +8,7 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 
 import { getUserToken } from '../../apiManager/services/bpmServices'
 import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants'
-import { fetchTaskList, getTaskCount, claimTask, unClaimTask } from '../../apiManager/services/taskServices'
+import { fetchTaskList, getTaskCount, claimTask, unClaimTask, getTaskSubmissionDetails } from '../../apiManager/services/taskServices'
 import { columns, getoptions, defaultSortedBy, TaskSearch, clearFilter } from './table'
 import Loading from '../../containers/Loading'
 import Nodata from './nodata';
@@ -106,7 +106,21 @@ const mapDispatchToProps = (dispatch) => {
         if (!err) {
           dispatch(setLoader(true));
           dispatch(getTaskCount())
-          dispatch(fetchTaskList())
+          dispatch(fetchTaskList((err,res)=>{
+            if(!err){
+              res.forEach(ele=>{
+                dispatch(
+                  getTaskSubmissionDetails(ele.processInstanceId,(err,result)=>{
+                    for(let i=0;i<res.length;i++){
+                      if(res[i].processInstanceId===ele.processInstanceId){
+                        //append to the tasklist
+                      }
+                    }
+                })
+                )
+              })
+            }
+          }))
         }
       })
     ),

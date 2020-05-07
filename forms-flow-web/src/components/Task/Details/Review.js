@@ -22,30 +22,37 @@ class Review extends Component {
                 <section className="review-box">
                     <section className="row">
                         <p className="col-md-6" style={{ fontSize: "21px", fontWeight: "bolder" }}>{this.props.detail.name}</p>
-                    </section>{/*
-                    <section>
+                    </section>
+                    {/* <section>
                         <p>
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tem por incididunt ut labore et dolore magna aliqua.
                         </p>
-                    </section>*/}
-                    <section className="review-status">
-                        <label>Review Status</label>
-                        <select className="ml-5" defaultValue={this.state.status} onChange={(e) => this.handleChange(e)}
-                            disabled={(this.props.detail.assignee === null ) || (this.props.detail.assignee === this.props.userName && this.props.detail.deleteReason !== "completed"? false : true)}>
+                    </section> */}
+                    <div className="review-status">
+                    <div className="row col-md-12">
+                     <div className="col-md-4">   <label>Review Status</label></div>
+                     <div className="col-md-6">
+                        <select defaultValue={this.state.status} onChange={(e) => this.handleChange(e)}
+                            disabled={(this.props.detail.assignee === null) || (this.props.detail.assignee === this.props.userName ? false : true)}>
                             <option value=" " disabled>Set review status</option>
                             <option value="approve">Approve</option>
                             <option value="reject">Reject</option>
                             <option value="sendback">Send Back</option>
                         </select>
-
-                        {(this.props.detail.assignee && this.props.detail.assignee === this.props.userName && this.props.detail.deleteReason !== "completed") ?
-                            <button
-                                className="btn btn-primary pull-right"
+                        </div>
+                        
+                        <div className="col-md-2">
+                        {(this.props.detail.assignee && this.props.detail.assignee === this.props.userName) ?
+                           
+                           <button
+                                className="btn btn-primary"
                                 disabled={this.state.status === " "}
                                 onClick={() => this.props.onCompleteTask(this.props.detail.id, this.state.status)}
                             >Submit</button>
                             : null}
-                    </section>
+                             </div>
+                             </div>
+                    </div>
                 </section>
             </div>
         )

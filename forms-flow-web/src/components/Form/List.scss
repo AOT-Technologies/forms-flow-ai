@@ -11,7 +11,7 @@
     .col
     {
         border-left: 1px solid #ced4da;
-        min-height: 40px;
+        min-height: 50px;
         text-align: start;
         padding-top: 15px;
         height: auto;
@@ -53,4 +53,9 @@
         float: right;
         margin-left: auto;
     }
+    .btn{
+        margin-right: 5px;
+        margin-top: 1px;
+        margin-bottom: 7px;
+      }
 }

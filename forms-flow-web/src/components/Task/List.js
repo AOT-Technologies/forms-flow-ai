@@ -105,23 +105,19 @@ const mapDispatchToProps = (dispatch) => {
       getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {
           dispatch(setLoader(true));
-          dispatch(getTaskCount())
+          dispatch(getTaskCount());
           dispatch(fetchTaskList((err,res)=>{
             if(!err){
               res.map(ele=>{
-                dispatch(
+                return dispatch(
                   getTaskSubmissionDetails(ele.processInstanceId,(err,result)=>{
-                    for(let i=0;i<res.length;i++){
-                      if(res[i].processInstanceId===ele.processInstanceId){
-                        res[i]=Object.assign(res[i],result)
-                      }
-                    }
-                })
+                     return {...ele, ...result};
+                    })
                 )
               })
               dispatch(setTaskList(res))
             }
-          }))
+            }))
         }
       })
     ),

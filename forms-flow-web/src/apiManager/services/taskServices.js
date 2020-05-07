@@ -36,33 +36,33 @@ export const getTaskCount = () =>{
       }
 }
 
-export const getTaskDetail = (id) =>{
+export const getTaskDetail = (id, ...rest) =>{
+  const done = rest.length ? rest[0] :  ()=>{};
   return dispatch=>{
     httpGETRequest(`${API.GET_TASK_DETAIL_API}${id}`).then(res=>{
       if(res.status === 200){
         dispatch(setTaskDetail(res.data[0]))
         dispatch(setLoader(false))
+        done(null,res.data);
       }
     })
     .catch(error=>{
       dispatch(serviceActionError(error))
       dispatch(setLoader(false))
+      done(error);
     })
   }
 }
 
-export const getTaskSubmissionDetails = (id) =>{
+export const getTaskSubmissionDetails = (id,value) =>{
   return dispatch=>{
     httpGETRequest(`${API.GET_TASK_SUBMISSION_DATA}${id}`).then(res=>{
       if(res.status === 200){
-       // new dispatch needed ..... dispatch(setTaskDetail(res.data))
-        dispatch(setLoader(false))
       }
     })
-      .catch(error=>{
-        dispatch(serviceActionError(error))
-        dispatch(setLoader(false))
-      })
+    .catch(error=>{
+      dispatch(serviceActionError(error))
+    })
   }
 }
 

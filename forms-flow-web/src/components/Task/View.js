@@ -7,7 +7,7 @@ import {selectRoot, selectError} from 'react-formio';
 import Details from './Details'
 import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants'
 import { getUserToken } from '../../apiManager/services/bpmServices'
-import { getTaskDetail } from '../../apiManager/services/taskServices'
+import { getTaskDetail, getTaskSubmissionDetails } from '../../apiManager/services/taskServices'
 // import { setLoader } from '../../actions/taskActions'
 import Loading from '../../containers/Loading'
 import {setLoader} from "../../actions/taskActions";
@@ -87,7 +87,11 @@ const mapDispatchToProps = (dispatch) => {
                 let id = window.location.pathname.split("/")[2]
                 if (!err) {
                   dispatch(setLoader(true));
-                  dispatch(getTaskDetail(id))
+                  dispatch(getTaskDetail(id,(err,res)=>{
+                      if(!err){
+                          dispatch(getTaskSubmissionDetails(res[0].processInstanceId,res[0]))
+                      }
+                  }))
                 }
             })
         )

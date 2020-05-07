@@ -1,4 +1,5 @@
-export default {
+// runtime-config.js
+window['_env_'] =  {
   "NODE_ENV": "development",
   "REACT_APP_CLIENT_ROLE": "rpas-client",
   "REACT_APP_STAFF_DESIGNER_ROLE": "rpas-designer",
@@ -9,7 +10,6 @@ export default {
   "REACT_APP_USER_RESOURCE_FORM_ID": "5e92e635059056905c533e24",
   "REACT_APP_API_SERVER_URL": "http://localhost:3001",
   "REACT_APP_API_PROJECT_URL": "http://localhost:3001",
-  "REACT_APP_KEYCLOAK_JSON_DEV": "./keycloak.json",
   "REACT_APP_KEYCLOAK_CLIENT": "forms-flow-web",
   "REACT_APP_BPM_API_BASE": "https://bpm1.aot-technologies.com",
   "REACT_APP_BPM_TOKEN_API": "https://iam.aot-technologies.com/auth/realms/forms-flow-ai/protocol/openid-connect/token",

@@ -24,7 +24,7 @@ const listTasks = (props) => {
         id: task.id,
         applicationId: task.id,//to do update to application/submission id
         taskTitle: task.name,
-        taskStatus: task.task_status,
+        taskStatus: task.deleteReason === "completed"?'Completed': task.assignee?"In-Progress":"New",//todo update ,
         taskAssignee: task.assignee,
         submittedBy: "---",
         dueDate: (task.due || "Set due date"),
@@ -108,14 +108,15 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(getTaskCount());
           dispatch(fetchTaskList((err,res)=>{
             if(!err){
-              res.map(ele=>{
+             /* res.map(ele=>{
                 return dispatch(
                   getTaskSubmissionDetails(ele.processInstanceId,(err,result)=>{
                      return {...ele, ...result};
                     })
                 )
-              })
-              dispatch(setTaskList(res))
+              });
+              console.log("res", res);
+              dispatch(setTaskList(res))*/
             }
             }))
         }

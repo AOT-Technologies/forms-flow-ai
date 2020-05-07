@@ -21,7 +21,7 @@ export const TaskSearch = (props) => {
       <select className="form-control" ref={n => input = n} onChange={statusFilter}>
         <option value=" ">All tasks</option>
         <option value="New">New tasks</option>
-        <option value="Assigned">Assigned tasks</option>
+        <option value="In-Progress">In-Progress tasks</option>
         <option value="Completed">Completed tasks</option>
       </select>
     </div>
@@ -30,7 +30,7 @@ export const TaskSearch = (props) => {
 
 const selectOptions = [
   {value: 'New', label: 'New'},
-  {value: 'Assigned', label: 'In-Progress'},
+  {value: 'In-Progress', label: 'In-Progress'},
   {value: 'Completed', label: 'Completed'}
 ];
 
@@ -49,8 +49,8 @@ function linkSubmisionId(cell) {
 function buttonFormatter(cell, row) {
   if(cell === "Completed"){
     return <label className="text-success font-weight-bold text-uppercase task-btn">Completed</label>;
-  }else if(cell === "Assigned"){
-    return <label className="text-info font-weight-bold text-uppercase">In Progress</label>
+  }else if(cell === "In-Progress"){
+    return <label className="text-info font-weight-bold text-uppercase">In-Progress</label>
   }else{
     return <label className="text-primary font-weight-bold text-uppercase task-btn">New</label>;
   }

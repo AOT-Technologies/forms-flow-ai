@@ -11,8 +11,6 @@ const CLIENT_ID = window._env_.REACT_APP_CLIENT_ID || process.env.REACT_APP_CLIE
 const STAFF_REVIEWER_ID = window._env_.REACT_APP_STAFF_REVIEWER_ID || process.env.REACT_APP_STAFF_REVIEWER_ID;
 const STAFF_DESIGNER_ID = window._env_.REACT_APP_STAFF_DESIGNER_ID || process.env.REACT_APP_STAFF_DESIGNER_ID;
 
-console.log("CLIENT",window._env_, CLIENT, STAFF_DESIGNER, STAFF_REVIEWER);
-
 export const ROLES = [{
     id: CLIENT_ID,
     title: CLIENT

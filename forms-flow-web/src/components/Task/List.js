@@ -12,7 +12,7 @@ import { fetchTaskList, getTaskCount, claimTask, unClaimTask, getTaskSubmissionD
 import { columns, getoptions, defaultSortedBy, TaskSearch, clearFilter } from './table'
 import Loading from '../../containers/Loading'
 import Nodata from './nodata';
-import {setLoader} from "../../actions/taskActions";
+import { setLoader, setTaskList } from "../../actions/taskActions";
 
 let isTaskAvailable = false;
 let total = 0;
@@ -24,7 +24,7 @@ const listTasks = (props) => {
         id: task.id,
         applicationId: task.id,//to do update to application/submission id
         taskTitle: task.name,
-        taskStatus: task.deleteReason === "completed"?'Completed': task.assignee?"Assigned":"New",//todo update ,
+        taskStatus: task.task_status,
         taskAssignee: task.assignee,
         submittedBy: "---",
         dueDate: (task.due || "Set due date"),
@@ -108,17 +108,18 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(getTaskCount())
           dispatch(fetchTaskList((err,res)=>{
             if(!err){
-              res.forEach(ele=>{
+              res.map(ele=>{
                 dispatch(
                   getTaskSubmissionDetails(ele.processInstanceId,(err,result)=>{
                     for(let i=0;i<res.length;i++){
                       if(res[i].processInstanceId===ele.processInstanceId){
-                        //append to the tasklist
+                        res[i]=Object.assign(res[i],result)
                       }
                     }
                 })
                 )
               })
+              dispatch(setTaskList(res))
             }
           }))
         }

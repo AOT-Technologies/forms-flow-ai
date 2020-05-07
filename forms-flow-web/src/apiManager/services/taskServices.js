@@ -1,7 +1,7 @@
 import {  httpGETRequest, httpPOSTRequest } from '../httpRequestHandler'
 import API from '../endpoints'
 import { setTaskList, setTaskCount, serviceActionError, setLoader, setTaskDetail } from '../../actions/taskActions'
-
+import {taskSubmissionFormatter} from './formatterService'
 export const fetchTaskList = () =>{
     return dispatch => {
       httpPOSTRequest(API.GET_TASK_API,{"taskVariables":[]}).then(res => {
@@ -43,7 +43,7 @@ export const getTaskDetail = (id, ...rest) =>{
       if(res.status === 200){
         dispatch(setTaskDetail(res.data[0]))
         dispatch(setLoader(false))
-        done(null,res.data);
+        done(null,res.data[0]);
       }
     })
     .catch(error=>{
@@ -54,20 +54,23 @@ export const getTaskDetail = (id, ...rest) =>{
   }
 }
 
-export const getTaskSubmissionDetails = (id,value) =>{
+export const getTaskSubmissionDetails = (id, ...rest) =>{
+  const done = rest.length ? rest[0] :  ()=>{};
   return dispatch=>{
     httpGETRequest(`${API.GET_TASK_SUBMISSION_DATA}${id}`).then(res=>{
       if(res.status === 200){
+        const taskData = taskSubmissionFormatter(res.data);
+        done(null,taskData);
       }
     })
     .catch(error=>{
-      dispatch(serviceActionError(error))
+      dispatch(serviceActionError(error));
+      done(error);
     })
   }
 }
 
 export const claimTask = (id,user, ...rest)=>{
-  // console.log("Claimed",id,user)
   const done = rest.length ? rest[0] :  ()=>{};
   return dispatch=>{
     httpPOSTRequest(`${API.TASK_ACTION_API}/${id}/claim`,{userId:user}).then(res=>{

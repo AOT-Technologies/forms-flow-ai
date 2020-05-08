@@ -4,15 +4,15 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import filterFactory from 'react-bootstrap-table2-filter';
 import paginationFactory from 'react-bootstrap-table2-paginator';
 import ToolkitProvider from 'react-bootstrap-table2-toolkit';
-import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
-import { getUserToken } from '../../apiManager/services/bpmServices'
-import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants'
-import { fetchTaskList, getTaskCount, claimTask, unClaimTask, getTaskSubmissionDetails } from '../../apiManager/services/taskServices'
-import { columns, getoptions, defaultSortedBy, TaskSearch, clearFilter } from './table'
-import Loading from '../../containers/Loading'
+import { getUserToken } from '../../apiManager/services/bpmServices';
+import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants';
+import { fetchTaskList, getTaskCount, claimTask, unClaimTask } from '../../apiManager/services/taskServices';
+import { columns, getoptions, defaultSortedBy, TaskSearch, clearFilter } from './table';
+import Loading from '../../containers/Loading';
 import Nodata from './nodata';
-import {setLoader, setTaskDetail, setTaskList} from "../../actions/taskActions";
+import {setLoader} from "../../actions/taskActions";
 import moment from 'moment';
 
 let isTaskAvailable = false;

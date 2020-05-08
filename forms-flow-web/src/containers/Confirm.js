@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 
 export default class extends Component {
   render() {
-    const {modalOpen=false, onYes, onNo, message, yesText = 'Yes', noText = 'No' } = this.props;
+    const { modalOpen=false, onYes, onNo, message, yesText = 'Yes', noText = 'No' } = this.props;
     return (
       <>
           <Modal show={modalOpen}>

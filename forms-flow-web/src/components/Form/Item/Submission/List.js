@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux';
 import { push } from 'connected-react-router';
-import { getSubmissions, selectRoot, selectError, SubmissionGrid, Errors,deleteSubmission, resetSubmissions } from 'react-formio';
+import { getSubmissions, selectRoot, selectError, SubmissionGrid, Errors, deleteSubmission } from 'react-formio';
 
 import Loading from '../../../../containers/Loading';
 import { OPERATIONS, CLIENT } from '../../../../constants/constants';
@@ -27,7 +27,7 @@ const List = class extends Component {
 
   render() {
     const { match: { params: { formId } } } = this.props
-    const { form, submissions, isLoading, onAction, getSubmissions, errors, userRoles,submissionFormId, submissionId,onNo,onYes} = this.props
+    const { form, submissions, isLoading, onAction, getSubmissions, errors, userRoles, submissionFormId, submissionId, onNo, onYes} = this.props
     const operations = this.getOperations(userRoles)
     if (isLoading) {
       return (
@@ -40,7 +40,7 @@ const List = class extends Component {
       <Confirm modalOpen={this.props.modalOpen}
       message= "Are you sure you wish to delete this submission?"
       onNo={() =>onNo()}
-      onYes={() =>onYes(submissionFormId,submissionId,submissions)}
+      onYes={() =>onYes(submissionFormId, submissionId, submissions)}
       >
       </Confirm>
         <div className="main-header">
@@ -111,11 +111,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       }
     },
     onYes: (formId,submissionId,submissions) => {
-      dispatch(deleteSubmission('submission',submissionId,formId,  (err) => {
+      dispatch(deleteSubmission('submission', submissionId, formId,  (err) => {
         if (!err) {
           const submissionDetails={modalOpen:false,submissionId:"",formId:""}
           dispatch(setFormSubmissionDeleteStatus(submissionDetails))
-         dispatch(getSubmissions('submissions', 1,submissions.query , ownProps.match.params.formId))
+         dispatch(getSubmissions('submissions', 1, submissions.query, ownProps.match.params.formId))
           
         }
       }));

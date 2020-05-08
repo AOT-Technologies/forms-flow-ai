@@ -26,7 +26,7 @@ export const getUserToken = (data, ...rest) => {
   }
 };
 
-export const getProcess = (processType,formId, submissionId, action, user) => {
+export const getProcess = (processType, formId, submissionId, action, user) => {
   switch(processType){
     case PROCESS.EmailNotification :
       return {

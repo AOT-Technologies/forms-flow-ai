@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { Link } from 'react-router-dom'
-import { indexForms, selectRoot, selectError, Errors, FormGrid,deleteForm, resetForms, } from 'react-formio';
+import { indexForms, selectRoot, selectError, Errors, FormGrid, deleteForm } from 'react-formio';
 
 import Loading from "../../containers/Loading";
 import {OPERATIONS, CLIENT, STAFF_DESIGNER, STAFF_REVIEWER} from "../../constants/constants"
@@ -16,7 +16,7 @@ const List = class extends Component {
   }
 
   render() {
-    const { forms, onAction, getForms, errors, userRoles ,formId,onNo,onYes} = this.props;
+    const { forms, onAction, getForms, errors, userRoles, formId, onNo, onYes} = this.props;
     const operations =  this.getOperations(userRoles);
     if (forms.isActive) {
       return (
@@ -94,7 +94,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(push(`/form/${form._id}/edit`));
           break;
         case 'delete':
-            const formDetails={modalOpen:true,formId:form._id,formName:form.title}
+            const formDetails = { modalOpen:true, formId:form._id, formName:form.title }
             dispatch(setFormDeleteStatus(formDetails))
           break;
         case 'viewForm':
@@ -106,14 +106,14 @@ const mapDispatchToProps = (dispatch) => {
     onYes: (formId,forms) => {
       dispatch(deleteForm('form', formId,  (err) => {
         if (!err) {
-          const formDetails={modalOpen:false,formId:"",formName:""}
+          const formDetails = { modalOpen:false, formId:"", formName:"" }
           dispatch(setFormDeleteStatus(formDetails))
           dispatch(indexForms('forms', 1, forms.query))
         }
       }));
     },
     onNo: () => {
-      const formDetails={modalOpen:false,formId:"",formName:""}
+      const formDetails = { modalOpen:false, formId:"", formName:"" }
       dispatch(setFormDeleteStatus(formDetails))
     }
   }

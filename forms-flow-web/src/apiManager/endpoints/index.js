@@ -1,8 +1,8 @@
-import {BASE_API_URL, BPM_TOKEN_URL} from './config';
+import { BPM_TOKEN_URL, PROCESS_BASE_API } from './config';
 
 const API = {
   GET_BPM_TOKEN: BPM_TOKEN_URL,
-  SEND_EMAIL_NOTIFICATION: BASE_API_URL + 'EmailNotification/start'
+  SEND_NOTIFICATION: PROCESS_BASE_API,
 }
 //TODO update the process to read from json/API
 

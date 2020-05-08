@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+  <g id="form" transform="translate(-125.009 -127.012)">
+    <rect id="Rectangle_345" data-name="Rectangle 345" width="30" height="30" transform="translate(125.009 127.012)" fill="none"/>
+    <g id="forms" transform="translate(74.357 129.012)">
+      <g id="Group_857" data-name="Group 857" transform="translate(55.652 0)">
+        <g id="Group_856" data-name="Group 856" transform="translate(0 0)">
+          <path id="Path_315" data-name="Path 315" d="M75.006,6.77,68.475.239A.819.819,0,0,0,67.9,0H56.468a.816.816,0,0,0-.816.816v23.4a.816.816,0,0,0,.816.816h17.96a.816.816,0,0,0,.816-.816V7.347A.823.823,0,0,0,75.006,6.77ZM68.714,2.787l3.744,3.744H68.714Zm4.9,20.616H57.285V1.633h9.8V7.347a.816.816,0,0,0,.816.816h5.715V23.4Z" transform="translate(-55.652 0)" fill="#373a3c" stroke="#373a3c" stroke-width="0.3"/>
+        </g>
+      </g>
+      <g id="Group_859" data-name="Group 859" transform="translate(62.183 11.974)">
+        <g id="Group_858" data-name="Group 858" transform="translate(0)">
+          <path id="Path_316" data-name="Path 316" d="M198.2,244.87h-8.164a.816.816,0,0,0,0,1.633H198.2a.816.816,0,0,0,0-1.633Z" transform="translate(-189.217 -244.87)" fill="#373a3c" stroke="#373a3c" stroke-width="0.3"/>
+        </g>
+      </g>
+      <g id="Group_861" data-name="Group 861" transform="translate(62.183 15.239)">
+        <g id="Group_860" data-name="Group 860" transform="translate(0)">
+          <path id="Path_317" data-name="Path 317" d="M198.2,311.652h-8.164a.816.816,0,0,0,0,1.633H198.2a.816.816,0,0,0,0-1.633Z" transform="translate(-189.217 -311.652)" fill="#373a3c" stroke="#373a3c" stroke-width="0.3"/>
+        </g>
+      </g>
+      <g id="Group_863" data-name="Group 863" transform="translate(62.183 18.505)">
+        <g id="Group_862" data-name="Group 862" transform="translate(0)">
+          <path id="Path_318" data-name="Path 318" d="M198.2,378.435h-8.164a.816.816,0,0,0,0,1.633H198.2a.816.816,0,0,0,0-1.633Z" transform="translate(-189.217 -378.435)" fill="#373a3c" stroke="#373a3c" stroke-width="0.3"/>
+        </g>
+      </g>
+      <g id="Group_865" data-name="Group 865" transform="translate(58.917 11.974)">
+        <g id="Group_864" data-name="Group 864">
+          <circle id="Ellipse_11" data-name="Ellipse 11" cx="0.816" cy="0.816" r="0.816" fill="#373a3c" stroke="#373a3c" stroke-width="0.3"/>
+        </g>
+      </g>
+      <g id="Group_867" data-name="Group 867" transform="translate(58.917 15.239)">
+        <g id="Group_866" data-name="Group 866">
+          <circle id="Ellipse_12" data-name="Ellipse 12" cx="0.816" cy="0.816" r="0.816" fill="#373a3c" stroke="#373a3c" stroke-width="0.3"/>
+        </g>
+      </g>
+      <g id="Group_869" data-name="Group 869" transform="translate(58.917 18.505)">
+        <g id="Group_868" data-name="Group 868">
+          <circle id="Ellipse_13" data-name="Ellipse 13" cx="0.816" cy="0.816" r="0.816" fill="#373a3c" stroke="#373a3c" stroke-width="0.3"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

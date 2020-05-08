@@ -49,11 +49,11 @@ NOTE: There are two methods for running this application. Using docker container
 
 ### Keycloak Configuration
 
-- Update KeyCloak Info (public/keycloak.json)
+- Update KeyCloak Info (public/config/kc/keycloak.json)
 
   - Login to keycloak
   - Select your realm -->Go to clients tab --> Click on your client Id --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
-  - Copy the JSON data and update  public/keycloak.json
+  - Copy the JSON data and update  public/config/kc/keycloak.json
 
 
 ## Build and Deploy

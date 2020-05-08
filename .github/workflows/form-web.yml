@@ -57,7 +57,7 @@ jobs:
         run: |
           oc ${{ secrets.oc_parameters }}
           oc project ${{ secrets.OPENSHIFT_REPOSITORY_TOOLS }}
-          oc tag $IMAGE_ID:latest $IMAGE_NAME:${TAG_NAME}
+          oc tag $IMAGE_NAME:latest $IMAGE_NAME:${TAG_NAME}
           oc project ${{ secrets.OPENSHIFT_REPOSITORY_DEV }}
       - name: Rollout new deployment
         working-directory: ./forms-flow-web

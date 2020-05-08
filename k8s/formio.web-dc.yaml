@@ -82,6 +82,19 @@
         },
         "spec": {
           "volumes": [
+          {
+            "name": "formio-ui-configuration",
+            "configMap": {
+              "name": "${NAME}-${TAG_NAME}-ui-configuration",
+              "defaultMode": 420
+            }
+          }, {
+            "name": "formio-ui-keycloak-configuration",
+            "configMap": {
+              "name": "${NAME}-${TAG_NAME}-keycloak-config",
+              "defaultMode": 420
+            }
+          }
           ],
           "containers": [
           {
@@ -93,6 +106,16 @@
             }
             ],
             "volumeMounts": [
+            {
+              "name": "formio-ui-configuration",
+              "readOnly": true,
+              "mountPath": "/usr/share/nginx/html/config"
+            },
+            {
+              "name": "formio-ui-keycloak-configuration",
+              "readOnly": true,
+              "mountPath": "/usr/share/nginx/html/"
+            }
             ],
             "envFrom": [],
             "env": [],

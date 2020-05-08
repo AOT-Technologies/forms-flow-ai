@@ -13,10 +13,22 @@ export const setUserRole = (data) => dispatch => {
     payload: data
   })
 }
+export const setUserDetails = (data) => dispatch => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_USER_DETAILS,
+    payload: data
+  })
+}
 
 export const sendEmailNotification = (data) => dispatch => {
   dispatch({
     type: ACTION_CONSTANTS.SEND_EMAIL_NOTIFICATION,
+    payload: data
+  })
+}
+export const sendOneStepApproval = (data) => dispatch => {
+  dispatch({
+    type: ACTION_CONSTANTS.SEND_ONE_STEP_APPROVAL,
     payload: data
   })
 }

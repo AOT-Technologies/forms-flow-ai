@@ -1,28 +1,32 @@
 import Keycloak from "keycloak-js";
 
-export const CLIENT = process.env.REACT_APP_CLIENT_ROLE;
-export const STAFF_DESIGNER = process.env.REACT_APP_STAFF_DESIGNER_ROLE;
-export const STAFF_REVIEWER = process.env.REACT_APP_STAFF_REVIEWER_ROLE;
-export const USER_RESOURCE_FORM_ID = process.env.REACT_APP_USER_RESOURCE_FORM_ID;
-export const Keycloak_Client = process.env.REACT_APP_KEYCLOAK_CLIENT || 'forms-flow-web';
-export const  _kc = new Keycloak(process.env.REACT_APP_KEYCLOAK_JSON ||'/keycloak.json');
+export const CLIENT = window._env_.REACT_APP_CLIENT_ROLE || process.env.REACT_APP_CLIENT_ROLE;
+export const STAFF_DESIGNER = window._env_.REACT_APP_STAFF_DESIGNER_ROLE || process.env.REACT_APP_STAFF_DESIGNER_ROLE;
+export const STAFF_REVIEWER = window._env_.REACT_APP_STAFF_REVIEWER_ROLE || process.env.REACT_APP_STAFF_REVIEWER_ROLE;
+export const USER_RESOURCE_FORM_ID = window._env_.REACT_APP_USER_RESOURCE_FORM_ID || process.env.REACT_APP_USER_RESOURCE_FORM_ID;
+export const Keycloak_Client = window._env_.REACT_APP_KEYCLOAK_CLIENT || process.env.REACT_APP_KEYCLOAK_CLIENT || 'forms-flow-web';
+export const  _kc = new Keycloak("/config/kc/keycloak.json");
+
+const CLIENT_ID = window._env_.REACT_APP_CLIENT_ID || process.env.REACT_APP_CLIENT_ID;
+const STAFF_REVIEWER_ID = window._env_.REACT_APP_STAFF_REVIEWER_ID || process.env.REACT_APP_STAFF_REVIEWER_ID;
+const STAFF_DESIGNER_ID = window._env_.REACT_APP_STAFF_DESIGNER_ID || process.env.REACT_APP_STAFF_DESIGNER_ID;
 
 export const ROLES = [{
-    id: process.env.REACT_APP_CLIENT_ID,
+    id: CLIENT_ID,
     title: CLIENT
   },
   {
-    id: process.env.REACT_APP_STAFF_REVIEWER_ID,
+    id: STAFF_REVIEWER_ID,
     title: STAFF_REVIEWER
   }, {
-    id: process.env.REACT_APP_STAFF_DESIGNER_ID,
+    id: STAFF_DESIGNER_ID,
     title: STAFF_DESIGNER
   }
 ];
 
 export const OPERATIONS = {
   insert: {
-    action: 'view',
+    action: 'insert',
     buttonType: 'primary',
     icon: 'pencil',
     permissionsResolver: function permissionsResolver() {
@@ -32,7 +36,7 @@ export const OPERATIONS = {
   },
   submission: {
     action: 'submission',
-    buttonType: 'warning',
+    buttonType: 'primary',
     icon: 'list-alt',
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -42,7 +46,7 @@ export const OPERATIONS = {
   },
   edit: {
     action: 'edit',
-    buttonType: 'secondary',
+    buttonType: 'primary',
     icon: 'edit',
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -50,9 +54,19 @@ export const OPERATIONS = {
 
     title: 'Edit Form'
   },
+  viewForm: {
+    action: 'viewForm',
+    buttonType: 'primary',
+    icon: 'eye',
+    permissionsResolver: function permissionsResolver() {
+      return true;
+    },
+
+    title: 'View Form'
+  },
   delete: {
     action: 'delete',
-    buttonType: 'danger',
+    buttonType: 'primary',
     icon: 'trash',
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -60,8 +74,8 @@ export const OPERATIONS = {
     title: 'Delete Form'
   },
   view: {
-    action: 'view',
-    buttonType: 'warning',
+    action: 'viewSubmission',
+    buttonType: 'primary',
     icon: 'list',
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -71,7 +85,7 @@ export const OPERATIONS = {
   },
   editSubmission: {
     action: 'edit',
-    buttonType: 'secondary',
+    buttonType: 'primary',
     icon: 'edit',
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -81,45 +95,46 @@ export const OPERATIONS = {
   },
   deleteSubmission: {
     action: 'delete',
-    buttonType: 'danger',
+    buttonType: 'primary',
     icon: 'trash',
     permissionsResolver: function permissionsResolver() {
       return true;
     },
+    title: 'Delete'
   }
 };
 
 export const SUBMISSION_ACCESS = [
   {
-    roles:[process.env.REACT_APP_STAFF_DESIGNER_ID],
+    roles:[STAFF_DESIGNER_ID],
     type:"create_all"
   },
   {
-    roles:[process.env.REACT_APP_STAFF_REVIEWER_ID],
+    roles:[STAFF_REVIEWER_ID],
     type:"read_all"
   },
   {
-    roles:[process.env.REACT_APP_STAFF_REVIEWER_ID],
+    roles:[STAFF_REVIEWER_ID],
     type:"update_all"
   },
   {
-    roles:[process.env.REACT_APP_STAFF_DESIGNER_ID,process.env.REACT_APP_STAFF_REVIEWER_ID],
+    roles:[STAFF_DESIGNER_ID, STAFF_REVIEWER_ID],
     type:"delete_all"
   },
   {
-    roles:[process.env.REACT_APP_CLIENT_ID],
+    roles:[CLIENT_ID],
     type:"create_own"
   },
   {
-    roles:[process.env.REACT_APP_CLIENT_ID],
+    roles:[CLIENT_ID],
     type:"read_own"
   },
   {
-    roles:[process.env.REACT_APP_CLIENT_ID],
+    roles:[CLIENT_ID],
     type:"update_own"
   },
   {
-    roles:[process.env.REACT_APP_STAFF_REVIEWER_ID],
+    roles:[STAFF_REVIEWER_ID],
     type:"delete_own"
   },
 ];

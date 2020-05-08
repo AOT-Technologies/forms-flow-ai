@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+  <g id="task_white" transform="translate(-125.009 -127.012)">
+    <rect id="Rectangle_345" data-name="Rectangle 345" width="30" height="30" transform="translate(125.009 127.012)" fill="none"/>
+    <g id="clipboards" transform="translate(81.009 127.012)">
+      <g id="Group_807" data-name="Group 807" transform="translate(52.536 12.466)">
+        <g id="Group_806" data-name="Group 806">
+          <rect id="Rectangle_342" data-name="Rectangle 342" width="13.599" height="2.267" fill="#fff"/>
+        </g>
+      </g>
+      <g id="Group_809" data-name="Group 809" transform="translate(52.536 16.999)">
+        <g id="Group_808" data-name="Group 808">
+          <rect id="Rectangle_343" data-name="Rectangle 343" width="13.599" height="2.267" fill="#fff"/>
+        </g>
+      </g>
+      <g id="Group_811" data-name="Group 811" transform="translate(52.536 21.532)">
+        <g id="Group_810" data-name="Group 810">
+          <rect id="Rectangle_344" data-name="Rectangle 344" width="6.8" height="2.267" fill="#fff"/>
+        </g>
+      </g>
+      <g id="Group_813" data-name="Group 813" transform="translate(48)">
+        <g id="Group_812" data-name="Group 812">
+          <path id="Path_301" data-name="Path 301" d="M68.4,4.533H65.252a3.391,3.391,0,0,0-1.578-1A1.56,1.56,0,0,1,62.6,2.458a3.4,3.4,0,0,0-6.536,0A1.562,1.562,0,0,1,54.99,3.532a3.389,3.389,0,0,0-1.577,1H50.267A2.267,2.267,0,0,0,48,6.8V27.2a2.266,2.266,0,0,0,2.266,2.267H68.4A2.266,2.266,0,0,0,70.665,27.2V6.8A2.266,2.266,0,0,0,68.4,4.533ZM59.347,2.267A1.133,1.133,0,1,1,58.214,3.4,1.133,1.133,0,0,1,59.347,2.267ZM68.4,27.2H50.267V6.8h2.267V9.066h13.6V6.8H68.4Z" transform="translate(-48)" fill="#fff"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

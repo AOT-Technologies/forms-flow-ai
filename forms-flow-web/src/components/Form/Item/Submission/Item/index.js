@@ -5,7 +5,6 @@ import { getSubmission } from "react-formio";
 
 import View from './View'
 import Edit from './Edit'
-import Delete from './Delete'
 
 const Item = class extends Component {
   constructor() {
@@ -57,7 +56,6 @@ const Item = class extends Component {
         <Switch>
           <Route exact path="/form/:formId/submission/:submissionId" component={View} />
           <Route path="/form/:formId/submission/:submissionId/edit" component={Edit} />
-          <Route path="/form/:formId/submission/:submissionId/delete" component={Delete} />
         </Switch>
       </div>
     )

@@ -5,8 +5,9 @@ import {selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors}
 import {push} from 'connected-react-router';
 
 import Loading from '../../../../../containers/Loading'
-import {getUserToken, triggerEmailNotification} from "../../../../../apiManager/services/bpmServices";
+import {getProcess, getUserToken, triggerNotification} from "../../../../../apiManager/services/bpmServices";
 import {BPM_USER_DETAILS} from "../../../../../apiManager/constants/apiConstants";
+import PROCESS from "../../../../../apiManager/constants/processConstants";
 
 const Edit = class extends Component {
   render() {
@@ -24,8 +25,10 @@ const Edit = class extends Component {
     }
 
     return (
-      <div className="detail-view">
-        <h3 className="h3-form">Edit { form.title } Submission</h3>
+      <div className="container">
+      <div className="main-header">
+        <h3 className="task-head">Edit { form.title } Submission</h3>
+      </div>
         <Errors errors={errors} />
         <Form
           form={form}
@@ -37,6 +40,21 @@ const Edit = class extends Component {
         />
       </div>
     );
+  }
+}
+
+function doProcessActions(submission, ownProps) {
+  return (dispatch, getState) => {
+    let user=getState().user.userDetail
+    let form=getState().form.form
+    dispatch(resetSubmissions('submission'));
+    const data = getProcess(PROCESS.EmailNotification, form, submission._id,"edit",user);
+    dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
+      if (!err) {
+        dispatch(triggerNotification(data));
+        dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}`))
+      }
+    }));
   }
 }
 
@@ -64,19 +82,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onSubmit: (submission) => {
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
-          dispatch(resetSubmissions('submission'));
-          dispatch(getUserToken(BPM_USER_DETAILS,(err,res)=>{
-            if(!err){
-              dispatch(triggerEmailNotification({
-                  "variables": {
-                    "category" : {"value" : "task_notification"},
-                    "formurl" : {"value" : `${window.location.origin}/form/${ownProps.match.params.formId}/submission/${submission._id}`}
-                  }
-                }
-              ));
-              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`));
-            }
-          }));
+          dispatch(doProcessActions(submission, ownProps))
         }
       }));
     }

@@ -1,5 +1,5 @@
-import {ROLES, USER_RESOURCE_FORM_ID, Keycloak_Client, _kc} from '../constants/constants';
-import {setUserRole} from "../actions/bpmActions";
+import { ROLES, USER_RESOURCE_FORM_ID, Keycloak_Client, _kc } from '../constants/constants';
+import { setUserRole, setUserToken, setUserDetails } from "../actions/bpmActions";
 
 const jwt = require('jsonwebtoken');
 
@@ -17,29 +17,35 @@ const initKeycloak = (onAuthenticatedCallback, store) => {
   })
     .then((authenticated) => {
       if (authenticated) {
-        const UserRoles=KeycloakData.resourceAccess[Keycloak_Client].roles;
-        store.dispatch(setUserRole(UserRoles));
-
-        let role = [];
-        for (let i = 0; i < UserRoles.length; i++) {
-          const roledata = ROLES.find(x => x.title === UserRoles[i]);
-          if(roledata){
-            role = role.concat(roledata.id)
+        if(KeycloakData.resourceAccess[Keycloak_Client]){
+          const UserRoles=KeycloakData.resourceAccess[Keycloak_Client].roles;
+          store.dispatch(setUserRole(UserRoles));
+          store.dispatch(setUserToken(KeycloakData.token));
+          
+          let role = [];
+          for (let i = 0; i < UserRoles.length; i++) {
+            const roleData = ROLES.find(x => x.title === UserRoles[i]);
+            if(roleData){
+              role = role.concat(roleData.id)
+            }
           }
+          _kc.loadUserInfo().then(res=>store.dispatch(setUserDetails(res)))
+          const email= KeycloakData.tokenParsed.email || 'external';
+          const FORMIO_TOKEN = jwt.sign({
+            form: {
+              _id: USER_RESOURCE_FORM_ID // form.io form Id of user resource
+            },
+            user: {
+              _id: email, // keep it like that
+              roles: role
+            }
+          }, '--- change me now ---'); // JWT secret key
+          //TODO remove this token from local Storage on logout and try to move to redux store as well
+          localStorage.setItem('formioToken', FORMIO_TOKEN);
+          onAuthenticatedCallback();
+        }else{
+          doLogout()
         }
-        const email= KeycloakData.tokenParsed.email || 'external';
-        const FORMIO_TOKEN = jwt.sign({
-          form: {
-            _id: USER_RESOURCE_FORM_ID // form.io form Id of user resource
-          },
-          user: {
-            _id: email, // keep it like that
-            roles: role
-          }
-        }, '--- change me now ---'); // JWT secret key
-        //TODO remove this token from local Storage on logout and try to move to redux store as well
-        localStorage.setItem('formioToken', FORMIO_TOKEN);
-        onAuthenticatedCallback();
       } else {
         console.warn("not authenticated!");
         doLogin();

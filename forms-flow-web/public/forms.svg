@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+  <g id="forms" transform="translate(-125.009 -127.012)">
+    <rect id="Rectangle_345" data-name="Rectangle 345" width="30" height="30" transform="translate(125.009 127.012)" fill="none"/>
+    <g id="google-application" transform="translate(70.66 128.456)">
+      <path id="Path_307" data-name="Path 307" d="M78.795,8.46s-7.289-7.291-7.289-7.291A3.988,3.988,0,0,0,68.684,0H59V27.244H79.965V11.281A3.978,3.978,0,0,0,78.795,8.46ZM72.675,4.6,75.37,7.29H72.675Zm5.694,21.052H60.6V1.6h8.088a2.4,2.4,0,0,1,2.394,2.394v4.9h4.9a2.4,2.4,0,0,1,2.394,2.394Z" transform="translate(0)" fill="#373a3c"/>
+      <path id="Path_308" data-name="Path 308" d="M194,377h9.791v1.6H194Z" transform="translate(-127.817 -356.94)" fill="#373a3c"/>
+      <path id="Path_309" data-name="Path 309" d="M194,317h9.791v1.6H194Z" transform="translate(-127.817 -300.132)" fill="#373a3c"/>
+      <path id="Path_310" data-name="Path 310" d="M194,257h9.791v1.6H194Z" transform="translate(-127.817 -243.325)" fill="#373a3c"/>
+      <path id="Path_311" data-name="Path 311" d="M134,257h1.6v1.6H134Z" transform="translate(-71.009 -243.325)" fill="#373a3c"/>
+      <path id="Path_312" data-name="Path 312" d="M134,317h1.6v1.6H134Z" transform="translate(-71.009 -300.132)" fill="#373a3c"/>
+      <path id="Path_313" data-name="Path 313" d="M134,377h1.6v1.6H134Z" transform="translate(-71.009 -356.94)" fill="#373a3c"/>
+    </g>
+  </g>
+</svg>

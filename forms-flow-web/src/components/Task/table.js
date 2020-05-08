@@ -2,7 +2,7 @@ import React from 'react'
 import {Link} from 'react-router-dom'
 import {textFilter, selectFilter} from 'react-bootstrap-table2-filter';
 
-let titleFilter, statusFilter, ownerFilter, appidFilter, submittedFilter, apptypeFilter;
+let titleFilter, statusFilter, ownerFilter, appidFilter, submittedFilter, submittedOnFilter, apptypeFilter;
 
 export const defaultSortedBy = [{
   dataField: "name",
@@ -62,7 +62,7 @@ function linkTaskAssignee(cell,row){
              <p className="mb-0" onClick={() => row.unAssignFn(row.id)}>Unassign</p> : null}
          </div>;
   }else {
-    return <Link onClick={() => row.assignToMeFn(row.id,row.userName)}>Assign to me</Link>;
+    return <p className="mb-0" onClick={() => row.assignToMeFn(row.id,row.userName)}>Assign to me</p>
   }
 
 }
@@ -73,6 +73,7 @@ export const clearFilter = () => {
   ownerFilter('');
   appidFilter('');
   submittedFilter('');
+  submittedOnFilter('');
   apptypeFilter('');
 };
 
@@ -142,6 +143,18 @@ export const columns = [
       className: "icon-seach",
       getFilter: (filter) => {
         submittedFilter = filter;
+      }
+    })
+  },
+  {
+    dataField: 'submissionDate',
+    text: 'Submitted On',
+    filter: textFilter({
+      placeholder: '\uf002 Date',  // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      className: "icon-seach",
+      getFilter: (filter) => {
+        submittedOnFilter = filter;
       }
     })
   },

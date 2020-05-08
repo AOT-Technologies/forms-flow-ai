@@ -12,7 +12,7 @@ const urlsToCache = [
   "/icons-192.png",
   "/static/js/main.chunk.js",
   "/static/js/0.chunk.js",
-  "/keycloak.json",
+  "/config/kc/keycloak.json",
   "/static/js/0.chunk.js.map",
   "/spinner.gif",
   "/AOT-logo.png",

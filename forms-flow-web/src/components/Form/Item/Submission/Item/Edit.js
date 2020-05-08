@@ -46,8 +46,9 @@ const Edit = class extends Component {
 function doProcessActions(submission, ownProps) {
   return (dispatch, getState) => {
     let user=getState().user.userDetail
+    let form=getState().form.form
     dispatch(resetSubmissions('submission'));
-    const data = getProcess(PROCESS.OneStepApproval, ownProps.match.params.formId, submission._id,"edit",user);
+    const data = getProcess(PROCESS.OneStepApproval, form, submission._id,"edit",user);
     dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
       if (!err) {
         dispatch(triggerNotification(data));

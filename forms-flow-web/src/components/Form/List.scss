@@ -1,4 +1,5 @@
-.custom-grid{
+.grid-forms
+{
     .col-md-4 {
         flex: 0 0 50% !important;
         max-width: 50% !important;
@@ -8,6 +9,8 @@
         flex: 0 0 50% !important;
         max-width: 50% !important;
     }
+}
+.custom-grid{
     .col
     {
         border-left: 1px solid #ced4da;

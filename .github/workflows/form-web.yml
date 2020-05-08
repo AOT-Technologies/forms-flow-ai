@@ -52,3 +52,14 @@ jobs:
           # docker push $IMAGE_ID:latest
           docker tag image $IMAGE_ID:latest
           docker push $IMAGE_ID:latest 
+      - name: Login Openshift and Tag image
+        working-directory: ./forms-flow-web
+        run: |
+          oc ${{ secrets.oc_parameters }}
+          oc project ${{ secrets.OPENSHIFT_REPOSITORY_TOOLS }}
+          oc tag $IMAGE_ID:latest $IMAGE_NAME:${TAG_NAME}
+          oc project ${{ secrets.OPENSHIFT_REPOSITORY_DEV }}
+      - name: Rollout new deployment
+        working-directory: ./forms-flow-web
+        run: |
+          oc rollout status dc/$IMAGE_NAME-${TAG_NAME} -w   

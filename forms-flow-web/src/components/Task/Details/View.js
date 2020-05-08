@@ -67,6 +67,11 @@ const View = (props) => {
                   <td className="border-0">{task.id}</td>{/*TODO update*/}
                 </tr>
                 <tr>
+                  <td className="border-0">Application Name</td>
+                  <td className="border-0">:</td>
+                  <td className="border-0">{task.form_name||'---'}</td>
+                </tr>
+                <tr>
                     <td className="border-0">Applicant</td>
                     <td className="border-0">:</td>
                     <td className="border-0">{task.submitter_name||'---'}</td>

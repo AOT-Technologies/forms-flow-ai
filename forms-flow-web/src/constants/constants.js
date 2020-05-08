@@ -5,7 +5,7 @@ export const STAFF_DESIGNER = window._env_.REACT_APP_STAFF_DESIGNER_ROLE || proc
 export const STAFF_REVIEWER = window._env_.REACT_APP_STAFF_REVIEWER_ROLE || process.env.REACT_APP_STAFF_REVIEWER_ROLE;
 export const USER_RESOURCE_FORM_ID = window._env_.REACT_APP_USER_RESOURCE_FORM_ID || process.env.REACT_APP_USER_RESOURCE_FORM_ID;
 export const Keycloak_Client = window._env_.REACT_APP_KEYCLOAK_CLIENT || process.env.REACT_APP_KEYCLOAK_CLIENT || 'forms-flow-web';
-export const  _kc = new Keycloak("/keycloak.json");
+export const  _kc = new Keycloak("/config/kc/keycloak.json");
 
 const CLIENT_ID = window._env_.REACT_APP_CLIENT_ID || process.env.REACT_APP_CLIENT_ID;
 const STAFF_REVIEWER_ID = window._env_.REACT_APP_STAFF_REVIEWER_ID || process.env.REACT_APP_STAFF_REVIEWER_ID;

@@ -1,6 +1,7 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import {textFilter, selectFilter} from 'react-bootstrap-table2-filter';
+import moment from 'moment'
 
 let titleFilter, statusFilter, ownerFilter, appidFilter, submittedFilter, submittedOnFilter, apptypeFilter;
 
@@ -52,6 +53,12 @@ function buttonFormatter(cell, row) {
   }else{
     return <label className="text-primary font-weight-bold text-uppercase task-btn">New</label>;
   }
+}
+
+function timeFormatter(cell){
+  return <label title={moment(cell).format("DD-MMM-YYYY HH:mm:ss")}>
+    {moment(cell).format("DD-MMM-YYYY")}
+    </label>
 }
 
 function linkTaskAssignee(cell,row){
@@ -149,6 +156,8 @@ export const columns = [
   {
     dataField: 'submissionDate',
     text: 'Submitted On',
+    formatter: timeFormatter,
+    sort: true,
     filter: textFilter({
       placeholder: '\uf002 Date',  // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE

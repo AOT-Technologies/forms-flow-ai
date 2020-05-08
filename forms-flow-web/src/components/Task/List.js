@@ -13,7 +13,6 @@ import { columns, getoptions, defaultSortedBy, TaskSearch, clearFilter } from '.
 import Loading from '../../containers/Loading';
 import Nodata from './nodata';
 import {setLoader} from "../../actions/taskActions";
-import moment from 'moment';
 
 let isTaskAvailable = false;
 let total = 0;
@@ -28,7 +27,7 @@ const listTasks = (props) => {
         taskStatus: task.deleteReason === "completed"?'Completed': task.assignee?"In-Progress":"New",//todo update ,
         taskAssignee: task.assignee,
         submittedBy: "---",
-        submissionDate: moment(task.startTime).format("DD-MMM-YYYY HH:mm:ss"),
+        submissionDate: task.startTime,
         dueDate: (task.due || "Set due date"),
         form: '---',
         userName:props.userDetail.preferred_username,

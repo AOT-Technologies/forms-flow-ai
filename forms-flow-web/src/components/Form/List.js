@@ -16,7 +16,7 @@ const List = class extends Component {
   }
 
   render() {
-    const { forms, onAction, getForms, errors, userRoles } = this.props;
+    const { forms, onAction, getForms, errors, userRoles ,formId,onNo,onYes} = this.props;
     const operations =  this.getOperations(userRoles);
     if (forms.isActive) {
       return (
@@ -27,9 +27,9 @@ const List = class extends Component {
     return (
       <div className="container">
             <Confirm modalOpen={this.props.modalOpen}
-      message={`Are you sure you wish to delete the form ?`}
-      onNo={() =>this.props.onNo()}
-      onYes={() =>this.props.onYes(this.props.formId)}
+      message={"Are you sure you wish to delete the form "+this.props.formName+"?"}
+      onNo={() =>onNo()}
+      onYes={() =>onYes(formId,forms)}
       >
       </Confirm>
         <div className="main-header">
@@ -73,6 +73,7 @@ const mapStateToProps = (state) => {
     userRoles: selectRoot('user',state).roles||[],
     modalOpen: selectRoot('formDelete',state).formDelete.modalOpen,
     formId: selectRoot('formDelete',state).formDelete.formId,
+    formName: selectRoot('formDelete',state).formDelete.formName
   }
 }
 
@@ -93,8 +94,7 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(push(`/form/${form._id}/edit`));
           break;
         case 'delete':
-            const formDetails={modalOpen:true,formId:form._id}
-            //dispatch(push(`/form/${form._id}/delete`));
+            const formDetails={modalOpen:true,formId:form._id,formName:form.title}
             dispatch(setFormDeleteStatus(formDetails))
           break;
         case 'viewForm':
@@ -103,15 +103,17 @@ const mapDispatchToProps = (dispatch) => {
         default:
       }
     },
-    onYes: (formId) => {
-      dispatch(deleteForm('submission', formId,  (err) => {
+    onYes: (formId,forms) => {
+      dispatch(deleteForm('form', formId,  (err) => {
         if (!err) {
-          dispatch(resetForms('forms'));
+          const formDetails={modalOpen:false,formId:"",formName:""}
+          dispatch(setFormDeleteStatus(formDetails))
+          dispatch(indexForms('forms', 1, forms.query))
         }
       }));
     },
     onNo: () => {
-      const formDetails={modalOpen:false,formId:""}
+      const formDetails={modalOpen:false,formId:"",formName:""}
       dispatch(setFormDeleteStatus(formDetails))
     }
   }

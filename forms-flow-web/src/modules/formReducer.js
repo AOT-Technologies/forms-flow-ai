@@ -2,7 +2,7 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
   formSubMissionDelete:{modalOpen:false,submissionId:"",formId:""},
-  formDelete:{modalOpen:false,formId:""}
+  formDelete:{modalOpen:false,formId:"",formName:""}
 }
 
 export default (state = initialState, action)=> {

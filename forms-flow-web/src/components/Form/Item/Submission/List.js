@@ -27,7 +27,7 @@ const List = class extends Component {
 
   render() {
     const { match: { params: { formId } } } = this.props
-    const { form, submissions, isLoading, onAction, getSubmissions, errors, userRoles } = this.props
+    const { form, submissions, isLoading, onAction, getSubmissions, errors, userRoles,submissionFormId, submissionId,onNo,onYes} = this.props
     const operations = this.getOperations(userRoles)
     if (isLoading) {
       return (
@@ -39,8 +39,8 @@ const List = class extends Component {
       <div className="container">
       <Confirm modalOpen={this.props.modalOpen}
       message= "Are you sure you wish to delete this submission?"
-      onNo={() =>this.props.onNo()}
-      onYes={() =>this.props.onYes(this.props.formId,this.props.submissionId)}
+      onNo={() =>onNo()}
+      onYes={() =>onYes(submissionFormId,submissionId,submissions)}
       >
       </Confirm>
         <div className="main-header">
@@ -86,7 +86,7 @@ const mapStateToProps = (state, ownProps) => {
     ],
     userRoles: selectRoot('user',state).roles||[],
     modalOpen: selectRoot('formDelete',state).formSubMissionDelete.modalOpen,
-    formId: selectRoot('formDelete',state).formSubMissionDelete.formId,
+    submissionFormId: selectRoot('formDelete',state).formSubMissionDelete.formId,
     submissionId: selectRoot('formDelete',state).formSubMissionDelete.submissionId
   };
 };
@@ -104,17 +104,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           break;
         case 'delete':
           const submissionDetails={modalOpen:true,formId:ownProps.match.params.formId,submissionId:submission._id}
-          //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/delete`));
-         dispatch(setFormSubmissionDeleteStatus(submissionDetails))
+          dispatch(setFormSubmissionDeleteStatus(submissionDetails))
           break;
         default:
 
       }
     },
-    onYes: (formId,submissionId) => {
-      dispatch(deleteSubmission('submission', formId,submissionId,  (err) => {
+    onYes: (formId,submissionId,submissions) => {
+      dispatch(deleteSubmission('submission',submissionId,formId,  (err) => {
         if (!err) {
-          dispatch(resetSubmissions('submissions'));
+          const submissionDetails={modalOpen:false,submissionId:"",formId:""}
+          dispatch(setFormSubmissionDeleteStatus(submissionDetails))
+         dispatch(getSubmissions('submissions', 1,submissions.query , ownProps.match.params.formId))
+          
         }
       }));
     },

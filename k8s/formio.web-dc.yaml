@@ -83,13 +83,14 @@
         "spec": {
           "volumes": [
           {
-            "name": "formio-ui-configuration",
+            "name": "${NAME}-${TAG_NAME}-configuration",
             "configMap": {
-              "name": "${NAME}-${TAG_NAME}-ui-configuration",
+              "name": "${NAME}-${TAG_NAME}-configuration",
               "defaultMode": 420
             }
-          }, {
-            "name": "formio-ui-keycloak-configuration",
+          },
+          {
+            "name": "${NAME}-${TAG_NAME}-keycloak-config",
             "configMap": {
               "name": "${NAME}-${TAG_NAME}-keycloak-config",
               "defaultMode": 420
@@ -107,14 +108,14 @@
             ],
             "volumeMounts": [
             {
-              "name": "formio-ui-configuration",
+              "name": "${NAME}-${TAG_NAME}-configuration",
               "readOnly": true,
-              "mountPath": "/usr/share/nginx/html/config"
+              "mountPath": "${MOUNT_PATH}"
             },
             {
-              "name": "formio-ui-keycloak-configuration",
+              "name": "${NAME}-${TAG_NAME}-keycloak-config",
               "readOnly": true,
-              "mountPath": "/usr/share/nginx/html/"
+              "mountPath": "${KC_MOUNT_PATH}"
             }
             ],
             "envFrom": [],
@@ -286,6 +287,20 @@
     "description": "The number of replicas to run in this environment.",
     "required": true,
     "value": "1"
+  },
+  {
+    "name": "MOUNT_PATH",
+    "displayName": "Mount config directory.",
+    "description": "The path to where the app config directory will get mounted.",
+    "required": true,
+    "value": "/usr/share/nginx/html/config"
+  },
+  {
+    "name": "KC_MOUNT_PATH",
+    "displayName": "Mount config directory.",
+    "description": "The path to where the app config directory will get mounted.",
+    "required": true,
+    "value": "/usr/share/nginx/html/config/kc"
   }
   ]
 }

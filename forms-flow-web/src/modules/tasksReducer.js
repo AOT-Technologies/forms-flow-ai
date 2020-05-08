@@ -4,7 +4,7 @@ const initialState = {
   isLoading:true,
   tasksList:[],
   tasksCount:0,
-  taskDetail:[]
+  taskDetail: {}
 }
 
 export default (state = initialState, action)=> {
@@ -17,6 +17,8 @@ export default (state = initialState, action)=> {
       return {...state, tasksCount: action.payload.count};
     case ACTION_CONSTANTS.TASK_DETAIL:
       return {...state, taskDetail: action.payload};
+    case ACTION_CONSTANTS.TASK_SUBMISSION_DETAIL:
+      return {...state, taskDetail: {...state.taskDetail,...action.payload}};
     default:
       return state;
   }

@@ -10,8 +10,8 @@ const history = createBrowserHistory();
 
 function configureStore(preloadedState){
   const enhancers = [];
-
-  if (process.env.NODE_ENV === 'development') {
+  const node_env = window._env_.NODE_ENV || process.env.NODE_ENV;
+  if (node_env === 'development') {
     enhancers.push(applyMiddleware(logger));
   }
 

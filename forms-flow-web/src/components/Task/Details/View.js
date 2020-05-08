@@ -5,17 +5,25 @@ import moment from 'moment'
 
 import { BPM_USER_DETAILS } from '../../../apiManager/constants/apiConstants'
 import { getUserToken } from '../../../apiManager/services/bpmServices'
-import {claimTask, getTaskDetail, unClaimTask} from '../../../apiManager/services/taskServices'
-import { setLoader } from '../../../actions/taskActions'
+import {
+  claimTask,
+  getTaskDetail,
+  getTaskSubmissionDetails,
+  unClaimTask
+} from '../../../apiManager/services/taskServices'
+import {setLoader, setTaskSubmissionDetail} from '../../../actions/taskActions'
 
 const taskStatus =(task)=>{
-    if(task.deleteReason === "completed"){
-        return <label className="text-success font-weight-bold text-uppercase task-btn">Completed</label>;
-      }else if(task.assignee){
-        return <label className="text-secondary font-weight-bold text-uppercase">In Progress</label>
-      }else{
-        return <label className="text-primary font-weight-bold text-uppercase task-btn">New</label>;
-      }
+    switch(task.task_status){
+        case "Completed" :
+            return <label className="text-success font-weight-bold text-uppercase task-btn">{task.task_status||'Completed'}</label>;
+        case "In-Progess":
+            return <label className="text-info font-weight-bold text-uppercase">{task.task_status||'In-Progress'}</label>
+        case "New":
+            return <label className="text-primary font-weight-bold text-uppercase task-btn">{task.task_status||'New'}</label>;
+        default:
+            return <label className="text-primary font-weight-bold text-uppercase task-btn">{task.task_status||'New'}</label>;
+    }
 }
 
 const View = (props) => {
@@ -61,12 +69,12 @@ const View = (props) => {
                 <tr>
                     <td className="border-0">Applicant</td>
                     <td className="border-0">:</td>
-                    <td className="border-0">---</td>
+                    <td className="border-0">{task.submitter_name||'---'}</td>
                 </tr>
                 <tr>
                     <td className="border-0">Submitted On</td>
                     <td className="border-0">:</td>
-                    <td className="border-0">{moment(task.created).format('DD-MMM-YYYY')}</td>
+                    <td className="border-0">{moment(task.submission_date).format('DD-MMM-YYYY')}</td>
                 </tr>
                 <tr>
                     <td className="border-0">Due date</td>
@@ -91,8 +99,17 @@ const mapDispatchToProps = (dispatch) => {
                 if (!err) {
                   dispatch(setLoader(true));
                   dispatch(claimTask(id,userName,(err, res)=>{
-                    if(!err)
-                      dispatch(getTaskDetail(id))
+                    if(!err){
+                      dispatch(getTaskDetail(id,(err,res)=>{
+                        if(!err){
+                          dispatch(getTaskSubmissionDetails(res.processInstanceId, (err,res)=>{
+                            if(!err){
+                              dispatch(setTaskSubmissionDetail(res));
+                            }
+                          }))
+                        }
+                      }))
+                    }
                     else{
                       dispatch(setLoader(false));
                     }
@@ -106,8 +123,17 @@ const mapDispatchToProps = (dispatch) => {
                 if (!err) {
                   dispatch(setLoader(true));
                   dispatch(unClaimTask(id,(err, res)=>{
-                    if(!err)
-                      dispatch(getTaskDetail(id));
+                    if(!err){
+                      dispatch(getTaskDetail(id,(err,res)=>{
+                        if(!err){
+                          dispatch(getTaskSubmissionDetails(res.processInstanceId, (err,res)=>{
+                            if(!err){
+                              dispatch(setTaskSubmissionDetail(res));
+                            }
+                          }))
+                        }
+                      }))
+                    }
                     else{
                       dispatch(setLoader(false));
                     }

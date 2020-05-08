@@ -36,9 +36,9 @@ export const getProcess = (processType,formId, submissionId, action, user) => {
           "variables": {
             "category": { "value": "task_notification" },
             "formurl": { "value": `${window.location.origin}/form/${formId}/submission/${submissionId}` },
-            "submitter_name":{"value":user.name},
+            "submitter_name":{"value":user.name || user.preferred_username},
             "submitter_email":{"value":user.email},
-            "submitted_datetime":{"value":new Date().toLocaleString()},
+            "submitted_datetime":{"value":new Date().toJSON()},
             "action":{"value":action}
           }
         }
@@ -51,9 +51,9 @@ export const getProcess = (processType,formId, submissionId, action, user) => {
             "variables": {
               "formurl": { "value": `${window.location.origin}/form/${formId}/submission/${submissionId}` },
               "submission_id":{"value":submissionId},
-              "submitter_name":{"value":user.name},
+              "submitter_name":{"value":user.name || user.preferred_username},
               "form_id":{"value":formId},
-              "submission_date":{"value":new Date().toLocaleDateString()},
+              "submission_date":{"value":new Date().toJSON()},
               "task_status":{"value":"New"}
             },
           }

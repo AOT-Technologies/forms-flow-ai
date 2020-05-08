@@ -8,11 +8,12 @@ import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css'
 
 import { getUserToken } from '../../apiManager/services/bpmServices'
 import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants'
-import { fetchTaskList, getTaskCount, claimTask, unClaimTask } from '../../apiManager/services/taskServices'
+import { fetchTaskList, getTaskCount, claimTask, unClaimTask, getTaskSubmissionDetails } from '../../apiManager/services/taskServices'
 import { columns, getoptions, defaultSortedBy, TaskSearch, clearFilter } from './table'
 import Loading from '../../containers/Loading'
 import Nodata from './nodata';
-import {setLoader} from "../../actions/taskActions";
+import {setLoader, setTaskDetail, setTaskList} from "../../actions/taskActions";
+import moment from 'moment';
 
 let isTaskAvailable = false;
 let total = 0;
@@ -24,11 +25,12 @@ const listTasks = (props) => {
         id: task.id,
         applicationId: task.id,//to do update to application/submission id
         taskTitle: task.name,
-        taskStatus: task.deleteReason === "completed"?'Completed': task.assignee?"Assigned":"New",//todo update ,
+        taskStatus: task.deleteReason === "completed"?'Completed': task.assignee?"In-Progress":"New",//todo update ,
         taskAssignee: task.assignee,
         submittedBy: "---",
         dueDate: (task.due || "Set due date"),
         form: '---',
+        submissionDate: task.submission_date? moment(task.submission_date).format('DD-MMM-YYYY') : '---',
         userName:props.userDetail.preferred_username,
         deleteReason:task.deleteReason,
         assignToMeFn:props.onClaim,
@@ -105,11 +107,23 @@ const mapDispatchToProps = (dispatch) => {
       getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {
           dispatch(setLoader(true));
-          dispatch(getTaskCount())
-          dispatch(fetchTaskList())
+          dispatch(getTaskCount());
+          dispatch(fetchTaskList((err,res)=>{
+            if(!err){
+             /* res.map(ele=>{
+                return dispatch(
+                  getTaskSubmissionDetails(ele.processInstanceId,(err,result)=>{
+                     return {...ele, ...result};
+                    })
+                )
+              });
+              console.log("res", res);
+              dispatch(setTaskList(res))*/
+            }
+            }))
         }
       })
-    ),
+      ),
     onClaim: (id,userName) => {
       dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {

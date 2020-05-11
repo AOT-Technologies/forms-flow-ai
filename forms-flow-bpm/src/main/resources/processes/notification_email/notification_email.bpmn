@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0e3v6wh" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.2">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0e3v6wh" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.6.0">
   <bpmn:process id="EmailNotification" name="Email Notification" isExecutable="true">
     <bpmn:serviceTask id="ServiceTask_1o5gnzy" name="Send email">
       <bpmn:extensionElements>
@@ -23,8 +23,8 @@
     <bpmn:startEvent id="StartEvent_1" name="Notification Requested" camunda:initiator="Message_Email">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="category" label="category" type="string" defaultValue="task_notification" />
-          <camunda:formField id="taskurl" label="taskurl" type="string" defaultValue="taskurl-click-here" />
+          <camunda:formField id="submission_group" label="submission_group" type="string" />
+          <camunda:formField id="category" label="category" type="string" />
         </camunda:formData>
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_1hk7qik</bpmn:outgoing>
@@ -34,6 +34,7 @@
       <bpmn:extensionElements>
         <camunda:inputOutput>
           <camunda:inputParameter name="category">${category}</camunda:inputParameter>
+          <camunda:outputParameter name="groupName">${submission_group}</camunda:outputParameter>
         </camunda:inputOutput>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1hk7qik</bpmn:incoming>

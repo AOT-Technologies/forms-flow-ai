@@ -55,6 +55,12 @@ camunda.bpm:
 
 server:
   port: 8080
+  ssl:
+    key-store: file:/certs/keystore.ks
+    key-store-password: password
+    key-store-type: pkcs12
+    key-alias: tomcat
+    key-password: password
   servlet.context-path: /camunda
 
 security:

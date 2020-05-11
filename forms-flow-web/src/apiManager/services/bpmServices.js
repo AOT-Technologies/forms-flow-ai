@@ -34,7 +34,8 @@ export const getProcess = (processType,form, submissionId, action, user) => {
         service: sendEmailNotification,
         req: {
           "variables": {
-            "category": { "value": "task_notification" },
+            "category": { "value": "submission_notification" },
+            "submission_group": { "value": window._env_.REACT_APP_STAFF_REVIEWER_ROLE||process.env.REACT_APP_STAFF_REVIEWER_ROLE },
             "formurl": { "value": `${window.location.origin}/form/${form._id}/submission/${submissionId}` },
             "submitter_name":{"value":user.name || user.preferred_username},
             "submitter_email":{"value":user.email},

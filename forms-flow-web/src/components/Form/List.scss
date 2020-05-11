@@ -1,5 +1,5 @@
-.list-forms {
-
+.grid-forms
+{
     .col-md-4 {
         flex: 0 0 50% !important;
         max-width: 50% !important;
@@ -9,13 +9,16 @@
         flex: 0 0 50% !important;
         max-width: 50% !important;
     }
+}
+.custom-grid{
     .col
     {
         border-left: 1px solid #ced4da;
-        min-height: 60px;
+        min-height: 50px;
         text-align: start;
         padding-top: 15px;
         height: auto;
+        word-break: break-all;
     }
     .list-group-item
     {
@@ -25,7 +28,7 @@
     .list-group-item:first-child
     {
         border-bottom: 1.5px solid #ced4da !important;
-        height: 60px;
+        background-color: #F2F2F2 !important;
     }
     h5, .h5 {
         font-weight: 400 !important;
@@ -53,4 +56,9 @@
         float: right;
         margin-left: auto;
     }
+    .btn{
+        margin-right: 5px;
+        margin-top: 1px;
+        margin-bottom: 7px;
+      }
 }

@@ -2,11 +2,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'connected-react-router'
 import { Link } from 'react-router-dom'
-import { indexForms, selectRoot, selectError, Errors, FormGrid } from 'react-formio';
+import { indexForms, selectRoot, selectError, Errors, FormGrid, deleteForm } from 'react-formio';
 
 import Loading from "../../containers/Loading";
 import {OPERATIONS, CLIENT, STAFF_DESIGNER, STAFF_REVIEWER} from "../../constants/constants"
 import '../Form/List.scss'
+import {setFormDeleteStatus} from '../../actions/formActions'
+import Confirm from '../../containers/Confirm';
 
 const List = class extends Component {
   componentWillMount() {
@@ -14,7 +16,7 @@ const List = class extends Component {
   }
 
   render() {
-    const { forms, onAction, getForms, errors, userRoles } = this.props;
+    const { forms, onAction, getForms, errors, userRoles, formId, onNo, onYes} = this.props;
     const operations =  this.getOperations(userRoles);
     if (forms.isActive) {
       return (
@@ -24,6 +26,12 @@ const List = class extends Component {
 
     return (
       <div className="container">
+            <Confirm modalOpen={this.props.modalOpen}
+      message={"Are you sure you wish to delete the form "+this.props.formName+"?"}
+      onNo={() =>onNo()}
+      onYes={() =>onYes(formId,forms)}
+      >
+      </Confirm>
         <div className="main-header">
           <img src="/form.svg" width="30" height="30" alt="form"/>
           <h3 className="task-head">Forms</h3>
@@ -31,7 +39,7 @@ const List = class extends Component {
           <i className="fa fa-plus"></i> Create Form
         </Link>:null}
         </div>
-        <section className="list-forms">
+        <section className="custom-grid grid-forms">
           <Errors errors={errors} />
           <FormGrid
             forms={forms}
@@ -62,6 +70,9 @@ const mapStateToProps = (state) => {
     forms: selectRoot('forms', state),
     errors: selectError('forms', state),
     userRoles: selectRoot('user',state).roles||[],
+    modalOpen: selectRoot('formDelete',state).formDelete.modalOpen,
+    formId: selectRoot('formDelete',state).formDelete.formId,
+    formName: selectRoot('formDelete',state).formDelete.formName
   }
 }
 
@@ -82,13 +93,27 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(push(`/form/${form._id}/edit`));
           break;
         case 'delete':
-            dispatch(push(`/form/${form._id}/delete`));
+            const formDetails = { modalOpen:true, formId:form._id, formName:form.title }
+            dispatch(setFormDeleteStatus(formDetails))
           break;
         case 'viewForm':
             dispatch(push(`/form/${form._id}/preview`));
           break;
         default:
       }
+    },
+    onYes: (formId,forms) => {
+      dispatch(deleteForm('form', formId,  (err) => {
+        if (!err) {
+          const formDetails = { modalOpen:false, formId:"", formName:"" }
+          dispatch(setFormDeleteStatus(formDetails))
+          dispatch(indexForms('forms', 1, forms.query))
+        }
+      }));
+    },
+    onNo: () => {
+      const formDetails = { modalOpen:false, formId:"", formName:"" }
+      dispatch(setFormDeleteStatus(formDetails))
     }
   }
 };

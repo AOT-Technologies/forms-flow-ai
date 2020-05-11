@@ -16,7 +16,8 @@
   </head>
   <body>
   <div id="app"></div>
-    <script>
+   <script src="%PUBLIC_URL%/config/config.js"></script>
+   <script>
       let newWorker, refreshing;
 
       if ('serviceWorker' in navigator) {
@@ -64,7 +65,7 @@
       } else {
           console.log('Service Worker is not supported by browser.');
       }
-      </script>
-      <noscript>This website requires JavaScript.</noscript>
+   </script>
+  <noscript>This website requires JavaScript.</noscript>
   </body>
 </html>

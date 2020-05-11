@@ -26,7 +26,7 @@ export const getUserToken = (data, ...rest) => {
   }
 };
 
-export const getProcess = (processType,formId, submissionId, action, user) => {
+export const getProcess = (processType,form, submissionId, action, user) => {
   switch(processType){
     case PROCESS.EmailNotification :
       return {
@@ -34,11 +34,12 @@ export const getProcess = (processType,formId, submissionId, action, user) => {
         service: sendEmailNotification,
         req: {
           "variables": {
-            "category": { "value": "task_notification" },
-            "formurl": { "value": `${window.location.origin}/form/${formId}/submission/${submissionId}` },
-            "submitter_name":{"value":user.name||" "},
-            "submitter_email":{"value":user.email||" "},
-            "submitted_datetime":{"value":new Date().toLocaleString()},
+            "category": { "value": "submission_notification" },
+            "submission_group": { "value": window._env_.REACT_APP_STAFF_REVIEWER_ROLE||process.env.REACT_APP_STAFF_REVIEWER_ROLE },
+            "formurl": { "value": `${window.location.origin}/form/${form._id}/submission/${submissionId}` },
+            "submitter_name":{"value":user.name || user.preferred_username},
+            "submitter_email":{"value":user.email},
+            "submitted_datetime":{"value":new Date().toJSON()},
             "action":{"value":action}
           }
         }
@@ -49,9 +50,13 @@ export const getProcess = (processType,formId, submissionId, action, user) => {
           service: sendOneStepApproval,
           req: {
             "variables": {
-              "formurl": { "value": `${window.location.origin}/form/${formId}/submission/${submissionId}` },
-              "submissionid":{"value":{submissionId}},
-              "formid":{"value":{formId}}
+              "formurl": { "value": `${window.location.origin}/form/${form._id}/submission/${submissionId}` },
+              "submission_id":{"value":submissionId},
+              "submitter_name":{"value":user.name || user.preferred_username},
+              "form_id":{"value":form._id},
+              "form_name":{"value":form.title},
+              "submission_date":{"value":new Date().toJSON()},
+              "task_status":{"value":"New"}
             },
           }
       }

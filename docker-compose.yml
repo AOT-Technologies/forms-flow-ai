@@ -20,21 +20,6 @@ services:
     networks:
       - forms-flow-bpm-network
   
-  forms-flow-bpm-db-admin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    volumes:
-      - ./pgadmin:/root/.pgadmin
-    ports:
-      - "${PGADMIN_PORT}:80"
-    networks:
-      - postgres
-    restart: unless-stopped
-    networks:
-      - forms-flow-bpm-network
-        
   forms-flow-bpm:
     build:
       context: ./forms-flow-bpm/
@@ -160,4 +145,3 @@ networks:
 volumes:
   mdb-data:
   postgres:
-  pgadmin:

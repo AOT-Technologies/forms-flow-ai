@@ -15,6 +15,8 @@ window['_env_'] =  {
   "REACT_APP_STAFF_REVIEWER_ID": "<Form-IO-SERVERS Reviewer role-Id>",
   // Form-IO-Administrator-Id
   "REACT_APP_STAFF_DESIGNER_ID": "<Form-IO-SERVERS Administrator role-Id>",
+  "REACT_APP_ANONYMOUS_ID":"<Form-IO-SERVERS Anonymous role-Id>",
+ 
   // Form-IO USER FORM FORM_ID
   "REACT_APP_USER_RESOURCE_FORM_ID": "<Form-IO-SERVERS User forms form-Id>",
   //Submission-group in Email Notification

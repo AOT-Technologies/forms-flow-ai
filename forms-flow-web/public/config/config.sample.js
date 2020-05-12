@@ -16,11 +16,11 @@ window['_env_'] =  {
   // Form-IO-Administrator-Id
   "REACT_APP_STAFF_DESIGNER_ID": "<Form-IO-SERVERS Administrator role-Id>",
   "REACT_APP_ANONYMOUS_ID":"<Form-IO-SERVERS Anonymous role-Id>",
- 
+
   // Form-IO USER FORM FORM_ID
   "REACT_APP_USER_RESOURCE_FORM_ID": "<Form-IO-SERVERS User forms form-Id>",
   //Submission-group in Email Notification
-  "REACT_APP_EMAIL_SUBMISSION_GROUP":"rpas/rpas-reviewer",
+  "REACT_APP_EMAIL_SUBMISSION_GROUP":"Keycloak group to send Email eg 'rpas/rpas-reviewer'",
   /*URL of forms-flow-forms
    Form-IO API-URL*/
   "REACT_APP_API_SERVER_URL": "http: //localhost:3001",

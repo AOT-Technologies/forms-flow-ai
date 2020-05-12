@@ -54,7 +54,7 @@ camunda.bpm:
     create: All tasks
 
 server:
-  port: 8080
+  port: 8443
   ssl:
     key-store: file:/certs/keystore.ks
     key-store-password: password

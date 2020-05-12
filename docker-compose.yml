@@ -19,22 +19,7 @@ services:
     restart: unless-stopped
     networks:
       - forms-flow-bpm-network
-  
-  forms-flow-bpm-db-admin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    volumes:
-      - ./pgadmin:/root/.pgadmin
-    ports:
-      - "${PGADMIN_PORT}:80"
-    networks:
-      - postgres
-    restart: unless-stopped
-    networks:
-      - forms-flow-bpm-network
-        
+
   forms-flow-bpm:
     build:
       context: ./forms-flow-bpm/
@@ -98,7 +83,7 @@ services:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio?replicaSet=rs0"}'
+      NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio"}'
       ROOT_EMAIL: ${ROOT_EMAIL}
       ROOT_PASSWORD: ${ROOT_PASSWORD}
     stdin_open: true  # -i
@@ -160,4 +145,3 @@ networks:
 volumes:
   mdb-data:
   postgres:
-  pgadmin:

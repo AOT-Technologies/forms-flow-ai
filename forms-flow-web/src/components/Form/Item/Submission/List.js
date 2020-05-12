@@ -11,7 +11,7 @@ import {setFormSubmissionDeleteStatus} from '../../../../actions/formActions'
 
 
 const List = class extends Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.getSubmissions(1);
   }
 

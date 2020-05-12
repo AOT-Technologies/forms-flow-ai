@@ -211,7 +211,7 @@ padding: 0rem 0rem;
   cursor: pointer;
   padding: 0rem 0rem;
   font-size: 16px;
-  
+
 }
 .nav-tabs .nav-link.active{
   color: #4D4D4D;
@@ -239,7 +239,7 @@ padding: 0rem 0rem;
 .dropdown-menu:before {
   position: absolute;
   top: -7px;
-  right: 9px; 
+  right: 9px;
   display: inline-block;
   border-right: 7px solid transparent;
   border-bottom: 7px solid #ccc;
@@ -251,7 +251,7 @@ padding: 0rem 0rem;
 .dropdown-menu:after {
   position: absolute;
   top: -6px;
-  right: 10px; 
+  right: 10px;
   display: inline-block;
   border-right: 6px solid transparent;
   border-bottom: 6px solid #ffffff;
@@ -261,7 +261,7 @@ padding: 0rem 0rem;
 .custom-profile
 {
   position: absolute;
-  margin-left: 210px;
+  margin-left: 220px;
   padding-bottom: 10px;
   z-index: 10;
 }
@@ -344,4 +344,7 @@ margin-right: 3px;
 {
     float: right;
     margin-left: auto;
+}
+.btn.btn-link:focus, .btn.btn-link.focus {
+  box-shadow: none;
 }

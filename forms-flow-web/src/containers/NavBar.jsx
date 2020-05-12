@@ -27,8 +27,8 @@ class NavBar extends Component {
                 <Navbar expand="lg">
                     <section className="container">
                         <Navbar.Brand className="d-flex">
-                            <img className="img-fluid d-none d-md-block" src="/AOT-logo.png" width="250" alt="AOT Logo" />
-                            <img className="img-fluid d-md-none" src="/AOT-simple-logo.png" width="40" alt="AOT Logo"></img>
+                            <img className="img-fluid d-none d-md-block" src="/bcid-logo-rev-en.svg" width="177" height="44" alt="Government of British Columbia" />
+                            <img className="img-fluid d-md-none" src="/bcid-symbol-rev.svg" width="63" height="44" alt="Government of British Columbia"></img>
                             <label className="lbl-app-nanme">FormsFlow</label><label className="lbl-app-nanme app-name">.AI</label>
                        {/* for small screen */}
                        <Nav className="d-md-none custom-profile">

@@ -10,7 +10,6 @@ class PublicRoute extends Component {
 
     componentDidMount() {
         UserService.authenticateAnonymousUser(this.props.store)
-        console.log(this.props)
     }
 
     render() {
@@ -23,7 +22,6 @@ class PublicRoute extends Component {
 }
 
 const mapDispatchToProps = (dispatch,ownProps) => {
-    console.log("Props",ownProps)
     return {
         getForm: (id) => dispatch(getForm('form', id))
     };

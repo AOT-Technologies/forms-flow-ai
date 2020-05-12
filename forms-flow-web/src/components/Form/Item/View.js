@@ -13,7 +13,6 @@ import PROCESS from "../../../apiManager/constants/processConstants";
 const View = class extends Component {
   UNSAFE_componentWillMount(){
     if(!this.props.isAuthenticated){
-      console.log("In get form")
       this.props.getForm()
     }
   }

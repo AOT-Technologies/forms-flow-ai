@@ -22,13 +22,6 @@ class NavBar extends Component {
         return role;
     }
 
-    login=(store)=>{
-        
-        // UserService.initKeycloak(store,(err,res)=>{
-        //     this.props.setUserAuth(res.authenticated)
-        //   })
-    }
-
     render() {
         const { user, userRoles, isAuthenticated } = this.props;
         return (
@@ -46,7 +39,7 @@ class NavBar extends Component {
                                         src="/assets/Images/user.svg"
                                         alt="user pic"
                                     /></div>} className="nav-dropdown" id="basic-nav-dropdown">
-                                    
+
                                     <NavDropdown.Header className="nav-user-name">{user.name || user.preferred_username}</NavDropdown.Header>
                                     <NavDropdown.Header className="nav-user-email" title={user.email}>{user.email}</NavDropdown.Header>
                                     <NavDropdown.Header className="nav-user-role">{this.getUserRole(userRoles)}</NavDropdown.Header>
@@ -68,7 +61,7 @@ class NavBar extends Component {
                             </Nav>
                             </Navbar.Collapse>
                             <Nav className="d-none d-md-block">
-                                { isAuthenticated? 
+                                { isAuthenticated?
                                 <NavDropdown style={{ fontSize: '18px' }} title={<div className="pull-left">
                                     Hi {user.given_name || user.name || user.preferred_username || ''} &nbsp;
                                     <img className="thumbnail-image"
@@ -96,7 +89,7 @@ class NavBar extends Component {
             </header>
         )
     }
-};
+}
 
 const mapStatetoProps = (state) => {
     return {

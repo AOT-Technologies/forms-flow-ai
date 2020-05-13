@@ -83,7 +83,7 @@
               "name": "NODE_CONFIG",
               "valueFrom": {
                 "secretKeyRef": {
-                  "key": "mongo-url",
+                  "key": "NODE_CONFIG",
                   "name": "mongodb"
                 }
               }
@@ -234,7 +234,7 @@
     "displayName": "App Group",
     "description": "The name assigned to all of the deployments in this project.",
     "required": true,
-    "value": "formio-core"
+    "value": "formio-rpas"
   },
   {
     "name": "IMAGE_NAMESPACE",

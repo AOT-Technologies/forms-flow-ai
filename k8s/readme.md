@@ -92,3 +92,6 @@ oc process -f formio.web-dc.yaml |oc apply -f -
 
 
 create the MONGO HA
+
+put necessary values in dev.env
+oc process -f mongodb-replicaset.yaml --param-file=dev.env |oc create -f -

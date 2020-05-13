@@ -52,7 +52,7 @@ function doProcessActions(submission, ownProps) {
     dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
       if (!err) {
         dispatch(triggerNotification(data));
-        dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}`))
+        dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
       }
     }));
   }

@@ -72,7 +72,7 @@ function doProcessActions(submission, ownProps) {
       if (!err) {
         dispatch(triggerNotification(data));
         if(IsAuth){
-          dispatch(push(`/${ownProps.match.params.formId}/submission/${submission._id}`))
+          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
         }
       }
     }));

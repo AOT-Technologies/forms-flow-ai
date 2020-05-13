@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { ConnectedRouter } from 'connected-react-router';
 
-import PublicRoute from "./PublicRoute";
+// import PublicRoute from "./PublicRoute";
 import Form from "../components/Form";
 import NavBar from '../containers/NavBar';
 require('typeface-nunito-sans')
@@ -18,7 +18,7 @@ class App extends Component{
       <ConnectedRouter  history={history}>
         <NavBar store={store}/>
         <Switch>
-          <Route path="/public"><PublicRoute store={store}/></Route>
+          {/* <Route path="/public"><PublicRoute store={store}/></Route> */}
           <Route path="/form"><Form store={store}/></Route>
           <Route path="/"><Redirect to="/form"/></Route>
         </Switch>

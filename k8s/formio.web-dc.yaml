@@ -237,14 +237,14 @@
     "displayName": "App Group",
     "description": "The name assigned to all of the deployments in this project.",
     "required": true,
-    "value": "formio-web"
+    "value": "formio-rpas"
   },
   {
     "name": "IMAGE_NAMESPACE",
     "displayName": "Image Namespace",
     "required": true,
     "description": "The namespace of the OpenShift project containing the imagestream for the application.",
-    "value": "vmvfjv-tools"
+    "value": "ebiqwr-tools"
   },
   {
     "name": "TAG_NAME",

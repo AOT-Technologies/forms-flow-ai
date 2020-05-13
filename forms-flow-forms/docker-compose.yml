@@ -39,7 +39,7 @@ services:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: '{"mongo": "mongodb://mongo:27017/formio"}'
+      NODE_CONFIG: '{"mongo": "mongodb://mongo:27017/app"}'
       ROOT_EMAIL: admin@example.com
       ROOT_PASSWORD: CHANGEME
     stdin_open: true  # -i

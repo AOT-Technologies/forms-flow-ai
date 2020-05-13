@@ -29,9 +29,9 @@ class NavBar extends Component {
                 <Navbar expand="lg">
                     <section className="container">
                         <Navbar.Brand className="d-flex">
-                            <img className="img-fluid d-none d-md-block" src="/AOT-logo.png" width="250" alt="AOT Logo" />
-                            <img className="img-fluid d-md-none" src="/AOT-simple-logo.png" width="40" alt="AOT Logo"></img>
-                            <label className="lbl-app-nanme">FormsFlow</label><label className="lbl-app-nanme app-name">.AI</label>
+                            <img className="img-fluid d-none d-md-block" src="/logo.svg" width="177" height="44" alt="Logo" />
+                            <img className="img-fluid d-md-none" src="/simple-logo.svg" width="63" height="44" alt="Logo"></img>
+                            <div className="div-center"><label className="lbl-app-nanme">FormsFlow</label><label className="lbl-app-nanme app-name">.AI</label></div>
                        {/* for small screen */}
                        <Nav className="d-md-none custom-profile">
                                 <NavDropdown style={{ fontSize: '18px' }} title={<div className="pull-left">

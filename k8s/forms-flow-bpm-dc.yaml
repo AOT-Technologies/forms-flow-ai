@@ -197,7 +197,7 @@ parameters:
   - name: DATABASE_SERVICE_NAME
     description: The Service name used to connect to the database.
     required: true
-    value: camunda-postgresql-dev
+    value: patroni-postgres-master
   - name: DATABASE_NAME
     description: The name of the database to connect to.
     required: true

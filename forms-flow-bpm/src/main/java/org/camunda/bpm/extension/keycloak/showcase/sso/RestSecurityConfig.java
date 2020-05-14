@@ -1,6 +1,5 @@
 package org.camunda.bpm.extension.keycloak.showcase.sso;
 
-import java.util.Arrays;
 
 import org.camunda.bpm.extension.keycloak.showcase.filter.StatelessUserAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+
+import javax.ws.rs.HttpMethod;
+
 
 @Configuration
 @EnableWebSecurity
@@ -31,15 +30,13 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     KeycloakAuthenticationConverter kcAuthenticationConverter;
 
-    @Autowired
-    private CorsFilter corsfilter;
-
     @Override
     public void configure(final HttpSecurity http) throws Exception {
-        http.requestMatchers().antMatchers("/engine-rest/**").and().authorizeRequests().anyRequest().authenticated().and().csrf().disable()
+        http.requestMatchers().antMatchers("/engine-rest/**").
+                and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/engine-rest/**").permitAll()
+                .anyRequest().authenticated().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().oauth2ResourceServer()
                 .jwt().jwtAuthenticationConverter(grantedAuthoritiesExtractor());
-
     }
 
     Converter<Jwt, AbstractAuthenticationToken> grantedAuthoritiesExtractor() {
@@ -49,14 +46,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Bean
     public FilterRegistrationBean kcStatelessUserAuthenticationFilter() {
-        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        final CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("*");
-        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
-        config.setAllowCredentials(true);
-        source.registerCorsConfiguration("/**", config);
-        FilterRegistrationBean filterRegistration = new FilterRegistrationBean(new CustomCorsFilter(source));
+        FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(statelessUserAuthenticationFilter);
         filterRegistration.setOrder(103); // make sure the filter is registered after the Spring Security Filter Chain
         filterRegistration.addUrlPatterns("/engine-rest/*");

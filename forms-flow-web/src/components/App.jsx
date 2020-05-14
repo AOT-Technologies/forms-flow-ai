@@ -4,35 +4,22 @@ import { Provider } from "react-redux";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { ConnectedRouter } from 'connected-react-router';
 
+// import PublicRoute from "./PublicRoute";
 import Form from "../components/Form";
 import NavBar from '../containers/NavBar';
-import { STAFF_REVIEWER } from "../constants/constants";
 require('typeface-nunito-sans')
 
 class App extends Component{
-  constructor(){
-    super();
-    this.user=[];
-  }
-
-  ListRoute = ({ component: Component, ...rest }) => (
-    <Route {...rest} render={(props) => (
-      this.user.includes(STAFF_REVIEWER)
-      ? <Component {...props} />
-      : <Redirect exact to='/' />
-      )} />
-      )
-
   render(){
     const { store, history } = this.props;
-    this.user = store.getState().user.roles;
     return(
   <div>
     <Provider store={store}>
       <ConnectedRouter  history={history}>
-        <NavBar/>
+        <NavBar store={store}/>
         <Switch>
-          <Route path="/form"><Form/></Route>
+          {/* <Route path="/public"><PublicRoute store={store}/></Route> */}
+          <Route path="/form"><Form store={store}/></Route>
           <Route path="/"><Redirect to="/form"/></Route>
         </Switch>
       </ConnectedRouter >

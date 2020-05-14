@@ -1,5 +1,12 @@
 import ACTION_CONSTANTS from './actionConstants'
 
+export const setUserAuth = (data) => dispatch => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_USER_AUTHENTICATION,
+    payload: data
+  })
+}
+
 export const setUserToken = (data) => dispatch => {
   dispatch({
     type: ACTION_CONSTANTS.SET_USER_TOKEN,

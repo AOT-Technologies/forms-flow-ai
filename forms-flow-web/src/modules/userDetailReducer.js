@@ -3,7 +3,8 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 const initialState = {
   bearerToken: '',
   roles: '',
-  userDetail:[]
+  userDetail:[],
+  isAuthenticated:false
 }
 
 export default (state = initialState, action)=> {
@@ -14,6 +15,8 @@ export default (state = initialState, action)=> {
       return {...state, roles: action.payload};
     case ACTION_CONSTANTS.SET_USER_DETAILS:
       return {...state, userDetail:action.payload}
+    case ACTION_CONSTANTS.SET_USER_AUTHENTICATION:
+      return {...state, isAuthenticated:action.payload}
     default:
       return state;
   }

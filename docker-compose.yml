@@ -19,22 +19,7 @@ services:
     restart: unless-stopped
     networks:
       - forms-flow-bpm-network
-  
-  forms-flow-bpm-db-admin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    volumes:
-      - ./pgadmin:/root/.pgadmin
-    ports:
-      - "${PGADMIN_PORT}:80"
-    networks:
-      - postgres
-    restart: unless-stopped
-    networks:
-      - forms-flow-bpm-network
-        
+      -
   forms-flow-bpm:
     build:
       context: ./forms-flow-bpm/
@@ -53,6 +38,7 @@ services:
       - JDBC_USER=${JDBC_USER}
       - JDBC_PASSWORD=${JDBC_PASSWORD}
       - JDBC_DRIVER=${JDBC_DRIVER}
+      - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN}
     volumes:
       - /home/dev/certs/bpm1.aot-technologies.com:/certs
     networks:
@@ -133,6 +119,8 @@ services:
       - REACT_APP_BPM_TOKEN_API=${REACT_APP_BPM_TOKEN_API}
       - REACT_APP_BPM_CLIENT_ID=${REACT_APP_BPM_CLIENT_ID}
       - REACT_APP_KEYCLOAK_BPM_CLIENT=${REACT_APP_KEYCLOAK_BPM_CLIENT}
+      - REACT_APP_ANONYMOUS_ID=${REACT_APP_ANONYMOUS_ID}
+      - REACT_APP_EMAIL_SUBMISSION_GROUP=${REACT_APP_EMAIL_SUBMISSION_GROUP}
 
     networks:
       - forms-flow-web-network
@@ -160,4 +148,3 @@ networks:
 volumes:
   mdb-data:
   postgres:
-  pgadmin:

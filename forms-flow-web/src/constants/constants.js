@@ -3,6 +3,8 @@ import Keycloak from "keycloak-js";
 export const CLIENT = window._env_.REACT_APP_CLIENT_ROLE || process.env.REACT_APP_CLIENT_ROLE;
 export const STAFF_DESIGNER = window._env_.REACT_APP_STAFF_DESIGNER_ROLE || process.env.REACT_APP_STAFF_DESIGNER_ROLE;
 export const STAFF_REVIEWER = window._env_.REACT_APP_STAFF_REVIEWER_ROLE || process.env.REACT_APP_STAFF_REVIEWER_ROLE;
+export const ANONYMOUS_USER = 'anonymous';
+
 export const USER_RESOURCE_FORM_ID = window._env_.REACT_APP_USER_RESOURCE_FORM_ID || process.env.REACT_APP_USER_RESOURCE_FORM_ID;
 export const Keycloak_Client = window._env_.REACT_APP_KEYCLOAK_CLIENT || process.env.REACT_APP_KEYCLOAK_CLIENT || 'forms-flow-web';
 export const  _kc = new Keycloak("/config/kc/keycloak.json");
@@ -10,9 +12,7 @@ export const  _kc = new Keycloak("/config/kc/keycloak.json");
 const CLIENT_ID = window._env_.REACT_APP_CLIENT_ID || process.env.REACT_APP_CLIENT_ID;
 const STAFF_REVIEWER_ID = window._env_.REACT_APP_STAFF_REVIEWER_ID || process.env.REACT_APP_STAFF_REVIEWER_ID;
 const STAFF_DESIGNER_ID = window._env_.REACT_APP_STAFF_DESIGNER_ID || process.env.REACT_APP_STAFF_DESIGNER_ID;
-
-console.log("env ...", process.env);
-console.log("bpm", process.env.REACT_APP_BPM_API_BASE);
+export const ANONYMOUS_ID = window._env_.REACT_APP_ANONYMOUS_ID || process.env.REACT_APP_ANONYMOUS_ID;
 
 export const ROLES = [{
     id: CLIENT_ID,
@@ -124,6 +124,10 @@ export const SUBMISSION_ACCESS = [
     roles:[STAFF_DESIGNER_ID, STAFF_REVIEWER_ID],
     type:"delete_all"
   },
+  // {
+  //   roles:[CLIENT_ID, ANONYMOUS_ID],
+  //   type:"create_own"
+  // },
   {
     roles:[CLIENT_ID],
     type:"create_own"
@@ -139,5 +143,5 @@ export const SUBMISSION_ACCESS = [
   {
     roles:[STAFF_REVIEWER_ID],
     type:"delete_own"
-  },
+  }
 ];

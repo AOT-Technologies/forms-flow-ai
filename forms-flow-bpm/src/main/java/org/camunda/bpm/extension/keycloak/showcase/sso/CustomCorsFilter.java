@@ -1,37 +1,80 @@
 package org.camunda.bpm.extension.keycloak.showcase.sso;
 
 import java.io.IOException;
-
+import java.util.Enumeration;
+import java.util.logging.Logger;
+import javax.servlet.Filter;
 import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
-    @Configuration
-    public class CustomCorsFilter extends CorsFilter {
+/**
+ * This class is support CORS for Camunda application
+ *
+ * @author sumathi.thirumani@aot-technologies.com
+ */
+@Component
+@Order(SecurityProperties.DEFAULT_FILTER_ORDER)
+public class CustomCorsFilter implements Filter {
 
-        public CustomCorsFilter(CorsConfigurationSource source) {
-            super((CorsConfigurationSource) source);
-        }
+    private final Logger LOGGER = Logger.getLogger(CustomCorsFilter.class.getName());
 
-        @Override
-        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-                throws ServletException, IOException {
-        	response.setHeader("Access-Control-Allow-Origin", "*");
-            response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-            response.addHeader("Access-Control-Allow-Headers",
-                    "Access-Control-Allow-Origin, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, authorization");
-            response.setHeader("Access-Control-Max-Age", "3600");
-            if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-                response.setStatus(HttpServletResponse.SC_OK);
-            } else {
-            	filterChain.doFilter(request, response);
-            }
-            
-        }
+    @Value("${app.security.origin}")
+    private String customAllowOrigin;
 
+    public CustomCorsFilter() {
+        LOGGER.info("Initialization of cors filter");
     }
+
+    @Override
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
+
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) res;
+
+        response.setHeader("Access-Control-Allow-Origin",getOrigin(request));
+        response.setHeader("Access-Control-Allow-Methods","POST, PUT, GET, OPTIONS");
+        response.setHeader("Access-Control-Allow-Headers","access-control-allow-methods,authorization,content-type");
+        response.setHeader("Access-Control-Max-Age", "3600");
+
+        if("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            chain.doFilter(req, res);
+        }
+    }
+
+    private String getOrigin(HttpServletRequest request){
+        if(StringUtils.isNotBlank(customAllowOrigin)) {
+            LOGGER.info("Leveraging the customAllowOrigin : "+customAllowOrigin);
+            return customAllowOrigin;
+        }
+        for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
+            String headerName = (String) e.nextElement();
+            if(StringUtils.isNotBlank(headerName) && "ORIGIN".equals(headerName.toUpperCase())) {
+                LOGGER.info("Leveraging the origin from header : "+request.getHeader(headerName));
+                return request.getHeader(headerName);
+            }
+        }
+        LOGGER.info("Leveraging the wildcard : *");
+        return "*";
+    }
+
+    @Override
+    public void init(FilterConfig filterConfig) {
+    }
+
+    @Override
+    public void destroy() {
+    }
+}

@@ -38,6 +38,7 @@ services:
       - JDBC_USER=${JDBC_USER}
       - JDBC_PASSWORD=${JDBC_PASSWORD}
       - JDBC_DRIVER=${JDBC_DRIVER}
+      - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN}
     volumes:
       - /home/dev/certs/bpm1.aot-technologies.com:/certs
     networks:

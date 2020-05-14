@@ -460,7 +460,7 @@ module.exports = function(formio, items, done) {
     }
   };
 
-  util.log('Installing...');
+  util.log('Installing..heyyyyyyyyyyyyyyyy.');
   prompt.start();
   async.series([
     steps.areYouSure,

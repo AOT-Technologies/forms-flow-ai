@@ -84,6 +84,7 @@ module.exports = function(options) {
         config.appPort = config.appPort || 8080;
         application.listen(config.appPort);
         const appHost= process.env.DOMAIN ;
+        console.log('appHost:-----------------------------',appHost)
         util.log(` > Serving application at ${appHost.green}`);
       }
 

@@ -77,52 +77,16 @@
             }
             ],
             "envFrom": [
-            {
-              "configMapRef": {
-                "name": "${NAME}-${TAG_NAME}-config"
-              }
-            }
             ],
             "env": [
-            {
-              "name": "MONGO_INITDB_ROOT_USERNAME",
-              "valueFrom": {
-                "configMapKeyRef": {
-                  "name": "${DATABASE_NAME}-${TAG_NAME}-config",
-                  "key": "MONGO_INITDB_ROOT_USERNAME"
-                }
-              }
-            },
-            {
-              "name": "MONGO_INITDB_ROOT_PASSWORD",
-              "valueFrom": {
-                "secretKeyRef": {
-                  "name": "${DATABASE_NAME}-${TAG_NAME}-secret",
-                  "key": "database-password"
-                }
-              }
-            },
-            {
-              "name": "MONGO_INITDB_DATABASE",
-              "valueFrom": {
-                "configMapKeyRef": {
-                  "name": "${DATABASE_NAME}-${TAG_NAME}-config",
-                  "key": "DATABASE_NAME"
-                }
-              }
-            },
             {
               "name": "NODE_CONFIG",
               "valueFrom": {
                 "secretKeyRef": {
                   "key": "NODE_CONFIG",
-                  "name": "mongodb-formio-core-dev-secret"
+                  "name": "mongodb"
                 }
               }
-            },
-            {
-              "name": "NO_INSTALL",
-              "value":  "true"
             },
             {
               "name": "DEBUG",
@@ -270,14 +234,14 @@
     "displayName": "App Group",
     "description": "The name assigned to all of the deployments in this project.",
     "required": true,
-    "value": "formio-core"
+    "value": "formio-rpas"
   },
   {
     "name": "IMAGE_NAMESPACE",
     "displayName": "Image Namespace",
     "required": true,
     "description": "The namespace of the OpenShift project containing the imagestream for the application.",
-    "value": "vmvfjv-tools"
+    "value": "ebiqwr-tools"
   },
   {
     "name": "TAG_NAME",

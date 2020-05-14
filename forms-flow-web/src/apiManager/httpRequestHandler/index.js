@@ -1,11 +1,11 @@
-import axios from 'axios'
+import axios from 'axios';
 
-import Token from '../token/tokenService'
+import Token from '../token/tokenService';
 
 const qs = require('querystring');
 
 export const httpGETRequest = (url, data) => {
-  return axios.get(url, { params: data, headers: { Authorization:`Bearer ${Token.getBpmToken()}`}, mode:'no-cors'  }) // TODO get this dynamic from url
+  return axios.get(url, { params: data, headers: { Authorization:`Bearer ${Token.getBpmToken()}`} }) // TODO get this dynamic from url
 }
 
 export const httpPOSTRequest = (url, data) => {
@@ -13,7 +13,7 @@ export const httpPOSTRequest = (url, data) => {
   console.log("env inside post req",process.env);
   console.log("bpm", process.env.REACT_APP_BPM_API_BASE);
   const token = `Bearer ${Token.getBpmToken()}`;
-  return axios.post(url, data, { headers: { Authorization: token , 'Access-Control-Allow-Origin':'*'} , crossDomain: true, mode:'no-cors' }) // TODO get this dynamic from url
+  return axios.post(url, data, { headers: { Authorization: token } }) // TODO get this dynamic from url
 }
 
 export const httpPOSTRequestWithoutToken = (url, data) => {

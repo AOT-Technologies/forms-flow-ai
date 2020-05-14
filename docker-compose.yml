@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
     networks:
       - forms-flow-bpm-network
-
+      -
   forms-flow-bpm:
     build:
       context: ./forms-flow-bpm/
@@ -38,6 +38,7 @@ services:
       - JDBC_USER=${JDBC_USER}
       - JDBC_PASSWORD=${JDBC_PASSWORD}
       - JDBC_DRIVER=${JDBC_DRIVER}
+      - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN}
     volumes:
       - /home/dev/certs/bpm1.aot-technologies.com:/certs
     networks:
@@ -83,7 +84,7 @@ services:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio"}'
+      NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio?replicaSet=rs0"}'
       ROOT_EMAIL: ${ROOT_EMAIL}
       ROOT_PASSWORD: ${ROOT_PASSWORD}
     stdin_open: true  # -i
@@ -118,6 +119,8 @@ services:
       - REACT_APP_BPM_TOKEN_API=${REACT_APP_BPM_TOKEN_API}
       - REACT_APP_BPM_CLIENT_ID=${REACT_APP_BPM_CLIENT_ID}
       - REACT_APP_KEYCLOAK_BPM_CLIENT=${REACT_APP_KEYCLOAK_BPM_CLIENT}
+      - REACT_APP_ANONYMOUS_ID=${REACT_APP_ANONYMOUS_ID}
+      - REACT_APP_EMAIL_SUBMISSION_GROUP=${REACT_APP_EMAIL_SUBMISSION_GROUP}
 
     networks:
       - forms-flow-web-network

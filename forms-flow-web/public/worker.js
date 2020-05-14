@@ -15,8 +15,8 @@ const urlsToCache = [
   "/config/kc/keycloak.json",
   "/static/js/0.chunk.js.map",
   "/spinner.gif",
-  "/bcid-logo-rev-en.svg",
-  "/bcid-symbol-rev.svg",
+  "/logo.png",
+  "/simple-logo.png",
   "https://iam.aot-technologies.com/auth/"
 ];
 // Install a service worker

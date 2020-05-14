@@ -121,7 +121,7 @@ h5, .h5
   color:white !important;
 }
 .text-muted {
-  color: #ffff !important;
+  color: #94b8b8 !important;
 }
 .panel-heading
 {
@@ -347,4 +347,13 @@ margin-right: 3px;
 }
 .btn.btn-link:focus, .btn.btn-link.focus {
   box-shadow: none;
+}
+.div-center
+{
+  align-self: center;
+}
+.tooltip-inner {
+  color: black !important;
+  background-color: white !important;
+  border: 0.5px solid !important;
 }

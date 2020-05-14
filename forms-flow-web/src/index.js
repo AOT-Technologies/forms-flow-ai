@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import App from "./components/App";
 import StoreService from "./services/StoreService";
-import UserService from "./services/UserService";
+// import UserService from "./services/UserService";
 
 import { Formio} from 'react-formio';
 import {AppConfig} from './config';
@@ -16,7 +16,8 @@ const history = StoreService.history;
 Formio.setProjectUrl(AppConfig.projectUrl);
 Formio.setBaseUrl(AppConfig.apiUrl);
 
-const renderApp = () => ReactDOM.render(<App {...{ store, history }} />, document.getElementById("app"));
+ReactDOM.render(<App {...{ store, history }} />, document.getElementById("app"));
+// const renderApp = () => ReactDOM.render(<App {...{ store, history }} />, document.getElementById("app"));
 
 serviceWorker.register();
-UserService.initKeycloak(renderApp, store);
+// UserService.initKeycloak(renderApp, store);

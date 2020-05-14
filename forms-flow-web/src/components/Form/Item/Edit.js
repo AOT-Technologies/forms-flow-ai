@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { saveForm, selectForm, FormEdit, Errors, selectError } from 'react-formio';
 import {push} from "connected-react-router";
 import { Link } from 'react-router-dom'
+import { SUBMISSION_ACCESS } from '../../../constants/constants';
 
 const Edit = props => (
           <div className="container">
@@ -32,13 +33,15 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    saveForm: (form) => dispatch(saveForm('form', form, (err, form) => {
-
-      if (!err) {
-        // TODO: Display a save success message here.
-        dispatch(push(`/form/${form._id}/preview`))
-      }
-    }))
+    saveForm: (form) =>{
+      form.submissionAccess=SUBMISSION_ACCESS;
+      return dispatch(saveForm('form', form, (err, form) => {
+        if (!err) {
+          // TODO: Display a save success message here.
+          dispatch(push(`/form/${form._id}/preview`))
+        } 
+      }))
+    }
   }
 }
 

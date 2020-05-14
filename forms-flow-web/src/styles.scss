@@ -345,3 +345,10 @@ margin-right: 3px;
     float: right;
     margin-left: auto;
 }
+.btn.btn-link:focus, .btn.btn-link.focus {
+  box-shadow: none;
+}
+.div-center
+{
+  align-self: center;
+}

@@ -11,7 +11,7 @@ import {setFormDeleteStatus} from '../../actions/formActions'
 import Confirm from '../../containers/Confirm';
 
 const List = class extends Component {
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     this.props.getForms(1);
   }
 

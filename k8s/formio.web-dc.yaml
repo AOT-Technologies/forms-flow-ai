@@ -250,8 +250,7 @@
     "name": "TAG_NAME",
     "displayName": "Environment TAG name",
     "description": "The TAG name for this environment, e.g., dev, test, prod",
-    "required": true,
-    "value": "dev"
+    "required": true
   },
   {
     "name": "CPU_REQUEST",
@@ -285,8 +284,7 @@
     "name": "REPLICAS",
     "displayName": "The number of replicas to run",
     "description": "The number of replicas to run in this environment.",
-    "required": true,
-    "value": "1"
+    "required": true
   },
   {
     "name": "MOUNT_PATH",

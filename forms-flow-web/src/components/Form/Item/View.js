@@ -6,9 +6,9 @@ import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
 
 import Loading from '../../../containers/Loading';
-import { getUserToken, triggerNotification, getProcess } from "../../../apiManager/services/bpmServices";
+import { triggerNotification, getProcess } from "../../../apiManager/services/bpmServices";
 import { setFormSubmissionError } from "../../../actions/formActions";
-import { BPM_USER_DETAILS } from "../../../apiManager/constants/apiConstants";
+// import { BPM_USER_DETAILS } from "../../../apiManager/constants/apiConstants";
 import PROCESS from "../../../apiManager/constants/processConstants";
 import SubmissionError from '../../../containers/SubmissionError';
 
@@ -75,14 +75,17 @@ function doProcessActions(submission, ownProps) {
     let IsAuth = getState().user.isAuthenticated
     dispatch(resetSubmissions('submission'));
     const data = getProcess(PROCESS.EmailNotification, form, submission._id, "new", user);
-    dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
-      if (!err) {
-        dispatch(triggerNotification(data));
+    dispatch(triggerNotification(data),(err,res)=>{
+      if(!err){
         if (IsAuth) {
           dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
         }
+      }else{ //TO DO Update to show error message
+          if (IsAuth) {
+            dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+          }
       }
-    }));
+    });
   }
 }
 

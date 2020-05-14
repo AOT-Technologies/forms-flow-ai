@@ -12,7 +12,7 @@ require('typeface-nunito-sans')
 class App extends Component{
   constructor(){
     super();
-    console.log('****************************************************************NEW BUILD 1')
+    console.log('*****************************s***********************************NEW BUILD 1')
     this.user=[];
   }
 

@@ -57,7 +57,7 @@ camunda.bpm:
 
 server:
   port: 8080
-    servlet.context-path: /camunda
+  servlet.context-path: /camunda
 
 security:
   oauth2:

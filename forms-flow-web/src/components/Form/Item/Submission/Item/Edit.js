@@ -57,14 +57,14 @@ function doProcessActions(submission, ownProps) {
     let form = getState().form.form
     dispatch(resetSubmissions('submission'));
     const data = getProcess(PROCESS.EmailNotification, form, submission._id, "edit", user);
-    dispatch(triggerNotification(data),(err,res)=>{
+    dispatch(triggerNotification(data,(err,res)=>{
       if(!err){
         dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
       }
       else{ //TODO Update this to show error message
         dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
       }
-    });
+    }));
   }
 }
 

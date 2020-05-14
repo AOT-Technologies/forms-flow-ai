@@ -32,8 +32,4 @@ window['_env_'] =  {
 
   // BPM-API-URL
   "REACT_APP_BPM_API_BASE": "http: //localhost:8000",
-  // BPM TOKEN URL
-  "REACT_APP_BPM_TOKEN_API": "<KEYCLOAK-BASE-URL>/auth/realms/forms-flow-ai/protocol/openid-connect/token",
-  // Keycloak-client-name for BPM
-  "REACT_APP_KEYCLOAK_BPM_CLIENT": "forms-flow-bpm"
 }

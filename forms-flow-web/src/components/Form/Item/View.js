@@ -75,17 +75,19 @@ function doProcessActions(submission, ownProps) {
     let IsAuth = getState().user.isAuthenticated
     dispatch(resetSubmissions('submission'));
     const data = getProcess(PROCESS.EmailNotification, form, submission._id, "new", user);
-    dispatch(triggerNotification(data),(err,res)=>{
+    dispatch(triggerNotification(data,(err,res)=>{
       if(!err){
+        console.log("Not Error")
         if (IsAuth) {
           dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
         }
+        console.log("Error")
       }else{ //TO DO Update to show error message
           if (IsAuth) {
             dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
           }
       }
-    });
+    }));
   }
 }
 

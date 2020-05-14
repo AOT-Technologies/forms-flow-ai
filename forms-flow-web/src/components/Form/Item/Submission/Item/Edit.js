@@ -13,6 +13,7 @@ import SubmissionError from '../../../../../containers/SubmissionError';
 
 const Edit = class extends Component {
   render() {
+    console.log("Props",this.props)
     const {
       hideComponents,
       onSubmit,
@@ -69,6 +70,7 @@ const mapStateToProps = (state) => {
   return {
     user: state.user.userDetail,
     form: selectRoot('form', state),
+    submission: selectRoot('submission', state),
     isAuthenticated: state.user.isAuthenticated,
     errors: [
       selectError('form', state),
@@ -88,14 +90,16 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
+    // getForm: () => dispatch(getForm('form', ownProps.match.params.formId)),
     onSubmit: (submission) => {
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
           dispatch(doProcessActions(submission, ownProps))
-        } else {
-          const ErrorDetails = { modalOpen: true, message: "Submission cannot be done" }
-          dispatch(setFormSubmissionError(ErrorDetails))
-        }
+        } 
+        // else {
+        //   const ErrorDetails = { modalOpen: true, message: "Submission cannot be done" }
+        //   dispatch(setFormSubmissionError(ErrorDetails))
+        // }
       }));
     },
     onConfirm: () => {

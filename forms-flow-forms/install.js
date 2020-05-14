@@ -144,12 +144,9 @@ module.exports = function(formio, items, done) {
 
       // Change the project configuration.
       const config = fs.readFileSync(path.join(directoryPath, 'config.template.js'));
-      console.log('config------------------------------------------------------------------------------process.env.DOMAIN------------',process.env.DOMAIN)
       const newConfig = nunjucks.renderString(config.toString(), {
-        domain: process.env.DOMAIN
+        domain: formio.config.domain ? formio.config.domain : 'https://form.io'
       });
-      console.log('config------------------------------------------------------------------------------process.env.DOMAIN------------',JSON.stringify(newConfig))
-
       fs.writeFileSync(path.join(directoryPath, 'config.js'), newConfig);
       done();
     });
@@ -463,7 +460,7 @@ module.exports = function(formio, items, done) {
     }
   };
 
-  util.log('Installing..heyyyyyyyyyyyyyyyy.');
+  util.log('Installing...');
   prompt.start();
   async.series([
     steps.areYouSure,

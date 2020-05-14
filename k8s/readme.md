@@ -143,4 +143,11 @@ oc process -f mongodb-replicaset.yaml --param-file=dev.env |oc create -f -
 
 
 
+Camunda command
 
+create a config map 
+forms-flow-bpm 
+
+
+
+oc process -f forms-flow-bpm-dc.yaml --param-file=test.env --ignore-unknown-parameters=true |oc create -f -

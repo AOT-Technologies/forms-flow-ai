@@ -145,7 +145,7 @@ module.exports = function(formio, items, done) {
       // Change the project configuration.
       const config = fs.readFileSync(path.join(directoryPath, 'config.template.js'));
       const newConfig = nunjucks.renderString(config.toString(), {
-        domain: process.env.DOMAIN ? process.env.DOMAIN: formio.config.domain
+        domain: formio.config.domain ? formio.config.domain : 'https://form.io'
       });
       fs.writeFileSync(path.join(directoryPath, 'config.js'), newConfig);
       done();

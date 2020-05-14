@@ -5,8 +5,8 @@ import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors
 import { push } from 'connected-react-router';
 
 import Loading from '../../../../../containers/Loading'
-import { getProcess, triggerNotification } from "../../../../../apiManager/services/bpmServices";
-// import { BPM_USER_DETAILS } from "../../../../../apiManager/constants/apiConstants";
+import { getUserToken,getProcess, triggerNotification } from "../../../../../apiManager/services/bpmServices";
+import { BPM_USER_DETAILS } from "../../../../../apiManager/constants/apiConstants";
 import PROCESS from "../../../../../apiManager/constants/processConstants";
 import { setFormSubmissionError } from '../../../../../actions/formActions';
 import SubmissionError from '../../../../../containers/SubmissionError';
@@ -57,13 +57,17 @@ function doProcessActions(submission, ownProps) {
     let form = getState().form.form
     dispatch(resetSubmissions('submission'));
     const data = getProcess(PROCESS.EmailNotification, form, submission._id, "edit", user);
-    dispatch(triggerNotification(data,(err,res)=>{
+    dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
       if(!err){
-        dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
-      }
-      else{ //TODO Update this to show error message
-        dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
-      }
+      dispatch(triggerNotification(data,(err,res)=>{
+        if(!err){
+          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+        }
+        else{ //TODO Update this to show error message
+          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+        }
+      }));
+    }
     }));
   }
 }

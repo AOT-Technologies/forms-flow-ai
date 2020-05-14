@@ -12,6 +12,7 @@ require('typeface-nunito-sans')
 class App extends Component{
   constructor(){
     super();
+    console.log('****************************************************************NEW BUILD 1')
     this.user=[];
   }
 
@@ -22,7 +23,7 @@ class App extends Component{
       : <Redirect exact to='/' />
       )} />
       )
-      
+
   render(){
     const { store, history } = this.props;
     this.user = store.getState().user.roles;

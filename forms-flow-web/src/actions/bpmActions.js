@@ -21,6 +21,7 @@ export const setUserRole = (data) => dispatch => {
   })
 }
 export const setUserDetails = (data) => dispatch => {
+  localStorage.setItem('UserDetails', JSON.stringify(data));
   dispatch({
     type: ACTION_CONSTANTS.SET_USER_DETAILS,
     payload: data

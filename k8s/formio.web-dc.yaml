@@ -61,7 +61,7 @@
         "type": "ConfigChange"
       }
       ],
-      "replicas": 1,
+      "replicas": "${REPLICAS}",
       "test": false,
       "selector": {
         "app": "${NAME}-${TAG_NAME}",

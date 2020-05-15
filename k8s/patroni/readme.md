@@ -14,3 +14,6 @@ oc process -f deployment-prereq.yaml |oc create -f -
 **Run the deployment file**
 
 oc process -f deployment.yaml |oc create -f -
+
+
+the secret from patroni app-db-password

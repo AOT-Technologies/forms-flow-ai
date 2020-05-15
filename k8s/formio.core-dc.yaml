@@ -94,7 +94,7 @@
             },
             {
               "name": "ROOT_EMAIL",
-              "value":  "admin@example.com"
+              "value":  "${FORM_IO_ADMIN_EMAIL}"
             },
             {
               "name": "ROOT_PASSWORD",
@@ -296,6 +296,11 @@
     "description": "Form io needs a default password to login",
     "generate": "expression",
     "from": "[a-zA-Z0-9]{16}",
+    "required": true
+  },{
+    "name": "FORM_IO_ADMIN_EMAIL",
+    "displayName": "formio admin email",
+    "description": "Form io needs an email login",
     "required": true
   }
   ]

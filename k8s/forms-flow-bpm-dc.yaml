@@ -70,7 +70,7 @@ objects:
       name: ${NAME}
     spec:
       podManagementPolicy: Parallel
-      replicas: 1
+      replicas: 2
       selector:
         matchLabels:
           app: ${NAME}
@@ -99,13 +99,13 @@ objects:
                 - name: JDBC_USER
                   valueFrom:
                     secretKeyRef:
-                      key: db_username
-                      name: ${NAME}
+                      key: app-db-username
+                      name: patroni
                 - name: JDBC_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      key: db_password
-                      name: ${NAME}
+                      key: app-db-password
+                      name: patroni
                 - name: WAIT_FOR
                   value: ${DATABASE_SERVICE_NAME}:${DATABASE_PORT}
                 - name: KEYCLOAK_URL
@@ -185,7 +185,6 @@ parameters:
   - name: IMAGE_TAG
     description: The image tag to pull for the deployment.
     required: true
-    value: latest
   - name: TOOLS_WORKSPACE
     description: The location for your image streams (Tools Workspace).
     required: true

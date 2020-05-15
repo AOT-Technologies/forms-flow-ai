@@ -150,4 +150,4 @@ forms-flow-bpm
 
 
 
-oc process -f forms-flow-bpm-dc.yaml --param-file=test.env --ignore-unknown-parameters=true |oc create -f -
+oc process -f forms-flow-bpm-dc.yaml --param-file=prod.env --ignore-unknown-parameters=true |oc create -f -

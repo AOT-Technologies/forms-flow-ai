@@ -19,7 +19,8 @@ services:
     restart: unless-stopped
     networks:
       - forms-flow-bpm-network
-        
+
+
   forms-flow-bpm:
     build:
       context: ./forms-flow-bpm/

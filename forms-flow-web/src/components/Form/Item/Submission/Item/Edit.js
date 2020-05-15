@@ -13,7 +13,6 @@ import SubmissionError from '../../../../../containers/SubmissionError';
 
 const Edit = class extends Component {
   render() {
-    console.log("Props",this.props)
     const {
       hideComponents,
       onSubmit,

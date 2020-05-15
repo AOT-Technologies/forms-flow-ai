@@ -1,0 +1,71 @@
+---
+apiVersion: v1
+kind: Template
+labels:
+  app: "${APP_NAME}-${INSTANCE}"
+  name: "${NAME}"
+  role: "${ROLE}"
+  template: "${NAME}-${INSTANCE}-template"
+  app-group: ${APP_GROUP}
+metadata:
+  annotations:
+    description: web config map generator for form io value
+    tags: "${NAME}-${INSTANCE}"
+objects:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: "${NAME}"
+    data:
+      config.js: |-
+        // runtime-config.js vars
+          window['_env_'] =  {
+            "NODE_ENV": "development",
+            "REACT_APP_CLIENT_ROLE": "rpas-client",
+            "REACT_APP_STAFF_DESIGNER_ROLE": "rpas-designer",
+            "REACT_APP_STAFF_REVIEWER_ROLE": "rpas-reviewer",
+            "REACT_APP_CLIENT_ID": "5ebd5f50fb1096a5703253d5",
+            "REACT_APP_STAFF_REVIEWER_ID": "5ebd5f50fb109635733253d6",
+            "REACT_APP_STAFF_DESIGNER_ID": "5ebc4decf4e2eef7de47a924",
+            "REACT_APP_USER_RESOURCE_FORM_ID": "5ebc4decf4e2ee4a9147a927",
+            "REACT_APP_API_SERVER_URL": "https://formio-core-api-dev-ebiqwr-dev.pathfinder.gov.bc.ca"     ,
+            "REACT_APP_API_PROJECT_URL": "https://formio-core-api-dev-ebiqwr-dev.pathfinder.gov.bc.ca"     ,
+            "REACT_APP_KEYCLOAK_CLIENT": "forms-flow-web",
+            "REACT_APP_BPM_API_BASE": "https://forms-flow-bpm-ebiqwr-dev.pathfinder.gov.bc.ca"     ,
+            "REACT_APP_BPM_TOKEN_API": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/p8jhnzlo/protocol/openid-connect/token"     ,
+            "REACT_APP_BPM_CLIENT_ID": "9ea3b59e-f99f-4427-bbd4-458d931005a1",
+            "REACT_APP_KEYCLOAK_BPM_CLIENT": "forms-flow-bpm",
+            "REACT_APP_ANONYMOUS_ID":"5ebc4decf4e2ee5e1047a926",
+            "REACT_APP_EMAIL_SUBMISSION_GROUP":"rpas/rpas-reviewer"
+          }
+
+parameters:
+  - name: NAME
+    displayName: Name
+    description:
+      The name assigned to all of the OpenShift resources associated to the
+      server instance.
+    required: true
+  - name: INSTANCE
+    description: The name of this instance of the application
+    displayName: Application Instance Name
+    required: true
+    value: prod
+  - name: APP_NAME
+    displayName: App Name
+    description: Used to group components together in the OpenShift console.
+    required: true
+    value: formio
+  - name: ROLE
+    displayName: Role
+    description:
+      The role of this service within the application - used for Network
+      Policies
+    required: true
+    value: configmap
+  - name: APP_GROUP
+    displayName: APP_GROUP
+    description:
+      The name assigned to all of the deployments in this project.
+    required: true
+    value: formio-rpas

@@ -87,11 +87,67 @@ oc policy add-role-to-user system:image-puller system:serviceaccount:ebiqwr-prod
 HOW TO BUILD THE FRONT END REACT PROJECT
     1) create the config maps   forms-flow-web-dev-configuration,forms-flow-web-dev-keycloak-config
 
+sample configmap values are as below
+
+forms-flow-web-dev-configuration:
+    config.js   
+// runtime-config.js vars
+window['_env_'] =  {
+  "NODE_ENV": "development",
+  "REACT_APP_CLIENT_ROLE": "rpas-client",
+  "REACT_APP_STAFF_DESIGNER_ROLE": "rpas-designer",
+  "REACT_APP_STAFF_REVIEWER_ROLE": "rpas-reviewer",
+  "REACT_APP_CLIENT_ID": "5ea9c9b56ca0f7438337c2bd",
+  "REACT_APP_STAFF_REVIEWER_ID": "5ea9c9b56ca0f74ac337c2be",
+  "REACT_APP_STAFF_DESIGNER_ID": "5ea98bd37e79ba1d5fea9b04",
+  "REACT_APP_USER_RESOURCE_FORM_ID": "5ea98bd37e79babfbaea9b07",
+  "REACT_APP_API_SERVER_URL": "https://formio-core-api-dev.pathfinder.gov.bc.ca"   ,
+  "REACT_APP_API_PROJECT_URL": "https://formio-core-api-dev.pathfinder.gov.bc.ca"   ,
+  "REACT_APP_KEYCLOAK_CLIENT": "forms-flow-web",
+  "REACT_APP_BPM_API_BASE": "https://forms-flow-bpm-vmvfjv-dev.pathfinder.gov.bc.ca"   ,
+  "REACT_APP_BPM_TOKEN_API": "https://sso-dev.pathfinder.gov.bc.ca/auth/realms/p8jhnzlo/protocol/openid-connect/token"   ,
+  "REACT_APP_BPM_CLIENT_ID": "9ea3b59e-f99f-4427-bbd4-458d931005a1",
+  "REACT_APP_KEYCLOAK_BPM_CLIENT": "forms-flow-bpm",
+  "REACT_APP_ANONYMOUS_ID":"5ea98bd37e79ba3c16ea9b06",
+  "REACT_APP_EMAIL_SUBMISSION_GROUP":"rpas/rpas-reviewer"
+}
+
+
+forms-flow-web-dev-keycloak-config
+    keycloak.json
+
+    {
+  "realm": "p8jhnzlo",
+  "auth-server-url": "https://sso-dev.pathfinder.gov.bc.ca/auth" ,
+  "ssl-required": "external",
+  "resource": "forms-flow-web",
+  "public-client": true,
+  "verify-token-audience": true,
+  "use-resource-role-mappings": true,
+  "confidential-port": 0
+  
+}
+
+
 
 oc process -f formio.web-dc.yaml |oc apply -f -
+
+
+
 
 
 create the MONGO HA
 
 put necessary values in dev.env
 oc process -f mongodb-replicaset.yaml --param-file=dev.env |oc create -f -
+
+
+
+Camunda command
+
+create a config map 
+forms-flow-bpm 
+
+
+
+oc process -f forms-flow-bpm-dc.yaml --param-file=prod.env --ignore-unknown-parameters=true |oc create -f -

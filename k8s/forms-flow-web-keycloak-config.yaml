@@ -1,0 +1,61 @@
+---
+apiVersion: v1
+kind: Template
+labels:
+  app: "${APP_NAME}-${INSTANCE}"
+  name: "${KEYCLOAK_CONFIG_NAME}"
+  role: "${ROLE}"
+  template: "${KEYCLOAK_CONFIG_NAME}-${INSTANCE}-template"
+  app-group: ${APP_GROUP}
+metadata:
+  annotations:
+    description: web config map generator for keycloak value
+    tags: "${KEYCLOAK_CONFIG_NAME}-${INSTANCE}"
+objects:
+  - apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: "${KEYCLOAK_CONFIG_NAME}"
+    data:
+      keycloak.json: |-
+        {
+          "realm": "p8jhnzlo",
+          "auth-server-url": "https://sso-dev.pathfinder.gov.bc.ca/auth"  ,
+          "ssl-required": "external",
+          "resource": "forms-flow-web",
+          "public-client": true,
+          "verify-token-audience": true,
+          "use-resource-role-mappings": true,
+          "confidential-port": 0
+
+        }
+parameters:
+  - name: KEYCLOAK_CONFIG_NAME
+    displayName: Name
+    description:
+      The name assigned to all of the OpenShift resources associated to the
+      server instance.
+    required: true
+  - name: INSTANCE
+    description: The name of this instance of the application
+    displayName: Application Instance Name
+    required: true
+    value: prod
+  - name: APP_NAME
+    displayName: App Name
+    description: Used to group components together in the OpenShift console.
+    required: true
+    value: formio
+  - name: ROLE
+    displayName: Role
+    description:
+      The role of this service within the application - used for Network
+      Policies
+    required: true
+    value: configmap
+  - name: APP_GROUP
+    displayName: APP_GROUP
+    description:
+      The name assigned to all of the deployments in this project.
+    required: true
+    value: formio-rpas

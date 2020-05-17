@@ -94,11 +94,11 @@
             },
             {
               "name": "ROOT_EMAIL",
-              "value":  "admin@example.com"
+              "value":  "${FORM_IO_ADMIN_EMAIL}"
             },
             {
               "name": "ROOT_PASSWORD",
-              "value":  "CHANGEME"
+              "value":  "${FORM_IO_ADMIN_PASSWORD}"
             }
             ],
             "resources": {
@@ -247,8 +247,7 @@
     "name": "TAG_NAME",
     "displayName": "Environment TAG name",
     "description": "The TAG name for this environment, e.g., dev, test, prod",
-    "required": true,
-    "value": "dev"
+    "required": true
   },
   {
     "name": "DATABASE_NAME",
@@ -289,8 +288,20 @@
     "name": "REPLICAS",
     "displayName": "The number of replicas to run",
     "description": "The number of replicas to run in this environment.",
-    "required": true,
-    "value": "1"
+    "required": true
+  },
+  {
+    "name": "FORM_IO_ADMIN_PASSWORD",
+    "displayName": "formio default password",
+    "description": "Form io needs a default password to login",
+    "generate": "expression",
+    "from": "[a-zA-Z0-9]{16}",
+    "required": true
+  },{
+    "name": "FORM_IO_ADMIN_EMAIL",
+    "displayName": "formio admin email",
+    "description": "Form io needs an email login",
+    "required": true
   }
   ]
 }

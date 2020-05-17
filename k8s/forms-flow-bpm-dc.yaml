@@ -70,7 +70,7 @@ objects:
       name: ${NAME}
     spec:
       podManagementPolicy: Parallel
-      replicas: 1
+      replicas: 2
       selector:
         matchLabels:
           app: ${NAME}
@@ -99,13 +99,13 @@ objects:
                 - name: JDBC_USER
                   valueFrom:
                     secretKeyRef:
-                      key: db_username
-                      name: ${NAME}
+                      key: app-db-username
+                      name: patroni
                 - name: JDBC_PASSWORD
                   valueFrom:
                     secretKeyRef:
-                      key: db_password
-                      name: ${NAME}
+                      key: app-db-password
+                      name: patroni
                 - name: WAIT_FOR
                   value: ${DATABASE_SERVICE_NAME}:${DATABASE_PORT}
                 - name: KEYCLOAK_URL
@@ -141,6 +141,8 @@ objects:
                   value: ${SESSION_STORE_TIMEOUT}
                 - name: CAMUNDA_CONN_TIMEOUT
                   value: ${CAMUNDA_CONN_TIMEOUT}
+                - name: APP_SECURITY_ORIGIN
+                  value: ${APP_SECURITY_ORIGIN}
               image: docker-registry.default.svc:5000/${TOOLS_WORKSPACE}/${NAME}:${IMAGE_TAG}
               imagePullPolicy: Always
               name: ${NAME}
@@ -186,10 +188,11 @@ parameters:
   - name: TOOLS_WORKSPACE
     description: The location for your image streams (Tools Workspace).
     required: true
-    value: vmvfjv-tools
+    value: ebiqwr-tools
   - name: SMTP_SERVER
     description: The domain name of the SMTP server for sending emails.
     required: true
+    value: "apps.smtp.gov.bc.ca"
   - name: DATABASE_DRIVER
     description: The database driver used to connnect to the persistent storage.
     required: true
@@ -197,11 +200,11 @@ parameters:
   - name: DATABASE_SERVICE_NAME
     description: The Service name used to connect to the database.
     required: true
-    value: patroni-postgres-master
+    value: patroni-master
   - name: DATABASE_NAME
     description: The name of the database to connect to.
     required: true
-    value: postgres
+    value: camunda
   - name: DATABASE_PORT
     description: The port that the database is running on.
     required: true
@@ -209,6 +212,7 @@ parameters:
   - name: KEYCLOAK_URL
     description: The URL used to connnect to the OIDC provider.
     required: true
+    value: "https://sso-dev.pathfinder.gov.bc.ca"
   - name: APP_ROOT_LOG_FLAG
     description: The log4j logging level to use for the application logs.
     required: true
@@ -229,3 +233,7 @@ parameters:
     description: The spring session timeout for browser connections, in seconds.
     required: true
     value: "28800"
+  - name: APP_SECURITY_ORIGIN
+    description: Camunda allows requests from certian origns only.Allow it here
+    required: true
+

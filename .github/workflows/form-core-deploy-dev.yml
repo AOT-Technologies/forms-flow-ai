@@ -6,7 +6,7 @@ name: form-core-deploy-dev
 # events but only for the master branch
 on:
   push:
-    branches: [ devops ]
+    branches: [ master ]
     paths:
       - "forms-flow-forms/**"
 

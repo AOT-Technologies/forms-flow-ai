@@ -8,7 +8,8 @@ oc process -f forms-flow-bpm-secret.yaml --param-file=prod.env --ignore-unknown-
 
 #### create the image in Tools namespace
 
-``` oc process -f forms-flow-bpm-bc.yaml|oc create -f -
+``` 
+oc process -f forms-flow-bpm-bc.yaml|oc create -f -
 ```
 
 #### create the Statefulset in DEV/TEST/PROD namespace

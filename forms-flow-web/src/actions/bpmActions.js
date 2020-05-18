@@ -1,5 +1,12 @@
 import ACTION_CONSTANTS from './actionConstants'
 
+export const setUserAuth = (data) => dispatch => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_USER_AUTHENTICATION,
+    payload: data
+  })
+}
+
 export const setUserToken = (data) => dispatch => {
   dispatch({
     type: ACTION_CONSTANTS.SET_USER_TOKEN,
@@ -14,6 +21,7 @@ export const setUserRole = (data) => dispatch => {
   })
 }
 export const setUserDetails = (data) => dispatch => {
+  localStorage.setItem('UserDetails', JSON.stringify(data));
   dispatch({
     type: ACTION_CONSTANTS.SET_USER_DETAILS,
     payload: data

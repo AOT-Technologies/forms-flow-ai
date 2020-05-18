@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/1.0" id="Definitions_1h338s2" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="3.7.2">
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/1.0" id="Definitions_1h338s2" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="3.6.0">
   <decision id="decide-email-template" name="email-template">
     <extensionElements>
       <biodi:bounds x="150" y="150" width="180" height="80" />
@@ -15,24 +15,23 @@
       <output id="OutputClause_1o2aisg" label="body" name="body" typeRef="string" />
       <rule id="DecisionRule_0ycnss6">
         <inputEntry id="UnaryTests_1g3piq1">
-          <text>"task_notification"</text>
+          <text>"submission_notification"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1w28m1k">
-          <text>"bhuvanesh.p@aot-technologies.com"</text>
+          <text></text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1czkz3j">
-          <text>"Task Notification"</text>
+          <text>"Submission Notification"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1qfdlgl">
           <text>"Hello,
       
 You have a new task for the process. Please click the following link to access your new task.
 
-@taskurl
+@formurl
 
   
-Best Regards
-AOT Technologies"</text>
+Best Regards"</text>
         </outputEntry>
       </rule>
     </decisionTable>

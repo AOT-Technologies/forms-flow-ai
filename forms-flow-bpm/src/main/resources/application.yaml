@@ -5,6 +5,8 @@ keycloak.url.realm: ${KEYCLOAK_URL_REALM}
 keycloak.clientId: ${KEYCLOAK_CLIENTID}
 keycloak.clientSecret: ${KEYCLOAK_CLIENTSECRET}
 
+app.security.origin: ${APP_SECURITY_ORIGIN}
+
 spring.datasource:
   jdbc-url: ${JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
   username: ${JDBC_USER:sa}
@@ -54,7 +56,13 @@ camunda.bpm:
     create: All tasks
 
 server:
-  port: 8080
+  port: 8443
+  ssl:
+    key-store: file:/certs/keystore.ks
+    key-store-password: password
+    key-store-type: pkcs12
+    key-alias: tomcat
+    key-password: password
   servlet.context-path: /camunda
 
 security:

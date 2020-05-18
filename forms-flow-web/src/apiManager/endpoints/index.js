@@ -1,4 +1,4 @@
-import { BPM_TOKEN_URL, PROCESS_BASE_API } from './config';
+import { BPM_TOKEN_URL,PROCESS_BASE_API } from './config';
 
 const API = {
   GET_BPM_TOKEN: BPM_TOKEN_URL,

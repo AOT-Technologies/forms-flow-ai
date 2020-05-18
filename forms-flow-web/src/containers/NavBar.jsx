@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { Nav, Navbar, NavDropdown, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { selectRoot } from 'react-formio'
+import { selectRoot } from 'react-formio';
+import { push } from 'connected-react-router';
 
 import UserService from '../services/UserService';
+import { setUserAuth } from '../actions/bpmActions';
 import { STAFF_REVIEWER, STAFF_DESIGNER } from '../constants/constants';
 
 class NavBar extends Component {
@@ -21,15 +23,15 @@ class NavBar extends Component {
     }
 
     render() {
-        const { user, userRoles } = this.props;
+        const { user, userRoles, isAuthenticated } = this.props;
         return (
             <header>
                 <Navbar expand="lg">
                     <section className="container">
                         <Navbar.Brand className="d-flex">
-                            <img className="img-fluid d-none d-md-block" src="/AOT-logo.png" width="250" alt="AOT Logo" />
-                            <img className="img-fluid d-md-none" src="/AOT-simple-logo.png" width="40" alt="AOT Logo"></img>
-                            <label className="lbl-app-nanme">FormsFlow</label><label className="lbl-app-nanme app-name">.AI</label>
+                            <img className="img-fluid d-none d-md-block" src="/logo.svg" width="177" height="44" alt="Logo" />
+                            <img className="img-fluid d-md-none" src="/simple-logo.svg" width="63" height="44" alt="Logo"></img>
+                            <div className="div-center"><label className="lbl-app-nanme">FormsFlow</label><label className="lbl-app-nanme app-name">.AI</label></div>
                        {/* for small screen */}
                        <Nav className="d-md-none custom-profile">
                                 <NavDropdown style={{ fontSize: '18px' }} title={<div className="pull-left">
@@ -37,7 +39,7 @@ class NavBar extends Component {
                                         src="/assets/Images/user.svg"
                                         alt="user pic"
                                     /></div>} className="nav-dropdown" id="basic-nav-dropdown">
-                                    
+
                                     <NavDropdown.Header className="nav-user-name">{user.name || user.preferred_username}</NavDropdown.Header>
                                     <NavDropdown.Header className="nav-user-email" title={user.email}>{user.email}</NavDropdown.Header>
                                     <NavDropdown.Header className="nav-user-role">{this.getUserRole(userRoles)}</NavDropdown.Header>
@@ -52,19 +54,20 @@ class NavBar extends Component {
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" className="navbar-dark custom-toggler" />
                         <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
                             <Nav className="mr-auto nav-custom-tab">
-                                <Link to="/" className="main-nav nav-link active-tab">
+                                <Link to="/" className={`main-nav nav-link ${window.location.pathname.startsWith('/form')?"active-tab":""}`}>
                                 <img className="nav-icons" src="/form_white.svg" width="22" height="22" alt="form"/>
                                     Forms
                                 </Link>
                             </Nav>
                             </Navbar.Collapse>
                             <Nav className="d-none d-md-block">
+                                { isAuthenticated?
                                 <NavDropdown style={{ fontSize: '18px' }} title={<div className="pull-left">
                                     Hi {user.given_name || user.name || user.preferred_username || ''} &nbsp;
                                     <img className="thumbnail-image"
                                         src="/assets/Images/user.svg"
                                         alt="user pic"
-                                    /></div>} className="nav-dropdown" id="basic-nav-dropdown">
+                                        /></div>} className="nav-dropdown" id="basic-nav-dropdown">
                                     <NavDropdown.Item><img className="float-right" src="/assets/Images/user.svg" alt="userimage"/></NavDropdown.Item>
                                     <br></br>
                                     <NavDropdown.Header className="nav-user-name">{user.name || user.preferred_username}</NavDropdown.Header>
@@ -74,23 +77,37 @@ class NavBar extends Component {
                                     <NavDropdown.Header className="nav-logout" onClick={UserService.userLogout}>
                                         <img src="/assets/Images/logout.svg" alt="" /><label className="lbl-logout">Logout</label>
                                 </NavDropdown.Header>
-
                                 </NavDropdown>
+                                :
+                                <Button variant="link" style={{color:"white",fontSize:"20px",textDecoration:"none"}} onClick={()=>this.props.login()}>
+                                    Login
+                                </Button>
+                                    }
                             </Nav>
-                            
-                        
                     </section>
                 </Navbar>
             </header>
         )
     }
-};
+}
 
 const mapStatetoProps = (state) => {
     return {
         userRoles: selectRoot('user', state).roles || [],
-        user: selectRoot('user', state).userDetail || []
+        user: selectRoot('user', state).userDetail || [],
+        isAuthenticated:state.user.isAuthenticated
     }
 }
 
-export default connect(mapStatetoProps)(NavBar);
+const mapDispatchToProps = (dispatch)=>{
+    return{
+        login:()=>{
+            dispatch(push(`/`))
+        },
+        setUserAuth:(value)=>{
+            dispatch(setUserAuth(value))
+        }
+    }
+}
+
+export default connect(mapStatetoProps,mapDispatchToProps)(NavBar);

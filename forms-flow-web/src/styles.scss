@@ -121,8 +121,13 @@ h5, .h5
   color:white !important;
 }
 .text-muted {
-  color: #2E96FF !important;
+  color: #FFF !important;
 }
+
+i.fa.fa-question-circle.text-muted {
+    color: #2E96FF !important;
+}
+
 .panel-heading
 {
     background-color: #38598a;
@@ -356,6 +361,7 @@ margin-right: 3px;
   color: black !important;
   background-color: white !important;
   border: 0.5px solid !important;
+  text-align: left;
 }
 
 .navbar-brand {

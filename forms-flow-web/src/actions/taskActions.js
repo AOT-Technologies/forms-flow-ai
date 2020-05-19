@@ -7,6 +7,13 @@ export const setLoader = (data) => dispatch =>{
     })
 }
 
+export const setUpdateLoader = (data) => dispatch =>{
+    dispatch({
+        type:ACTION_CONSTANTS.IS_TASK_UPDATING,
+        payload:data
+    })
+}
+
 export const setTaskList = (data) => dispatch =>{
     dispatch({
         type:ACTION_CONSTANTS.LIST_TASKS,
@@ -40,9 +47,3 @@ export const serviceActionError = (data) => dispatch => {
     })
 }
 
-export const setUpdateLoader = (data) => dispatch =>{
-    dispatch({
-        type:ACTION_CONSTANTS.IS_TASK_UPDATING,
-        payload:data
-    })
-}

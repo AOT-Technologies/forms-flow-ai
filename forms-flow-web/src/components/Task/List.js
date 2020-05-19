@@ -18,7 +18,7 @@ import moment from 'moment';
 
 const List = class extends Component {
   componentWillMount() {
-     this.props.getTasks();
+    //  this.props.getTasks();
   }
   render() {
     const { isLoading, tasks, tasksCount, userDetail, onClaim, onUnclaim, isTaskUpdating } = this.props;
@@ -90,7 +90,6 @@ const List = class extends Component {
   }
 }
 
-
 const mapStateToProps = (state) => {
   return {
     isLoading: state.tasks.isLoading,
@@ -109,7 +108,7 @@ const mapDispatchToProps = (dispatch) => {
     }
   }
   return {
-    getTasks: ()=>{dispatch(
+    getTasks:dispatch(
       getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {
         //  dispatch(getTaskCount());
@@ -128,7 +127,7 @@ const mapDispatchToProps = (dispatch) => {
             }))
         }
       })
-      )},
+      ),
     onClaim: (id,userName) => {
     dispatch(setUpdateLoader(true));
       dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
@@ -136,8 +135,11 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(claimTask(id,userName,(err, res)=>{
             if(!err)
             {
-              dispatch(fetchTaskList());
-              dispatch(setUpdateLoader(false));
+              dispatch(fetchTaskList((err,res)=>{
+                if(!err){
+                  dispatch(setUpdateLoader(false));
+                }
+              }));
             }
             else{
               dispatch(setUpdateLoader(false));
@@ -154,8 +156,11 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(unClaimTask(id,(err, res)=>{
             if(!err)
             {
-              dispatch(fetchTaskList());
-              dispatch(setUpdateLoader(false));
+              dispatch(fetchTaskList((err,res)=>{
+                if(!err){
+                  dispatch(setUpdateLoader(false));
+                }
+              }));
             }
             else{
               dispatch(setUpdateLoader(false));

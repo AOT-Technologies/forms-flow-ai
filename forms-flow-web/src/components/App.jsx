@@ -20,7 +20,6 @@ class App extends Component{
         <NavBar store={store}/>
         <Switch>
           {/* <Route path="/public"><PublicRoute store={store}/></Route> */}
-          <Route path="/form"><Form store={store}/></Route>
           <Route path="/"><PrivateRoute store={store}/></Route>
         </Switch>
       </ConnectedRouter >

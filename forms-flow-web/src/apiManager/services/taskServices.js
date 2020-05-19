@@ -104,7 +104,8 @@ export const unClaimTask = (id, ...rest)=>{
     })
   }
 }
-export const completeTask=(id,reviewStatus)=>{
+export const completeTask=(id,reviewStatus,...rest)=>{
+  const done = rest.length ? rest[0] :  ()=>{};
   const data={
     "variables": {
       "action": {
@@ -115,8 +116,10 @@ export const completeTask=(id,reviewStatus)=>{
   return dispatch=>{
     httpPOSTRequest(`${API.TASK_ACTION_API}/${id}/complete`,data).then(res=>{
       dispatch(getTaskDetail(id))
+      done(null,res)
     }).catch(error=>{
       console.log('Error',error)
+      done(error);
       dispatch(serviceActionError(error))
     })
   }

@@ -4,11 +4,14 @@ const initialState = {
   bearerToken: '',
   roles: '',
   userDetail:[],
-  isAuthenticated:false
+  isAuthenticated:false,
+  currentPage:'',
 }
 
 export default (state = initialState, action)=> {
   switch (action.type) {
+    case ACTION_CONSTANTS.SET_CURRENT_PAGE:
+      return {...state, currentPage: action.payload};
     case ACTION_CONSTANTS.SET_USER_TOKEN:
       return {...state, bearerToken: action.payload};
     case ACTION_CONSTANTS.SET_USER_ROLES:

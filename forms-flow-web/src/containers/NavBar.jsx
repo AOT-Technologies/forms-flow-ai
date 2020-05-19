@@ -10,29 +10,7 @@ import { setUserAuth } from '../actions/bpmActions';
 import { STAFF_REVIEWER, STAFF_DESIGNER } from '../constants/constants';
 
 class NavBar extends Component {
-    constructor() {
-        super();
-        this.state = {
-            isFormActive: true,
-            isTaskActive:false
-        }
-    }
-    componentDidMount(){
-        let path = window.location.pathname;
-        let str = path.split('/');
-        this.setActiveMenu(str[1])
-    }
-    setActiveMenu=(path)=>{
-        let data = {...this.state};
-        if(path==="form"){
-            data.isFormActive=true
-            data.isTaskActive=false
-        }else if(path==="task"){
-            data.isFormActive=false
-            data.isTaskActive=true
-        }
-        this.setState(data)
-    }
+    
     getUserRole = (userRoles) => {
         let role = '';
         if (userRoles.includes(STAFF_REVIEWER)) {
@@ -44,9 +22,9 @@ class NavBar extends Component {
         }
         return role;
     }
-
+    
     render() {
-        const { user, userRoles, isAuthenticated } = this.props;
+        const { user, userRoles, isAuthenticated, activePage } = this.props;
         return (
             <header>
                 <Navbar expand="lg">
@@ -77,12 +55,12 @@ class NavBar extends Component {
                         <Navbar.Toggle aria-controls="responsive-navbar-nav" className="navbar-dark custom-toggler" />
                         <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
                             <Nav className="mr-auto nav-custom-tab">
-                                <Link to="/" className={`main-nav nav-link ${window.location.pathname.startsWith('/form')?"active-tab":""}`}>
+                                <Link to="/form" className={`main-nav nav-link ${activePage==='form'?"active-tab":''}`}>
                                 <img className="nav-icons" src="/form_white.svg" width="22" height="22" alt="form"/>
                                     Forms
                                 </Link>
                                 {userRoles && userRoles.includes(STAFF_REVIEWER) ?
-                                     <Link to="/task" className={`main-nav nav-link ${this.state.isTaskActive? "active-tab":""}`}  onClick={()=>this.setActiveMenu('task')}>
+                                     <Link to="/task" className={`main-nav nav-link ${activePage==='task'?"active-tab":''}`}>
                                          <img className="nav-icons" src="/task_white.svg" width="22" height="22" alt="task"/>
                                          Tasks
                                     </Link>
@@ -125,7 +103,8 @@ const mapStatetoProps = (state) => {
     return {
         userRoles: selectRoot('user', state).roles || [],
         user: selectRoot('user', state).userDetail || [],
-        isAuthenticated:state.user.isAuthenticated
+        isAuthenticated:state.user.isAuthenticated,
+        activePage: selectRoot('user', state).currentPage || ''
     }
 }
 

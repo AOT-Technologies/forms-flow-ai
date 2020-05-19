@@ -8,7 +8,7 @@ import Create from './Create';
 import Item from './Item/index';
 import { STAFF_DESIGNER } from '../../constants/constants';
 import Loading from '../../containers/Loading';
-import { setUserAuth } from '../../actions/bpmActions'
+import { setUserAuth, setCurrentPage } from '../../actions/bpmActions'
 
 let user = '';
 
@@ -47,6 +47,7 @@ const mapStatetoProps = (state) => {
 
 const mapStateToDispatch = (dispatch) =>{
   return{
+    setCurrentPage:dispatch(setCurrentPage('form')),
     setUserAuth:(value)=>{
       dispatch(setUserAuth(value))
     }

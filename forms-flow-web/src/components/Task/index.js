@@ -6,9 +6,10 @@ import { getUserToken } from '../../apiManager/services/bpmServices';
 import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants';
 import { fetchTaskList, getTaskCount, getTaskSubmissionDetails } from '../../apiManager/services/taskServices';
 import { setTaskList } from "../../actions/taskActions";
-import List from './List'
-import ViewTask from './ViewTask'
-import './Task.scss'
+import List from './List';
+import ViewTask from './ViewTask';
+import './Task.scss';
+import { setCurrentPage } from '../../actions/bpmActions';
 
 const Task = () => {
   return (
@@ -23,6 +24,7 @@ const Task = () => {
 
 const mapDispatchToProps=(dispatch)=>{
   return{
+    setCurrentPage:dispatch(setCurrentPage('task')),
     getTasks: dispatch(
       getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {

@@ -6,7 +6,6 @@ import { ConnectedRouter } from 'connected-react-router';
 
 // import PublicRoute from "./PublicRoute";
 import PrivateRoute from './PrivateRoute';
-import Form from "../components/Form";
 import NavBar from '../containers/NavBar';
 require('typeface-nunito-sans')
 

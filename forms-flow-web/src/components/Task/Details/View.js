@@ -7,8 +7,7 @@ import { BPM_USER_DETAILS } from '../../../apiManager/constants/apiConstants'
 import { getUserToken } from '../../../apiManager/services/bpmServices'
 import { setUpdateLoader } from "../../../actions/taskActions";
 import { claimTask, getTaskDetail, getTaskSubmissionDetails, unClaimTask } from '../../../apiManager/services/taskServices'
-import { setLoader, setTaskSubmissionDetail } from '../../../actions/taskActions'
-import Loading from '../../../containers/Loading'
+import { setTaskSubmissionDetail } from '../../../actions/taskActions'
 
 const taskStatus = (task) => {
   switch (task.task_status) {

@@ -24,6 +24,25 @@ NOTE: There are two methods for running this application. Using docker container
     Using npm
 -   Create a .env file in root folder with sample.env data
 -   Change .env data with relevant data
+    | Variables                        | Description                              | Values
+    | -------------------------------- |:----------------------------------------:| :-----------------------------------------------
+    | NODE_ENV                         | Defines project level configuration      | Possible values : development, test, production
+    | REACT_APP_CLIENT_ROLE            | Formio role name for client              | Keycloak -> Roles -> Client role
+    | REACT_APP_STAFF_DESIGNER_ROLE    | Formio role name for designer            | Keycloak -> Roles -> Designer role
+    | REACT_APP_STAFF_REVIEWER_ROLE    | Formio role name for reviewer            | Keycloak -> Roles -> Reviewer role
+    | REACT_APP_CLIENT_ID              | Formio client role mapping id            |
+    | REACT_APP_STAFF_DESIGNER_ID      | Formio designer role mapping id          |
+    | REACT_APP_STAFF_REVIEWER_ID      | Formio reviewer role mapping id          |
+    | REACT_APP_ANONYMOUS_ID           | Formio anonymous role mapping id         |
+    | REACT_APP_USER_RESOURCE_FORM_ID  |                                          |
+    | REACT_APP_EMAIL_SUBMISSION_GROUP | Submission group in email notification   | Keycloak role for submission
+    | REACT_APP_API_SERVER_URL         | Form-IO API-URL                          |
+    | REACT_APP_KEYCLOAK_CLIENT        | Keycloak client name                     |
+    | REACT_APP_BPM_API_BASE           | BPM-API-URL                              |
+    | REACT_APP_BPM_TOKEN_API          | BPM TOKEN URL                            |
+    | REACT_APP_KEYCLOAK_BPM_CLIENT    | Keycloak client name for BPM             |
+    | REACT_APP_BPM_CLIENT_ID          | Secret Key for BPM                       | Secret in BPM Keycloak->Credentials
+    
 
 - To get Form-IO authorization IDs use the follwing steps 
   - Get token

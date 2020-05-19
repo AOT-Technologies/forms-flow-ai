@@ -12,7 +12,6 @@ export const defaultSortedBy = [{
 
 
 export const TaskSearch = (props) => {
-  console.log(props)
   let input;
   let userName= props.user
   const statusChange = () => {

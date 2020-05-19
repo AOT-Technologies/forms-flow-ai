@@ -13,7 +13,7 @@ import { fetchTaskList, claimTask, unClaimTask } from '../../apiManager/services
 import { columns, getoptions, defaultSortedBy, TaskSearch, clearFilter } from './table';
 import Loading from '../../containers/Loading';
 import Nodata from './nodata';
-import { setLoader, setUpdateLoader } from "../../actions/taskActions";
+import { setUpdateLoader } from "../../actions/taskActions";
 import moment from 'moment';
 
 const List = class extends Component {

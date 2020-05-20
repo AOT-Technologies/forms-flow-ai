@@ -90,6 +90,16 @@ const List = class extends Component {
   }
 }
 
+function doLoaderUpdate(){
+  return(dispatch,getState)=>{
+    let isLoading = getState().tasks.isTaskUpdating;
+    if(isLoading){
+      dispatch(fetchTaskList());
+      dispatch(setUpdateLoader(false));
+    }
+  }
+}
+
 const mapStateToProps = (state) => {
   return {
     isLoading: state.tasks.isLoading,
@@ -100,14 +110,8 @@ const mapStateToProps = (state) => {
   }
 }
 const mapDispatchToProps = (dispatch) => {
-  if(setUpdateLoader)
-  {
-    {
-      dispatch(fetchTaskList());
-      dispatch(setUpdateLoader(false));
-    }
-  }
   return {
+    setLoader:dispatch(doLoaderUpdate),
     getTasks:dispatch(
       getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {

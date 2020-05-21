@@ -53,7 +53,7 @@ The fastest way to run this library locally is to use [Docker](https://docker.co
        - The following applications will be started and can be accessed in your browser.
          - http://localhost:3000 - forms-flow-web
          - http://localhost:3001 - forms-flow-forms
-         - https://localhost:8000 - forms-flow-bpm
+         - https://localhost:8000/camunda - forms-flow-bpm
     
 Managing forms
 --------------

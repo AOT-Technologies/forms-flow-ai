@@ -17,8 +17,8 @@ import { setUpdateLoader } from "../../actions/taskActions";
 import moment from 'moment';
 
 const List = class extends Component {
-  componentWillMount() {
-    //  this.props.getTasks();
+  UNSAFE_componentWillMount() {
+     this.props.getTasks();
   }
   render() {
     const { isLoading, tasks, tasksCount, userDetail, onClaim, onUnclaim, isTaskUpdating } = this.props;
@@ -112,7 +112,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setLoader:dispatch(doLoaderUpdate),
-    getTasks:dispatch(
+    getTasks:()=>dispatch(
       getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {
         //  dispatch(getTaskCount());

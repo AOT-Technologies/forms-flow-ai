@@ -47,8 +47,8 @@ const View = (props) => {
               </p>
             }
             {props.isUpdating ?
-              <div class="spinner-border text-info ml-2" role="status">
-                <span class="sr-only">Loading...</span>
+              <div className="spinner-border text-info ml-2" role="status">
+                <span className="sr-only">Loading...</span>
               </div>
               : null}
           </td>

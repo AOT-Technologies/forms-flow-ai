@@ -1,0 +1,1212 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "application",
+    "version": "1.0",
+    "contact": {
+      "name": "Abhilash"
+    },
+    "description": "Application related Apis"
+  },
+  "tags": [
+    {
+      "name": "application"
+    },
+    {
+      "name": "process"
+    },
+    {
+      "name": "submission"
+    },
+    {
+      "name": "task"
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://localhost:5000"
+    }
+  ],
+  "paths": {
+    "/application": {
+      "get": {
+        "summary": "get all applications",
+        "tags": [
+          "application"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/applications"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-applications",
+        "description": "Get Applications list",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "parameters": [],
+      "post": {
+        "summary": "Create a new application",
+        "operationId": "post-application",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/application"
+                }
+              }
+            }
+          }
+        },
+        "description": "Application create with process mapping",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/new-application"
+              }
+            }
+          }
+        },
+        "tags": [
+          "application"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/application/{applicationId}": {
+      "get": {
+        "summary": "get application detail",
+        "tags": [
+          "application"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/application"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-application",
+        "description": "get Application details"
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "applicationId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "put": {
+        "summary": "Update a application",
+        "operationId": "put-application-applicationId",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/application"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/update-application"
+              }
+            }
+          }
+        },
+        "description": "application Update",
+        "tags": [
+          "application"
+        ]
+      }
+    },
+    "/process": {
+      "get": {
+        "summary": "get process list",
+        "tags": [
+          "process"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/process-list"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-process",
+        "description": "process List Api",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/process/{processKey}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "processKey",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "get process definition",
+        "tags": [
+          "process"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/process-full"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-process-processKey",
+        "description": "process Definition to get required process Info",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/application/{applicationId}/submission": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "applicationId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "get Submission List",
+        "tags": [
+          "submission"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/submissions"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "operationId": "get-application-applicationId-submission",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "description": "get Submitted list for Application"
+      },
+      "post": {
+        "summary": "Create New Submission",
+        "operationId": "post-application-applicationId-submission",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/submission"
+                }
+              }
+            }
+          }
+        },
+        "description": "Post new Submission",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/new-submission"
+              }
+            }
+          }
+        },
+        "tags": [
+          "submission"
+        ]
+      }
+    },
+    "/application/{applicationId}/submission/{submissionId}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "applicationId",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "submissionId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Get Submission Details",
+        "tags": [
+          "submission"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/submission"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-application-applicationId-submission-submissionId",
+        "description": "Get Submission Detail",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "put": {
+        "summary": "Update Submission",
+        "operationId": "put-application-applicationId-submission-submissionId",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/submission"
+                }
+              }
+            }
+          }
+        },
+        "description": "Update Particular Application Submission",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/update-submission"
+              }
+            }
+          }
+        },
+        "tags": [
+          "submission"
+        ]
+      }
+    },
+    "/task": {
+      "get": {
+        "summary": "get Task List",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tasks"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-task",
+        "description": "get task list",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "tags": [
+          "task"
+        ]
+      }
+    },
+    "/task/{taskId}": {
+      "get": {
+        "summary": "Get Task Detail",
+        "tags": [
+          "task"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/task-detail"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-task-id",
+        "description": "Task Detail",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "taskId",
+          "in": "path",
+          "required": true
+        }
+      ]
+    },
+    "/task/{taskId}/claim": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "taskId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Claim Task",
+        "operationId": "post-task-taskId-claim",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/task-detail"
+                }
+              }
+            }
+          }
+        },
+        "description": "Claim task",
+        "tags": [
+          "task"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/task-claim"
+              }
+            }
+          },
+          "description": ""
+        },
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/task/{taskId}/unclaim": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "taskId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Unclaim Task",
+        "operationId": "post-task-taskId-unclaim",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/task-detail"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "task"
+        ],
+        "description": "Unclaim Task",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ]
+      }
+    },
+    "/task/{taskId}/action": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "taskId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Task Action",
+        "operationId": "post-task-taskId-action",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/task-detail"
+                }
+              }
+            }
+          }
+        },
+        "description": "Task Action",
+        "tags": [
+          "task"
+        ],
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/task-action"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/process/{processKey}/action": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "processKey",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "get process Action list",
+        "tags": [
+          "process"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/actions"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-process-processKey-action",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "description": "get Task actions List for particular process"
+      }
+    },
+    "/task/{taskId}/due": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "taskId",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Set Due Date for task",
+        "operationId": "post-task-taskId-due",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        },
+        "tags": [
+          "task"
+        ],
+        "description": "Set Due Date",
+        "security": [
+          {
+            "Authorization": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/due"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "application": {
+        "title": "application",
+        "type": "object",
+        "x-tags": [
+          "application"
+        ],
+        "description": "Application Definition",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "process_definition_key": {
+            "type": "string"
+          },
+          "form_id": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "created_on": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status: active/inactive --> default active"
+          },
+          "comments": {
+            "type": "string"
+          },
+          "access": {
+            "type": "array",
+            "description": "Group/Role Access??",
+            "items": {
+              "type": "string"
+            }
+          },
+          "public": {
+            "type": "boolean",
+            "description": "Make public/private Application forms"
+          },
+          "modified_by": {
+            "type": "string"
+          },
+          "modified_on": {
+            "type": "string"
+          },
+          "tenant": {
+            "type": "string",
+            "description": "super tenant role\n"
+          },
+          "etag": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "form_id",
+          "created_by"
+        ]
+      },
+      "new-application": {
+        "title": "new-application",
+        "type": "object",
+        "description": "New Application Creation",
+        "x-tags": [
+          "application"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "process_definition_key": {
+            "type": "string"
+          },
+          "form_id": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "comments": {
+            "type": "string"
+          },
+          "access": {
+            "type": "array",
+            "description": "Access param for defining the role??/group?? who would be allowed to show the form. \n",
+            "items": {
+              "type": "string"
+            }
+          },
+          "public": {
+            "type": "boolean"
+          },
+          "tenant": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "form_id",
+          "created_by"
+        ]
+      },
+      "applications": {
+        "title": "applications",
+        "type": "object",
+        "x-tags": [
+          "application"
+        ],
+        "properties": {
+          "applications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/application"
+            }
+          },
+          "totalCount": {
+            "type": "number"
+          },
+          "pageNo": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          }
+        }
+      },
+      "process-list": {
+        "title": "process-list",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/process-partial"
+        },
+        "x-tags": [
+          "process"
+        ]
+      },
+      "process-partial": {
+        "title": "process-partial",
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "x-examples": {
+          "Email Notification": {
+            "key": "EmailNotification",
+            "name": "Email Notification Process"
+          },
+          "one step approval": {
+            "key": "onestepapproval",
+            "name": "one step Notification Process"
+          }
+        },
+        "x-tags": [
+          "process"
+        ]
+      },
+      "process-full": {
+        "title": "process-full",
+        "type": "object",
+        "x-tags": [
+          "process"
+        ],
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "variables": {
+            "type": "array",
+            "description": "Variable List\n",
+            "items": {
+              "type": "object",
+              "properties": {
+                "mandatory": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                },
+                "dynamic": {
+                  "type": "array",
+                  "items": {
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "submissions": {
+        "title": "submissions",
+        "x-tags": [
+          "submission"
+        ],
+        "description": "",
+        "type": "object",
+        "properties": {
+          "totalCount": {
+            "type": "number"
+          },
+          "pageNo": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "submissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/submission"
+            }
+          }
+        }
+      },
+      "new-submission": {
+        "title": "new-submission",
+        "type": "object",
+        "x-tags": [
+          "submission"
+        ],
+        "properties": {
+          "application_id": {
+            "type": "number"
+          },
+          "submission_id": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "form_id": {
+            "type": "string"
+          },
+          "process_variables": {
+            "type": "object",
+            "description": "Process Variable details"
+          }
+        },
+        "required": [
+          "application_id",
+          "submission_id"
+        ]
+      },
+      "submission": {
+        "title": "submission",
+        "type": "object",
+        "description": "",
+        "x-tags": [
+          "submission"
+        ],
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "application_id": {
+            "type": "string"
+          },
+          "submission_id": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "created_on": {
+            "type": "string"
+          },
+          "modified_by": {
+            "type": "string"
+          },
+          "modified_on": {
+            "type": "string"
+          },
+          "process_instance_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "form_id": {
+            "type": "string"
+          },
+          "etag": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "application_id",
+          "submission_id"
+        ]
+      },
+      "update-application": {
+        "title": "update-application",
+        "type": "object",
+        "description": "Update Application Creation",
+        "x-tags": [
+          "application"
+        ],
+        "properties": {
+          "modified_by": {
+            "type": "string"
+          },
+          "comments": {
+            "type": "string"
+          },
+          "access": {
+            "type": "array",
+            "description": "Access param for defining the role??/group?? who would be allowed to show the form. \n",
+            "items": {
+              "type": "string"
+            }
+          },
+          "public": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": "string"
+          },
+          "tenant": {
+            "type": "string"
+          },
+          "etag": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "modified_by"
+        ]
+      },
+      "update-submission": {
+        "title": "update-submission",
+        "type": "object",
+        "x-tags": [
+          "submission"
+        ],
+        "description": "Update a Submission",
+        "properties": {
+          "modified_by": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "process_variables": {
+            "type": "object",
+            "description": "To get Details of process Variables to be send"
+          },
+          "etag": {
+            "type": "string"
+          }
+        }
+      },
+      "tasks": {
+        "type": "object",
+        "properties": {
+          "totalCount": {
+            "type": "number"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/task"
+            }
+          },
+          "pageNo": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          }
+        }
+      },
+      "task": {
+        "title": "task",
+        "type": "object",
+        "x-tags": [
+          "task"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "submission_date": {
+            "type": "string"
+          },
+          "submitted_by": {
+            "type": "string"
+          },
+          "assignee": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "submission_id": {
+            "type": "number",
+            "description": "id of the application submission"
+          },
+          "application_name": {
+            "type": "string"
+          },
+          "created_on": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "modified_by": {
+            "type": "string"
+          },
+          "modified_on": {
+            "type": "string"
+          },
+          "due": {
+            "type": "string"
+          }
+        }
+      },
+      "task-claim": {
+        "title": "task-claim",
+        "type": "object",
+        "x-tags": [
+          "task"
+        ],
+        "properties": {
+          "userId": {
+            "type": "string"
+          }
+        }
+      },
+      "task-detail": {
+        "title": "task-detail",
+        "type": "object",
+        "x-tags": [
+          "task"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "submission_date": {
+            "type": "string"
+          },
+          "submitted_by": {
+            "type": "string"
+          },
+          "assignee": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string"
+          },
+          "submission_id": {
+            "type": "number",
+            "description": "id of the application submission"
+          },
+          "application_name": {
+            "type": "string"
+          },
+          "created_on": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "modified_by": {
+            "type": "string"
+          },
+          "modified_on": {
+            "type": "string"
+          },
+          "form_id": {
+            "type": "string"
+          },
+          "form_submission_id": {
+            "type": "string"
+          },
+          "due": {
+            "type": "string"
+          }
+        }
+      },
+      "task-action": {
+        "title": "task-action",
+        "type": "object",
+        "properties": {
+          "reviewAction": {
+            "type": "string"
+          }
+        },
+        "x-tags": [
+          "task"
+        ]
+      },
+      "actions": {
+        "title": "actions",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/action"
+        }
+      },
+      "action": {
+        "title": "action",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "actionType": {
+            "type": "string"
+          }
+        }
+      },
+      "due": {
+        "title": "due",
+        "type": "object",
+        "properties": {
+          "due": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Authorization": {
+        "name": "Authorization",
+        "type": "apiKey",
+        "in": "header"
+      }
+    }
+  }
+}

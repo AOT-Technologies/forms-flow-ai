@@ -141,7 +141,7 @@ const mapDispatchToProps = (dispatch) => {
             {
               dispatch(fetchTaskList((err,res)=>{
                 if(!err){
-                  dispatch(setUpdateLoader(false));
+                  // dispatch(setUpdateLoader(false));
                 }
               }));
             }

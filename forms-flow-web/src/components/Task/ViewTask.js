@@ -9,12 +9,12 @@ import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants'
 import { getUserToken } from '../../apiManager/services/bpmServices'
 import { getTaskDetail, getTaskSubmissionDetails } from '../../apiManager/services/taskServices'
 import Loading from '../../containers/Loading'
-import {setLoader, setTaskSubmissionDetail} from "../../actions/taskActions";
+import { setLoader, setTaskSubmissionDetail } from "../../actions/taskActions";
 import View from '../Form/Item/Submission/Item/View';
 
 class ViewTask extends Component {
-
-  render() {
+    
+    render() {
         const { detail } = this.props;
         if (this.props.isLoading) {
             return (
@@ -40,7 +40,7 @@ class ViewTask extends Component {
                         <Details />
                     </Tab>
                     <Tab eventKey="form" title="Form" id="form">
-                        <View page="task-detail"/>
+                        <View page="task-detail" />
                     </Tab>
                     <Tab eventKey="history" title="History" disabled>
                         <h1>History</h1>
@@ -67,29 +67,40 @@ const mapStateToProps = (state) => {
     }
 }
 
+const isDataLoaded = (id) => {
+    return (dispatch, getState) => {
+        let task = getState().tasks.taskDetail;
+        if (task && task.id === id) {
+            dispatch(setLoader(false))
+        } else {
+            dispatch(setLoader(true))
+            dispatch(getTaskDetail(id, (err, res) => {
+                if (!err) {
+                    dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {
+                        if (!err) {
+                            if (res.submission_id && res.form_id) {
+                                dispatch(getForm('form', res.form_id))
+                                dispatch(getSubmission('submission', res.submission_id, res.form_id));
+                            }
+                            dispatch(setTaskSubmissionDetail(res));
+                        }
+                    }))
+                }
+            }))
+        }
+    }
+}
+
 const mapDispatchToProps = (dispatch) => {
     return {
         getTask: dispatch(
             getUserToken(BPM_USER_DETAILS, (err, res) => {
                 let id = window.location.pathname.split("/")[2]
                 if (!err) {
-                    dispatch(setLoader(true));
-                    dispatch(getTaskDetail(id,(err,res)=>{
-                        if(!err){
-                            dispatch(getTaskSubmissionDetails(res.processInstanceId, (err,res)=>{
-                                if(!err){
-                                    if(res.submission_id && res.form_id){
-                                        dispatch(getForm('form', res.form_id))
-                                        dispatch(getSubmission('submission', res.submission_id, res.form_id));
-                                    }
-                                dispatch(setTaskSubmissionDetail(res));
-                            }
-                          }))
-                      }
-                  }))
+                    dispatch(isDataLoaded(id))
                 }
             })
-        ),
+        )
     }
 }
 

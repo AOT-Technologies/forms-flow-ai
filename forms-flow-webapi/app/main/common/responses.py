@@ -1,3 +1,5 @@
+from flask import jsonify
+
 class response(object):
     success_code = 200
     success_message = "Success"
@@ -24,3 +26,5 @@ class response(object):
     'message': 'User already exists. Please Log in.',
     }
 
+def errorResponse(message=''):
+   return jsonify( { 'STATUS':'ERROR','MESSAGE': message } )

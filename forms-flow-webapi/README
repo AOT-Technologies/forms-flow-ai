@@ -13,9 +13,9 @@ python manage.py db migrate
 
 
 to generate versions use
+    create a model 
     python manage.py db revision -m 'short_name_of_your_revision'
-    or
-    python manage.py db revision
+    python manage.py db upgrade
 
 to run
     python manage.py run

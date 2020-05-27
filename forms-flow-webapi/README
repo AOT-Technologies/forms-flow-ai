@@ -9,7 +9,8 @@ Steps required to run for initital setup
 
 No need to do the following steps for inital setup
 python  manage.py db init
-python manage.py db migrate
+python manage.py db migrate --message 'initial database migration'
+python manage.py db upgrade
 
 
 to generate versions use

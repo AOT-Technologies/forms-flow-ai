@@ -16,6 +16,9 @@ class response(object):
     alreadyexisting_code = 409
     alreadyexisting_message = "Already exits"
 
+    nodata_code = 417
+    nodata_message = "No data found"
+
     success_response = {
     'status': 'success',
     'message': 'Successfully added.'

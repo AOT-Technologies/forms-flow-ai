@@ -46,11 +46,6 @@ const View = (props) => {
                 Assign to me
               </p>
             }
-            {props.isUpdating ?
-              <div className="spinner-border text-info ml-2" role="status">
-                <span className="sr-only">Loading...</span>
-              </div>
-              : null}
           </td>
         </tr>
         <tr>
@@ -92,7 +87,6 @@ const mapStateToProps = (state) => {
   return {
     detail: state.tasks.taskDetail,
     userName: state.user.userDetail.preferred_username,
-    isUpdating: state.tasks.isTaskUpdating
   }
 }
 const mapDispatchToProps = (dispatch) => {

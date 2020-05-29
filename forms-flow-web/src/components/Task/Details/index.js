@@ -1,12 +1,15 @@
 import React from 'react'
+import LoadingOverlay from 'react-loading-overlay';
 
 import View from './View'
 import Review from './Review';
+import { connect } from 'react-redux';
 
 
-const Details=()=>{
-  return (
-            <div className="row" style={{ marginTop: '26.5px',fontWeight:"500px" }}>
+const Details = (props) => {
+    return (
+        <LoadingOverlay active={props.isTaskUpdating} spinner text='Loading...'>
+            <div className="row" style={{ marginTop: '26.5px', fontWeight: "500px" }}>
                 <div className="col-md-6">
                     <View />
                 </div>
@@ -14,7 +17,14 @@ const Details=()=>{
                     <Review />
                 </div>
             </div>
-  );
+        </LoadingOverlay>
+    );
 }
 
-export default Details;
+const mapStateToProps = (state) =>{
+    return{
+        isTaskUpdating: state.tasks.isTaskUpdating
+    }
+}
+
+export default connect(mapStateToProps)(Details);

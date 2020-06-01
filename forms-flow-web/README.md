@@ -22,8 +22,27 @@ NOTE: There are two methods for running this application. Using docker container
 -   Modify docker-compose.yml in the root folder with relevant data
 
     Using npm
--   Create a .env file in root folder with sample.env data
--   Change .env data with relevant data
+-   Create a .env file in root folder with using sample.env data or alternatively use public/config/config.sample.js
+-   Change .env data with relevant data (For compile time  env binding on build) or alternatively use public/config/config.js (For Runtime env binding as needed in openshift).
+    | Variables                        | Description                              | Value Obtained From
+    | -------------------------------- |:----------------------------------------:| :-----------------------------------------------
+    | NODE_ENV                         | Defines project level configuration      | Possible values : development, test, production
+    | REACT_APP_CLIENT_ROLE            | Keycloak role name for client            | Keycloak ->Web Client--> Roles -> Client role name
+    | REACT_APP_STAFF_DESIGNER_ROLE    | Keycloak role name for designer          | Keycloak ->Web Client--> Roles -> Designer role name
+    | REACT_APP_STAFF_REVIEWER_ROLE    | Keycloak role name for reviewer          | Keycloak ->Web Client--> Roles -> Reviewer role name
+    | REACT_APP_CLIENT_ID              | Formio client role mapping id            | 
+    | REACT_APP_STAFF_DESIGNER_ID      | Formio designer role mapping id          |
+    | REACT_APP_STAFF_REVIEWER_ID      | Formio reviewer role mapping id          |
+    | REACT_APP_ANONYMOUS_ID           | Formio anonymous role mapping id         |
+    | REACT_APP_USER_RESOURCE_FORM_ID  | Formio user resource form id             |
+    | REACT_APP_EMAIL_SUBMISSION_GROUP | Submission group in email notification   | Keycloak role for submission
+    | REACT_APP_API_SERVER_URL         | Form-IO API-URL                          |
+    | REACT_APP_KEYCLOAK_CLIENT        | Keycloak client name                     |
+    | REACT_APP_BPM_API_BASE           | BPM-API-URL                              |
+    | REACT_APP_BPM_TOKEN_API          | BPM TOKEN URL                            |
+    | REACT_APP_KEYCLOAK_BPM_CLIENT    | Keycloak client name for BPM             |
+    | REACT_APP_BPM_CLIENT_ID          | Secret Key for BPM                       | Secret in BPM Client in Keycloak->Credentials
+    
 
 - To get Form-IO authorization IDs use the follwing steps 
   - Get token

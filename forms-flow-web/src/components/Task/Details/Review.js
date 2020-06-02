@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 import { BPM_USER_DETAILS } from '../../../apiManager/constants/apiConstants'
 import { getUserToken } from '../../../apiManager/services/bpmServices'
 import { completeTask } from '../../../apiManager/services/taskServices'
-import { setUpdateLoader } from '../../../actions/taskActions'
+import { setUpdateLoader, setTaskSubmissionDetail } from '../../../actions/taskActions'
+import { getTaskDetail, getTaskSubmissionDetails } from '../../../apiManager/services/taskServices'
 import { setFormSubmissionError } from '../../../actions/formActions'
 import SubmissionError from '../../../containers/SubmissionError'
 
@@ -87,10 +88,21 @@ const mapDispatchToProps = (dispatch) => {
         if (!err) {
           dispatch(setUpdateLoader(true));
           dispatch(completeTask(id, status, (err, response) => {
-            dispatch(setUpdateLoader(false));
             if (err) {
+              dispatch(setUpdateLoader(false));
               const ErrorDetails = { modalOpen: true, message: "Unable to perform the action" }
               dispatch(setFormSubmissionError(ErrorDetails))
+            }else{
+              dispatch(getTaskDetail(id, (err, res) => {
+                if (!err) {
+                  dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {
+                    if (!err) {
+                      dispatch(setTaskSubmissionDetail(res));
+                      dispatch(setUpdateLoader(false));
+                    }
+                  }))
+                }
+              }))
             }
           }))
         }

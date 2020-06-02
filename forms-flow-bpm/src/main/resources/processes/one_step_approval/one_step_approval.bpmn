@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0993co4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.7.2">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0993co4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.6.0">
   <bpmn:process id="onestepapproval" name="One Step Approval" isExecutable="true">
     <bpmn:startEvent id="StartEvent_1" name="Start Request">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="javascript">execution.setVariable('task_status', "New");</camunda:script>
+        </camunda:executionListener>
+      </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:userTask id="Task_1el1yok" name="Review Submission" camunda:formKey="embedded:deployment:approve-reject.html">
@@ -9,6 +14,12 @@
         <camunda:formData>
           <camunda:formField id="decision" type="string" />
         </camunda:formData>
+        <camunda:taskListener event="assignment">
+          <camunda:script scriptFormat="javascript">task.execution.setVariable('task_status', "In-Progess");</camunda:script>
+        </camunda:taskListener>
+        <camunda:taskListener event="complete">
+          <camunda:script scriptFormat="javascript">task.execution.setVariable('task_status', "Completed");</camunda:script>
+        </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0ociprs</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0jg4sg3</bpmn:outgoing>
@@ -27,10 +38,10 @@
       <bpmn:outgoing>SequenceFlow_0pc6hcp</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_1x38yu4" name="approve" sourceRef="ExclusiveGateway_0l1c65j" targetRef="EndEvent_03cla68">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == 'approve'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'approve'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0pc6hcp" name="reject" sourceRef="ExclusiveGateway_0l1c65j" targetRef="EndEvent_037tmkg">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decision == 'reject'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'reject'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmn:message id="Message_1ihrno3" name="Message_Email" />

@@ -19,10 +19,10 @@ class Process(db.Model):
     modified_on = db.Column(db.Date(), nullable=False)
     tenant_id = db.Column(db.String(50), nullable=False)
 
-class ProcessSchema(ma.ModelSchema):
+class ProcessSchema(ma.Schema):
     class Meta:
-        model = Process
-        include_fk = True
+        # Fields to expose
+        fields = ("id", "key", "name")
 
 process_schema = ProcessSchema()
-processes_schema = ProcessSchema(many=True,only=("mapper_id", "process_name"))
+processes_schema = ProcessSchema(many=True)

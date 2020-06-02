@@ -9,21 +9,20 @@ from ..common.responses import response, successResponse, errorResponse, nodataR
 from .dboperations import save_changes
 from ..service.bpm_service import  httpGETRequest,httpPOSTRequest
 
-def get_all_processes():
+def get_all_tasks():
     try:
-        #process =  Process.query.filter_by(status="active").all()
-        url = 'https://bpm1.aot-technologies.com/camunda/engine-rest/process-definition'
-        process = httpGETRequest(url)
-        result = processes_schema.dump(process)
-        return successResponse(result)
+        url = 'https://bpm1.aot-technologies.com/camunda/engine-rest/task'
+        task = httpGETRequest(url)
+        #result = processes_schema.dump(task)
+        return successResponse(task)
     except Exception as e:
         return errorResponse()
 
 
-def get_a_process(processId):
+def get_a_task(taskId):
     try:
         #process_details = Process.query.filter_by(mapper_id = processId, status = "active").first()
-        url = 'https://bpm1.aot-technologies.com/camunda/engine-rest/process-definition/'+processId
+        url = 'https://bpm1.aot-technologies.com/camunda/engine-rest/task/'+taskId
         process_details=  httpGETRequest(url)
         if not process_details:
             return nodataResponse()

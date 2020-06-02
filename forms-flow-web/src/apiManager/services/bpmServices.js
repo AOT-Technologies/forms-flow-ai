@@ -1,4 +1,4 @@
-import {  httpPOSTRequest, httpPOSTRequestWithoutToken  } from '../httpRequestHandler'
+import {  httpPOSTRequest, httpPOSTRequestWithoutToken, httpGETRequest  } from '../httpRequestHandler'
 import API from '../endpoints'
 import Token from "../token/tokenService";
 import { setUserToken,sendEmailNotification, sendOneStepApproval, serviceActionError } from '../../actions/bpmActions'
@@ -66,10 +66,12 @@ export const getProcess = (processType,form, submissionId, action, user) => {
 
 export const  triggerNotification= (data, ...rest) => {
   const done = rest.length ? rest[0] :  ()=>{};
-  let url = API.SEND_NOTIFICATION+`${data.process}/start`
+  let url = 'https://bpm1.aot-technologies.com/camunda/engine-rest/history/process-instance'
+  debugger;
   return dispatch => {
-    httpPOSTRequest(url,data.req).then(res => {
+    httpGETRequest(url).then(res => {
       if (res.data) {
+        debugger;
         dispatch(data.service(res.data))
         done(null,res.data);
       } else {

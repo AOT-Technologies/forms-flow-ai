@@ -5,6 +5,8 @@ import Token from '../token/tokenService';
 const qs = require('querystring');
 
 export const httpGETRequest = (url, data) => {
+  const Authorization = `Bearer ${Token.getBpmToken()}`
+  debugger;
   return axios.get(url, { params: data, headers: { Authorization:`Bearer ${Token.getBpmToken()}`} }) // TODO get this dynamic from url
 }
 
@@ -14,6 +16,7 @@ export const httpPOSTRequest = (url, data) => {
 }
 
 export const httpPOSTRequestWithoutToken = (url, data) => {
+  debugger;
   const config = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'

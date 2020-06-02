@@ -88,3 +88,20 @@ class NewSubmissionsDto:
         'process_instance_id': fields.String(description='Process Instance Id'),
         'revision_no': fields.Integer(required=True, description='Revision_no')
     })
+class TaskDto:
+    api = Namespace('task', description='task related operations')
+    task = api.model('task', {
+        'form_id': fields.Integer(required=True, description='Form id'),
+        'mapper_id': fields.String(required=True, description='Mapper id'),
+        'form_name': fields.String(required=True, description='Form name'),
+        'form_revision_number': fields.String(required=True, description='Form Revision Number'),
+        'process_definition_key': fields.String(required=True, description='Process Defin ition Key'),
+        'process_name': fields.DateTime(required=True, description='Process Name'),
+        'comments': fields.DateTime(required=True, description='Comments'),
+        'created_by': fields.String(required=True, description='Created by'),
+        'created_on': fields.DateTime(required=True, description='Created on'),
+        'modified_by': fields.String(required=True, description='Modified by'),
+        'modified_on': fields.DateTime(required=True, description='Modified on'),
+        'tenant_id': fields.String(required=True, description='Tenant id')
+
+    })

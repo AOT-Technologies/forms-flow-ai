@@ -1,11 +1,10 @@
-from .. import db, flask_bcrypt,ma
+from .. import db, flask_bcrypt
 from sqlalchemy.dialects import postgresql
 from .process import Process
-from ...main.utils.dto import ApplicationDto
 
-class Application(db.Model):
-    """ Application Model for storing application related details """
-    __tablename__ = "FAI_APPLICATION"
+class ApplicationVersion(db.Model):
+    """ ApplicationVersion Model for storing application version related details """
+    __tablename__ = "FAI_APPLICATION_AUDIT"
 
     application_id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
     application_name = db.Column(db.String(100), nullable=False)
@@ -19,12 +18,4 @@ class Application(db.Model):
     process_instance_id = db.Column(db.String(30), nullable=False)
     revision_no = db.Column(db.Integer, nullable=False)
 
-    FORM_PROCESS_MAPPER = db.relationship('Process', primaryjoin='Application.mapper_id == Process.mapper_id', backref='FAI_APPLICATION')
-
-class ApplicationSchema(ma.ModelSchema):
-    class Meta:
-        model = Application
-        include_fk = True
-
-application_schema = ApplicationSchema()
-applications_schema = ApplicationSchema(many=True)
+    FORM_PROCESS_MAPPER = db.relationship('Process', primaryjoin='ApplicationVersion.mapper_id == Process.mapper_id', backref='FAI_APPLICATION_AUDIT')

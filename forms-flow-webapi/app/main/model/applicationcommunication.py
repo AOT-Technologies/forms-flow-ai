@@ -3,7 +3,7 @@ from sqlalchemy.dialects import postgresql
 from .application import Application
 
 class Applicationcommunication(db.Model):
-    """ Communication Model for storing communication related details """
+    """ ApplicationCommunication Model for storing applicationcommunication related details """
     __tablename__ = "FAI_APPLICATION_COMMUNICATION"
 
     communication_id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
@@ -12,4 +12,4 @@ class Applicationcommunication(db.Model):
     created_by = db.Column(db.String(20), nullable=False)
     created_on = db.Column(db.Date(), nullable=False)
 
-    FAI_APPLICATION = db.relationship('Application', primaryjoin='Communication.application_id == Application.application_id', backref='FAI_APPLICATION_COMMUNICATION')
+    FAI_APPLICATION = db.relationship('Application', primaryjoin='Applicationcommunication.application_id == Application.application_id', backref='FAI_APPLICATION_COMMUNICATION')

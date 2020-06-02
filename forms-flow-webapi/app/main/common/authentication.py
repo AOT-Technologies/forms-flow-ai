@@ -1,38 +1,49 @@
 from flask import Flask, request,jsonify
 import jwt
+import json
 import os
 from ..common.responses import errorResponse
 import datetime as datetime
+from os import environ as env
 
-    
-def decode_auth_token(auth_token):
-    """
-    Decodes the auth token
-    :param auth_token:
-    :return: integer|string
-    """
-    public_key=b'''-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAoOzzAWKs/sbog8ypg+4S-----END PUBLIC KEY-----'''
-    
+public_key = env.get('public_key')
+audience = env.get('audience')
 
+def verify_auth_token():
     try:
-        payload = jwt.decode(auth_token, public_key)
-        return payload
-    
+        auth_token = request.headers.get("Authorization", None)
+        #auth_token = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJSXlONlpkOWs2M1ZGV1VZQjIzUU1lNkZwMkcwSk5SQV9HdERKRmJadVBJIn0.eyJqdGkiOiIwMTc0NGFkYS1hZjM1LTQxOTAtOWNjMi00YTkyMTgxN2RhOWEiLCJleHAiOjE1OTA2NjY3MDQsIm5iZiI6MCwiaWF0IjoxNTkwNjY2NDA0LCJpc3MiOiJodHRwczovL2lhbS5hb3QtdGVjaG5vbG9naWVzLmNvbS9hdXRoL3JlYWxtcy9mb3Jtcy1mbG93LWFpIiwiYXVkIjoiZm9ybXMtZmxvdy13ZWIiLCJzdWIiOiI1Zjg0MzhlZC1jY2FhLTQ4NWYtOWRlZi1jYjlmN2Q2MTAyZjMiLCJ0eXAiOiJJRCIsImF6cCI6ImZvcm1zLWZsb3ctd2ViIiwibm9uY2UiOiI0MDBmZjE3OC0zZjRiLTRjMWUtODk5MC0zYjY2MDA3YWE5MjIiLCJhdXRoX3RpbWUiOjE1OTA2NjY0MDEsInNlc3Npb25fc3RhdGUiOiJiMTI1N2RhNS1hOWM1LTQ4YjktYjAzOS02NTBiYTM1MGE4OTAiLCJhY3IiOiIxIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJyb2xlIjpbInJwYXMtZGVzaWduZXIiXSwibmFtZSI6IlJpbnR1IE1lcmluIiwicHJlZmVycmVkX3VzZXJuYW1lIjoicnBhcy1kZXNpZ25lciIsImdpdmVuX25hbWUiOiJSaW50dSIsImZhbWlseV9uYW1lIjoiTWVyaW4iLCJlbWFpbCI6InJpbnR1Lm1lcmluQGFvdC10ZWNobm9sb2dpZXMuY29tIn0.PiOdFs1O7t9u3yVwNodzQZvsaOdmFYTtGQSukDnM_X2gfQ1hcq3MEdpnga7Qx33WigLX79ydy9UxwzTNzKggE5fKKZaOlrsOEGDGXZNYPbxkFnNkQHET68CwKQe25e17Bb8WmyKFl2gmDYwr1PsjDiT539xO7zZAjxF8L5kgL4Bpl7d3cnFBYtmdKtK_nEoLUJva7TBMfJNWFwukWyhvKV9eUxoj5YoG3sUaFLhMBFx88Cpw7IVm0SD5i84QWt_yFD_GkYyr4qAcjEjGN0NKjgdIAqIWWzv4MVzaYn2OA7ZxICG4bh-Rnm9utXBiQQXbTlXoqtjMGNmx8cL1IVlU9A"
+        if auth_token == None:
+            #return errorResponse("Authorization header is expected.")
+            return True
+        else:
+            payload = json.dumps(jwt.decode(auth_token, public_key, audience=audience))
+            return True
+            
+
     except jwt.ExpiredSignatureError:
         return errorResponse("Signature expired. Please log in again.")
         
     except jwt.InvalidTokenError:
         return errorResponse("Invalid token. Please log in again.")
+
+def get_token_details():
+    user_details = None
+    try:
+    #auth_token = request.headers.get("Authorization", None)
+        auth_token = "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJSXlONlpkOWs2M1ZGV1VZQjIzUU1lNkZwMkcwSk5SQV9HdERKRmJadVBJIn0.eyJqdGkiOiIxNDNjNjBkNC05NjEzLTQ0YjMtOGZiZC03YzQyMDhlZDY0MDMiLCJleHAiOjE1OTA3Mzc4NjksIm5iZiI6MCwiaWF0IjoxNTkwNzM3NTY5LCJpc3MiOiJodHRwczovL2lhbS5hb3QtdGVjaG5vbG9naWVzLmNvbS9hdXRoL3JlYWxtcy9mb3Jtcy1mbG93LWFpIiwiYXVkIjoiZm9ybXMtZmxvdy13ZWIiLCJzdWIiOiI1Zjg0MzhlZC1jY2FhLTQ4NWYtOWRlZi1jYjlmN2Q2MTAyZjMiLCJ0eXAiOiJJRCIsImF6cCI6ImZvcm1zLWZsb3ctd2ViIiwibm9uY2UiOiJlZTMxNGE3NS1lY2ZmLTQzOWEtYWFkYi0zZGM3Nzg2Yzk0N2EiLCJhdXRoX3RpbWUiOjE1OTA3Mzc1NjYsInNlc3Npb25fc3RhdGUiOiJjYzA3ZjExZi0wNDJlLTRkMzctYmI4Mi1jMmZhZmFhMGRmYzYiLCJhY3IiOiIxIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJyb2xlIjpbInJwYXMtZGVzaWduZXIiXSwibmFtZSI6IlJpbnR1IE1lcmluIiwicHJlZmVycmVkX3VzZXJuYW1lIjoicnBhcy1kZXNpZ25lciIsImdpdmVuX25hbWUiOiJSaW50dSIsImZhbWlseV9uYW1lIjoiTWVyaW4iLCJlbWFpbCI6InJpbnR1Lm1lcmluQGFvdC10ZWNobm9sb2dpZXMuY29tIn0.YSSB4ZM8p72p_4L82lBFEKnUH5uahouerYJAulZignsGh9k9OUMteefDCRGkoCzWOpulSQNnEKRjlZhO-2WJcCMCGQlzxLzlqTyA0IkfzIW1zXjwMNUIKHGaQllOehIA3PcEBEb-uqZVhE9JITaXVai8fUEYK_LiLeH-j7F_0g9pUnsCvuoDZ3WK7sp5mq6OqGtgFb3jGAkI8JUSj0y9q0jKUH__xOGXAF94CSP4GWQHSweH6clnk4a74QaAkazIKmVt2L_JAFXap90gxnCGSnc4raHY8JcuCZ_KqIselv1QdSAdK4kHbzuxXceiKPNL3gGj-AwtQwYmXaYrHUJZZg"
+        if auth_token == None:
+            return user_details
+        else:
+            user_details = json.dumps(jwt.decode(auth_token, public_key, audience=audience))
+            return user_details
+
+    except jwt.ExpiredSignatureError:
+        return user_details
         
-    
-def get_token_auth_header():
-    
-    #auth = request.headers.get("Authorization", None)
-    auth = '''eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJSXlONlpkOWs2M1ZGV1VZQjIzUU1lNkZwMkcwSk5SQV9HdERKRmJadVBJIn0.eyJqdGkiOiI3NmUyMWFkZS0wYjhiLTQwY2QtODI2OC1lN2FkMzU1NTRjZGYiLCJleHAiOjE1OTAxMjE5MjgsIm5iZiI6MCwiaWF0IjoxNTkwMTIxNjI4LCJpc3MiOiJodHRwczovL2lhbS5hb3QtdGVjaG5vbG9naWVzLmNvbS9hdXRoL3JlYWxtcy9mb3Jtcy1mbG93LWFpIiwiYXVkIjoiYWNjb3VudCIsInN1YiI6IjVmODQzOGVkLWNjYWEtNDg1Zi05ZGVmLWNiOWY3ZDYxMDJmMyIsInR5cCI6IkJlYXJlciIsImF6cCI6ImZvcm1zLWZsb3ctd2ViIiwibm9uY2UiOiI1MzU1ZTA0NS04N2I5LTQyNjctODJhNy03M2MzMTkzZTlhNmUiLCJhdXRoX3RpbWUiOjE1OTAxMjE2MTgsInNlc3Npb25fc3RhdGUiOiI3Y2YwN2EzZC0zZTE3LTQ0NzctYWU1My04MDc5MTlmNGZkOTUiLCJhY3IiOiIxIiwiYWxsb3dlZC1vcmlnaW5zIjpbIioiXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbIm9mZmxpbmVfYWNjZXNzIiwidW1hX2F1dGhvcml6YXRpb24iXX0sInJlc291cmNlX2FjY2VzcyI6eyJmb3Jtcy1mbG93LXdlYiI6eyJyb2xlcyI6WyJycGFzLWRlc2lnbmVyIl19LCJhY2NvdW50Ijp7InJvbGVzIjpbIm1hbmFnZS1hY2NvdW50IiwibWFuYWdlLWFjY291bnQtbGlua3MiLCJ2aWV3LXByb2ZpbGUiXX19LCJzY29wZSI6Im9wZW5pZCBlbWFpbCBwcm9maWxlIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJyb2xlIjpbInJwYXMtZGVzaWduZXIiXSwibmFtZSI6IlJpbnR1IE1lcmluIiwicHJlZmVycmVkX3VzZXJuYW1lIjoicnBhcy1kZXNpZ25lciIsImdpdmVuX25hbWUiOiJSaW50dSIsImZhbWlseV9uYW1lIjoiTWVyaW4iLCJlbWFpbCI6InJpbnR1Lm1lcmluQGFvdC10ZWNobm9sb2dpZXMuY29tIn0.O2u2hSDQl4MM140gKid8cR__BsXmbQNiNdkGPjfJiqhLqPoo0qEZQOM79y7Vkl9X7-L4Axg0UanC-zqbk5-Ito7pIK7SZjzuCmeeWgfmltaTCf3pC1wBYrNTlLot2TadZDQidjPFpJKJlDDp8iL38lLZhQBB-QSd3s7CWvQafx1rEsdnbm9O7vA-v0EfTIBgmJJQAaqJA-9YhBIm22jmAnkaNccrpc7_FLKKexLgrh3iMneKkALPhuaBA75yoFBLdW-fzGwPffmal2HLBCrOfESmAFXdke9me_XaKrYvRKUYVhr_Zvi04eZKxqb8sDWpA9uGYOjCeettX_jRf7QurQ'''
-    if auth == None:
-        return errorResponse("Authorization header is expected.")
+    except jwt.InvalidTokenError:
+        return user_details
         
-    return decode_auth_token(auth)
     
 
      

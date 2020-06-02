@@ -1,65 +1,81 @@
 from flask import request
 from flask_restplus import Resource
 
-from ..utils.dto import ApplicationDto,NewApplicationsDto
+from ..utils.dto import ApplicationDto,NewApplicationDto
 from ..common.responses import response
-from ..service.application_service import save_new_application, get_all_applications, get_a_application,update_application
+from ..service.application_service import save_new_application, get_all_applications, get_a_application,update_application, delete_application
 from ..common import writeException
+from ..common.authentication import verify_auth_token
 
 api = ApplicationDto.api
 _application = ApplicationDto.application
 
-createapi = NewApplicationsDto.api
-_newapplication = NewApplicationsDto.newapplication
-
+createapi = NewApplicationDto.api
+_newapplication = NewApplicationDto.newapplication
 
 @api.route('/')
 class ApplicationList(Resource):
     @api.response(response().error_code, response().error_message)
     @api.response(response().notfound_code, response().notfound_message)
     @api.doc('list_of_applications')
-    @api.marshal_list_with(_application, envelope='data')
+    # @api.marshal_list_with(_application, envelope='data')
+    @api.response(200, 'Success', _application)
+    # @api.marshal_with(_application)
     def get(self):
         """List all applications"""
-        return get_all_applications()
+        if verify_auth_token() == True:
+            return get_all_applications()
+        else:
+            return verify_auth_token()
 
-
-@api.route('/create')
-class ApplicationCreate(Resource):
     @createapi.response(response().created_code, response().created_message)
     @createapi.response(response().error_code, response().error_message)
     @createapi.response(response().notfound_code, response().notfound_message)
     @createapi.doc('create a new application')
     @createapi.expect(_newapplication, validate=True)
     def post(self):
-        """Create a new application with process. """
-        writeException("create")
-        data = request.json
-        return save_new_application(data=data)
+        """Create a new application. """
+        if verify_auth_token() == True:
+            data = request.json
+            return save_new_application(data=data)
+        else:
+            return verify_auth_token()
 
-
-@api.route('/<Id>')
-@api.param('Id', 'The Application identifier')
+@api.route('/<applicationId>')
+@api.param('applicationId', 'The Application identifier')
 class ApplicationDetails(Resource):
     @api.response(response().error_code, response().error_message)
     @api.response(response().notfound_code, response().notfound_message)
     @api.doc('get a application')
-    @api.marshal_with(_application)
-    def get(self, Id):
+    # @api.marshal_with(_application)
+    def get(self, applicationId):
         """Get application detail"""
-        application = get_a_application(Id)
-        if not application:
-            api.abort(404)
+        if verify_auth_token() == True:
+            return  get_a_application(applicationId)
         else:
-            return application
-
+            return verify_auth_token()
 
     @createapi.response(response().created_code, response().created_message)
     @createapi.response(response().error_code, response().error_message)
     @createapi.response(response().notfound_code, response().notfound_message)
     @createapi.doc('Update an application')
     @createapi.expect(_newapplication, validate=True)
-    def post(self,Id):
+    def put(self,applicationId):
         """Update an application """
-        data = request.json
-        return update_application(Id,data=data)
+        if verify_auth_token() == True:
+            data = request.json
+            return update_application(applicationId,data=data)
+        else:
+            return verify_auth_token()
+
+
+    @api.response(response().created_code, response().created_message)
+    @api.response(response().error_code, response().error_message)
+    @api.response(response().notfound_code, response().notfound_message)
+    @api.doc('Delete an application')
+    def delete(self,applicationId):
+        """delete an application """
+        if verify_auth_token() == True:
+            return delete_application(applicationId)
+        else:
+            return verify_auth_token()

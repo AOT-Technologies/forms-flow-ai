@@ -19,15 +19,12 @@ class response(object):
     nodata_code = 417
     nodata_message = "No data found"
 
-    success_response = {
-    'status': 'success',
-    'message': 'Successfully added.'
-    }
-
-    fail_object = {
-    'status': 'fail',
-    'message': 'User already exists. Please Log in.',
-    }
-
 def errorResponse(message=''):
-   return jsonify( { 'STATUS':'ERROR','MESSAGE': message } )
+   return jsonify( { 'CODE': response.error_code, 'STATUS':response.error_message, 'MESSAGE': message, 'DATA':'' } )
+
+def successResponse (data = '',etag='') :
+    return  jsonify({'CODE': response.success_code, 'STATUS': response.success_message,'MESSAGE': 'Success.', 'DATA':data})
+
+
+def nodataResponse(message=''):
+     return jsonify( { 'CODE': response.nodata_code, 'STATUS':response.nodata_message, 'MESSAGE': message, 'DATA':'' } )

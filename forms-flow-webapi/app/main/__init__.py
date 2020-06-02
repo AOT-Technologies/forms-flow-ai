@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
 from flask_bcrypt import Bcrypt
 from flask import Blueprint
 from flask_restful import request,Api
@@ -8,6 +9,7 @@ from config import config_by_name
 from .common import authentication
 
 db = SQLAlchemy()
+ma = Marshmallow()
 flask_bcrypt = Bcrypt()
 
 api_bp = Blueprint('api', __name__)
@@ -20,7 +22,7 @@ def create_app(config_name):
     flask_bcrypt.init_app(app)
 
     def before_my_blueprint():
-        ret = authentication.get_token_auth_header()
+        ret = authentication.verify_auth_token()
         return ret
 
     app.before_request_funcs = {

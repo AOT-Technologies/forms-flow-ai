@@ -1,60 +1,88 @@
 import uuid
 import datetime
+import json
+from marshmallow import Schema
 
 from app.main import db
-from ..model.application import Application
-from ..common.responses import response
+from ..model.process import Process,process_schema,processes_schema
+from ..common.responses import response, successResponse, errorResponse, nodataResponse
 from .dboperations import save_changes
 
-def save_new_application(data):
-    new_application = Application(
-        application_name = data['application_name'],
-        application_status = "1",
-        mapper_id = data['mapper_id'],
-        created_by = data['created_by'],
-        created_on = datetime.datetime.utcnow(),
-        modified_by = data['modified_by'],
-        modified_on = datetime.datetime.utcnow(),
-        submission_id = data['submission_id'],
-        process_instance_id = data['process_instance_id'],
-        revision_no = data['revision_no']
-    )
-    save_changes(new_application)
-    return response.success_message, response.SUCCESS_CODE
-
-
 def get_all_applications():
-    return Application.query.all()
+    try:
+        process =  Process.query.filter_by(status="active").all()
+        result = processes_schema.dump(process)
+        return successResponse(result)
+    except Exception as e:
+        return errorResponse()
 
 
 def get_a_application(applicationId):
-    return Application.query.filter_by(application_id=applicationId).first()
+    try:
+        process_details = Process.query.filter_by(mapper_id = applicationId, status = "active").first()
+        if not process_details:
+            return nodataResponse()
+        else:
+            result = process_schema.dump(process_details)
+            return successResponse(result)
+    except Exception as e:
+        return errorResponse()
+
+def save_new_application(data):
+    try:
+        new_application = Process(
+            form_id = data['form_id'],
+            form_name = data["form_name"],
+            form_revision_number = data['form_revision_number'],
+            process_definition_key = data['process_definition_key'],
+            process_name = data['process_name'],
+            status = "active",
+            comments = data['comments'],
+            created_by = data['created_by'],
+            created_on = datetime.datetime.utcnow(),
+            modified_by = data['modified_by'],
+            modified_on = datetime.datetime.utcnow(),
+            tenant_id  = data['tenant_id']
+        )
+        save_changes(new_application)
+        return successResponse(data)
+    except Exception as e:
+        return errorResponse()
+
 
 def update_application(applicationId,data):
-    application = Application.query.filter_by(application_id=applicationId).first()
-    if not application:
-        return response.nodata_message, response.nodata_code
-    else:
-        
-        application.application_name = data['application_name']
-        application.application_status = "1"
-        application.mapper_id = data['mapper_id']
-        application.modified_by = data['modified_by']
-        application.modified_on = datetime.datetime.utcnow()
-        application.submission_id = data['submission_id']
-        application.process_instance_id = data['process_instance_id']
-        application.revision_no = data['revision_no']
-        
-        save_changes(application)
-        return response.success_message, response.SUCCESS_CODE
+    try:
+        application = Process.query.filter_by(mapper_id=applicationId, status = "active").first()
+        if not application:
+            return nodataResponse()
+        else:
+            
+            application.form_id = data['form_id']
+            application.form_name = data["form_name"]
+            application.form_revision_number = data['form_revision_number']
+            application.process_definition_key = data['process_definition_key']
+            application.process_name = data['process_name']
+            application.comments = data['comments']
+            application.modified_by = data['modified_by']
+            application.modified_on = datetime.datetime.utcnow()
+            application.tenant_id  = data['tenant_id']
+            
+            save_changes(application)
+            return successResponse(data)
+    except Exception as e:
+        return errorResponse()
 
 def delete_application(applicationId):
-    application = Application.query.filter_by(application_id=applicationId).first()
-    if not application:
-        return response.nodata_message, response.nodata_code
-    else:
-        application.application_status = "0"
+    try:
+        application = Process.query.filter_by(mapper_id=applicationId).first()
+        if not application:
+            return nodataResponse()
+        else:
+            application.status = "inactive"
 
-        save_changes(application)
-        return response.success_message, response.SUCCESS_CODE
+            save_changes(application)
+            return successResponse()
+    except Exception as e:
+        return errorResponse()
+
         

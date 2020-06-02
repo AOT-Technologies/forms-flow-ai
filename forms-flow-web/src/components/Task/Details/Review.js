@@ -85,10 +85,10 @@ const mapDispatchToProps = (dispatch) => {
     onCompleteTask: (id, status) => {
       dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
         if (!err) {
+          dispatch(setUpdateLoader(true));
           dispatch(completeTask(id, status, (err, response) => {
-            if (!err) {
-              dispatch(setUpdateLoader(true));
-            } else {
+            dispatch(setUpdateLoader(false));
+            if (err) {
               const ErrorDetails = { modalOpen: true, message: "Unable to perform the action" }
               dispatch(setFormSubmissionError(ErrorDetails))
             }

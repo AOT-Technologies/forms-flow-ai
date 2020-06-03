@@ -1,7 +1,6 @@
 import React from 'react'
 import {Link} from 'react-router-dom'
 import {textFilter, selectFilter} from 'react-bootstrap-table2-filter';
-import moment from 'moment'
 
 let titleFilter, statusFilter, ownerFilter, appidFilter, submittedFilter, submittedOnFilter, apptypeFilter;
 

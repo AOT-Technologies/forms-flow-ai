@@ -21,18 +21,17 @@ def get_all_tasks():
 
 def get_a_task(taskId):
     try:
-        #process_details = Process.query.filter_by(mapper_id = processId, status = "active").first()
         url = 'https://bpm1.aot-technologies.com/camunda/engine-rest/task/'+taskId
-        process_details=  httpGETRequest(url)
-        if not process_details:
+        task_details=  httpGETRequest(url)
+        if not task_details:
             return nodataResponse()
         else:
-            result = process_schema.dump(process_details)
-            return successResponse(process_details)
+            #result = task_schema.dump(task_details)
+            return successResponse(task_details)
     except Exception as e:
         return errorResponse()
 
-def get_a_process_action(processId):
+def claim_a_task(taskId):
     try:
         process_details = Process.query.filter_by(mapper_id = processId, status = "active").first()
         if not process_details:

@@ -5,7 +5,7 @@ Steps required to run for initital setup
     (b)set DATABASE_URL in .env file
     migrate DB using following commands
         python manage.py db upgrade
-
+    (c)create a .env file, based on sample env
 
 No need to do the following steps for inital setup
 python  manage.py db init

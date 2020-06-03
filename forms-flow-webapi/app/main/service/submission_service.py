@@ -1,5 +1,5 @@
 import uuid
-import datetime
+from datetime import datetime as dt
 import json
 from marshmallow import Schema
 
@@ -15,15 +15,18 @@ def save_new_submission(data,Id):
             application_status = "active",
             mapper_id = Id,
             created_by = data['created_by'],
-            created_on = datetime.datetime.utcnow(),
+            created_on = dt.datetime.utcnow(),
             modified_by = data['modified_by'],
-            modified_on = datetime.datetime.utcnow(),
+            modified_on = dt.datetime.utcnow(),
             submission_id = data['submission_id'],
             process_instance_id = data['process_instance_id'],
             revision_no = data['revision_no']
         )
         save_changes(new_application)
-        return successResponse(data)
+        response = successResponse(data)
+        response.last_modified = dt.utcnow()
+        response.add_etag()
+        return response
     except Exception as e:
         return errorResponse()
 
@@ -32,7 +35,10 @@ def get_all_submissions(applicationId):
     try:
         applications =  Application.query.filter_by(application_status="active",mapper_id = applicationId).all()
         result = applications_schema.dump(applications)
-        return successResponse(result)
+        response = successResponse(result)
+        response.last_modified = dt.utcnow()
+        response.add_etag()
+        return response
     except Exception as e:
         return errorResponse()
 
@@ -44,7 +50,10 @@ def get_a_submission(applicationId, submissionId):
             return nodataResponse()
         else:
             result = application_schema.dump(application_details)
-            return successResponse(result)
+            response = successResponse(result)
+            response.last_modified = dt.utcnow()
+            response.add_etag()
+            return response
     except Exception as e:
         return errorResponse()
 
@@ -57,12 +66,15 @@ def update_submission(applicationId, submissionId, data):
             application.application_name = data['application_name']
             application.mapper_id = data['mapper_id']
             application.modified_by = data['modified_by']
-            application.modified_on = datetime.datetime.utcnow()
+            application.modified_on = dt.datetime.utcnow()
             application.process_instance_id = data['process_instance_id']
             application.revision_no = data['revision_no']
             
             save_changes(application)
-            return successResponse(data)
+            response = successResponse(data)
+            response.last_modified = dt.utcnow()
+            response.add_etag()
+            return response
     except Exception as e:
         return errorResponse()
 

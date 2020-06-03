@@ -22,7 +22,7 @@ class response(object):
 def errorResponse(message=''):
    return jsonify( { 'CODE': response.error_code, 'STATUS':response.error_message, 'MESSAGE': message, 'DATA':'' } )
 
-def successResponse (data = '',etag='') :
+def successResponse (data = '') :
     return  jsonify({'CODE': response.success_code, 'STATUS': response.success_message,'MESSAGE': 'Success.', 'DATA':data})
 
 

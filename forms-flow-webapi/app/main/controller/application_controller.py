@@ -19,7 +19,6 @@ class ApplicationList(Resource):
     @api.response(response().notfound_code, response().notfound_message)
     @api.doc('list_of_applications')
     # @api.marshal_list_with(_application, envelope='data')
-    @api.response(200, 'Success', _application)
     # @api.marshal_with(_application)
     def get(self):
         """List all applications"""

@@ -1,18 +1,23 @@
 import uuid
-import datetime
+from datetime import datetime as dt
 import json
 from marshmallow import Schema
 
 from app.main import db
-from ..model.process import Process,process_schema,processes_schema
+from ..model.process import Process,application_schema,applications_schema
 from ..common.responses import response, successResponse, errorResponse, nodataResponse
 from .dboperations import save_changes
+from ..utils.dto import ApplicationDto,NewApplicationDto
+
 
 def get_all_applications():
     try:
         process =  Process.query.filter_by(status="active").all()
-        result = processes_schema.dump(process)
-        return successResponse(result)
+        result = applications_schema.dump(process)
+        response=  successResponse(result)
+        response.last_modified = dt.utcnow()
+        response.add_etag()
+        return response
     except Exception as e:
         return errorResponse()
 
@@ -23,8 +28,11 @@ def get_a_application(applicationId):
         if not process_details:
             return nodataResponse()
         else:
-            result = process_schema.dump(process_details)
-            return successResponse(result)
+            result = application_schema.dump(process_details)
+            response = successResponse(result)
+            response.last_modified = dt.utcnow()
+            response.add_etag()
+            return response
     except Exception as e:
         return errorResponse()
 
@@ -39,13 +47,16 @@ def save_new_application(data):
             status = "active",
             comments = data['comments'],
             created_by = data['created_by'],
-            created_on = datetime.datetime.utcnow(),
+            created_on = dt.datetime.utcnow(),
             modified_by = data['modified_by'],
-            modified_on = datetime.datetime.utcnow(),
+            modified_on = dt.datetime.utcnow(),
             tenant_id  = data['tenant_id']
         )
         save_changes(new_application)
-        return successResponse(data)
+        response = successResponse(data)
+        response.last_modified = dt.utcnow()
+        response.add_etag()
+        return response
     except Exception as e:
         return errorResponse()
 
@@ -64,11 +75,14 @@ def update_application(applicationId,data):
             application.process_name = data['process_name']
             application.comments = data['comments']
             application.modified_by = data['modified_by']
-            application.modified_on = datetime.datetime.utcnow()
+            application.modified_on = dt.datetime.utcnow()
             application.tenant_id  = data['tenant_id']
             
             save_changes(application)
-            return successResponse(data)
+            response = successResponse(data)
+            response.last_modified = dt.utcnow()
+            response.add_etag()
+            return response
     except Exception as e:
         return errorResponse()
 
@@ -81,7 +95,10 @@ def delete_application(applicationId):
             application.status = "inactive"
 
             save_changes(application)
-            return successResponse()
+            response = successResponse()
+            response.last_modified = dt.utcnow()
+            response.add_etag()
+            return response
     except Exception as e:
         return errorResponse()
 

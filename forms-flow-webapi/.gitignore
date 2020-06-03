@@ -22,5 +22,6 @@
 # IntelliJ IDEA
 .idea
 *.iml
+*.pyc
 
 

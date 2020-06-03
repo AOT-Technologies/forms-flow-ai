@@ -19,6 +19,7 @@ const initKeycloak = (store,...rest) => {
     .then((authenticated) => {
       if (authenticated) {
         if(KeycloakData.resourceAccess[Keycloak_Client]){
+          debugger
           const UserRoles=KeycloakData.resourceAccess[Keycloak_Client].roles;
           store.dispatch(setUserRole(UserRoles));
           store.dispatch(setUserToken(KeycloakData.token));

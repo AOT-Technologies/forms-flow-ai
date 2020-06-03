@@ -1,5 +1,5 @@
 import uuid
-import datetime
+from datetime import datetime as dt
 import json
 from marshmallow import Schema
 
@@ -8,39 +8,60 @@ from ..model.process import Process,process_schema,processes_schema
 from ..common.responses import response, successResponse, errorResponse, nodataResponse
 from .dboperations import save_changes
 from ..service.bpm_service import  httpGETRequest,httpPOSTRequest
+from os import environ as env
+
+BPM_API_BASE = env.get('BPM_API_BASE')
+API_PROCESS = env.get('API_PROCESS')
+BPM_API_PROCESS = BPM_API_BASE + API_PROCESS
 
 def get_all_processes():
     try:
-        #process =  Process.query.filter_by(status="active").all()
-        url = 'https://bpm1.aot-technologies.com/camunda/engine-rest/process-definition'
+        url = BPM_API_PROCESS
         process = httpGETRequest(url)
         result = processes_schema.dump(process)
-        return successResponse(result)
+        seen = set()
+        new_result = []
+        for data in result:
+            for d in data:
+                    t = tuple(d.items())
+                    if t not in seen:
+                        seen.add(t)
+                        new_result.append(d)
+        response = successResponse(new_result)
+        response.last_modified = dt.utcnow()
+        response.add_etag()
+        return response
     except Exception as e:
         return errorResponse()
 
 
 def get_a_process(processId):
     try:
-        #process_details = Process.query.filter_by(mapper_id = processId, status = "active").first()
-        url = 'https://bpm1.aot-technologies.com/camunda/engine-rest/process-definition/'+processId
+        url = BPM_API_PROCESS + processId
         process_details=  httpGETRequest(url)
         if not process_details:
             return nodataResponse()
         else:
             result = process_schema.dump(process_details)
-            return successResponse(process_details)
+            response = successResponse(process_details)
+            response.last_modified = dt.utcnow()
+            response.add_etag()
+            return response
     except Exception as e:
         return errorResponse()
 
 def get_a_process_action(processId):
     try:
-        process_details = Process.query.filter_by(mapper_id = processId, status = "active").first()
+        url = BPM_API_PROCESS + processId
+        process_details=  httpGETRequest(url)
         if not process_details:
             return nodataResponse()
         else:
             result = process_schema.dump(process_details)
-            return successResponse(result)
+            response = successResponse(process_details)
+            response.last_modified = dt.utcnow()
+            response.add_etag()
+            return response
     except Exception as e:
         return errorResponse()
 

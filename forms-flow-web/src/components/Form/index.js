@@ -1,5 +1,5 @@
+import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
-import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { selectRoot } from 'react-formio'
 
@@ -7,9 +7,8 @@ import List from './List';
 import Create from './Create';
 import Item from './Item/index';
 import { STAFF_DESIGNER } from '../../constants/constants';
-import UserService from '../../services/UserService';
 import Loading from '../../containers/Loading';
-import { setUserAuth } from '../../actions/bpmActions'
+import { setUserAuth, setCurrentPage } from '../../actions/bpmActions'
 
 let user = '';
 
@@ -21,16 +20,9 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
   )} />
 )
 
-class Form extends Component{
-  componentDidMount(){
-    UserService.initKeycloak(this.props.store,(err,res)=>{
-      this.props.setUserAuth(res.authenticated)
-    })
-  }
-
-  render(){
-    user = this.props.user;
-    if(!this.props.isAuthenticated){
+const Form = (props)=>{  
+    user = props.user;
+    if(!props.isAuthenticated){
       return (
         <Loading/>
         );
@@ -45,7 +37,6 @@ class Form extends Component{
       </div>
   )
 }
-}
 
 const mapStatetoProps = (state) => {
   return {
@@ -56,6 +47,7 @@ const mapStatetoProps = (state) => {
 
 const mapStateToDispatch = (dispatch) =>{
   return{
+    setCurrentPage:dispatch(setCurrentPage('form')),
     setUserAuth:(value)=>{
       dispatch(setUserAuth(value))
     }

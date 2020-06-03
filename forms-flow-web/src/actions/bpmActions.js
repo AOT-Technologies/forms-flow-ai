@@ -1,5 +1,12 @@
 import ACTION_CONSTANTS from './actionConstants'
 
+export const setCurrentPage = (data) => dispatch => {
+  dispatch({
+    type:ACTION_CONSTANTS.SET_CURRENT_PAGE,
+    payload:data
+  })
+}
+
 export const setUserAuth = (data) => dispatch => {
   dispatch({
     type: ACTION_CONSTANTS.SET_USER_AUTHENTICATION,

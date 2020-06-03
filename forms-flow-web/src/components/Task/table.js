@@ -63,9 +63,7 @@ function buttonFormatter(cell, row) {
 }
 
 function timeFormatter(cell){
-  return <label title={moment(cell).format("DD-MMM-YYYY HH:mm:ss")}>
-    {moment(cell).format("DD-MMM-YYYY")}
-    </label>
+  return <label title={cell}>{cell}</label>
 }
 
 function linkTaskAssignee(cell,row){

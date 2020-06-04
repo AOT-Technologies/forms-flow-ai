@@ -15,9 +15,9 @@ def save_new_submission(data,Id):
             application_status = "active",
             mapper_id = Id,
             created_by = data['created_by'],
-            created_on = dt.datetime.utcnow(),
+            created_on = dt.utcnow(),
             modified_by = data['modified_by'],
-            modified_on = dt.datetime.utcnow(),
+            modified_on = dt.utcnow(),
             submission_id = data['submission_id'],
             process_instance_id = data['process_instance_id'],
             revision_no = data['revision_no']
@@ -66,7 +66,7 @@ def update_submission(applicationId, submissionId, data):
             application.application_name = data['application_name']
             application.mapper_id = data['mapper_id']
             application.modified_by = data['modified_by']
-            application.modified_on = dt.datetime.utcnow()
+            application.modified_on = dt.utcnow()
             application.process_instance_id = data['process_instance_id']
             application.revision_no = data['revision_no']
             

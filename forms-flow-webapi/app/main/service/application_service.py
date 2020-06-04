@@ -47,9 +47,9 @@ def save_new_application(data):
             status = "active",
             comments = data['comments'],
             created_by = data['created_by'],
-            created_on = dt.datetime.utcnow(),
+            created_on = dt.utcnow(),
             modified_by = data['modified_by'],
-            modified_on = dt.datetime.utcnow(),
+            modified_on = dt.utcnow(),
             tenant_id  = data['tenant_id']
         )
         save_changes(new_application)
@@ -75,7 +75,7 @@ def update_application(applicationId,data):
             application.process_name = data['process_name']
             application.comments = data['comments']
             application.modified_by = data['modified_by']
-            application.modified_on = dt.datetime.utcnow()
+            application.modified_on = dt.utcnow()
             application.tenant_id  = data['tenant_id']
             
             save_changes(application)

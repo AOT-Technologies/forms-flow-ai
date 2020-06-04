@@ -17,6 +17,8 @@ _newsubmission = NewSubmissionsDto.newsubmission
 @submissionapi.route('/<applicationId>/submission')
 @submissionapi.param('applicationId', 'The Application identifier')
 class SubmissionList(Resource):
+    @submissionapi.param('pageNo', 'PageNumber')
+    @submissionapi.param('limit', 'Items per page')
     @submissionapi.response(response().error_code, response().error_message)
     @submissionapi.response(response().notfound_code, response().notfound_message)
     @submissionapi.doc('list_of_submissions')
@@ -24,8 +26,10 @@ class SubmissionList(Resource):
     # @api.marshal_with(_submission)
     def get(self,applicationId):
         """List all applications"""
+        pageNo = request.args.get('pageNo')
+        limit = request.args.get('limit')
         if verify_auth_token() == True:
-            return get_all_submissions(applicationId)
+            return get_all_submissions(applicationId,pageNo,limit)
         else:
             return verify_auth_token()
 

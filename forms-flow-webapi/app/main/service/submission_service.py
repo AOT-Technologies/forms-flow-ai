@@ -5,7 +5,7 @@ from marshmallow import Schema
 
 from app.main import db
 from ..model.application import Application,application_schema,applications_schema
-from ..common.responses import response, successResponse, errorResponse, nodataResponse
+from ..common.responses import response, successResponse, errorResponse, nodataResponse, successListResponse
 from .dboperations import save_changes
 
 def save_new_submission(data,Id):
@@ -31,11 +31,16 @@ def save_new_submission(data,Id):
         return errorResponse()
 
 
-def get_all_submissions(applicationId):
+def get_all_submissions(applicationId,page_number, limit):
+    if page_number!=None:
+        page_number = int(page_number)
+    if limit!=None:
+        limit = int(limit)
     try:
-        applications =  Application.query.filter_by(application_status="active",mapper_id = applicationId).all()
+        applications =  Application.query.filter_by(application_status="active",mapper_id = applicationId).paginate(page_number, limit, False).items
+        total = Application.query.filter_by(application_status="active").count()
         result = applications_schema.dump(applications)
-        response = successResponse(result)
+        response=  successListResponse(result, total, page_number,limit)
         response.last_modified = dt.utcnow()
         response.add_etag()
         return response

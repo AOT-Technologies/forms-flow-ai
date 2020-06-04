@@ -10,7 +10,7 @@ from app._init__ import blueprint
 
 
 app = create_app(os.getenv('BOILERPLATE_ENV') or 'dev')
-app.register_blueprint(blueprint)
+#app.register_blueprint(blueprint, url_prefix='/api')
 
 app.app_context().push()
 

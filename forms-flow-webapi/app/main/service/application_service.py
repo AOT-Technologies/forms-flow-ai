@@ -5,20 +5,26 @@ from marshmallow import Schema
 
 from app.main import db
 from ..model.process import Process,application_schema,applications_schema
-from ..common.responses import response, successResponse, errorResponse, nodataResponse
+from ..common.responses import response, successResponse, errorResponse, nodataResponse, successListResponse
 from .dboperations import save_changes
 from ..utils.dto import ApplicationDto,NewApplicationDto
 
 
-def get_all_applications():
+def get_all_applications(page_number, limit):
+    if page_number!=None:
+        page_number = int(page_number)
+    if limit!=None:
+        limit = int(limit)
     try:
-        process =  Process.query.filter_by(status="active").all()
+        process =  Process.query.filter_by(status="active").paginate(page_number, limit, False).items
+        total = Process.query.filter_by(status="active").count()
         result = applications_schema.dump(process)
-        response=  successResponse(result)
+        response=  successListResponse(result, total, page_number,limit)
         response.last_modified = dt.utcnow()
         response.add_etag()
         return response
     except Exception as e:
+        print(e)
         return errorResponse()
 
 

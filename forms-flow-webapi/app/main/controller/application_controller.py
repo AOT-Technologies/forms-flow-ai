@@ -14,6 +14,8 @@ createapi = NewApplicationDto.api
 _newapplication = NewApplicationDto.newapplication
 
 @api.route('/')
+@api.param('pageNo', 'PageNumber')
+@api.param('limit', 'Items per page')
 class ApplicationList(Resource):
     @api.response(response().error_code, response().error_message)
     @api.response(response().notfound_code, response().notfound_message)
@@ -22,8 +24,10 @@ class ApplicationList(Resource):
     # @api.marshal_with(_application)
     def get(self):
         """List all applications"""
+        pageNo = request.args.get('pageNo')
+        limit = request.args.get('limit')
         if verify_auth_token() == True:
-            return get_all_applications()
+            return get_all_applications(pageNo, limit)
         else:
             return verify_auth_token()
 

@@ -25,6 +25,8 @@ def errorResponse(message=''):
 def successResponse (data = '') :
     return  jsonify({'CODE': response.success_code, 'STATUS': response.success_message,'MESSAGE': 'Success.', 'DATA':data})
 
+def successListResponse (data = '', total = '', pageno = '', limit = '') :
+    return  jsonify({'CODE': response.success_code, 'STATUS': response.success_message,'MESSAGE': 'Success.', 'DATA':data, 'TOTALCOUNT':total ,'PAGENO':pageno, 'LIMIT':limit})
 
 def nodataResponse(message=''):
      return jsonify( { 'CODE': response.nodata_code, 'STATUS':response.nodata_message, 'MESSAGE': message, 'DATA':'' } )

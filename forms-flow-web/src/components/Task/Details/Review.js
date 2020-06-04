@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Select from 'react-select'
 
 import { BPM_USER_DETAILS } from '../../../apiManager/constants/apiConstants'
 import { getUserToken } from '../../../apiManager/services/bpmServices'
@@ -15,6 +16,11 @@ class Review extends Component {
     this.state = {
       status: props.detail.action || " "
     }
+    this.options = [
+      { value: 'approve', label: 'Approve' },
+      { value: 'reject', label: 'Reject' },
+      { value: 'sendback', label: 'Send Back' }
+    ]
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -23,8 +29,8 @@ class Review extends Component {
     }
   }
 
-  handleChange = (event) => {
-    this.setState({ status: event.target.value })
+  handleChange = (element) => {
+    this.setState({ status: element.value })
   }
 
   render() {
@@ -48,13 +54,24 @@ class Review extends Component {
             <div className="row col-md-12">
               <div className="col-md-4"><label>Review Status</label></div>
               <div className="col-md-6">
-                <select value={this.state.status} onChange={(e) => this.handleChange(e)}
-                  disabled={(this.props.detail.assignee === null) || (!(this.props.detail.assignee === this.props.userName && this.props.detail.deleteReason !== "completed"))}>
-                  <option value=" " disabled>Set review status</option>
-                  <option value="approve">Approve</option>
-                  <option value="reject">Reject</option>
-                  <option value="sendback">Send Back</option>
-                </select>
+                <Select
+                  onChange={(e) => this.handleChange(e)}
+                  className="basic-single"
+                  classNamePrefix="select"
+                  defaultValue={this.state.status}
+                  name="status"
+                  options={this.options}
+                  isSearchable={false}
+                  isDisabled = {(this.props.detail.assignee === null) || (!(this.props.detail.assignee === this.props.userName && this.props.detail.deleteReason !== "completed"))}
+                  theme={theme => ({
+                    ...theme,
+                    colors: {
+                      ...theme.colors,
+                      primary25: '#f1f3f7',
+                      primary: '#036'
+                    },
+                  })}
+                />
               </div>
               <div className="col-md-2">
                 {(this.props.detail.assignee && this.props.detail.assignee === this.props.userName && this.props.detail.deleteReason !== "completed") ?
@@ -92,7 +109,7 @@ const mapDispatchToProps = (dispatch) => {
               dispatch(setUpdateLoader(false));
               const ErrorDetails = { modalOpen: true, message: "Unable to perform the action" }
               dispatch(setFormSubmissionError(ErrorDetails))
-            }else{
+            } else {
               dispatch(getTaskDetail(id, (err, res) => {
                 if (!err) {
                   dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {

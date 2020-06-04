@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -24,11 +24,11 @@ class PrivateRoute extends Component {
 
   render() {
     return (
-      <div className="container">
+      <Fragment>
         <Route path="/form" component={Form} />
         <this.TaskRoute path="/task" component={Task} />
         <Route exact path="/"><Redirect to="/form" /></Route>
-      </div>
+      </Fragment>
     )
   }
 }

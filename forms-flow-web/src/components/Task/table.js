@@ -62,7 +62,7 @@ function buttonFormatter(cell, row) {
 }
 
 function timeFormatter(cell){
-  return <label title={cell}>{cell}</label>
+  return <label className='text-truncate w-100' title={cell}>{cell}</label>
 }
 
 function linkTaskAssignee(cell,row){

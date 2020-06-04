@@ -79,7 +79,6 @@ function doProcessActions(submission, ownProps) {
       if (!err) {
         dispatch(triggerNotification(data, (err, res) => {
           if (!err) {
-            console.log("Not Error")
             if (IsAuth) {
               dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
             }

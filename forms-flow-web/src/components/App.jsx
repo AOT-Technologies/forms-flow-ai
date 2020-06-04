@@ -9,21 +9,23 @@ import PrivateRoute from './PrivateRoute';
 import NavBar from '../containers/NavBar';
 require('typeface-nunito-sans')
 
-class App extends Component{
-  render(){
+class App extends Component {
+  render() {
     const { store, history } = this.props;
-    return(
-  <div>
-    <Provider store={store}>
-      <ConnectedRouter  history={history}>
-        <NavBar store={store}/>
-        <Switch>
-          {/* <Route path="/public"><PublicRoute store={store}/></Route> */}
-          <Route path="/"><PrivateRoute store={store}/></Route>
-        </Switch>
-      </ConnectedRouter >
-    </Provider>
-  </div>
+    return (
+      <div>
+        <Provider store={store}>
+          <ConnectedRouter history={history}>
+            <NavBar store={store} />
+            <div className="container">
+              <Switch>
+                {/* <Route path="/public"><PublicRoute store={store}/></Route> */}
+                <Route path="/"><PrivateRoute store={store} /></Route>
+              </Switch>
+            </div>
+          </ConnectedRouter >
+        </Provider>
+      </div>
     )
   }
 }

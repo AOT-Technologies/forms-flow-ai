@@ -1,36 +1,58 @@
 import React, { Component } from 'react';
+import { Route, Redirect } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import UserService from '../services/UserService'
-import { Route, Redirect } from 'react-router-dom';
 import Form from './Form';
 import Task from './Task';
 import { setUserAuth } from '../actions/bpmActions';
-import { connect } from 'react-redux';
+import { STAFF_REVIEWER } from '../constants/constants';
+import Loading from '../containers/Loading';
 
-class PrivateRoute extends Component{
-    componentDidMount(){
-        UserService.initKeycloak(this.props.store,(err,res)=>{
-          this.props.setUserAuth(res.authenticated)
-        })
+class PrivateRoute extends Component {
+  UNSAFE_componentWillMount() {
+    UserService.initKeycloak(this.props.store, (err, res) => {
+      this.props.setUserAuth(res.authenticated)
+    })
+  }
+  TaskRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={(props) => (
+      this.props.userRoles.includes(STAFF_REVIEWER)
+        ? <Component {...props} />
+        : <Redirect exact to='/' />
+    )} />
+  )
+
+  render() {
+    return (
+      <>
+        { this.props.isAuth?
+        <>
+        <Route path="/form" component={Form} />
+        <this.TaskRoute path="/task" component={Task} />
+        <Route exact path="/"><Redirect to="/form" /></Route>
+       </>
+       :
+       <Loading/>
       }
-
-    render(){
-        return(
-            <div className="container">
-                <Route path="/form" component={Form}/>
-                <Route path="/task" component={Task}/>
-                <Route exact path="/"><Redirect to="/form"/></Route>
-            </div>
-        )
-    }
+      </>
+    )
+  }
 }
 
-const mapStateToDispatch = (dispatch) =>{
-    return{
-      setUserAuth:(value)=>{
-        dispatch(setUserAuth(value))
-      }
+const mapStateToProps = (state) => {
+  return {
+    userRoles: state.user.roles || [],
+    isAuth: state.user.isAuthenticated
+  }
+}
+
+const mapStateToDispatch = (dispatch) => {
+  return {
+    setUserAuth: (value) => {
+      dispatch(setUserAuth(value))
     }
   }
+}
 
-export default connect(null,mapStateToDispatch)(PrivateRoute);
+export default connect(mapStateToProps, mapStateToDispatch)(PrivateRoute);

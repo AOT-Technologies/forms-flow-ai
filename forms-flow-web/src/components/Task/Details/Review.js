@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import Select from 'react-select'
 
 import { BPM_USER_DETAILS } from '../../../apiManager/constants/apiConstants'
 import { getUserToken } from '../../../apiManager/services/bpmServices'
@@ -13,21 +14,27 @@ class Review extends Component {
   constructor(props) {
     super();
     this.state = {
-      status: props.detail.action || " "
+      selectedOption: { value: '', label: '' }
     }
+    this.options = [
+      { value: 'approve', label: 'Approve' },
+      { value: 'reject', label: 'Reject' },
+      { value: 'sendback', label: 'Send Back' }
+    ]
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.detail.action !== this.state.status) {
-      this.setState({ status: nextProps.detail.action });
+    if (this.state.selectedOption && nextProps.detail.action !== this.state.selectedOption.value) {
+      this.setState({ selectedOption: this.options.find(ele => (ele.value === nextProps.detail.action)) });
     }
   }
 
-  handleChange = (event) => {
-    this.setState({ status: event.target.value })
-  }
+  handleChange = selectedOption => {
+    this.setState({ selectedOption });
+  };
 
   render() {
+    const { selectedOption } = this.state;
     return (
       <div className="review-section">
         <section className="review-box">
@@ -48,13 +55,24 @@ class Review extends Component {
             <div className="row col-md-12">
               <div className="col-md-4"><label>Review Status</label></div>
               <div className="col-md-6">
-                <select value={this.state.status} onChange={(e) => this.handleChange(e)}
-                  disabled={(this.props.detail.assignee === null) || (!(this.props.detail.assignee === this.props.userName && this.props.detail.deleteReason !== "completed"))}>
-                  <option value=" " disabled>Set review status</option>
-                  <option value="approve">Approve</option>
-                  <option value="reject">Reject</option>
-                  <option value="sendback">Send Back</option>
-                </select>
+                <Select
+                  onChange={this.handleChange}
+                  className="basic-single"
+                  classNamePrefix="select"
+                  value={((selectedOption && selectedOption.value !== "") ? selectedOption : "")}
+                  name="status"
+                  options={this.options}
+                  isSearchable={false}
+                  isDisabled={(this.props.detail.assignee === null) || (!(this.props.detail.assignee === this.props.userName && this.props.detail.deleteReason !== "completed"))}
+                  theme={theme => ({
+                    ...theme,
+                    colors: {
+                      ...theme.colors,
+                      primary25: '#f1f3f7',
+                      primary: '#036'
+                    },
+                  })}
+                />
               </div>
               <div className="col-md-2">
                 {(this.props.detail.assignee && this.props.detail.assignee === this.props.userName && this.props.detail.deleteReason !== "completed") ?
@@ -62,7 +80,7 @@ class Review extends Component {
                   <button
                     className="btn btn-primary"
                     disabled={this.state.status === " "}
-                    onClick={() => this.props.onCompleteTask(this.props.detail.id, this.state.status)}
+                    onClick={() => this.props.onCompleteTask(this.props.detail.id, this.state.selectedOption.value)}
                   >Submit</button>
                   : null}
               </div>
@@ -92,7 +110,7 @@ const mapDispatchToProps = (dispatch) => {
               dispatch(setUpdateLoader(false));
               const ErrorDetails = { modalOpen: true, message: "Unable to perform the action" }
               dispatch(setFormSubmissionError(ErrorDetails))
-            }else{
+            } else {
               dispatch(getTaskDetail(id, (err, res) => {
                 if (!err) {
                   dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {

@@ -12,11 +12,13 @@ from os import environ as env
 
 BPM_API_BASE = env.get('BPM_API_BASE')
 API_TASK = env.get('API_TASK')
+API_TASK_HISTORY = env.get('API_TASK_HISTORY')
 BPM_API_TASK = BPM_API_BASE + API_TASK
+BPM_API_TASK_HISTORY = BPM_API_BASE + API_TASK_HISTORY
 
 def get_all_tasks():
     try:
-        url = BPM_API_TASK
+        url = BPM_API_TASK_HISTORY
         task = httpGETRequest(url)
         #result = processes_schema.dump(task)
         response = successResponse(task)

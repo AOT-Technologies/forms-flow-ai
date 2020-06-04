@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 
@@ -17,7 +17,7 @@ class PrivateRoute extends Component {
   }
   TaskRoute = ({ component: Component, ...rest }) => (
     <Route {...rest} render={(props) => (
-      this.props.user.includes(STAFF_REVIEWER)
+      this.props.userRoles.includes(STAFF_REVIEWER)
         ? <Component {...props} />
         : <Redirect exact to='/' />
     )} />
@@ -25,8 +25,8 @@ class PrivateRoute extends Component {
 
   render() {
     return (
-      <Fragment>
-        { this.props.isAuth? 
+      <>
+        { this.props.isAuth?
         <>
         <Route path="/form" component={Form} />
         <this.TaskRoute path="/task" component={Task} />
@@ -35,14 +35,14 @@ class PrivateRoute extends Component {
        :
        <Loading/>
       }
-      </Fragment>
+      </>
     )
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    user: state.user.roles || [],
+    userRoles: state.user.roles || [],
     isAuth: state.user.isAuthenticated
   }
 }

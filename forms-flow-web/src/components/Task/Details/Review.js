@@ -80,7 +80,7 @@ class Review extends Component {
                   <button
                     className="btn btn-primary"
                     disabled={this.state.status === " "}
-                    onClick={() => this.props.onCompleteTask(this.props.detail.id, this.state.status)}
+                    onClick={() => this.props.onCompleteTask(this.props.detail.id, this.state.selectedOption.value)}
                   >Submit</button>
                   : null}
               </div>

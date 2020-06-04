@@ -24,7 +24,6 @@ class PrivateRoute extends Component {
   )
 
   render() {
-    console.log("dfsdf",this.props.user)
     return (
       <Fragment>
         { this.props.isAuth? 

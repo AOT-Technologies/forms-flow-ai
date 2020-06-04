@@ -62,7 +62,7 @@ function buttonFormatter(cell, row) {
 }
 
 function timeFormatter(cell){
-  return <label className='text-truncate w-100' title={cell}>{cell}</label>
+  return <label title={cell}>{cell}</label>
 }
 
 function linkTaskAssignee(cell,row){
@@ -97,7 +97,7 @@ export const columns = [
   filter: textFilter({
     placeholder: '\uf002 Task Title',  // custom the input placeholder
     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-    className: "icon-seach",
+    className: "icon-search",
     getFilter: (filter) => {
       titleFilter = filter;
     }
@@ -111,7 +111,7 @@ export const columns = [
     filter: textFilter({
       placeholder: '\uf002 Task Assignee',  // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-      className: "icon-seach",
+      className: "icon-search",
       getFilter: (filter) => {
         ownerFilter = filter;
       }
@@ -139,7 +139,7 @@ export const columns = [
     filter: textFilter({
       placeholder: '\uf002 Id',  // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-      className: "icon-seach",
+      className: "icon-search",
       getFilter: (filter) => {
         appidFilter = filter;
       }
@@ -151,7 +151,7 @@ export const columns = [
     filter: textFilter({
       placeholder: '\uf002 Name',  // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-      className: "icon-seach",
+      className: "icon-search",
       getFilter: (filter) => {
         submittedFilter = filter;
       }
@@ -162,10 +162,13 @@ export const columns = [
     text: 'Submitted On',
     formatter: timeFormatter,
     sort: true,
+    headerStyle: (colum, colIndex) => {
+      return { width: '15%'};
+    },
     filter: textFilter({
       placeholder: '\uf002 Date',  // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-      className: "icon-seach",
+      className: "icon-search",
       getFilter: (filter) => {
         submittedOnFilter = filter;
       }
@@ -175,9 +178,9 @@ export const columns = [
     dataField: 'form',
     text: 'Application Name',
     filter: textFilter({
-      placeholder: '\uf002 Application Type',  // custom the input placeholder
+      placeholder: '\uf002 Application Name',  // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-      className: "icon-seach",
+      className: "icon-search",
       getFilter: (filter) => {
         apptypeFilter = filter;
       }

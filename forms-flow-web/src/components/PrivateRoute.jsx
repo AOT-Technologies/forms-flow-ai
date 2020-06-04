@@ -7,9 +7,10 @@ import Form from './Form';
 import Task from './Task';
 import { setUserAuth } from '../actions/bpmActions';
 import { STAFF_REVIEWER } from '../constants/constants';
+import Loading from '../containers/Loading';
 
 class PrivateRoute extends Component {
-  componentDidMount() {
+  UNSAFE_componentWillMount() {
     UserService.initKeycloak(this.props.store, (err, res) => {
       this.props.setUserAuth(res.authenticated)
     })
@@ -23,19 +24,27 @@ class PrivateRoute extends Component {
   )
 
   render() {
+    console.log("dfsdf",this.props.user)
     return (
       <Fragment>
+        { this.props.isAuth? 
+        <>
         <Route path="/form" component={Form} />
         <this.TaskRoute path="/task" component={Task} />
         <Route exact path="/"><Redirect to="/form" /></Route>
+       </>
+       :
+       <Loading/>
+      }
       </Fragment>
     )
   }
 }
 
-const mapStatetoProps = (state) => {
+const mapStateToProps = (state) => {
   return {
     user: state.user.roles || [],
+    isAuth: state.user.isAuthenticated
   }
 }
 
@@ -47,4 +56,4 @@ const mapStateToDispatch = (dispatch) => {
   }
 }
 
-export default connect(mapStatetoProps, mapStateToDispatch)(PrivateRoute);
+export default connect(mapStateToProps, mapStateToDispatch)(PrivateRoute);

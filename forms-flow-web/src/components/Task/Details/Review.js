@@ -14,7 +14,7 @@ class Review extends Component {
   constructor(props) {
     super();
     this.state = {
-      status: props.detail.action || " "
+      selectedOption: { value: '', label: '' }
     }
     this.options = [
       { value: 'approve', label: 'Approve' },
@@ -24,16 +24,17 @@ class Review extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (nextProps.detail.action !== this.state.status) {
-      this.setState({ status: nextProps.detail.action });
+    if (this.state.selectedOption && nextProps.detail.action !== this.state.selectedOption.value) {
+      this.setState({ selectedOption: this.options.find(ele => (ele.value === nextProps.detail.action)) });
     }
   }
 
-  handleChange = (element) => {
-    this.setState({ status: element.value })
-  }
+  handleChange = selectedOption => {
+    this.setState({ selectedOption });
+  };
 
   render() {
+    const { selectedOption } = this.state;
     return (
       <div className="review-section">
         <section className="review-box">
@@ -55,14 +56,14 @@ class Review extends Component {
               <div className="col-md-4"><label>Review Status</label></div>
               <div className="col-md-6">
                 <Select
-                  onChange={(e) => this.handleChange(e)}
+                  onChange={this.handleChange}
                   className="basic-single"
                   classNamePrefix="select"
-                  defaultValue={this.state.status}
+                  value={((selectedOption && selectedOption.value !== "") ? selectedOption : "")}
                   name="status"
                   options={this.options}
                   isSearchable={false}
-                  isDisabled = {(this.props.detail.assignee === null) || (!(this.props.detail.assignee === this.props.userName && this.props.detail.deleteReason !== "completed"))}
+                  isDisabled={(this.props.detail.assignee === null) || (!(this.props.detail.assignee === this.props.userName && this.props.detail.deleteReason !== "completed"))}
                   theme={theme => ({
                     ...theme,
                     colors: {

@@ -14,12 +14,12 @@ createapi = NewApplicationDto.api
 _newapplication = NewApplicationDto.newapplication
 
 @api.route('/')
-@api.param('pageNo', 'PageNumber')
-@api.param('limit', 'Items per page')
 class ApplicationList(Resource):
     @api.response(response().error_code, response().error_message)
     @api.response(response().notfound_code, response().notfound_message)
     @api.doc('list_of_applications')
+    @api.param('pageNo', 'PageNumber')
+    @api.param('limit', 'Items per page')
     # @api.marshal_list_with(_application, envelope='data')
     # @api.marshal_with(_application)
     def get(self):

@@ -8,8 +8,8 @@ if ENV_FILE:
     load_dotenv(ENV_FILE)
 
 
-# postgres_local_base = os.environ['DATABASE_URL']
-postgres_local_base = env.get('DATABASE_URL')
+# postgres_local_base = os.environ['WEB_API_DATABASE_URL']
+postgres_local_base = env.get('WEB_API_DATABASE_URL')
 #postgres_local_base ='postgresql://postgres:admin@localhost:5435/FORMIO'
 
 class Config:

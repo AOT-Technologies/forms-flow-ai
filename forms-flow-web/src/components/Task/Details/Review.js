@@ -24,9 +24,7 @@ class Review extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    if (this.state.selectedOption && nextProps.detail.action !== this.state.selectedOption.value) {
       this.setState({ selectedOption: this.options.find(ele => (ele.value === nextProps.detail.action)) });
-    }
   }
 
   handleChange = selectedOption => {

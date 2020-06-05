@@ -1,8 +1,9 @@
-from flask import Flask
-from app.main import create_app
+"""Provides the WSGI entry point for running the application."""
 
-application = create_app('dev')
+from forms_flow_api import create_app
 
-if __name__ == "__main__":
+
+application = create_app()  # pylint: disable=invalid-name
+
+if __name__ == '__main__':
     application.run()
-  

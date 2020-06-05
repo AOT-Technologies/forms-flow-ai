@@ -1,16 +1,15 @@
 version: '3.7'
 
 services:
-  
   forms-flow-webapi-db:
     image: postgres
     environment:
       POSTGRES_USER: ${WEB_API_POSTGRES_USER}
       POSTGRES_PASSWORD: ${WEB_API_POSTGRES_PASSWORD}
       POSTGRES_DB: ${WEB_API_POSTGRES_DB}
-      POSTGRES_HOST_AUTH_METHOD: "trust"
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
     ports:
-      - "6432:5432"
+      - '6432:5432'
     restart: unless-stopped
     networks:
       - forms-flow-webapi-network
@@ -28,11 +27,11 @@ services:
       - ./:/app:rw
     environment:
       DATABASE_URL: ${WEB_API_DATABASE_URL}
-    stdin_open: true  # -i
-    tty: true         # -t
+    stdin_open: true # -i
+    tty: true # -t
     networks:
       - forms-flow-webapi-network
 
 networks:
   forms-flow-webapi-network:
-    driver: "bridge"
+    driver: 'bridge'

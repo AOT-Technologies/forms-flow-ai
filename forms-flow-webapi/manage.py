@@ -1,38 +1,23 @@
+"""Manage the database and some other items required to run the API."""
+
+import logging
 import os
-import unittest
 
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 
-from app.main import create_app, db
-from app.main.model import application, applicationversion, applicationcommunication, formiotoken
-from app._init__ import blueprint
+# models included so that migrate can build the database migrations
+from forms_flow_api import models  # noqa: F401 # pylint: disable=unused-import
+from forms_flow_api import create_app
+from forms_flow_api.models import db
 
 
-app = create_app(os.getenv('BOILERPLATE_ENV') or 'dev')
-#app.register_blueprint(blueprint, url_prefix='/api')
-app.register_blueprint(blueprint)
+APP = create_app(os.getenv('BOILERPLATE_ENV') or 'dev')  # TODO: Identify the purpose of BOILERPLATE_ENV
+MIGRATE = Migrate(APP, db)
+MANAGER = Manager(APP)
 
-app.app_context().push()
-
-manager = Manager(app)
-
-migrate = Migrate(app, db)
-
-manager.add_command('db', MigrateCommand)
-
-@manager.command
-def run():
-    app.run(debug=True)
-
-@manager.command
-def test():
-    """Runs the unit tests."""
-    tests = unittest.TestLoader().discover('app/test', pattern='test*.py')
-    result = unittest.TextTestRunner(verbosity=2).run(tests)
-    if result.wasSuccessful():
-        return 0
-    return 1
+MANAGER.add_command('db', MigrateCommand)
 
 if __name__ == '__main__':
-    manager.run()
+    logging.log(logging.INFO, 'Running the Manager')
+    MANAGER.run()

@@ -16,7 +16,7 @@ const Dashboard = (props) => {
                   class="fa fa-arrow-circle-o-right mr-1"
                   aria-hidden="true"
                 ></i>
-                New{" "}
+                New
               </h3>
               <div class="progress progress-md">
                 <div

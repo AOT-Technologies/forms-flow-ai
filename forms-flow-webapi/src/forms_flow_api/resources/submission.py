@@ -2,7 +2,7 @@ from flask import request
 from flask_restplus import Resource
 
 from ..common.responses import response
-from ..service.submission_service import get_a_submission, get_all_submissions, save_new_submission, update_submission
+from ..services.submission_service import get_a_submission, get_all_submissions, save_new_submission, update_submission
 from ..utils.dto import NewSubmissionsDto, SubmissionDto
 
 

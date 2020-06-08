@@ -1,7 +1,7 @@
 from flask_restplus import Resource
 
 from ..common.responses import response
-from ..service.formiotoken_service import get_formio_token
+from ..services.formiotoken_service import get_formio_token
 from ..utils.dto import FormIOTokenDto
 
 

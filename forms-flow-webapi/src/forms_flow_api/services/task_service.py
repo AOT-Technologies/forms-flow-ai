@@ -2,7 +2,7 @@ import os
 from datetime import datetime as dt
 
 from ..common.responses import errorResponse, nodataResponse, successResponse
-from ..service.bpm_service import httpGETRequest, httpPOSTRequest
+from .bpm_service import httpGETRequest, httpPOSTRequest
 
 
 BPM_API_BASE = os.getenv('BPM_API_BASE', '')

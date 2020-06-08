@@ -2,7 +2,7 @@ from flask import request
 from flask_restplus import Resource
 
 from ..common.responses import response
-from ..service.application_service import delete_application, get_a_application, get_all_applications, save_new_application, update_application
+from ..services.application_service import delete_application, get_a_application, get_all_applications, save_new_application, update_application
 from ..utils.dto import ApplicationDto, NewApplicationDto
 
 api = ApplicationDto.api
@@ -48,7 +48,6 @@ class ApplicationDetails(Resource):
     def get(self, applicationId):
         """Get application detail"""
         return get_a_application(applicationId)
-
 
     @createapi.response(response().created_code, response().created_message)
     @createapi.response(response().error_code, response().error_message)

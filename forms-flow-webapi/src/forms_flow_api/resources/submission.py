@@ -1,7 +1,6 @@
 from flask import request
 from flask_restplus import Resource
 
-from ..common.authentication import verify_auth_token
 from ..common.responses import response
 from ..service.submission_service import get_a_submission, get_all_submissions, save_new_submission, update_submission
 from ..utils.dto import NewSubmissionsDto, SubmissionDto
@@ -28,10 +27,7 @@ class SubmissionList(Resource):
         """List all applications"""
         pageNo = request.args.get('pageNo')
         limit = request.args.get('limit')
-        if verify_auth_token() == True:
-            return get_all_submissions(applicationId, pageNo, limit)
-        else:
-            return verify_auth_token()
+        return get_all_submissions(applicationId, pageNo, limit)
 
     @createsubmissionapi.response(response().created_code, response().created_message)
     @createsubmissionapi.response(response().error_code, response().error_message)
@@ -40,11 +36,8 @@ class SubmissionList(Resource):
     @createsubmissionapi.expect(_newsubmission, validate=True)
     def post(self, applicationId):
         """Create a new submission. """
-        if verify_auth_token() == True:
-            data = request.json
-            return save_new_submission(data=data, Id=applicationId)
-        else:
-            return verify_auth_token()
+        data = request.json
+        return save_new_submission(data=data, Id=applicationId)
 
 
 @submissionapi.route('/<applicationId>/submission/<submissionId>')
@@ -57,10 +50,7 @@ class SubmissionDetails(Resource):
     # @api.marshal_with(_submission)
     def get(self, applicationId, submissionId):
         """Get a submission details"""
-        if verify_auth_token() == True:
-            return get_a_submission(applicationId, submissionId)
-        else:
-            return verify_auth_token()
+        return get_a_submission(applicationId, submissionId)
 
     @createsubmissionapi.response(response().created_code, response().created_message)
     @createsubmissionapi.response(response().error_code, response().error_message)
@@ -69,8 +59,5 @@ class SubmissionDetails(Resource):
     @createsubmissionapi.expect(_newsubmission, validate=True)
     def put(self, applicationId, submissionId):
         """Update an application """
-        if verify_auth_token() == True:
-            data = request.json
-            return update_submission(applicationId, submissionId, data=data)
-        else:
-            return verify_auth_token()
+        data = request.json
+        return update_submission(applicationId, submissionId, data=data)

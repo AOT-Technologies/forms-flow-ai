@@ -1,6 +1,5 @@
 from flask_restplus import Resource
 
-from ..common.authentication import verify_auth_token
 from ..common.responses import response
 from ..service.formiotoken_service import get_formio_token
 from ..utils.dto import FormIOTokenDto
@@ -18,7 +17,4 @@ class ApplicationList(Resource):
     @api.marshal_with(_token)
     def get(self):
         """Get formio token"""
-        if verify_auth_token() == True:
-            return get_formio_token()
-        else:
-            return verify_auth_token()
+        return get_formio_token()

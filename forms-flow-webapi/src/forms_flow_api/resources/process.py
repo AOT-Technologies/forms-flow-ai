@@ -1,6 +1,5 @@
 from flask_restplus import Resource
 
-from ..common.authentication import verify_auth_token
 from ..common.responses import response
 from ..service.process_service import get_a_process, get_a_process_action, get_all_processes
 from ..utils.dto import ProcessDto
@@ -18,10 +17,7 @@ class ProcessList(Resource):
     # @api.marshal_list_with(_process, envelope='data')
     def get(self):
         """List all process"""
-        if verify_auth_token() == True:
-            return get_all_processes()
-        else:
-            return verify_auth_token()
+        return get_all_processes()
 
 
 @api.route('/<Id>')
@@ -33,10 +29,7 @@ class ApplicationDetails(Resource):
     # @api.marshal_with(_process)
     def get(self, Id):
         """Get process detail"""
-        if verify_auth_token() == True:
-            return get_a_process(Id)
-        else:
-            return verify_auth_token()
+        return get_a_process(Id)
 
 
 @api.route('/<Id>/action')
@@ -48,7 +41,4 @@ class ApplicationActionDetails(Resource):
     # @api.marshal_with(_process)
     def get(self, Id):
         """Get process Action list"""
-        if verify_auth_token() == True:
-            return get_a_process_action(Id)
-        else:
-            return verify_auth_token()
+        return get_a_process_action(Id)

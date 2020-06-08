@@ -13,7 +13,6 @@ from .formiotoken import api as formiotoken
 from .process import api as process
 from .task import api as task
 
-
 # This will add the Authorize button to the swagger docs
 # oauth2 & openid may not yet be supported by restplus
 AUTHORIZATIONS = {

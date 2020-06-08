@@ -1,6 +1,5 @@
 from flask_restplus import Resource
 
-from ..common.authentication import verify_auth_token
 from ..common.responses import response
 from ..service.task_service import claim_a_task, due_a_task, get_a_task, get_all_tasks, set_action_a_task, unclaim_a_task
 from ..utils.dto import TaskDto
@@ -17,10 +16,7 @@ class TaskList(Resource):
     @api.doc('list_of_tasks')
     def get(self):
         """List all tasks"""
-        if verify_auth_token() == True:
-            return get_all_tasks()
-        else:
-            return verify_auth_token()
+        return get_all_tasks()
 
 
 @api.route('/<taskId>')
@@ -31,10 +27,7 @@ class TaskDetails(Resource):
     @api.doc('get a task')
     def get(self, taskId):
         """Get task detail"""
-        if verify_auth_token() == True:
-            return get_a_task(taskId)
-        else:
-            return verify_auth_token()
+        return get_a_task(taskId)
 
 
 @api.route('/<taskId>/claim')
@@ -45,10 +38,7 @@ class TaskClaim(Resource):
     @api.doc('claim a task')
     def get(self, taskId):
         """Claim a task"""
-        if verify_auth_token() == True:
-            return claim_a_task(taskId)
-        else:
-            return verify_auth_token()
+        return claim_a_task(taskId)
 
 
 @api.route('/<taskId>/unclaim')
@@ -59,10 +49,7 @@ class TaskUnclaim(Resource):
     @api.doc('unclaim a task')
     def get(self, taskId):
         """Unclaim a task"""
-        if verify_auth_token() == True:
-            return unclaim_a_task(taskId)
-        else:
-            return verify_auth_token()
+        return unclaim_a_task(taskId)
 
 
 @api.route('/<taskId>/action')
@@ -73,10 +60,7 @@ class TaskAction(Resource):
     @api.doc('set action for a task')
     def get(self, taskId):
         """Set action for a task"""
-        if verify_auth_token() == True:
-            return set_action_a_task(taskId)
-        else:
-            return verify_auth_token()
+        return set_action_a_task(taskId)
 
 
 @api.route('/<taskId>/due')
@@ -87,7 +71,4 @@ class TaskDue(Resource):
     @api.doc('set due for a task')
     def get(self, taskId):
         """Set due for a task"""
-        if verify_auth_token() == True:
-            return due_a_task(taskId)
-        else:
-            return verify_auth_token()
+        return due_a_task(taskId)

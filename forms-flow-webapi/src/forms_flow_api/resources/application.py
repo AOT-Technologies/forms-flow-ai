@@ -1,11 +1,9 @@
 from flask import request
 from flask_restplus import Resource
 
-from ..common.authentication import verify_auth_token
 from ..common.responses import response
 from ..service.application_service import delete_application, get_a_application, get_all_applications, save_new_application, update_application
 from ..utils.dto import ApplicationDto, NewApplicationDto
-
 
 api = ApplicationDto.api
 _application = ApplicationDto.application
@@ -27,10 +25,7 @@ class ApplicationList(Resource):
         """List all applications"""
         pageNo = request.args.get('pageNo')
         limit = request.args.get('limit')
-        if verify_auth_token() == True:
-            return get_all_applications(pageNo, limit)
-        else:
-            return verify_auth_token()
+        return get_all_applications(pageNo, limit)
 
     @createapi.response(response().created_code, response().created_message)
     @createapi.response(response().error_code, response().error_message)
@@ -39,11 +34,8 @@ class ApplicationList(Resource):
     @createapi.expect(_newapplication, validate=True)
     def post(self):
         """Create a new application. """
-        if verify_auth_token() == True:
-            data = request.json
-            return save_new_application(data=data)
-        else:
-            return verify_auth_token()
+        data = request.json
+        return save_new_application(data=data)
 
 
 @api.route('/<applicationId>')
@@ -55,10 +47,8 @@ class ApplicationDetails(Resource):
     # @api.marshal_with(_application)
     def get(self, applicationId):
         """Get application detail"""
-        if verify_auth_token() == True:
-            return get_a_application(applicationId)
-        else:
-            return verify_auth_token()
+        return get_a_application(applicationId)
+
 
     @createapi.response(response().created_code, response().created_message)
     @createapi.response(response().error_code, response().error_message)
@@ -67,11 +57,8 @@ class ApplicationDetails(Resource):
     @createapi.expect(_newapplication, validate=True)
     def put(self, applicationId):
         """Update an application """
-        if verify_auth_token() == True:
-            data = request.json
-            return update_application(applicationId, data=data)
-        else:
-            return verify_auth_token()
+        data = request.json
+        return update_application(applicationId, data=data)
 
     @api.response(response().created_code, response().created_message)
     @api.response(response().error_code, response().error_message)
@@ -79,7 +66,4 @@ class ApplicationDetails(Resource):
     @api.doc('Delete an application')
     def delete(self, applicationId):
         """delete an application """
-        if verify_auth_token() == True:
-            return delete_application(applicationId)
-        else:
-            return verify_auth_token()
+        return delete_application(applicationId)

@@ -12,7 +12,7 @@ from forms_flow_api import create_app
 from forms_flow_api.models import db
 
 
-APP = create_app(os.getenv('BOILERPLATE_ENV') or 'dev')  # TODO: Identify the purpose of BOILERPLATE_ENV
+APP = create_app()
 MIGRATE = Migrate(APP, db)
 MANAGER = Manager(APP)
 

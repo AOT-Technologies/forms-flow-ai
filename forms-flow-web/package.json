@@ -28,7 +28,6 @@
     "jsonwebtoken": "^8.5.1",
     "keycloak-js": "^9.0.0",
     "lodash": "^4.17.15",
-    "mdi-react": "^7.3.0",
     "moment": "^2.24.0",
     "node-sass": "^4.13.1",
     "querystring": "^0.2.0",

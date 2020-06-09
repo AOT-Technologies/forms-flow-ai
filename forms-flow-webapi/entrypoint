@@ -1,5 +1,4 @@
 #!/bin/bash
 flask db stamp head
-flask db migrate
 flask db upgrade
 flask run

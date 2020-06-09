@@ -1,7 +1,9 @@
+"""This manages FormIO Token Data."""
+from .base_model import BaseModel
 from .db import db
 
 
-class FormIOToken(db.Model):
+class FormIOToken(BaseModel, db.Model):
     """FormIOToken Model for storing formio token."""
 
     __tablename__ = 'FAI_FORMIO_TOKEN'

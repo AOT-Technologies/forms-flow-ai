@@ -1,7 +1,9 @@
+"""This manages Process Data."""
+from .base_model import BaseModel
 from .db import db, ma
 
 
-class Process(db.Model):
+class Process(BaseModel, db.Model):
     """Process Model for storing process related process."""
 
     __tablename__ = 'FORM_PROCESS_MAPPER'

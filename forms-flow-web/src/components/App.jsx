@@ -7,8 +7,8 @@ import { ConnectedRouter } from "connected-react-router";
 // import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 import SideBar from "../containers/SideBar";
-import "material-design-icons/iconfont/material-icons.css";
-// import NavBar from "../containers/NavBar";
+
+import NavBar from "../containers/NavBar";
 // import TopNav from "../containers/TopNav";
 require("typeface-nunito-sans");
 
@@ -19,7 +19,7 @@ class App extends Component {
       <div>
         <Provider store={store}>
           <ConnectedRouter history={history}>
-            {/* <NavBar /> */}
+            <NavBar />
             {/* <TopNav /> */}
             <div class="wrapper">
               <SideBar store={store} />

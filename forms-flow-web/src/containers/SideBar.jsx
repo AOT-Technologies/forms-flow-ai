@@ -33,7 +33,7 @@ class NavBar extends Component {
         {/* <section className="container"> */}
 
         <nav id="sidebar">
-          <div className="sidebar-header">
+          {/* <div className="sidebar-header">
             <img
               className="img-fluid d-none d-md-block"
               src="/logo.svg"
@@ -52,11 +52,11 @@ class NavBar extends Component {
               <label className="lbl-app-nanme">FormsFlow</label>
               <label className="lbl-app-nanme app-name">.AI</label>
             </div>
-          </div>
+          </div> */}
 
           <ul className="list-unstyled components">
             {isAuthenticated && (
-              <li class="nav-item nav-profile">
+              <li class="nav-item nav-profile mt-3">
                 <a href="#" class="nav-link">
                   <div className="profile-image">
                     <img

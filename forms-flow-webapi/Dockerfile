@@ -1,6 +1,4 @@
 FROM python:3.7-alpine
-ENV FLASK_APP manage.py
-ENV FLASK_RUN_HOST 0.0.0.0
 
 ADD . /app
 WORKDIR /app

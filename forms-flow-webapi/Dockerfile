@@ -2,8 +2,8 @@ FROM python:3.7-alpine
 ENV FLASK_APP manage.py
 ENV FLASK_RUN_HOST 0.0.0.0
 
-ADD . /app
-WORKDIR /app
+ADD . /forms-flow-webapi/app
+WORKDIR /forms-flow-webapi/app
 
 RUN apk update \
   && apk add \

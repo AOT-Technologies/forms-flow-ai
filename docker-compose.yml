@@ -14,8 +14,6 @@ services:
       - ./postgres:/data/postgres
     ports:
       - "5432:5432"
-    networks:
-      - postgres
     restart: unless-stopped
     networks:
       - forms-flow-bpm-network
@@ -62,10 +60,6 @@ services:
       - ./mongodb/mongod.conf:/etc/mongod.conf
       - ./mongodb/initdb.d/:/docker-entrypoint-initdb.d/
     command: [ "--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all"]
-    healthcheck:
-            test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo --quiet) -eq 1
-            interval: 10s
-            start_period: 30s
     networks:
       - forms-flow-forms-network
 
@@ -85,7 +79,7 @@ services:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio?replicaSet=rs0"}'
+      NODE_CONFIG: '{"mongo": "mongodb://formio:aot123@forms-flow-forms-db:27017/formio?replicaSet=rs0"}'
       ROOT_EMAIL: ${ROOT_EMAIL}
       ROOT_PASSWORD: ${ROOT_PASSWORD}
     stdin_open: true  # -i
@@ -126,10 +120,42 @@ services:
     networks:
       - forms-flow-web-network
 
+  forms-flow-webapi-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${WEB_API_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${WEB_API_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${WEB_API_POSTGRES_DB}
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+    ports:
+      - "6432:5432"
+    restart: unless-stopped
+    volumes:
+      - ./postgres/webapi:/data/postgres
+    networks:
+      - forms-flow-webapi-network
+
+  forms-flow-webapi:
+    build:
+      context: ./forms-flow-webapi/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    links:
+      - forms-flow-webapi-db
+    ports:
+      - '5000:5000'
+    volumes:
+      - ./:/app:rw
+    environment:
+      DATABASE_URL: ${WEB_API_DATABASE_URL}
+    stdin_open: true  # -i
+    tty: true         # -t
+    networks:
+      - forms-flow-webapi-network
+  
   nginx:
     image: nginx:1.15-alpine
     ports:
-      - "80:80"
       - "443:443"
     volumes:
       - ./:/var/www
@@ -141,6 +167,7 @@ services:
       - forms-flow-web-network
 
 networks:
+  forms-flow-webapi-network:
   forms-flow-forms-network:
   forms-flow-bpm-network:
   forms-flow-web-network:

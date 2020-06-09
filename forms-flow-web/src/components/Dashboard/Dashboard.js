@@ -4,7 +4,7 @@ import Chart from "./Chart";
 const Dashboard = (props) => {
   return (
     <Fragment>
-      <div className="dashboard">
+      <div className="dashboard mb-2">
         <div className="row ">
           <div className="col-12">
             <h1 className="dashboard-title">
@@ -15,7 +15,9 @@ const Dashboard = (props) => {
           <div className="col-12">
             <Counters />
           </div>
-          <div className="col-12">{/* <Chart /> */}</div>
+          <div className="col-12">
+            <Chart />
+          </div>
         </div>
       </div>
     </Fragment>

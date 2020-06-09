@@ -49,15 +49,18 @@
         margin-right: 15px;
         position: relative;
         & img {
-          width: 50px;
+          width: 58px;
         }
       }
       & .text-wrapper p {
         margin-bottom: 5px;
         font-weight: 500;
-        font-size: 15px;
+        font-size: 13px;
         color: #fff;
         margin-bottom: 0 !important;
+        & p {
+          font-size: 13px;
+        }
       }
     }
   }
@@ -70,6 +73,7 @@
 .wrapper {
   display: flex;
   align-items: stretch;
+  min-height: 100vh;
 }
 
 #sidebar {
@@ -78,7 +82,7 @@
   background: $primary-blue;
   color: #fff;
   transition: all 0.3s;
-  height: 100vh;
+  height: 100%;
 }
 
 #sidebar.active {

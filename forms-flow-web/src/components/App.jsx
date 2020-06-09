@@ -10,6 +10,7 @@ import SideBar from "../containers/SideBar";
 
 import NavBar from "../containers/NavBar";
 // import TopNav from "../containers/TopNav";
+import "../assets/styles/layouts.scss";
 require("typeface-nunito-sans");
 
 class App extends Component {

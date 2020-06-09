@@ -74,9 +74,11 @@ class NavBar extends Component {
                         user.preferred_username ||
                         ""}{" "}
                     </p>
-                    <p className="designation" onClick={UserService.userLogout}>
+                    <p> {user.email}</p>
+                    <p>{this.getUserRole(userRoles)}</p>
+                    {/* <p className="designation" onClick={UserService.userLogout}>
                       Logout
-                    </p>
+                    </p> */}
                   </div>
                 </a>
               </li>

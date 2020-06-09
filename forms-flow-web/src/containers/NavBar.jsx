@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import { Nav, Navbar, NavDropdown, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
@@ -29,24 +29,28 @@ class NavBar extends Component {
         <Navbar expand="lg">
           <section className="container-fluid">
             <Navbar.Brand className="d-flex">
-              <img
-                className="img-fluid d-none d-md-block"
-                src="/logo.svg"
-                width="177"
-                height="44"
-                alt="Logo"
-              />
-              <img
-                className="img-fluid d-md-none"
-                src="/simple-logo.svg"
-                width="63"
-                height="44"
-                alt="Logo"
-              ></img>
-              <div className="div-center">
-                <label className="lbl-app-nanme">FormsFlow</label>
-                <label className="lbl-app-nanme app-name">.AI</label>
-              </div>
+              <Link to="/">
+                <img
+                  className="img-fluid d-none d-md-block"
+                  src="/logo.svg"
+                  width="177"
+                  height="44"
+                  alt="Logo"
+                />
+                <img
+                  className="img-fluid d-md-none"
+                  src="/simple-logo.svg"
+                  width="63"
+                  height="44"
+                  alt="Logo"
+                ></img>
+              </Link>
+              <Link to="/">
+                <div className="div-center">
+                  <label className="lbl-app-nanme">FormsFlow</label>
+                  <label className="lbl-app-nanme app-name">.AI</label>
+                </div>
+              </Link>
               {/* for small screen */}
               <Nav className="d-md-none custom-profile">
                 <NavDropdown
@@ -91,7 +95,7 @@ class NavBar extends Component {
               className="navbar-dark custom-toggler"
             />
             <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
-              <Nav className="mr-auto nav-custom-tab">
+              {/* <Nav className="mr-auto nav-custom-tab">
                 <Link
                   to="/form"
                   className={`main-nav nav-link ${
@@ -124,71 +128,91 @@ class NavBar extends Component {
                     Tasks
                   </Link>
                 ) : null}
-              </Nav>
+              </Nav> */}
             </Navbar.Collapse>
             <Nav className="d-none d-md-block">
               {isAuthenticated ? (
-                <NavDropdown
-                  style={{ fontSize: "18px" }}
-                  title={
-                    <div className="pull-left">
-                      Hi{" "}
-                      {user.given_name ||
-                        user.name ||
-                        user.preferred_username ||
-                        ""}{" "}
-                      &nbsp;
-                      <img
-                        className="thumbnail-image"
-                        src="/assets/Images/user.svg"
-                        alt="user pic"
-                      />
-                    </div>
-                  }
-                  className="nav-dropdown"
-                  id="basic-nav-dropdown"
-                >
-                  <NavDropdown.Item>
-                    <img
-                      className="float-right"
-                      src="/assets/Images/user.svg"
-                      alt="userimage"
-                    />
-                  </NavDropdown.Item>
-                  <br></br>
-                  <NavDropdown.Header className="nav-user-name">
-                    {user.name || user.preferred_username}
-                  </NavDropdown.Header>
-                  <NavDropdown.Header
-                    className="nav-user-email"
-                    title={user.email}
-                  >
-                    {user.email}
-                  </NavDropdown.Header>
-                  <NavDropdown.Header className="nav-user-role">
-                    {this.getUserRole(userRoles)}
-                  </NavDropdown.Header>
-                  <NavDropdown.Divider />
-                  <NavDropdown.Header
-                    className="nav-logout"
+                <Fragment>
+                  <i
+                    class="fa fa-sign-out text-white fa-lg"
+                    aria-hidden="true"
+                  ></i>
+                  <Button
+                    variant="link"
+                    style={{
+                      color: "white",
+                      fontSize: "20px",
+                      textDecoration: "none",
+                    }}
                     onClick={UserService.userLogout}
                   >
-                    <img src="/assets/Images/logout.svg" alt="" />
-                    <label className="lbl-logout">Logout</label>
-                  </NavDropdown.Header>
-                </NavDropdown>
+                    Logout
+                  </Button>
+                </Fragment>
               ) : (
-                <Button
-                  variant="link"
-                  style={{
-                    color: "white",
-                    fontSize: "20px",
-                    textDecoration: "none",
-                  }}
-                  onClick={() => this.props.login()}
-                >
-                  Login
-                </Button>
+                // <NavDropdown
+                //   style={{ fontSize: "18px" }}
+                //   title={
+                //     <div className="pull-left">
+                //       Hi{" "}
+                //       {user.given_name ||
+                //         user.name ||
+                //         user.preferred_username ||
+                //         ""}{" "}
+                //       &nbsp;
+                //       <img
+                //         className="thumbnail-image"
+                //         src="/assets/Images/user.svg"
+                //         alt="user pic"
+                //       />
+                //     </div>
+                //   }
+                //   className="nav-dropdown"
+                //   id="basic-nav-dropdown"
+                // >
+                //   <NavDropdown.Item>
+                //     <img
+                //       className="float-right"
+                //       src="/assets/Images/user.svg"
+                //       alt="userimage"
+                //     />
+                //   </NavDropdown.Item>
+                //   <br></br>
+                //   <NavDropdown.Header className="nav-user-name">
+                //     {user.name || user.preferred_username}
+                //   </NavDropdown.Header>
+                //   <NavDropdown.Header
+                //     className="nav-user-email"
+                //     title={user.email}
+                //   >
+                //     {user.email}
+                //   </NavDropdown.Header>
+                //   <NavDropdown.Header className="nav-user-role">
+                //     {this.getUserRole(userRoles)}
+                //   </NavDropdown.Header>
+                //   <NavDropdown.Divider />
+                //   <NavDropdown.Header
+                //     className="nav-logout"
+                //     onClick={UserService.userLogout}
+                //   >
+                //     <img src="/assets/Images/logout.svg" alt="" />
+                //     <label className="lbl-logout">Logout</label>
+                //   </NavDropdown.Header>
+                // </NavDropdown>
+                <Fragment>
+                  <i class="fa fa-sign-in text-white" aria-hidden="true"></i>
+                  <Button
+                    variant="link"
+                    style={{
+                      color: "white",
+                      fontSize: "20px",
+                      textDecoration: "none",
+                    }}
+                    onClick={() => this.props.login()}
+                  >
+                    Login
+                  </Button>
+                </Fragment>
               )}
             </Nav>
           </section>

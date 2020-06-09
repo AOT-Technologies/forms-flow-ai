@@ -1,7 +1,7 @@
 from flask_restplus import Resource
 
 from ..common.responses import response
-from ..service.process_service import get_a_process, get_a_process_action, get_all_processes
+from ..services.process_service import get_a_process, get_a_process_action, get_all_processes
 from ..utils.dto import ProcessDto
 
 

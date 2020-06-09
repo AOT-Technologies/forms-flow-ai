@@ -1,7 +1,7 @@
 from flask_restplus import Resource
 
 from ..common.responses import response
-from ..service.task_service import claim_a_task, due_a_task, get_a_task, get_all_tasks, set_action_a_task, unclaim_a_task
+from ..services.task_service import claim_a_task, due_a_task, get_a_task, get_all_tasks, set_action_a_task, unclaim_a_task
 from ..utils.dto import TaskDto
 
 

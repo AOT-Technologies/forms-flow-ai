@@ -12,6 +12,8 @@ from .submission import createsubmissionapi as submission
 from .formiotoken import api as formiotoken
 from .process import api as process
 from .task import api as task
+from .tenant import API as TENANT_API
+
 
 # This will add the Authorize button to the swagger docs
 # oauth2 & openid may not yet be supported by restplus
@@ -37,3 +39,4 @@ API.add_namespace(submissions, path='/application')
 API.add_namespace(submission, path='/application')
 API.add_namespace(process, path='/process')
 API.add_namespace(task, path='/task')
+API.add_namespace(TENANT_API, path='/tenant')

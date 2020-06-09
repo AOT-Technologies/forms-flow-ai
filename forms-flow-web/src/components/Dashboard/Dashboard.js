@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import Counters from "./Counters";
 import Chart from "./Chart";
-import ListData from "./ListData";
+
 const Dashboard = (props) => {
   return (
     <Fragment>

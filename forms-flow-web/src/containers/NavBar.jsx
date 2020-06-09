@@ -23,7 +23,8 @@ class NavBar extends Component {
   };
 
   render() {
-    const { user, userRoles, isAuthenticated, activePage } = this.props;
+    const { user, userRoles, isAuthenticated } = this.props;
+
     return (
       <header>
         <Navbar expand="lg">
@@ -228,6 +229,7 @@ const mapStatetoProps = (state) => {
     user: selectRoot("user", state).userDetail || [],
     isAuthenticated: state.user.isAuthenticated,
     activePage: selectRoot("user", state).currentPage || "",
+    pathname: state.router.location.pathname,
   };
 };
 

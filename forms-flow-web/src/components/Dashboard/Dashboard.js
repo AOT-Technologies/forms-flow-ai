@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
 import Counters from "./Counters";
 import Chart from "./Chart";
+import ListData from "./ListData";
 const Dashboard = (props) => {
   return (
     <Fragment>
@@ -18,6 +19,9 @@ const Dashboard = (props) => {
           <div className="col-12">
             <Chart />
           </div>
+          {/* <div className="col-12">
+            <ListData />
+          </div> */}
         </div>
       </div>
     </Fragment>

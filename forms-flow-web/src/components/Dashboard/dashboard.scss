@@ -34,6 +34,10 @@
   & .progress {
     height: 12px;
   }
+  & .progress-bar {
+    transition: all 4s ease;
+    transition-delay: 1s;
+  }
   & .application-title {
     margin-bottom: -5px;
     color: $primary-blue;

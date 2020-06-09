@@ -9,6 +9,7 @@ import PrivateRoute from "./PrivateRoute";
 import SideBar from "../containers/SideBar";
 
 import NavBar from "../containers/NavBar";
+import Footer from "../components/Footer";
 // import TopNav from "../containers/TopNav";
 import "../assets/styles/layouts.scss";
 require("typeface-nunito-sans");
@@ -25,13 +26,14 @@ class App extends Component {
             <div class="wrapper">
               <SideBar store={store} />
 
-              <div className="container">
+              <div className="container-fluid">
                 <Switch>
                   {/* <Route path="/public"><PublicRoute store={store}/></Route> */}
                   <Route path="/">
                     <PrivateRoute store={store} />
                   </Route>
                 </Switch>
+                <Footer />
               </div>
             </div>
           </ConnectedRouter>

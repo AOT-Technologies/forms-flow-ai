@@ -13,14 +13,14 @@ const Dashboard = (props) => {
             <div className="white-box analytics-info">
               <h3 className="box-title">
                 <i
-                  class="fa fa-arrow-circle-o-right mr-1"
+                  class="fa fa-arrow-circle-o-right mr-1 text-purple "
                   aria-hidden="true"
                 ></i>
-                New
+                New (unassigned)
               </h3>
               <div class="progress progress-md">
                 <div
-                  class="progress-bar bg-success"
+                  class="progress-bar bg-purple "
                   role="progressbar"
                   style={{ width: "50%" }}
                   aria-valuenow="78"
@@ -31,14 +31,14 @@ const Dashboard = (props) => {
               <ul className="list-inline two-part">
                 <li>
                   <div>
-                    <div className="counter text-success">50</div>
+                    <div className="counter text-purple ">50</div>
                     <div className="app-title">With Me</div>
                   </div>
                 </li>
                 <li className="text-right">
-                  <i className="ti-arrow-up text-success"></i>
-                  <div className="counter text-danger">100</div>
-                  <div className="app-title">with Group</div>
+                  <i className="ti-arrow-up text-purple "></i>
+                  <div className="counter text-purple ">100</div>
+                  <div className="app-title text-purple ">with Group</div>
                 </li>
               </ul>
             </div>
@@ -49,11 +49,11 @@ const Dashboard = (props) => {
             <div className="white-box analytics-info">
               <h3 className="box-title">
                 {" "}
-                <i className="fa fa-clock-o mr-1"></i>In progress
+                <i className="fa fa-clock-o mr-1 text-yellow"></i>In progress
               </h3>
               <div class="progress progress-md">
                 <div
-                  class="progress-bar bg-danger"
+                  class="progress-bar bg-yellow"
                   role="progressbar"
                   style={{ width: "20%" }}
                   aria-valuenow="78"
@@ -64,13 +64,13 @@ const Dashboard = (props) => {
               <ul className="list-inline two-part">
                 <li>
                   <div>
-                    <div className="counter text-danger">20</div>
+                    <div className="counter text-yellow">20</div>
                     <div className="app-title">With Me</div>
                   </div>
                 </li>
                 <li className="text-right">
-                  <i className="ti-arrow-up text-danger"></i>
-                  <div className="counter text-success">100</div>
+                  <i className="ti-arrow-up text-yellow"></i>
+                  <div className="counter text-yellow">100</div>
                   <div className="app-title">with Group</div>
                 </li>
               </ul>
@@ -106,7 +106,7 @@ const Dashboard = (props) => {
                 </li>
                 <li className="text-right">
                   <i className="ti-arrow-up text-success"></i>
-                  <div className="counter text-danger">100</div>
+                  <div className="counter text-success">100</div>
                   <div className="app-title">with Group</div>
                 </li>
               </ul>

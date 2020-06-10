@@ -135,7 +135,7 @@ class NavBar extends Component {
               {isAuthenticated ? (
                 <Fragment>
                   <i
-                    class="fa fa-sign-out text-white fa-lg"
+                    className="fa fa-sign-out text-white fa-lg"
                     aria-hidden="true"
                   />
                   <Button

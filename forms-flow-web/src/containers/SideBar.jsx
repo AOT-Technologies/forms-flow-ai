@@ -24,16 +24,16 @@ const SideBar = (props) => {
       <nav id="sidebar">
         <ul className="list-unstyled components">
           {isAuthenticated && (
-            <li class="nav-item nav-profile mt-3">
-              <a href="#" class="nav-link">
+            <li className="nav-item nav-profile mt-3">
+              <div className="nav-link">
                 <div className="profile-image">
                   <img
                     className="img-xs rounded-circle"
                     src="/assets/Images/user.svg"
-                    alt="profile image"
+                    alt="profile"
                   />
 
-                  <div className="dot-indicator bg-success"></div>
+                  <div className="dot-indicator bg-success"/>
                 </div>
                 <div className="text-wrapper">
                   <p className="profile-name">
@@ -48,7 +48,7 @@ const SideBar = (props) => {
                       Logout
                     </p> */}
                 </div>
-              </a>
+              </div>
             </li>
           )}
           <li className="active">
@@ -89,7 +89,7 @@ const SideBar = (props) => {
                   pathname === "/task" ? "active-tab" : ""
                 }`}
               >
-                <i class="fa fa-list"></i>
+                <i className="fa fa-list"></i>
                 Tasks
               </Link>
             ) : null}

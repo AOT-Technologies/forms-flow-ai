@@ -44,7 +44,7 @@ class NavBar extends Component {
                   width="63"
                   height="44"
                   alt="Logo"
-                ></img>
+                />
               </Link>
               <Link to="/">
                 <div className="div-center">
@@ -135,9 +135,9 @@ class NavBar extends Component {
               {isAuthenticated ? (
                 <Fragment>
                   <i
-                    class="fa fa-sign-out text-white fa-lg"
+                    className="fa fa-sign-out text-white fa-lg"
                     aria-hidden="true"
-                  ></i>
+                  />
                   <Button
                     variant="link"
                     style={{
@@ -201,7 +201,7 @@ class NavBar extends Component {
                 //   </NavDropdown.Header>
                 // </NavDropdown>
                 <Fragment>
-                  <i class="fa fa-sign-in text-white" aria-hidden="true"></i>
+                  <i className="fa fa-sign-in text-white" aria-hidden="true"/>
                   <Button
                     variant="link"
                     style={{

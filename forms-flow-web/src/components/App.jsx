@@ -23,7 +23,7 @@ class App extends Component {
           <ConnectedRouter history={history}>
             <NavBar />
             {/* <TopNav /> */}
-            <div class="wrapper">
+            <div className="wrapper">
               <SideBar store={store} />
 
               <div className="container-fluid">

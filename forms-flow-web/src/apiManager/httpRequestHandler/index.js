@@ -4,18 +4,15 @@ import Token from "../token/tokenService";
 
 const qs = require("querystring");
 
-export const httpGETRequest = (url, data) => {
-  const Authorization = `Bearer ${Token.getBpmToken()}`;
-
+export const httpGETRequest = (url, data, token) => {
   return axios.get(url, {
     params: data,
-    headers: { Authorization: `Bearer ${Token.getBpmToken()}` },
-  }); // TODO get this dynamic from url
+    headers: { Authorization: `Bearer ${token || Token.getBpmToken()}` },
+  });
 };
 
-export const httpPOSTRequest = (url, data) => {
-  const token = `Bearer ${Token.getBpmToken()}`;
-  return axios.post(url, data, { headers: { Authorization: token } }); // TODO get this dynamic from url
+export const httpPOSTRequest = (url, data, token) => {
+  return axios.post(url, data, { headers: { Authorization: `Bearer ${ token || Token.getBpmToken()}` } });
 };
 
 export const httpPOSTRequestWithoutToken = (url, data) => {
@@ -24,9 +21,9 @@ export const httpPOSTRequestWithoutToken = (url, data) => {
       "Content-Type": "application/x-www-form-urlencoded",
     },
   };
-  return axios.post(url, qs.stringify(data), config); // TODO get this dynamic from url
+  return axios.post(url, qs.stringify(data), config);
 };
 
-export const httpGETRequestToken = (url, token) => {
-  return axios.get(url, { headers: { Authorization: token } }); // TODO get this dynamic from url
+export const httpGETRequestWithoutToken = (url, token) => {
+  return axios.get(url);
 };

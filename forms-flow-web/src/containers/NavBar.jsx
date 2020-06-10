@@ -95,42 +95,10 @@ class NavBar extends Component {
               aria-controls="responsive-navbar-nav"
               className="navbar-dark custom-toggler"
             />
-            <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
-              {/* <Nav className="mr-auto nav-custom-tab">
-                <Link
-                  to="/form"
-                  className={`main-nav nav-link ${
-                    activePage === "form" ? "active-tab" : ""
-                  }`}
-                >
-                  <img
-                    className="nav-icons"
-                    src="/form_white.svg"
-                    width="22"
-                    height="22"
-                    alt="form"
-                  />
-                  Forms
-                </Link>
-                {userRoles && userRoles.includes(STAFF_REVIEWER) ? (
-                  <Link
-                    to="/task"
-                    className={`main-nav nav-link ${
-                      activePage === "task" ? "active-tab" : ""
-                    }`}
-                  >
-                    <img
-                      className="nav-icons"
-                      src="/task_white.svg"
-                      width="22"
-                      height="22"
-                      alt="task"
-                    />
-                    Tasks
-                  </Link>
-                ) : null}
-              </Nav> */}
-            </Navbar.Collapse>
+            <Navbar.Collapse
+              id="responsive-navbar-nav"
+              className="navbar-nav"
+            ></Navbar.Collapse>
             <Nav className="d-none d-md-block">
               {isAuthenticated ? (
                 <Fragment>
@@ -151,57 +119,8 @@ class NavBar extends Component {
                   </Button>
                 </Fragment>
               ) : (
-                // <NavDropdown
-                //   style={{ fontSize: "18px" }}
-                //   title={
-                //     <div className="pull-left">
-                //       Hi{" "}
-                //       {user.given_name ||
-                //         user.name ||
-                //         user.preferred_username ||
-                //         ""}{" "}
-                //       &nbsp;
-                //       <img
-                //         className="thumbnail-image"
-                //         src="/assets/Images/user.svg"
-                //         alt="user pic"
-                //       />
-                //     </div>
-                //   }
-                //   className="nav-dropdown"
-                //   id="basic-nav-dropdown"
-                // >
-                //   <NavDropdown.Item>
-                //     <img
-                //       className="float-right"
-                //       src="/assets/Images/user.svg"
-                //       alt="userimage"
-                //     />
-                //   </NavDropdown.Item>
-                //   <br></br>
-                //   <NavDropdown.Header className="nav-user-name">
-                //     {user.name || user.preferred_username}
-                //   </NavDropdown.Header>
-                //   <NavDropdown.Header
-                //     className="nav-user-email"
-                //     title={user.email}
-                //   >
-                //     {user.email}
-                //   </NavDropdown.Header>
-                //   <NavDropdown.Header className="nav-user-role">
-                //     {this.getUserRole(userRoles)}
-                //   </NavDropdown.Header>
-                //   <NavDropdown.Divider />
-                //   <NavDropdown.Header
-                //     className="nav-logout"
-                //     onClick={UserService.userLogout}
-                //   >
-                //     <img src="/assets/Images/logout.svg" alt="" />
-                //     <label className="lbl-logout">Logout</label>
-                //   </NavDropdown.Header>
-                // </NavDropdown>
                 <Fragment>
-                  <i className="fa fa-sign-in text-white" aria-hidden="true"/>
+                  <i className="fa fa-sign-in text-white" aria-hidden="true" />
                   <Button
                     variant="link"
                     style={{

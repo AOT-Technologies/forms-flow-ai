@@ -1,0 +1,33 @@
+{
+  "applicationsMetrix": [
+    {
+      "name": "form 1",
+      "count": 10,
+      "id": 1
+    },
+    {
+      "name": "form 2",
+      "count": 20,
+      "id": 2
+    },
+    {
+      "name": "form 3",
+      "count": 40,
+      "id": 3
+    }
+  ],
+  "statusMetrix": [
+    {
+      "statusName": "new",
+      "count": 10
+    },
+    {
+      "statusName": "in progress",
+      "count": 10
+    },
+    {
+      "statusName": "completed",
+      "count": 10
+    }
+  ]
+}

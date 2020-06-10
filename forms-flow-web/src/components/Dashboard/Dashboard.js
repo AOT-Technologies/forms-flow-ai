@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import Counters from "./Counters";
+import ApplicationCounter from "./ApplicationCounter";
 import Chart from "./Chart";
 
 const Dashboard = (props) => {
@@ -9,16 +9,14 @@ const Dashboard = (props) => {
         <div className="row ">
           <div className="col-12">
             <h1 className="dashboard-title">
-              <i className="fa fa-home"></i> My Dashboard
+              <i className="fa fa-home"></i> Application metrics
             </h1>
             <hr className="line-hr"></hr>
           </div>
           <div className="col-12">
-            <Counters />
+            <ApplicationCounter />
           </div>
-          <div className="col-12">
-            <Chart />
-          </div>
+          <div className="col-12">{/* <Chart /> */}</div>
           {/* <div className="col-12">
             <ListData />
           </div> */}

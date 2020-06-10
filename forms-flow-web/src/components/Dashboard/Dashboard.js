@@ -16,7 +16,9 @@ const Dashboard = (props) => {
           <div className="col-12">
             <ApplicationCounter />
           </div>
-          <div className="col-12">{/* <Chart /> */}</div>
+          <div className="col-12">
+            <Chart />
+          </div>
           {/* <div className="col-12">
             <ListData />
           </div> */}

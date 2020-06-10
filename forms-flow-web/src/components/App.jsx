@@ -26,7 +26,7 @@ class App extends Component {
             <div className="wrapper">
               <SideBar store={store} />
 
-              <div className="container-fluid">
+              <div className="container-fluid content">
                 <Switch>
                   {/* <Route path="/public"><PublicRoute store={store}/></Route> */}
                   <Route path="/">

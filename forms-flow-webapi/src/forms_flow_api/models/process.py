@@ -6,7 +6,6 @@ from datetime import datetime as dt
 
 from .base_model import BaseModel
 from .db import db, ma
-from .enums.application import ApplicationStatus
 class Process(BaseModel, db.Model):
     """Process Model for storing process related process."""
 

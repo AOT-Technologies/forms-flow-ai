@@ -3,7 +3,7 @@
 from http import HTTPStatus
 
 from flask import jsonify
-from flask_restplus import Namespace, Resource, cors
+from flask_restx import Namespace, Resource, cors
 
 from ..exceptions import BusinessException
 from ..services import TenantService

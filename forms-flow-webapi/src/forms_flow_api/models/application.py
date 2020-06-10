@@ -1,7 +1,9 @@
+"""This manages Application Data."""
+from .base_model import BaseModel
 from .db import db, ma
 
 
-class Application(db.Model):
+class Application(BaseModel, db.Model):
     """Application Model for storing application related details."""
 
     __tablename__ = 'FAI_APPLICATION'
@@ -18,7 +20,10 @@ class Application(db.Model):
     process_instance_id = db.Column(db.String(30), nullable=False)
     revision_no = db.Column(db.Integer, nullable=False)
 
-    FORM_PROCESS_MAPPER = db.relationship('Process', primaryjoin='Application.mapper_id == Process.mapper_id', backref='FAI_APPLICATION')
+    FORM_PROCESS_MAPPER = db.relationship(
+        'Process',
+        primaryjoin='Application.mapper_id == Process.mapper_id',
+        backref='FAI_APPLICATION')
 
 
 class ApplicationSchema(ma.ModelSchema):

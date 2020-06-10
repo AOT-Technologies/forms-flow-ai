@@ -1,4 +1,4 @@
-from flask_restplus import Resource
+from flask_restx import Resource
 
 from ..common.responses import response
 from ..services.formiotoken_service import get_formio_token

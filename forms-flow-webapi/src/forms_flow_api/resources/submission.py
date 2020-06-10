@@ -3,7 +3,7 @@
 from http import HTTPStatus
 from flask import request
 from flask import jsonify
-from flask_restplus import Namespace, Resource, cors
+from flask_restx import Namespace, Resource, cors
 from marshmallow import ValidationError
 
 from ..exceptions import BusinessException
@@ -27,7 +27,7 @@ class SubmissionResource(Resource):
         pageNo = request.args.get('pageNo')
         limit = request.args.get('limit')
         return jsonify({
-            'submissions': SubmissionService.get_all_submissions(applicationId,pageNo, limit)
+            'submissions': SubmissionService.get_all_submissions(applicationId, pageNo, limit)
         }), HTTPStatus.OK
 
     @staticmethod
@@ -39,13 +39,14 @@ class SubmissionResource(Resource):
         try:
             submission_schema = SubmissionResource()
             dict_data = submission_schema.load(submission_json)
-            application = SubmissionService.save_new_submission(dict_data,applicationId)
+            application = SubmissionService.save_new_submission(dict_data, applicationId)
 
             response, status = submission_schema.dump(application), HTTPStatus.CREATED
         except ValidationError as application_err:
             response, status = {'systemErrors': application_err.messages}, \
                 HTTPStatus.BAD_REQUEST
         return response, status
+
 
 @cors_preflight('GET,PUT,OPTIONS')
 @API.route('/<int:applicationId>/submission/<submissionId>', methods=['GET', 'PUT', 'OPTIONS'])
@@ -54,22 +55,21 @@ class ApplicationResourceById(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
-    def get(applicationId,submissionId):
+    def get(applicationId, submissionId):
         """Get submission by id."""
         try:
-            return SubmissionService.get_a_submission(applicationId,submissionId), HTTPStatus.OK
+            return SubmissionService.get_a_submission(applicationId, submissionId), HTTPStatus.OK
         except BusinessException as err:
             return err.error, err.status_code
 
-
     @staticmethod
     @cors.crossdomain(origin='*')
-    def put(applicationId,submissionId):
+    def put(applicationId, submissionId):
         """Update submission details."""
         submission_json = request.get_json()
 
         try:
-            submisssion = SubmissionService.update_submission(applicationId,submissionId,submission_json)
+            submisssion = SubmissionService.update_submission(applicationId, submissionId, submission_json)
 
             return 'Updated successfully', HTTPStatus.OK
         except ValidationError as submission_err:
@@ -77,27 +77,8 @@ class ApplicationResourceById(Resource):
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # from flask import request
-# from flask_restplus import Resource
+# from flask_restx import Resource
 
 # from ..common.responses import response
 # from ..services.submission_service import get_a_submission, get_all_submissions, save_new_submission, update_submission

@@ -1,4 +1,4 @@
-from flask_restplus import Resource
+from flask_restx import Resource
 
 from ..common.responses import response
 from ..services.task_service import claim_a_task, due_a_task, get_a_task, get_all_tasks, set_action_a_task, unclaim_a_task

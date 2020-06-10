@@ -1,4 +1,4 @@
-"""This manages Tenant."""
+"""This manages Tenant Data."""
 
 from __future__ import annotations
 

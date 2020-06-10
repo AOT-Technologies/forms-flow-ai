@@ -17,10 +17,10 @@ class BaseModel():
         db.session.commit()
         return self
 
-    def delete(self):
-        """Delete and commit."""
-        db.session.delete(self)
-        db.session.commit()
+    # def delete(self):
+    #     """Delete and commit."""
+    #     db.session.delete(self)
+    #     db.session.commit()
 
     def update_from_dict(self, columns: list, values: dict):
         """Update this model from a given dictionary.

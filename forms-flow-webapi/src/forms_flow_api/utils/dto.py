@@ -1,4 +1,5 @@
-from flask_restplus import Namespace, fields
+from flask_restx import Namespace, fields
+
 
 class FormIOTokenDto:
     api = Namespace('formiotoken', description='formiotoken')

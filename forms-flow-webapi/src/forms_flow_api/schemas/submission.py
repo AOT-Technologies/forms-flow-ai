@@ -11,7 +11,6 @@ class SubmissionSchema(Schema):
 
         unknown = EXCLUDE
 
-
     application_id = fields.Int()
     application_name = fields.Str()
     application_status = fields.Str(data_key='status')

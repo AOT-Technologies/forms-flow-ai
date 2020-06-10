@@ -3,7 +3,7 @@
 Uses restplus namespaces to mount individual api endpoints into the service.
 """
 
-from flask_restplus import Api
+from flask_restx import Api
 
 from .application import API as APPLICATION_API
 from .submission import API as SUBMISSION_API

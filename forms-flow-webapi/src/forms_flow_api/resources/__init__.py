@@ -5,12 +5,10 @@ Uses restplus namespaces to mount individual api endpoints into the service.
 
 from flask_restplus import Api
 
-from .application import api as application
-from .application import createapi as createapplication
-from .submission import submissionapi as submissions
-from .submission import createsubmissionapi as submission
+from .application import API as APPLICATION_API
+from .submission import API as SUBMISSION_API
 from .formiotoken import api as formiotoken
-from .process import api as process
+from .process import API as PROCESS_API
 from .task import api as task
 from .tenant import API as TENANT_API
 
@@ -33,10 +31,8 @@ API = Api(
     authorizations=AUTHORIZATIONS)
 
 API.add_namespace(formiotoken, path='/getformiotoken')
-API.add_namespace(application, path='/application')
-API.add_namespace(createapplication, path='/application')
-API.add_namespace(submissions, path='/application')
-API.add_namespace(submission, path='/application')
-API.add_namespace(process, path='/process')
+API.add_namespace(APPLICATION_API, path='/application')
+API.add_namespace(SUBMISSION_API, path='/submission')
+API.add_namespace(PROCESS_API, path='/process')
 API.add_namespace(task, path='/task')
 API.add_namespace(TENANT_API, path='/tenant')

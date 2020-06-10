@@ -1,44 +1,62 @@
-from flask_restplus import Resource
+"""API endpoints for managing process resource."""
 
-from ..common.responses import response
-from ..services.process_service import get_a_process, get_a_process_action, get_all_processes
-from ..utils.dto import ProcessDto
+from http import HTTPStatus
+from flask import request
+from flask import jsonify
+from flask_restplus import Namespace, Resource, cors
+from marshmallow import ValidationError
 
+from ..exceptions import BusinessException
+from ..services import ProcessService
+from ..utils.util import cors_preflight
+from ..models import Process
 
-api = ProcessDto.api
-_process = ProcessDto.process
-
-
-@api.route('/')
-class ProcessList(Resource):
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('list_of_process')
-    # @api.marshal_list_with(_process, envelope='data')
-    def get(self):
-        """List all process"""
-        return get_all_processes()
+API = Namespace('Process', description='Process')
 
 
-@api.route('/<Id>')
-@api.param('Id', 'The Process identifier')
-class ApplicationDetails(Resource):
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('get a process definition')
-    # @api.marshal_with(_process)
-    def get(self, Id):
+@cors_preflight('GET,OPTIONS')
+@API.route('', methods=['GET', 'OPTIONS'])
+class ProcessResource(Resource):
+    """Resource for managing process."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def get():
+        """Get all process."""
+        try:
+            return jsonify({
+                'process': ProcessService.get_all_processes()
+            }), HTTPStatus.OK
+        except BusinessException as err:
+            return err.error, err.status_code
+
+@cors_preflight('GET,OPTIONS')
+@API.route('/<processKey>', methods=['GET'])
+class ProcessDetailsResource(Resource):
+    """Resource for managing process details."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def get(processKey):
         """Get process detail"""
-        return get_a_process(Id)
+        try:
+            return ProcessService.get_a_process(processKey), HTTPStatus.OK
+        except BusinessException as err:
+            return err.error, err.status_code
 
 
-@api.route('/<Id>/action')
-@api.param('Id', 'The Process identifier')
-class ApplicationActionDetails(Resource):
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('get process Action list')
-    # @api.marshal_with(_process)
-    def get(self, Id):
-        """Get process Action list"""
-        return get_a_process_action(Id)
+
+@cors_preflight('GET,OPTIONS')
+@API.route('/<processKey>/action', methods=['GET'])
+class ProcessActionsResource(Resource):
+    """Resource for managing process ations."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def get(processKey):
+        """Get process detail"""
+        try:
+            return  ProcessService.get_a_process_action(processKey), HTTPStatus.OK
+        except BusinessException as err:
+            return err.error, err.status_code
+

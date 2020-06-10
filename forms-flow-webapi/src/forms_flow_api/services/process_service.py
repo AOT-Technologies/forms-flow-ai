@@ -1,5 +1,6 @@
 import os
 from datetime import datetime as dt
+from http import HTTPStatus
 
 from ..common.responses import errorResponse, nodataResponse, successResponse
 from ..models.process import process_schema, processes_schema
@@ -10,9 +11,11 @@ BPM_API_BASE = os.getenv('BPM_API_BASE', '')
 API_PROCESS = os.getenv('API_PROCESS', '')
 BPM_API_PROCESS = BPM_API_BASE + API_PROCESS
 
+class ProcessService():
+    """This class manages process service."""
 
-def get_all_processes():
-    try:
+    @staticmethod
+    def get_all_processes():
         url = BPM_API_PROCESS
         process = httpGETRequest(url)
         result = processes_schema.dump(process)
@@ -24,17 +27,12 @@ def get_all_processes():
                 if t not in seen:
                     seen.add(t)
                     new_result.append(d)
-        response = successResponse(new_result)
-        response.last_modified = dt.utcnow()
-        response.add_etag()
-        return response
-    except Exception as e:
-        return errorResponse()
+        return new_result
 
 
-def get_a_process(processId):
-    try:
-        url = BPM_API_PROCESS + processId
+    @staticmethod
+    def get_a_process(processKey):
+        url = BPM_API_PROCESS + processKey
         process_details = httpGETRequest(url)
         if not process_details:
             return nodataResponse()
@@ -44,13 +42,12 @@ def get_a_process(processId):
             response.last_modified = dt.utcnow()
             response.add_etag()
             return response
-    except Exception as e:
-        return errorResponse()
 
 
-def get_a_process_action(processId):
-    try:
-        url = BPM_API_PROCESS + processId
+
+    @staticmethod
+    def get_a_process_action(processKey):
+        url = BPM_API_PROCESS + processKey
         process_details = httpGETRequest(url)
         if not process_details:
             return nodataResponse()
@@ -60,5 +57,4 @@ def get_a_process_action(processId):
             response.last_modified = dt.utcnow()
             response.add_etag()
             return response
-    except Exception as e:
-        return errorResponse()
+

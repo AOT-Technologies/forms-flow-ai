@@ -9,7 +9,7 @@ from . import config, models
 from .common import authentication
 from .models import db, ma
 from .resources import API
-# from .utils.auth import jwt
+from .utils.auth import jwt
 from .utils.logging import setup_logging
 
 
@@ -31,9 +31,6 @@ def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
     API.init_app(app)
     # setup_jwt_manager(app, jwt) #TODO: Uncomment only if we are using flask_jwt_oidc
 
-    def before_my_blueprint():
-        ret = authentication.verify_auth_token()
-        return ret
 
     @app.after_request
     def add_additional_headers(response):  # pylint: disable=unused-variable
@@ -52,7 +49,6 @@ def setup_jwt_manager(app, jwt_manager):
     def get_roles(a_dict):
         return a_dict['realm_access']['roles']  # pragma: no cover
     app.config['JWT_ROLE_CALLBACK'] = get_roles
-
     jwt_manager.init_app(app)
 
 

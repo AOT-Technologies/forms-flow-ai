@@ -1,45 +1,41 @@
 from datetime import datetime as dt
+from http import HTTPStatus
 
 from ..common.responses import errorResponse, nodataResponse, successListResponse, successResponse
 from ..models.process import Process, application_schema, applications_schema
 from .dboperations import save_changes
+from ..schemas import ApplicationSchema
+from ..exceptions import BusinessException
 
+class ApplicationService():
+    """This class manages application service."""
 
-def get_all_applications(page_number, limit):
-    if page_number != None:
-        page_number = int(page_number)
-    if limit != None:
-        limit = int(limit)
-    try:
-        process = Process.query.filter_by(status='active').paginate(page_number, limit, False).items
+    @staticmethod
+    def get_all_applications(page_number, limit):
+        if page_number != None:
+            page_number = int(page_number)
+        if limit != None:
+            limit = int(limit)
+        process = Process.find_all(page_number, limit)
         total = Process.query.filter_by(status='active').count()
-        result = applications_schema.dump(process)
-        response = successListResponse(result, total, page_number, limit)
-        response.last_modified = dt.utcnow()
-        response.add_etag()
-        return response
-    except Exception as e:
-        print(e)
-        return errorResponse()
+        application_schema = ApplicationSchema(only=( "mapper_id","form_id","form_name","form_revision_number","process_definition_key","process_name",
+        "form_name","status","comments","created_by","created_on","modified_on"))
+        return application_schema.dump(process, many=True)
 
+    @staticmethod
+    def get_a_application(application_id):
 
-def get_a_application(applicationId):
-    try:
-        process_details = Process.query.filter_by(mapper_id=applicationId, status='active').first()
-        if not process_details:
-            return nodataResponse()
+        process_details = Process.find_by_id(application_id)
+        if process_details:
+            application_schema = ApplicationSchema(only=( "mapper_id","form_id","form_name","form_revision_number","process_definition_key","process_name",
+            "form_name","status","comments","created_by","created_on","modified_on"))
+            return application_schema.dump(process_details)
         else:
-            result = application_schema.dump(process_details)
-            response = successResponse(result)
-            response.last_modified = dt.utcnow()
-            response.add_etag()
-            return response
-    except Exception as e:
-        return errorResponse()
+            raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
 
 
-def save_new_application(data):
-    try:
+    @staticmethod     
+    def save_new_application(data):
         new_application = Process(
             form_id=data['form_id'],
             form_name=data['form_name'],
@@ -55,19 +51,13 @@ def save_new_application(data):
             tenant_id=data['tenant_id']
         )
         save_changes(new_application)
-        response = successResponse(data)
-        response.last_modified = dt.utcnow()
-        response.add_etag()
-        return response
-    except Exception as e:
-        return errorResponse()
 
+    @staticmethod
+    def update_application(applicationId, data):
 
-def update_application(applicationId, data):
-    try:
-        application = Process.query.filter_by(mapper_id=applicationId, status='active').first()
+        application = Process.find_by_id(applicationId)
         if not application:
-            return nodataResponse()
+            raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
         else:
 
             application.form_id = data['form_id']
@@ -81,26 +71,14 @@ def update_application(applicationId, data):
             application.tenant_id = data['tenant_id']
 
             save_changes(application)
-            response = successResponse(data)
-            response.last_modified = dt.utcnow()
-            response.add_etag()
-            return response
-    except Exception as e:
-        return errorResponse()
 
 
-def delete_application(applicationId):
-    try:
-        application = Process.query.filter_by(mapper_id=applicationId).first()
+    @staticmethod
+    def delete_application(application_id):
+        application = Process.find_by_id(application_id)
         if not application:
-            return nodataResponse()
+            raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
         else:
             application.status = 'inactive'
-
             save_changes(application)
-            response = successResponse()
-            response.last_modified = dt.utcnow()
-            response.add_etag()
-            return response
-    except Exception as e:
-        return errorResponse()
+

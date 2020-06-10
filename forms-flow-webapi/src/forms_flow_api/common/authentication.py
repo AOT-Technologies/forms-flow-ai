@@ -21,6 +21,10 @@ def verify_auth_token():
             return True
         else:
             payload = json.dumps(jwt.decode(auth_token, public_key, audience=audience))
+            if "rpas-designer" in payload['roles']  :
+                return True
+            else:
+                return False
             return True
 
     except jwt.ExpiredSignatureError:
@@ -30,19 +34,3 @@ def verify_auth_token():
         return errorResponse('Invalid token. Please log in again.')
 
 
-def get_token_details():
-    user_details = None
-    try:
-        # auth_token = request.headers.get('Authorization', None)
-        auth_token = 'eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJJSXlONlpkOWs2M1ZGV1VZQjIzUU1lNkZwMkcwSk5SQV9HdERKRmJadVBJIn0.eyJqdGkiOiIxNDNjNjBkNC05NjEzLTQ0YjMtOGZiZC03YzQyMDhlZDY0MDMiLCJleHAiOjE1OTA3Mzc4NjksIm5iZiI6MCwiaWF0IjoxNTkwNzM3NTY5LCJpc3MiOiJodHRwczovL2lhbS5hb3QtdGVjaG5vbG9naWVzLmNvbS9hdXRoL3JlYWxtcy9mb3Jtcy1mbG93LWFpIiwiYXVkIjoiZm9ybXMtZmxvdy13ZWIiLCJzdWIiOiI1Zjg0MzhlZC1jY2FhLTQ4NWYtOWRlZi1jYjlmN2Q2MTAyZjMiLCJ0eXAiOiJJRCIsImF6cCI6ImZvcm1zLWZsb3ctd2ViIiwibm9uY2UiOiJlZTMxNGE3NS1lY2ZmLTQzOWEtYWFkYi0zZGM3Nzg2Yzk0N2EiLCJhdXRoX3RpbWUiOjE1OTA3Mzc1NjYsInNlc3Npb25fc3RhdGUiOiJjYzA3ZjExZi0wNDJlLTRkMzctYmI4Mi1jMmZhZmFhMGRmYzYiLCJhY3IiOiIxIiwiZW1haWxfdmVyaWZpZWQiOmZhbHNlLCJyb2xlIjpbInJwYXMtZGVzaWduZXIiXSwibmFtZSI6IlJpbnR1IE1lcmluIiwicHJlZmVycmVkX3VzZXJuYW1lIjoicnBhcy1kZXNpZ25lciIsImdpdmVuX25hbWUiOiJSaW50dSIsImZhbWlseV9uYW1lIjoiTWVyaW4iLCJlbWFpbCI6InJpbnR1Lm1lcmluQGFvdC10ZWNobm9sb2dpZXMuY29tIn0.YSSB4ZM8p72p_4L82lBFEKnUH5uahouerYJAulZignsGh9k9OUMteefDCRGkoCzWOpulSQNnEKRjlZhO-2WJcCMCGQlzxLzlqTyA0IkfzIW1zXjwMNUIKHGaQllOehIA3PcEBEb-uqZVhE9JITaXVai8fUEYK_LiLeH-j7F_0g9pUnsCvuoDZ3WK7sp5mq6OqGtgFb3jGAkI8JUSj0y9q0jKUH__xOGXAF94CSP4GWQHSweH6clnk4a74QaAkazIKmVt2L_JAFXap90gxnCGSnc4raHY8JcuCZ_KqIselv1QdSAdK4kHbzuxXceiKPNL3gGj-AwtQwYmXaYrHUJZZg'
-        if auth_token == None:
-            return user_details
-        else:
-            user_details = json.dumps(jwt.decode(auth_token, public_key, audience=audience))
-            return user_details
-
-    except jwt.ExpiredSignatureError:
-        return user_details
-
-    except jwt.InvalidTokenError:
-        return user_details

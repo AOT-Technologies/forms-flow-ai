@@ -1,68 +1,87 @@
+"""API endpoints for managing application resource."""
+
+from http import HTTPStatus
 from flask import request
-from flask_restplus import Resource
+from flask import jsonify
+from flask_restplus import Namespace, Resource, cors
+from marshmallow import ValidationError
 
-from ..common.responses import response
-from ..services.application_service import delete_application, get_a_application, get_all_applications, save_new_application, update_application
-from ..utils.dto import ApplicationDto, NewApplicationDto
+from ..exceptions import BusinessException
+from ..services import ApplicationService
+from ..utils.util import cors_preflight
+from ..schemas import ApplicationSchema
+from ..models import Process
 
-api = ApplicationDto.api
-_application = ApplicationDto.application
-
-createapi = NewApplicationDto.api
-_newapplication = NewApplicationDto.newapplication
+API = Namespace('Application', description='Application')
 
 
-@api.route('/')
-class ApplicationList(Resource):
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('list_of_applications')
-    @api.param('pageNo', 'PageNumber')
-    @api.param('limit', 'Items per page')
-    # @api.marshal_list_with(_application, envelope='data')
-    # @api.marshal_with(_application)
-    def get(self):
-        """List all applications"""
+@cors_preflight('GET,POST,OPTIONS')
+@API.route('', methods=['GET', 'POST', 'OPTIONS'])
+class ApplicationResource(Resource):
+    """Resource for managing applications."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def get():
+        """Get Applications."""
         pageNo = request.args.get('pageNo')
         limit = request.args.get('limit')
-        return get_all_applications(pageNo, limit)
+        return jsonify({
+            'applications': ApplicationService.get_all_applications(pageNo, limit)
+        }), HTTPStatus.OK
 
-    @createapi.response(response().created_code, response().created_message)
-    @createapi.response(response().error_code, response().error_message)
-    @createapi.response(response().notfound_code, response().notfound_message)
-    @createapi.doc('create a new application')
-    @createapi.expect(_newapplication, validate=True)
-    def post(self):
-        """Create a new application. """
-        data = request.json
-        return save_new_application(data=data)
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def post():
+        """Post a new application using the request body."""
+        application_json = request.get_json()
+
+        try:
+            application_schema = ApplicationSchema()
+            dict_data = application_schema.load(application_json)
+            application = ApplicationService.save_new_application(dict_data)
+
+            response, status = application_schema.dump(application), HTTPStatus.CREATED
+        except ValidationError as application_err:
+            response, status = {'systemErrors': application_err.messages}, \
+                HTTPStatus.BAD_REQUEST
+        return response, status
+
+@cors_preflight('GET,PUT,DELETE,OPTIONS')
+@API.route('/<int:applicationId>', methods=['GET', 'PUT', 'DELETE', 'OPTIONS'])
+class ApplicationResourceById(Resource):
+    """Resource for managing application."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def get(applicationId):
+        """Get application by id."""
+        try:
+            return ApplicationService.get_a_application(applicationId), HTTPStatus.OK
+        except BusinessException as err:
+            return err.error, err.status_code
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def delete(applicationId):
+        """Delete application."""
+        try:
+            ApplicationService.delete_application(applicationId)
+            return 'Deleted', HTTPStatus.OK
+        except BusinessException as err:
+            return err.error, err.status_code
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def put(applicationId):
+        """Update application details."""
+        application_json = request.get_json()
+
+        try:
+            application = ApplicationService.update_application(applicationId,application_json)
+
+            return 'Updated successfully', HTTPStatus.OK
+        except ValidationError as project_err:
+            return {'systemErrors': project_err.messages}, HTTPStatus.BAD_REQUEST
 
 
-@api.route('/<applicationId>')
-@api.param('applicationId', 'The Application identifier')
-class ApplicationDetails(Resource):
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('get a application')
-    # @api.marshal_with(_application)
-    def get(self, applicationId):
-        """Get application detail"""
-        return get_a_application(applicationId)
-
-    @createapi.response(response().created_code, response().created_message)
-    @createapi.response(response().error_code, response().error_message)
-    @createapi.response(response().notfound_code, response().notfound_message)
-    @createapi.doc('Update an application')
-    @createapi.expect(_newapplication, validate=True)
-    def put(self, applicationId):
-        """Update an application """
-        data = request.json
-        return update_application(applicationId, data=data)
-
-    @api.response(response().created_code, response().created_message)
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('Delete an application')
-    def delete(self, applicationId):
-        """delete an application """
-        return delete_application(applicationId)

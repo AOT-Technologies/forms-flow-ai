@@ -1,12 +1,17 @@
 from datetime import datetime as dt
+from http import HTTPStatus
 
 from ..common.responses import errorResponse, nodataResponse, successListResponse, successResponse
 from ..models.application import Application, application_schema, applications_schema
 from .dboperations import save_changes
+from ..schemas import SubmissionSchema
+from ..exceptions import BusinessException
 
+class SubmissionService():
+    """This class manages submission service."""
 
-def save_new_submission(data, Id):
-    try:
+    @staticmethod
+    def save_new_submission(data, Id):
         new_application = Application(
             application_name=data['application_name'],
             application_status="active",
@@ -20,51 +25,36 @@ def save_new_submission(data, Id):
             revision_no=data['revision_no']
         )
         save_changes(new_application)
-        response = successResponse(data)
-        response.last_modified = dt.utcnow()
-        response.add_etag()
-        return response
-    except Exception as e:
-        return errorResponse()
 
+    @staticmethod
+    def get_all_submissions(applicationId, page_number, limit):
+        if page_number != None:
+            page_number = int(page_number)
+        if limit != None:
+            limit = int(limit)
 
-def get_all_submissions(applicationId, page_number, limit):
-    if page_number != None:
-        page_number = int(page_number)
-    if limit != None:
-        limit = int(limit)
-    try:
-        applications = Application.query.filter_by(application_status="active", mapper_id=applicationId).paginate(page_number, limit, False).items
+        submissions = Application.query.filter_by(application_status="active", mapper_id=applicationId).paginate(page_number, limit, False).items
         total = Application.query.filter_by(application_status="active").count()
-        result = applications_schema.dump(applications)
-        response = successListResponse(result, total, page_number, limit)
-        response.last_modified = dt.utcnow()
-        response.add_etag()
-        return response
-    except Exception as e:
-        return errorResponse()
+        submission_schema = SubmissionSchema()
+        return submission_schema.dump(submissions, many=True)
 
 
-def get_a_submission(applicationId, submissionId):
-    try:
+    @staticmethod
+    def get_a_submission(applicationId, submissionId):
+
         application_details = Application.query.filter_by(mapper_id=applicationId, submission_id=submissionId, application_status="active").first()
-        if not application_details:
-            return nodataResponse()
+        if application_details:
+            submission_schema = SubmissionSchema(only=( "application_id","submission_id","created_by","mapper_id"))
+            #process_variables
+            return submission_schema.dump(application_details)
         else:
-            result = application_schema.dump(application_details)
-            response = successResponse(result)
-            response.last_modified = dt.utcnow()
-            response.add_etag()
-            return response
-    except Exception as e:
-        return errorResponse()
+            raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
 
-
-def update_submission(applicationId, submissionId, data):
-    try:
+    @staticmethod
+    def update_submission(applicationId, submissionId, data):
         application = Application.query.filter_by(mapper_id=applicationId, submission_id=submissionId, application_status="active").first()
         if not application:
-            return nodataResponse()
+            raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
         else:
             application.application_name = data['application_name']
             application.mapper_id = data['mapper_id']
@@ -74,9 +64,3 @@ def update_submission(applicationId, submissionId, data):
             application.revision_no = data['revision_no']
 
             save_changes(application)
-            response = successResponse(data)
-            response.last_modified = dt.utcnow()
-            response.add_etag()
-            return response
-    except Exception as e:
-        return errorResponse()

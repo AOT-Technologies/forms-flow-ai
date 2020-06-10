@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   forms-flow-webapi-db:
-    image: postgres
+    image: postgres:11
     environment:
       POSTGRES_USER: ${WEB_API_POSTGRES_USER}
       POSTGRES_PASSWORD: ${WEB_API_POSTGRES_PASSWORD}

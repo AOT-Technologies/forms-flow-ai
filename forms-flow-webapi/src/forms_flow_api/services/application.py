@@ -1,11 +1,11 @@
 from datetime import datetime as dt
 from http import HTTPStatus
 
-from ..common.responses import errorResponse, nodataResponse, successListResponse, successResponse
-from ..models.process import Process, application_schema, applications_schema
-from .dboperations import save_changes
-from ..schemas import ApplicationSchema
 from ..exceptions import BusinessException
+from ..models import Application, Process
+from .dboperations import save_changes
+from ..schemas import AggregatedApplicationSchema, ApplicationSchema
+
 
 class ApplicationService():
     """This class manages application service."""
@@ -18,8 +18,8 @@ class ApplicationService():
             limit = int(limit)
         process = Process.find_all(page_number, limit)
         total = Process.query.filter_by(status='active').count()
-        application_schema = ApplicationSchema(only=( "mapper_id","form_id","form_name","form_revision_number","process_definition_key","process_name",
-        "form_name","status","comments","created_by","created_on","modified_on"))
+        application_schema = ApplicationSchema(only=("mapper_id", "form_id", "form_name", "form_revision_number", "process_definition_key", "process_name",
+                                                     "form_name", "status", "comments", "created_by", "created_on", "modified_on"))
         return application_schema.dump(process, many=True)
 
     @staticmethod
@@ -27,14 +27,13 @@ class ApplicationService():
 
         process_details = Process.find_by_id(application_id)
         if process_details:
-            application_schema = ApplicationSchema(only=( "mapper_id","form_id","form_name","form_revision_number","process_definition_key","process_name",
-            "form_name","status","comments","created_by","created_on","modified_on"))
+            application_schema = ApplicationSchema(only=("mapper_id", "form_id", "form_name", "form_revision_number", "process_definition_key", "process_name",
+                                                         "form_name", "status", "comments", "created_by", "created_on", "modified_on"))
             return application_schema.dump(process_details)
         else:
             raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
 
-
-    @staticmethod     
+    @staticmethod
     def save_new_application(data):
         new_application = Process(
             form_id=data['form_id'],
@@ -72,7 +71,6 @@ class ApplicationService():
 
             save_changes(application)
 
-
     @staticmethod
     def delete_application(application_id):
         application = Process.find_by_id(application_id)
@@ -82,3 +80,16 @@ class ApplicationService():
             application.status = 'inactive'
             save_changes(application)
 
+    @staticmethod
+    def get_aggregated_applications(from_date: str, to_date: str):
+        """Get aggregated applications."""
+        applications = Application.find_aggregated_applications(from_date, to_date)
+        schema = AggregatedApplicationSchema(exclude=('application_status',))
+        return schema.dump(applications, many=True)
+
+    @staticmethod
+    def get_aggregated_application_status(mapper_id: int, from_date: str, to_date: str):
+        """Get aggregated application status."""
+        application_status = Application.find_aggregated_application_status(mapper_id, from_date, to_date)
+        schema = AggregatedApplicationSchema(exclude=('mapper_id',))
+        return schema.dump(application_status, many=True)

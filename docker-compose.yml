@@ -1,19 +1,18 @@
 # Author: Gurumoorthy Mohan
-version: "3.7"
+version: '3.7'
 
 services:
-
   forms-flow-bpm-db:
-    image: postgres
+    image: postgres:11
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_HOST_AUTH_METHOD: "trust"
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
     volumes:
       - ./postgres/camunda:/data/postgres
     ports:
-      - "5432:5432"
+      - '5432:5432'
     restart: unless-stopped
     networks:
       - forms-flow-bpm-network
@@ -47,7 +46,7 @@ services:
     restart: always
     hostname: forms-flow-forms-db
     ports:
-      - "27018:27017"
+      - '27018:27017'
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
@@ -68,7 +67,7 @@ services:
     links:
       - forms-flow-forms-db
     ports:
-      - "3001:3001"
+      - '3001:3001'
     # The application wants to download things to the local directory
     # TODO: really wish I could mount this as read-only
     volumes:
@@ -78,8 +77,8 @@ services:
       NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio"}'
       ROOT_EMAIL: ${ROOT_EMAIL}
       ROOT_PASSWORD: ${ROOT_PASSWORD}
-    stdin_open: true  # -i
-    tty: true         # -t
+    stdin_open: true # -i
+    tty: true # -t
     networks:
       - forms-flow-forms-network
 
@@ -122,9 +121,9 @@ services:
       POSTGRES_USER: ${WEB_API_POSTGRES_USER}
       POSTGRES_PASSWORD: ${WEB_API_POSTGRES_PASSWORD}
       POSTGRES_DB: ${WEB_API_POSTGRES_DB}
-      POSTGRES_HOST_AUTH_METHOD: "trust"
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
     ports:
-      - "6432:5432"
+      - '6432:5432'
     restart: unless-stopped
     volumes:
       - ./postgres/webapi:/data/postgres
@@ -144,17 +143,17 @@ services:
       - ./:/app:rw
     environment:
       DATABASE_URL: ${WEB_API_DATABASE_URL}
-    stdin_open: true  # -i
-    tty: true         # -t
+    stdin_open: true # -i
+    tty: true # -t
     networks:
       - forms-flow-webapi-network
-  
+
 networks:
   forms-flow-webapi-network:
   forms-flow-forms-network:
   forms-flow-bpm-network:
   forms-flow-web-network:
-    driver: "bridge"
+    driver: 'bridge'
 
 volumes:
   mdb-data:

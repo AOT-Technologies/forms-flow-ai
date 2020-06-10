@@ -8,16 +8,15 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      PGDATA: /data/postgres
       POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST_AUTH_METHOD: "trust"
     volumes:
-      - ./postgres:/data/postgres
+      - ./postgres/camunda:/data/postgres
     ports:
       - "5432:5432"
     restart: unless-stopped
     networks:
       - forms-flow-bpm-network
-
 
   forms-flow-bpm:
     build:
@@ -44,7 +43,7 @@ services:
       - forms-flow-bpm-network
 
   forms-flow-forms-db:
-    image: mongo:4.1
+    image: mongo
     restart: always
     hostname: forms-flow-forms-db
     ports:
@@ -53,13 +52,10 @@ services:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
-      MONGO_REPLICA_SET_NAME: ${MONGO_REPLICA_SET_NAME}
     volumes:
       - ./mongodb/data/db/:/data/db/
       - ./mongodb/data/log/:/var/log/mongodb/
       - ./mongodb/mongod.conf:/etc/mongod.conf
-      - ./mongodb/initdb.d/:/docker-entrypoint-initdb.d/
-    command: [ "--replSet", "${MONGO_REPLICA_SET_NAME}", "--bind_ip_all"]
     networks:
       - forms-flow-forms-network
 
@@ -79,7 +75,7 @@ services:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: '{"mongo": "mongodb://formio:aot123@forms-flow-forms-db:27017/formio?replicaSet=rs0"}'
+      NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio"}'
       ROOT_EMAIL: ${ROOT_EMAIL}
       ROOT_PASSWORD: ${ROOT_PASSWORD}
     stdin_open: true  # -i
@@ -153,19 +149,6 @@ services:
     networks:
       - forms-flow-webapi-network
   
-  nginx:
-    image: nginx:1.15-alpine
-    ports:
-      - "443:443"
-    volumes:
-      - ./:/var/www
-      - ./nginx/conf.d/:/etc/nginx/conf.d/
-      - /home/dev/certs:/etc/nginx/certs
-    restart: unless-stopped
-    tty: true
-    networks:
-      - forms-flow-web-network
-
 networks:
   forms-flow-webapi-network:
   forms-flow-forms-network:

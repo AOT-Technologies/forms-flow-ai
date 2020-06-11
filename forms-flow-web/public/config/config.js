@@ -17,4 +17,5 @@ window['_env_'] =  {
   "REACT_APP_BPM_TOKEN_API": "",
   "REACT_APP_KEYCLOAK_BPM_CLIENT": "",
   "REACT_APP_BPM_CLIENT_ID": "",
+  "REACT_APP_INSIGHT_API_BASE":""
 }

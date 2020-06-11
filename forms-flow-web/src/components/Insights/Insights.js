@@ -24,9 +24,9 @@ const Insights = (props) => {
           </div>
           <div className="col-12" >
             <iframe
-              style={{maxWidth:1640,
+              style={{
                 width:'100%',
-                height:'100%',
+                height:'600px',
                 overflow:'visible'
               }}
               src="https://bpm2.aot-technologies.com/public/dashboards/TyeHsJLGWiCJWRIwcfRZiGlGWUDeun9JwWWeZnsC?org_slug=default"/>

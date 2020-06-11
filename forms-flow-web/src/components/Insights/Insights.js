@@ -1,4 +1,5 @@
 import React, { useEffect }  from "react";
+import ReactDOM from 'react-dom';
 import {connect} from "react-redux";
 // import {push} from "connected-react-router";
 
@@ -21,8 +22,14 @@ const Insights = (props) => {
             </h1>
             <hr className="line-hr"/>
           </div>
-          <div className="col-12">
-            TODO
+          <div className="col-12" >
+            <iframe
+              style={{maxWidth:1640,
+                width:'100%',
+                height:'100%',
+                overflow:'visible'
+              }}
+              src="https://bpm2.aot-technologies.com/public/dashboards/TyeHsJLGWiCJWRIwcfRZiGlGWUDeun9JwWWeZnsC?org_slug=default"/>
           </div>
         </div>
       </div>

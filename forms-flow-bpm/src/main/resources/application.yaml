@@ -25,21 +25,21 @@ spring:
           issuer-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}
   main:
     allow-bean-definition-overriding: true
- 
+
 management:
   endpoints:
     web:
       exposure:
         include: "health,info"
- 
+
 info:
   app:
     name: "Camunda"
     description: "Forms Process Engine"
-    version: "7.11.3"
+    version: "7.13"
   java:
     version: "11"
- 
+
 # Redis Session Cache not yet in use
 #  session:
 #    store-type: ${SESSION_STORE_TYPE:none}
@@ -49,22 +49,15 @@ info:
 #    port: ${REDIS_PORT:6379}
 
 camunda.bpm:
-  history-level: audit
+  history-level: none
   authorization:
     enabled: true
   filter:
     create: All tasks
   webapp:
     application-path: /
-
 server:
-  port: 8443
-  ssl:
-    key-store: file:/certs/keystore.ks
-    key-store-password: password
-    key-store-type: pkcs12
-    key-alias: tomcat
-    key-password: password
+  port: 8080
   servlet.context-path: /camunda
 
 security:

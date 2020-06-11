@@ -7,7 +7,7 @@ from flask_restx import Namespace, Resource, cors
 from marshmallow import ValidationError
 
 from ..exceptions import BusinessException
-from ..schemas import AggregatedApplicationReqSchema, ApplicationSchema
+from ..schemas import AggregatedApplicationReqSchema, ApplicationSchema, ApplicationListReqSchema, ApplicationReqSchema
 from ..services import ApplicationService
 from ..utils.util import cors_preflight
 
@@ -23,12 +23,20 @@ class ApplicationResource(Resource):
     @staticmethod
     @cors.crossdomain(origin='*')
     def get():
-        """Get Applications."""
-        pageNo = request.args.get('pageNo')
-        limit = request.args.get('limit')
-        return jsonify({
-            'applications': ApplicationService.get_all_applications(pageNo, limit)
-        }), HTTPStatus.OK
+        try:
+            """Get Applications."""
+            request_schema = ApplicationListReqSchema()
+            dict_data = request_schema.load(request.args)
+            pageNo = dict_data['pageNo']
+            limit = dict_data['limit']
+            return jsonify({
+                'applications': ApplicationService.get_all_applications(pageNo, limit),
+                'totalCount': ApplicationService.get_all_application_count(),
+                'pageNo':pageNo,
+                'limit':limit
+            }), HTTPStatus.OK
+        except ValidationError as agg_err:
+            return {'systemErrors': agg_err.messages}, HTTPStatus.BAD_REQUEST
 
     @staticmethod
     @cors.crossdomain(origin='*')
@@ -37,7 +45,7 @@ class ApplicationResource(Resource):
         application_json = request.get_json()
 
         try:
-            application_schema = ApplicationSchema()
+            application_schema = ApplicationReqSchema()
             dict_data = application_schema.load(application_json)
             application = ApplicationService.save_new_application(dict_data)
 
@@ -79,6 +87,8 @@ class ApplicationResourceById(Resource):
         application_json = request.get_json()
 
         try:
+            application_schema = ApplicationReqSchema()
+            dict_data = application_schema.load(application_json)
             application = ApplicationService.update_application(applicationId, application_json)
 
             return 'Updated successfully', HTTPStatus.OK

@@ -11,16 +11,19 @@ class ApplicationService():
     """This class manages application service."""
 
     @staticmethod
-    def get_all_applications(page_number, limit):
+    def get_all_applications(page_number:int, limit:int):
         if page_number != None:
             page_number = int(page_number)
         if limit != None:
             limit = int(limit)
         process = Process.find_all(page_number, limit)
-        total = Process.query.filter_by(status='active').count()
         application_schema = ApplicationSchema(only=("mapper_id", "form_id", "form_name", "form_revision_number", "process_definition_key", "process_name",
                                                      "form_name", "status", "comments", "created_by", "created_on", "modified_on"))
         return application_schema.dump(process, many=True)
+
+    @staticmethod
+    def get_all_application_count():
+        return Process.query.filter_by(status='active').count()
 
     @staticmethod
     def get_a_application(application_id):
@@ -43,9 +46,9 @@ class ApplicationService():
             process_name=data['process_name'],
             status='active',
             comments=data['comments'],
-            created_by=data['created_by'],
+            created_by='test', #TODO: Use data from keycloak token
             created_on=dt.utcnow(),
-            modified_by=data['modified_by'],
+            modified_by='test', #TODO: Use data from keycloak token
             modified_on=dt.utcnow(),
             tenant_id=data['tenant_id']
         )
@@ -65,7 +68,7 @@ class ApplicationService():
             application.process_definition_key = data['process_definition_key']
             application.process_name = data['process_name']
             application.comments = data['comments']
-            application.modified_by = data['modified_by']
+            application.modified_by = 'test', #TODO: Use data from keycloak token
             application.modified_on = dt.utcnow()
             application.tenant_id = data['tenant_id']
 

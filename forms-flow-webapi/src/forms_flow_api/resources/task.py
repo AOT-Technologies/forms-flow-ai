@@ -1,74 +1,96 @@
-from flask_restx import Resource
+"""API endpoints for managing task resource."""
 
-from ..common.responses import response
-from ..services.task_service import claim_a_task, due_a_task, get_a_task, get_all_tasks, set_action_a_task, unclaim_a_task
-from ..utils.dto import TaskDto
+from http import HTTPStatus
+
+from flask import jsonify, request
+from flask_restx import Namespace, Resource, cors
+from marshmallow import ValidationError
+
+from ..exceptions import BusinessException
+from ..schemas import TaskListSchema
+from ..services import TaskService
+from ..utils.util import cors_preflight
 
 
-api = TaskDto.api
-_application = TaskDto.task
 
+API = Namespace('Task', description='Task')
 
-@api.route('/')
+@cors_preflight('GET,OPTIONS')
+@API.route('', methods=['GET','OPTIONS'])
 class TaskList(Resource):
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('list_of_tasks')
-    def get(self):
+    """Resource for managing tasks."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def get():
         """List all tasks"""
-        return get_all_tasks()
+        return jsonify({
+            'tasks': TaskService.get_all_tasks()
+        }), HTTPStatus.OK
 
-
-@api.route('/<taskId>')
-@api.param('taskId', 'The task identifier')
+@cors_preflight('GET,OPTIONS')
+@API.route('/taskId', methods=['GET', 'OPTIONS'])
 class TaskDetails(Resource):
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('get a task')
-    def get(self, taskId):
+    """Resource for task details."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def get(taskId):
         """Get task detail"""
-        return get_a_task(taskId)
+        return jsonify({
+            'tasks': TaskService.get_a_task(taskId)
+            }), HTTPStatus.OK
 
 
-@api.route('/<taskId>/claim')
-@api.param('taskId', 'The task identifier')
+@cors_preflight('GET,OPTIONS')
+@API.route('/taskId/claim', methods=['GET', 'OPTIONS'])
 class TaskClaim(Resource):
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('claim a task')
-    def get(self, taskId):
+    """Resource for claim task."""
+
+    @staticmethod
+    def get(taskId):
         """Claim a task"""
-        return claim_a_task(taskId)
+        return jsonify({
+            'tasks': TaskService.claim_a_task(taskId)
+            }), HTTPStatus.OK
 
 
-@api.route('/<taskId>/unclaim')
-@api.param('taskId', 'The task identifier')
+@cors_preflight('GET,OPTIONS')
+@API.route('/taskId/unclaim', methods=['GET', 'OPTIONS'])
 class TaskUnclaim(Resource):
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('unclaim a task')
-    def get(self, taskId):
+    """Resource for unclaim task."""
+
+    @staticmethod
+    def get(taskId):
         """Unclaim a task"""
-        return unclaim_a_task(taskId)
+        return jsonify({
+            'tasks': TaskService.unclaim_a_task(taskId)
+            }), HTTPStatus.OK
 
 
-@api.route('/<taskId>/action')
-@api.param('taskId', 'The task identifier')
+
+@cors_preflight('GET,OPTIONS')
+@API.route('/taskId/action', methods=['GET', 'OPTIONS'])
 class TaskAction(Resource):
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('set action for a task')
-    def get(self, taskId):
+    """Resource for do task actions."""
+
+    @staticmethod
+    def get(taskId):
         """Set action for a task"""
-        return set_action_a_task(taskId)
+        return jsonify({
+            'tasks': TaskService.set_action_a_task(taskId)
+            }), 
 
 
-@api.route('/<taskId>/due')
-@api.param('taskId', 'The task identifier')
-class TaskDue(Resource):
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('set due for a task')
-    def get(self, taskId):
-        """Set due for a task"""
-        return due_a_task(taskId)
+@cors_preflight('GET,OPTIONS')
+@API.route('/taskId/due', methods=['GET', 'OPTIONS'])
+class TaskAction(Resource):
+    """Resource for set due for task."""
+
+    @staticmethod
+    def get(taskId):
+        """set due for a task"""
+        return jsonify({
+            'tasks': TaskService.due_a_task(taskId)
+            }), 
+

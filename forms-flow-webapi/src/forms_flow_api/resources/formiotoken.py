@@ -1,20 +1,24 @@
-from flask_restx import Resource
+"""API endpoints for generating formio token."""
 
-from ..common.responses import response
-from ..services.formiotoken_service import get_formio_token
-from ..utils.dto import FormIOTokenDto
+from http import HTTPStatus
+from flask_restx import Namespace, Resource, cors
+from flask import jsonify, request
 
+from ..services import FormIOTokenService
+from ..utils.util import cors_preflight
 
-api = FormIOTokenDto.api
-_token = FormIOTokenDto.token
+API = Namespace('FormIOToken', description='FormIOToken')
 
-
-@api.route('/')
+@cors_preflight('GET,OPTIONS')
+@API.route('', methods=['GET', 'OPTIONS'])
 class ApplicationList(Resource):
-    @api.response(response().error_code, response().error_message)
-    @api.response(response().notfound_code, response().notfound_message)
-    @api.doc('formio token data')
-    @api.marshal_with(_token)
-    def get(self):
+    """Resource for generatiing formiotoken."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def get():
         """Get formio token"""
-        return get_formio_token()
+        return jsonify({
+            'formioToken': FormIOTokenService.get_formio_token()
+        }), HTTPStatus.OK
+

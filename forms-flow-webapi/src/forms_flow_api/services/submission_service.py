@@ -34,27 +34,28 @@ class SubmissionService():
             limit = int(limit)
 
         submissions = Application.query.filter_by(application_status="active", mapper_id=applicationId).paginate(page_number, limit, False).items
-        total = Application.query.filter_by(application_status="active").count()
         submission_schema = SubmissionSchema()
         return submission_schema.dump(submissions, many=True)
 
+    @staticmethod 
+    def get_all_submissions_count():
+        return Application.query.filter_by(application_status="active").count()
 
     @staticmethod
     def get_a_submission(applicationId, submissionId):
 
         application_details = Application.query.filter_by(mapper_id=applicationId, submission_id=submissionId, application_status="active").first()
         if application_details:
-            submission_schema = SubmissionSchema(only=( "application_id","submission_id","created_by","mapper_id"))
-            #process_variables
+            submission_schema = SubmissionSchema()
             return submission_schema.dump(application_details)
         else:
-            raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
+            raise BusinessException('Invalid submission', HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def update_submission(applicationId, submissionId, data):
         application = Application.query.filter_by(mapper_id=applicationId, submission_id=submissionId, application_status="active").first()
         if not application:
-            raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
+            raise BusinessException('Invalid submission', HTTPStatus.BAD_REQUEST)
         else:
             application.application_name = data['application_name']
             application.mapper_id = data['mapper_id']

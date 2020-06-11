@@ -7,9 +7,9 @@ from flask_restx import Api
 
 from .application import API as APPLICATION_API
 from .submission import API as SUBMISSION_API
-from .formiotoken import api as formiotoken
+from .formiotoken import API as FORMIOTOKEN_API
 from .process import API as PROCESS_API
-from .task import api as task
+from .task import API as TASK_API
 from .tenant import API as TENANT_API
 
 
@@ -30,9 +30,9 @@ API = Api(
     security=['apikey'],
     authorizations=AUTHORIZATIONS)
 
-API.add_namespace(formiotoken, path='/getformiotoken')
+API.add_namespace(FORMIOTOKEN_API, path='/getformiotoken')
 API.add_namespace(APPLICATION_API, path='/application')
-API.add_namespace(SUBMISSION_API, path='/submission')
+API.add_namespace(SUBMISSION_API, path='/application')
 API.add_namespace(PROCESS_API, path='/process')
-API.add_namespace(task, path='/task')
+API.add_namespace(TASK_API, path='/task')
 API.add_namespace(TENANT_API, path='/tenant')

@@ -1,6 +1,6 @@
 import React from "react";
 import Insights from "./Insights";
-import "./insights.scss";
+import "./Insights.scss";
 
 const InsightsPage = () => {
   return <Insights />;

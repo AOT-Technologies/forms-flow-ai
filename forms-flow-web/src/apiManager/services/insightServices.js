@@ -2,11 +2,13 @@ import {  httpGETRequest } from '../httpRequestHandler';
 import API from '../endpoints';
 import { serviceActionError } from '../../actions/taskActions'; //TODO move to a common action
 import { getDashboards, getDashboardDetail} from '../../actions/insightActions';
+import INSIGHTS from "../constants/insightConstants";
 
-export const getDashboardsList = (id, ...rest) =>{
+export const fetchDashboardsList = (id, ...rest) =>{
   const done = rest.length ? rest[0] :  ()=>{};
   return dispatch=>{
-    httpGETRequest(API.GET_DASHBOARDS).then(res=>{
+    httpGETRequest(API.GET_DASHBOARDS, null, INSIGHTS.authToken, false).then(res=>{
+      debugger;
       if (res.data) {
         dispatch(getDashboards(res.data))
         done(null,res);
@@ -22,10 +24,10 @@ export const getDashboardsList = (id, ...rest) =>{
   }
 }
 
-export const getDashboardDetails = (id, ...rest) =>{
+export const fetchDashboardDetails = (id, ...rest) =>{
   const done = rest.length ? rest[0] :  ()=>{};
   return dispatch=>{
-    httpGETRequest(`${API.GET_DASHBOARDS}/${id}`).then(res=>{
+    httpGETRequest(`${API.GET_DASHBOARDS}/${id}`, null, INSIGHTS.authToken, false).then(res=>{
       if (res.data) {
         dispatch(getDashboardDetail(res.data))
         done(null,res);

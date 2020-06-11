@@ -94,6 +94,17 @@ const SideBar = (props) => {
               </Link>
             ) : null}
           </li>
+          <li>
+            <Link
+              to="/insights"
+              className={`main-nav nav-link ${
+                pathname === "/insights" ? "active-tab" : ""
+              }`}
+            >
+            <i className="fa fa-lightbulb-o"></i>
+              Insights
+            </Link>
+          </li>
         </ul>
       </nav>
     </header>

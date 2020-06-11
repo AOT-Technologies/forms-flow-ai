@@ -9,6 +9,7 @@ import { setUserAuth } from "../actions/bpmActions";
 import { STAFF_REVIEWER } from "../constants/constants";
 import Loading from "../containers/Loading";
 import DashboardPage from "./Dashboard";
+import InsightsPage from "./Insights";
 
 class PrivateRoute extends Component {
   UNSAFE_componentWillMount() {
@@ -40,6 +41,7 @@ class PrivateRoute extends Component {
             <Route exact path="/">
               <Redirect to="/form" />
             </Route>
+            <Route path="/insights" component={InsightsPage} />
           </>
         ) : (
           <Loading />

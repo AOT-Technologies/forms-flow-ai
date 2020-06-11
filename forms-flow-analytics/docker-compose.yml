@@ -8,7 +8,7 @@ x-redash-service: &redash-service
     - .:/app
 x-redash-environment: &redash-environment
   REDASH_LOG_LEVEL: ${REDASH_LOG_LEVEL}
-  REDASH_REDIS_URL: $[REDASH_REDIS_URL}
+  REDASH_REDIS_URL: ${REDASH_REDIS_URL}
   REDASH_DATABASE_URL: ${REDASH_DATABASE_URL}
   REDASH_RATELIMIT_ENABLED: ${REDASH_RATELIMIT_ENABLED}
 services:
@@ -16,8 +16,8 @@ services:
     <<: *redash-service
     command: dev_server
     depends_on:
-      - postgres
-      - redis
+      - forms-flow-analytics-db
+      - forms-flow-analytics-redis
     ports:
       - '6000:6000'
       - '5678:5678'
@@ -31,7 +31,7 @@ services:
     <<: *redash-service
     command: dev_scheduler
     depends_on:
-      - server
+      - forms-flow-analytics-server
     environment:
       <<: *redash-environment
     networks:
@@ -41,7 +41,7 @@ services:
     <<: *redash-service
     command: dev_worker
     depends_on:
-      - server
+      - forms-flow-analytics-server
     environment:
       <<: *redash-environment
       PYTHONUNBUFFERED: 0
@@ -70,5 +70,5 @@ services:
       - forms-flow-analytics-network
 
 networks:
-  forms-flow-analytics-network
+  forms-flow-analytics-network:
     driver: 'bridge'

@@ -57,7 +57,7 @@
     "font-awesome": "^4.7.0",
     "history": "^4.10.1",
     "hoist-non-react-statics": "^3.3.0",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.15",
     "markdown": "0.5.0",
     "material-design-iconic-font": "^2.2.0",
     "moment": "^2.19.3",
@@ -126,8 +126,8 @@
     "webpack": "^4.20.2",
     "webpack-build-notifier": "^0.1.30",
     "webpack-bundle-analyzer": "^2.11.1",
-    "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.9",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0",
     "webpack-manifest-plugin": "^2.0.4"
   },
   "optionalDependencies": {

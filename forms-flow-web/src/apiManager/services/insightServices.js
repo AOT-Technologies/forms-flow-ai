@@ -8,7 +8,6 @@ export const fetchDashboardsList = (id, ...rest) =>{
   const done = rest.length ? rest[0] :  ()=>{};
   return dispatch=>{
     httpGETRequest(API.GET_DASHBOARDS, null, INSIGHTS.authToken, false).then(res=>{
-      debugger;
       if (res.data) {
         dispatch(getDashboards(res.data))
         done(null,res);

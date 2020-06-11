@@ -5,12 +5,11 @@ import {connect} from "react-redux";
 import { fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/services/insightServices";
 
 const Insights = (props) => {
-
+  const {dashboards, activeDashboard, getDashboardsList } = props;
   useEffect(() => {
-    props.getDashboardsList();
-  },[]);
+    getDashboardsList();
+  },[getDashboardsList]);
 
-  const {dashboards, activeDashboard } = props;
   console.log(dashboards, activeDashboard);
   return (
     <>

@@ -1,10 +1,12 @@
 """Exposes all of the resource endpoints mounted in Flask-Blueprint style.
 
-Uses restplus namespaces to mount individual api endpoints into the service.
+Uses restx namespaces to mount individual api endpoints into the service.
 """
 
+from flask_jwt_oidc import AuthError
 from flask_restx import Api
 
+from ..exceptions import BusinessException
 from .application import API as APPLICATION_API
 from .submission import API as SUBMISSION_API
 from .formiotoken import API as FORMIOTOKEN_API
@@ -29,6 +31,19 @@ API = Api(
     description='The API for FORMIO',
     security=['apikey'],
     authorizations=AUTHORIZATIONS)
+
+
+@API.errorhandler(BusinessException)
+def handle_business_exception(error: BusinessException):
+    """Handle Business exception."""
+    return {'message': error.error}, error.status_code, {'Access-Control-Allow-Origin': '*'}
+
+
+@API.errorhandler(AuthError)
+def handle_auth_error(error: AuthError):
+    """Handle Business exception."""
+    return {'message': 'Access Denied'}, error.status_code, {'Access-Control-Allow-Origin': '*'}
+
 
 API.add_namespace(FORMIOTOKEN_API, path='/getformiotoken')
 API.add_namespace(APPLICATION_API, path='/application')

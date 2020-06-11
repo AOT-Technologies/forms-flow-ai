@@ -69,10 +69,22 @@ class _Config():  # pylint: disable=too-few-public-methods
     JWT_OIDC_AUDIENCE = os.getenv('JWT_OIDC_AUDIENCE')
     JWT_OIDC_CACHING_ENABLED = os.getenv('JWT_OIDC_CACHING_ENABLED')
     try:
-        #JWT_OIDC_JWKS_CACHE_TIMEOUT = int(os.getenv('JWT_OIDC_JWKS_CACHE_TIMEOUT'))
-        JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
+        JWT_OIDC_JWKS_CACHE_TIMEOUT = int(os.getenv('JWT_OIDC_JWKS_CACHE_TIMEOUT'))
     except ValueError:
         JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
+
+    # Keycloak Service for BPM Camunda
+    BPM_TOKEN_API = os.getenv('BPM_TOKEN_API')
+    BPM_CLIENT_ID = os.getenv('BPM_CLIENT_ID')
+    BPM_CLIENT_SECRET = os.getenv('BPM_CLIENT_SECRET')
+    BPM_GRANT_TYPE = os.getenv('BPM_GRANT_TYPE')
+
+    # BPM Camunda Details
+    BPM_API_BASE = os.getenv('BPM_API_BASE')
+    API_PROCESS = os.getenv('API_PROCESS')
+    API_TASK_HISTORY = os.getenv('API_TASK_HISTORY')
+    API_TASK = os.getenv('API_TASK')
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""
@@ -86,6 +98,7 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
 
     DEBUG = True
     TESTING = True
+
     # POSTGRESQL
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL_TEST', '')
 

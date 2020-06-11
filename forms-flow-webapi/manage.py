@@ -1,7 +1,6 @@
 """Manage the database and some other items required to run the API."""
 
 import logging
-import os
 
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager

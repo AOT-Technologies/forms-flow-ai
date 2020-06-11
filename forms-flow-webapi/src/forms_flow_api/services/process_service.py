@@ -1,15 +1,15 @@
 import os
-from datetime import datetime as dt
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
-from ..schemas import ProcessListSchema, ProcessDefinitionSchema, ProcessActionListSchema
-from .bpm_service import httpGETRequest
+from ..schemas import ProcessActionListSchema, ProcessDefinitionSchema, ProcessListSchema
+from .external import BPMService
 
 
 BPM_API_BASE = os.getenv('BPM_API_BASE', '')
 API_PROCESS = os.getenv('API_PROCESS', '')
 BPM_API_PROCESS = BPM_API_BASE + API_PROCESS
+
 
 class ProcessService():
     """This class manages process service."""
@@ -18,8 +18,8 @@ class ProcessService():
     def get_all_processes():
         try:
             url = BPM_API_PROCESS
-            process = httpGETRequest(url)
-            if process == [] :
+            process = BPMService.get_request(url)
+            if process == []:
                 return process
             else:
                 result = ProcessListSchema.dump(process)
@@ -35,11 +35,10 @@ class ProcessService():
         except Exception as err:
             return "Error"
 
-
     @staticmethod
     def get_a_process(processKey):
         url = BPM_API_PROCESS + processKey
-        process_details = httpGETRequest(url)
+        process_details = BPMService.get_request(url)
         if not process_details:
             raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
         else:
@@ -48,9 +47,8 @@ class ProcessService():
     @staticmethod
     def get_a_process_action(processKey):
         url = BPM_API_PROCESS + processKey
-        process_details = httpGETRequest(url)
+        process_details = BPMService.get_request(url)
         if not process_details:
             raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
         else:
             return ProcessActionListSchema.dump(process_details)
-

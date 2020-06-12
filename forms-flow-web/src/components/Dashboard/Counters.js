@@ -1,117 +1,32 @@
 import React, { Fragment } from "react";
+import CardStatusCounterCard from "./CardStatusCounterCard";
 const Dashboard = (props) => {
   return (
     <Fragment>
       <div className="row mt-3">
         <div className="col-12">
           <h3 className="application-title">
-            <i className="fa fa-bars mr-1"></i> Application
+            <i className="fa fa-bars mr-1"></i> Application status
           </h3>
         </div>
         <div className="col-lg-4 col-sm-6 col-xs-12">
-          <div className="card-counter">
-            <div className="white-box analytics-info">
-              <h3 className="box-title">
-                <i
-                  className="fa fa-arrow-circle-o-right mr-1 text-purple "
-                  aria-hidden="true"
-                ></i>
-                New (unassigned)
-              </h3>
-              <div className="progress progress-md">
-                <div
-                  className="progress-bar bg-purple "
-                  role="progressbar"
-                  style={{ width: "50%" }}
-                  aria-valuenow="78"
-                  aria-valuemin="0"
-                  aria-valuemax="78"
-                ></div>
-              </div>
-              <ul className="list-inline two-part">
-                <li>
-                  <div>
-                    <div className="counter text-purple ">50</div>
-                    <div className="app-title">With Me</div>
-                  </div>
-                </li>
-                <li className="text-right">
-                  <i className="ti-arrow-up text-purple "></i>
-                  <div className="counter text-purple ">100</div>
-                  <div className="app-title text-purple ">with Group</div>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <CardStatusCounterCard type="new" title="New " count="5" total="30" />
         </div>
         <div className="col-lg-4 col-sm-6 col-xs-12">
-          <div className="card-counter">
-            <div className="white-box analytics-info">
-              <h3 className="box-title">
-                {" "}
-                <i className="fa fa-clock-o mr-1 text-yellow"></i>In progress
-              </h3>
-              <div className="progress progress-md">
-                <div
-                  className="progress-bar bg-yellow"
-                  role="progressbar"
-                  style={{ width: "20%" }}
-                  aria-valuenow="78"
-                  aria-valuemin="0"
-                  aria-valuemax="78"
-                ></div>
-              </div>
-              <ul className="list-inline two-part">
-                <li>
-                  <div>
-                    <div className="counter text-yellow">20</div>
-                    <div className="app-title">With Me</div>
-                  </div>
-                </li>
-                <li className="text-right">
-                  <i className="ti-arrow-up text-yellow"></i>
-                  <div className="counter text-yellow">100</div>
-                  <div className="app-title">with Group</div>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <CardStatusCounterCard
+            type="progress"
+            title="New "
+            count="10"
+            total="30"
+          />
         </div>
         <div className="col-lg-4 col-sm-6 col-xs-12">
-          <div className="card-counter">
-            <div className="white-box analytics-info">
-              <h3 className="box-title">
-                <i
-                  className="fa fa-check-circle  text-success mr-1"
-                  aria-hidden="true"
-                ></i>{" "}
-                completed
-              </h3>
-              <div className="progress progress-md">
-                <div
-                  className="progress-bar bg-success"
-                  role="progressbar"
-                  style={{ width: "80%" }}
-                  aria-valuenow="78"
-                  aria-valuemin="0"
-                  aria-valuemax="78"
-                ></div>
-              </div>
-              <ul className="list-inline two-part">
-                <li>
-                  <div>
-                    <div className="counter text-success">80</div>
-                    <div className="app-title">With Me</div>
-                  </div>
-                </li>
-                <li className="text-right">
-                  <i className="ti-arrow-up text-success"></i>
-                  <div className="counter text-success">100</div>
-                  <div className="app-title">with Group</div>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <CardStatusCounterCard
+            type="completed"
+            title="New "
+            count="15"
+            total="30"
+          />
         </div>
       </div>
     </Fragment>

@@ -33,7 +33,7 @@ const SideBar = (props) => {
                     alt="profile"
                   />
 
-                  <div className="dot-indicator bg-success"/>
+                  <div className="dot-indicator bg-success" />
                 </div>
                 <div className="text-wrapper">
                   <p className="profile-name">

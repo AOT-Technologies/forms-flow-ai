@@ -12,7 +12,7 @@ const ListData = (props) => {
       {/* <div className="card-counter">
         <div className="white-box analytics-info"> */}
       <h3 className="">Latest 5 unassigned forms</h3>
-      <table class="table">
+      <table className="table">
         <thead>
           <tr>
             <th scope="col">#</th>
@@ -61,7 +61,7 @@ const ListData = (props) => {
           <div className="card-counter">
             <div className="white-box analytics-info">
               <h3 className="">Latest 5 unassigned task</h3>
-              <table class="table">
+              <table className="table">
                 <thead>
                   <tr>
                     <th scope="col">#</th>

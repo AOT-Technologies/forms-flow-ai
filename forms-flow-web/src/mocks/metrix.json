@@ -1,0 +1,88 @@
+{
+  "applicationsMetrix": [
+    {
+      "applications": [
+        {
+          "mapperId": 1,
+          "formName": "form 1",
+          "count": 30
+        },
+        {
+          "mapperId": 2,
+          "formName": "form 2",
+          "count": 50
+        },
+        {
+          "mapperId": 3,
+          "formName": "form 3",
+          "count": 60
+        }
+      ]
+    }
+  ],
+  "statusMetrix": [
+    {
+      "applicationStatus": [
+        {
+          "formName": "form 1",
+          "statusName": "new",
+          "count": 10,
+          "id": 1
+        }
+      ],
+      "id": 1
+    },
+    {
+      "applicationStatus": [
+        {
+          "formName": "form 2",
+          "statusName": "new",
+          "count": 10,
+          "id": 1
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Approval",
+          "count": 5,
+          "id": 2
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Second Approval",
+          "count": 10,
+          "id": 2
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Completed",
+          "count": 25,
+          "id": 3
+        }
+      ],
+      "id": 2
+    },
+    {
+      "applicationStatus": [
+        {
+          "formName": "form 3",
+          "statusName": "new",
+          "count": 10,
+          "id": 1
+        },
+        {
+          "formName": "form 3",
+          "statusName": "new",
+          "count": 10,
+          "id": 2
+        },
+        {
+          "formName": "form 3",
+          "statusName": "new",
+          "count": 10,
+          "id": 3
+        }
+      ],
+      "id": 3
+    }
+  ]
+}

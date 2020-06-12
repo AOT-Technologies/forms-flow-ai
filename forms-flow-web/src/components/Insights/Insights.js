@@ -1,5 +1,4 @@
 import React, { useEffect }  from "react";
-import ReactDOM from 'react-dom';
 import {connect} from "react-redux";
 import Select from 'react-select'
 // import {push} from "connected-react-router";
@@ -40,13 +39,14 @@ const Insights = (props) => {
             </div>
           <div className="col-12" >
             <iframe
+              title="dashboard"
               style={{
                 width: '100%',
                 height: 'auto',
                 overflow: 'visible',
                 border: 'none',
                 minHeight: '100vh',
-              
+
               }}
               src="https://bpm2.aot-technologies.com/public/dashboards/TyeHsJLGWiCJWRIwcfRZiGlGWUDeun9JwWWeZnsC?org_slug=default"/>
           </div>

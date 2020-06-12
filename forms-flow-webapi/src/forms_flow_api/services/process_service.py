@@ -1,60 +1,54 @@
 import os
-from datetime import datetime as dt
 from http import HTTPStatus
 
-from ..common.responses import errorResponse, nodataResponse, successResponse
-from ..models.process import process_schema, processes_schema
-from .bpm_service import httpGETRequest
+from ..exceptions import BusinessException
+from ..schemas import ProcessActionListSchema, ProcessDefinitionSchema, ProcessListSchema
+from .external import BPMService
 
 
 BPM_API_BASE = os.getenv('BPM_API_BASE', '')
 API_PROCESS = os.getenv('API_PROCESS', '')
 BPM_API_PROCESS = BPM_API_BASE + API_PROCESS
 
+
 class ProcessService():
     """This class manages process service."""
 
     @staticmethod
     def get_all_processes():
-        url = BPM_API_PROCESS
-        process = httpGETRequest(url)
-        result = processes_schema.dump(process)
-        seen = set()
-        new_result = []
-        for data in result:
-            for d in data:
-                t = tuple(d.items())
-                if t not in seen:
-                    seen.add(t)
-                    new_result.append(d)
-        return new_result
-
+        try:
+            url = BPM_API_PROCESS
+            process = BPMService.get_request(url)
+            if process == []:
+                return process
+            else:
+                result = ProcessListSchema.dump(process)
+                seen = set()
+                new_result = []
+                for data in result:
+                    for d in data:
+                        t = tuple(d.items())
+                        if t not in seen:
+                            seen.add(t)
+                            new_result.append(d)
+                return new_result
+        except Exception as err:
+            return "Error"
 
     @staticmethod
     def get_a_process(processKey):
         url = BPM_API_PROCESS + processKey
-        process_details = httpGETRequest(url)
+        process_details = BPMService.get_request(url)
         if not process_details:
-            return nodataResponse()
+            raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
         else:
-            result = process_schema.dump(process_details)
-            response = successResponse(process_details)
-            response.last_modified = dt.utcnow()
-            response.add_etag()
-            return response
-
-
+            return ProcessDefinitionSchema.dump(process_details)
 
     @staticmethod
     def get_a_process_action(processKey):
         url = BPM_API_PROCESS + processKey
-        process_details = httpGETRequest(url)
+        process_details = BPMService.get_request(url)
         if not process_details:
-            return nodataResponse()
+            raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
         else:
-            result = process_schema.dump(process_details)
-            response = successResponse(process_details)
-            response.last_modified = dt.utcnow()
-            response.add_etag()
-            return response
-
+            return ProcessActionListSchema.dump(process_details)

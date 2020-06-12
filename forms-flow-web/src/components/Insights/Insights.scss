@@ -1,0 +1,29 @@
+@import "./../../assets/styles/themes.scss";
+
+.insights {
+  background: #f3f3f3;
+  margin-top: 40px;
+  & .line-hr {
+    border-top: 1px solid $yellow;
+  }
+  & .card-counter {
+    width: 100%;
+    margin: 25px 0px;
+    & .white-box {
+      background: $white;
+      padding: 25px;
+      margin-bottom: 30px;
+      & .box-title {
+        margin: 0 0 12px;
+        text-transform: uppercase;
+        font-size: 18px;
+        font-weight: bold;
+      }
+    }
+  }
+
+}
+
+#app {
+  background: #f3f3f3;
+}

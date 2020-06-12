@@ -4,11 +4,9 @@
 from functools import wraps
 from http import HTTPStatus
 
-from flask import g
 from flask_jwt_oidc import JwtManager
 
 from ..exceptions import BusinessException
-from .roles import Role
 
 
 jwt = JwtManager()  # pylint: disable=invalid-name; lower case name as used by convention in most Flask apps
@@ -16,6 +14,16 @@ jwt = JwtManager()  # pylint: disable=invalid-name; lower case name as used by c
 
 class Auth():
     """Extending JwtManager to include additional functionalities."""
+
+    @classmethod
+    def require(cls, f):
+        """Validate the Bearer Token."""
+        @jwt.requires_auth
+        @wraps(f)
+        def decorated(*args, **kwargs):
+            return f(*args, **kwargs)
+
+        return decorated
 
     @classmethod
     def has_one_of_roles(cls, roles):
@@ -35,4 +43,3 @@ class Auth():
 
 
 auth = Auth()  # pylint: disable=invalid-name; lower case name as used by convention in most Flask apps
-

@@ -3,7 +3,7 @@
 from http import HTTPStatus
 from flask import request
 from flask import jsonify
-from flask_restplus import Namespace, Resource, cors
+from flask_restx import Namespace, Resource, cors
 from marshmallow import ValidationError
 
 from ..exceptions import BusinessException
@@ -30,6 +30,7 @@ class ProcessResource(Resource):
         except BusinessException as err:
             return err.error, err.status_code
 
+
 @cors_preflight('GET,OPTIONS')
 @API.route('/<processKey>', methods=['GET'])
 class ProcessDetailsResource(Resource):
@@ -45,7 +46,6 @@ class ProcessDetailsResource(Resource):
             return err.error, err.status_code
 
 
-
 @cors_preflight('GET,OPTIONS')
 @API.route('/<processKey>/action', methods=['GET'])
 class ProcessActionsResource(Resource):
@@ -56,7 +56,6 @@ class ProcessActionsResource(Resource):
     def get(processKey):
         """Get process detail"""
         try:
-            return  ProcessService.get_a_process_action(processKey), HTTPStatus.OK
+            return ProcessService.get_a_process_action(processKey), HTTPStatus.OK
         except BusinessException as err:
             return err.error, err.status_code
-

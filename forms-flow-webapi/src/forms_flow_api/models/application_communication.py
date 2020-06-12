@@ -1,7 +1,9 @@
+"""This manages Application Communication Data."""
+from .base_model import BaseModel
 from .db import db
 
 
-class ApplicationCommunication(db.Model):
+class ApplicationCommunication(BaseModel, db.Model):
     """ApplicationCommunication Model for storing application communication related details."""
 
     __tablename__ = 'FAI_APPLICATION_COMMUNICATION'
@@ -12,4 +14,7 @@ class ApplicationCommunication(db.Model):
     created_by = db.Column(db.String(20), nullable=False)
     created_on = db.Column(db.Date(), nullable=False)
 
-    FAI_APPLICATION = db.relationship('Application', primaryjoin='ApplicationCommunication.application_id == Application.application_id', backref='FAI_APPLICATION_COMMUNICATION')
+    FAI_APPLICATION = db.relationship(
+        'Application',
+        primaryjoin='ApplicationCommunication.application_id == Application.application_id',
+        backref='FAI_APPLICATION_COMMUNICATION')

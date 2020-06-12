@@ -9,16 +9,24 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="Task_1el1yok" name="Review Submission" camunda:formKey="embedded:deployment:approve-reject.html">
+    <bpmn:userTask id="Task_1el1yok" name="Review Submission" camunda:candidateGroups="rpas-staff">
       <bpmn:extensionElements>
         <camunda:formData>
-          <camunda:formField id="decision" type="string" />
+          <camunda:formField id="action" label="Action" type="string" />
         </camunda:formData>
         <camunda:taskListener event="assignment">
           <camunda:script scriptFormat="javascript">task.execution.setVariable('task_status', "In-Progess");</camunda:script>
         </camunda:taskListener>
         <camunda:taskListener event="complete">
           <camunda:script scriptFormat="javascript">task.execution.setVariable('task_status', "Completed");</camunda:script>
+        </camunda:taskListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.task.listeners.NotifyListener" event="create">
+          <camunda:field name="messageId">
+            <camunda:string>Message_Email</camunda:string>
+          </camunda:field>
+          <camunda:field name="category">
+            <camunda:string>submission_notification</camunda:string>
+          </camunda:field>
         </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0ociprs</bpmn:incoming>

@@ -3,23 +3,37 @@
 from marshmallow import EXCLUDE, Schema, fields
 
 
-class SubmissionSchema(Schema):
-    """This class manages application response schema."""
+class SubmissionReqSchema(Schema):
+    """This class manages submission Request schema."""
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Exclude unknown fields in the deserialized output."""
 
         unknown = EXCLUDE
 
+    application_id = fields.Int(data_key='applicationId')
+    mapper_id = fields.Str(data_key='formId')
+    created_by = fields.Str(data_key='createdBy')
+    submission_id = fields.Str(data_key='submissionId')
+    # process_variables {} # TODO
 
-    application_id = fields.Int()
-    application_name = fields.Str()
+
+class SubmissionSchema(Schema):
+    """This class manages submission response schema."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    application_id = fields.Int(data_key='applicationId')
+    application_name = fields.Str(data_key='applicationName')
     application_status = fields.Str(data_key='status')
     mapper_id = fields.Str(data_key='id')
-    created_by = fields.Str()
-    created_on = fields.Str()
-    modified_by = fields.Str()
-    modified_on = fields.Str()
-    submission_id = fields.Str()
-    process_instance_id = fields.Str()
-    revision_no = fields.Str()
+    created_by = fields.Str(data_key='createdBy')
+    created_on = fields.Str(data_key='createdOn')
+    modified_by = fields.Str(data_key='modifiedBy')
+    modified_on = fields.Str(data_key='modifiedOn')
+    submission_id = fields.Str(data_key='submissionId')
+    process_instance_id = fields.Str(data_key='processInstanceId')
+    revision_no = fields.Str(data_key='revisionNo')

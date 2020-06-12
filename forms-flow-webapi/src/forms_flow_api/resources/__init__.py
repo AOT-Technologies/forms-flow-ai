@@ -1,15 +1,17 @@
 """Exposes all of the resource endpoints mounted in Flask-Blueprint style.
 
-Uses restplus namespaces to mount individual api endpoints into the service.
+Uses restx namespaces to mount individual api endpoints into the service.
 """
 
-from flask_restplus import Api
+from flask_jwt_oidc import AuthError
+from flask_restx import Api
 
+from ..exceptions import BusinessException
 from .application import API as APPLICATION_API
 from .submission import API as SUBMISSION_API
-from .formiotoken import api as formiotoken
+from .formiotoken import API as FORMIOTOKEN_API
 from .process import API as PROCESS_API
-from .task import api as task
+from .task import API as TASK_API
 from .tenant import API as TENANT_API
 
 
@@ -30,9 +32,22 @@ API = Api(
     security=['apikey'],
     authorizations=AUTHORIZATIONS)
 
-API.add_namespace(formiotoken, path='/getformiotoken')
+
+@API.errorhandler(BusinessException)
+def handle_business_exception(error: BusinessException):
+    """Handle Business exception."""
+    return {'message': error.error}, error.status_code, {'Access-Control-Allow-Origin': '*'}
+
+
+@API.errorhandler(AuthError)
+def handle_auth_error(error: AuthError):
+    """Handle Business exception."""
+    return {'message': 'Access Denied'}, error.status_code, {'Access-Control-Allow-Origin': '*'}
+
+
+API.add_namespace(FORMIOTOKEN_API, path='/getformiotoken')
 API.add_namespace(APPLICATION_API, path='/application')
-API.add_namespace(SUBMISSION_API, path='/submission')
+API.add_namespace(SUBMISSION_API, path='/application')
 API.add_namespace(PROCESS_API, path='/process')
-API.add_namespace(task, path='/task')
+API.add_namespace(TASK_API, path='/task')
 API.add_namespace(TENANT_API, path='/tenant')

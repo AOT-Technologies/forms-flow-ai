@@ -1,63 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>org.camunda.bpm.extension.examples</groupId>
 	<artifactId>camunda-bpm-identity-keycloak-examples-sso-kubernetes</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
+	<version>1.5.0</version>
 
-  	<name>camunda BPM - engine plugins - identity - keycloak - examples - showcase</name>
+	<name>camunda BPM - engine plugins - identity - keycloak - examples - showcase</name>
 	<description>Showcase for using Camunda Keycloak Identity Provider </description>
 
 	<properties>
 		<version.java>11</version.java>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
-    	<encoding>UTF-8</encoding>
-    	<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
-    	<project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
+		<encoding>UTF-8</encoding>
+		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
+		<project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
 		<failOnMissingWebXml>false</failOnMissingWebXml>
-    
-	    <!-- versions -->
+
+		<!-- versions -->
 		<version.camunda>7.13.0</version.camunda>
 		<version.camundaSpringBoot>7.13.0</version.camundaSpringBoot>
 		<version.springBoot>2.2.7.RELEASE</version.springBoot>
-		<version.springSecurityOauth2>2.2.6.RELEASE</version.springSecurityOauth2>
+		<version.springSecurityOauth2>2.2.7.RELEASE</version.springSecurityOauth2>
 	</properties>
 
-    <dependencyManagement>
-	    <dependencies>
-	      <dependency>
-	        <groupId>org.camunda.bpm</groupId>
-	        <artifactId>camunda-bom</artifactId>
-	        <version>${version.camunda}</version>
-	        <scope>import</scope>
-	        <type>pom</type>
-	      </dependency>
-	      <dependency>
-	        <groupId>org.springframework.boot</groupId>
-	        <artifactId>spring-boot-dependencies</artifactId>
-	        <version>${version.springBoot}</version>
-	        <type>pom</type>
-	        <scope>import</scope>
-	      </dependency>
-	      <!-- modules -->
-	      <dependency>
-	        <groupId>org.camunda.bpm.extension</groupId>
-	        <artifactId>camunda-bpm-identity-keycloak</artifactId>
-	        <version>${project.version}</version>
-	        <scope>provided</scope>
-	      </dependency>
-	    </dependencies>
-    </dependencyManagement>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.camunda.bpm</groupId>
+				<artifactId>camunda-bom</artifactId>
+				<version>${version.camunda}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-dependencies</artifactId>
+				<version>${version.springBoot}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- modules -->
+			<dependency>
+				<groupId>org.camunda.bpm.extension</groupId>
+				<artifactId>camunda-bpm-identity-keycloak</artifactId>
+				<version>${project.version}</version>
+				<scope>provided</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 	<dependencies>
 		<dependency>
 			<groupId>org.camunda.bpm.springboot</groupId>
 			<artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
-<!-- 			<artifactId>camunda-bpm-spring-boot-starter-webapp-ee</artifactId> -->
+			<!-- 			<artifactId>camunda-bpm-spring-boot-starter-webapp-ee</artifactId> -->
 			<version>${version.camundaSpringBoot}</version>
 		</dependency>
 
@@ -67,12 +67,12 @@
 			<version>${version.camundaSpringBoot}</version>
 		</dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>provided</scope>
-        </dependency>
-		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
@@ -90,20 +90,20 @@
 		</dependency>
 
 		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-oauth2-client</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-client</artifactId>
 		</dependency>
 
 		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-oauth2-resource-server</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-resource-server</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-oauth2-jose</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-jose</artifactId>
 		</dependency>
 
-		<!-- Redis Session Cache 
+		<!-- Redis Session Cache
 		<dependency>
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-data-redis</artifactId>
@@ -113,71 +113,92 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 		-->
-		
+
+		<!-- jdbc Session Cache -->
+		<!--dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-jdbc</artifactId>
+		</dependency-->
+
+		<!-- MongoDB Session Cache -->
+		<!--dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-mongodb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency-->
+
 		<!-- Keycloak Identity Prover Plugin  -->
 		<dependency>
-	        <groupId>org.camunda.bpm.extension</groupId>
-	        <artifactId>camunda-bpm-identity-keycloak</artifactId>
+			<groupId>org.camunda.bpm.extension</groupId>
+			<artifactId>camunda-bpm-identity-keycloak</artifactId>
 		</dependency>
 
 		<!-- Add Email Component -->
 
 		<dependency>
-  			<groupId>org.camunda.connect</groupId>
-  			<artifactId>camunda-connect-connectors-all</artifactId>
+			<groupId>org.camunda.connect</groupId>
+			<artifactId>camunda-connect-connectors-all</artifactId>
 		</dependency>
 
 		<dependency>
-  			<groupId>org.camunda.bpm.extension</groupId>
-  			<artifactId>camunda-bpm-mail-core</artifactId>
-  			<version>1.2.0</version>
+			<groupId>org.camunda.bpm.extension</groupId>
+			<artifactId>camunda-bpm-mail-core</artifactId>
+			<version>1.2.0</version>
 		</dependency>
 
 		<dependency>
-		    <groupId>org.camunda.connect</groupId>
-    		<artifactId>camunda-connect-core</artifactId>
-    		<version>1.2.2</version>
+			<groupId>org.camunda.connect</groupId>
+			<artifactId>camunda-connect-core</artifactId>
+			<version>1.2.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.camunda.bpm</groupId>
 			<artifactId>camunda-engine-plugin-connect</artifactId>
 		</dependency>
 
 		<dependency>
-   			<groupId>com.sun.mail</groupId>
-    		<artifactId>javax.mail</artifactId>
-    		<version>1.6.2</version>
+			<groupId>com.sun.mail</groupId>
+			<artifactId>javax.mail</artifactId>
+			<version>1.6.2</version>
 		</dependency>
 
 		<dependency>
-    		<groupId>org.slf4j</groupId>
-    		<artifactId>slf4j-api</artifactId>
-    		<version>1.7.29</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.29</version>
 		</dependency>
-		
+
 		<!-- Freemarker Template -->
 		<dependency>
-		  <groupId>org.camunda.template-engines</groupId>
-		  <artifactId>camunda-template-engines-freemarker</artifactId>
-		  <version>1.0.0</version>
+			<groupId>org.camunda.template-engines</groupId>
+			<artifactId>camunda-template-engines-freemarker</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 
 		<dependency>
-		  <groupId>org.camunda.template-engines</groupId>
-		  <artifactId>camunda-template-engines-velocity</artifactId>
-		  <version>1.0.0</version>
+			<groupId>org.camunda.template-engines</groupId>
+			<artifactId>camunda-template-engines-velocity</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 
 		<!-- Database -->
 		<dependency>
-		  <groupId>org.springframework.boot</groupId>
-		  <artifactId>spring-boot-starter-jdbc</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>org.postgresql</groupId>
-		    <artifactId>postgresql</artifactId>
-			<version>9.4-1205-jdbc41</version>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<!--version>9.4-1205-jdbc41</version-->
+			<version>42.2.5</version>
 		</dependency>
 
 		<dependency>
@@ -186,9 +207,9 @@
 		</dependency>
 
 		<dependency>
-    		<groupId>com.microsoft.sqlserver</groupId>
-    		<artifactId>mssql-jdbc</artifactId>
-    		<version>7.4.1.jre11</version>
+			<groupId>com.microsoft.sqlserver</groupId>
+			<artifactId>mssql-jdbc</artifactId>
+			<version>7.4.1.jre11</version>
 		</dependency>
 
 		<!-- Required to use Spin dataformat support -->
@@ -203,8 +224,8 @@
 
 		<!-- Required to run with Java 11 -->
 		<dependency>
-		    <groupId>javax.xml.bind</groupId>
-		    <artifactId>jaxb-api</artifactId>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
 		</dependency>
 
 		<!-- Test dependencies -->
@@ -239,8 +260,8 @@
 		<!-- Add your own dependencies here, if in compile scope, they are added 
 			to the jar -->
 		<dependency>
-  			<groupId>org.codehaus.groovy</groupId>
-  			<artifactId>groovy-all</artifactId>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
 			<version>2.5.8</version>
 			<type>pom</type>
 		</dependency>
@@ -301,7 +322,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.6.0</version>
+				<version>1.14</version>
 				<configuration>
 					<mainClass>org.camunda.bpm.extension.keycloak.showcase.CamundaApplication</mainClass>
 				</configuration>

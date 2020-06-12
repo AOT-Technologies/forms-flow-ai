@@ -6,4 +6,3 @@ class Role():  # pylint: disable=too-few-public-methods
 
     rpas_designer = 'rpas_designer'
     rpas_reviewer = 'rpas_reviewer'
-    

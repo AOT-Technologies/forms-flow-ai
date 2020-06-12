@@ -1,16 +1,16 @@
 """API endpoints for managing application resource."""
 
 from http import HTTPStatus
-from flask import request
-from flask import jsonify
-from flask_restplus import Namespace, Resource, cors
+
+from flask import jsonify, request
+from flask_restx import Namespace, Resource, cors
 from marshmallow import ValidationError
 
 from ..exceptions import BusinessException
+from ..schemas import AggregatedApplicationReqSchema, ApplicationListReqSchema, ApplicationSchema
 from ..services import ApplicationService
 from ..utils.util import cors_preflight
-from ..schemas import ApplicationSchema
-from ..models import Process
+
 
 API = Namespace('Application', description='Application')
 
@@ -24,11 +24,19 @@ class ApplicationResource(Resource):
     @cors.crossdomain(origin='*')
     def get():
         """Get Applications."""
-        pageNo = request.args.get('pageNo')
-        limit = request.args.get('limit')
-        return jsonify({
-            'applications': ApplicationService.get_all_applications(pageNo, limit)
-        }), HTTPStatus.OK
+        try:
+            request_schema = ApplicationListReqSchema()
+            dict_data = request_schema.load(request.args)
+            page_no = dict_data['page_no']
+            limit = dict_data['limit']
+            return jsonify({
+                'applications': ApplicationService.get_all_applications(page_no, limit),
+                'totalCount': ApplicationService.get_all_application_count(),
+                'pageNo': page_no,
+                'limit': limit
+            }), HTTPStatus.OK
+        except ValidationError as agg_err:
+            return {'systemErrors': agg_err.messages}, HTTPStatus.BAD_REQUEST
 
     @staticmethod
     @cors.crossdomain(origin='*')
@@ -47,41 +55,86 @@ class ApplicationResource(Resource):
                 HTTPStatus.BAD_REQUEST
         return response, status
 
+
 @cors_preflight('GET,PUT,DELETE,OPTIONS')
-@API.route('/<int:applicationId>', methods=['GET', 'PUT', 'DELETE', 'OPTIONS'])
+@API.route('/<int:application_id>', methods=['GET', 'PUT', 'DELETE', 'OPTIONS'])
 class ApplicationResourceById(Resource):
     """Resource for managing application."""
 
     @staticmethod
     @cors.crossdomain(origin='*')
-    def get(applicationId):
+    def get(application_id):
         """Get application by id."""
         try:
-            return ApplicationService.get_a_application(applicationId), HTTPStatus.OK
+            return ApplicationService.get_a_application(application_id), HTTPStatus.OK
         except BusinessException as err:
             return err.error, err.status_code
 
     @staticmethod
     @cors.crossdomain(origin='*')
-    def delete(applicationId):
+    def delete(application_id):
         """Delete application."""
         try:
-            ApplicationService.delete_application(applicationId)
+            ApplicationService.delete_application(application_id)
             return 'Deleted', HTTPStatus.OK
         except BusinessException as err:
             return err.error, err.status_code
 
     @staticmethod
     @cors.crossdomain(origin='*')
-    def put(applicationId):
+    def put(application_id):
         """Update application details."""
         application_json = request.get_json()
 
         try:
-            application = ApplicationService.update_application(applicationId,application_json)
+            application_schema = ApplicationSchema()
+            dict_data = application_schema.load(application_json)
+            ApplicationService.update_application(application_id, dict_data)
 
             return 'Updated successfully', HTTPStatus.OK
         except ValidationError as project_err:
             return {'systemErrors': project_err.messages}, HTTPStatus.BAD_REQUEST
 
 
+@cors_preflight('GET,OPTIONS')
+@API.route('/metrics', methods=['GET', 'OPTIONS'])
+class AggregatedApplicationsResource(Resource):
+    """Resource for managing aggregated applications."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def get():
+        """Get aggregated applications."""
+        try:
+            request_schema = AggregatedApplicationReqSchema()
+            dict_data = request_schema.load(request.args)
+            from_date = dict_data['from_date']
+            to_date = dict_data['to_date']
+
+            return jsonify({
+                'applications': ApplicationService.get_aggregated_applications(from_date, to_date)
+            }), HTTPStatus.OK
+        except ValidationError as agg_err:
+            return {'systemErrors': agg_err.messages}, HTTPStatus.BAD_REQUEST
+
+
+@cors_preflight('GET,OPTIONS')
+@API.route('/metrics/<int:mapper_id>', methods=['GET', 'OPTIONS'])
+class AggregatedApplicationStatusResource(Resource):
+    """Resource for managing aggregated applications."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def get(mapper_id):
+        """Get aggregated application status."""
+        try:
+            request_schema = AggregatedApplicationReqSchema()
+            dict_data = request_schema.load(request.args)
+            from_date = dict_data['from_date']
+            to_date = dict_data['to_date']
+
+            return jsonify({
+                'applicationStatus': ApplicationService.get_aggregated_application_status(mapper_id, from_date, to_date)
+            }), HTTPStatus.OK
+        except ValidationError as agg_err:
+            return {'systemErrors': agg_err.messages}, HTTPStatus.BAD_REQUEST

@@ -1,8 +1,9 @@
 import os
-from datetime import datetime as dt
+from http import HTTPStatus
 
-from ..common.responses import errorResponse, nodataResponse, successResponse
-from .bpm_service import httpGETRequest, httpPOSTRequest
+from ..exceptions import BusinessException
+from ..schemas import TaskListSchema
+from .external import BPMService
 
 
 BPM_API_BASE = os.getenv('BPM_API_BASE', '')
@@ -12,90 +13,63 @@ BPM_API_TASK = BPM_API_BASE + API_TASK
 BPM_API_TASK_HISTORY = BPM_API_BASE + API_TASK_HISTORY
 
 
-def get_all_tasks():
-    try:
-        url = BPM_API_TASK_HISTORY
-        task = httpGETRequest(url)
-        # result = processes_schema.dump(task)
-        response = successResponse(task)
-        response.last_modified = dt.utcnow()
-        response.add_etag()
-        return response
-    except Exception as e:
-        return errorResponse()
+class TaskService():
+    """This class manages task service."""
 
+    @staticmethod
+    def get_all_tasks():
+        try:
+            url = BPM_API_TASK_HISTORY
+            task = BPMService.get_request(url)
+            if task == []:
+                return task
+            else:
+                return TaskListSchema.dump(task)
+        except Exception as err:
+            return "Error"
 
-def get_a_task(taskId):
-    try:
+    @staticmethod
+    def get_a_task(taskId):
         url = BPM_API_TASK + taskId
-        task_details = httpGETRequest(url)
+        task_details = BPMService.get_request(url)
         if not task_details:
-            return nodataResponse()
+            raise BusinessException('Invalid task', HTTPStatus.BAD_REQUEST)
         else:
-            # result = task_schema.dump(task_details)
-            response = successResponse(task_details)
-            response.last_modified = dt.utcnow()
-            response.add_etag()
-            return response
-    except Exception as e:
-        return errorResponse()
+            return TaskListSchema.dump(task_details)
 
-
-def claim_a_task(taskId):
-    try:
+    @staticmethod
+    def claim_a_task(taskId):
         url = BPM_API_TASK + taskId + '/claim'
-        task_claim = httpPOSTRequest(url)
+        task_claim = BPMService.post_request(url)
         if task_claim.status == 204:
-            response = successResponse()
-            response.last_modified = dt.utcnow()
-            response.add_etag()
-            return response
+            return "success"
         else:
-            return errorResponse()
-    except Exception as e:
-        return errorResponse()
+            return "error"
 
-
-def unclaim_a_task(taskId):
-    try:
+    @staticmethod
+    def unclaim_a_task(taskId):
         url = BPM_API_TASK + taskId + '/unclaim'
-        task_claim = httpPOSTRequest(url)
-        if task_claim.status == 204:
-            response = successResponse()
-            response.last_modified = dt.utcnow()
-            response.add_etag()
-            return response
+        task_unclaim = BPMService.post_request(url)
+        if task_unclaim.status == 204:
+            return "success"
         else:
-            return errorResponse()
-    except Exception as e:
-        return errorResponse()
+            return "error"
 
-
-def set_action_a_task(taskId):
-    try:
+    @staticmethod
+    def set_action_a_task(taskId):
         url = BPM_API_TASK + taskId + '/complete'
-        task_claim = httpPOSTRequest(url)
-        if task_claim.status == 204:
-            response = successResponse()
-            response.last_modified = dt.utcnow()
-            response.add_etag()
-            return response
+        task_action = BPMService.post_request(url)
+        if task_action.status == 204:
+            return "success"
         else:
-            return errorResponse()
-    except Exception as e:
-        return errorResponse()
+            return "error"
 
+    @staticmethod
+    def due_a_task(taskId):
 
-def due_a_task(taskId):
-    try:
         url = BPM_API_TASK + taskId + '/unclaim'
-        task_claim = httpPOSTRequest(url)
-        if task_claim.status == 204:
-            response = successResponse()
-            response.last_modified = dt.utcnow()
-            response.add_etag()
-            return response
+        task_due = BPMService.post_request(url)
+        if task_due.status == 204:
+            return "success"
         else:
-            return errorResponse()
-    except Exception as e:
-        return errorResponse()
+            return "error"

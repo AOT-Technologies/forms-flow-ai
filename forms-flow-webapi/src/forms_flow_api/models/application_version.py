@@ -1,7 +1,9 @@
+"""This manages Application Version Data."""
+from .base_model import BaseModel
 from .db import db
 
 
-class ApplicationVersion(db.Model):
+class ApplicationVersion(BaseModel, db.Model):
     """ApplicationVersion Model for storing application version related details."""
 
     __tablename__ = 'FAI_APPLICATION_AUDIT'
@@ -18,4 +20,7 @@ class ApplicationVersion(db.Model):
     process_instance_id = db.Column(db.String(30), nullable=False)
     revision_no = db.Column(db.Integer, nullable=False)
 
-    FORM_PROCESS_MAPPER = db.relationship('Process', primaryjoin='ApplicationVersion.mapper_id == Process.mapper_id', backref='FAI_APPLICATION_AUDIT')
+    FORM_PROCESS_MAPPER = db.relationship(
+        'Process',
+        primaryjoin='ApplicationVersion.mapper_id == Process.mapper_id',
+        backref='FAI_APPLICATION_AUDIT')

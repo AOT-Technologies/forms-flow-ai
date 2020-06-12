@@ -2,6 +2,7 @@
 
 from .base_enum import ExtendedIntEnum
 
+
 class ApplicationStatus(ExtendedIntEnum):
     """This enum provides the list of application Status."""
 

@@ -3,10 +3,8 @@
 import os
 
 from flask import Flask
-from flask_bcrypt import Bcrypt
 
 from . import config, models
-from .common import authentication
 from .models import db, ma
 from .resources import API
 from .utils.auth import jwt
@@ -25,12 +23,8 @@ def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
     db.init_app(app)
     ma.init_app(app)
 
-    flask_bcrypt = Bcrypt()
-    flask_bcrypt.init_app(app)
-
     API.init_app(app)
-    # setup_jwt_manager(app, jwt) #TODO: Uncomment only if we are using flask_jwt_oidc
-
+    setup_jwt_manager(app, jwt)
 
     @app.after_request
     def add_additional_headers(response):  # pylint: disable=unused-variable
@@ -58,7 +52,7 @@ def register_shellcontext(app):
         """Shell context objects."""
         return {
             'app': app,
-            # 'jwt': jwt,
+            'jwt': jwt,
             'db': db,
             'models': models}  # pragma: no cover
 

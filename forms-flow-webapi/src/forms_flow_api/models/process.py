@@ -5,7 +5,7 @@ from __future__ import annotations
 from datetime import datetime as dt
 
 from .base_model import BaseModel
-from .db import db, ma
+from .db import db
 from .enums import ApplicationStatus
 
 
@@ -73,21 +73,3 @@ class Process(BaseModel, db.Model):
     def find_by_id(cls, application_id) -> Process:
         """Find application that matches the provided id."""
         return cls.query.filter(Process.mapper_id == application_id, Process.status == 'active').first()
-
-
-class ApplicationSchema(ma.ModelSchema):
-    class Meta:
-        model = Process
-        include_fk = True
-
-
-class ProcessSchema(ma.Schema):
-    class Meta:
-        # Fields to expose
-        fields = ('key', 'name')
-
-
-process_schema = ProcessSchema()
-processes_schema = ProcessSchema(many=True)
-application_schema = ApplicationSchema()
-applications_schema = ApplicationSchema(many=True)

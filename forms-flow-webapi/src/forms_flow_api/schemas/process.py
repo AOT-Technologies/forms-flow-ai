@@ -3,7 +3,6 @@
 from marshmallow import EXCLUDE, Schema, fields
 
 
-
 class ProcessListSchema(Schema):
     """This class manages processlist response schema."""
 
@@ -14,6 +13,7 @@ class ProcessListSchema(Schema):
 
     key = fields.Str()
     name = fields.Str()
+
 
 class ProcessDefinitionSchema(Schema):
     """This class manages process definition response schema."""
@@ -26,6 +26,7 @@ class ProcessDefinitionSchema(Schema):
     key = fields.Str()
     name = fields.Str()
     variables = fields.Str()
+
 
 class ProcessActionListSchema(Schema):
     """This class manages process action list response schema."""

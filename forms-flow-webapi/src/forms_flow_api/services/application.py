@@ -3,22 +3,21 @@ from http import HTTPStatus
 
 from ..exceptions import BusinessException
 from ..models import Application, Process
-from .dboperations import save_changes
 from ..schemas import AggregatedApplicationSchema, ApplicationSchema
+from .dboperations import save_changes
 
 
 class ApplicationService():
     """This class manages application service."""
 
     @staticmethod
-    def get_all_applications(page_number:int, limit:int):
-        if page_number != None:
+    def get_all_applications(page_number: int, limit: int):
+        if page_number:
             page_number = int(page_number)
-        if limit != None:
+        if limit:
             limit = int(limit)
         process = Process.find_all(page_number, limit)
-        application_schema = ApplicationSchema(only=("mapper_id", "form_id", "form_name", "form_revision_number", "process_definition_key", "process_name",
-                                                     "form_name", "status", "comments", "created_by", "created_on", "modified_on"))
+        application_schema = ApplicationSchema()
         return application_schema.dump(process, many=True)
 
     @staticmethod
@@ -27,11 +26,9 @@ class ApplicationService():
 
     @staticmethod
     def get_a_application(application_id):
-
         process_details = Process.find_by_id(application_id)
         if process_details:
-            application_schema = ApplicationSchema(only=("mapper_id", "form_id", "form_name", "form_revision_number", "process_definition_key", "process_name",
-                                                         "form_name", "status", "comments", "created_by", "created_on", "modified_on"))
+            application_schema = ApplicationSchema()
             return application_schema.dump(process_details)
         else:
             raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
@@ -46,18 +43,17 @@ class ApplicationService():
             process_name=data['process_name'],
             status='active',
             comments=data['comments'],
-            created_by='test', #TODO: Use data from keycloak token
+            created_by='test',  # TODO: Use data from keycloak token
             created_on=dt.utcnow(),
-            modified_by='test', #TODO: Use data from keycloak token
+            modified_by='test',  # TODO: Use data from keycloak token
             modified_on=dt.utcnow(),
             tenant_id=data['tenant_id']
         )
         save_changes(new_application)
 
     @staticmethod
-    def update_application(applicationId, data):
-
-        application = Process.find_by_id(applicationId)
+    def update_application(application_id, data):
+        application = Process.find_by_id(application_id)
         if not application:
             raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
         else:
@@ -68,7 +64,7 @@ class ApplicationService():
             application.process_definition_key = data['process_definition_key']
             application.process_name = data['process_name']
             application.comments = data['comments']
-            application.modified_by = 'test', #TODO: Use data from keycloak token
+            application.modified_by = 'test',  # TODO: Use data from keycloak token
             application.modified_on = dt.utcnow()
             application.tenant_id = data['tenant_id']
 

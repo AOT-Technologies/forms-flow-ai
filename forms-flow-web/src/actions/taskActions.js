@@ -14,6 +14,8 @@ export const setUpdateLoader = (data) => dispatch =>{
     })
 }
 
+//TODO Update set to get on below cases
+
 export const setTaskList = (data) => dispatch =>{
     dispatch({
         type:ACTION_CONSTANTS.LIST_TASKS,
@@ -41,6 +43,8 @@ export const setTaskSubmissionDetail = (data) => dispatch =>{
 }
 
 export const serviceActionError = (data) => dispatch => {
+   //TODO update to a common file
+    console.log(data);
     dispatch({
       type: ACTION_CONSTANTS.ERROR,
       payload: 'Error Handling API'

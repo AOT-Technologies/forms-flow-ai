@@ -37,5 +37,7 @@ window['_env_'] =  {
   // Secret Key for BPM
   "REACT_APP_BPM_CLIENT_ID": "<BPM CLIENT SECRET KEY HERE>",
   // Keycloak-client-name for BPM
-  "REACT_APP_KEYCLOAK_BPM_CLIENT": "forms-flow-bpm"
+  "REACT_APP_KEYCLOAK_BPM_CLIENT": "forms-flow-bpm",
+  //Insight Api End point
+  "REACT_APP_INSIGHT_API_BASE":"Insight Api base end-point"
 }

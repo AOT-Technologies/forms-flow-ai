@@ -28,6 +28,12 @@
           "statusName": "new",
           "count": 10,
           "id": 1
+        },
+        {
+          "formName": "form 1",
+          "statusName": "In progress",
+          "count": 10,
+          "id": 2
         }
       ],
       "id": 1
@@ -54,9 +60,15 @@
         },
         {
           "formName": "form 2",
-          "statusName": "Completed",
+          "statusName": "third approval",
           "count": 25,
           "id": 3
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Completed",
+          "count": 25,
+          "id": 4
         }
       ],
       "id": 2

@@ -51,19 +51,7 @@ const SideBar = (props) => {
               </div>
             </li>
           )}
-          <li className="active">
-            <Link
-              data-toggle="collapse"
-              aria-expanded="false"
-              to="/dashboard"
-              className={`main-nav nav-link ${
-                pathname === "/dashboard" ? "active-tab" : ""
-              }`}
-            >
-              <i className="fa fa-home"></i>
-              Dashboard
-            </Link>
-          </li>
+
           <li>
             <Link
               to="/form"
@@ -94,6 +82,19 @@ const SideBar = (props) => {
               </Link>
             ) : null}
           </li>
+          <li className="active">
+            <Link
+              data-toggle="collapse"
+              aria-expanded="false"
+              to="/metrix"
+              className={`main-nav nav-link ${
+                pathname === "/metrix" ? "active-tab" : ""
+              }`}
+            >
+              <i className="fa fa-home"></i>
+              Metrix
+            </Link>
+          </li>
           <li>
             <Link
               to="/insights"
@@ -101,7 +102,7 @@ const SideBar = (props) => {
                 pathname === "/insights" ? "active-tab" : ""
               }`}
             >
-            <i className="fa fa-lightbulb-o"></i>
+              <i className="fa fa-lightbulb-o"></i>
               Insights
             </Link>
           </li>

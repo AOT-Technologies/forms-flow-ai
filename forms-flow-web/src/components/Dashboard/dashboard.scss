@@ -17,6 +17,10 @@
       &.active {
         background-color: $green !important;
         color: $white;
+        & .small-title {
+          font-size: 12px;
+          color: $white;
+        }
       }
       & .box-title {
         margin: 0 0 12px;
@@ -53,10 +57,6 @@
 }
 
 .form-card-counter {
-  & .active {
-    background-color: #9eabc0 !important;
-  }
-
   & .counter {
     font-size: 42px;
     text-align: center;
@@ -75,7 +75,7 @@
   }
   .small-title {
     font-size: 12px;
-    color: #9eabc0 !important;
+    color: #9eabc0;
   }
 }
 .status-counter {

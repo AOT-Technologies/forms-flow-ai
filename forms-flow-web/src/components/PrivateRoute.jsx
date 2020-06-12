@@ -36,7 +36,7 @@ class PrivateRoute extends Component {
         {this.props.isAuth ? (
           <>
             <Route path="/form" component={Form} />
-            <Route path="/dashboard" component={DashboardPage} />
+            <Route path="/metrix" component={DashboardPage} />
             <this.TaskRoute path="/task" component={Task} />
             <Route exact path="/">
               <Redirect to="/form" />

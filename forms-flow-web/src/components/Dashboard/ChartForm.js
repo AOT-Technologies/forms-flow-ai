@@ -34,7 +34,7 @@ const renderCustomizedLabel = ({
 // label={renderCustomizedLabel}
 const ChartForm = (props) => {
   const { submissionsStatusList } = props;
-  console.log("submissionsStatusList", submissionsStatusList);
+
   const pieData = submissionsStatusList;
   if (pieData.length === 0) {
     return <div>Loading status ..</div>;
@@ -42,7 +42,7 @@ const ChartForm = (props) => {
   return (
     <div className="card-counter">
       <div className="white-box analytics-info">
-        <h4>submission status</h4>
+        <h4>Submission Status</h4>
         <PieChart width={500} height={300}>
           <Pie
             data={pieData}

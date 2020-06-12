@@ -1,10 +1,10 @@
 import React, { Fragment, useEffect } from "react";
 import ApplicationCounter from "./ApplicationCounter";
-import StatusCounters from "./StatusCounters";
+// import StatusCounters from "./StatusCounters";
 import { useDispatch, useSelector } from "react-redux";
 
 import ChartForm from "./ChartForm";
-import Counters from "./Counters";
+// import Counters from "./Counters";
 import * as metrix from "../../mocks/metrix.json";
 import {
   fetchMetrixSubmissionCount,

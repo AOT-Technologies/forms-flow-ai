@@ -2,24 +2,8 @@
 
 from marshmallow import EXCLUDE, Schema, fields
 
-
-class SubmissionReqSchema(Schema):
-    """This class manages submission Request schema."""
-
-    class Meta:  # pylint: disable=too-few-public-methods
-        """Exclude unknown fields in the deserialized output."""
-
-        unknown = EXCLUDE
-
-    application_id = fields.Int(data_key='applicationId')
-    mapper_id = fields.Str(data_key='formId')
-    created_by = fields.Str(data_key='createdBy')
-    submission_id = fields.Str(data_key='submissionId')
-    # process_variables {} # TODO
-
-
 class SubmissionSchema(Schema):
-    """This class manages submission response schema."""
+    """This class manages submission request and response schema."""
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Exclude unknown fields in the deserialized output."""
@@ -37,3 +21,4 @@ class SubmissionSchema(Schema):
     submission_id = fields.Str(data_key='submissionId')
     process_instance_id = fields.Str(data_key='processInstanceId')
     revision_no = fields.Str(data_key='revisionNo')
+    # process_variables {} # TODO

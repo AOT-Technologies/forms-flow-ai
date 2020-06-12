@@ -54,6 +54,11 @@
   & .dashboard-title {
     color: $primary-blue;
   }
+
+  & .date-calander {
+    position: absolute;
+    z-index: 3;
+  }
 }
 
 .form-card-counter {

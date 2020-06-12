@@ -1,10 +1,8 @@
-import React, { Fragment, useEffect } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import ApplicationCounter from "./ApplicationCounter";
-// import StatusCounters from "./StatusCounters";
 import { useDispatch, useSelector } from "react-redux";
 
 import ChartForm from "./ChartForm";
-// import Counters from "./Counters";
 import * as metrix from "../../mocks/metrix.json";
 import {
   fetchMetrixSubmissionCount,
@@ -12,6 +10,7 @@ import {
 } from "./../../apiManager/services/metrixServices";
 // import Loading from "../../containers/Loading";
 import Loading from "../Loading";
+import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 
 const Dashboard = (props) => {
   console.log("metrix", metrix.applicationsMetrix);
@@ -27,7 +26,7 @@ const Dashboard = (props) => {
   const selectedMEtrixId = useSelector(
     (state) => state.metrix.selectedMEtrixId
   );
-
+  const [value, onChange] = useState([new Date(), new Date()]);
   useEffect(() => {
     console.log("inside mount useEffect");
     dispatch(fetchMetrixSubmissionCount());
@@ -50,7 +49,11 @@ const Dashboard = (props) => {
     console.log("id", id);
     dispatch(fetchMetrixSubmissionStatusCount(id));
   };
-  console.log("submissionsStatusList", submissionsStatusList);
+  const handleSelect = (date) => {
+    console.log(date); // native Date object
+  };
+
+  console.log("value", value);
   return (
     <Fragment>
       <div className="dashboard mb-2">
@@ -60,7 +63,13 @@ const Dashboard = (props) => {
               <i className="fa fa-home"></i> Metrics Dashboard
             </h1>
             <hr className="line-hr"></hr>
-            <div>date</div>
+            <div>
+              <DateRangePicker
+                onChange={onChange}
+                value={value}
+                format="y-MM-d"
+              />
+            </div>
           </div>
           <div className="col-12">
             <ApplicationCounter

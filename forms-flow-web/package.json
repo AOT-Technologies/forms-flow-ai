@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@bcgov/bootstrap-theme": "https://github.com/bcgov/bootstrap-theme/releases/download/v1.1.1/bcgov-bootstrap-theme-1.1.1.tgz",
+    "@wojtekmaj/react-daterange-picker": "^3.0.0",
     "aot-formio-export": "file:forms-flow-util",
     "axios": "^0.19.0",
     "bootstrap": "^4.4.1",
@@ -38,6 +39,7 @@
     "react-bootstrap-table2-overlay": "^2.0.0",
     "react-bootstrap-table2-paginator": "^2.1.2",
     "react-bootstrap-table2-toolkit": "^2.1.2",
+    "react-date-range": "^1.0.3",
     "react-dom": "^16.12.0",
     "react-formio": "^4.3.0",
     "react-loading-overlay": "^1.0.1",

@@ -3,14 +3,7 @@ from http import HTTPStatus
 
 from ..exceptions import BusinessException
 from ..schemas import TaskListSchema
-from .external import BPMService
-
-
-BPM_API_BASE = os.getenv('BPM_API_BASE', '')
-API_TASK = os.getenv('API_TASK', '')
-API_TASK_HISTORY = os.getenv('API_TASK_HISTORY', '')
-BPM_API_TASK = BPM_API_BASE + API_TASK
-BPM_API_TASK_HISTORY = BPM_API_BASE + API_TASK_HISTORY
+from .external import ExtendedBPMService as BPMService
 
 
 class TaskService():
@@ -19,8 +12,7 @@ class TaskService():
     @staticmethod
     def get_all_tasks():
         try:
-            url = BPM_API_TASK_HISTORY
-            task = BPMService.get_request(url)
+            task = BPMService.get_all_tasks()
             if task == []:
                 return task
             else:
@@ -30,8 +22,7 @@ class TaskService():
 
     @staticmethod
     def get_a_task(taskId):
-        url = BPM_API_TASK + taskId
-        task_details = BPMService.get_request(url)
+        task_details = BPMService.get_task_details(taskId)
         if not task_details:
             raise BusinessException('Invalid task', HTTPStatus.BAD_REQUEST)
         else:
@@ -39,8 +30,7 @@ class TaskService():
 
     @staticmethod
     def claim_a_task(taskId):
-        url = BPM_API_TASK + taskId + '/claim'
-        task_claim = BPMService.post_request(url)
+        task_claim = BPMService.claim_a_task(taskId)
         if task_claim.status == 204:
             return "success"
         else:
@@ -48,8 +38,7 @@ class TaskService():
 
     @staticmethod
     def unclaim_a_task(taskId):
-        url = BPM_API_TASK + taskId + '/unclaim'
-        task_unclaim = BPMService.post_request(url)
+        task_unclaim = BPMService.unclaim_task(taskId)
         if task_unclaim.status == 204:
             return "success"
         else:
@@ -57,8 +46,7 @@ class TaskService():
 
     @staticmethod
     def set_action_a_task(taskId):
-        url = BPM_API_TASK + taskId + '/complete'
-        task_action = BPMService.post_request(url)
+        task_action = BPMService.set_action_request(taskId)
         if task_action.status == 204:
             return "success"
         else:
@@ -66,9 +54,7 @@ class TaskService():
 
     @staticmethod
     def due_a_task(taskId):
-
-        url = BPM_API_TASK + taskId + '/unclaim'
-        task_due = BPMService.post_request(url)
+        task_due = BPMService.due_a_task(taskId)
         if task_due.status == 204:
             return "success"
         else:

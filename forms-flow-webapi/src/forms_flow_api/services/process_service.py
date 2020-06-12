@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 from ..exceptions import BusinessException
 from ..schemas import ProcessActionListSchema, ProcessDefinitionSchema, ProcessListSchema
-from .external import BPMService
+from .external import ExtendedBPMService as BPMService
 
 
 BPM_API_BASE = os.getenv('BPM_API_BASE', '')
@@ -17,8 +17,7 @@ class ProcessService():
     @staticmethod
     def get_all_processes():
         try:
-            url = BPM_API_PROCESS
-            process = BPMService.get_request(url)
+            process = BPMService.get_all_process()
             if process == []:
                 return process
             else:
@@ -37,8 +36,7 @@ class ProcessService():
 
     @staticmethod
     def get_a_process(processKey):
-        url = BPM_API_PROCESS + processKey
-        process_details = BPMService.get_request(url)
+        process_details = BPMService.get_request(processKey)
         if not process_details:
             raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
         else:
@@ -46,8 +44,7 @@ class ProcessService():
 
     @staticmethod
     def get_a_process_action(processKey):
-        url = BPM_API_PROCESS + processKey
-        process_details = BPMService.get_request(url)
+        process_details = BPMService.get_process_actions(processKey)
         if not process_details:
             raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
         else:

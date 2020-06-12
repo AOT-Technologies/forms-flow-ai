@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import ApplicationCounter from "./ApplicationCounter";
 import { useDispatch, useSelector } from "react-redux";
 
-import ChartForm from "./ChartForm";
+import StatusChart from "./StatusChart";
 import * as metrix from "../../mocks/metrix.json";
 import {
   fetchMetrixSubmissionCount,
@@ -11,8 +11,9 @@ import {
 
 import Loading from "../Loading";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
+import * as moment from "moment";
 
-const Dashboard = (props) => {
+const Dashboard = () => {
   console.log("metrix", metrix.applicationsMetrix);
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrix.submissionsList);
@@ -26,19 +27,12 @@ const Dashboard = (props) => {
   const selectedMEtrixId = useSelector(
     (state) => state.metrix.selectedMEtrixId
   );
-  const [value, onChange] = useState([new Date(), new Date()]);
+  const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   useEffect(() => {
     console.log("inside mount useEffect");
     dispatch(fetchMetrixSubmissionCount());
-    return () => {
-      console.log("on update");
+  }, [dispatch]);
 
-      return false;
-    };
-  }, []);
-  console.log("submissionsList", submissionsList);
-  console.log("isMetrixLoading", isMetrixLoading);
-  console.log("selectedMEtrixId", selectedMEtrixId);
   if (isMetrixLoading) {
     return <Loading />;
   }
@@ -49,11 +43,18 @@ const Dashboard = (props) => {
     console.log("id", id);
     dispatch(fetchMetrixSubmissionStatusCount(id));
   };
-  const handleSelect = (date) => {
-    console.log(date); // native Date object
+
+  const onSetDateRange = (date) => {
+    console.log("date", date);
+
+    const formatedFromDate = moment(date[0]).format("YYYY-MM-DD");
+    const formatedToDate = moment(date[0]).format("YYYY-MM-DD");
+    console.log("formatedFromDate", formatedFromDate);
+    console.log("formatedToDate", formatedToDate);
+    setDateRange(date);
   };
 
-  console.log("value", value);
+  console.log("dateRange", dateRange);
   return (
     <Fragment>
       <div className="dashboard mb-2">
@@ -71,8 +72,8 @@ const Dashboard = (props) => {
 
                 <div>
                   <DateRangePicker
-                    onChange={onChange}
-                    value={value}
+                    onChange={onSetDateRange}
+                    value={dateRange}
                     format="y-MM-d"
                   />
                 </div>
@@ -96,7 +97,7 @@ const Dashboard = (props) => {
             {isMetrixStatusLoading ? (
               <Loading />
             ) : (
-              <ChartForm submissionsStatusList={submissionsStatusList} />
+              <StatusChart submissionsStatusList={submissionsStatusList} />
             )}
           </div>
         </div>

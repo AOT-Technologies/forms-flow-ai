@@ -20,22 +20,8 @@ const CardFormCounter = (props) => {
           </div>
           <div className="count">
             <div className="counter ">{count}</div>
-            <div className="small-title">Total no submissions</div>
+            <div className="small-title">Total Submissions</div>
           </div>
-
-          {/* <ul className="list-inline two-part">
-            <li>
-              <div>
-                <div className="counter text-purple ">50</div>
-                <div className="app-title">With Me</div>
-              </div>
-            </li>
-            <li className="text-right">
-              <i className="ti-arrow-up text-purple "></i>
-              <div className="counter text-purple ">100</div>
-              <div className="app-title text-purple ">with Group</div>
-            </li>
-          </ul> */}
         </div>
       </div>
     </Fragment>

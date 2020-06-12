@@ -13,48 +13,24 @@ const COLORS = [
   "#ff7c43",
 ];
 
-const RADIAN = Math.PI / 180;
-const renderCustomizedLabel = ({
-  cx,
-  cy,
-  midAngle,
-  innerRadius,
-  outerRadius,
-  percent,
-  index,
-}) => {
-  const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-  const x = cx + radius * Math.cos(-midAngle * RADIAN);
-  const y = cy + radius * Math.sin(-midAngle * RADIAN);
-
-  return (
-    <text
-      x={x}
-      y={y}
-      fill="white"
-      textAnchor={x > cx ? "start" : "end"}
-      dominantBaseline="central"
-    >
-      {`${(percent * 100).toFixed(0)}%`}
-    </text>
-  );
-};
-
 // label={renderCustomizedLabel}
 const ChartForm = (props) => {
   const { submissionsStatusList } = props;
 
   const pieData = submissionsStatusList;
+
   if (pieData.length === 0) {
     return <div>Loading status ..</div>;
   }
+
+  const { formName } = pieData[0];
   return (
     <div className="row">
       <div className="col-12">
         <div className="card-counter">
           <div className="white-box status-container d-flex">
             <div className="col-lg-6  col-xs-12">
-              <h4>Submission Status</h4>
+              <h4>Submission Status - {formName}</h4>
               <div className="chart text-center">
                 <PieChart width={600} height={400}>
                   <Pie
@@ -66,7 +42,7 @@ const ChartForm = (props) => {
                     fill="#8884d8"
                     dataKey="count"
                     nameKey="statusName"
-                    label="statusName"
+                    label
                   >
                     <Legend />
                     <LabelList
@@ -89,7 +65,7 @@ const ChartForm = (props) => {
             </div>
             <div className="col-lg-6  col-xs-12 legent-container">
               {pieData.map((entry, index) => (
-                <div className="legent">
+                <div className="legent" key={entry.statusName}>
                   <span
                     className="legent-color"
                     style={{ backgroundColor: COLORS[index % COLORS.length] }}

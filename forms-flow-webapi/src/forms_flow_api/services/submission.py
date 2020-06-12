@@ -2,20 +2,21 @@ from datetime import datetime as dt
 from http import HTTPStatus
 
 from ..common.responses import errorResponse, nodataResponse, successListResponse, successResponse
-from ..models.application import Application, application_schema, applications_schema
+from ..models.application import Application
 from .dboperations import save_changes
 from ..schemas import SubmissionSchema
 from ..exceptions import BusinessException
+
 
 class SubmissionService():
     """This class manages submission service."""
 
     @staticmethod
-    def save_new_submission(data, Id):
+    def save_new_submission(data, id):
         new_application = Application(
             application_name=data['application_name'],
-            application_status="active",
-            mapper_id=Id,
+            application_status='active',
+            mapper_id=id,
             created_by=data['created_by'],
             created_on=dt.utcnow(),
             modified_by=data['modified_by'],
@@ -25,7 +26,7 @@ class SubmissionService():
             revision_no=data['revision_no']
         )
         save_changes(new_application)
-        #TODO Call triger notification BPM API
+        # TODO Call triger notification BPM API
 
     @staticmethod
     def get_all_submissions(applicationId, page_number, limit):
@@ -38,7 +39,7 @@ class SubmissionService():
         submission_schema = SubmissionSchema()
         return submission_schema.dump(submissions, many=True)
 
-    @staticmethod 
+    @staticmethod
     def get_all_submissions_count():
         return Application.query.filter_by(application_status="active").count()
 
@@ -66,4 +67,4 @@ class SubmissionService():
             application.revision_no = data['revision_no']
 
             save_changes(application)
-            #TODO Call triger notification BPM API
+            # TODO Call triger notification BPM API

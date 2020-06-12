@@ -24,5 +24,5 @@ class TenantService():
         if tenant:
             tenant_schema = TenantSchema()
             return tenant_schema.dump(tenant)
-        else:
-            raise BusinessException('Invalid tenant', HTTPStatus.BAD_REQUEST)
+
+        raise BusinessException('Invalid tenant', HTTPStatus.BAD_REQUEST)

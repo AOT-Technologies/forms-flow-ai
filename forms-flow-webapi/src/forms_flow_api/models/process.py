@@ -38,12 +38,12 @@ class Process(BaseModel, db.Model):
             process.form_revision_number = application_info['form_revision_number']
             process.process_definition_key = application_info['process_definition_key']
             process.process_name = application_info['process_name']
-            process.form_id = ApplicationStatus.Active,
+            process.form_id = ApplicationStatus.Active
             process.form_name = application_info['comments']
             process.form_revision_number = application_info['created_by']
-            process.process_definition_key = dt.utcnow(),
+            process.process_definition_key = dt.utcnow()
             process.process_name = application_info['modified_by']
-            process.modified_on = dt.utcnow(),
+            process.modified_on = dt.utcnow()
             process.tenant_id = application_info['tenant_id']
             process.save()
             return process

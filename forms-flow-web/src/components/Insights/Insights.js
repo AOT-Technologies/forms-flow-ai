@@ -1,6 +1,7 @@
 import React, { useEffect }  from "react";
 import ReactDOM from 'react-dom';
 import {connect} from "react-redux";
+import Select from 'react-select'
 // import {push} from "connected-react-router";
 
 import { fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/services/insightServices";
@@ -11,6 +12,11 @@ const Insights = (props) => {
     getDashboardsList();
   },[getDashboardsList]);
 
+  const options = [
+    { value: 'rpas', label: 'RPAS Self Assessment Form' },
+  ]
+  const handleChange = selectedOption => {
+  };
   console.log(dashboards, activeDashboard);
   return (
     <>
@@ -22,12 +28,25 @@ const Insights = (props) => {
             </h1>
             <hr className="line-hr"/>
           </div>
+          <div className="row col-md-10 mb-2">
+              <div className="col-md-2">Select Dashboard</div>
+              <div className="col-md-4">
+                <Select
+                options={options}
+                onChange={handleChange}
+                className="basic-single"
+                />
+              </div>
+            </div>
           <div className="col-12" >
             <iframe
               style={{
-                width:'100%',
-                height:'600px',
-                overflow:'visible'
+                width: '100%',
+                height: 'auto',
+                overflow: 'visible',
+                border: 'none',
+                minHeight: '100vh',
+              
               }}
               src="https://bpm2.aot-technologies.com/public/dashboards/TyeHsJLGWiCJWRIwcfRZiGlGWUDeun9JwWWeZnsC?org_slug=default"/>
           </div>

@@ -25,6 +25,7 @@ class SubmissionService():
             revision_no=data['revision_no']
         )
         save_changes(new_application)
+        #TODO Call triger notification BPM API
 
     @staticmethod
     def get_all_submissions(applicationId, page_number, limit):
@@ -65,3 +66,4 @@ class SubmissionService():
             application.revision_no = data['revision_no']
 
             save_changes(application)
+            #TODO Call triger notification BPM API

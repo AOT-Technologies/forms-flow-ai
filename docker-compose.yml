@@ -10,7 +10,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_HOST_AUTH_METHOD: 'trust'
     volumes:
-      - ./postgres/camunda:/data/postgres
+      - ./postgres/camunda:/var/lib/postgresql/data
     ports:
       - '5432:5432'
     restart: unless-stopped
@@ -117,7 +117,7 @@ services:
       - forms-flow-web-network
 
   forms-flow-webapi-db:
-    image: postgres
+    image: postgres:11
     environment:
       POSTGRES_USER: ${WEB_API_POSTGRES_USER}
       POSTGRES_PASSWORD: ${WEB_API_POSTGRES_PASSWORD}
@@ -127,7 +127,7 @@ services:
       - '6432:5432'
     restart: unless-stopped
     volumes:
-      - ./postgres/webapi:/data/postgres
+      - ./postgres/webapi:/var/lib/postgresql/data
     networks:
       - forms-flow-webapi-network
 

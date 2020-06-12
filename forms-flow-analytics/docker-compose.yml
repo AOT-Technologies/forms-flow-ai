@@ -19,7 +19,7 @@ services:
       - forms-flow-analytics-db
       - forms-flow-analytics-redis
     ports:
-      - '6000:6000'
+      - '7000:5000'
       - '5678:5678'
     environment:
       <<: *redash-environment
@@ -65,7 +65,7 @@ services:
       - '15432:5432'
     restart: unless-stopped
     volumes:
-      - ./postgres/analytics:/data/postgres
+      - ./postgres/analytics:/var/lib/postgresql/data
     networks:
       - forms-flow-analytics-network
 

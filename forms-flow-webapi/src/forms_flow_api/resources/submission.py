@@ -9,7 +9,7 @@ from marshmallow import ValidationError
 from ..exceptions import BusinessException
 from ..services import SubmissionService
 from ..utils.util import cors_preflight
-from ..schemas import SubmissionSchema, ApplicationListReqSchema, SubmissionReqSchema
+from ..schemas import SubmissionSchema, ApplicationListReqSchema
 from ..models import Application
 
 API = Namespace('Submission', description='Submission')
@@ -42,7 +42,7 @@ class SubmissionResource(Resource):
         submission_json = request.get_json()
 
         try:
-            submission_schema = SubmissionReqSchema()
+            submission_schema = SubmissionSchema()
             dict_data = submission_schema.load(submission_json)
             application = SubmissionService.save_new_submission(dict_data, applicationId)
 
@@ -73,7 +73,7 @@ class ApplicationResourceById(Resource):
         """Update submission details."""
         submission_json = request.get_json()
         try:
-            submission_schema = SubmissionReqSchema()
+            submission_schema = SubmissionSchema()
             dict_data = submission_schema.load(submission_json)
             submisssion = SubmissionService.update_submission(applicationId, submissionId, submission_json)
             return 'Updated successfully', HTTPStatus.OK

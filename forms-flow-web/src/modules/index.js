@@ -6,6 +6,7 @@ import user from "./userDetailReducer";
 import tasks from "./tasksReducer";
 import formDelete from "./formReducer";
 import insights from "./insightReducer";
+import metrix from "./metrixReducer";
 
 const createRootReducer = (history) =>
   combineReducers({

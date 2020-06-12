@@ -5,12 +5,7 @@ const ApplicationCounter = (props) => {
 
   return (
     <Fragment>
-      <div className="row mt-3">
-        <div className="col-12">
-          <h3 className="application-title">
-            <i className="fa fa-bars mr-1"></i> Submissions
-          </h3>
-        </div>
+      <div className="row">
         {application.map((app) => (
           <div className="col-lg-4 col-sm-6 col-xs-12">
             <CardFormCounter

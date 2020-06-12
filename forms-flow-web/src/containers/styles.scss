@@ -157,7 +157,7 @@
 
 #sidebar ul li.active > a,
 #sidebar a[aria-expanded="true"] {
-  color: #fff;
+  color: $yellow !important;
   background: $primary-blue;
 }
 

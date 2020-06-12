@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectRoot } from "react-formio";
+import { useLocation } from "react-router-dom";
 
 import { STAFF_REVIEWER } from "../constants/constants";
 import { getUserRoleName, getUserRolePermission } from "../helper/user";
@@ -10,7 +11,10 @@ import { getUserRoleName, getUserRolePermission } from "../helper/user";
 import "./styles.scss";
 
 const SideBar = (props) => {
-  const { pathname } = props;
+  const location = useLocation();
+
+  const { pathname } = location;
+  console.log("sbprops", props);
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const user = useSelector((state) => {
     return selectRoot("user", state).userDetail;
@@ -52,7 +56,7 @@ const SideBar = (props) => {
             </li>
           )}
 
-          <li>
+          <li className={`${pathname === "/form" ? "active" : ""}`}>
             <Link
               to="/form"
               className={`main-nav nav-link ${
@@ -69,7 +73,7 @@ const SideBar = (props) => {
               Forms
             </Link>
           </li>
-          <li>
+          <li className={`${pathname === "/task" ? "active" : ""}`}>
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
                 to="/task"
@@ -82,7 +86,7 @@ const SideBar = (props) => {
               </Link>
             ) : null}
           </li>
-          <li className="active">
+          <li className={` ${pathname === "/metrix" ? "active" : ""}`}>
             <Link
               data-toggle="collapse"
               aria-expanded="false"
@@ -95,7 +99,7 @@ const SideBar = (props) => {
               Metrix
             </Link>
           </li>
-          <li>
+          <li className={`${pathname === "/insights" ? "active" : ""}`}>
             <Link
               to="/insights"
               className={`main-nav nav-link ${

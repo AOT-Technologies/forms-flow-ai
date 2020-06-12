@@ -8,7 +8,7 @@ import {
   fetchMetrixSubmissionCount,
   fetchMetrixSubmissionStatusCount,
 } from "./../../apiManager/services/metrixServices";
-// import Loading from "../../containers/Loading";
+
 import Loading from "../Loading";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 
@@ -63,12 +63,20 @@ const Dashboard = (props) => {
               <i className="fa fa-home"></i> Metrics Dashboard
             </h1>
             <hr className="line-hr"></hr>
-            <div>
-              <DateRangePicker
-                onChange={onChange}
-                value={value}
-                format="y-MM-d"
-              />
+            <div className="col-12">
+              <div className="app-title-container mt-3">
+                <h3 className="application-title">
+                  <i className="fa fa-bars mr-1"></i> Submissions
+                </h3>
+
+                <div>
+                  <DateRangePicker
+                    onChange={onChange}
+                    value={value}
+                    format="y-MM-d"
+                  />
+                </div>
+              </div>
             </div>
           </div>
           <div className="col-12">

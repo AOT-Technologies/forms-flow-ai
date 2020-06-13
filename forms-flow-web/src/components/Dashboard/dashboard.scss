@@ -77,6 +77,9 @@
       align-self: center;
       flex-direction: row;
       flex-wrap: wrap;
+      border: 1px solid #b9b7b7;
+      padding: 30px;
+      border-radius: 10px;
       & .legent {
         width: 50%;
         min-height: 45px;
@@ -94,6 +97,7 @@
     & .counter {
       font-size: 42px;
       text-align: center;
+      font-weight: bold;
     }
     & .form-title {
       text-align: center;

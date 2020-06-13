@@ -30,7 +30,7 @@ const ChartForm = (props) => {
         <div className="card-counter">
           <div className="white-box status-container d-flex">
             <div className="col-lg-6  col-xs-12">
-              <h4>Submission Status - {formName}</h4>
+              <h2>Submission Status - {formName}</h2>
               <div className="chart text-center">
                 <PieChart width={600} height={400}>
                   <Pie
@@ -65,7 +65,7 @@ const ChartForm = (props) => {
             </div>
             <div className="col-lg-6  col-xs-12 legent-container">
               {pieData.map((entry, index) => (
-                <div className="legent" key={entry.statusName}>
+                <div className="legent" key={index}>
                   <span
                     className="legent-color"
                     style={{ backgroundColor: COLORS[index % COLORS.length] }}

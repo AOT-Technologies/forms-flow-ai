@@ -3,7 +3,6 @@ import ApplicationCounter from "./ApplicationCounter";
 import { useDispatch, useSelector } from "react-redux";
 
 import StatusChart from "./StatusChart";
-import * as metrix from "../../mocks/metrix.json";
 import {
   fetchMetrixSubmissionCount,
   fetchMetrixSubmissionStatusCount,
@@ -14,7 +13,6 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import * as moment from "moment";
 
 const Dashboard = () => {
-  console.log("metrix", metrix.applicationsMetrix);
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrix.submissionsList);
   const submissionsStatusList = useSelector(
@@ -28,40 +26,42 @@ const Dashboard = () => {
     (state) => state.metrix.selectedMEtrixId
   );
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+  const getFormattedDate = (date) => {
+    return moment(date).format("YYYY-MM-DD");
+  };
   useEffect(() => {
-    console.log("inside mount useEffect");
-    dispatch(fetchMetrixSubmissionCount());
+    const fromDate = getFormattedDate(new Date());
+    const toDate = getFormattedDate(new Date());
+    dispatch(fetchMetrixSubmissionCount(fromDate, toDate));
   }, [dispatch]);
 
   if (isMetrixLoading) {
     return <Loading />;
   }
-  if (submissionsList) {
-    // dispatch(fetchMetrixSubmissionStatusCount());
-  }
+
   const getStatusDetails = (id) => {
-    console.log("id", id);
-    dispatch(fetchMetrixSubmissionStatusCount(id));
+    const fromDate = getFormattedDate(dateRange[0]);
+    const toDate = getFormattedDate(dateRange[1]);
+    dispatch(fetchMetrixSubmissionStatusCount(id, fromDate, toDate));
   };
 
   const onSetDateRange = (date) => {
-    console.log("date", date);
+    const fdate = date && date[0] ? date[0] : new Date();
+    const tdate = date && date[1] ? date[1] : new Date();
+    const fromDate = getFormattedDate(fdate);
+    const toDate = getFormattedDate(tdate);
 
-    const formatedFromDate = moment(date[0]).format("YYYY-MM-DD");
-    const formatedToDate = moment(date[0]).format("YYYY-MM-DD");
-    console.log("formatedFromDate", formatedFromDate);
-    console.log("formatedToDate", formatedToDate);
+    dispatch(fetchMetrixSubmissionCount(fromDate, toDate));
     setDateRange(date);
   };
 
-  console.log("dateRange", dateRange);
   return (
     <Fragment>
       <div className="dashboard mb-2">
         <div className="row ">
           <div className="col-12">
             <h1 className="dashboard-title">
-              <i className="fa fa-home"></i> Metrics Dashboard
+              <i className="fa fa-home"></i> Metrics
             </h1>
             <hr className="line-hr"></hr>
             <div className="col-12">
@@ -82,17 +82,12 @@ const Dashboard = () => {
           </div>
           <div className="col-12">
             <ApplicationCounter
-              application={submissionsList[0].applications}
+              application={submissionsList}
               getStatusDetails={getStatusDetails}
               selectedMEtrixId={selectedMEtrixId}
             />
           </div>
-          {/* <div className="col-12 white-box">
-            <Counters />
-          </div>
-          <div className="col-6 white-box">
-            <StatusCounters />
-          </div> */}
+
           <div className="col-12">
             {isMetrixStatusLoading ? (
               <Loading />

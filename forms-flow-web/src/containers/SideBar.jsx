@@ -14,7 +14,7 @@ const SideBar = (props) => {
   const location = useLocation();
 
   const { pathname } = location;
-  console.log("sbprops", props);
+
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const user = useSelector((state) => {
     return selectRoot("user", state).userDetail;
@@ -86,17 +86,17 @@ const SideBar = (props) => {
               </Link>
             ) : null}
           </li>
-          <li className={` ${pathname === "/metrix" ? "active" : ""}`}>
+          <li className={` ${pathname === "/metrics" ? "active" : ""}`}>
             <Link
               data-toggle="collapse"
               aria-expanded="false"
-              to="/metrix"
+              to="/metrics"
               className={`main-nav nav-link ${
-                pathname === "/metrix" ? "active-tab" : ""
+                pathname === "/metrics" ? "active-tab" : ""
               }`}
             >
               <i className="fa fa-home"></i>
-              Metrix
+              Metrics
             </Link>
           </li>
           <li className={`${pathname === "/insights" ? "active" : ""}`}>

@@ -1,21 +1,9 @@
 @import "./themes.scss";
-.text-white {
-  color: $white;
-}
+@import "./base.scss";
 
-.bg-white {
-  background-color: $white;
+.content {
+  padding-bottom: 2.5rem;
 }
-.bg-yellow {
-  background-color: $yellow !important;
-}
-.text-yellow {
-  color: $yellow !important;
-}
-
-.bg-purple {
-  background-color: $purple !important;
-}
-.text-purple {
-  color: $purple !important;
+#app {
+  background: #f3f3f3;
 }

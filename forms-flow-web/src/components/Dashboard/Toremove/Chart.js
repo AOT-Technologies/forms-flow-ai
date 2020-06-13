@@ -102,7 +102,7 @@ const Chart = () => {
     <div className="row">
       <div className="col-12  mb-3">
         <h3 className="application-title">
-          <i class="fa fa-bar-chart" aria-hidden="true"></i> Info Graph
+          <i className="fa fa-bar-chart" aria-hidden="true"></i> Info Graph
         </h3>
       </div>
       {/* <div className="col-12 bg-white p-3">

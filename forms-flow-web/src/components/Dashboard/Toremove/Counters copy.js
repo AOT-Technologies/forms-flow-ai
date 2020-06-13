@@ -13,14 +13,14 @@ const Dashboard = (props) => {
             <div className="white-box analytics-info">
               <h3 className="box-title">
                 <i
-                  class="fa fa-arrow-circle-o-right mr-1 text-purple "
+                  className="fa fa-arrow-circle-o-right mr-1 text-purple "
                   aria-hidden="true"
                 ></i>
                 New (unassigned)
               </h3>
-              <div class="progress progress-md">
+              <div className="progress progress-md">
                 <div
-                  class="progress-bar bg-purple "
+                  className="progress-bar bg-purple "
                   role="progressbar"
                   style={{ width: "50%" }}
                   aria-valuenow="78"
@@ -51,9 +51,9 @@ const Dashboard = (props) => {
                 {" "}
                 <i className="fa fa-clock-o mr-1 text-yellow"></i>In progress
               </h3>
-              <div class="progress progress-md">
+              <div className="progress progress-md">
                 <div
-                  class="progress-bar bg-yellow"
+                  className="progress-bar bg-yellow"
                   role="progressbar"
                   style={{ width: "20%" }}
                   aria-valuenow="78"
@@ -82,14 +82,14 @@ const Dashboard = (props) => {
             <div className="white-box analytics-info">
               <h3 className="box-title">
                 <i
-                  class="fa fa-check-circle  text-success mr-1"
+                  className="fa fa-check-circle  text-success mr-1"
                   aria-hidden="true"
                 ></i>{" "}
                 completed
               </h3>
-              <div class="progress progress-md">
+              <div className="progress progress-md">
                 <div
-                  class="progress-bar bg-success"
+                  className="progress-bar bg-success"
                   role="progressbar"
                   style={{ width: "80%" }}
                   aria-valuenow="78"

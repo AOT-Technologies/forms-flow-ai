@@ -74,6 +74,7 @@
   display: flex;
   align-items: stretch;
   min-height: 94vh;
+  position: relative;
 }
 
 #sidebar {
@@ -156,7 +157,7 @@
 
 #sidebar ul li.active > a,
 #sidebar a[aria-expanded="true"] {
-  color: #fff;
+  color: $yellow !important;
   background: $primary-blue;
 }
 

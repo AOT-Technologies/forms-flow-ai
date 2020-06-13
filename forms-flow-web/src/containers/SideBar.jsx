@@ -3,6 +3,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectRoot } from "react-formio";
+import { useLocation } from "react-router-dom";
 
 import { STAFF_REVIEWER } from "../constants/constants";
 import { getUserRoleName, getUserRolePermission } from "../helper/user";
@@ -10,7 +11,10 @@ import { getUserRoleName, getUserRolePermission } from "../helper/user";
 import "./styles.scss";
 
 const SideBar = (props) => {
-  const { pathname } = props;
+  const location = useLocation();
+
+  const { pathname } = location;
+
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const user = useSelector((state) => {
     return selectRoot("user", state).userDetail;
@@ -33,7 +37,7 @@ const SideBar = (props) => {
                     alt="profile"
                   />
 
-                  <div className="dot-indicator bg-success"/>
+                  <div className="dot-indicator bg-success" />
                 </div>
                 <div className="text-wrapper">
                   <p className="profile-name">
@@ -51,20 +55,8 @@ const SideBar = (props) => {
               </div>
             </li>
           )}
-          <li className="active">
-            <Link
-              data-toggle="collapse"
-              aria-expanded="false"
-              to="/dashboard"
-              className={`main-nav nav-link ${
-                pathname === "/dashboard" ? "active-tab" : ""
-              }`}
-            >
-              <i className="fa fa-home"></i>
-              Dashboard
-            </Link>
-          </li>
-          <li>
+
+          <li className={`${pathname === "/form" ? "active" : ""}`}>
             <Link
               to="/form"
               className={`main-nav nav-link ${
@@ -81,7 +73,7 @@ const SideBar = (props) => {
               Forms
             </Link>
           </li>
-          <li>
+          <li className={`${pathname === "/task" ? "active" : ""}`}>
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
                 to="/task"
@@ -94,14 +86,27 @@ const SideBar = (props) => {
               </Link>
             ) : null}
           </li>
-          <li>
+          <li className={` ${pathname === "/metrics" ? "active" : ""}`}>
+            <Link
+              data-toggle="collapse"
+              aria-expanded="false"
+              to="/metrics"
+              className={`main-nav nav-link ${
+                pathname === "/metrics" ? "active-tab" : ""
+              }`}
+            >
+              <i className="fa fa-home"></i>
+              Metrics
+            </Link>
+          </li>
+          <li className={`${pathname === "/insights" ? "active" : ""}`}>
             <Link
               to="/insights"
               className={`main-nav nav-link ${
                 pathname === "/insights" ? "active-tab" : ""
               }`}
             >
-            <i className="fa fa-lightbulb-o"></i>
+              <i className="fa fa-lightbulb-o"></i>
               Insights
             </Link>
           </li>

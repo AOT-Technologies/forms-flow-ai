@@ -1,27 +1,100 @@
-import React, { Fragment } from "react";
-import Counters from "./Counters";
-import Chart from "./Chart";
+import React, { Fragment, useEffect, useState } from "react";
+import ApplicationCounter from "./ApplicationCounter";
+import { useDispatch, useSelector } from "react-redux";
 
-const Dashboard = (props) => {
+import StatusChart from "./StatusChart";
+import {
+  fetchMetrixSubmissionCount,
+  fetchMetrixSubmissionStatusCount,
+} from "./../../apiManager/services/metrixServices";
+
+import Loading from "../Loading";
+import DateRangePicker from "@wojtekmaj/react-daterange-picker";
+import * as moment from "moment";
+
+const Dashboard = () => {
+  const dispatch = useDispatch();
+  const submissionsList = useSelector((state) => state.metrix.submissionsList);
+  const submissionsStatusList = useSelector(
+    (state) => state.metrix.submissionsStatusList
+  );
+  const isMetrixLoading = useSelector((state) => state.metrix.isMetrixLoading);
+  const isMetrixStatusLoading = useSelector(
+    (state) => state.metrix.isMetrixStatusLoading
+  );
+  const selectedMEtrixId = useSelector(
+    (state) => state.metrix.selectedMEtrixId
+  );
+  const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+  const getFormattedDate = (date) => {
+    return moment(date).format("YYYY-MM-DD");
+  };
+  useEffect(() => {
+    const fromDate = getFormattedDate(new Date());
+    const toDate = getFormattedDate(new Date());
+    dispatch(fetchMetrixSubmissionCount(fromDate, toDate));
+  }, [dispatch]);
+
+  if (isMetrixLoading) {
+    return <Loading />;
+  }
+
+  const getStatusDetails = (id) => {
+    const fromDate = getFormattedDate(dateRange[0]);
+    const toDate = getFormattedDate(dateRange[1]);
+    dispatch(fetchMetrixSubmissionStatusCount(id, fromDate, toDate));
+  };
+
+  const onSetDateRange = (date) => {
+    const fdate = date && date[0] ? date[0] : new Date();
+    const tdate = date && date[1] ? date[1] : new Date();
+    const fromDate = getFormattedDate(fdate);
+    const toDate = getFormattedDate(tdate);
+
+    dispatch(fetchMetrixSubmissionCount(fromDate, toDate));
+    setDateRange(date);
+  };
+
   return (
     <Fragment>
       <div className="dashboard mb-2">
         <div className="row ">
           <div className="col-12">
             <h1 className="dashboard-title">
-              <i className="fa fa-home"></i> My Dashboard
+              <i className="fa fa-home"></i> Metrics
             </h1>
             <hr className="line-hr"></hr>
+            <div className="col-12">
+              <div className="app-title-container mt-3">
+                <h3 className="application-title">
+                  <i className="fa fa-bars mr-1"></i> Submissions
+                </h3>
+
+                <div>
+                  <DateRangePicker
+                    onChange={onSetDateRange}
+                    value={dateRange}
+                    format="y-MM-d"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
           <div className="col-12">
-            <Counters />
+            <ApplicationCounter
+              application={submissionsList}
+              getStatusDetails={getStatusDetails}
+              selectedMEtrixId={selectedMEtrixId}
+            />
           </div>
+
           <div className="col-12">
-            <Chart />
+            {isMetrixStatusLoading ? (
+              <Loading />
+            ) : (
+              <StatusChart submissionsStatusList={submissionsStatusList} />
+            )}
           </div>
-          {/* <div className="col-12">
-            <ListData />
-          </div> */}
         </div>
       </div>
     </Fragment>

@@ -48,7 +48,7 @@ const Insights = (props) => {
                 minHeight: '100vh',
 
               }}
-              src="https://bpm2.aot-technologies.com/public/dashboards/TyeHsJLGWiCJWRIwcfRZiGlGWUDeun9JwWWeZnsC?org_slug=default"/>
+              src="https://bpm2.aot-technologies.com/public/dashboards/YCdoptdldMmuS4SgHrOUHvtRe1sRoeLCRm2tWUQG?org_slug=default"/>
           </div>
         </div>
       </div>

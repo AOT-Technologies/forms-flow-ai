@@ -5,10 +5,9 @@ const ApplicationCounter = (props) => {
   const {
     application,
     getStatusDetails,
-    selectedMEtrixId,
+    selectedMetricsId,
     noOfApplicationsAvailable,
   } = props;
-
   if (noOfApplicationsAvailable === 0) {
     return (
       <Nodata
@@ -27,7 +26,7 @@ const ApplicationCounter = (props) => {
             <CardFormCounter
               submitionData={app}
               getStatusDetails={getStatusDetails}
-              selectedMEtrixId={selectedMEtrixId}
+              selectedMetricsId={selectedMetricsId}
             />
           </div>
         ))}

@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
 const CardFormCounter = (props) => {
-  const { submitionData, getStatusDetails, selectedMEtrixId } = props;
+  const { submitionData, getStatusDetails, selectedMetricsId } = props;
   const { formName, mapperId, count } = submitionData;
   return (
     <Fragment>
@@ -12,7 +12,7 @@ const CardFormCounter = (props) => {
       >
         <div
           className={`white-box analytics-info submission-counter ${
-            selectedMEtrixId === mapperId && "active"
+            selectedMetricsId === mapperId && "active"
           }`}
         >
           <div className="name">

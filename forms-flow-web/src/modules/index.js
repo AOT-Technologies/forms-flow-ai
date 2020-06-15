@@ -6,7 +6,7 @@ import user from "./userDetailReducer";
 import tasks from "./tasksReducer";
 import formDelete from "./formReducer";
 import insights from "./insightReducer";
-import metrix from "./metrixReducer";
+import metrics from "./metricsReducer";
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -19,7 +19,7 @@ const createRootReducer = (history) =>
     submission: submission({ name: "submission" }),
     submissions: submissions({ name: "submissions" }),
     router: connectRouter(history),
-    metrix,
+    metrics,
   });
 
 export default createRootReducer;

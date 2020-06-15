@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 import StatusChart from "./StatusChart";
 import {
-  fetchMetrixSubmissionCount,
-  fetchMetrixSubmissionStatusCount,
-} from "./../../apiManager/services/metrixServices";
+  fetchMetricsSubmissionCount,
+  fetchMetricsSubmissionStatusCount,
+} from "./../../apiManager/services/metricsServices";
 
 import Loading from "../Loading";
 import LoadError from "../Error";
@@ -18,20 +18,24 @@ const firsDay = moment().format("YYYY-MM-02");
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const submissionsList = useSelector((state) => state.metrix.submissionsList);
+  const submissionsList = useSelector((state) => state.metrics.submissionsList);
   const submissionsStatusList = useSelector(
-    (state) => state.metrix.submissionsStatusList
+    (state) => state.metrics.submissionsStatusList
   );
-  const isMetrixLoading = useSelector((state) => state.metrix.isMetrixLoading);
-  const isMetrixStatusLoading = useSelector(
-    (state) => state.metrix.isMetrixStatusLoading
+  const isMetricsLoading = useSelector(
+    (state) => state.metrics.isMetricsLoading
   );
-  const selectedMEtrixId = useSelector(
-    (state) => state.metrix.selectedMEtrixId
+  const isMetricsStatusLoading = useSelector(
+    (state) => state.metrics.isMetricsStatusLoading
   );
-  const metrixLoadError = useSelector((state) => state.metrix.metrixLoadError);
+  const selectedMetricsId = useSelector(
+    (state) => state.metrics.selectedMetricsId
+  );
+  const metricsLoadError = useSelector(
+    (state) => state.metrics.metricsLoadError
+  );
   const metricsStatusLoadError = useSelector(
-    (state) => state.metrix.metricsStatusLoadError
+    (state) => state.metrics.metricsStatusLoadError
   );
 
   const [dateRange, setDateRange] = useState([new Date(firsDay), new Date()]);
@@ -41,17 +45,17 @@ const Dashboard = () => {
   useEffect(() => {
     const fromDate = getFormattedDate(new Date(firsDay));
     const toDate = getFormattedDate(new Date());
-    dispatch(fetchMetrixSubmissionCount(fromDate, toDate));
+    dispatch(fetchMetricsSubmissionCount(fromDate, toDate));
   }, [dispatch]);
 
-  if (isMetrixLoading) {
+  if (isMetricsLoading) {
     return <Loading />;
   }
 
   const getStatusDetails = (id) => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
-    dispatch(fetchMetrixSubmissionStatusCount(id, fromDate, toDate));
+    dispatch(fetchMetricsSubmissionStatusCount(id, fromDate, toDate));
   };
 
   const onSetDateRange = (date) => {
@@ -60,12 +64,12 @@ const Dashboard = () => {
     const fromDate = getFormattedDate(fdate);
     const toDate = getFormattedDate(tdate);
 
-    dispatch(fetchMetrixSubmissionCount(fromDate, toDate));
+    dispatch(fetchMetricsSubmissionCount(fromDate, toDate));
     setDateRange(date);
   };
 
   const noOfApplicationsAvailable = submissionsList.length;
-  if (metrixLoadError) {
+  if (metricsLoadError) {
     return (
       <LoadError text="The operation couldn't be completed. Please try after sometime" />
     );
@@ -98,14 +102,14 @@ const Dashboard = () => {
             <ApplicationCounter
               application={submissionsList}
               getStatusDetails={getStatusDetails}
-              selectedMEtrixId={selectedMEtrixId}
+              selectedMetricsId={selectedMetricsId}
               noOfApplicationsAvailable={noOfApplicationsAvailable}
             />
           </div>
           {metricsStatusLoadError && <LoadError />}
           {noOfApplicationsAvailable > 0 && (
             <div className="col-12">
-              {isMetrixStatusLoading ? (
+              {isMetricsStatusLoading ? (
                 <Loading />
               ) : (
                 <StatusChart submissionsStatusList={submissionsStatusList} />

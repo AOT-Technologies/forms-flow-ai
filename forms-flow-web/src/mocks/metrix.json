@@ -1,5 +1,5 @@
 {
-  "applicationsMetrix": [
+  "applicationsMetrics": [
     {
       "applications": [
         {
@@ -20,7 +20,7 @@
       ]
     }
   ],
-  "statusMetrix": [
+  "statusMetrics": [
     {
       "applicationStatus": [
         {

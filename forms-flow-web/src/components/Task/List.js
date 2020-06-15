@@ -124,6 +124,7 @@ const mapDispatchToProps = (dispatch) => {
           //  dispatch(getTaskCount());
           dispatch(fetchTaskList((err, res) => {
             if (!err) {
+              dispatch(setUpdateLoader(false));
               /* res.map(ele=>{
                  return dispatch(
                    getTaskSubmissionDetails(ele.processInstanceId,(err,result)=>{

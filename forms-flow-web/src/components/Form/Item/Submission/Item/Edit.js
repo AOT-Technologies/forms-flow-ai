@@ -10,6 +10,7 @@ import Loading from '../../../../../containers/Loading'
 // import PROCESS from "../../../../../apiManager/constants/processConstants";
 import { setFormSubmissionError } from '../../../../../actions/formActions';
 import SubmissionError from '../../../../../containers/SubmissionError';
+import { setUpdateLoader } from "../../../../../actions/taskActions";
 
 const Edit = class extends Component {
   render() {
@@ -99,6 +100,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
           // dispatch(doProcessActions(submission, ownProps))
+          dispatch(setUpdateLoader(true));
           dispatch(resetSubmissions('submission'));
           dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
         }

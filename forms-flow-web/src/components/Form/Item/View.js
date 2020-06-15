@@ -11,6 +11,7 @@ import { setFormSubmissionError } from "../../../actions/formActions";
 import { BPM_USER_DETAILS } from "../../../apiManager/constants/apiConstants";
 import PROCESS from "../../../apiManager/constants/processConstants";
 import SubmissionError from '../../../containers/SubmissionError';
+import { setUpdateLoader } from "../../../actions/taskActions";
 
 const View = class extends Component {
   UNSAFE_componentWillMount() {
@@ -121,6 +122,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onSubmit: (submission) => {
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
+          dispatch(setUpdateLoader(true));
           dispatch(doProcessActions(submission, ownProps))
         } else {
           const ErrorDetails = { modalOpen: true, message: "Submission cannot be done" }

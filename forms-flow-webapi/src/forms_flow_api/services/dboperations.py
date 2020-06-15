@@ -1,6 +1,6 @@
 """This manages Base Model functions."""
 
-from .. import db
+from ..models import db
 
 
 @staticmethod
@@ -8,14 +8,17 @@ def commit():
     """Commit the session."""
     db.session.commit()
 
+
 def save_changes(data):
     db.session.add(data)
     db.session.commit()
+
 
 def delete(self):
     """Delete and commit."""
     db.session.delete(self)
     db.session.commit()
+
 
 def update_from_dict(self, columns: list, values: dict):
     """Update this model from a given dictionary.

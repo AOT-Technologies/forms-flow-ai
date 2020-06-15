@@ -1,6 +1,6 @@
 """This manages Application Data."""
 from .base_model import BaseModel
-from .db import db, ma
+from .db import db
 
 
 class Application(BaseModel, db.Model):
@@ -81,13 +81,3 @@ class Application(BaseModel, db.Model):
             result.append(info)
 
         return result
-
-
-class ApplicationSchema(ma.ModelSchema):
-    class Meta:
-        model = Application
-        include_fk = True
-
-
-application_schema = ApplicationSchema()
-applications_schema = ApplicationSchema(many=True)

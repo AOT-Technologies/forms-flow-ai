@@ -1,0 +1,8 @@
+@import "./../../assets/styles/themes.scss";
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: calc(100% - 250px);
+  height: 2.5rem; /* Footer height */
+}

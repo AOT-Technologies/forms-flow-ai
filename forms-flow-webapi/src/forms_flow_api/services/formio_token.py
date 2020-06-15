@@ -1,23 +1,25 @@
 import datetime
+import os
 
 import jwt
-import os
 
 from ..common.responses import errorResponse
 from ..models.formio_token import FormIOToken
 from .dboperations import save_changes
+
 
 class FormIOTokenService():
     """This class manages application service."""
 
     @staticmethod
     def get_formio_token():
+        """Get formio token."""
         try:
             # userDetails = get_token_details()
-            formioToken = generate_formio_token()
+            formio_token = FormIOTokenService.generate_formio_token()
             new_formiotoken = FormIOToken(
                 keycloak_role="userDetails['given_name']",
-                formio_token=formioToken,
+                formio_token=formio_token,
                 formio_role='',
                 created_on=datetime.datetime.utcnow(),
             )
@@ -27,7 +29,7 @@ class FormIOTokenService():
         except Exception as e:
             return errorResponse()
 
-
+    @staticmethod
     def generate_formio_token():
         """Generate Auth Token.
 

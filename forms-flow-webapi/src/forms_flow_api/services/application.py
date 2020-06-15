@@ -1,10 +1,11 @@
+"""This exposes application service."""
+
 from datetime import datetime as dt
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
 from ..models import Application, Process
 from ..schemas import AggregatedApplicationSchema, ApplicationSchema
-from .dboperations import save_changes
 
 
 class ApplicationService():
@@ -12,6 +13,7 @@ class ApplicationService():
 
     @staticmethod
     def get_all_applications(page_number: int, limit: int):
+        """Get all applications."""
         if page_number:
             page_number = int(page_number)
         if limit:
@@ -21,21 +23,24 @@ class ApplicationService():
         return application_schema.dump(process, many=True)
 
     @staticmethod
-    def get_all_application_count():
+    def get_application_count():
+        """Get application count."""
         return Process.query.filter_by(status='active').count()
 
     @staticmethod
-    def get_a_application(application_id):
+    def get_application(application_id):
+        """Get application."""
         process_details = Process.find_by_id(application_id)
         if process_details:
             application_schema = ApplicationSchema()
             return application_schema.dump(process_details)
-        else:
-            raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
+
+        raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
 
     @staticmethod
-    def save_new_application(data):
-        new_application = Process(
+    def create_application(data):
+        """Create new application."""
+        application = Process(
             form_id=data['form_id'],
             form_name=data['form_name'],
             form_revision_number=data['form_revision_number'],
@@ -49,35 +54,35 @@ class ApplicationService():
             modified_on=dt.utcnow(),
             tenant_id=data['tenant_id']
         )
-        save_changes(new_application)
+        application.save()
 
     @staticmethod
     def update_application(application_id, data):
+        """Update application."""
         application = Process.find_by_id(application_id)
-        if not application:
-            raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
-        else:
-
+        if application:
             application.form_id = data['form_id']
             application.form_name = data['form_name']
             application.form_revision_number = data['form_revision_number']
             application.process_definition_key = data['process_definition_key']
             application.process_name = data['process_name']
             application.comments = data['comments']
-            application.modified_by = 'test',  # TODO: Use data from keycloak token
+            application.modified_by = 'test'  # TODO: Use data from keycloak token
             application.modified_on = dt.utcnow()
             application.tenant_id = data['tenant_id']
+            application.save()
 
-            save_changes(application)
+        raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def delete_application(application_id):
+        """Mark application as inactive."""
         application = Process.find_by_id(application_id)
-        if not application:
-            raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
-        else:
+        if application:
             application.status = 'inactive'
-            save_changes(application)
+            application.save()
+
+        raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def get_aggregated_applications(from_date: str, to_date: str):

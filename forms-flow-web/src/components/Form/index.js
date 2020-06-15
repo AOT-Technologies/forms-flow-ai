@@ -1,57 +1,60 @@
-import React from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { selectRoot } from 'react-formio'
+import React from "react";
+import { Route, Switch, Redirect } from "react-router-dom";
+import { connect } from "react-redux";
+import { selectRoot } from "react-formio";
 
-import List from './List';
-import Create from './Create';
-import Item from './Item/index';
-import { STAFF_DESIGNER } from '../../constants/constants';
-import Loading from '../../containers/Loading';
-import { setUserAuth, setCurrentPage } from '../../actions/bpmActions'
+import List from "./List";
+import Create from "./Create";
+import Item from "./Item/index";
+import { STAFF_DESIGNER } from "../../constants/constants";
+import Loading from "../../containers/Loading";
+import { setUserAuth, setCurrentPage } from "../../actions/bpmActions";
 
-let user = '';
+let user = "";
 
 const CreateFormRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (
-    user.includes(STAFF_DESIGNER)
-      ? <Component {...props} />
-      : <Redirect exact to='/' />
-  )} />
-)
+  <Route
+    {...rest}
+    render={(props) =>
+      user.includes(STAFF_DESIGNER) ? (
+        <Component {...props} />
+      ) : (
+        <Redirect exact to="/" />
+      )
+    }
+  />
+);
 
-const Form = (props)=>{  
-    user = props.user;
-    if(!props.isAuthenticated){
-      return (
-        <Loading/>
-        );
-      }
-    return (
-      <div className="container" id="main">
-       <Switch>
+const Form = (props) => {
+  user = props.user;
+  if (!props.isAuthenticated) {
+    return <Loading />;
+  }
+  return (
+    <div className="container" id="main">
+      <Switch>
         <Route exact path="/form" component={List} />
         <CreateFormRoute exact path="/form/create" component={Create} />
         <Route path="/form/:formId" component={Item} />
-       </Switch>
-      </div>
-  )
-}
+      </Switch>
+    </div>
+  );
+};
 
 const mapStatetoProps = (state) => {
   return {
-    user: selectRoot('user', state).roles || [],
-    isAuthenticated:state.user.isAuthenticated
-  }
-}
+    user: selectRoot("user", state).roles || [],
+    isAuthenticated: state.user.isAuthenticated,
+  };
+};
 
-const mapStateToDispatch = (dispatch) =>{
-  return{
-    setCurrentPage:dispatch(setCurrentPage('form')),
-    setUserAuth:(value)=>{
-      dispatch(setUserAuth(value))
-    }
-  }
-}
+const mapStateToDispatch = (dispatch) => {
+  return {
+    setCurrentPage: dispatch(setCurrentPage("form")),
+    setUserAuth: (value) => {
+      dispatch(setUserAuth(value));
+    },
+  };
+};
 
-export default connect(mapStatetoProps,mapStateToDispatch)(Form);
+export default connect(mapStatetoProps, mapStateToDispatch)(Form);

@@ -31,7 +31,7 @@ class ApplicationResource(Resource):
             limit = dict_data['limit']
             return jsonify({
                 'applications': ApplicationService.get_all_applications(page_no, limit),
-                'totalCount': ApplicationService.get_all_application_count(),
+                'totalCount': ApplicationService.get_application_count(),
                 'pageNo': page_no,
                 'limit': limit
             }), HTTPStatus.OK
@@ -47,7 +47,7 @@ class ApplicationResource(Resource):
         try:
             application_schema = ApplicationSchema()
             dict_data = application_schema.load(application_json)
-            application = ApplicationService.save_new_application(dict_data)
+            application = ApplicationService.create_application(dict_data)
 
             response, status = application_schema.dump(application), HTTPStatus.CREATED
         except ValidationError as application_err:
@@ -66,7 +66,7 @@ class ApplicationResourceById(Resource):
     def get(application_id):
         """Get application by id."""
         try:
-            return ApplicationService.get_a_application(application_id), HTTPStatus.OK
+            return ApplicationService.get_application(application_id), HTTPStatus.OK
         except BusinessException as err:
             return err.error, err.status_code
 

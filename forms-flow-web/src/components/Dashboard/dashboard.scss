@@ -13,6 +13,15 @@
       background: $white;
       padding: 25px;
       margin-bottom: 30px;
+      cursor: pointer;
+      &.active {
+        background-color: $green !important;
+        color: $white;
+        & .small-title {
+          font-size: 12px;
+          color: $white;
+        }
+      }
       & .box-title {
         margin: 0 0 12px;
         font-weight: 500;
@@ -45,8 +54,66 @@
   & .dashboard-title {
     color: $primary-blue;
   }
-}
 
-#app {
-  background: #f3f3f3;
+  & .app-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  & .react-daterange-picker__wrapper {
+    color: #036;
+    padding: 5px;
+    border: 1px solid white;
+    background: white;
+    & input {
+      color: #036;
+    }
+  }
+  & .status-container {
+    display: flex;
+
+    & .legent-container {
+      display: flex;
+      align-self: center;
+      flex-direction: row;
+      flex-wrap: wrap;
+      border: 1px solid #b9b7b7;
+      padding: 30px;
+      border-radius: 10px;
+      & .legent {
+        width: 50%;
+        min-height: 45px;
+
+        & .legent-color {
+          width: 40px;
+          height: 30px;
+          float: left;
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+  & .form-card-counter {
+    & .counter {
+      font-size: 42px;
+      text-align: center;
+      font-weight: bold;
+    }
+    & .form-title {
+      text-align: center;
+      color: #9eabc0 !important;
+    }
+    .submission-counter {
+      display: flex;
+      justify-content: space-between;
+      & .name {
+        font-size: 28px;
+        align-self: center;
+      }
+    }
+    .small-title {
+      font-size: 12px;
+      color: #9eabc0;
+    }
+  }
 }

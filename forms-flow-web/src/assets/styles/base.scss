@@ -1,0 +1,29 @@
+@import "./themes.scss";
+.text-white {
+  color: $white;
+}
+
+.bg-white {
+  background-color: $white;
+}
+.bg-yellow {
+  background-color: $yellow !important;
+}
+.text-yellow {
+  color: $yellow !important;
+}
+
+.bg-purple {
+  background-color: $purple !important;
+}
+.text-purple {
+  color: $purple !important;
+}
+
+.text-green {
+  color: $green !important;
+}
+
+.bg-green {
+  background-color: $green !important;
+}

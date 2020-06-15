@@ -2,6 +2,7 @@ import React, { useEffect }  from "react";
 import {connect} from "react-redux";
 import Select from 'react-select'
 // import {push} from "connected-react-router";
+import Nodata from './nodashboard';
 
 import { fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/services/insightServices";
 
@@ -14,6 +15,7 @@ const Insights = (props) => {
   const options = [
     { value: 'rpas', label: 'RPAS Self Assessment Form' },
   ]
+  const  dashBoardCount = 1
   const handleChange = selectedOption => {
   };
   console.log(dashboards, activeDashboard);
@@ -26,17 +28,24 @@ const Insights = (props) => {
               <i className="fa fa-lightbulb-o"/> Insights
             </h1>
             <hr className="line-hr"/>
-          </div>
-          <div className="row col-md-10 mb-2">
-              <div className="col-md-2">Select Dashboard</div>
-              <div className="col-md-4">
+            <div className="col-12">
+              <div className="app-title-container mt-3">
+                <h3 className="insight-title">
+                  <i className="fa fa-bars mr-1"></i> Dashboard
+                </h3>
+
+                <div className="col-3 mb-2">
                 <Select
                 options={options}
                 onChange={handleChange}
-                className="basic-single"
+                placeholder='Select Dashboard'
+                value={options.filter(option => option.label === 'RPAS Self Assessment Form')}
                 />
+                </div>
               </div>
             </div>
+          </div>
+          {dashBoardCount < 0 ? 
           <div className="col-12" >
             <iframe
               title="dashboard"
@@ -50,6 +59,9 @@ const Insights = (props) => {
               }}
               src="https://bpm2.aot-technologies.com/public/dashboards/YCdoptdldMmuS4SgHrOUHvtRe1sRoeLCRm2tWUQG?org_slug=default"/>
           </div>
+          :
+          <Nodata/>
+            }
         </div>
       </div>
     </>

@@ -21,7 +21,15 @@
       }
     }
   }
-
+  & .app-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  & .insight-title {
+    margin-bottom: -5px;
+    color: $primary-blue;
+  }
 }
 
 #app {

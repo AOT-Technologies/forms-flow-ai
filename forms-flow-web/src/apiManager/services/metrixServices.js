@@ -11,7 +11,7 @@ import {
 export const fetchMetrixSubmissionCount = (fromDate, toDate, ...rest) => {
   return (dispatch) => {
     httpGETRequest(
-      `${API.METRIX_SUBMISSIONS}?from=${fromDate}&to=${toDate}`,
+      `${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}`,
       {}
     )
       .then((res) => {
@@ -51,7 +51,7 @@ export const fetchMetrixSubmissionStatusCount = (id, fromDate, toDate) => {
     dispatch(setSelectedMetrixId(id));
     // httpPOSTRequest(API.GET_TASK_API, { taskVariables: [] })
     httpGETRequest(
-      `${API.METRIX_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}`,
+      `${API.METRICS_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}`,
       {}
     )
       .then((res) => {

@@ -15,7 +15,7 @@ const API = {
   TASK_ACTION_API: `${BPM_BASE_URL}/task`,
   GET_TASK_SUBMISSION_DATA: `${BPM_BASE_URL}/history/variable-instance?processInstanceId=`,
   GET_DASHBOARDS: `${INSIGHTS_BASE_API}/dashboards`,
-  METRIX_SUBMISSIONS: `${WEB_BASE_URL}/application/metrics`,
+  METRICS_SUBMISSIONS: `${WEB_BASE_URL}/application/metrics`,
 };
 
 export default API;

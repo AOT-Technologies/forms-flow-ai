@@ -22,3 +22,4 @@ class SubmissionSchema(Schema):
     process_instance_id = fields.Str(data_key='processInstanceId')
     revision_no = fields.Str(data_key='revisionNo')
     # process_variables {} # TODO
+    

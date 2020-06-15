@@ -21,6 +21,6 @@ class ApplicationVersion(BaseModel, db.Model):
     revision_no = db.Column(db.Integer, nullable=False)
 
     FORM_PROCESS_MAPPER = db.relationship(
-        'Process',
-        primaryjoin='ApplicationVersion.mapper_id == Process.mapper_id',
+        'Application',
+        primaryjoin='ApplicationVersion.mapper_id == Application.mapper_id',
         backref='FAI_APPLICATION_AUDIT')

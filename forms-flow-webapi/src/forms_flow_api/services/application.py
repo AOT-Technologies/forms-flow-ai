@@ -4,7 +4,7 @@ from datetime import datetime as dt
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
-from ..models import Application, Process
+from ..models import ApplicationSubmission, Application
 from ..schemas import AggregatedApplicationSchema, ApplicationSchema
 
 
@@ -18,29 +18,29 @@ class ApplicationService():
             page_number = int(page_number)
         if limit:
             limit = int(limit)
-        process = Process.find_all(page_number, limit)
+        applications = Application.find_all(page_number, limit)
         application_schema = ApplicationSchema()
-        return application_schema.dump(process, many=True)
+        return application_schema.dump(applications, many=True)
 
     @staticmethod
     def get_application_count():
         """Get application count."""
-        return Process.query.filter_by(status='active').count()
+        return Application.query.filter_by(status='active').count()
 
     @staticmethod
     def get_application(application_id):
         """Get application."""
-        process_details = Process.find_by_id(application_id)
-        if process_details:
+        application_details = Application.find_by_id(application_id)
+        if application_details:
             application_schema = ApplicationSchema()
-            return application_schema.dump(process_details)
+            return application_schema.dump(application_details)
 
         raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def create_application(data):
         """Create new application."""
-        application = Process(
+        application = Application(
             form_id=data['form_id'],
             form_name=data['form_name'],
             form_revision_number=data['form_revision_number'],
@@ -59,7 +59,7 @@ class ApplicationService():
     @staticmethod
     def update_application(application_id, data):
         """Update application."""
-        application = Process.find_by_id(application_id)
+        application = Application.find_by_id(application_id)
         if application:
             application.form_id = data['form_id']
             application.form_name = data['form_name']
@@ -70,17 +70,17 @@ class ApplicationService():
             application.modified_by = 'test'  # TODO: Use data from keycloak token
             application.modified_on = dt.utcnow()
             application.tenant_id = data['tenant_id']
-            application.save()
+            return application.save()
 
         raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def delete_application(application_id):
         """Mark application as inactive."""
-        application = Process.find_by_id(application_id)
+        application = Application.find_by_id(application_id)
         if application:
             application.status = 'inactive'
-            application.save()
+            return application.save()
 
         raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
 

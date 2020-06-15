@@ -15,6 +15,6 @@ class ApplicationCommunication(BaseModel, db.Model):
     created_on = db.Column(db.Date(), nullable=False)
 
     FAI_APPLICATION = db.relationship(
-        'Application',
-        primaryjoin='ApplicationCommunication.application_id == Application.application_id',
+        'ApplicationSubmission',
+        primaryjoin='ApplicationCommunication.application_id == ApplicationSubmission.application_id',
         backref='FAI_APPLICATION_COMMUNICATION')

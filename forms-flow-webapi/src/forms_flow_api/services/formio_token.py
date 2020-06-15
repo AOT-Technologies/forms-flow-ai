@@ -3,10 +3,8 @@ import os
 
 import jwt
 
-from ..common.responses import errorResponse
 from ..models.formio_token import FormIOToken
 from .dboperations import save_changes
-
 
 class FormIOTokenService():
     """This class manages application service."""
@@ -14,20 +12,17 @@ class FormIOTokenService():
     @staticmethod
     def get_formio_token():
         """Get formio token."""
-        try:
             # userDetails = get_token_details()
-            formio_token = FormIOTokenService.generate_formio_token()
-            new_formiotoken = FormIOToken(
-                keycloak_role="userDetails['given_name']",
-                formio_token=formio_token,
-                formio_role='',
-                created_on=datetime.datetime.utcnow(),
-            )
-            print(new_formiotoken)
-            save_changes(new_formiotoken)
-            return FormIOToken.query.last()
-        except Exception as e:
-            return errorResponse()
+        formio_token = FormIOTokenService.generate_formio_token()
+        new_formiotoken = FormIOToken(
+            keycloak_role="userDetails['given_name']",
+            formio_token=formio_token,
+            formio_role='',
+            created_on=datetime.datetime.utcnow(),
+        )
+        print(new_formiotoken)
+        save_changes(new_formiotoken)
+        return FormIOToken.query.last()
 
     @staticmethod
     def generate_formio_token():

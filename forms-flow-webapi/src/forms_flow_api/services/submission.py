@@ -1,8 +1,7 @@
 from datetime import datetime as dt
 from http import HTTPStatus
 
-from ..common.responses import errorResponse, nodataResponse, successListResponse, successResponse
-from ..models.application import Application
+from ..models.applicationsubmission import ApplicationSubmission
 from .dboperations import save_changes
 from ..schemas import SubmissionSchema
 from ..exceptions import BusinessException
@@ -13,7 +12,7 @@ class SubmissionService():
 
     @staticmethod
     def save_new_submission(data, id):
-        new_application = Application(
+        new_application = ApplicationSubmission(
             application_name=data['application_name'],
             application_status='active',
             mapper_id=id,
@@ -35,18 +34,18 @@ class SubmissionService():
         if limit != None:
             limit = int(limit)
 
-        submissions = Application.query.filter_by(application_status="active", mapper_id=applicationId).paginate(page_number, limit, False).items
+        submissions = ApplicationSubmission.query.filter_by(application_status="active", mapper_id=applicationId).paginate(page_number, limit, False).items
         submission_schema = SubmissionSchema()
         return submission_schema.dump(submissions, many=True)
 
     @staticmethod
     def get_all_submissions_count():
-        return Application.query.filter_by(application_status="active").count()
+        return ApplicationSubmission.query.filter_by(application_status="active").count()
 
     @staticmethod
-    def get_a_submission(applicationId, submissionId):
+    def get_a_submission(application_id, submission_id):
 
-        application_details = Application.query.filter_by(mapper_id=applicationId, submission_id=submissionId, application_status="active").first()
+        application_details = ApplicationSubmission.query.filter_by(mapper_id=application_id, submission_id=submission_id, application_status="active").first()
         if application_details:
             submission_schema = SubmissionSchema()
             return submission_schema.dump(application_details)
@@ -54,11 +53,9 @@ class SubmissionService():
             raise BusinessException('Invalid submission', HTTPStatus.BAD_REQUEST)
 
     @staticmethod
-    def update_submission(applicationId, submissionId, data):
-        application = Application.query.filter_by(mapper_id=applicationId, submission_id=submissionId, application_status="active").first()
-        if not application:
-            raise BusinessException('Invalid submission', HTTPStatus.BAD_REQUEST)
-        else:
+    def update_submission(application_id, submission_id, data):
+        application = ApplicationSubmission.query.filter_by(mapper_id=application_id, submission_id=submission_id, application_status="active").first()
+        if application:
             application.application_name = data['application_name']
             application.mapper_id = data['mapper_id']
             application.modified_by = data['modified_by']
@@ -68,3 +65,6 @@ class SubmissionService():
 
             save_changes(application)
             # TODO Call triger notification BPM API
+            
+        else:
+            raise BusinessException('Invalid submission', HTTPStatus.BAD_REQUEST)

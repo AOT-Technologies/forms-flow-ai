@@ -11,18 +11,16 @@ const Insights = (props) => {
     { value: 'rpas-self-assessment-dashboard', label: 'RPAS Self Assessment Dashboard', "public_url": "https://bpm2.aot-technologies.com/public/dashboards/YCdoptdldMmuS4SgHrOUHvtRe1sRoeLCRm2tWUQG?org_slug=default" },
     { value: 'overall-submissions', label: 'Overall Submissions', "public_url": "https://bpm2.aot-technologies.com/public/dashboards/Hoyv2ExfHOkhfmoFL7YYXCzUuazzp8zbEhIKwOkF?org_slug=default" },
   ];
-  const {dashboards, activeDashboard, getDashboardsList, getDashboardDetail } = props;
+  const {getDashboardsList, getDashboardDetail } = props;
   const [dashboardSelected, setDashboardSelected] = useState(options[0]);
 
   useEffect(() => {
     getDashboardsList();
-  },[]);
+  },[getDashboardsList]);
 
   useEffect(() => {
     getDashboardDetail(dashboardSelected.value);
-  },[dashboardSelected]);
-
-  console.log(dashboards, activeDashboard, dashboardSelected);
+  },[dashboardSelected,getDashboardDetail]);
 
   return (
     <>

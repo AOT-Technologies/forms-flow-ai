@@ -1,4 +1,4 @@
-import React, { useEffect }  from "react";
+import React, { useEffect, useState }  from "react";
 import {connect} from "react-redux";
 import Select from 'react-select'
 // import {push} from "connected-react-router";
@@ -7,18 +7,21 @@ import Nodata from './nodashboard';
 import { fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/services/insightServices";
 
 const Insights = (props) => {
-  const {dashboards, activeDashboard, getDashboardsList } = props;
+  const options = [
+    { value: 'rpas-self-assessment-dashboard', label: 'RPAS Self Assessment Dashboard', "public_url": "https://bpm2.aot-technologies.com/public/dashboards/YCdoptdldMmuS4SgHrOUHvtRe1sRoeLCRm2tWUQG?org_slug=default" },
+    { value: 'overall-submissions', label: 'Overall Submissions', "public_url": "https://bpm2.aot-technologies.com/public/dashboards/Hoyv2ExfHOkhfmoFL7YYXCzUuazzp8zbEhIKwOkF?org_slug=default" },
+  ];
+  const {getDashboardsList, getDashboardDetail } = props;
+  const [dashboardSelected, setDashboardSelected] = useState(options[0]);
+
   useEffect(() => {
     getDashboardsList();
   },[getDashboardsList]);
 
-  const options = [
-    { value: 'rpas', label: 'RPAS Self Assessment Form' },
-  ]
-  const  dashBoardCount = 1
-  const handleChange = selectedOption => {
-  };
-  console.log(dashboards, activeDashboard);
+  useEffect(() => {
+    getDashboardDetail(dashboardSelected.value);
+  },[dashboardSelected,getDashboardDetail]);
+
   return (
     <>
       <div className="insights mb-2">
@@ -37,15 +40,15 @@ const Insights = (props) => {
                 <div className="col-3 mb-2">
                 <Select
                 options={options}
-                onChange={handleChange}
+                onChange={setDashboardSelected}
                 placeholder='Select Dashboard'
-                value={options.filter(option => option.label === 'RPAS Self Assessment Form')}
+                value={dashboardSelected}
                 />
                 </div>
               </div>
             </div>
           </div>
-          {dashBoardCount > 0 ? 
+          {options.length > 0 ?
           <div className="col-12" >
             <iframe
               title="dashboard"
@@ -57,7 +60,7 @@ const Insights = (props) => {
                 minHeight: '100vh',
 
               }}
-              src="https://bpm2.aot-technologies.com/public/dashboards/YCdoptdldMmuS4SgHrOUHvtRe1sRoeLCRm2tWUQG?org_slug=default"/>
+              src={dashboardSelected.public_url}/>
           </div>
           :
           <Nodata/>
@@ -86,7 +89,7 @@ const mapDispatchToProps = (dispatch) => {
       })
     ),
     getDashboardDetail: (dashboardId) => {
-    dispatch(fetchDashboardDetails((err, res) => {
+    dispatch(fetchDashboardDetails(dashboardId, (err, res) => {
       if (!err) {
         console.log(res);
       }

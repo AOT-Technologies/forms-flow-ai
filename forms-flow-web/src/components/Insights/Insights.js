@@ -45,7 +45,7 @@ const Insights = (props) => {
               </div>
             </div>
           </div>
-          {dashBoardCount < 0 ? 
+          {dashBoardCount > 0 ? 
           <div className="col-12" >
             <iframe
               title="dashboard"

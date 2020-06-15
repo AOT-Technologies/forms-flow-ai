@@ -6,6 +6,8 @@ const initialState = {
   submissionsStatusList: [],
   isMetrixStatusLoading: true,
   selectedMEtrixId: 0,
+  metrixLoadError: false,
+  metricsStatusLoadError: false,
   // tasksCount:0,
   // taskDetail: {},
   // isTaskUpdating:false,
@@ -24,6 +26,10 @@ export default (state = initialState, action) => {
       return { ...state, submissionsStatusList: action.payload };
     case ACTION_CONSTANTS.SELECTED_METRIX_ID:
       return { ...state, selectedMEtrixId: action.payload };
+    case ACTION_CONSTANTS.METRIX_LOAD_ERROR:
+      return { ...state, metrixLoadError: action.payload };
+    case ACTION_CONSTANTS.METRIX_STATUS_LOAD_ERROR:
+      return { ...state, metricsStatusLoadError: action.payload };
     default:
       return state;
   }

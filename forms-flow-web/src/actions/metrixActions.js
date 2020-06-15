@@ -33,15 +33,15 @@ export const setSelectedMetrixId = (data) => (dispatch) => {
   });
 };
 
-export const setFormSubmissionError = (data) => (dispatch) => {
+export const setMetrixLoadError = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.FORM_SUBMISSION_ERROR,
+    type: ACTION_CONSTANTS.METRIX_LOAD_ERROR,
     payload: data,
   });
 };
-export const setFormDeleteStatus = (data) => (dispatch) => {
+export const setMetrixStatusLoadError = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.FORM_DELETE,
+    type: ACTION_CONSTANTS.METRIX_STATUS_LOAD_ERROR,
     payload: data,
   });
 };

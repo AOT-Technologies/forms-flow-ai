@@ -6,10 +6,13 @@ import {
   setMetrixStatusLoader,
   setMetrixSubmissionStatusCount,
   setSelectedMetrixId,
+  setMetrixLoadError,
+  setMetrixStatusLoadError,
 } from "../../actions/metrixActions";
 
 export const fetchMetrixSubmissionCount = (fromDate, toDate, ...rest) => {
   return (dispatch) => {
+    dispatch(setMetrixLoadError(false));
     httpGETRequest(
       `${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}`,
       {}
@@ -28,11 +31,13 @@ export const fetchMetrixSubmissionCount = (fromDate, toDate, ...rest) => {
             );
           } else {
             dispatch(setMetrixSubmissionStatusCount([]));
+            dispatch(setMetrixStatusLoader(false));
           }
         } else {
           // TODO error handling
           console.log("Error", res);
-          // dispatch(serviceActionError(res));
+          dispatch(setMetrixStatusLoader(false));
+          dispatch(setMetrixLoadError(true));
           // dispatch(setMetrixLoader(false));
         }
       })
@@ -41,6 +46,7 @@ export const fetchMetrixSubmissionCount = (fromDate, toDate, ...rest) => {
         console.log("Error", error);
         // dispatch(serviceActionError(error));
         dispatch(setMetrixLoader(false));
+        dispatch(setMetrixLoadError(true));
       });
   };
 };
@@ -67,6 +73,7 @@ export const fetchMetrixSubmissionStatusCount = (id, fromDate, toDate) => {
         }
       })
       .catch((error) => {
+        dispatch(setMetrixStatusLoadError(true));
         // TODO error handling
         console.log("Error", error);
         // dispatch(serviceActionError(error));

@@ -67,7 +67,7 @@ class TaskUnclaim(Resource):
 
 
 @cors_preflight('GET,OPTIONS')
-@API.route('/<int:task_id>/action', methods=['GET', 'OPTIONS'])
+@API.route('/<int:task_id>/action', methods=['GET', 'OPTIONS'])  # TODO: change action to complete
 class TaskAction(Resource):
     """Resource for do task actions."""
 
@@ -79,14 +79,14 @@ class TaskAction(Resource):
         }),
 
 
-@cors_preflight('GET,OPTIONS')
-@API.route('/<int:task_id>/due', methods=['GET', 'OPTIONS'])
-class TaskActionDue(Resource):
-    """Resource for set due for task."""
+# @cors_preflight('GET,OPTIONS')
+# @API.route('/<int:task_id>/due', methods=['GET', 'OPTIONS'])
+# class TaskActionDue(Resource):
+#     """Resource for set due for task."""
 
-    @staticmethod
-    def get(task_id):
-        """Set due for a task."""
-        return jsonify({
-            'tasks': TaskService.due_task(task_id)
-        }),
+#     @staticmethod
+#     def get(task_id):
+#         """Set due for a task."""
+#         return jsonify({
+#             'tasks': TaskService.due_task(task_id)
+#         }),

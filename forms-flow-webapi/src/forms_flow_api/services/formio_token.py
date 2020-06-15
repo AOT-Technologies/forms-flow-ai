@@ -1,10 +1,12 @@
+"""This exposes formIO token service."""
+
 import datetime
 import os
 
 import jwt
 
 from ..models.formio_token import FormIOToken
-from .dboperations import save_changes
+
 
 class FormIOTokenService():
     """This class manages application service."""
@@ -12,16 +14,15 @@ class FormIOTokenService():
     @staticmethod
     def get_formio_token():
         """Get formio token."""
-            # userDetails = get_token_details()
+        # userDetails = get_token_details()
         formio_token = FormIOTokenService.generate_formio_token()
         new_formiotoken = FormIOToken(
             keycloak_role="userDetails['given_name']",
             formio_token=formio_token,
             formio_role='',
-            created_on=datetime.datetime.utcnow(),
+            created=datetime.datetime.utcnow(),
         )
-        print(new_formiotoken)
-        save_changes(new_formiotoken)
+        new_formiotoken.save()
         return FormIOToken.query.last()
 
     @staticmethod

@@ -17,36 +17,33 @@ API = Namespace('Application', description='Application')
 
 @cors_preflight('GET,POST,OPTIONS')
 @API.route('', methods=['GET', 'POST', 'OPTIONS'])
-class ApplicationResource(Resource):
+class ApplicationsResource(Resource):
     """Resource for managing applications."""
 
     @staticmethod
     @cors.crossdomain(origin='*')
     def get():
-        """Get Applications."""
-        try:
-            request_schema = ApplicationListReqSchema()
-            dict_data = request_schema.load(request.args)
-            page_no = dict_data['page_no']
-            limit = dict_data['limit']
-            return jsonify({
-                'applications': ApplicationService.get_all_applications(page_no, limit),
-                'totalCount': ApplicationService.get_application_count(),
-                'pageNo': page_no,
-                'limit': limit
-            }), HTTPStatus.OK
-        except ValidationError as agg_err:
-            return {'systemErrors': agg_err.messages}, HTTPStatus.BAD_REQUEST
+        """Get applications."""
+        dict_data = ApplicationListReqSchema().load(request.args)
+        page_no = dict_data['page_no']
+        limit = dict_data['limit']
+        return jsonify({
+            'submissions': ApplicationService.get_all_applications(page_no, limit),
+            'totalCount': ApplicationService.get_all_application_count(),
+            'limit': limit,
+            'pageNo': page_no
+        }), HTTPStatus.OK
 
     @staticmethod
     @cors.crossdomain(origin='*')
     def post():
         """Post a new application using the request body."""
-        application_json = request.get_json()
+        submission_json = request.get_json()
 
         try:
             application_schema = ApplicationSchema()
-            dict_data = application_schema.load(application_json)
+            dict_data = application_schema.load(submission_json)
+            dict_data['created_by'] = 'user'  # TODO: from jwt token
             application = ApplicationService.create_application(dict_data)
 
             response, status = application_schema.dump(application), HTTPStatus.CREATED
@@ -56,10 +53,10 @@ class ApplicationResource(Resource):
         return response, status
 
 
-@cors_preflight('GET,PUT,DELETE,OPTIONS')
-@API.route('/<int:application_id>', methods=['GET', 'PUT', 'DELETE', 'OPTIONS'])
+@cors_preflight('GET,PUT,OPTIONS')
+@API.route('/<int:application_id>', methods=['GET', 'PUT', 'OPTIONS'])
 class ApplicationResourceById(Resource):
-    """Resource for managing application."""
+    """Resource for submissions."""
 
     @staticmethod
     @cors.crossdomain(origin='*')
@@ -72,28 +69,17 @@ class ApplicationResourceById(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
-    def delete(application_id):
-        """Delete application."""
-        try:
-            ApplicationService.delete_application(application_id)
-            return 'Deleted', HTTPStatus.OK
-        except BusinessException as err:
-            return err.error, err.status_code
-
-    @staticmethod
-    @cors.crossdomain(origin='*')
     def put(application_id):
         """Update application details."""
         application_json = request.get_json()
-
         try:
             application_schema = ApplicationSchema()
             dict_data = application_schema.load(application_json)
+            dict_data['modified_by'] = 'user'  # TODO: from jwt token
             ApplicationService.update_application(application_id, dict_data)
-
             return 'Updated successfully', HTTPStatus.OK
-        except ValidationError as project_err:
-            return {'systemErrors': project_err.messages}, HTTPStatus.BAD_REQUEST
+        except ValidationError as submission_err:
+            return {'systemErrors': submission_err.messages}, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight('GET,OPTIONS')

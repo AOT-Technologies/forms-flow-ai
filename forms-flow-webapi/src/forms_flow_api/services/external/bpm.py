@@ -75,7 +75,8 @@ class BPMService(BaseBPMService):
     @classmethod
     def trigger_notification(cls):
         """Submit a form."""
-        url = cls._get_url_(BPMEndpointType.Process) + 'process/start'  # TODO process= onestepapproval or email notification
+        url = cls._get_url_(BPMEndpointType.Process) + 'process/start'
+        # TODO process= onestepapproval or email notification
         return cls.post_request(url)
 
     @classmethod

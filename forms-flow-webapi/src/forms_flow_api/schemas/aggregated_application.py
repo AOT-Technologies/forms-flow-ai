@@ -23,7 +23,7 @@ class AggregatedApplicationSchema(Schema):
 
         unknown = EXCLUDE
 
-    mapper_id = fields.Int(data_key='mapperId')
+    form_process_mapper_id = fields.Int(data_key='mapperId')
     form_name = fields.Str(data_key='formName')
     application_status = fields.Str(data_key='statusName')
     count = fields.Int()

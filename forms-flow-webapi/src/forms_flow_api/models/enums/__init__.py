@@ -1,4 +1,4 @@
-"""This exports all of the enums used by the application."""
+"""This exports all of the enums used by this application."""
 
 from .base_enum import ExtendedEnum, ExtendedIntEnum
-from .application import ApplicationStatus
+from .form_process_mapper import FormProcessMapperStatus

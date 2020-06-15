@@ -95,7 +95,7 @@ const SideBar = (props) => {
                 pathname === "/metrics" ? "active-tab" : ""
               }`}
             >
-              <i className="fa fa-home"></i>
+              <i className="fa fa-pie-chart" aria-hidden="true"></i>
               Metrics
             </Link>
           </li>

@@ -1,4 +1,6 @@
 import React, { Fragment } from "react";
+import { OverlayTrigger, Tooltip } from "react-bootstrap";
+
 const CardFormCounter = (props) => {
   const { submitionData, getStatusDetails, selectedMEtrixId } = props;
   const { formName, mapperId, count } = submitionData;
@@ -15,7 +17,18 @@ const CardFormCounter = (props) => {
         >
           <div className="name">
             <i className="fa fa-wpforms mr-2" aria-hidden="true"></i>
-            {formName}
+
+            <OverlayTrigger
+              placement="top"
+              delay={{ show: 0, hide: 400 }}
+              overlay={(propsData) => (
+                <Tooltip id="overlay-example" {...propsData}>
+                  {formName}
+                </Tooltip>
+              )}
+            >
+              <span>{formName}</span>
+            </OverlayTrigger>
             <div className="small-title">Form Name</div>
           </div>
           <div className="count">

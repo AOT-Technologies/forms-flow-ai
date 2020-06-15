@@ -14,6 +14,8 @@ import LoadError from "../Error";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import * as moment from "moment";
 
+const firsDay = moment().format("YYYY-MM-02");
+
 const Dashboard = () => {
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrix.submissionsList);
@@ -32,12 +34,12 @@ const Dashboard = () => {
     (state) => state.metrix.metricsStatusLoadError
   );
 
-  const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+  const [dateRange, setDateRange] = useState([new Date(firsDay), new Date()]);
   const getFormattedDate = (date) => {
     return moment(date).format("YYYY-MM-DD");
   };
   useEffect(() => {
-    const fromDate = getFormattedDate(new Date());
+    const fromDate = getFormattedDate(new Date(firsDay));
     const toDate = getFormattedDate(new Date());
     dispatch(fetchMetrixSubmissionCount(fromDate, toDate));
   }, [dispatch]);
@@ -74,7 +76,7 @@ const Dashboard = () => {
         <div className="row ">
           <div className="col-12">
             <h1 className="dashboard-title">
-              <i className="fa fa-home"></i> Metrics
+              <i className="fa fa-pie-chart" aria-hidden="true"></i> Metrics
             </h1>
             <hr className="line-hr"></hr>
             <div className="row ">

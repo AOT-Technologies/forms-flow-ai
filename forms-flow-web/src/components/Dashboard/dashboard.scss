@@ -109,6 +109,11 @@
       & .name {
         font-size: 28px;
         align-self: center;
+        width: 60%;
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
     }
     .small-title {

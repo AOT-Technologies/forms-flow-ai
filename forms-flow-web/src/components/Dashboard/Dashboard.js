@@ -4,45 +4,58 @@ import { useDispatch, useSelector } from "react-redux";
 
 import StatusChart from "./StatusChart";
 import {
-  fetchMetrixSubmissionCount,
-  fetchMetrixSubmissionStatusCount,
-} from "./../../apiManager/services/metrixServices";
+  fetchMetricsSubmissionCount,
+  fetchMetricsSubmissionStatusCount,
+} from "./../../apiManager/services/metricsServices";
 
 import Loading from "../Loading";
+import LoadError from "../Error";
+
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import * as moment from "moment";
 
+const firsDay = moment().format("YYYY-MM-02");
+
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const submissionsList = useSelector((state) => state.metrix.submissionsList);
+  const submissionsList = useSelector((state) => state.metrics.submissionsList);
   const submissionsStatusList = useSelector(
-    (state) => state.metrix.submissionsStatusList
+    (state) => state.metrics.submissionsStatusList
   );
-  const isMetrixLoading = useSelector((state) => state.metrix.isMetrixLoading);
-  const isMetrixStatusLoading = useSelector(
-    (state) => state.metrix.isMetrixStatusLoading
+  const isMetricsLoading = useSelector(
+    (state) => state.metrics.isMetricsLoading
   );
-  const selectedMEtrixId = useSelector(
-    (state) => state.metrix.selectedMEtrixId
+  const isMetricsStatusLoading = useSelector(
+    (state) => state.metrics.isMetricsStatusLoading
   );
-  const [dateRange, setDateRange] = useState([new Date(), new Date()]);
+  const selectedMetricsId = useSelector(
+    (state) => state.metrics.selectedMetricsId
+  );
+  const metricsLoadError = useSelector(
+    (state) => state.metrics.metricsLoadError
+  );
+  const metricsStatusLoadError = useSelector(
+    (state) => state.metrics.metricsStatusLoadError
+  );
+
+  const [dateRange, setDateRange] = useState([new Date(firsDay), new Date()]);
   const getFormattedDate = (date) => {
     return moment(date).format("YYYY-MM-DD");
   };
   useEffect(() => {
-    const fromDate = getFormattedDate(new Date());
+    const fromDate = getFormattedDate(new Date(firsDay));
     const toDate = getFormattedDate(new Date());
-    dispatch(fetchMetrixSubmissionCount(fromDate, toDate));
+    dispatch(fetchMetricsSubmissionCount(fromDate, toDate));
   }, [dispatch]);
 
-  if (isMetrixLoading) {
+  if (isMetricsLoading) {
     return <Loading />;
   }
 
   const getStatusDetails = (id) => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
-    dispatch(fetchMetrixSubmissionStatusCount(id, fromDate, toDate));
+    dispatch(fetchMetricsSubmissionStatusCount(id, fromDate, toDate));
   };
 
   const onSetDateRange = (date) => {
@@ -51,32 +64,37 @@ const Dashboard = () => {
     const fromDate = getFormattedDate(fdate);
     const toDate = getFormattedDate(tdate);
 
-    dispatch(fetchMetrixSubmissionCount(fromDate, toDate));
+    dispatch(fetchMetricsSubmissionCount(fromDate, toDate));
     setDateRange(date);
   };
 
+  const noOfApplicationsAvailable = submissionsList.length;
+  if (metricsLoadError) {
+    return (
+      <LoadError text="The operation couldn't be completed. Please try after sometime" />
+    );
+  }
   return (
     <Fragment>
       <div className="dashboard mb-2">
         <div className="row ">
           <div className="col-12">
             <h1 className="dashboard-title">
-              <i className="fa fa-home"></i> Metrics
+              <i className="fa fa-pie-chart" aria-hidden="true"></i> Metrics
             </h1>
             <hr className="line-hr"></hr>
-            <div className="col-12">
-              <div className="app-title-container mt-3">
+            <div className="row ">
+              <div className="col-12 col-lg-6 ">
                 <h3 className="application-title">
                   <i className="fa fa-bars mr-1"></i> Submissions
                 </h3>
-
-                <div>
-                  <DateRangePicker
-                    onChange={onSetDateRange}
-                    value={dateRange}
-                    format="y-MM-d"
-                  />
-                </div>
+              </div>
+              <div className="col-12 col-lg-6 d-flex align-items-end flex-lg-column mt-3 mt-lg-0">
+                <DateRangePicker
+                  onChange={onSetDateRange}
+                  value={dateRange}
+                  format="y-MM-d"
+                />
               </div>
             </div>
           </div>
@@ -84,20 +102,24 @@ const Dashboard = () => {
             <ApplicationCounter
               application={submissionsList}
               getStatusDetails={getStatusDetails}
-              selectedMEtrixId={selectedMEtrixId}
+              selectedMetricsId={selectedMetricsId}
+              noOfApplicationsAvailable={noOfApplicationsAvailable}
             />
           </div>
-
-          <div className="col-12">
-            {isMetrixStatusLoading ? (
-              <Loading />
-            ) : (
-              <StatusChart submissionsStatusList={submissionsStatusList} />
-            )}
-          </div>
+          {metricsStatusLoadError && <LoadError />}
+          {noOfApplicationsAvailable > 0 && (
+            <div className="col-12">
+              {isMetricsStatusLoading ? (
+                <Loading />
+              ) : (
+                <StatusChart submissionsStatusList={submissionsStatusList} />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </Fragment>
   );
 };
+
 export default Dashboard;

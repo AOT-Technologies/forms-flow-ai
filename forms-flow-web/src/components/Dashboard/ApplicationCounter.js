@@ -1,7 +1,23 @@
 import React, { Fragment } from "react";
 import CardFormCounter from "./CardFormCounter";
+import Nodata from "./../Nodata";
 const ApplicationCounter = (props) => {
-  const { application, getStatusDetails, selectedMEtrixId } = props;
+  const {
+    application,
+    getStatusDetails,
+    selectedMetricsId,
+    noOfApplicationsAvailable,
+  } = props;
+  if (noOfApplicationsAvailable === 0) {
+    return (
+      <Nodata
+        text="No submissions available for the selected date range"
+        className="no-data-submission "
+      >
+        {" "}
+      </Nodata>
+    );
+  }
   return (
     <Fragment>
       <div className="row">
@@ -10,7 +26,7 @@ const ApplicationCounter = (props) => {
             <CardFormCounter
               submitionData={app}
               getStatusDetails={getStatusDetails}
-              selectedMEtrixId={selectedMEtrixId}
+              selectedMetricsId={selectedMetricsId}
             />
           </div>
         ))}

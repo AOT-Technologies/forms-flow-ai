@@ -20,7 +20,7 @@ const ChartForm = (props) => {
   const pieData = submissionsStatusList;
 
   if (pieData.length === 0) {
-    return <div>Loading status ..</div>;
+    return <div>No submission status</div>;
   }
 
   const { formName } = pieData[0];

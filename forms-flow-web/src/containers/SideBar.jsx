@@ -81,13 +81,13 @@ const SideBar = (props) => {
                   pathname === "/task" ? "active-tab" : ""
                 }`}
               >
-                <i className="fa fa-list"></i>
+                <i className="fa fa-list"/>
                 Tasks
               </Link>
             ) : null}
           </li>
           <li className={` ${pathname === "/metrics" ? "active" : ""}`}>
-            <Link
+            {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<Link
               data-toggle="collapse"
               aria-expanded="false"
               to="/metrics"
@@ -95,20 +95,20 @@ const SideBar = (props) => {
                 pathname === "/metrics" ? "active-tab" : ""
               }`}
             >
-              <i className="fa fa-pie-chart" aria-hidden="true"></i>
+              <i className="fa fa-pie-chart" aria-hidden="true"/>
               Metrics
-            </Link>
+            </Link>:null}
           </li>
           <li className={`${pathname === "/insights" ? "active" : ""}`}>
-            <Link
+            {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<Link
               to="/insights"
               className={`main-nav nav-link ${
                 pathname === "/insights" ? "active-tab" : ""
               }`}
             >
-              <i className="fa fa-lightbulb-o"></i>
+              <i className="fa fa-lightbulb-o"/>
               Insights
-            </Link>
+            </Link>:null}
           </li>
         </ul>
       </nav>

@@ -17,7 +17,7 @@ class PrivateRoute extends Component {
       this.props.setUserAuth(res.authenticated);
     });
   }
-  TaskRoute = ({ component: Component, ...rest }) => (
+  ReviewerRoute = ({ component: Component, ...rest }) => (
     <Route
       {...rest}
       render={(props) =>
@@ -36,12 +36,12 @@ class PrivateRoute extends Component {
         {this.props.isAuth ? (
           <>
             <Route path="/form" component={Form} />
-            <Route path="/metrics" component={DashboardPage} />
-            <this.TaskRoute path="/task" component={Task} />
+            <this.ReviewerRoute path="/metrics" component={DashboardPage} />
+            <this.ReviewerRoute path="/task" component={Task} />
             <Route exact path="/">
               <Redirect to="/form" />
             </Route>
-            <Route path="/insights" component={InsightsPage} />
+            <this.ReviewerRoute path="/insights" component={InsightsPage} />
           </>
         ) : (
           <Loading />

@@ -322,7 +322,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
-				<version>1.14</version>
+				<version>1.6.0</version>
 				<configuration>
 					<mainClass>org.camunda.bpm.extension.keycloak.showcase.CamundaApplication</mainClass>
 				</configuration>

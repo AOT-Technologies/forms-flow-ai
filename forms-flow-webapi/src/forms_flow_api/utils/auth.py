@@ -4,6 +4,7 @@
 from functools import wraps
 from http import HTTPStatus
 
+from flask import g
 from flask_jwt_oidc import JwtManager
 
 from ..exceptions import BusinessException
@@ -21,6 +22,8 @@ class Auth():
         @jwt.requires_auth
         @wraps(f)
         def decorated(*args, **kwargs):
+            g.token_info = g.jwt_oidc_token_info
+
             return f(*args, **kwargs)
 
         return decorated
@@ -33,6 +36,7 @@ class Auth():
             roles [str,]: Comma separated list of valid roles
         """
         def decorated(f):
+            @Auth.require
             @wraps(f)
             def wrapper(*args, **kwargs):
                 if jwt.contains_role(roles):

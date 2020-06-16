@@ -2,13 +2,14 @@
 
 from http import HTTPStatus
 
-from flask import jsonify, request
+from flask import g, jsonify, request
 from flask_restx import Namespace, Resource, cors
 from marshmallow import ValidationError
 
 from ..exceptions import BusinessException
 from ..schemas import AggregatedApplicationReqSchema, ApplicationListReqSchema, ApplicationSchema
 from ..services import ApplicationService
+from ..utils.auth import auth
 from ..utils.util import cors_preflight
 
 
@@ -22,13 +23,14 @@ class ApplicationsResource(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def get():
         """Get applications."""
         dict_data = ApplicationListReqSchema().load(request.args)
         page_no = dict_data['page_no']
         limit = dict_data['limit']
         return jsonify({
-            'submissions': ApplicationService.get_all_applications(page_no, limit),
+            'applications': ApplicationService.get_all_applications(page_no, limit),
             'totalCount': ApplicationService.get_all_application_count(),
             'limit': limit,
             'pageNo': page_no
@@ -36,14 +38,16 @@ class ApplicationsResource(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def post():
         """Post a new application using the request body."""
-        submission_json = request.get_json()
+        application_json = request.get_json()
 
         try:
             application_schema = ApplicationSchema()
-            dict_data = application_schema.load(submission_json)
-            dict_data['created_by'] = 'user'  # TODO: from jwt token
+            dict_data = application_schema.load(application_json)
+            sub = g.token_info.get('sub')
+            dict_data['created_by'] = sub
             application = ApplicationService.create_application(dict_data)
 
             response, status = application_schema.dump(application), HTTPStatus.CREATED
@@ -60,6 +64,7 @@ class ApplicationResourceById(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def get(application_id):
         """Get application by id."""
         try:
@@ -69,13 +74,15 @@ class ApplicationResourceById(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def put(application_id):
         """Update application details."""
         application_json = request.get_json()
         try:
             application_schema = ApplicationSchema()
             dict_data = application_schema.load(application_json)
-            dict_data['modified_by'] = 'user'  # TODO: from jwt token
+            sub = g.token_info.get('sub')
+            dict_data['modified_by'] = sub
             ApplicationService.update_application(application_id, dict_data)
             return 'Updated successfully', HTTPStatus.OK
         except ValidationError as submission_err:
@@ -89,6 +96,7 @@ class AggregatedApplicationsResource(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def get():
         """Get aggregated applications."""
         try:
@@ -111,6 +119,7 @@ class AggregatedApplicationStatusResource(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def get(mapper_id):
         """Get aggregated application status."""
         try:

@@ -2,7 +2,7 @@
 
 from http import HTTPStatus
 
-from flask import jsonify, request
+from flask import g, jsonify, request
 from flask_restx import Namespace, Resource, cors
 from marshmallow import ValidationError
 
@@ -10,6 +10,7 @@ from marshmallow import ValidationError
 from ..exceptions import BusinessException
 from ..schemas import ApplicationListReqSchema, FormProcessMapperSchema
 from ..services import FormProcessMapperService
+from ..utils.auth import auth
 from ..utils.util import cors_preflight
 
 
@@ -23,6 +24,7 @@ class FormResource(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def get():
         """Get form process mapper."""
         try:
@@ -41,14 +43,17 @@ class FormResource(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def post():
         """Post a form process mapper using the request body."""
         mapper_json = request.get_json()
 
         try:
+            sub = g.token_info.get('sub')
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(mapper_json)
-            dict_data['created_by'] = 'user'  # TODO: from jwt token
+            dict_data['created_by'] = sub
+
             mapper = FormProcessMapperService.create_mapper(dict_data)
 
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
@@ -65,6 +70,7 @@ class FormResourceById(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def get(mapper_id):
         """Get form process mapper by id."""
         try:
@@ -74,6 +80,7 @@ class FormResourceById(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def delete(mapper_id):
         """Delete form process mapper."""
         try:
@@ -84,6 +91,7 @@ class FormResourceById(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def put(mapper_id):
         """Update form process mapper details."""
         application_json = request.get_json()
@@ -91,7 +99,9 @@ class FormResourceById(Resource):
         try:
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(application_json)
-            dict_data['modified_by'] = 'user'  # TODO: from jwt token
+            sub = g.token_info.get('sub')
+            dict_data['modified_by'] = sub
+
             FormProcessMapperService.update_mapper(mapper_id, dict_data)
 
             return 'Updated successfully', HTTPStatus.OK

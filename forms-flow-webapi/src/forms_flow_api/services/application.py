@@ -2,8 +2,9 @@
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
-from ..models import Application
+from ..models import Application, FormProcessMapper
 from ..schemas import AggregatedApplicationSchema, ApplicationSchema
+from .external import BPMService
 
 
 class ApplicationService():
@@ -12,8 +13,22 @@ class ApplicationService():
     @staticmethod
     def create_application(data):
         """Create new application."""
-        return Application.create_from_dict(data)
-        # TODO Call triger notification BPM API
+        data['application_status'] = 'new'
+
+        mapper = FormProcessMapper.find_by_form_id(data['form_id'])
+        # temperory until the frontend can provide form_process_mapper_id
+        data['form_process_mapper_id'] = mapper.id
+        data['application_name'] = mapper.form_name
+
+        application = Application.create_from_dict(data)
+
+        payload = {'variables': data['variables']}
+        payload['variables']['application_id'] = {'value': application.id}
+        response = BPMService.post_process_start(mapper.process_key, payload)
+
+        application.update({'process_instance_id': response['id']})
+
+        return application
 
     @staticmethod
     def get_all_applications(page_no, limit):

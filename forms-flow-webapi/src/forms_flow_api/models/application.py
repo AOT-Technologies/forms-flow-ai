@@ -14,9 +14,9 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     application_name = db.Column(db.String(100), nullable=False)
     application_status = db.Column(db.String(10), nullable=False)
     form_process_mapper_id = db.Column(db.Integer, db.ForeignKey('form_process_mapper.id'), nullable=False)
-    form_submission_id = db.Column(db.String(30), nullable=False)
-    process_instance_id = db.Column(db.String(30), nullable=False)
-    revision_no = db.Column(db.Integer, nullable=False)
+    form_submission_id = db.Column(db.String(100), nullable=False)
+    process_instance_id = db.Column(db.String(100), nullable=True)
+    revision_no = db.Column(db.Integer, nullable=False)  # set 1 now
 
     @classmethod
     def create_from_dict(cls, application_info: dict) -> Application:
@@ -27,8 +27,8 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             application.application_status = application_info['application_status']
             application.form_process_mapper_id = application_info['form_process_mapper_id']
             application.form_submission_id = application_info['form_submission_id']
-            application.process_instance_id = application_info['process_instance_id']
-            application.revision_no = application_info['revision_no']
+            # application.process_instance_id = application_info['process_instance_id']
+            application.revision_no = 1  # application_info['revision_no']
             application.created_by = application_info['created_by']
             application.save()
             return application

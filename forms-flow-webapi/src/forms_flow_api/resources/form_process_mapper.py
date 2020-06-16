@@ -6,7 +6,6 @@ from flask import g, jsonify, request
 from flask_restx import Namespace, Resource, cors
 from marshmallow import ValidationError
 
-# pylint: disable=duplicate-code
 from ..exceptions import BusinessException
 from ..schemas import ApplicationListReqSchema, FormProcessMapperSchema
 from ..services import FormProcessMapperService

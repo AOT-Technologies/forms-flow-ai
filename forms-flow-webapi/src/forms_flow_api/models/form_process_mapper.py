@@ -60,11 +60,17 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     @classmethod
     def find_all(cls, page_number, limit):
         """Fetch all active form process mapper."""
-        return cls.query.filter(FormProcessMapper.status == FormProcessMapperStatus.Active) \
+        return cls.query.filter(FormProcessMapper.status == FormProcessMapperStatus.Active.value) \
                         .paginate(page_number, limit, False).items
 
     @classmethod
     def find_by_id(cls, form_process_mapper_id) -> FormProcessMapper:
         """Find active form process mapper that matches the provided id."""
         return cls.query.filter(and_(FormProcessMapper.id == form_process_mapper_id,
-                                     FormProcessMapper.status == FormProcessMapperStatus.Active)).first()
+                                     FormProcessMapper.status == FormProcessMapperStatus.Active.value)).first()
+
+    @classmethod
+    def find_by_form_id(cls, form_id) -> FormProcessMapper:
+        """Find active form process mapper that matches the provided form_id."""
+        return cls.query.filter(and_(FormProcessMapper.form_id == form_id,
+                                     FormProcessMapper.status == FormProcessMapperStatus.Active.value)).first()

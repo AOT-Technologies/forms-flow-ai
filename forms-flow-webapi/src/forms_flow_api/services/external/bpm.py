@@ -10,9 +10,10 @@ from .base_bpm import BaseBPMService
 class BPMEndpointType(IntEnum):
     """This enum provides the list of bpm endpoints type."""
 
-    Process = 1
-    Task = 2
-    TaskHistory = 3
+    ProcessDefinition = 1
+    Task = 3
+    AllTask = 4
+    TaskVariables = 5
 
 
 class BPMService(BaseBPMService):
@@ -21,20 +22,26 @@ class BPMService(BaseBPMService):
     @classmethod
     def get_all_process(cls):
         """Get all process."""
-        url = cls._get_url_(BPMEndpointType.Process)
+        url = cls._get_url_(BPMEndpointType.ProcessDefinition)
         return cls.get_request(url)
 
     @classmethod
     def get_process_details(cls, process_key):
         """Get process details."""
-        url = cls._get_url_(BPMEndpointType.Process) + process_key
+        url = cls._get_url_(BPMEndpointType.ProcessDefinition) + process_key
         return cls.get_request(url)
 
     @classmethod
     def get_process_actions(cls, process_key):
         """Get process actions."""
-        url = cls._get_url_(BPMEndpointType.Process) + process_key
+        url = cls._get_url_(BPMEndpointType.ProcessDefinition) + process_key
         return cls.get_request(url)
+
+    @classmethod
+    def post_process_start(cls, process_key, payload):
+        """Post process start."""
+        url = f'{cls._get_url_(BPMEndpointType.ProcessDefinition)}key/{process_key}/start'
+        return cls.post_request(url, payload=payload)
 
     @classmethod
     def get_all_tasks(cls):
@@ -45,7 +52,7 @@ class BPMService(BaseBPMService):
     @classmethod
     def get_task_details(cls, task_id):
         """Get task details."""
-        url = cls._get_url_(BPMEndpointType.Process) + task_id
+        url = cls._get_url_(BPMEndpointType.ProcessDefinition) + task_id
         return cls.get_request(url)
 
     @classmethod
@@ -75,7 +82,7 @@ class BPMService(BaseBPMService):
     @classmethod
     def trigger_notification(cls):
         """Submit a form."""
-        url = cls._get_url_(BPMEndpointType.Process) + 'process/start'
+        url = cls._get_url_(BPMEndpointType.ProcessDefinition) + 'process/start'
         # TODO process= onestepapproval or email notification
         return cls.post_request(url)
 
@@ -87,15 +94,12 @@ class BPMService(BaseBPMService):
             bpm_api_base += '/'
 
         url = ''
-        if endpoint_type == BPMEndpointType.Process:
-            api_process = current_app.config.get('API_PROCESS')
-            url = bpm_api_base + api_process
-        elif endpoint_type == BPMEndpointType.Task:
-            api_task = current_app.config.get('API_TASK')
-            url = bpm_api_base + api_task
-        elif endpoint_type == BPMEndpointType.TaskHistory:
-            api_task_history = current_app.config.get('API_TASK_HISTORY')
-            url = bpm_api_base + api_task_history
+        if endpoint_type == BPMEndpointType.ProcessDefinition:
+            url = bpm_api_base + 'process-definition/'
+        elif endpoint_type == BPMEndpointType.AllTask:
+            url = bpm_api_base + 'history/task/'
+        elif endpoint_type == BPMEndpointType.TaskVariables:
+            url = bpm_api_base + 'history/variable-instance'
 
         if not url.endswith('/'):
             url += '/'

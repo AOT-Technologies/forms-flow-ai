@@ -6,6 +6,7 @@ from flask import jsonify, request
 from flask_restx import Namespace, Resource, cors
 
 from ..services import TaskService
+from ..utils.auth import auth
 from ..utils.util import cors_preflight
 
 
@@ -19,6 +20,7 @@ class TaskList(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def get():
         """List all tasks."""
         return jsonify({
@@ -33,6 +35,7 @@ class Task(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def get(task_id):
         """List specific tasks."""
         return jsonify({
@@ -47,6 +50,7 @@ class TaskClaim(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def post(task_id):
         """Claim a task."""
         request_json = request.get_json()
@@ -62,6 +66,7 @@ class TaskUnClaim(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def post(task_id):
         """Unclaim a task."""
         request_json = request.get_json()
@@ -77,6 +82,7 @@ class TaskComplete(Resource):
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def post(task_id):
         """Complete a task."""
         request_json = request.get_json()

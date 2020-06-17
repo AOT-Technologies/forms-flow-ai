@@ -57,8 +57,11 @@ class ProcessService():
             }
         }
         data = BPMService.post_process_evaluate(payload)
-        value = data[0].get('state', {}).get('value')
-        # Since we are receiving a string instead of json and the string contain single quote
-        # instead of double quote.
-        value = value.replace("'", '"')
-        return json.loads(value)
+        if data:
+            value = data[0].get('state', {}).get('value')
+            # Since we are receiving a string instead of json and the string contain single quote
+            # instead of double quote.
+            value = value.replace("'", '"')
+            return json.loads(value)
+
+        raise BusinessException('error', HTTPStatus.BAD_REQUEST)

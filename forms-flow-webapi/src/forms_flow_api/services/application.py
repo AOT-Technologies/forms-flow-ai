@@ -63,7 +63,6 @@ class ApplicationService():
         application = Application.find_by_id(application_id)
         if application:
             application.update(data)
-            # TODO Call triger notification BPM API
         else:
             raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
 

@@ -4,7 +4,7 @@
 from functools import wraps
 from http import HTTPStatus
 
-from flask import g
+from flask import g, request
 from flask_jwt_oidc import JwtManager
 
 from ..exceptions import BusinessException
@@ -22,6 +22,7 @@ class Auth():
         @jwt.requires_auth
         @wraps(f)
         def decorated(*args, **kwargs):
+            g.authorization_header = request.headers.get('Authorization', None)
             g.token_info = g.jwt_oidc_token_info
 
             return f(*args, **kwargs)

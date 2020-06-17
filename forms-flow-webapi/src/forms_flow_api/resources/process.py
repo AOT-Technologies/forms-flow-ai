@@ -7,6 +7,7 @@ from flask_restx import Namespace, Resource, cors
 
 from ..exceptions import BusinessException
 from ..services import ProcessService
+from ..utils.auth import auth
 from ..utils.util import cors_preflight
 
 
@@ -14,12 +15,13 @@ API = Namespace('Process', description='Process')
 
 
 @cors_preflight('GET,OPTIONS')
-@API.route('/<string:process_key>/task/<string:task_key>/state', methods=['GET'])
+@API.route('/<string:process_key>/task/<string:task_key>/state', methods=['GET', 'OPTIONS'])
 class ProcessStateResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
     @cors.crossdomain(origin='*')
+    @auth.require
     def get(process_key, task_key):
         """Get states by process and task key."""
         try:
@@ -45,7 +47,7 @@ class ProcessStateResource(Resource):
 
 
 # @cors_preflight('GET,OPTIONS')
-# @API.route('/<int:process_key>', methods=['GET'])
+# @API.route('/<int:process_key>', methods=['GET', 'OPTIONS'])
 # class ProcessDetailsResource(Resource):
 #     """Resource for managing process details."""
 
@@ -60,7 +62,7 @@ class ProcessStateResource(Resource):
 
 
 # @cors_preflight('GET,OPTIONS')
-# @API.route('/<int:process_key>/action', methods=['GET'])
+# @API.route('/<int:process_key>/action', methods=['GET', 'OPTIONS'])
 # class ProcessActionsResource(Resource):
 #     """Resource for managing process ations."""
 

@@ -4,5 +4,5 @@ from .aggregated_application import AggregatedApplicationReqSchema, AggregatedAp
 from .application import ApplicationSchema, ApplicationListReqSchema
 from .form_process_mapper import FormProcessMapperSchema
 from .process import ProcessListSchema, ProcessDefinitionSchema, ProcessActionListSchema
-from .task import TaskListSchema
+from .task import TaskSchema, TaskVariableSchema
 from .tenant import TenantSchema

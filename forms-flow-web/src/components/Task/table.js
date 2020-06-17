@@ -184,12 +184,13 @@ export const columns = [
       }
     })
   },
-  {
-    dataField: 'dueDate',
-    text: 'Due Date',
-    formatter: linkDueDate,
-    sort: true,
-  },];
+  // {
+  //   dataField: 'dueDate',
+  //   text: 'Due Date',
+  //   formatter: linkDueDate,
+  //   sort: true,
+  // },
+];
 
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">

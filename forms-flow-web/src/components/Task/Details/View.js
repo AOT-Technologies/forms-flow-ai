@@ -2,6 +2,7 @@ import React from 'react'
 import { Table } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import moment from 'moment'
+import { getSubmission, getForm } from 'react-formio';
 
 import { BPM_USER_DETAILS } from '../../../apiManager/constants/apiConstants'
 import { getUserToken } from '../../../apiManager/services/bpmServices'
@@ -56,7 +57,7 @@ const View = (props) => {
         <tr>
           <td className="border-0">Application Id</td>
           <td className="border-0">:</td>
-          <td className="border-0">{task.id}</td>{/*TODO update*/}
+          <td className="border-0">{task.form_id}</td>{/*TODO update*/}
         </tr>
         <tr>
           <td className="border-0">Application Name</td>
@@ -73,11 +74,11 @@ const View = (props) => {
           <td className="border-0">:</td>
           <td className="border-0">{moment(task.submission_date).format('DD-MMM-YYYY')}</td>
         </tr>
-        <tr>
+        {/* <tr>
           <td className="border-0">Due date</td>
           <td className="border-0">:</td>
           <td className="border-0">{(task.due ? moment(task.due).format('DD-MMM-YYYY') : <p className="mb-0">Set due date</p>)}</td>
-        </tr>
+        </tr> */}
       </tbody>
     </Table>
   )
@@ -100,18 +101,19 @@ const mapDispatchToProps = (dispatch) => {
             if (!err) {
               dispatch(getTaskDetail(id, (err, res) => {
                 if (!err) {
-                    dispatch(setTaskSubmissionDetail(res));
+                  if (res.submission_id && res.form_id) {
+                    dispatch(getForm('form', res.form_id))
+                    dispatch(getSubmission('submission', res.submission_id, res.form_id));
                 }
-            }))
+                  // dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {
+                  //   if (!err) {
+                  //     dispatch(setTaskSubmissionDetail(res));
+                  //     dispatch(setUpdateLoader(false));
+                  //   }
+                  // }))
+                }
+              }))
               // dispatch(getTaskDetail(id, (err, res) => {
-              //   if (!err) {
-              //     dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {
-              //       if (!err) {
-              //         dispatch(setTaskSubmissionDetail(res));
-              //         dispatch(setUpdateLoader(false));
-              //       }
-              //     }))
-              //   }
               // }))
             }
             else {
@@ -130,9 +132,9 @@ const mapDispatchToProps = (dispatch) => {
             if (!err) {
               dispatch(getTaskDetail(id, (err, res) => {
                 if (!err) {
-                    dispatch(setTaskSubmissionDetail(res));
+                  dispatch(setTaskSubmissionDetail(res));
                 }
-            }))
+              }))
             }
             else {
               dispatch(setUpdateLoader(false));

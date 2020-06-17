@@ -11,6 +11,7 @@ import {
   serviceActionError,
 } from "../../actions/bpmActions";
 import PROCESS from "../constants/processConstants";
+import UserService from "../../services/UserService";
 
 export const getUserToken = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -103,7 +104,7 @@ export const triggerNotification = (data, ...rest) => {
   // let url = API.SEND_NOTIFICATION + `${data.process}/start`;
   const URL = API.APPLICATION_START;
   return (dispatch) => {
-    httpPOSTRequest(URL, data.req)
+    httpPOSTRequest(URL, data.req,UserService.getToken())
       .then((res) => {
         if (res.data) {
           dispatch(data.service(res.data));

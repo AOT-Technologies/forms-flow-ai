@@ -34,7 +34,7 @@ const List = class extends Component {
             taskAssignee: task.assignee,
             submittedBy: (task.submitter_name || '---'),
             submissionDate: moment(task.submission_date).format("DD-MMM-YYYY HH:mm:ss"),
-            dueDate: (task.due || "Set due date"),
+            // dueDate: (task.due || "Set due date"),
             form: (task.form_name||'---'),
             userName: userDetail.preferred_username,
             deleteReason: task.deleteReason,

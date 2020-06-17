@@ -1,6 +1,6 @@
 import React from 'react'
-import {Link} from 'react-router-dom'
-import {textFilter, selectFilter} from 'react-bootstrap-table2-filter';
+import { Link } from 'react-router-dom'
+import { textFilter, selectFilter } from 'react-bootstrap-table2-filter';
 
 let titleFilter, statusFilter, ownerFilter, appidFilter, submittedFilter, submittedOnFilter, apptypeFilter;
 
@@ -12,14 +12,13 @@ export const defaultSortedBy = [{
 
 export const TaskSearch = (props) => {
   let input;
-  let userName= props.user
+  let userName = props.user
   const statusChange = () => {
-    if(input.value === 'Username')
-    {
+    if (input.value === 'Username') {
       props.onSearch(userName);
     }
     else
-    props.onSearch(input.value);
+      props.onSearch(input.value);
   };
   return (
     <div>
@@ -34,16 +33,16 @@ export const TaskSearch = (props) => {
 };
 
 const selectOptions = [
-  {value: 'New', label: 'New'},
-  {value: 'In-Progress', label: 'In-Progress'},
-  {value: 'Completed', label: 'Completed'}
+  { value: 'New', label: 'New' },
+  { value: 'In-Progress', label: 'In-Progress' },
+  { value: 'Completed', label: 'Completed' }
 ];
 
 function linkDueDate(cell) {
   return <a href=" ">{cell}</a>
 }
 
-function linkSubmision(cell,row) {
+function linkSubmision(cell, row) {
   return <Link to={`/task/${row.id}`} title={cell}>{cell}</Link>
 }
 
@@ -52,30 +51,29 @@ function linkSubmisionId(cell) {
 }
 
 function buttonFormatter(cell, row) {
-  if(cell === "Completed"){
+  if (cell === "Completed") {
     return <label className="text-success font-weight-bold text-uppercase task-btn">Completed</label>;
-  }else if(cell === "In-Progress"){
+  } else if (cell === "In-Progress") {
     return <label className="text-info font-weight-bold text-uppercase">In-Progress</label>
-  }else{
+  } else {
     return <label className="text-primary font-weight-bold text-uppercase task-btn">New</label>;
   }
 }
 
-function timeFormatter(cell){
+function timeFormatter(cell) {
   return <label title={cell}>{cell}</label>
 }
 
-function linkTaskAssignee(cell,row){
-  if(cell){
-    return  <div>
-            {cell}
-           {row.userName === row.taskAssignee && row.deleteReason !== "completed"?
-             <p className="mb-0" onClick={() => row.unAssignFn(row.id)}>Unassign</p> : null}
-         </div>;
-  }else {
-    return <p className="mb-0" onClick={() => row.assignToMeFn(row.id,row.userName)}>Assign to me</p>
+function linkTaskAssignee(cell, row) {
+  if (cell) {
+    return <div>
+      {cell}
+      {row.userName === row.taskAssignee && row.deleteReason !== "completed" ?
+        <p className="mb-0" onClick={() => row.unAssignFn(row.id)}>Unassign</p> : null}
+    </div>;
+  } else {
+    return <p className="mb-0" onClick={() => row.assignToMeFn(row.id, row.userName)}>Assign to me</p>
   }
-
 }
 
 export const clearFilter = () => {
@@ -89,24 +87,24 @@ export const clearFilter = () => {
 };
 
 export const columns = [
-{
-  dataField: 'taskTitle',
-  text: 'Task Title',
-  formatter:linkSubmision,
-  sort: true,
-  filter: textFilter({
-    placeholder: '\uf002 Task Title',  // custom the input placeholder
-    caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-    className: "icon-search",
-    getFilter: (filter) => {
-      titleFilter = filter;
-    }
-  })
-},
+  {
+    dataField: 'taskTitle',
+    text: 'Task Title',
+    formatter: linkSubmision,
+    sort: true,
+    filter: textFilter({
+      placeholder: '\uf002 Task Title',  // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      className: "icon-search",
+      getFilter: (filter) => {
+        titleFilter = filter;
+      }
+    })
+  },
   {
     dataField: 'taskAssignee',
     text: 'Task Assignee',
-    formatter:linkTaskAssignee,
+    formatter: linkTaskAssignee,
     sort: true,
     filter: textFilter({
       placeholder: '\uf002 Task Assignee',  // custom the input placeholder
@@ -163,7 +161,7 @@ export const columns = [
     formatter: timeFormatter,
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: '15%'};
+      return { width: '15%' };
     },
     filter: textFilter({
       placeholder: '\uf002 Date',  // custom the input placeholder

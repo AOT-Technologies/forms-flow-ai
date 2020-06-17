@@ -13,7 +13,7 @@ import { setLoader, setTaskSubmissionDetail } from "../../actions/taskActions";
 import View from '../Form/Item/Submission/Item/View';
 
 class ViewTask extends Component {
-    
+
     render() {
         const { detail } = this.props;
         if (this.props.isLoading) {
@@ -76,20 +76,40 @@ const isDataLoaded = (id) => {
             dispatch(setLoader(true))
             dispatch(getTaskDetail(id, (err, res) => {
                 if (!err) {
-                    dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {
-                        if (!err) {
-                            if (res.submission_id && res.form_id) {
-                                dispatch(getForm('form', res.form_id))
-                                dispatch(getSubmission('submission', res.submission_id, res.form_id));
-                            }
-                            dispatch(setTaskSubmissionDetail(res));
-                        }
-                    }))
+                    if (res.submission_id && res.form_id) {
+                        dispatch(getForm('form', res.form_id))
+                        dispatch(getSubmission('submission', res.submission_id, res.form_id));
+                    }
+                    dispatch(setTaskSubmissionDetail(res));
                 }
             }))
         }
     }
 }
+// const isDataLoaded = (id) => {
+//     return (dispatch, getState) => {
+//         let task = getState().tasks.taskDetail;
+//         if (task && task.id === id) {
+//             dispatch(setLoader(false))
+//         } else {
+//             dispatch(setLoader(true))
+//             dispatch(getTaskDetail(id, (err, res) => {
+//                 if (!err) {
+//                     dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {
+//                         if (!err) {
+//                             if (res.submission_id && res.form_id) {
+//                                 dispatch(getForm('form', res.form_id))
+//                                 dispatch(getSubmission('submission', res.submission_id, res.form_id));
+//                             }
+//                             dispatch(setTaskSubmissionDetail(res));
+//                         }
+//                     }))
+
+//                 }
+//             }))
+//         }
+//     }
+// }
 
 const mapDispatchToProps = (dispatch) => {
     return {

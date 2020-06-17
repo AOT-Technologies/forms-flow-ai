@@ -100,14 +100,19 @@ const mapDispatchToProps = (dispatch) => {
             if (!err) {
               dispatch(getTaskDetail(id, (err, res) => {
                 if (!err) {
-                  dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {
-                    if (!err) {
-                      dispatch(setTaskSubmissionDetail(res));
-                      dispatch(setUpdateLoader(false));
-                    }
-                  }))
+                    dispatch(setTaskSubmissionDetail(res));
                 }
-              }))
+            }))
+              // dispatch(getTaskDetail(id, (err, res) => {
+              //   if (!err) {
+              //     dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {
+              //       if (!err) {
+              //         dispatch(setTaskSubmissionDetail(res));
+              //         dispatch(setUpdateLoader(false));
+              //       }
+              //     }))
+              //   }
+              // }))
             }
             else {
               dispatch(setUpdateLoader(false));
@@ -125,14 +130,9 @@ const mapDispatchToProps = (dispatch) => {
             if (!err) {
               dispatch(getTaskDetail(id, (err, res) => {
                 if (!err) {
-                  dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {
-                    if (!err) {
-                      dispatch(setTaskSubmissionDetail(res));
-                      dispatch(setUpdateLoader(false));
-                    }
-                  }))
+                    dispatch(setTaskSubmissionDetail(res));
                 }
-              }))
+            }))
             }
             else {
               dispatch(setUpdateLoader(false));

@@ -25,25 +25,31 @@ const Task = () => {
 const mapDispatchToProps=(dispatch)=>{
   return{
     setCurrentPage:dispatch(setCurrentPage('task')),
-    getTasks: dispatch(
-      getUserToken(BPM_USER_DETAILS, (err, res) => {
-        if (!err) {
-          dispatch(getTaskCount());
-          dispatch(fetchTaskList((err, res) => {
+    getTasks:dispatch(fetchTaskList((err, res) => {
             if (!err) {
-              res.map(ele => {
-                return dispatch(
-                  getTaskSubmissionDetails(ele.processInstanceId, (err, result) => {
-                    return ele = Object.assign(ele,result);
-                  })
-                )
-              })
-              dispatch(setTaskList(res))
+              //  dispatch(getTaskCount());
             }
-          }))
-        }
-      })
+          })
     ),
+    // getTasks: dispatch(
+    //   getUserToken(BPM_USER_DETAILS, (err, res) => {
+    //     if (!err) {
+    //       dispatch(getTaskCount());
+    //       dispatch(fetchTaskList((err, res) => {
+    //         if (!err) {
+    //           res.map(ele => {
+    //             return dispatch(
+    //               getTaskSubmissionDetails(ele.processInstanceId, (err, result) => {
+    //                 return ele = Object.assign(ele,result);
+    //               })
+    //             )
+    //           })
+    //           dispatch(setTaskList(res))
+    //         }
+    //       }))
+    //     }
+    //   })
+    // ),
   }
 }
 

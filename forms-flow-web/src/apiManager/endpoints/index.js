@@ -9,8 +9,10 @@ import {
 const API = {
   GET_BPM_TOKEN: BPM_TOKEN_URL,
   SEND_NOTIFICATION: PROCESS_BASE_API,
-  GET_TASK_API: `${BPM_BASE_URL}/history/task`,
-  GET_TASK_DETAIL_API: `${BPM_BASE_URL}/history/task?taskId=`,
+  // GET_TASK_API: `${BPM_BASE_URL}/history/task`,
+  // GET_TASK_DETAIL_API: `${BPM_BASE_URL}/history/task?taskId=`,
+  GET_TASK_API: `${WEB_BASE_URL}/task`,
+  GET_TASK_DETAIL_API: `${WEB_BASE_URL}/task/`,
   GET_TASK_COUNT: `${BPM_BASE_URL}/history/task/count`,
   TASK_ACTION_API: `${BPM_BASE_URL}/task`,
   GET_TASK_SUBMISSION_DATA: `${BPM_BASE_URL}/history/variable-instance?processInstanceId=`,

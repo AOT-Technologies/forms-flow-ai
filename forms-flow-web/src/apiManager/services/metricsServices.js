@@ -60,7 +60,8 @@ export const fetchMetricsSubmissionStatusCount = (id, fromDate, toDate) => {
     // httpPOSTRequest(API.GET_TASK_API, { taskVariables: [] })
     httpGETRequest(
       `${API.METRICS_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}`,
-      {}
+      {},
+      UserService.getToken()
     )
       .then((res) => {
         if (res.data) {

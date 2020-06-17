@@ -78,5 +78,5 @@ class ApplicationService():
     def get_aggregated_application_status(mapper_id: int, from_date: str, to_date: str):
         """Get aggregated application status."""
         application_status = Application.find_aggregated_application_status(mapper_id, from_date, to_date)
-        schema = AggregatedApplicationSchema(exclude=('mapper_id',))
+        schema = AggregatedApplicationSchema(exclude=('form_process_mapper_id',))
         return schema.dump(application_status, many=True)

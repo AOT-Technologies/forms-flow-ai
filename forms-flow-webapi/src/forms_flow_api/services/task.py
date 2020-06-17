@@ -44,12 +44,12 @@ class TaskService():
 
     @staticmethod
     def unclaim_task(task_id, data):
-        """Claim a task."""
+        """Unclaim a task."""
         task_unclaim = BPMService.unclaim_task(task_id, data)
         return 'success' if task_unclaim else 'error'
 
     @staticmethod
     def complete_task(task_id, data):
-        """Claim a task."""
+        """Complete a task."""
         task_complete = BPMService.complete_task(task_id, data)
         return 'success' if task_complete else 'error'

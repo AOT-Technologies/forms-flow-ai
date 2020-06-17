@@ -14,6 +14,7 @@ class TaskVariableSchema(Schema):
     name = fields.Str()
     value = fields.Str()
 
+
 class TaskSchema(Schema):
     """This class manages task response schema."""
 

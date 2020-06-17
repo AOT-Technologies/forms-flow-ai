@@ -48,6 +48,7 @@ class TaskClaim(Resource):
     @staticmethod
     @cors.crossdomain(origin='*')
     def post(task_id):
+        """Claim a task."""
         request_json = request.get_json()
         return jsonify({
             'tasks': TaskService.claim_task(task_id, request_json)
@@ -62,6 +63,7 @@ class TaskUnClaim(Resource):
     @staticmethod
     @cors.crossdomain(origin='*')
     def post(task_id):
+        """Unclaim a task."""
         request_json = request.get_json()
         return jsonify({
             'tasks': TaskService.unclaim_task(task_id, request_json)
@@ -76,6 +78,7 @@ class TaskComplete(Resource):
     @staticmethod
     @cors.crossdomain(origin='*')
     def post(task_id):
+        """Complete a task."""
         request_json = request.get_json()
         return jsonify({
             'tasks': TaskService.complete_task(task_id, request_json)

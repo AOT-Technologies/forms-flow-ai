@@ -1,0 +1,12 @@
+{
+  "status": [
+    {
+      "name": "Approve",
+      "value": "approve"
+    },
+    {
+      "name": "Reject",
+      "value": "reject"
+    }
+  ]
+}

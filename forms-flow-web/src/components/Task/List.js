@@ -29,12 +29,13 @@ const List = class extends Component {
             id: task.id,
             applicationId: task.id,//to do update to application/submission id
             taskTitle: task.name,
-            taskStatus: task.deleteReason === "completed" ? 'Completed' : task.assignee ? "In-Progress" : "New",//todo update ,
+            // taskStatus: task.deleteReason === "completed" ? 'Completed' : task.assignee ? "In-Progress" : "New",//todo update ,
+            taskStatus:task.task_status,
             taskAssignee: task.assignee,
-            submittedBy: "---",
-            submissionDate: moment(task.startTime).format("DD-MMM-YYYY HH:mm:ss"),
-            dueDate: (task.due || "Set due date"),
-            form: '---',
+            submittedBy: (task.submitter_name || '---'),
+            submissionDate: moment(task.submission_date).format("DD-MMM-YYYY HH:mm:ss"),
+            // dueDate: (task.due || "Set due date"),
+            form: (task.form_name||'---'),
             userName: userDetail.preferred_username,
             deleteReason: task.deleteReason,
             assignToMeFn: onClaim,
@@ -61,14 +62,15 @@ const List = class extends Component {
       </div>)
     }
     return (
-      tasksCount > 0 ?
+      // tasksCount > 0 ?
+      tasks.length > 0 ?
         <ToolkitProvider keyField="id" data={listTasks(tasks)} columns={columns} search>
           {
             props => (
               <div className="container">
                 <div className="main-header">
                   <img src="/clipboard.svg" width="30" height="30" alt="task" />
-                  <h3 className="task-head">Tasks<div className="col-md-1 task-count">({tasksCount})</div></h3>
+                  <h3 className="task-head">Tasks<div className="col-md-1 task-count">({tasks.length})</div></h3>
                   <div className="col-md-2 btn-group">
                     <TaskSearch {...props.searchProps} user={this.props.userDetail.preferred_username} />
                   </div>
@@ -118,27 +120,33 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setLoader: dispatch(doLoaderUpdate),
-    getTasks: () => dispatch(
-      getUserToken(BPM_USER_DETAILS, (err, res) => {
+    getTasks: () => dispatch(fetchTaskList((err, res) => {
         if (!err) {
-          //  dispatch(getTaskCount());
-          dispatch(fetchTaskList((err, res) => {
-            if (!err) {
-              dispatch(setUpdateLoader(false));
-              /* res.map(ele=>{
-                 return dispatch(
-                   getTaskSubmissionDetails(ele.processInstanceId,(err,result)=>{
-                      return {...ele, ...result};
-                     })
-                 )
-               });
-               console.log("res", res);
-               dispatch(setTaskList(res))*/
-            }
-          }))
+          dispatch(setUpdateLoader(false));
         }
       })
     ),
+    // getTasks: () => dispatch(
+    //   getUserToken(BPM_USER_DETAILS, (err, res) => {
+    //     if (!err) {
+    //       //  dispatch(getTaskCount());
+    //       dispatch(fetchTaskList((err, res) => {
+    //         if (!err) {
+    //           dispatch(setUpdateLoader(false));
+    //           /* res.map(ele=>{
+    //              return dispatch(
+    //                getTaskSubmissionDetails(ele.processInstanceId,(err,result)=>{
+    //                   return {...ele, ...result};
+    //                  })
+    //              )
+    //            });
+    //            console.log("res", res);
+    //            dispatch(setTaskList(res))*/
+    //         }
+    //       }))
+    //     }
+    //   })
+    // ),
     onClaim: (id, userName) => {
       dispatch(setUpdateLoader(true));
       dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {

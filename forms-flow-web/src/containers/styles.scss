@@ -27,11 +27,7 @@
   & span {
     display: inline-block;
   }
-  & a,
-  & a:not(.btn):focus {
-    color: $white;
-    text-decoration: none;
-  }
+
   & .nav-profile {
     max-width: 270px;
     margin-bottom: 30px;

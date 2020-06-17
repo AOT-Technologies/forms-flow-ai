@@ -11,6 +11,7 @@ class BPMEndpointType(IntEnum):
     """This enum provides the list of bpm endpoints type."""
 
     ProcessDefinition = 1
+    DecisionDefinition = 2
     Task = 3
     AllTask = 4
     TaskVariables = 5
@@ -36,6 +37,12 @@ class BPMService(BaseBPMService):
         """Get process actions."""
         url = cls._get_url_(BPMEndpointType.ProcessDefinition) + process_key
         return cls.get_request(url)
+
+    @classmethod
+    def post_process_evaluate(cls, process_key):
+        """Get process states."""
+        url = f'{cls._get_url_(BPMEndpointType.DecisionDefinition)}key/{process_key}/evaluate'
+        return cls.post_request(url)
 
     @classmethod
     def post_process_start(cls, process_key, payload):
@@ -96,6 +103,8 @@ class BPMService(BaseBPMService):
         url = ''
         if endpoint_type == BPMEndpointType.ProcessDefinition:
             url = bpm_api_base + 'process-definition/'
+        elif endpoint_type == BPMEndpointType.DecisionDefinition:
+            url = bpm_api_base + 'decision-definition/'
         elif endpoint_type == BPMEndpointType.AllTask:
             url = bpm_api_base + 'history/task/'
         elif endpoint_type == BPMEndpointType.TaskVariables:

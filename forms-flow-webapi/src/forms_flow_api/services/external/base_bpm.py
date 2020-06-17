@@ -29,7 +29,8 @@ class BaseBPMService():
     def post_request(cls, url, payload=None):
         """Post HTTP request to BPM API with auth header."""
         headers = cls._get_headers_()
-        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        payload = json.dumps(payload) if payload else payload
+        response = requests.post(url, data=payload, headers=headers)
 
         data = None
         if response.ok:

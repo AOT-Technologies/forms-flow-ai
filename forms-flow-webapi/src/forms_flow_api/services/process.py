@@ -44,3 +44,8 @@ class ProcessService():
             return ProcessActionListSchema().dump(process_details)
 
         raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
+
+    @staticmethod
+    def get_process_states(process_key):
+        """Get process states."""
+        return BPMService.post_process_evaluate(process_key)

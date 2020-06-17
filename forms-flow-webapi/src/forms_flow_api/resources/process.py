@@ -14,20 +14,36 @@ API = Namespace('Process', description='Process')
 
 
 @cors_preflight('GET,OPTIONS')
-@API.route('', methods=['GET', 'OPTIONS'])
-class ProcessResource(Resource):
-    """Resource for managing process."""
+@API.route('/<string:process_key>/state', methods=['GET'])
+class ProcessStateResource(Resource):
+    """Resource for managing process state."""
 
     @staticmethod
     @cors.crossdomain(origin='*')
-    def get():
-        """Get all process."""
+    def get(process_key):
+        """Get process states."""
         try:
             return jsonify({
-                'process': ProcessService.get_all_processes()
+                'states': ProcessService.get_process_states(process_key)
             }), HTTPStatus.OK
         except BusinessException as err:
             return err.error, err.status_code
+
+# @cors_preflight('GET,OPTIONS')
+# @API.route('', methods=['GET', 'OPTIONS'])
+# class ProcessResource(Resource):
+#     """Resource for managing process."""
+
+#     @staticmethod
+#     @cors.crossdomain(origin='*')
+#     def get():
+#         """Get all process."""
+#         try:
+#             return jsonify({
+#                 'process': ProcessService.get_all_processes()
+#             }), HTTPStatus.OK
+#         except BusinessException as err:
+#             return err.error, err.status_code
 
 
 # @cors_preflight('GET,OPTIONS')
@@ -45,16 +61,16 @@ class ProcessResource(Resource):
 #             return err.error, err.status_code
 
 
-@cors_preflight('GET,OPTIONS')
-@API.route('/<int:process_key>/action', methods=['GET'])
-class ProcessActionsResource(Resource):
-    """Resource for managing process ations."""
+# @cors_preflight('GET,OPTIONS')
+# @API.route('/<int:process_key>/action', methods=['GET'])
+# class ProcessActionsResource(Resource):
+#     """Resource for managing process ations."""
 
-    @staticmethod
-    @cors.crossdomain(origin='*')
-    def get(process_key):
-        """Get process action details."""
-        try:
-            return ProcessService.get_process_action(process_key), HTTPStatus.OK
-        except BusinessException as err:
-            return err.error, err.status_code
+#     @staticmethod
+#     @cors.crossdomain(origin='*')
+#     def get(process_key):
+#         """Get process action details."""
+#         try:
+#             return ProcessService.get_process_action(process_key), HTTPStatus.OK
+#         except BusinessException as err:
+#             return err.error, err.status_code

@@ -19,7 +19,7 @@ const API = {
   GET_DASHBOARDS: `${INSIGHTS_BASE_API}/dashboards`,
   METRICS_SUBMISSIONS: `${WEB_BASE_URL}/application/metrics`,
   APPLICATION_START: `${WEB_BASE_URL}/application`,
-  PROCESS_STATE: `${WEB_BASE_URL}/process/state`,
+  PROCESS_STATE: `${WEB_BASE_URL}/process/<process_key>/task/<task_key>/state`,
 };
 
 export default API;

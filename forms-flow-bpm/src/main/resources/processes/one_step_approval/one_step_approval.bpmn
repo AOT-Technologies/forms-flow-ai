@@ -9,7 +9,7 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="Task_1el1yok" name="Review Submission" camunda:candidateGroups="rpas-staff">
+    <bpmn:userTask id="reviewer" name="Review Submission" camunda:candidateGroups="rpas-staff">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="action" label="Action" type="string" />
@@ -28,12 +28,15 @@
             <camunda:string>submission_notification</camunda:string>
           </camunda:field>
         </camunda:taskListener>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="javascript">execution.setVariable('submission_group', "rpas-staff");</camunda:script>
+        </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0ociprs</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0jg4sg3</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_0ociprs" sourceRef="StartEvent_1" targetRef="Task_1el1yok" />
-    <bpmn:sequenceFlow id="SequenceFlow_0jg4sg3" sourceRef="Task_1el1yok" targetRef="ExclusiveGateway_0l1c65j" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ociprs" sourceRef="StartEvent_1" targetRef="reviewer" />
+    <bpmn:sequenceFlow id="SequenceFlow_0jg4sg3" sourceRef="reviewer" targetRef="ExclusiveGateway_0l1c65j" />
     <bpmn:endEvent id="EndEvent_03cla68">
       <bpmn:incoming>SequenceFlow_1x38yu4</bpmn:incoming>
     </bpmn:endEvent>
@@ -84,7 +87,7 @@
           <dc:Bounds x="163" y="142" width="69" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_0l4y66o_di" bpmnElement="Task_1el1yok">
+      <bpmndi:BPMNShape id="UserTask_0l4y66o_di" bpmnElement="reviewer">
         <dc:Bounds x="300" y="77" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_03cla68_di" bpmnElement="EndEvent_03cla68">

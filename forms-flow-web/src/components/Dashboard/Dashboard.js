@@ -15,7 +15,9 @@ import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import * as moment from "moment";
 
 const firsDay = moment().format("YYYY-MM-02");
-
+// export const calendarIcon = () => {
+//   return <i className="fa fa-pie-chart" aria-hidden="true"></i>;
+// };
 const Dashboard = () => {
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrics.submissionsList);
@@ -94,6 +96,9 @@ const Dashboard = () => {
                   onChange={onSetDateRange}
                   value={dateRange}
                   format="y-MM-d"
+                  calendarIcon={
+                    <i className="fa fa-calendar" aria-hidden="true"></i>
+                  }
                 />
               </div>
             </div>

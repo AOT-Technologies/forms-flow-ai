@@ -7,7 +7,8 @@ from flask_restx import Namespace, Resource, cors
 from marshmallow import ValidationError
 
 from ..exceptions import BusinessException
-from ..schemas import AggregatedApplicationReqSchema, ApplicationListReqSchema, ApplicationSchema
+from ..schemas.aggregated_application import AggregatedApplicationReqSchema
+from ..schemas.application import ApplicationListReqSchema, ApplicationSchema, ApplicationUpdateSchema
 from ..services import ApplicationService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
@@ -79,7 +80,7 @@ class ApplicationResourceById(Resource):
         """Update application details."""
         application_json = request.get_json()
         try:
-            application_schema = ApplicationSchema()
+            application_schema = ApplicationUpdateSchema()
             dict_data = application_schema.load(application_json)
             sub = g.token_info.get('sub')
             dict_data['modified_by'] = sub

@@ -14,18 +14,16 @@ API = Namespace('Process', description='Process')
 
 
 @cors_preflight('GET,OPTIONS')
-@API.route('/<string:process_key>/state', methods=['GET'])
+@API.route('/<string:process_key>/task/<string:task_key>/state', methods=['GET'])
 class ProcessStateResource(Resource):
-    """Resource for managing process state."""
+    """Resource for managing state."""
 
     @staticmethod
     @cors.crossdomain(origin='*')
-    def get(process_key):
-        """Get process states."""
+    def get(process_key, task_key):
+        """Get states by process and task key."""
         try:
-            return jsonify({
-                'states': ProcessService.get_process_states(process_key)
-            }), HTTPStatus.OK
+            return jsonify(ProcessService.get_states(process_key, task_key)), HTTPStatus.OK
         except BusinessException as err:
             return err.error, err.status_code
 

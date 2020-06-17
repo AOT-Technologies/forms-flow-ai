@@ -39,10 +39,10 @@ class BPMService(BaseBPMService):
         return cls.get_request(url)
 
     @classmethod
-    def post_process_evaluate(cls, process_key):
-        """Get process states."""
-        url = f'{cls._get_url_(BPMEndpointType.DecisionDefinition)}key/{process_key}/evaluate'
-        return cls.post_request(url)
+    def post_process_evaluate(cls, payload):
+        """Get states by evaluating process."""
+        url = f'{cls._get_url_(BPMEndpointType.DecisionDefinition)}key/state-decision/evaluate'
+        return cls.post_request(url, payload=payload)
 
     @classmethod
     def post_process_start(cls, process_key, payload):

@@ -38,3 +38,14 @@ class ApplicationSchema(Schema):
 
     variables = fields.Raw(required=True)
     form_id = fields.Str(data_key='formId', required=True)
+
+
+class ApplicationUpdateSchema(Schema):
+    """This class manages application update request schema."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    application_status = fields.Str(data_key='applicationStatus', required=True)

@@ -1,4 +1,6 @@
 """This exposes process service."""
+
+import json
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
@@ -46,6 +48,17 @@ class ProcessService():
         raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
 
     @staticmethod
-    def get_process_states(process_key):
-        """Get process states."""
-        return BPMService.post_process_evaluate(process_key)
+    def get_states(process_key, task_key):
+        """Get states."""
+        payload = {
+            'variables': {
+                'process': {'value': process_key},
+                'task': {'value': task_key}
+            }
+        }
+        data = BPMService.post_process_evaluate(payload)
+        value = data[0].get('state', {}).get('value')
+        # Since we are receiving a string instead of json and the string contain single quote
+        # instead of double quote.
+        value = value.replace("'", '"')
+        return json.loads(value)

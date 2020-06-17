@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" id="definitions" name="definitions" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="3.6.0">
+  <decision id="state-decision" name="state">
+    <decisionTable id="decisionTable">
+      <input id="input1" label="process-key">
+        <inputExpression id="inputExpression1" typeRef="string">
+          <text>process</text>
+        </inputExpression>
+      </input>
+      <input id="InputClause_0hmkumv" label="task-key">
+        <inputExpression id="LiteralExpression_0m7s53h" typeRef="string">
+          <text>task</text>
+        </inputExpression>
+      </input>
+      <output id="output1" label="state" name="state" typeRef="string" />
+      <rule id="row-950612891-1">
+        <inputEntry id="UnaryTests_0c1o054">
+          <text>"onestepapproval"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1lod0sz">
+          <text>"reviewer"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_065u3ym">
+          <text>"{'status':[{'name': 'Approve','value': 'approve'},{'name': 'Reject','value': 'reject'}]}"	</text>
+        </outputEntry>
+      </rule>
+      <rule id="row-950612891-2">
+        <inputEntry id="UnaryTests_0u1z4ho">
+          <text>"onestepapproval-sendback"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1euytqf">
+          <text>"reviewer"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_198frve">
+          <text>"{'status':[{'name': 'Complete','value': 'complete'},{'name': 'Send Back','value': 'send-back'}]}"	</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

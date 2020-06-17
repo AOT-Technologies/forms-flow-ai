@@ -2,12 +2,14 @@
 
 from http import HTTPStatus
 
-from flask import jsonify
+from flask import jsonify,request
 from flask_restx import Namespace, Resource, cors
+from ..schemas import TaskSchema
 
 from ..services import TaskService
 from ..utils.util import cors_preflight
 
+from ..utils.logging import log_info
 
 API = Namespace('Task', description='Task')
 
@@ -27,66 +29,56 @@ class TaskList(Resource):
 
 
 @cors_preflight('GET,OPTIONS')
-@API.route('/<int:task_id>', methods=['GET', 'OPTIONS'])
-class TaskDetails(Resource):
-    """Resource for task details."""
+@API.route('/<string:task_id>', methods=['GET', 'OPTIONS'])
+class Task(Resource):
+    """Resource for managing tasks."""
 
     @staticmethod
     @cors.crossdomain(origin='*')
     def get(task_id):
-        """Get task details."""
+        """List specific tasks."""
         return jsonify({
-            'tasks': TaskService.get_task(task_id)
+            'task': TaskService.get_task(task_id)
         }), HTTPStatus.OK
 
 
-@cors_preflight('GET,OPTIONS')
-@API.route('/<int:task_id>/claim', methods=['GET', 'OPTIONS'])
+@cors_preflight('POST,OPTIONS')
+@API.route('/<string:task_id>/claim', methods=['POST', 'OPTIONS'])
 class TaskClaim(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    def get(task_id):
-        """Claim a task."""
+    @cors.crossdomain(origin='*')
+    def post(task_id):
+        request_json = request.get_json()
         return jsonify({
-            'tasks': TaskService.claim_task(task_id)
+            'tasks': TaskService.claim_task(task_id,request_json)
         }), HTTPStatus.OK
 
 
-@cors_preflight('GET,OPTIONS')
-@API.route('/<int:task_id>/unclaim', methods=['GET', 'OPTIONS'])
-class TaskUnclaim(Resource):
-    """Resource for unclaim task."""
+@cors_preflight('POST,OPTIONS')
+@API.route('/<string:task_id>/unclaim', methods=['POST', 'OPTIONS'])
+class TaskUnClaim(Resource):
+    """Resource for claim task."""
 
     @staticmethod
-    def get(task_id):
-        """Unclaim a task."""
+    @cors.crossdomain(origin='*')
+    def post(task_id):
+        request_json = request.get_json()
         return jsonify({
-            'tasks': TaskService.unclaim_task(task_id)
+            'tasks': TaskService.unclaim_task(task_id,request_json)
         }), HTTPStatus.OK
 
 
-@cors_preflight('GET,OPTIONS')
-@API.route('/<int:task_id>/action', methods=['GET', 'OPTIONS'])  # TODO: change action to complete
-class TaskAction(Resource):
-    """Resource for do task actions."""
+@cors_preflight('POST,OPTIONS')
+@API.route('/<string:task_id>/complete', methods=['POST', 'OPTIONS'])
+class TaskComplete(Resource):
+    """Resource for claim task."""
 
     @staticmethod
-    def get(task_id):
-        """Set action for a task."""
+    @cors.crossdomain(origin='*')
+    def post(task_id):
+        request_json = request.get_json()
         return jsonify({
-            'tasks': TaskService.set_action_task(task_id)
-        }),
-
-
-# @cors_preflight('GET,OPTIONS')
-# @API.route('/<int:task_id>/due', methods=['GET', 'OPTIONS'])
-# class TaskActionDue(Resource):
-#     """Resource for set due for task."""
-
-#     @staticmethod
-#     def get(task_id):
-#         """Set due for a task."""
-#         return jsonify({
-#             'tasks': TaskService.due_task(task_id)
-#         }),
+            'tasks': TaskService.complete_task(task_id,request_json)
+        }), HTTPStatus.OK

@@ -9,7 +9,7 @@ import { fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/serv
 const Insights = (props) => {
   const options = [
     { value: 'rpas-self-assessment-dashboard', label: 'RPAS Self Assessment Dashboard', "public_url": "https://bpm2.aot-technologies.com/public/dashboards/YCdoptdldMmuS4SgHrOUHvtRe1sRoeLCRm2tWUQG?org_slug=default" },
-    { value: 'overall-submissions', label: 'Overall Submissions', "public_url": "https://bpm2.aot-technologies.com/public/dashboards/Hoyv2ExfHOkhfmoFL7YYXCzUuazzp8zbEhIKwOkF?org_slug=default" },
+    { value: 'overall-submissions', label: 'FOI Submissions', "public_url": "https://bpm2.aot-technologies.com/public/dashboards/Hoyv2ExfHOkhfmoFL7YYXCzUuazzp8zbEhIKwOkF?org_slug=default" },
   ];
   const {getDashboardsList, getDashboardDetail } = props;
   const [dashboardSelected, setDashboardSelected] = useState(options[0]);
@@ -34,7 +34,7 @@ const Insights = (props) => {
             <div className="col-12">
               <div className="app-title-container mt-3">
                 <h3 className="insight-title">
-                  <i className="fa fa-bars mr-1"></i> Dashboard
+                  <i className="fa fa-bars mr-1"/> Dashboard
                 </h3>
 
                 <div className="col-3 mb-2">
@@ -58,7 +58,6 @@ const Insights = (props) => {
                 overflow: 'visible',
                 border: 'none',
                 minHeight: '100vh',
-
               }}
               src={dashboardSelected.public_url}/>
           </div>

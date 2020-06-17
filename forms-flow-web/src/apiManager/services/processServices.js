@@ -23,7 +23,7 @@ export const getProcessStatusList = (processId, taskId) => {
       .then((res) => {
         if (res.data) {
           dispatch(setProcessStatusLoading(false));
-          dispatch(setProcessList(res.data));
+          dispatch(setProcessList(res.data.status));
         } else {
           dispatch(setProcessStatusLoading(false));
           dispatch(setProcessList([]));

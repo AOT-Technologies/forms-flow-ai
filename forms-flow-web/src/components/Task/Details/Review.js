@@ -57,6 +57,7 @@ class Review extends Component {
   render() {
     const { selectedOption, options } = this.state;
     const { processLoadError, isProcessLoading } = this.props;
+
     return (
       <div className="review-section">
         <section className="review-box">

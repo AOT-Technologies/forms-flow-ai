@@ -58,9 +58,9 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         """Fetch aggregated applications."""
         where_condition = ''
         if from_date == to_date:
-            where_condition = f"""app.created = '{from_date}'"""
+            where_condition = f"""DATE(app.created) = '{from_date}'"""
         else:
-            where_condition = f"""app.created BETWEEN '{from_date}' AND '{to_date}'"""
+            where_condition = f"""DATE(app.created) BETWEEN '{from_date}' AND '{to_date}'"""
         result_proxy = db.session.execute(f"""SELECT
                 app.form_process_mapper_id,
                 mapper.form_name,
@@ -85,9 +85,9 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         """Fetch aggregated application status."""
         where_condition = ''
         if from_date == to_date:
-            where_condition = f"""app.created = '{from_date}'"""
+            where_condition = f"""DATE(app.created) = '{from_date}'"""
         else:
-            where_condition = f"""(app.created BETWEEN '{from_date}' AND '{to_date}')"""
+            where_condition = f"""(DATE(app.created) BETWEEN '{from_date}' AND '{to_date}')"""
 
         where_condition += f""" AND app.form_process_mapper_id = {str(mapper_id)} """
 

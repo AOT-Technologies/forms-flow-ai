@@ -94,6 +94,9 @@ const Dashboard = () => {
                   onChange={onSetDateRange}
                   value={dateRange}
                   format="y-MM-d"
+                  calendarIcon={
+                    <i className="fa fa-calendar" aria-hidden="true"></i>
+                  }
                 />
               </div>
             </div>

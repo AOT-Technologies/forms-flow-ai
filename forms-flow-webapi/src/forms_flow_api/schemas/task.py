@@ -26,4 +26,6 @@ class TaskSchema(Schema):
     name = fields.Str()
     assignee = fields.Str()
     processInstanceId = fields.Str()
+    processDefinitionKey = fields.Str()
+    taskDefinitionKey = fields.Str()
     variables = fields.List(fields.Nested(TaskVariableSchema))

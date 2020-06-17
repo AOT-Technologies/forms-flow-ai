@@ -34,7 +34,10 @@ class BaseBPMService():
 
         data = None
         if response.ok:
-            data = json.loads(response.text)
+            if response.text:
+                data = json.loads(response.text)
+            else:
+                data = True
         else:
             log_error('ERROR:Create - status_code: ' + str(response.status_code) + ', ' + response.text)
 

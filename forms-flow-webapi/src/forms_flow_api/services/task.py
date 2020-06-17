@@ -1,11 +1,7 @@
 """This exposes task service."""
-from http import HTTPStatus
-import json
-from ..exceptions import BusinessException
 from ..schemas import TaskSchema, TaskVariableSchema
-
 from .external import BPMService
-from ..utils.logging import log_info
+
 
 class TaskService():
     """This class manages task service."""
@@ -14,46 +10,46 @@ class TaskService():
     def get_all_tasks():
         """Get all tasks."""
         task = BPMService.get_all_tasks()
-        taskList = ''
+        task_list = ''
         if task:
             task_schema = TaskSchema()
-            taskList = task_schema.dump(task, many=True)
-            for entry in taskList:
-                taskVariables = BPMService.get_task_variables(entry['processInstanceId'])
-                taskvariables_schema = TaskVariableSchema()
-                taskVariablesList = taskvariables_schema.dump(taskVariables, many=True)
-                entry['variables'] = taskVariablesList
-        return taskList
-    
+            task_list = task_schema.dump(task, many=True)
+            for entry in task_list:
+                task_variables = BPMService.get_task_variables(entry['processInstanceId'])
+                task_variable_schema = TaskVariableSchema()
+                task_variable_list = task_variable_schema.dump(task_variables, many=True)
+                entry['variables'] = task_variable_list
+        return task_list
+
     @staticmethod
     def get_task(task_id):
         """Get task."""
         task = BPMService.get_task(task_id)
-        taskList = ''
+        task_list = ''
         if task:
             task_schema = TaskSchema()
-            taskList = task_schema.dump(task, many=True)
-            for entry in taskList:
-                taskVariables = BPMService.get_task_variables(entry['processInstanceId'])
-                taskvariables_schema = TaskVariableSchema()
-                taskVariablesList = taskvariables_schema.dump(taskVariables, many=True)
-                entry['variables'] = taskVariablesList
-        return taskList
-    
+            task_list = task_schema.dump(task, many=True)
+            for entry in task_list:
+                task_variables = BPMService.get_task_variables(entry['processInstanceId'])
+                task_variable_schema = TaskVariableSchema()
+                task_variable_list = task_variable_schema.dump(task_variables, many=True)
+                entry['variables'] = task_variable_list
+        return task_list
+
     @staticmethod
     def claim_task(task_id, data):
         """Claim a task."""
-        task_claim = BPMService.claim_task(task_id,data)
+        task_claim = BPMService.claim_task(task_id, data)
         return 'success' if task_claim else 'error'
-    
+
     @staticmethod
     def unclaim_task(task_id, data):
         """Claim a task."""
-        task_unclaim = BPMService.unclaim_task(task_id,data)
+        task_unclaim = BPMService.unclaim_task(task_id, data)
         return 'success' if task_unclaim else 'error'
 
     @staticmethod
     def complete_task(task_id, data):
         """Claim a task."""
-        task_complete = BPMService.complete_task(task_id,data)
+        task_complete = BPMService.complete_task(task_id, data)
         return 'success' if task_complete else 'error'

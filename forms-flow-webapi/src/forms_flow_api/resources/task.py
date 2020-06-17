@@ -2,14 +2,12 @@
 
 from http import HTTPStatus
 
-from flask import jsonify,request
+from flask import jsonify, request
 from flask_restx import Namespace, Resource, cors
-from ..schemas import TaskSchema
 
 from ..services import TaskService
 from ..utils.util import cors_preflight
 
-from ..utils.logging import log_info
 
 API = Namespace('Task', description='Task')
 
@@ -52,7 +50,7 @@ class TaskClaim(Resource):
     def post(task_id):
         request_json = request.get_json()
         return jsonify({
-            'tasks': TaskService.claim_task(task_id,request_json)
+            'tasks': TaskService.claim_task(task_id, request_json)
         }), HTTPStatus.OK
 
 
@@ -66,7 +64,7 @@ class TaskUnClaim(Resource):
     def post(task_id):
         request_json = request.get_json()
         return jsonify({
-            'tasks': TaskService.unclaim_task(task_id,request_json)
+            'tasks': TaskService.unclaim_task(task_id, request_json)
         }), HTTPStatus.OK
 
 
@@ -80,5 +78,5 @@ class TaskComplete(Resource):
     def post(task_id):
         request_json = request.get_json()
         return jsonify({
-            'tasks': TaskService.complete_task(task_id,request_json)
+            'tasks': TaskService.complete_task(task_id, request_json)
         }), HTTPStatus.OK

@@ -2,8 +2,6 @@
 
 from enum import IntEnum
 
-import json
-
 from flask import current_app
 
 from .base_bpm import BaseBPMService
@@ -61,34 +59,34 @@ class BPMService(BaseBPMService):
     @classmethod
     def get_task(cls, task_id):
         """Get task."""
-        url = cls._get_url_(BPMEndpointType.History) + 'task?taskId='+ task_id
+        url = cls._get_url_(BPMEndpointType.History) + 'task?taskId=' + task_id
         return cls.get_request(url)
 
     @classmethod
-    def get_task_variables(cls, processInstanceId):
+    def get_task_variables(cls, process_instance_id):
         """Get task details."""
         url = cls._get_url_(BPMEndpointType.History) + 'variable-instance'
         data = {}
-        data['processInstanceId'] = processInstanceId
+        data['processInstanceId'] = process_instance_id
         return cls.post_request(url, data)
 
     @classmethod
     def claim_task(cls, task_id, data):
         """Claim a task."""
         url = cls._get_url_(BPMEndpointType.Task) + task_id + '/claim'
-        return cls.post_request(url,data)
+        return cls.post_request(url, data)
 
     @classmethod
     def unclaim_task(cls, task_id, data):
         """Unclaim a task."""
         url = cls._get_url_(BPMEndpointType.Task) + task_id + '/unclaim'
-        return cls.post_request(url,data)
+        return cls.post_request(url, data)
 
     @classmethod
     def complete_task(cls, task_id, data):
         """Complete a task."""
         url = cls._get_url_(BPMEndpointType.Task) + task_id + '/complete'
-        return cls.post_request(url,data)
+        return cls.post_request(url, data)
 
     @classmethod
     def trigger_notification(cls):

@@ -5,13 +5,13 @@ import {
   setProcessList,
   setProcessLoadError,
 } from "../../actions/processActions";
+import UserService from "../../services/UserService";
 
-export const getProcessStatusList = () => {
+export const getProcessStatusList = (processId, taskId) => {
   return (dispatch) => {
     dispatch(setProcessStatusLoading(true));
     dispatch(setProcessLoadError(false));
-    httpGETRequest(`${API.PROCESS_STATE}`, {})
-      // httpGETRequest(`http://localhost:3004/status`, {})
+    httpGETRequest(`${API.PROCESS_STATE}`, {}, UserService.getToken())
       .then((res) => {
         if (res.data) {
           dispatch(setProcessStatusLoading(false));
@@ -24,7 +24,7 @@ export const getProcessStatusList = () => {
       })
       .catch((error) => {
         dispatch(setProcessStatusLoading(false));
-        dispatch(setProcessList([]));
+        // dispatch(setProcessList([]));
         dispatch(setProcessLoadError(true));
       });
   };

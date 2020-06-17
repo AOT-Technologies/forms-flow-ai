@@ -17,6 +17,7 @@ import {
 import { setFormSubmissionError } from "../../../actions/formActions";
 import SubmissionError from "../../../containers/SubmissionError";
 import Loading from "../../Loading";
+import Error from "../../Error";
 
 class Review extends Component {
   constructor(props) {
@@ -26,7 +27,6 @@ class Review extends Component {
       options: [
         { value: "approve", label: "Approve" },
         { value: "reject", label: "Reject" },
-        { value: "sendback", label: "Send Back" },
       ],
     };
   }
@@ -50,18 +50,13 @@ class Review extends Component {
     }
   }
 
-  componentDidMount() {
-    const { getProcessStatusListData } = this.props;
-    getProcessStatusListData();
-  }
-
   handleChange = (selectedOption) => {
     this.setState({ selectedOption });
   };
 
   render() {
     const { selectedOption, options } = this.state;
-
+    const { processLoadError, isProcessLoading } = this.props;
     return (
       <div className="review-section">
         <section className="review-box">
@@ -89,9 +84,11 @@ class Review extends Component {
                 <label>Review Status</label>
               </div>
               <div className="col-md-6">
-                {this.props.isProcessLoading ? (
-                  <Loading />
-                ) : (
+                {processLoadError && (
+                  <Error noStyle text="Something went wrong.." />
+                )}
+                {isProcessLoading && <Loading />}
+                {!processLoadError && !isProcessLoading && (
                   <Select
                     onChange={this.handleChange}
                     className="basic-single"
@@ -103,6 +100,8 @@ class Review extends Component {
                     }
                     name="status"
                     options={options}
+                    getOptionLabel={(option) => `${option.name} `}
+                    getOptionValue={(option) => `${option.value}`}
                     isSearchable={false}
                     isDisabled={
                       this.props.detail.assignee === null ||
@@ -160,10 +159,6 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    getProcessStatusListData: () => {
-      dispatch(getProcessStatusList());
-    },
-
     onCompleteTask: (id, status) => {
       dispatch(
         getUserToken(BPM_USER_DETAILS, (err, res) => {

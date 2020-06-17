@@ -1,7 +1,14 @@
 import React from "react";
 import "./loadError.scss";
 
-const LoadError = ({ text = "Something went wrong.", className = "" }) => {
+const LoadError = ({
+  text = "Something went wrong.",
+  className = "",
+  noStyle = false,
+}) => {
+  if (noStyle) {
+    return <div>{text}</div>;
+  }
   return (
     <div className="row ">
       <div className={`col-12 error-message-block ${className} `}>

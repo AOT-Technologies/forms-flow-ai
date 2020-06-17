@@ -1,7 +1,12 @@
 {
   "status": [
-    { "value": "approve", "label": "Approve" },
-    { "value": "reject", "label": "Reject" },
-    { "value": "sendback", "label": "Send Back" }
+    {
+      "name": "Approve",
+      "value": "approve"
+    },
+    {
+      "name": "Reject",
+      "value": "reject"
+    }
   ]
 }

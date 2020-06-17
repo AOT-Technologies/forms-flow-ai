@@ -107,11 +107,17 @@ const View = (props) => {
             {moment(task.submission_date).format("DD-MMM-YYYY")}
           </td>
         </tr>
-        {/* <tr>
+        <tr>
           <td className="border-0">Due date</td>
           <td className="border-0">:</td>
-          <td className="border-0">{(task.due ? moment(task.due).format('DD-MMM-YYYY') : <p className="mb-0">Set due date</p>)}</td>
-        </tr> */}
+          <td className="border-0">
+            {task.due ? (
+              moment(task.due).format("DD-MMM-YYYY")
+            ) : (
+              <p className="mb-0">Set due date</p>
+            )}
+          </td>
+        </tr>
       </tbody>
     </Table>
   );

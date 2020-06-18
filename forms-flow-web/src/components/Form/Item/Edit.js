@@ -14,7 +14,7 @@ const Edit = props => (
           <span className="ml-3">
                         <img src="/form.svg" alt="Forms" />
                     </span>
-        <h3 className="task-head">Edit {props.form.title} Form</h3>
+        <h3 className="task-head">{props.form.title} Form</h3>
       </div>
 
     <hr />

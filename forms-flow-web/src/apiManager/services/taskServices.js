@@ -54,7 +54,6 @@ export const getTaskDetail = (id, ...rest) => {
           const taskVariables = taskSubmissionFormatter(task.variables);
           delete task.variables;
           let taskDetail = { ...task, ...taskVariables };
-          console.log("taskDetail", taskDetail);
           dispatch(setTaskDetail(taskDetail));
           dispatch(setLoader(false));
           done(null, taskDetail);

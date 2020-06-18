@@ -5,7 +5,6 @@ import {
   setProcessList,
   setProcessLoadError,
 } from "../../actions/processActions";
-import UserService from "../../services/UserService";
 import { replaceUrl } from "../../helper/helper";
 
 export const getProcessStatusList = (processId, taskId) => {
@@ -19,7 +18,7 @@ export const getProcessStatusList = (processId, taskId) => {
     );
     const apiURLWithtaskId = replaceUrl(apiUrlProcessId, "<task_key>", taskId);
 
-    httpGETRequest(apiURLWithtaskId, {}, UserService.getToken())
+    httpGETRequest(apiURLWithtaskId)
       .then((res) => {
         if (res.data) {
           dispatch(setProcessStatusLoading(false));

@@ -36,10 +36,10 @@ class ViewTask extends Component {
         </div>
         <br/>
         <Tabs id="task-details" defaultActiveKey="details">
-          <Tab eventKey="details" title="Details" id="details">
+          <Tab eventKey="details" title="Details">
             <Details/>
           </Tab>
-          <Tab eventKey="form" title="Form" id="form">
+          <Tab eventKey="form" title="Form">
             <View page="task-detail"/>
           </Tab>
           <Tab eventKey="history" title="History" disabled>

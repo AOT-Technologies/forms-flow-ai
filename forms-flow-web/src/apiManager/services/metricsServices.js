@@ -9,16 +9,11 @@ import {
   setMetricsLoadError,
   setMetricsStatusLoadError,
 } from "../../actions/metricsActions";
-import UserService from "../../services/UserService";
 
 export const fetchMetricsSubmissionCount = (fromDate, toDate, ...rest) => {
   return (dispatch) => {
     dispatch(setMetricsLoadError(false));
-    httpGETRequest(
-      `${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}`,
-      {},
-      UserService.getToken()
-    )
+    httpGETRequest(`${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}`)
       .then((res) => {
         if (res.data) {
           dispatch(setMetricsSubmissionCount(res.data.applications));
@@ -59,10 +54,7 @@ export const fetchMetricsSubmissionStatusCount = (id, fromDate, toDate) => {
     dispatch(setSelectedMetricsId(id));
     // httpPOSTRequest(API.GET_TASK_API, { taskVariables: [] })
     httpGETRequest(
-      `${API.METRICS_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}`,
-      {},
-      UserService.getToken()
-    )
+      `${API.METRICS_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}`)
       .then((res) => {
         if (res.data) {
           dispatch(setMetricsSubmissionStatusCount(res.data.applicationStatus));

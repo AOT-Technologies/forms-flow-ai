@@ -33,23 +33,23 @@ export const TaskSearch = (props) => {
         onChange={statusChange}
       >
         <option value=" ">All tasks</option>
-        <option value="New">New tasks</option>
+        <option value="new">New tasks</option>
         <option value="Username">My assigned tasks</option>
-        <option value="Completed">Completed tasks</option>
       </select>
     </div>
   );
 };
 
 const selectOptions = [
-  { value: "New", label: "New" },
+  { value: "new", label: "New" },
   { value: "In-Progress", label: "In-Progress" },
-  { value: "Completed", label: "Completed" },
+  { value: "Approved", label: "Approved" },
+  { value: "Rejected", label: "Rejected" },
 ];
 
-function linkDueDate(cell) {
+/*function linkDueDate(cell) {
   return <a href=" ">{cell}</a>;
-}
+}*/
 
 function linkSubmision(cell, row) {
   return (
@@ -68,22 +68,24 @@ function linkSubmisionId(cell) {
 }
 
 function buttonFormatter(cell, row) {
-  if (cell === "Completed") {
+
+  console.log(cell, row)
+  if (cell === "Completed" || cell=== "Rejected" || cell==="Approved") {
     return (
       <label className="text-success font-weight-bold text-uppercase task-btn">
-        Completed
+        {cell}
       </label>
     );
-  } else if (cell === "In-Progress") {
+  } else if (cell==="In-Progress") {
     return (
       <label className="text-info font-weight-bold text-uppercase">
-        In-Progress
+        {cell}
       </label>
     );
   } else {
     return (
       <label className="text-primary font-weight-bold text-uppercase task-btn">
-        New
+        {cell}
       </label>
     );
   }
@@ -110,7 +112,7 @@ function linkTaskAssignee(cell, row) {
     return (
       <p
         className="mb-0"
-        onClick={() => row.assignToMeFn(row.id, row.userName)}
+        onClick={() => row.assignToMeFn(row.id, row.userName, row.applicationId)}
       >
         Assign to me
       </p>

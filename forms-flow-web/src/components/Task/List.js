@@ -6,13 +6,11 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import LoadingOverlay from "react-loading-overlay";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-
-import { getUserToken } from "../../apiManager/services/bpmServices";
-import { BPM_USER_DETAILS } from "../../apiManager/constants/apiConstants";
 import {
   fetchTaskList,
   claimTask,
   unClaimTask,
+  updateApplicationStatus
 } from "../../apiManager/services/taskServices";
 import {
   columns,
@@ -34,7 +32,6 @@ const List = class extends Component {
     const {
       isLoading,
       tasks,
-      tasksCount,
       userDetail,
       onClaim,
       onUnclaim,
@@ -168,56 +165,28 @@ const mapDispatchToProps = (dispatch) => {
           }
         })
       ),
-    // getTasks: () => dispatch(
-    //   getUserToken(BPM_USER_DETAILS, (err, res) => {
-    //     if (!err) {
-    //       //  dispatch(getTaskCount());
-    //       dispatch(fetchTaskList((err, res) => {
-    //         if (!err) {
-    //           dispatch(setUpdateLoader(false));
-    //           /* res.map(ele=>{
-    //              return dispatch(
-    //                getTaskSubmissionDetails(ele.processInstanceId,(err,result)=>{
-    //                   return {...ele, ...result};
-    //                  })
-    //              )
-    //            });
-    //            console.log("res", res);
-    //            dispatch(setTaskList(res))*/
-    //         }
-    //       }))
-    //     }
-    //   })
-    // ),
-    onClaim: (id, userName) => {
+    onClaim: (id, userName, applicationId) => {
       dispatch(setUpdateLoader(true));
       dispatch(
-        getUserToken(BPM_USER_DETAILS, (err, res) => {
-          if (!err) {
-            dispatch(
               claimTask(id, userName, (err, res) => {
                 if (!err) {
-                  dispatch(
-                    fetchTaskList((err, res) => {
-                      if (!err) {
-                        dispatch(setUpdateLoader(false));
-                      }
-                    })
-                  );
+                  dispatch(updateApplicationStatus(applicationId, {applicationStatus:"In-Progress"}, (err,res)=> {
+                    dispatch(
+                      fetchTaskList((err, res) => {
+                        if (!err) {
+                          dispatch(setUpdateLoader(false));
+                        }
+                      })
+                    );
+                  }))
                 } else {
                   dispatch(setUpdateLoader(false));
                 }
               })
             );
-          }
-        })
-      );
     },
     onUnclaim: (id) => {
       dispatch(setUpdateLoader(true));
-      dispatch(
-        getUserToken(BPM_USER_DETAILS, (err, res) => {
-          if (!err) {
             dispatch(
               unClaimTask(id, (err, res) => {
                 if (!err) {
@@ -233,9 +202,6 @@ const mapDispatchToProps = (dispatch) => {
                 }
               })
             );
-          }
-        })
-      );
     },
   };
 };

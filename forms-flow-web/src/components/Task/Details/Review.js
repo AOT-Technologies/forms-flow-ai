@@ -1,20 +1,17 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, {Component} from "react";
+import {connect} from "react-redux";
 import Select from "react-select";
 
-import { BPM_USER_DETAILS } from "../../../apiManager/constants/apiConstants";
-import { getUserToken } from "../../../apiManager/services/bpmServices";
-import { completeTask } from "../../../apiManager/services/taskServices";
-import { getProcessStatusList } from "../../../apiManager/services/processServices";
+import {completeTask} from "../../../apiManager/services/taskServices";
+
 import {
-  setUpdateLoader,
-  setTaskSubmissionDetail,
+  setUpdateLoader
 } from "../../../actions/taskActions";
 import {
   getTaskDetail,
-  getTaskSubmissionDetails,
+  updateApplicationStatus,
 } from "../../../apiManager/services/taskServices";
-import { setFormSubmissionError } from "../../../actions/formActions";
+import {setFormSubmissionError} from "../../../actions/formActions";
 import SubmissionError from "../../../containers/SubmissionError";
 import Loading from "../../Loading";
 import Error from "../../Error";
@@ -23,10 +20,10 @@ class Review extends Component {
   constructor(props) {
     super();
     this.state = {
-      selectedOption: { value: "", label: "" },
+      selectedOption: {value: "", label: ""},
       options: [
-        { value: "approve", label: "Approve" },
-        { value: "reject", label: "Reject" },
+        {value: "approve", label: "Approve"},
+        {value: "reject", label: "Reject"},
       ],
     };
   }
@@ -40,8 +37,8 @@ class Review extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { processStatusList } = props;
-    const { options } = state;
+    const {processStatusList} = props;
+    const {options} = state;
 
     if (processStatusList !== options) {
       return {
@@ -51,12 +48,12 @@ class Review extends Component {
   }
 
   handleChange = (selectedOption) => {
-    this.setState({ selectedOption });
+    this.setState({selectedOption});
   };
 
   render() {
-    const { selectedOption, options } = this.state;
-    const { processLoadError, isProcessLoading } = this.props;
+    const {selectedOption, options} = this.state;
+    const {processLoadError, isProcessLoading} = this.props;
 
     return (
       <div className="review-section">
@@ -65,11 +62,11 @@ class Review extends Component {
             modalOpen={this.props.submissionError.modalOpen}
             message={this.props.submissionError.message}
             onConfirm={this.props.onConfirm}
-          ></SubmissionError>
+          />
           <section className="row">
             <p
               className="col-md-6"
-              style={{ fontSize: "21px", fontWeight: "bolder" }}
+              style={{fontSize: "21px", fontWeight: "bolder"}}
             >
               {this.props.detail.name}
             </p>
@@ -86,9 +83,9 @@ class Review extends Component {
               </div>
               <div className="col-md-6">
                 {processLoadError && (
-                  <Error noStyle text="Something went wrong.." />
+                  <Error noStyle text="Something went wrong.."/>
                 )}
-                {isProcessLoading && <Loading />}
+                {isProcessLoading && <Loading/>}
                 {!processLoadError && !isProcessLoading && (
                   <Select
                     onChange={this.handleChange}
@@ -132,7 +129,8 @@ class Review extends Component {
                     onClick={() =>
                       this.props.onCompleteTask(
                         this.props.detail.id,
-                        this.state.selectedOption.value
+                        this.state.selectedOption.value,
+                        this.props.detail.application_id,
                       )
                     }
                   >
@@ -160,47 +158,34 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    onCompleteTask: (id, status) => {
+    onCompleteTask: (id, status, applicationId) => {
+      dispatch(setUpdateLoader(true));
       dispatch(
-        getUserToken(BPM_USER_DETAILS, (err, res) => {
-          if (!err) {
-            dispatch(setUpdateLoader(true));
-            dispatch(
-              completeTask(id, status, (err, response) => {
-                if (err) {
-                  dispatch(setUpdateLoader(false));
-                  const ErrorDetails = {
-                    modalOpen: true,
-                    message: "Unable to perform the action",
-                  };
-                  dispatch(setFormSubmissionError(ErrorDetails));
-                } else {
-                  dispatch(
-                    getTaskDetail(id, (err, res) => {
-                      if (!err) {
-                        dispatch(
-                          getTaskSubmissionDetails(
-                            res.processInstanceId,
-                            (err, res) => {
-                              if (!err) {
-                                dispatch(setTaskSubmissionDetail(res));
-                                dispatch(setUpdateLoader(false));
-                              }
-                            }
-                          )
-                        );
-                      }
-                    })
-                  );
-                }
-              })
-            );
+        completeTask(id, status, (err, response) => {
+          if (err) {
+            dispatch(setUpdateLoader(false));
+            const ErrorDetails = {
+              modalOpen: true,
+              message: "Unable to perform the action",
+            };
+            dispatch(setFormSubmissionError(ErrorDetails));
+          } else {
+            dispatch(updateApplicationStatus( applicationId, {applicationStatus:status} , (err,res)=>{
+              dispatch(
+                getTaskDetail(id, (err, res) => {
+                  if (!err) {
+                    dispatch(setUpdateLoader(false));
+                  }
+                })
+              );
+            }))
+
           }
         })
       );
     },
     onConfirm: () => {
-      const ErrorDetails = { modalOpen: false, message: "" };
+      const ErrorDetails = {modalOpen: false, message: ""};
       dispatch(setFormSubmissionError(ErrorDetails));
     },
   };

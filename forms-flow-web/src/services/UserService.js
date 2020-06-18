@@ -61,11 +61,12 @@ const initKeycloak = (store, ...rest) => {
 let refreshInterval;
 const refreshToken = (store) => {
   refreshInterval = setInterval(() => {
-    _kc.updateToken(5).success((refreshed)=> {
+    _kc.updateToken(5).then((refreshed)=> {
       if (refreshed) {
         store.dispatch(setUserToken(KeycloakData.token));
       }
-    }).error( ()=> {
+    }).catch( (error)=> {
+      console.log(error);
       userLogout();
     });
   }, 6000);

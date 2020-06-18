@@ -24,7 +24,6 @@ export const fetchDashboardsList = (id, ...rest) =>{
 }
 
 export const fetchDashboardDetails = (id, ...rest) =>{
-  console.log("id...", id);
   const done = rest.length ? rest[0] :  ()=>{};
   return dispatch=>{
     httpGETRequest(`${API.GET_DASHBOARDS}/${id}`, null, INSIGHTS.authToken, false).then(res=>{

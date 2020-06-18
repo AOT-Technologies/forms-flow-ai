@@ -1,34 +1,34 @@
 import React from "react";
-import { Table } from "react-bootstrap";
-import { connect } from "react-redux";
+import {Table} from "react-bootstrap";
+import {connect} from "react-redux";
 import moment from "moment";
-import { getSubmission, getForm } from "react-formio";
+import {getSubmission, getForm} from "react-formio";
 
-import { BPM_USER_DETAILS } from "../../../apiManager/constants/apiConstants";
-import { getUserToken } from "../../../apiManager/services/bpmServices";
-import { setUpdateLoader } from "../../../actions/taskActions";
+import {setUpdateLoader} from "../../../actions/taskActions";
 import {
   claimTask,
   getTaskDetail,
-  getTaskSubmissionDetails,
   unClaimTask,
+  updateApplicationStatus
 } from "../../../apiManager/services/taskServices";
-import { setTaskSubmissionDetail } from "../../../actions/taskActions";
+import {setTaskSubmissionDetail} from "../../../actions/taskActions";
 
 const taskStatus = (task) => {
   switch (task.task_status) {
     case "Completed":
+    case "Approved":
+    case "Rejected":
       return (
         <label className="text-success font-weight-bold text-uppercase task-btn">
           {task.task_status || "Completed"}
         </label>
       );
-    case "In-Progess":
+    case "In-Progress":
       return (
         <label className="text-info font-weight-bold text-uppercase">
           {task.task_status || "In-Progress"}
         </label>
-      );
+    );
     case "New":
       return (
         <label className="text-primary font-weight-bold text-uppercase task-btn">
@@ -49,75 +49,75 @@ const View = (props) => {
   return (
     <Table responsive>
       <tbody>
-        <tr>
-          <td className="border-0">Task Title</td>
-          <td className="border-0">:</td>
-          <td className="border-0">{task.name}</td>
-        </tr>
-        <tr>
-          <td className="border-0">Task Assignee</td>
-          <td className="border-0">:</td>
-          <td className="border-0 d-inline-flex">
-            {task.assignee}
-            {task.assignee ? (
-              task.assignee === props.userName &&
-              props.detail.deleteReason !== "completed" ? (
-                <p
-                  className="mb-0 ml-3"
-                  onClick={() => props.onUnclaim(task.id)}
-                >
-                  Unassign
-                </p>
-              ) : null
-            ) : (
+      <tr>
+        <td className="border-0">Task Title</td>
+        <td className="border-0">:</td>
+        <td className="border-0">{task.name}</td>
+      </tr>
+      <tr>
+        <td className="border-0">Task Assignee</td>
+        <td className="border-0">:</td>
+        <td className="border-0 d-inline-flex">
+          {task.assignee}
+          {task.assignee ? (
+            task.assignee === props.userName &&
+            props.detail.deleteReason !== "completed" ? (
               <p
-                className="mb-0"
-                onClick={() => props.onClaim(task.id, props.userName)}
+                className="mb-0 ml-3"
+                onClick={() => props.onUnclaim(task.id)}
               >
-                Assign to me
+                Unassign
               </p>
-            )}
-          </td>
-        </tr>
-        <tr>
-          <td className="border-0">Task Status</td>
-          <td className="border-0">:</td>
-          <td className="border-0">{taskStatus(task)}</td>
-        </tr>
-        <tr>
-          <td className="border-0">Application Id</td>
-          <td className="border-0">:</td>
-          <td className="border-0">{task.application_id}</td>
-          {/*TODO update*/}
-        </tr>
-        <tr>
-          <td className="border-0">Application Name</td>
-          <td className="border-0">:</td>
-          <td className="border-0">{task.form_name || "---"}</td>
-        </tr>
-        <tr>
-          <td className="border-0">Applicant</td>
-          <td className="border-0">:</td>
-          <td className="border-0">{task.submitter_name || "---"}</td>
-        </tr>
-        <tr>
-          <td className="border-0">Submitted On</td>
-          <td className="border-0">:</td>
-          <td className="border-0">
-            {moment(task.submission_date).format("DD-MMM-YYYY")}
-          </td>
-        </tr>
-        <tr>
-          <td className="border-0">Due date</td>
-          <td className="border-0">:</td>
-          <td className="border-0">
-            {task.due ? (
-              moment(task.due).format("DD-MMM-YYYY")
-            ) : (
-              <p className="mb-0">Set due date</p>
-            )}
-          </td>
-        </tr>
+            ) : null
+          ) : (
+            <p
+              className="mb-0"
+              onClick={() => props.onClaim(task.id, props.userName, task.application_id)}
+            >
+              Assign to me
+            </p>
+          )}
+        </td>
+      </tr>
+      <tr>
+        <td className="border-0">Task Status</td>
+        <td className="border-0">:</td>
+        <td className="border-0">{taskStatus(task)}</td>
+      </tr>
+      <tr>
+        <td className="border-0">Application Id</td>
+        <td className="border-0">:</td>
+        <td className="border-0">{task.application_id}</td>
+        {/*TODO update*/}
+      </tr>
+      <tr>
+        <td className="border-0">Application Name</td>
+        <td className="border-0">:</td>
+        <td className="border-0">{task.form_name || "---"}</td>
+      </tr>
+      <tr>
+        <td className="border-0">Applicant</td>
+        <td className="border-0">:</td>
+        <td className="border-0">{task.submitter_name || "---"}</td>
+      </tr>
+      <tr>
+        <td className="border-0">Submitted On</td>
+        <td className="border-0">:</td>
+        <td className="border-0">
+          {moment(task.submission_date).format("DD-MMM-YYYY")}
+        </td>
+      </tr>
+      <tr>
+        <td className="border-0">Due date</td>
+        <td className="border-0">:</td>
+        <td className="border-0">
+          {task.due ? (
+            moment(task.due).format("DD-MMM-YYYY")
+          ) : (
+            <p className="mb-0">Set due date</p>
+          )}
+        </td>
+      </tr>
       </tbody>
     </Table>
   );
@@ -131,73 +131,57 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    onClaim: (id, userName) => {
+    onClaim: (id, userName, applicationId) => {
       dispatch(setUpdateLoader(true));
       dispatch(
-        getUserToken(BPM_USER_DETAILS, (err, res) => {
+        claimTask(id, userName, (err, res) => {
           if (!err) {
-            dispatch(setUpdateLoader(true));
-            dispatch(
-              claimTask(id, userName, (err, res) => {
-                if (!err) {
-                  dispatch(
-                    getTaskDetail(id, (err, res) => {
-                      if (!err) {
-                        if (res.submission_id && res.form_id) {
-                          dispatch(getForm("form", res.form_id));
-                          dispatch(
-                            getSubmission(
-                              "submission",
-                              res.submission_id,
-                              res.form_id
-                            )
-                          );
-                        }
-                        dispatch(setUpdateLoader(false));
-                        // dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {
-                        //   if (!err) {
-                        //     dispatch(setTaskSubmissionDetail(res));
-                        //     dispatch(setUpdateLoader(false));
-                        //   }
-                        // }))
-                      }
-                    })
-                  );
-                  // dispatch(getTaskDetail(id, (err, res) => {
-                  // }))
-                } else {
-                  dispatch(setUpdateLoader(false));
-                }
-              })
-            );
+            dispatch(updateApplicationStatus(applicationId, {applicationStatus:"In-Progress"} , (err,res)=> {
+              if(!err){
+              console.log(res); //TODO Update
+              }
+              dispatch(
+                getTaskDetail(id, (err, res) => {
+                  if (!err) {
+                    if (res.submission_id && res.form_id) {
+                      dispatch(getForm("form", res.form_id));
+                      dispatch(
+                        getSubmission(
+                          "submission",
+                          res.submission_id,
+                          res.form_id
+                        )
+                      );
+                    }
+                    dispatch(setUpdateLoader(false));
+                  }
+                })
+              );
+            }))
+          } else {
+            dispatch(setUpdateLoader(false));
           }
         })
       );
     },
     onUnclaim: (id) => {
+      dispatch(setUpdateLoader(true));
       dispatch(
-        getUserToken(BPM_USER_DETAILS, (err, res) => {
+        unClaimTask(id, (err, res) => {
           if (!err) {
-            dispatch(setUpdateLoader(true));
             dispatch(
-              unClaimTask(id, (err, res) => {
+              getTaskDetail(id, (err, res) => {
                 if (!err) {
-                  dispatch(
-                    getTaskDetail(id, (err, res) => {
-                      if (!err) {
-                        dispatch(setTaskSubmissionDetail(res));
-                      }
-                    })
-                  );
-                } else {
-                  dispatch(setUpdateLoader(false));
+                  dispatch(setTaskSubmissionDetail(res));
                 }
               })
             );
+          } else {
+            dispatch(setUpdateLoader(false));
           }
         })
       );
-    },
+    }
   };
 };
 

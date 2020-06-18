@@ -1,19 +1,22 @@
 import axios from "axios";
 
-import Token from "../token/tokenService";
+import UserService from "../../services/UserService";
 
 const qs = require("querystring");
 
 export const httpGETRequest = (url, data, token, isBearer=true) => {
-
   return axios.get(url, {
     params: data,
-    headers: { Authorization: isBearer ?`Bearer ${ token || Token.getBpmToken()}`: token },
+    headers: { Authorization: isBearer ?`Bearer ${ token || UserService.getToken()}`: token },
   });
 };
 
 export const httpPOSTRequest = (url, data, token, isBearer=true) => {
-  return axios.post(url, data, { headers: { Authorization: isBearer ?`Bearer ${ token || Token.getBpmToken()}`: token } });
+  return axios.post(url, data, { headers: { Authorization: isBearer ?`Bearer ${ token || UserService.getToken()}`: token } });
+};
+
+export const httpPUTRequest = (url, data, token, isBearer=true) => {
+  return axios.put(url, data, { headers: { Authorization: isBearer ?`Bearer ${ token || UserService.getToken()}`: token } });
 };
 
 export const httpPOSTRequestWithoutToken = (url, data) => {

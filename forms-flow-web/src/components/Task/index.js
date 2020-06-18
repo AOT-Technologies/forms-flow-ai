@@ -2,10 +2,7 @@ import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import { getUserToken } from '../../apiManager/services/bpmServices';
-import { BPM_USER_DETAILS } from '../../apiManager/constants/apiConstants';
-import { fetchTaskList, getTaskCount, getTaskSubmissionDetails } from '../../apiManager/services/taskServices';
-import { setTaskList } from "../../actions/taskActions";
+import { fetchTaskList } from '../../apiManager/services/taskServices';
 import List from './List';
 import ViewTask from './ViewTask';
 import './Task.scss';
@@ -27,29 +24,10 @@ const mapDispatchToProps=(dispatch)=>{
     setCurrentPage:dispatch(setCurrentPage('task')),
     getTasks:dispatch(fetchTaskList((err, res) => {
             if (!err) {
-              //  dispatch(getTaskCount());
+              console.log(res);
             }
           })
-    ),
-    // getTasks: dispatch(
-    //   getUserToken(BPM_USER_DETAILS, (err, res) => {
-    //     if (!err) {
-    //       dispatch(getTaskCount());
-    //       dispatch(fetchTaskList((err, res) => {
-    //         if (!err) {
-    //           res.map(ele => {
-    //             return dispatch(
-    //               getTaskSubmissionDetails(ele.processInstanceId, (err, result) => {
-    //                 return ele = Object.assign(ele,result);
-    //               })
-    //             )
-    //           })
-    //           dispatch(setTaskList(res))
-    //         }
-    //       }))
-    //     }
-    //   })
-    // ),
+    )
   }
 }
 

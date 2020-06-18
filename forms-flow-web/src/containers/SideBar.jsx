@@ -56,11 +56,11 @@ const SideBar = (props) => {
             </li>
           )}
 
-          <li className={`${pathname === "/form" ? "active" : ""}`}>
+          <li className={`${pathname.match(/^\/form/) ? "active" : ""}`}>
             <Link
               to="/form"
               className={`main-nav nav-link ${
-                pathname === "/form" ? "active-tab" : ""
+                pathname.match(/^\/form/) ? "active-tab" : ""
               }`}
             >
               <img
@@ -73,12 +73,12 @@ const SideBar = (props) => {
               Forms
             </Link>
           </li>
-          <li className={`${pathname === "/task" ? "active" : ""}`}>
+          <li className={`${pathname.match(/^\/task/) ? "active" : ""}`}>
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
                 to="/task"
                 className={`main-nav nav-link ${
-                  pathname === "/task" ? "active-tab" : ""
+                  pathname.match(/^\/task/) ? "active-tab" : ""
                 }`}
               >
                 <i className="fa fa-list" />
@@ -86,14 +86,18 @@ const SideBar = (props) => {
               </Link>
             ) : null}
           </li>
-          <li className={` ${pathname === "/metrics" ? "active" : ""}`}>
+          <li
+            className={` ${
+              pathname && pathname.match(/^\/metrics/) ? "active" : ""
+            }`}
+          >
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
                 data-toggle="collapse"
                 aria-expanded="false"
                 to="/metrics"
                 className={`main-nav nav-link ${
-                  pathname === "/metrics" ? "active-tab" : ""
+                  pathname.match(/^\/metrics/) ? "active-tab" : ""
                 }`}
               >
                 <i className="fa fa-pie-chart" aria-hidden="true" />
@@ -101,12 +105,12 @@ const SideBar = (props) => {
               </Link>
             ) : null}
           </li>
-          <li className={`${pathname === "/insights" ? "active" : ""}`}>
+          <li className={`${pathname.match(/^\/insights/) ? "active" : ""}`}>
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
                 to="/insights"
                 className={`main-nav nav-link ${
-                  pathname === "/insights" ? "active-tab" : ""
+                  pathname.match(/^\/insights/) ? "active-tab" : ""
                 }`}
               >
                 <i className="fa fa-lightbulb-o" />

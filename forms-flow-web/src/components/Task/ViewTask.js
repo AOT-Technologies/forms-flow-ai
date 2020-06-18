@@ -1,49 +1,46 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
-import { Tabs, Tab } from "react-bootstrap";
-import { connect } from "react-redux";
-import { selectError, getSubmission, getForm } from "react-formio";
+import React, {Component} from "react";
+import {Link} from "react-router-dom";
+import {Tabs, Tab} from "react-bootstrap";
+import {connect} from "react-redux";
+import {selectError, getSubmission, getForm} from "react-formio";
 
 import Details from "./Details";
-import { BPM_USER_DETAILS } from "../../apiManager/constants/apiConstants";
-import { getUserToken } from "../../apiManager/services/bpmServices";
-import {
-  getTaskDetail,
-  getTaskSubmissionDetails,
-} from "../../apiManager/services/taskServices";
+import {BPM_USER_DETAILS} from "../../apiManager/constants/apiConstants";
+import {getUserToken} from "../../apiManager/services/bpmServices";
+import {getTaskDetail} from "../../apiManager/services/taskServices";
 import Loading from "../../containers/Loading";
-import { setLoader, setTaskSubmissionDetail } from "../../actions/taskActions";
+import {setLoader, setTaskSubmissionDetail} from "../../actions/taskActions";
 import View from "../Form/Item/Submission/Item/View";
 
-import { getProcessStatusList } from "../../apiManager/services/processServices";
+import {getProcessStatusList} from "../../apiManager/services/processServices";
 
 class ViewTask extends Component {
   render() {
-    const { detail } = this.props;
+    const {detail} = this.props;
     if (this.props.isLoading) {
-      return <Loading />;
+      return <Loading/>;
     }
     return (
       <div className="container">
         <div className="main-header">
           <Link to="/task">
-            <img src="/back.svg" alt="back" />
+            <img src="/back.svg" alt="back"/>
           </Link>
           <span className="ml-3">
-            <img src="/clipboard.svg" alt="Task" />
+            <img src="/clipboard.svg" alt="Task"/>
           </span>
           <h3>
             <span className="task-head-details">Tasks /</span>{" "}
             {`${detail.name}`}
           </h3>
         </div>
-        <br />
+        <br/>
         <Tabs id="task-details" defaultActiveKey="details">
           <Tab eventKey="details" title="Details" id="details">
-            <Details />
+            <Details/>
           </Tab>
           <Tab eventKey="form" title="Form" id="form">
-            <View page="task-detail" />
+            <View page="task-detail"/>
           </Tab>
           <Tab eventKey="history" title="History" disabled>
             <h1>History</h1>

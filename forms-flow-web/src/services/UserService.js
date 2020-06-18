@@ -61,8 +61,6 @@ const initKeycloak = (store, ...rest) => {
 let refreshInterval;
 const refreshToken = (store) => {
   refreshInterval = setInterval(() => {
-    console.log("setInterval");
-
     _kc.updateToken(5).success((refreshed)=> {
       if (refreshed) {
         store.dispatch(setUserToken(KeycloakData.token));

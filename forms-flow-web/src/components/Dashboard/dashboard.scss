@@ -68,6 +68,16 @@
     & input {
       color: #036;
     }
+    & select {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      text-indent: 1px;
+      text-overflow: "";
+      color: #036;
+    }
+    & .react-daterange-picker__range-divider {
+      margin: 0 15px;
+    }
   }
   & .status-container {
     display: flex;

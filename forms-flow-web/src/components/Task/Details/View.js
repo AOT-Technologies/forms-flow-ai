@@ -87,7 +87,7 @@ const View = (props) => {
         <tr>
           <td className="border-0">Application Id</td>
           <td className="border-0">:</td>
-          <td className="border-0">{task.form_id}</td>
+          <td className="border-0">{task.application_id}</td>
           {/*TODO update*/}
         </tr>
         <tr>

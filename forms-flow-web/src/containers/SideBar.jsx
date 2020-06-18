@@ -81,34 +81,38 @@ const SideBar = (props) => {
                   pathname === "/task" ? "active-tab" : ""
                 }`}
               >
-                <i className="fa fa-list"/>
+                <i className="fa fa-list" />
                 Tasks
               </Link>
             ) : null}
           </li>
           <li className={` ${pathname === "/metrics" ? "active" : ""}`}>
-            {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<Link
-              data-toggle="collapse"
-              aria-expanded="false"
-              to="/metrics"
-              className={`main-nav nav-link ${
-                pathname === "/metrics" ? "active-tab" : ""
-              }`}
-            >
-              <i className="fa fa-pie-chart" aria-hidden="true"/>
-              Metrics
-            </Link>:null}
+            {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
+              <Link
+                data-toggle="collapse"
+                aria-expanded="false"
+                to="/metrics"
+                className={`main-nav nav-link ${
+                  pathname === "/metrics" ? "active-tab" : ""
+                }`}
+              >
+                <i className="fa fa-pie-chart" aria-hidden="true" />
+                Metrics
+              </Link>
+            ) : null}
           </li>
           <li className={`${pathname === "/insights" ? "active" : ""}`}>
-            {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<Link
-              to="/insights"
-              className={`main-nav nav-link ${
-                pathname === "/insights" ? "active-tab" : ""
-              }`}
-            >
-              <i className="fa fa-lightbulb-o"/>
-              Insights
-            </Link>:null}
+            {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
+              <Link
+                to="/insights"
+                className={`main-nav nav-link ${
+                  pathname === "/insights" ? "active-tab" : ""
+                }`}
+              >
+                <i className="fa fa-lightbulb-o" />
+                Insights
+              </Link>
+            ) : null}
           </li>
         </ul>
       </nav>

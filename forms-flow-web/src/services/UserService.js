@@ -48,6 +48,7 @@ const initKeycloak = (store, ...rest) => {
           authenticateFormio(email, roles);
           // onAuthenticatedCallback();
           done(null, KeycloakData);
+          refreshToken(store);
         } else {
           doLogout();
         }
@@ -57,7 +58,20 @@ const initKeycloak = (store, ...rest) => {
       }
     });
 };
+let refreshInterval;
+const refreshToken = (store) => {
+  refreshInterval = setInterval(() => {
+    console.log("setInterval");
 
+    _kc.updateToken(5).success((refreshed)=> {
+      if (refreshed) {
+        store.dispatch(setUserToken(KeycloakData.token));
+      }
+    }).error( ()=> {
+      userLogout();
+    });
+  }, 6000);
+}
 const doLogin = _kc.login;
 
 const doLogout = _kc.logout;
@@ -68,6 +82,7 @@ const doLogout = _kc.logout;
 const userLogout = () => {
   localStorage.clear();
   sessionStorage.clear();
+  clearInterval(refreshInterval);
   doLogout();
 };
 

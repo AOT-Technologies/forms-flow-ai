@@ -35,7 +35,7 @@ const Edit = class extends Component {
             onConfirm={this.props.onConfirm}
           >
           </SubmissionError>
-          <h3 className="task-head">Edit {form.title} Submission</h3>
+          <h3 className="task-head">{form.title} Submission</h3>
         </div>
         <Errors errors={errors} />
         <Form

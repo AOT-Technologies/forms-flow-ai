@@ -146,7 +146,7 @@ CONTENT_SECURITY_POLICY_NONCE_IN = array_from_string(
 # See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy
 # for more information.
 REFERRER_POLICY = os.environ.get(
-    "REDASH_REFERRER_POLICY", "strict-origin-when-cross-origin"
+    "REDASH_REFERRER_POLICY", "no-referrer"
 )
 # Whether and how to send Feature-Policy response headers. Defaults to
 # an empty value.
@@ -301,15 +301,11 @@ LIMITER_STORAGE = os.environ.get("REDASH_LIMITER_STORAGE", REDIS_URL)
 # CORS settings for the Query Result API (and possbily future external APIs).
 # In most cases all you need to do is set REDASH_CORS_ACCESS_CONTROL_ALLOW_ORIGIN
 # to the calling domain (or domains in a comma separated list).
-ACCESS_CONTROL_ALLOW_ORIGIN = set_from_string(
-    os.environ.get("REDASH_CORS_ACCESS_CONTROL_ALLOW_ORIGIN", "")
-)
+ACCESS_CONTROL_ALLOW_ORIGIN = "*"
 ACCESS_CONTROL_ALLOW_CREDENTIALS = parse_boolean(
     os.environ.get("REDASH_CORS_ACCESS_CONTROL_ALLOW_CREDENTIALS", "false")
 )
-ACCESS_CONTROL_REQUEST_METHOD = os.environ.get(
-    "REDASH_CORS_ACCESS_CONTROL_REQUEST_METHOD", "GET, POST, PUT"
-)
+ACCESS_CONTROL_REQUEST_METHOD = "GET, POST, POST, OPTIONS"
 ACCESS_CONTROL_ALLOW_HEADERS = os.environ.get(
     "REDASH_CORS_ACCESS_CONTROL_ALLOW_HEADERS", "Content-Type"
 )

@@ -55,7 +55,7 @@ services:
       - forms-flow-analytics-network
 
   forms-flow-analytics-db:
-    image: postgres
+    image: postgres:9.5-alpine
     environment:
       POSTGRES_USER: ${ANALYTICS_POSTGRES_USER}
       POSTGRES_PASSWORD: ${ANALYTICS_POSTGRES_PASSWORD}

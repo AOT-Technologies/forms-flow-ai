@@ -178,6 +178,12 @@ export const columns = [
     text: "Application Id",
     formatter: linkSubmisionId,
     sort: true,
+    sortFunc: (a, b, order) => {
+      if (order === "asc") {
+          return b - a;
+      }
+      return a - b;
+    },
     filter: textFilter({
       placeholder: "\uf002 Id", // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE

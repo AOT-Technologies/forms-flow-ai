@@ -25,8 +25,8 @@ const View = class extends Component {
     return (
             <div className="container">
         <div className="main-header">
-          <h3 className="task-head">View { form.title } Submission</h3>
-          <Button className="btn btn-primary btn-sm form-btn pull-right btn-right" onClick={()=>PdfDownloadService.getPdf(form,submission)}><i className="fa fa-print" aria-hidden="true"></i> Print As PDF</Button>
+          <h3 className="task-head"> { form.title } Submission</h3>
+          <div className="btn-right"><Button className="btn btn-primary btn-sm form-btn pull-right btn-right" onClick={()=>PdfDownloadService.getPdf(form,submission)}><i className="fa fa-print" aria-hidden="true"></i> Print As PDF</Button></div>
         </div>
 
         <Errors errors={errors} />

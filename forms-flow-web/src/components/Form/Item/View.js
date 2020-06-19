@@ -52,7 +52,7 @@ const View = class extends Component {
             <img src="/form.svg" alt="Forms" />
           </span>
           <h3>
-            <span className="task-head-details">Forms /</span> New {form.title}
+            <span className="task-head-details">Forms /</span> {form.title}
           </h3>
         </div>
         <Errors errors={errors} />

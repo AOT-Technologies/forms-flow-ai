@@ -6,7 +6,7 @@
     * [Step 1 : Environment Configuration](#environment-configuration)
     * [Step 2 : Keycloak Configuration](#keycloak-configuration)
     * [Step 3 : Build and Deploy](#build-and-deploy)
-    
+
 
 ## Prerequisites
 
@@ -16,7 +16,7 @@
 ### Environment Configuration
 
 
-NOTE: There are two methods for running this application. Using docker container or run locally using npm 
+NOTE: There are two methods for running this application. Using docker container or run locally using npm
 
     Using docker
 -   Modify docker-compose.yml in the root folder with relevant data
@@ -30,7 +30,7 @@ NOTE: There are two methods for running this application. Using docker container
     | REACT_APP_CLIENT_ROLE            | Keycloak role name for client            | Keycloak ->Web Client--> Roles -> Client role name
     | REACT_APP_STAFF_DESIGNER_ROLE    | Keycloak role name for designer          | Keycloak ->Web Client--> Roles -> Designer role name
     | REACT_APP_STAFF_REVIEWER_ROLE    | Keycloak role name for reviewer          | Keycloak ->Web Client--> Roles -> Reviewer role name
-    | REACT_APP_CLIENT_ID              | Formio client role mapping id            | 
+    | REACT_APP_CLIENT_ID              | Formio client role mapping id            |
     | REACT_APP_STAFF_DESIGNER_ID      | Formio designer role mapping id          |
     | REACT_APP_STAFF_REVIEWER_ID      | Formio reviewer role mapping id          |
     | REACT_APP_ANONYMOUS_ID           | Formio anonymous role mapping id         |
@@ -39,12 +39,8 @@ NOTE: There are two methods for running this application. Using docker container
     | REACT_APP_API_SERVER_URL         | Form-IO API-URL                          |
     | REACT_APP_KEYCLOAK_CLIENT        | Keycloak client name                     |
     | REACT_APP_BPM_API_BASE           | BPM-API-URL                              |
-    | REACT_APP_BPM_TOKEN_API          | BPM TOKEN URL                            |
-    | REACT_APP_KEYCLOAK_BPM_CLIENT    | Keycloak client name for BPM             |
-    | REACT_APP_BPM_CLIENT_ID          | Secret Key for BPM                       | Secret in BPM Client in Keycloak->Credentials
-    
 
-- To get Form-IO authorization IDs use the follwing steps 
+- To get Form-IO authorization IDs use the follwing steps
   - Get token
     - request POST http://localhost:3001/user/login
     {
@@ -81,9 +77,9 @@ For docker
 - docker-compose build
 - docker-compose up
 
-For direct 
+For direct
 - npm install
-- npm start 
+- npm start
 
 
 

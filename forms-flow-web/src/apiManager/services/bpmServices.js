@@ -12,30 +12,6 @@ import {
 } from "../../actions/bpmActions";
 import PROCESS from "../constants/processConstants";
 
-export const getUserToken = (data, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  return (dispatch) => {
-    httpPOSTRequestWithoutToken(API.GET_BPM_TOKEN, data)
-      .then((res) => {
-        if (res.data) {
-          //TODO update refresh token logic
-          const token = `${res.data.access_token}`;
-          Token.setBpmToken(token);
-          dispatch(setUserToken(res.data));
-          done(null, res);
-        } else {
-          dispatch(serviceActionError(res));
-          done("Error Posting data");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        dispatch(serviceActionError(error));
-        done(error);
-      });
-  };
-};
-
 export const getProcess = (processType, form, submissionId, action, user) => {
   switch (processType) {
     case PROCESS.EmailNotification:

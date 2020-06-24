@@ -1,26 +1,34 @@
-import React, { useEffect, useState }  from "react";
+import React, {useEffect, useState} from "react";
 import {connect} from "react-redux";
 import Select from 'react-select'
-// import {push} from "connected-react-router";
-import Nodata from './nodashboard';
+import NoData from './nodashboard';
 
-import { fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/services/insightServices";
+import {fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/services/insightServices";
 
 const Insights = (props) => {
+  //TODO Remove once API cors fixes
   const options = [
-    { value: 'rpas-self-assessment-dashboard', label: 'RPAS Self Assessment Dashboard', "public_url": "https://bpm2.aot-technologies.com/public/dashboards/YCdoptdldMmuS4SgHrOUHvtRe1sRoeLCRm2tWUQG?org_slug=default" },
-    { value: 'overall-submissions', label: 'FOI Submissions', "public_url": "https://bpm2.aot-technologies.com/public/dashboards/Hoyv2ExfHOkhfmoFL7YYXCzUuazzp8zbEhIKwOkF?org_slug=default" },
-  ];
-  const {getDashboardsList, getDashboardDetail } = props;
+    {
+      value: 'rpas-self-assessment-dashboard',
+      label: 'RPAS Self Assessment Dashboard',
+      "public_url": "https://analytics1.aot-technologies.com/public/dashboards/3REIAWpfBZ9kW1y924BFknB1QGIQLozRedi9E11U?org_slug=default"
+    },
+    {
+      value: 'overall-submissions',
+      label: 'FOI Submissions',
+      "public_url": "https://analytics1.aot-technologies.com/public/dashboards/H7xv90X2CmpXxJecSCFv1Ca6DrHHptnqaCrpQwv7?org_slug=default"
+    }
+  ]
+  const {getDashboardsList, getDashboardDetail} = props;
   const [dashboardSelected, setDashboardSelected] = useState(options[0]);
 
   useEffect(() => {
     getDashboardsList();
-  },[getDashboardsList]);
+  }, [getDashboardsList]);
 
   useEffect(() => {
     getDashboardDetail(dashboardSelected.value);
-  },[dashboardSelected,getDashboardDetail]);
+  }, [dashboardSelected, getDashboardDetail]);
 
   return (
     <>
@@ -38,32 +46,32 @@ const Insights = (props) => {
                 </h3>
 
                 <div className="col-3 mb-2">
-                <Select
-                options={options}
-                onChange={setDashboardSelected}
-                placeholder='Select Dashboard'
-                value={dashboardSelected}
-                />
+                  <Select
+                    options={options}
+                    onChange={setDashboardSelected}
+                    placeholder='Select Dashboard'
+                    value={dashboardSelected}
+                  />
                 </div>
               </div>
             </div>
           </div>
           {options.length > 0 ?
-          <div className="col-12" >
-            <iframe
-              title="dashboard"
-              style={{
-                width: '100%',
-                height: 'auto',
-                overflow: 'visible',
-                border: 'none',
-                minHeight: '100vh',
-              }}
-              src={dashboardSelected.public_url}/>
-          </div>
-          :
-          <Nodata/>
-            }
+            <div className="col-12">
+              <iframe
+                title="dashboard"
+                style={{
+                  width: '100%',
+                  height: 'auto',
+                  overflow: 'visible',
+                  border: 'none',
+                  minHeight: '100vh',
+                }}
+                src={dashboardSelected.public_url}/>
+            </div>
+            :
+            <NoData/>
+          }
         </div>
       </div>
     </>
@@ -88,11 +96,11 @@ const mapDispatchToProps = (dispatch) => {
       })
     ),
     getDashboardDetail: (dashboardId) => {
-    dispatch(fetchDashboardDetails(dashboardId, (err, res) => {
-      if (!err) {
-        console.log(res);
-      }
-    }))
+      dispatch(fetchDashboardDetails(dashboardId, (err, res) => {
+        if (!err) {
+          console.log(res);
+        }
+      }))
     }
   }
 };

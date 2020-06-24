@@ -1,11 +1,8 @@
 import {
-  httpPOSTRequest,
-  httpPOSTRequestWithoutToken,
+  httpPOSTRequest
 } from "../httpRequestHandler";
 import API from "../endpoints";
-import Token from "../token/tokenService";
 import {
-  setUserToken,
   sendEmailNotification,
   sendOneStepApproval,
   serviceActionError,

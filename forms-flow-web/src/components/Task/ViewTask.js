@@ -5,8 +5,6 @@ import {connect} from "react-redux";
 import {selectError, getSubmission, getForm} from "react-formio";
 
 import Details from "./Details";
-import {BPM_USER_DETAILS} from "../../apiManager/constants/apiConstants";
-import {getUserToken} from "../../apiManager/services/bpmServices";
 import {getTaskDetail} from "../../apiManager/services/taskServices";
 import Loading from "../../containers/Loading";
 import {setLoader, setTaskSubmissionDetail} from "../../actions/taskActions";
@@ -94,41 +92,10 @@ const isDataLoaded = (id) => {
     }
   };
 };
-// const isDataLoaded = (id) => {
-//     return (dispatch, getState) => {
-//         let task = getState().tasks.taskDetail;
-//         if (task && task.id === id) {
-//             dispatch(setLoader(false))
-//         } else {
-//             dispatch(setLoader(true))
-//             dispatch(getTaskDetail(id, (err, res) => {
-//                 if (!err) {
-//                     dispatch(getTaskSubmissionDetails(res.processInstanceId, (err, res) => {
-//                         if (!err) {
-//                             if (res.submission_id && res.form_id) {
-//                                 dispatch(getForm('form', res.form_id))
-//                                 dispatch(getSubmission('submission', res.submission_id, res.form_id));
-//                             }
-//                             dispatch(setTaskSubmissionDetail(res));
-//                         }
-//                     }))
-
-//                 }
-//             }))
-//         }
-//     }
-// }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getTask: dispatch(
-      getUserToken(BPM_USER_DETAILS, (err, res) => {
-        let id = window.location.pathname.split("/")[2];
-        if (!err) {
-          dispatch(isDataLoaded(id));
-        }
-      })
-    ),
+    getTask: dispatch(isDataLoaded(window.location.pathname.split("/")[2]))
   };
 };
 

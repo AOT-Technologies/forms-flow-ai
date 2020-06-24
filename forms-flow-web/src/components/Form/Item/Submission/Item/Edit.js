@@ -5,9 +5,7 @@ import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors
 import { push } from 'connected-react-router';
 
 import Loading from '../../../../../containers/Loading'
-// import { getUserToken, getProcess, triggerNotification } from "../../../../../apiManager/services/bpmServices";
-// import { BPM_USER_DETAILS } from "../../../../../apiManager/constants/apiConstants";
-// import PROCESS from "../../../../../apiManager/constants/processConstants";
+
 import { setFormSubmissionError } from '../../../../../actions/formActions';
 import SubmissionError from '../../../../../containers/SubmissionError';
 import { setUpdateLoader } from "../../../../../actions/taskActions";
@@ -51,27 +49,6 @@ const Edit = class extends Component {
   }
 }
 
-// function doProcessActions(submission, ownProps) {
-//   return (dispatch, getState) => {
-//     let user = getState().user.userDetail
-//     let form = getState().form.form
-//     dispatch(resetSubmissions('submission'));
-//     const data = getProcess(PROCESS.OneStepApproval, form, submission._id, "edit", user);
-//     dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
-//     dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
-//       if(!err){
-//       dispatch(triggerNotification(data,(err,res)=>{
-//         if(!err){
-//         }
-//         else{ //TODO Update this to show error message
-//           dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
-//         }
-//       }));
-//     }
-//     }));
-//   }
-// }
-
 const mapStateToProps = (state) => {
   return {
     user: state.user.userDetail,
@@ -99,7 +76,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onSubmit: (submission) => {
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
-          // dispatch(doProcessActions(submission, ownProps))
           dispatch(setUpdateLoader(true));
           dispatch(resetSubmissions('submission'));
           dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))

@@ -6,9 +6,8 @@ import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
 
 import Loading from '../../../containers/Loading';
-import { getUserToken, triggerNotification, getProcess } from "../../../apiManager/services/bpmServices";
+import { triggerNotification, getProcess } from "../../../apiManager/services/bpmServices";
 import { setFormSubmissionError } from "../../../actions/formActions";
-import { BPM_USER_DETAILS } from "../../../apiManager/constants/apiConstants";
 import PROCESS from "../../../apiManager/constants/processConstants";
 import SubmissionError from '../../../containers/SubmissionError';
 import { setUpdateLoader } from "../../../actions/taskActions";
@@ -76,9 +75,7 @@ function doProcessActions(submission, ownProps) {
     let IsAuth = getState().user.isAuthenticated
     dispatch(resetSubmissions('submission'));
     const data = getProcess(PROCESS.OneStepApproval, form, submission._id, "new", user);
-    dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
-      if (!err) {
-        dispatch(triggerNotification(data, (err, res) => {
+    dispatch(triggerNotification(data, (err, res) => {
           if (!err) {
             if (IsAuth) {
               dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
@@ -89,8 +86,6 @@ function doProcessActions(submission, ownProps) {
               dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
             }
           }
-        }));
-      }
     }));
   }
 }

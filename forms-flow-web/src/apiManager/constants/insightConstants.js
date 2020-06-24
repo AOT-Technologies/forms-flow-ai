@@ -1,5 +1,5 @@
 const INSIGHTS = {
-  authToken: 'ZhoZHIj2K3IrUYRUA6aeVbwlxzcLmhLfVBwau19b', //TODO REMOVE THIS
+  authToken: 'HT5fbVEmfGekKXqv6ZWljkSLWisunsbLIncghDRA', //TODO REMOVE THIS AND MOVE TO ENV
 }
 
 export default INSIGHTS;

@@ -9,12 +9,12 @@ const Insights = (props) => {
   //TODO Remove once API cors fixes
   const options = [
     {
-      value: 'rpas-self-assessment-dashboard',
+      value: 'dashboard1',
       label: 'RPAS Self Assessment Dashboard',
       "public_url": "https://analytics1.aot-technologies.com/public/dashboards/3REIAWpfBZ9kW1y924BFknB1QGIQLozRedi9E11U?org_slug=default"
     },
     {
-      value: 'overall-submissions',
+      value: 'foi-submissions',
       label: 'FOI Submissions',
       "public_url": "https://analytics1.aot-technologies.com/public/dashboards/H7xv90X2CmpXxJecSCFv1Ca6DrHHptnqaCrpQwv7?org_slug=default"
     }

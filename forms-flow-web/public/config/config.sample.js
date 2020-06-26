@@ -36,6 +36,7 @@ window["_env_"] = {
 
   //Insight Api End point
   REACT_APP_INSIGHT_API_BASE: "Insight Api base end-point",
+  REACT_APP_INSIGHTS_API_KEY: "<API_KEY from REDASH>",
   //web Api End point
   REACT_APP_WEB_BASE_URL: "Insight Api base end-point",
 };

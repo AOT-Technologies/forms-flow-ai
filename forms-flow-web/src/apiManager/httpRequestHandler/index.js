@@ -3,9 +3,10 @@ import axios from "axios";
 import UserService from "../../services/UserService";
 
 const qs = require("querystring");
+const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
 
 export const httpGETRequest = (url, data, token, isBearer=true) => {
-  return axios.get(url, {
+  return axios.get(PROXY_URL+url, {
     params: data,
     headers: { Authorization: isBearer ?`Bearer ${ token || UserService.getToken()}`: token },
   });

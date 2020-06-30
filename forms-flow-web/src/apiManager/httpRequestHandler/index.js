@@ -2,11 +2,10 @@ import axios from "axios";
 
 import UserService from "../../services/UserService";
 
-const qs = require("querystring");
-const PROXY_URL = 'https://cors-anywhere.herokuapp.com/';
+// const qs = require("querystring");
 
 export const httpGETRequest = (url, data, token, isBearer=true) => {
-  return axios.get(PROXY_URL+url, {
+  return axios.get(url, {
     params: data,
     headers: { Authorization: isBearer ?`Bearer ${ token || UserService.getToken()}`: token },
   });
@@ -20,7 +19,7 @@ export const httpPUTRequest = (url, data, token, isBearer=true) => {
   return axios.put(url, data, { headers: { Authorization: isBearer ?`Bearer ${ token || UserService.getToken()}`: token } });
 };
 
-export const httpPOSTRequestWithoutToken = (url, data) => {
+/*export const httpPOSTRequestWithoutToken = (url, data) => {
   const config = {
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -31,4 +30,4 @@ export const httpPOSTRequestWithoutToken = (url, data) => {
 
 export const httpGETRequestWithoutToken = (url, token) => {
   return axios.get(url);
-};
+};*/

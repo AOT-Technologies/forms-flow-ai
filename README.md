@@ -64,7 +64,7 @@ Managing forms
 
 Analytics-Redash
 ----------------
-- Goto forms-flow-ai/forms-flow-analytics and follow the instructions in the README.md under it
+- Refer [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-analytics#forms-flow-analytics)
 
 Additional Configurations
 -------------------------
@@ -85,7 +85,7 @@ Additional Configurations
          - http://localhost:3001
          - https://localhost:8000
            - NOTE: 'https' for localhost:8000
-  - Goto forms-flow-ai/nginx and follow the instructions in the README.md under it
+  - Refer [nginx](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/nginx#nginx)
   
 NOTE:
   - Once nginx server is applied, change the hostnames in the Keycloak server for forms-flow-web and forms-flow-bpm

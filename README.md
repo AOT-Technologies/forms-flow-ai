@@ -64,7 +64,7 @@ Managing forms
 
 Analytics-Redash
 ----------------
-- Refer [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/tasks-base/forms-flow-analytics#how-to-run)
+- Refer [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/feature/tasks-base/forms-flow-analytics#how-to-run)
 
 Additional Configurations
 -------------------------

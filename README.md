@@ -85,7 +85,7 @@ Additional Configurations
          - http://localhost:3001
          - https://localhost:8000
            - NOTE: 'https' for localhost:8000
-  - Refer [nginx](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/nginx#nginx)
+  - Refer [nginx](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/nginx#how-to-run)
   
 NOTE:
   - Once nginx server is applied, change the hostnames in the Keycloak server for forms-flow-web and forms-flow-bpm

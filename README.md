@@ -8,6 +8,7 @@
     * [Environment Variables Setup](#environment-variables-setup)
     * [Running the Application](#running-the-application)
 * [Managing forms](#managing-forms)
+* [Analytics-Redash](#analytics-redash)
 * [Additional Configurations](#additional-configurations)
     * [SSL Nginx configurations](#ssl-nginx-configurations)
 
@@ -16,6 +17,8 @@ Technologies Used
 - [form.io](https://www.form.io/opensource) (included under forms-flow-ai/forms-flow-forms)
 - [Camunda](https://camunda.com/) (included under forms-flow-ai/forms-flow-bpm)
 - [Keycloak](https://www.keycloak.org/) (existing Keycloak server required)
+- [Redash](https://redash.io)(included under forms-flow-ai/forms-flow-analytics)
+- [Nginx](https://www.nginx.com)(included under forms-flow-ai/nginx)
 
 Running the application in Docker Environment
 ---------------------------------------------
@@ -59,6 +62,10 @@ Managing forms
 --------------
 - Refer [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#forms-flow-web)
 
+Analytics-Redash
+----------------
+- Goto forms-flow-ai/forms-flow-analytics and follow the instructions in the README.md under it
+
 Additional Configurations
 -------------------------
 - SSL Nginx configurations
@@ -78,5 +85,11 @@ Additional Configurations
          - http://localhost:3001
          - https://localhost:8000
            - NOTE: 'https' for localhost:8000
-  - Once applied change the hostnames in the Keycloak server for forms-flow-web and forms-flow-bpm
+  - Goto forms-flow-ai/nginx and follow the instructions in the README.md under it
+  
+NOTE:
+  - Once nginx server is applied, change the hostnames in the Keycloak server for forms-flow-web and forms-flow-bpm
   - Also change values for REACT_APP_API_SERVER_URL and REACT_APP_API_PROJECT_URL with the hostname in .env file
+  
+
+

@@ -11,12 +11,12 @@ const Insights = (props) => {
     {
       value: 'public-notification',
       label: 'RPAS Self Assessment Dashboard',
-      "public_url": "https://analytics1.aot-technologies.com/public/dashboards/3REIAWpfBZ9kW1y924BFknB1QGIQLozRedi9E11U?org_slug=default"
+      "public_url": "https://analytics1.aot-technologies.com/public/dashboards/yvFjn3mnZ8reUpzYUbl7BVahOJtpfiYYbuyGLBY4?org_slug=default"
     },
     {
       value: 'foi-notification',
       label: 'FOI Submissions',
-      "public_url": "https://analytics1.aot-technologies.com/public/dashboards/H7xv90X2CmpXxJecSCFv1Ca6DrHHptnqaCrpQwv7?org_slug=default"
+      "public_url": "https://analytics1.aot-technologies.com/public/dashboards/lOUQmjBJIEhkIYiWS8frQxCruiWyxtkG6GPijiAJ?org_slug=default"
     }
   ]
   const {getDashboardsList, getDashboardDetail} = props;

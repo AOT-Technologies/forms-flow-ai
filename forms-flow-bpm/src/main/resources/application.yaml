@@ -49,7 +49,7 @@ info:
 #    port: ${REDIS_PORT:6379}
 
 camunda.bpm:
-  history-level: none
+  history-level: audit
   authorization:
     enabled: true
   filter:

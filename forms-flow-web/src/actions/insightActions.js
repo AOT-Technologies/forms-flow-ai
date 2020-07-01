@@ -13,3 +13,17 @@ export const getDashboardDetail = (data) => dispatch =>{
     payload:data
   })
 }
+
+export const setInsightDetailLoader = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_INSIGHT_DETAIL_LOADING,
+    payload:data
+  })
+}
+
+export const setInsightDashboardListLoader = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_DASHBOARD_LOADING,
+    payload:data
+  })
+}

@@ -8,7 +8,7 @@ export const fetchDashboardsList = (...rest) =>{
   return dispatch=>{
     httpGETRequest(API.GET_DASHBOARDS, null, API.INSIGHTS_API_KEY, false).then(res=>{
       if (res.data) {
-        const dashboardList = res.data.results.length? insightDashboardFormatter(res.data.results): [];
+        const dashboardList = res.data.results && res.data.results.length? insightDashboardFormatter(res.data.results): [];
         dispatch(getDashboards(dashboardList))
         done(null,res);
       } else {

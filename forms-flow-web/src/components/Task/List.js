@@ -9,8 +9,7 @@ import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import {
   fetchTaskList,
   claimTask,
-  unClaimTask,
-  updateApplicationStatus
+  unClaimTask
 } from "../../apiManager/services/taskServices";
 import {
   columns,
@@ -170,7 +169,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
               claimTask(id, userName, (err, res) => {
                 if (!err) {
-                  dispatch(updateApplicationStatus(applicationId, {applicationStatus:"In-Progress"}, (err,res)=> {
                     dispatch(
                       fetchTaskList((err, res) => {
                         if (!err) {
@@ -178,7 +176,6 @@ const mapDispatchToProps = (dispatch) => {
                         }
                       })
                     );
-                  }))
                 } else {
                   dispatch(setUpdateLoader(false));
                 }

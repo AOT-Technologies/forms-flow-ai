@@ -8,8 +8,7 @@ import {
   setUpdateLoader
 } from "../../../actions/taskActions";
 import {
-  getTaskDetail,
-  updateApplicationStatus,
+  getTaskDetail
 } from "../../../apiManager/services/taskServices";
 import {setFormSubmissionError} from "../../../actions/formActions";
 import SubmissionError from "../../../containers/SubmissionError";
@@ -170,7 +169,6 @@ const mapDispatchToProps = (dispatch) => {
             };
             dispatch(setFormSubmissionError(ErrorDetails));
           } else {
-            dispatch(updateApplicationStatus( applicationId, {applicationStatus:status} , (err,res)=>{
               dispatch(
                 getTaskDetail(id, (err, res) => {
                   if (!err) {
@@ -178,8 +176,6 @@ const mapDispatchToProps = (dispatch) => {
                   }
                 })
               );
-            }))
-
           }
         })
       );

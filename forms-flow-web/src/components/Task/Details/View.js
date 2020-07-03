@@ -8,8 +8,7 @@ import {setUpdateLoader} from "../../../actions/taskActions";
 import {
   claimTask,
   getTaskDetail,
-  unClaimTask,
-  updateApplicationStatus
+  unClaimTask
 } from "../../../apiManager/services/taskServices";
 import {setTaskSubmissionDetail} from "../../../actions/taskActions";
 
@@ -136,11 +135,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         claimTask(id, userName, (err, res) => {
           if (!err) {
-            dispatch(updateApplicationStatus(applicationId, {applicationStatus:"In-Progress"} , (err,res)=> {
-              if(!err){
-              console.log(res); //TODO Update
-              }
-              dispatch(
+            dispatch(
                 getTaskDetail(id, (err, res) => {
                   if (!err) {
                     if (res.submission_id && res.form_id) {
@@ -157,7 +152,6 @@ const mapDispatchToProps = (dispatch) => {
                   }
                 })
               );
-            }))
           } else {
             dispatch(setUpdateLoader(false));
           }

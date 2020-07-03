@@ -1,4 +1,4 @@
-import { httpGETRequest, httpPOSTRequest, httpPUTRequest } from "../httpRequestHandler";
+import { httpGETRequest, httpPOSTRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import {
   setTaskList,
@@ -8,7 +8,6 @@ import {
 } from "../../actions/taskActions";
 import { taskSubmissionFormatter } from "./formatterService";
 import UserService from "../../services/UserService";
-import {replaceUrl} from "../../helper/helper";
 
 export const fetchTaskList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -136,32 +135,6 @@ export const completeTask = (id, reviewStatus, ...rest) => {
         console.log("Error", error);
         done(error);
         dispatch(serviceActionError(error));
-      });
-  };
-};
-
-export const updateApplicationStatus = (applicationId, data, ...rest) => {
-  //data:  {applicationStatus:"In-Progress"}
-  const done = rest.length ? rest[0] : () => {};
-  const url = replaceUrl(
-    API.GET_APPLICATION,
-    "<application_id>",
-    applicationId
-  );
-  return (dispatch) => {
-    httpPUTRequest(url, data, UserService.getToken())
-      .then((res) => {
-        // dispatch(getTaskDetail(id));
-        if (res.status === 200) {
-          done(null, res);
-        }else {
-          dispatch(serviceActionError(res));
-          done("Error Updating Application Status");
-        }
-      })
-      .catch((error) => {
-        dispatch(serviceActionError(error));
-        done(error);
       });
   };
 };

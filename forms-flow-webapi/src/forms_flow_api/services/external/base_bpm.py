@@ -5,7 +5,7 @@ import json
 import requests
 from flask import current_app
 
-from ...utils.logging import log_error
+from ...utils.logging import log_error, log_info
 
 
 class BaseBPMService():
@@ -30,6 +30,7 @@ class BaseBPMService():
         """Post HTTP request to BPM API with auth header."""
         headers = cls._get_headers_()
         payload = json.dumps(payload) if payload else payload
+        log_info("request for call"+url)
         response = requests.post(url, data=payload, headers=headers)
 
         data = None
@@ -40,7 +41,7 @@ class BaseBPMService():
                 data = True
         else:
             log_error('ERROR:Create - status_code: ' + str(response.status_code) + ', ' + response.text)
-
+        log_info("request complete for call"+url)
         return data
 
     @classmethod

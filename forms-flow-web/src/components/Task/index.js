@@ -2,7 +2,6 @@ import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import { fetchTaskList } from '../../apiManager/services/taskServices';
 import List from './List';
 import ViewTask from './ViewTask';
 import './Task.scss';
@@ -21,13 +20,7 @@ const Task = () => {
 
 const mapDispatchToProps=(dispatch)=>{
   return{
-    setCurrentPage:dispatch(setCurrentPage('task')),
-    getTasks:dispatch(fetchTaskList((err, res) => {
-            if (!err) {
-              console.log(res);
-            }
-          })
-    )
+    setCurrentPage:dispatch(setCurrentPage('task'))
   }
 }
 

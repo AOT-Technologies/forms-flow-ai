@@ -30,7 +30,8 @@ class BaseBPMService():
         """Post HTTP request to BPM API with auth header."""
         headers = cls._get_headers_(token)
         payload = json.dumps(payload) if payload else payload
-        response = requests.post(url, data=payload, headers=headers)
+        log_info("request for call 2m"+url)
+        response = requests.post(url, data=payload, headers=headers, timeout=120)
 
         data = None
         if response.ok:
@@ -40,7 +41,7 @@ class BaseBPMService():
                 data = True
         else:
             log_error('ERROR:Create - status_code: ' + str(response.status_code) + ', ' + response.text)
-
+        log_info("request complete for call"+url)
         return data
 
     @classmethod

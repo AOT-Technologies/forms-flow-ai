@@ -30,7 +30,6 @@ class BaseBPMService():
         """Post HTTP request to BPM API with auth header."""
         headers = cls._get_headers_(token)
         payload = json.dumps(payload) if payload else payload
-        log_info("request for call 2m"+url)
         response = requests.post(url, data=payload, headers=headers, timeout=120)
 
         data = None
@@ -41,7 +40,6 @@ class BaseBPMService():
                 data = True
         else:
             log_error('ERROR:Create - status_code: ' + str(response.status_code) + ', ' + response.text)
-        log_info("request complete for call"+url)
         return data
 
     @classmethod
@@ -59,13 +57,11 @@ class BaseBPMService():
             'grant_type': bpm_grant_type
         }
         if token:
-            log_info('reuse token')
             return {
                 'Authorization': token,
                 'content-type': 'application/json'
             }
         else:
-            log_info('new token')
             response = requests.post(bpm_token_api, headers=headers, data=payload)
             data = json.loads(response.text)
             return {

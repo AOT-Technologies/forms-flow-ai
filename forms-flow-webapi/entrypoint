@@ -1,2 +1,2 @@
 #!/bin/bash
-python manage.py db upgrade && gunicorn -b :5000 'forms_flow_api:create_app()'
+python manage.py db upgrade && gunicorn -b :5000 'forms_flow_api:create_app()' --timeout 120

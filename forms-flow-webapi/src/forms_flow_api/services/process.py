@@ -12,9 +12,9 @@ class ProcessService():
     """This class manages process service."""
 
     @staticmethod
-    def get_all_processes():
+    def get_all_processes(token):
         """Get all processes."""
-        process = BPMService.get_all_process()
+        process = BPMService.get_all_process(token)
         if process:
             result = ProcessListSchema().dump(process)
             seen = set()
@@ -30,25 +30,25 @@ class ProcessService():
         return process
 
     @staticmethod
-    def get_process(process_key):
+    def get_process(process_key, token):
         """Get process details."""
-        process_details = BPMService.get_process_details(process_key)
+        process_details = BPMService.get_process_details(process_key, token)
         if process_details:
             return ProcessDefinitionSchema().dump(process_details)
 
         raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
 
     @staticmethod
-    def get_process_action(process_key):
+    def get_process_action(process_key, token):
         """Get process actions."""
-        process_details = BPMService.get_process_actions(process_key)
+        process_details = BPMService.get_process_actions(process_key, token)
         if process_details:
             return ProcessActionListSchema().dump(process_details)
 
         raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
 
     @staticmethod
-    def get_states(process_key, task_key):
+    def get_states(process_key, task_key, token):
         """Get states."""
         payload = {
             'variables': {
@@ -56,7 +56,7 @@ class ProcessService():
                 'task': {'value': task_key}
             }
         }
-        data = BPMService.post_process_evaluate(payload)
+        data = BPMService.post_process_evaluate(payload, token)
         if data:
             value = data[0].get('state', {}).get('value')
             # Since we are receiving a string instead of json and the string contain single quote

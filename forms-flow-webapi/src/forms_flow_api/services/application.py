@@ -11,7 +11,7 @@ class ApplicationService():
     """This class manages application service."""
 
     @staticmethod
-    def create_application(data):
+    def create_application(data, token):
         """Create new application."""
         data['application_status'] = 'new'
 
@@ -24,7 +24,7 @@ class ApplicationService():
 
         payload = {'variables': data['variables']}
         payload['variables']['application_id'] = {'value': application.id}
-        response = BPMService.post_process_start(mapper.process_key, payload)
+        response = BPMService.post_process_start(mapper.process_key, payload, token)
 
         application.update({'process_instance_id': response['id']})
 

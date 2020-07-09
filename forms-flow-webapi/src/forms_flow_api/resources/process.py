@@ -25,7 +25,7 @@ class ProcessStateResource(Resource):
     def get(process_key, task_key):
         """Get states by process and task key."""
         try:
-            return jsonify(ProcessService.get_states(process_key, task_key)), HTTPStatus.OK
+            return jsonify(ProcessService.get_states(process_key, task_key, request.headers["Authorization"])), HTTPStatus.OK
         except BusinessException as err:
             return err.error, err.status_code
 

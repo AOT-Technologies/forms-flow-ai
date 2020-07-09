@@ -49,7 +49,7 @@ class ApplicationsResource(Resource):
             dict_data = application_schema.load(application_json)
             sub = g.token_info.get('sub')
             dict_data['created_by'] = sub
-            application = ApplicationService.create_application(dict_data)
+            application = ApplicationService.create_application(dict_data, request.headers["Authorization"])
 
             response, status = application_schema.dump(application), HTTPStatus.CREATED
         except ValidationError as application_err:

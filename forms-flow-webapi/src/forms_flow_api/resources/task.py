@@ -24,7 +24,7 @@ class TaskList(Resource):
     def get():
         """List all tasks."""
         return jsonify({
-            'tasks': TaskService.get_all_tasks()
+            'tasks': TaskService.get_all_tasks(request.headers["Authorization"])
         }), HTTPStatus.OK
 
 
@@ -39,7 +39,7 @@ class Task(Resource):
     def get(task_id):
         """List specific tasks."""
         return jsonify({
-            'task': TaskService.get_task(task_id)
+            'task': TaskService.get_task(task_id, request.headers["Authorization"])
         }), HTTPStatus.OK
 
 
@@ -55,7 +55,7 @@ class TaskClaim(Resource):
         """Claim a task."""
         request_json = request.get_json()
         return jsonify({
-            'tasks': TaskService.claim_task(task_id, request_json)
+            'tasks': TaskService.claim_task(task_id, request_json, request.headers["Authorization"])
         }), HTTPStatus.OK
 
 
@@ -71,7 +71,7 @@ class TaskUnClaim(Resource):
         """Unclaim a task."""
         request_json = request.get_json()
         return jsonify({
-            'tasks': TaskService.unclaim_task(task_id, request_json)
+            'tasks': TaskService.unclaim_task(task_id, request_json, request.headers["Authorization"])
         }), HTTPStatus.OK
 
 
@@ -87,5 +87,5 @@ class TaskComplete(Resource):
         """Complete a task."""
         request_json = request.get_json()
         return jsonify({
-            'tasks': TaskService.complete_task(task_id, request_json)
+            'tasks': TaskService.complete_task(task_id, request_json, request.headers["Authorization"])
         }), HTTPStatus.OK

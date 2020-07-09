@@ -31,7 +31,7 @@ class BaseBPMService():
         headers = cls._get_headers_()
         payload = json.dumps(payload) if payload else payload
         log_info("request for call 1m"+url)
-        response = requests.post(url, data=payload, headers=headers, timeout=60)
+        response = requests.post(url, data=payload, headers=headers)
 
         data = None
         if response.ok:

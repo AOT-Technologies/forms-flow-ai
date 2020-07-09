@@ -2,7 +2,7 @@
 
 from http import HTTPStatus
 
-from flask import jsonify
+from flask import jsonify, request
 from flask_restx import Namespace, Resource, cors
 
 from ..exceptions import BusinessException

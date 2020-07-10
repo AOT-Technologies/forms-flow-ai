@@ -67,9 +67,7 @@ function linkSubmisionId(cell) {
   );
 }
 
-function buttonFormatter(cell, row) {
-
-  console.log(cell, row)
+function buttonFormatter(cell) {
   if (cell === "Completed" || cell=== "Rejected" || cell==="Approved") {
     return (
       <label className="text-success font-weight-bold text-uppercase task-btn">

@@ -2,7 +2,6 @@ import React from "react";
 import {Table} from "react-bootstrap";
 import {connect} from "react-redux";
 import moment from "moment";
-import {getSubmission, getForm} from "react-formio";
 
 import {setUpdateLoader} from "../../../actions/taskActions";
 import {

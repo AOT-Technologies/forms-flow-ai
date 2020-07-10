@@ -7,7 +7,7 @@ import {selectError, getSubmission, getForm} from "react-formio";
 import Details from "./Details";
 import {getTaskDetail} from "../../apiManager/services/taskServices";
 import Loading from "../../containers/Loading";
-import {setLoader, setTaskSubmissionDetail} from "../../actions/taskActions";
+import {setLoader} from "../../actions/taskActions";
 import View from "../Form/Item/Submission/Item/View";
 
 import {getProcessStatusList} from "../../apiManager/services/processServices";
@@ -85,7 +85,6 @@ const isDataLoaded = (id) => {
                 getSubmission("submission", res.submission_id, res.form_id)
               );
             }
-            dispatch(setTaskSubmissionDetail(res));
           }
         })
       );

@@ -35,13 +35,6 @@ export const setTaskDetail = (data) => dispatch =>{
     })
 }
 
-export const setTaskSubmissionDetail = (data) => dispatch =>{
-  dispatch({
-    type:ACTION_CONSTANTS.TASK_SUBMISSION_DETAIL,
-    payload:data
-  })
-}
-
 export const serviceActionError = (data) => dispatch => {
    //TODO update to a common file
     console.log(data);

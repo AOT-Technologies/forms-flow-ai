@@ -18,8 +18,6 @@ export default (state = initialState, action)=> {
       return {...state, tasksCount: action.payload.count};
     case ACTION_CONSTANTS.TASK_DETAIL:
       return {...state, taskDetail: action.payload};
-    case ACTION_CONSTANTS.TASK_SUBMISSION_DETAIL:
-      return {...state, taskDetail: {...state.taskDetail,...action.payload}};
     case ACTION_CONSTANTS.IS_TASK_UPDATING:
     return {...state, isTaskUpdating: action.payload};
     default:

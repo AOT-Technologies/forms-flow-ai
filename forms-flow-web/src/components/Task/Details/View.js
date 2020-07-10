@@ -10,7 +10,6 @@ import {
   getTaskDetail,
   unClaimTask
 } from "../../../apiManager/services/taskServices";
-import {setTaskSubmissionDetail} from "../../../actions/taskActions";
 
 const taskStatus = (task) => {
   switch (task.task_status) {
@@ -138,16 +137,6 @@ const mapDispatchToProps = (dispatch) => {
             dispatch(
                 getTaskDetail(id, (err, res) => {
                   if (!err) {
-                    if (res.submission_id && res.form_id) {
-                      dispatch(getForm("form", res.form_id));
-                      dispatch(
-                        getSubmission(
-                          "submission",
-                          res.submission_id,
-                          res.form_id
-                        )
-                      );
-                    }
                     dispatch(setUpdateLoader(false));
                   }
                 })
@@ -165,9 +154,7 @@ const mapDispatchToProps = (dispatch) => {
           if (!err) {
             dispatch(
               getTaskDetail(id, (err, res) => {
-                if (!err) {
-                  dispatch(setTaskSubmissionDetail(res));
-                }
+                dispatch(setUpdateLoader(false));
               })
             );
           } else {

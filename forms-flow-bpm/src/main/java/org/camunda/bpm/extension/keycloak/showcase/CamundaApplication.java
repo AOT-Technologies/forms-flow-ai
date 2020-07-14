@@ -4,6 +4,8 @@ import org.camunda.bpm.engine.AuthorizationService;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.authorization.Authorization;
+import org.camunda.bpm.engine.authorization.Resource;
+import org.camunda.bpm.engine.authorization.Resources;
 import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
 import org.camunda.bpm.spring.boot.starter.event.PostDeployEvent;
 import org.slf4j.Logger;
@@ -83,22 +85,43 @@ public class CamundaApplication {
 	}
 
 	private static void authorizeServiceAccount() {
-		// Add authorization to service account
 		LOG.info("Setting authorization for service account...");
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-		/* To read about resource type in Camunda, refer to
-		   https://docs.camunda.org/manual/latest/user-guide/process-engine/authorization-service/#resources */
+
 		for (int resourceType = 0; resourceType<=17; resourceType++){
-			LOG.info("==> Setting resource type " + resourceType);
+			LOG.info(String.format("==> Setting resource type  %d", resourceType));
+			Resource resource = null;
+			if (resourceType==0) resource = Resources.APPLICATION;
+			else if (resourceType==1) resource = Resources.USER;
+			else if (resourceType==2) resource = Resources.GROUP;
+			else if (resourceType==3) resource = Resources.GROUP_MEMBERSHIP;
+			else if (resourceType==4) resource = Resources.AUTHORIZATION;
+			else if (resourceType==5) resource = Resources.FILTER;
+			else if (resourceType==6) resource = Resources.PROCESS_DEFINITION;
+			else if (resourceType==7) resource = Resources.TASK;
+			else if (resourceType==8) resource = Resources.PROCESS_INSTANCE;
+			else if (resourceType==9) resource = Resources.DEPLOYMENT;
+			else if (resourceType==10) resource = Resources.DECISION_DEFINITION;
+			else if (resourceType==11) resource = Resources.TENANT;
+			else if (resourceType==12) resource = Resources.TENANT_MEMBERSHIP;
+			else if (resourceType==13) resource = Resources.BATCH;
+			else if (resourceType==14) resource = Resources.DECISION_REQUIREMENTS_DEFINITION;
+			else if (resourceType==15) resource = Resources.REPORT;
+			else if (resourceType==16) resource = Resources.DASHBOARD;
+			else if (resourceType==17) resource = Resources.OPERATION_LOG_CATEGORY;
+
 			AuthorizationService authorizationService = processEngine.getAuthorizationService();
 			Authorization auth;
-			// If resource is process defination or instance, set GLOBAL; Else, ALLOW
+			// If resource is process definition or instance, set GLOBAL; Else, ALLOW
 			if (resourceType == 6 || resourceType == 8) {
+				if (authorizationService.isUserAuthorized("*", null, ALL, resource, ANY)) continue;
 				auth = authorizationService.createNewAuthorization(AUTH_TYPE_GLOBAL);
 				auth.setUserId("*");
 			} else {
+				String userId = "service-account-"+System.getenv("KEYCLOAK_CLIENTID");
+				if (authorizationService.isUserAuthorized(userId, null, ALL, resource, ANY)) continue;
 				auth = authorizationService.createNewAuthorization(AUTH_TYPE_GRANT);
-				auth.setUserId("service-account-"+System.getenv("KEYCLOAK_CLIENTID"));
+				auth.setUserId(userId);
 			}
 			auth.setResourceType(resourceType);
 			auth.setResourceId(ANY);

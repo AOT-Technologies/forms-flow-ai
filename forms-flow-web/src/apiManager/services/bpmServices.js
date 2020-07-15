@@ -73,7 +73,6 @@ export const getProcess = (processType, form, submissionId, action, user) => {
 
 export const triggerNotification = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  // let url = API.SEND_NOTIFICATION + `${data.process}/start`;
   const URL = API.APPLICATION_START;
   return (dispatch) => {
     httpPOSTRequest(URL, data.req)

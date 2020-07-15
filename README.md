@@ -186,7 +186,6 @@ Variable name | Meaning | Possible values | Default value |
 `REACT_APP_INSIGHT_API_BASE`| Insight Api base end-point| eg. | 
 `REACT_APP_INSIGHTS_API_KEY`| API_KEY from REDASH | | must insert your ReDash API key here
 `REACT_APP_WEB_BASE_URL`|Web API base endpoint|||
-`REACT_APP_BPM_API_BASE`| URL of BPM API||`http://localhost:8000`
 `JDBC_URL`|JDBC DB Connection URL for BPM-API||`jdbc:postgresql://forms-flow-bpm-db:5432/postgres`	
 `JDBC_USER`|Username for BPM database user|||	
 `JDBC_PASSWORD`|Password for BPM database user|||
@@ -226,7 +225,6 @@ JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
       - Camunda UserId's from Keycloak URLs has to be configured in the **Environment Variables for forms-flow-bpm** section
       - Default username and password for admin has to be configured in the **Environment Variables for forms-flow-forms** section
       - Change the REACT_APP_API_PROJECT_URL and REACT_APP_API_SERVER_URL with http://localhost:3001
-      - Change the REACT_APP_BPM_API_BASE with https://localhost:8000
 
    - Running the Application
      -----------------------

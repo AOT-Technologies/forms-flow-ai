@@ -31,9 +31,6 @@ window["_env_"] = {
   REACT_APP_KEYCLOAK_CLIENT: "forms-flow-web",
   ////Environment Variables for forms-flow-bpm////
 
-  // BPM-API-URL
-  REACT_APP_BPM_API_BASE: "http: //localhost:8000",
-
   //Insight Api End point
   REACT_APP_INSIGHT_API_BASE: "Insight Api base end-point",
   REACT_APP_INSIGHTS_API_KEY: "<API_KEY from REDASH>",

@@ -52,7 +52,6 @@ public class CamundaApplication {
 	public void onPostDeploy(PostDeployEvent event) {
 		LOG.info("========================================");
 		LOG.info("Successfully started Camunda Showcase");
-		LOG.info("Customized by AOT Technologies");
 		LOG.info("========================================\n");
 		authorizeServiceAccount();
 	}

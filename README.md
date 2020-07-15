@@ -282,10 +282,6 @@ Variable name | Meaning | Possible values | Default value |
 `REACT_APP_INSIGHT_API_BASE`| Insight Api base end-point| eg. | 
 `REACT_APP_INSIGHTS_API_KEY`| API_KEY from REDASH | | must insert your ReDash API key here
 
-#### Camunda
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`REACT_APP_BPM_API_BASE`| URL of BPM API||`http://localhost:8000`
 `JDBC_URL`|JDBC DB Connection URL for BPM-API||`jdbc:postgresql://forms-flow-bpm-db:5432/postgres`	
 `JDBC_USER`|Username for BPM database user|||	
 `JDBC_PASSWORD`|Password for BPM database user|||
@@ -311,8 +307,6 @@ Variable name | Meaning | Possible values | Default value |
 
 
 SECRET_KEY='--- change me now ---'
-
-
 ## Running the Application
      -----------------------
 * Open up your terminal and navigate to the root folder of this project

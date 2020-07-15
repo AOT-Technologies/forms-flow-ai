@@ -1,6 +1,6 @@
 # **how-to-run**
 
-* init database
+* init db && create tables in db
 
 ```code
 docker-compose run --rm server create_db

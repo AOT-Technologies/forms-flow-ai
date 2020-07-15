@@ -38,7 +38,6 @@ NOTE: There are two methods for running this application. Using docker container
     | REACT_APP_EMAIL_SUBMISSION_GROUP | Submission group in email notification   | Keycloak role for submission
     | REACT_APP_API_SERVER_URL         | Form-IO API-URL                          |
     | REACT_APP_KEYCLOAK_CLIENT        | Keycloak client name                     |
-    | REACT_APP_BPM_API_BASE           | BPM-API-URL                              |
 
 - To get Form-IO authorization IDs use the follwing steps
   - Get token

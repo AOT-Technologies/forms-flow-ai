@@ -18,8 +18,8 @@ In the example below, the following external URL's are accessible (as of writing
 The following table lists the required placeholder mappings
 
 
-Placehoder | Meaning | Sample 
---- | --- | --- | ---
+Placeholder | Meaning | Sample 
+--- | --- | --- 
 `http://localhost:3000`| Replace with the ip /host / port of the FormsFlow UI|   http://207.216.46.120:3000;
 `http://localhost:5000` | Replace with the ip/ host / portf the FormsFlow API|  http://207.216.46.120:5000;
 `<forms-flow-web hostname fullchain.pem>`|SSL certificate public key for FormsFlow UI component|/etc/nginx/certs/app1.aot-technologies.com/fullchain.pem

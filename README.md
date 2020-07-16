@@ -282,6 +282,9 @@ Variable name | Meaning | Possible values | Default value |
 `REACT_APP_INSIGHT_API_BASE`| Insight Api base end-point| eg. | 
 `REACT_APP_INSIGHTS_API_KEY`| API_KEY from REDASH | | must insert your ReDash API key here
 
+#### Camunda
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
 `JDBC_URL`|JDBC DB Connection URL for BPM-API||`jdbc:postgresql://forms-flow-bpm-db:5432/postgres`	
 `JDBC_USER`|Username for BPM database user|||	
 `JDBC_PASSWORD`|Password for BPM database user|||

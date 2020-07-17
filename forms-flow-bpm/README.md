@@ -1,39 +1,39 @@
 # **Workflow Engine**
 
-`Forms Flow.AI` leverages Camunda for workflow and decision automation platform.
+**Forms Flow.AI** leverages Camunda for workflow and decision automation platform.
+It is currently based on camunda version `7.13.0` , Keycloak, Spring boot `2.2.7.RELEASE` and PostgreSQL (latest).
  
- Based on camunda version `7.13.0` , Keycloak, Spring boot 2.2.7.RELEASE and PostgreSQL (latest)
- For knowing more about Redash. Follow https://github.com/camunda/camunda-bpm-identity-keycloak
-
+To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identity-keycloak.
 
 ## Table of contents
 * [Prerequisites](#prerequisites)
 * [Project setup](#project-setup)
-  * [Step 1 : Make sure you have set up the Keycloak](#make-sure-you-have-set-up-the-keycloak)
-  * [Step 2 : Configuration](#configuration)
+  * [Step 1 : Keycloak Configuration](#keycloak-configuration)
+  * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Build and Deploy](#build-and-deploy)
   * [Step 4 : Verify the application status](#verify-the-application-status)
 * [How to Deploy Process](#how-to-deploy-process)
 * [How to enable SSL](#how-to-enable-ssl)
+
 ## Prerequisites
 
-The system is deployed and run using [docker-compose](https://docker.com) and [docker](https://docker.com). These need to be available. 
-* There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (ability to create realms, users etc.).
+The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
+* There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
 
 ## Project Setup
 
-## Make sure you have set up the Keycloak 
+## Keycloak Configuration
 
 1. Login to keycloak
 2. Select your realm --> Go to clients tab --> create a new service account enabled client 
-3. Besides configuring the client for protocol "openid-connect", the listed roles under "Service Client Roles".
+3. Configure the client for protocol "openid-connect", and configure the following listed roles under "Service Client Roles":
     * query-groups
     * query-users
     * view-users
     
  NOTE: The default admin group "camunda-admin" has been referenced in application.yaml, and this needs to be available for use.
  
-## Configuration
+## Environment Configuration
 
 This section elaborates on properties exposed for tuning the system.
  

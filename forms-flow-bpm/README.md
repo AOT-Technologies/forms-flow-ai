@@ -13,7 +13,7 @@ To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identit
   * [Step 3 : Build and Deploy](#build-and-deploy)
   * [Step 4 : Verify the application status](#verify-the-application-status)
 * [How to Deploy Process](#how-to-deploy-process)
-* [How to enable SSL](#how-to-enable-ssl)
+* [How to Enable SSL](#how-to-enable-ssl)
 
 ## Prerequisites
 
@@ -63,7 +63,7 @@ This section elaborates on properties exposed for tuning the system.
 
    The application should be up and available for use at port defaulted to 8000 in application.yaml http://localhost:8000/camunda/
    
-### How to Deploy Process
+## How to Deploy Process
 
    REST service **/camunda/engine-rest/deployment/create** will be used for deployment of process.
    
@@ -82,9 +82,9 @@ This section elaborates on properties exposed for tuning the system.
    
 Post successful deployment of process, it is ready for use.
    
-### How to enable SSL
+## How to Enable SSL
 
- ##### 1. Generate domain specific pem format and convert into pkcs12 using below commands.      
+##### 1. Generate domain specific pem format and convert into pkcs12 using below commands.      
      ```       
              openssl pkcs12 -export -out bpm1.pkcs12 -in combined.pem
              keytool -genkey -keyalg RSA -alias tomcat -keystore truststore.ks
@@ -95,7 +95,7 @@ Post successful deployment of process, it is ready for use.
     
              keytool -v -importkeystore -srckeystore bpm1.pkcs12 -srcstoretype PKCS12 -destkeystore keystore.ks -des
      ```      
- ##### 2. Place the generated keystore.ks file and place in cert path ~/certs/keystore.ks. 
+##### 2. Place the generated keystore.ks file and place in cert path ~/certs/keystore.ks. 
 ``` 
    NOTE: This configuration can be found in /forms-flow-bpm/src/mai/resources    
 ```  

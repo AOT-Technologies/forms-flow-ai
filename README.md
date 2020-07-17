@@ -282,9 +282,6 @@ Variable name | Meaning | Possible values | Default value |
 `REACT_APP_INSIGHT_API_BASE`| Insight Api base end-point| eg. | 
 `REACT_APP_INSIGHTS_API_KEY`| API_KEY from REDASH | | must insert your ReDash API key here
 
-#### Camunda
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
 `JDBC_URL`|JDBC DB Connection URL for BPM-API||`jdbc:postgresql://forms-flow-bpm-db:5432/postgres`	
 `JDBC_USER`|Username for BPM database user|||	
 `JDBC_PASSWORD`|Password for BPM database user|||
@@ -328,30 +325,7 @@ Analytics-Redash
 ----------------
 - Refer [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-analytics#how-to-run)
 
-Additional Configuration
--------------------------
-- SSL Nginx configurations
-  ------------------------
-   - Create hostnames and secure them using the appropriate certificates
-     - Generate certificates as below and place in the appropriate server paths
-         - forms-flow-web hostname fullchain.pem
-         - forms-flow-web hostname privkey.pem
-         - forms-flow-forms hostname fullchain.pem
-         - forms-flow-forms hostname privkey.pem
-         - forms-flow-bpm hostname fullchain.pem
-         - forms-flow-bpm hostname privkey.pem
-  - Open /nginx/conf.d/app.conf
-  - Update the paths accordingly in the app.conf
-     - Update the localhost to the server IP address for the below URLs
-         - http://localhost:3000
-         - http://localhost:3001
-         - https://localhost:8000
-           - NOTE: 'https' for localhost:8000
-  - Refer [nginx](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/nginx#how-to-run)
-  
-NOTE:
-  - Once nginx server is applied, change the hostnames in the Keycloak server for forms-flow-web and forms-flow-bpm
-  - Also change values for REACT_APP_API_SERVER_URL and REACT_APP_API_PROJECT_URL with the hostname in .env file
+
   
 ## License
 

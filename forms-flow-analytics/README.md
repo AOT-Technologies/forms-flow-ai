@@ -1,5 +1,5 @@
 # Analytics Engine
-`Forms Flow.AI` leverages Redash for studying and visualizing data captured.
+**Forms Flow.AI** leverages Redash for studying and visualizing data captured.
 
 To know more about Redash, go to https://github.com/getredash/redash.
 
@@ -25,7 +25,7 @@ TO DO
 
 ## Step 2 : Environment Configuration
 
-Environment variables are set in `redash.env` and read by Redash.
+Environment variables are set in **redash.env** and read by Redash.
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -43,13 +43,13 @@ Variable name | Meaning | Possible values | Default value |
 ## Step 3 : Running the Application
 
    * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is `forms-flow-analytics`.
+   * Make sure your current working directory is **forms-flow-analytics**.
    * Modify the configuration values as needed. For example, you may want to change these:
      
          The Postgres volume location
          The value of REDASH_COOKIE_SECRET (especially if this instance is not just for testing purposes)
-   * Run **docker-compose run --rm server create_db** to setup database andd to create tables.
-   * Run **docker-compose up -d** to start.
+   * Run `docker-compose run --rm server create_db` to setup database andd to create tables.
+   * Run `docker-compose up -d` to start.
    
 ## Step 4 : Verify the application status
 

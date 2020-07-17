@@ -6,11 +6,11 @@ To know more about Redash, go to https://github.com/getredash/redash.
 ## Table of contents
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
-  * [Step 1 : Keycloak Setup](#step-1-:-keycloak-setup)
-  * [Step 2 : Environment Configuration](#step-2-:-environment-configuration)
-  * [Step 3 : Running the Application](#step-3-:-running-the-application)
-  * [Step 4 : Verify the application status](#step-4-:-Verify-the-application-status)
-  * [Step 5 : Configuration of Keycloak SAML Setup](#step-5-:-configuration-of-keycloak-saml-setup)   
+  * [Step 1 : Keycloak Setup](#step-1--keycloak-setup)
+  * [Step 2 : Environment Configuration](#step-2--environment-configuration)
+  * [Step 3 : Running the Application](#step-3--running-the-application)
+  * [Step 4 : Verify the application status](#step-4--verify-the-application-status)
+  * [Step 5 : Configuration of Keycloak SAML Setup](#step-5--configuration-of-keycloak-saml-setup)   
 
 ## Prerequisites
 

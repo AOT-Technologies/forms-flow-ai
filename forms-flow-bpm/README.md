@@ -98,10 +98,7 @@ Post successful deployment of process, it is ready for use.
     
              keytool -v -importkeystore -srckeystore bpm1.pkcs12 -srcstoretype PKCS12 -destkeystore keystore.ks -des
      ```      
-##### 2. Place the generated keystore.ks file and place in cert path ~/certs/keystore.ks. 
-``` 
-   NOTE: This configuration can be found in /forms-flow-bpm/src/main/resources    
-```  
+##### 2. Place the generated keystore.ks file under cert path ~/certs/keystore.ks. 
 ##### 3. Include the below **ssl configuration** in application.yaml present in path /forms-flow-bpm/src/main/resources.
 ``` 
 server:
@@ -114,4 +111,4 @@ server:
     key-password: password
   servlet.context-path: /camunda
 ``` 
-     
+**NOTE: Alternatively, you can directly place your ssl cert under the classpath "/forms-flow-bpm/src/main/resources". Your configuration for the key-store in application.yaml would be `key-store: classpath:/keystore.ks`**

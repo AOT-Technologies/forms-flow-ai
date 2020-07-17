@@ -81,23 +81,23 @@ This section elaborates on properties exposed for tuning the system.
    curl -H "Authorization: Bearer ${token}" -H "Accept: application/json" -F "deployment-name=One Step Approval" -F "enable-duplicate-filtering=false" -F "deploy-changed-only=falses" -F "one_step_approval.bpmnn=@one_step_approval.bpmn"  https://bpm1.aot-technologies.com/camunda/engine-rest/deployment/create
 ```
    
-   **NOTE: In case, POST request fails with permission issue. Login to camunda -> Admin -> Authorizations -> Deployment; then verify the account existence under "deployment" service. If does not, please add it manually.**
+* **NOTE: In case, POST request fails with permission issue. Login to camunda -> Admin -> Authorizations -> Deployment; then verify the account existence under "deployment" service. If does not, please add it manually.**
    
 Post successful deployment of process, it is ready for use.
    
 ## How to Enable SSL
 
 ##### 1. Generate domain specific pem format and convert into pkcs12 using below commands.      
-     ```       
-             openssl pkcs12 -export -out bpm1.pkcs12 -in combined.pem
-             keytool -genkey -keyalg RSA -alias tomcat -keystore truststore.ks
-             keytool -delete -alias tomcat -keystore truststore.ks
-    
-             keytool -import -v -trustcacerts -alias tomcat -file fullchain.pem -keystore truststore.ks
-             keytool -genkey -keyalg RSA -alias tomcat -keystore keystore.ks
-    
-             keytool -v -importkeystore -srckeystore bpm1.pkcs12 -srcstoretype PKCS12 -destkeystore keystore.ks -des
-     ```      
+```       
+openssl pkcs12 -export -out bpm1.pkcs12 -in combined.pem
+keytool -genkey -keyalg RSA -alias tomcat -keystore truststore.ks
+keytool -delete -alias tomcat -keystore truststore.ks
+
+keytool -import -v -trustcacerts -alias tomcat -file fullchain.pem -keystore truststore.ks
+keytool -genkey -keyalg RSA -alias tomcat -keystore keystore.ks
+
+keytool -v -importkeystore -srckeystore bpm1.pkcs12 -srcstoretype PKCS12 -destkeystore keystore.ks -des
+```      
 ##### 2. Place the generated keystore.ks file under cert path ~/certs/keystore.ks. 
 ##### 3. Include the below **ssl configuration** in application.yaml present in path /forms-flow-bpm/src/main/resources.
 ``` 
@@ -111,4 +111,4 @@ server:
     key-password: password
   servlet.context-path: /camunda
 ``` 
-**NOTE: Alternatively, you can directly place your ssl cert under the classpath "/forms-flow-bpm/src/main/resources". Your configuration for the key-store in application.yaml would be `key-store: classpath:/keystore.ks`**
+* **NOTE: Alternatively, you can directly place your ssl cert under the classpath "/forms-flow-bpm/src/main/resources". Your configuration for the key-store in application.yaml would be `key-store: classpath:/keystore.ks`.**

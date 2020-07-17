@@ -6,11 +6,11 @@ To know more about Redash, go to https://github.com/getredash/redash.
 ## Table of contents
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
-  * [Step 1 : Keycloak Setup](#step-1--keycloak-setup)
-  * [Step 2 : Environment Configuration](#step-2--environment-configuration)
-  * [Step 3 : Running the Application](#step-3--running-the-application)
-  * [Step 4 : Verify the application status](#step-4--verify-the-application-status)
-  * [Step 5 : Configuration of Keycloak SAML Setup](#step-5--configuration-of-keycloak-saml-setup)   
+  * [Step 1 : Keycloak Setup](#keycloak-setup)
+  * [Step 2 : Environment Configuration](#environment-configuration)
+  * [Step 3 : Running the Application](#running-the-application)
+  * [Step 4 : Verify the application status](#verify-the-application-status)
+  * [Step 5 : Configuration of Keycloak SAML Setup](#configuration-of-keycloak-saml-setup)   
 
 ## Prerequisites
 
@@ -19,11 +19,11 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ## Project Setup
 
-## Step 1 : Keycloak Setup
+## Keycloak Setup
 
 TO DO
 
-## Step 2 : Environment Configuration
+## Environment Configuration
 
 Environment variables are set in **redash.env** and read by Redash.
 
@@ -40,7 +40,7 @@ Variable name | Meaning | Possible values | Default value |
 `REDASH_SECRET_KEY`|Encryption for datasource configuration|ditto|`redash-selfhosted`
 
 
-## Step 3 : Running the Application
+## Running the Application
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-analytics".
@@ -51,12 +51,12 @@ Variable name | Meaning | Possible values | Default value |
    * Run `docker-compose run --rm server create_db` to setup database andd to create tables.
    * Run `docker-compose up -d` to start.
    
-## Step 4 : Verify the application status
+## Verify the application status
 
    The application should be up and available for use at port defaulted to 7000 in docker-compose.yml (i.e. http://localhost:7000/)
     and register with any valid credentials.
     
-## Step 5 : Configuration of Keycloak SAML Setup
+## Configuration of Keycloak SAML Setup
     
    * Post registration, login to the application with admin credentials.
    * Click the menu icon to the left of the username.

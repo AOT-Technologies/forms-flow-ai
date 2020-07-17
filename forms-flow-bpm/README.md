@@ -18,14 +18,14 @@ To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identit
 ## Prerequisites
 
 The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
-* There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
+There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
 
 ## Project Setup
 
 ## Keycloak Configuration
 
 1. Login to keycloak
-2. Select your realm --> Go to clients tab --> create a new service account enabled client 
+2. Select your realm --> Go to clients tab --> Create a new service account enabled client 
 3. Configure the client for protocol "openid-connect", and configure the following listed roles under "Service Client Roles":
     * query-groups
     * query-users
@@ -56,8 +56,8 @@ This section elaborates on properties exposed for tuning the system.
    * Modify the configuration values as needed. For example, you may want to change these:
         * The Postgres volume location
         * The value of datastore credentials   
-   * Run **docker-compose build** to build.
-   * Run **docker-compose up -d** to start.
+   * Run `docker-compose build` to build.
+   * Run `docker-compose up -d` to start.
       
 ## Verify the application status
 

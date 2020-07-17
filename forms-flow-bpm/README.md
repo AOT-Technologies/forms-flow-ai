@@ -51,10 +51,6 @@ This section elaborates on properties exposed for tuning the system.
    
 ## Build and Deploy
 
-   Use the following set of commands to build and run the application
-      docker-compose build
-      docker-compse up
-      
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is forms-flow-bpm.
    * Modify the configuration values as needed. For example, you may want to change these:

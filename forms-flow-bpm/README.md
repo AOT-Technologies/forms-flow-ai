@@ -38,7 +38,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
  
 ### Environment Configuration
 
-This section elaborates on properties exposed for tuning the system.
+This section elaborates on the properties exposed for tuning the system.
  
  Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
@@ -81,9 +81,7 @@ This section elaborates on properties exposed for tuning the system.
    curl -H "Authorization: Bearer ${token}" -H "Accept: application/json" -F "deployment-name=One Step Approval" -F "enable-duplicate-filtering=false" -F "deploy-changed-only=falses" -F "one_step_approval.bpmnn=@one_step_approval.bpmn"  https://bpm1.aot-technologies.com/camunda/engine-rest/deployment/create
 ```
    
-* **NOTE: In case, POST request fails with permission issue. Login to camunda -> Admin -> Authorizations -> Deployment; then verify the account existence under "deployment" service. If does not, please add it manually.**
-   
-Post successful deployment of process, it is ready for use.
+* **NOTE: If POST request fails with permission issue, login to Camunda and go to Admin -> Authorizations -> Deployment. Then, verify the account existence under "deployment" service. If does not, please add it manually.**
    
 ## How to Enable SSL
 

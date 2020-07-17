@@ -1,5 +1,8 @@
 # **Workflow Engine**
 
+**Forms Flow.AI** leverages Camunda as a business workflow and decision automation platform.
+To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identity-keycloak.
+
 ## Table of contents
 * [Prerequisites](#prerequisites)
 * [Project setup](#project-setup)
@@ -13,7 +16,7 @@
 
 ## Prerequisites
 
-- based on camunda version `7.12.0` , Keycloak, Spring boot 2.2.6.RELEASE and PostgreSQL (latest)
+- based on camunda version `7.13.0`, Keycloak, Spring boot `2.2.7.RELEASE` and PostgreSQL (latest)
 
 ## Project Setup
 

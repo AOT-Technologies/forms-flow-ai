@@ -53,7 +53,7 @@ Variable name | Meaning | Possible values | Default value |
    
 ## Step 4 : Verify the application status
 
-   The application should be up and available for use at port defaulted to 7000 in docker-compose.yml i.e. http://localhost:7000/
+   The application should be up and available for use at port defaulted to 7000 in docker-compose.yml (i.e. http://localhost:7000/)
     and register with any valid credentials.
     
 ## Step 5 : Configuration of Keycloak SAML Setup

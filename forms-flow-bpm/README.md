@@ -22,7 +22,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ## Project Setup
 
-## Keycloak Configuration
+### Keycloak Configuration
 
 1. Login to keycloak
 2. Select your realm --> Go to clients tab --> Create a new service account enabled client 
@@ -33,7 +33,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
     
  NOTE: The default admin group "camunda-admin" has been referenced in application.yaml, and this needs to be available for use.
  
-## Environment Configuration
+### Environment Configuration
 
 This section elaborates on properties exposed for tuning the system.
  
@@ -49,7 +49,7 @@ This section elaborates on properties exposed for tuning the system.
  `CAMUNDA_POSTGRES_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
  `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`camunda`
    
-## Build and Deploy
+### Build and Deploy
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is forms-flow-bpm.
@@ -59,11 +59,11 @@ This section elaborates on properties exposed for tuning the system.
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
       
-## Verify the application status
+### Verify the application status
 
    The application should be up and available for use at port defaulted to 8000 in application.yaml http://localhost:8000/camunda/
    
-## How to Deploy Process
+### How to Deploy Process
 
    REST service **/camunda/engine-rest/deployment/create** will be used for deployment of process.
    
@@ -82,7 +82,7 @@ This section elaborates on properties exposed for tuning the system.
    
 Post successful deployment of process, it is ready for use.
    
-## How to enable SSL
+### How to enable SSL
 
  ##### 1. Generate domain specific pem format and convert into pkcs12 using below commands.      
      ```       

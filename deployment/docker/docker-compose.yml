@@ -1,0 +1,171 @@
+# Author: Gurumoorthy Mohan
+version: '3.7'
+
+services:
+  forms-flow-bpm-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
+    volumes:
+      - ./postgres/camunda:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+    networks:
+      - forms-flow-bpm-network
+
+  forms-flow-bpm:
+    build:
+      context: ./forms-flow-bpm/
+      dockerfile: Dockerfile
+    restart: always
+    links:
+      - forms-flow-bpm-db
+    ports:
+      - '8000:8080'
+    environment:
+      - KEYCLOAK_URL=${KEYCLOAK_URL}
+      - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM}
+      - KEYCLOAK_CLIENTID=${KEYCLOAK_CLIENTID}
+      - KEYCLOAK_CLIENTSECRET=${KEYCLOAK_CLIENTSECRET}
+      - JDBC_URL=${JDBC_URL}
+      - JDBC_USER=${JDBC_USER}
+      - JDBC_PASSWORD=${JDBC_PASSWORD}
+      - JDBC_DRIVER=${JDBC_DRIVER}
+      - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN}
+    networks:
+      - forms-flow-bpm-network
+
+  forms-flow-forms-db:
+    image: mongo
+    restart: always
+    hostname: forms-flow-forms-db
+    ports:
+      - '27018:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    volumes:
+      - ./mongodb/data/db/:/data/db/
+      - ./mongodb/data/log/:/var/log/mongodb/
+      - ./mongodb/mongod.conf:/etc/mongod.conf
+    networks:
+      - forms-flow-forms-network
+
+  forms-flow-forms:
+    build:
+      context: ./forms-flow-forms/
+      dockerfile: Dockerfile
+    # The app will restart until Mongo is listening
+    restart: always
+    links:
+      - forms-flow-forms-db
+    ports:
+      - '3001:3001'
+    # The application wants to download things to the local directory
+    # TODO: really wish I could mount this as read-only
+    volumes:
+      - ./:/app:rw
+    environment:
+      DEBUG: formio:*
+      NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio"}'
+      ROOT_EMAIL: ${ROOT_EMAIL}
+      ROOT_PASSWORD: ${ROOT_PASSWORD}
+    stdin_open: true # -i
+    tty: true # -t
+    networks:
+      - forms-flow-forms-network
+
+  forms-flow-ai:
+    build:
+      context: ./forms-flow-web/
+      dockerfile: Dockerfile
+    volumes:
+      - '.:/app'
+      - '/app/node_modules'
+    ports:
+      - '3000:3000'
+    tty: true
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - REACT_APP_CLIENT_ROLE=${REACT_APP_CLIENT_ROLE}
+      - REACT_APP_STAFF_REVIEWER_ROLE=${REACT_APP_STAFF_REVIEWER_ROLE}
+      - REACT_APP_STAFF_DESIGNER_ROLE=${REACT_APP_STAFF_DESIGNER_ROLE}
+      - REACT_APP_CLIENT_ID=${REACT_APP_CLIENT_ID}
+      - REACT_APP_STAFF_REVIEWER_ID=${REACT_APP_STAFF_REVIEWER_ID}
+      - REACT_APP_STAFF_DESIGNER_ID=${REACT_APP_STAFF_DESIGNER_ID}
+      - REACT_APP_USER_RESOURCE_FORM_ID=${REACT_APP_USER_RESOURCE_FORM_ID}
+      - REACT_APP_API_SERVER_URL=${REACT_APP_API_SERVER_URL}
+      - REACT_APP_API_PROJECT_URL=${REACT_APP_API_PROJECT_URL}
+      - REACT_APP_KEYCLOAK_CLIENT=${REACT_APP_KEYCLOAK_CLIENT}
+      - REACT_APP_ANONYMOUS_ID=${REACT_APP_ANONYMOUS_ID}
+      - REACT_APP_EMAIL_SUBMISSION_GROUP=${REACT_APP_EMAIL_SUBMISSION_GROUP}
+      - REACT_APP_INSIGHT_API_BASE=${REACT_APP_INSIGHT_API_BASE}
+      - REACT_APP_INSIGHTS_API_KEY=${REACT_APP_INSIGHTS_API_KEY}
+      - REACT_APP_WEB_BASE_URL=${REACT_APP_WEB_BASE_URL}
+
+    networks:
+      - forms-flow-web-network
+
+  forms-flow-webapi-db:
+    image: postgres:11
+    environment:
+      POSTGRES_USER: ${WEB_API_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${WEB_API_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${WEB_API_POSTGRES_DB}
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
+    ports:
+      - '6432:5432'
+    restart: unless-stopped
+    volumes:
+      - ./postgres/webapi:/var/lib/postgresql/data
+    networks:
+      - forms-flow-webapi-network
+
+  forms-flow-webapi:
+    build:
+      context: ./forms-flow-webapi/
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    links:
+      - forms-flow-webapi-db
+    ports:
+      - '5000:5000'
+    volumes:
+      - ./:/app:rw
+    environment:
+      DATABASE_URL: ${WEB_API_DATABASE_URL}
+      BPM_TOKEN_API: ${BPM_TOKEN_API}
+      BPM_CLIENT_ID: ${BPM_CLIENT_ID}
+      BPM_CLIENT_SECRET: ${BPM_CLIENT_SECRET}
+      BPM_GRANT_TYPE: ${BPM_GRANT_TYPE}
+      BPM_API_BASE: ${BPM_API_BASE}
+      API_PROCESS: ${API_PROCESS}
+      API_TASK_HISTORY: ${API_TASK_HISTORY}
+      API_TASK: ${API_TASK}
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${JWT_OIDC_WELL_KNOWN_CONFIG}
+      JWT_OIDC_ALGORITHMS: ${JWT_OIDC_ALGORITHMS}
+      JWT_OIDC_JWKS_URI: ${JWT_OIDC_JWKS_URI}
+      JWT_OIDC_ISSUER: ${JWT_OIDC_ISSUER}
+      JWT_OIDC_AUDIENCE: ${JWT_OIDC_AUDIENCE}
+      JWT_OIDC_CACHING_ENABLED: ${JWT_OIDC_CACHING_ENABLED}
+      JWT_OIDC_JWKS_CACHE_TIMEOUT: ${JWT_OIDC_JWKS_CACHE_TIMEOUT}
+    stdin_open: true # -i
+    tty: true # -t
+    networks:
+      - forms-flow-webapi-network
+
+networks:
+  forms-flow-webapi-network:
+  forms-flow-forms-network:
+  forms-flow-bpm-network:
+  forms-flow-web-network:
+    driver: 'bridge'
+
+volumes:
+  mdb-data:
+  postgres:

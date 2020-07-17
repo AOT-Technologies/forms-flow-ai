@@ -30,9 +30,10 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
     * query-groups
     * query-users
     * view-users
-4. Configure a custom Client Scope named `camunda-rest-api` [to include the expected audience claim in delivered tokens](https://github.com/camunda/camunda-bpm-identity-keycloak/tree/master/examples/sso-kubernetes#optional-security-for-the-camunda-rest-api)
+4. Configure a custom "Client Scope" named `camunda-rest-api` to include the expected audience claim in delivered tokens
     * Add a mapper with type `Audience` and configure the required audience `camunda-rest-api`
-    * Assign the created Client Scope to our existing Camunda-Identity-Service used for authentication
+    * Assign the created "Client Scope" `camunda-rest-api` to our client
+    * For more details, go to https://github.com/camunda/camunda-bpm-identity-keycloak/tree/master/examples/sso-kubernetes#optional-security-for-the-camunda-rest-api
 
  NOTE: The default admin group "camunda-admin" has been referenced in application.yaml, and this needs to be available for use.
  

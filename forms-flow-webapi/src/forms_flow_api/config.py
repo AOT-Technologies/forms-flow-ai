@@ -81,9 +81,6 @@ class _Config():  # pylint: disable=too-few-public-methods
 
     # BPM Camunda Details
     BPM_API_BASE = os.getenv('BPM_API_BASE')
-    API_PROCESS = os.getenv('API_PROCESS')
-    API_TASK_HISTORY = os.getenv('API_TASK_HISTORY')
-    API_TASK = os.getenv('API_TASK')
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

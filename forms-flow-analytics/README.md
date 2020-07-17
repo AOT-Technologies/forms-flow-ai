@@ -1,7 +1,7 @@
 # Analytics Engine
 `Forms Flow.AI` leverages Redash for studying and visualizing data captured.
 
-For knowing more about Redash. Follow https://github.com/getredash/redash
+To know more about Redash, go to https://github.com/getredash/redash.
 
 ## Table of contents
 * [Prerequisites](#prerequisites)
@@ -14,8 +14,8 @@ For knowing more about Redash. Follow https://github.com/getredash/redash
 
 ## Prerequisites
 
-The system is deployed and run using [docker-compose](https://docker.com) and [docker](https://docker.com). These need to be available. 
-* There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (ability to create realms, users etc.).
+The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
+* There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
 
 ## Project Setup
 
@@ -23,42 +23,40 @@ The system is deployed and run using [docker-compose](https://docker.com) and [d
 
 TO DO
 
-## Configuration
+## Step 2 : Environment Configuration
 
-Many aspects of the functionality of Redash can be changed with settings. 
-
-Settings are read by redash from environment variables which are set in through redash.env
+Environment variables are set in `redash.env` and read by Redash.
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`REDASH_HOST`| base address of your Redash instance (the DNS name or IP) with the protocol |`postgres` | http://localhost/redash
+`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol |`postgres` | http://localhost/redash
 `PYTHONUNBUFFERED`|Log buffering setup|1 or 0 | 1
 `REDASH_LOG_LEVEL`|Logging level|`CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET` | ERROR
-`REDASH_REDIS_URL`|Message Queue|Used on installation to create the database.Choose your own|`redis://redis:6379/0`
-`REDASH_DATABASE_URL`|Postgres Database URL|ditto|`postgresql://postgres@postgres/postgres`
-`POSTGRES_PASSWORD`|Postgres Database Password|ditto|`postgres`
-`POSTGRES_HOST_AUTH_METHOD`|Postgres authentication Method|ditto|`trust`
-`REDASH_COOKIE_SECRET`|Encryption for all Configuration|ditto|`redash-selfhosted`
-`REDASH_SECRET_KEY`|Encryption for Datasource Configuration|ditto|`redash-selfhosted`
+`REDASH_REDIS_URL`|Redis URL|Choose your own.|`redis://redis:6379/0`
+`REDASH_DATABASE_URL`|Postgres database URL|ditto|`postgresql://postgres@postgres/postgres`
+`POSTGRES_PASSWORD`|Postgres database Password|ditto|`postgres`
+`POSTGRES_HOST_AUTH_METHOD`|Postgres authentication method|ditto|`trust`
+`REDASH_COOKIE_SECRET`|Encryption for all configuration|ditto|`redash-selfhosted`
+`REDASH_SECRET_KEY`|Encryption for datasource configuration|ditto|`redash-selfhosted`
 
 
-## Running the Application
+## Step 3 : Running the Application
 
    * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is forms-flow-analytics.
+   * Make sure your current working directory is `forms-flow-analytics`.
    * Modify the configuration values as needed. For example, you may want to change these:
      
          The Postgres volume location
          The value of REDASH_COOKIE_SECRET (especially if this instance is not just for testing purposes)
-   * Run **docker-compose run --rm server create_db** to setup database.
+   * Run **docker-compose run --rm server create_db** to setup database andd to create tables.
    * Run **docker-compose up -d** to start.
    
-## Verify the application status
+## Step 4 : Verify the application status
 
    The application should be up and available for use at port defaulted to 7000 in docker-compose.yml i.e. http://localhost:7000/
     and register with any valid credentials.
     
-## Configuration of Keycloak SAML Setup
+## Step 5 : Configuration of Keycloak SAML Setup
     
    * Post registration, login to the application with admin credentials.
    * Click the menu icon to the left of the username.

@@ -30,7 +30,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
     * query-groups
     * query-users
     * view-users
-4. Configure a custom Client Scope named "camunda-rest-api" [to include the expected audience claim in delivered tokens](https://github.com/camunda/camunda-bpm-identity-keycloak/tree/master/examples/sso-kubernetes#optional-security-for-the-camunda-rest-api)
+4. Configure a custom Client Scope named `camunda-rest-api` [to include the expected audience claim in delivered tokens](https://github.com/camunda/camunda-bpm-identity-keycloak/tree/master/examples/sso-kubernetes#optional-security-for-the-camunda-rest-api)
     * Add a mapper with type `Audience` and configure the required audience `camunda-rest-api`
     * Assign the created Client Scope to our existing Camunda-Identity-Service used for authentication
 
@@ -76,7 +76,7 @@ This section elaborates on properties exposed for tuning the system.
 ```   
       export token=`curl -X POST "https://sso-dev.com/auth/realms/forms-flow-ai/protocol/openid-connect/token" -H "Content-Type: application/x-www-form-urlencoded" -d "username=test" -d "password=test" -d "grant_type=password" -d "client_id=forms-flow-bpm" -d "client_secret=xxxxxxxxxxxxxx" | jq -r ".access_token"`
 ```
-   ##### 2. Post the process as file with HTTP Verb POST.
+   ##### 2. Post the process as file with HTTP verb POST.
 ```
    curl -H "Authorization: Bearer ${token}" -H "Accept: application/json" -F "deployment-name=One Step Approval" -F "enable-duplicate-filtering=false" -F "deploy-changed-only=falses" -F "one_step_approval.bpmnn=@one_step_approval.bpmn"  https://bpm1.aot-technologies.com/camunda/engine-rest/deployment/create
 ```
@@ -100,9 +100,9 @@ Post successful deployment of process, it is ready for use.
      ```      
 ##### 2. Place the generated keystore.ks file and place in cert path ~/certs/keystore.ks. 
 ``` 
-   NOTE: This configuration can be found in /forms-flow-bpm/src/mai/resources    
+   NOTE: This configuration can be found in /forms-flow-bpm/src/main/resources    
 ```  
-##### 3. Include the below given **ssl configuration** in application.yaml present in path /forms-flow-bpm/src/mai/resources.
+##### 3. Include the below **ssl configuration** in application.yaml present in path /forms-flow-bpm/src/main/resources.
 ``` 
 server:
   port: 8443

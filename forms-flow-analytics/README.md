@@ -19,11 +19,11 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ## Project Setup
 
-## Keycloak Setup
+### Keycloak Setup
 
 TO DO
 
-## Environment Configuration
+### Environment Configuration
 
 Environment variables are set in **redash.env** and read by Redash.
 
@@ -40,7 +40,7 @@ Variable name | Meaning | Possible values | Default value |
 `REDASH_SECRET_KEY`|Encryption for datasource configuration|ditto|`redash-selfhosted`
 
 
-## Running the Application
+### Running the Application
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-analytics".
@@ -51,12 +51,12 @@ Variable name | Meaning | Possible values | Default value |
    * Run `docker-compose run --rm server create_db` to setup database andd to create tables.
    * Run `docker-compose up -d` to start.
    
-## Verify the application status
+### Verify the application status
 
    The application should be up and available for use at port defaulted to 7000 in docker-compose.yml (i.e. http://localhost:7000/)
     and register with any valid credentials.
     
-## Configuration of Keycloak SAML Setup
+### Configuration of Keycloak SAML Setup
     
    * Post registration, login to the application with admin credentials.
    * Click the menu icon to the left of the username.

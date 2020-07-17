@@ -15,7 +15,7 @@ To know more about Redash, go to https://github.com/getredash/redash.
 ## Prerequisites
 
 The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
-* There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
+There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
 
 ## Project Setup
 
@@ -43,7 +43,7 @@ Variable name | Meaning | Possible values | Default value |
 ## Step 3 : Running the Application
 
    * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is **forms-flow-analytics**.
+   * Make sure your current working directory is "forms-flow-analytics".
    * Modify the configuration values as needed. For example, you may want to change these:
      
          The Postgres volume location
@@ -62,7 +62,7 @@ Variable name | Meaning | Possible values | Default value |
    * Click the menu icon to the left of the username.
    * Go to section "Authentication" on tab "Settings".
         * Check the option "SAML".
-        * Set the field "SAML Metadata URL" with value of keycloak SAML descriptor URL. Example. "{Keycloak URL}/auth/realms/forms-flow-ai/protocol/saml/descriptor".
-        * Set the field "SAML Entity ID" value to be "forms-flow-analytics".
-        * Set the field "SAML NameID Format" value to be "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress".
+        * Set the field "SAML Metadata URL" with value of keycloak SAML descriptor URL. Example. `{Keycloak URL}/auth/realms/forms-flow-ai/protocol/saml/descriptor`.
+        * Set the field "SAML Entity ID" value to be `forms-flow-analytics`.
+        * Set the field "SAML NameID Format" value to be `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`.
    * Logout and try to login using valid realm user credentials.

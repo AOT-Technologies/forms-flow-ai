@@ -1,6 +1,6 @@
 # **Workflow Engine**
 
-**Forms Flow.AI** leverages Camunda for workflow and decision automation platform.
+**Forms Flow.AI** leverages Camunda for workflow and decision automation.
 It is currently based on camunda version `7.13.0` , Keycloak, Spring boot `2.2.7.RELEASE` and PostgreSQL (latest).
  
 To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identity-keycloak.
@@ -30,7 +30,10 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
     * query-groups
     * query-users
     * view-users
-    
+4. Configure a custom Client Scope named "camunda-rest-api" [to induce Keycloak to include the expected audience claim in delivered tokens](https://github.com/camunda/camunda-bpm-identity-keycloak/tree/master/examples/sso-kubernetes#optional-security-for-the-camunda-rest-api)
+    * Add a mapper with type `Audience` and configure the required audience `camunda-rest-api`
+    * Assign the created Client Scope to our existing Camunda-Identity-Service used for authentication
+
  NOTE: The default admin group "camunda-admin" has been referenced in application.yaml, and this needs to be available for use.
  
 ### Environment Configuration

@@ -59,8 +59,8 @@ Variable name | Meaning | Possible values | Default value |
 ### Configuration of Keycloak SAML Setup
     
    * Post registration, login to the application with admin credentials.
-   * Click the menu icon to the left of the username.
-   * Go to section "Authentication" on tab "Settings".
+   * Click the menu icon to the left of the username and navigate to **Edit Profile**.
+   * Go to tab "Settings", and then navigate to section "Authentication".
         * Check the option "SAML".
         * Set the field "SAML Metadata URL" with value of keycloak SAML descriptor URL. Example. `{Keycloak URL}/auth/realms/forms-flow-ai/protocol/saml/descriptor`.
         * Set the field "SAML Entity ID" value to be `forms-flow-analytics`.

@@ -46,7 +46,13 @@ Variable name | Meaning | Possible values | Default value |
    * Make sure your current working directory is "forms-flow-forms".
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. For example, you may want to change these:
-     
+  ```       
+         The Mongo volume definition
+    volumes:
+      - mdb-data:/data/db/
+      - ./mongodb/data/log/:/var/log/mongodb/
+      - ./mongodb/mongod.conf:/etc/mongod.conf
+  ```
          The value of ROOT user account details (especially if this instance is not just for testing purposes)
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.

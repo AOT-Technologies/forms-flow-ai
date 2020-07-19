@@ -57,6 +57,7 @@ This section elaborates on the properties exposed for tuning the system.
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is forms-flow-bpm.
+   * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. For example, you may want to change these:
         ```  
           The Postgres volume location.          

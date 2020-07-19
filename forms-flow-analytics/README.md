@@ -46,8 +46,10 @@ Variable name | Meaning | Possible values | Default value |
    * Make sure your current working directory is "forms-flow-analytics".
    * Modify the configuration values as needed. For example, you may want to change these:
      
-         The Postgres volume location
-```
+         
+```  
+          The Postgres volume location.          
+          
           For windows, the path of volume to be changed as given below.
            volumes:
             - ./postgres/analytics:/data/postgres

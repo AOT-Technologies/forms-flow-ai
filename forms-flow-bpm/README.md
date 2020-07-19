@@ -63,7 +63,7 @@ This section elaborates on the properties exposed for tuning the system.
           
           For windows, the path of volume to be changed as given below.
            volumes:
-            - ./postgres/analytics:/data/postgres
+            - ./postgres/camunda:/data/postgres
       ```
          The value of Datastore credentials (especially if this instance is not just for testing purposes)
    * Run `docker-compose build` to build.

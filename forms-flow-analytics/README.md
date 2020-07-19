@@ -1,5 +1,5 @@
 # Analytics Engine
-**Forms Flow.AI** leverages Redash for studying and visualization of data.
+**Forms Flow.AI** leverages Redash for getting insight and data visualization.
 
 To know more about Redash, go to https://github.com/getredash/redash.
 
@@ -29,7 +29,7 @@ Environment variables are set in **redash.env** and read by Redash.
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol |`postgres` | http://localhost/redash
+`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://localhost/redash
 `PYTHONUNBUFFERED`|Log buffering setup|1 or 0 | 1
 `REDASH_LOG_LEVEL`|Logging level|`CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET` | ERROR
 `REDASH_REDIS_URL`|Redis URL|Choose your own.|`redis://redis:6379/0`

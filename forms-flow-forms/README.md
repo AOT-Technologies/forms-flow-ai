@@ -33,7 +33,7 @@ Environment variables are set in **.env** and read by FORMIO.
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own|Can be blank|`redis://redis:6379/0`
-`FORMIO_MONGO_PASSWORD`|Mongo Root Password|ditto|`postgresql://postgres@postgres/postgres`
+`FORMIO_MONGO_PASSWORD`|Mongo Root Password|Can be blank|`postgresql://postgres@postgres/postgres`
 `FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 `FORMIO_ROOT_EMAIL`|formio admin login|eg. admin@example.com|`must be set to whatever email address you want formio to have as admin user`
 `FORMIO_ROOT_PASSWORD`|formio admin password|eg.CHANGEME|`must be set to whatever password you want for your formio admin user`
@@ -53,6 +53,7 @@ Variable name | Meaning | Possible values | Default value |
       - ./mongodb/data/log/:/var/log/mongodb/
       - ./mongodb/mongod.conf:/etc/mongod.conf
   ```
+         The value of Mongo database details (especially if this instance is not just for testing purposes)
          The value of ROOT user account details (especially if this instance is not just for testing purposes)
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.

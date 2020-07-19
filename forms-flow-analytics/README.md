@@ -32,7 +32,7 @@ Variable name | Meaning | Possible values | Default value |
 `REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://localhost/redash
 `PYTHONUNBUFFERED`|Log buffering setup|1 or 0 | 1
 `REDASH_LOG_LEVEL`|Logging level|`CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET` | ERROR
-`REDASH_REDIS_URL`|Redis URL|Choose your own.|`redis://redis:6379/0`
+`REDASH_REDIS_URL`|Redis URL|Used on installation to create the database.Choose your own.|`redis://redis:6379/0`
 `REDASH_DATABASE_URL`|Postgres database URL|ditto|`postgresql://postgres@postgres/postgres`
 `POSTGRES_PASSWORD`|Postgres database Password|ditto|`postgres`
 `POSTGRES_HOST_AUTH_METHOD`|Postgres authentication method|ditto|`trust`

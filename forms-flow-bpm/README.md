@@ -58,8 +58,14 @@ This section elaborates on the properties exposed for tuning the system.
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is forms-flow-bpm.
    * Modify the configuration values as needed. For example, you may want to change these:
-        * The Postgres volume location
-        * The value of datastore credentials   
+        ```  
+          The Postgres volume location.          
+          
+          For windows, the path of volume to be changed as given below.
+           volumes:
+            - ./postgres/analytics:/data/postgres
+      ```
+         The value of Datastore credentials (especially if this instance is not just for testing purposes)
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
       

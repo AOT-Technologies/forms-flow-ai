@@ -46,7 +46,7 @@ Variable name | Meaning | Possible values | Default value |
    * Make sure your current working directory is "forms-flow-analytics".
    * Modify the configuration values as needed. For example, you may want to change these:
      
-         The Postgres volume location
+         The Postgres volume location [NOTE: For Windows, the path of volume to be changed as "/data/postgres"]
          The value of REDASH_COOKIE_SECRET (especially if this instance is not just for testing purposes)
    * Run `docker-compose run --rm server create_db` to setup database andd to create tables.
    * Run `docker-compose up -d` to start.

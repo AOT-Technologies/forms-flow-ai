@@ -81,4 +81,5 @@ Steps to get the client adapter configuration from Keycloak:
   * Click the button **+ Create Form** to launch the form designer studio.
   * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
 
+To know more about formio, go to https://help.form.io/userguide/introduction/.
 

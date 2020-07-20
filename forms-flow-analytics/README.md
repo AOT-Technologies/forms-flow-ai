@@ -21,7 +21,37 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ### Keycloak Setup
 
-TO DO
+1. Login to KeyCloak Realm with admin privileges
+2. Configure > Clients > Create
+	3. Client ID = forms-flow-analytics
+	4. Client Protocol = saml
+	5. Click Save
+6. Settings Tab
+	7. Name = forms-flow-analytics
+	8. Description = Redash-Analytics
+	7. Enabled = ON
+	8. Include AuthStatement = ON
+	9. Sign Assertions = ON
+	10. Signature Algorithm = RSA_SHA256
+	11. SAML Signature Key Name = KEY_ID
+	12. Canonicalization Method = EXCLUSIVE_WITH_COMMENTS
+	13. Name ID Format = email 	
+	14. Valid Redirect URIs = {ANALYTICS_URL}/*
+	15. Valid Master SAML Processing URL = {ANALYTICS_URL}/saml/callback?org_slug=default
+	16. Note: All other settings should be turned off and empty
+	17. Click Save
+18. Mappers Tab
+	19. Click Add Builtin
+		a. Click the Add checkbox for X500 surname and X500 givenName
+		b. Click Add selected
+	20. Go Back to Mappers 
+		a. Click Edit on X500 surname
+		b. Change Friendly Name to LastName 
+		c. Click Save
+	21. Go Back to Mappers 
+		a. Click Edit on X500 givenName
+		b. Change Friendly Name to FirstName 
+		c. Click Save
 
 ### Environment Configuration
 

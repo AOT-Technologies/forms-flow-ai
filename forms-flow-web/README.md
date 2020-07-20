@@ -47,8 +47,10 @@ Environment variables are set in **.env** and read by system.
 
 #### Keycloak Configuration
 
-- Update KeyCloak Info (public/config/kc/keycloak.json)
+- Update KeyCloak configuration in file **public/config/kc/keycloak.json**
 
+Steps to get the client adapter configuration from keycloak,
   - Login to keycloak
-  - Select your realm -->Go to clients tab --> Click on your client Id --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
-  - Copy the JSON data and update  public/config/kc/keycloak.json
+  - Select your realm --> Go to clients tab --> Click on your client Id i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
+  - Copy the JSON data
+  - Update the content in file **public/config/kc/keycloak.json**

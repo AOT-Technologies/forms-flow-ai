@@ -1,5 +1,5 @@
 # Analytics Engine
-**Forms Flow.AI** leverages Redash for getting insight and data visualization.
+**FormsFlow.AI** leverages Redash for getting insight and data visualization.
 
 To know more about Redash, go to https://github.com/getredash/redash.
 

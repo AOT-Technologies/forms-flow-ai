@@ -1,5 +1,5 @@
 # Keycloak Configuration
-`Forms Flow.AI` framework can be hooked up with any OpenID Connect compliant Identity Management Server. A typical security model referenced in the current solution is illustrated below assuming *Keycloak* as the identity and access management server.
+`FormsFlow.AI` framework can be hooked up with any OpenID Connect compliant Identity Management Server. A typical security model referenced in the current solution is illustrated below assuming *Keycloak* as the identity and access management server.
 
 Use Case considered
 ---------

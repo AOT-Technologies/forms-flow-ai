@@ -1,5 +1,5 @@
-# Forms Flow.AI
-`Forms Flow.AI` is an open source solution framework developed and maintained by [AOT Technologies](https://www.aot-technologies.com/). The framework combines selected  open source Forms, Workflow, Analytics and Security products with custom-built integration code to provide a seamless solution which provides a viable alternative to expensive, enterprise software products.
+# FormsFlow.AI
+`FormsFlow.AI` is an open source solution framework developed and maintained by [AOT Technologies](https://www.aot-technologies.com/). The framework combines selected  open source Forms, Workflow, Analytics and Security products with custom-built integration code to provide a seamless solution which provides a viable alternative to expensive, enterprise software products.
 
 ## Table of contents
 * [About the Project](#about-the-project)

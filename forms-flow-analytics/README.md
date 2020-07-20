@@ -74,7 +74,7 @@ Variable name | Meaning | Possible values | Default value |
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-analytics".
-   * Modify the configuration values as needed. For example, you may want to change these:
+   * Modify the configuration values as needed. Additionally, you may want to change these
      
          
 ```  

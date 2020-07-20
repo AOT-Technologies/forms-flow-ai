@@ -46,7 +46,7 @@ Variable name | Meaning | Possible values | Default value |
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-webapi".
    * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. For example, you may want to change these:
+   * Modify the configuration values as needed. Additionally, you may want to change these
   ```       
          The Postgres volume definition
     volumes:

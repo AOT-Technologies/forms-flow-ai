@@ -3,7 +3,7 @@
 
 The goal of the REST API is to provide access to all relevant interfaces of the system.
 
-## Table of contents
+## Table of Content
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)

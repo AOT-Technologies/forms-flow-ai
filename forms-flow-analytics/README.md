@@ -3,7 +3,7 @@
 
 To know more about Redash, go to https://github.com/getredash/redash.
 
-## Table of contents
+## Table of Content
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)

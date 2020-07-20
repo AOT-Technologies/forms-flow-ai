@@ -1,11 +1,11 @@
 # Keycloak Configuration
 **FormsFlow.AI** framework can be hooked up with any OpenID Connect compliant Identity Management Server. A typical security model referenced in the current solution is illustrated below assuming *Keycloak* as the identity and access management server.
 
-Use Case considered
+Use Case Considered
 ---------
 A staff user with form designer role is able to create and publish form.io based forms. When an authenricated end user (client) submits a form, staff users with reviewer role can approve or reject the submission
 
-Keycloak setup
+Keycloak Setup
 ----------
 - Create a realm with appropriate naming convention of choice, say `forms-flow-ai`
 - Create 2 clients `forms-flow-bpm` and `forms-flow-web`

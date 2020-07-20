@@ -3,7 +3,7 @@
 
 To know more about FORMIO, go to https://github.com/formio/formio.
 
-## Table of contents
+## Table of Content
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)

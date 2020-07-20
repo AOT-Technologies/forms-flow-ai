@@ -1,10 +1,10 @@
-# **Web Application**
+# FormsFlow.AI Web Application
 
 **FormsFlow.AI** delivers progressive web application with React version `16.3` and `create-react-app`
 
 A React library for rendering out forms based on the Form.io platform.
 
-## Table of contents
+## Table of Content
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)

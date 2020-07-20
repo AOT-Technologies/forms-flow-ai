@@ -1,7 +1,7 @@
 # FormsFlow.AI
 **FormsFlow.AI** is an open source solution framework developed and maintained by [AOT Technologies](https://www.aot-technologies.com/). The framework combines selected  open source Forms, Workflow, Analytics and Security products with custom-built integration code to provide a seamless solution which provides a viable alternative to expensive, enterprise software products.
 
-## Table of contents
+## Table of Content
 * [About the Project](#about-the-project)
   * [Project dependencies](#project-dependencies)
   * [Project tree](#project-tree)
@@ -192,7 +192,7 @@ The products are installed with a default configuration so that the base system 
 * All components are installed by default onto a single server. Distribution across multiple servers would be possible but beyond the scope of this document
 * This server  can be a local PC or Mac provided it is 64-bit with at least 16GB RAM and 100GB HDD
 
-### Default settings
+### Default Settings
 
 By default the following component settings are configured. These could be changed to other components if needed but it is beyound the scope of this document 
 * postgres db is used for the Camunda server
@@ -231,7 +231,7 @@ Variable name | Meaning | Possible values | Default value |
 
 
 
-####  KEYCLOAK
+####  Keycloak
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `KEYCLOAK_URL`| URL to your Keycloak server|eg. https://iam.aot-technologies.com| must be set to your Keycloak server
@@ -253,7 +253,7 @@ Variable name | Meaning | Possible values | Default value |
 `JWT_OIDC_CACHING_ENABLED`|JWT caching||`True`
 `JWT_OIDC_JWKS_CACHE_TIMEOUT`| How long to cache JWKS values before rechecking server||`300`
 
-####  form.io 
+#### form.io 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `ROOT_EMAIL`|form.io admin login |eg. user@gov.bc.ca | must be set to whatever email address you want form.io to have as admin user|

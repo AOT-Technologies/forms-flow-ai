@@ -2,16 +2,16 @@
 
 
 
-## Table of contents
+## Table of Content
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
-  * [Step 4 : Verify the application status](#verify-the-application-status) 
+  * [Step 4 : Verify the Application Status](#verify-the-application-status) 
 * [How to Create your First Form](#how-to-create-your-first-form)
 * [How to Create your First Workflow Process](#how-to-create-your-first-workflow-process)
-* [How to associate the form with Workflow process](#how-to-associate-the-form-with-workflow-process)
+* [How to Associate the Form with Workflow Process](#how-to-associate-the-form-with-workflow-process)
 
 
 ## Prerequisites
@@ -95,7 +95,7 @@ Listed variables are used by **forms-flow-web**
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
   
-### Verify the application status
+### Verify the Application Status
   * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
   * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/
   * FormIO should be up and available for use at port defaulted to 3001 i.e. http://localhost:3001/
@@ -114,7 +114,7 @@ To know more about formio, go to https://help.form.io/userguide/introduction/.
 
 To know about camunda, go to  https://docs.camunda.org/manual/7.13/
 
-### How to associate the form with Workflow process
+### How to Associate the Form with Workflow Process
 
 
 

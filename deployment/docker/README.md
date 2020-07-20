@@ -1,5 +1,7 @@
 # FormsFlow.AI
 
+
+
 ## Table of contents
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
@@ -7,6 +9,10 @@
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Verify the application status](#verify-the-application-status) 
+* [How to Create your First Form](#how-to-create-your-first-form)
+* [How to Create your First Workflow Process](#how-to-create-your-first-workflow-process)
+* [How to associate the form with Workflow process](#how-to-associate-the-form-with-workflow-process)
+
 
 ## Prerequisites
 
@@ -71,34 +77,33 @@ Listed variables are used by **forms-flow-web**
  `REACT_APP_INSIGHTS_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
  `REACT_APP_WEB_BASE_URL`|FormsFlow Rest API URI||`http://localhost:5000/api`
  `EMAIL_NOTIFICATION_GROUP`|Group to to which to send Email notifications|Must match keycloak group|`formsflow-reviewer`
-
-#### Keycloak Configuration
-
-- Update KeyCloak configuration in file **public/config/kc/keycloak.json** present on **forms-flow-web**
-
-Steps to get the client adapter configuration from keycloak,
-  - Login to keycloak
-  - Select your realm --> Go to clients tab --> Click on your client Id i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
-  - Copy the JSON data
-  - Update the content in file **public/config/kc/keycloak.json** present on **forms-flow-web**
-
-
+        
 ### Running the Application
 
-#### Using Docker
    * Make sure you have a Docker machine up and running.
    * Start the analytics server by following the instructions given on  [README](../../forms-flow-analytics/README.md)
    * Start the FormIO server by following the instructions given on  [README](../../forms-flow-forms/README.md)
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. For example, you may want to change these:
-  ```       
-         The Postgres volume definition
-    volumes:
-       - ./postgres/webapi:/data/postgres
-  ```
-         The value of Postgres database details (especially if this instance is not just for testing purposes)
+   * Modify the configuration values as needed.  Additionally, you may want to change these:     
+        * The value of Postgres database details (especially if this instance is not just for testing purposes)
+        * The Postgres volume definition [This may apply for windows based setup. Refer the README of individual modules.]
+                    *  [forms-flow-analytics](../../forms-flow-analytics/README.md)
+                    *  [forms-flow-forms](../../forms-flow-forms/README.md)
+                    *  [forms-flow-bpm](../../forms-flow-bpm/README.md)
+                    *  [forms-flow-webapi](../../forms-flow-webapi/README.md)   
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
   
+### Verify the application status
+  * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
+  * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/
+  * FormIO should be up and available for use at port defaulted to 3001 i.e. http://localhost:3001/
+  * FormsFlow Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
+  * FormsFlow web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
+  
+### How to Create your First Form
+ 
+### How to Create your First Workflow Process
 
+### How to associate the form with Workflow process

@@ -49,7 +49,10 @@ The project was initiated by AOT Technologies as a means of addressing the gener
 
 ### Project tree
 
-. * [README.md](./README.md) This file
+.
+ * [README.md](./README.md) This file
+ * [deployment](./deployment) Deployment of complete framework
+   * [README](./deployment/README)
  * [forms-flow-analytics](./forms-flow-analytics) ReDash analytics components
    * [README](./forms-flow-analytics/README)
  * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
@@ -60,17 +63,10 @@ The project was initiated by AOT Technologies as a means of addressing the gener
    * [README](./forms-flow-forms/README)
  * [forms-flow-idm](./forms-flow-idm) Identity Management (Keycloak)
    * [README](./forms-flow-idm/README)
- * [forms-flow-web](./forms-flow-web) React Integration client
+ * [forms-flow-web](./forms-flow-web) Forms Flow Integration client
    * [README](./forms-flow-web/README)
- * [mongodb](./mongodb) Mongodb database for form.io integration
-   * [README](./mongodb/README)
- * [openshift](./openshift)  Openshift deploynent
-   * [README](./openshift/README)
- * [postgres](./postgres) Postgres database for BPM integration
-   * [README](./postgres/README)
-* [nginx](./nginx) nginx front-end web server
-   * [README](./nginx/README)
-
+* [forms-flow-webapi](./forms-flow-webapi) REST API to FormsFlow integration components
+   * [README](./forms-flow-webapi/README)
 
 Features 
 ------------------
@@ -90,26 +86,25 @@ Features
 
 See diagram 
 
-![FormsFlow AI Component Architecture](./images/formsflow-ai-components.png)
+![FormsFlow AI Component Architecture](./.images/formsflow-ai-components.png)
+
 ### Components 
 
 The components of the system are :
 #### Formsflow UI
-Browser-based React web-app (this project)
+Browser-based React integration web UI
 Most of the day-to-day end-user and review tasks are performed from this application,  built specifically to act as a common UI combining forms, workflow and analytics functionality. The web-application is written as a [progressive](https://en.wikipedia.org/wiki/Progressive_web_application) app with potential for offline data-entry. FormsFlow UI accesses the individual system component data through native API's using OIDC or SAML access tokens.
 
 #### Redash Admin UI
 The native admin interface to ReDash (bundled and unchanged). Use this to build analytics dashboards.
 #### Redash API
 The REST interface to the Redash core. Bundled and unchanged
-#### Form.io admin UI
-The native admin interface to form.io (bundled and unchanged ). This is also iframed into the Formsflow UI to allow design of forms without leaving the main application.
 #### Form.io API
 The REST interface to the form.io core
 #### Camunda admin UI
 The native admin interface to Camunda (bundled and unchannged) . Use this to define workflows and to manage workflow tasks as an admin.
-#### Python API
-API providing business logic around Formsflow Postgres DB (this project). This API is used extensiveoy by the FormsFlow UI synchronise/maintain state/extend functionality/integrate .
+#### REST API
+API providing business logic around Formsflow Postgres DB. This API is used extensively by the FormsFlow UI synchronise/maintain state/extend functionality/integrate .
 #### Nginx Web server
 Webserver providing reverse-proxy redirection and to components. ( bundled and configured ) 
 Keycloak Identity management server - Your Keycloak server. Set up Realms, Users, Groups, Service accounts, Mappings.(Not provided)
@@ -180,7 +175,7 @@ These users are responsible for accessing the native capabilities of the embedde
 
 
 
-## Installation and configuration
+## Deployment and configuration
  The framework installs the products  mentioned above (with the exception of Keycloak which must either be pre-existing or installed and configured in advance).
 
 The products are installed with a default configuration so that the base system works "out-the-box", however the advanced configuration and management of the products requires the relevant product documentation. 
@@ -329,8 +324,19 @@ Analytics-Redash
   
 ## License
 
-FormsFlow-AI is licensed under the terms of the GPL Open Source
-license and is available for free.
+Copyright 2020 AOT-Technoogies
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
 ## Links
 

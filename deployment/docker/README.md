@@ -2,16 +2,16 @@
 
 
 
-## Table of contents
+## Table of Content
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
-  * [Step 4 : Verify the application status](#verify-the-application-status) 
+  * [Step 4 : Verify the Application Status](#verify-the-application-status) 
 * [How to Create your First Form](#how-to-create-your-first-form)
 * [How to Create your First Workflow Process](#how-to-create-your-first-workflow-process)
-* [How to associate the form with Workflow process](#how-to-associate-the-form-with-workflow-process)
+* [How to Associate the Form with Workflow Process](#how-to-associate-the-form-with-workflow-process)
 
 
 ## Prerequisites
@@ -22,7 +22,7 @@ The system is deployed and run using [docker-compose](https://docker.com) and [D
 
 ### Keycloak Setup
 
-TO DO
+Follow the instructions given on [link](./keycloak-setup-update.md)
 
 ### Environment Configuration
 
@@ -36,23 +36,23 @@ Variable name | Meaning | Possible values | Default value |
 `WEB_API_POSTGRES_PASSWORD`|FormsFlow database postgres password|ditto|`changeme`
 `WEB_API_POSTGRES_DB`|FormsFlow database name||`formsflow`
 `WEB_API_DATABASE_URL`|JDBC DB Connection URL for FormsFlow||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/formsflow`
-`KEYCLOAK_TOKEN_URL`|Keycloak OIDC token API for clients|Plug in your keycloak base url and realm name|`{Keycloak URL}/auth/realms/<realm>/protocol/openid-connect/token`
-`KEYCLOAK_JWT_OIDC_CONFIG`|Path to Keycloak well-know config for realm|Plug in your keycloak URL plus realm|`{Keycloak URL}/auth/realms/<REALM>/.well-known/openid-configuration`
+`KEYCLOAK_TOKEN_URL`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`{Keycloak URL}/auth/realms/<realm>/protocol/openid-connect/token`
+`KEYCLOAK_JWT_OIDC_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`{Keycloak URL}/auth/realms/<REALM>/.well-known/openid-configuration`
 `KEYCLOAK_JWT_OIDC_JWKS_URI`|Keycloak JWKS URI|Plug in Keycloak base url plus realm|`{Keycloak URL}/auth/realms/<REALM>/protocol/openid-connect/certs`
 `KEYCLOAK_JWT_OIDC_ISSUER`|The issuer of JWT's from Keycloak for your realm|Plug in your realm and Keycloak base url|`{Keycloak URL}/auth/realms/forms-flow-ai`
-`KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|must be set to your keycloak client id
-`KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to yourkeycloak client secret
-`KEYCLOAK_WEB_CLIENTID`|Client ID for FormsFlow to register with Keycloak|eg. forms-flow-web|must be set to your keycloak client id
+`KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|must be set to your Keycloak client id
+`KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret
+`KEYCLOAK_WEB_CLIENTID`|Client ID for FormsFlow to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
 `CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda/engine-rest/`
 
 Listed variables are used by **forms-flow-bpm**
 
  Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `KEYCLOAK_URL`| URL to your keycloak server |eg. https://iam.aot-technologies.com | must be set to your keycloak serve
- `KEYCLOAK_URL_REALM`|	The Keyvcloak realm to use|eg. forms-flow-ai | must be set to your keycloak realm
- `KEYCLOAK_BPM_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | must be set to your keycloak client id
- `KEYCLOAK_BPM_CLIENTSECRET`|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to yourkeycloak client secret
+ `KEYCLOAK_URL`| URL to your Keycloak server |eg. https://iam.aot-technologies.com | must be set to your Keycloak serve
+ `KEYCLOAK_URL_REALM`|	The Keyvcloak realm to use|eg. forms-flow-ai | must be set to your Keycloak realm
+ `KEYCLOAK_BPM_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | must be set to your Keycloak client id
+ `KEYCLOAK_BPM_CLIENTSECRET`|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret
  `CAMUNDA_JDBC_URL`|Postgres JDBC DB Connection URL|Used on installation to create the database.Choose your own|`jdbc:postgresql://forms-flow-bpm-db:5432/postgres`
  `CAMUNDA_JDBC_DRIVER`|Postgres JDBC Database Driver||`org.postgresql.Driver`
  `CAMUNDA_POSTGRES_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
@@ -76,7 +76,7 @@ Listed variables are used by **forms-flow-web**
  `REACT_APP_INSIGHT_API_BASE`|Insight Api base end-point||`http://localhost:7000`
  `REACT_APP_INSIGHTS_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
  `REACT_APP_WEB_BASE_URL`|FormsFlow Rest API URI||`http://localhost:5000/api`
- `EMAIL_NOTIFICATION_GROUP`|Group to to which to send Email notifications|Must match keycloak group|`formsflow-reviewer`
+ `EMAIL_NOTIFICATION_GROUP`|Group to to which to send Email notifications|Must match Keycloak group|`formsflow-reviewer`
         
 ### Running the Application
 
@@ -95,7 +95,7 @@ Listed variables are used by **forms-flow-web**
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
   
-### Verify the application status
+### Verify the Application Status
   * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
   * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/
   * FormIO should be up and available for use at port defaulted to 3001 i.e. http://localhost:3001/
@@ -103,7 +103,20 @@ Listed variables are used by **forms-flow-web**
   * FormsFlow web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   
 ### How to Create your First Form
+  * Login to **http://localhost:3000/** using valid **designer** credentials
+  * Navigate to menu **Forms**
+  * Click the button **+ Create Form** to launch the form designer studio.
+  * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
+
+To know more about formio, go to https://help.form.io/userguide/introduction/.
  
 ### How to Create your First Workflow Process
 
-### How to associate the form with Workflow process
+* You would need the Camunda Modeler to design your BPMN: https://camunda.com/download/modeler/
+* To learn about designing your BPMN, go to https://docs.camunda.org/get-started/quick-start/service-task/
+* To learn about deploying your BPMN, go to https://docs.camunda.org/get-started/quick-start/deploy/. Note that your default endpoint for Camunda's REST API is http://localhost:8000/camunda/engine-rest
+
+### How to Associate the Form with Workflow Process
+
+
+

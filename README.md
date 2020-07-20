@@ -1,7 +1,7 @@
 # FormsFlow.AI
 **FormsFlow.AI** is an open source solution framework developed and maintained by [AOT Technologies](https://www.aot-technologies.com/). The framework combines selected  open source Forms, Workflow, Analytics and Security products with custom-built integration code to provide a seamless solution which provides a viable alternative to expensive, enterprise software products.
 
-## Table of contents
+## Table of Content
 * [About the Project](#about-the-project)
   * [Project dependencies](#project-dependencies)
   * [Project tree](#project-tree)
@@ -187,7 +187,7 @@ The products are installed with a default configuration so that the base system 
 * All components are installed by default onto a single server. Distribution across multiple servers would be possible but beyond the scope of this document
 * This server  can be a local PC or Mac provided it is 64-bit with at least 16GB RAM and 100GB HDD
 
-### Default settings
+### Default Settings
 
 By default the following component settings are configured. These could be changed to other components if needed but it is beyound the scope of this document 
 * postgres db is used for the Camunda server
@@ -226,21 +226,21 @@ Variable name | Meaning | Possible values | Default value |
 
 
 
-####  KEYCLOAK
+####  Keycloak
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`KEYCLOAK_URL`| URL to your keycloak server|eg. https://iam.aot-technologies.com| must be set to your keycloak server
-`KEYCLOAK_URL_REALM`|The Keyvcloak realm to use| eg. form-test| must be set to your keycloak realm
-`KEYCLOAK_CLIENTID`|Your Keycloak Client ID within the realm|eg. forms-flow-bpm | must be set to your keycloak client id
-`KEYCLOAK_CLIENTSECRET`|The secret for your Keycloak Client Id| eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12 | must be set to yourkeycloak client secret
+`KEYCLOAK_URL`| URL to your Keycloak server|eg. https://iam.aot-technologies.com| must be set to your Keycloak server
+`KEYCLOAK_URL_REALM`|The Keyvcloak realm to use| eg. form-test| must be set to your Keycloak realm
+`KEYCLOAK_CLIENTID`|Your Keycloak Client ID within the realm|eg. forms-flow-bpm | must be set to your Keycloak client id
+`KEYCLOAK_CLIENTSECRET`|The secret for your Keycloak Client Id| eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12 | must be set to your Keycloak client secret
 `REACT_APP_CLIENT_ROLE`|The role name used for client users||`formsflow-client`
 `REACT_APP_STAFF_DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
 `REACT_APP_STAFF_REVIEWER_ROLE`|The role name used for reviewer users||`formsflow-reviewer`
 `STAFF_ANALYST_ROLE`|The role name used for analyst/redash users||`formsflow-analyst`
 `STAFF_BPM_ROLE`|The role name used for workflow designer users||`formsflow-bpm`
 `REACT_APP_KEYCLOAK_CLIENT`|Keycloak client name for FormsFlowUI||forms-flow-web
-`BPM_TOKEN_API`|Keycloak OIDC token API for clients|Plug in your keycloak base url and realm name|`<KEYCLOAK-BASE-URL>/auth/realms/<realm>/protocol/openid-connect/token`
-`JWT_OIDC_WELL_KNOWN_CONFIG`|Path to Keycloak well-know config for realm|Plug in your keycloak URL plus realm|`<KEYCLOAK-BASE-URL>/auth/realms/<REALM>/.well-known/openid-configuration`
+`BPM_TOKEN_API`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`<KEYCLOAK-BASE-URL>/auth/realms/<realm>/protocol/openid-connect/token`
+`JWT_OIDC_WELL_KNOWN_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`<KEYCLOAK-BASE-URL>/auth/realms/<REALM>/.well-known/openid-configuration`
 `JWT_OIDC_ALGORITHMS`|JWT signing algorithms||`RS256`
 `JWT_OIDC_JWKS_URI`|Keycloak JWKS URI|Plug in Keycloakd base url plus realm| `<KEYCLOAK-BASE-URL>/auth/realms/<REALM>/protocol/openid-connect/certs`
 `JWT_OIDC_ISSUER`| The issuer of JWT's from Keycloak for your realm| Plug in your realm and Keycloak base url | | `<KEYCLOAK-BASE-URL>/auth/realms/<REALM>`
@@ -248,7 +248,7 @@ Variable name | Meaning | Possible values | Default value |
 `JWT_OIDC_CACHING_ENABLED`|JWT caching||`True`
 `JWT_OIDC_JWKS_CACHE_TIMEOUT`| How long to cache JWKS values before rechecking server||`300`
 
-####  form.io 
+#### form.io 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `ROOT_EMAIL`|form.io admin login |eg. user@gov.bc.ca | must be set to whatever email address you want form.io to have as admin user|
@@ -269,7 +269,7 @@ Variable name | Meaning | Possible values | Default value |
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
- `REACT_APP_EMAIL_SUBMISSION_GROUP`|Group to to which to send Email notifications|Must match keycloak group| `formsflow-reviewer`
+ `REACT_APP_EMAIL_SUBMISSION_GROUP`|Group to to which to send Email notifications|Must match Keycloak group| `formsflow-reviewer`
 
 #### ReDash
 Variable name | Meaning | Possible values | Default value |

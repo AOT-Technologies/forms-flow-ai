@@ -1,17 +1,17 @@
-# **Workflow Engine**
+# Workflow Engine
 
 **FormsFlow.AI** leverages Camunda for workflow and decision automation.
 It is currently based on camunda version `7.13.0` , Keycloak, Spring boot `2.2.7.RELEASE` and PostgreSQL (latest).
  
 To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identity-keycloak.
 
-## Table of contents
+## Table of Content
 * [Prerequisites](#prerequisites)
 * [Project setup](#project-setup)
   * [Step 1 : Keycloak Configuration](#keycloak-configuration)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Build and Deploy](#build-and-deploy)
-  * [Step 4 : Verify the application status](#verify-the-application-status)
+  * [Step 4 : Verify the Application Status](#verify-the-application-status)
 * [How to Deploy Process](#how-to-deploy-process)
 * [How to Enable SSL](#how-to-enable-ssl)
 
@@ -24,7 +24,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ### Keycloak Configuration
 
-1. Login to keycloak
+1. Login to Keycloak
 2. Select your realm --> Go to clients tab --> Create a new service account enabled client 
 3. Configure the client for protocol "openid-connect", and configure the following listed roles under "Service Client Roles":
     * query-groups
@@ -43,10 +43,10 @@ This section elaborates on the properties exposed for tuning the system.
  
  Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `KEYCLOAK_URL`| URL to your keycloak server |eg. https://iam.aot-technologies.com | must be set to your keycloak serve
- `KEYCLOAK_URL_REALM`|	The Keyvcloak realm to use|eg. forms-flow-ai | must be set to your keycloak realm
- `KEYCLOAK_BPM_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | must be set to your keycloak client id
- `KEYCLOAK_BPM_CLIENTSECRET`|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to yourkeycloak client secret
+ `KEYCLOAK_URL`| URL to your Keycloak server |eg. https://iam.aot-technologies.com | must be set to your Keycloak serve
+ `KEYCLOAK_URL_REALM`|	The Keyvcloak realm to use|eg. forms-flow-ai | must be set to your Keycloak realm
+ `KEYCLOAK_BPM_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | must be set to your Keycloak client id
+ `KEYCLOAK_BPM_CLIENTSECRET`|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret
  `CAMUNDA_JDBC_URL`|Postgres JDBC DB Connection URL|Used on installation to create the database.Choose your own|`jdbc:postgresql://forms-flow-bpm-db:5432/postgres`
  `CAMUNDA_JDBC_DRIVER`|Postgres JDBC Database Driver||`org.postgresql.Driver`
  `CAMUNDA_POSTGRES_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
@@ -70,7 +70,7 @@ This section elaborates on the properties exposed for tuning the system.
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
       
-### Verify the application status
+### Verify the Application Status
 
    The application should be up and available for use at port defaulted to 8000 in application.yaml http://localhost:8000/camunda/
    

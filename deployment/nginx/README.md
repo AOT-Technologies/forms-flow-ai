@@ -1,5 +1,5 @@
-# Hosted server setup
-## Typical setup
+# Hosted Server Setup
+## Typical Setup
 
 A common deployment option for the FormsFlow.IO solution is a cloud or hosted solution. Many of the cloud-based solutions have proprietory web-server/storage/networking etc. which is beyond the scope of this project (with the exception of Openshift where we do have more detailed deployment instructions) .
 

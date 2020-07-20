@@ -3,7 +3,7 @@
 
 To know more about FORMIO, go to https://github.com/formio/formio.
 
-## Table of contents
+## Table of Content
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
@@ -45,7 +45,7 @@ Variable name | Meaning | Possible values | Default value |
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-forms".
    * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. For example, you may want to change these:
+   * Modify the configuration values as needed. Additionally, you may want to change these
   ```       
          The Mongo volume definition
     volumes:

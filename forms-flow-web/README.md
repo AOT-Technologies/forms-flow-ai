@@ -1,30 +1,65 @@
-# **forms-flow-web**
+# FormsFlow.AI Web Application
 
-**FormsFlow.AI** delivers progressive web application with React version >= 16.3 and `create-react-app`
+**FormsFlow.AI** delivers progressive web application with React version `16.3` and `create-react-app`
 
 A React library for rendering out forms based on the Form.io platform.
 
-## Table of contents
+## Table of Content
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
-     * Using Docker
-     * Using npm
-  * [Step 4 : Verify the application status](#verify-the-application-status)
-* [How to Create your First Form](#how-to-create-your-first-form)
+     * [Using Docker](#using-docker)
+     * [Using npm](#using-npm)
+  * [Step 4 : Verify the Application Status](#verify-the-application-status)
+* [How to Create Your First Form](#how-to-create-your-first-form)
 
 ## Prerequisites
 
 The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available.
 There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
 
-## Project setup
+## Project Setup
 
 ### Keycloak Setup
 
-TO DO
+1. Login to KeyCloak Realm with admin privileges  
+2. Configure > Clients > Create  
+	3. Client ID = forms-flow-web  
+	4. Client Protocol = openid-connect  
+	5. Click Save  
+6. Settings Tab  
+	7. Name = forms-flow-web  
+	8. Description = React based FormIO web components  
+	7. Access Type = public  
+	8. Standard Flow Enabled = ON  
+	9. Direct Access Grants Enabled = ON  
+	10. Valid Root URL  
+	11. Valid Redirect URIs  
+	12. Valid Base URL  
+	13. Valid Admin URL  
+	14. Valid Web Origins  
+	15. Click Save  
+16. Roles Tab  
+	17. Click Add Role  
+		a. Role Name = formsflow-client  
+		b. Click Save  
+	18. Click Add Role  
+		a. Role Name = formsflow-reviewer  
+		b. Click Save  
+	19. Click Add Role  
+		a. Role Name = formsflow-designer  
+		b. Click Save  
+20. Configure > Clients Scope > Roles > Mappers > Create Update the form as  
+    21. Name- Role  
+    22. Mapper Type - User Client Role  
+    23. Client ID - forms-flow-web  
+    24. Token Claim role - role  
+    25. Add to ID token -yes  
+    27. Add to userinfo - yes  
+    28. Click Save  
+
 
 ### Environment Configuration
 
@@ -49,11 +84,11 @@ Environment variables are set in **.env** and read by system.
 
 #### Keycloak Configuration
 
-- Update KeyCloak configuration in file **public/config/kc/keycloak.json**
+- Update Keycloak configuration in file **public/config/kc/keycloak.json**
 
-Steps to get the client adapter configuration from keycloak,
-  - Login to keycloak
-  - Select your realm --> Go to clients tab --> Click on your client Id i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
+Steps to get the client adapter configuration from Keycloak:
+  - Login to Keycloak
+  - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
   - Copy the JSON data
   - Update the content in file **public/config/kc/keycloak.json**
 
@@ -71,14 +106,15 @@ Steps to get the client adapter configuration from keycloak,
    * Run `npm install` to install dependencies and build
    * Run `npm start` to start.
 
-### Verify the application status
+### Verify the Application Status
 
    The application should be up and available for use at port defaulted to 3000 in application.yaml http://localhost:3000/
 
-### How to Create your First Form
+### How to Create Your First Form
   * Login to **http://localhost:3000/** using valid **designer** credentials
   * Navigate to menu **Forms**
   * Click the button **+ Create Form** to launch the form designer studio.
   * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
 
+To know more about formio, go to https://help.form.io/userguide/introduction/.
 

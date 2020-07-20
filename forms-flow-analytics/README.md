@@ -3,7 +3,7 @@
 
 To know more about Redash, go to https://github.com/getredash/redash.
 
-## Table of contents
+## Table of Content
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
@@ -21,7 +21,37 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ### Keycloak Setup
 
-TO DO
+1. Login to KeyCloak Realm with admin privileges  
+2. Configure > Clients > Create  
+	3. Client ID = forms-flow-analytics  
+	4. Client Protocol = saml  
+	5. Click Save  	
+6. Settings Tab  
+	7. Name = forms-flow-analytics  
+	8. Description = Redash-Analytics  
+	7. Enabled = ON  
+	8. Include AuthStatement = ON  
+	9. Sign Assertions = ON  
+	10. Signature Algorithm = RSA_SHA256  
+	11. SAML Signature Key Name = KEY_ID  
+	12. Canonicalization Method = EXCLUSIVE_WITH_COMMENTS  
+	13. Name ID Format = email    	
+	14. Valid Redirect URIs = {ANALYTICS_URL}/*  
+	15. Valid Master SAML Processing URL = {ANALYTICS_URL}/saml/callback?org_slug=default  
+	16. Note: All other settings should be turned off and empty  
+	17. Click Save  
+18. Mappers Tab  
+	19. Click Add Builtin  
+		a. Click the Add checkbox for X500 surname and X500 givenName  
+		b. Click Add selected  
+	20. Go Back to Mappers   
+		a. Click Edit on X500 surname  
+		b. Change Friendly Name to LastName   
+		c. Click Save  
+	21. Go Back to Mappers    
+		a. Click Edit on X500 givenName  
+		b. Change Friendly Name to FirstName   
+		c. Click Save  
 
 ### Environment Configuration
 
@@ -44,7 +74,7 @@ Variable name | Meaning | Possible values | Default value |
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-analytics".
-   * Modify the configuration values as needed. For example, you may want to change these:
+   * Modify the configuration values as needed. Additionally, you may want to change these
      
          
 ```  
@@ -69,7 +99,7 @@ Variable name | Meaning | Possible values | Default value |
    * Click the menu icon to the left of the username and navigate to **Edit Profile**.
    * Go to tab "Settings", and then navigate to section "Authentication".
         * Check the option "SAML".
-        * Set the field "SAML Metadata URL" with value of keycloak SAML descriptor URL. Example. `{Keycloak URL}/auth/realms/forms-flow-ai/protocol/saml/descriptor`.
+        * Set the field "SAML Metadata URL" with value of Keycloak SAML descriptor URL. Example. `{Keycloak URL}/auth/realms/forms-flow-ai/protocol/saml/descriptor`.
         * Set the field "SAML Entity ID" value to be `forms-flow-analytics`.
         * Set the field "SAML NameID Format" value to be `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`.
    * Logout and try to login using valid realm user credentials.

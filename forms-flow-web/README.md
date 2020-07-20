@@ -1,86 +1,54 @@
 # **forms-flow-web**
 
+**FormsFlow.AI** delivers progressive web application with React version >= 16.3 and `create-react-app`
+
+A React library for rendering out forms based on the Form.io platform.
+
 ## Table of contents
 * [Prerequisites](#prerequisites)
-* [Project setup](#project-setup)
-    * [Step 1 : Environment Configuration](#environment-configuration)
-    * [Step 2 : Keycloak Configuration](#keycloak-configuration)
-    * [Step 3 : Build and Deploy](#build-and-deploy)
-
+* [Project Setup](#project-setup)
+  * [Step 1 : Keycloak Setup](#keycloak-setup)
+  * [Step 2 : Environment Configuration](#environment-configuration)
+  * [Step 3 : Running the Application](#running-the-application)
+  * [Step 4 : Verify the application status](#verify-the-application-status)
+  * [Step 5 : Configuration of Keycloak SAML Setup](#configuration-of-keycloak-saml-setup)
 
 ## Prerequisites
 
-- based on React version >= 16.3 and `create-react-app`
+The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available.
+There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
+
 ## Project setup
+
+### Keycloak Setup
+
+TO DO
 
 ### Environment Configuration
 
+Environment variables are set in **.env** and read by system.
 
-NOTE: There are two methods for running this application. Using docker container or run locally using npm
+ Variable name | Meaning | Possible values | Default value |
+ --- | --- | --- | ---
+ `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
+ `CLIENT_ROLE`|	The role name used for client users|| formsflow-client
+ `CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the value from form.io resource **/roles**
+ `REVIEWER_ROLE`|The role name used for staff/reviewer users||`formsflow-reviewer`
+ `REVIEWER_ROLE_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|must get the value from form.io resource **/roles**
+ `DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
+ `DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the value from form.io resource **/roles**
+ `ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the value from form.io resource **/roles**
+ `USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource **/user**
+ `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://localhost:3001`
+ `REACT_APP_INSIGHT_API_BASE`|Insight Api base end-point||`http://localhost:7000`
+ `REACT_APP_INSIGHTS_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
+ `REACT_APP_WEB_BASE_URL`|FormsFlow Rest API URI||`http://localhost:5000/api`
+ `EMAIL_NOTIFICATION_GROUP`|Group to to which to send Email notifications|Must match keycloak group|`formsflow-reviewer`
 
-    Using docker
--   Modify docker-compose.yml in the root folder with relevant data
-
-    Using npm
--   Create a .env file in root folder with using sample.env data or alternatively use public/config/config.sample.js
--   Change .env data with relevant data (For compile time  env binding on build) or alternatively use public/config/config.js (For Runtime env binding as needed in openshift).
-    | Variables                        | Description                              | Value Obtained From
-    | -------------------------------- |:----------------------------------------:| :-----------------------------------------------
-    | NODE_ENV                         | Defines project level configuration      | Possible values : development, test, production
-    | REACT_APP_CLIENT_ROLE            | Keycloak role name for client            | Keycloak ->Web Client--> Roles -> Client role name
-    | REACT_APP_STAFF_DESIGNER_ROLE    | Keycloak role name for designer          | Keycloak ->Web Client--> Roles -> Designer role name
-    | REACT_APP_STAFF_REVIEWER_ROLE    | Keycloak role name for reviewer          | Keycloak ->Web Client--> Roles -> Reviewer role name
-    | REACT_APP_CLIENT_ID              | Formio client role mapping id            |
-    | REACT_APP_STAFF_DESIGNER_ID      | Formio designer role mapping id          |
-    | REACT_APP_STAFF_REVIEWER_ID      | Formio reviewer role mapping id          |
-    | REACT_APP_ANONYMOUS_ID           | Formio anonymous role mapping id         |
-    | REACT_APP_USER_RESOURCE_FORM_ID  | Formio user resource form id             |
-    | REACT_APP_EMAIL_SUBMISSION_GROUP | Submission group in email notification   | Keycloak role for submission
-    | REACT_APP_API_SERVER_URL         | Form-IO API-URL                          |
-    | REACT_APP_KEYCLOAK_CLIENT        | Keycloak client name                     |
-
-- To get Form-IO authorization IDs use the follwing steps
-  - Get token
-    - request POST http://localhost:3001/user/login
-    {
-    "data": {
-    "email": {{email}},
-    "password": {{password}}
-    }
-    }
-    - Use the token from x-jwt-token header in the result header for the following steps
-
-  - Get authorization role IDS
-    - request GET Form-IO-API-URL/role
-        x-jwt-token:{{token}}
-    - Update appropriate role env values: REACT_APP_CLIENT_ID(client role _id),REACT_APP_STAFF_REVIEWER_ID(reviewer role    _id),REACT_APP_STAFF_DESIGNER_ID(Administrator role _id)
-
-- To get Form-IO User Form_ID for env variable REACT_APP_USER_RESOURCE_FORM_ID
-  - Get User Form_ID
-    - request GET Form-IO-API-URL/user
-      use Form_ID = "_id" from the result
-
-
-### Keycloak Configuration
+#### Keycloak Configuration
 
 - Update KeyCloak Info (public/config/kc/keycloak.json)
 
   - Login to keycloak
   - Select your realm -->Go to clients tab --> Click on your client Id --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
   - Copy the JSON data and update  public/config/kc/keycloak.json
-
-
-## Build and Deploy
-
-For docker
-- docker-compose build
-- docker-compose up
-
-For direct
-- npm install
-- npm start
-
-
-
-
-

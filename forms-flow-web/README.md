@@ -1,6 +1,6 @@
-# **forms-flow-web**
+# **Web Application**
 
-**FormsFlow.AI** delivers progressive web application with React version >= 16.3 and `create-react-app`
+**FormsFlow.AI** delivers progressive web application with React version `16.3` and `create-react-app`
 
 A React library for rendering out forms based on the Form.io platform.
 
@@ -49,11 +49,11 @@ Environment variables are set in **.env** and read by system.
 
 #### Keycloak Configuration
 
-- Update KeyCloak configuration in file **public/config/kc/keycloak.json**
+- Update Keycloak configuration in file **public/config/kc/keycloak.json**
 
-Steps to get the client adapter configuration from keycloak,
-  - Login to keycloak
-  - Select your realm --> Go to clients tab --> Click on your client Id i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
+Steps to get the client adapter configuration from Keycloak:
+  - Login to Keycloak
+  - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
   - Copy the JSON data
   - Update the content in file **public/config/kc/keycloak.json**
 

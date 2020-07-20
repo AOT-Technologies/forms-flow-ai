@@ -234,18 +234,18 @@ Variable name | Meaning | Possible values | Default value |
 ####  KEYCLOAK
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`KEYCLOAK_URL`| URL to your keycloak server|eg. https://iam.aot-technologies.com| must be set to your keycloak server
-`KEYCLOAK_URL_REALM`|The Keyvcloak realm to use| eg. form-test| must be set to your keycloak realm
-`KEYCLOAK_CLIENTID`|Your Keycloak Client ID within the realm|eg. forms-flow-bpm | must be set to your keycloak client id
-`KEYCLOAK_CLIENTSECRET`|The secret for your Keycloak Client Id| eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12 | must be set to yourkeycloak client secret
+`KEYCLOAK_URL`| URL to your Keycloak server|eg. https://iam.aot-technologies.com| must be set to your Keycloak server
+`KEYCLOAK_URL_REALM`|The Keyvcloak realm to use| eg. form-test| must be set to your Keycloak realm
+`KEYCLOAK_CLIENTID`|Your Keycloak Client ID within the realm|eg. forms-flow-bpm | must be set to your Keycloak client id
+`KEYCLOAK_CLIENTSECRET`|The secret for your Keycloak Client Id| eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12 | must be set to your Keycloak client secret
 `REACT_APP_CLIENT_ROLE`|The role name used for client users||`formsflow-client`
 `REACT_APP_STAFF_DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
 `REACT_APP_STAFF_REVIEWER_ROLE`|The role name used for reviewer users||`formsflow-reviewer`
 `STAFF_ANALYST_ROLE`|The role name used for analyst/redash users||`formsflow-analyst`
 `STAFF_BPM_ROLE`|The role name used for workflow designer users||`formsflow-bpm`
 `REACT_APP_KEYCLOAK_CLIENT`|Keycloak client name for FormsFlowUI||forms-flow-web
-`BPM_TOKEN_API`|Keycloak OIDC token API for clients|Plug in your keycloak base url and realm name|`<KEYCLOAK-BASE-URL>/auth/realms/<realm>/protocol/openid-connect/token`
-`JWT_OIDC_WELL_KNOWN_CONFIG`|Path to Keycloak well-know config for realm|Plug in your keycloak URL plus realm|`<KEYCLOAK-BASE-URL>/auth/realms/<REALM>/.well-known/openid-configuration`
+`BPM_TOKEN_API`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`<KEYCLOAK-BASE-URL>/auth/realms/<realm>/protocol/openid-connect/token`
+`JWT_OIDC_WELL_KNOWN_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`<KEYCLOAK-BASE-URL>/auth/realms/<REALM>/.well-known/openid-configuration`
 `JWT_OIDC_ALGORITHMS`|JWT signing algorithms||`RS256`
 `JWT_OIDC_JWKS_URI`|Keycloak JWKS URI|Plug in Keycloakd base url plus realm| `<KEYCLOAK-BASE-URL>/auth/realms/<REALM>/protocol/openid-connect/certs`
 `JWT_OIDC_ISSUER`| The issuer of JWT's from Keycloak for your realm| Plug in your realm and Keycloak base url | | `<KEYCLOAK-BASE-URL>/auth/realms/<REALM>`
@@ -274,7 +274,7 @@ Variable name | Meaning | Possible values | Default value |
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
- `REACT_APP_EMAIL_SUBMISSION_GROUP`|Group to to which to send Email notifications|Must match keycloak group| `formsflow-reviewer`
+ `REACT_APP_EMAIL_SUBMISSION_GROUP`|Group to to which to send Email notifications|Must match Keycloak group| `formsflow-reviewer`
 
 #### ReDash
 Variable name | Meaning | Possible values | Default value |

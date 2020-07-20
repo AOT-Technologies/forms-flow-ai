@@ -69,7 +69,7 @@ Variable name | Meaning | Possible values | Default value |
    * Click the menu icon to the left of the username and navigate to **Edit Profile**.
    * Go to tab "Settings", and then navigate to section "Authentication".
         * Check the option "SAML".
-        * Set the field "SAML Metadata URL" with value of keycloak SAML descriptor URL. Example. `{Keycloak URL}/auth/realms/forms-flow-ai/protocol/saml/descriptor`.
+        * Set the field "SAML Metadata URL" with value of Keycloak SAML descriptor URL. Example. `{Keycloak URL}/auth/realms/forms-flow-ai/protocol/saml/descriptor`.
         * Set the field "SAML Entity ID" value to be `forms-flow-analytics`.
         * Set the field "SAML NameID Format" value to be `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`.
    * Logout and try to login using valid realm user credentials.

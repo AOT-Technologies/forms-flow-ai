@@ -10,17 +10,17 @@ A React library for rendering out forms based on the Form.io platform.
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
-     * Using Docker
-     * Using npm
-  * [Step 4 : Verify the application status](#verify-the-application-status)
-* [How to Create your First Form](#how-to-create-your-first-form)
+     * [Using Docker](#using-docker)
+     * [Using npm](#using-npm)
+  * [Step 4 : Verify the Application Status](#verify-the-application-status)
+* [How to Create Your First Form](#how-to-create-your-first-form)
 
 ## Prerequisites
 
 The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available.
 There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
 
-## Project setup
+## Project Setup
 
 ### Keycloak Setup
 
@@ -71,11 +71,11 @@ Steps to get the client adapter configuration from Keycloak:
    * Run `npm install` to install dependencies and build
    * Run `npm start` to start.
 
-### Verify the application status
+### Verify the Application Status
 
    The application should be up and available for use at port defaulted to 3000 in application.yaml http://localhost:3000/
 
-### How to Create your First Form
+### How to Create Your First Form
   * Login to **http://localhost:3000/** using valid **designer** credentials
   * Navigate to menu **Forms**
   * Click the button **+ Create Form** to launch the form designer studio.

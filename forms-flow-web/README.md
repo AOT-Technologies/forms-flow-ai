@@ -24,7 +24,42 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ### Keycloak Setup
 
-TO DO
+1. Login to KeyCloak Realm with admin privileges  
+2. Configure > Clients > Create  
+	3. Client ID = forms-flow-web  
+	4. Client Protocol = openid-connect  
+	5. Click Save  
+6. Settings Tab  
+	7. Name = forms-flow-web  
+	8. Description = React based FormIO web components  
+	7. Access Type = public  
+	8. Standard Flow Enabled = ON  
+	9. Direct Access Grants Enabled = ON  
+	10. Valid Root URL  
+	11. Valid Redirect URIs  
+	12. Valid Base URL  
+	13. Valid Admin URL  
+	14. Valid Web Origins  
+	15. Click Save  
+16. Roles Tab  
+	17. Click Add Role  
+		a. Role Name = formsflow-client  
+		b. Click Save  
+	18. Click Add Role  
+		a. Role Name = formsflow-reviewer  
+		b. Click Save  
+	19. Click Add Role  
+		a. Role Name = formsflow-designer  
+		b. Click Save  
+20. Configure > Clients Scope > Roles > Mappers > Create Update the form as  
+    21. Name- Role  
+    22. Mapper Type - User Client Role  
+    23. Client ID - forms-flow-web  
+    24. Token Claim role - role  
+    25. Add to ID token -yes  
+    27. Add to userinfo - yes  
+    28. Click Save  
+
 
 ### Environment Configuration
 

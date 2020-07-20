@@ -10,28 +10,28 @@ Create a forms-flow-web Client.
 	3. Client ID = forms-flow-web  
 	4. Client Protocol = openid-connect  
 	5. Click Save  
-6. Settings Tab  
-	7. Name = forms-flow-web  
-	8. Description = React based FormIO web components  
-	7. Access Type = public  
-	8. Standard Flow Enabled = ON  
-	9. Direct Access Grants Enabled = ON  
-	10. Valid Root URL  
-	11. Valid Redirect URIs  
-	12. Valid Base URL  
-	13. Valid Admin URL  
-	14. Valid Web Origins  
-	15. Click Save  
-16. Roles Tab  
-	17. Click Add Role  
-		a. Role Name = formsflow-client  
-		b. Click Save  
-	18. Click Add Role  
-		a. Role Name = formsflow-reviewer  
-		b. Click Save  
-	19. Click Add Role  
-		a. Role Name = formsflow-designer  
-		b. Click Save  
+	6. Settings Tab  
+		7. Name = forms-flow-web  
+		8. Description = React based FormIO web components  
+		7. Access Type = public  
+		8. Standard Flow Enabled = ON  
+		9. Direct Access Grants Enabled = ON  
+		10. Valid Root URL  
+		11. Valid Redirect URIs  
+		12. Valid Base URL  
+		13. Valid Admin URL  
+		14. Valid Web Origins  
+		15. Click Save  
+	16. Roles Tab  
+		17. Click Add Role  
+			a. Role Name = formsflow-client  
+			b. Click Save  
+		18. Click Add Role  
+			a. Role Name = formsflow-reviewer  
+			b. Click Save  
+		19. Click Add Role  
+			a. Role Name = formsflow-designer  
+			b. Click Save  
 
 ## Update Role information Mapping to Keycloak userinfo data  
 
@@ -57,32 +57,32 @@ Create a forms-flow-analytics Client.
 	3. Client ID = forms-flow-analytics  
 	4. Client Protocol = saml  
 	5. Click Save  
-6. Settings Tab  
-	7. Name = forms-flow-analytics  
-	8. Description = Redash-Analytics  
-	7. Enabled = ON  
-	8. Include AuthStatement = ON  
-	9. Sign Assertions = ON  
-	10. Signature Algorithm = RSA_SHA256  
-	11. SAML Signature Key Name = KEY_ID  
-	12. Canonicalization Method = EXCLUSIVE_WITH_COMMENTS  
-	13. Name ID Format = email 	  
-	14. Valid Redirect URIs = {ANALYTICS_URL}/*  
-	15. Valid Master SAML Processing URL = {ANALYTICS_URL}/saml/callback?org_slug=default  
-	16. Note: All other settings should be turned off and empty  
-	17. Click Save  
-18. Mappers Tab  
-	19. Click Add Builtin  
-		a. Click the Add checkbox for X500 surname and X500 givenName  
-		b. Click Add selected  
-	20. Go Back to Mappers   
-		a. Click Edit on X500 surname  
-		b. Change Friendly Name to LastName   
-		c. Click Save  
-	21. Go Back to Mappers   
-		a. Click Edit on X500 givenName  
-		b. Change Friendly Name to FirstName   
-		c. Click Save  
+	6. Settings Tab  
+		7. Name = forms-flow-analytics  
+		8. Description = Redash-Analytics  
+		7. Enabled = ON  
+		8. Include AuthStatement = ON  
+		9. Sign Assertions = ON  
+		10. Signature Algorithm = RSA_SHA256  
+		11. SAML Signature Key Name = KEY_ID  
+		12. Canonicalization Method = EXCLUSIVE_WITH_COMMENTS  
+		13. Name ID Format = email 	  
+		14. Valid Redirect URIs = {ANALYTICS_URL}/*  
+		15. Valid Master SAML Processing URL = {ANALYTICS_URL}/saml/callback?org_slug=default  
+		16. Note: All other settings should be turned off and empty  
+		17. Click Save  
+	18. Mappers Tab  
+		19. Click Add Builtin  
+			a. Click the Add checkbox for X500 surname and X500 givenName  
+			b. Click Add selected  
+		20. Go Back to Mappers   
+			a. Click Edit on X500 surname  
+			b. Change Friendly Name to LastName   
+			c. Click Save  
+		21. Go Back to Mappers   
+			a. Click Edit on X500 givenName  
+			b. Change Friendly Name to FirstName   
+			c. Click Save  
 
 ## Enable SAML login in REDASH  
 
@@ -105,33 +105,49 @@ Create a forms-flow-bpm Client.
 	3. Client ID = forms-flow-bpm  
 	4. Client Protocol = openid-connect  
 	5. Click Save  
-6. Settings Tab  
-	7. Name = forms-flow-bpm  
-	8. Description = Camunda Process Engine Components  
-	7. Access Type = confidential  
-	8. Standard Flow Enabled = ON  
-	9. Direct Access Grants Enabled = ON  
-	10. Service Accounts Enabled = ON  
-	11. Valid Redirect URIs  
-	12. Web Origins = *  
-	13. Click Save  
-14. Mappers Tab  
-	15. Click Create, and provide in below properties  
-			a. Name = username  
-			b. Mapper Type =User Property  
-			c. Property = username  
-			d. Token Claim Name = preferred_username  
-			e. Claim JSON Type = String  
-			f. Add to ID Token = ON  
-			g. Add to access Token = ON  
-			h. Add to userinfo = ON  
-			g. Click Save  
-16. Service Accounts Tab  
-	17. Select Client roles as "realm-management"  
-	18. Map the listed "Available Roles" to "Assigned Roles"  
-			a. query-groups  
-			b. query-users  
-			c. view-users  
+	6. Settings Tab  
+		7. Name = forms-flow-bpm  
+		8. Description = Camunda Process Engine Components  
+		7. Access Type = confidential  
+		8. Standard Flow Enabled = ON  
+		9. Direct Access Grants Enabled = ON  
+		10. Service Accounts Enabled = ON  
+		11. Valid Redirect URIs  
+		12. Web Origins = *  
+		13. Click Save  
+	14. Mappers Tab  
+		15. Click Create, and provide in below properties  
+				a. Name = username  
+				b. Mapper Type =User Property  
+				c. Property = username  
+				d. Token Claim Name = preferred_username  
+				e. Claim JSON Type = String  
+				f. Add to ID Token = ON  
+				g. Add to access Token = ON  
+				h. Add to userinfo = ON  
+				g. Click Save  
+	16. Service Accounts Tab  
+		17. Select Client roles as "realm-management"  
+		18. Map the listed "Available Roles" to "Assigned Roles"  
+				a. query-groups  
+				b. query-users  
+				c. view-users  
+19. Configure > Client Scopes > Create
+	20. Name = camunda-rest-api
+	21. Click Save
+	22. Client Scopes > camunda-rest-api
+		23. Mappers Tab
+			24. Click Create
+			25. Name = camunda-rest-api
+			26. Mapper Type = Audience
+			27. Included Custom Audience = camunda-rest-api
+			28. Click Save
+29. Configure > Clients > forms-flow-bpm
+	30. Client Scopes Tab
+		31. Default Client Scopes
+		32. Select camunda-rest-api
+		33. Click Add selected >>
+
 
 ## Create Groups   
 

@@ -11,7 +11,7 @@ To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identit
   * [Step 1 : Keycloak Configuration](#keycloak-configuration)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Build and Deploy](#build-and-deploy)
-  * [Step 4 : Verify the application status](#verify-the-application-status)
+  * [Step 4 : Verify the Application Status](#verify-the-application-status)
 * [How to Deploy Process](#how-to-deploy-process)
 * [How to Enable SSL](#how-to-enable-ssl)
 
@@ -70,7 +70,7 @@ This section elaborates on the properties exposed for tuning the system.
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
       
-### Verify the application status
+### Verify the Application Status
 
    The application should be up and available for use at port defaulted to 8000 in application.yaml http://localhost:8000/camunda/
    

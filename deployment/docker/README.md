@@ -112,7 +112,9 @@ To know more about formio, go to https://help.form.io/userguide/introduction/.
  
 ### How to Create your First Workflow Process
 
-To know about camunda, go to  https://docs.camunda.org/manual/7.13/
+* You would need the Camunda Modeler to design your BPMN: https://camunda.com/download/modeler/
+* To learn about designing your BPMN, go to https://docs.camunda.org/get-started/quick-start/service-task/
+* To learn about deploying your BPMN, go to https://docs.camunda.org/get-started/quick-start/deploy/. Note that your default endpoint for Camunda's REST API is http://localhost:8080/camunda/engine-rest
 
 ### How to Associate the Form with Workflow Process
 

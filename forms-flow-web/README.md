@@ -10,8 +10,10 @@ A React library for rendering out forms based on the Form.io platform.
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
+     * Using Docker
+     * Using npm
   * [Step 4 : Verify the application status](#verify-the-application-status)
-  * [Step 5 : Configuration of Keycloak SAML Setup](#configuration-of-keycloak-saml-setup)
+* [How to Create your First Form](#how-to-create-your-first-form)
 
 ## Prerequisites
 
@@ -54,3 +56,29 @@ Steps to get the client adapter configuration from keycloak,
   - Select your realm --> Go to clients tab --> Click on your client Id i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
   - Copy the JSON data
   - Update the content in file **public/config/kc/keycloak.json**
+
+### Running the Application
+
+#### Using Docker
+   * Make sure you have a Docker machine up and running.
+   * Make sure your current working directory is forms-flow-web.
+   * Rename the file **sample.env** to **.env**.
+   * Modify the configuration values as needed.
+   * Run `docker-compose build` to build.
+   * Run `docker-compose up -d` to start.
+
+#### Using npm
+   * Run `npm install` to install dependencies and build
+   * Run `npm start` to start.
+
+### Verify the application status
+
+   The application should be up and available for use at port defaulted to 3000 in application.yaml http://localhost:3000/
+
+### How to Create your First Form
+  * Login to **http://localhost:3000/** using valid **designer** credentials
+  * Navigate to menu **Forms**
+  * Click the button **+ Create Form** to launch the form designer studio.
+  * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
+
+

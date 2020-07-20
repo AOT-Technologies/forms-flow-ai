@@ -103,7 +103,18 @@ Listed variables are used by **forms-flow-web**
   * FormsFlow web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   
 ### How to Create your First Form
+  * Login to **http://localhost:3000/** using valid **designer** credentials
+  * Navigate to menu **Forms**
+  * Click the button **+ Create Form** to launch the form designer studio.
+  * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
+
+To know more about formio, go to https://help.form.io/userguide/introduction/.
  
 ### How to Create your First Workflow Process
 
+To know about camunda, go to  https://docs.camunda.org/manual/7.13/
+
 ### How to associate the form with Workflow process
+
+
+

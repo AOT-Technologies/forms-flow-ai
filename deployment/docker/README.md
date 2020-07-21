@@ -38,9 +38,10 @@ Environment variables are set in **.env** and read by system.
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. Details below,   
-   **FormsFlow.AI Role Mapping:**
+   **FormsFlow.AI Role Mapping:**  
+   
 Variable name | Meaning | Possible values | Default value |
- --- | --- | --- | ---
+--- | --- | --- | ---
 `CLIENT_ROLE`|	The role name used for client users|| formsflow-client
 `CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the value from form.io resource **/roles**
 `REVIEWER_ROLE`|The role name used for staff/reviewer users||`formsflow-reviewer`

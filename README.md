@@ -197,19 +197,25 @@ The products are installed with a default configuration so that the base system 
     
 ## Managing Forms
 
-- Please refer to [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#forms-flow-web)
+  * Login to **http://localhost:3000/** using valid **designer** credentials
+  * Navigate to menu **Forms**
+  * Click the button **+ Create Form** to launch the form designer studio.
+  * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
+
+To know more about formio, go to https://help.form.io/userguide/introduction/.
 
 ## Managing Workflows
 
-- Please refer to [forms-flow-bpm](https://github.com/AOT-Technologies/forms-flow-ai-dev/tree/feature/tasks-base/forms-flow-bpm#how-to-deploy-process)
+* You would need the Camunda Modeler to design your BPMN: https://camunda.com/download/modeler/
+* To learn about designing your BPMN, go to https://docs.camunda.org/get-started/quick-start/service-task/
+* To learn about deploying your BPMN, go to https://docs.camunda.org/get-started/quick-start/deploy/. Note that your default endpoint for Camunda's REST API is http://localhost:8000/camunda/engine-rest
+
 
 ## Managing Analytics Dashboard
 
 - Please refer to [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-analytics#how-to-run)
 
-
-
-  
+ 
 ## License
 
 Copyright 2020 AOT-Technoogies

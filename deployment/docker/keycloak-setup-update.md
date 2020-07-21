@@ -29,12 +29,6 @@ Create a forms-flow-web Client.
 		* Click Add Role  
 			* Role Name = formsflow-designer  
 			* Click Save  
-
-## Update Role information Mapping to Keycloak userinfo data  
-
-This is for making role information to be available in the userinfo object for various use cases like updating a form based on role:  
- 
-* Login to KeyCloak Realm with admin privileges  
 * Configure > Clients Scope > Roles > Mappers > Create Update the form as  
     * Name- Role  
     * Mapper Type - User Client Role  
@@ -44,7 +38,15 @@ This is for making role information to be available in the userinfo object for v
     * Add to access token - yes  
     * Add to userinfo - yes  
     * Click Save  
-
+* Configure > Clients 
+* Select forms-flow-web Client
+* Select Mappers tab
+    * Click Create
+        * Name = flowsflow-api-mapper
+        * Mapper Type = Audience
+       	* Included Custom Audience = forms-flow-web
+       	* Click Save
+	
 ## Create forms-flow-analytics Client  
 
 Create a forms-flow-analytics Client.     
@@ -80,18 +82,6 @@ Create a forms-flow-analytics Client.
 			* Click Edit on X500 givenName  
 			* Change Friendly Name to FirstName   
 			* Click Save  
-
-## Enable SAML login in REDASH  
-
-* Login to Redash using the admin credentials  
-* Click on your profileName(top right side corner) and Click EditProfile  
-* Goto Settings tab    
-* Click SAML Enabled checkbox and update the below details  
-	* SAML Metadata URL = {KEYCLOAK_URL}/auth/realms/{REALM_NAME}/protocol/saml/descriptor  
-	* SAML Entity ID = forms-flow-analytics  
-	* SAML NameID Format = urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress  
-	* Click Save  
-* After logging out, SAML Login will be enabled and log in through it can be done for your users.  
 
 ## Create forms-flow-bpm Client  
 
@@ -144,10 +134,6 @@ Create a forms-flow-bpm Client.
 		* Default Client Scopes
 		* Select camunda-rest-api
 		* Click Add selected >>
-
-## Add Audience Mapper for forms-flow-bpm 
-
-* Login to KeyCloak Realm with admin privileges  
 * Configure > Clients 
 * Select forms-flow-bpm Client
 * Select Mappers tab
@@ -156,19 +142,6 @@ Create a forms-flow-bpm Client.
         * Mapper Type = Audience
        	* Included Custom Audience = forms-flow-web
        	* Click Save
-
-## Add Audience Mapper for forms-flow-web 
-
-* Login to KeyCloak Realm with admin privileges  
-* Configure > Clients 
-* Select forms-flow-web Client
-* Select Mappers tab
-    * Click Create
-        * Name = flowsflow-api-mapper
-        * Mapper Type = Audience
-       	* Included Custom Audience = forms-flow-web
-       	* Click Save
-
 
 ## Create Groups   
 

@@ -18,12 +18,6 @@ export const getProcess = (processType, form, submissionId, action, user) => {
         req: {
           variables: {
             category: { value: "submission_notification" },
-            submission_group: {
-              value:
-                window._env_.REACT_APP_EMAIL_SUBMISSION_GROUP ||
-                process.env.REACT_APP_EMAIL_SUBMISSION_GROUP ||
-                "",
-            },
             formurl: {
               value: `${window.location.origin}/form/${form._id}/submission/${submissionId}`,
             },
@@ -55,12 +49,6 @@ export const getProcess = (processType, form, submissionId, action, user) => {
             form_name: { value: form.title },
             submission_date: { value: new Date().toJSON() },
             task_status: { value: "New" },
-            submission_group: {
-              value:
-                window._env_.REACT_APP_EMAIL_SUBMISSION_GROUP ||
-                process.env.REACT_APP_EMAIL_SUBMISSION_GROUP ||
-                "",
-            },
           },
           formId: form._id,
           formSubmissionId: submissionId,

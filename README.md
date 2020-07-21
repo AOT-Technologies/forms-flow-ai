@@ -256,7 +256,6 @@ Variable name | Meaning | Possible values | Default value |
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
- `REACT_APP_EMAIL_SUBMISSION_GROUP`|Group to to which to send Email notifications|Must match Keycloak group| `formsflow-reviewer`
 
 #### ReDash
 Variable name | Meaning | Possible values | Default value |

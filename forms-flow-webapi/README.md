@@ -5,7 +5,7 @@ The goal of the REST API is to provide access to all relevant interfaces of the 
 
 ## Table of Content
 * [Prerequisites](#prerequisites)
-* [Project Setup](#project-setup)
+* [Solution Setup](#solution-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
@@ -16,7 +16,7 @@ The goal of the REST API is to provide access to all relevant interfaces of the 
 
 The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
 
-## Project Setup
+## Solution Setup
 
 ### Keycloak Setup
 

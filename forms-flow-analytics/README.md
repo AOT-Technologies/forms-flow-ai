@@ -8,7 +8,7 @@ To know more about Redash, go to https://github.com/getredash/redash.
 * [Solution Setup](#solution-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Environment Configuration](#environment-configuration)
-  * [Step 3 : Running the Application](#running-the-application)
+  * [Step 3 : Installation](#installation)
   * [Step 4 : Health Check](#health-check)
   * [Step 5 : Configuration of Keycloak SAML Setup](#configuration-of-keycloak-saml-setup)   
 
@@ -70,7 +70,7 @@ Variable name | Meaning | Possible values | Default value |
 `REDASH_SECRET_KEY`|Encryption for datasource configuration|ditto|`redash-selfhosted`
 
 
-### Running the Application
+### Installation
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-analytics".

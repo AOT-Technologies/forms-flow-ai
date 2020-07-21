@@ -3,27 +3,24 @@
 
 ## Table of Content
 * [About the Project](#about-the-project)
-  * [Project dependencies](#project-dependencies)
-  * [Project tree](#project-tree)
+  * [Project Dependencies](#project-dependencies)
+  * [Project Tree](#project-tree)
 * [Features](#features)
 * [System Architecture](#system-architecture)
-* [User and roles](#users-and-roles)
+* [User and Roles](#users-and-roles)
 * [System Operation](#system-operation)
-* [Installation and Configuration](#installation-and-configuration)
-* [Installation and Configuration](#installation-and-configuration)
+* [Deployment and Configuration](#deployment-and-configuration)
   * [Prerequisites](#prerequisites)
-  * [Build](#build)
-  * [Default Settings](#default-settings)
-  * [Environment Variables](#Environment-Variables-setup)
-  * [Running the application in Docker Environment](#running-the-application-in-docker-environment)
-* [Managing forms](#  -forms)
-* [Additional Configurations](#additional-configurations)
-    * [SSL Nginx configurations](#ssl-nginx-configurations)
+  * [Configure and Build](#configure-and-build)
+* [Running the Application](#running-the-application)
+* [Managing Forms](#managing-forms)
+* [Managing Workflows](#managing-workflows)
+* [Managing Analytics Dashboard](#managing-analytics-dashboard)
 * [License](#license)
 * [Links](#links)
 
 ## About the Project
-The project was initiated by AOT Technologies as a means of addressing the general situation whereby end-users fill in a form, the form is processed and there may be a requirement to report on the form metrics or data. Typical use cases are :
+The project was initiated by AOT Technologies as a means of addressing the general situation whereby end-users fill in a form, the form is processed and there may be a requirement to report on the form metrics or data. Typical use cases are:
 
 * Applications for licences
 * Public submissions
@@ -40,32 +37,30 @@ The project was initiated by AOT Technologies as a means of addressing the gener
 ### Project Dependencies
 
 
-- [form.io](https://www.form.io/opensource) (included under forms-flow-ai/forms-flow-forms)
-- [Camunda](https://camunda.com/) (included under forms-flow-ai/forms-flow-bpm)
+- [form.io](https://www.form.io/opensource) (included under ./forms-flow-forms)
+- [Camunda](https://camunda.com/) (included under ./forms-flow-bpm)
+- [Redash](https://redash.io) (included under ./forms-flow-analytics)
 - [Keycloak](https://www.keycloak.org/) (existing Keycloak server required)
-- [Redash](https://redash.io)(included under forms-flow-ai/forms-flow-analytics)
-- [Python]() (included under forms-flow-ai/forms-flow-webapi)
-- [Nginx](https://www.nginx.com)(included under forms-flow-ai/nginx) **Optional**
+- [Python](https://www.python.org/) (included under ./forms-flow-api)
+- **Optional**: [Nginx](https://www.nginx.com) (included under ./deployment/nginx) 
 
-### Project tree
+### Project Tree
 
 
  * [README.md](./README.md) This file
  * [deployment](./deployment) Deployment of complete framework
    * [README](./deployment/README)
- * [forms-flow-analytics](./forms-flow-analytics) ReDash analytics components
+ * [forms-flow-analytics](./forms-flow-analytics) Redash analytics components
    * [README](./forms-flow-analytics/README)
  * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
     * [README](./forms-flow-bpm/README)
-* [forms-flow-db](./forms-flow-db) Database scripts
-   * [README](./forms-flow-db/README)
  * [forms-flow-forms](./forms-flow-forms) form. io deployment and  integration
    * [README](./forms-flow-forms/README)
  * [forms-flow-idm](./forms-flow-idm) Identity Management (Keycloak)
    * [README](./forms-flow-idm/README)
  * [forms-flow-web](./forms-flow-web) Forms Flow Integration client
    * [README](./forms-flow-web/README)
-* [forms-flow-webapi](./forms-flow-api) REST API to FormsFlow integration components
+* [forms-flow-api](./forms-flow-api) REST API to FormsFlow integration components
    * [README](./forms-flow-api/README)
 
 Features 
@@ -96,12 +91,12 @@ Browser-based React integration web UI
 Most of the day-to-day end-user and review tasks are performed from this application,  built specifically to act as a common UI combining forms, workflow and analytics functionality. The web-application is written as a [progressive](https://en.wikipedia.org/wiki/Progressive_web_application) app with potential for offline data-entry. FormsFlow UI accesses the individual system component data through native API's using OIDC or SAML access tokens.
 
 #### Redash Admin UI
-The native admin interface to ReDash (bundled and unchanged). Use this to build analytics dashboards.
+The native admin interface to Redash (bundled and unchanged). Use this to build analytics dashboards.
 #### Redash API
 The REST interface to the Redash core. Bundled and unchanged
 #### Form.io API
 The REST interface to the form.io core
-#### Camunda admin UI
+#### Camunda Admin UI
 The native admin interface to Camunda (bundled and unchannged) . Use this to define workflows and to manage workflow tasks as an admin.
 #### REST API
 API providing business logic around Formsflow Postgres  developed in Python. This API is used extensively by the FormsFlow UI to synchronize,maintain state, extend functionality and integrate between components.
@@ -172,7 +167,7 @@ These users are responsible for accessing the native capabilities of the embedde
 
 
 
-## Deployment and configuration
+## Deployment and Configuration
  The framework installs the products  mentioned above (with the exception of Keycloak which must either be pre-existing or installed and configured in advance).
 
 The products are installed with a default configuration so that the base system works "out-the-box", however the advanced configuration and management of the products requires the relevant product documentation. 
@@ -200,17 +195,19 @@ The products are installed with a default configuration so that the base system 
          - http://localhost:3001 - forms-flow-forms
          - https://localhost:8000/camunda - forms-flow-bpm
     
-Managing forms
---------------
-- Refer [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#forms-flow-web)
+## Managing Forms
 
-Managing analytics dashboards
-----------------
-- Refer [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-analytics#how-to-run)
+- Please refer to [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#forms-flow-web)
 
-##Managing workflows
+## Managing Workflows
 
-* Refer 
+- Please refer to [forms-flow-bpm](https://github.com/AOT-Technologies/forms-flow-ai-dev/tree/feature/tasks-base/forms-flow-bpm#how-to-deploy-process)
+
+## Managing Analytics Dashboard
+
+- Please refer to [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-analytics#how-to-run)
+
+
 
   
 ## License

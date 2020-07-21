@@ -8,8 +8,8 @@ The goal of the REST API is to provide access to all relevant interfaces of the 
 * [Solution Setup](#solution-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Environment Configuration](#environment-configuration)
-  * [Step 3 : Running the Application](#running-the-application)
-  * [Step 4 : Verify the application status](#verify-the-application-status) 
+  * [Step 3 : Installation](#installation)
+  * [Step 4 : Health Check](#Health Check) 
 * [How-to export roles and Forms](#how-to-export-roles-and-forms)   
 
 ## Prerequisites

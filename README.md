@@ -112,10 +112,9 @@ The framework defines user roles which are standardised across all the products.
 
 - formsflow-designer  
   * Design and manage electronic forms
+  * Create metrics and analytics dashboards. 
 - formsflow-bpm
   * Create workflows and associate forms with deployed workflows
-- formsflow-analyst
-  * Create metrics and analytics dashboards. 
 - formsflow-reviewer
   * Receive and process online submissions. 
   * Fill in forms on behalf of the client if needed. 

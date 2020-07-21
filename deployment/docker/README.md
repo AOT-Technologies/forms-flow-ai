@@ -110,20 +110,6 @@ Variable name | Meaning | Possible values | Default value |
   * FormsFlow Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
   * FormsFlow web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   
-### How to Create your First Form
-  * Login to **http://localhost:3000/** using valid **designer** credentials
-  * Navigate to menu **Forms**
-  * Click the button **+ Create Form** to launch the form designer studio.
-  * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
-
-To know more about formio, go to https://help.form.io/userguide/introduction/.
- 
-### How to Create your First Workflow Process
-
-* You would need the Camunda Modeler to design your BPMN: https://camunda.com/download/modeler/
-* To learn about designing your BPMN, go to https://docs.camunda.org/get-started/quick-start/service-task/
-* To learn about deploying your BPMN, go to https://docs.camunda.org/get-started/quick-start/deploy/. Note that your default endpoint for Camunda's REST API is http://localhost:8000/camunda/engine-rest
-
 ### How to Associate the Form with Workflow Process
 * Get the jwt token from formio resource **/user/login**
 ```

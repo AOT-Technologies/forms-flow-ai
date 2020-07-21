@@ -1,5 +1,6 @@
 # FormsFlow.AI
 
+This page elaborates how to install the overall solution using docker.
 
 
 ## Table of Content

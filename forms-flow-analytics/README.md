@@ -7,8 +7,8 @@ To know more about Redash, go to https://github.com/getredash/redash.
 * [Prerequisites](#prerequisites)
 * [Solution Setup](#solution-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
-  * [Step 2 : Environment Configuration](#environment-configuration)
-  * [Step 3 : Installation](#installation)
+  * [Step 2 : Installation](#installation)
+  * [Step 3 : Running the application](#running-the-application)
   * [Step 4 : Health Check](#health-check)
   * [Step 5 : Configuration of Keycloak SAML Setup](#configuration-of-keycloak-saml-setup)   
 
@@ -24,9 +24,12 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 * Login to KeyCloak Realm with admin privileges  
 * For client **forms-flow-analytics** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md) 
 
-### Environment Configuration
 
-Environment variables are set in **redash.env** and read by Redash.
+### Installation
+
+   * Make sure you have a Docker machine up and running.
+   * Make sure your current working directory is "forms-flow-analytics".
+   * Modify the configuration values as needed. Details below,
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -39,15 +42,8 @@ Variable name | Meaning | Possible values | Default value |
 `POSTGRES_HOST_AUTH_METHOD`|Postgres authentication method|ditto|`trust`
 `REDASH_COOKIE_SECRET`|Encryption for all configuration|ditto|`redash-selfhosted`
 `REDASH_SECRET_KEY`|Encryption for datasource configuration|ditto|`redash-selfhosted`
-
-
-### Installation
-
-   * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is "forms-flow-analytics".
-   * Modify the configuration values as needed. Additionally, you may want to change these
-     
-         
+  
+  **Additionally, you may want to change these**
 ```  
           The Postgres volume location.          
           
@@ -56,9 +52,11 @@ Variable name | Meaning | Possible values | Default value |
             - ./postgres/analytics:/data/postgres
 ```
          The value of REDASH_COOKIE_SECRET (especially if this instance is not just for testing purposes)
-   * Run `docker-compose run --rm server create_db` to setup database andd to create tables.
-   * Run `docker-compose up -d` to start.
-   
+ 
+### Running the application
+  * Run `docker-compose run --rm server create_db` to setup database andd to create tables.
+  * Run `docker-compose up -d` to start.
+
 ### Health Check
 
    The application should be up and available for use at port defaulted to 7000 in docker-compose.yml (i.e. http://localhost:7000/)

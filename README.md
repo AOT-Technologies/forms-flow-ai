@@ -12,10 +12,10 @@
 * [Deployment and Configuration](#deployment-and-configuration)
   * [Prerequisites](#prerequisites)
   * [Configure and Build](#configure-and-build)
-* [Running the Applicationt](#running-the-application)
+* [Running the Application](#running-the-application)
 * [Managing Forms](#managing-forms)
 * [Managing Workflows](#managing-workflows)
-* [Managing Analytics Dashboards](#managing-analytics-dashboards)
+* [Managing Analytics Dashboard](#managing-analytics-dashboard)
 * [License](#license)
 * [Links](#links)
 
@@ -201,11 +201,11 @@ The products are installed with a default configuration so that the base system 
 
 - Please refer to [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#forms-flow-web)
 
-## Managing workflows
+## Managing Workflows
 
 - Please refer to [forms-flow-bpm](https://github.com/AOT-Technologies/forms-flow-ai-dev/tree/feature/tasks-base/forms-flow-bpm#how-to-deploy-process)
 
-## Managing Analytics Dashboards
+## Managing Analytics Dashboard
 
 - Please refer to [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-analytics#how-to-run)
 

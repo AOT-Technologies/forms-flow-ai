@@ -8,7 +8,7 @@ To know more about FORMIO, go to https://github.com/formio/formio.
 * [Solution Setup](#solution-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Environment Configuration](#environment-configuration)
-  * [Step 3 : Running the Application](#running-the-application)
+  * [Step 3 : Installation](#installation)
        * Using Docker
        * Using npm
   * [Step 4 : Health Check](#health-check)
@@ -39,7 +39,7 @@ Variable name | Meaning | Possible values | Default value |
 `FORMIO_ROOT_PASSWORD`|formio admin password|eg.CHANGEME|`must be set to whatever password you want for your formio admin user`
 
 
-### Running the Application
+### Installation
 
 #### Using Docker
    * Make sure you have a Docker machine up and running.

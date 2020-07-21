@@ -11,7 +11,7 @@ To know more about FORMIO, go to https://github.com/formio/formio.
   * [Step 3 : Running the Application](#running-the-application)
        * Using Docker
        * Using npm
-  * [Step 4 : Verify the application status](#verify-the-application-status)
+  * [Step 4 : Health Check](#health-check)
   * [Step 5 : Import of predefined roles and Forms](#import-of-predefined-roles-and-forms)   
 * [How-to export roles and Forms](#how-to-export-roles-and-forms)   
 
@@ -61,7 +61,7 @@ Variable name | Meaning | Possible values | Default value |
 #### Using npm
    * Run `npm install` to install dependencies and build
    * Run `npm start` to start.
-### Verify the application status
+### Health Check
 
    The application should be up and available for use at port defaulted to 3001 in docker-compose.yml (i.e. http://localhost:3001/)
     and login using valid root credentials setup in .env

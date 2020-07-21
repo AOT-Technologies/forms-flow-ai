@@ -1,7 +1,7 @@
 FROM python:3.7-alpine
 
-ADD . /forms-flow-webapi/app
-WORKDIR /forms-flow-webapi/app
+ADD . /forms-flow-api/app
+WORKDIR /forms-flow-api/app
 
 RUN apk update \
   && apk add \

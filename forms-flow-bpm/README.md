@@ -7,7 +7,7 @@ To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identit
 
 ## Table of Content
 * [Prerequisites](#prerequisites)
-* [Project setup](#project-setup)
+* [Solution setup](#solution-setup)
   * [Step 1 : Keycloak Configuration](#keycloak-configuration)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Build and Deploy](#build-and-deploy)
@@ -20,7 +20,7 @@ To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identit
 The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
 There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
 
-## Project Setup
+## Solution Setup
 
 ### Keycloak Configuration
 

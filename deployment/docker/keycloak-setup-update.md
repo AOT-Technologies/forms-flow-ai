@@ -16,12 +16,9 @@ Create a forms-flow-web Client.
 		7. Access Type = public  
 		8. Standard Flow Enabled = ON  
 		9. Direct Access Grants Enabled = ON  
-		10. Valid Root URL  
-		11. Valid Redirect URIs  
-		12. Valid Base URL  
-		13. Valid Admin URL  
-		14. Valid Web Origins  
-		15. Click Save  
+		10. Valid Redirect URIs  eg. http://localhost:3000/*
+		11. Valid Web Origins  = *
+		12. Click Save  
 	16. Roles Tab  
 		17. Click Add Role  
 			a. Role Name = formsflow-client  

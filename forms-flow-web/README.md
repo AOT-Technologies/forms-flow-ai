@@ -10,8 +10,6 @@ A React library for rendering out forms based on the Form.io platform.
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
-     * [Using Docker](#using-docker)
-     * [Using npm](#using-npm)
   * [Step 4 : Health Check](#health-check)
 * [How to Create Your First Form](#how-to-create-your-first-form)
 
@@ -94,17 +92,12 @@ Steps to get the client adapter configuration from Keycloak:
 
 ### Running the Application
 
-#### Using Docker
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is forms-flow-web.
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed.
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
-
-#### Using npm
-   * Run `npm install` to install dependencies and build
-   * Run `npm start` to start.
 
 ### Health Check
 

@@ -49,7 +49,7 @@ The project was initiated by AOT Technologies as a means of addressing the gener
 
 ### Project tree
 
-.
+
  * [README.md](./README.md) This file
  * [deployment](./deployment) Deployment of complete framework
    * [README](./deployment/README)
@@ -104,12 +104,12 @@ The REST interface to the form.io core
 #### Camunda admin UI
 The native admin interface to Camunda (bundled and unchannged) . Use this to define workflows and to manage workflow tasks as an admin.
 #### REST API
-API providing business logic around Formsflow Postgres DB. This API is used extensively by the FormsFlow UI synchronise/maintain state/extend functionality/integrate .
-#### Nginx Web server
+API providing business logic around Formsflow Postgres  developed in Python. This API is used extensively by the FormsFlow UI to synchronize,maintain state, extend functionality and integrate between components.
+#### Nginx Web server (optional)
 Webserver providing reverse-proxy redirection and SSL to components for remote deployments. ( bundled and configured ) 
 
 #### Keycloak Identity management server 
-The system  has at its core a Keycloak server which provides a common identity management function. Provisioning of the Keycloak server is not part of this project, however there are specific [Keycloak configuration tasks](./forms-flow-idm/README) which are required for this project. 
+The system  uses an existing (your) Keycloak server which provides a common identity management capability. Provisioning of the Keycloak server is not part of this project, however there are specific [Keycloak configuration tasks](./forms-flow-idm/README) which are required for this project. 
 
 ## Users and Roles
 
@@ -164,11 +164,11 @@ These users are responsible for accessing the native capabilities of the embedde
 
 * Access product URL as follows :
   * Camunda : https://localhost/camunda
-  * form. io : https://localhost/formflow-ui (the form designer is embedded into the form flow UI as well)
+  * form.io : https://localhost/formflow-ui (the form designer is embedded into the FormsFlow UI)
   * Redash : https://localhost/analytics
 * The login process is the same for all of them, redirect to Keycloak as OIDC (SAML for Redash) and optain the appropriate JWT + claims. 
 * For the forms designer, the FormFlow UI recognises the additional role of formsflow-designer and enables a form design capability
-* For Redash and Camunda, there is a mapping in the configuration file which needs to be setup between formsflow-analyst and formsflow-bpm and the corresponding groups in Redash and Camunda respectively.
+* For Redash and Camunda, there is a mapping in the configuration file which needs to be setup between formsflow-analyst and formsflow-bpm and the corresponding groups in Redash and Camunda respectively. This is all covered in the installation instructions.
 
 
 
@@ -190,106 +190,8 @@ The products are installed with a default configuration so that the base system 
 * If deploying to a remote server, you can use nginx as a reverse proxy. To help you, follow the instructions in the [,/nginx/README](./nginx/README.md)
 * Start the system as per [Running the application](#running-the-application)
 
-### Environment Variables Setup
 
-The following sections describe environment variables grouped according to the component for which the environment variable provides configuration NOT according to the component using it. In this sense the environment variable naming might seem confusing as they were largely created and named according to the component USING them which was logical at the time, but has become superceded as more components require usage of the same component. 
-
-Environment variable with no default value need to be defined (unless otherwise specified). In general those with a default value can be left as is depending on specific circumstances. 
-
-#### General
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`NODE_ENV` | define project level configuration | `development, test, production` | `development`
-`APP_SECURITY_ORIGIN` | Set CORS Origin |Domains from which cross-site requests are allowed |`*`
-
-#### Postgres Formsflow
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`POSTGRES_USER`|Postgres Root Username|Used on installation to create the database.Choose your own |`postgres`
-`POSTGRES_PASSWORD`|Postgres Root Password|ditto|`changeme`
-`POSTGRES_DB`|Postgres Database Name|ditto|`postgres`
-
-
-
-####  Keycloak
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`KEYCLOAK_URL`| URL to your Keycloak server|eg. https://iam.aot-technologies.com| must be set to your Keycloak server
-`KEYCLOAK_URL_REALM`|The Keyvcloak realm to use| eg. form-test| must be set to your Keycloak realm
-`KEYCLOAK_CLIENTID`|Your Keycloak Client ID within the realm|eg. forms-flow-bpm | must be set to your Keycloak client id
-`KEYCLOAK_CLIENTSECRET`|The secret for your Keycloak Client Id| eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12 | must be set to your Keycloak client secret
-`REACT_APP_CLIENT_ROLE`|The role name used for client users||`formsflow-client`
-`REACT_APP_STAFF_DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
-`REACT_APP_STAFF_REVIEWER_ROLE`|The role name used for reviewer users||`formsflow-reviewer`
-`STAFF_ANALYST_ROLE`|The role name used for analyst/redash users||`formsflow-analyst`
-`STAFF_BPM_ROLE`|The role name used for workflow designer users||`formsflow-bpm`
-`REACT_APP_KEYCLOAK_CLIENT`|Keycloak client name for FormsFlowUI||forms-flow-web
-`BPM_TOKEN_API`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`<KEYCLOAK-BASE-URL>/auth/realms/<realm>/protocol/openid-connect/token`
-`JWT_OIDC_WELL_KNOWN_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`<KEYCLOAK-BASE-URL>/auth/realms/<REALM>/.well-known/openid-configuration`
-`JWT_OIDC_ALGORITHMS`|JWT signing algorithms||`RS256`
-`JWT_OIDC_JWKS_URI`|Keycloak JWKS URI|Plug in Keycloakd base url plus realm| `<KEYCLOAK-BASE-URL>/auth/realms/<REALM>/protocol/openid-connect/certs`
-`JWT_OIDC_ISSUER`| The issuer of JWT's from Keycloak for your realm| Plug in your realm and Keycloak base url | | `<KEYCLOAK-BASE-URL>/auth/realms/<REALM>`
-`JWT_OIDC_AUDIENCE`|The audience for the JWT||`forms-flow-web`
-`JWT_OIDC_CACHING_ENABLED`|JWT caching||`True`
-`JWT_OIDC_JWKS_CACHE_TIMEOUT`| How long to cache JWKS values before rechecking server||`300`
-
-#### form.io 
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`ROOT_EMAIL`|form.io admin login |eg. user@gov.bc.ca | must be set to whatever email address you want form.io to have as admin user|
-`ROOT_PASSWORD`|form.io admin password|eg. dontusethis|must be set to whatever password you want for your form.io admin user
-`REACT_APP_API_SERVER_URL`|The URL of the form.io server ||`http://localhost:3001`
-`REACT_APP_API_PROJECT_URL`|The URL of the form.io project server ||`http://localhost:3001`
-`REACT_APP_CLIENT_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the value from form.io interface as per 
-`REACT_APP_STAFF_REVIEWER_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d| must get the value from form.io interface as per 
-`REACT_APP_STAFF_DESIGNER_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the value from form.io interface as per 
-`REACT_APP_ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the value from form.io interface as per
-`REACT_APP_USER_RESOURCE_FORM_ID`| User forms form-Id| eg.5ee090b0ee045f51c5609cb1| must get the value from form.io interface as per
-`MONGO_INITDB_ROOT_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own|Can be blank|
-`MONGO_INITDB_ROOT_PASSWORD`|Mongo Root Password|Can be blank
-`MONGO_INITDB_DATABASE`|Mongo Database Name||formio
-`MONGO_REPLICA_SET_NAME`|Mongo Replica set name|| rs0
-
-#### FormsFlow UI
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-
-#### ReDash
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`REACT_APP_INSIGHT_API_BASE`| Insight Api base end-point| eg. | 
-`REACT_APP_INSIGHTS_API_KEY`| API_KEY from REDASH | | must insert your ReDash API key here
-
-`JDBC_URL`|JDBC DB Connection URL for BPM-API||`jdbc:postgresql://forms-flow-bpm-db:5432/postgres`	
-`JDBC_USER`|Username for BPM database user|||	
-`JDBC_PASSWORD`|Password for BPM database user|||
-`JDBC_DRIVER`|JDBC driver||`org.postgresql.Driver`
-`BPM_CLIENT_ID`|Client ID for Camunda to register with Keycloak||`forms-flow-bpm`
-`BPM_CLIENT_SECRET`|Secret returned from BPM client registration|Plug in your BPM secret key|`<BPM CLIENT SECRET KEY HERE>`
-`BPM_GRANT_TYPE`|OIDC grant type||`client_credentials`
-`BPM_API_BASE`| Base URL for accessing Camunda data||`http://localhost:8000/camunda/engine-rest/`
-`API_PROCESS`|Path fragment to query process definition||`process-definition/`
-`API_TASK_HISTORY`|Path fragment to query task history||`history/task/`
-`API_TASK`|Path fragment for task API||`task/`
-
-
-#### FormsFlow Python API 
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`REACT_APP_WEB_BASE_URL`|Web API base endpoint|||
-`WEB_API_DATABASE_URL`|URL used to access the web api| Fill in the user and password from below |`postgresql://<USER>:<PASSWORD>@forms-flow-webapi-db:5432/<WEBAPI_DB>`
-`WEB_API_POSTGRES_USER`|FormsFlow database postgres user||postgres
-`WEB_API_POSTGRES_PASSWORD`|FormsFlow database postgres password|Change this|`changeme`
-`WEB_API_POSTGRES_DB`| FormsFlow database name||`formsflow`
-
-
-
-SECRET_KEY='--- change me now ---'
 ## Running the Application
-     -----------------------
 * Open up your terminal and navigate to the root folder of this project
 * Start the application using the command
             ```docker-compose up --build           ```
@@ -302,10 +204,13 @@ Managing forms
 --------------
 - Refer [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#forms-flow-web)
 
-Analytics-Redash
+Managing analytics dashboards
 ----------------
 - Refer [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-analytics#how-to-run)
 
+##Managing workflows
+
+* Refer 
 
   
 ## License

@@ -145,6 +145,30 @@ Create a forms-flow-bpm Client.
 		* Select camunda-rest-api
 		* Click Add selected >>
 
+## Add Audience Mapper for forms-flow-bpm 
+
+* Login to KeyCloak Realm with admin privileges  
+* Configure > Clients 
+* Select forms-flow-bpm Client
+* Select Mappers tab
+    * Click Create
+        * Name = flowsflow-api-mapper
+        * Mapper Type = Audience
+       	* Included Custom Audience = forms-flow-web
+       	* Click Save
+
+## Add Audience Mapper for forms-flow-web 
+
+* Login to KeyCloak Realm with admin privileges  
+* Configure > Clients 
+* Select forms-flow-web Client
+* Select Mappers tab
+    * Click Create
+        * Name = flowsflow-api-mapper
+        * Mapper Type = Audience
+       	* Included Custom Audience = forms-flow-web
+       	* Click Save
+
 
 ## Create Groups   
 

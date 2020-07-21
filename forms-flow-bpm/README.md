@@ -24,16 +24,8 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ### Keycloak Configuration
 
-1. Login to Keycloak
-2. Select your realm --> Go to clients tab --> Create a new service account enabled client 
-3. Configure the client for protocol "openid-connect", and configure the following listed roles under "Service Client Roles":
-    * query-groups
-    * query-users
-    * view-users
-4. Configure a custom "Client Scope" named `camunda-rest-api` to include the expected audience claim in delivered tokens
-    * Add a mapper with type `Audience` and configure the required audience `camunda-rest-api`
-    * Assign the created "Client Scope" `camunda-rest-api` to our client
-    * For more details, go to https://github.com/camunda/camunda-bpm-identity-keycloak/tree/master/examples/sso-kubernetes#optional-security-for-the-camunda-rest-api
+1. Login to KeyCloak Realm with admin privileges
+2. For client **forms-flow-bpm** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md) 
 
  NOTE: The default admin group "camunda-admin" has been referenced in application.yaml, and this needs to be available for use.
  

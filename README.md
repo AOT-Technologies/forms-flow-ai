@@ -40,12 +40,12 @@ The project was initiated by AOT Technologies as a means of addressing the gener
 ### Project Dependencies
 
 
-- [form.io](https://www.form.io/opensource) (included under /forms-flow-forms)
-- [Camunda](https://camunda.com/) (included under /forms-flow-bpm)
+- [form.io](https://www.form.io/opensource) (included under ./forms-flow-forms)
+- [Camunda](https://camunda.com/) (included under ./forms-flow-bpm)
+- [Redash](https://redash.io) (included under ./forms-flow-analytics)
 - [Keycloak](https://www.keycloak.org/) (existing Keycloak server required)
-- [Redash](https://redash.io) (included under /forms-flow-analytics)
-- [Python](https://www.python.org/) (included under /forms-flow-api)
-- **Optional**: [Nginx](https://www.nginx.com) (included under deployment/nginx) 
+- [Python](https://www.python.org/) (included under ./forms-flow-api)
+- **Optional**: [Nginx](https://www.nginx.com) (included under ./deployment/nginx) 
 
 ### Project Tree
 
@@ -53,7 +53,7 @@ The project was initiated by AOT Technologies as a means of addressing the gener
  * [README.md](./README.md) This file
  * [deployment](./deployment) Deployment of complete framework
    * [README](./deployment/README)
- * [forms-flow-analytics](./forms-flow-analytics) ReDash analytics components
+ * [forms-flow-analytics](./forms-flow-analytics) Redash analytics components
    * [README](./forms-flow-analytics/README)
  * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
     * [README](./forms-flow-bpm/README)
@@ -96,7 +96,7 @@ Browser-based React integration web UI
 Most of the day-to-day end-user and review tasks are performed from this application,  built specifically to act as a common UI combining forms, workflow and analytics functionality. The web-application is written as a [progressive](https://en.wikipedia.org/wiki/Progressive_web_application) app with potential for offline data-entry. FormsFlow UI accesses the individual system component data through native API's using OIDC or SAML access tokens.
 
 #### Redash Admin UI
-The native admin interface to ReDash (bundled and unchanged). Use this to build analytics dashboards.
+The native admin interface to Redash (bundled and unchanged). Use this to build analytics dashboards.
 #### Redash API
 The REST interface to the Redash core. Bundled and unchanged
 #### Form.io API

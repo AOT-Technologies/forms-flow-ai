@@ -180,9 +180,9 @@ The products are installed with a default configuration so that the base system 
 ### Configure and Build
 
 * Clone this github repo.
-* cd  to deployment/docker folder ```cd ./deployment/docker```
+* cd  to deployment/docker folder using ```cd ./deployment/docker```
 * Follow the instructions in the [README](./deployment/docker/README.md)
-* If deploying to a remote server, you can use nginx as a reverse proxy. To help you, follow the instructions in the [,/nginx/README](./nginx/README.md)
+* If deploying to a remote server, you can use nginx as a reverse proxy. To help you, follow the instructions in the [README of Nginx](./deployment/nginx/README.md)
 * Start the system as per [Running the application](#running-the-application)
 
 

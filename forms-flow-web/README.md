@@ -29,7 +29,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 	5. Click Save  
 6. Settings Tab  
 	7. Name = forms-flow-web  
-	8. Description = React based FormIO web components  
+	8. Description = React based form.io web components  
 	7. Access Type = public  
 	8. Standard Flow Enabled = ON  
 	9. Direct Access Grants Enabled = ON  
@@ -108,5 +108,5 @@ Steps to get the client adapter configuration from Keycloak:
   * Click the button **+ Create Form** to launch the form designer studio.
   * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
 
-To know more about formio, go to https://help.form.io/userguide/introduction/.
+To know more about form.io, go to https://help.form.io/userguide/introduction/.
 

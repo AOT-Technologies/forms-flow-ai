@@ -16,7 +16,7 @@
 version: '3.7'
 services:
   forms-flow-forms-db:
-    image: mongo
+    image: mongo:4.1
     restart: always
     hostname: forms-flow-forms-db
     ports:
@@ -26,9 +26,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${FORMIO_MONGO_PASSWORD}
       MONGO_INITDB_DATABASE: ${FORMIO_MONGO_DATABASE}
     volumes:
-      - ./mongodb/data/db/:/data/db/
-      - ./mongodb/data/log/:/var/log/mongodb/
-      - ./mongodb/mongod.conf:/etc/mongod.conf
+      - mdb-data:/data/db/
     networks:
       - forms-flow-forms-network
 

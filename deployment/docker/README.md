@@ -92,7 +92,7 @@ Listed variables are used by **forms-flow-web**
                     *  [forms-flow-analytics](../../forms-flow-analytics/README.md)
                     *  [forms-flow-forms](../../forms-flow-forms/README.md)
                     *  [forms-flow-bpm](../../forms-flow-bpm/README.md)
-                    *  [forms-flow-webapi](../../forms-flow-webapi/README.md)   
+                    *  [forms-flow-api](../../forms-flow-api/README.md)   
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
   

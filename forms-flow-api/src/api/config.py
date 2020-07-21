@@ -17,10 +17,10 @@ from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
 
 CONFIGURATION = {
-    'development': 'forms_flow_api.config.DevConfig',
-    'testing': 'forms_flow_api.config.TestConfig',
-    'production': 'forms_flow_api.config.ProdConfig',
-    'default': 'forms_flow_api.config.ProdConfig'
+    'development': 'api.config.DevConfig',
+    'testing': 'api.config.TestConfig',
+    'production': 'api.config.ProdConfig',
+    'default': 'api.config.ProdConfig'
 }
 
 

@@ -10,8 +10,6 @@ This page elaborates how to setup the overall solution using docker.
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Verify the Application Status](#verify-the-application-status) 
-* [How to Create your First Form](#how-to-create-your-first-form)
-* [How to Create your First Workflow Process](#how-to-create-your-first-workflow-process)
 * [How to Associate the Form with Workflow Process](#how-to-associate-the-form-with-workflow-process)
 
 

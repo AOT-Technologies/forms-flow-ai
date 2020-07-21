@@ -25,16 +25,6 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 * Login to KeyCloak Realm with admin privileges  
 * For client **forms-flow-web** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md) 
 
- 
-#### Keycloak Configuration
-
-- Update Keycloak configuration in file **public/config/kc/keycloak.json**
-
-Steps to get the client adapter configuration from Keycloak:
-  - Login to Keycloak
-  - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
-  - Copy the JSON data
-  - Update the content in file **public/config/kc/keycloak.json**
 
 ### Installation
 
@@ -58,7 +48,14 @@ Steps to get the client adapter configuration from Keycloak:
  `INSIGHT_API_BASE`|Insight Api base end-point||`http://localhost:7000`
  `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
  `WEB_API_BASE_URL`|FormsFlow Rest API URI||`http://localhost:5000/api`
-   
+* Update Keycloak configuration in file **public/config/kc/keycloak.json**
+
+Steps to get the client adapter configuration from Keycloak:
+  - Login to Keycloak
+  - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
+  - Copy the JSON data
+  - Update the content in file **public/config/kc/keycloak.json**
+  
 ### Running the application
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.

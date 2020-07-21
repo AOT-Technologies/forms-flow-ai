@@ -9,13 +9,10 @@
 * [System Architecture](#system-architecture)
 * [User and Roles](#users-and-roles)
 * [System Operation](#system-operation)
-* [Installation and Configuration](#installation-and-configuration)
-* [Installation and Configuration](#installation-and-configuration)
+* [Deployment and Configuration](#deployment-and-configuration)
   * [Prerequisites](#prerequisites)
-  * [Build](#build)
-  * [Default Settings](#default-settings)
-  * [Environment Variables](#Environment-Variables-setup)
-  * [Running the Application in Docker Environment](#running-the-application-in-docker-environment)
+  * [Configure and Build](#configure-and-build)
+* [Running the Applicationt](#running-the-application)
 * [Managing Forms](#managing-forms)
 * [Managing Workflows](#managing-workflows)
 * [Managing Analytics Dashboards](#managing-analytics-dashboards)
@@ -101,7 +98,7 @@ The native admin interface to Redash (bundled and unchanged). Use this to build 
 The REST interface to the Redash core. Bundled and unchanged
 #### Form.io API
 The REST interface to the form.io core
-#### Camunda admin UI
+#### Camunda Admin UI
 The native admin interface to Camunda (bundled and unchannged) . Use this to define workflows and to manage workflow tasks as an admin.
 #### REST API
 API providing business logic around Formsflow Postgres  developed in Python. This API is used extensively by the FormsFlow UI to synchronize,maintain state, extend functionality and integrate between components.
@@ -172,7 +169,7 @@ These users are responsible for accessing the native capabilities of the embedde
 
 
 
-## Deployment and configuration
+## Deployment and Configuration
  The framework installs the products  mentioned above (with the exception of Keycloak which must either be pre-existing or installed and configured in advance).
 
 The products are installed with a default configuration so that the base system works "out-the-box", however the advanced configuration and management of the products requires the relevant product documentation. 

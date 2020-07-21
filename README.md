@@ -54,8 +54,6 @@ The project was initiated by AOT Technologies as a means of addressing the gener
    * [README](./forms-flow-analytics/README)
  * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
     * [README](./forms-flow-bpm/README)
-* [forms-flow-db](./forms-flow-db) Database scripts
-   * [README](./forms-flow-db/README)
  * [forms-flow-forms](./forms-flow-forms) form. io deployment and  integration
    * [README](./forms-flow-forms/README)
  * [forms-flow-idm](./forms-flow-idm) Identity Management (Keycloak)

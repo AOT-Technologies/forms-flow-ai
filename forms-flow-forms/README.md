@@ -5,7 +5,7 @@ To know more about FORMIO, go to https://github.com/formio/formio.
 
 ## Table of Content
 * [Prerequisites](#prerequisites)
-* [Project Setup](#project-setup)
+* [Solution Setup](#solution-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
@@ -19,7 +19,7 @@ To know more about FORMIO, go to https://github.com/formio/formio.
 
 The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
 
-## Project Setup
+## Solution Setup
 
 ### Keycloak Setup
 

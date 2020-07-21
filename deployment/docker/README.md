@@ -7,9 +7,9 @@ This page elaborates how to setup the overall solution using docker.
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
-  * [Step 2 : Environment Configuration](#environment-configuration)
+  * [Step 2 : Installation](#installation)
   * [Step 3 : Running the Application](#running-the-application)
-  * [Step 4 : Verify the Application Status](#verify-the-application-status) 
+  * [Step 4 : Health Check](#health-check) 
 * [How to Associate the Form with Workflow Process](#how-to-associate-the-form-with-workflow-process)
 
 
@@ -27,7 +27,18 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
 
 Environment variables are set in **.env** and read by system.  
 
-**FormsFlow.AI Role Mapping:**
+
+
+      
+### Running the Application
+
+   * Make sure you have a Docker machine up and running.
+   * Start the analytics server by following the instructions given on  [README](../../forms-flow-analytics/README.md)
+   * Start the FormIO server by following the instructions given on  [README](../../forms-flow-forms/README.md)
+   * Make sure your current working directory is "/deployment/docker".
+   * Rename the file **sample.env** to **.env**.
+   * Modify the configuration values as needed. Details below,   
+   **FormsFlow.AI Role Mapping:**
 Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
 `CLIENT_ROLE`|	The role name used for client users|| formsflow-client
@@ -82,22 +93,20 @@ Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `INSIGHT_API_BASE`|Insight Api base end-point||`http://localhost:7000`
 `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
+   
+   **Additionally, you may want to change these**
+ ```  
+        * The value of database details (especially if this instance is not just for testing purposes)
+ ```
+ ```
+        * The Postgres volume definition [This may apply for windows based setup. Refer the README of individual modules.]  
+                    *  [forms-flow-analytics](../../forms-flow-analytics/README.md)  
+                    *  [forms-flow-forms](../../forms-flow-forms/README.md)  
+                    *  [forms-flow-bpm](../../forms-flow-bpm/README.md)  
+                    *  [forms-flow-api](../../forms-flow-api/README.md)     
+```
 
-      
 ### Running the Application
-
-   * Make sure you have a Docker machine up and running.
-   * Start the analytics server by following the instructions given on  [README](../../forms-flow-analytics/README.md)
-   * Start the FormIO server by following the instructions given on  [README](../../forms-flow-forms/README.md)
-   * Make sure your current working directory is "/deployment/docker".
-   * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed.  Additionally, you may want to change these:     
-        * The value of Postgres database details (especially if this instance is not just for testing purposes)
-        * The Postgres volume definition [This may apply for windows based setup. Refer the README of individual modules.]
-                    *  [forms-flow-analytics](../../forms-flow-analytics/README.md)
-                    *  [forms-flow-forms](../../forms-flow-forms/README.md)
-                    *  [forms-flow-bpm](../../forms-flow-bpm/README.md)
-                    *  [forms-flow-api](../../forms-flow-api/README.md)   
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
   

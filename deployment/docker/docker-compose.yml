@@ -38,6 +38,47 @@ services:
       - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN}
     networks:
       - forms-flow-bpm-network
+ 
+  forms-flow-forms-db:
+    image: mongo
+    restart: always
+    hostname: forms-flow-forms-db
+    ports:
+      - '27018:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+    volumes:
+      - ./mongodb/data/db/:/data/db/
+      - ./mongodb/data/log/:/var/log/mongodb/
+      - ./mongodb/mongod.conf:/etc/mongod.conf
+    networks:
+      - forms-flow-forms-network
+
+  forms-flow-forms:
+    build:
+      context: ./forms-flow-forms/
+      dockerfile: Dockerfile
+    # The app will restart until Mongo is listening
+    restart: always
+    links:
+      - forms-flow-forms-db
+    ports:
+      - '3001:3001'
+    # The application wants to download things to the local directory
+    # TODO: really wish I could mount this as read-only
+    volumes:
+      - ./:/app:rw
+    environment:
+      DEBUG: formio:*
+      NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio"}'
+      ROOT_EMAIL: ${ROOT_EMAIL}
+      ROOT_PASSWORD: ${ROOT_PASSWORD}
+    stdin_open: true # -i
+    tty: true # -t
+    networks:
+      - forms-flow-forms-network
 
   forms-flow-ai:
     build:
@@ -115,9 +156,11 @@ services:
 
 networks:
   forms-flow-webapi-network:
+  forms-flow-forms-network:
   forms-flow-bpm-network:
   forms-flow-web-network:
     driver: 'bridge'
 
 volumes:
+  mdb-data:
   postgres:

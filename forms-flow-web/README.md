@@ -12,7 +12,7 @@ A React library for rendering out forms based on the Form.io platform.
   * [Step 3 : Running the Application](#running-the-application)
      * [Using Docker](#using-docker)
      * [Using npm](#using-npm)
-  * [Step 4 : Verify the Application Status](#verify-the-application-status)
+  * [Step 4 : Health Check](#health-check)
 * [How to Create Your First Form](#how-to-create-your-first-form)
 
 ## Prerequisites
@@ -106,7 +106,7 @@ Steps to get the client adapter configuration from Keycloak:
    * Run `npm install` to install dependencies and build
    * Run `npm start` to start.
 
-### Verify the Application Status
+### Health Check
 
    The application should be up and available for use at port defaulted to 3000 in application.yaml http://localhost:3000/
 

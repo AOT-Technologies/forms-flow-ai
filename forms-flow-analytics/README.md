@@ -9,7 +9,7 @@ To know more about Redash, go to https://github.com/getredash/redash.
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
-  * [Step 4 : Verify the application status](#verify-the-application-status)
+  * [Step 4 : Health Check](#health-check)
   * [Step 5 : Configuration of Keycloak SAML Setup](#configuration-of-keycloak-saml-setup)   
 
 ## Prerequisites
@@ -88,7 +88,7 @@ Variable name | Meaning | Possible values | Default value |
    * Run `docker-compose run --rm server create_db` to setup database andd to create tables.
    * Run `docker-compose up -d` to start.
    
-### Verify the application status
+### Health Check
 
    The application should be up and available for use at port defaulted to 7000 in docker-compose.yml (i.e. http://localhost:7000/)
     and register with any valid credentials.

@@ -43,9 +43,9 @@ The project was initiated by AOT Technologies as a means of addressing the gener
 - [form.io](https://www.form.io/opensource) (included under forms-flow-ai/forms-flow-forms)
 - [Camunda](https://camunda.com/) (included under forms-flow-ai/forms-flow-bpm)
 - [Keycloak](https://www.keycloak.org/) (existing Keycloak server required)
-- [Redash](https://redash.io)(included under forms-flow-ai/forms-flow-analytics)
-- [Python]() (included under forms-flow-ai/forms-flow-webapi)
-- [Nginx](https://www.nginx.com)(included under forms-flow-ai/nginx) **Optional**
+- [Redash](https://redash.io) (included under forms-flow-ai/forms-flow-analytics)
+- [Python](https://www.python.org/) (included under forms-flow-ai/forms-flow-webapi)
+- **Optional**: [Nginx](https://www.nginx.com) (included under forms-flow-ai/nginx) 
 
 ### Project Tree
 

@@ -47,6 +47,8 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
  `CAMUNDA_POSTGRES_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
  `CAMUNDA_POSTGRES_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
  `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`camunda`
+
+ * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default setting provided is for Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
    
  **Additionally, you may want to change these**  
  

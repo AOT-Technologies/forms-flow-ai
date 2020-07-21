@@ -85,7 +85,7 @@ See diagram
 
 ### Components 
 
-The components of the system are :
+The components of the system are:
 #### Formsflow UI
 Browser-based React integration web UI
 Most of the day-to-day end-user and review tasks are performed from this application,  built specifically to act as a common UI combining forms, workflow and analytics functionality. The web-application is written as a [progressive](https://en.wikipedia.org/wiki/Progressive_web_application) app with potential for offline data-entry. FormsFlow UI accesses the individual system component data through native API's using OIDC or SAML access tokens.
@@ -99,7 +99,7 @@ The REST interface to the form.io core
 #### Camunda Admin UI
 The native admin interface to Camunda (bundled and unchannged) . Use this to define workflows and to manage workflow tasks as an admin.
 #### REST API
-API providing business logic around Formsflow Postgres  developed in Python. This API is used extensively by the FormsFlow UI to synchronize,maintain state, extend functionality and integrate between components.
+API providing business logic around Formsflow Postgres  developed in Python. This API is used extensively by the FormsFlow UI to synchronize, maintain state, extend functionality and integrate between components.
 #### Nginx Web server (optional)
 Webserver providing reverse-proxy redirection and SSL to components for remote deployments. ( bundled and configured ) 
 
@@ -108,7 +108,7 @@ The system  uses an existing (your) Keycloak server which provides a common iden
 
 ## Users and Roles
 
-The framework defines user roles which are standardised across all the products. During the installation process, component-specific variants of these roles are set up , these need to be added to the main .env file in order to provide seamless integration
+The framework defines user roles which are standardised across all the products. During the installation process, component-specific variants of these roles are set up , these need to be added to the main .env file in order to provide seamless integration:
 
 - formsflow-designer  
   * Design and manage electronic forms
@@ -157,10 +157,10 @@ In general operation is as follows (assuming local installation ):
 
 These users are responsible for accessing the native capabilities of the embedded products in order to configure analytics dashboards, create and manage workflows and create and manage forms. It is beyond the scope of this document to describe the detailed functionality of these products, however the general process is :
 
-* Access product URL as follows :
-  * Camunda : https://localhost/camunda
-  * form.io : https://localhost/formflow-ui (the form designer is embedded into the FormsFlow UI)
-  * Redash : https://localhost/analytics
+* Access product URL as follows:
+  * Camunda: https://localhost/camunda
+  * form.io: https://localhost/formflow-ui (the form designer is embedded into the FormsFlow UI)
+  * Redash: https://localhost/analytics
 * The login process is the same for all of them, redirect to Keycloak as OIDC (SAML for Redash) and optain the appropriate JWT + claims. 
 * For the forms designer, the FormFlow UI recognises the additional role of formsflow-designer and enables a form design capability
 * For Redash and Camunda, there is a mapping in the configuration file which needs to be setup between formsflow-analyst and formsflow-bpm and the corresponding groups in Redash and Camunda respectively. This is all covered in the installation instructions.
@@ -168,7 +168,7 @@ These users are responsible for accessing the native capabilities of the embedde
 
 
 ## Deployment and Configuration
- The framework installs the products  mentioned above (with the exception of Keycloak which must either be pre-existing or installed and configured in advance).
+ The framework installs the products mentioned above (with the exception of Keycloak which must either be pre-existing or installed and configured in advance).
 
 The products are installed with a default configuration so that the base system works "out-the-box", however the advanced configuration and management of the products requires the relevant product documentation. 
 
@@ -179,7 +179,7 @@ The products are installed with a default configuration so that the base system 
 
 ### Configure and Build
 
-* Clone this github repo.
+* Clone this github repo
 * cd  to deployment/docker folder using ```cd ./deployment/docker```
 * Follow the instructions in the [README](./deployment/docker/README.md)
 * If deploying to a remote server, you can use nginx as a reverse proxy. To help you, follow the instructions in the [README of Nginx](./deployment/nginx/README.md)

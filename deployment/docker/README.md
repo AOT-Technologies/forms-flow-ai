@@ -117,6 +117,58 @@ To know more about formio, go to https://help.form.io/userguide/introduction/.
 * To learn about deploying your BPMN, go to https://docs.camunda.org/get-started/quick-start/deploy/. Note that your default endpoint for Camunda's REST API is http://localhost:8000/camunda/engine-rest
 
 ### How to Associate the Form with Workflow Process
+* Get the jwt token from formio resource **/user/login**
+```
+POST http://localhost:3001/user/login
+{
+    "data": {
+        "email": {{email}},
+        "password": {{password}}
+    }
+}
+```
+* Get the form ID of form' from formio resource **/export** 
+```
+GET http://localhost:3001/export
+
+Headers:
+Content-Type : application/json
+x-jwt-token: {x-jwt-token}
+```
+* Get the process definition key from .bpmn
+
+* Get the access token
+```
+POST {Keycloak URL}/auth/realms/forms-flow-ai/protocol/openid-connect/token
+
+Body:
+grant_type: client_credentials
+client_secret: a3413dbd-caf2-41a8-ae54-e7aa448154d8
+client_id: forms-flow-bpm
+
+Headers:
+Content-Type : application/x-www-form-urlencoded
+```   
+* Create form using the resource **/form**
+```
+POST http://localhost:5000/form
+
+Body:
+{
+  "created_by": "userid",
+  "formId": "5ee10121d8f7fa73e2402a52",
+  "formName": "Feedback Form",
+  "formRevisionNumber": "V1",
+  "processKey": "onestepapproval",
+  "processName": "One Step Approval",
+  "comments": "OK"
+}
+
+Headers:
+Content-Type : application/json
+Authorization: Bearer {access_token}
+
+```
 
 
 

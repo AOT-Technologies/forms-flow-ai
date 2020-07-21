@@ -2,7 +2,7 @@
 
 **FormsFlow.AI** delivers progressive web application with React version `16.3` and `create-react-app`
 
-A React library for rendering out forms based on the Form.io platform.
+A React library for rendering out forms based on the form.io platform.
 
 ## Table of Content
 * [Prerequisites](#prerequisites)
@@ -78,8 +78,7 @@ Environment variables are set in **.env** and read by system.
  `INSIGHT_API_BASE`|Insight Api base end-point||`http://localhost:7000`
  `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
  `WEB_API_BASE_URL`|FormsFlow Rest API URI||`http://localhost:5000/api`
- `EMAIL_NOTIFICATION_GROUP`|Group to to which to send Email notifications|Must match keycloak group|`formsflow-reviewer`
-
+ 
 #### Keycloak Configuration
 
 - Update Keycloak configuration in file **public/config/kc/keycloak.json**

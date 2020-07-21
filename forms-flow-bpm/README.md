@@ -10,7 +10,7 @@ To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identit
 * [Solution setup](#solution-setup)
   * [Step 1 : Keycloak Configuration](#keycloak-configuration)
   * [Step 2 : Environment Configuration](#environment-configuration)
-  * [Step 3 : Build and Deploy](#build-and-deploy)
+  * [Step 3 : Installation](#installation)
   * [Step 4 : Health Check](#health-check)
 * [How to Deploy Process](#how-to-deploy-process)
 * [How to Enable SSL](#how-to-enable-ssl)
@@ -53,7 +53,7 @@ This section elaborates on the properties exposed for tuning the system.
  `CAMUNDA_POSTGRES_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
  `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`camunda`
    
-### Build and Deploy
+### Installation
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is forms-flow-bpm.

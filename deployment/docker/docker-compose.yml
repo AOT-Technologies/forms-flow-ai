@@ -127,7 +127,7 @@ services:
 
   forms-flow-webapi:
     build:
-      context: ./forms-flow-webapi/
+      context: ./forms-flow-api/
       dockerfile: Dockerfile
     restart: unless-stopped
     links:

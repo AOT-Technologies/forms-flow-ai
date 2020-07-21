@@ -65,8 +65,8 @@ The project was initiated by AOT Technologies as a means of addressing the gener
    * [README](./forms-flow-idm/README)
  * [forms-flow-web](./forms-flow-web) Forms Flow Integration client
    * [README](./forms-flow-web/README)
-* [forms-flow-webapi](./forms-flow-webapi) REST API to FormsFlow integration components
-   * [README](./forms-flow-webapi/README)
+* [forms-flow-webapi](./forms-flow-api) REST API to FormsFlow integration components
+   * [README](./forms-flow-api/README)
 
 Features 
 ------------------

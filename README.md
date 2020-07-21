@@ -49,7 +49,7 @@ The project was initiated by AOT Technologies as a means of addressing the gener
 
 ### Project tree
 
-.
+
  * [README.md](./README.md) This file
  * [deployment](./deployment) Deployment of complete framework
    * [README](./deployment/README)

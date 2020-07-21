@@ -49,15 +49,17 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
  `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`camunda`
    
  **Additionally, you may want to change these**  
-        ```  
+ 
+```
           The Postgres volume location.          
           
           For windows, the path of volume to be changed as given below.
            volumes:
             - ./postgres/camunda:/data/postgres
-      ```
+```
+```
          The value of Datastore credentials (especially if this instance is not just for testing purposes)
-   
+```
 ### Running the application
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.

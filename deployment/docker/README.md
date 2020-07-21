@@ -29,10 +29,6 @@ Follow the instructions given on [link](./keycloak-setup-update.md)
 
 Environment variables are set in **.env** and read by system.  
 
- Variable name | Meaning | Possible values | Default value |
- --- | --- | --- | ---
- `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
-
 **FormsFlow.AI Role Mapping:**
 Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
@@ -54,6 +50,9 @@ Variable name | Meaning | Possible values | Default value |
 `WEB_API_POSTGRES_DB`|FormsFlow database name||`formsflow`
 
 **FormsFlow.AI Integration Settings:**
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`NODE_ENV`| Define project level configuration | `development, test, production` | `development`
 `CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda/engine-rest/`
 `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://localhost:3001`
 `REACT_APP_WEB_BASE_URL`|FormsFlow Rest API URI||`http://localhost:5000/api`

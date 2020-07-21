@@ -64,7 +64,7 @@ Variable name | Meaning | Possible values | Default value |
     
    * Get the access token
 ```
-POST https://iam.aot-technologies.com/auth/realms/process-engine/protocol/openid-connect/token
+POST {Keycloak URL}/auth/realms/process-engine/protocol/openid-connect/token
 
 Body:
 grant_type: client_credentials

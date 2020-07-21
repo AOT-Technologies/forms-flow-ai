@@ -201,16 +201,16 @@ The products are installed with a default configuration so that the base system 
          - https://localhost:8000/camunda - forms-flow-bpm
     
 ## Managing Forms
---------------
-- Refer to [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#forms-flow-web)
+
+- Please refer to [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#forms-flow-web)
 
 ## Managing workflows
---------------
-- Refer to [forms-flow-bpm](https://github.com/AOT-Technologies/forms-flow-ai-dev/tree/feature/tasks-base/forms-flow-bpm#how-to-deploy-process)
+
+- Please refer to [forms-flow-bpm](https://github.com/AOT-Technologies/forms-flow-ai-dev/tree/feature/tasks-base/forms-flow-bpm#how-to-deploy-process)
 
 ## Managing Analytics Dashboards
---------------
-- Refer to [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-analytics#how-to-run)
+
+- Please refer to [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-analytics#how-to-run)
 
 
 

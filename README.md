@@ -3,11 +3,11 @@
 
 ## Table of Content
 * [About the Project](#about-the-project)
-  * [Project dependencies](#project-dependencies)
-  * [Project tree](#project-tree)
+  * [Project Dependencies](#project-dependencies)
+  * [Project Tree](#project-tree)
 * [Features](#features)
 * [System Architecture](#system-architecture)
-* [User and roles](#users-and-roles)
+* [User and Roles](#users-and-roles)
 * [System Operation](#system-operation)
 * [Installation and Configuration](#installation-and-configuration)
 * [Installation and Configuration](#installation-and-configuration)
@@ -15,10 +15,10 @@
   * [Build](#build)
   * [Default Settings](#default-settings)
   * [Environment Variables](#Environment-Variables-setup)
-  * [Running the application in Docker Environment](#running-the-application-in-docker-environment)
-* [Managing forms](#  -forms)
-* [Additional Configurations](#additional-configurations)
-    * [SSL Nginx configurations](#ssl-nginx-configurations)
+  * [Running the Application in Docker Environment](#running-the-application-in-docker-environment)
+* [Managing Forms](#managing-forms)
+* [Managing Workflows](#managing-workflows)
+* [Managing Analytics Dashboards](#managing-analytics-dashboards)
 * [License](#license)
 * [Links](#links)
 
@@ -47,7 +47,7 @@ The project was initiated by AOT Technologies as a means of addressing the gener
 - [Python]() (included under forms-flow-ai/forms-flow-webapi)
 - [Nginx](https://www.nginx.com)(included under forms-flow-ai/nginx) **Optional**
 
-### Project tree
+### Project Tree
 
 
  * [README.md](./README.md) This file
@@ -200,17 +200,19 @@ The products are installed with a default configuration so that the base system 
          - http://localhost:3001 - forms-flow-forms
          - https://localhost:8000/camunda - forms-flow-bpm
     
-Managing forms
+## Managing Forms
 --------------
-- Refer [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#forms-flow-web)
+- Refer to [forms-flow-web](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-web#forms-flow-web)
 
-Managing analytics dashboards
-----------------
-- Refer [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-analytics#how-to-run)
+## Managing workflows
+--------------
+- Refer to [forms-flow-bpm](https://github.com/AOT-Technologies/forms-flow-ai-dev/tree/feature/tasks-base/forms-flow-bpm#how-to-deploy-process)
 
-##Managing workflows
+## Managing Analytics Dashboards
+--------------
+- Refer to [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-analytics#how-to-run)
 
-* Refer 
+
 
   
 ## License

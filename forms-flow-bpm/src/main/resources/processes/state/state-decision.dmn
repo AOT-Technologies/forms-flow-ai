@@ -21,18 +21,18 @@
           <text>"reviewer"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_065u3ym">
-          <text>"{'status':[{'name': 'Approve','value': 'approve'},{'name': 'Reject','value': 'reject'}]}"	</text>
+          <text>"{'status':[{'name': 'Approve','value': 'Approved'},{'name': 'Reject','value': 'Rejected'}]}"</text>
         </outputEntry>
       </rule>
       <rule id="row-950612891-2">
         <inputEntry id="UnaryTests_0u1z4ho">
-          <text>"onestepapproval-sendback"</text>
+          <text>"onestepreview"</text>
         </inputEntry>
         <inputEntry id="UnaryTests_1euytqf">
           <text>"reviewer"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_198frve">
-          <text>"{'status':[{'name': 'Complete','value': 'complete'},{'name': 'Send Back','value': 'send-back'}]}"	</text>
+          <text>"{'status':[{'name': 'Request Processed','value': 'Request Processed'}]}"</text>
         </outputEntry>
       </rule>
     </decisionTable>

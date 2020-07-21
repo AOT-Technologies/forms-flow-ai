@@ -134,7 +134,7 @@ The framework defines user roles which are standardised across all the products.
 In general operation is as follows (assuming local installation ):
 
 #### End-user
-* End-user logs into FormsFlow UI at url https://localhost/formsflow-ui
+* End-user logs into FormsFlow UI at url http://localhost:3000/
 * User is redirected to Keycloak via OIDC where user's roles are returned as OIDC claims in a JWT
 * User selects a form from the list of forms available. The available forms can be filtered by the user group with advanced configuration, by default the user sees all forms published. Form details are provided through form.io 
 * The user fills in the form and submits it
@@ -144,7 +144,7 @@ In general operation is as follows (assuming local installation ):
 
 #### Reviewer
 
-* Reviewer logs into FormsFlow UI at url https://localhost/formsflow-ui
+* Reviewer logs into FormsFlow UI at url http://localhost:3000/
 * Reviewer is redirected to Keycloak via OIDC where user's roles are returned as OIDC claims in a JWT. The fact that the reviewer has a reviewer role from Keycloak enables additional capabilities in the UI.
 * Reviewer accesses task from task list. Tasks are retrieved through the Camunda API, filtered by the reviewer group memberships mapped between Keycloak and native Camunda. 
 * Reviewer claims a task and processes it. The task moves to the next step in the workflow, with appropriate notifications and actions specific to that workflow.

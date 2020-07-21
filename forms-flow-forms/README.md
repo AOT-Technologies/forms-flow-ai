@@ -1,7 +1,7 @@
 # Form Management Platform
-**FormsFlow.AI** leverages FORMIO to build "serverless" data management applications using a simple drag-and-drop form builder interface.
+**FormsFlow.AI** leverages form.io to build "serverless" data management applications using a simple drag-and-drop form builder interface.
 
-To know more about FORMIO, go to https://github.com/formio/formio.
+To know more about form.io, go to https://github.com/formio/formio.
 
 ## Table of Content
 * [Prerequisites](#prerequisites)
@@ -24,19 +24,19 @@ The system is deployed and run using [docker-compose](https://docker.com) and [D
 ### Keycloak Setup
 
 Not applicable.  
-**Please note that the FORMIO server is accessed using root user account.**
+**Please note that the form.io server is accessed using root user account.**
 
 ### Environment Configuration
 
-Environment variables are set in **.env** and read by FORMIO.
+Environment variables are set in **.env** and read by form.io.
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own|Can be blank|
 `FORMIO_MONGO_PASSWORD`|Mongo Root Password|Can be blank|
 `FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
-`FORMIO_ROOT_EMAIL`|formio admin login|eg. admin@example.com|`must be set to whatever email address you want formio to have as admin user`
-`FORMIO_ROOT_PASSWORD`|formio admin password|eg.CHANGEME|`must be set to whatever password you want for your formio admin user`
+`FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
+`FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
 
 
 ### Installation

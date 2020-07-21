@@ -7,8 +7,8 @@ The goal of the REST API is to provide access to all relevant interfaces of the 
 * [Prerequisites](#prerequisites)
 * [Solution Setup](#solution-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
-  * [Step 2 : Environment Configuration](#environment-configuration)
-  * [Step 3 : Installation](#installation)
+  * [Step 2 : Installation](#installation)
+  * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Health Check](#Health Check) 
 * [How-to export roles and Forms](#how-to-export-roles-and-forms)   
 
@@ -20,13 +20,21 @@ The system is deployed and run using [docker-compose](https://docker.com) and [D
 
 ### Keycloak Setup
 
-TO DO
+Not specific client creation required.  
+Audience has been added for clients **forms-flow-web** and **forms-flow-bpm**.  
 
 ### Environment Configuration
 
 Environment variables are set in **.env** and read by system.
 
-Variable name | Meaning | Possible values | Default value |
+
+### Running the Application
+
+   * Make sure you have a Docker machine up and running.
+   * Make sure your current working directory is "forms-flow-webapi".
+   * Rename the file **sample.env** to **.env**.
+   * Modify the configuration values as needed. Details below,
+   Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `WEB_API_POSTGRES_USER`|FormsFlow database postgres user|Used on installation to create the database.Choose your own|`postgres`
 `WEB_API_POSTGRES_PASSWORD`|FormsFlow database postgres password|ditto|`changeme`
@@ -41,22 +49,19 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_WEB_CLIENTID`|Client ID for FormsFlow to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
 `CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda/engine-rest/`
 
-### Running the Application
-
-   * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is "forms-flow-webapi".
-   * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. Additionally, you may want to change these
+ **Additionally, you may want to change these**  
+   
   ```       
          The Postgres volume definition
     volumes:
        - ./postgres/webapi:/data/postgres
   ```
          The value of Postgres database details (especially if this instance is not just for testing purposes)
+  
+### Running the application
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
-  
-
+   
 ### Verify the application status
 
    The application should be up and available for use at port defaulted to 5000 in docker-compose.yml (i.e. http://localhost:5000/)

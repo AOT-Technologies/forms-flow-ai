@@ -9,8 +9,8 @@ To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identit
 * [Prerequisites](#prerequisites)
 * [Solution setup](#solution-setup)
   * [Step 1 : Keycloak Configuration](#keycloak-configuration)
-  * [Step 2 : Environment Configuration](#environment-configuration)
-  * [Step 3 : Installation](#installation)
+  * [Step 2 : Installation](#installation)
+  * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Health Check](#health-check)
 * [How to Deploy Process](#how-to-deploy-process)
 * [How to Enable SSL](#how-to-enable-ssl)
@@ -29,11 +29,14 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
  NOTE: The default admin group "camunda-admin" has been referenced in application.yaml, and this needs to be available for use.
  
-### Environment Configuration
+### Installation
 
-This section elaborates on the properties exposed for tuning the system.
- 
- Variable name | Meaning | Possible values | Default value |
+   * Make sure you have a Docker machine up and running.
+   * Make sure your current working directory is forms-flow-bpm.
+   * Rename the file **sample.env** to **.env**.
+   * Modify the configuration values as needed. Details below,
+   
+   Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `KEYCLOAK_URL`| URL to your Keycloak server |eg. https://iam.aot-technologies.com | must be set to your Keycloak serve
  `KEYCLOAK_URL_REALM`|	The Keyvcloak realm to use|eg. forms-flow-ai | must be set to your Keycloak realm
@@ -45,12 +48,7 @@ This section elaborates on the properties exposed for tuning the system.
  `CAMUNDA_POSTGRES_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
  `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`camunda`
    
-### Installation
-
-   * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is forms-flow-bpm.
-   * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. For example, you may want to change these:
+ **Additionally, you may want to change these**  
         ```  
           The Postgres volume location.          
           
@@ -59,6 +57,8 @@ This section elaborates on the properties exposed for tuning the system.
             - ./postgres/camunda:/data/postgres
       ```
          The value of Datastore credentials (especially if this instance is not just for testing purposes)
+   
+### Running the application
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
       

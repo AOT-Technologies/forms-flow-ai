@@ -23,7 +23,7 @@
 * [Links](#links)
 
 ## About the Project
-The project was initiated by AOT Technologies as a means of addressing the general situation whereby end-users fill in a form, the form is processed and there may be a requirement to report on the form metrics or data. Typical use cases are :
+The project was initiated by AOT Technologies as a means of addressing the general situation whereby end-users fill in a form, the form is processed and there may be a requirement to report on the form metrics or data. Typical use cases are:
 
 * Applications for licences
 * Public submissions
@@ -65,7 +65,7 @@ The project was initiated by AOT Technologies as a means of addressing the gener
    * [README](./forms-flow-idm/README)
  * [forms-flow-web](./forms-flow-web) Forms Flow Integration client
    * [README](./forms-flow-web/README)
-* [forms-flow-webapi](./forms-flow-api) REST API to FormsFlow integration components
+* [forms-flow-api](./forms-flow-api) REST API to FormsFlow integration components
    * [README](./forms-flow-api/README)
 
 Features 

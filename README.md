@@ -212,10 +212,10 @@ To know more about form.io, go to https://help.form.io/userguide/introduction/.
 
 ## Managing Analytics Dashboard
 
-- Please refer to [forms-flow-analytics](https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-analytics#how-to-run)
+* Login to **http://localhost:3000/** using valid **designer** credentials
+* Create dashboard by following the [userguide](https://redash.io/help/user-guide/getting-started) 
 
- 
-## License
+ ## License
 
 Copyright 2020 AOT-Technoogies
 

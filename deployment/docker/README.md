@@ -23,7 +23,7 @@ The system is deployed and run using [docker-compose](https://docker.com) and [D
 
 ### Keycloak Setup
 
-Follow the instructions given on [link](./keycloak-setup-update.md)
+Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
 
 ### Environment Configuration
 

@@ -121,7 +121,7 @@ The framework defines user roles which are standardised across all the products.
   * Create workflows and associate forms with deployed workflows
 - formsflow-analyst
   * Create metrics and analytics dashboards. 
-- formsflow-reviewer (Staff)
+- formsflow-reviewer
   * Receive and process online submissions. 
   * Fill in forms on behalf of the client if needed. 
   * View reports on analytics (slice 'n dice the data within the form) and metrics (details about the process eg. how many cases processed per day  )

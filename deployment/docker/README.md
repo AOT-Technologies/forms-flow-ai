@@ -46,6 +46,7 @@ Variable name | Meaning | Possible values | Default value |
    * Do a [health check for forms-flow-forms](../../forms-flow-forms#health-check)
    * Initially to create the Role Ids, we need to import [sample.json](../../forms-flow-forms/sample.json)
      * [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
+   * For the **FormsFlow.AI Role Mapping** step below, use the token from the previous import step token generation
    
 ### Start the FormsFlow.AI Application
 Other Environment variables are set in **.env** and read by the system. 
@@ -56,13 +57,13 @@ Other Environment variables are set in **.env** and read by the system.
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `CLIENT_ROLE`|	The role name used for client users|| formsflow-client
-`CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the value from form.io resource **/roles**
+`CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the value from form.io resource **http://localhost:3001/role**
 `REVIEWER_ROLE`|The role name used for staff/reviewer users||`formsflow-reviewer`
-`REVIEWER_ROLE_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|must get the value from form.io resource **/roles**
+`REVIEWER_ROLE_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|must get the value from form.io resource **http://localhost:3001/role**
 `DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
-`DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the value from form.io resource **/roles**
-`ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the value from form.io resource **/roles** 
-`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource **/user**
+`DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the value from form.io resource **http://localhost:3001/role**
+`ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the value from form.io resource **http://localhost:3001/role** 
+`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource **http://localhost:3001/user**
 
 **FormsFlow.AI Datastore Settings:**
 Variable name | Meaning | Possible values | Default value |
@@ -109,12 +110,12 @@ Variable name | Meaning | Possible values | Default value |
 `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
    
    **Additionally, you may want to change these**
-        * The value of database details (especially if this instance is not just for testing purposes)
-        * The Postgres volume definition [This may apply for windows based setup. Refer the README of individual modules.]  
-                    *  [forms-flow-analytics](../../forms-flow-analytics/README.md)  
-                    *  [forms-flow-forms](../../forms-flow-forms/README.md)  
-                    *  [forms-flow-bpm](../../forms-flow-bpm/README.md)  
-                    *  [forms-flow-api](../../forms-flow-api/README.md)     
+   * The value of database details (especially if this instance is not just for testing purposes)
+   * The Postgres volume definition [This may apply for windows based setup. Refer the README of individual modules.]  
+     * [forms-flow-analytics](../../forms-flow-analytics/README.md)  
+     * [forms-flow-forms](../../forms-flow-forms/README.md)  
+     * [forms-flow-bpm](../../forms-flow-bpm/README.md)  
+     * [forms-flow-api](../../forms-flow-api/README.md)     
 
 ### Running the Application
    * Run `docker-compose up -d` to start.

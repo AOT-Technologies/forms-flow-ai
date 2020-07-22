@@ -159,9 +159,9 @@ In general, operation is as follows :
 These users are responsible for accessing the native capabilities of the embedded products in order to configure analytics dashboards, create and manage workflows and create and manage forms. It is beyond the scope of this document to describe the detailed functionality of these products, however the general process is :
 
 * Access product URL as follows:
-  * Camunda: https://localhost/3001/
-  * form.io: https://localhost/2000/ (the form designer is embedded into the FormsFlow UI)
-  * Redash: https://localhost/7000/
+  * Camunda: http://localhost:8000/camunda/
+  * form.io: http://localhost:3001/ (the form designer is embedded into the FormsFlow UI)
+  * Redash: http://localhost:7000/
 * The login process is the same for all of them, redirect to Keycloak as OIDC (SAML for Redash) and optain the appropriate JWT + claims. 
 * For the forms designer, the FormFlow UI recognises the additional role of formsflow-designer and enables a form design capability
 * For Redash and Camunda, there is a mapping in the configuration file which needs to be setup between formsflow-analyst and formsflow-bpm and the corresponding groups in Redash and Camunda respectively. This is all covered in the installation instructions.

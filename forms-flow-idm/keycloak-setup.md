@@ -190,6 +190,9 @@ Create groups to support operations
 	* Click Save  
 * Create Sub group by Clicking on Main group created on step-1 i.e. formsflow, and then click New  
 	* Name = formsflow-reviewer  
+	* Click Save 
+* Create Sub group by Clicking on Main group created on step-1 i.e. formsflow, and then click New  
+	* Name = formsflow-analyst  
 	* Click Save  
 * Create Main group by Clicking New  
 	* Name = camunda-admin  

@@ -40,7 +40,7 @@ Environment variables are set in **.env** and read by the system.
 
 **FormsFlow.AI Role Mapping:**
 Variable name | Meaning | Possible values | Default value |
- --- | --- | --- | ---
+--- | --- | --- | ---
 `CLIENT_ROLE`|	The role name used for client users|| formsflow-client
 `CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the value from form.io resource **/roles**
 `REVIEWER_ROLE`|The role name used for staff/reviewer users||`formsflow-reviewer`
@@ -117,59 +117,3 @@ Variable name | Meaning | Possible values | Default value |
   * FormsFlow Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
   * FormsFlow web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   
-### How to Associate the Form with Workflow Process
-* Get the jwt token from formio resource **/user/login**
-```
-POST http://localhost:3001/user/login
-{
-    "data": {
-        "email": {{email}},
-        "password": {{password}}
-    }
-}
-```
-* Get the form ID of form' from formio resource **/export** 
-```
-GET http://localhost:3001/export
-
-Headers:
-Content-Type : application/json
-x-jwt-token: {x-jwt-token}
-```
-* Get the process definition key from .bpmn
-
-* Get the access token
-```
-POST {Keycloak URL}/auth/realms/forms-flow-ai/protocol/openid-connect/token
-
-Body:
-grant_type: client_credentials
-client_secret: a3413dbd-caf2-41a8-ae54-e7aa448154d8
-client_id: forms-flow-bpm
-
-Headers:
-Content-Type : application/x-www-form-urlencoded
-```   
-* Create form using the resource **/form**
-```
-POST http://localhost:5000/form
-
-Body:
-{
-  "created_by": "userid",
-  "formId": "5ee10121d8f7fa73e2402a52",
-  "formName": "Feedback Form",
-  "formRevisionNumber": "V1",
-  "processKey": "onestepapproval",
-  "processName": "One Step Approval",
-  "comments": "OK"
-}
-
-Headers:
-Content-Type : application/json
-Authorization: Bearer {access_token}
-
-```
-
-
-

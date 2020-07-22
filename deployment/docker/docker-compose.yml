@@ -19,7 +19,7 @@ services:
 
   forms-flow-bpm:
     build:
-      context: ./forms-flow-bpm/
+      context: ./../../forms-flow-bpm/
       dockerfile: Dockerfile
     restart: always
     links:
@@ -58,7 +58,7 @@ services:
 
   forms-flow-forms:
     build:
-      context: ./forms-flow-forms/
+      context: ./../../forms-flow-forms/
       dockerfile: Dockerfile
     # The app will restart until Mongo is listening
     restart: always
@@ -82,7 +82,7 @@ services:
 
   forms-flow-ai:
     build:
-      context: ./forms-flow-web/
+      context: ./../../forms-flow-web/
       dockerfile: Dockerfile
     volumes:
       - '.:/app'
@@ -126,7 +126,7 @@ services:
 
   forms-flow-webapi:
     build:
-      context: ./forms-flow-api/
+      context: ./../../forms-flow-api/
       dockerfile: Dockerfile
     restart: unless-stopped
     links:

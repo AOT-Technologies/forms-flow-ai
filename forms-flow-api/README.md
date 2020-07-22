@@ -34,7 +34,8 @@ Environment variables are set in **.env** and read by system.
    * Make sure your current working directory is "forms-flow-webapi".
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. Details below,
-   Variable name | Meaning | Possible values | Default value |
+
+Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `WEB_API_POSTGRES_USER`|FormsFlow database postgres user|Used on installation to create the database.Choose your own|`postgres`
 `WEB_API_POSTGRES_PASSWORD`|FormsFlow database postgres password|ditto|`changeme`

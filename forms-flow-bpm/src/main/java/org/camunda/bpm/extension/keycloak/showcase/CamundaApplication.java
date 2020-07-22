@@ -112,7 +112,7 @@ public class CamundaApplication {
 			AuthorizationService authorizationService = processEngine.getAuthorizationService();
 			Authorization auth;
 			// If resource is process definition or instance, set GLOBAL; Else, ALLOW
-			if (resourceType == 6 || resourceType == 8) {
+			if (resourceType == 6 || resourceType == 8 || resourceType == 10) {
 				if (authorizationService.isUserAuthorized("*", null, ALL, resource, ANY)) continue;
 				auth = authorizationService.createNewAuthorization(AUTH_TYPE_GLOBAL);
 				auth.setUserId("*");

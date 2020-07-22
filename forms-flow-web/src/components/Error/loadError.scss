@@ -1,0 +1,13 @@
+@import "./../../assets/styles/themes.scss";
+
+.error-message-block {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-top: 5%;
+  font-weight: bold;
+  font-size: 20px;
+  & .error-alert {
+    text-align: center;
+  }
+}

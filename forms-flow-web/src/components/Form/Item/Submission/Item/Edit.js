@@ -5,11 +5,10 @@ import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors
 import { push } from 'connected-react-router';
 
 import Loading from '../../../../../containers/Loading'
-import { getUserToken,getProcess, triggerNotification } from "../../../../../apiManager/services/bpmServices";
-import { BPM_USER_DETAILS } from "../../../../../apiManager/constants/apiConstants";
-import PROCESS from "../../../../../apiManager/constants/processConstants";
+
 import { setFormSubmissionError } from '../../../../../actions/formActions';
 import SubmissionError from '../../../../../containers/SubmissionError';
+import { setUpdateLoader } from "../../../../../actions/taskActions";
 
 const Edit = class extends Component {
   render() {
@@ -34,7 +33,7 @@ const Edit = class extends Component {
             onConfirm={this.props.onConfirm}
           >
           </SubmissionError>
-          <h3 className="task-head">Edit {form.title} Submission</h3>
+          <h3 className="task-head">{form.title} Submission</h3>
         </div>
         <Errors errors={errors} />
         <Form
@@ -47,27 +46,6 @@ const Edit = class extends Component {
         />
       </div>
     );
-  }
-}
-
-function doProcessActions(submission, ownProps) {
-  return (dispatch, getState) => {
-    let user = getState().user.userDetail
-    let form = getState().form.form
-    dispatch(resetSubmissions('submission'));
-    const data = getProcess(PROCESS.EmailNotification, form, submission._id, "edit", user);
-    dispatch(getUserToken(BPM_USER_DETAILS, (err, res) => {
-      if(!err){
-      dispatch(triggerNotification(data,(err,res)=>{
-        if(!err){
-          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
-        }
-        else{ //TODO Update this to show error message
-          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
-        }
-      }));
-    }
-    }));
   }
 }
 
@@ -98,8 +76,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onSubmit: (submission) => {
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
-          dispatch(doProcessActions(submission, ownProps))
-        } 
+          dispatch(setUpdateLoader(true));
+          dispatch(resetSubmissions('submission'));
+          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+        }
         else {
           const ErrorDetails = { modalOpen: true, message: "Submission cannot be done" }
           dispatch(setFormSubmissionError(ErrorDetails))

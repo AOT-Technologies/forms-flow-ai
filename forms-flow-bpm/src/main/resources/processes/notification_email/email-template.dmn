@@ -23,8 +23,8 @@
         <outputEntry id="LiteralExpression_1czkz3j">
           <text>"Submission Notification"</text>
         </outputEntry>
-        <outputEntry id="LiteralExpression_1qfdlgl">
-          <text>"Hello,
+        <outputEntry id="LiteralExpression_1qfdlgl" expressionLanguage="juel">
+          <text>"Hello @name,
       
 You have a new task for the process. Please click the following link to access your new task.
 

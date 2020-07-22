@@ -1,0 +1,142 @@
+{
+  "applicationsMetrics": [
+    {
+      "applications": [
+        {
+          "mapperId": 1,
+          "formName": "form 1",
+          "count": 30
+        },
+        {
+          "mapperId": 2,
+          "formName": "form 2",
+          "count": 50
+        },
+        {
+          "mapperId": 3,
+          "formName": "form 3",
+          "count": 60
+        }
+      ]
+    }
+  ],
+  "statusMetrics": [
+    {
+      "applicationStatus": [
+        {
+          "formName": "form 1",
+          "statusName": "new",
+          "count": 10,
+          "id": 1
+        },
+        {
+          "formName": "form 1",
+          "statusName": "In progress",
+          "count": 10,
+          "id": 2
+        }
+      ],
+      "id": 1
+    },
+    {
+      "applicationStatus": [
+        {
+          "formName": "form 2",
+          "statusName": "new",
+          "count": 10,
+          "id": 1
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Approval",
+          "count": 5,
+          "id": 2
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Second Approval",
+          "count": 10,
+          "id": 2
+        },
+        {
+          "formName": "form 2",
+          "statusName": "third approval",
+          "count": 25,
+          "id": 3
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Completed",
+          "count": 25,
+          "id": 4
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Completed",
+          "count": 25,
+          "id": 5
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Completed",
+          "count": 25,
+          "id": 6
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Completed",
+          "count": 25,
+          "id": 7
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Completed",
+          "count": 25,
+          "id": 8
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Completed",
+          "count": 25,
+          "id": 9
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Completed",
+          "count": 25,
+          "id": 10
+        },
+        {
+          "formName": "form 2",
+          "statusName": "Completed",
+          "count": 25,
+          "id": 11
+        }
+      ],
+      "id": 2
+    },
+    {
+      "applicationStatus": [
+        {
+          "formName": "form 3",
+          "statusName": "new",
+          "count": 10,
+          "id": 1
+        },
+        {
+          "formName": "form 3",
+          "statusName": "new",
+          "count": 10,
+          "id": 2
+        },
+        {
+          "formName": "form 3",
+          "statusName": "new",
+          "count": 10,
+          "id": 3
+        }
+      ],
+      "id": 3
+    }
+  ]
+}

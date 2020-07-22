@@ -29,7 +29,7 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
    * Start the **analytics server** by following the instructions given on  [README](../../forms-flow-analytics/README.md)
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.
-   * Start the **form.io server** by modifying listed form.io related environment variables **(Skip this step if the configuration of form.io role mapping already exists)**
+   * Start the **form.io server** by modifying listed form.io related environment variables **(Skip this step if the configuration of form.io role mapping already exists)**    
     (**Note: This step is required only if the installation is is done for the first time or new volume mounts**)   
        **FormsFlow.AI form.io Server Variables:**  
 
@@ -40,7 +40,7 @@ Variable name | Meaning | Possible values | Default value |
 `FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
 `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
- *  Follow the listed sub-instructions for getting the form.io based role IDs.     
+ *  Follow the listed sub-instructions for getting the form.io based role IDs. **(Skip this step if the configuration of form.io role mapping already exists)**    
       *  Run `docker-compose up -d forms-flow-forms` to start.
         * Do a [health check for forms-flow-forms](../../forms-flow-forms#health-check)
       * Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)

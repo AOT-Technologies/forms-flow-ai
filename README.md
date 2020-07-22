@@ -11,8 +11,8 @@
 * [System Operation](#system-operation)
 * [Deployment and Configuration](#deployment-and-configuration)
   * [Prerequisites](#prerequisites)
-  * [Configure and Build](#configure-and-build)
-* [Running the Application](#running-the-application)
+  * [Configuration and Deployment](#configuration-and-deployment)
+* [Verifying the Application](#verifying-the-application)
 * [Managing Forms](#managing-forms)
 * [Managing Workflows](#managing-workflows)
 * [Managing Analytics Dashboard](#managing-analytics-dashboard)
@@ -178,7 +178,7 @@ The products are installed with a default configuration so that the base system 
 * Admin access to a local or remote server (can be local PC or Mac provided it is 64-bit with at least 16GB RAM and 100GB HDD) where [docker-compose](https://docker.com) and [docker](https://docker.com) are installed and configured. 
 * Admin access to a [Keycloak](https://www.keycloak.org/) server  (ability to create realms, users etc.)
 
-### Configure and Build
+### Configuration and Deployment
 
 * Clone this github repo
 * Change directory   to deployment/docker folder  ```cd ./deployment/docker```
@@ -186,10 +186,7 @@ The products are installed with a default configuration so that the base system 
 * If deploying to a remote server, you can use nginx as a reverse proxy and SSL engine. To help you, follow the instructions in the nginx [README](./deployment/nginx/README.md)
 
 
-## Running the Application
-* Ensure that the configuration and installation steps have been followed
-* Change directory to deployment/docker folder  ```cd ./deployment/docker```
-* Run `docker-compose up -d` to start.
+## Verifying the Application
 * The following applications will be started and can be accessed in your browser.
          - http://localhost:3000 - FormsFlow UI (+ forms designer) 
          - http://localhost:7000 - Redash analytics

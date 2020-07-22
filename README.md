@@ -11,7 +11,7 @@
 * [System Operation](#system-operation)
 * [Deployment and Configuration](#deployment-and-configuration)
   * [Prerequisites](#prerequisites)
-  * [Configuration and Deployment](#configuration-and-deployment)
+  * [Deployment](#deployment)
 * [Verifying the Application](#verifying-the-application)
 * [Managing Forms](#managing-forms)
 * [Managing Workflows](#managing-workflows)
@@ -178,7 +178,7 @@ The products are installed with a default configuration so that the base system 
 * Admin access to a local or remote server (can be local PC or Mac provided it is 64-bit with at least 16GB RAM and 100GB HDD) where [docker-compose](https://docker.com) and [docker](https://docker.com) are installed and configured. 
 * Admin access to a [Keycloak](https://www.keycloak.org/) server  (ability to create realms, users etc.)
 
-### Configuration and Deployment
+### Deployment
 
 * Clone this github repo
 * Change directory   to deployment/docker folder  ```cd ./deployment/docker```

@@ -9,7 +9,7 @@ class ApplicationAudit(BaseModel, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     application_id = db.Column(db.Integer)
     application_name = db.Column(db.String(100), nullable=False)
-    application_status = db.Column(db.String(10), nullable=False)
+    application_status = db.Column(db.String(50), nullable=False)
     form_process_mapper_id = db.Column(db.Integer, nullable=False)
     form_submission_id = db.Column(db.String(30), nullable=False)
     process_instance_id = db.Column(db.String(30), nullable=False)

@@ -31,7 +31,8 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
    * Rename the file **sample.env** to **.env**.
    * Start the **form.io server** by modifying listed form.io related environment variables **(Skip this step if the configuration of form.io role mapping already exists)**    
     (**Note: This step is required only if the installation is is done for the first time or new volume mounts**)   
-       **FormsFlow.AI form.io Server Variables:**  
+       
+**FormsFlow.AI form.io Server Variables:**  
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---

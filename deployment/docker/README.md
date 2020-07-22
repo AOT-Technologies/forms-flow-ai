@@ -29,7 +29,7 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
    * Start the analytics server by following the instructions given on  [README](../../forms-flow-analytics/README.md)
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.
-   * (Note: Its an onetime configuration) Modify the configuration for forms-flow-forms initially to fetch the Role Id values as needed.   
+   * (**Note: Its an onetime configuration**) Modify the configuration for forms-flow-forms initially to fetch the Role Id values as needed.   
 
 **FormsFlow.AI Forms Variables:**
 Variable name | Meaning | Possible values | Default value |
@@ -48,7 +48,8 @@ Variable name | Meaning | Possible values | Default value |
      * [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
    
 ### Start the FormsFlow.AI Application
-Other Environment variables are set in **.env** and read by the system.  
+Other Environment variables are set in **.env** and read by the system. 
+   * Open **.env** file again
    * Modify the configuration values as needed. Details below,
  
 **FormsFlow.AI Role Mapping:**
@@ -108,16 +109,12 @@ Variable name | Meaning | Possible values | Default value |
 `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
    
    **Additionally, you may want to change these**
- ```  
         * The value of database details (especially if this instance is not just for testing purposes)
- ```
- ```
         * The Postgres volume definition [This may apply for windows based setup. Refer the README of individual modules.]  
                     *  [forms-flow-analytics](../../forms-flow-analytics/README.md)  
                     *  [forms-flow-forms](../../forms-flow-forms/README.md)  
                     *  [forms-flow-bpm](../../forms-flow-bpm/README.md)  
                     *  [forms-flow-api](../../forms-flow-api/README.md)     
-```
 
 ### Running the Application
    * Run `docker-compose up -d` to start.

@@ -47,26 +47,15 @@ The project was initiated by AOT Technologies as a means of addressing the gener
 
 ### Project Tree
 
-
- * [README.md](./README.md) This file
  * [deployment](./deployment) Deployment of complete framework
     * [docker](./deployment/docker) Deployment using docker 
-      * [README](./deployment/docker/README.md)
     * [nginx](./deployment/nginx) Deployment on a remote host using nginx
-      * [README](./deployment/nginx/README.md)
-
  * [forms-flow-analytics](./forms-flow-analytics) Redash analytics components
-   * [README](./forms-flow-analytics/README.md)
  * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
-    * [README](./forms-flow-bpm/README.md)
  * [forms-flow-forms](./forms-flow-forms) form.io deployment and  integration
-   * [README](./forms-flow-forms/README.md)
  * [forms-flow-idm](./forms-flow-idm) Identity Management (Keycloak)
-   * [README](./forms-flow-idm/README.md)
  * [forms-flow-web](./forms-flow-web) FormsFlow integration web UI
-   * [README](./forms-flow-web/README.md)
 * [forms-flow-api](./forms-flow-api) REST API to FormsFlow.AI integration components
-   * [README](./forms-flow-api/README.md)
 
 Features 
 ------------------

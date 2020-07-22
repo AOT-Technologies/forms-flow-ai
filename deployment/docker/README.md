@@ -8,7 +8,6 @@ This page elaborates how to setup the overall solution using docker.
 * [Solution Setup](#solution-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
   * [Step 2 : Installation](#installation)
-  * [Step 3 : Setting up the environment](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Health Check](#health-check) 
 

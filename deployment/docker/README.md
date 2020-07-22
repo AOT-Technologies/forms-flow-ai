@@ -5,9 +5,9 @@ This page elaborates how to setup the overall solution using docker.
 
 ## Table of Contents
 * [Prerequisites](#prerequisites)
-* [Project Setup](#project-setup)
+* [Solution Setup](#solution-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
-  * [Step 2 : Initial Installation](#installation)
+  * [Step 2 : Installation](#installation)
   * [Step 3 : Setting up the environment](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Health Check](#health-check) 
@@ -17,23 +17,21 @@ This page elaborates how to setup the overall solution using docker.
 
 The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
 
-## Project Setup
+## Solution Setup
 
 ### Keycloak Setup
 
 Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
 
-
       
-### Initial Installation
+### Installation
 
    * Make sure you have a Docker machine up and running.
    * Start the analytics server by following the instructions given on  [README](../../forms-flow-analytics/README.md)
    * Start the FormIO server by following the instructions given on  [README](../../forms-flow-forms/README.md)
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. Details in the below Environment Configuration,   
-### Environment Configuration
+   * Modify the configuration values as needed. Details below,   
 
 Environment variables are set in **.env** and read by the system.  
 

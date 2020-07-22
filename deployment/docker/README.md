@@ -11,7 +11,6 @@ This page elaborates how to setup the overall solution using docker.
   * [Step 3 : Setting up the environment](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Health Check](#health-check) 
-* [How to Associate the Form with Workflow Process](#how-to-associate-the-form-with-workflow-process)
 
 
 ## Prerequisites
@@ -110,7 +109,7 @@ Variable name | Meaning | Possible values | Default value |
    * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
   
-### Verify the Application Status
+### Health Check
   * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
   * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/
   * FormIO should be up and available for use at port defaulted to 3001 i.e. http://localhost:3001/

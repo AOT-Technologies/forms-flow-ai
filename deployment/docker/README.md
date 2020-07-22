@@ -27,13 +27,30 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
 
    * Make sure you have a Docker machine up and running.
    * Start the analytics server by following the instructions given on  [README](../../forms-flow-analytics/README.md)
-   * Start the FormIO server by following the instructions given on  [README](../../forms-flow-forms/README.md)
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. Details below,   
+   * (Note: Its an onetime configuration) Modify the configuration for forms-flow-forms initially to fetch the Role Id values as needed.   
 
-Environment variables are set in **.env** and read by the system.  
+**FormsFlow.AI Forms Variables:**
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own|Can be blank|
+`FORMIO_MONGO_PASSWORD`|Mongo Root Password|Can be blank|
+`FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
+`FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
+`FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
 
+### Start the forms-flow-forms Application
+   * Skip this step if you have already configured once.
+   * Run `docker-compose up -d forms-flow-forms` to start.
+   * Do a [health check for forms-flow-forms](../../forms-flow-forms#health-check)
+   * Initially to create the Role Ids, we need to import [sample.json](../../forms-flow-forms/sample.json)
+     * [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
+   
+### Start the FormsFlow.AI Application
+Other Environment variables are set in **.env** and read by the system.  
+   * Modify the configuration values as needed. Details below,
+ 
 **FormsFlow.AI Role Mapping:**
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -103,7 +120,6 @@ Variable name | Meaning | Possible values | Default value |
 ```
 
 ### Running the Application
-   * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
   
 ### Health Check
@@ -113,3 +129,5 @@ Variable name | Meaning | Possible values | Default value |
   * FormsFlow Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
   * FormsFlow web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   
+### Stopping the Application
+   * Run `docker-compose down` to stop.

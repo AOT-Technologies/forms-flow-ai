@@ -30,7 +30,8 @@ Not applicable.
    * Make sure your current working directory is "forms-flow-forms".
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. Details below,
-   Variable name | Meaning | Possible values | Default value |
+ 
+Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own|Can be blank|
 `FORMIO_MONGO_PASSWORD`|Mongo Root Password|Can be blank|

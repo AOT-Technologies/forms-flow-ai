@@ -70,7 +70,7 @@ Create a forms-flow-analytics Client.
 		* SAML Signature Key Name = KEY_ID  
 		* Canonicalization Method = EXCLUSIVE_WITH_COMMENTS  
 		* Name ID Format = email 	  
-		* Valid Redirect URIs = {ANALYTICS_URL}/*  
+		* Valid Redirect URIs  eg. http://localhost:7000/*  
 		* Valid Master SAML Processing URL = {ANALYTICS_URL}/saml/callback?org_slug=default  
 		* Note: All other settings should be turned off and empty  
 		* Click Save  
@@ -103,7 +103,7 @@ Create a forms-flow-bpm Client.
 		* Standard Flow Enabled = ON  
 		* Direct Access Grants Enabled = ON  
 		* Service Accounts Enabled = ON  
-		* Valid Redirect URIs  
+		* Valid Redirect URIs  eg. http://localhost:8000/camunda/*
 		* Web Origins = *  
 		* Click Save  
 	* Mappers Tab  

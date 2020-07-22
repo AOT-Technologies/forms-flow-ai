@@ -12,7 +12,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     application_name = db.Column(db.String(100), nullable=False)
-    application_status = db.Column(db.String(10), nullable=False)
+    application_status = db.Column(db.String(50), nullable=False)
     form_process_mapper_id = db.Column(db.Integer, db.ForeignKey('form_process_mapper.id'), nullable=False)
     form_submission_id = db.Column(db.String(100), nullable=False)
     process_instance_id = db.Column(db.String(100), nullable=True)

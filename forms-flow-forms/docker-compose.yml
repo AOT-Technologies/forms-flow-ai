@@ -34,7 +34,7 @@ services:
 
   forms-flow-forms:
     build:
-      context: ./forms-flow-forms/
+      context: ./
       dockerfile: Dockerfile
     # The app will restart until Mongo is listening
     restart: always

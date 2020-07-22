@@ -56,7 +56,6 @@ Variable name | Meaning | Possible values | Default value |
 
   
 ### Running the Application
-   * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
 
 ### Health Check
@@ -112,3 +111,5 @@ Content-Type : application/json
 x-jwt-token: {x-jwt-token}
 ``` 
 
+### Stopping the Application
+   * Run `docker-compose down` to stop.

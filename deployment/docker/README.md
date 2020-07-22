@@ -3,11 +3,12 @@
 This page elaborates how to setup the overall solution using docker.
 
 
-## Table of Content
+## Table of Contents
 * [Prerequisites](#prerequisites)
 * [Project Setup](#project-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
-  * [Step 2 : Installation](#installation)
+  * [Step 2 : Initial Installation](#installation)
+  * [Step 3 : Setting up the environment](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Health Check](#health-check) 
 * [How to Associate the Form with Workflow Process](#how-to-associate-the-form-with-workflow-process)
@@ -23,22 +24,21 @@ The system is deployed and run using [docker-compose](https://docker.com) and [D
 
 Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
 
-### Environment Configuration
-
-Environment variables are set in **.env** and read by system.  
-
-
 
       
-### Running the Application
+### Initial Installation
 
    * Make sure you have a Docker machine up and running.
    * Start the analytics server by following the instructions given on  [README](../../forms-flow-analytics/README.md)
    * Start the FormIO server by following the instructions given on  [README](../../forms-flow-forms/README.md)
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. Details below,   
-   **FormsFlow.AI Role Mapping:**
+   * Modify the configuration values as needed. Details in the below Environment Configuration,   
+### Environment Configuration
+
+Environment variables are set in **.env** and read by the system.  
+
+**FormsFlow.AI Role Mapping:**
 Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
 `CLIENT_ROLE`|	The role name used for client users|| formsflow-client

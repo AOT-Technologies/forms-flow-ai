@@ -61,18 +61,18 @@ Features
 ------------------
 -  Drag-and-drop forms-builder with rich UI components
 -  Lightweight server-based workflow engine with full capabilities including human, parallel, asynchronous and timed flows, decision engine and graphical designer
-- Notifications engine for notifications, reminders and alerts on tasks and even data thresholds.
-- Metrics and data visualization dashboards for display of key workflow and form data
-- (future) Multi-tenancy isolation
-- Containerized deployment with docker, docker-compose and (soon) Openshift
-- Flexible Identity Management uses existing IDM systems for authentication and single sign-on
+-  Notifications engine for notifications, reminders and alerts on tasks and even data thresholds.
+-  Metrics and data visualization dashboards for display of key workflow and form data
+-  (future) Multi-tenancy isolation
+-  Containerized deployment with docker, docker-compose and (soon) Openshift
+-  Flexible Identity Management uses existing IDM systems for authentication and single sign-on
 
 ## System Architecture
 
 
 ![FormsFlow AI Component Architecture](./.images/formsflow-ai-components.png)
 
-### Components 
+## Components 
 
 The components of the system are:
 #### FormsFlow UI

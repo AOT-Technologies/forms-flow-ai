@@ -9,7 +9,7 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="reviewer" name="Review Submission" camunda:candidateGroups="formsflow-reviewer">
+    <bpmn:userTask id="reviewer" name="Review Submission" camunda:candidateGroups="formsflow/formsflow-reviewer">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="action" label="Action" type="string" />
@@ -30,7 +30,7 @@
 task.execution.setVariable('deleteReason', "completed");</camunda:script>
         </camunda:taskListener>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="javascript">execution.setVariable('submission_group', "formsflow-reviewer");</camunda:script>
+          <camunda:script scriptFormat="javascript">execution.setVariable('submission_group', "formsflow/formsflow-reviewer");</camunda:script>
         </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0ociprs</bpmn:incoming>
@@ -45,7 +45,7 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
       <bpmn:extensionElements>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.task.listeners.HTTPServiceListener" event="start">
           <camunda:field name="url">
-            <camunda:expression>http://localhost:5000/api/application/@application_id</camunda:expression>
+            <camunda:expression>http://localhost:5000/application/@application_id</camunda:expression>
           </camunda:field>
           <camunda:field name="method">
             <camunda:expression>PUT</camunda:expression>

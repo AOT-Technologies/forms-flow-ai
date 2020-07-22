@@ -9,7 +9,7 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="reviewer" name="Review Submission" camunda:candidateGroups="formsflow-reviewer">
+    <bpmn:userTask id="reviewer" name="Review Submission" camunda:candidateGroups="formsflow/formsflow-reviewer">
       <bpmn:extensionElements>
         <camunda:formData>
           <camunda:formField id="action" label="Action" type="string" />
@@ -35,11 +35,11 @@ task.execution.setVariable('task_status', "Rejected");
 task.execution.setVariable('deleteReason', "completed");</camunda:script>
         </camunda:taskListener>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="javascript">execution.setVariable('submission_group', "formsflow-reviewer");</camunda:script>
+          <camunda:script scriptFormat="javascript">execution.setVariable('submission_group', "formsflow/formsflow-reviewer");</camunda:script>
         </camunda:executionListener>
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.task.listeners.HTTPServiceListener" event="assignment">
           <camunda:field name="url">
-            <camunda:expression>http://localhost:5000/api/application/@application_id</camunda:expression>
+            <camunda:expression>http://localhost:5000/application/@application_id</camunda:expression>
           </camunda:field>
           <camunda:field name="method">
             <camunda:expression>PUT</camunda:expression>
@@ -53,27 +53,15 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
       <bpmn:outgoing>SequenceFlow_0jg4sg3</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_0ociprs" sourceRef="StartEvent_1" targetRef="reviewer" />
-    <bpmn:sequenceFlow id="SequenceFlow_0jg4sg3" sourceRef="reviewer" targetRef="ExclusiveGateway_0l1c65j" />
     <bpmn:endEvent id="EndEvent_03cla68">
       <bpmn:incoming>SequenceFlow_00bn1p7</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:exclusiveGateway id="ExclusiveGateway_0l1c65j" name="Action Taken?">
-      <bpmn:incoming>SequenceFlow_0jg4sg3</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1x38yu4</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_0pc6hcp</bpmn:outgoing>
-    </bpmn:exclusiveGateway>
-    <bpmn:sequenceFlow id="SequenceFlow_1x38yu4" name="approve" sourceRef="ExclusiveGateway_0l1c65j" targetRef="Task_1hko8r7">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'approve' || action == 'Approved'}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_0pc6hcp" name="reject" sourceRef="ExclusiveGateway_0l1c65j" targetRef="Task_1hko8r7">
-      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'reject' || action == 'Rejected'}</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_00bn1p7" sourceRef="Task_1hko8r7" targetRef="EndEvent_03cla68" />
     <bpmn:task id="Task_1hko8r7" name="Update Application Status">
       <bpmn:extensionElements>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.task.listeners.HTTPServiceListener" event="start">
           <camunda:field name="url">
-            <camunda:expression>http://localhost:5000/api/application/@application_id</camunda:expression>
+            <camunda:expression>http://localhost:5000/application/@application_id</camunda:expression>
           </camunda:field>
           <camunda:field name="method">
             <camunda:expression>PUT</camunda:expression>
@@ -83,14 +71,55 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
           </camunda:field>
         </camunda:executionListener>
       </bpmn:extensionElements>
-      <bpmn:incoming>SequenceFlow_1x38yu4</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0pc6hcp</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_1x38yu4</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_00bn1p7</bpmn:outgoing>
     </bpmn:task>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_0l1c65j" name="Action Taken?">
+      <bpmn:incoming>SequenceFlow_0jg4sg3</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0pc6hcp</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1x38yu4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0pc6hcp" name="reject" sourceRef="ExclusiveGateway_0l1c65j" targetRef="Task_1hko8r7">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'reject' || action == 'Rejected'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1x38yu4" name="approve" sourceRef="ExclusiveGateway_0l1c65j" targetRef="Task_1hko8r7">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'approve' || action == 'Approved'}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_0jg4sg3" sourceRef="reviewer" targetRef="ExclusiveGateway_0l1c65j" />
   </bpmn:process>
   <bpmn:message id="Message_1ihrno3" name="Message_Email" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="onestepapproval">
+      <bpmndi:BPMNEdge id="SequenceFlow_0ociprs_di" bpmnElement="SequenceFlow_0ociprs">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="300" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="163" y="142" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0l4y66o_di" bpmnElement="reviewer">
+        <dc:Bounds x="300" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_03cla68_di" bpmnElement="EndEvent_03cla68">
+        <dc:Bounds x="842" y="119" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_00bn1p7_di" bpmnElement="SequenceFlow_00bn1p7">
+        <di:waypoint x="760" y="137" />
+        <di:waypoint x="842" y="137" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Task_0fde0ul_di" bpmnElement="Task_1hko8r7">
+        <dc:Bounds x="660" y="97" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0l1c65j_di" bpmnElement="ExclusiveGateway_0l1c65j" isMarkerVisible="true">
+        <dc:Bounds x="505" y="92" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="496" y="68" width="69" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0pc6hcp_di" bpmnElement="SequenceFlow_0pc6hcp">
         <di:waypoint x="530" y="142" />
         <di:waypoint x="530" y="167" />
@@ -110,35 +139,6 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
         <di:waypoint x="400" y="117" />
         <di:waypoint x="505" y="117" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0ociprs_di" bpmnElement="SequenceFlow_0ociprs">
-        <di:waypoint x="215" y="117" />
-        <di:waypoint x="300" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
-        <dc:Bounds x="179" y="99" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="163" y="142" width="69" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_0l4y66o_di" bpmnElement="reviewer">
-        <dc:Bounds x="300" y="77" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_03cla68_di" bpmnElement="EndEvent_03cla68">
-        <dc:Bounds x="842" y="119" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ExclusiveGateway_0l1c65j_di" bpmnElement="ExclusiveGateway_0l1c65j" isMarkerVisible="true">
-        <dc:Bounds x="505" y="92" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="495.5" y="68" width="69" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_00bn1p7_di" bpmnElement="SequenceFlow_00bn1p7">
-        <di:waypoint x="760" y="137" />
-        <di:waypoint x="842" y="137" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Task_0fde0ul_di" bpmnElement="Task_1hko8r7">
-        <dc:Bounds x="660" y="97" width="100" height="80" />
-      </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

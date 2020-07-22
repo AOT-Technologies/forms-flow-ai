@@ -46,9 +46,9 @@ services:
     ports:
       - '27018:27017'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_INITDB_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
-      MONGO_INITDB_DATABASE: ${MONGO_INITDB_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${FORMIO_MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${FORMIO_MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${FORMIO_MONGO_DATABASE}
     volumes:
       - ./mongodb/data/db/:/data/db/
       - ./mongodb/data/log/:/var/log/mongodb/
@@ -73,8 +73,8 @@ services:
     environment:
       DEBUG: formio:*
       NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-db:27017/formio"}'
-      ROOT_EMAIL: ${ROOT_EMAIL}
-      ROOT_PASSWORD: ${ROOT_PASSWORD}
+      ROOT_EMAIL: ${FORMIO_ROOT_EMAIL}
+      ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD}
     stdin_open: true # -i
     tty: true # -t
     networks:

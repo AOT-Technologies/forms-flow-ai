@@ -117,5 +117,3 @@ server:
 ``` 
 * **NOTE: Alternatively, you can directly place your ssl cert under the classpath "/forms-flow-bpm/src/main/resources". Your configuration for the key-store in application.yaml would be `key-store: classpath:/keystore.ks`.**
 
-### Stopping the Application
-   * Run `docker-compose down` to stop.

@@ -94,5 +94,3 @@ Content-Type : application/json
 Authorization: Bearer {access token}
 ``` 
 
-### Stopping the Application
-   * Run `docker-compose down` to stop.

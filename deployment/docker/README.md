@@ -26,25 +26,38 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
 ### Installation
 
    * Make sure you have a Docker machine up and running.
-   * Start the analytics server by following the instructions given on  [README](../../forms-flow-analytics/README.md)
-   * Start the FormIO server by following the instructions given on  [README](../../forms-flow-forms/README.md)
+   * Start the **analytics server** by following the instructions given on  [README](../../forms-flow-analytics/README.md)
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. Details below,   
+   * Start the **form.io server** by modifying listed form.io related environment variables **(Skip this step if the configuration of form.io role mapping already exists)**    
+    (**Note: This step is required only if the installation is is done for the first time or new volume mounts**)   
+       
+**FormsFlow.AI form.io Server Variables:**  
 
-Environment variables are set in **.env** and read by the system.  
-
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own|Can be blank|
+`FORMIO_MONGO_PASSWORD`|Mongo Root Password|Can be blank|
+`FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
+`FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
+`FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
+ *  Follow the listed sub-instructions for mapping form.io based role IDs. **(Skip this step if the configuration of form.io role mapping already exists)**    
+      *  Run `docker-compose up -d forms-flow-forms` to start.
+        * Do a [health check for forms-flow-forms](../../forms-flow-forms#health-check)
+      * Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
+ * Modify the configuration values as needed. Details below,
+ 
 **FormsFlow.AI Role Mapping:**
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `CLIENT_ROLE`|	The role name used for client users|| formsflow-client
-`CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the value from form.io resource **/roles**
+`CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the value from form.io resource **http://localhost:3001/role**
 `REVIEWER_ROLE`|The role name used for staff/reviewer users||`formsflow-reviewer`
-`REVIEWER_ROLE_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|must get the value from form.io resource **/roles**
+`REVIEWER_ROLE_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|must get the value from form.io resource **http://localhost:3001/role**
 `DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
-`DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the value from form.io resource **/roles**
-`ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the value from form.io resource **/roles** 
-`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource **/user**
+`DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the value from form.io resource **http://localhost:3001/role**
+`ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the value from form.io resource **http://localhost:3001/role** 
+`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource **http://localhost:3001/user**
 
 **FormsFlow.AI Datastore Settings:**
 Variable name | Meaning | Possible values | Default value |
@@ -91,19 +104,14 @@ Variable name | Meaning | Possible values | Default value |
 `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
    
    **Additionally, you may want to change these**
- ```  
-        * The value of database details (especially if this instance is not just for testing purposes)
- ```
- ```
-        * The Postgres volume definition [This may apply for windows based setup. Refer the README of individual modules.]  
-                    *  [forms-flow-analytics](../../forms-flow-analytics/README.md)  
-                    *  [forms-flow-forms](../../forms-flow-forms/README.md)  
-                    *  [forms-flow-bpm](../../forms-flow-bpm/README.md)  
-                    *  [forms-flow-api](../../forms-flow-api/README.md)     
-```
+   * The value of database details (especially if this instance is not just for testing purposes)
+   * The Postgres volume definition [This may apply for windows based setup. Refer the README of individual modules.]  
+     * [forms-flow-analytics](../../forms-flow-analytics/README.md)  
+     * [forms-flow-forms](../../forms-flow-forms/README.md)  
+     * [forms-flow-bpm](../../forms-flow-bpm/README.md)  
+     * [forms-flow-api](../../forms-flow-api/README.md)     
 
 ### Running the Application
-   * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
   
 ### Health Check
@@ -113,3 +121,5 @@ Variable name | Meaning | Possible values | Default value |
   * FormsFlow Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
   * FormsFlow web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   
+### Stopping the Application
+   * Run `docker-compose down` to stop.

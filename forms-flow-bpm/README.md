@@ -63,7 +63,6 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
          The value of Datastore credentials (especially if this instance is not just for testing purposes)
 ```
 ### Running the application
-   * Run `docker-compose build` to build.
    * Run `docker-compose up -d` to start.
       
 ### Health Check
@@ -114,3 +113,6 @@ server:
   servlet.context-path: /camunda
 ``` 
 * **NOTE: Alternatively, you can directly place your ssl cert under the classpath "/forms-flow-bpm/src/main/resources". Your configuration for the key-store in application.yaml would be `key-store: classpath:/keystore.ks`.**
+
+### Stopping the Application
+   * Run `docker-compose down` to stop.

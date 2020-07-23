@@ -11,8 +11,8 @@
 * [System Operation](#system-operation)
 * [Deployment and Configuration](#deployment-and-configuration)
   * [Prerequisites](#prerequisites)
-  * [Configure and Build](#configure-and-build)
-* [Running the Application](#running-the-application)
+  * [Deployment](#deployment)
+* [Verifying the Application](#verifying-the-application)
 * [Managing Forms](#managing-forms)
 * [Managing Workflows](#managing-workflows)
 * [Managing Analytics Dashboard](#managing-analytics-dashboard)
@@ -47,43 +47,32 @@ The project was initiated by AOT Technologies as a means of addressing the gener
 
 ### Project Tree
 
-
- * [README.md](./README.md) This file
  * [deployment](./deployment) Deployment of complete framework
     * [docker](./deployment/docker) Deployment using docker 
-      * [README](./deployment/docker/README.md)
     * [nginx](./deployment/nginx) Deployment on a remote host using nginx
-      * [README](./deployment/nginx/README.md)
-
  * [forms-flow-analytics](./forms-flow-analytics) Redash analytics components
-   * [README](./forms-flow-analytics/README.md)
  * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
-    * [README](./forms-flow-bpm/README.md)
  * [forms-flow-forms](./forms-flow-forms) form.io deployment and  integration
-   * [README](./forms-flow-forms/README.md)
  * [forms-flow-idm](./forms-flow-idm) Identity Management (Keycloak)
-   * [README](./forms-flow-idm/README.md)
  * [forms-flow-web](./forms-flow-web) FormsFlow integration web UI
-   * [README](./forms-flow-web/README.md)
 * [forms-flow-api](./forms-flow-api) REST API to FormsFlow.AI integration components
-   * [README](./forms-flow-api/README.md)
 
 Features 
 ------------------
 -  Drag-and-drop forms-builder with rich UI components
 -  Lightweight server-based workflow engine with full capabilities including human, parallel, asynchronous and timed flows, decision engine and graphical designer
-- Notifications engine for notifications, reminders and alerts on tasks and even data thresholds.
-- Metrics and data visualization dashboards for display of key workflow and form data
-- (future) Multi-tenancy isolation
-- Containerized deployment with docker, docker-compose and (soon) Openshift
-- Flexible Identity Management uses existing IDM systems for authentication and single sign-on
+-  Notifications engine for notifications, reminders and alerts on tasks and even data thresholds.
+-  Metrics and data visualization dashboards for display of key workflow and form data
+-  (future) Multi-tenancy isolation
+-  Containerized deployment with docker, docker-compose and (soon) Openshift
+-  Flexible Identity Management uses existing IDM systems for authentication and single sign-on
 
 ## System Architecture
 
 
 ![FormsFlow AI Component Architecture](./.images/formsflow-ai-components.png)
 
-### Components 
+## Components 
 
 The components of the system are:
 #### FormsFlow UI
@@ -173,12 +162,12 @@ These users are responsible for accessing the native capabilities of the embedde
 
 The products are installed with a default configuration so that the base system works "out-the-box", however the advanced configuration and management of the products requires the relevant product documentation. 
 
-### Prerequisites
+#### Prerequisites
 
 * Admin access to a local or remote server (can be local PC or Mac provided it is 64-bit with at least 16GB RAM and 100GB HDD) where [docker-compose](https://docker.com) and [docker](https://docker.com) are installed and configured. 
 * Admin access to a [Keycloak](https://www.keycloak.org/) server  (ability to create realms, users etc.)
 
-### Configure and Build
+#### Deployment
 
 * Clone this github repo
 * Change directory   to deployment/docker folder  ```cd ./deployment/docker```
@@ -186,10 +175,7 @@ The products are installed with a default configuration so that the base system 
 * If deploying to a remote server, you can use nginx as a reverse proxy and SSL engine. To help you, follow the instructions in the nginx [README](./deployment/nginx/README.md)
 
 
-## Running the Application
-* Ensure that the configuration and installation steps have been followed
-* Change directory to deployment/docker folder  ```cd ./deployment/docker```
-* Run `docker-compose up -d` to start.
+## Verifying the Application
 * The following applications will be started and can be accessed in your browser.
          - http://localhost:3000 - FormsFlow UI (+ forms designer) 
          - http://localhost:7000 - Redash analytics

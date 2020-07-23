@@ -74,5 +74,4 @@ Steps to get the client adapter configuration from Keycloak:
 
 To know more about form.io, go to https://help.form.io/userguide/introduction/.
 
-### Stopping the application
-   * Run `docker-compose down` to stop.
+

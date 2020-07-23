@@ -59,6 +59,9 @@ Steps to get the client adapter configuration from Keycloak:
 ### Running the application
    * Run `docker-compose up -d` to start.
 
+#### To stop the application
+   * Run `docker-compose down` to stop.
+
 ### Health Check
 
    The application should be up and available for use at port defaulted to 3000 in application.yaml http://localhost:3000/

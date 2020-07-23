@@ -29,11 +29,11 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-analytics".
-   * Modify the configuration values as needed. Details below,
+   * Modify the configuration values as needed in the redash.env file. Details below,
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://localhost/redash
+`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://localhost:7000/redash
 `PYTHONUNBUFFERED`|Log buffering setup|1 or 0 | 1
 `REDASH_LOG_LEVEL`|Logging level|`CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET` | ERROR
 `REDASH_REDIS_URL`|Redis URL|Used on installation to create the database.Choose your own.|`redis://redis:6379/0`
@@ -43,19 +43,22 @@ Variable name | Meaning | Possible values | Default value |
 `REDASH_COOKIE_SECRET`|Encryption for all configuration|ditto|`redash-selfhosted`
 `REDASH_SECRET_KEY`|Encryption for datasource configuration|ditto|`redash-selfhosted`
   
-  **Additionally, you may want to change these**
-```  
-          The Postgres volume location.          
-          
-          For windows, the path of volume to be changed as given below.
-           volumes:
-            - ./postgres/analytics:/data/postgres
-```
-         The value of REDASH_COOKIE_SECRET (especially if this instance is not just for testing purposes)
+  **Additionally, you may want to change these**  
+   * The value of REDASH_COOKIE_SECRET (especially if this instance is not just for testing purposes)
  
 ### Running the application
-  * Run `docker-compose run --rm server create_db` to setup database andd to create tables.
-  * Run `docker-compose up -d` to start.
+* For Linux,
+  * Run `docker-compose -f docker-compose-linux.yml run --rm server create_db` to setup database and to create tables.
+  * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+* For Windows,
+  * Run `docker-compose -f docker-compose-windows.yml run --rm server create_db` to setup database and to create tables.
+  * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+
+#### To stop the application
+* For Linux,
+  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
+* For Windows,
+  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
 
 ### Health Check
 

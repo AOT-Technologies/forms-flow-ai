@@ -29,26 +29,36 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
    * Start the **analytics server** by following the instructions given on  [README](../../forms-flow-analytics/README.md)
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.
-   * Start the **form.io server** by modifying listed form.io related environment variables **(Skip this step if the configuration of form.io role mapping already exists)**    
+   * Start the **form.io server** by modifying listed form.io related environment variables **(Skip this step if the pre-defined template i.e.sample.json is already imported and role IDs are mapped in this .env)**    
     (**Note: This step is required only if the installation is is done for the first time or new volume mounts**)   
        
 **FormsFlow.AI form.io Server Variables:**  
 
-Variable name | Meaning | Possible values | Default value |
+ Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own|Can be blank|
 `FORMIO_MONGO_PASSWORD`|Mongo Root Password|Can be blank|
 `FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
 `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
- *  Follow the listed sub-instructions for mapping form.io based role IDs. **(Skip this step if the configuration of form.io role mapping already exists)**    
-      *  Run `docker-compose up -d forms-flow-forms` to start.
+ * Build all the services.
+    * For Linux,
+        * Run `docker-compose -f docker-compose-linux.yml build` to build.
+    * For Windows,
+        * Run `docker-compose -f docker-compose-windows.yml build` to build.
+ *  Follow the listed sub-instructions for mapping the pre-defined role IDs. **(Skip this step if the pre-defined template i.e.sample.json is already imported and role IDs are mapped in this .env)**   
+      *  Start the form.io service.  
+        For Linux,  
+        Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
+        For Windows,  
+        Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
         * Do a [health check for forms-flow-forms](../../forms-flow-forms#health-check)
       * Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
  * Modify the configuration values as needed. Details below,
  
 **FormsFlow.AI Role Mapping:**
-Variable name | Meaning | Possible values | Default value |
+
+ Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `CLIENT_ROLE`|	The role name used for client users|| formsflow-client
 `CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the value from form.io resource **http://localhost:3001/role**
@@ -60,6 +70,7 @@ Variable name | Meaning | Possible values | Default value |
 `USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource **http://localhost:3001/user**
 
 **FormsFlow.AI Datastore Settings:**
+
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `WEB_API_DATABASE_URL`|JDBC DB Connection URL for FormsFlow||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/formsflow`
@@ -68,6 +79,7 @@ Variable name | Meaning | Possible values | Default value |
 `WEB_API_POSTGRES_DB`|FormsFlow database name||`formsflow`
 
 **FormsFlow.AI Integration Settings:**
+
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
@@ -76,6 +88,7 @@ Variable name | Meaning | Possible values | Default value |
 `REACT_APP_WEB_BASE_URL`|FormsFlow Rest API URI||`http://localhost:5000/api`
 
 **Authentication Provider (Keycloak) Settings:**
+
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `KEYCLOAK_TOKEN_URL`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`{Keycloak URL}/auth/realms/<realm>/protocol/openid-connect/token`
@@ -87,6 +100,7 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_WEB_CLIENTID`|Client ID for FormsFlow to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
 
 **BPM (Camunda) Datastore Settings:**
+
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `CAMUNDA_JDBC_URL`|Postgres JDBC DB Connection URL|Used on installation to create the database.Choose your own|`jdbc:postgresql://forms-flow-bpm-db:5432/postgres`
@@ -105,14 +119,19 @@ Variable name | Meaning | Possible values | Default value |
    
    **Additionally, you may want to change these**
    * The value of database details (especially if this instance is not just for testing purposes)
-   * The Postgres volume definition [This may apply for windows based setup. Refer the README of individual modules.]  
-     * [forms-flow-analytics](../../forms-flow-analytics/README.md)  
-     * [forms-flow-forms](../../forms-flow-forms/README.md)  
-     * [forms-flow-bpm](../../forms-flow-bpm/README.md)  
-     * [forms-flow-api](../../forms-flow-api/README.md)     
+  
 
-### Running the Application
-   * Run `docker-compose up -d` to start.
+### Running the application
+* For Linux,
+   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+* For Windows,
+   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+   
+#### To stop the application
+* For Linux,
+  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
+* For Windows,
+  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
   
 ### Health Check
   * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/

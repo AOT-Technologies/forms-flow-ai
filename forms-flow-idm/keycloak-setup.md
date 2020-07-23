@@ -181,8 +181,18 @@ Mapping different roles to group/subgroups:
 * Select tab Role Mappings  
     * Select forms-flow-web from the list of Client Roles selection  
     * Select formsflow-client role and click add selected  
-    * The selected role will come in assigned roles for that subgroup.  
-* Repeat the step 2 and 3 for subgroups formsflow-designer, formsflow-reviewer and formsflow-analyst and choose the respective roles for them.   
+    * The selected role will appear in assigned roles for that subgroup.  
+* Repeat the step 2 and 3 for subgroups formsflow-designer, formsflow-reviewer and formsflow-analyst and choose the respective roles for them according to the table :
+
+Group|Roles|Description
+---|---|---
+camunda-admin|formsflow-bpm|Able to administer Camunda directly and create new workflows
+formsflow-analyst|formsflow-analyst, formsflow-client|Able to access the Redash dashboard and FormsFlow UI
+formsflow-designer|formsflow-client, formsflow-designer, formsflow-reviewer| Able to access all elements of the FormsFlow UI including forms design, task list and forms access
+formsflow-reviewer|formsflow-client, formsflow-reviewer| Able to access task list and forms access of FormsFlow UI
+formsflow-client|formsflow-client| Able to access form fill-in only
+
+
 
 ### Test forms-flow-web access in Postman  
 

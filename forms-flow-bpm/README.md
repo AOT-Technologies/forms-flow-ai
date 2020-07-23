@@ -51,19 +51,22 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
    
  **Additionally, you may want to change these**  
- 
-```
-          The Postgres volume location.          
-          
-          For windows, the path of volume to be changed as given below.
-           volumes:
-            - ./postgres/camunda:/data/postgres
-```
-```
-         The value of Datastore credentials (especially if this instance is not just for testing purposes)
-```
+*   The value of Datastore credentials (especially if this instance is not just for testing purposes)
+
 ### Running the application
-   * Run `docker-compose up -d` to start.
+* For Linux,
+   * Run `docker-compose -f docker-compose-linux.yml build` to start.
+   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+* For Windows,
+   * Run `docker-compose -f docker-compose-windows.yml build` to start.
+   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+
+#### To stop the application
+* For Linux,
+  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
+* For Windows,
+  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
+      
       
 ### Health Check
 

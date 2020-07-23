@@ -140,5 +140,3 @@ Variable name | Meaning | Possible values | Default value |
   * FormsFlow Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
   * FormsFlow web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   
-### Stopping the Application
-   * Run `docker-compose down` to stop.

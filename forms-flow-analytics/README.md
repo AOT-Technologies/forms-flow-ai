@@ -43,19 +43,16 @@ Variable name | Meaning | Possible values | Default value |
 `REDASH_COOKIE_SECRET`|Encryption for all configuration|ditto|`redash-selfhosted`
 `REDASH_SECRET_KEY`|Encryption for datasource configuration|ditto|`redash-selfhosted`
   
-  **Additionally, you may want to change these**
-```  
-          The Postgres volume location.          
-          
-          For windows, the path of volume to be changed as given below.
-           volumes:
-            - ./postgres/analytics:/data/postgres
-```
-         The value of REDASH_COOKIE_SECRET (especially if this instance is not just for testing purposes)
+  **Additionally, you may want to change these**  
+   * The value of REDASH_COOKIE_SECRET (especially if this instance is not just for testing purposes)
  
 ### Running the application
-  * Run `docker-compose run --rm server create_db` to setup database andd to create tables.
-  * Run `docker-compose up -d` to start.
+* For Linux,
+  * Run `docker-compose -f docker-compose-linux.yml run --rm server create_db` to setup database and to create tables.
+  * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+* For Windows,
+  * Run `docker-compose -f docker-compose-windows.yml run --rm server create_db` to setup database and to create tables.
+  * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
 
 ### Health Check
 

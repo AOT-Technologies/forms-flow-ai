@@ -40,23 +40,22 @@ Variable name | Meaning | Possible values | Default value |
 `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
 
 **Additionally, you may want to change these**
-  ```       
-         The Mongo volume definition
-    volumes:
-      - mdb-data:/data/db/
-      - ./mongodb/data/log/:/var/log/mongodb/
-      - ./mongodb/mongod.conf:/etc/mongod.conf
-  ```
-  ```
-         The value of Mongo database details (especially if this instance is not just for testing purposes)
-   ```
-   ```
-         The value of ROOT user account details (especially if this instance is not just for testing purposes)
-   ```
-
+* The value of Mongo database details (especially if this instance is not just for testing purposes)
+* The value of ROOT user account details (especially if this instance is not just for testing purposes)
   
-### Running the Application
-   * Run `docker-compose up -d` to start.
+### Running the application
+* For Linux,
+   * Run `docker-compose -f docker-compose-linux.yml build` to start.
+   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+* For Windows,
+   * Run `docker-compose -f docker-compose-windows.yml build` to start.
+   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+   
+#### To stop the application
+* For Linux,
+  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
+* For Windows,
+  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
 
 ### Health Check
 

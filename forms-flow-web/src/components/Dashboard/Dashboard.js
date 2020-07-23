@@ -17,7 +17,7 @@ import * as moment from "moment";
 const firsDay = moment().format("YYYY-MM-01");
 
 const lastDay = moment().endOf("month").format("YYYY-MM-DD");
-console.log("lastDay", lastDay);
+
 const Dashboard = () => {
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrics.submissionsList);

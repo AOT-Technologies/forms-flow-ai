@@ -55,10 +55,10 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ### Running the application
 * For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml build` to start.
+   * Run `docker-compose -f docker-compose-linux.yml build` to build.
    * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
 * For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml build` to start.
+   * Run `docker-compose -f docker-compose-windows.yml build` to build.
    * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
 
 #### To stop the application

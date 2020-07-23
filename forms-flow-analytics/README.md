@@ -29,7 +29,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-analytics".
-   * Modify the configuration values as needed. Details below,
+   * Modify the configuration values as needed in the redash.env file. Details below,
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---

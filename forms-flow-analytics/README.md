@@ -54,6 +54,12 @@ Variable name | Meaning | Possible values | Default value |
   * Run `docker-compose -f docker-compose-windows.yml run --rm server create_db` to setup database and to create tables.
   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
 
+#### To stop the application
+* For Linux,
+  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
+* For Windows,
+  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
+
 ### Health Check
 
    The application should be up and available for use at port defaulted to 7000 in docker-compose.yml (i.e. http://localhost:7000/)

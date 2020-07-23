@@ -110,5 +110,3 @@ Content-Type : application/json
 x-jwt-token: {x-jwt-token}
 ``` 
 
-### Stopping the Application
-   * Run `docker-compose down` to stop.

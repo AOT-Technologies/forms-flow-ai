@@ -46,11 +46,7 @@ const SideBar = (props) => {
                       user.preferred_username ||
                       ""}{" "}
                   </p>
-                  <p> {user.email}</p>
                   <p>{getUserRoleName(userRoles)}</p>
-                  {/* <p className="designation" onClick={UserService.userLogout}>
-                      Logout
-                    </p> */}
                 </div>
               </div>
             </li>

@@ -22,8 +22,8 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ### Keycloak Setup
 
-* Login to KeyCloak Realm with admin privileges  
-* For client **forms-flow-web** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md) 
+* Login to KeyCloak Realm with admin privileges
+* For client **forms-flow-web** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md)
 
 
 ### Installation
@@ -32,7 +32,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
    * Make sure your current working directory is forms-flow-web.
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. Details below,
-   
+
  Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
@@ -55,7 +55,7 @@ Steps to get the client adapter configuration from Keycloak:
   - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
   - Copy the JSON data
   - Update the content in file **public/config/kc/keycloak.json**
-  
+
 ### Running the application
    * Run `docker-compose up -d` to start.
 

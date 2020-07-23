@@ -51,16 +51,21 @@ Variable name | Meaning | Possible values | Default value |
 `CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda/engine-rest/`
 
  **Additionally, you may want to change these**  
-   
-  ```       
-         The Postgres volume definition
-    volumes:
-       - ./postgres/webapi:/data/postgres
-  ```
-         The value of Postgres database details (especially if this instance is not just for testing purposes)
-  
+*   The value of Datastore credentials (especially if this instance is not just for testing purposes)
+
 ### Running the application
-   * Run `docker-compose up -d` to start.
+* For Linux,
+   * Run `docker-compose -f docker-compose-linux.yml build` to start.
+   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+* For Windows,
+   * Run `docker-compose -f docker-compose-windows.yml build` to start.
+   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+   
+#### To stop the application
+* For Linux,
+  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
+* For Windows,
+  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
    
 ### Verify the application status
 

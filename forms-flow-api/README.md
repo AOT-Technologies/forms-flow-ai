@@ -6,7 +6,7 @@ The goal of the REST API is to provide access to all relevant interfaces of the 
 ## Table of Content
 * [Prerequisites](#prerequisites)
 * [Solution Setup](#solution-setup)
-  * [Step 1 : Keycloak Setup](#keycloak-setup)
+  * [Step 1 : Installation](#intallation)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Verify the Application Status](#verify-the-application-status) 
@@ -50,7 +50,7 @@ Variable name | Meaning | Possible values | Default value |
  **Additionally, you may want to change these**  
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)
 
-### Running the application
+### Running the Application
 * For Linux,
    * Run `docker-compose -f docker-compose-linux.yml build` to build.
    * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
@@ -58,13 +58,13 @@ Variable name | Meaning | Possible values | Default value |
    * Run `docker-compose -f docker-compose-windows.yml build` to build.
    * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
    
-#### To stop the application
+#### To Stop the Application
 * For Linux,
   * Run `docker-compose -f docker-compose-linux.yml down` to stop.
 * For Windows,
   * Run `docker-compose -f docker-compose-windows.yml down` to stop.
    
-### Verify the application status
+### Verify the Application Status
 
    The application should be up and available for use at port defaulted to 5000 in docker-compose.yml (i.e. http://localhost:5000/)
   

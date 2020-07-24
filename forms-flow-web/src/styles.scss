@@ -17,7 +17,7 @@ $purple: #613d7c;
 $pink: #e83e8c;
 $red: #ff0039;
 $orange: #f2661f;
-$yellow: #bed32b;
+$yellow: #fcba19;
 $green: #3fb618;
 $teal: #20c997;
 $cyan: #9954bb;
@@ -227,7 +227,7 @@ i.fa.fa-question-circle.text-muted {
   background-color: white;
 }
 .active-tab {
-  border-bottom: 1px solid #fcba19;
+  border-bottom: 1px solid $yellow;
   background-color: transparent;
 }
 .lbl-logout {
@@ -305,7 +305,7 @@ i.fa.fa-question-circle.text-muted {
   margin-left: 20px;
 }
 .app-name {
-  color: #fcba19;
+  color: $yellow;
   margin: 0;
 }
 .nav-icons {

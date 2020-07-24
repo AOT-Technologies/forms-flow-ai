@@ -49,15 +49,17 @@
         }
       }
       & .text-wrapper p {
-        margin-bottom: 5px;
         font-weight: 500;
-        font-size: 13px;
+        font-size: 14px;
         color: #fff;
-        margin-bottom: 0 !important;
+        margin-bottom: 0;
         word-break: break-all;
         & p {
           font-size: 13px;
         }
+      }
+      & .profile-role {
+        color: $yellow !important;
       }
     }
   }

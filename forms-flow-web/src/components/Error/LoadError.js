@@ -13,7 +13,7 @@ const LoadError = ({
     <div className="row ">
       <div className={`col-12 error-message-block ${className} `}>
         <div className="alert alert-danger error-alert" role="alert">
-          <i className="fa fa-times-circle" aria-hidden="true"></i>
+          <i className="fa fa-times-circle" aria-hidden="true"/>
           <div className="alert-heading d-inline ml-3">{text}</div>
         </div>
       </div>

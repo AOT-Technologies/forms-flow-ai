@@ -11,8 +11,10 @@ const getUserRoleName = (userRoles) => {
   return role;
 };
 
+const getNameFromEmail = (email) => email?email.substring(0, email.lastIndexOf("@")) : "" ;
+
 const getUserRolePermission = (userRoles, role) => {
   return userRoles && userRoles.includes(role);
 };
 
-export { getUserRoleName, getUserRolePermission };
+export { getUserRoleName, getUserRolePermission, getNameFromEmail };

@@ -6,7 +6,7 @@ import { selectRoot } from "react-formio";
 import { useLocation } from "react-router-dom";
 
 import { STAFF_REVIEWER } from "../constants/constants";
-import { getUserRoleName, getUserRolePermission } from "../helper/user";
+import { getUserRoleName, getUserRolePermission, getNameFromEmail } from "../helper/user";
 
 import "./styles.scss";
 
@@ -43,10 +43,10 @@ const SideBar = (props) => {
                   <p className="profile-name">
                     {user.given_name ||
                       user.name ||
-                      user.preferred_username ||
+                      user.preferred_username || getNameFromEmail(user.email) ||
                       ""}{" "}
                   </p>
-                  <p>{getUserRoleName(userRoles)}</p>
+                  <p className="profile-role">{getUserRoleName(userRoles)}</p>
                 </div>
               </div>
             </li>

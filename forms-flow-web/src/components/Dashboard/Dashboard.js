@@ -17,7 +17,7 @@ import * as moment from "moment";
 const firsDay = moment().format("YYYY-MM-01");
 
 const lastDay = moment().endOf("month").format("YYYY-MM-DD");
-console.log("lastDay", lastDay);
+
 const Dashboard = () => {
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrics.submissionsList);
@@ -85,13 +85,13 @@ const Dashboard = () => {
         <div className="row ">
           <div className="col-12">
             <h1 className="dashboard-title">
-              <i className="fa fa-pie-chart" aria-hidden="true"></i> Metrics
+              <i className="fa fa-pie-chart" aria-hidden="true"/> Metrics
             </h1>
-            <hr className="line-hr"></hr>
+            <hr className="line-hr"/>
             <div className="row ">
               <div className="col-12 col-lg-6 ">
                 <h3 className="application-title">
-                  <i className="fa fa-bars mr-1"></i> Submissions
+                  <i className="fa fa-bars mr-1"/> Submissions
                 </h3>
               </div>
               <div className="col-12 col-lg-6 d-flex align-items-end flex-lg-column mt-3 mt-lg-0">
@@ -102,7 +102,7 @@ const Dashboard = () => {
                   rangeDivider=" - "
                   clearIcon={null}
                   calendarIcon={
-                    <i className="fa fa-calendar" aria-hidden="true"></i>
+                    <i className="fa fa-calendar" aria-hidden="true"/>
                   }
                 />
               </div>

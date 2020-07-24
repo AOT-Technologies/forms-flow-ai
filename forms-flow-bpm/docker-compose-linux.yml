@@ -1,0 +1,47 @@
+# Author: Yichun Zhao
+version: "3.7"
+services:
+  forms-flow-bpm-db:
+    image: postgres
+    environment:
+      POSTGRES_USER: ${CAMUNDA_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${CAMUNDA_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${CAMUNDA_POSTGRES_DB}
+      POSTGRES_HOST_AUTH_METHOD: 'trust'
+    volumes:
+      - ./postgres/camunda:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+    networks:
+      - forms-flow-bpm-network
+
+  forms-flow-bpm:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    links:
+      - forms-flow-bpm-db
+    ports:
+      - '8000:8080'
+    environment:
+      - KEYCLOAK_URL=${KEYCLOAK_URL}
+      - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM}
+      - KEYCLOAK_CLIENTID=${KEYCLOAK_BPM_CLIENTID}
+      - KEYCLOAK_CLIENTSECRET=${KEYCLOAK_BPM_CLIENTSECRET}
+      - JDBC_URL=${CAMUNDA_JDBC_URL}
+      - JDBC_USER=${CAMUNDA_POSTGRES_USER}
+      - JDBC_PASSWORD=${CAMUNDA_POSTGRES_PASSWORD}
+      - JDBC_DRIVER=${CAMUNDA_JDBC_DRIVER}
+      - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN}
+    networks:
+      - forms-flow-bpm-network
+    
+
+networks:
+  forms-flow-bpm-network:
+    driver: "bridge"
+
+volumes:
+  postgres:

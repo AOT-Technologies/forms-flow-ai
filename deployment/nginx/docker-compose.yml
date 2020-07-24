@@ -1,0 +1,9 @@
+  nginx:
+    image: nginx:1.17-alpine
+    ports:
+      - "443:443"
+    volumes:
+      - ./conf.d/:/etc/nginx/conf.d/
+      - /home/dev/certs:/etc/nginx/certs
+    restart: unless-stopped
+    tty: true

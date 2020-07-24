@@ -33,6 +33,10 @@ public interface IUser {
         return execution.getProcessEngine().getIdentityService().createUserQuery().userId(userId).singleResult();
     }
 
+    default String getDefaultAddresseName() {
+        return "Team";
+    }
+
     default List<String> getEmailsOfUnassignedTask(DelegateTask delegateTask) {
         Set<IdentityLink> identityLinks = delegateTask.getCandidates();
         List<String> emails = new ArrayList<>();

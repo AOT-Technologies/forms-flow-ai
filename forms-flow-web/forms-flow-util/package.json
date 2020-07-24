@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "js-html2pdf": "^1.1.4",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "moment": "^2.24.0"
   }
 }

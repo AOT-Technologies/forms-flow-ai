@@ -95,7 +95,7 @@ Webserver providing reverse-proxy redirection and SSL to components for remote d
 #### Keycloak Identity management server 
 The system  uses an existing (your) Keycloak server which provides a common identity management capability. Provisioning of the Keycloak server is not part of this project, however there are specific [Keycloak configuration tasks](./forms-flow-idm/keycloak-setup.md) which are required for this project. 
 
-## Users and Roles
+## Users, Roles and Groups
 
 The framework defines user roles which are standardised across all the products. During the installation process, component-specific variants of these roles are set up , these need to be added to the main .env file in order to provide seamless integration:
 
@@ -112,9 +112,32 @@ The framework defines user roles which are standardised across all the products.
 - formsflow-client 
   * Fill in and submit online form(s)
 
-A user may be assigned multiple roles. User, group and role creation and management is performed in  Keycloak by the Keycloak administrator. 
+Roles are derived from claims extracted from the JWT's returned from Keycloak during the login process. A user may be assigned multiple roles. User, group and role creation and management is performed in  Keycloak by the Keycloak administrator. 
 
-  For example it is possible to assign a user to roles formsflow-analyst and formsflow-reviewer, which would allow the user to not only process forms but also design analytics dashboards. 
+Here are some important notes about the interaction between users, groups and roles
+
+* Groups (and if needed , subgroups) are associated with roles
+* The current implementation uses "cleint roles" which associates roles with clients (which, in Keycloak are effectively components with the ability to have user logins - forms-flow-analytics, forms-flow-bpm and forms-flow-web for components Redash, Camunda and FormsFlow UI respectively). This may be moved to the realm in a later release.
+* Note that there is no client for form.io - there is no direct login capability on Keycloak for form.io. All form administration is performed from the FormsFlow UI
+* Users are assigned to groups and thereby inherit the roles
+* Groups are also synced to Camunda so are available for task filtering, email notifications etc.
+* In the current implementation ONLY members of group camunda-admins are able to access the Camunda UI directly
+* There is some "under-the-covers" authorization going on with repect to access between the  FormsFlow UI, the FormsFlow API and Camunda with the addition of audience mapping - basically allowing communication between components 
+
+By convention we use the following strategy in our Keycloak setup instructions (it can of course be modified as needed ):
+
+There is one group "formsflow" under which are 5 sub-groups 
+Group|Roles|Description
+---|---|---
+camunda-admin|formsflow-bpm|Able to administer Camunda directly and create new workflows
+formsflow-analyst|formsflow-analyst, formsflow-client|Able to access the Redash dashboard and FormsFlow UI
+formsflow-designer|formsflow-client, formsflow-designer, formsflow-reviewer| Able to access all elements of the FormsFlow UI including forms design, task list and forms access
+formsflow-reviewer|formsflow-client, formsflow-reviewer| Able to access task list and forms access of FormsFlow UI
+formsflow-client|formsflow-client| Able to access form fill-in only
+
+
+
+  For example it is possible to assign a user to roles formsflow-analyst and formsflow-client or to simply make the user a member of group formsflow-analyst, both of which have the effect of allowing the user to not only process forms but also design analytics dashboards. 
 
 
 

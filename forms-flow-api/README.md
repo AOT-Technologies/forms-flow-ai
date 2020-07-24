@@ -6,11 +6,11 @@ The goal of the REST API is to provide access to all relevant interfaces of the 
 ## Table of Content
 * [Prerequisites](#prerequisites)
 * [Solution Setup](#solution-setup)
-  * [Step 1 : Keycloak Setup](#keycloak-setup)
-  * [Step 2 : Installation](#installation)
+  * [Step 1 : Installation](#intallation)
+  * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
-  * [Step 4 : Health Check](#Health Check) 
-* [How-to export roles and Forms](#how-to-export-roles-and-forms)   
+  * [Step 4 : Verify the Application Status](#verify-the-application-status) 
+<!--* [How-to export roles and Forms](#how-to-export-roles-and-forms)   -->
 
 ## Prerequisites
 
@@ -26,9 +26,6 @@ Audience has been added for clients **forms-flow-web** and **forms-flow-bpm**.
 ### Environment Configuration
 
 Environment variables are set in **.env** and read by system.
-
-
-### Running the Application
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-webapi".
@@ -51,18 +48,23 @@ Variable name | Meaning | Possible values | Default value |
 `CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda/engine-rest/`
 
  **Additionally, you may want to change these**  
+*   The value of Datastore credentials (especially if this instance is not just for testing purposes)
+
+### Running the Application
+* For Linux,
+   * Run `docker-compose -f docker-compose-linux.yml build` to build.
+   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+* For Windows,
+   * Run `docker-compose -f docker-compose-windows.yml build` to build.
+   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
    
-  ```       
-         The Postgres volume definition
-    volumes:
-       - ./postgres/webapi:/data/postgres
-  ```
-         The value of Postgres database details (especially if this instance is not just for testing purposes)
-  
-### Running the application
-   * Run `docker-compose up -d` to start.
+#### To Stop the Application
+* For Linux,
+  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
+* For Windows,
+  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
    
-### Verify the application status
+### Verify the Application Status
 
    The application should be up and available for use at port defaulted to 5000 in docker-compose.yml (i.e. http://localhost:5000/)
   
@@ -89,5 +91,3 @@ Content-Type : application/json
 Authorization: Bearer {access token}
 ``` 
 
-### Stopping the Application
-   * Run `docker-compose down` to stop.

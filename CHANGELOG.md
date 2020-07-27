@@ -28,7 +28,7 @@ Multi-tenant support
 * All README.md files cleaned up throughout project
 * Environment variables rationalised and renamed to be globally generic
 
-##1.0.0 - 2020-04-15
+## 1.0.0 - 2020-04-15
 `Added`
 * Initial release
 

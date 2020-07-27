@@ -11,7 +11,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
 `Added`
 * This file (CHANGELOG.md)
 * CONTRIBUTING.md
-* 
+
 ## 2.0.0 - 2020-07-24
 `Added`
 * ReDash implementation under forms-flow-analytics

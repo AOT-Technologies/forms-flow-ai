@@ -2,9 +2,9 @@
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
 ## Unreleased
 `Added`
-Openshift deployment
-Support for form.io enterprise
-Multi-tenant support
+* Openshift deployment
+* Support for form.io enterprise
+* Multi-tenant support
 
 
 ## 2.0.1 - 2020-07-27
@@ -17,6 +17,7 @@ Multi-tenant support
 * ReDash implementation under forms-flow-analytics
 * Deployment folder with docker and nginx
 * FormsFlow UI task dashboard
+* FormsFlow UI metrics dashboard 
 * Single component installations with docker and docker-compose
 * Native windows intallation docker-compose-windows.yml  
 * Native Linux installation docker-compose-linux.yml

@@ -236,9 +236,9 @@ POST http://localhost:3001/user/login
     }
 }
 ```
-* Get the form ID of form' from formio resource **/export** 
+* Get the form ID of form' from formio resource **/form** 
 ```
-GET http://localhost:3001/export
+GET http://localhost:3001/form
 
 Headers:
 Content-Type : application/json

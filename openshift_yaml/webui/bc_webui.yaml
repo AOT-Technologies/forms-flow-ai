@@ -1,0 +1,39 @@
+kind: Template
+apiVersion: v1
+metadata:
+  name: forms-flow-analytics
+  annotations:
+    description: ""
+    tags: forms-flow-analytics
+objects:
+-
+  apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    name: forms-flow-web
+    labels:
+      app: forms-flow-web
+  spec:
+    source:
+      git:
+        ref: master
+        uri: 'https://github.com/AOT-Technologies/forms-flow-ai'
+      contextDir: forms-flow-web
+    output:
+      to:
+        kind: ImageStreamTag
+        name: 'forms-flow-web:latest'
+    strategy:
+      type: Docker
+      dockerStrategy:
+        dockerfilePath: Dockerfile
+    triggers:
+      - type: ImageChange
+        imageChange: {}
+      - type: ConfigChange
+
+- 
+  apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: forms-flow-web

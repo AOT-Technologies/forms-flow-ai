@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: forms-flow-forms
+objects:
+- 
+  apiVersion: v1
+  kind: ConfigMap
+  data:
+    DEBUG: formio:*
+    NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-mdb:27017/formio"}'
+    ROOT_EMAIL: admin@example.com
+    ROOT_PASSWORD: CHANGEME
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: forms-flow-forms-env
+    name: forms-flow-forms-env
+
+- 
+  apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      app: forms-flow-forms
+    name: forms-flow-forms
+  spec:
+    replicas: 1
+    selector:
+      app: forms-flow-forms
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app.network/forms-flow-forms-network: "true"
+          app: forms-flow-forms
+      spec:
+        containers:
+        - env:
+          - name: DEBUG
+            valueFrom:
+              configMapKeyRef:
+                key: DEBUG
+                name: forms-flow-forms-env
+          - name: NODE_CONFIG
+            valueFrom:
+              configMapKeyRef:
+                key: NODE_CONFIG
+                name: forms-flow-forms-env
+          - name: ROOT_EMAIL
+            valueFrom:
+              configMapKeyRef:
+                key: ROOT_EMAIL
+                name: forms-flow-forms-env
+          - name: ROOT_PASSWORD
+            valueFrom:
+              configMapKeyRef:
+                key: ROOT_PASSWORD
+                name: forms-flow-forms-env
+          image: ' '
+          name: forms-flow-forms
+          ports:
+          - containerPort: 3001
+          resources: {}
+          stdin: true
+          tty: true
+        restartPolicy: Always
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - forms-flow-forms
+        from:
+          kind: ImageStreamTag
+          name: forms-flow-forms:latest
+      type: ImageChange
+  status: {}
+
+- 
+  apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      app: forms-flow-forms
+    name: forms-flow-forms
+  spec:
+    ports:
+    - name: "3001"
+      port: 3001
+      targetPort: 3001
+    selector:
+      app: forms-flow-forms
+  status:
+    loadBalancer: {}

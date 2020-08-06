@@ -1,0 +1,167 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: forms-flow-web
+objects:
+- 
+  apiVersion: v1
+  kind: ConfigMap
+  data:
+    NODE_ENV: 'development'
+    REACT_APP_ANONYMOUS_ID: ''
+    REACT_APP_API_PROJECT_URL: ''
+    REACT_APP_API_SERVER_URL: ''
+    REACT_APP_CLIENT_ID: ''
+    REACT_APP_CLIENT_ROLE: 'formsflow-client'
+    REACT_APP_INSIGHTS_API_KEY: ''
+    REACT_APP_INSIGHT_API_BASE: ''
+    REACT_APP_KEYCLOAK_CLIENT: 'forms-flow-web'
+    REACT_APP_STAFF_DESIGNER_ID: ''
+    REACT_APP_STAFF_DESIGNER_ROLE: 'formsflow-designer'
+    REACT_APP_STAFF_REVIEWER_ID: ''
+    REACT_APP_STAFF_REVIEWER_ROLE: 'formsflow-reviewer'
+    REACT_APP_USER_RESOURCE_FORM_ID: ''
+    REACT_APP_WEB_BASE_URL: ''
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: forms-flow-web-env
+    name: forms-flow-web-env
+
+- 
+  apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      app: forms-flow-web
+    name: forms-flow-web
+  spec:
+    replicas: 1
+    selector:
+      app: forms-flow-web
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: forms-flow-web
+      spec:
+        containers:
+        - env:
+          - name: NODE_ENV
+            valueFrom:
+              configMapKeyRef:
+                key: NODE_ENV
+                name: forms-flow-web-env
+          - name: REACT_APP_ANONYMOUS_ID
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_ANONYMOUS_ID
+                name: forms-flow-web-env
+          - name: REACT_APP_API_PROJECT_URL
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_API_PROJECT_URL
+                name: forms-flow-web-env
+          - name: REACT_APP_API_SERVER_URL
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_API_SERVER_URL
+                name: forms-flow-web-env
+          - name: REACT_APP_CLIENT_ID
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_CLIENT_ID
+                name: forms-flow-web-env
+          - name: REACT_APP_CLIENT_ROLE
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_CLIENT_ROLE
+                name: forms-flow-web-env
+          - name: REACT_APP_INSIGHTS_API_KEY
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_INSIGHTS_API_KEY
+                name: forms-flow-web-env
+          - name: REACT_APP_INSIGHT_API_BASE
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_INSIGHT_API_BASE
+                name: forms-flow-web-env
+          - name: REACT_APP_KEYCLOAK_CLIENT
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_KEYCLOAK_CLIENT
+                name: forms-flow-web-env
+          - name: REACT_APP_STAFF_DESIGNER_ID
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_STAFF_DESIGNER_ID
+                name: forms-flow-web-env
+          - name: REACT_APP_STAFF_DESIGNER_ROLE
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_STAFF_DESIGNER_ROLE
+                name: forms-flow-web-env
+          - name: REACT_APP_STAFF_REVIEWER_ID
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_STAFF_REVIEWER_ID
+                name: forms-flow-web-env
+          - name: REACT_APP_STAFF_REVIEWER_ROLE
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_STAFF_REVIEWER_ROLE
+                name: forms-flow-web-env
+          - name: REACT_APP_USER_RESOURCE_FORM_ID
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_USER_RESOURCE_FORM_ID
+                name: forms-flow-web-env
+          - name: REACT_APP_WEB_BASE_URL
+            valueFrom:
+              configMapKeyRef:
+                key: REACT_APP_WEB_BASE_URL
+                name: forms-flow-web-env
+          image: ' '
+          name: forms-flow-ai
+          ports:
+          - containerPort: 3000
+          resources: {}
+          tty: true
+        restartPolicy: Always
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - forms-flow-ai
+        from:
+          kind: ImageStreamTag
+          name: forms-flow-web:latest
+      type: ImageChange
+  status: {}
+
+-
+  apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      app: forms-flow-web
+    name: forms-flow-web
+  spec:
+    ports:
+    - name: "3000"
+      port: 3000
+      targetPort: 3000
+    selector:
+      app: forms-flow-web
+  status:
+    loadBalancer: {}
+  

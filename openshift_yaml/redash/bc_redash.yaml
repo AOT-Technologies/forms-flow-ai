@@ -1,0 +1,39 @@
+---
+  kind: Template
+  apiVersion: v1
+  metadata:
+    name: forms-flow-analytics
+    annotations:
+      description: ""
+      tags: forms-flow-analytics
+  objects:
+  -
+    apiVersion: build.openshift.io/v1
+    kind: BuildConfig
+    metadata:
+      name: forms-flow-analytics
+      labels:
+        app: forms-flow-analytics
+    spec:
+      source:
+        git:
+          ref: master
+          uri: 'https://github.com/getredash/redash'
+      output:
+        to:
+          kind: ImageStreamTag
+          name: 'forms-flow-analytics:latest'
+      strategy:
+        type: Docker
+        dockerStrategy:
+          dockerfilePath: Dockerfile
+      triggers:
+        - type: ImageChange
+          imageChange: {}
+        - type: ConfigChange
+  
+  - 
+    apiVersion: image.openshift.io/v1
+    kind: ImageStream
+    metadata:
+      name: forms-flow-analytics

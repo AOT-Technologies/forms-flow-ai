@@ -21,7 +21,7 @@ class ApplicationAudit(BaseModel, db.Model):
     def get_application_history(cls, application_id: int):
         """Fetch application history."""
         where_condition = ''
-        where_condition += f""" AND audit.application_id = {str(application_id)} """
+        where_condition += f""" audit.application_id = {str(application_id)} """
 
         result_proxy = db.session.execute(f"""SELECT
                 audit.application_name,audit.application_status

@@ -14,3 +14,26 @@ class ApplicationAudit(BaseModel, db.Model):
     form_submission_id = db.Column(db.String(30), nullable=False)
     process_instance_id = db.Column(db.String(30), nullable=False)
     revision_no = db.Column(db.Integer, nullable=False)
+
+
+
+    @classmethod
+    def get_application_history(cls, application_id: int):
+        """Fetch application history."""
+        where_condition = ''
+        where_condition += f""" AND audit.application_id = {str(application_id)} """
+
+        result_proxy = db.session.execute(f"""SELECT
+                audit.application_name,audit.application_status
+            FROM "application_audit" audit
+            WHERE 
+                {where_condition}
+            ORDER BY application_name    
+            """)
+
+        result = []
+        for row in result_proxy:
+            info = dict(row)
+            result.append(info)
+
+        return result

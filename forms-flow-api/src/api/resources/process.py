@@ -29,21 +29,22 @@ class ProcessStateResource(Resource):
         except BusinessException as err:
             return err.error, err.status_code
 
-# @cors_preflight('GET,OPTIONS')
-# @API.route('', methods=['GET', 'OPTIONS'])
-# class ProcessResource(Resource):
-#     """Resource for managing process."""
+@cors_preflight('GET,OPTIONS')
+@API.route('', methods=['GET', 'OPTIONS'])
+class ProcessResource(Resource):
+    """Resource for managing process."""
 
-#     @staticmethod
-#     @cors.crossdomain(origin='*')
-#     def get():
-#         """Get all process."""
-#         try:
-#             return jsonify({
-#                 'process': ProcessService.get_all_processes()
-#             }), HTTPStatus.OK
-#         except BusinessException as err:
-#             return err.error, err.status_code
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    @auth.require
+    def get():
+        """Get all process."""
+        try:
+             return jsonify({
+                 'process': ProcessService.get_all_processes(request.headers["Authorization"])
+             }), HTTPStatus.OK
+        except BusinessException as err:
+             return err.error, err.status_code
 
 
 # @cors_preflight('GET,OPTIONS')

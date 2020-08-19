@@ -15,8 +15,6 @@ class ApplicationAudit(BaseModel, db.Model):
     process_instance_id = db.Column(db.String(30), nullable=False)
     revision_no = db.Column(db.Integer, nullable=False)
 
-
-
     @classmethod
     def get_application_history(cls, application_id: int):
         """Fetch application history."""
@@ -24,11 +22,13 @@ class ApplicationAudit(BaseModel, db.Model):
         where_condition += f""" audit.application_id = {str(application_id)} """
 
         result_proxy = db.session.execute(f"""SELECT
-                audit.application_name,audit.application_status
+                audit.application_name,
+                audit.application_status,
+                count(audit.application_name) as count
             FROM "application_audit" audit
-            WHERE 
+            WHERE
                 {where_condition}
-            ORDER BY application_name    
+            ORDER BY application_name
             """)
 
         result = []

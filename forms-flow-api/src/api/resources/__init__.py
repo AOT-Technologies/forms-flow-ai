@@ -13,6 +13,7 @@ from .formiotoken import API as FORMIOTOKEN_API
 from .process import API as PROCESS_API
 from .task import API as TASK_API
 from .tenant import API as TENANT_API
+from .application_audit import API as APPLICATION_HISTORY_API
 
 
 # This will add the Authorize button to the swagger docs
@@ -51,3 +52,4 @@ API.add_namespace(APPLICATION_API, path='/application')
 API.add_namespace(PROCESS_API, path='/process')
 API.add_namespace(TASK_API, path='/task')
 API.add_namespace(TENANT_API, path='/tenant')
+API.add_namespace(APPLICATION_HISTORY_API, path='/history')

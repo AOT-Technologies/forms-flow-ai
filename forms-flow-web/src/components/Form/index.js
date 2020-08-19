@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { selectRoot } from "react-formio";
 
 import List from "./List";
-import Create from "./Create";
+// import Create from "./Create";
 import Stepper from "./Stepper";
 import Item from "./Item/index";
 import { STAFF_DESIGNER } from "../../constants/constants";
@@ -26,19 +26,6 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
   />
 );
 
-const LinkFormRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={(props) =>
-      user.includes(STAFF_DESIGNER) ? (
-        <Component {...props} />
-      ) : (
-        <Redirect exact to="/" />
-      )
-    }
-  />
-);
-
 const Form = (props) => {
   user = props.user;
   if (!props.isAuthenticated) {
@@ -48,8 +35,7 @@ const Form = (props) => {
     <div className="container" id="main">
       <Switch>
         <Route exact path="/form" component={List} />
-        <CreateFormRoute exact path="/form/create" component={Create} />
-        <LinkFormRoute exact path="/form/link" component={Stepper} />
+        <CreateFormRoute exact path="/form/create" component={Stepper} />
         <Route path="/form/:formId" component={Item} />
       </Switch>
     </div>

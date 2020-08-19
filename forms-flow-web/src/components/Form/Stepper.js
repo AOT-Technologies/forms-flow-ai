@@ -92,7 +92,7 @@ class StepperPage extends Component{
                 <>  
               <AppBar position="static">  
               <Toolbar style={{ 'paddingLeft': "600px" }}>  
-              Stepper Component   
+              Create Form Wizard   
               </Toolbar>  
               </AppBar>  
           <div>  

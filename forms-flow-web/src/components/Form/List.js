@@ -35,12 +35,9 @@ const List = class extends Component {
         <div className="main-header">
           <img src="/form.svg" width="30" height="30" alt="form"/>
           <h3 className="task-head">Forms</h3>
-          {userRoles.includes(STAFF_DESIGNER) ?<Link to="/form/create" className="btn btn-primary btn-right btn-sm">
+          {userRoles.includes(STAFF_DESIGNER) && <Link to="/form/create" className="btn btn-primary btn-right btn-sm">
           <i className="fa fa-plus"></i> Create Form
-        </Link>:null}
-        {userRoles.includes(STAFF_DESIGNER) ?<Link to="/form/link" className="btn btn-primary btn-right btn-sm">
-          <i className="fa fa-plus"></i> Link Form with Flow
-        </Link>:null}
+        </Link>}
         </div>
         <section className="custom-grid grid-forms">
           <Errors errors={errors} />

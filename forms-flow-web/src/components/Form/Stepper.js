@@ -20,7 +20,6 @@ class StepperPage extends Component{
     setActiveStep(val){
         this.setState({activeStep: val})
     }
- 
 
     handleCheckboxChange = event =>
     this.setState({ checked: event.target.checked })

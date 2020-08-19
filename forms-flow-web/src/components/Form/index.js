@@ -5,6 +5,7 @@ import { selectRoot } from "react-formio";
 
 import List from "./List";
 import Create from "./Create";
+import Stepper from "./Stepper";
 import Item from "./Item/index";
 import { STAFF_DESIGNER } from "../../constants/constants";
 import Loading from "../../containers/Loading";
@@ -13,6 +14,19 @@ import { setUserAuth, setCurrentPage } from "../../actions/bpmActions";
 let user = "";
 
 const CreateFormRoute = ({ component: Component, ...rest }) => (
+  <Route
+    {...rest}
+    render={(props) =>
+      user.includes(STAFF_DESIGNER) ? (
+        <Component {...props} />
+      ) : (
+        <Redirect exact to="/" />
+      )
+    }
+  />
+);
+
+const LinkFormRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) =>
@@ -35,6 +49,7 @@ const Form = (props) => {
       <Switch>
         <Route exact path="/form" component={List} />
         <CreateFormRoute exact path="/form/create" component={Create} />
+        <LinkFormRoute exact path="/form/link" component={Stepper} />
         <Route path="/form/:formId" component={Item} />
       </Switch>
     </div>

@@ -14,13 +14,11 @@ import {
   columns_history,
   getoptions,
   defaultSortedBy,
-  // TaskSearch,
   clearFilter,
 } from "./historyTable";
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
 import { setUpdateLoader } from "../../actions/taskActions";
-import moment from "moment";
 const appHistory1=[
   {
       "applicationName": "Test 123",
@@ -36,24 +34,8 @@ const List = class extends Component {
     const {
       isLoading,
       appHistory,
-      userDetail,
-      onClaim,
-      onUnclaim,
       isTaskUpdating,
     } = this.props;
-    //  const listTasks = (tasks) => {
-    //   if (tasks.length > 0) {
-    //   const data = tasks.map((task) => {
-    //         return {
-    //         applicationName:task.applicationName,
-    //         applicationStatus:task.applicationStatus,
-    //       };
-    //     });
-    //     return data;
-    //   } else {
-    //     return [];
-    //   }
-    // };
     if (isLoading) {
       return <Loading />;
     }
@@ -74,8 +56,7 @@ const List = class extends Component {
       );
     };
     return (
-      // tasksCount > 0 ?
-      appHistory1.length > 0 ? (
+        appHistory1.length > 0 ? (
         <ToolkitProvider
           keyField="id"
           data={appHistory1}
@@ -88,10 +69,8 @@ const List = class extends Component {
                 <img src="/clipboard.svg" width="30" height="30" alt="task" />
                 <h3 className="task-head">
                   History
-                  {/* <div className="col-md-1 task-count">({tasks.length})</div> */}
                 </h3>
- 
-              </div>
+               </div>
               <br />
               <div>
                 <LoadingOverlay
@@ -150,43 +129,7 @@ const mapDispatchToProps = (dispatch) => {
           }
         })
       ),
-    // onClaim: (id, userName, applicationId) => {
-    //   dispatch(setUpdateLoader(true));
-    //   dispatch(
-    //           claimTask(id, userName, (err, res) => {
-    //             if (!err) {
-    //                 dispatch(
-    //                   fetchApplicatinAuditHistoryList((err, res) => {
-    //                     if (!err) {
-    //                       dispatch(setUpdateLoader(false));
-    //                     }
-    //                   })
-    //                 );
-    //             } else {
-    //               dispatch(setUpdateLoader(false));
-    //             }
-    //           })
-    //         );
-    // },
-    // onUnclaim: (id) => {
-    //   dispatch(setUpdateLoader(true));
-    //         dispatch(
-    //           unClaimTask(id, (err, res) => {
-    //             if (!err) {
-    //               dispatch(
-    //                 fetchApplicatinAuditHistoryList((err, res) => {
-    //                   if (!err) {
-    //                     dispatch(setUpdateLoader(false));
-    //                   }
-    //                 })
-    //               );
-    //             } else {
-    //               dispatch(setUpdateLoader(false));
-    //             }
-    //           })
-    //         );
-    // },
-  };
+      };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);

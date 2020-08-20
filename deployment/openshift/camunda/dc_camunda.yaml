@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: forms-flow-bpm
+  name: ff-bpm
 objects:
   - apiVersion: v1
     data:

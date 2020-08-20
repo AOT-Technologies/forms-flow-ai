@@ -1,16 +1,16 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: forms-flow-bpm
+  name: ff-bpm
   annotations:
     description: ""
-    tags: forms-flow-bpm,java
+    tags: ff-bpm,java
     iconClass: icon-java
 parameters:
   - name: SOURCE_REPOSITORY_URL
     displayName: Git Repository URL
     description: The URL of the repository with your application source code.
-    value: https://github.com/bcgov/forms-flow-ai
+    value: https://github.com/AOT-Technologies/forms-flow-ai
   - name: SOURCE_REPOSITORY_REF
     displayName: Git Reference
     description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.
@@ -22,22 +22,22 @@ objects:
   -  kind: ImageStream
      apiVersion: v1
      metadata:
-       name: forms-flow-bpm
+       name: ff-bpm
        annotations:
          description: "Keeps track of changes in the application image"
        labels:
-         app: forms-flow-bpm
+         app: ff-bpm
   -  kind: BuildConfig
      apiVersion: v1
      metadata:
-       name: forms-flow-bpm
+       name: ff-bpm
      spec:
        failedBuildsHistoryLimit: 2
        nodeSelector: null
        output:
          to:
            kind: ImageStreamTag
-           name: 'forms-flow-bpm:latest'
+           name: 'ff-bpm:latest'
        postCommit: {}
        resources:
          limits:

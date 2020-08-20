@@ -28,6 +28,7 @@ class ApplicationAudit(BaseModel, db.Model):
             FROM "application_audit" audit
             WHERE
                 {where_condition}
+            GROUP BY (application_name,application_status)    
             ORDER BY application_name
             """)
 

@@ -127,7 +127,35 @@ export const clearFilter = () => {
   submittedOnFilter("");
   apptypeFilter("");
 };
-
+export const columns_history = [
+  {
+    dataField: "application_name",
+    text: "Application Name",
+       sort: true,
+    filter: textFilter({
+      placeholder: "\uf002 Application Name", // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      className: "icon-search",
+      getFilter: (filter) => {
+        titleFilter = filter;
+      },
+    }),
+  },
+  {
+    dataField: "application_status",
+    text: "Application Status",
+    sort: true,
+    formatter: buttonFormatter,
+    filter: selectFilter({
+      options: selectOptions,
+      placeholder: "All",
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      getFilter: (filter) => {
+        statusFilter = filter;
+      },
+    }),
+  },
+];
 export const columns = [
   {
     dataField: "taskTitle",
@@ -238,6 +266,35 @@ export const columns = [
   //   formatter: linkDueDate,
   //   sort: true,
   // },
+  // {
+  //   dataField: "statusName",
+  //   text: "Application Status",
+  //   sort: true,
+  //   formatter: buttonFormatter,
+  //   filter: selectFilter({
+  //     options: selectOptions,
+  //     placeholder: "All",
+  //     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+  //     getFilter: (filter) => {
+  //       statusFilter = filter;
+  //     },
+  //   }),
+  // }, 
+  // {
+  //   dataField: "formName",
+  //   text: "Form Name",
+  //   sort: true,
+  //   formatter: buttonFormatter,
+  //   filter: selectFilter({
+  //     options: selectOptions,
+  //     placeholder: "All",
+  //     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+  //     getFilter: (filter) => {
+  //       statusFilter = filter;
+  //     },
+  //   }),
+  // },
+
 ];
 
 const customTotal = (from, to, size) => (

@@ -2,6 +2,7 @@
 
 from .aggregated_application import AggregatedApplicationReqSchema, AggregatedApplicationSchema
 from .application import ApplicationSchema, ApplicationListReqSchema, ApplicationUpdateSchema
+from .application_audit import ApplicationAuditSchema, ApplicationAuditReqSchema
 from .form_process_mapper import FormProcessMapperSchema
 from .process import ProcessListSchema, ProcessDefinitionSchema, ProcessActionListSchema
 from .task import TaskSchema, TaskVariableSchema

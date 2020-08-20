@@ -9,7 +9,7 @@ from marshmallow import ValidationError
 from ..exceptions import BusinessException
 from ..schemas.aggregated_application import AggregatedApplicationReqSchema
 from ..schemas.application import ApplicationListReqSchema, ApplicationSchema, ApplicationUpdateSchema
-from ..services import ApplicationService
+from ..services import ApplicationService, ApplicationAuditService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
 
@@ -134,3 +134,20 @@ class AggregatedApplicationStatusResource(Resource):
             }), HTTPStatus.OK
         except ValidationError as agg_err:
             return {'systemErrors': agg_err.messages}, HTTPStatus.BAD_REQUEST
+
+
+@cors_preflight('GET,OPTIONS')
+@API.route('/<string:application_id>/history', methods=['GET', 'POST', 'OPTIONS'])
+class ApplicationAuditResource(Resource):
+    """Resource for managing state."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    @auth.require
+    def get(application_id):
+        """Get application histry."""
+        #dict_data = ApplicationAuditReqSchema().load(request.args)
+        #application_id = dict_data['application_id']
+        return jsonify({
+            'applications': ApplicationAuditService.get_application_history(application_id)
+        }), HTTPStatus.OK            

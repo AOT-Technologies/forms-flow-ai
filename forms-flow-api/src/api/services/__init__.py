@@ -6,3 +6,4 @@ from .process import ProcessService
 from .task import TaskService
 from .tenant import TenantService
 from .formio_token import FormIOTokenService
+from .application_audit import ApplicationAuditService

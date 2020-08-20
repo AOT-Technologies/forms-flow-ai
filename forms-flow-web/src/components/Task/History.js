@@ -7,22 +7,27 @@ import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import LoadingOverlay from "react-loading-overlay";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import {
-  fetchTaskList,
-  claimTask,
-  unClaimTask
-} from "../../apiManager/services/taskServices";
+  fetchApplicatinAuditHistoryList
+ 
+} from "../../apiManager/services/applicationAuditServices";
 import {
-  columns,
+  columns_history,
   getoptions,
   defaultSortedBy,
-  TaskSearch,
+  // TaskSearch,
   clearFilter,
-} from "./table";
+} from "./historyTable";
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
 import { setUpdateLoader } from "../../actions/taskActions";
 import moment from "moment";
-
+const appHistory1=[
+  {
+      "applicationName": "Test 123",
+      "applicationStatus": "new",
+      "count": 1
+  }
+]
 const List = class extends Component {
   UNSAFE_componentWillMount() {
     this.props.getTasks();
@@ -30,39 +35,25 @@ const List = class extends Component {
   render() {
     const {
       isLoading,
-      tasks,
+      appHistory,
       userDetail,
       onClaim,
       onUnclaim,
       isTaskUpdating,
     } = this.props;
-    const listTasks = (tasks) => {
-      if (tasks.length > 0) {
-        const data = tasks.map((task) => {
-          return {
-            id: task.id,
-            applicationId: task.application_id || "--", //to do update to application/submission id
-            taskTitle: task.name,
-            // taskStatus: task.deleteReason === "completed" ? 'Completed' : task.assignee ? "In-Progress" : "New",//todo update ,
-            taskStatus: task.task_status,
-            taskAssignee: task.assignee,
-            submittedBy: task.submitter_name || "---",
-            submissionDate: moment(task.submission_date).format(
-              "DD-MMM-YYYY HH:mm:ss"
-            ),
-            // dueDate: (task.due || "Set due date"),
-            form: task.form_name || "---",
-            userName: userDetail.preferred_username,
-            deleteReason: task.deleteReason,
-            assignToMeFn: onClaim,
-            unAssignFn: onUnclaim,
-          };
-        });
-        return data;
-      } else {
-        return [];
-      }
-    };
+    //  const listTasks = (tasks) => {
+    //   if (tasks.length > 0) {
+    //   const data = tasks.map((task) => {
+    //         return {
+    //         applicationName:task.applicationName,
+    //         applicationStatus:task.applicationStatus,
+    //       };
+    //     });
+    //     return data;
+    //   } else {
+    //     return [];
+    //   }
+    // };
     if (isLoading) {
       return <Loading />;
     }
@@ -84,11 +75,11 @@ const List = class extends Component {
     };
     return (
       // tasksCount > 0 ?
-      tasks.length > 0 ? (
+      appHistory1.length > 0 ? (
         <ToolkitProvider
           keyField="id"
-          data={listTasks(tasks)}
-          columns={columns}
+          data={appHistory1}
+          columns={columns_history}
           search
         >
           {(props) => (
@@ -133,7 +124,7 @@ function doLoaderUpdate() {
   return (dispatch, getState) => {
     let isLoading = getState().tasks.isTaskUpdating;
     if (isLoading) {
-      dispatch(fetchTaskList());
+      dispatch(fetchApplicatinAuditHistoryList());
       dispatch(setUpdateLoader(false));
     }
   };
@@ -142,7 +133,7 @@ function doLoaderUpdate() {
 const mapStateToProps = (state) => {
   return {
     isLoading: state.tasks.isLoading,
-    tasks: state.tasks.tasksList,
+    appHistory: state.tasks.appHistory,
     tasksCount: state.tasks.tasksCount,
     userDetail: state.user.userDetail,
     isTaskUpdating: state.tasks.isTaskUpdating,
@@ -153,48 +144,48 @@ const mapDispatchToProps = (dispatch) => {
     setLoader: dispatch(doLoaderUpdate),
     getTasks: () =>
       dispatch(
-        fetchTaskList((err, res) => {
+        fetchApplicatinAuditHistoryList((err, res) => {
           if (!err) {
             dispatch(setUpdateLoader(false));
           }
         })
       ),
-    onClaim: (id, userName, applicationId) => {
-      dispatch(setUpdateLoader(true));
-      dispatch(
-              claimTask(id, userName, (err, res) => {
-                if (!err) {
-                    dispatch(
-                      fetchTaskList((err, res) => {
-                        if (!err) {
-                          dispatch(setUpdateLoader(false));
-                        }
-                      })
-                    );
-                } else {
-                  dispatch(setUpdateLoader(false));
-                }
-              })
-            );
-    },
-    onUnclaim: (id) => {
-      dispatch(setUpdateLoader(true));
-            dispatch(
-              unClaimTask(id, (err, res) => {
-                if (!err) {
-                  dispatch(
-                    fetchTaskList((err, res) => {
-                      if (!err) {
-                        dispatch(setUpdateLoader(false));
-                      }
-                    })
-                  );
-                } else {
-                  dispatch(setUpdateLoader(false));
-                }
-              })
-            );
-    },
+    // onClaim: (id, userName, applicationId) => {
+    //   dispatch(setUpdateLoader(true));
+    //   dispatch(
+    //           claimTask(id, userName, (err, res) => {
+    //             if (!err) {
+    //                 dispatch(
+    //                   fetchApplicatinAuditHistoryList((err, res) => {
+    //                     if (!err) {
+    //                       dispatch(setUpdateLoader(false));
+    //                     }
+    //                   })
+    //                 );
+    //             } else {
+    //               dispatch(setUpdateLoader(false));
+    //             }
+    //           })
+    //         );
+    // },
+    // onUnclaim: (id) => {
+    //   dispatch(setUpdateLoader(true));
+    //         dispatch(
+    //           unClaimTask(id, (err, res) => {
+    //             if (!err) {
+    //               dispatch(
+    //                 fetchApplicatinAuditHistoryList((err, res) => {
+    //                   if (!err) {
+    //                     dispatch(setUpdateLoader(false));
+    //                   }
+    //                 })
+    //               );
+    //             } else {
+    //               dispatch(setUpdateLoader(false));
+    //             }
+    //           })
+    //         );
+    // },
   };
 };
 

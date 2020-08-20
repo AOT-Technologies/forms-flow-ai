@@ -129,7 +129,7 @@ export const clearFilter = () => {
 };
 export const columns_history = [
   {
-    dataField: "application_name",
+    dataField: "applicationName",
     text: "Application Name",
        sort: true,
     filter: textFilter({
@@ -139,10 +139,11 @@ export const columns_history = [
       getFilter: (filter) => {
         titleFilter = filter;
       },
-    }),
+    }
+    ),
   },
   {
-    dataField: "application_status",
+    dataField: "applicationStatus",
     text: "Application Status",
     sort: true,
     formatter: buttonFormatter,

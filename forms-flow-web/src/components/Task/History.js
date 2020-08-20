@@ -14,7 +14,6 @@ import {
   columns_history,
   getoptions,
   defaultSortedBy,
-  clearFilter,
 } from "./historyTable";
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
@@ -49,10 +48,7 @@ const List = class extends Component {
             Please change the selected filters to view tasks{" "}
           </label>
           <br />
-          <label className="lbl-clear" onClick={clearFilter}>
-            Clear all filters
-          </label>
-        </div>
+         </div>
       );
     };
     return (

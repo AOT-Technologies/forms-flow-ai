@@ -27,6 +27,13 @@ objects:
     labels:
       app: forms-flow-analytics
   spec:
+    resources:
+      limits:
+        cpu: '2'
+        memory: 8Gi
+      requests:
+        cpu: '1'
+        memory: 4Gi
     source:
       git:
         ref: ${SOURCE_REPOSITORY_REF}

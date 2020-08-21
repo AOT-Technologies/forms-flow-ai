@@ -30,11 +30,32 @@ objects:
       app: ${NAME}
   name: ${NAME}
   spec:
-  replicas: 1
+  replicas: ${REPLICAS}
   selector:
       app: ${NAME}
   strategy:
-      resources: {}
+      type: Rolling
+      rollingParams:
+        updatePeriodSeconds: 1
+        intervalSeconds: 1
+        timeoutSeconds: 600
+        maxUnavailable: 25%
+        maxSurge: 25%
+        post:
+          execNewPod:
+            command:
+            - /bin/sh
+            - -c
+            - python ./manage.py database create_tables
+          failurePolicy: ignore
+      resources:
+        requests:
+          cpu: "${CPU_REQUEST}"
+          memory: "${MEMORY_REQUEST}"
+        limits:
+          cpu: "${CPU_LIMIT}"
+          memory: "${MEMORY_LIMIT}"
+      activeDeadlineSeconds: 21600
   template:
       metadata:
       creationTimestamp: null
@@ -92,7 +113,7 @@ objects:
               name: ${NAME}
           - name: REDASH_WEB_WORKERS
           value: "4"
-          image: ' '
+          image: docker-registry.default.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           name: ${NAME}
           ports:
           - containerPort: 5000
@@ -107,7 +128,8 @@ objects:
       - ${NAME}
       from:
           kind: ImageStreamTag
-          name: ${NAME}:latest
+          namespace: "${IMAGE_NAMESPACE}"
+          name: "${NAME}-${TAG_NAME}"
       type: ImageChange
   status: {}
 
@@ -184,7 +206,7 @@ objects:
                 name: ${NAME}
           - name: WORKERS_COUNT
             value: "2"
-          image: ' '
+          image: docker-registry.default.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           name: ${NAME}-adhoc-worker
           resources: {}
         restartPolicy: Always
@@ -197,7 +219,8 @@ objects:
         - ${NAME}-adhoc-worker
         from:
           kind: ImageStreamTag
-          name: ${NAME}:latest
+          namespace: "${IMAGE_NAMESPACE}"
+          name: "${NAME}-${TAG_NAME}"
       type: ImageChange
   status: {}
     
@@ -274,7 +297,7 @@ objects:
                 name: ${NAME}
           - name: WORKERS_COUNT
           value: "1"
-          image: ' '
+          image: docker-registry.default.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           name: ${NAME}-scheduled-worker
           resources: {}
         restartPolicy: Always
@@ -287,7 +310,8 @@ objects:
         - ${NAME}-scheduled-worker
         from:
           kind: ImageStreamTag
-          name: ${NAME}:latest
+          namespace: "${IMAGE_NAMESPACE}"
+          name: "${NAME}-${TAG_NAME}"
       type: ImageChange
   status: {}
 
@@ -465,7 +489,8 @@ objects:
         - ${NAME}-worker
         from:
           kind: ImageStreamTag
-          name: ${NAME}:latest
+          namespace: "${IMAGE_NAMESPACE}"
+          name: "${NAME}-${TAG_NAME}"
       type: ImageChange
   status: {}
 
@@ -525,17 +550,17 @@ parameters:
     displayName: Resources CPU Request
     description: The resources CPU request (in cores) for this build.
     required: true
-    value: 100m
+    value: 500m
   - name: CPU_LIMIT
     displayName: Resources CPU Limit
     description: The resources CPU limit (in cores) for this build.
     required: true
-    value: 750m
+    value: 1000m
   - name: MEMORY_REQUEST
     displayName: Resources Memory Request
     description: The resources Memory request (in Mi, Gi, etc) for this build.
     required: true
-    value: 100Mi
+    value: 1Gi
   - name: MEMORY_LIMIT
     displayName: Resources Memory Limit
     description: The resources Memory limit (in Mi, Gi, etc) for this build.

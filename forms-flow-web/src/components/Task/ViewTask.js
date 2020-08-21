@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import {Tabs, Tab} from "react-bootstrap";
 import {connect} from "react-redux";
-import {selectError, getSubmission, getForm, FormGrid} from "react-formio";
+import {selectError, getSubmission, getForm} from "react-formio";
 import Details from "./Details";
 import {getTaskDetail} from "../../apiManager/services/taskServices";
 import Loading from "../../containers/Loading";

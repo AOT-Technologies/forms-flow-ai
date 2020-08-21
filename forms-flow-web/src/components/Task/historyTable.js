@@ -1,20 +1,58 @@
 import React from "react";
+import { Link } from "react-router-dom";
 export const defaultSortedBy = [
   {
     dataField: "name",
     order: "asc", // or desc
   },
 ];
+function linkSubmision(cell, row) {
+  return (
+    <Link to={`/task/${row.id}`} title={cell}>
+      {cell}
+    </Link>
+  );
+}
+
 // History table columns
 export const columns_history = [
+  {
+    dataField: "taskName",
+    text: "Task Name",
+  },
+  {
+    dataField: "taskStatus",
+    text: "Status",
+    sort: true,
+  },
   {
     dataField: "applicationName",
     text: "Application Name",
   },
   {
-    dataField: "applicationStatus",
-    text: "Application Status",
-    sort: true,
+    dataField: "startTime",
+    text: "Start Time",
+  },
+  {
+    dataField: "endTime",
+    text: "End Time",
+  },
+  {
+    dataField: "duration",
+    text: "Duration",
+  },
+  {
+    dataField: "assignee",
+    text: "Assignee",
+  },
+  {
+    dataField: "groupName",
+    text: "Group Name",
+  },
+  {
+    dataField: "formURL",
+    text: "Form URL",
+    formatter: linkSubmision,
   },
 ];
 const customTotal = (from, to, size) => (

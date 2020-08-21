@@ -150,4 +150,4 @@ class ApplicationAuditResource(Resource):
         #application_id = dict_data['application_id']
         return jsonify({
             'applications': ApplicationAuditService.get_application_history(application_id)
-        }), HTTPStatus.OK            
+        }), HTTPStatus.OK   dock         

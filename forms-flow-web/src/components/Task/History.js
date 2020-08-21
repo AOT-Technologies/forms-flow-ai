@@ -20,10 +20,17 @@ import Nodata from "./nodata";
 import { setUpdateLoader } from "../../actions/taskActions";
 const appHistory1=[
   {
-      "applicationName": "Test 123",
-      "applicationStatus": "new",
-      "count": 1
-  }
+    "taskName": "Task1",
+    "taskStatus": "new",
+    "applicationName": "Freedom Of Information Application",
+    "startTime": "12-Jan-2020 12:31:23",
+    "endTime": "14-Jun-2020 16:52:38",
+    "duration": "90 days",
+    "assignee": "Test User",
+    "groupName": "Test Group",
+    "formURL": "http://localhost:3000/task/undefined",
+    "count": 1
+}
 ]
 const List = class extends Component {
   UNSAFE_componentWillMount() {
@@ -81,7 +88,6 @@ const List = class extends Component {
                     defaultSorted={defaultSortedBy}
                     {...props.baseProps}
                     noDataIndication={() => getNoDataIndicationContent()}
-                    // overlay={ overlayFactory({ spinner: true, styles: { overlay: (base) => ({...base}) } }) }
                   />
                 </LoadingOverlay>
               </div>

@@ -8,6 +8,7 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';  
 import { Checkbox } from '@material-ui/core';
 import Select from 'react-dropdown-select'
+import Create from './Create.js'
 
 
 
@@ -17,6 +18,7 @@ class StepperPage extends Component{
         this.state = {checked: false, activeStep: 0, workflow: null}
     }
 
+
     setActiveStep(val){
         this.setState({activeStep: val})
     }
@@ -25,43 +27,58 @@ class StepperPage extends Component{
     this.setState({ checked: event.target.checked })
 
     getSteps() {  
-        return ['Associated with workflow?', 'Address'];  
+        return ['Create Form', 'Associate this form with a workflow?'];  
       }  
+
+    populateDropdown(){
+      //code here to call api for process, must be stored in array
+
+      //temp return until api can be made
+      return [{label: 'workflow1', value: 'filename'}, {label: 'workflow2', value: 'filename'}, {label: 'workflow3', value: 'filename'}]
+    }
+
+    associateToWorkFlow(item){
+      alert(item[0][0])
+      this.setState({workflow: item[1]})
+      //code to link form to a workflow
+
+    }
         
     getStepContent(step) {  
         switch (step) {  
           case 0:  
             return(
-                <div>
-                    <label>
-                        <Checkbox
-                            checked={this.state.checked}
-                            onChange={this.handleCheckboxChange}
-                        />
-                        <span>Check box to associate form with a workflow</span>
-                    </label>
-                </div>
+              <Create></Create>
             );
-          case 1:  
+          case 1: 
             if(this.state.checked){
                 return(
                     <div>
-                        <Select options={[{value: 'workflow1', label: 'Covid-19 Flow'}, {value: 'workflow2', label: 'Email Flow'}]} 
-                        onChange={(val) => this.setState({workflow: val})} 
-                        />
+                      <div style={{'marginLeft': 320}}>
+                        <label>
+                          <Checkbox
+                            checked={this.state.checked}
+                            onChange={this.handleCheckboxChange}
+                          />
+                          <span>Check box to associate form with a workflow</span>
+                        </label>
+                      </div>
+                      <Select options={this.populateDropdown()} onChange={(item) => this.associateToWorkFlow(item)}/>
                     </div>
                 )
             }  
             else{
                 return(
                     <div>
-                        <Button  
-                        variant="contained"  
-                        color="primary"  
-                        onClick={console.log('save')}  
-                        >  
-                        Save Form  
-                        </Button>
+                      <div style={{'marginLeft': 320}}>
+                        <label>
+                          <Checkbox
+                            checked={this.state.checked}
+                            onChange={this.handleCheckboxChange}
+                          />
+                          <span>Check box to associate form with a workflow</span>
+                        </label>
+                      </div>
                     </div>
                 )
             }
@@ -76,7 +93,11 @@ class StepperPage extends Component{
         
        
         const handleNext = () => {      
-          this.setActiveStep(this.state.activeStep + 1);  
+          this.setActiveStep(this.state.activeStep + 1); 
+          if(this.state.activeStep === steps.length - 1){
+            //code to save form properly
+            alert("SAVED")
+          } 
         };  
         
         const handleBack = () => {  
@@ -86,11 +107,13 @@ class StepperPage extends Component{
         const handleReset = () => {  
           this.setActiveStep(0);  
         };  
+
+
         
         return (  
                 <>  
               <AppBar position="static">  
-              <Toolbar style={{ 'paddingLeft': "600px" }}>  
+              <Toolbar style={{ 'alignContent': "center", 'alignItems': "center", "justifyContent": "center" }}>  
               Create Form Wizard   
               </Toolbar>  
               </AppBar>  
@@ -116,24 +139,24 @@ class StepperPage extends Component{
                   </Button>  
                 </div>  
               ) : (  
-                <div>  
-                  
-                  {this.getStepContent(this.state.activeStep)}
-                  
-                  <div>  
-                    <Button disabled={this.state.activeStep === 0} onClick={handleBack} >  
-                      Back  
-                    </Button>   
+                <div>                   
+                  {this.getStepContent(this.state.activeStep)}  
+                  <div style={{'justifyContent': "center", 'alignItems': "center", 'marginLeft': 400}}> 
+                    <div>
+
+                      <Button disabled={this.state.activeStep === 0} onClick={handleBack} >  
+                        Back  
+                      </Button>   
         
-                    <Button  
-                      variant="contained"  
-                      color="primary"  
-                      onClick={handleNext}  
-                      
-                    >  
-                      {this.state.activeStep === steps.length - 1 ? 'Finish' : 'Next'}  
-                    </Button>  
-                  </div>  
+                      <Button  
+                        variant="contained"  
+                        color="primary"  
+                        onClick={handleNext}  
+                      >  
+                        {this.state.activeStep === steps.length - 1 ? 'Save Form' : 'Next'}  
+                      </Button>
+                    </div>
+                  </div> 
                 </div>  
               )}  
             </div>  

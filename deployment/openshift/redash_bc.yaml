@@ -1,11 +1,11 @@
----
-  kind: Template
-  apiVersion: v1
-  metadata:
-    name: forms-flow-analytics
-    annotations:
-      description: ""
-      tags: forms-flow-analytics
+
+kind: Template
+apiVersion: template.openshift.io/v1
+metadata:
+  name: forms-flow-analytics
+  annotations:
+    description: ""
+    tags: forms-flow-analytics
 parameters:
   - name: SOURCE_REPOSITORY_URL
     displayName: Git Repository URL
@@ -18,34 +18,34 @@ parameters:
   - name: SOURCE_CONTEXT_DIR
     displayName: Git context directory
     description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.
-  objects:
-  -
-    apiVersion: build.openshift.io/v1
-    kind: BuildConfig
-    metadata:
-      name: forms-flow-analytics
-      labels:
-        app: forms-flow-analytics
-    spec:
-      source:
-        git:
-          ref: ${SOURCE_REPOSITORY_REF}
-          uri: ${SOURCE_REPOSITORY_URL}
-      output:
-        to:
-          kind: ImageStreamTag
-          name: 'forms-flow-analytics:latest'
-      strategy:
-        type: Docker
-        dockerStrategy:
-          dockerfilePath: Dockerfile
-      triggers:
-        - type: ImageChange
-          imageChange: {}
-        - type: ConfigChange
-  
-  - 
-    apiVersion: image.openshift.io/v1
-    kind: ImageStream
-    metadata:
-      name: forms-flow-analytics
+objects:
+-
+  apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    name: forms-flow-analytics
+    labels:
+      app: forms-flow-analytics
+  spec:
+    source:
+      git:
+        ref: ${SOURCE_REPOSITORY_REF}
+        uri: ${SOURCE_REPOSITORY_URL}
+    output:
+      to:
+        kind: ImageStreamTag
+        name: 'forms-flow-analytics:latest'
+    strategy:
+      type: Docker
+      dockerStrategy:
+        dockerfilePath: Dockerfile
+    triggers:
+      - type: ImageChange
+        imageChange: {}
+      - type: ConfigChange
+
+- 
+  apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: forms-flow-analytics

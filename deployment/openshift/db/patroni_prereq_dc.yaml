@@ -5,11 +5,11 @@ metadata:
     description: |-
       Patroni Postgresql database cluster, with persistent storage.
     iconClass: icon-postgresql
-    openshift.io/display-name: Patroni Postgresql (Persistent)
+    openshift.io/display-name: Patroni Postgresql (Persistent) Prereq
     openshift.io/long-description: This template deploys a patroni postgresql HA
       cluster with persistent storage.
     tags: postgresql
-  name: patroni-pgsql-persistent
+  name: patroni-pgsql-persistent-prereq
 labels:
   app.kubernetes.io/component: database
   app.kubernetes.io/name: patroni
@@ -134,9 +134,9 @@ parameters:
   generate: expression
   from: '[a-zA-Z0-9]{32}'
 - name: APP_DB_USERNAME
-  value: camunda
+  value: app
 - name: APP_DB_NAME
-  value: camunda
+  value: app
 - name: APP_DB_PASSWORD
   generate: expression
   from: '[a-zA-Z0-9]{32}'

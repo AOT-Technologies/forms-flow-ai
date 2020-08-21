@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   name: forms-flow-forms
@@ -195,7 +195,7 @@ parameters:
   displayName: The number of replicas to run
   description: The number of replicas to run in this environment.
   required: true
-  value: 1
+  value: '1'
 - name: FORMIO_ADMIN_EMAIL
   displayName: Formio admin email
   description: Formio needs an email login

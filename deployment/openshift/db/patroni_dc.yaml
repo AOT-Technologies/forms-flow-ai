@@ -19,7 +19,7 @@ labels:
   app.kubernetes.io/managed-by: template
   app.kubernetes.io/version: "10"
 objects:
-# It doesn't seem to be used/needed - remote it?
+# This doesn't seem to be used/needed - remove it?
 #- apiVersion: v1
 #  kind: Service
 #  metadata:

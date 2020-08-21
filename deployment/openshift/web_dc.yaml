@@ -1,7 +1,7 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
-  name: ${NAME}
+  name: forms-flow-web
 objects:
 - 
   apiVersion: v1
@@ -265,7 +265,7 @@ parameters:
     displayName: The number of replicas to run
     description: The number of replicas to run in this environment.
     required: true
-    value: 1
+    value: '1'
   - name: KC_MOUNT_PATH
     displayName: Mount config directory.
     description: The path to where the app config directory will get mounted.

@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   name: forms-flow-bpm
@@ -116,7 +116,7 @@ objects:
           containers:
             - env:
                 - name: APP_SECURITY_ORIGIN
-                  value: *
+                  value: '*'
                 - name: JDBC_DRIVER
                   value: ${DATABASE_DRIVER}
                 - name: JDBC_URL

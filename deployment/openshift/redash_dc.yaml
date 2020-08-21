@@ -1,7 +1,7 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
-  name: ${NAME}
+  name: forms-flow-analytics
 objects:
 - kind: Secret
   apiVersion: v1
@@ -570,4 +570,4 @@ parameters:
     displayName: The number of replicas to run
     description: The number of replicas to run in this environment.
     required: true
-    value: 1
+    value: '1'

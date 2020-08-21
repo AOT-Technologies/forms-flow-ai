@@ -1,13 +1,13 @@
-Kind: Template
-apiVersion: v1
+apiVersion: template.openshift.io/v1
+kind: Template
 metadata:
-  name: mongodb
+  name: mongodb_replica_set
   annotations:
     description: "MongoDB database running as replicate set"
     iconClass: "icon-nodejs"
     tags: "nodejs,mongodb,replication,instant-app"
 labels:
-        app: "${APP_GROUP}"    
+  app: "${APP_GROUP}"    
 
 parameters:
   - name: MEMORY_REQUEST
@@ -32,7 +32,7 @@ parameters:
     description: Amount of CPU to Limit.
     displayName: Memory Limit
     required: true
-    value: 1
+    value: '1'
     
   - name: MONGODB_SERVICE_NAME
     description: Name of the MongoDB Service

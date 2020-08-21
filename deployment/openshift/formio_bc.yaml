@@ -1,0 +1,53 @@
+---
+kind: Template
+apiVersion: v1
+metadata:
+  name: forms-flow-forms
+  annotations:
+    description: ""
+    tags: forms-flow-forms
+parameters:
+  - name: SOURCE_REPOSITORY_URL
+    displayName: Git Repository URL
+    description: The URL of the repository with your application source code.
+    value: https://github.com/AOT-Technologies/forms-flow-ai
+  - name: SOURCE_REPOSITORY_REF
+    displayName: Git Reference
+    description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.
+    value: master
+  - name: SOURCE_CONTEXT_DIR
+    displayName: Git context directory
+    description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.
+    value: /forms-flow-forms
+objects:
+-
+  apiVersion: build.openshift.io/v1
+  kind: BuildConfig
+  metadata:
+    name: forms-flow-forms
+    labels:
+      app: forms-flow-forms
+  spec:
+    source:
+      git:
+        ref: ${SOURCE_REPOSITORY_REF}
+        uri: ${SOURCE_REPOSITORY_URL}
+      contextDir: ${SOURCE_CONTEXT_DIR}
+    output:
+      to:
+        kind: ImageStreamTag
+        name: 'forms-flow-forms:latest'
+    strategy:
+      type: Docker
+      dockerStrategy:
+        dockerfilePath: Dockerfile
+    triggers:
+      - type: ImageChange
+        imageChange: {}
+      - type: ConfigChange
+
+- 
+  apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: forms-flow-forms

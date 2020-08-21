@@ -6,6 +6,18 @@
     annotations:
       description: ""
       tags: forms-flow-analytics
+parameters:
+  - name: SOURCE_REPOSITORY_URL
+    displayName: Git Repository URL
+    description: The URL of the repository with your application source code.
+    value: https://github.com/getredash/redash
+  - name: SOURCE_REPOSITORY_REF
+    displayName: Git Reference
+    description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.
+    value: v9.0.0-beta
+  - name: SOURCE_CONTEXT_DIR
+    displayName: Git context directory
+    description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.
   objects:
   -
     apiVersion: build.openshift.io/v1
@@ -17,8 +29,8 @@
     spec:
       source:
         git:
-          ref: master
-          uri: 'https://github.com/getredash/redash'
+          ref: ${SOURCE_REPOSITORY_REF}
+          uri: ${SOURCE_REPOSITORY_URL}
       output:
         to:
           kind: ImageStreamTag

@@ -1,0 +1,274 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: ${NAME}
+objects:
+- 
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: ${NAME}-keycloak-config
+  data:
+    keycloak.json: |-
+      {
+      "realm": "296gqjn5",
+      "auth-server-url": "https://sso-dev.pathfinder.gov.bc.ca/auth/"   ,
+      "ssl-required": "external",
+      "resource": "forms-flow-web",
+      "public-client": true,
+      "verify-token-audience": true,
+      "use-resource-role-mappings": true,
+      "confidential-port": 0
+      }
+
+- 
+  apiVersion: v1
+  kind: Secret
+  stringData:
+    NODE_ENV: 'development'
+    REACT_APP_ANONYMOUS_ID: ''
+    REACT_APP_API_PROJECT_URL: ''
+    REACT_APP_API_SERVER_URL: ''
+    REACT_APP_CLIENT_ID: ''
+    REACT_APP_CLIENT_ROLE: 'formsflow-client'
+    REACT_APP_INSIGHTS_API_KEY: ''
+    REACT_APP_INSIGHT_API_BASE: ''
+    REACT_APP_KEYCLOAK_CLIENT: 'forms-flow-web'
+    REACT_APP_STAFF_DESIGNER_ID: ''
+    REACT_APP_STAFF_DESIGNER_ROLE: 'formsflow-designer'
+    REACT_APP_STAFF_REVIEWER_ID: ''
+    REACT_APP_STAFF_REVIEWER_ROLE: 'formsflow-reviewer'
+    REACT_APP_USER_RESOURCE_FORM_ID: ''
+    REACT_APP_WEB_BASE_URL: ''
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+
+- 
+  apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    replicas: ${REPLICAS}
+    selector:
+      app: ${NAME}
+      strategy:
+        type: Rolling
+        rollingParams:
+          updatePeriodSeconds: 1
+          intervalSeconds: 1
+          timeoutSeconds: 600
+          maxUnavailable: 25%
+          maxSurge: 25%
+        resources:
+          requests:
+            cpu: "${CPU_REQUEST}"
+            memory: "${MEMORY_REQUEST}"
+          limits:
+            cpu: "${CPU_LIMIT}"
+            memory: "${MEMORY_LIMIT}"
+        activeDeadlineSeconds: 21600
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: ${NAME}
+      spec:
+        containers:
+        - env:
+          - name: NODE_ENV
+            valueFrom:
+              secretKeyRef:
+                key: NODE_ENV
+                name: ${NAME}
+          - name: REACT_APP_ANONYMOUS_ID
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_ANONYMOUS_ID
+                name: ${NAME}
+          - name: REACT_APP_API_PROJECT_URL
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_API_PROJECT_URL
+                name: ${NAME}
+          - name: REACT_APP_API_SERVER_URL
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_API_SERVER_URL
+                name: ${NAME}
+          - name: REACT_APP_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_CLIENT_ID
+                name: ${NAME}
+          - name: REACT_APP_CLIENT_ROLE
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_CLIENT_ROLE
+                name: ${NAME}
+          - name: REACT_APP_INSIGHTS_API_KEY
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_INSIGHTS_API_KEY
+                name: ${NAME}
+          - name: REACT_APP_INSIGHT_API_BASE
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_INSIGHT_API_BASE
+                name: ${NAME}
+          - name: REACT_APP_KEYCLOAK_CLIENT
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_KEYCLOAK_CLIENT
+                name: ${NAME}
+          - name: REACT_APP_STAFF_DESIGNER_ID
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_STAFF_DESIGNER_ID
+                name: ${NAME}
+          - name: REACT_APP_STAFF_DESIGNER_ROLE
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_STAFF_DESIGNER_ROLE
+                name: ${NAME}
+          - name: REACT_APP_STAFF_REVIEWER_ID
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_STAFF_REVIEWER_ID
+                name: ${NAME}
+          - name: REACT_APP_STAFF_REVIEWER_ROLE
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_STAFF_REVIEWER_ROLE
+                name: ${NAME}
+          - name: REACT_APP_USER_RESOURCE_FORM_ID
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_USER_RESOURCE_FORM_ID
+                name: ${NAME}
+          - name: REACT_APP_WEB_BASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: REACT_APP_WEB_BASE_URL
+                name: ${NAME}
+          image: docker-registry.default.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+          name: ${NAME}
+          ports:
+          - containerPort: 3000
+          resources: {}
+          tty: true
+          volumeMounts:
+            - name: ${NAME}-keycloak-config
+              readOnly: true
+              mountPath: "${KC_MOUNT_PATH}"
+        restartPolicy: Always
+        volumes:
+          - name: ${NAME}-keycloak-config
+            configMap:
+              name: ${NAME}-keycloak-config
+              defaultMode: 420
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${NAME}
+        from:
+          kind: ImageStreamTag
+          namespace: "${IMAGE_NAMESPACE}"
+          name: "${NAME}-${TAG_NAME}"
+      type: ImageChange
+  status: {}
+
+-
+  apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    ports:
+    - name: "3000"
+      port: 3000
+      targetPort: 3000
+    selector:
+      app: ${NAME}
+  status:
+    loadBalancer: {}
+
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    host: sbcffw.pathfinder.gov.bc.ca
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
+      name: ${NAME}
+    wildcardPolicy: None
+
+parameters:
+  - name: NAME
+    displayName: Name
+    description: The name assigned to all of the OpenShift resources associated to the
+      server instance.
+    required: true
+    value: forms-flow-web
+  - name: IMAGE_NAMESPACE
+    displayName: Image Namespace
+    required: true
+    description: The namespace of the OpenShift project containing the imagestream for
+      the application.
+    value: nzpnbz-tools
+  - name: TAG_NAME
+    displayName: Environment TAG name
+    description: The TAG name for this environment, e.g., dev, test, prod
+    required: true
+    vaue: latest
+  - name: CPU_REQUEST
+    displayName: Resources CPU Request
+    description: The resources CPU request (in cores) for this build.
+    required: true
+    value: 100m
+  - name: CPU_LIMIT
+    displayName: Resources CPU Limit
+    description: The resources CPU limit (in cores) for this build.
+    required: true
+    value: 750m
+  - name: MEMORY_REQUEST
+    displayName: Resources Memory Request
+    description: The resources Memory request (in Mi, Gi, etc) for this build.
+    required: true
+    value: 100Mi
+  - name: MEMORY_LIMIT
+    displayName: Resources Memory Limit
+    description: The resources Memory limit (in Mi, Gi, etc) for this build.
+    required: true
+    value: 2Gi
+  - name: REPLICAS
+    displayName: The number of replicas to run
+    description: The number of replicas to run in this environment.
+    required: true
+    value: 1
+  - name: KC_MOUNT_PATH
+    displayName: Mount config directory.
+    description: The path to where the app config directory will get mounted.
+    required: true
+    value: /forms-flow-web/app/public/config/kc
+  

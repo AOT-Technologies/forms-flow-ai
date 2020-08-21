@@ -1,10 +1,10 @@
 kind: Template
 apiVersion: v1
 metadata:
-  name: ff-bpm
+  name: forms-flow-bpm
   annotations:
     description: ""
-    tags: ff-bpm,java
+    tags: forms-flow-bpm,java
     iconClass: icon-java
 parameters:
   - name: SOURCE_REPOSITORY_URL
@@ -22,22 +22,22 @@ objects:
   -  kind: ImageStream
      apiVersion: v1
      metadata:
-       name: ff-bpm
+       name: forms-flow-bpm
        annotations:
          description: "Keeps track of changes in the application image"
        labels:
-         app: ff-bpm
+         app: forms-flow-bpm
   -  kind: BuildConfig
      apiVersion: v1
      metadata:
-       name: ff-bpm
+       name: forms-flow-bpm
      spec:
        failedBuildsHistoryLimit: 2
        nodeSelector: null
        output:
          to:
            kind: ImageStreamTag
-           name: 'ff-bpm:latest'
+           name: 'forms-flow-bpm:latest'
        postCommit: {}
        resources:
          limits:

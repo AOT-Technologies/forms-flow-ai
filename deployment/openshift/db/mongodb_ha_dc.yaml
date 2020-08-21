@@ -6,27 +6,33 @@ metadata:
     description: "MongoDB database running as replicate set"
     iconClass: "icon-nodejs"
     tags: "nodejs,mongodb,replication,instant-app"
+labels:
+        app: "${APP_GROUP}"    
 
 parameters:
   - name: MEMORY_REQUEST
     description: Amount of Memory to Request.
     displayName: Memory Request
     required: true
+    value: 512Mi
 
   - name: MEMORY_LIMIT
     description: Amount of Memory to Limit.
     displayName: Memory Limit
     required: true
+    value: 3Gi
 
   - name: CPU_REQUEST
     description: Amount of CPU to Request.
     displayName: Memory Request
     required: true
+    value: 500m
 
   - name: CPU_LIMIT
     description: Amount of CPU to Limit.
     displayName: Memory Limit
     required: true
+    value: 1
     
   - name: MONGODB_SERVICE_NAME
     description: Name of the MongoDB Service
@@ -37,7 +43,7 @@ parameters:
   - name: MONGODB_REPLICAS
     description: Number of MongoDB replica pods
     displayName: MongoDB Replicas
-    value: "3"
+    value: "2"
     required: true
 
   - name: MONGODB_SECRET_NAME
@@ -63,7 +69,7 @@ parameters:
   - name: MONGODB_DATABASE
     displayName: "MongoDB Database Name"
     description: "Name of the MongoDB database accessed."
-    value: formio
+    value: formiodb
     required: true
 
   - name: MONGODB_ADMIN_PASSWORD
@@ -102,11 +108,20 @@ parameters:
     displayName: "Volume Capacity for MongoDB"
     description: "Volume space available for data, e.g. 512Mi, 2Gi."
     required: true
+    value: 10Gi
 
   - name: SC_MONGO
     description: The Storage Class for the MongoDB
     displayName: Storage Class for MongoDB
     required: true
+    value: netapp-block-standard
+
+  - name: APP_GROUP
+    description: The name assigned to all of the deployments in this project.
+    displayName: App Group
+    required: true
+    value: "mongodb"
+    
 
 objects:
 # Secrets for mongo DB 
@@ -116,6 +131,7 @@ objects:
       name: ${MONGODB_SECRET_NAME}
       labels:
         name: "${MONGODB_SERVICE_NAME}"
+        app: "${APP_GROUP}"
     stringData:
       username: "${MONGODB_USER}"
       password: "${MONGODB_PASSWORD}"
@@ -124,6 +140,7 @@ objects:
       database: "${MONGODB_DATABASE}"
       replica-name: "${MONGODB_REPLICA_NAME}"
       mongo-url: "mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_SERVICE_NAME}:27017/${MONGODB_DATABASE}?replicaSet=${MONGODB_REPLICA_NAME}"
+      NODE_CONFIG: "{\"mongo\":\"mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_SERVICE_NAME}:27017/${MONGODB_DATABASE}?replicaSet=${MONGODB_REPLICA_NAME}\"}"
       mongo-oplog-url: "mongodb://admin:${MONGODB_ADMIN_PASSWORD}@${MONGODB_SERVICE_NAME}:27017/local?authSource=admin&replicaSet=${MONGODB_REPLICA_NAME}"
 
   # A non-headless service which takes pod readiness into consideration
@@ -133,6 +150,7 @@ objects:
       name: "${MONGODB_SERVICE_NAME}"
       labels:
         name: "${MONGODB_SERVICE_NAME}"
+        app: "${APP_GROUP}"
     spec:
       ports:
         - name: mongodb
@@ -147,6 +165,7 @@ objects:
       name: "${MONGODB_SERVICE_NAME}-internal"
       labels:
         name: "${MONGODB_SERVICE_NAME}"
+        app: "${APP_GROUP}"
       annotations:
         service.alpha.kubernetes.io/tolerate-unready-endpoints: "true"
     spec:    
@@ -162,6 +181,8 @@ objects:
     apiVersion: apps/v1beta1
     metadata:
       name: "${MONGODB_SERVICE_NAME}"
+      labels:
+        app: "${APP_GROUP}"
     spec:
       serviceName: "${MONGODB_SERVICE_NAME}-internal"
       replicas: "${MONGODB_REPLICAS}"
@@ -169,6 +190,7 @@ objects:
         metadata:
           labels:
             name: "${MONGODB_SERVICE_NAME}"
+            app: "${APP_GROUP}"
         spec:
           affinity:
             podAntiAffinity:
@@ -242,6 +264,7 @@ objects:
             name: mongo-data
             labels:
               name: "${MONGODB_SERVICE_NAME}"
+              app: "${APP_GROUP}"
           spec:
             accessModes: [ ReadWriteOnce ]
             storageClassName: "${SC_MONGO}"

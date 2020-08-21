@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: ff-bpm
+  name: forms-flow-bpm
 objects:
   - apiVersion: v1
     data:
@@ -32,7 +32,20 @@ objects:
     metadata:
       labels:
         app: ${NAME}
-      name: camunda-mail-setup
+      name: ${NAME}-mail-config
+
+  - apiVersion: v1
+    kind: Secret
+    metadata:
+      name: ${NAME}
+    stringData:
+      db_password: "${PATRONI_PASSWORD}"
+      db_username: "${PATRONI_USERNAME}"
+      keycloak_clientid: "${keycloak_clientid}"
+      keycloak_clientsecret: "${keycloak_clientsecret}"
+      keycloak_realm: "${keycloak_realm}"
+    type: Opaque
+
   - apiVersion: route.openshift.io/v1
     kind: Route
     metadata:
@@ -40,6 +53,7 @@ objects:
         app: ${NAME}
       name: ${NAME}
     spec:
+      host: sbcffb.pathfinder.gov.bc.ca
       path: /camunda
       tls:
         insecureEdgeTerminationPolicy: Redirect
@@ -48,6 +62,7 @@ objects:
         kind: Service
         name: ${NAME}
       wildcardPolicy: None
+
   - apiVersion: v1
     kind: Service
     metadata:
@@ -61,20 +76,28 @@ objects:
           targetPort: 8080
       selector:
         app: ${NAME}
-  - apiVersion: apps/v1
-    kind: StatefulSet
+
+  - apiVersion: v1
+    kind: DeploymentConfig
     metadata:
       annotations:
       labels:
         app: ${NAME}
       name: ${NAME}
     spec:
-      podManagementPolicy: Parallel
       replicas: 1
       selector:
-        matchLabels:
-          app: ${NAME}
-      serviceName: ${NAME}
+        app: ${NAME}
+      strategy:
+        activeDeadlineSeconds: 21600
+        resources: {}
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 600
+          updatePeriodSeconds: 1
+        type: Rolling
       template:
         metadata:
           labels:
@@ -92,6 +115,8 @@ objects:
                   topologyKey: kubernetes.io/hostname
           containers:
             - env:
+                - name: APP_SECURITY_ORIGIN
+                  value: *
                 - name: JDBC_DRIVER
                   value: ${DATABASE_DRIVER}
                 - name: JDBC_URL
@@ -141,12 +166,31 @@ objects:
                   value: ${SESSION_STORE_TIMEOUT}
                 - name: CAMUNDA_CONN_TIMEOUT
                   value: ${CAMUNDA_CONN_TIMEOUT}
-              image: docker-registry.default.svc:5000/${TOOLS_WORKSPACE}/${NAME}:${IMAGE_TAG}
               imagePullPolicy: Always
+              livenessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /camunda/actuator/health
+                  port: 8080
+                  scheme: HTTP
+                initialDelaySeconds: 60
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 3
               name: ${NAME}
               ports:
                 - containerPort: 8080
                   protocol: TCP
+              readinessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /camunda/actuator/health
+                  port: 8080
+                  scheme: HTTP
+                initialDelaySeconds: 60
+                periodSeconds: 60
+                successThreshold: 1
+                timeoutSeconds: 3
               resources:
                 limits:
                   cpu: 750m
@@ -158,7 +202,7 @@ objects:
               terminationMessagePolicy: File
               volumeMounts:
                 - mountPath: /app/mail-config.properties
-                  name: camunda-mail-volume
+                  name: ${NAME}-mail-config
                   subPath: mail-config.properties
           dnsPolicy: ClusterFirst
           restartPolicy: Always
@@ -171,10 +215,21 @@ objects:
                 items:
                   - key: mail-config.properties
                     path: mail-config.properties
-                name: camunda-mail-setup
-              name: camunda-mail-volume
-      updateStrategy:
-        type: RollingUpdate
+                name: ${NAME}-mail-config
+              name: ${NAME}-mail-config
+      test: false
+      triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+          - ${NAME}
+          from:
+            kind: ImageStreamTag
+            name: ${NAME}:${IMAGE_TAG}
+            namespace: ${TOOLS_WORKSPACE}
+        type: ImageChange
+        
 parameters:
   - name: NAME
     description: The name for all created objects.
@@ -183,13 +238,15 @@ parameters:
   - name: IMAGE_TAG
     description: The image tag to pull for the deployment.
     required: true
+    value: latest
   - name: TOOLS_WORKSPACE
     description: The location for your image streams (Tools Workspace).
     required: true
-    value: vmvfjv-tools
+    value: nzpnbz-tools
   - name: SMTP_SERVER
     description: The domain name of the SMTP server for sending emails.
     required: true
+    value: apps.smtp.gov.bc.ca
   - name: DATABASE_DRIVER
     description: The database driver used to connnect to the persistent storage.
     required: true
@@ -197,11 +254,11 @@ parameters:
   - name: DATABASE_SERVICE_NAME
     description: The Service name used to connect to the database.
     required: true
-    value: camunda-postgresql-dev
+    value: patroni-master-001
   - name: DATABASE_NAME
     description: The name of the database to connect to.
     required: true
-    value: postgres
+    value: camunda
   - name: DATABASE_PORT
     description: The port that the database is running on.
     required: true
@@ -209,6 +266,7 @@ parameters:
   - name: KEYCLOAK_URL
     description: The URL used to connnect to the OIDC provider.
     required: true
+    value: https://sso-dev.pathfinder.gov.bc.ca
   - name: APP_ROOT_LOG_FLAG
     description: The log4j logging level to use for the application logs.
     required: true
@@ -229,3 +287,28 @@ parameters:
     description: The spring session timeout for browser connections, in seconds.
     required: true
     value: "28800"
+  - name: PATRONI_USERNAME
+    displayName: PATRONI_USERNAME
+    description:
+      PATRONI_USERNAME
+    required: true
+  - name: PATRONI_PASSWORD
+    displayName: PATRONI_PASSWORD
+    description:
+      PATRONI_PASSWORD
+    required: true
+  - name: keycloak_clientid
+    displayName: keycloak_clientid
+    description:
+      keycloak_clientid
+    required: true
+  - name: keycloak_clientsecret
+    displayName: keycloak_clientsecret
+    description:
+      keycloak_clientsecret
+    required: true
+  - name: keycloak_realm
+    displayName: keycloak_realm
+    description:
+      keycloak_realm
+    required: true

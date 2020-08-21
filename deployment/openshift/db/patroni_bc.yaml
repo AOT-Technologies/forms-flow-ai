@@ -1,0 +1,108 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: patroni
+labels:
+  app: ${NAME}${SUFFIX}
+  phase: build
+  app.kubernetes.io/component: database
+  app.kubernetes.io/name: patroni
+  app.kubernetes.io/managed-by: template
+  app.kubernetes.io/version: "10"
+parameters:
+  - name: NAME
+    value: patroni
+  - name: SUFFIX
+  - name: VERSION
+    description: Ouput version
+    value: "v10-latest"
+  - name: GIT_URI
+    value: https://github.com/BCDevOps/platform-services.git
+  - name: GIT_REF
+    value: master
+  - name: POSTGRES_VERSION
+    value: "10"
+objects:
+#ImageStream is create if it doesn't already exist
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    annotations: {}
+    creationTimestamp: null
+    generation: 1
+    name: postgres
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: registry.hub.docker.com/library/postgres:${POSTGRES_VERSION}
+      generation: 1
+      importPolicy: {}
+      name: "${POSTGRES_VERSION}"
+      referencePolicy:
+        type: Source
+  status:
+    dockerImageRepository: ""
+#- apiVersion: v1
+#  generation: 0
+#  kind: ImageStreamTag
+#  lookupPolicy:
+#    local: false
+#  metadata:
+#    creationTimestamp: null
+#    name: postgres:${POSTGRES_VERSION}
+#  tag:
+#    annotations: null
+#    from:
+#      kind: DockerImage
+#      name: registry.hub.docker.com/library/postgres:${POSTGRES_VERSION}
+#    generation: 0
+#    importPolicy: {}
+#    name: "${POSTGRES_VERSION}"
+#    referencePolicy:
+#      type: Source
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: ${NAME}
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    creationTimestamp: null
+    name: ${NAME}${SUFFIX}
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: "${NAME}:${VERSION}"
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: apps/pgsql/patroni/docker
+      git:
+        ref: ${GIT_REF}
+        uri: ${GIT_URI}
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: postgres:${POSTGRES_VERSION}
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0

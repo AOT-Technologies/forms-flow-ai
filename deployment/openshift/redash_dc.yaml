@@ -10,7 +10,7 @@ objects:
     POSTGRES_PASSWORD: 
     PYTHONUNBUFFERED: "0"
     REDASH_COOKIE_SECRET: redash-selfhosted
-    REDASH_DATABASE_URL: 'postgresql://postgres:postgres@postgres:5432/app'
+    REDASH_DATABASE_URL: 'postgresql://postgres:postgres@postgresql:5432/app'
     REDASH_HOST: ''
     REDASH_LOG_LEVEL: INFO
     REDASH_REDIS_URL: redis://redis:6379/0
@@ -24,16 +24,16 @@ objects:
 - kind: DeploymentConfig
   apiVersion: apps.openshift.io/v1
   metadata:
-  annotations:
-  creationTimestamp: null
-  labels:
+    name: ${NAME}
+    annotations:
+    creationTimestamp: null
+    labels:
       app: ${NAME}
-  name: ${NAME}
   spec:
-  replicas: ${REPLICAS}
-  selector:
+    replicas: 1
+    selector:
       app: ${NAME}
-  strategy:
+    strategy:
       type: Rolling
       rollingParams:
         updatePeriodSeconds: 1
@@ -56,10 +56,10 @@ objects:
           cpu: "${CPU_LIMIT}"
           memory: "${MEMORY_LIMIT}"
       activeDeadlineSeconds: 21600
-  template:
+    template:
       metadata:
-      creationTimestamp: null
-      labels:
+        creationTimestamp: null
+        labels:
           app: ${NAME}
       spec:
         containers:
@@ -69,50 +69,50 @@ objects:
           - name: POSTGRES_HOST_AUTH_METHOD
             valueFrom:
               secretKeyRef:
-              key: POSTGRES_HOST_AUTH_METHOD
-              name: ${NAME}
+                key: POSTGRES_HOST_AUTH_METHOD
+                name: ${NAME}
           - name: POSTGRES_PASSWORD
             valueFrom:
               secretKeyRef:
-              key: POSTGRES_PASSWORD
-              name: ${NAME}
+                key: POSTGRES_PASSWORD
+                name: ${NAME}
           - name: PYTHONUNBUFFERED
             valueFrom:
               secretKeyRef:
-              key: PYTHONUNBUFFERED
-              name: ${NAME}
+                key: PYTHONUNBUFFERED
+                name: ${NAME}
           - name: REDASH_COOKIE_SECRET
             valueFrom:
               secretKeyRef:
-              key: REDASH_COOKIE_SECRET
-              name: ${NAME}
+                key: REDASH_COOKIE_SECRET
+                name: ${NAME}
           - name: REDASH_DATABASE_URL
             valueFrom:
               secretKeyRef:
-              key: REDASH_DATABASE_URL
-              name: ${NAME}
+                key: REDASH_DATABASE_URL
+                name: ${NAME}
           - name: REDASH_HOST
             valueFrom:
               secretKeyRef:
-              key: REDASH_HOST
-              name: ${NAME}
+                key: REDASH_HOST
+                name: ${NAME}
           - name: REDASH_LOG_LEVEL
             valueFrom:
               secretKeyRef:
-              key: REDASH_LOG_LEVEL
-              name: ${NAME}
+                key: REDASH_LOG_LEVEL
+                name: ${NAME}
           - name: REDASH_REDIS_URL
             valueFrom:
               secretKeyRef:
-              key: REDASH_REDIS_URL
-              name: ${NAME}
+                key: REDASH_REDIS_URL
+                name: ${NAME}
           - name: REDASH_SECRET_KEY
             valueFrom:
               secretKeyRef:
-              key: REDASH_SECRET_KEY
-              name: ${NAME}
+                key: REDASH_SECRET_KEY
+                name: ${NAME}
           - name: REDASH_WEB_WORKERS
-          value: "4"
+            value: "4"
           image: docker-registry.default.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           name: ${NAME}
           ports:
@@ -129,7 +129,7 @@ objects:
       from:
           kind: ImageStreamTag
           namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}-${TAG_NAME}"
+          name: "${NAME}:${TAG_NAME}"
       type: ImageChange
   status: {}
 
@@ -220,7 +220,7 @@ objects:
         from:
           kind: ImageStreamTag
           namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}-${TAG_NAME}"
+          name: "${NAME}:${TAG_NAME}"
       type: ImageChange
   status: {}
     
@@ -311,7 +311,7 @@ objects:
         from:
           kind: ImageStreamTag
           namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}-${TAG_NAME}"
+          name: "${NAME}:${TAG_NAME}"
       type: ImageChange
   status: {}
 
@@ -398,13 +398,12 @@ objects:
         from:
           kind: ImageStreamTag
           namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}-${TAG_NAME}"
+          name: "${NAME}:${TAG_NAME}"
       type: ImageChange
   status: {}
 
--
+- kind: DeploymentConfig
   apiVersion: apps.openshift.io/v1
-  kind: DeploymentConfig
   metadata:
     annotations:
     creationTimestamp: null
@@ -490,27 +489,28 @@ objects:
         from:
           kind: ImageStreamTag
           namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}-${TAG_NAME}"
+          name: "${NAME}:${TAG_NAME}"
       type: ImageChange
   status: {}
 
 -   kind: Service
     apiVersion: v1
     metadata:
+      name: ${NAME}
     annotations:
     creationTimestamp: null
     labels:
         app: ${NAME}
     name: ${NAME}
     spec:
-    ports:
-    - name: "7000"
-      port: 7000
-      targetPort: 5000
-    selector:
+      ports:
+      - name: "7000"
+        port: 7000
+        targetPort: 5000
+      selector:
         app: ${NAME}
-    status:
-    loadBalancer: {}
+      status:
+      loadBalancer: {}
 
 - apiVersion: route.openshift.io/v1
   kind: Route
@@ -566,8 +566,3 @@ parameters:
     description: The resources Memory limit (in Mi, Gi, etc) for this build.
     required: true
     value: 2Gi
-  - name: REPLICAS
-    displayName: The number of replicas to run
-    description: The number of replicas to run in this environment.
-    required: true
-    value: '1'

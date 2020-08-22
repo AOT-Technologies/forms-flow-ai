@@ -8,6 +8,7 @@ objects:
   kind: Secret
   stringData:
     DEBUG: formio:*
+    NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-mdb:27017/formio"}'
     ROOT_EMAIL: ${FORMIO_ADMIN_EMAIL}
     ROOT_PASSWORD: ${FORMIO_ADMIN_PASSWORD}
   metadata:
@@ -23,7 +24,7 @@ objects:
       app: ${NAME}
     name: ${NAME}
   spec:
-    replicas: ${REPLICAS}
+    replicas: 1
     selector:
       app: ${NAME}
     strategy:
@@ -51,7 +52,7 @@ objects:
             valueFrom:
               secretKeyRef:
                 key: NODE_CONFIG
-                name: ${MONGODB_SECRET_NAME}
+                name: ${NAME}
           - name: ROOT_EMAIL
             valueFrom:
               secretKeyRef:
@@ -134,8 +135,8 @@ objects:
   status:
     loadBalancer: {}
 
-- kind: route.openshift.io/v1
-  apiVersion: v1
+- kind: Route
+  apiVersion: route.openshift.io/v1
   metadata:
     labels:
       app: ${NAME}
@@ -191,11 +192,6 @@ parameters:
   description: The resources Memory limit (in Mi, Gi, etc) for this build.
   required: true
   value: 2Gi
-- name: REPLICAS
-  displayName: The number of replicas to run
-  description: The number of replicas to run in this environment.
-  required: true
-  value: '1'
 - name: FORMIO_ADMIN_EMAIL
   displayName: Formio admin email
   description: Formio needs an email login

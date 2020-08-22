@@ -56,25 +56,25 @@ objects:
       app: ${NAME}
     name: ${NAME}
   spec:
-    replicas: ${REPLICAS}
+    replicas: 1
     selector:
       app: ${NAME}
-      strategy:
-        type: Rolling
-        rollingParams:
-          updatePeriodSeconds: 1
-          intervalSeconds: 1
-          timeoutSeconds: 600
-          maxUnavailable: 25%
-          maxSurge: 25%
-        resources:
-          requests:
-            cpu: "${CPU_REQUEST}"
-            memory: "${MEMORY_REQUEST}"
-          limits:
-            cpu: "${CPU_LIMIT}"
-            memory: "${MEMORY_LIMIT}"
-        activeDeadlineSeconds: 21600
+    strategy:
+      type: Rolling
+      rollingParams:
+        updatePeriodSeconds: 1
+        intervalSeconds: 1
+        timeoutSeconds: 600
+        maxUnavailable: 25%
+        maxSurge: 25%
+      resources:
+        requests:
+          cpu: "${CPU_REQUEST}"
+          memory: "${MEMORY_REQUEST}"
+        limits:
+          cpu: "${CPU_LIMIT}"
+          memory: "${MEMORY_LIMIT}"
+      activeDeadlineSeconds: 21600
     template:
       metadata:
         creationTimestamp: null
@@ -184,7 +184,7 @@ objects:
         from:
           kind: ImageStreamTag
           namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}-${TAG_NAME}"
+          name: "${NAME}:${TAG_NAME}"
       type: ImageChange
   status: {}
 
@@ -240,7 +240,7 @@ parameters:
     displayName: Environment TAG name
     description: The TAG name for this environment, e.g., dev, test, prod
     required: true
-    vaue: latest
+    value: latest
   - name: CPU_REQUEST
     displayName: Resources CPU Request
     description: The resources CPU request (in cores) for this build.
@@ -261,11 +261,6 @@ parameters:
     description: The resources Memory limit (in Mi, Gi, etc) for this build.
     required: true
     value: 2Gi
-  - name: REPLICAS
-    displayName: The number of replicas to run
-    description: The number of replicas to run in this environment.
-    required: true
-    value: '1'
   - name: KC_MOUNT_PATH
     displayName: Mount config directory.
     description: The path to where the app config directory will get mounted.

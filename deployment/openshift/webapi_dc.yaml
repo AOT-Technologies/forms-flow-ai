@@ -35,7 +35,7 @@ objects:
       app: ${NAME}
     name: ${NAME}
   spec:
-    replicas: ${REPLICAS}
+    replicas: 1
     selector:
       app: ${NAME}
     strategy:
@@ -126,7 +126,7 @@ objects:
         from:
           kind: ImageStreamTag
           namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}-${TAG_NAME}"
+          name: "${NAME}:${TAG_NAME}"
       type: ImageChange
   status: {}
 
@@ -197,8 +197,3 @@ parameters:
     description: The resources Memory limit (in Mi, Gi, etc) for this build.
     required: true
     value: 2Gi
-  - name: REPLICAS
-    displayName: The number of replicas to run
-    description: The number of replicas to run in this environment.
-    required: true
-    value: '1'

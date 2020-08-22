@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   name: forms-flow-forms-mdb
@@ -115,4 +115,21 @@ objects:
     selector:
       app: forms-flow-forms-mdb
   status:
-    loadBalancer: {}
+    loadBalancer: {}\
+
+- 
+  apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: forms-flow-forms-mdb
+  spec:
+    tags:
+      - annotations: null
+        from:
+          kind: DockerImage
+          name: 'mongo:latest'
+        generation: 2
+        importPolicy: {}
+        name: latest
+        referencePolicy:
+          type: Source

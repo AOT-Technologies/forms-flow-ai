@@ -115,7 +115,7 @@ objects:
     selector:
       app: forms-flow-forms-mdb
   status:
-    loadBalancer: {}\
+    loadBalancer: {}
 
 - 
   apiVersion: image.openshift.io/v1

@@ -17,41 +17,17 @@ function linkSubmision(cell, row) {
 // History table columns
 export const columns_history = [
   {
-    dataField: "taskName",
-    text: "Task Name",
-  },
-  {
-    dataField: "taskStatus",
+    dataField: "applicationStatus",
     text: "Status",
     sort: true,
   },
   {
-    dataField: "applicationName",
-    text: "Application Name",
+    dataField: "createdTimestamp",
+    text: "Created",
   },
   {
-    dataField: "startTime",
-    text: "Start Time",
-  },
-  {
-    dataField: "endTime",
-    text: "End Time",
-  },
-  {
-    dataField: "duration",
-    text: "Duration",
-  },
-  {
-    dataField: "assignee",
-    text: "Assignee",
-  },
-  {
-    dataField: "groupName",
-    text: "Group Name",
-  },
-  {
-    dataField: "formURL",
-    text: "Form URL",
+    dataField: "formURI",
+    text: "Form URI",
     formatter: linkSubmision,
   },
 ];

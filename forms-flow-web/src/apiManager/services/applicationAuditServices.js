@@ -4,13 +4,14 @@ import {
   setApplicationHistoryList,
   serviceActionError,
   setLoader,
-  setApplicationHistoryDetail,
+  // setApplicationHistoryDetail,
 } from "../../actions/taskActions";
 import UserService from "../../services/UserService";
 import { replaceUrl } from "../../helper/helper";
 
 
 export const fetchApplicatinAuditHistoryList = (applicationId, ...rest) => {
+  // console.log('application id in fetchApp>>',applicationId)
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     const apiUrlAppHistory = replaceUrl(
@@ -19,11 +20,8 @@ export const fetchApplicatinAuditHistoryList = (applicationId, ...rest) => {
       applicationId
     );
 
-    console.log("apiUrlAppHistory>>>", apiUrlAppHistory);
-
-    // httpGETRequest(apiUrlAppHistory)
-    // httpGETRequest("http://localhost:5000/application/1/history")
-    httpGETRequest("http://localhost:5000/application/1/history", {}, UserService.getToken(),true)
+    // console.log("apiUrlAppHistory>>>", apiUrlAppHistory);
+     httpGETRequest(apiUrlAppHistory, {}, UserService.getToken(),true)
       .then((res) => {
         if (res.data) {
         const applications = res.data.applications;

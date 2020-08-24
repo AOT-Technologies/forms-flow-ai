@@ -18,30 +18,22 @@ import {
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
 import { setUpdateLoader } from "../../actions/taskActions";
-const appHistory1=[
-  {
-    "taskName": "Task1",
-    "taskStatus": "new",
-    "applicationName": "Freedom Of Information Application",
-    "startTime": "12-Jan-2020 12:31:23",
-    "endTime": "14-Jun-2020 16:52:38",
-    "duration": "90 days",
-    "assignee": "Test User",
-    "groupName": "Test Group",
-    "formURL": "http://localhost:3000/task/undefined",
-    "count": 1
-}
-]
+
 const List = class extends Component {
+  
   UNSAFE_componentWillMount() {
-    this.props.getTasks();
+    const application_id =this.props.detail.application_id;
+    this.props.getAuditHistory(application_id);
   }
   render() {
     const {
       isLoading,
       appHistory,
-      isTaskUpdating,
+      isTaskUpdating
     } = this.props;
+    
+  
+    
     if (isLoading) {
       return <Loading />;
     }
@@ -59,10 +51,10 @@ const List = class extends Component {
       );
     };
     return (
-        appHistory1.length > 0 ? (
+        appHistory.length > 0 ? (
         <ToolkitProvider
           keyField="id"
-          data={appHistory1}
+          data={appHistory}
           columns={columns_history}
           search
         >
@@ -71,7 +63,7 @@ const List = class extends Component {
               <div className="main-header">
                 <img src="/clipboard.svg" width="30" height="30" alt="task" />
                 <h3 className="task-head">
-                  History
+                  Application History
                 </h3>
                </div>
               <br />
@@ -118,14 +110,15 @@ const mapStateToProps = (state) => {
     tasksCount: state.tasks.tasksCount,
     userDetail: state.user.userDetail,
     isTaskUpdating: state.tasks.isTaskUpdating,
+    detail: state.tasks.taskDetail,
   };
 };
 const mapDispatchToProps = (dispatch) => {
   return {
     setLoader: dispatch(doLoaderUpdate),
-    getTasks: () =>
+    getAuditHistory: (application_id) =>
       dispatch(
-        fetchApplicatinAuditHistoryList((err, res) => {
+        fetchApplicatinAuditHistoryList(application_id,(err, res) => {
           if (!err) {
             dispatch(setUpdateLoader(false));
           }

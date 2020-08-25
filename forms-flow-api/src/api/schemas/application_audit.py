@@ -25,6 +25,6 @@ class ApplicationAuditSchema(Schema):
     id = fields.Int()
     application_id = fields.Int(data_key='applicationId')
     application_status = fields.Str(data_key='applicationStatus')
-    form_uri = fields.Str(data_key='formUri')
+    form_url = fields.Str(data_key='formUrl')
     created = fields.Str()
     #count = fields.Int()

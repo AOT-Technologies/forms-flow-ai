@@ -28,6 +28,7 @@ class ApplicationSchema(Schema):
     application_status = fields.Str(data_key='applicationStatus')
     form_process_mapper_id = fields.Str(data_key='formProcessMapperId')
     form_submission_id = fields.Str(data_key='formSubmissionId', required=True)
+    form_url = fields.Str(data_key='formUrl')
     process_instance_id = fields.Str(data_key='processInstanceId')
     revision_no = fields.Str(data_key='revisionNo')
 
@@ -49,3 +50,4 @@ class ApplicationUpdateSchema(Schema):
         unknown = EXCLUDE
 
     application_status = fields.Str(data_key='applicationStatus', required=True)
+    form_url = fields.Str(data_key='formUrl', required=False)

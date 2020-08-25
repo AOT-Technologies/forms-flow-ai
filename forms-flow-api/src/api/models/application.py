@@ -15,6 +15,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     application_status = db.Column(db.String(50), nullable=False)
     form_process_mapper_id = db.Column(db.Integer, db.ForeignKey('form_process_mapper.id'), nullable=False)
     form_submission_id = db.Column(db.String(100), nullable=False)
+    form_url = db.Column(db.String(500), nullable=True)
     process_instance_id = db.Column(db.String(100), nullable=True)
     revision_no = db.Column(db.Integer, nullable=False)  # set 1 now
 
@@ -27,6 +28,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             application.application_status = application_info['application_status']
             application.form_process_mapper_id = application_info['form_process_mapper_id']
             application.form_submission_id = application_info['form_submission_id']
+            application.form_url = application_info['form_url']
             # application.process_instance_id = application_info['process_instance_id']
             application.revision_no = 1  # application_info['revision_no']
             application.created_by = application_info['created_by']
@@ -37,7 +39,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def update(self, mapper_info: dict):
         """Update application."""
         self.update_from_dict(
-            ['application_name', 'application_status', 'form_process_mapper_id',
+            ['application_name', 'application_status', 'form_url', 'form_process_mapper_id',
              'form_submission_id', 'process_instance_id', 'revision_no',
              'modified_by'],
             mapper_info)

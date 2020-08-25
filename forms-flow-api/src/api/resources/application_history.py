@@ -42,7 +42,7 @@ class ApplicationHistoryResource(Resource):
             dict_data = application_history_schema.load(application_history_json)
             # sub = g.token_info.get('sub')
             # dict_data['created_by'] = sub
-
+            dict_data['application_id']=application_id
             application_history = ApplicationAuditService.create_application_history(dict_data)
            
 

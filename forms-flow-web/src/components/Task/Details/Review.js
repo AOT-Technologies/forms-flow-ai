@@ -37,7 +37,6 @@ const Review = (props) => {
   },[options, detailAction]);
 
   useEffect(()=>{
-    console.log("optionsList", processStatusList, options);
     if (processStatusList !== options){
       setOptions(processStatusList);
     }

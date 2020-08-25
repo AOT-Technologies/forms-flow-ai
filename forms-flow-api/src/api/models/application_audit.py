@@ -1,4 +1,6 @@
 """This manages Application audit data."""
+from __future__ import annotations
+
 from .base_model import BaseModel
 from .db import db
 
@@ -11,6 +13,19 @@ class ApplicationAudit(BaseModel, db.Model):
     application_status = db.Column(db.String(50), nullable=False)
     form_uri = db.Column(db.String(100), nullable=False)
     created = db.Column(db.DateTime, nullable=False)
+
+    @classmethod
+    def create_from_dict(cls, application_audit_info: dict) -> ApplicationAudit:
+        """Create new application."""
+        if application_audit_info:
+            application_audit = ApplicationAudit()
+            application_audit.application_id = application_audit_info['application_id']
+            application_audit.application_status = application_audit_info['application_status']
+            application_audit.form_uri = application_audit_info['form_uri']
+            application_audit.created = application_audit_info['created']
+            application_audit.save()
+            return application_audit
+        return None
 
     @classmethod
     def get_application_history(cls, application_id: int):

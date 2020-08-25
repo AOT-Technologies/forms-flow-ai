@@ -1,8 +1,8 @@
-package org.camunda.bpm.extension.hooks.task.listeners;
+package org.camunda.bpm.extension.hooks.listeners;
 
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.*;
-import org.camunda.bpm.extension.hooks.services.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
+ * This class intends to invoke the REST services from task and execution listeners.
+ *
  * @author  sumathi.thirumani@aot-technologies.com
  */
 @Component
@@ -28,13 +30,13 @@ public class HTTPServiceListener implements TaskListener, ExecutionListener {
     @Override
     public void notify(DelegateTask delegateTask) {
         LOGGER.info("Invoking REST API for instance"+delegateTask.getProcessInstanceId());
-        httpServiceInvoker.execute(getURL(delegateTask.getExecution()), getMethod(delegateTask.getExecution()), getPayload(delegateTask.getExecution()),false);
+        httpServiceInvoker.execute(getURL(delegateTask.getExecution()), getMethod(delegateTask.getExecution()), getPayload(delegateTask.getExecution()));
     }
 
     @Override
     public void notify(DelegateExecution delegateExecution) throws Exception {
         LOGGER.info("Invoking REST API for instance"+delegateExecution.getProcessInstanceId());
-        httpServiceInvoker.execute(getURL(delegateExecution), getMethod(delegateExecution), getPayload(delegateExecution),false);
+        httpServiceInvoker.execute(getURL(delegateExecution), getMethod(delegateExecution), getPayload(delegateExecution));
     }
 
     private String getURL(DelegateExecution delegateExecution) {
@@ -58,7 +60,5 @@ public class HTTPServiceListener implements TaskListener, ExecutionListener {
         }
         return data;
     }
-
-
 
 }

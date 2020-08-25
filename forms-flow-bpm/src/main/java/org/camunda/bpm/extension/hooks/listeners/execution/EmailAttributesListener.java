@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.hooks.task.listeners;
+package org.camunda.bpm.extension.hooks.listeners.execution;
 
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

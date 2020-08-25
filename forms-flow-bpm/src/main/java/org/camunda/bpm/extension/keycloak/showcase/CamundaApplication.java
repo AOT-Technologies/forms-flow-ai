@@ -6,11 +6,14 @@ import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.authorization.Authorization;
 import org.camunda.bpm.engine.authorization.Resource;
 import org.camunda.bpm.engine.authorization.Resources;
+import org.camunda.bpm.extension.commons.connector.AccessHandlerFactory;
 import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
 import org.camunda.bpm.spring.boot.starter.event.PostDeployEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.ServiceLocatorFactoryBean;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -81,6 +84,19 @@ public class CamundaApplication {
 	@ConfigurationProperties(prefix = "security.oauth2.client")
 	public Properties clientCredentialProperties() {
 		return new Properties();
+	}
+
+	@Bean
+	@ConfigurationProperties(prefix = "formsflow.ai")
+	public Properties integrationCredentialProperties() {
+		return new Properties();
+	}
+
+	@Bean("accessHandlerFactory")
+	public FactoryBean accessHandlerFactory() {
+		ServiceLocatorFactoryBean factoryBean = new ServiceLocatorFactoryBean();
+		factoryBean.setServiceLocatorInterface(AccessHandlerFactory.class);
+		return factoryBean;
 	}
 
 	private static void authorizeServiceAccount() {

@@ -4,7 +4,7 @@
     <bpmn:startEvent id="StartEvent_1" name="Start Request">
       <bpmn:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="javascript">execution.setVariable('task_status', "new");</camunda:script>
+          <camunda:script scriptFormat="javascript">execution.setVariable('application_status', "new");</camunda:script>
         </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
@@ -14,7 +14,7 @@
         <camunda:formData>
           <camunda:formField id="action" label="Action" type="string" />
         </camunda:formData>
-        <camunda:taskListener class="org.camunda.bpm.extension.hooks.task.listeners.NotifyListener" event="create">
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.task.NotifyListener" event="create">
           <camunda:field name="messageId">
             <camunda:string>Message_Email</camunda:string>
           </camunda:field>
@@ -23,15 +23,16 @@
           </camunda:field>
         </camunda:taskListener>
         <camunda:taskListener event="assignment">
-          <camunda:script scriptFormat="javascript">task.execution.setVariable('task_status', "In-Progress");</camunda:script>
+          <camunda:script scriptFormat="javascript">task.execution.setVariable('application_status', "In-Progress");</camunda:script>
         </camunda:taskListener>
         <camunda:taskListener event="complete">
-          <camunda:script scriptFormat="groovy">task.execution.setVariable('task_status', "Request Processed");
+          <camunda:script scriptFormat="groovy">task.execution.setVariable('application_status', "Request Processed");
 task.execution.setVariable('deleteReason', "completed");</camunda:script>
         </camunda:taskListener>
         <camunda:executionListener event="start">
           <camunda:script scriptFormat="javascript">execution.setVariable('submission_group', "formsflow/formsflow-reviewer");</camunda:script>
         </camunda:executionListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="assignment" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0ociprs</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0jg4sg3</bpmn:outgoing>
@@ -43,17 +44,7 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
     </bpmn:endEvent>
     <bpmn:task id="Task_0zs0xmv" name="Update Application Status">
       <bpmn:extensionElements>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.task.listeners.HTTPServiceListener" event="start">
-          <camunda:field name="url">
-            <camunda:expression>http://localhost:5000/application/@application_id</camunda:expression>
-          </camunda:field>
-          <camunda:field name="method">
-            <camunda:expression>PUT</camunda:expression>
-          </camunda:field>
-          <camunda:field name="payload">
-            <camunda:expression>{"applicationStatus": "Request Processed"}</camunda:expression>
-          </camunda:field>
-        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="start" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0jg4sg3</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_17pq3ra</bpmn:outgoing>

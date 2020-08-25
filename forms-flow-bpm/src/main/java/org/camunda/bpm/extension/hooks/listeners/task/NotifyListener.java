@@ -1,14 +1,12 @@
-package org.camunda.bpm.extension.hooks.task.listeners;
+package org.camunda.bpm.extension.hooks.listeners.task;
 
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.springframework.stereotype.Component;
-
 
 import java.util.HashMap;
 import java.util.List;

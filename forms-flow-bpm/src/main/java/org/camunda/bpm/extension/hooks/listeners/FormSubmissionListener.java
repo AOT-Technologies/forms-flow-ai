@@ -43,11 +43,18 @@ public class FormSubmissionListener implements ExecutionListener, TaskListener {
 
     private String readSubmission(String formUrl) {
         ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
-        return response.getBody();
+        if(response.getStatusCode().value() == HttpStatus.OK.value()) {
+            return response.getBody();
+        }
+        return null;
     }
 
     private void createRevision(DelegateExecution execution) {
         String submission =  readSubmission(String.valueOf(execution.getVariables().get("form_url")));
+        if(StringUtils.isBlank(submission)) {
+            LOGGER.log(Level.SEVERE,"Unable to read submission for "+execution.getVariables().get("form_url"));
+            return;
+        }
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode submissionObj = objectMapper.readTree(submission);

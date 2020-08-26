@@ -48,16 +48,17 @@ public class FormSubmissionListener implements ExecutionListener, TaskListener {
 
     private void createRevision(DelegateExecution execution) {
         String submission =  readSubmission(String.valueOf(execution.getVariables().get("form_url")));
-        ResponseEntity<String> response =  httpServiceInvoker.execute(getUrl(execution), HttpMethod.GET, submission);
-        if(response.getStatusCode().value() == HttpStatus.OK.value()) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            JsonNode submissionObj = objectMapper.readTree(submission);
+            ResponseEntity<String> response =  httpServiceInvoker.execute(getUrl(execution), HttpMethod.POST, submissionObj);
+            if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
                 JsonNode jsonNode = objectMapper.readTree(response.getBody());
-                String submissionId = jsonNode.get(0).get("_id").asText();
-                execution.setVariable("form_url",getUrl(execution)+"/"+submissionId);
-            } catch (JsonProcessingException e) {
-                LOGGER.log(Level.SEVERE,"Exception occurred in creating submission", e);
+                String submissionId = jsonNode.get("_id").asText();
+                execution.setVariable("form_url", getUrl(execution) + "/" + submissionId);
             }
+        } catch (JsonProcessingException e) {
+            LOGGER.log(Level.SEVERE,"Exception occurred in creating submission", e);
         }
     }
 

@@ -43,21 +43,29 @@ public class FormSubmissionListener implements ExecutionListener, TaskListener {
 
     private String readSubmission(String formUrl) {
         ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
-        return response.getBody();
+        if(response.getStatusCode().value() == HttpStatus.OK.value()) {
+            return response.getBody();
+        }
+        return null;
     }
 
     private void createRevision(DelegateExecution execution) {
         String submission =  readSubmission(String.valueOf(execution.getVariables().get("form_url")));
-        ResponseEntity<String> response =  httpServiceInvoker.execute(getUrl(execution), HttpMethod.GET, submission);
-        if(response.getStatusCode().value() == HttpStatus.OK.value()) {
-            ObjectMapper objectMapper = new ObjectMapper();
-            try {
+        if(StringUtils.isBlank(submission)) {
+            LOGGER.log(Level.SEVERE,"Unable to read submission for "+execution.getVariables().get("form_url"));
+            return;
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            JsonNode submissionObj = objectMapper.readTree(submission);
+            ResponseEntity<String> response =  httpServiceInvoker.execute(getUrl(execution), HttpMethod.POST, submissionObj);
+            if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
                 JsonNode jsonNode = objectMapper.readTree(response.getBody());
-                String submissionId = jsonNode.get(0).get("_id").asText();
-                execution.setVariable("form_url",getUrl(execution)+"/"+submissionId);
-            } catch (JsonProcessingException e) {
-                LOGGER.log(Level.SEVERE,"Exception occurred in creating submission", e);
+                String submissionId = jsonNode.get("_id").asText();
+                execution.setVariable("form_url", getUrl(execution) + "/" + submissionId);
             }
+        } catch (JsonProcessingException e) {
+            LOGGER.log(Level.SEVERE,"Exception occurred in creating submission", e);
         }
     }
 

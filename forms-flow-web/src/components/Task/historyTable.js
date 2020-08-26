@@ -22,12 +22,12 @@ export const columns_history = [
     sort: true,
   },
   {
-    dataField: "createdTimestamp",
+    dataField: "created",
     text: "Created",
   },
   {
-    dataField: "formURI",
-    text: "Form URI",
+    dataField: "formUrl",
+    text: "Form",
     formatter: linkSubmision,
   },
 ];

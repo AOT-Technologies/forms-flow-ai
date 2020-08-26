@@ -168,11 +168,21 @@ objects:
             - name: ${NAME}-keycloak-config
               readOnly: true
               mountPath: "${KC_MOUNT_PATH}"
+            # The following is required if you are running Redash v9
+            - name: forms-flow-web-redash-v9-config
+              readOnly: true
+              mountPath: /forms-flow-web/app/src/apiManager/services/formatterService.js
+              subPath: formatterService.js
         restartPolicy: Always
         volumes:
           - name: ${NAME}-keycloak-config
             configMap:
               name: ${NAME}-keycloak-config
+              defaultMode: 420
+          # The following is required if you are running Redash v9
+          - name: forms-flow-web-redash-v9-config
+            configMap:
+              name: forms-flow-web-redash-v9-config
               defaultMode: 420
     test: false
     triggers:

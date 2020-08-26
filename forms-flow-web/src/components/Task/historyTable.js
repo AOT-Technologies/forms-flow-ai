@@ -24,6 +24,7 @@ export const columns_history = [
   {
     dataField: "created",
     text: "Created",
+    sort: true,
   },
   {
     dataField: "formUrl",

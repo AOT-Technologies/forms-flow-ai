@@ -122,6 +122,11 @@ objects:
                   value: sonar
                 - name: SONAR_FORCEAUTHENTICATION
                   value: "true"
+                - name: SONARQUBE_ADMINPW
+                valueFrom:
+                  secretKeyRef:
+                    key: password
+                    name: sonarqube-admin-password
               volumeMounts:
                 - mountPath: /opt/sonarqube/data
                   name: sonar-data

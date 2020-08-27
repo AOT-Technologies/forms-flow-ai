@@ -90,11 +90,13 @@ podTemplate(
             echo "PWD: ${SONARQUBE_PWD}"
             echo "URL: ${SONARQUBE_URL}"
 
-            dir('deployment\openshift\pipeline\sonar-runner') {
+            dir('deployment/openshift/pipeline/sonar-runner') {
                 sh (
                     returnStdout: true,
                     script: "./gradlew sonarqube --stacktrace --info \
                         -Dsonar.verbose=true \
+                        -Dsonar.login=admin \
+                        -Dsonar.password=${SONARQUBE_PWD} \
                         -Dsonar.host.url=${SONARQUBE_URL} \
                         -Dsonar.projectName='${SONAR_PROJECT_NAME}' \
                         -Dsonar.projectKey=${SONAR_PROJECT_KEY} \

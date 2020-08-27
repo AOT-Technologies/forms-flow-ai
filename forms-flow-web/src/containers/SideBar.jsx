@@ -41,9 +41,9 @@ const SideBar = (props) => {
                 </div>
                 <div className="text-wrapper">
                   <p className="profile-name">
-                    {user.given_name ||
-                      user.name ||
-                      user.preferred_username || getNameFromEmail(user.email) ||
+                    {
+                      user.preferred_username || user.given_name ||
+                      user.name || getNameFromEmail(user.email) ||
                       ""}{" "}
                   </p>
                   <p className="profile-role">{getUserRoleName(userRoles)}</p>
@@ -59,13 +59,7 @@ const SideBar = (props) => {
                 pathname.match(/^\/form/) ? "active-tab" : ""
               }`}
             >
-              <img
-                className="nav-icons"
-                src="/form_white.svg"
-                width="22"
-                height="22"
-                alt="form"
-              />
+              <i className="fa fa-wpforms" />
               Forms
             </Link>
           </li>

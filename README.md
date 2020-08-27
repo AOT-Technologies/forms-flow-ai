@@ -1,5 +1,5 @@
-# FormsFlow.AI
-**FormsFlow.AI** is an open source solution framework developed and maintained by [AOT Technologies](https://www.aot-technologies.com/). The framework combines selected  open source Forms, Workflow, Analytics and Security products with custom-built integration code to provide a seamless solution which provides a viable alternative to expensive, enterprise software products.
+# formsflow.ai
+**formsflow.ai** is an open source solution framework developed and maintained by [AOT Technologies](https://www.aot-technologies.com/). The framework combines selected  open source Forms, Workflow, Analytics and Security products with custom-built integration code to provide a seamless solution which provides a viable alternative to expensive, enterprise software products.
 
 ## Table of Contents
 * [About the Project](#about-the-project)
@@ -54,8 +54,8 @@ The project was initiated by AOT Technologies as a means of addressing the gener
  * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
  * [forms-flow-forms](./forms-flow-forms) form.io deployment and  integration
  * [forms-flow-idm](./forms-flow-idm) Identity Management (Keycloak)
- * [forms-flow-web](./forms-flow-web) FormsFlow integration web UI
-* [forms-flow-api](./forms-flow-api) REST API to FormsFlow.AI integration components
+ * [forms-flow-web](./forms-flow-web) formsflow.ai integration web UI
+* [forms-flow-api](./forms-flow-api) REST API to formsflow.ai integration components
 
 Features 
 ------------------

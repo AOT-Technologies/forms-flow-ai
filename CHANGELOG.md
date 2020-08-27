@@ -1,4 +1,4 @@
-# Changelog for FormsFlow.AI
+# Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
 ## Unreleased
 `Added`

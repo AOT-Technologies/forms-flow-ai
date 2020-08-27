@@ -1,6 +1,6 @@
-# FormsFlow.AI Web Application
+# formsflow.ai Web Application
 
-**FormsFlow.AI** delivers progressive web application with React version `16.3` and `create-react-app`
+**formsflow.ai** delivers progressive web application with React version `16.3` and `create-react-app`
 
 A React library for rendering out forms based on the form.io platform.
 

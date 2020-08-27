@@ -1,4 +1,4 @@
-## FormsFlow.AI Keycloak Setup
+## formsflow.ai Keycloak Setup
 
 Create a realm **forms-flow-ai**
 

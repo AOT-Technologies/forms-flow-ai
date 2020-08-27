@@ -21,7 +21,7 @@ $yellow: #fcba19;
 $green: #3fb618;
 $teal: #20c997;
 $cyan: #9954bb;
-$lightblue: lighten($blue, 20%);
+$lightblue: #4d61fc;
 
 $primary: $blue;
 $secondary: $grey;
@@ -185,7 +185,7 @@ i.fa.fa-question-circle.text-muted {
 }
 .main-nav {
   text-decoration: none !important;
-  color: #ffff !important;
+  color: $black !important;
   font-size: 18px !important;
 }
 .nav-user-role {
@@ -224,10 +224,10 @@ i.fa.fa-question-circle.text-muted {
   }
 }
 .active {
-  background-color: white;
+  background-color: $white;
 }
 .active-tab {
-  border-bottom: 1px solid $yellow;
+  border-bottom: 1px solid $lightblue;
   background-color: transparent;
 }
 .lbl-logout {

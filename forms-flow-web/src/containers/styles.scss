@@ -3,7 +3,7 @@
 #sidebar {
   & .navbar {
     padding: 15px 10px;
-    background: #fff;
+    background: $white;
     border: none;
     border-radius: 0;
     margin-bottom: 40px;
@@ -36,9 +36,9 @@
       display: -ms-flexbox;
       display: flex;
       border-radius: 3px;
-      border: 1px solid $yellow;
+      border: 1px solid $light-blue;
 
-      color: #fff;
+      color: $black;
       padding: 15px 25px;
 
       & .profile-image {
@@ -49,9 +49,9 @@
         }
       }
       & .text-wrapper p {
-        font-weight: 500;
+        font-weight: bolder;
         font-size: 14px;
-        color: #fff;
+        color: $black;
         margin-bottom: 0;
         word-break: break-all;
         & p {
@@ -59,7 +59,7 @@
         }
       }
       & .profile-role {
-        color: $yellow !important;
+        color: $light-blue !important;
       }
     }
   }
@@ -79,8 +79,8 @@
 #sidebar {
   min-width: 250px;
   max-width: 250px;
-  background: $primary-blue;
-  color: #fff;
+  background: $white;
+  color: $black;
   transition: all 0.3s;
   height: 100%;
 }
@@ -132,7 +132,7 @@
 
 #sidebar .sidebar-header {
   padding: 20px;
-  background: $primary-blue;
+  background: $white;
 }
 
 #sidebar .sidebar-header strong {
@@ -156,8 +156,8 @@
 
 #sidebar ul li.active > a,
 #sidebar a[aria-expanded="true"] {
-  color: $yellow !important;
-  background: $primary-blue;
+  color: $light-blue !important;
+  background: $white;
 }
 
 #sidebar a[data-toggle="collapse"] {
@@ -175,7 +175,7 @@
 #sidebar ul ul a {
   font-size: 0.9em !important;
   padding-left: 30px !important;
-  background: $primary-blue;
+  background: $white;
 }
 
 #sidebar ul.CTAs {
@@ -192,8 +192,8 @@
 
 #sidebar a.article,
 #sidebar a.article:hover {
-  background: $primary-blue !important;
-  color: #fff !important;
+  background: $white !important;
+  color: $black !important;
 }
 
 /* ---------------------------------------------------
@@ -263,3 +263,7 @@
     display: none;
   }
 }
+.topheading-border-bottom{
+  border-bottom: 2px solid $light-blue !important;
+}
+

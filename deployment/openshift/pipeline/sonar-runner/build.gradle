@@ -1,0 +1,47 @@
+// Uses DSL plugins resolution introduced in Gradle 2.1
+plugins {
+  id "java"
+  id "jacoco"
+  id "org.sonarqube" version "2.6.2"
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectName", "Queue Management"
+        property "sonar.projectKey", "org.sonarqube:queue-management"
+        property "sonar.projectBaseDir", "../"
+        property "sonar.sources", "./forms-flow-api/src/api,./forms-flow-web/src"
+        property "sonar.exclusions", "**/test_*.py"
+        property "sonar.verbose", "true"
+        property "sourceEncoding", "UTF-8"
+        property "sonar.python.coveragePlugin","cobertura"
+        property "sonar.jacoco.reportPath", "${project.buildDir}/jacoco/test.exec"
+    }
+}
+
+allprojects {
+  ext.baseVersion = "0.1"
+  ext.snapshotVersion = true
+
+  group = "org.sonarqube"
+  version = "$baseVersion" + (snapshotVersion ? "-SNAPSHOT" : "")
+}
+
+test {
+  ignoreFailures = true
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+}
+
+repositories {
+  repositories {
+    maven {
+      url "https://repo1.maven.org/maven2/"
+    }
+    maven {
+      url "https://plugins.gradle.org/m2/"
+    }
+  }
+}

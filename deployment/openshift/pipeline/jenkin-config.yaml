@@ -1,0 +1,20 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: jenkin-config
+objects:
+- 
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: "jenkin-config"
+  data:
+    password_qtxn: <cfms-postman-operator userid password>
+    password_nonqtxn: <cfms-postman-non-operator userid password>
+    client_secret: <keycloak client secret>
+    zap_with_url: <zap command including dev url for analysis> 
+    namespace: nzpnbz-tools
+    url: <url of api>/api/v1/
+    authurl: <Keycloak domain>
+    clientid: <keycload Client ID>
+    realm: <keycloak realm>

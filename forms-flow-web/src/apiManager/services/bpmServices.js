@@ -1,4 +1,5 @@
 import {
+  httpGETRequest,
   httpPOSTRequest
 } from "../httpRequestHandler";
 import API from "../endpoints";
@@ -6,9 +7,12 @@ import {
   sendEmailNotification,
   sendOneStepApproval,
   serviceActionError,
+  setAllBpmList,
+  setLoader
 } from "../../actions/bpmActions";
 import PROCESS from "../constants/processConstants";
-
+import UserService from "../../services/UserService";
+// import { httpGETRequest, httpPOSTRequest } from "../httpRequestHandler";
 export const getProcess = (processType, form, submissionId, action, user) => {
   switch (processType) {
     case PROCESS.EmailNotification:
@@ -78,4 +82,31 @@ export const triggerNotification = (data, ...rest) => {
         done(error);
       });
   };
-};
+}
+
+export const fetchAllBpmProcesses = (...rest)=> {
+    const done = rest.length ? rest[0] : () => {};
+  return (dispatch) => {
+     httpGETRequest(API.GET_PROCESS_API, {}, UserService.getToken(),true)
+      .then((res) => {
+        if (res.data) {
+        const applications = res.data.applications;
+        let data = applications.map((app) => {
+          return { ...app};
+        });
+        dispatch(setAllBpmList(data));
+         done(null, res.data);
+      } else {
+        console.log("Error", res);
+        dispatch(serviceActionError(res));
+        dispatch(setLoader(false));
+      }
+      })
+      .catch((error) => {
+        dispatch(serviceActionError(error));
+        dispatch(setLoader(false));
+        done(error);
+      });
+  };
+}
+;

@@ -19,14 +19,14 @@ const Create = props => {
 const mapStateToProps = (state) => {
   return {
     form: { display: 'form' },
-    saveText: 'Create Form',
+    saveText: 'Save & Go Next',
     errors: selectError('form', state),
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    saveForm: (form) => {
+    saveForm: (form) => {  
       const newForm = {
         ...form,
         tags: ['common'],

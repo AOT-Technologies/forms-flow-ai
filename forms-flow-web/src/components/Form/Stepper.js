@@ -9,7 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { Checkbox } from '@material-ui/core';
 import Select from 'react-dropdown-select'
 import Create from './Create.js'
-
+import { getProcess } from '../../actions/bpmActions';
 
 
 class StepperPage extends Component{
@@ -27,7 +27,7 @@ class StepperPage extends Component{
     this.setState({ checked: event.target.checked })
 
     getSteps() {  
-        return ['Create Form', 'Associate this form with a workflow?'];  
+        return ['Create Form', 'Associate this form with a workflow?' ,'Complete'];  
       }  
 
     populateDropdown(){

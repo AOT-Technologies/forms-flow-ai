@@ -90,7 +90,7 @@ podTemplate(
             echo "PWD: ${SONARQUBE_PWD}"
             echo "URL: ${SONARQUBE_URL}"
 
-            dir('deployment/openshift/pipeline/sonar-runner') {
+            dir('sonar-runner') {
                 sh (
                     returnStdout: true,
                     script: "./gradlew sonarqube --stacktrace --info \
@@ -193,6 +193,102 @@ podTemplate(
                     def NAME_SPACE = getNameSpace()
                     openshift.withProject("${NAME_SPACE}-${DEP_ENV_NAMES[0]}") {
                         def dc = openshift.selector('dc', "${BUILDS[0]}")
+                        // Wait for the deployment to complete.
+                        // This will wait until the desired replicas are all available
+                        dc.rollout().status()
+                    }
+                    echo "API Deployment Complete."
+                }
+            }
+        }
+        stage("Deploy Camunda to Dev") {
+            script: {
+                openshift.withCluster() {
+                    openshift.withProject() {
+                        echo "Tagging ${BUILDS[1]} for deployment to ${TAG_NAMES[0]} ..."
+
+                        // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
+                        // Tag the images for deployment based on the image's hash
+                        API_IMAGE_HASH = getImageTagHash("${BUILDS[1]}")
+                        echo "API_IMAGE_HASH: ${API_IMAGE_HASH}"
+                        openshift.tag("${BUILDS[1]}@${API_IMAGE_HASH}", "${BUILDS[1]}:${TAG_NAMES[0]}")
+                    }
+
+                    def NAME_SPACE = getNameSpace()
+                    openshift.withProject("${NAME_SPACE}-${DEP_ENV_NAMES[0]}") {
+                        def dc = openshift.selector('dc', "${BUILDS[1]}")
+                        // Wait for the deployment to complete.
+                        // This will wait until the desired replicas are all available
+                        dc.rollout().status()
+                    }
+                    echo "API Deployment Complete."
+                }
+            }
+        }
+        stage("Deploy FormIO to Dev") {
+            script: {
+                openshift.withCluster() {
+                    openshift.withProject() {
+                        echo "Tagging ${BUILDS[2]} for deployment to ${TAG_NAMES[0]} ..."
+
+                        // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
+                        // Tag the images for deployment based on the image's hash
+                        API_IMAGE_HASH = getImageTagHash("${BUILDS[2]}")
+                        echo "API_IMAGE_HASH: ${API_IMAGE_HASH}"
+                        openshift.tag("${BUILDS[2]}@${API_IMAGE_HASH}", "${BUILDS[2]}:${TAG_NAMES[0]}")
+                    }
+
+                    def NAME_SPACE = getNameSpace()
+                    openshift.withProject("${NAME_SPACE}-${DEP_ENV_NAMES[0]}") {
+                        def dc = openshift.selector('dc', "${BUILDS[2]}")
+                        // Wait for the deployment to complete.
+                        // This will wait until the desired replicas are all available
+                        dc.rollout().status()
+                    }
+                    echo "API Deployment Complete."
+                }
+            }
+        }
+        stage("Deploy Web UI to Dev") {
+            script: {
+                openshift.withCluster() {
+                    openshift.withProject() {
+                        echo "Tagging ${BUILDS[3]} for deployment to ${TAG_NAMES[0]} ..."
+
+                        // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
+                        // Tag the images for deployment based on the image's hash
+                        API_IMAGE_HASH = getImageTagHash("${BUILDS[3]}")
+                        echo "API_IMAGE_HASH: ${API_IMAGE_HASH}"
+                        openshift.tag("${BUILDS[3]}@${API_IMAGE_HASH}", "${BUILDS[3]}:${TAG_NAMES[0]}")
+                    }
+
+                    def NAME_SPACE = getNameSpace()
+                    openshift.withProject("${NAME_SPACE}-${DEP_ENV_NAMES[0]}") {
+                        def dc = openshift.selector('dc', "${BUILDS[3]}")
+                        // Wait for the deployment to complete.
+                        // This will wait until the desired replicas are all available
+                        dc.rollout().status()
+                    }
+                    echo "API Deployment Complete."
+                }
+            }
+        }
+        stage("Deploy Web API to Dev") {
+            script: {
+                openshift.withCluster() {
+                    openshift.withProject() {
+                        echo "Tagging ${BUILDS[4]} for deployment to ${TAG_NAMES[0]} ..."
+
+                        // Don't tag with BUILD_ID so the pruner can do it's job; it won't delete tagged images.
+                        // Tag the images for deployment based on the image's hash
+                        API_IMAGE_HASH = getImageTagHash("${BUILDS[4]}")
+                        echo "API_IMAGE_HASH: ${API_IMAGE_HASH}"
+                        openshift.tag("${BUILDS[4]}@${API_IMAGE_HASH}", "${BUILDS[4]}:${TAG_NAMES[0]}")
+                    }
+
+                    def NAME_SPACE = getNameSpace()
+                    openshift.withProject("${NAME_SPACE}-${DEP_ENV_NAMES[0]}") {
+                        def dc = openshift.selector('dc', "${BUILDS[4]}")
                         // Wait for the deployment to complete.
                         // This will wait until the desired replicas are all available
                         dc.rollout().status()

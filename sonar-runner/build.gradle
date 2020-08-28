@@ -7,10 +7,10 @@ plugins {
 
 sonarqube {
     properties {
-        property "sonar.projectName", "Queue Management"
-        property "sonar.projectKey", "org.sonarqube:queue-management"
+        property "sonar.projectName", "formsflow-ai"
+        property "sonar.projectKey", "formsflow-ai"
         property "sonar.projectBaseDir", "../"
-        property "sonar.sources", "./forms-flow-api/src/api,./forms-flow-web/src"
+        property "sonar.sources", "."
         property "sonar.exclusions", "**/test_*.py"
         property "sonar.verbose", "true"
         property "sourceEncoding", "UTF-8"

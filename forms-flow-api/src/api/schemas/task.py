@@ -28,5 +28,6 @@ class TaskSchema(Schema):
     assignee = fields.Str()
     process_instance_id = fields.Str(data_key='processInstanceId', attribute='processInstanceId')
     process_definition_key = fields.Str(data_key='processDefinitionKey', attribute='processDefinitionKey')
-    task_definition_key = fields.Str(data_key='taskDefinitionKey', attribute='taskDefinitionKey')
+    groupName = fields.Str(data_key='groupName', attribute='groupName')
+    status = fields.Str(data_key='status', attribute='status')
     variables = fields.List(fields.Nested(TaskVariableSchema))

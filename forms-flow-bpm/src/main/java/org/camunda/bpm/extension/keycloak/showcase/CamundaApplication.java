@@ -80,6 +80,16 @@ public class CamundaApplication {
 		return DataSourceBuilder.create().build();
 	}
 
+	/**
+	 * JDBC template for camunda datasource interaction.
+	 * @param camundaBpmDataSource
+	 * @return
+	 */
+	@Bean("bpmJdbcTemplate")
+	public NamedParameterJdbcTemplate bpmJdbcTemplate(@Qualifier("camundaBpmDataSource") DataSource camundaBpmDataSource) {
+		return new NamedParameterJdbcTemplate(camundaBpmDataSource);
+	}
+
 	@Bean
 	@ConfigurationProperties(prefix = "security.oauth2.client")
 	public Properties clientCredentialProperties() {

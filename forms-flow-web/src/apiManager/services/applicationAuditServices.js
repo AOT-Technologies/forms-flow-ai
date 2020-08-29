@@ -1,4 +1,4 @@
-import { httpGETRequest, httpPOSTRequest } from "../httpRequestHandler";
+import { httpGETRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import {
   setApplicationHistoryList,

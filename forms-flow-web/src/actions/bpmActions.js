@@ -35,19 +35,6 @@ export const setUserDetails = (data) => dispatch => {
   })
 }
 
-export const sendEmailNotification = (data) => dispatch => {
-  dispatch({
-    type: ACTION_CONSTANTS.SEND_EMAIL_NOTIFICATION,
-    payload: data
-  })
-}
-export const sendOneStepApproval = (data) => dispatch => {
-  dispatch({
-    type: ACTION_CONSTANTS.SEND_ONE_STEP_APPROVAL,
-    payload: data
-  })
-}
-
 export const serviceActionError = (data) => dispatch => {
   dispatch({
     type: ACTION_CONSTANTS.ERROR,

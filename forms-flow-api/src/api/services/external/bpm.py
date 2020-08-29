@@ -63,14 +63,6 @@ class BPMService(BaseBPMService):
         return cls.get_request(url, token)
 
     @classmethod
-    def get_task_variables(cls, process_instance_id, token):
-        """Get task details."""
-        url = cls._get_url_(BPMEndpointType.History) + 'variable-instance'
-        data = {}
-        data['processInstanceId'] = process_instance_id
-        return cls.post_request(url, token, data)
-
-    @classmethod
     def claim_task(cls, task_id, data, token):
         """Claim a task."""
         url = cls._get_url_(BPMEndpointType.Task) + task_id + '/claim'

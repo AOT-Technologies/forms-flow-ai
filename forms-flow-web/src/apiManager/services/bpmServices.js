@@ -6,7 +6,7 @@ import {
   serviceActionError,
 } from "../../actions/bpmActions";
 
-export const getProcess = (form, submissionId, action, user) => {
+export const getProcessReq = (form, submissionId, action, user) => {
   const requestFormat = {
     variables: {
       formurl: {

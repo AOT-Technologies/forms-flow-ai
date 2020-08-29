@@ -71,7 +71,7 @@ Create a forms-flow-analytics Client.
 		* Canonicalization Method = EXCLUSIVE_WITH_COMMENTS  
 		* Name ID Format = email 	  
 		* Valid Redirect URIs  eg. http://localhost:7000/*  
-		* Valid Master SAML Processing URL = {ANALYTICS_URL}/saml/callback?org_slug=default  
+		* Valid Master SAML Processing URL = localhost:7000/saml/callback?org_slug=default   
 		* Note: All other settings should be turned off and empty  
 		* Click Save  
 	* Mappers Tab  
@@ -86,6 +86,7 @@ Create a forms-flow-analytics Client.
 			* Click Edit on X500 givenName  
 			* Change Friendly Name to FirstName   
 			* Click Save  
+ 
 
 ## Create forms-flow-bpm Client  
 

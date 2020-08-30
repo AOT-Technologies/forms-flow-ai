@@ -9,7 +9,7 @@ import {
 export const getProcessReq = (form, submissionId, action, user) => {
   const requestFormat = {
     variables: {
-      formurl: {
+      form_url: {
         value: `${window.location.origin}/form/${form._id}/submission/${submissionId}`,
       },
       submission_id: { value: submissionId },

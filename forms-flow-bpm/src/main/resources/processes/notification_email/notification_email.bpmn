@@ -42,7 +42,7 @@
     </bpmn:businessRuleTask>
     <bpmn:sequenceFlow id="Flow_1lqclyt" name="email content transformation" sourceRef="Activity_0hupz4n" targetRef="ServiceTask_1o5gnzy">
       <bpmn:extensionElements>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.task.listeners.EmailAttributesListener" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.execution.EmailAttributesListener" event="take" />
       </bpmn:extensionElements>
     </bpmn:sequenceFlow>
   </bpmn:process>

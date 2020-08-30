@@ -91,7 +91,13 @@ public class TaskController {
         List<String> groups = new ArrayList<>();
         if(CollectionUtils.isNotEmpty(rawgroups)) {
             for(String entry: rawgroups) {
-                groups.add(StringEscapeUtils.unescapeJava(entry));
+                String groupName = StringEscapeUtils.unescapeJava(entry);
+                if(StringUtils.startsWith(groupName,"/")) {
+                    groups.add(StringUtils.substring(groupName,1));
+                } else {
+                    groups.add(groupName);
+                }
+
             }
         }
         return groups;

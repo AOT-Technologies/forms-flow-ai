@@ -31,7 +31,7 @@ API = Api(
     version='1.0',
     description='The API for FORMIO',
     security=['apikey'],
-    authorizations=AUTHORIZATIONS)
+    authorizations=AUTHORIZATIONS, doc='/swagger/')
 
 
 @API.errorhandler(BusinessException)

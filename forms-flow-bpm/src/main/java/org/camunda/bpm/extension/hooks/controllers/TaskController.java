@@ -49,6 +49,7 @@ public class TaskController {
                     task.setStatus(rs.getString("status"));
                     task.setProcessInstanceId(rs.getString("pid"));
                     task.setProcessDefinitionKey(rs.getString("processdefkey"));
+                    task.setTaskDefinitionKey(rs.getString("taskDefinitionKey"));
                     task.setGroupName(rs.getString("groupname"));
                     List<Variable> variables = new ArrayList<>();
                     task.setVariables(variables);
@@ -76,6 +77,7 @@ public class TaskController {
                 taskObj.setAssignee(rs.getString("assignee"));
                 taskObj.setStatus(rs.getString("status"));
                 taskObj.setProcessDefinitionKey(rs.getString("processdefkey"));
+                taskObj.setTaskDefinitionKey(rs.getString("taskDefinitionKey"));
                 taskObj.setProcessInstanceId(rs.getString("pid"));
                 taskObj.setGroupName(rs.getString("groupname"));
                 taskObj.getVariables().add(new Variable(rs.getString("variablename"), rs.getString("variablevalue")));
@@ -107,6 +109,7 @@ public class TaskController {
     class Task  extends  TaskDto {
         private String processInstanceId;
         private String processDefinitionKey;
+        private String taskDefinitionKey;
         private String groupName;
         private String status;
         private List<Variable> variables;
@@ -125,12 +128,12 @@ public class TaskController {
 
     enum TaskQuery {
         TASK_BY_GROUP("select aht.id_  taskid, aht.name_ taskname,  act.group_id_ groupname, aht.proc_inst_id_ pid, " +
-                "aht.proc_def_key_ processdefkey, aht.assignee_ assignee, ahv.name_ variablename, ahv.text_ variablevalue, " +
+                "aht.proc_def_key_ processdefkey, aht.task_def_key_ taskDefinitionKey, aht.assignee_ assignee, ahv.name_ variablename, ahv.text_ variablevalue, " +
                 "aht.delete_reason_ status from act_hi_varinst ahv, act_hi_taskinst aht FULL OUTER JOIN act_ru_identitylink act  " +
                 "ON aht.id_ = act.task_id_ where aht.proc_inst_id_ = ahv.proc_inst_id_ and (act.group_id_ is null or act.group_id_  IN (:groups))"),
 
         TASK_BY_ID("select aht.id_  taskid, aht.name_ taskname,  act.group_id_ groupname, aht.proc_inst_id_ pid, " +
-                              "aht.proc_def_key_ processdefkey, aht.assignee_ assignee, ahv.name_ variablename, ahv.text_ variablevalue, " +
+                              "aht.proc_def_key_ processdefkey, aht.task_def_key_ taskDefinitionKey, aht.assignee_ assignee, ahv.name_ variablename, ahv.text_ variablevalue, " +
                               "aht.delete_reason_ status from act_hi_varinst ahv, act_hi_taskinst aht FULL OUTER JOIN act_ru_identitylink act  " +
                               "ON aht.id_ = act.task_id_ where aht.proc_inst_id_ = ahv.proc_inst_id_ and (act.group_id_ is null or act.group_id_  IN (:groups)) and aht.id_ = :taskid");
 

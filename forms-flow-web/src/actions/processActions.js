@@ -20,3 +20,10 @@ export const setProcessLoadError = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setAllProcessList = (data) => (dispatch) => {  
+  dispatch({
+    type: ACTION_CONSTANTS.PROCESS_LIST,
+    payload: data,
+  });
+};

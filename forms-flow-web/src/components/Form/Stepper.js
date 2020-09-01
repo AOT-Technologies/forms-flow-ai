@@ -1,4 +1,5 @@
 import React, { Component } from 'react';  
+import { connect } from 'react-redux';
 import Stepper from '@material-ui/core/Stepper';  
 import Step from '@material-ui/core/Step';  
 import StepLabel from '@material-ui/core/StepLabel';  
@@ -9,16 +10,20 @@ import Toolbar from '@material-ui/core/Toolbar';
 import { Checkbox } from '@material-ui/core';
 import Select from 'react-dropdown-select'
 import Create from './Create.js'
-import { getProcess } from '../../actions/bpmActions';
+import { fetchAllBpmProcesses } from '../../apiManager/services/processServices'
 
 
 class StepperPage extends Component{
+    UNSAFE_componentWillMount() {
+      this.props.getAllProcesses();
+    }
+
     constructor(props){
         super(props)
         this.state = {checked: false, activeStep: 0, workflow: null}
     }
 
-
+   
     setActiveStep(val){
         this.setState({activeStep: val})
     }
@@ -27,18 +32,30 @@ class StepperPage extends Component{
     this.setState({ checked: event.target.checked })
 
     getSteps() {  
-        return ['Create Form', 'Associate this form with a workflow?' ,'Complete'];  
+        return ['Create Form', 'Associate this form with a workflow?'];  
       }  
 
     populateDropdown(){
-      //code here to call api for process, must be stored in array
 
-      //temp return until api can be made
-      return [{label: 'workflow1', value: 'filename'}, {label: 'workflow2', value: 'filename'}, {label: 'workflow3', value: 'filename'}]
+      const listProcess = (processes) => {
+        if (processes.length > 0) {
+          const data = processes.map((process) => {
+            return {
+              label: process.name,
+              value: process.key,
+            };
+          });
+          return data;
+        } else {
+          return [];
+        }
+      };
+   
+      return listProcess(this.props.processList);
     }
 
     associateToWorkFlow(item){
-      alert(item[0][0])
+      console.log(item[0].value)
       this.setState({workflow: item[1]})
       //code to link form to a workflow
 
@@ -56,15 +73,41 @@ class StepperPage extends Component{
                     <div>
                       <div style={{'marginLeft': 320}}>
                         <label>
-                          <Checkbox
+                         <Checkbox
                             checked={this.state.checked}
                             onChange={this.handleCheckboxChange}
                           />
                           <span>Check box to associate form with a workflow</span>
                         </label>
-                      </div>
+                      </div><br></br>
+                      <h5>Please select a process </h5>
                       <Select options={this.populateDropdown()} onChange={(item) => this.associateToWorkFlow(item)}/>
-                    </div>
+                      <br>
+                      </br>
+                      <div>
+                      <h5>Status</h5>
+      <select
+        className="form-control"
+        >
+        <option value=" ">Active</option>
+        <option value="new">Inactive</option>
+        <option value="Username">Annonymous</option>
+      </select>
+    </div>
+                    </div> 
+                    
+                  //    <div>
+                  //    <div style={{'marginLeft': 320}}>
+                  //      <label>
+                  //        <Checkbox
+                  //          checked={this.state.checked}
+                  //          onChange={this.handleCheckboxChange}
+                  //        />
+                  //        <span>Check box to associate form with a workflow</span>
+                  //      </label>
+                  //    </div>
+                  //    <Select options={this.populateDropdown()} onChange={(item) => this.associateToWorkFlow(item)}/>
+                  //  </div>
                 )
             }  
             else{
@@ -88,6 +131,10 @@ class StepperPage extends Component{
       }  
     
     render(){  
+
+        const {
+          process
+        } = this.props;
 
         const steps = this.getSteps();
         
@@ -166,4 +213,24 @@ class StepperPage extends Component{
       }
 }
 
-export default StepperPage;
+const mapStateToProps = (state) => {
+  return {
+    processList: state.process.processList,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getAllProcesses: () =>
+      dispatch(
+        fetchAllBpmProcesses((err, res) => {
+          if (!err) {
+           console.log(err);
+          }
+        })
+      )
+  }
+}
+
+
+export default connect(mapStateToProps,mapDispatchToProps)(StepperPage);

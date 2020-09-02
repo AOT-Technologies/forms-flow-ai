@@ -35,13 +35,13 @@ Create a forms-flow-web Client.
 			* Role Name = formsflow-designer  
 			* Click Save  
 * Configure > Clients Scope > Roles > Mappers > Create
-    * Name- Role  
-    * Mapper Type - User Client Role  
-    * Client ID - forms-flow-web  
-    * Token Claim role - role  
-    * Add to ID token -yes  
-    * Add to access token - yes  
-    * Add to userinfo - yes  
+    * Name = Role  
+    * Mapper Type = User Client Role  
+    * Client ID = forms-flow-web  
+    * Token Claim role = role  
+    * Add to ID token = ON  
+    * Add to access token = ON
+    * Add to userinfo = ON
     * Click Save  
 * Configure > Clients 
 * Select forms-flow-web Client

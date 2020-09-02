@@ -11,6 +11,10 @@ import { Checkbox } from '@material-ui/core';
 import Select from 'react-dropdown-select'
 import Create from './Create.js'
 import { fetchAllBpmProcesses } from '../../apiManager/services/processServices'
+import { saveFormProcessMapper } from '../../apiManager/services/formServices'
+import { saveForm, selectError,  Errors } from 'react-formio';
+import { SUBMISSION_ACCESS } from '../../constants/constants';
+import { push } from 'connected-react-router';
 
 
 class StepperPage extends Component{
@@ -20,7 +24,7 @@ class StepperPage extends Component{
 
     constructor(props){
         super(props)
-        this.state = {checked: false, activeStep: 0, workflow: null}
+        this.state = {checked: false, activeStep: 0, workflow: null, status: null}
     }
 
    
@@ -54,9 +58,33 @@ class StepperPage extends Component{
       return listProcess(this.props.processList);
     }
 
+    populateStatusDropdown(){
+
+      const statusList = ["Active","Inactive","Annonymous"]
+
+      const statusDropdown = (statusList) => {
+        const data = statusList.map((status) => {
+          return {
+            label: status,
+            value: status,
+          };
+        });
+        return data;
+      };
+   
+      return statusDropdown(statusList);
+    }
+
     associateToWorkFlow(item){
       console.log(item[0].value)
-      this.setState({workflow: item[1]})
+      this.setState({workflow: item[0]})
+      //code to link form to a workflow
+
+    }
+
+    setSelectedStatus(item){
+      console.log(item[0].value)
+      this.setState({status: item[0]})
       //code to link form to a workflow
 
     }
@@ -85,30 +113,11 @@ class StepperPage extends Component{
                       <br>
                       </br>
                       <div>
-                      <h5>Status</h5>
-      <select
-        className="form-control"
-        >
-        <option value=" ">Active</option>
-        <option value="new">Inactive</option>
-        <option value="Username">Annonymous</option>
-      </select>
-    </div>
+                        <h5>Status</h5>
+                        <Select options={this.populateStatusDropdown()} onChange={(item) => this.setSelectedStatus(item)}/>
+                      </div>
                     </div> 
-                    
-                  //    <div>
-                  //    <div style={{'marginLeft': 320}}>
-                  //      <label>
-                  //        <Checkbox
-                  //          checked={this.state.checked}
-                  //          onChange={this.handleCheckboxChange}
-                  //        />
-                  //        <span>Check box to associate form with a workflow</span>
-                  //      </label>
-                  //    </div>
-                  //    <Select options={this.populateDropdown()} onChange={(item) => this.associateToWorkFlow(item)}/>
-                  //  </div>
-                )
+              )
             }  
             else{
                 return(
@@ -142,8 +151,21 @@ class StepperPage extends Component{
         const handleNext = () => {      
           this.setActiveStep(this.state.activeStep + 1); 
           if(this.state.activeStep === steps.length - 1){
-            //code to save form properly
-            alert("SAVED")
+            if(this.state.checked){
+              const data = {
+                "formId": "5f1993f28dc3a1b73ae6b6bf",
+                "formName": "New RPAS Self Assessment Form",
+                "formRevisionNumber": "V1" ,
+                "processKey": this.state.workflow.value,
+                "processName": this.state.workflow.label,
+                "status": this.state.status.value,
+                "comments": "test 5555"
+              };
+              this.props.onSaveFormProcessMapper(data);
+            }else{
+              console.log('do nothing for now');
+            }
+          
           } 
         };  
         
@@ -200,7 +222,7 @@ class StepperPage extends Component{
                         color="primary"  
                         onClick={handleNext}  
                       >  
-                        {this.state.activeStep === steps.length - 1 ? 'Save Form' : 'Next'}  
+                        {this.state.activeStep === steps.length - 1 ? 'Save' : 'Next'}  
                       </Button>
                     </div>
                   </div> 
@@ -215,13 +237,16 @@ class StepperPage extends Component{
 
 const mapStateToProps = (state) => {
   return {
+    form: { display: 'form' },
+    saveText: 'Next',
+    errors: selectError('form', state),
     processList: state.process.processList,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getAllProcesses: () =>
+    getAllProcesses: () => {
       dispatch(
         fetchAllBpmProcesses((err, res) => {
           if (!err) {
@@ -229,8 +254,31 @@ const mapDispatchToProps = (dispatch) => {
           }
         })
       )
-  }
-}
+    },
+    onSaveFormProcessMapper: (data) => {
+      dispatch(
+        saveFormProcessMapper(data, (err, res) => {
+          if (!err) {
+           console.log(err);
+          }
+        })
+      );
+    },
+    saveForm: (form) => { 
+      console.log('inside save stepper'); 
+      const newForm = {
+        ...form,
+        tags: ['common'],
+      };
+      newForm.submissionAccess = SUBMISSION_ACCESS;
+      dispatch(saveForm('form', newForm, (err, form) => {
+        if (!err) {
+          dispatch(push(`/form/${form._id}/preview`))
+        }
+      }))
+    }
+  };
+};
 
 
 export default connect(mapStateToProps,mapDispatchToProps)(StepperPage);

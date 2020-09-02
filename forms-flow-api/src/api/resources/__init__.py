@@ -3,6 +3,7 @@
 Uses restx namespaces to mount individual api endpoints into the service.
 """
 
+from flask import Flask, url_for, current_app
 from flask_jwt_oidc import AuthError
 from flask_restx import Api
 
@@ -16,6 +17,13 @@ from .tenant import API as TENANT_API
 from .application_history import API as APPLICATION_HISTORY_API
 
 
+class CustomApi(Api):
+    @property
+    def specs_url(self):
+        """Monkey patch for HTTPS"""
+        self_api_base = current_app.config.get('WEB_API_BASE_URL')
+        return url_for(self.endpoint('specs'), _external=True, _scheme=self_api_base.partition(':')[0])
+
 # This will add the Authorize button to the swagger docs
 # oauth2 & openid may not yet be supported by restplus
 AUTHORIZATIONS = {
@@ -26,7 +34,7 @@ AUTHORIZATIONS = {
     }
 }
 
-API = Api(
+API = CustomApi(
     title='FORMIO API',
     version='1.0',
     description='The API for FORMIO',

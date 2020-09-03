@@ -40,7 +40,7 @@ public class NotifyListener implements TaskListener, IMessageEvent {
         String toAddress = CollectionUtils.isNotEmpty(toEmails) ? StringUtils.join(toEmails,",") : null;
         if(StringUtils.isNotEmpty(toAddress)) {
             Map<String, Object> emailAttributes = new HashMap<>();
-            emailAttributes.put("to", toAddress);
+            emailAttributes.put("email_to", toAddress);
             emailAttributes.put("category", getCategory(delegateTask));
             emailAttributes.put("name",getDefaultAddresseName());
             emailAttributes.put("taskid",taskId);

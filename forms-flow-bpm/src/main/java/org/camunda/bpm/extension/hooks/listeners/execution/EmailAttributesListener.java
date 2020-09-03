@@ -30,13 +30,10 @@ public class EmailAttributesListener implements ExecutionListener, IUser {
        if(CollectionUtils.isNotEmpty(emailgroup)) {
            emailto = emailto.concat(",").concat(String.join(",",emailgroup));
        }
+        tranformEmailContent(execution,dmnMap);
+        execution.setVariable("email_cc", getAddressValue(execution,dmnMap,"cc"));
         if(StringUtils.isNotBlank(emailto)) {
             execution.setVariable("email_to", emailto);
-            tranformEmailContent(execution,dmnMap);
-            execution.setVariable("email_cc", getAddressValue(execution,dmnMap,"cc"));
-            LOGGER.info("EmailAttributesListener output: "+execution.getVariables());
-        } else {
-            LOGGER.info("No valid to address found: "+execution.getProcessInstanceId());
         }
 
     }

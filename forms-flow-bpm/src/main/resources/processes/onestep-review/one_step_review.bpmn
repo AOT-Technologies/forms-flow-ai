@@ -22,22 +22,22 @@
             <camunda:string>submission_notification</camunda:string>
           </camunda:field>
         </camunda:taskListener>
-        <camunda:taskListener event="assignment">
-          <camunda:script scriptFormat="javascript">task.execution.setVariable('application_status', "In-Progress");</camunda:script>
-        </camunda:taskListener>
         <camunda:taskListener event="complete">
           <camunda:script scriptFormat="groovy">task.execution.setVariable('application_status', "Request Processed");
 task.execution.setVariable('deleteReason', "completed");</camunda:script>
         </camunda:taskListener>
-        <camunda:executionListener event="start">
-          <camunda:script scriptFormat="javascript">execution.setVariable('submission_group', "formsflow/formsflow-reviewer");</camunda:script>
-        </camunda:executionListener>
-        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="assignment" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0ociprs</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0jg4sg3</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:sequenceFlow id="SequenceFlow_0ociprs" sourceRef="StartEvent_1" targetRef="reviewer" />
+    <bpmn:sequenceFlow id="SequenceFlow_0ociprs" sourceRef="StartEvent_1" targetRef="reviewer">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('application_status', 'New');</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_0jg4sg3" sourceRef="reviewer" targetRef="Task_0zs0xmv" />
     <bpmn:endEvent id="EndEvent_03cla68">
       <bpmn:incoming>SequenceFlow_17pq3ra</bpmn:incoming>

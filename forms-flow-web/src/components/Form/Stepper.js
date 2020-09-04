@@ -8,10 +8,11 @@ import Typography from '@material-ui/core/Typography';
 import AppBar from '@material-ui/core/AppBar';  
 import Toolbar from '@material-ui/core/Toolbar';  
 import { Checkbox } from '@material-ui/core';
-import Select from 'react-dropdown-select'
-import Create from './Create.js'
-import { fetchAllBpmProcesses } from '../../apiManager/services/processServices'
-import { saveFormProcessMapper } from '../../apiManager/services/formServices'
+import Select from 'react-dropdown-select';
+import Create from './Create.js';
+import Preview from './Item/Preview.js';
+import { fetchAllBpmProcesses } from '../../apiManager/services/processServices';
+import { saveFormProcessMapper } from '../../apiManager/services/formServices';
 import { saveForm, selectError,  Errors } from 'react-formio';
 import { SUBMISSION_ACCESS } from '../../constants/constants';
 import { push } from 'connected-react-router';
@@ -24,19 +25,23 @@ class StepperPage extends Component{
 
     constructor(props){
         super(props)
-        this.state = {checked: false, activeStep: 0, workflow: null, status: null}
+        this.state = {checked: false, activeStep: 0, workflow: null, status: null, previewMode: false}
+        this.setPreviewMode = this.setPreviewMode.bind(this);
+        this.handleNext = this.handleNext.bind(this);
     }
 
    
     setActiveStep(val){
         this.setState({activeStep: val})
     }
-
+    setPreviewMode(val){
+      this.setState({previewMode: val})
+  }
     handleCheckboxChange = event =>
     this.setState({ checked: event.target.checked })
 
     getSteps() {  
-        return ['Create Form', 'Associate this form with a workflow?'];  
+        return ['Create Form', 'Associate this form with a workflow?','Preview and Conform'];  
       }  
 
     populateDropdown(){
@@ -81,7 +86,21 @@ class StepperPage extends Component{
       //code to link form to a workflow
 
     }
-
+     handleNext  ()  {  
+      this.setState(prevState =>({
+        activeStep:prevState.activeStep + 1
+        // console.log("formdata>>>>>"+data)
+        // const data = {
+        //    "formId": "5f1993f28dc3a1b73ae6b6bf",
+        //    "formName": "New RPAS Self Assessment Form",
+        //     "formRevisionNumber": "V1" ,
+        //     "processKey": this.state.workflow.value,
+        //      "processName": this.state.workflow.label,
+        //      "status": this.state.status.value,
+        //      "comments": "test 5555"
+        //      },
+    }))    
+   }; 
     setSelectedStatus(item){
       console.log(item[0].value)
       this.setState({status: item[0]})
@@ -90,11 +109,16 @@ class StepperPage extends Component{
     }
         
     getStepContent(step) {  
+      const {previewMode} = this.state;
         switch (step) {  
           case 0:  
-            return(
-              <Create></Create>
-            );
+            // return(
+              // previewMode ? <Preview/> : <Create/> ;
+              if(previewMode){
+                return <Preview handleNext={this.handleNext} />
+              }
+              return <Create setPreviewMode={this.setPreviewMode}/>    
+            break;
           case 1: 
             if(this.state.checked){
                 return(
@@ -148,26 +172,27 @@ class StepperPage extends Component{
         const steps = this.getSteps();
         
        
-        const handleNext = () => {      
-          this.setActiveStep(this.state.activeStep + 1); 
-          if(this.state.activeStep === steps.length - 1){
-            if(this.state.checked){
-              const data = {
-                "formId": "5f1993f28dc3a1b73ae6b6bf",
-                "formName": "New RPAS Self Assessment Form",
-                "formRevisionNumber": "V1" ,
-                "processKey": this.state.workflow.value,
-                "processName": this.state.workflow.label,
-                "status": this.state.status.value,
-                "comments": "test 5555"
-              };
-              this.props.onSaveFormProcessMapper(data);
-            }else{
-              console.log('do nothing for now');
-            }
+        // const handleNext = () => {      
+        //   this.setActiveStep(this.state.activeStep + 1); 
+        //   // this.props.saveForm(null);
+        //   if(this.state.activeStep === steps.length - 1){
+        //     // if(this.state.checked){
+        //     //   const data = {
+        //     //     "formId": "5f1993f28dc3a1b73ae6b6bf",
+        //     //     "formName": "New RPAS Self Assessment Form",
+        //     //     "formRevisionNumber": "V1" ,
+        //     //     "processKey": this.state.workflow.value,
+        //     //     "processName": this.state.workflow.label,
+        //     //     "status": this.state.status.value,
+        //     //     "comments": "test 5555"
+        //     //   };
+        //     //   this.props.onSaveFormProcessMapper(data);
+        //     // }else{
+        //     //   console.log('do nothing for now');
+        //     // }
           
-          } 
-        };  
+        //   } 
+        // };  
         
         const handleBack = () => {  
           this.setActiveStep(this.state.activeStep - 1);  
@@ -220,7 +245,7 @@ class StepperPage extends Component{
                       <Button  
                         variant="contained"  
                         color="primary"  
-                        onClick={handleNext}  
+                        onClick={this.handleNext}  
                       >  
                         {this.state.activeStep === steps.length - 1 ? 'Save' : 'Next'}  
                       </Button>

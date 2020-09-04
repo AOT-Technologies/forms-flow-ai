@@ -1,4 +1,4 @@
-import { httpGETRequest } from "../httpRequestHandler";
+import { httpGETRequest, httpPOSTRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import {
   setProcessStatusLoading,
@@ -46,8 +46,8 @@ export const getProcessStatusList = (processId, taskId) => {
 export const fetchAllBpmProcesses = (...rest) => {
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
-      httpGETRequest(API.GET_ALL_PROCESSES, {}, UserService.getToken(), true)
-      //httpGETRequest('http://localhost:5000/process', {}, UserService.getToken(), true)
+      //httpGETRequest(API.GET_ALL_PROCESSES, {}, UserService.getToken(), true)
+      httpGETRequest('http://localhost:5000/process', {}, UserService.getToken(), true)
       .then((res) => {
         if (res.data) {
           dispatch(setAllProcessList(res.data.process));
@@ -63,3 +63,6 @@ export const fetchAllBpmProcesses = (...rest) => {
       });
   };
 };
+
+
+

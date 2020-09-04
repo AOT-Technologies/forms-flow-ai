@@ -21,14 +21,12 @@ export const setProcessLoadError = (data) => (dispatch) => {
   });
 };
 
-<<<<<<< HEAD
 export const setAllProcessList = (data) => (dispatch) => {  
   dispatch({
     type: ACTION_CONSTANTS.PROCESS_LIST,
     payload: data,
   });
 };
-=======
 
 export const setApplicationAuditList = (data) => (dispatch) => {
   dispatch({
@@ -36,4 +34,3 @@ export const setApplicationAuditList = (data) => (dispatch) => {
     payload: data,
   });
 };
->>>>>>> 83c0f406599b442bcf81a83580af6ed3ecfe8737

@@ -1,4 +1,4 @@
-# FormsFlow.AI
+# formsflow.ai
 
 This page elaborates how to setup the overall solution using docker.
 
@@ -32,7 +32,7 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
    * Start the **form.io server** by modifying listed form.io related environment variables **(Skip this step if the pre-defined template i.e.sample.json is already imported and role IDs are mapped in this .env)**    
     (**Note: This step is required only if the installation is is done for the first time or new volume mounts**)   
        
-**FormsFlow.AI form.io Server Variables:**  
+**formsflow.ai form.io Server Variables:**  
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -56,7 +56,7 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
       * Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
  * Modify the configuration values as needed. Details below,
  
-**FormsFlow.AI Role Mapping:**
+**formsflow.ai Role Mapping:**
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -69,7 +69,7 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
 `ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the value from form.io resource **http://localhost:3001/role** 
 `USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource **http://localhost:3001/user**
 
-**FormsFlow.AI Datastore Settings:**
+**formsflow.ai Datastore Settings:**
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -78,7 +78,7 @@ Variable name | Meaning | Possible values | Default value |
 `WEB_API_POSTGRES_PASSWORD`|FormsFlow database postgres password|ditto|`changeme`
 `WEB_API_POSTGRES_DB`|FormsFlow database name||`formsflow`
 
-**FormsFlow.AI Integration Settings:**
+**formsflow.ai Integration Settings:**
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---

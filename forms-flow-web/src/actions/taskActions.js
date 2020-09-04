@@ -44,3 +44,26 @@ export const serviceActionError = (data) => dispatch => {
     })
 }
 
+
+
+export const setApplicationAuditList = (data) => (dispatch) => {
+    dispatch({
+      type: ACTION_CONSTANTS.APPLICATION_AUDIT_LIST,
+      payload: data,
+    });
+  }
+  
+  export const setApplicationHistoryList = (data) => dispatch =>{
+    dispatch({
+        type:ACTION_CONSTANTS.LIST_APPLICATION_HISTORY,
+        payload:data
+    })
+}
+
+export const setApplicationHistoryDetail = (data) => dispatch =>{
+    dispatch({
+        type:ACTION_CONSTANTS.APPLICATION_HISTORY_DETAIL,
+        payload:data
+    })
+};
+

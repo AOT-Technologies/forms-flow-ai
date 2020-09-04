@@ -36,6 +36,10 @@ services:
       - JDBC_PASSWORD=${CAMUNDA_POSTGRES_PASSWORD}
       - JDBC_DRIVER=${CAMUNDA_JDBC_DRIVER}
       - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN}
+      - FORMSFLOW_API_URL=${WEB_API_BASE_URL}
+      - FORMIO_URL=${FORMIO_DEFAULT_PROJECT_URL}
+      - FORMIO_ROOT_EMAIL=${FORMIO_ROOT_EMAIL}
+      - FORMIO_ROOT_PASSWORD=${FORMIO_ROOT_PASSWORD}
     networks:
       - forms-flow-bpm-network
  
@@ -149,6 +153,7 @@ services:
       JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENTID}
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
+      WEB_API_BASE_URL: ${WEB_API_BASE_URL}
     stdin_open: true # -i
     tty: true # -t
     networks:

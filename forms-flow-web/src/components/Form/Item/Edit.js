@@ -14,7 +14,7 @@ const Edit = props => (
           <span className="ml-3">
                         <img src="/form.svg" alt="Forms" />
                     </span>
-        <h3 className="task-head">{props.form.title} Form</h3>
+        <h3 className="task-head">{props.form.title}</h3>
       </div>
 
     <hr />
@@ -39,7 +39,7 @@ const mapDispatchToProps = (dispatch) => {
         if (!err) {
           // TODO: Display a save success message here.
           dispatch(push(`/form/${form._id}/preview`))
-        } 
+        }
       }))
     }
   }

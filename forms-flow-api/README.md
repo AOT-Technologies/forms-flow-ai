@@ -1,5 +1,5 @@
-# FormsFlow.AI Rest API 
-**FormsFlow.AI** has built this adaptive tier for correlating form management, BPM and analytics together.
+# formsflow.ai Rest API 
+**formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
 
 The goal of the REST API is to provide access to all relevant interfaces of the system.
 
@@ -45,7 +45,7 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|must be set to your Keycloak client id
 `KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret
 `KEYCLOAK_WEB_CLIENTID`|Client ID for FormsFlow to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
-`CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda/engine-rest/`
+`CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda`
 
  **Additionally, you may want to change these**  
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)

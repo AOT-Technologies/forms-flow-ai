@@ -32,8 +32,9 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(final HttpSecurity http) throws Exception {
-        http.requestMatchers().antMatchers("/engine-rest/**").
+        http.requestMatchers().antMatchers("/engine-rest/**","/engine-rest-ext/**","/engine-rest-ext/**").
                 and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/engine-rest/**").permitAll()
+                .and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/engine-rest-ext/**").permitAll()
                 .anyRequest().authenticated().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().oauth2ResourceServer()
                 .jwt().jwtAuthenticationConverter(grantedAuthoritiesExtractor());
@@ -49,7 +50,7 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
         FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
         filterRegistration.setFilter(statelessUserAuthenticationFilter);
         filterRegistration.setOrder(103); // make sure the filter is registered after the Spring Security Filter Chain
-        filterRegistration.addUrlPatterns("/engine-rest/*");
+        filterRegistration.addUrlPatterns("/engine-rest/*","/engine-rest-ext/*");
         return filterRegistration;
     }
 

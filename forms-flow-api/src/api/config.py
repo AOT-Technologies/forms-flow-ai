@@ -79,6 +79,9 @@ class _Config():  # pylint: disable=too-few-public-methods
     # BPM Camunda Details
     BPM_API_BASE = os.getenv('BPM_API_BASE')
 
+    #API Base URL (Self)
+    WEB_API_BASE_URL = os.getenv('WEB_API_BASE_URL')
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""

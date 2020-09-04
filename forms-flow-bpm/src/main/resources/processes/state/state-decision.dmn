@@ -35,6 +35,39 @@
           <text>"{'status':[{'name': 'Request Processed','value': 'Request Processed'}]}"</text>
         </outputEntry>
       </rule>
+      <rule id="DecisionRule_1g90zyq">
+        <inputEntry id="UnaryTests_0r97udh">
+          <text>"two-step-approval"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0phx1fh">
+          <text>"Clerk"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0vyoz67">
+          <text>"{'status':[{'name': 'Send to Approver/Manager','value': 'Reviewed'},{'name': 'Send Back for Update','value': 'Returned'}]}"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0rfkvoi">
+        <inputEntry id="UnaryTests_1v8il8l">
+          <text>"two-step-approval"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0jfysbe">
+          <text>"Approver"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_09396ee">
+          <text>"{'status':[{'name': 'Approve','value': 'Approved'},{'name': 'Reject','value': 'Rejected'},{'name': 'Send Back for Update','value': 'Returned'}]}"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_16c5cgz">
+        <inputEntry id="UnaryTests_03ngplk">
+          <text>"two-step-approval"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1o3tauv">
+          <text>"Client"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0g70mj9">
+          <text>"{'status':[{'name': 'Re-Submit','value': 'Re-Submitted'}]}"</text>
+        </outputEntry>
+      </rule>
     </decisionTable>
   </decision>
 </definitions>

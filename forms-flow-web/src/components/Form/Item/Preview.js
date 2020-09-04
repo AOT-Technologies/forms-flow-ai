@@ -60,7 +60,7 @@ const Preview = class extends Component {
           <span className="ml-3">
                         <img src="/form.svg" alt="Forms" />
                     </span>
-        <h3 className="task-head">{ form.title } Submission</h3>
+        <h3 className="task-head">{ form.title }</h3>
         <Button className="btn btn-primary btn-sm form-btn pull-right btn-right" onClick={()=>{dispatch(push(`/form/${form._id}/edit`))}}>
             <i className="fa fa-pencil" aria-hidden="true"></i>
             &nbsp;&nbsp;Edit Form

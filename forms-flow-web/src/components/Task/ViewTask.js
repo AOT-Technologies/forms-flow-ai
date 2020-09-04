@@ -3,14 +3,13 @@ import {Link} from "react-router-dom";
 import {Tabs, Tab} from "react-bootstrap";
 import {connect} from "react-redux";
 import {selectError, getSubmission, getForm} from "react-formio";
-
 import Details from "./Details";
 import {getTaskDetail} from "../../apiManager/services/taskServices";
 import Loading from "../../containers/Loading";
 import {setLoader} from "../../actions/taskActions";
 import View from "../Form/Item/Submission/Item/View";
-
 import {getProcessStatusList} from "../../apiManager/services/processServices";
+import History from './History';
 
 class ViewTask extends Component {
   render() {
@@ -40,9 +39,12 @@ class ViewTask extends Component {
           <Tab eventKey="form" title="Form">
             <View page="task-detail"/>
           </Tab>
-          <Tab eventKey="history" title="History" disabled>
-            <h1>History</h1>
-          </Tab>
+          <Tab eventKey="history" title="History" enabled>
+            
+          
+            <History page="task-detail"/>
+          
+           </Tab>
         </Tabs>
       </div>
     );

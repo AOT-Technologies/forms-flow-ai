@@ -47,7 +47,7 @@ export const getTaskDetail = (id, ...rest) => {
     )
       .then((res) => {
         if (res.data) {
-          const task = res.data.task[0];
+          const task = res.data.task;
           const taskVariables = taskSubmissionFormatter(task.variables);
           delete task.variables;
           let taskDetail = { ...task, ...taskVariables };

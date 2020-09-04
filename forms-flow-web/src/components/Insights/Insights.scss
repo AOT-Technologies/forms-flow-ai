@@ -1,10 +1,10 @@
 @import "./../../assets/styles/themes.scss";
 
 .insights {
-  background: #f3f3f3;
+  background: $white;
   margin-top: 40px;
   & .line-hr {
-    border-top: 1px solid $yellow;
+    border-top: 1px solid $light-blue;
   }
   & .card-counter {
     width: 100%;
@@ -28,7 +28,7 @@
   }
   & .insight-title {
     margin-bottom: -5px;
-    color: $primary-blue;
+    color: $black;
   }
 }
 .div-middle
@@ -36,5 +36,5 @@
   margin-top: 10%;
 }
 #app {
-  background: #f3f3f3;
+  background: $white;
 }

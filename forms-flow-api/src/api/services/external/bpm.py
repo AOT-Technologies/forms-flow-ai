@@ -53,22 +53,14 @@ class BPMService(BaseBPMService):
     @classmethod
     def get_all_tasks(cls, token):
         """Get all tasks."""
-        url = cls._get_url_(BPMEndpointType.History) + 'task'
+        url = cls._get_url_(BPMEndpointType.History)
         return cls.get_request(url, token)
 
     @classmethod
     def get_task(cls, task_id, token):
         """Get task."""
-        url = cls._get_url_(BPMEndpointType.History) + 'task?taskId=' + task_id
+        url = cls._get_url_(BPMEndpointType.History) + task_id
         return cls.get_request(url, token)
-
-    @classmethod
-    def get_task_variables(cls, process_instance_id, token):
-        """Get task details."""
-        url = cls._get_url_(BPMEndpointType.History) + 'variable-instance'
-        data = {}
-        data['processInstanceId'] = process_instance_id
-        return cls.post_request(url, token, data)
 
     @classmethod
     def claim_task(cls, task_id, data, token):
@@ -103,13 +95,13 @@ class BPMService(BaseBPMService):
 
         url = ''
         if endpoint_type == BPMEndpointType.ProcessDefinition:
-            url = bpm_api_base + 'process-definition/'
+            url = bpm_api_base + 'engine-rest/process-definition/'
         elif endpoint_type == BPMEndpointType.DecisionDefinition:
-            url = bpm_api_base + 'decision-definition/'
+            url = bpm_api_base + 'engine-rest/decision-definition/'
         elif endpoint_type == BPMEndpointType.History:
-            url = bpm_api_base + 'history'
+            url = bpm_api_base + 'engine-rest-ext/task'
         elif endpoint_type == BPMEndpointType.Task:
-            url = bpm_api_base + 'task'
+            url = bpm_api_base + 'engine-rest/task'
 
         if not url.endswith('/'):
             url += '/'

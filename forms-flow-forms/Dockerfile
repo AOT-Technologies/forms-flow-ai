@@ -44,6 +44,9 @@ ENV DEBUG=""
 
 COPY . /forms-flow-forms/app/
 
+RUN set -x \
+	&& chmod -R 777 /forms-flow-forms/app/
+
 # This will initialize the application based on
 # some questions to the user (login email, password, etc.)
 ENTRYPOINT [ "node", "main.js" ]

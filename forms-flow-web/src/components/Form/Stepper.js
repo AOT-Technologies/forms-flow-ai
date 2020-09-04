@@ -206,11 +206,11 @@ class StepperPage extends Component{
         
         return (  
                 <>  
-              <AppBar position="static">  
+              {/* <AppBar position="static">  
               <Toolbar style={{ 'alignContent': "center", 'alignItems': "center", "justifyContent": "center" }}>  
               Create Form Wizard   
               </Toolbar>  
-              </AppBar>  
+              </AppBar>   */}
           <div>  
             <Stepper activeStep={this.state.activeStep}>  
               {steps.map((label, index) => {   

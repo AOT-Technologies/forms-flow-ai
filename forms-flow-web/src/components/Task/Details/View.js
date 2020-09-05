@@ -11,31 +11,17 @@ import {
 } from "../../../apiManager/services/taskServices";
 
 const taskStatus = (task) => {
-  switch (task.task_status) {
-    case "Completed":
-    case "Approved":
-    case "Rejected":
+  switch (task.status) {
+    case "completed":
       return (
-        <label className="text-success font-weight-bold text-uppercase task-btn">
-          {task.task_status || "Completed"}
-        </label>
-      );
-    case "In-Progress":
-      return (
-        <label className="text-info font-weight-bold text-uppercase">
-          {task.task_status || "In-Progress"}
-        </label>
-    );
-    case "New":
-      return (
-        <label className="text-primary font-weight-bold text-uppercase task-btn">
-          {task.task_status || "New"}
+        <label className="text-success font-weight-bold text-capitalize task-btn">
+          {"Completed"}
         </label>
       );
     default:
       return (
-        <label className="text-primary font-weight-bold text-uppercase task-btn">
-          {task.task_status || "New"}
+        <label className="text-primary font-weight-bold text-capitalize task-btn">
+          {"Active"}
         </label>
       );
   }

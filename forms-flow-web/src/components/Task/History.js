@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, {useEffect} from "react";
+import { useDispatch, useSelector} from "react-redux";
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
@@ -8,7 +8,7 @@ import LoadingOverlay from "react-loading-overlay";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 import {
   fetchApplicatinAuditHistoryList
- 
+
 } from "../../apiManager/services/applicationAuditServices";
 import {
   columns_history,
@@ -17,27 +17,34 @@ import {
 } from "./historyTable";
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
-import { setUpdateLoader } from "../../actions/taskActions";
+import { setUpdateHistoryLoader } from "../../actions/taskActions";
 
-const List = class extends Component {
-  
-  UNSAFE_componentWillMount() {
-    const application_id =this.props.detail.application_id;
-    this.props.getAuditHistory(application_id);
-  }
-  render() {
-    const {
-      isLoading,
-      appHistory,
-      isTaskUpdating
-    } = this.props;
-    
-  
-    
-    if (isLoading) {
-      return <Loading />;
+const HistoryList = () => {
+  const dispatch = useDispatch();
+
+  const application_id = useSelector(state => state.tasks.taskDetail.application_id);
+  const isTaskLoading = useSelector(state => state.tasks.isTaskLoading);
+  const isHistoryListLoading = useSelector(state => state.tasks.isHistoryListLoading);
+  const appHistory = useSelector(state => state.tasks.appHistory);
+  const isLoading = useSelector(state => state.tasks.isLoading);
+
+  useEffect(()=>{
+    if(isHistoryListLoading || isTaskLoading){
+      dispatch(
+        fetchApplicatinAuditHistoryList(application_id,(err, res) => {
+          if (!err) {
+            dispatch(setUpdateHistoryLoader(false));
+          }
+        })
+      )
     }
-    const getNoDataIndicationContent = () => {
+  },[application_id, isHistoryListLoading, isTaskLoading]);
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  const getNoDataIndicationContent = () => {
       return (
         <div className="div-no-task">
           <label className="lbl-no-task"> No tasks found </label>
@@ -49,11 +56,11 @@ const List = class extends Component {
           <br />
          </div>
       );
-    };
-    return (
+  };
+  return (
         appHistory.length > 0 ? (
         <ToolkitProvider
-          keyField="id"
+          keyField="created"
           data={appHistory}
           columns={columns_history}
           search
@@ -69,14 +76,14 @@ const List = class extends Component {
               <br />
               <div>
                 <LoadingOverlay
-                  active={isTaskUpdating}
+                  active={isHistoryListLoading}
                   spinner
                   text="Loading..."
                 >
                   <BootstrapTable
-                    loading={isTaskUpdating}
+                    loading={isHistoryListLoading}
                     filter={filterFactory()}
-                    pagination={paginationFactory(getoptions(props.tasksCount))}
+                    pagination={paginationFactory(getoptions(appHistory.length))}
                     defaultSorted={defaultSortedBy}
                     {...props.baseProps}
                     noDataIndication={() => getNoDataIndicationContent()}
@@ -90,41 +97,6 @@ const List = class extends Component {
         <Nodata />
       )
     );
-  }
 };
 
-function doLoaderUpdate() {
-  return (dispatch, getState) => {
-    let isLoading = getState().tasks.isTaskUpdating;
-    if (isLoading) {
-      dispatch(fetchApplicatinAuditHistoryList());
-      dispatch(setUpdateLoader(false));
-    }
-  };
-}
-
-const mapStateToProps = (state) => {
-  return {
-    isLoading: state.tasks.isLoading,
-    appHistory: state.tasks.appHistory,
-    tasksCount: state.tasks.tasksCount,
-    userDetail: state.user.userDetail,
-    isTaskUpdating: state.tasks.isTaskUpdating,
-    detail: state.tasks.taskDetail,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-    setLoader: dispatch(doLoaderUpdate),
-    getAuditHistory: (application_id) =>
-      dispatch(
-        fetchApplicatinAuditHistoryList(application_id,(err, res) => {
-          if (!err) {
-            dispatch(setUpdateLoader(false));
-          }
-        })
-      ),
-      };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(List);
+export default HistoryList;

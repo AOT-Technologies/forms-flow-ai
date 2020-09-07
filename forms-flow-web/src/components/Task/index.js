@@ -12,7 +12,7 @@ const Task = () => {
     <div className="container" id="main">
       <Switch>
         <Route exact path="/task" component={List} />
-        <Route path="/task/:id"><ViewTask/></Route>
+        <Route path="/task/:taskId"><ViewTask/></Route>
       </Switch>
     </div>
   )

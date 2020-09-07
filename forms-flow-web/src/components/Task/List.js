@@ -134,15 +134,28 @@ const List = class extends Component {
   }
 };
 
-function doLoaderUpdate() {
-  return (dispatch, getState) => {
+const doLoaderUpdate = () => (dispatch, getState) => {
     let isLoading = getState().tasks.isTaskUpdating;
     if (isLoading) {
       dispatch(fetchTaskList());
       dispatch(setUpdateLoader(false));
     }
-  };
-  
+}
+//TODO change the below logic
+const afterFilter = (newResult, newFilters) => {
+  const globalFilterValue=document.getElementById("taskfilter").value;
+  const dropDown = document.getElementById("select-filter-column-taskStatus");
+  for (let i = 0; i <= dropDown.options.length; i++) {
+    if(dropDown.options[i]){
+      if(globalFilterValue === "Active" ){
+        if (dropDown.options[i].selected !== "Active") {
+          dropDown.options[i].style.display="none";
+        }
+      } else {
+        dropDown.options[i].style.display="block";
+      }
+    }
+  }
 }
 
 const mapStateToProps = (state) => {
@@ -205,20 +218,3 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(List);
-
-function afterFilter(newResult, newFilters) {
-var globalFilterValue=document.getElementById("taskfilter").value;
-	var dropDown = document.getElementById("select-filter-column-taskStatus");
-	for (var i = 0; i <= dropDown.options.length; i++) {
-		if(dropDown.options[i]){
-		if(globalFilterValue === "Active" ){
-			if (dropDown.options[i].selected !== "Active") {
-				dropDown.options[i].style.display="none";
-            }
-		} else {
-			dropDown.options[i].style.display="block";
-		}
-		}
-	}
-}
-

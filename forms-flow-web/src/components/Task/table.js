@@ -20,6 +20,7 @@ export const defaultSortedBy = [
 export const TaskSearch = (props) => {
   let input;
   let userName = props.user;
+
   const statusChange = () => {
 	clearFilter();
     if (input.value === "Username") {
@@ -31,8 +32,9 @@ export const TaskSearch = (props) => {
 		} else {
 		statusFilter("")
 		}
-	}
-};
+	 }
+  };
+
   return (
     <div>
       <select id="taskfilter"
@@ -282,7 +284,7 @@ export const columns = [
   //       statusFilter = filter;
   //     },
   //   }),
-  // }, 
+  // },
   // {
   //   dataField: "formName",
   //   text: "Form Name",

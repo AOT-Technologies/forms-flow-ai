@@ -7,6 +7,7 @@ const initialState = {
   taskDetail: {},
   isTaskUpdating:false,
   appHistory:[],
+  isHistoryListLoading: true
 }
 
 export default (state = initialState, action)=> {
@@ -21,6 +22,8 @@ export default (state = initialState, action)=> {
       return {...state, taskDetail: action.payload};
     case ACTION_CONSTANTS.IS_TASK_UPDATING:
     return {...state, isTaskUpdating: action.payload};
+    case ACTION_CONSTANTS.IS_HISTORY_LOADING:
+      return {...state, isHistoryListLoading: action.payload};
     case ACTION_CONSTANTS.LIST_APPLICATION_HISTORY:
       return {...state, appHistory: action.payload};
     default:

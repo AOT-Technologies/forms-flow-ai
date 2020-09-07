@@ -55,7 +55,7 @@ const View = (props) => {
           ) : (
             <p
               className="mb-0"
-              onClick={() => props.onClaim(task.id, props.userName, task.application_id)}
+              onClick={() => props.onClaim(task.id, props.userName)}
             >
               Assign to me
             </p>
@@ -82,6 +82,11 @@ const View = (props) => {
         <td className="border-0">Applicant</td>
         <td className="border-0">:</td>
         <td className="border-0">{task.submitter_name || "---"}</td>
+      </tr>
+      <tr>
+        <td className="border-0">Application Status</td>
+        <td className="border-0">:</td>
+        <td className="border-0">{task.application_status || "---"}</td>
       </tr>
       <tr>
         <td className="border-0">Submitted On</td>
@@ -114,7 +119,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    onClaim: (id, userName, applicationId) => {
+    onClaim: (id, userName) => {
       dispatch(setUpdateLoader(true));
       dispatch(
         claimTask(id, userName, (err, res) => {

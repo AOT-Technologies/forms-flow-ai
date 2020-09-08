@@ -2,6 +2,7 @@
 
 from enum import IntEnum
 
+import logging
 from flask import current_app
 
 from .base_bpm import BaseBPMService
@@ -15,6 +16,7 @@ class BPMEndpointType(IntEnum):
     Task = 3
     History = 4
     TaskVariables = 5
+    ProcessDefinitionXML = 6
 
 
 class BPMService(BaseBPMService):
@@ -31,6 +33,13 @@ class BPMService(BaseBPMService):
         """Get process details."""
         url = cls._get_url_(BPMEndpointType.ProcessDefinition) + process_key
         return cls.get_request(url, token)
+
+    @classmethod
+    def get_process_definition_xml(cls, process_id, token):
+        """Get process details XML."""
+        url = cls._get_url_(BPMEndpointType.ProcessDefinition) + process_id + '/xml'
+        logging.log(logging.DEBUG, 'process def url>>'+url)
+        return cls.get_request(url, token)    
 
     @classmethod
     def get_process_actions(cls, process_key, token):
@@ -102,6 +111,8 @@ class BPMService(BaseBPMService):
             url = bpm_api_base + 'engine-rest-ext/task'
         elif endpoint_type == BPMEndpointType.Task:
             url = bpm_api_base + 'engine-rest/task'
+        elif endpoint_type == BPMEndpointType.ProcessDefinitionXML:
+            url = bpm_api_base + 'engine-rest/process-definition/'    
 
         if not url.endswith('/'):
             url += '/'

@@ -4,6 +4,6 @@ from .aggregated_application import AggregatedApplicationReqSchema, AggregatedAp
 from .application import ApplicationSchema, ApplicationListReqSchema, ApplicationUpdateSchema
 from .application_audit import ApplicationAuditSchema, ApplicationAuditReqSchema
 from .form_process_mapper import FormProcessMapperSchema
-from .process import ProcessListSchema, ProcessDefinitionSchema, ProcessActionListSchema
+from .process import ProcessListSchema, ProcessDefinitionSchema, ProcessActionListSchema,ProcessDefinitionXMLSchema
 from .task import TaskSchema, TaskVariableSchema
 from .tenant import TenantSchema

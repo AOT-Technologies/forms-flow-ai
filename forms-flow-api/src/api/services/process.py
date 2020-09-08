@@ -5,7 +5,7 @@ import logging
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
-from ..schemas import ProcessActionListSchema, ProcessDefinitionSchema, ProcessListSchema
+from ..schemas import ProcessActionListSchema, ProcessDefinitionSchema, ProcessListSchema,ProcessDefinitionXMLSchema
 from .external import BPMService
 
 
@@ -21,12 +21,22 @@ class ProcessService():
             return ProcessListSchema().dump(process,many=True)
         raise BusinessException('Invalid Request', HTTPStatus.BAD_REQUEST)
 
-    @staticmethod
+    @staticmethod   
     def get_process(process_key, token):
         """Get process details."""
         process_details = BPMService.get_process_details(process_key, token)
         if process_details:
             return ProcessDefinitionSchema().dump(process_details)
+
+        raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
+
+    @staticmethod 
+    def get_process_definition_xml(process_id, token):
+        """Get process details."""
+        logging.log(logging.INFO, process_id)
+        process_definition_xml = BPMService.get_process_definition_xml(process_id, token)
+        if process_definition_xml:
+            return ProcessDefinitionXMLSchema().dump(process_definition_xml)
 
         raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
 

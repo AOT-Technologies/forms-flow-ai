@@ -31,7 +31,7 @@ class StepperPage extends Component {
     super(props);
     this.state = {
       checked: false,
-      activeStep: 0,
+      activeStep: 2,
       workflow: null,
       status: null,
       previewMode: false,
@@ -109,11 +109,11 @@ class StepperPage extends Component {
     return statusDropdown(statusList);
   }
 
-  associateToWorkFlow(item) {
+  associateToWorkFlow = (item) => {
     console.log(item[0].value);
     this.setState({ workflow: item[0] });
     //code to link form to a workflow
-  }
+  };
   handleEdit() {
     this.setState((editState) => ({
       activeStep: editState.activeStep + 1,
@@ -144,7 +144,7 @@ class StepperPage extends Component {
   }
 
   getStepContent(step) {
-    const { previewMode, processData } = this.state;
+    const { previewMode, processData, activeStep } = this.state;
     const { editMode } = this.state;
 
     switch (step) {
@@ -171,7 +171,7 @@ class StepperPage extends Component {
             associateToWorkFlow={this.associateToWorkFlow}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
-            activeStep={this.activeStep}
+            activeStep={activeStep}
             steps={this.getSteps().length}
           />
         );
@@ -183,7 +183,7 @@ class StepperPage extends Component {
             populateStatusDropdown={this.populateStatusDropdown}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
-            activeStep={this.activeStep}
+            activeStep={activeStep}
             steps={this.getSteps().length}
             processData={processData}
             setProcessData={this.setProcessData}

@@ -22,6 +22,8 @@ const Preview = (props) => {
     // handleAnonymous,
     setProcessData,
   } = props;
+  console.log("steps", steps);
+  console.log("activeStep", activeStep);
 
   return (
     <Grid

@@ -11,6 +11,8 @@ import { Checkbox } from '@material-ui/core';
 import Select from 'react-dropdown-select';
 import Create from './Create.js';
 import Preview from './Item/Preview.js';
+// for edit
+import Edit from './Item/Edit.js';
 import { fetchAllBpmProcesses } from '../../apiManager/services/processServices';
 import { saveFormProcessMapper } from '../../apiManager/services/formServices';
 import { saveForm, selectError,  Errors } from 'react-formio';
@@ -25,9 +27,11 @@ class StepperPage extends Component{
 
     constructor(props){
         super(props)
-        this.state = {checked: false, activeStep: 0, workflow: null, status: null, previewMode: false}
+        this.state = {checked: false, activeStep: 0, workflow: null, status: null, previewMode: false, editMode: false}
         this.setPreviewMode = this.setPreviewMode.bind(this);
         this.handleNext = this.handleNext.bind(this);
+        // for edit
+        this.setEditMode = this.setEditMode.bind(this);
     }
 
    
@@ -37,6 +41,9 @@ class StepperPage extends Component{
     setPreviewMode(val){
       this.setState({previewMode: val})
   }
+  setEditMode(val){
+    this.setState({editMode: val})
+}
     handleCheckboxChange = event =>
     this.setState({ checked: event.target.checked })
 
@@ -86,6 +93,11 @@ class StepperPage extends Component{
       //code to link form to a workflow
 
     }
+    handleEdit  ()  {  
+      this.setState(editState =>({
+        activeStep:editState.activeStep + 1
+        }))    
+   };
      handleNext  ()  {  
       this.setState(prevState =>({
         activeStep:prevState.activeStep + 1
@@ -110,6 +122,7 @@ class StepperPage extends Component{
         
     getStepContent(step) {  
       const {previewMode} = this.state;
+      const {editMode} = this.state;
         switch (step) {  
           case 0:  
             // return(
@@ -118,7 +131,13 @@ class StepperPage extends Component{
                 return <Preview handleNext={this.handleNext} />
               }
               return <Create setPreviewMode={this.setPreviewMode}/>    
-            break;
+            
+          // else if(editMode){
+          //     return <Edit handleNext={this.handleEdit} />
+          //   }
+          //   return <Create setEditMode={this.setEditMode}/>  
+            
+          break;
           case 1: 
             if(this.state.checked){
                 return(
@@ -139,7 +158,11 @@ class StepperPage extends Component{
                       <div>
                         <h5>Status</h5>
                         <Select options={this.populateStatusDropdown()} onChange={(item) => this.setSelectedStatus(item)}/>
-                      </div>
+                      </div><br></br>
+                      <div>
+                      <h5>Comments</h5>
+                        {/* <Select options={this.populateStatusDropdown()} onChange={(item) => this.setSelectedStatus(item)}/> */}
+                        <textarea type="submit" value={this.state.value}/></div>
                     </div> 
               )
             }  

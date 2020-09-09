@@ -93,19 +93,23 @@ class StepperPage extends Component {
   }
 
   populateStatusDropdown() {
-    const statusList = ["Active", "Inactive"];
+    const list = [
+      { label: "Active", value: "Active" },
+      { label: "Inactive", value: "Inactive" },
+    ];
+    return list;
+    // const statusList = ["Active", "Inactive"];
+    // const statusDropdown = (statusList) => {
+    //   const data = statusList.map((status) => {
+    //     return {
+    //       label: status,
+    //       value: status,
+    //     };
+    //   });
+    //   return data;
+    // };
 
-    const statusDropdown = (statusList) => {
-      const data = statusList.map((status) => {
-        return {
-          label: status,
-          value: status,
-        };
-      });
-      return data;
-    };
-
-    return statusDropdown(statusList);
+    // return statusDropdown(statusList);
   }
 
   associateToWorkFlow = (item) => {

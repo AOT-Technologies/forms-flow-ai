@@ -153,7 +153,7 @@ class StepperPage extends Component {
     const data = {
       formId: form.id,
       formName: form.form && form.form.name,
-      formRevisionNumber: "V1",
+      formRevisionNumber: "V1", // to do
       processKey: workflow && workflow.value,
       processName: workflow && workflow.label,
       status: processData.status,

@@ -21,9 +21,9 @@ const Preview = (props) => {
     processData,
     // handleAnonymous,
     setProcessData,
+    workflow,
+    formData,
   } = props;
-  console.log("steps", steps);
-  console.log("activeStep", activeStep);
 
   return (
     <Grid
@@ -49,10 +49,10 @@ const Preview = (props) => {
           <CardContent>
             <form noValidate autoComplete="off">
               <Typography variant="h5" component="h2">
-                From Name
+                {formData && formData.form && formData.form.name}
               </Typography>
               <Typography variant="h5" component="h2">
-                Process Name
+                {workflow && workflow.label}
               </Typography>
               <div>
                 <label>

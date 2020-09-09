@@ -15,11 +15,12 @@ import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import { saveFormProcessMapper } from "../../apiManager/services/formServices";
-import { saveForm, selectError, Errors } from "react-formio";
+import { selectRoot, saveForm, selectError, Errors } from "react-formio";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
+
 import "./stepper.scss";
 
 class StepperPage extends Component {
@@ -31,7 +32,7 @@ class StepperPage extends Component {
     super(props);
     this.state = {
       checked: false,
-      activeStep: 0,
+      activeStep: 2,
       workflow: null,
       status: null,
       previewMode: false,
@@ -144,8 +145,9 @@ class StepperPage extends Component {
   }
 
   getStepContent(step) {
-    const { previewMode, processData, activeStep } = this.state;
+    const { previewMode, processData, activeStep, workflow } = this.state;
     const { editMode } = this.state;
+    const { form } = this.props;
 
     switch (step) {
       case 0:
@@ -187,6 +189,8 @@ class StepperPage extends Component {
             steps={this.getSteps().length}
             processData={processData}
             setProcessData={this.setProcessData}
+            formData={form}
+            workflow={workflow}
           />
         );
       default:
@@ -312,7 +316,7 @@ class StepperPage extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    form: { display: "form" },
+    form: selectRoot("form", state),
     saveText: "Next",
     errors: selectError("form", state),
     processList: state.process.processList,

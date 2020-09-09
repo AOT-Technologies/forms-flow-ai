@@ -10,6 +10,7 @@ import {
 } from "@material-ui/core";
 import Select from "react-dropdown-select";
 import SaveNext from "./SaveNext";
+import ProcessDiagram from "../../BPMN/ProcessDiagram";
 
 const WorkFlow = (props) => {
   const {
@@ -22,6 +23,18 @@ const WorkFlow = (props) => {
     activeStep,
     steps,
   } = props;
+
+  function onShown() {
+    console.log('diagram shown');
+  }
+
+  function onLoading() {
+    console.log('diagram loading');
+  }
+
+  function onError(err) {
+    console.log('failed to show diagram');
+  }
 
   return (
     <Grid container direction="row" justify="flex-start" alignItems="baseline">
@@ -71,6 +84,13 @@ const WorkFlow = (props) => {
                 <Select
                   options={populateDropdown()}
                   onChange={(item) => associateToWorkFlow(item)}
+                />
+                <ProcessDiagram
+                // http://localhost:5000/process/key/EmailNotification/xml
+                  url="/public/diagram.bpmn"
+                  onShown={ onShown }
+                  onLoading={ onLoading }
+                  onError={ onError }
                 />
               </Grid>
             )}

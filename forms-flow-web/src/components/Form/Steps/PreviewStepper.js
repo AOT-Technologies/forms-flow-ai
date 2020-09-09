@@ -23,6 +23,7 @@ const Preview = (props) => {
     setProcessData,
     workflow,
     formData,
+    submitData,
   } = props;
 
   return (
@@ -42,6 +43,8 @@ const Preview = (props) => {
           handleNext={handleNext}
           activeStep={activeStep}
           steps={steps}
+          submitData={submitData}
+          isLastStep={true}
         />
       </Grid>
       <Grid item sm={8} xs={12} spacing={3}>
@@ -49,10 +52,15 @@ const Preview = (props) => {
           <CardContent>
             <form noValidate autoComplete="off">
               <Typography variant="h5" component="h2">
-                {formData && formData.form && formData.form.name}
+                {formData &&
+                  formData.form &&
+                  formData.form.name &&
+                  "Form Name : " + formData.form.name}
               </Typography>
               <Typography variant="h5" component="h2">
-                {workflow && workflow.label}
+                {workflow &&
+                  workflow.label &&
+                  "Process Name: " + workflow.label}
               </Typography>
               <div>
                 <label>

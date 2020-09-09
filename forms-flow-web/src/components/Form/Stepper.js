@@ -5,14 +5,11 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-import { Checkbox, Grid, Paper } from "@material-ui/core";
-import Select from "react-dropdown-select";
+import { Grid, Paper } from "@material-ui/core";
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
+
 // for edit
-import Edit from "./Item/Edit.js";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import { saveFormProcessMapper } from "../../apiManager/services/formServices";
 import { selectRoot, saveForm, selectError, Errors } from "react-formio";
@@ -31,7 +28,7 @@ class StepperPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      checked: false,
+      // checked: false,
       activeStep: 0,
       workflow: null,
       status: null,
@@ -62,6 +59,7 @@ class StepperPage extends Component {
   changeWorkFlowStatus = (e) => {
     this.setState({ associateWorkFlow: e.target.value });
   };
+
   setProcessData = (data) => {
     this.setState((prevState) => ({
       processData: { ...prevState.processData, ...data },
@@ -144,9 +142,25 @@ class StepperPage extends Component {
     this.setActiveStep(this.state.activeStep - 1);
   }
 
+  submitData = () => {
+    const { form, onSaveFormProcessMapper } = this.props;
+    const { workflow, processData } = this.state;
+    // if (associateWorkFlow === "yes") {
+    const data = {
+      formId: form.id,
+      formName: form.form && form.form.name,
+      formRevisionNumber: "V1",
+      processKey: workflow && workflow.value,
+      processName: workflow && workflow.label,
+      status: processData.status,
+      comments: processData.comments,
+    };
+    onSaveFormProcessMapper(data);
+  };
+
   getStepContent(step) {
     const { previewMode, processData, activeStep, workflow } = this.state;
-    const { editMode } = this.state;
+    // const { editMode } = this.state;
     const { form } = this.props;
 
     switch (step) {
@@ -191,6 +205,7 @@ class StepperPage extends Component {
             setProcessData={this.setProcessData}
             formData={form}
             workflow={workflow}
+            submitData={this.submitData}
           />
         );
       default:

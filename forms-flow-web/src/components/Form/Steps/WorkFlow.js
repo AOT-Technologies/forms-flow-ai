@@ -39,7 +39,7 @@ const WorkFlow = (props) => {
         />
       </Grid>
       <Grid item sm={8} xs={12} spacing={3}>
-        <Card variant="outlined">
+        <Card variant="outlined" className="card-overflow">
           <CardContent>
             <Grid item sm={8} xs={12} spacing={3}>
               <FormLabel component="legend">

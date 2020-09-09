@@ -32,7 +32,7 @@ class StepperPage extends Component {
     super(props);
     this.state = {
       checked: false,
-      activeStep: 2,
+      activeStep: 0,
       workflow: null,
       status: null,
       previewMode: false,

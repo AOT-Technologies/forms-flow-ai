@@ -18,15 +18,12 @@ class ProcessService():
         process = BPMService.get_all_process(token)
         if process:
             result = ProcessListSchema().dump(process, many=True)
-            logging.info(result)
             seen = set()
             new_result = []
             for data in result:
-                for d in data:
-                    t = tuple(d.items())
-                    if t not in seen:
-                        seen.add(t)
-                        new_result.append(d)
+                if data['key'] not in seen:
+                    seen.add(data['key'])
+                    new_result.append(data)
             return new_result
 
         return process

@@ -9,8 +9,7 @@ export const saveFormProcessMapper = (data, ...rest) => {
  
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpPOSTRequest('http://localhost:5000/form', data)
-    //httpPOSTRequest(`${API.FORM}`, data)
+      httpPOSTRequest(`${API.FORM}`, data)
       .then((res) => {
         // if (res.status === 200) {
         //TODO REMOVE

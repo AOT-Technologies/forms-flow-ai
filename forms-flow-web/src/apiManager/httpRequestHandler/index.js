@@ -5,7 +5,6 @@ import UserService from "../../services/UserService";
 // const qs = require("querystring");
 
 export const httpGETRequest = (url, data, token, isBearer=true) => {
-  console.log("user token >>>", token);
   return axios.get(url, {
     params: data,
     headers: { Authorization: isBearer ?`Bearer ${ token || UserService.getToken()}`: token },

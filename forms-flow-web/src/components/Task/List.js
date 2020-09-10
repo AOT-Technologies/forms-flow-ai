@@ -44,7 +44,7 @@ const List = class extends Component {
             applicationId: task.application_id || "--", //to do update to application/submission id
             taskTitle: task.name,
             // taskStatus: task.deleteReason === "completed" ? 'Completed' : task.assignee ? "In-Progress" : "New",//todo update ,
-            taskStatus: task.task_status,
+            taskStatus: task.status === "completed" ? 'Completed' : "Active",
             taskAssignee: task.assignee,
             submittedBy: task.submitter_name || "---",
             submissionDate: moment(task.submission_date).format(
@@ -115,7 +115,7 @@ const List = class extends Component {
                 >
                   <BootstrapTable
                     loading={isTaskUpdating}
-                    filter={filterFactory()}
+                    filter={filterFactory({ afterFilter })}
                     pagination={paginationFactory(getoptions(props.tasksCount))}
                     defaultSorted={defaultSortedBy}
                     {...props.baseProps}
@@ -134,14 +134,28 @@ const List = class extends Component {
   }
 };
 
-function doLoaderUpdate() {
-  return (dispatch, getState) => {
+const doLoaderUpdate = () => (dispatch, getState) => {
     let isLoading = getState().tasks.isTaskUpdating;
     if (isLoading) {
       dispatch(fetchTaskList());
       dispatch(setUpdateLoader(false));
     }
-  };
+}
+//TODO change the below logic
+const afterFilter = (newResult, newFilters) => {
+  const globalFilterValue=document.getElementById("taskfilter").value;
+  const dropDown = document.getElementById("select-filter-column-taskStatus");
+  for (let i = 0; i <= dropDown.options.length; i++) {
+    if(dropDown.options[i]){
+      if(globalFilterValue === "Active" ){
+        if (dropDown.options[i].selected !== "Active") {
+          dropDown.options[i].style.display="none";
+        }
+      } else {
+        dropDown.options[i].style.display="block";
+      }
+    }
+  }
 }
 
 const mapStateToProps = (state) => {

@@ -55,8 +55,11 @@ const List = class extends Component {
   getOperations(userRoles) {
     let operations = [];
     //TODO MOVE userROles and staff_designer to constants
-    if(userRoles.includes(STAFF_REVIEWER)||userRoles.includes(CLIENT)){
+    if(userRoles.includes(CLIENT)){
       operations.push(OPERATIONS.insert,OPERATIONS.submission);
+    }
+    if(userRoles.includes(STAFF_REVIEWER)){
+      operations.push(OPERATIONS.submission);
     }
     if(userRoles.includes(STAFF_DESIGNER)){
       operations.push(OPERATIONS.viewForm, OPERATIONS.edit, OPERATIONS.delete);

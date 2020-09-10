@@ -11,31 +11,17 @@ import {
 } from "../../../apiManager/services/taskServices";
 
 const taskStatus = (task) => {
-  switch (task.task_status) {
-    case "Completed":
-    case "Approved":
-    case "Rejected":
+  switch (task.status) {
+    case "completed":
       return (
-        <label className="text-success font-weight-bold text-uppercase task-btn">
-          {task.task_status || "Completed"}
-        </label>
-      );
-    case "In-Progress":
-      return (
-        <label className="text-info font-weight-bold text-uppercase">
-          {task.task_status || "In-Progress"}
-        </label>
-    );
-    case "New":
-      return (
-        <label className="text-primary font-weight-bold text-uppercase task-btn">
-          {task.task_status || "New"}
+        <label className="text-success font-weight-bold text-capitalize task-btn">
+          {"Completed"}
         </label>
       );
     default:
       return (
-        <label className="text-primary font-weight-bold text-uppercase task-btn">
-          {task.task_status || "New"}
+        <label className="text-primary font-weight-bold text-capitalize task-btn">
+          {"Active"}
         </label>
       );
   }
@@ -69,7 +55,7 @@ const View = (props) => {
           ) : (
             <p
               className="mb-0"
-              onClick={() => props.onClaim(task.id, props.userName, task.application_id)}
+              onClick={() => props.onClaim(task.id, props.userName)}
             >
               Assign to me
             </p>
@@ -96,6 +82,11 @@ const View = (props) => {
         <td className="border-0">Applicant</td>
         <td className="border-0">:</td>
         <td className="border-0">{task.submitter_name || "---"}</td>
+      </tr>
+      <tr>
+        <td className="border-0">Application Status</td>
+        <td className="border-0">:</td>
+        <td className="border-0">{task.application_status || "---"}</td>
       </tr>
       <tr>
         <td className="border-0">Submitted On</td>
@@ -128,7 +119,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    onClaim: (id, userName, applicationId) => {
+    onClaim: (id, userName) => {
       dispatch(setUpdateLoader(true));
       dispatch(
         claimTask(id, userName, (err, res) => {

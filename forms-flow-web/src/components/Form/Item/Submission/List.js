@@ -5,7 +5,7 @@ import { push } from 'connected-react-router';
 import { getSubmissions, selectRoot, selectError, SubmissionGrid, Errors, deleteSubmission } from 'react-formio';
 
 import Loading from '../../../../containers/Loading';
-import { OPERATIONS, CLIENT } from '../../../../constants/constants';
+import {OPERATIONS, CLIENT, STAFF_REVIEWER} from '../../../../constants/constants';
 import Confirm from '../../../../containers/Confirm';
 import {setFormSubmissionDeleteStatus} from '../../../../actions/formActions'
 
@@ -19,7 +19,7 @@ const List = class extends Component {
     let operations = []
     if(userRoles.includes(CLIENT)){
       operations.push(OPERATIONS.view, OPERATIONS.editSubmission)
-    }else{
+    }else if(userRoles.includes(STAFF_REVIEWER)){
       operations.push(OPERATIONS.view, OPERATIONS.editSubmission, OPERATIONS.deleteSubmission)
     }
     return operations;
@@ -57,7 +57,7 @@ const List = class extends Component {
             <i className='fa fa-plus' aria-hidden='true'/> New Submisssion
         </Link>
         </div>
-        
+
         <section className="custom-grid">
           <Errors errors={errors} />
           <SubmissionGrid
@@ -116,7 +116,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           const submissionDetails={modalOpen:false,submissionId:"",formId:""}
           dispatch(setFormSubmissionDeleteStatus(submissionDetails))
          dispatch(getSubmissions('submissions', 1, submissions.query, ownProps.match.params.formId))
-          
+
         }
       }));
     },

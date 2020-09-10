@@ -5,6 +5,7 @@ import Select from "react-select";
 import {completeTask} from "../../../apiManager/services/taskServices";
 
 import {
+  setUpdateHistoryLoader,
   setUpdateLoader
 } from "../../../actions/taskActions";
 import {
@@ -151,6 +152,7 @@ const mapDispatchToProps = (dispatch) => {
                 getTaskDetail(id, (err, res) => {
                   if (!err) {
                     dispatch(setUpdateLoader(false));
+                    dispatch(setUpdateHistoryLoader(true));
                   }
                 })
               );

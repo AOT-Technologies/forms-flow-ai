@@ -110,7 +110,7 @@ class FormResourceById(Resource):
 
 # API for getting process diagram xml -for displaying bpmn diagram in UI
 @cors_preflight('GET,OPTIONS')
-@API.route('/formId/<string:form_id>', methods=['GET', 'OPTIONS'])
+@API.route('/formid/<string:form_id>', methods=['GET', 'OPTIONS'])
 class FormResourceByFormId(Resource):
     """Resource for managing process details."""
 

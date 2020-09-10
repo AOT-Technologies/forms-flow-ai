@@ -16,14 +16,14 @@ const ViewTask = (props) => {
     const taskDetail = useSelector(state => state.tasks.taskDetail);
     const isLoading = useSelector(state => state.tasks.isLoading);
     const dispatch = useDispatch();
-
+    const {getTask} = props;
     useEffect(()=>{
       if(taskDetail && taskDetail.id === taskId){
         dispatch(setLoader(false));
       }else{
-        props.getTask(taskId);
+        getTask(taskId);
       }
-    },[taskId])
+    },[taskId, dispatch, taskDetail, getTask])
 
     if (isLoading) {
       return <Loading/>;

@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { saveForm, selectError, FormEdit, Errors } from 'react-formio';
-import { push } from 'connected-react-router';
-import CreateForm from './Create.js';
+/*import { push } from 'connected-react-router';
+import CreateForm from './Create.js';*/
 
 
 import { SUBMISSION_ACCESS } from '../../constants/constants';
@@ -28,8 +28,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch,ownProps) => {
   return {
-    saveForm: (form) => { 
-      console.log('inside save create form'); 
+    saveForm: (form) => {
+      console.log('inside save create form');
       const newForm = {
         ...form,
         tags: ['common'],

@@ -1,4 +1,4 @@
-import { httpGETRequest, httpPOSTRequest } from "../httpRequestHandler";
+import { httpGETRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import {
   setProcessStatusLoading,
@@ -40,8 +40,8 @@ export const getProcessStatusList = (processId, taskId) => {
 };
 
 /**
- * 
- * @param  {...any} rest 
+ *
+ * @param  {...any} rest
  */
 export const fetchAllBpmProcesses = (...rest) => {
   const done = rest.length ? rest[0] : () => { };

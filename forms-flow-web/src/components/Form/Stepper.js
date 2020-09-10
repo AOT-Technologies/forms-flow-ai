@@ -12,7 +12,7 @@ import Preview from "./Item/Preview.js";
 // for edit
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import { saveFormProcessMapper } from "../../apiManager/services/formServices";
-import { selectRoot, saveForm, selectError, Errors } from "react-formio";
+import { selectRoot, saveForm, selectError } from "react-formio";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
@@ -98,14 +98,14 @@ class StepperPage extends Component {
       { label: "Inactive", value: "Inactive" },
     ];
     return list;
-    
+
   }
 
   associateToWorkFlow = (item) => {
     this.setState({ workflow: item[0] });
     };
 
- 
+
   handleEdit() {
     this.setState((editState) => ({
       activeStep: editState.activeStep + 1,
@@ -153,8 +153,6 @@ class StepperPage extends Component {
           return <Preview handleNext={this.handleNext} />;
         }
         return <Create setPreviewMode={this.setPreviewMode} />;
-
-        break;
       case 1:
         return (
           <WorkFlow
@@ -192,7 +190,7 @@ class StepperPage extends Component {
   }
 
   render() {
-    const { process } = this.props;
+    // const { process } = this.props;
 
     const steps = this.getSteps();
 

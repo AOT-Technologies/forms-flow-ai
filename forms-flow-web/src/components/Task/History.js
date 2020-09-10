@@ -38,7 +38,7 @@ const HistoryList = () => {
         })
       )
     }
-  },[application_id, isHistoryListLoading, isTaskLoading]);
+  },[application_id, isHistoryListLoading, isTaskLoading, dispatch]);
 
   if (isLoading) {
     return <Loading />;

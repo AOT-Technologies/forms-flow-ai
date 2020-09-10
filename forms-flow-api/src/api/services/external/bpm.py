@@ -35,9 +35,10 @@ class BPMService(BaseBPMService):
         return cls.get_request(url, token)
 
     @classmethod
-    def get_process_definition_xml(cls, process_id, token):
+    def get_process_definition_xml(cls, process_key, token):
         """Get process details XML."""
-        url = cls._get_url_(BPMEndpointType.ProcessDefinition) + process_id + '/xml'
+        logging.log(logging.DEBUG, 'process detail xml process-key>>'+process_key)
+        url = cls._get_url_(BPMEndpointType.ProcessDefinitionXML) + process_key + '/xml'
         logging.log(logging.DEBUG, 'process def url>>'+url)
         return cls.get_request(url, token)    
 
@@ -112,7 +113,7 @@ class BPMService(BaseBPMService):
         elif endpoint_type == BPMEndpointType.Task:
             url = bpm_api_base + 'engine-rest/task'
         elif endpoint_type == BPMEndpointType.ProcessDefinitionXML:
-            url = bpm_api_base + 'engine-rest/process-definition/'    
+            url = bpm_api_base + 'engine-rest/process-definition/key/'    
 
         if not url.endswith('/'):
             url += '/'

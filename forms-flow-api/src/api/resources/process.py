@@ -47,16 +47,16 @@ class ProcessResource(Resource):
              return err.error, err.status_code
 # API for getting process diagram xml -for displaying bpmn diagram in UI
 @cors_preflight('GET,OPTIONS')
-@API.route('/<string:process_id>/xml', methods=['GET', 'OPTIONS'])
+@API.route('/<string:process_key>/xml', methods=['GET', 'OPTIONS'])
 class ProcessDefinitionResource(Resource):
     """Resource for managing process details."""
 
     @staticmethod
     @cors.crossdomain(origin='*')
-    def get(process_id):
+    def get(process_key):
         """Get process detailsXML."""
         try:
-             return ProcessService.get_process_definition_xml(process_id,request.headers["Authorization"]), HTTPStatus.OK
+             return ProcessService.get_process_definition_xml(process_key,request.headers["Authorization"]), HTTPStatus.OK
         except BusinessException as err:
              return err.error, err.status_code
 

@@ -31,10 +31,10 @@ class ProcessService():
         raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
 
     @staticmethod 
-    def get_process_definition_xml(process_id, token):
+    def get_process_definition_xml(process_key, token):
         """Get process details."""
-        logging.log(logging.INFO, process_id)
-        process_definition_xml = BPMService.get_process_definition_xml(process_id, token)
+        logging.log(logging.INFO, process_key)
+        process_definition_xml = BPMService.get_process_definition_xml(process_key, token)
         if process_definition_xml:
             return ProcessDefinitionXMLSchema().dump(process_definition_xml)
 

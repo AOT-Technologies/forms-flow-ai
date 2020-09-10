@@ -107,3 +107,18 @@ class FormResourceById(Resource):
             return 'Updated successfully', HTTPStatus.OK
         except ValidationError as mapper_err:
             return {'systemErrors': mapper_err.messages}, HTTPStatus.BAD_REQUEST
+
+# API for getting process diagram xml -for displaying bpmn diagram in UI
+@cors_preflight('GET,OPTIONS')
+@API.route('/formId/<string:form_id>', methods=['GET', 'OPTIONS'])
+class FormResourceByFormId(Resource):
+    """Resource for managing process details."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def get(form_id):
+        """Get process detailsXML."""
+        try:
+             return FormProcessMapperService.get_mapper_by_formid(form_id), HTTPStatus.OK
+        except BusinessException as err:
+             return err.error, err.status_code

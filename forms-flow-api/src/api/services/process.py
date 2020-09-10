@@ -17,7 +17,8 @@ class ProcessService():
         """Get all processes."""
         process = BPMService.get_all_process(token)
         if process:
-            result = ProcessListSchema().dump(process)
+            result = ProcessListSchema().dump(process, many=True)
+            logging.info(result)
             seen = set()
             new_result = []
             for data in result:

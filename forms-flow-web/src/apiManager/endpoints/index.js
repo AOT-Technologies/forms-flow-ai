@@ -14,7 +14,7 @@ const API = {
   PROCESS_STATE: `${WEB_BASE_URL}/process/<process_key>/task/<task_key>/state`,
   GET_APPLICATION: `${WEB_BASE_URL}/application/<application_id>`,
   GET_APPLICATION_HISTORY_API: `${WEB_BASE_URL}/application/<application_id>/history`,
-  GET_ALL_PROCESSES: `${WEB_BASE_URL}/process`,
+  PROCESSES: `${WEB_BASE_URL}/process`,
   FORM: `${WEB_BASE_URL}/form`,
 };
 

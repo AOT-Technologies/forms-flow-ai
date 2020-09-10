@@ -22,8 +22,10 @@ const WorkFlow = (props) => {
     handleBack,
     activeStep,
     steps,
+    workflow,
   } = props;
 
+ 
   function onShown() {
     console.log('diagram shown');
   }
@@ -35,6 +37,8 @@ const WorkFlow = (props) => {
   function onError(err) {
     console.log('failed to show diagram');
   }
+
+  
 
   return (
     <Grid container direction="row" justify="flex-start" alignItems="baseline">
@@ -79,80 +83,28 @@ const WorkFlow = (props) => {
             </Grid>
 
             {associateWorkFlow === "yes" && (
-              <Grid item xs={12} spacing={3}>
+              <><Grid item xs={12} spacing={3}>
                 <h5>Please select a process </h5>
                 <Select
                   options={populateDropdown()}
                   onChange={(item) => associateToWorkFlow(item)}
                 />
+              </Grid>
+              {workflow && workflow.value && (
+              <Grid item xs={12} spacing={3}>
                 <ProcessDiagram
-                // http://localhost:5000/process/key/EmailNotification/xml
-                  url="/public/diagram.bpmn"
+                  process_key={workflow && workflow.value}
                   onShown={ onShown }
                   onLoading={ onLoading }
                   onError={ onError }
                 />
-              </Grid>
+              </Grid>)}</>
             )}
-            {/* </FormControl> */}
+                       {/* </FormControl> */}
           </CardContent>
         </Card>
       </Grid>
     </Grid>
   );
-  // if (workFlow) {
-  //   return (
-  //     <div>
-  //       <div style={{ marginLeft: 320 }}>
-  //         <label>
-  //           <Checkbox checked={workFlow} onChange={handleCheckboxChange} />
-  //           <FormControlLabel
-  //             control={
-  //               <Checkbox
-  //                 checked={workFlow}
-  //                 onChange={handleCheckboxChange}
-  //                 name="Check box to associate form with a workflow"
-  //                 color="primary"
-  //               />
-  //             }
-  //             label="Check box to associate form with a workflow"
-  //           />
-  //           {/* <span>Check box to associate form with a workflow</span> */}
-  //         </label>
-  //       </div>
-  //       <br></br>
-  //       {/* <h5>Please select a process </h5>
-  //       <Select
-  //         options={this.populateDropdown()}
-  //         onChange={(item) => this.associateToWorkFlow(item)}
-  //       />
-  //       <br></br>
-  //       <div>
-  //         <h5>Status</h5>
-  //         <Select
-  //           options={this.populateStatusDropdown()}
-  //           onChange={(item) => this.setSelectedStatus(item)}
-  //         />
-  //       </div>
-  //       <br></br>
-  //       <div>
-  //         <h5>Comments</h5> */}
-  //       {/* <Select options={this.populateStatusDropdown()} onChange={(item) => this.setSelectedStatus(item)}/> */}
-  //       {/* <textarea type="submit" value={this.state.value} /> */}
-  //       {/* </div> */}
-  //     </div>
-  //   );
-  // }
-
-  // return (
-  //   <div>
-  //     <div style={{ marginLeft: 320 }}>
-  //       <label>
-  //         <Checkbox checked={workFlow} onChange={handleCheckboxChange} />
-  //         <span>Check box to associate form with a workflow</span>
-  //       </label>
-  //     </div>
-  //   </div>
-  // );
-};
+ };
 export default WorkFlow;

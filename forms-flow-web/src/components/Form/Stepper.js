@@ -29,7 +29,7 @@ class StepperPage extends Component {
     super(props);
     this.state = {
       // checked: false,
-      activeStep: 0,
+      activeStep:0,
       workflow: null,
       status: null,
       previewMode: false,
@@ -98,25 +98,14 @@ class StepperPage extends Component {
       { label: "Inactive", value: "Inactive" },
     ];
     return list;
-    // const statusList = ["Active", "Inactive"];
-    // const statusDropdown = (statusList) => {
-    //   const data = statusList.map((status) => {
-    //     return {
-    //       label: status,
-    //       value: status,
-    //     };
-    //   });
-    //   return data;
-    // };
-
-    // return statusDropdown(statusList);
+    
   }
 
   associateToWorkFlow = (item) => {
-    console.log(item[0].value);
     this.setState({ workflow: item[0] });
-    //code to link form to a workflow
-  };
+    };
+
+ 
   handleEdit() {
     this.setState((editState) => ({
       activeStep: editState.activeStep + 1,
@@ -124,21 +113,10 @@ class StepperPage extends Component {
   }
   handleNext() {
     this.setState((prevState) => ({
-      activeStep: prevState.activeStep + 1,
-      // console.log("formdata>>>>>"+data)
-      // const data = {
-      //    "formId": "5f1993f28dc3a1b73ae6b6bf",
-      //    "formName": "New RPAS Self Assessment Form",
-      //     "formRevisionNumber": "V1" ,
-      //     "processKey": this.state.workflow.value,
-      //      "processName": this.state.workflow.label,
-      //      "status": this.state.status.value,
-      //      "comments": "test 5555"
-      //      },
+      activeStep: prevState.activeStep + 1
     }));
   }
   setSelectedStatus(item) {
-    console.log(item[0].value);
     this.setState({ status: item[0] });
     //code to link form to a workflow
   }
@@ -176,11 +154,6 @@ class StepperPage extends Component {
         }
         return <Create setPreviewMode={this.setPreviewMode} />;
 
-        // else if(editMode){
-        //     return <Edit handleNext={this.handleEdit} />
-        //   }
-        //   return <Create setEditMode={this.setEditMode}/>
-
         break;
       case 1:
         return (
@@ -193,6 +166,7 @@ class StepperPage extends Component {
             handleBack={this.handleBack}
             activeStep={activeStep}
             steps={this.getSteps().length}
+            workflow={this.state.workflow}
           />
         );
       case 2:
@@ -222,28 +196,6 @@ class StepperPage extends Component {
 
     const steps = this.getSteps();
 
-    // const handleNext = () => {
-    //   this.setActiveStep(this.state.activeStep + 1);
-    //   // this.props.saveForm(null);
-    //   if(this.state.activeStep === steps.length - 1){
-    //     // if(this.state.checked){
-    //     //   const data = {
-    //     //     "formId": "5f1993f28dc3a1b73ae6b6bf",
-    //     //     "formName": "New RPAS Self Assessment Form",
-    //     //     "formRevisionNumber": "V1" ,
-    //     //     "processKey": this.state.workflow.value,
-    //     //     "processName": this.state.workflow.label,
-    //     //     "status": this.state.status.value,
-    //     //     "comments": "test 5555"
-    //     //   };
-    //     //   this.props.onSaveFormProcessMapper(data);
-    //     // }else{
-    //     //   console.log('do nothing for now');
-    //     // }
-
-    //   }
-    // };
-
     const handleReset = () => {
       this.setActiveStep(0);
     };
@@ -252,17 +204,6 @@ class StepperPage extends Component {
       <>
         <div>
           <Paper elevation={3} className="paper-root">
-            {/* <AppBar position="static">
-              <Toolbar
-                style={{
-                  alignContent: "center",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                Create Form Wizard
-              </Toolbar>
-            </AppBar> */}
             <Grid
               container
               direction="row"
@@ -295,32 +236,6 @@ class StepperPage extends Component {
                   ) : (
                     <div>
                       {this.getStepContent(this.state.activeStep)}
-                      {/* <div
-                        style={{
-                          justifyContent: "center",
-                          alignItems: "center",
-                          marginLeft: 400,
-                        }}
-                      >
-                        <div className="mt-4">
-                          <Button
-                            disabled={this.state.activeStep === 0}
-                            onClick={this.handleBack}
-                          >
-                            Back
-                          </Button>
-
-                          <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={this.handleNext}
-                          >
-                            {this.state.activeStep === steps.length - 1
-                              ? "Save"
-                              : "Next"}
-                          </Button>
-                        </div>
-                      </div> */}
                     </div>
                   )}
                 </div>

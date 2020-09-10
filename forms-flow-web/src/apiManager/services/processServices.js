@@ -46,8 +46,7 @@ export const getProcessStatusList = (processId, taskId) => {
 export const fetchAllBpmProcesses = (...rest) => {
   const done = rest.length ? rest[0] : () => { };
   return (dispatch) => {
-      //httpGETRequest(API.GET_ALL_PROCESSES, {}, UserService.getToken(), true)
-      httpGETRequest('http://localhost:5000/process', {}, UserService.getToken(), true)
+      httpGETRequest(API.PROCESSES, {}, UserService.getToken(), true)
       .then((res) => {
         if (res.data) {
           dispatch(setAllProcessList(res.data.process));

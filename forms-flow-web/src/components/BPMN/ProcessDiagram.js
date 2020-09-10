@@ -85,7 +85,7 @@ const ProcessDiagram = class extends Component {
   }
 
   fetchDiagram(process_key) {
-    const url =API.PROCESSES+process_key+'/xml';
+    const url =API.PROCESSES+'/'+process_key+'/xml';
 
     this.handleLoading();
 

@@ -53,6 +53,7 @@ class FormResource(Resource):
             dict_data = mapper_schema.load(mapper_json)
             dict_data['created_by'] = sub
 
+
             mapper = FormProcessMapperService.create_mapper(dict_data)
 
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED

@@ -21,6 +21,12 @@ export const setProcessLoadError = (data) => (dispatch) => {
   });
 };
 
+export const setAllProcessList = (data) => (dispatch) => {  
+  dispatch({
+    type: ACTION_CONSTANTS.PROCESS_LIST,
+    payload: data,
+  });
+};
 
 export const setApplicationAuditList = (data) => (dispatch) => {
   dispatch({

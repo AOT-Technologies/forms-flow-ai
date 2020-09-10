@@ -4,6 +4,7 @@ const initialState = {
   isProcessLoading: true,
   processStatusList: [],
   processLoadError: false,
+  processList: [],
 };
 
 export default (state = initialState, action) => {
@@ -14,6 +15,8 @@ export default (state = initialState, action) => {
       return { ...state, processStatusList: action.payload };
     case ACTION_CONSTANTS.IS_PROCESS_STATUS_LOAD_ERROR:
       return { ...state, processLoadError: action.payload };
+    case ACTION_CONSTANTS.PROCESS_LIST:
+      return {...state, processList: action.payload};  
     default:
       return state;
   }

@@ -1,10 +1,11 @@
 """This exposes process service."""
 
 import json
+import logging
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
-from ..schemas import ProcessActionListSchema, ProcessDefinitionSchema, ProcessListSchema
+from ..schemas import ProcessActionListSchema, ProcessDefinitionSchema, ProcessListSchema,ProcessDefinitionXMLSchema
 from .external import BPMService
 
 
@@ -15,26 +16,27 @@ class ProcessService():
     def get_all_processes(token):
         """Get all processes."""
         process = BPMService.get_all_process(token)
+        logging.log(logging.INFO, process)
         if process:
-            result = ProcessListSchema().dump(process)
-            seen = set()
-            new_result = []
-            for data in result:
-                for d in data:
-                    t = tuple(d.items())
-                    if t not in seen:
-                        seen.add(t)
-                        new_result.append(d)
-            return new_result
+            return ProcessListSchema().dump(process,many=True)
+        raise BusinessException('Invalid Request', HTTPStatus.BAD_REQUEST)
 
-        return process
-
-    @staticmethod
+    @staticmethod   
     def get_process(process_key, token):
         """Get process details."""
         process_details = BPMService.get_process_details(process_key, token)
         if process_details:
             return ProcessDefinitionSchema().dump(process_details)
+
+        raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
+
+    @staticmethod 
+    def get_process_definition_xml(process_key, token):
+        """Get process details."""
+        logging.log(logging.INFO, process_key)
+        process_definition_xml = BPMService.get_process_definition_xml(process_key, token)
+        if process_definition_xml:
+            return ProcessDefinitionXMLSchema().dump(process_definition_xml)
 
         raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
 

@@ -2,6 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { saveForm, selectError, FormEdit, Errors } from 'react-formio';
 import { push } from 'connected-react-router';
+import CreateForm from './Create.js';
+
 
 import { SUBMISSION_ACCESS } from '../../constants/constants';
 
@@ -19,14 +21,15 @@ const Create = props => {
 const mapStateToProps = (state) => {
   return {
     form: { display: 'form' },
-    saveText: 'Create Form',
+    saveText: 'Save & Preview',
     errors: selectError('form', state),
   }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch,ownProps) => {
   return {
-    saveForm: (form) => {
+    saveForm: (form) => { 
+      console.log('inside save create form'); 
       const newForm = {
         ...form,
         tags: ['common'],
@@ -34,7 +37,8 @@ const mapDispatchToProps = (dispatch) => {
       newForm.submissionAccess = SUBMISSION_ACCESS;
       dispatch(saveForm('form', newForm, (err, form) => {
         if (!err) {
-          dispatch(push(`/form/${form._id}/preview`))
+          ownProps.setPreviewMode(true);
+          // dispatch(push(`/form/${form._id}/preview`))
         }
       }))
     }

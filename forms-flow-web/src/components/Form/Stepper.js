@@ -8,11 +8,21 @@ import Typography from "@material-ui/core/Typography";
 import { Grid, Paper } from "@material-ui/core";
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
+import Edit from "./Item/Edit.js";
 
 // for edit
-import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
+import {
+  fetchAllBpmProcesses,
+  getFormProcesses,
+} from "../../apiManager/services/processServices";
 import { saveFormProcessMapper } from "../../apiManager/services/formServices";
-import { selectRoot, saveForm, selectError, Errors } from "react-formio";
+import {
+  selectRoot,
+  saveForm,
+  selectError,
+  Errors,
+  getForm,
+} from "react-formio";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
@@ -21,21 +31,24 @@ import PreviewStepper from "./Steps/PreviewStepper";
 import "./stepper.scss";
 
 class StepperPage extends Component {
-  UNSAFE_componentWillMount() {
-    this.props.getAllProcesses();
-  }
+  // UNSAFE_componentWillMount() {
+  //   this.props.getAllProcesses();
+  // }
 
   constructor(props) {
     super(props);
     this.state = {
       // checked: false,
-      activeStep:0,
+      activeStep: 0,
       workflow: null,
       status: null,
       previewMode: false,
       editMode: false,
       associateWorkFlow: "no",
       processData: { status: "", isAnonymousAllowd: false, comments: "" },
+      formId: "",
+      processList: [],
+      processListLoaded: false,
     };
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
@@ -43,6 +56,59 @@ class StepperPage extends Component {
     this.setEditMode = this.setEditMode.bind(this);
     this.populateDropdown = this.populateDropdown.bind(this);
     this.handleBack = this.handleBack.bind(this);
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let stateData = null;
+    if (
+      nextProps.match.params.formId &&
+      nextProps.match.params.formId !== prevState.formId
+    ) {
+      if (nextProps.match.params.formId !== "create") {
+        nextProps.getForm(nextProps.match.params.formId);
+        nextProps.getFormProcessesDetails(nextProps.match.params.formId);
+      }
+    }
+
+    if (!prevState.processListLoaded) {
+      stateData = {
+        ...stateData,
+        processList: nextProps.processList,
+        processListLoaded: true,
+      };
+      nextProps.getAllProcesses();
+    }
+    if (
+      nextProps.match.params.formId === "create" &&
+      nextProps.match.params.step === undefined
+    ) {
+      stateData = {
+        ...stateData,
+        editMode: false,
+        formId: "",
+        previewMode: false,
+      };
+    } else if (nextProps.match.params.step === "edit") {
+      stateData = {
+        ...stateData,
+        formId: nextProps.match.params.formId,
+        editMode: true,
+        previewMode: false,
+      };
+    } else {
+      stateData = {
+        ...stateData,
+        formId: nextProps.match.params.formId,
+        editMode: false,
+        previewMode: true,
+      };
+    }
+
+    return { ...stateData };
+
+    // else {
+    //   return { editMode: false, formId: "" };
+    // }
   }
 
   setActiveStep(val) {
@@ -94,18 +160,16 @@ class StepperPage extends Component {
 
   populateStatusDropdown() {
     const list = [
-      { label: "Active", value: "Active" },
-      { label: "Inactive", value: "Inactive" },
+      { label: "Active", value: "active" },
+      { label: "Inactive", value: "inactive" },
     ];
     return list;
-    
   }
 
   associateToWorkFlow = (item) => {
     this.setState({ workflow: item[0] });
-    };
+  };
 
- 
   handleEdit() {
     this.setState((editState) => ({
       activeStep: editState.activeStep + 1,
@@ -113,7 +177,7 @@ class StepperPage extends Component {
   }
   handleNext() {
     this.setState((prevState) => ({
-      activeStep: prevState.activeStep + 1
+      activeStep: prevState.activeStep + 1,
     }));
   }
   setSelectedStatus(item) {
@@ -141,9 +205,15 @@ class StepperPage extends Component {
   };
 
   getStepContent(step) {
-    const { previewMode, processData, activeStep, workflow } = this.state;
+    const {
+      previewMode,
+      editMode,
+      processData,
+      activeStep,
+      workflow,
+    } = this.state;
     // const { editMode } = this.state;
-    const { form } = this.props;
+    const { form, formProcessList } = this.props;
 
     switch (step) {
       case 0:
@@ -151,6 +221,14 @@ class StepperPage extends Component {
         // previewMode ? <Preview/> : <Create/> ;
         if (previewMode) {
           return <Preview handleNext={this.handleNext} />;
+        } else if (editMode) {
+          return (
+            <Edit
+              handleNext={this.handleNext}
+              {...this.props}
+              setPreviewMode={this.setPreviewMode}
+            />
+          );
         }
         return <Create setPreviewMode={this.setPreviewMode} />;
 
@@ -167,6 +245,7 @@ class StepperPage extends Component {
             activeStep={activeStep}
             steps={this.getSteps().length}
             workflow={this.state.workflow}
+            formProcessList={formProcessList}
           />
         );
       case 2:
@@ -184,6 +263,7 @@ class StepperPage extends Component {
             formData={form}
             workflow={workflow}
             submitData={this.submitData}
+            formProcessList={formProcessList}
           />
         );
       default:
@@ -234,9 +314,7 @@ class StepperPage extends Component {
                       <Button onClick={handleReset}>Reset</Button>
                     </div>
                   ) : (
-                    <div>
-                      {this.getStepContent(this.state.activeStep)}
-                    </div>
+                    <div>{this.getStepContent(this.state.activeStep)}</div>
                   )}
                 </div>
               </Grid>
@@ -254,6 +332,7 @@ const mapStateToProps = (state) => {
     saveText: "Next",
     errors: selectError("form", state),
     processList: state.process.processList,
+    formProcessList: state.process.formProcessList,
   };
 };
 
@@ -277,6 +356,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
+
     saveForm: (form) => {
       console.log("inside save stepper");
       const newForm = {
@@ -288,6 +368,16 @@ const mapDispatchToProps = (dispatch) => {
         saveForm("form", newForm, (err, form) => {
           if (!err) {
             dispatch(push(`/form/${form._id}/preview`));
+          }
+        })
+      );
+    },
+    getForm: (id) => dispatch(getForm("form", id)),
+    getFormProcessesDetails: (formId) => {
+      dispatch(
+        getFormProcesses(formId, (err, res) => {
+          if (!err) {
+            console.log(err);
           }
         })
       );

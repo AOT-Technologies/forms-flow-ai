@@ -1,8 +1,4 @@
-import {
-  INSIGHTS_BASE_API,
-  INSIGHTS_API_KEY,
-  WEB_BASE_URL,
-} from "./config";
+import { INSIGHTS_BASE_API, INSIGHTS_API_KEY, WEB_BASE_URL } from "./config";
 
 const API = {
   INSIGHTS_API_KEY: INSIGHTS_API_KEY,
@@ -16,6 +12,7 @@ const API = {
   GET_APPLICATION_HISTORY_API: `${WEB_BASE_URL}/application/<application_id>/history`,
   PROCESSES: `${WEB_BASE_URL}/process`,
   FORM: `${WEB_BASE_URL}/form`,
+  FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
 };
 
 export default API;

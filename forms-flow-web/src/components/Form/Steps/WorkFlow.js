@@ -25,20 +25,17 @@ const WorkFlow = (props) => {
     workflow,
   } = props;
 
- 
   function onShown() {
-    console.log('diagram shown');
+    console.log("diagram shown");
   }
 
   function onLoading() {
-    console.log('diagram loading');
+    console.log("diagram loading");
   }
 
   function onError(err) {
-    console.log('failed to show diagram');
+    console.log("failed to show diagram");
   }
-
-  
 
   return (
     <Grid container direction="row" justify="flex-start" alignItems="baseline">
@@ -83,28 +80,31 @@ const WorkFlow = (props) => {
             </Grid>
 
             {associateWorkFlow === "yes" && (
-              <><Grid item xs={12} spacing={3}>
-                <h5>Please select a process </h5>
-                <Select
-                  options={populateDropdown()}
-                  onChange={(item) => associateToWorkFlow(item)}
-                />
-              </Grid>
-              {workflow && workflow.value && (
-              <Grid item xs={12} spacing={3}>
-                <ProcessDiagram
-                  process_key={workflow && workflow.value}
-                  onShown={ onShown }
-                  onLoading={ onLoading }
-                  onError={ onError }
-                />
-              </Grid>)}</>
+              <>
+                <Grid item xs={12} spacing={3}>
+                  <h5>Please select a process </h5>
+                  <Select
+                    options={populateDropdown()}
+                    onChange={(item) => associateToWorkFlow(item)}
+                  />
+                </Grid>
+                {workflow && workflow.value && (
+                  <Grid item xs={12} spacing={3}>
+                    <ProcessDiagram
+                      process_key={workflow && workflow.value}
+                      onShown={onShown}
+                      onLoading={onLoading}
+                      onError={onError}
+                    />
+                  </Grid>
+                )}
+              </>
             )}
-                       {/* </FormControl> */}
+            {/* </FormControl> */}
           </CardContent>
         </Card>
       </Grid>
     </Grid>
   );
- };
+};
 export default WorkFlow;

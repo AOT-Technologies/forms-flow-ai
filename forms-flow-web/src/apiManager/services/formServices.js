@@ -1,13 +1,20 @@
-import { httpPOSTRequest } from "../httpRequestHandler";
+import { httpPOSTRequest, httpPUTRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import { serviceActionError } from "../../actions/taskActions";
 
-export const saveFormProcessMapper = (data, ...rest) => {
+export const saveFormProcessMapper = (data, update, ...rest) => {
   console.log("data inside save " + data);
 
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpPOSTRequest(`${API.FORM}`, data)
+    let request;
+
+    if (update) {
+      request = httpPUTRequest(`${API.FORM}/${data.id}`, data);
+    } else {
+      request = httpPOSTRequest(`${API.FORM}`, data);
+    }
+    request
       .then((res) => {
         // if (res.status === 200) {
         //TODO REMOVE

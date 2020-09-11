@@ -63,7 +63,7 @@ const List = class extends Component {
               to="/form/create"
               className="btn btn-primary btn-right btn-sm"
             >
-              <i className="fa fa-plus"/> Create Form
+              <i className="fa fa-plus" /> Create Form
             </Link>
           )}
         </div>
@@ -90,7 +90,7 @@ const List = class extends Component {
       operations.push(OPERATIONS.submission);
     }
     if (userRoles.includes(STAFF_DESIGNER)) {
-      operations.push(OPERATIONS.viewForm, OPERATIONS.edit, OPERATIONS.delete);
+      operations.push(OPERATIONS.viewForm, OPERATIONS.delete); //  OPERATIONS.edit,
     }
     return operations;
   }
@@ -120,9 +120,9 @@ const mapDispatchToProps = (dispatch) => {
         case "submission":
           dispatch(push(`/form/${form._id}/submission`));
           break;
-        case "edit":
-          dispatch(push(`/form/${form._id}/edit`));
-          break;
+        // case "edit":
+        //   dispatch(push(`/form/${form._id}/edit`));
+        //   break;
         case "delete":
           const formDetails = {
             modalOpen: true,
@@ -132,7 +132,7 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(setFormDeleteStatus(formDetails));
           break;
         case "viewForm":
-          dispatch(push(`/form/${form._id}/preview`));
+          dispatch(push(`/form/${form._id}/view-edit`));
           break;
         default:
       }

@@ -25,17 +25,17 @@ const WorkFlow = (props) => {
     workflow,
   } = props;
 
-  function onShown() {
-    console.log("diagram shown");
-  }
+  // function onShown() {
+  //   console.log("diagram shown");
+  // }
 
-  function onLoading() {
-    console.log("diagram loading");
-  }
+  // function onLoading() {
+  //   console.log("diagram loading");
+  // }
 
-  function onError(err) {
-    console.log("failed to show diagram");
-  }
+  // function onError(err) {
+  //   console.log("failed to show diagram");
+  // }
 
   return (
     <Grid container direction="row" justify="flex-start" alignItems="baseline">
@@ -86,15 +86,16 @@ const WorkFlow = (props) => {
                   <Select
                     options={populateDropdown()}
                     onChange={(item) => associateToWorkFlow(item)}
+                    values={workflow && workflow.value ? [workflow] : []}
                   />
                 </Grid>
                 {workflow && workflow.value && (
                   <Grid item xs={12} spacing={3}>
                     <ProcessDiagram
                       process_key={workflow && workflow.value}
-                      onShown={onShown}
-                      onLoading={onLoading}
-                      onError={onError}
+                      // onShown={onShown}
+                      // onLoading={onLoading}
+                      // onError={onError}
                     />
                   </Grid>
                 )}

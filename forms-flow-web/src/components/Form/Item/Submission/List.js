@@ -53,9 +53,9 @@ const List = class extends Component {
           <h3>
             <span className="task-head-details">Forms /</span> {form.title}
           </h3>
-          <Link className="btn btn-primary form-btn btn-right" to={`/form/${formId}`}>
+          {userRoles.includes(CLIENT) ?<Link className="btn btn-primary form-btn btn-right" to={`/form/${formId}`}>
             <i className='fa fa-plus' aria-hidden='true'/> New Submisssion
-        </Link>
+        </Link>:null}
         </div>
 
         <section className="custom-grid">

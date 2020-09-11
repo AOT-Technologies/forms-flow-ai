@@ -16,10 +16,17 @@ class ProcessService():
     def get_all_processes(token):
         """Get all processes."""
         process = BPMService.get_all_process(token)
-        logging.log(logging.INFO, process)
         if process:
-            return ProcessListSchema().dump(process,many=True)
-        raise BusinessException('Invalid Request', HTTPStatus.BAD_REQUEST)
+            result = ProcessListSchema().dump(process, many=True)
+            seen = set()
+            new_result = []
+            for data in result:
+                if data['key'] not in seen:
+                    seen.add(data['key'])
+                    new_result.append(data)
+            return new_result
+
+        return process
 
     @staticmethod   
     def get_process(process_key, token):

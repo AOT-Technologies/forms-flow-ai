@@ -20,7 +20,6 @@ import {
   selectRoot,
   saveForm,
   selectError,
-  Errors,
   getForm,
 } from "react-formio";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
@@ -231,8 +230,6 @@ class StepperPage extends Component {
           );
         }
         return <Create setPreviewMode={this.setPreviewMode} />;
-
-        break;
       case 1:
         return (
           <WorkFlow
@@ -272,7 +269,7 @@ class StepperPage extends Component {
   }
 
   render() {
-    const { process } = this.props;
+    // const { process } = this.props;
 
     const steps = this.getSteps();
 
@@ -358,7 +355,7 @@ const mapDispatchToProps = (dispatch) => {
     },
 
     saveForm: (form) => {
-      console.log("inside save stepper");
+
       const newForm = {
         ...form,
         tags: ["common"],

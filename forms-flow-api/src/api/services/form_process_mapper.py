@@ -38,6 +38,16 @@ class FormProcessMapperService():
         raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
 
     @staticmethod
+    def get_mapper_by_formid(form_id):
+        """Get form process mapper."""
+        mapper = FormProcessMapper.find_by_form_id(form_id)
+        if mapper:
+            mapper_schema = FormProcessMapperSchema()
+            return mapper_schema.dump(mapper)
+
+        raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
+
+    @staticmethod
     def create_mapper(data):
         """Create new mapper between form and process."""
         return FormProcessMapper.create_from_dict(data)

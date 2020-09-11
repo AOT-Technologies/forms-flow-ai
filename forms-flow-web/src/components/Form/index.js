@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { selectRoot } from "react-formio";
+import { selectRoot, getForm } from "react-formio";
 
 import List from "./List";
 // import Create from "./Create";
@@ -35,8 +35,13 @@ const Form = (props) => {
     <div className="container" id="main">
       <Switch>
         <Route exact path="/form" component={List} />
-        <CreateFormRoute exact path="/form/create" component={Stepper} />
-        <Route path="/form/:formId" component={Item} />
+        <CreateFormRoute
+          exact
+          path="/form/:formId?/:step?"
+          component={Stepper}
+        />
+
+        {/* <Route path="/form/:formId" component={Item} /> */}
       </Switch>
     </div>
   );

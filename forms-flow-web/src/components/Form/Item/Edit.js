@@ -37,7 +37,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     saveForm: (form) => {
       form.submissionAccess = SUBMISSION_ACCESS;
@@ -46,6 +46,7 @@ const mapDispatchToProps = (dispatch) => {
           if (!err) {
             // TODO: Display a save success message here.
             dispatch(push(`/form/${form._id}/preview`));
+            // ownProps.setPreviewMode(true);
           }
         })
       );

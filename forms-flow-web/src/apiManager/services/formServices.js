@@ -2,9 +2,7 @@ import { httpPOSTRequest, httpPUTRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import { serviceActionError } from "../../actions/taskActions";
 
-export const saveFormProcessMapper = (data, update, ...rest) => {
-  console.log("data inside save " + data);
-
+export const saveFormProcessMapper = (data, update = false, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     let request;

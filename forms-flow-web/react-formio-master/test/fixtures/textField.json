@@ -1,0 +1,30 @@
+{
+  "input": true,
+  "tableView": true,
+  "inputType": "text",
+  "inputMask": "",
+  "label": "My Textfield",
+  "key": "myTextfield",
+  "placeholder": "",
+  "prefix": "",
+  "suffix": "",
+  "multiple": false,
+  "defaultValue": "",
+  "protected": false,
+  "unique": false,
+  "persistent": true,
+  "validate": {
+    "required": false,
+    "minLength": "",
+    "maxLength": "",
+    "pattern": "",
+    "custom": "",
+    "customPrivate": false
+  },
+  "conditional": {
+    "show": null,
+    "when": null,
+    "eq": ""
+  },
+  "type": "textfield"
+}

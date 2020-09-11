@@ -16,12 +16,7 @@ import {
   getFormProcesses,
 } from "../../apiManager/services/processServices";
 import { saveFormProcessMapper } from "../../apiManager/services/formServices";
-import {
-  selectRoot,
-  saveForm,
-  selectError,
-  getForm,
-} from "react-formio";
+import { selectRoot, saveForm, selectError, getForm } from "react-formio";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
@@ -348,14 +343,14 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveFormProcessMapper(data, (err, res) => {
           if (!err) {
-            console.log(err);
+            // console.log(err);
+            dispatch(push(`/form`));
           }
         })
       );
     },
 
     saveForm: (form) => {
-
       const newForm = {
         ...form,
         tags: ["common"],

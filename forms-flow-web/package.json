@@ -43,7 +43,7 @@
     "react-date-range": "^1.0.3",
     "react-dom": "^16.12.0",
     "react-dropdown-select": "^4.4.2",
-    "react-formio": "file:react-formio-master",
+    "react-formio": "^4.3.0",
     "react-loading-overlay": "^1.0.1",
     "react-moment": "^0.9.7",
     "react-redux": "^7.1.3",

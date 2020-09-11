@@ -50,7 +50,7 @@ const ViewTask = (props) => {
           <Tab eventKey="form" title="Form">
             <View page="task-detail"/>
           </Tab>
-          <Tab eventKey="history" title="History">
+          <Tab eventKey="history" title="Application Audit">
             <History page="task-detail"/>
            </Tab>
         </Tabs>

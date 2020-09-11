@@ -1,12 +1,12 @@
 import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
-import { selectRoot, getForm } from "react-formio";
+import { selectRoot } from "react-formio";
 
 import List from "./List";
 // import Create from "./Create";
 import Stepper from "./Stepper";
-import Item from "./Item/index";
+/*import Item from "./Item/index";*/
 import { STAFF_DESIGNER } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 import { setUserAuth, setCurrentPage } from "../../actions/bpmActions";

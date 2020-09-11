@@ -54,7 +54,7 @@ const List = class extends Component {
           }
           onNo={() => onNo()}
           onYes={() => onYes(formId, forms)}
-        ></Confirm>
+        />
         <div className="main-header">
           <img src="/form.svg" width="30" height="30" alt="form" />
           <h3 className="task-head">Forms</h3>
@@ -63,7 +63,7 @@ const List = class extends Component {
               to="/form/create"
               className="btn btn-primary btn-right btn-sm"
             >
-              <i className="fa fa-plus"></i> Create Form
+              <i className="fa fa-plus"/> Create Form
             </Link>
           )}
         </div>

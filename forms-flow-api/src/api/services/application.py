@@ -47,6 +47,24 @@ class ApplicationService():
         """Get application count."""
         return Application.query.count()
 
+
+    @staticmethod
+    def get_all_applications_form_id(form_id,page_no, limit):
+        """Get all applications."""
+        if page_no:
+            page_no = int(page_no)
+        if limit:
+            limit = int(limit)
+
+        applications = Application.find_by_form_id(form_id, page_no, limit)
+        application_schema = ApplicationSchema()
+        return application_schema.dump(applications, many=True)
+
+    @staticmethod
+    def get_all_applications_form_id_count(form_id):
+        """Get application count."""
+        return Application.find_by_form_id(form_id).count
+
     @staticmethod
     def get_application(application_id):
         """Get application by id."""

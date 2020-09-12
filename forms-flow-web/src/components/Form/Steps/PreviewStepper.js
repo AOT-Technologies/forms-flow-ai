@@ -58,8 +58,8 @@ const Preview = (props) => {
               <Typography variant="h5" component="h2">
                 {formData &&
                   formData.form &&
-                  formData.form.name &&
-                  "Form Name : " + formData.form.name}
+                  formData.form.title &&
+                  "Form Name : " + formData.form.title}
               </Typography>
               <Typography variant="h5" component="h2">
                 {workflow &&

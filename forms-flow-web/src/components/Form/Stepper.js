@@ -167,7 +167,7 @@ class StepperPage extends Component {
     return [
       "Create Form",
       "Associate this form with a workflow?",
-      "Preview and Conform",
+      "Preview and Confirm",
     ];
   }
 

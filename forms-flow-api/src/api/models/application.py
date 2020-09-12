@@ -58,7 +58,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return cls.query.filter(Application.form_url.like('%'+form_id+'%')).paginate(page_no, limit, False).items
 
     @classmethod
-    def find_by_form_id(cls, form_id):
+    def find_all_by_form_id(cls, form_id):
         """Fetch all application."""
         return cls.query.filter(Application.form_url.like('%'+form_id+'%')).items
 

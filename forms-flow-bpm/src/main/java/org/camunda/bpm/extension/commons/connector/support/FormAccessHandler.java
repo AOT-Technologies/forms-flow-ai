@@ -41,7 +41,7 @@ public class FormAccessHandler implements IAccessHandler {
         headers.set("x-jwt-token", getAccessToken());
         HttpEntity<String> reqObj =
                 new HttpEntity<String>(payload, headers);
-        ResponseEntity<String> wrsp = getRestTemplate().exchange(url, method, reqObj, String.class);
+        ResponseEntity<String> wrsp = getRestTemplate().exchange(getDecoratedServerUrl(url), method, reqObj, String.class);
         LOGGER.info("Response code for service invocation: " + wrsp.getStatusCode());
         return wrsp;
     }
@@ -68,6 +68,10 @@ public class FormAccessHandler implements IAccessHandler {
             LOGGER.log(Level.SEVERE,"Exception occured in getting x-jwt-token", e);
         }
             return null;
+    }
+
+    private String getDecoratedServerUrl(String url) {
+        return integrationCredentialProperties.getProperty("formio.url")+"/form/"+StringUtils.substringAfter(url,"/form/");
     }
 
 }

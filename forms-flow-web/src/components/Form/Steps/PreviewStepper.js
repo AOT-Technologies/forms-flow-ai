@@ -81,7 +81,7 @@ const Preview = (props) => {
                         color="primary"
                       />
                     }
-                    label="Annonymous"
+                    label="Anonymous"
                   />
                   {/* <span>Check box to associate form with a workflow</span> */}
                 </label>

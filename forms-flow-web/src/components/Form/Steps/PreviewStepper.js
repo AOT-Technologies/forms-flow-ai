@@ -13,7 +13,7 @@ import SaveNext from "./SaveNext";
 
 const Preview = (props) => {
   const {
-    populateStatusDropdown,
+    statusList,
     handleNext,
     handleBack,
     activeStep,
@@ -25,6 +25,10 @@ const Preview = (props) => {
     formData,
     submitData,
   } = props;
+
+  const selctedStatus = statusList.find(
+    (status) => status.value === processData.status
+  );
 
   return (
     <Grid
@@ -84,12 +88,13 @@ const Preview = (props) => {
               </div>
               <label className="text-label">Status</label>
               <Select
-                options={populateStatusDropdown()}
+                options={statusList}
                 onChange={(item) =>
                   setProcessData({
                     status: item[0].value,
                   })
                 }
+                values={selctedStatus ? [selctedStatus] : []}
               />
 
               {/* <label>Comments</label> */}

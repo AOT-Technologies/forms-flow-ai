@@ -63,7 +63,7 @@ class ApplicationService():
     @staticmethod
     def get_all_applications_form_id_count(form_id):
         """Get application count."""
-        return Application.find_all_by_form_id(form_id).count
+        return Application.find_all_by_form_id_count(form_id)
 
     @staticmethod
     def get_application(application_id):

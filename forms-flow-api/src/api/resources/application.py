@@ -104,7 +104,7 @@ class ApplicationResourceByFormId(Resource):
         limit = dict_data['limit']
         return jsonify({
             'applications': ApplicationService.get_all_applications_form_id(form_id,page_no, limit),
-            'totalCount': ApplicationService.get_all_applications_form_id_count(),
+            'totalCount': ApplicationService.get_all_applications_form_id_count(form_id),
             'limit': limit,
             'pageNo': page_no
         }), HTTPStatus.OK

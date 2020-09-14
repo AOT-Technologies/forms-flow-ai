@@ -24,10 +24,10 @@ import PreviewStepper from "./Steps/PreviewStepper";
 
 import "./stepper.scss";
 
-const statusList = [
+/*const statusList = [
   { label: "Active", value: "active" },
   { label: "Inactive", value: "inactive" },
-];
+];*/
 
 class StepperPage extends Component {
   // UNSAFE_componentWillMount() {
@@ -165,7 +165,7 @@ class StepperPage extends Component {
 
   getSteps() {
     return [
-      "Create Form",
+      "Design Form",
       "Associate this form with a workflow?",
       "Preview and Confirm",
     ];
@@ -286,7 +286,6 @@ class StepperPage extends Component {
           <PreviewStepper
             associateWorkFlow={this.state.associateWorkFlow}
             setSelectedStatus={this.setSelectedStatus}
-            statusList={statusList}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
             activeStep={activeStep}

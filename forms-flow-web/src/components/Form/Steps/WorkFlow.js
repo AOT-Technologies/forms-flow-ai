@@ -41,9 +41,7 @@ const WorkFlow = (props) => {
     <Grid container direction="row" justify="flex-start" alignItems="baseline">
       {/* <FormControl component="fieldset"> */}
 
-      <Grid item xs={9} spacing={3}>
-        <h2>Work flow</h2>
-      </Grid>
+      <Grid item xs={9} spacing={3}/>
       <Grid item xs={3} className="next-btn">
         <SaveNext
           handleBack={handleBack}
@@ -82,13 +80,14 @@ const WorkFlow = (props) => {
             {associateWorkFlow === "yes" && (
               <>
                 <Grid item xs={12} spacing={3}>
-                  <h5>Please select a process </h5>
+                  <h5> Please select from one of the following workflows. </h5>
                   <Select
                     options={populateDropdown()}
                     onChange={(item) => associateToWorkFlow(item)}
                     values={workflow && workflow.value ? [workflow] : []}
                   />
                 </Grid>
+                <br/>
                 {workflow && workflow.value && (
                   <Grid item xs={12} spacing={3}>
                     <ProcessDiagram

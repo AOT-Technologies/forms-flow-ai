@@ -10,6 +10,7 @@ import {
 import { push } from "connected-react-router";
 /*import { Link } from "react-router-dom";*/
 import { SUBMISSION_ACCESS } from "../../../constants/constants";
+import {addHiddenApplicationComponent} from "../../../constants/applicationComponent";
 
 const Edit = (props) => (
   <div className="container">
@@ -40,6 +41,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     saveForm: (form) => {
+      form = addHiddenApplicationComponent(form);
       form.submissionAccess = SUBMISSION_ACCESS;
       return dispatch(
         saveForm("form", form, (err, form) => {

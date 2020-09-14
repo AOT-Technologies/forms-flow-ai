@@ -1,0 +1,19 @@
+{
+  "root": true,
+  "extends": "eslint-config-formio",
+  "parser": "babel-eslint",
+  "rules": {
+    "max-len": 0,
+    "max-depth": [1, 5],
+    "max-statements": 0,
+    "no-unused-vars": 0
+  },
+  "globals": {
+    "window": true,
+    "require": true,
+    "module": true,
+    "global": true,
+    "fetch": true,
+    "Promise": true
+  }
+}

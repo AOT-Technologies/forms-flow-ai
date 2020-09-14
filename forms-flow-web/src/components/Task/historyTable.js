@@ -1,4 +1,5 @@
 import React from "react";
+import moment from "moment";
 
 export const defaultSortedBy = [
   {
@@ -7,11 +8,12 @@ export const defaultSortedBy = [
   },
 ];
 
-const linkSubmision = (cell, row) => {
+const linkSubmision = (cell) => {
   return (
-    <a href={cell} target="_blank" title={cell} rel="noopener noreferrer">
-      {cell}
-    </a>
+    <div title={cell} onClick={()=> window.open(cell, "_blank")}>
+        <span className="btn btn-primary btn-sm form-btn"><span><i
+          className="fa fa-eye"/>&nbsp;</span>View Submission</span>
+    </div>
   );
 }
 
@@ -26,10 +28,11 @@ export const columns_history = [
     dataField: "created",
     text: "Created",
     sort: true,
+    formatter: (cell) =>  moment(cell).format("DD-MMM-YYYY HH:mm:ss")
   },
   {
     dataField: "formUrl",
-    text: "Form",
+    text: "Submissions",
     formatter: linkSubmision,
   },
 ];

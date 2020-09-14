@@ -76,7 +76,7 @@ services:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_MONGO_USERNAME}:${FORMIO_MONGO_PASSWORD}@forms-flow-forms-db:27017/formioDb?authSource=admin\"}"
+      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_MONGO_USERNAME}:${FORMIO_MONGO_PASSWORD}@forms-flow-forms-db:27017/formio?authSource=admin\"}"
       ROOT_EMAIL: ${FORMIO_ROOT_EMAIL}
       ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD}
     stdin_open: true # -i

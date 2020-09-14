@@ -55,8 +55,7 @@ const WorkFlow = (props) => {
       <Grid item sm={20} xs={12} spacing={3}>
         <Card variant="outlined" className="card-overflow">
           <CardContent>
-            {/* <Grid item sm={10} xs={12} spacing={3}> */}
-            <Grid item xs={9} spacing={3}>
+              <Grid item xs={9} spacing={3}>
               {/* <FormLabel component="legend"> */}
               <h5> Do you want to associate form with a workflow ?</h5> 
               {/* </FormLabel> */}

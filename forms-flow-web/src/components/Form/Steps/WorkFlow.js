@@ -50,13 +50,13 @@ const WorkFlow = (props) => {
           steps={steps}
         />
       </Grid>
-      <Grid item sm={8} xs={12} spacing={3}>
+      <Grid item sm={20} xs={12} spacing={3}>
         <Card variant="outlined" className="card-overflow">
           <CardContent>
-            <Grid item sm={8} xs={12} spacing={3}>
-              <FormLabel component="legend">
-                Do you want to associate form with a workflow ?
-              </FormLabel>
+              <Grid item xs={9} spacing={3}>
+              {/* <FormLabel component="legend"> */}
+              <h5> Do you want to associate form with a workflow ?</h5> 
+              {/* </FormLabel> */}
               <RadioGroup
                 aria-label="gender"
                 name="gender1"
@@ -79,8 +79,9 @@ const WorkFlow = (props) => {
 
             {associateWorkFlow === "yes" && (
               <>
-                <Grid item xs={12} spacing={3}>
-                  <h5> Please select from one of the following workflows. </h5>
+                <Grid item xs={9} spacing={3}>
+                  <h5>Please select a process </h5>
+
                   <Select
                     options={populateDropdown()}
                     onChange={(item) => associateToWorkFlow(item)}
@@ -89,12 +90,14 @@ const WorkFlow = (props) => {
                 </Grid>
                 <br/>
                 {workflow && workflow.value && (
-                  <Grid item xs={12} spacing={3}>
+                  <Grid item xs={9} spacing={3}>
                     <ProcessDiagram
                       process_key={workflow && workflow.value}
-                      // onShown={onShown}
-                      // onLoading={onLoading}
-                      // onError={onError}
+
+                      onLoading={onLoading}
+                      onShown={onShown}
+                      onError={onError}
+
                     />
                   </Grid>
                 )}

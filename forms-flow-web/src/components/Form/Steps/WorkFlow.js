@@ -94,9 +94,9 @@ const WorkFlow = (props) => {
                     <ProcessDiagram
                       process_key={workflow && workflow.value}
 
-                      onLoading={onLoading}
-                      onShown={onShown}
-                      onError={onError}
+                      //onLoading={onLoading}
+                      //onShown={onShown}
+                      //onError={onError}
 
                     />
                   </Grid>

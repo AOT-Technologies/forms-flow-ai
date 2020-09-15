@@ -44,7 +44,7 @@ const View = (props) => {
           {task.assignee}
           {task.assignee ? (
             task.assignee === props.userName &&
-            props.detail.deleteReason !== "completed" ? (
+            props.detail.status !== "completed" ? (
               <p
                 className="mb-0 ml-3"
                 onClick={() => props.onUnclaim(task.id)}

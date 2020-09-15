@@ -43,7 +43,6 @@ const List = class extends Component {
             id: task.id,
             applicationId: task.application_id || "--", //to do update to application/submission id
             taskTitle: task.name,
-            // taskStatus: task.deleteReason === "completed" ? 'Completed' : task.assignee ? "In-Progress" : "New",//todo update ,
             taskStatus: task.status === "completed" ? 'Completed' : "Active",
             taskAssignee: task.assignee,
             submittedBy: task.submitter_name || "---",
@@ -53,7 +52,6 @@ const List = class extends Component {
             // dueDate: (task.due || "Set due date"),
             form: task.form_name || "---",
             userName: userDetail.preferred_username,
-            deleteReason: task.deleteReason,
             assignToMeFn: onClaim,
             unAssignFn: onUnclaim,
           };

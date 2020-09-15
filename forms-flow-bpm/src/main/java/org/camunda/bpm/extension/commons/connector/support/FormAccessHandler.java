@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,8 +42,16 @@ public class FormAccessHandler implements IAccessHandler {
         headers.set("x-jwt-token", getAccessToken());
         HttpEntity<String> reqObj =
                 new HttpEntity<String>(payload, headers);
+        if(HttpMethod.PATCH.name().equals(method.name())) {
+            HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+            RestTemplate restTemplate = new RestTemplate(requestFactory);
+            String  response= restTemplate.patchForObject(getDecoratedServerUrl(url), reqObj, String.class);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }
+
         ResponseEntity<String> wrsp = getRestTemplate().exchange(getDecoratedServerUrl(url), method, reqObj, String.class);
         LOGGER.info("Response code for service invocation: " + wrsp.getStatusCode());
+
         return wrsp;
     }
 

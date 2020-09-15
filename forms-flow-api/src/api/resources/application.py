@@ -89,6 +89,25 @@ class ApplicationResourceById(Resource):
         except ValidationError as submission_err:
             return {'systemErrors': submission_err.messages}, HTTPStatus.BAD_REQUEST
 
+@cors_preflight('GET,OPTIONS')
+@API.route('/formid/<string:form_id>', methods=['GET', 'OPTIONS'])
+class ApplicationResourceByFormId(Resource):
+    """Resource for submissions."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    @auth.require
+    def get(form_id):
+        """Get applications."""
+        dict_data = ApplicationListReqSchema().load(request.args)
+        page_no = dict_data['page_no']
+        limit = dict_data['limit']
+        return jsonify({
+            'applications': ApplicationService.get_all_applications_form_id(form_id,page_no, limit),
+            'totalCount': ApplicationService.get_all_applications_form_id_count(form_id),
+            'limit': limit,
+            'pageNo': page_no
+        }), HTTPStatus.OK
 
 @cors_preflight('GET,OPTIONS')
 @API.route('/metrics', methods=['GET', 'OPTIONS'])

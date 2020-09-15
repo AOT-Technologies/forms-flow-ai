@@ -70,7 +70,7 @@ const HistoryList = () => {
               <div className="main-header">
                 <img src="/clipboard.svg" width="30" height="30" alt="task" />
                 <h3 className="task-head">
-                  Application History
+                  Application Audit
                 </h3>
                </div>
               <br />

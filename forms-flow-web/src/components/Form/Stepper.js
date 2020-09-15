@@ -24,6 +24,11 @@ import PreviewStepper from "./Steps/PreviewStepper";
 
 import "./stepper.scss";
 
+/*const statusList = [
+  { label: "Active", value: "active" },
+  { label: "Inactive", value: "inactive" },
+];*/
+
 class StepperPage extends Component {
   // UNSAFE_componentWillMount() {
   //   this.props.getAllProcesses();
@@ -43,6 +48,8 @@ class StepperPage extends Component {
       formId: "",
       processList: [],
       processListLoaded: false,
+      displayMode: "create",
+      dataModified: false,
     };
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
@@ -98,6 +105,35 @@ class StepperPage extends Component {
       };
     }
 
+    if (nextProps.match.params.step === "view-edit") {
+      stateData = {
+        ...stateData,
+        displayMode: "view",
+      };
+
+      if (!prevState.dataModified && nextProps.formProcessList) {
+        if (nextProps.formProcessList.processKey) {
+          stateData = {
+            ...stateData,
+            workflow: {
+              label: nextProps.formProcessList.processName,
+              value: nextProps.formProcessList.processKey,
+            },
+            associateWorkFlow: "yes",
+          };
+        }
+
+        stateData = {
+          ...stateData,
+          processData: {
+            status: nextProps.formProcessList.status,
+            isAnonymousAllowd: false,
+            comments: nextProps.formProcessList.comments,
+          },
+        };
+      }
+    }
+
     return { ...stateData };
 
     // else {
@@ -123,14 +159,15 @@ class StepperPage extends Component {
   setProcessData = (data) => {
     this.setState((prevState) => ({
       processData: { ...prevState.processData, ...data },
+      dataModified: true,
     }));
   };
 
   getSteps() {
     return [
-      "Create Form",
+      "Design Form",
       "Associate this form with a workflow?",
-      "Preview and Conform",
+      "Preview and Confirm",
     ];
   }
 
@@ -152,16 +189,16 @@ class StepperPage extends Component {
     return listProcess(this.props.processList);
   }
 
-  populateStatusDropdown() {
-    const list = [
-      { label: "Active", value: "active" },
-      { label: "Inactive", value: "inactive" },
-    ];
-    return list;
-  }
+  // populateStatusDropdown() {
+  //   const list = [
+  //     { label: "Active", value: "active" },
+  //     { label: "Inactive", value: "inactive" },
+  //   ];
+  //   return list;
+  // }
 
   associateToWorkFlow = (item) => {
-    this.setState({ workflow: item[0] });
+    this.setState({ workflow: item[0], dataModified: true });
   };
 
   handleEdit() {
@@ -183,7 +220,7 @@ class StepperPage extends Component {
   }
 
   submitData = () => {
-    const { form, onSaveFormProcessMapper } = this.props;
+    const { form, onSaveFormProcessMapper, formProcessList } = this.props;
     const { workflow, processData } = this.state;
     // if (associateWorkFlow === "yes") {
     const data = {
@@ -195,7 +232,11 @@ class StepperPage extends Component {
       status: processData.status,
       comments: processData.comments,
     };
-    onSaveFormProcessMapper(data);
+    const isUpdate = formProcessList && formProcessList.id ? true : false;
+    if (isUpdate) {
+      data.id = formProcessList.id;
+    }
+    onSaveFormProcessMapper(data, isUpdate);
   };
 
   getStepContent(step) {
@@ -245,7 +286,6 @@ class StepperPage extends Component {
           <PreviewStepper
             associateWorkFlow={this.state.associateWorkFlow}
             setSelectedStatus={this.setSelectedStatus}
-            populateStatusDropdown={this.populateStatusDropdown}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
             activeStep={activeStep}
@@ -339,9 +379,9 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    onSaveFormProcessMapper: (data) => {
+    onSaveFormProcessMapper: (data, update) => {
       dispatch(
-        saveFormProcessMapper(data, (err, res) => {
+        saveFormProcessMapper(data, update, (err, res) => {
           if (!err) {
             // console.log(err);
             dispatch(push(`/form`));

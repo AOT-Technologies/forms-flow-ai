@@ -1,0 +1,10 @@
+{
+  "plugins": [
+    "mocha"
+  ],
+  "env": {
+    "mocha": true,
+    "browser": true,
+    "es6": true
+  }
+}

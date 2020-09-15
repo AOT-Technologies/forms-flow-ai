@@ -38,10 +38,10 @@ public class HTTPServiceInvoker {
     }
 
     private String getServiceId(String url) {
-        if(StringUtils.contains(url,integrationCredentialProperties.getProperty("formio.url"))) {
-            return "formAccessHandler";
+        if(StringUtils.contains(url,"/api/")) {
+            return "applicationAccessHandler";
         }
-        return "applicationAccessHandler";
+        return "formAccessHandler";
     }
 
     public Properties getProperties() {

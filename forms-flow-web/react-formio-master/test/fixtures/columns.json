@@ -1,0 +1,80 @@
+[
+  {
+    "lockKey": true,
+    "input": true,
+    "inputType": "checkbox",
+    "tableView": true,
+    "hideLabel": true,
+    "label": "Visible",
+    "datagridLabel": true,
+    "key": "visible",
+    "defaultValue": false,
+    "protected": false,
+    "persistent": true,
+    "clearOnHide": true,
+    "validate": {
+      "required": false
+    },
+    "type": "checkbox",
+    "tags": [],
+    "conditional": {
+      "show": "",
+      "when": null,
+      "eq": ""
+    }
+  },
+  {
+    "lockKey": true,
+    "conditional": {
+      "eq": "true",
+      "when": "visible",
+      "show": "true"
+    },
+    "tags": [],
+    "type": "columns",
+    "columns": [
+      {
+        "components": [
+          {
+            "isNew": false,
+            "tags": [],
+            "type": "textfield",
+            "conditional": {
+              "eq": "",
+              "when": null,
+              "show": ""
+            },
+            "validate": {
+              "customPrivate": false,
+              "custom": "",
+              "pattern": "",
+              "maxLength": "",
+              "minLength": "",
+              "required": true
+            },
+            "clearOnHide": true,
+            "persistent": true,
+            "unique": false,
+            "protected": false,
+            "defaultValue": "",
+            "multiple": false,
+            "suffix": "",
+            "prefix": "",
+            "placeholder": "",
+            "key": "textfield",
+            "label": "Textfield",
+            "inputMask": "",
+            "inputType": "text",
+            "tableView": true,
+            "input": true
+          }
+        ]
+      },
+      {
+        "components": []
+      }
+    ],
+    "key": "columns1",
+    "input": false
+  }
+]

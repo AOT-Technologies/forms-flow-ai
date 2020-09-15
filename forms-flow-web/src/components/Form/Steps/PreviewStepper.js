@@ -5,15 +5,12 @@ import {
   Grid,
   Card,
   CardContent,
-  Typography,
   TextField,
 } from "@material-ui/core";
-import Select from "react-dropdown-select";
 import SaveNext from "./SaveNext";
 
 const Preview = (props) => {
   const {
-    populateStatusDropdown,
     handleNext,
     handleBack,
     activeStep,
@@ -34,9 +31,7 @@ const Preview = (props) => {
       alignItems="baseline"
       spacing={3}
     >
-      <Grid item xs={9} spacing={3}>
-        <h2>Preview and confirm</h2>
-      </Grid>
+      <Grid item xs={9} spacing={3}/>
       <Grid item xs={3} className="next-btn">
         <SaveNext
           handleBack={handleBack}
@@ -51,18 +46,18 @@ const Preview = (props) => {
         <Card variant="outlined">
           <CardContent>
             <form noValidate autoComplete="off">
-              <Typography variant="h5" component="h2">
-                {formData &&
-                  formData.form &&
-                  formData.form.name &&
-                  "Form Name : " + formData.form.name}
-              </Typography>
-              <Typography variant="h5" component="h2">
-                {workflow &&
-                  workflow.label &&
-                  "Process Name: " + workflow.label}
-              </Typography>
               <div>
+                <span className="font-weight-bolder">Form Name : </span>
+                <span>{formData &&
+                formData.form &&
+                formData.form.title ? formData.form.title : "-"}</span>
+              </div>
+              <div>
+                <span className="font-weight-bolder">Workflow Name : </span>
+                <span>{workflow &&
+                workflow.label ? workflow.label : "-"}</span>
+              </div>
+              {/*<div>
                 <label>
                   <FormControlLabel
                     control={
@@ -77,22 +72,30 @@ const Preview = (props) => {
                         color="primary"
                       />
                     }
-                    label="Annonymous"
+                    label="Anonymous"
                   />
-                  {/* <span>Check box to associate form with a workflow</span> */}
+                   <span>Check box to associate form with a workflow</span>
+                </label>
+              </div>*/}
+              <div>
+                <label>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={processData.status === 'active'}
+                        onChange={(e) =>
+                          setProcessData({
+                            status: e.target.checked?'active':"inactive",
+                          })
+                        }
+                        name="Check box to associate form with a workflow"
+                        color="primary"
+                      />
+                    }
+                    label="Publish this form for Client Users."
+                  />
                 </label>
               </div>
-              <label className="text-label">Status</label>
-              <Select
-                options={populateStatusDropdown()}
-                onChange={(item) =>
-                  setProcessData({
-                    status: item[0].value,
-                  })
-                }
-              />
-
-              {/* <label>Comments</label> */}
               <label className="text-label">Comments</label>
               {/* <TextareaAutosize
                 aria-label="minimum height"

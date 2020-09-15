@@ -3,7 +3,7 @@
   <bpmn:collaboration id="Collaboration_01drroj">
     <bpmn:participant id="Participant_1tv1lnj" name="Two Step Approval" processRef="two-step-approval" />
   </bpmn:collaboration>
-  <bpmn:process id="two-step-approval" isExecutable="true">
+  <bpmn:process id="two-step-approval" name="Two Step Approval" isExecutable="true">
     <bpmn:laneSet id="LaneSet_1e6v5og">
       <bpmn:lane id="Lane_0t984kw" name="Client/Submitter">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>

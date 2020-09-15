@@ -1,0 +1,57 @@
+[
+  {
+    "input": true,
+    "inputType": "checkbox",
+    "tableView": true,
+    "hideLabel": true,
+    "label": "Visible",
+    "datagridLabel": true,
+    "key": "visible",
+    "defaultValue": false,
+    "protected": false,
+    "persistent": true,
+    "clearOnHide": true,
+    "validate": {
+      "required": false
+    },
+    "type": "checkbox",
+    "tags": [],
+    "conditional": {
+      "show": "",
+      "when": null,
+      "eq": ""
+    }
+  },
+  {
+    "input": true,
+    "tableView": true,
+    "inputType": "text",
+    "inputMask": "",
+    "label": "Textfield",
+    "key": "textfield",
+    "placeholder": "",
+    "prefix": "",
+    "suffix": "",
+    "multiple": false,
+    "defaultValue": "",
+    "protected": false,
+    "unique": false,
+    "persistent": true,
+    "clearOnHide": true,
+    "validate": {
+      "required": true,
+      "minLength": "",
+      "maxLength": "",
+      "pattern": "",
+      "custom": "",
+      "customPrivate": false
+    },
+    "conditional": {
+      "show": "true",
+      "when": "visible",
+      "eq": "true"
+    },
+    "type": "textfield",
+    "tags": []
+  }
+]

@@ -1,0 +1,73 @@
+[
+  {
+    "conditional": {
+      "eq": "",
+      "when": null,
+      "show": ""
+    },
+    "tags": [],
+    "type": "checkbox",
+    "validate": {
+      "required": false
+    },
+    "clearOnHide": true,
+    "persistent": true,
+    "protected": false,
+    "defaultValue": false,
+    "key": "visible",
+    "datagridLabel": true,
+    "label": "Visible",
+    "hideLabel": true,
+    "tableView": true,
+    "inputType": "checkbox",
+    "input": true,
+    "lockKey": true
+  },
+  {
+    "key": "fieldset1",
+    "input": false,
+    "tableView": true,
+    "legend": "fieldset",
+    "components": [
+      {
+        "input": true,
+        "tableView": true,
+        "inputType": "text",
+        "inputMask": "",
+        "label": "Textfield",
+        "key": "textfield",
+        "placeholder": "",
+        "prefix": "",
+        "suffix": "",
+        "multiple": false,
+        "defaultValue": "",
+        "protected": false,
+        "unique": false,
+        "persistent": true,
+        "clearOnHide": true,
+        "validate": {
+          "required": false,
+          "minLength": "",
+          "maxLength": "",
+          "pattern": "",
+          "custom": "",
+          "customPrivate": false
+        },
+        "conditional": {
+          "show": "",
+          "when": null,
+          "eq": ""
+        },
+        "type": "textfield",
+        "tags": []
+      }
+    ],
+    "type": "fieldset",
+    "tags": [],
+    "conditional": {
+      "show": "true",
+      "when": "visible",
+      "eq": "true"
+    }
+  }
+]

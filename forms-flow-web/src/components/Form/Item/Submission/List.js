@@ -1,14 +1,23 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom'
-import {connect, useDispatch} from 'react-redux';
+import {connect, useDispatch, useSelector} from 'react-redux';
 import {push} from 'connected-react-router';
 import {getSubmissions, selectRoot, selectError, SubmissionGrid, Errors, deleteSubmission} from 'react-formio';
+import cloneDeep from 'lodash/cloneDeep';
 
 import Loading from '../../../../containers/Loading';
 import {OPERATIONS, CLIENT, STAFF_REVIEWER} from '../../../../constants/constants';
 import Confirm from '../../../../containers/Confirm';
 import {setFormSubmissionDeleteStatus} from '../../../../actions/formActions'
 import {getAllApplicationsByFormId} from "../../../../apiManager/services/applicationServices";
+import {
+  addApplicationDetailsToFormComponent,
+  getRelevantApplications
+} from "../../../../apiManager/services/formatterService";
+import {defaultSubmissionData} from "../../../../constants/submissionConstants";
+import {setApplicationListLoader} from "../../../../actions/applicationActions";
+
+
 
 const getOperations = (userRoles) => {
   let operations = []
@@ -23,16 +32,37 @@ const getOperations = (userRoles) => {
 const List = (props) => {
   const dispatch = useDispatch();
   const {formId} = useParams();
-  const {form, submissions, isLoading, onAction, getSubmissions, errors, userRoles, submissionFormId, submissionId, onNo, onYes} = props;
+  const {submissions, isLoading, onAction, getSubmissions, errors, userRoles, submissionFormId, submissionId, onNo, onYes} = props;
+  const operations = getOperations(userRoles);
+  const formApplicationsList = useSelector((state) => state.applications.formApplicationsList);
+  const isApplicationsListLoading = useSelector((state) => state.applications.isApplicationListLoading);
+  const form = useSelector((state)=>state.form.form);
+  const [formData, setFormData] = useState();
+  const [submissionListData, setSubmissionListData] = useState(defaultSubmissionData);
 
-
-  const operations = getOperations(userRoles)
   useEffect(() => {
-    getSubmissions(1);
+    dispatch(setApplicationListLoader(true))
     dispatch(getAllApplicationsByFormId(formId));
-  }, [getSubmissions, dispatch, formId]);
+    getSubmissions(1);
+  }, [getSubmissions, dispatch, formId ]);
 
-  if (isLoading) {
+  useEffect(()=>{
+     if(form && form.components){
+       setFormData(addApplicationDetailsToFormComponent(cloneDeep(form)))
+     }
+  },[ form, setFormData ]);
+
+  useEffect(()=>{
+    if(formApplicationsList.length && submissions){
+      let updatedSubmissionList = getRelevantApplications(formApplicationsList,cloneDeep(submissions));
+      setSubmissionListData(updatedSubmissionList);
+    }
+  },[formApplicationsList,submissions, setSubmissionListData])
+
+
+
+//TODO add formApplicationLoader
+  if (isLoading || isApplicationsListLoading) {
     return (
       <Loading/>
     );
@@ -63,13 +93,13 @@ const List = (props) => {
 
       <section className="custom-grid">
         <Errors errors={errors}/>
-        <SubmissionGrid
-          submissions={submissions}
-          form={form}
+        {formData && <SubmissionGrid
+          submissions={submissionListData}
+          form={formData}
           onAction={onAction}
           getSubmissions={getSubmissions}
           operations={operations}
-        />
+        />}
       </section>
     </div>
   );
@@ -79,7 +109,6 @@ const mapStateToProps = (state) => {
   const form = selectRoot('form', state);
   const submissions = selectRoot('submissions', state);
   return {
-    form: form.form,
     submissions: submissions,
     isLoading: form.isActive || submissions.isActive,
     errors: [
@@ -121,7 +150,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           const submissionDetails = {modalOpen: false, submissionId: "", formId: ""}
           dispatch(setFormSubmissionDeleteStatus(submissionDetails))
           dispatch(getSubmissions('submissions', 1, submissions.query, ownProps.match.params.formId))
-
         }
       }));
     },

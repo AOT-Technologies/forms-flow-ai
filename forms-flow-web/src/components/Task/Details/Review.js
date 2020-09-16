@@ -94,7 +94,7 @@ const Review = (props) => {
                       detail.assignee === null ||
                       !(
                         detail.assignee === userName &&
-                        detail.deleteReason !== "completed"
+                        detail.status !== "completed"
                       )
                     }
                     theme={(theme) => ({
@@ -112,7 +112,7 @@ const Review = (props) => {
               <div className="col-md-2">
                 {detail.assignee &&
                 detail.assignee === userName &&
-                detail.deleteReason !== "completed" ? (
+                detail.status !== "completed" ? (
                   <button
                     className="btn btn-primary"
                     disabled={selectedOption?.value === ""}

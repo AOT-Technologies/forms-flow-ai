@@ -5,6 +5,7 @@ import { saveForm, selectError, FormEdit, Errors } from "react-formio";
 import { push } from "connected-react-router";
 
 import { SUBMISSION_ACCESS } from "../../constants/constants";
+import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 
 const Create = (props) => {
   return (
@@ -28,6 +29,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     saveForm: (form) => {
+      form = addHiddenApplicationComponent(form);
       const newForm = {
         ...form,
         tags: ["common"],

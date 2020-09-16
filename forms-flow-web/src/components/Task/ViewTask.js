@@ -10,6 +10,7 @@ import {setLoader} from "../../actions/taskActions";
 import View from "../Form/Item/Submission/Item/View";
 import {getProcessStatusList} from "../../apiManager/services/processServices";
 import History from './History';
+import ProcessDiagram from "../BPMN/ProcessDiagram";
 
 const ViewTask = (props) => {
     const {taskId} = useParams();
@@ -52,7 +53,12 @@ const ViewTask = (props) => {
           </Tab>
           <Tab eventKey="history" title="Application Audit">
             <History page="task-detail"/>
-           </Tab>
+          </Tab>
+          <Tab eventKey="process-diagram" title="Process Diagram">
+            <ProcessDiagram
+                process_key='EmailNotification'
+            />
+          </Tab>
         </Tabs>
       </div>
     );

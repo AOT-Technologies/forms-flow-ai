@@ -9,28 +9,28 @@ from pathlib import Path
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk import tokenize
 
-    # call the data object, run the database from models
-    # call the text and sentiment analysis resource
-    # get the calling api
-    
-    # call instance of api
-    #pass the input_text
-    # pass the sentiment_analysis api
 
-
-def pipeline(text):
+def sentiment_pipeline(text):
     """ 
     A input pipeline which returns for a given text blob, output of
     aspect based sentiment analaysis as list of entities with associated
     sentiment.
-    Usage:
+
+    Usage::
         >> pipeline(text="awesome staff and tea was epic.")
-            {'staff': 'pos, 'tea': 'pos'}
-    :params  :text: The input text blob which is being used by model
+        {
+            "overall_sentiment": "positive",
+            "sentiment": {
+                "tea": "positive",
+                "staff": "positive"
+            }
+        }
+
+    :param  text: The input text blob which is being used by model
     """
     # uncomment when working in linux and remove subsequent two lines
     #nlp = spacy.load("../models/quick-spacy/") 
-    model_path = Path(r'D:\work\forms-flow-ai-dev\forms-flow-api\src\api\service\models\quick-spacy')
+    model_path = Path(r'D:\work\forms-flow-ai-dev\forms-flow-api\src\api\service\models\quick-spacy') # modify later
     nlp = spacy.load(model_path)
     doc = nlp(text)
     a = [ent.text for ent in doc.ents]

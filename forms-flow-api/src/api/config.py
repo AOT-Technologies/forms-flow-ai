@@ -59,10 +59,7 @@ class _Config():  # pylint: disable=too-few-public-methods
     # SQLALCHEMY_ECHO = True
 
     # MONGODB
-    MONGO_USERNAME = os.getenv('MONGO_INITDB_ROOT_USERNAME') # ask abhilash or sumathi
-    MONGO_PASSWORD = os.getenv('MONGO_INITDB_ROOT_PASSWORD')
-    MONGO_URI = os.getenv('FORMIO_MONGO_USERNAME')
-    MONGO_DATABASE = os.getenv('MONGO_INITDB_DATABASE')
+    MONGO_URI = os.getenv('MONGO_URI')
 
     TESTING = False
     DEBUG = False

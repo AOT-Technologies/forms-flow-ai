@@ -3,7 +3,7 @@
 from flask import jsonify
 from flask_pymongo import PyMongo
 
-from ..schemas import 
+from ..schemas import SentimentAnalysisSchema
 from ..services.sentiment_analysis import sentiment_pipeline
 
 

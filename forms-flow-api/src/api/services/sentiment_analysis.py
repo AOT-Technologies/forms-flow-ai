@@ -1,8 +1,8 @@
 import spacy
 import nltk
 
-nltk.downloader.download('vader_lexicon')
-nltk.downloader.download('punkt')
+nltk.downloader.download("vader_lexicon")
+nltk.downloader.download("punkt")
 nltk.downloader.download("subjectivity")
 
 from pathlib import Path
@@ -11,7 +11,7 @@ from nltk import tokenize
 
 
 def sentiment_pipeline(text):
-    """ 
+    """
     A input pipeline which returns for a given text blob, output of
     aspect based sentiment analaysis as list of entities with associated
     sentiment.
@@ -29,8 +29,10 @@ def sentiment_pipeline(text):
     :param  text: The input text blob which is being used by model
     """
     # uncomment when working in linux and remove subsequent two lines
-    #nlp = spacy.load("../models/quick-spacy/") 
-    model_path = Path(r'D:\work\forms-flow-ai-dev\forms-flow-api\src\api\service\models\quick-spacy') # modify later
+    # nlp = spacy.load("../models/quick-spacy/")
+    model_path = Path(
+        r"D:\work\forms-flow-ai-dev\forms-flow-api\src\api\service\models\quick-spacy"
+    )  # modify later
     nlp = spacy.load(model_path)
     doc = nlp(text)
     a = [ent.text for ent in doc.ents]

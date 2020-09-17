@@ -2,7 +2,8 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
   applicationsList:[],
-  applicationDetail: {}
+  applicationDetail: {},
+  applicationProcess: {}
 }
 
 export default (state = initialState, action)=> {
@@ -11,6 +12,8 @@ export default (state = initialState, action)=> {
       return {...state, applications: action.payload};
     case ACTION_CONSTANTS.APPLICATION_DETAIL :
       return {...state, applicationDetail: action.payload};
+    case ACTION_CONSTANTS.APPLICATION_PROCESS :
+      return {...state, applicationProcess: action.payload};  
     default:
       return state;
   }

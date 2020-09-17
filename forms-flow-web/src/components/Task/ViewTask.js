@@ -9,12 +9,15 @@ import Loading from "../../containers/Loading";
 import {setLoader} from "../../actions/taskActions";
 import View from "../Form/Item/Submission/Item/View";
 import {getProcessStatusList} from "../../apiManager/services/processServices";
+import {getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
 import History from './History';
 import ProcessDiagram from "../BPMN/ProcessDiagram";
 
 const ViewTask = (props) => {
     const {taskId} = useParams();
     const taskDetail = useSelector(state => state.tasks.taskDetail);
+    const applicationProcess = useSelector(state => state.applications.applicationProcess);
+   
     const isLoading = useSelector(state => state.tasks.isLoading);
     const dispatch = useDispatch();
     const {getTask} = props;
@@ -56,7 +59,7 @@ const ViewTask = (props) => {
           </Tab>
           <Tab eventKey="process-diagram" title="Process Diagram">
             <ProcessDiagram
-                process_key='EmailNotification'
+                process_key={applicationProcess.processKey}
             />
           </Tab>
         </Tabs>
@@ -82,6 +85,10 @@ const mapDispatchToProps = (dispatch) => {
                   res.processDefinitionKey,
                   res.taskDefinitionKey
                 )
+              );
+
+              dispatch(
+                getApplicationFormDataByAppId(res.application_id)
               );
             }
           })

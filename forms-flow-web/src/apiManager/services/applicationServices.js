@@ -1,6 +1,7 @@
 import { httpGETRequest } from "../httpRequestHandler";
 import API from "../endpoints";
-import {setApplicationList, serviceActionError} from "../../actions/applicationActions";
+import {setApplicationList, setApplicationProcess,serviceActionError} from "../../actions/applicationActions";
+import { replaceUrl } from "../../helper/helper";
 
 export const getAllApplicationsByFormId = (formId,...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -25,3 +26,34 @@ export const getAllApplicationsByFormId = (formId,...rest) => {
       });
   };
 };
+
+export const getApplicationFormDataByAppId = (application_id,...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  return (dispatch) => {
+    const apiUrlAppFormProcess = replaceUrl(
+      API.GET_PROCESS_MAPPER_FOR_APPLICATION,
+      "<application_id>",
+      application_id
+    );
+    httpGETRequest(apiUrlAppFormProcess)
+      .then((res) => {
+        if (res.data) {
+          const process = res.data || [];
+          dispatch(setApplicationProcess(process));
+          done(null, process);
+        } else {
+          console.log("Error", res);
+          dispatch(serviceActionError(res));
+        }
+        done(null, res.data);
+      })
+      .catch((error) => {
+        console.log("Error", error);
+        dispatch(serviceActionError(error));
+        done(error);
+      });
+  };
+};
+
+
+

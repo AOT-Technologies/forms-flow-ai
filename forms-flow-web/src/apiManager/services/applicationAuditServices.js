@@ -43,4 +43,4 @@ export const fetchApplicatinAuditHistoryList = (applicationId, ...rest) => {
         done(error);
       });
   };
-};;
+};

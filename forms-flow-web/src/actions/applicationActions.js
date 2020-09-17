@@ -28,6 +28,13 @@ export const setApplicationListLoader = (data) => dispatch =>{
   })
 }
 
+export const setApplicationDetailLoader = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_APPLICATION_DETAIL_LOADING,
+    payload:data
+  })
+}
+
 export const serviceActionError = (data) => dispatch => {
   //TODO update to a common file
   console.log(data);

@@ -156,8 +156,8 @@ class AggregatedApplicationStatusResource(Resource):
 
 
 @cors_preflight('GET,OPTIONS')
-@API.route('/<string:application_id>/form', methods=['GET', 'OPTIONS'])
-class FormResourceByApplicationId(Resource):
+@API.route('/<string:application_id>/process', methods=['GET', 'OPTIONS'])
+class ProcessMapperResourceByApplicationId(Resource):
     """Resource for managing process details."""
 
     @staticmethod

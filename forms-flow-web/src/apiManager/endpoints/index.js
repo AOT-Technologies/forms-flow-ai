@@ -11,6 +11,7 @@ const API = {
   GET_APPLICATION: `${WEB_BASE_URL}/application/<application_id>`,
   GET_APPLICATION_HISTORY_API: `${WEB_BASE_URL}/application/<application_id>/history`,
   GET_ALL_APPLICATIONS_FROM_FORM_ID: `${WEB_BASE_URL}/application/formid`,
+  GET_ALL_APPLICATIONS: `${WEB_BASE_URL}/application`,
   PROCESSES: `${WEB_BASE_URL}/process`,
   FORM: `${WEB_BASE_URL}/form`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,

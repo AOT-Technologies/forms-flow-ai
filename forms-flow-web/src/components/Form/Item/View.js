@@ -6,7 +6,7 @@ import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
 
 import Loading from '../../../containers/Loading';
-import { triggerNotification, getProcessReq } from "../../../apiManager/services/bpmServices";
+import { applicationCreate, getProcessReq } from "../../../apiManager/services/bpmServices";
 import { setFormSubmissionError } from "../../../actions/formActions";
 import SubmissionError from '../../../containers/SubmissionError';
 import { setUpdateLoader } from "../../../actions/taskActions";
@@ -74,7 +74,7 @@ function doProcessActions(submission, ownProps) {
     let IsAuth = getState().user.isAuthenticated
     dispatch(resetSubmissions('submission'));
     const data = getProcessReq(form, submission._id, "new", user);
-    dispatch(triggerNotification(data, (err, res) => {
+    dispatch(applicationCreate(data, (err, res) => {
           if (!err) {
             if (IsAuth) {
               dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))

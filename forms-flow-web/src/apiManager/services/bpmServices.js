@@ -27,7 +27,7 @@ export const getProcessReq = (form, submissionId, action, user) => {
   return requestFormat;
 };
 
-export const triggerNotification = (data, ...rest) => {
+export const applicationCreate = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const URL = API.APPLICATION_START;
   return (dispatch) => {

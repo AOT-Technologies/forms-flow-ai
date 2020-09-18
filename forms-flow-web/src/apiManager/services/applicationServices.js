@@ -36,7 +36,7 @@ export const getAllApplications = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
-    httpGETRequest(API.GET_ALL_APPLICATIONS)
+    httpGETRequest(API.GET_ALL_APPLICATIONS+'?pageNo=1&limit=10')
       .then((res) => {
         if (res.data) {
           const applications = res.data.applications || [];

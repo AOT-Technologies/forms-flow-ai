@@ -5,7 +5,8 @@ const initialState = {
   applicationDetail: {},
   formApplicationsList:[],
   isApplicationListLoading:false,
-  isApplicationDetailLoading:false
+  isApplicationDetailLoading:false,
+  isApplicationUpdating:false
 }
 
 export default (state = initialState, action)=> {
@@ -20,6 +21,8 @@ export default (state = initialState, action)=> {
       return {...state, isApplicationListLoading: action.payload};
     case ACTION_CONSTANTS.IS_APPLICATION_DETAIL_LOADING:
       return {...state, isApplicationDetailLoading: action.payload};
+    case ACTION_CONSTANTS.IS_APPLICATION_UPDATING:
+      return {...state, isApplicationUpdating: action.payload};  
     default:
       return state;
   }

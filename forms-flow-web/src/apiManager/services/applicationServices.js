@@ -1,6 +1,6 @@
 import { httpGETRequest } from "../httpRequestHandler";
 import API from "../endpoints";
-import {setApplicationList, setApplicationProcess,serviceActionError} from "../../actions/applicationActions";
+import {setApplicationListByFormId, setApplicationProcess,serviceActionError} from "../../actions/applicationActions";
 import { replaceUrl } from "../../helper/helper";
 
 export const getAllApplicationsByFormId = (formId,...rest) => {
@@ -11,7 +11,7 @@ export const getAllApplicationsByFormId = (formId,...rest) => {
       .then((res) => {
         if (res.data) {
           const applications = res.data.applications || [];
-          dispatch(setApplicationList(applications));
+          dispatch(setApplicationListByFormId(applications));
           done(null, applications);
         } else {
           console.log("Error", res);

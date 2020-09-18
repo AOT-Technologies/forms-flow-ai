@@ -13,6 +13,7 @@ from ..services import ApplicationService, ApplicationAuditService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
 
+import json
 
 API = Namespace('Application', description='Application')
 
@@ -27,15 +28,20 @@ class ApplicationsResource(Resource):
     @auth.require
     def get():
         """Get applications."""
-        dict_data = ApplicationListReqSchema().load(request.args)
-        page_no = dict_data['page_no']
-        limit = dict_data['limit']
+        if request.args:
+            dict_data = ApplicationListReqSchema().load(request.args)
+            page_no = dict_data['page_no']
+            limit = dict_data['limit']
+        else:
+            page_no = 1
+            limit = 100
         return jsonify({
-            'applications': ApplicationService.get_all_applications(page_no, limit),
+            'applications': ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications(page_no, limit)),
             'totalCount': ApplicationService.get_all_application_count(),
             'limit': limit,
             'pageNo': page_no
         }), HTTPStatus.OK
+
 
     @staticmethod
     @cors.crossdomain(origin='*')
@@ -43,19 +49,14 @@ class ApplicationsResource(Resource):
     def post():
         """Post a new application using the request body."""
         application_json = request.get_json()
-
+        """Get applications."""
         try:
-            application_schema = ApplicationSchema()
-            dict_data = application_schema.load(application_json)
-            sub = g.token_info.get('sub')
-            dict_data['created_by'] = sub
-            application = ApplicationService.create_application(dict_data, request.headers["Authorization"])
+           return jsonify({
+                'applications': ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications_ids(application_json['applicationIds']))
+            }), HTTPStatus.OK
+        except BusinessException as err:
+            return err.error, err.status_code
 
-            response, status = application_schema.dump(application), HTTPStatus.CREATED
-        except ValidationError as application_err:
-            response, status = {'systemErrors': application_err.messages}, \
-                HTTPStatus.BAD_REQUEST
-        return response, status
 
 
 @cors_preflight('GET,PUT,OPTIONS')
@@ -69,7 +70,7 @@ class ApplicationResourceById(Resource):
     def get(application_id):
         """Get application by id."""
         try:
-            return ApplicationService.get_application(application_id), HTTPStatus.OK
+            return ApplicationService.apply_custom_attributes(ApplicationService.get_application(application_id)), HTTPStatus.OK
         except BusinessException as err:
             return err.error, err.status_code
 
@@ -99,15 +100,44 @@ class ApplicationResourceByFormId(Resource):
     @auth.require
     def get(form_id):
         """Get applications."""
-        dict_data = ApplicationListReqSchema().load(request.args)
-        page_no = dict_data['page_no']
-        limit = dict_data['limit']
+        if request.args:
+            dict_data = ApplicationListReqSchema().load(request.args)
+            page_no = dict_data['page_no']
+            limit = dict_data['limit']
+        else:
+            page_no = 1
+            limit = 100
         return jsonify({
-            'applications': ApplicationService.get_all_applications_form_id(form_id,page_no, limit),
+            'applications': ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications_form_id(form_id,page_no, limit)),
             'totalCount': ApplicationService.get_all_applications_form_id_count(form_id),
             'limit': limit,
             'pageNo': page_no
         }), HTTPStatus.OK
+
+@cors_preflight('POST,OPTIONS')
+@API.route('/create', methods=['POST', 'OPTIONS'])
+class ApplicationResourcesByIds(Resource):
+    """Resource for submissions."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    @auth.require
+    def post():
+        """Post a new application using the request body."""
+        application_json = request.get_json()
+
+        try:
+            application_schema = ApplicationSchema()
+            dict_data = application_schema.load(application_json)
+            sub = g.token_info.get('sub')
+            dict_data['created_by'] = sub
+            application = ApplicationService.create_application(dict_data, request.headers["Authorization"])
+
+            response, status = application_schema.dump(application), HTTPStatus.CREATED
+        except ValidationError as application_err:
+            response, status = {'systemErrors': application_err.messages}, \
+                HTTPStatus.BAD_REQUEST
+        return response, status
 
 @cors_preflight('GET,OPTIONS')
 @API.route('/metrics', methods=['GET', 'OPTIONS'])
@@ -154,7 +184,6 @@ class AggregatedApplicationStatusResource(Resource):
         except ValidationError as agg_err:
             return {'systemErrors': agg_err.messages}, HTTPStatus.BAD_REQUEST
 
-
 @cors_preflight('GET,OPTIONS')
 @API.route('/<string:application_id>/process', methods=['GET', 'OPTIONS'])
 class ProcessMapperResourceByApplicationId(Resource):
@@ -167,5 +196,4 @@ class ProcessMapperResourceByApplicationId(Resource):
         try:
              return ApplicationService.get_application_form_mapper_by_id(application_id), HTTPStatus.OK
         except BusinessException as err:
-             return err.error, err.status_code             
-    
+             return err.error, err.status_code   

@@ -103,7 +103,7 @@ function linkTaskAssignee(cell, row) {
       <div>
         {cell}
         {row.userName === row.taskAssignee &&
-        row.status !== "completed" ? (
+        row.taskStatus !== "Completed" ? (
           <p className="mb-0" onClick={() => row.unAssignFn(row.id)}>
             Unassign
           </p>

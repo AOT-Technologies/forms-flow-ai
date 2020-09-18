@@ -15,8 +15,8 @@ class FormProcessMapperSchema(Schema):
     form_id = fields.Str(data_key='formId', required=True)
     form_name = fields.Str(data_key='formName', required=True)
     form_revision_number = fields.Str(data_key='formRevisionNumber', required=True)
-    process_key = fields.Str(data_key='processKey', required=True)
-    process_name = fields.Str(data_key='processName', required=True)
+    process_key = fields.Str(data_key='processKey')
+    process_name = fields.Str(data_key='processName')
     comments = fields.Str()
 
     status = fields.Str()  # active/inactive

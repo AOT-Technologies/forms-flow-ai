@@ -10,6 +10,7 @@ from ..schemas import FormProcessMapperSchema
 import logging
 
 
+
 class ApplicationService():
     """This class manages application service."""
 
@@ -47,6 +48,19 @@ class ApplicationService():
 
 
     @staticmethod
+    def get_all_applications_by_user(user_id, page_no, limit):
+        """Get all applications."""
+        if page_no:
+            page_no = int(page_no)
+        if limit:
+            limit = int(limit)
+
+        applications = Application.find_all_by_user(user_id, page_no, limit)
+        application_schema = ApplicationSchema()
+        return application_schema.dump(applications, many=True)
+
+
+    @staticmethod
     def get_all_applications_ids(application_ids):
         applications = Application.find_by_ids(application_ids)
         application_schema = ApplicationSchema()
@@ -56,6 +70,11 @@ class ApplicationService():
     def get_all_application_count():
         """Get application count."""
         return Application.query.count()
+
+    @staticmethod
+    def get_all_application_by_user_count(user_id):
+        """Get application count."""
+        return Application.find_all_by_user_count(user_id)
 
 
     @staticmethod

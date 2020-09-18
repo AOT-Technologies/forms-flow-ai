@@ -76,3 +76,25 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         return cls.query.filter(
             and_(FormProcessMapper.form_id == form_id,
                  FormProcessMapper.status == FormProcessMapperStatus.Active.value)).first()  # pylint: disable=no-member
+
+    @classmethod
+    def find_by_application_id(cls, application_id: int):
+        """Fetch form process mapper details with application id."""
+        where_condition = ''
+        where_condition += f""" app.id  = {str(application_id)} """
+
+        result_proxy = db.session.execute(f"""select 
+            mapper.id,mapper.process_key,mapper.process_name
+            from application app, form_process_mapper mapper
+            where app.form_process_mapper_id=mapper.id and
+                {where_condition}
+            """)
+
+        result = []
+        for row in result_proxy:
+            info = dict(row)
+            result.append(info)
+
+        return result[0]    
+             
+             

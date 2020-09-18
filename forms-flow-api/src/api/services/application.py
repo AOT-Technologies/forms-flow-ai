@@ -5,6 +5,9 @@ from ..exceptions import BusinessException
 from ..models import Application, FormProcessMapper
 from ..schemas import AggregatedApplicationSchema, ApplicationSchema
 from .external import BPMService
+from ..schemas import FormProcessMapperSchema
+
+import logging
 
 
 class ApplicationService():
@@ -99,8 +102,18 @@ class ApplicationService():
         application_status = Application.find_aggregated_application_status(mapper_id, from_date, to_date)
         schema = AggregatedApplicationSchema(exclude=('form_process_mapper_id',))
         return schema.dump(application_status, many=True)
+      
+    @staticmethod
+    def get_application_form_mapper_by_id(application_id):
+        """Get form process mapper."""
+        logging.log(logging.DEBUG, 'get_application_form_mapper_by_id '+application_id)
+        mapper = FormProcessMapper.find_by_application_id(application_id)
+        if mapper:
+            mapper_schema = FormProcessMapperSchema()
+            return mapper_schema.dump(mapper)
 
-
+        raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)   
+        
     @staticmethod
     def apply_custom_attributes(application_schema):
         if isinstance(application_schema, list):
@@ -117,4 +130,3 @@ class ApplicationSchemaWrapper:
         application['formId'] = formurl[formurl.find("/form/")+6:formurl.find("/submission/")]
         application['submissionId'] = formurl[formurl.find("/submission/")+12:len(formurl)]
         return application
-

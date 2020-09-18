@@ -184,3 +184,16 @@ class AggregatedApplicationStatusResource(Resource):
         except ValidationError as agg_err:
             return {'systemErrors': agg_err.messages}, HTTPStatus.BAD_REQUEST
 
+@cors_preflight('GET,OPTIONS')
+@API.route('/<string:application_id>/process', methods=['GET', 'OPTIONS'])
+class ProcessMapperResourceByApplicationId(Resource):
+    """Resource for managing process details."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    def get(application_id):
+
+        try:
+             return ApplicationService.get_application_form_mapper_by_id(application_id), HTTPStatus.OK
+        except BusinessException as err:
+             return err.error, err.status_code   

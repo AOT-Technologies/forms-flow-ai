@@ -26,7 +26,6 @@ const Review = (props) => {
   const submissionError = useSelector(state=>state.formDelete.formSubmissionError);
   const isProcessLoading= useSelector(state=>state.process.isProcessLoading);
   const processStatusList = useSelector(state=> state.process.processStatusList);
-  const applicationId = useSelector(state=>state.process.processStatusList.applicationId);
   const processLoadError= useSelector(state=> state.process.processLoadError);
 
   useEffect(()=>{

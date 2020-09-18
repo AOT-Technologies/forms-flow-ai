@@ -15,6 +15,8 @@ from ..utils.util import cors_preflight
 
 import json
 
+import jwt
+
 API = Namespace('Application', description='Application')
 
 
@@ -35,9 +37,17 @@ class ApplicationsResource(Resource):
         else:
             page_no = 1
             limit = 100
+        token= request.headers["Authorization"].split(" ")[1:][0]
+        payload=jwt.decode(token,  verify=False)
+        if auth.has_role(['formsflow-client']):
+            application_schema = ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications_by_user(payload['preferred_username'],page_no, limit)),
+            application_count = ApplicationService.get_all_application_by_user_count(payload['preferred_username'])
+        else:
+            application_schema = ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications(page_no, limit)),
+            application_count = ApplicationService.get_all_application_count()
         return jsonify({
-            'applications': ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications(page_no, limit)),
-            'totalCount': ApplicationService.get_all_application_count(),
+            'applications': application_schema,
+            'totalCount': application_count,
             'limit': limit,
             'pageNo': page_no
         }), HTTPStatus.OK

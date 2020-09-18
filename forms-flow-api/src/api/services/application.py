@@ -5,6 +5,10 @@ from ..exceptions import BusinessException
 from ..models import Application, FormProcessMapper
 from ..schemas import AggregatedApplicationSchema, ApplicationSchema
 from .external import BPMService
+from ..schemas import FormProcessMapperSchema
+
+import logging
+
 
 
 class ApplicationService():
@@ -42,10 +46,35 @@ class ApplicationService():
         application_schema = ApplicationSchema()
         return application_schema.dump(applications, many=True)
 
+
+    @staticmethod
+    def get_all_applications_by_user(user_id, page_no, limit):
+        """Get all applications."""
+        if page_no:
+            page_no = int(page_no)
+        if limit:
+            limit = int(limit)
+
+        applications = Application.find_all_by_user(user_id, page_no, limit)
+        application_schema = ApplicationSchema()
+        return application_schema.dump(applications, many=True)
+
+
+    @staticmethod
+    def get_all_applications_ids(application_ids):
+        applications = Application.find_by_ids(application_ids)
+        application_schema = ApplicationSchema()
+        return application_schema.dump(applications, many=True)
+
     @staticmethod
     def get_all_application_count():
         """Get application count."""
         return Application.query.count()
+
+    @staticmethod
+    def get_all_application_by_user_count(user_id):
+        """Get application count."""
+        return Application.find_all_by_user_count(user_id)
 
 
     @staticmethod
@@ -68,12 +97,7 @@ class ApplicationService():
     @staticmethod
     def get_application(application_id):
         """Get application by id."""
-        application_details = Application.find_by_id(application_id)
-        if application_details:
-            application_schema = Application()
-            return application_schema.dump(application_details)
-
-        raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
+        return ApplicationSchema().dump(Application.find_by_id(application_id))
 
     @staticmethod
     def update_application(application_id, data):
@@ -97,3 +121,31 @@ class ApplicationService():
         application_status = Application.find_aggregated_application_status(mapper_id, from_date, to_date)
         schema = AggregatedApplicationSchema(exclude=('form_process_mapper_id',))
         return schema.dump(application_status, many=True)
+      
+    @staticmethod
+    def get_application_form_mapper_by_id(application_id):
+        """Get form process mapper."""
+        logging.log(logging.DEBUG, 'get_application_form_mapper_by_id '+application_id)
+        mapper = FormProcessMapper.find_by_application_id(application_id)
+        if mapper:
+            mapper_schema = FormProcessMapperSchema()
+            return mapper_schema.dump(mapper)
+
+        raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)   
+        
+    @staticmethod
+    def apply_custom_attributes(application_schema):
+        if isinstance(application_schema, list):
+            for entry in application_schema:
+                ApplicationSchemaWrapper.apply_attributes(entry)
+        else:
+            ApplicationSchemaWrapper.apply_attributes(application_schema)
+        return application_schema
+
+class ApplicationSchemaWrapper:
+    @staticmethod
+    def apply_attributes(application):
+        formurl = application['formUrl']
+        application['formId'] = formurl[formurl.find("/form/")+6:formurl.find("/submission/")]
+        application['submissionId'] = formurl[formurl.find("/submission/")+12:len(formurl)]
+        return application

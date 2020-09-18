@@ -48,9 +48,24 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return cls.query.filter_by(id=application_id).first()
 
     @classmethod
+    def find_by_ids(cls, application_ids) -> Application:
+        """Find application that matches the provided id."""
+        return cls.query.filter(cls.id.in_(application_ids))
+
+    @classmethod
     def find_all(cls, page_no, limit):
         """Fetch all application."""
         return cls.query.paginate(page_no, limit, False).items
+
+    @classmethod
+    def find_all_by_user(cls, user_id, page_no, limit):
+        """Fetch all application."""
+        return cls.query.filter(Application.created_by == user_id).paginate(page_no, limit, False).items
+
+    @classmethod
+    def find_all_by_user_count(cls, user_id):
+        """Fetch all application."""
+        return cls.query.filter(Application.created_by == user_id).count()
 
     @classmethod
     def find_by_form_id(cls, form_id, page_no, limit):

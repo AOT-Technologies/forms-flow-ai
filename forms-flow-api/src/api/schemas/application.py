@@ -37,7 +37,8 @@ class ApplicationSchema(Schema):
     modified = fields.Str()
 
     variables = fields.Raw(required=True)
-    form_id = fields.Str(data_key='formId', required=True)
+    form_id = fields.Str(data_key='formId')
+    submission_id = fields.Str(data_key='submissionId')
 
 
 class ApplicationUpdateSchema(Schema):

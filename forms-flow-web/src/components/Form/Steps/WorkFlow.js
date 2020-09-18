@@ -92,9 +92,6 @@ const WorkFlow = (props) => {
                   <Grid item xs={12} spacing={3}>
                     <ProcessDiagram
                       process_key={workflow && workflow.value}
-                      // onShown={onShown}
-                      // onLoading={onLoading}
-                      // onError={onError}
                     />
                   </Grid>
                 )}

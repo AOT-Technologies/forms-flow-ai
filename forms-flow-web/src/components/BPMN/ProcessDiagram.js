@@ -5,6 +5,7 @@ import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
 
 import UserService from "../../services/UserService";
 import API from "../../apiManager/endpoints";
+import "./bpm.scss"
 
 
 const ProcessDiagram = class extends Component {
@@ -128,7 +129,7 @@ const ProcessDiagram = class extends Component {
   render() {
 
     return (
-      <div className="react-bpmn-diagram-container" ref={ this.containerRef }></div>
+      <div className="react-bpmn-diagram-container bpm-container" ref={ this.containerRef }></div>
     );
   }
 };

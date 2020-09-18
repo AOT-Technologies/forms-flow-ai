@@ -43,3 +43,17 @@ export const serviceActionError = (data) => dispatch => {
     payload: 'Error Handling API'
   })
 }
+
+export const setApplicationProcess = (data) => dispatch =>{
+  dispatch({
+      type:ACTION_CONSTANTS.APPLICATION_PROCESS,
+      payload:data
+  })
+}
+
+export const setApplicationListCount = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.SET_APPLICATION_LIST_COUNT,
+    payload:data
+  })
+}

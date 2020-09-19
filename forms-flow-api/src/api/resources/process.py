@@ -9,7 +9,7 @@ from ..exceptions import BusinessException
 from ..services import ProcessService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
-
+from ..schemas.process import ProcessMessageSchema
 
 API = Namespace('Process', description='Process')
 
@@ -60,7 +60,37 @@ class ProcessDefinitionResource(Resource):
         except BusinessException as err:
              return err.error, err.status_code
 
+@cors_preflight('POST,OPTIONS')
+@API.route('/event', methods=['POST', 'OPTIONS'])
+class ProcessEventResource(Resource):
+    """Resource for managing state."""
 
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    @auth.require
+    def post():
+        message_json = request.get_json()
+        """Get states by process and task key."""
+        try:
+            return jsonify(ProcessService.post_message(ProcessMessageSchema.load(message_json), request.headers["Authorization"])), HTTPStatus.OK
+        except BusinessException as err:
+            return err.error, err.status_code
+
+@cors_preflight('POST,OPTIONS')
+@API.route('/event', methods=['POST', 'OPTIONS'])
+class ProcessEventResource(Resource):
+    """Resource for managing state."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    @auth.require
+    def post():
+        message_json = request.get_json()
+        """Get states by process and task key."""
+        try:
+            return jsonify(ProcessService.post_message(ProcessMessageSchema.load(message_json), request.headers["Authorization"])), HTTPStatus.OK
+        except BusinessException as err:
+            return err.error, err.status_code
 
 
 

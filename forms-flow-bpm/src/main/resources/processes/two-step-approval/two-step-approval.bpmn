@@ -7,8 +7,8 @@
     <bpmn:laneSet id="LaneSet_1e6v5og">
       <bpmn:lane id="Lane_0t984kw" name="Client/Submitter">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>IntermediateThrowEvent_0mxbwgy</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>ExclusiveGateway_0xgo1b6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>IntermediateThrowEvent_0mxbwgy</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_1eegye4" name="Sraff Group - Clerk">
         <bpmn:flowNodeRef>Clerk</bpmn:flowNodeRef>
@@ -87,12 +87,6 @@ execution.setVariable('sendback_by', "Clerk");</camunda:script>
       </bpmn:extensionElements>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Returned'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_0mxbwgy">
-      <bpmn:incoming>SequenceFlow_1hwdics</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_0ppj3wo</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_08cf9rf</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_1tj95qc" messageRef="Message_1ngb2eg" />
-    </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="SequenceFlow_0ppj3wo" name="Returned" sourceRef="Approver" targetRef="IntermediateThrowEvent_0mxbwgy">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
@@ -128,6 +122,12 @@ execution.setVariable('sendback_by', "Approver");</camunda:script>
       </bpmn:extensionElements>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${sendback_by == 'Approver'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_0mxbwgy">
+      <bpmn:incoming>SequenceFlow_1hwdics</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0ppj3wo</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_08cf9rf</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1tj95qc" messageRef="Message_1ngb2eg" />
+    </bpmn:intermediateCatchEvent>
   </bpmn:process>
   <bpmn:message id="Message_1ngb2eg" name="application_resubmitted" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">

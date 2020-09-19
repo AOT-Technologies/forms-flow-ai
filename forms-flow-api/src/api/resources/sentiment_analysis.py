@@ -1,4 +1,5 @@
 """" API endpoints for sentiment analysis """
+from http import HTTPStatus
 
 from flask import jsonify
 from flask_pymongo import PyMongo
@@ -28,4 +29,4 @@ def sentiment_analysis_api():
     parsejson = request.get_json()
     text = parsejson["text"]
     response = pipeline(text=text)
-    return jsonify(response)
+    return jsonify(response), HTTPStatus.OK

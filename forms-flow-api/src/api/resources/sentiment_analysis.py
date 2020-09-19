@@ -20,7 +20,7 @@ def sentiment_analysis_mongodb_insert():
     output_response = jsonify(response)
     post_data = {input: text, output: output_response}
     schema = Database.create(post_data)
-    return "Data was entered into mongo db database"
+    return "Data was entered into mongo db database", HTTPStatus.OK
 
 
 @API.route("/api", methods=["POST", "GET"])

@@ -52,7 +52,7 @@ fieldset[disabled] .btn-primary.active{
 }
 
 [cam-widget-header] a, [cam-widget-header] a:hover, [cam-widget-header] a:focus{
-  color: #fff;
+  color: #000000;
 }
 
 .three-cols-layout .column-left .list-unstyled>.item.active, .three-cols-layout .column-center .list-unstyled>li.active, .three-cols-layout .column-left .list-unstyled>.item.active:hover, .three-cols-layout .column-center .list-unstyled>li.active:hover {

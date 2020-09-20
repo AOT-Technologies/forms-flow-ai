@@ -22,6 +22,7 @@ const ApplicationList = () => {
   const isApplicationListLoading = useSelector((state) => state.applications.isApplicationListLoading);
   const applicationCount = useSelector((state) => state.applications.applicationCount);
   //const isApplicationUpdating = useSelector(state => state.applications.isApplicationUpdating);
+  console.log('applicationCount >'+applicationCount);
   const dispatch= useDispatch();
 
   useEffect(()=>{
@@ -54,13 +55,13 @@ const ApplicationList = () => {
 
 
 
-  console.log("here to get all Applications data", applications);
+  console.log("here to get all Applications data", applications[0]);
 
   return (
     applicationCount > 0 ? (
       <ToolkitProvider
         keyField="id"
-        data={applications}
+        data={applications[0]}
         columns={columns}
         search
       >

@@ -4,6 +4,12 @@ export const taskSubmissionFormatter = (taskSubmissionData) =>{
   return res;
 }
 
+export const applicationSubmissionFormatter = (applicationSubmissionData) =>{
+  const res = {};
+  applicationSubmissionData.forEach(applicationSubmission => res[applicationSubmission.name] = applicationSubmission.value);
+  return res;
+}
+
 export const insightDashboardFormatter = (dashboardsData) =>{
   const dashboards = dashboardsData.map(dashboard => {
     return  {value:dashboard.slug, label:dashboard.name}

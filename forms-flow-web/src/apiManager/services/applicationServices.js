@@ -5,8 +5,10 @@ import {
   serviceActionError,
   setApplicationList,
   setApplicationDetail,
+  setLoader,setApplicationDetailLoader,
   setApplicationProcess, setApplicationListCount
 } from "../../actions/applicationActions";
+import { applicationSubmissionFormatter } from "./formatterService";
 import {replaceUrl} from "../../helper/helper";
 
 export const getAllApplicationsByFormId = (formId,...rest) => {
@@ -32,6 +34,32 @@ export const getAllApplicationsByFormId = (formId,...rest) => {
       });
   };
 };
+
+export const getApplicationDetail = (id, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  return (dispatch) => {
+    httpGETRequest(
+      `${API.GET_ALL_APPLICATIONS + id}`
+    )
+      .then((res) => {
+        if (res.data) {
+          const application = res.data.application;
+          const applicationVariables = applicationSubmissionFormatter(application.variables);
+          delete application.variables;
+          let applicationDetail = { ...application, ...applicationVariables };
+          dispatch(setApplicationDetail(applicationDetail));
+          dispatch(setLoader(false));
+          done(null, applicationDetail);
+        }
+      })
+      .catch((error) => {
+        dispatch(serviceActionError(error));
+        dispatch(setLoader(false));
+        done(error);
+      });
+  };
+};
+
 
 export const getAllApplications = (pageNo=1, limit=10,...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -71,8 +99,8 @@ export const getApplicationById = (applicationId, ...rest) => {
     httpGETRequest(apiUrlgetApplication)
       .then((res) => {
         if (res.data) {
-          const application = res.data.application;
-          console.log("Application", application);
+          const application = res.data;
+          console.log("Application in api manager", application);
           dispatch(setApplicationDetail(application));
           done(null, application);
         } else {
@@ -80,11 +108,13 @@ export const getApplicationById = (applicationId, ...rest) => {
           dispatch(serviceActionError(res));
         }
         done(null, res.data);
+        dispatch(setApplicationDetailLoader(false));
       })
       .catch((error) => {
         console.log("Error", error);
         dispatch(serviceActionError(error));
         done(error);
+        dispatch(setApplicationDetailLoader(false))
       });
   };
 };

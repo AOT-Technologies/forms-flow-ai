@@ -68,9 +68,9 @@ aside li.active>a {
 }
 
 .navbar-header:after {
-  content: "Process Engine";
+  content: "formsflow.ai";
   display: inline-flex;
-  color: #fff;
+  color: #000000;
   font-size: 30px;
   padding: 7px;
   line-height: 36px;

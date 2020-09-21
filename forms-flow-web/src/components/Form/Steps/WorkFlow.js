@@ -50,7 +50,7 @@ const WorkFlow = (props) => {
           steps={steps}
         />
       </Grid>
-      <Grid item sm={8} xs={12} spacing={3}>
+      <Grid item sm={10} xs={12} spacing={3}>
         <Card variant="outlined" className="card-overflow">
           <CardContent>
             <Grid item sm={8} xs={12} spacing={3}>

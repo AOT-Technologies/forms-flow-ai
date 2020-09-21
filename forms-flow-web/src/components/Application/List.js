@@ -21,8 +21,6 @@ const ApplicationList = () => {
   const applications = useSelector(state=> state.applications.applicationsList)
   const isApplicationListLoading = useSelector((state) => state.applications.isApplicationListLoading);
   const applicationCount = useSelector((state) => state.applications.applicationCount);
-  //const isApplicationUpdating = useSelector(state => state.applications.isApplicationUpdating);
-  console.log('applicationCount >'+applicationCount);
   const dispatch= useDispatch();
 
   useEffect(()=>{

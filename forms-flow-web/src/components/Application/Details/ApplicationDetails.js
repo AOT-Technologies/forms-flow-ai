@@ -6,7 +6,7 @@ import moment from "moment";
 
 
 
-const ViewApplication = (props) => {
+const ApplicationDetails = (props) => {
   const application = props.application;
   return (
     <Table responsive>
@@ -49,4 +49,4 @@ const ViewApplication = (props) => {
   );
 };
 
-export default ViewApplication;
+export default ApplicationDetails;

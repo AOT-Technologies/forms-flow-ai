@@ -17,7 +17,7 @@ const ViewTask = (props) => {
     const {taskId} = useParams();
     const taskDetail = useSelector(state => state.tasks.taskDetail);
     const applicationProcess = useSelector(state => state.applications.applicationProcess);
-   
+
     const isLoading = useSelector(state => state.tasks.isLoading);
     const dispatch = useDispatch();
     const {getTask} = props;
@@ -54,7 +54,7 @@ const ViewTask = (props) => {
           <Tab eventKey="form" title="Form">
             <View page="task-detail"/>
           </Tab>
-          <Tab eventKey="history" title="Application Audit">
+          <Tab eventKey="history" title="Application History">
             <History page="task-detail"/>
           </Tab>
           <Tab eventKey="process-diagram" title="Process Diagram">

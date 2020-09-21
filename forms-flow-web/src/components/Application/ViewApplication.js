@@ -3,9 +3,11 @@ import {Link,useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {Tabs, Tab} from "react-bootstrap";
 import Details from "./Details";
-import {getApplicationById} from "../../apiManager/services/applicationServices";
+import {getApplicationById,getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
 import Loading from "../../containers/Loading";
 import {setApplicationDetailLoader} from "../../actions/applicationActions";
+import ProcessDiagram from "../BPMN/ProcessDiagram";
+import History from "./History";
 
 //import { useDispatch } from 'react-redux'
 
@@ -13,11 +15,13 @@ const ViewApplication = () => {
   const {applicationId} = useParams();
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
+  const applicationProcess = useSelector(state => state.applications.applicationProcess);
   const dispatch= useDispatch();
 
   useEffect(()=>{
       dispatch(setApplicationDetailLoader(true));
       dispatch(getApplicationById(applicationId));
+      dispatch(getApplicationFormDataByAppId(applicationId));
   },[applicationId, dispatch]);
 
 
@@ -48,13 +52,13 @@ const ViewApplication = () => {
         <Tab eventKey="details" title="Details">
           <Details application={applicationDetail}/>
         </Tab>
-        {/* <Tab eventKey="history" title="Application History">
-          <History page="application-detail"/>
-        </Tab> */}
+        <Tab eventKey="history" title="Application History">
+            <History page="task-detail"/>
+        </Tab>
         <Tab eventKey="process-diagram" title="Process Diagram">
-          {/* <ProcessDiagram
-              process_key={applicationDetail.processKey}
-          /> */}
+          <ProcessDiagram
+              process_key={applicationProcess.processKey}
+          />
         </Tab>
       </Tabs>
     </div>

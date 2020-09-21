@@ -16,6 +16,7 @@ const API = {
   PROCESSES: `${WEB_BASE_URL}/process`,
   FORM: `${WEB_BASE_URL}/form`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
+  APPLICATION_EVENT_UPDATE:`${WEB_BASE_URL}/process/event`,
 };
 
 export default API;

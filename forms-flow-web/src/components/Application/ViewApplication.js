@@ -24,11 +24,6 @@ const ViewApplication = () => {
       dispatch(getApplicationFormDataByAppId(applicationId));
   },[applicationId, dispatch]);
 
-
-  console.log('applicationDetail '+applicationDetail);
-  console.log('isApplicationDetailLoading '+isApplicationDetailLoading);
-
-
   if (isApplicationDetailLoading) {
     return <Loading/>;
   }

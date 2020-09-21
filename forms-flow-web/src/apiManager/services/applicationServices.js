@@ -1,14 +1,13 @@
-import { httpGETRequest } from "../httpRequestHandler";
+import {httpGETRequest, httpPOSTRequest} from "../httpRequestHandler";
 import API from "../endpoints";
 import {
   setApplicationListByFormId,
   serviceActionError,
   setApplicationList,
   setApplicationDetail,
-  setLoader,setApplicationDetailLoader,
+  setApplicationDetailLoader,
   setApplicationProcess, setApplicationListCount
 } from "../../actions/applicationActions";
-import { applicationSubmissionFormatter } from "./formatterService";
 import {replaceUrl} from "../../helper/helper";
 
 export const getAllApplicationsByFormId = (formId,...rest) => {
@@ -34,32 +33,6 @@ export const getAllApplicationsByFormId = (formId,...rest) => {
       });
   };
 };
-
-export const getApplicationDetail = (id, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  return (dispatch) => {
-    httpGETRequest(
-      `${API.GET_ALL_APPLICATIONS + id}`
-    )
-      .then((res) => {
-        if (res.data) {
-          const application = res.data.application;
-          const applicationVariables = applicationSubmissionFormatter(application.variables);
-          delete application.variables;
-          let applicationDetail = { ...application, ...applicationVariables };
-          dispatch(setApplicationDetail(applicationDetail));
-          dispatch(setLoader(false));
-          done(null, applicationDetail);
-        }
-      })
-      .catch((error) => {
-        dispatch(serviceActionError(error));
-        dispatch(setLoader(false));
-        done(error);
-      });
-  };
-};
-
 
 export const getAllApplications = (pageNo=1, limit=10,...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -147,6 +120,55 @@ export const getApplicationFormDataByAppId = (application_id,...rest) => {
       });
   };
 };
+
+export const applicationCreate = (data, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const URL = API.APPLICATION_START;
+  return (dispatch) => {
+    httpPOSTRequest(URL, data)
+      .then((res) => {
+        if (res.data) {
+          done(null, res.data);
+        } else {
+          dispatch(serviceActionError(res));
+          done("Error Posting data");
+        }
+      })
+      .catch((error) => {
+        dispatch(serviceActionError(error));
+        done(error);
+      });
+  };
+};
+
+
+
+export const updateApplicationEvent = (data,...rest) => {
+  /* * Data Format
+ {
+  "messageName" : "application_resubmitted",
+  "processInstanceId":"a8dad78e-fa3b-11ea-a119-0242ac1f0003"
+}
+* */
+  const done = rest.length ? rest[0] : () => {};
+  return (dispatch) => {
+    httpPOSTRequest(API.APPLICATION_EVENT_UPDATE, data)
+      .then((res) => {
+        if (res.data) {
+          done(null, res.data);
+        } else {
+          dispatch(serviceActionError(res));
+          done("Error Posting data");
+        }
+      })
+      .catch((error) => {
+        dispatch(serviceActionError(error));
+        done(error);
+      });
+  };
+};
+
+
 
 
 

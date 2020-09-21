@@ -4,12 +4,6 @@ export const taskSubmissionFormatter = (taskSubmissionData) =>{
   return res;
 }
 
-export const applicationSubmissionFormatter = (applicationSubmissionData) =>{
-  const res = {};
-  applicationSubmissionData.forEach(applicationSubmission => res[applicationSubmission.name] = applicationSubmission.value);
-  return res;
-}
-
 export const insightDashboardFormatter = (dashboardsData) =>{
   const dashboards = dashboardsData.map(dashboard => {
     return  {value:dashboard.slug, label:dashboard.name}
@@ -29,7 +23,7 @@ export const addApplicationDetailsToFormComponent = (formObjData) => {
 
 export const getRelevantApplications = (applications, submissionData) => {
   submissionData.submissions = submissionData.submissions.map( submission => {
-    const applicationData = applications.find(application => application.formUrl.includes(submission._id));
+    const applicationData = applications.find(application => application.submissionId === submission._id);
     if(applicationData){
       submission.data.applicationId = applicationData.id;
       submission.data.applicationStatus = applicationData.applicationStatus;

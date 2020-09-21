@@ -15,7 +15,7 @@ export const getAllApplicationsByFormId = (formId,...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
-    httpGETRequest(`${API.GET_ALL_APPLICATIONS_FROM_FORM_ID}/${formId}?pageNo=1&limit=1000`)
+    httpGETRequest(`${API.GET_ALL_APPLICATIONS_FROM_FORM_ID}/${formId}`)
       .then((res) => {
         if (res.data) {
           const applications = res.data.applications || [];
@@ -65,7 +65,8 @@ export const getAllApplications = (pageNo=1, limit=10,...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
-    httpGETRequest(`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`)
+    //`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
+    httpGETRequest(API.GET_ALL_APPLICATIONS)
       .then((res) => {
         if (res.data) {
           const applications = res.data.applications || [];

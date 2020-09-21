@@ -61,7 +61,7 @@ const ApplicationList = () => {
     applicationCount > 0 ? (
       <ToolkitProvider
         keyField="id"
-        data={applications[0]}
+        data={applications}
         columns={columns}
         search
       >

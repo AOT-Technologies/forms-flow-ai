@@ -16,13 +16,9 @@ const ViewApplication = () => {
   const dispatch= useDispatch();
 
   useEffect(()=>{
-    if(applicationDetail && applicationDetail.id === applicationId){
-      dispatch(setApplicationDetailLoader(false))
-    }else{
+      dispatch(setApplicationDetailLoader(true));
       dispatch(getApplicationById(applicationId));
-    }
-    console.log("here to get Application details",applicationId);
-  },[applicationId, dispatch,applicationDetail]);
+  },[applicationId, dispatch]);
 
 
   console.log('applicationDetail '+applicationDetail);

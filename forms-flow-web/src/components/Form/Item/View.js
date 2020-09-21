@@ -6,10 +6,11 @@ import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
 
 import Loading from '../../../containers/Loading';
-import { applicationCreate, getProcessReq } from "../../../apiManager/services/bpmServices";
+import { getProcessReq } from "../../../apiManager/services/bpmServices";
 import { setFormSubmissionError } from "../../../actions/formActions";
 import SubmissionError from '../../../containers/SubmissionError';
 import { setUpdateLoader } from "../../../actions/taskActions";
+import {applicationCreate} from "../../../apiManager/services/applicationServices";
 
 const View = class extends Component {
   UNSAFE_componentWillMount() {

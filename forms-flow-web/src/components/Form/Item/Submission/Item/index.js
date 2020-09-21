@@ -1,78 +1,79 @@
-import { Link, Route, Switch } from 'react-router-dom'
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { getSubmission } from "react-formio";
+import {Link, Route, Switch, useParams} from 'react-router-dom'
+import React, {useEffect, useState} from 'react'
+import {useDispatch, useSelector} from 'react-redux'
+import {getSubmission, selectRoot} from "react-formio";
 
 import View from './View'
 import Edit from './Edit'
+import {getApplicationById} from "../../../../../apiManager/services/applicationServices";
+import {setApplicationDetailLoader} from "../../../../../actions/applicationActions";
 
-const Item = class extends Component {
-  constructor() {
-    super();
+import {getUserRolePermission} from "../../../../../helper/user";
+import {CLIENT, STAFF_REVIEWER} from "../../../../../constants/constants";
+import {CLIENT_EDIT_STATUS} from "../../../../../constants/applicationConstants";
 
-    this.state = {
-      submissionId: ''
+const Item = (props) => {
+  const {formId, submissionId} = useParams();
+  const dispatch = useDispatch();
+  const path = props.location.pathname;
+  const applicationId = useSelector((state) => selectRoot('submission', state)?.submission?.data?.applicationId || null);
+  const userRoles = useSelector((state) => {
+    return selectRoot("user", state).roles;
+  });
+  const applicationStatus = useSelector(state => state.applications.applicationDetail?.applicationStatus || '');
+
+  const [editAllowed, setEditAllowed] = useState(false);
+
+  useEffect(() => {
+    dispatch(getSubmission('submission', submissionId, formId))
+  }, [submissionId, formId, dispatch]);
+
+  useEffect(() => {
+    if (applicationId) {
+      dispatch(setApplicationDetailLoader(true));
+      dispatch(getApplicationById(applicationId));
     }
-  }
+  }, [applicationId, dispatch]);
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.match.params.submissionId !== prevState.submissionId) {
-      nextProps.getSubmission(nextProps.match.params.submissionId);
+  useEffect(() => {
+    if (applicationStatus) {
+      if (getUserRolePermission(userRoles, STAFF_REVIEWER)) {
+        setEditAllowed(!CLIENT_EDIT_STATUS.includes(applicationStatus));
+      } else if (getUserRolePermission(userRoles, CLIENT)) {
+        setEditAllowed(CLIENT_EDIT_STATUS.includes(applicationStatus));
+      }
     }
+  }, [applicationStatus, userRoles]);
 
-    return {
-      submissionId: nextProps.match.params.submissionId
-    };
-  }
-  render() {
-    const { match: { params: { formId, submissionId } } } = this.props;
-    let path = this.props.location.pathname;
-    return (
-      <div>
-        {(path.indexOf("delete") < 0) ?
-          <ul className="nav nav-tabs">
-            <li className="nav-item">
-              <Link className="nav-link" to={`/form/${formId}/submission`}>
-                <i className="fa fa-chevron-left"></i>
-              </Link>
-            </li>
-            {(path.indexOf("edit") > 0) ?
-              <li className="nav-item">
-                <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}`}>
-                  <i className="fa fa-eye"></i> View
+
+  return (
+    <div>
+      <ul className="nav nav-tabs">
+        <li className="nav-item">
+          <Link className="nav-link" to={`/form/${formId}/submission`}>
+            <i className="fa fa-chevron-left"/>
+          </Link>
+        </li>
+        {(path.indexOf("edit") > 0) ?
+          <li className="nav-item">
+            <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}`}>
+              <i className="fa fa-eye"/> View
             </Link>
-              </li>
-              :
-              <li className="nav-item">
-                <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}/edit`}>
-                  <i className="fa fa-edit"></i> Edit
-            </Link>
-              </li>
-            }
-          </ul>
+          </li>
           :
-          null
+          editAllowed ? (<li className="nav-item">
+            <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}/edit`}>
+              <i className="fa fa-edit"/> Edit
+            </Link>
+          </li>) : null
         }
-        <Switch>
-          <Route exact path="/form/:formId/submission/:submissionId" component={View} />
-          <Route path="/form/:formId/submission/:submissionId/edit" component={Edit} />
-        </Switch>
-      </div>
-    )
-  }
+      </ul>
+      <Switch>
+        <Route exact path="/form/:formId/submission/:submissionId" component={View}/>
+        {editAllowed ?<Route path="/form/:formId/submission/:submissionId/edit" component={Edit}/>:null}
+      </Switch>
+    </div>
+  );
 }
 
-const mapStateToProps = () => {
-  return {};
-};
-
-const mapDispatchToProps = (dispatch, ownProps) => {
-  return {
-    getSubmission: (id) => dispatch(getSubmission('submission', id, ownProps.match.params.formId))
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Item)
+export default Item;

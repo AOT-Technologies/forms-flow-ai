@@ -7,4 +7,4 @@ export const defaultSubmissionData = {
     },
     sort: "",
     submissions:[],
-  };
+};

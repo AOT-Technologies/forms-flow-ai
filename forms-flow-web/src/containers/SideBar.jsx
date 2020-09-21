@@ -5,8 +5,8 @@ import { useSelector } from "react-redux";
 import { selectRoot } from "react-formio";
 import { useLocation } from "react-router-dom";
 
-import { STAFF_REVIEWER } from "../constants/constants";
-import { getUserRolePermission} from "../helper/user";
+import {CLIENT, STAFF_REVIEWER } from "../constants/constants";
+import { getUserRolePermission } from "../helper/user";
 
 import "./styles.scss";
 
@@ -36,6 +36,19 @@ const SideBar = (props) => {
               <i className="fa fa-wpforms" />
               Forms
             </Link>
+          </li>
+          <li className={`${pathname.match(/^\/application/) ? "active" : ""}`}>
+            {getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)? (
+              <Link
+                to="/application"
+                className={`main-nav nav-link ${
+                  pathname.match(/^\/application/) ? "active-tab" : ""
+                }`}
+              >
+                <i className="fa fa-list-alt" />
+                Applications
+              </Link>
+            ) : null}
           </li>
           <li className={`${pathname.match(/^\/task/) ? "active" : ""}`}>
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (

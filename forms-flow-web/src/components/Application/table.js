@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import startCase from "lodash/startCase";
 // import { textFilter, selectFilter } from "react-bootstrap-table2-filter";
 
 export const defaultSortedBy = [
@@ -10,7 +11,7 @@ export const defaultSortedBy = [
 ];
 
 
-function linkSubmision(cell, row) {
+const linkApplication = (cell, row) => {
   return (
     <Link to={`/application/${row.id}`} title={cell}>
       {cell}
@@ -18,8 +19,24 @@ function linkSubmision(cell, row) {
   );
 }
 
+
+const linkSubmision = (cell) => {
+  return (
+    <div title={cell} onClick={()=> window.open(cell, "_blank")}>
+        <span className="btn btn-primary btn-sm form-btn"><span><i
+          className="fa fa-eye"/>&nbsp;</span>View Submission</span>
+    </div>
+  );
+}
+
+
 function timeFormatter(cell) {
   return <label title={cell}>{cell}</label>;
+}
+
+const nameFormatter = (cell) => {
+  const name= startCase(cell);
+  return <label className="text-truncate w-100" title={name}>{startCase(name)}</label>;
 }
 
 export const columns_history = [
@@ -38,28 +55,24 @@ export const columns = [
   {
     dataField: "id",
     text: "Application ID",
-    formatter: linkSubmision,
+    formatter: linkApplication,
     sort: true,
   },
   {
     dataField: "applicationName",
-    text: "Form Type",
+    text: "Application Name",
     sort: true,
+    formatter: nameFormatter
   },
   {
     dataField: "applicationStatus",
     text: "Application Status",
-    sort: true,
-    sortFunc: (a, b, order) => {
-      if (order === "asc") {
-          return b - a;
-      }
-      return a - b;
-    }
+    sort: true
   },
   {
     dataField: "formUrl",
-    text: "Link to Form Submission"
+    text: "Link to Form Submission",
+    formatter: linkSubmision,
   },
   // {
   //   dataField: "submittedBy",

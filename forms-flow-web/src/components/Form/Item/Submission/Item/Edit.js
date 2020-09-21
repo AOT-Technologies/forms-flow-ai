@@ -108,11 +108,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
               "messageName" : RESUBMITTED_STATUS_EVENT,
               "processInstanceId": applicationDetail.processInstanceId
             }
-            dispatch(updateApplicationEvent(data));
+            dispatch(updateApplicationEvent(data,()=>{
+              dispatch(resetSubmissions('submission'));
+              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+            }));
+          }else{
+            dispatch(resetSubmissions('submission'));
+            dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
           }
-
-          dispatch(resetSubmissions('submission'));
-          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
         }
         else {
           const ErrorDetails = { modalOpen: true, message: "Submission cannot be done" }

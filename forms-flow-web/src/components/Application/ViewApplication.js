@@ -1,6 +1,8 @@
 import React, {useEffect} from 'react'
 import {Link,useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
+import startCase from "lodash/startCase";
+
 import {Tabs, Tab} from "react-bootstrap";
 import Details from "./Details";
 import {getApplicationById,getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
@@ -39,7 +41,7 @@ const ViewApplication = () => {
         </span>
         <h3>
           <span className="application-head-details">Applications /</span>{" "}
-          {`${applicationDetail.applicationName}`}
+          {`${startCase(applicationDetail.applicationName)}`}
         </h3>
       </div>
       <br/>
@@ -47,7 +49,7 @@ const ViewApplication = () => {
         <Tab eventKey="details" title="Details">
           <Details application={applicationDetail}/>
         </Tab>
-        <Tab eventKey="history" title="Application History">
+        <Tab eventKey="history" title="History">
             <History page="task-detail"/>
         </Tab>
         <Tab eventKey="process-diagram" title="Process Diagram">

@@ -1,7 +1,8 @@
 import React from "react";
 import {Table} from "react-bootstrap";
 import moment from "moment";
-
+import { Link } from "react-router-dom";
+import startCase from "lodash/startCase";
 //import {setUpdateLoader} from "../../../actions/taskActions";
 
 
@@ -14,7 +15,7 @@ const ApplicationDetails = (props) => {
       <tr>
         <td className="border-0">Application Name</td>
         <td className="border-0">:</td>
-        <td className="border-0">{application.applicationName}</td>
+        <td className="border-0">{startCase(application.applicationName)}</td>
       </tr>
       <tr>
         <td className="border-0">Application Id</td>
@@ -41,7 +42,9 @@ const ApplicationDetails = (props) => {
       <tr>
         <td className="border-0">Link to form submission</td>
         <td className="border-0">:</td>
-        <td className="border-0">{application.formUrl}</td>
+        <td className="border-0"> <Link to={`/form/${application.formId}/submission/${application.submissionId}`} title=''>
+          View Submission
+        </Link></td>
         {/*TODO update*/}
       </tr>
       </tbody>

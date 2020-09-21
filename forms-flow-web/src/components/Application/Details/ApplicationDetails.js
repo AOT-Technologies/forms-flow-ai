@@ -42,7 +42,7 @@ const ApplicationDetails = (props) => {
       <tr>
         <td className="border-0">Link to form submission</td>
         <td className="border-0">:</td>
-        <td className="border-0"> <Link to={`/form/${application.formId}/submission/${application.submissionId}`}>
+        <td className="border-0"> <Link to={`/form/${application.formId}/submission/${application.submissionId}`} title=''>
           View Submission
         </Link></td>
         {/*TODO update*/}

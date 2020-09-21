@@ -7,6 +7,7 @@ import {getApplicationById,getApplicationFormDataByAppId} from "../../apiManager
 import Loading from "../../containers/Loading";
 import {setApplicationDetailLoader} from "../../actions/applicationActions";
 import ProcessDiagram from "../BPMN/ProcessDiagram";
+import History from "./History";
 
 //import { useDispatch } from 'react-redux'
 
@@ -52,7 +53,7 @@ const ViewApplication = () => {
           <Details application={applicationDetail}/>
         </Tab>
         <Tab eventKey="history" title="Application History">
-          {/* <History page="application-detail"/> */}
+            <History page="task-detail"/>
         </Tab>
         <Tab eventKey="process-diagram" title="Process Diagram">
           <ProcessDiagram

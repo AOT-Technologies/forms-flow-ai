@@ -42,6 +42,7 @@ class Auth():
             def wrapper(*args, **kwargs):
                 if jwt.contains_role(roles):
                     return f(*args, **kwargs)
+        
                 raise BusinessException('Access Denied', HTTPStatus.UNAUTHORIZED)
             return wrapper
         return decorated

@@ -90,9 +90,26 @@ class ApplicationService():
         return application_schema.dump(applications, many=True)
 
     @staticmethod
+    def get_all_applications_form_id_user(form_id,user_id,page_no, limit):
+        """Get all applications."""
+        if page_no:
+            page_no = int(page_no)
+        if limit:
+            limit = int(limit)
+
+        applications = Application.find_by_form_id_user(form_id,user_id, page_no, limit)
+        application_schema = ApplicationSchema()
+        return application_schema.dump(applications, many=True)
+
+    @staticmethod
     def get_all_applications_form_id_count(form_id):
         """Get application count."""
         return Application.find_all_by_form_id_count(form_id)
+
+    @staticmethod
+    def get_all_applications_form_id_user_count(form_id, user_id):
+        """Get application count."""
+        return Application.find_all_by_form_id_user_count(form_id,user_id)
 
     @staticmethod
     def get_application(application_id):

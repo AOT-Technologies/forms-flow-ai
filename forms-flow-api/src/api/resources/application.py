@@ -15,7 +15,6 @@ from ..utils.util import cors_preflight
 
 import json
 
-import jwt
 
 API = Namespace('Application', description='Application')
 
@@ -35,22 +34,26 @@ class ApplicationsResource(Resource):
             page_no = dict_data['page_no']
             limit = dict_data['limit']
         else:
-            page_no = 1
-            limit = 100
-        token= request.headers["Authorization"].split(" ")[1:][0]
-        payload=jwt.decode(token,  verify=False)
-        if auth.has_role(['formsflow-client']):
-            application_schema = ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications_by_user(payload['preferred_username'],page_no, limit)),
-            application_count = ApplicationService.get_all_application_by_user_count(payload['preferred_username'])
-        else:
-            application_schema = ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications(page_no, limit)),
+            page_no = 0
+            limit = 0
+        if auth.has_role(['formsflow-reviewer']):
+            application_schema = ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications(page_no, limit))
             application_count = ApplicationService.get_all_application_count()
-        return jsonify({
-            'applications': application_schema,
-            'totalCount': application_count,
-            'limit': limit,
-            'pageNo': page_no
-        }), HTTPStatus.OK
+        else:
+            application_schema = ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications_by_user(g.token_info.get('preferred_username'),page_no, limit))
+            application_count = ApplicationService.get_all_application_by_user_count(g.token_info.get('preferred_username'))
+        if page_no > 0:
+            return jsonify({
+                'applications': application_schema,
+                'totalCount': application_count,
+                'limit': limit,
+                'pageNo': page_no
+            }), HTTPStatus.OK
+        else:
+            return jsonify({
+                'applications': application_schema,
+                'totalCount': application_count
+            }), HTTPStatus.OK
 
 
     @staticmethod
@@ -93,7 +96,7 @@ class ApplicationResourceById(Resource):
         try:
             application_schema = ApplicationUpdateSchema()
             dict_data = application_schema.load(application_json)
-            sub = g.token_info.get('sub')
+            sub = g.token_info.get('preferred_username')
             dict_data['modified_by'] = sub
             ApplicationService.update_application(application_id, dict_data)
             return 'Updated successfully', HTTPStatus.OK
@@ -115,14 +118,31 @@ class ApplicationResourceByFormId(Resource):
             page_no = dict_data['page_no']
             limit = dict_data['limit']
         else:
-            page_no = 1
-            limit = 100
-        return jsonify({
-            'applications': ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications_form_id(form_id,page_no, limit)),
-            'totalCount': ApplicationService.get_all_applications_form_id_count(form_id),
-            'limit': limit,
-            'pageNo': page_no
-        }), HTTPStatus.OK
+            page_no = 0
+            limit = 0
+
+        if auth.has_role(['formsflow-reviewer']):
+            application_schema = ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications_form_id(form_id,page_no, limit))
+            application_count = ApplicationService.get_all_applications_form_id_count(form_id)
+        else:
+            application_schema = ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications_form_id_user(form_id,g.token_info.get('preferred_username'),page_no, limit))
+            application_count = ApplicationService.get_all_applications_form_id_user_count(form_id,g.token_info.get('preferred_username'))
+
+        if page_no == 0:
+            return jsonify({
+                'applications': application_schema,
+                'totalCount': application_count
+            }), HTTPStatus.OK
+        else:
+            return jsonify({
+                'applications': application_schema,
+                'totalCount': application_count,
+                'limit': limit,
+                'pageNo': page_no
+            }), HTTPStatus.OK
+
+
+
 
 @cors_preflight('POST,OPTIONS')
 @API.route('/create', methods=['POST', 'OPTIONS'])
@@ -139,7 +159,7 @@ class ApplicationResourcesByIds(Resource):
         try:
             application_schema = ApplicationSchema()
             dict_data = application_schema.load(application_json)
-            sub = g.token_info.get('sub')
+            sub = g.token_info.get('preferred_username')
             dict_data['created_by'] = sub
             application = ApplicationService.create_application(dict_data, request.headers["Authorization"])
 
@@ -206,4 +226,4 @@ class ProcessMapperResourceByApplicationId(Resource):
         try:
              return ApplicationService.get_application_form_mapper_by_id(application_id), HTTPStatus.OK
         except BusinessException as err:
-             return err.error, err.status_code   
+             return err.error, err.status_code

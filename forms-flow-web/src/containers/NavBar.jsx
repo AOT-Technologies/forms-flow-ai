@@ -1,16 +1,22 @@
 import React from "react";
-import {Nav, Navbar, Button} from "react-bootstrap";
+import {Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
-
+import { selectRoot } from "react-formio";
 import UserService from "../services/UserService";
-
+import { getUserRoleName } from "../helper/user";
 
 const NavBar = () => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-  const logout = () => {
-    UserService.userLogout();
-  }
+  const user = useSelector((state) => {
+      return selectRoot("user", state).userDetail;
+    });
+    const userRoles = useSelector((state) => {
+      return selectRoot("user", state).roles;
+    });
+    const logout = () => {
+      UserService.userLogout();
+    }
   return (
     <header>
       <Navbar expand="lg" bg="white" className="topheading-border-bottom">
@@ -36,38 +42,19 @@ const NavBar = () => {
           />
           <Nav className="d-none d-md-block">
             {isAuthenticated ? (
-              <>
-                <i
-                  className="fa fa-sign-out text-black-50 fa-lg"
-                  aria-hidden="true"
-                />
-                <Button
-                  variant="link"
-                  style={{
-                    color: "#000",
-                    fontSize: "20px",
-                    textDecoration: "none",
-                  }}
-                  onClick={logout}
-                >
-                  Logout
-                </Button>
-              </>
+          <>
+            <NavDropdown title={user.name || user.preferred_username} id="collasible-nav-dropdown" >
+              <NavDropdown.Item href="#"> {user.name || user.preferred_username}<br/>
+                <i className="fa fa-users fa-fw"></i><b>{getUserRoleName(userRoles)}</b>
+              </NavDropdown.Item>
+
+              <NavDropdown.Divider />
+            <NavDropdown.Item href="#" onClick ={logout}><i className="fa fa-sign-out fa-fw"></i> Logout</NavDropdown.Item>
+            </NavDropdown>
+          </>
             ) : (
               <>
-                <i className="fa fa-sign-in text-black-50" aria-hidden="true"/>
-                <Button
-                  variant="link"
-                  style={{
-                    color: "#000",
-                    fontSize: "20px",
-                    textDecoration: "none",
-                  }}
-                  onClick={() => {
-                  }}
-                >{/*TODO login for public*/}
-                  Login
-                </Button>
+
               </>
             )}
           </Nav>

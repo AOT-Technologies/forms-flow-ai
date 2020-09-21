@@ -55,12 +55,17 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     @classmethod
     def find_all(cls, page_no, limit):
         """Fetch all application."""
-        return cls.query.paginate(page_no, limit, False).items
+        if page_no == 0:
+            return cls.query.all()
+        else:
+            return cls.query.paginate(page_no, limit, False).items
 
     @classmethod
     def find_all_by_user(cls, user_id, page_no, limit):
-        """Fetch all application."""
-        return cls.query.filter(Application.created_by == user_id).paginate(page_no, limit, False).items
+        if page_no == 0:
+            return cls.query.filter(Application.created_by == user_id)
+        else:
+            return cls.query.filter(Application.created_by == user_id).paginate(page_no, limit, False).items
 
     @classmethod
     def find_all_by_user_count(cls, user_id):
@@ -69,13 +74,32 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
 
     @classmethod
     def find_by_form_id(cls, form_id, page_no, limit):
-        """Fetch all application."""
-        return cls.query.filter(Application.form_url.like('%'+form_id+'%')).paginate(page_no, limit, False).items
+        if page_no == 0:
+            return cls.query.filter(Application.form_url.like('%'+form_id+'%'))
+        else:
+            return cls.query.filter(Application.form_url.like('%'+form_id+'%')).paginate(page_no, limit, False).items
+
+    @classmethod
+    def find_by_form_id_user(cls, form_id, user_id, page_no, limit):
+        if page_no == 0:
+            return cls.query.filter(Application.form_url.like('%'+form_id+'%')).filter(Application.created_by == user_id)
+        else:
+            return cls.query.filter(Application.form_url.like('%'+form_id+'%')).filter(Application.created_by == user_id).paginate(page_no, limit, False).items
+
+
+
 
     @classmethod
     def find_all_by_form_id_count(cls, form_id):
         """Fetch all application."""
         return cls.query.filter(Application.form_url.like('%'+form_id+'%')).count()
+
+
+    @classmethod
+    def find_all_by_form_id_user_count(cls, form_id, user_id):
+        """Fetch all application."""
+        return cls.query.filter(Application.form_url.like('%'+form_id+'%')).filter(Application.created_by == user_id).count()
+
 
     @classmethod
     def find_aggregated_applications(cls, from_date: str, to_date: str):

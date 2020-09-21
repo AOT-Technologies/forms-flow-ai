@@ -74,3 +74,9 @@ class ProcessService():
             return json.loads(value)
 
         raise BusinessException('error', HTTPStatus.BAD_REQUEST)
+
+
+    @staticmethod
+    def post_message(data, token):
+        """Get process details."""
+        return BPMService.send_message(data, token)

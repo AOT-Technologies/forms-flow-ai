@@ -13,7 +13,7 @@ const ViewApplication = () => {
   const {applicationId} = useParams();
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
- const dispatch= useDispatch();
+  const dispatch= useDispatch();
 
   useEffect(()=>{
     if(applicationDetail && applicationDetail.id === applicationId){
@@ -50,8 +50,7 @@ const ViewApplication = () => {
       <br/>
       <Tabs id="application-details" defaultActiveKey="details">
         <Tab eventKey="details" title="Details">
-          <Details/>
-
+          <Details application={applicationDetail}/>
         </Tab>
         {/* <Tab eventKey="history" title="Application History">
           <History page="application-detail"/>
@@ -63,14 +62,8 @@ const ViewApplication = () => {
         </Tab>
       </Tabs>
     </div>
-  
+
   );
-
-
-  console.log("application Detail", applicationDetail); //TODO check request and response
-  return (
-    <div>TODO application Detail --> {applicationId}</div>
-  )
 }
 
 export default ViewApplication ;

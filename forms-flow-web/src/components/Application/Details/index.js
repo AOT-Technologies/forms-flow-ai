@@ -2,29 +2,20 @@ import React from 'react'
 import LoadingOverlay from 'react-loading-overlay';
 
 import ViewApplication from './ViewApplication'
-import Review from './Review';
-import { connect } from 'react-redux';
+import {useSelector} from 'react-redux';
 
 
 const Details = (props) => {
+    const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
     return (
-        <LoadingOverlay active={props.isApplicationUpdating} spinner text='Loading...'>
+        <LoadingOverlay active={isApplicationDetailLoading} spinner text='Loading...'>
             <div className="row" style={{ marginTop: '26.5px', fontWeight: "500px" }}>
                 <div className="col-md-6">
-                    <ViewApplication />
-                </div>
-                <div className="col-md-6">
-                    <Review />
+                    <ViewApplication application={props.application} />
                 </div>
             </div>
         </LoadingOverlay>
     );
 }
 
-const mapStateToProps = (state) =>{
-    return{
-        isApplicationUpdating: state.applications.isApplicationUpdating
-    }
-}
-
-export default connect(mapStateToProps)(Details);
+export default Details;

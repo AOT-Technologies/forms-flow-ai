@@ -2,7 +2,6 @@ import React from 'react'
 import LoadingOverlay from 'react-loading-overlay';
 
 import ViewApplication from './ViewApplication'
-import Review from './Review';
 import { connect } from 'react-redux';
 
 
@@ -12,9 +11,6 @@ const Details = (props) => {
             <div className="row" style={{ marginTop: '26.5px', fontWeight: "500px" }}>
                 <div className="col-md-6">
                     <ViewApplication />
-                </div>
-                <div className="col-md-6">
-                    <Review />
                 </div>
             </div>
         </LoadingOverlay>

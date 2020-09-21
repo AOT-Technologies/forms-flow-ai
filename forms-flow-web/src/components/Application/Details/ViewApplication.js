@@ -1,15 +1,14 @@
 import React from "react";
 import {Table} from "react-bootstrap";
-import {connect} from "react-redux";
 import moment from "moment";
 
-import {setUpdateLoader} from "../../../actions/taskActions";
+//import {setUpdateLoader} from "../../../actions/taskActions";
 
 
 
 const ViewApplication = (props) => {
-  const application = props.detail;
-   return (
+  const application = props.application;
+  return (
     <Table responsive>
       <tbody>
       <tr>
@@ -49,15 +48,4 @@ const ViewApplication = (props) => {
   );
 };
 
-const mapStateToProps = (state) => {
-  return {
-    detail: state.applications.applicationDetail,
-    userName: state.user.userDetail.preferred_username,
-  };
-};
-const mapDispatchToProps = (dispatch) => {
-  return {
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ViewApplication);
+export default ViewApplication;

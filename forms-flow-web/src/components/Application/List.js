@@ -53,10 +53,6 @@ const ApplicationList = () => {
     );
   };
 
-
-
-  console.log("here to get all Applications data", applications[0]);
-
   return (
     applicationCount > 0 ? (
       <ToolkitProvider

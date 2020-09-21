@@ -13,14 +13,14 @@ const ApplicationDetails = (props) => {
     <Table responsive>
       <tbody>
       <tr>
-        <td className="border-0">Application Name</td>
-        <td className="border-0">:</td>
-        <td className="border-0">{startCase(application.applicationName)}</td>
-      </tr>
-      <tr>
         <td className="border-0">Application Id</td>
         <td className="border-0">:</td>
         <td className="border-0">{application.id}</td>
+      </tr>
+      <tr>
+        <td className="border-0">Application Name</td>
+        <td className="border-0">:</td>
+        <td className="border-0">{startCase(application.applicationName)}</td>
       </tr>
       <tr>
         <td className="border-0">Created By</td>
@@ -33,7 +33,7 @@ const ApplicationDetails = (props) => {
         <td className="border-0">{application.applicationStatus}</td>
       </tr>
       <tr>
-        <td className="border-0">Created On</td>
+        <td className="border-0">Submitted On</td>
         <td className="border-0">:</td>
         <td className="border-0">
           {moment(application.created).format("DD-MMM-YYYY")}

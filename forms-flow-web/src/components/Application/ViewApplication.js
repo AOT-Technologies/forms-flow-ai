@@ -47,7 +47,7 @@ const ViewApplication = () => {
         <Tab eventKey="details" title="Details">
           <Details application={applicationDetail}/>
         </Tab>
-        <Tab eventKey="history" title="Application History">
+        <Tab eventKey="history" title="History">
             <History page="task-detail"/>
         </Tab>
         <Tab eventKey="process-diagram" title="Process Diagram">

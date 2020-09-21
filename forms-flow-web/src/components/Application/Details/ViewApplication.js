@@ -13,7 +13,7 @@ const ViewApplication = (props) => {
     <Table responsive>
       <tbody>
       <tr>
-        <td className="border-0">Application Title</td>
+        <td className="border-0">Application Name</td>
         <td className="border-0">:</td>
         <td className="border-0">{application.applicationName}</td>
       </tr>
@@ -23,8 +23,9 @@ const ViewApplication = (props) => {
         <td className="border-0">{application.id}</td>
       </tr>
       <tr>
-        <td className="border-0">application Assignee</td>
+        <td className="border-0">Created By</td>
         <td className="border-0">:</td>
+        <td className="border-0">{application.createdBy}</td>
       </tr>
       <tr>
         <td className="border-0">Application Status</td>
@@ -32,17 +33,17 @@ const ViewApplication = (props) => {
         <td className="border-0">{application.applicationStatus}</td>
       </tr>
       <tr>
-        <td className="border-0">Link to form submission</td>
-        <td className="border-0">:</td>
-        <td className="border-0">{application.formUrl}</td>
-        {/*TODO update*/}
-      </tr>
-      <tr>
-        <td className="border-0">Submitted On</td>
+        <td className="border-0">Created On</td>
         <td className="border-0">:</td>
         <td className="border-0">
           {moment(application.created).format("DD-MMM-YYYY")}
         </td>
+      </tr>
+      <tr>
+        <td className="border-0">Link to form submission</td>
+        <td className="border-0">:</td>
+        <td className="border-0">{application.formUrl}</td>
+        {/*TODO update*/}
       </tr>
       </tbody>
     </Table>

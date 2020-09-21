@@ -275,10 +275,6 @@
   padding-left: .8rem !important;
 }
 
-.navbar-nav .nav-link:hover, .navbar-nav .nav-link:focus{
-  text-decoration:none;
-}
-
 .topheading-border-bottom{
   padding: 0.8rem 1rem !important;
   border-bottom: 2px solid $light-blue !important;
@@ -289,4 +285,16 @@
   padding-left: .8rem !important;
 }
 
+.dropdown-toggle {
+  margin-top: -15px;
+  margin-left: -30px;
+}
+
+.navbar-nav .dropdown-menu {
+  margin-left:-30px !important;
+}
+
+.navbar-nav .nav-link:hover, .navbar-nav .nav-link:focus {
+  text-decoration: none !important;
+}
 

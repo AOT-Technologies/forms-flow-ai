@@ -25,12 +25,15 @@ const NavBar = () => {
             <Link to="/">
               <img
                 className="img-fluid"
-                src="/logo.svg"
-                width="177"
-                height="44"
+                src="/formsflow.ai_icon.svg"
+                width="50"
+                height="55"
                 alt="Logo"
               />
             </Link>
+          </Navbar.Brand>
+          <Navbar.Brand className="d-flex">
+              <div className="custom-app-name">formsflow.ai</div>
           </Navbar.Brand>
           <Navbar.Toggle
             aria-controls="responsive-navbar-nav"
@@ -40,6 +43,15 @@ const NavBar = () => {
             id="responsive-navbar-nav"
             className="navbar-nav"
           />
+           <Navbar.Brand className="d-flex">
+            <Link to="/">
+                  <img
+                    className="img-xs rounded-circle"
+                    src="/assets/Images/user.svg"
+                    alt="profile"
+                  />
+            </Link>
+          </Navbar.Brand>
           <Nav className="d-none d-md-block">
             {isAuthenticated ? (
           <>

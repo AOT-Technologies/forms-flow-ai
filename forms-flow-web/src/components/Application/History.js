@@ -18,29 +18,28 @@ import {
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
 import { setUpdateHistoryLoader } from "../../actions/taskActions";
+import {useParams} from "react-router-dom";
 
 const HistoryList = () => {
   const dispatch = useDispatch();
-
-  const application_id = useSelector(state => state.applications.applicationDetail.id);
+  const { applicationId } = useParams();
   const isTaskLoading = useSelector(state => state.tasks.isTaskLoading);
   const isHistoryListLoading = useSelector(state => state.tasks.isHistoryListLoading);
   const appHistory = useSelector(state => state.tasks.appHistory);
-  const isLoading = useSelector(state => state.tasks.isLoading);
 
   useEffect(()=>{
     if(isHistoryListLoading || isTaskLoading){
       dispatch(
-        fetchApplicatinAuditHistoryList(application_id,(err, res) => {
+        fetchApplicatinAuditHistoryList(applicationId,(err, res) => {
           if (!err) {
             dispatch(setUpdateHistoryLoader(false));
           }
         })
       )
     }
-  },[application_id, isHistoryListLoading, isTaskLoading, dispatch]);
+  },[applicationId, isHistoryListLoading, isTaskLoading, dispatch]);
 
-  if (isLoading) {
+  if (isHistoryListLoading) {
     return <Loading />;
   }
 

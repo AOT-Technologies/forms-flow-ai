@@ -1,10 +1,12 @@
 import React from "react";
-import {Nav, Navbar, NavDropdown} from "react-bootstrap";
+import { Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
 import { selectRoot } from "react-formio";
 import UserService from "../services/UserService";
 import { getUserRoleName } from "../helper/user";
+
+import "./styles.scss";
 
 const NavBar = () => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
@@ -55,7 +57,7 @@ const NavBar = () => {
           <Nav className="d-none d-md-block">
             {isAuthenticated ? (
           <>
-            <NavDropdown title={user.name || user.preferred_username} id="collasible-nav-dropdown" >
+            <NavDropdown title={user.name || user.preferred_username} id="collasible-nav-dropdown" alignRight >
               <NavDropdown.Item href="#"> {user.name || user.preferred_username}<br/>
                 <i className="fa fa-users fa-fw"></i><b>{getUserRoleName(userRoles)}</b>
               </NavDropdown.Item>

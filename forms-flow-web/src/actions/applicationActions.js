@@ -52,7 +52,6 @@ export const setApplicationDetailLoader = (data) => dispatch =>{
 
 export const serviceActionError = (data) => dispatch => {
   //TODO update to a common file
-  console.log(data);
   dispatch({
     type: ACTION_CONSTANTS.ERROR,
     payload: 'Error Handling API'

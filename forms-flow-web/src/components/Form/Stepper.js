@@ -383,7 +383,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveFormProcessMapper(data, update, (err, res) => {
           if (!err) {
-            // console.log(err);
             dispatch(push(`/form`));
           }
         })

@@ -11,7 +11,6 @@ import { replaceUrl } from "../../helper/helper";
 
 
 export const fetchApplicatinAuditHistoryList = (applicationId, ...rest) => {
-  // console.log('application id in fetchApp>>',applicationId)
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     const apiUrlAppHistory = replaceUrl(
@@ -20,7 +19,6 @@ export const fetchApplicatinAuditHistoryList = (applicationId, ...rest) => {
       applicationId
     );
 
-    // console.log("apiUrlAppHistory>>>", apiUrlAppHistory);
      httpGETRequest(apiUrlAppHistory, {}, UserService.getToken(),true)
       .then((res) => {
         if (res.data) {
@@ -32,7 +30,6 @@ export const fetchApplicatinAuditHistoryList = (applicationId, ...rest) => {
         //dispatch(setLoader(false));
         done(null, res.data);
       } else {
-        console.log("Error", res);
         dispatch(serviceActionError(res));
         dispatch(setLoader(false));
       }

@@ -19,7 +19,7 @@ def sentiment_analysis_mongodb_insert():
     text = parsejson["text"]
     response = sentiment_pipeline(text=text)
     output_response = jsonify(response)
-    post_data = {input: text, output: output_response}
+    post_data = {'input': text, 'output': output_response}
     db_instance = SentimentAnalysisSchema()
     db_instance.insert(post_data)
     return "Data was entered into mongo db database", HTTPStatus.OK

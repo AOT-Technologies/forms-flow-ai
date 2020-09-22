@@ -50,6 +50,7 @@ The project was initiated by AOT Technologies as a means of addressing the gener
  * [deployment](./deployment) Deployment of complete framework
     * [docker](./deployment/docker) Deployment using docker 
     * [nginx](./deployment/nginx) Deployment on a remote host using nginx
+    * [Openshift](./deployment/openshift) Deployment using openshift platform
  * [forms-flow-analytics](./forms-flow-analytics) Redash analytics components
  * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
  * [forms-flow-forms](./forms-flow-forms) form.io deployment and  integration

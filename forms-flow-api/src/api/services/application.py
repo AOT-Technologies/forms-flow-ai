@@ -142,7 +142,6 @@ class ApplicationService():
     @staticmethod
     def get_application_form_mapper_by_id(application_id):
         """Get form process mapper."""
-        logging.log(logging.DEBUG, 'get_application_form_mapper_by_id '+application_id)
         mapper = FormProcessMapper.find_by_application_id(application_id)
         if mapper:
             mapper_schema = FormProcessMapperSchema()

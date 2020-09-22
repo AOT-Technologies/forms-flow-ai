@@ -20,12 +20,15 @@ const linkApplication = (cell, row) => {
 }
 
 
-const linkSubmision = (cell) => {
+const linkSubmision = (cell,row) => {
+  const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
+  const buttonText = row.isClientEdit ? 'Edit Submission' : 'View Submission'
+  const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
-    <div title={cell} onClick={()=> window.open(cell, "_blank")}>
+  <div onClick={()=> window.open(url, "_blank")}>
         <span className="btn btn-primary btn-sm form-btn"><span><i
-          className="fa fa-eye"/>&nbsp;</span>View Submission</span>
-    </div>
+          className={icon}/>&nbsp;</span>{buttonText}</span>
+  </div>
   );
 }
 
@@ -52,6 +55,7 @@ export const columns_history = [
     sort: true,
   },
 ];
+
 export const columns = [
   {
     dataField: "id",

@@ -66,3 +66,17 @@ def sentiment_pipeline(text):
     ans["overall_sentiment"] = overall_sentiment(text)
 
     return ans
+
+    def overall_sentiment(text):
+    # tokenize_text = tokenize.sent_tokenize(text)
+    # print(tokenize_text)
+    sid = SentimentIntensityAnalyzer()
+    ss = sid.polarity_scores(text)
+    for k in sorted(ss):
+        # print('{0}: {1}, '.format(k, ss[k]), end='')
+        if ss["compound"] >= 0.15:
+            return "positive"
+        elif ss["compound"] <= -0.01:
+            return "negative"
+        else:
+            return "neutral"

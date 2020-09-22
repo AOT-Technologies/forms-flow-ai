@@ -34,7 +34,7 @@ const linkApplication = (cell, row) => {
 
 const linkSubmision = (cell,row) => {
   const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
-  const buttonText = row.isClientEdit ? 'Edit Submission' : 'View Submission'
+  const buttonText = row.isClientEdit ? 'Edit' : 'View'
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
   <div onClick={()=> window.open(url, "_blank")}>

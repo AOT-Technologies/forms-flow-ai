@@ -21,6 +21,7 @@ const Review = (props) => {
   const [options,setOptions] = useState([]);
 
   const detail = useSelector(state => state.tasks.taskDetail);
+  const status = useSelector(state => state.tasks.taskDetail.status)
   const detailAction = useSelector(state=>state.tasks.taskDetail.action)
   const userName = useSelector(state=>state.user.userDetail.preferred_username);
   const submissionError = useSelector(state=>state.formDelete.formSubmissionError);
@@ -29,13 +30,13 @@ const Review = (props) => {
   const processLoadError= useSelector(state=> state.process.processLoadError);
 
   useEffect(()=>{
-    if(detailAction){
+    if(detailAction && status ==="completed"){
       const option= options.find(
         (ele) => ele.value === detailAction
       );
       changeSelectedOption(option);
     }
-  },[options, detailAction]);
+  },[options, detailAction, status]);
 
   useEffect(()=>{
     if (processStatusList !== options){

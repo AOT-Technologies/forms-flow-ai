@@ -120,7 +120,7 @@ execution.setVariable('sendback_by', "Approver");</camunda:script>
     <bpmn:sequenceFlow id="SequenceFlow_009hwyx" name="Resubmitted" sourceRef="ExclusiveGateway_0xgo1b6" targetRef="Clerk">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
-          <camunda:script scriptFormat="javascript">execution.setVariable('sendback_by', "Resubmitted");</camunda:script>
+          <camunda:script scriptFormat="javascript">execution.setVariable('application_status', "Resubmitted");</camunda:script>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
       </bpmn:extensionElements>
@@ -129,7 +129,7 @@ execution.setVariable('sendback_by', "Approver");</camunda:script>
     <bpmn:sequenceFlow id="SequenceFlow_07hh4hx" name="Resubmitted" sourceRef="ExclusiveGateway_0xgo1b6" targetRef="Approver">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
-          <camunda:script scriptFormat="javascript">execution.setVariable('sendback_by', "Resubmitted");</camunda:script>
+          <camunda:script scriptFormat="javascript">execution.setVariable('application_status', "Resubmitted");</camunda:script>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
       </bpmn:extensionElements>

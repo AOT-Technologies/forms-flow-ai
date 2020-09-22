@@ -92,7 +92,7 @@ const View = (props) => {
         <td className="border-0">Submitted On</td>
         <td className="border-0">:</td>
         <td className="border-0">
-          {moment(task.submission_date).format("DD-MMM-YYYY")}
+         {new Date(task.submission_date).toLocaleString()}
         </td>
       </tr>
       <tr>

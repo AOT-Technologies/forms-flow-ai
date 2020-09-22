@@ -48,7 +48,6 @@ public class FormAccessHandler implements IAccessHandler {
             String  response= restTemplate.patchForObject(getDecoratedServerUrl(url), reqObj, String.class);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
-
         ResponseEntity<String> wrsp = getRestTemplate().exchange(getDecoratedServerUrl(url), method, reqObj, String.class);
         LOGGER.info("Response code for service invocation: " + wrsp.getStatusCode());
 

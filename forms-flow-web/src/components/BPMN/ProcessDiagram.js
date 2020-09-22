@@ -42,7 +42,10 @@ const ProcessDiagram = class extends Component {
       }
 
       // this.bpmnViewer.get('canvas').zoom('fit-viewport');
-      this.bpmnViewer.get('canvas').zoom(1);
+      // console.log("canvas",this.bpmnViewer.get('canvas'))
+      // if(this.bpmnViewer.get('canvas') && this.bpmnViewer.get('canvas')._viewport&&this.bpmnViewer.get('canvas')._viewport.getCTM()){
+      // this.bpmnViewer.get('canvas').zoom(1);
+    // }
 
       return this.handleShown(warnings);
     });

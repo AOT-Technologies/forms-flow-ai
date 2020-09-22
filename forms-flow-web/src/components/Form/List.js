@@ -84,7 +84,7 @@ const List = class extends Component {
     let operations = [];
     //TODO MOVE userROles and staff_designer to constants
     if (userRoles.includes(CLIENT)) {
-      operations.push(OPERATIONS.insert, OPERATIONS.submission);
+      operations.push(OPERATIONS.insert);
     }
     if (userRoles.includes(STAFF_REVIEWER)) {
       operations.push(OPERATIONS.submission);

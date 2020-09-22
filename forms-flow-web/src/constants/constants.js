@@ -83,7 +83,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: "View Form",
+    title: "View/Edit Form",
   },
   delete: {
     action: "delete",

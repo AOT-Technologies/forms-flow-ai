@@ -1,5 +1,5 @@
 import React from "react";
-import moment from "moment";
+
 
 export const defaultSortedBy = [
   {
@@ -17,6 +17,11 @@ const linkSubmision = (cell) => {
   );
 }
 
+function timeFormatter(cell) {
+  const localdate = new Date(cell.replace(' ','T')+'Z').toLocaleString() 
+  return <label title={cell}>{localdate}</label>;
+}
+
 // History table columns
 export const columns_history = [
   {
@@ -28,7 +33,7 @@ export const columns_history = [
     dataField: "created",
     text: "Created",
     sort: true,
-    formatter: (cell) =>  moment(cell).format("DD-MMM-YYYY HH:mm:ss")
+    formatter: timeFormatter,
   },
   {
     dataField: "formUrl",

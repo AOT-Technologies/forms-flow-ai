@@ -30,11 +30,15 @@ public class HTTPServiceInvoker {
     public ResponseEntity<String> execute(String url, HttpMethod method, Object payload) {
         try {
             String dataJson = payload != null ? new ObjectMapper().writeValueAsString(payload) : null;
-            return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, dataJson);
+            return execute(url, method, dataJson);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ResponseEntity<String> execute(String url, HttpMethod method, String payload) {
+            return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload);
     }
 
     private String getServiceId(String url) {

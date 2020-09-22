@@ -1,7 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import startCase from "lodash/startCase";
-// import { textFilter, selectFilter } from "react-bootstrap-table2-filter";
+import { textFilter , selectFilter } from "react-bootstrap-table2-filter";
+
+let statusFilter,
+    idFilter,
+    nameFilter,
+    modifiedDateFilter;
 
 export const defaultSortedBy = [
   {
@@ -9,6 +14,13 @@ export const defaultSortedBy = [
     order: "asc", // or desc
   },
 ];
+
+const selectOptions = [
+  { value: "Approved", label: "Approved" },
+  { value: "New", label: "New" },
+  { value: "Reviewed", label: "Reviewed" },
+  { value: "Returned", label: "Returned" }
+]
 
 
 const linkApplication = (cell, row) => {
@@ -58,35 +70,49 @@ export const columns = [
     text: "Application ID",
     formatter: linkApplication,
     sort: true,
+    filter: textFilter({
+      placeholder: "\uf002 Application ID", // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      className: "icon-search",
+      getFilter: (filter) => {
+      idFilter = filter;
+      },
+    }),
   },
   {
     dataField: "applicationName",
     text: "Application Name",
     sort: true,
-    formatter: nameFormatter
+    formatter: nameFormatter,
+    filter: textFilter({
+      placeholder: "\uf002 Application Name", // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      className: "icon-search",
+      getFilter: (filter) => {
+        nameFilter = filter;
+      },
+    }),
   },
   {
     dataField: "applicationStatus",
     text: "Application Status",
-    sort: true
+    sort: true,
+    filter: selectFilter({
+      options: selectOptions,
+      placeholder: "All",
+	    defaultValue: 'All',
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      getFilter: (filter) => {
+        statusFilter = filter;
+      },
+    }),
   },
   {
     dataField: "formUrl",
     text: "Link to Form Submission",
     formatter: linkSubmision,
   },
-  // {
-  //   dataField: "submittedBy",
-  //   text: "Submitted by User",
-  //   filter: textFilter({
-  //     placeholder: "\uf002 Submitted by User", // custom the input placeholder
-  //     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-  //     className: "icon-search",
-  //     getFilter: (filter) => {
-  //       submittedFilter = filter;
-  //     },
-  //   }),
-  // },
+ 
   {
     dataField: "modified",
     text: "Last Modified",
@@ -94,7 +120,15 @@ export const columns = [
     sort: true,
     headerStyle: (colum, colIndex) => {
       return { width: "15%" };
-    }
+    },
+    filter: textFilter({
+      placeholder: "\uf002 Last Modified", // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      className: "icon-search",
+      getFilter: (filter) => {
+        modifiedDateFilter = filter;
+      },
+    }),
   }
 
 ];
@@ -122,4 +156,41 @@ export const getoptions = (count) => {
     disablePageTitle: true,
     sizePerPage: 5,
   };
+};
+export const clearFilter = () => {
+    statusFilter("");
+    idFilter("");
+    nameFilter("");
+};
+export const ApplicatioSearch = (props) => {
+  let input;
+  let id = props.id;
+
+  const statusChange = () => {
+	clearFilter();
+  //   if (input.value === "Username") {
+	//   props.onSearch(userName);
+  //   } else {
+	// 	props.onSearch(input.value);
+	// 	if(input.value === "Active") {
+	// 	statusFilter("Active")
+	// 	} else {
+	// 	statusFilter("")
+	// 	}
+	//  }
+  };
+
+  return (
+    <div>
+      <select id="taskfilter"
+        className="form-control"
+        ref={(n) => (input = n)}
+        onChange={statusChange} defaultValue="Active"
+      >
+        <option value=" ">All tasks</option>
+        <option value="Active">Active tasks</option>
+        <option value="Username">My assigned tasks</option>
+      </select>
+    </div>
+  );
 };

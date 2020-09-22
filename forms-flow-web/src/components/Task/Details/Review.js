@@ -34,7 +34,6 @@ const Review = (props) => {
       const option= options.find(
         (ele) => ele.value === detailAction
       );
-      console.log(option,"option", options)
       changeSelectedOption(option);
     }
   },[options, detailAction, status]);

@@ -25,18 +25,6 @@ const WorkFlow = (props) => {
     workflow,
   } = props;
 
-  // function onShown() {
-  //   console.log("diagram shown");
-  // }
-
-  // function onLoading() {
-  //   console.log("diagram loading");
-  // }
-
-  // function onError(err) {
-  //   console.log("failed to show diagram");
-  // }
-
   return (
     <Grid container direction="row" justify="flex-start" alignItems="baseline">
       {/* <FormControl component="fieldset"> */}

@@ -40,7 +40,6 @@ class ProcessService():
     @staticmethod 
     def get_process_definition_xml(process_key, token):
         """Get process details."""
-        logging.log(logging.INFO, process_key)
         process_definition_xml = BPMService.get_process_definition_xml(process_key, token)
         if process_definition_xml:
             return ProcessDefinitionXMLSchema().dump(process_definition_xml)

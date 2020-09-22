@@ -29,7 +29,6 @@ const ProcessDiagram = class extends Component {
     } = this.props;
 
     const container = this.containerRef.current;
-    console.log("component didmount",container);
     this.bpmnViewer = new BpmnJS({ container });
 
     this.bpmnViewer.on('import.done', (event) => {
@@ -43,7 +42,10 @@ const ProcessDiagram = class extends Component {
       }
 
       // this.bpmnViewer.get('canvas').zoom('fit-viewport');
-      this.bpmnViewer.get('canvas').zoom(1);
+      // console.log("canvas",this.bpmnViewer.get('canvas'))
+      // if(this.bpmnViewer.get('canvas') && this.bpmnViewer.get('canvas')._viewport&&this.bpmnViewer.get('canvas')._viewport.getCTM()){
+      // this.bpmnViewer.get('canvas').zoom(1);
+    // }
 
       return this.handleShown(warnings);
     });
@@ -77,7 +79,6 @@ const ProcessDiagram = class extends Component {
 
     const previousXML = prevProps.diagramXML || prevState.diagramXML;
     // this.bpmnViewer.get('canvas').zoom('fit-viewport');
-    console.log("bpmnViewer",this.bpmnViewer)
     if (currentXML && currentXML !== previousXML) {
       return this.displayDiagram(currentXML);
     }

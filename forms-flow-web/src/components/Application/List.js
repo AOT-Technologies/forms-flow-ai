@@ -2,6 +2,7 @@ import React, {useEffect} from 'react'
 
 import {useDispatch, useSelector} from 'react-redux'
 import BootstrapTable from "react-bootstrap-table-next";
+import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import LoadingOverlay from "react-loading-overlay";
@@ -13,7 +14,7 @@ import Nodata from "./nodata";
 import {
   columns,
   getoptions,
-  defaultSortedBy
+  defaultSortedBy,
 } from "./table";
 import {getUserRolePermission} from "../../helper/user";
 import {CLIENT} from "../../constants/constants";
@@ -99,6 +100,7 @@ const ApplicationList = () => {
                 >
                   <BootstrapTable
                     loading={isApplicationListLoading}
+                    filter={filterFactory()}
                     pagination={paginationFactory(getoptions(applicationCount))}
                     defaultSorted={defaultSortedBy}
                     {...props.baseProps}

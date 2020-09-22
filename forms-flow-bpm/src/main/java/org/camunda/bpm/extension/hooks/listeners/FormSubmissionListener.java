@@ -38,6 +38,7 @@ public class FormSubmissionListener implements ExecutionListener, TaskListener {
 
     @Override
     public void notify(DelegateTask delegateTask) {
+        LOGGER.info("-----------Inside FormSubmissionListener------------------");
         createRevision(delegateTask.getExecution());
     }
 
@@ -55,10 +56,12 @@ public class FormSubmissionListener implements ExecutionListener, TaskListener {
             LOGGER.log(Level.SEVERE,"Unable to read submission for "+execution.getVariables().get("form_url"));
             return;
         }
+        LOGGER.info("--------submission----as string----------->"+submission);
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             JsonNode submissionObj = objectMapper.readTree(submission);
-            ResponseEntity<String> response =  httpServiceInvoker.execute(getUrl(execution), HttpMethod.POST, submissionObj);
+            LOGGER.info("-----------POST URL---------------->"+getUrl(execution));
+            ResponseEntity<String> response =  httpServiceInvoker.execute(getUrl(execution), HttpMethod.POST, submission);
             if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
                 JsonNode jsonNode = objectMapper.readTree(response.getBody());
                 String submissionId = jsonNode.get("_id").asText();

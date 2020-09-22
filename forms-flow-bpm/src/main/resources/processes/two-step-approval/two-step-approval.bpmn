@@ -68,9 +68,22 @@
       <bpmn:outgoing>SequenceFlow_0ppj3wo</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_0xvu6g6" name="Reviewed" sourceRef="Clerk" targetRef="Approver">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('application_status', "Reviewed");</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+      </bpmn:extensionElements>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Reviewed'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_08bp69k" name="Approved/Rejected" sourceRef="Approver" targetRef="EndEvent_1v2yre2">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('application_status', execution.getVariable('action'));</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+      </bpmn:extensionElements>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Approved' || action == 'Rejected'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="EndEvent_1v2yre2">
@@ -191,10 +204,11 @@ execution.setVariable('sendback_by', "Approver");</camunda:script>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_0ppj3wo_di" bpmnElement="SequenceFlow_0ppj3wo">
         <di:waypoint x="426" y="440" />
-        <di:waypoint x="540" y="440" />
-        <di:waypoint x="540" y="178" />
+        <di:waypoint x="640" y="440" />
+        <di:waypoint x="640" y="160" />
+        <di:waypoint x="558" y="160" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="460" y="422" width="46" height="14" />
+          <dc:Bounds x="510" y="422" width="46" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ExclusiveGateway_0xgo1b6_di" bpmnElement="ExclusiveGateway_0xgo1b6" isMarkerVisible="true">

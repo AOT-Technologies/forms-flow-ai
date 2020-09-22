@@ -94,7 +94,8 @@ function buttonFormatter(cell) {
 }
 
 function timeFormatter(cell) {
-  return <label title={cell}>{cell}</label>;
+  const localdate = new Date(cell).toLocaleString() 
+  return <label title={cell}>{localdate}</label>;
 }
 
 function linkTaskAssignee(cell, row) {

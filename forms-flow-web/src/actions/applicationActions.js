@@ -14,6 +14,14 @@ export const setApplicationListByFormId = (data) => dispatch =>{
   })
 }
 
+export const setLoader = (data) => dispatch =>{
+  dispatch({
+      type:ACTION_CONSTANTS.IS_LOADING,
+      payload:data
+  })
+}
+
+
 export const setApplicationDetail = (data) => dispatch =>{
     dispatch({
         type:ACTION_CONSTANTS.APPLICATION_DETAIL,
@@ -21,9 +29,23 @@ export const setApplicationDetail = (data) => dispatch =>{
     })
 }
 
+export const setUpdateLoader = (data) => dispatch =>{
+  dispatch({
+      type:ACTION_CONSTANTS.IS_APPLICATION_UPDATING,
+      payload:data
+  })
+}
+
 export const setApplicationListLoader = (data) => dispatch =>{
   dispatch({
     type:ACTION_CONSTANTS.IS_APPLICATION_LIST_LOADING,
+    payload:data
+  })
+}
+
+export const setApplicationDetailLoader = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_APPLICATION_DETAIL_LOADING,
     payload:data
   })
 }
@@ -34,5 +56,19 @@ export const serviceActionError = (data) => dispatch => {
   dispatch({
     type: ACTION_CONSTANTS.ERROR,
     payload: 'Error Handling API'
+  })
+}
+
+export const setApplicationProcess = (data) => dispatch =>{
+  dispatch({
+      type:ACTION_CONSTANTS.APPLICATION_PROCESS,
+      payload:data
+  })
+}
+
+export const setApplicationListCount = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.SET_APPLICATION_LIST_COUNT,
+    payload:data
   })
 }

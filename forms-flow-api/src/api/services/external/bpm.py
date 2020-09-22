@@ -17,6 +17,7 @@ class BPMEndpointType(IntEnum):
     History = 4
     TaskVariables = 5
     ProcessDefinitionXML = 6
+    MessageEvent = 7
 
 
 class BPMService(BaseBPMService):
@@ -97,6 +98,12 @@ class BPMService(BaseBPMService):
         return cls.post_request(url, token)
 
     @classmethod
+    def send_message(cls, data, token):
+        """Submit a form."""
+        url = cls._get_url_(BPMEndpointType.MessageEvent)
+        return cls.post_request(url, token, data)
+
+    @classmethod
     def _get_url_(cls, endpoint_type: BPMEndpointType):
         """Get Url."""
         bpm_api_base = current_app.config.get('BPM_API_BASE')
@@ -114,7 +121,8 @@ class BPMService(BaseBPMService):
             url = bpm_api_base + 'engine-rest/task'
         elif endpoint_type == BPMEndpointType.ProcessDefinitionXML:
             url = bpm_api_base + 'engine-rest/process-definition/key/'    
-
+        elif endpoint_type == BPMEndpointType.MessageEvent:
+            url = bpm_api_base + 'engine-rest/message/'
         if not url.endswith('/'):
             url += '/'
 

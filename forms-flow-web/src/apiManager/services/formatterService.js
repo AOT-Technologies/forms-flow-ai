@@ -22,8 +22,9 @@ export const addApplicationDetailsToFormComponent = (formObjData) => {
 }
 
 export const getRelevantApplications = (applications, submissionData) => {
+  //TODO UPDATE SUBMISSIONS VIEW
   submissionData.submissions = submissionData.submissions.map( submission => {
-    const applicationData = applications.find(application => application.formUrl.includes(submission._id));
+    const applicationData = applications.find(application => application.submissionId === submission._id);
     if(applicationData){
       submission.data.applicationId = applicationData.id;
       submission.data.applicationStatus = applicationData.applicationStatus;

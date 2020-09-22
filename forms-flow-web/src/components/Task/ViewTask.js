@@ -9,11 +9,15 @@ import Loading from "../../containers/Loading";
 import {setLoader} from "../../actions/taskActions";
 import View from "../Form/Item/Submission/Item/View";
 import {getProcessStatusList} from "../../apiManager/services/processServices";
+import {getApplicationById, getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
 import History from './History';
+import ProcessDiagram from "../BPMN/ProcessDiagram";
 
 const ViewTask = (props) => {
     const {taskId} = useParams();
     const taskDetail = useSelector(state => state.tasks.taskDetail);
+    const applicationProcess = useSelector(state => state.applications.applicationProcess);
+
     const isLoading = useSelector(state => state.tasks.isLoading);
     const dispatch = useDispatch();
     const {getTask} = props;
@@ -50,9 +54,14 @@ const ViewTask = (props) => {
           <Tab eventKey="form" title="Form">
             <View page="task-detail"/>
           </Tab>
-          <Tab eventKey="history" title="Application Audit">
+          <Tab eventKey="history" title="Application History">
             <History page="task-detail"/>
-           </Tab>
+          </Tab>
+          <Tab eventKey="process-diagram" title="Process Diagram">
+            <ProcessDiagram
+                process_key={applicationProcess.processKey}
+            />
+          </Tab>
         </Tabs>
       </div>
     );
@@ -65,18 +74,26 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(
           getTaskDetail(id, (err, res) => {
             if (!err) {
-              if (res.submission_id && res.form_id) { //TODO update this as form and submission ids are not populated now
-                dispatch(getForm("form", res.form_id));
-                dispatch(
-                  getSubmission("submission", res.submission_id, res.form_id)
-                );
-              }
               dispatch(
                 getProcessStatusList(
                   res.processDefinitionKey,
                   res.taskDefinitionKey
                 )
               );
+
+              dispatch(
+                getApplicationFormDataByAppId(res.application_id)
+              );
+              dispatch(getApplicationById(res.application_id,(err,res)=>{
+                if (!err) {
+                  if (res.submissionId && res.formId) { //TODO update this as form and submission ids are not populated now
+                    dispatch(getForm("form", res.formId));
+                    dispatch(
+                      getSubmission("submission", res.submissionId, res.formId)
+                    );
+                  }
+                }
+              }));
             }
           })
         );

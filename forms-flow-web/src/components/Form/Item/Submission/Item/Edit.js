@@ -1,6 +1,5 @@
-import React from 'react';
-import { Component } from 'react';
-import { connect } from 'react-redux'
+import React, {useEffect} from 'react';
+import {connect, useDispatch, useSelector} from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors } from 'react-formio';
 import { push } from 'connected-react-router';
 
@@ -9,28 +8,54 @@ import Loading from '../../../../../containers/Loading'
 import { setFormSubmissionError } from '../../../../../actions/formActions';
 import SubmissionError from '../../../../../containers/SubmissionError';
 import { setUpdateLoader } from "../../../../../actions/taskActions";
+import {getUserRolePermission} from "../../../../../helper/user";
+import {CLIENT, STAFF_REVIEWER} from "../../../../../constants/constants";
+import {
+  CLIENT_EDIT_STATUS,
+  RESUBMITTED_STATUS_EVENT,
+  RETURNED_STATUS
+} from "../../../../../constants/applicationConstants";
+import {useParams} from "react-router-dom";
+import {updateApplicationEvent} from "../../../../../apiManager/services/applicationServices";
 
-const Edit = class extends Component {
-  render() {
-    const {
-      hideComponents,
-      onSubmit,
-      options,
-      errors,
-      form: { form, isActive: isFormActive },
-      submission: { submission, isActive: isSubActive, url }
-    } = this.props;
+const Edit = (props) => {
+  const dispatch = useDispatch();
+  const {formId, submissionId} = useParams();
+  const {
+    hideComponents,
+    onSubmit,
+    options,
+    errors,
+    form: { form, isActive: isFormActive },
+    submission: { submission, isActive: isSubActive, url }
+  } = props;
 
-    if (isFormActive || isSubActive) {
-      return <Loading />;
+  const applicationStatus = useSelector(state => state.applications.applicationDetail?.applicationStatus || '');
+  const userRoles = useSelector((state) => {
+    return selectRoot("user", state).roles;
+  });
+  const applicationDetail = useSelector(state=>state.applications.applicationDetail);
+
+  useEffect(() => {
+    if (applicationStatus) {
+      if (getUserRolePermission(userRoles, STAFF_REVIEWER) && CLIENT_EDIT_STATUS.includes(applicationStatus)) {
+        dispatch(push(`/form/${formId}/submission/${submissionId}`));
+      } else if (getUserRolePermission(userRoles, CLIENT) && !CLIENT_EDIT_STATUS.includes(applicationStatus)) {
+        dispatch(push(`/form/${formId}/submission/${submissionId}`));
+      }
     }
+  }, [applicationStatus, userRoles, dispatch, submissionId, formId ]);
 
-    return (
+  if (isFormActive || isSubActive) {
+      return <Loading />;
+  }
+
+  return (
       <div className="container">
         <div className="main-header">
-          <SubmissionError modalOpen={this.props.submissionError.modalOpen}
-            message={this.props.submissionError.message}
-            onConfirm={this.props.onConfirm}
+          <SubmissionError modalOpen={props.submissionError.modalOpen}
+            message={props.submissionError.message}
+            onConfirm={props.onConfirm}
           >
           </SubmissionError>
           <h3 className="task-head">{form.title}</h3>
@@ -41,12 +66,11 @@ const Edit = class extends Component {
           submission={submission}
           url={url}
           hideComponents={hideComponents}
-          onSubmit={onSubmit}
+          onSubmit={(submission)=>onSubmit(submission,applicationDetail)}
           options={{ ...options }}
         />
       </div>
     );
-  }
 }
 
 const mapStateToProps = (state) => {
@@ -73,12 +97,25 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onSubmit: (submission) => {
+    onSubmit: (submission,applicationDetail) => {
+      console.log("applicationDetail", applicationDetail);
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
           dispatch(setUpdateLoader(true));
-          dispatch(resetSubmissions('submission'));
-          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+
+          if(applicationDetail.applicationStatus===RETURNED_STATUS){
+            const data = {
+              "messageName" : RESUBMITTED_STATUS_EVENT,
+              "processInstanceId": applicationDetail.processInstanceId
+            }
+            dispatch(updateApplicationEvent(data,()=>{
+              dispatch(resetSubmissions('submission'));
+              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+            }));
+          }else{
+            dispatch(resetSubmissions('submission'));
+            dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+          }
         }
         else {
           const ErrorDetails = { modalOpen: true, message: "Submission cannot be done" }

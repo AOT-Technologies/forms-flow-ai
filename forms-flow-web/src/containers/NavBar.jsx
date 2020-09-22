@@ -1,16 +1,24 @@
 import React from "react";
-import {Nav, Navbar, Button} from "react-bootstrap";
+import { Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
-
+import { selectRoot } from "react-formio";
 import UserService from "../services/UserService";
+import { getUserRoleName } from "../helper/user";
 
+import "./styles.scss";
 
 const NavBar = () => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-  const logout = () => {
-    UserService.userLogout();
-  }
+  const user = useSelector((state) => {
+      return selectRoot("user", state).userDetail;
+    });
+    const userRoles = useSelector((state) => {
+      return selectRoot("user", state).roles;
+    });
+    const logout = () => {
+      UserService.userLogout();
+    }
   return (
     <header>
       <Navbar expand="lg" bg="white" className="topheading-border-bottom">
@@ -19,12 +27,15 @@ const NavBar = () => {
             <Link to="/">
               <img
                 className="img-fluid"
-                src="/logo.svg"
-                width="177"
-                height="44"
+                src="/formsflow.ai_icon.svg"
+                width="50"
+                height="55"
                 alt="Logo"
               />
             </Link>
+          </Navbar.Brand>
+          <Navbar.Brand className="d-flex">
+              <div className="custom-app-name">formsflow.ai</div>
           </Navbar.Brand>
           <Navbar.Toggle
             aria-controls="responsive-navbar-nav"
@@ -34,40 +45,30 @@ const NavBar = () => {
             id="responsive-navbar-nav"
             className="navbar-nav"
           />
+           <Navbar.Brand className="d-flex">
+            <Link to="/">
+                  <img
+                    className="img-xs rounded-circle"
+                    src="/assets/Images/user.svg"
+                    alt="profile"
+                  />
+            </Link>
+          </Navbar.Brand>
           <Nav className="d-none d-md-block">
             {isAuthenticated ? (
-              <>
-                <i
-                  className="fa fa-sign-out text-black-50 fa-lg"
-                  aria-hidden="true"
-                />
-                <Button
-                  variant="link"
-                  style={{
-                    color: "#000",
-                    fontSize: "20px",
-                    textDecoration: "none",
-                  }}
-                  onClick={logout}
-                >
-                  Logout
-                </Button>
-              </>
+          <>
+            <NavDropdown title={user.name || user.preferred_username} id="collasible-nav-dropdown" alignRight >
+              <NavDropdown.Item href="#"> {user.name || user.preferred_username}<br/>
+                <i className="fa fa-users fa-fw"></i><b>{getUserRoleName(userRoles)}</b>
+              </NavDropdown.Item>
+
+              <NavDropdown.Divider />
+            <NavDropdown.Item href="#" onClick ={logout}><i className="fa fa-sign-out fa-fw"></i> Logout</NavDropdown.Item>
+            </NavDropdown>
+          </>
             ) : (
               <>
-                <i className="fa fa-sign-in text-black-50" aria-hidden="true"/>
-                <Button
-                  variant="link"
-                  style={{
-                    color: "#000",
-                    fontSize: "20px",
-                    textDecoration: "none",
-                  }}
-                  onClick={() => {
-                  }}
-                >{/*TODO login for public*/}
-                  Login
-                </Button>
+
               </>
             )}
           </Nav>

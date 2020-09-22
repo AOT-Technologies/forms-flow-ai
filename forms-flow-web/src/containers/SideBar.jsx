@@ -5,8 +5,8 @@ import { useSelector } from "react-redux";
 import { selectRoot } from "react-formio";
 import { useLocation } from "react-router-dom";
 
-import { STAFF_REVIEWER } from "../constants/constants";
-import { getUserRoleName, getUserRolePermission, getNameFromEmail } from "../helper/user";
+import {CLIENT, STAFF_REVIEWER } from "../constants/constants";
+import { getUserRolePermission } from "../helper/user";
 
 import "./styles.scss";
 
@@ -15,10 +15,7 @@ const SideBar = (props) => {
 
   const { pathname } = location;
 
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-  const user = useSelector((state) => {
-    return selectRoot("user", state).userDetail;
-  });
+
   const userRoles = useSelector((state) => {
     return selectRoot("user", state).roles;
   });
@@ -27,30 +24,7 @@ const SideBar = (props) => {
     <header>
       <nav id="sidebar">
         <ul className="list-unstyled components">
-          {isAuthenticated && (
-            <li className="nav-item nav-profile mt-3">
-              <div className="nav-link">
-                <div className="profile-image">
-                  <img
-                    className="img-xs rounded-circle"
-                    src="/assets/Images/user.svg"
-                    alt="profile"
-                  />
 
-                  <div className="dot-indicator bg-success" />
-                </div>
-                <div className="text-wrapper">
-                  <p className="profile-name">
-                    {
-                      user.preferred_username || user.given_name ||
-                      user.name || getNameFromEmail(user.email) ||
-                      ""}{" "}
-                  </p>
-                  <p className="profile-role">{getUserRoleName(userRoles)}</p>
-                </div>
-              </div>
-            </li>
-          )}
 
           <li className={`${pathname.match(/^\/form/) ? "active" : ""}`}>
             <Link
@@ -62,6 +36,19 @@ const SideBar = (props) => {
               <i className="fa fa-wpforms" />
               Forms
             </Link>
+          </li>
+          <li className={`${pathname.match(/^\/application/) ? "active" : ""}`}>
+            {getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)? (
+              <Link
+                to="/application"
+                className={`main-nav nav-link ${
+                  pathname.match(/^\/application/) ? "active-tab" : ""
+                }`}
+              >
+                <i className="fa fa-list-alt" />
+                Applications
+              </Link>
+            ) : null}
           </li>
           <li className={`${pathname.match(/^\/task/) ? "active" : ""}`}>
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (

@@ -48,7 +48,7 @@ class FormResource(Resource):
         mapper_json = request.get_json()
 
         try:
-            sub = g.token_info.get('sub')
+            sub = g.token_info.get('preferred_username')
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(mapper_json)
             dict_data['created_by'] = sub
@@ -99,7 +99,7 @@ class FormResourceById(Resource):
         try:
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(application_json)
-            sub = g.token_info.get('sub')
+            sub = g.token_info.get('preferred_username')
             dict_data['modified_by'] = sub
 
             FormProcessMapperService.update_mapper(mapper_id, dict_data)

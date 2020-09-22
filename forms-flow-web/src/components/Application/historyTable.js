@@ -22,6 +22,7 @@ function timeFormatter(cell) {
   return <label title={cell}>{localdate}</label>;
 }
 
+
 // History table columns
 export const columns_history = [
   {

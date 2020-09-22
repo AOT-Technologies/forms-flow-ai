@@ -2,14 +2,14 @@
 
 from http import HTTPStatus
 
-from flask import jsonify, request
+from flask import g, jsonify, request
 from flask_restx import Namespace, Resource, cors
 
 from ..exceptions import BusinessException
 from ..services import ProcessService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
-
+from ..schemas.process import ProcessMessageSchema
 
 API = Namespace('Process', description='Process')
 
@@ -59,6 +59,24 @@ class ProcessDefinitionResource(Resource):
              return ProcessService.get_process_definition_xml(process_key,request.headers["Authorization"]), HTTPStatus.OK
         except BusinessException as err:
              return err.error, err.status_code
+
+@cors_preflight('POST,OPTIONS')
+@API.route('/event', methods=['POST', 'OPTIONS'])
+class ProcessEventResource(Resource):
+    """Resource for managing state."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    @auth.require
+    def post():
+        message_json = request.get_json()
+        message_schema = ProcessMessageSchema()
+        dict_data = message_schema.load(message_json)
+        """Get states by process and task key."""
+        try:
+            return jsonify(ProcessService.post_message(dict_data, request.headers["Authorization"])), HTTPStatus.OK
+        except BusinessException as err:
+            return err.error, err.status_code
 
 
 

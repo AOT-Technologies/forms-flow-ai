@@ -1,11 +1,3 @@
-import {
-  httpPOSTRequest
-} from "../httpRequestHandler";
-import API from "../endpoints";
-import {
-  serviceActionError,
-} from "../../actions/bpmActions";
-
 export const getProcessReq = (form, submissionId, action, user) => {
   const requestFormat = {
     variables: {
@@ -27,22 +19,4 @@ export const getProcessReq = (form, submissionId, action, user) => {
   return requestFormat;
 };
 
-export const triggerNotification = (data, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  const URL = API.APPLICATION_START;
-  return (dispatch) => {
-    httpPOSTRequest(URL, data)
-      .then((res) => {
-        if (res.data) {
-          done(null, res.data);
-        } else {
-          dispatch(serviceActionError(res));
-          done("Error Posting data");
-        }
-      })
-      .catch((error) => {
-        dispatch(serviceActionError(error));
-        done(error);
-      });
-  };
-};
+

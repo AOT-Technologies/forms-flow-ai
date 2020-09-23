@@ -225,7 +225,7 @@ class StepperPage extends Component {
     // if (associateWorkFlow === "yes") {
     const data = {
       formId: form.id,
-      formName: form.form && form.form.name,
+      formName: form.form && form.form.title,
       formRevisionNumber: "V1", // to do
       processKey: workflow && workflow.value,
       processName: workflow && workflow.label,

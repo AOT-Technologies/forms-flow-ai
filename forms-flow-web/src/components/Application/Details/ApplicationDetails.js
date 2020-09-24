@@ -1,7 +1,6 @@
 import React from "react";
 import {Table} from "react-bootstrap";
 import moment from "moment";
-import { Link } from "react-router-dom";
 import startCase from "lodash/startCase";
 //import {setUpdateLoader} from "../../../actions/taskActions";
 
@@ -42,9 +41,12 @@ const ApplicationDetails = (props) => {
       <tr>
         <td className="border-0">Link to form submission</td>
         <td className="border-0">:</td>
-        <td className="border-0"> <Link to={`/form/${application.formId}/submission/${application.submissionId}`} title=''>
-          View Submission
-        </Link></td>
+        <td className="border-0">
+          <div onClick={()=> window.open(`/form/${application.formId}/submission/${application.submissionId}`, "_blank")}>
+        <span className="btn btn-primary btn-sm form-btn"><span><i
+          className="fa fa-eye"/>&nbsp;</span>View</span>
+          </div>
+        </td>
         {/*TODO update*/}
       </tr>
       </tbody>

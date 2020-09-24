@@ -38,17 +38,6 @@ const ApplicationDetails = (props) => {
           {moment(application.created).format("DD-MMM-YYYY")}
         </td>
       </tr>
-      <tr>
-        <td className="border-0">Link to form submission</td>
-        <td className="border-0">:</td>
-        <td className="border-0">
-          <div onClick={()=> window.open(`/form/${application.formId}/submission/${application.submissionId}`, "_blank")}>
-        <span className="btn btn-primary btn-sm form-btn"><span><i
-          className="fa fa-eye"/>&nbsp;</span>View</span>
-          </div>
-        </td>
-        {/*TODO update*/}
-      </tr>
       </tbody>
     </Table>
   );

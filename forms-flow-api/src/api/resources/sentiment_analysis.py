@@ -6,7 +6,7 @@ from flask_pymongo import PyMongo
 from flask_restx import Namespace
 
 from ..schemas import SentimentAnalysisSchema
-from ..services.sentiment_analysis import sentiment_pipeline
+from ..services import sentiment_pipeline
 
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
@@ -14,7 +14,7 @@ API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 
 @API.route("/insert", methods=["POST", "GET"])
 def sentiment_analysis_mongodb_insert():
-    """ Api for adding sentiment analysis response to mongodb """
+    """ Api for storing sentiment analysis response to mongodb """
     parsejson = request.get_json()
     text = parsejson["text"]
     response = sentiment_pipeline(text=text)

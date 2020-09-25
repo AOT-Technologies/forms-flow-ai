@@ -30,9 +30,7 @@ def sentiment_pipeline(text):
     """
     # uncomment when working in linux and remove subsequent two lines
     # nlp = spacy.load("../models/quick-spacy/")
-    model_path = Path(
-        r"D:\work\forms-flow-ai-dev\forms-flow-api\src\api\service\models\quick-spacy"
-    )  # modify later
+    model_path = Path("../models/quick-spacy")  # modify later
     nlp = spacy.load(model_path)
     doc = nlp(text)
     a = [ent.text for ent in doc.ents]

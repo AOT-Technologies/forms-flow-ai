@@ -30,9 +30,7 @@ def sentiment_pipeline(text):
     """
     # uncomment when working in linux and remove subsequent two lines
     # nlp = spacy.load("../models/quick-spacy/")
-    model_path = Path(
-        r"D:\work\forms-flow-ai-dev\forms-flow-api\src\api\service\models\quick-spacy"
-    )  # modify later
+    model_path = Path("../models/quick-spacy")  # modify later
     nlp = spacy.load(model_path)
     doc = nlp(text)
     a = [ent.text for ent in doc.ents]
@@ -70,13 +68,13 @@ def sentiment_pipeline(text):
 def overall_sentiment(text):
 # tokenize_text = tokenize.sent_tokenize(text)
 # print(tokenize_text)
-sid = SentimentIntensityAnalyzer()
-ss = sid.polarity_scores(text)
-for k in sorted(ss):
-    # print('{0}: {1}, '.format(k, ss[k]), end='')
-    if ss["compound"] >= 0.15:
-        return "positive"
-    elif ss["compound"] <= -0.01:
-        return "negative"
-    else:
-        return "neutral"
+    sid = SentimentIntensityAnalyzer()
+    ss = sid.polarity_scores(text)
+    for k in sorted(ss):
+        # print('{0}: {1}, '.format(k, ss[k]), end='')
+        if ss["compound"] >= 0.15:
+            return "positive"
+        elif ss["compound"] <= -0.01:
+            return "negative"
+        else:
+            return "neutral"

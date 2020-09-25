@@ -6,7 +6,7 @@ from flask import Flask
 from flask_cors import CORS
 
 from . import config, models
-from .models import db, ma
+from .models import db, ma, mongo
 from .resources import API
 from .utils.auth import jwt
 from .utils.logging import setup_logging
@@ -24,6 +24,7 @@ def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
 
     db.init_app(app)
     ma.init_app(app)
+    mongo.init_app(app)
 
     API.init_app(app)
     setup_jwt_manager(app, jwt)

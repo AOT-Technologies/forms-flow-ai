@@ -58,6 +58,9 @@ class _Config():  # pylint: disable=too-few-public-methods
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', '')
     # SQLALCHEMY_ECHO = True
 
+    # MONGODB
+    MONGO_URI = os.getenv('MONGO_URI')
+
     TESTING = False
     DEBUG = False
 

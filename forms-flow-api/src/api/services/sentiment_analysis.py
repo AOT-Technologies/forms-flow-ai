@@ -1,3 +1,5 @@
+from app import app
+
 import spacy
 import nltk
 

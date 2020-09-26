@@ -21,6 +21,7 @@ def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
     app = Flask(__name__)
     CORS(app)
     app.config.from_object(config.CONFIGURATION[run_mode])
+    app.config["MONGO_URI"] = os.getenv("MONGODB_URI")
 
     db.init_app(app)
     ma.init_app(app)
@@ -37,7 +38,7 @@ def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
         return response
 
     register_shellcontext(app)
-
+    from app.resources.sentiment_anaysis imort app
     return app
 
 

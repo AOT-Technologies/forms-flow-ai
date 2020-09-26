@@ -7,4 +7,4 @@ from .task import TaskService
 from .tenant import TenantService
 from .formio_token import FormIOTokenService
 from .application_audit import ApplicationAuditService
-from .sentiment_analysis import sentiment_pipeline
+from .sentiment_analysis import sentiment_pipeline, entity_category

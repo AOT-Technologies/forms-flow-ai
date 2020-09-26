@@ -1,4 +1,5 @@
 """" API endpoints for sentiment analysis """
+from app import app
 from http import HTTPStatus
 
 from flask import jsonify, request
@@ -6,13 +7,11 @@ from flask_pymongo import PyMongo
 from flask_restx import Namespace
 
 from ..schemas import SentimentAnalysisSchema
-from ..services import sentiment_pipeline
+from ..services import sentiment_pipeline, entity_category
 
 
-API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 
-
-@API.route("/insert", methods=["POST", "GET"])
+@app.routes("sentiment/", methods=["POST", "GET"])
 def sentiment_analysis_mongodb_insert():
     """ Api for storing sentiment analysis response to mongodb """
     parsejson = request.get_json()
@@ -34,8 +33,7 @@ def sentiment_analysis_mongodb_insert():
 
     return "Data was entered into mongo db database", HTTPStatus.OK
 
-
-@API.route("/api", methods=["POST", "GET"])
+@app.routes("sentiment/", methods=["POST", "GET"])
 def sentiment_analysis_api():
     """ Api for fetching sentiment analysis response"""
     parsejson = request.get_json()

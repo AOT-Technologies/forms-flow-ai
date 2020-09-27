@@ -14,13 +14,11 @@ class SentimentAnalysisSchema(object):
 
     def insert_sentiment(self, sentiment_object):
         # TODO: validate if all the object of database are currently there in required fields
-        mongo_db = mongo.db.application_ai
-        inserted = mongo_db.insert(sentiment_object)
-        id = str(inserted.inserted_id)
-        return f"Mongodb sentiment response created for {id}"
+        mongo_db = mongo.db.application_ai #application_ai is collection name
+        inserted = mongo_db.insert_one(sentiment_object)
+        return f"Mongodb sentiment response created for {inserted.inserted_id}"
 
     def insert_entity(self, entity_object):
-        mongo_db = mongo.db.entity_ai
-        inserted = mongo_db.insert(entity_object)
-        id = str(inserted.inserted_id)
-        return f"Mongodb entity response created for {id}"
+        mongo_db = mongo.db.entity_ai  #entity_ai is the collection name
+        inserted = mongo_db.insert_many(entity_object)
+        return f"Mongodb entity response created "

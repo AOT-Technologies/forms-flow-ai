@@ -16,6 +16,7 @@ def sentiment_analysis_mongodb_insert():
     """ Api for storing sentiment analysis response to mongodb """
     parsejson = request.get_json()
     text = parsejson["text"]
+    topics = parsejson["topics"]
     response = sentiment_pipeline(text=text)
     output_response = jsonify(response)
 
@@ -28,12 +29,13 @@ def sentiment_analysis_mongodb_insert():
 
     for _, t in enumerate(entity_response):
         k, value = t
-        for _, t in enumerate(value):
-            db_instance.insert_entity(k, t)
+        if k in topics:
+            for _, t in enumerate(value):
+                db_instance.insert_entity(k, t)
 
     return "Data was entered into mongo db database", HTTPStatus.OK
 
-@app.routes("sentiment/", methods=["POST", "GET"])
+@app.routes("sentiment/api", methods=["POST", "GET"])
 def sentiment_analysis_api():
     """ Api for fetching sentiment analysis response"""
     parsejson = request.get_json()

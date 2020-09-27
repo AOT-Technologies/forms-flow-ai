@@ -45,3 +45,4 @@ class SentimentAnalysisResource(Resource):
         logging.info(entity_response)
         db_entity_instance.insert_entity(entity_response)
         return "Data was entered into mongo db database", HTTPStatus.OK
+

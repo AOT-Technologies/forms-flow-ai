@@ -11,7 +11,7 @@ from ..services import SentimentAnalyserService, entity_category
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
 import json
-import logging
+
 
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
@@ -25,24 +25,23 @@ class SentimentAnalysisResource(Resource):
     @cors.crossdomain(origin='*')
     @auth.require
     def post():
-        parsejson = request.get_json()
-        text = parsejson["text"]
-        topics = parsejson["topics"]
-        logging.info(text)
-        logging.info(topics)
+        inputjson = request.get_json()
+        text = inputjson["text"]
+        topics = inputjson["topics"]
+
         response = SentimentAnalyserService.sentiment_pipeline(text=text)
         output_response = jsonify(response)
-        logging.info(output_response.get_json())
 
 
-        post_data = {"input_text": text, "output_response": response}
+
+        post_data = {"input_text": inputjson, "output_response": response}
         db_instance = SentimentAnalysisSchema()
         result = db_instance.insert_sentiment(post_data)
-        logging.info(result)
+
 
         db_entity_instance = SentimentAnalysisSchema()
         entity_response = entity_category(text, topics)
-        logging.info(entity_response)
+
         db_entity_instance.insert_entity(entity_response)
-        return "Data was entered into mongo db database", HTTPStatus.OK
+        return output_response, HTTPStatus.OK
 

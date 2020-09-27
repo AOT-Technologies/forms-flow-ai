@@ -1,6 +1,7 @@
-import logging
 import spacy
 import nltk
+
+import os
 
 nltk.downloader.download("vader_lexicon")
 nltk.downloader.download("punkt")
@@ -13,13 +14,11 @@ from nltk import tokenize
 
 
 class SentimentAnalyserService():
-    
+
     @staticmethod
     def sentiment_pipeline(text):
         sentence, labels = load_model_output(text)
         ent = sentence.copy()
-        logging.info(ent)
-        logging.info(labels)
         full_sentence = []
         full_text = text.split(".")
 
@@ -51,27 +50,11 @@ class SentimentAnalyserService():
         return ans
 
 
-# class OverallSentimentAnalyserService():
-#     @staticmethod
-#     def overall_sentiment(text):
-#     # tokenize_text = tokenize.sent_tokenize(text)
-#     # print(tokenize_text)
-#         sid = SentimentIntensityAnalyzer()
-#         ss = sid.polarity_scores(text)
-#         for k in sorted(ss):
-#         # print('{0}: {1}, '.format(k, ss[k]), end='')
-#             if ss["compound"] >= 0.15:
-#                 return "positive"
-#             elif ss["compound"] <= -0.01:
-#                 return "negative"
-#             else:
-#                 return "neutral"
-
 
 def load_model_output(text):
     # uncomment when working in linux and remove subsequent two lines
     # nlp = spacy.load("../models/quick-spacy/")
-    model_path = Path("../models/quick-spacy")  # modify later
+    model_path = Path(os.path.dirname(os.path.realpath(__file__))+"/models/quick-spacy/")
     nlp = spacy.load(model_path)
     doc = nlp(text)
     sentence = [ent.text for ent in doc.ents]

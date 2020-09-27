@@ -71,7 +71,7 @@ class SentimentAnalyserService():
 def load_model_output(text):
     # uncomment when working in linux and remove subsequent two lines
     # nlp = spacy.load("../models/quick-spacy/")
-    model_path = Path("D:/forms-flow-api/src/api/services/support/quick-spacy")  # modify later
+    model_path = Path("../models/quick-spacy")  # modify later
     nlp = spacy.load(model_path)
     doc = nlp(text)
     sentence = [ent.text for ent in doc.ents]

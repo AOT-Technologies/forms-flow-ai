@@ -1,42 +1,47 @@
 """" API endpoints for sentiment analysis """
-from app import app
 from http import HTTPStatus
 
-from flask import jsonify, request
+from flask import g, jsonify, request
 from flask_pymongo import PyMongo
-from flask_restx import Namespace
+from flask_restx import Namespace, Resource, cors
 
+from ..models import mongo
 from ..schemas import SentimentAnalysisSchema
-from ..services import sentiment_pipeline, entity_category
+from ..services import SentimentAnalyserService, entity_category
+from ..utils.auth import auth
+from ..utils.util import cors_preflight
+import json
+import logging
 
 
+API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 
-@app.routes("sentiment/", methods=["POST", "GET"])
-def sentiment_analysis_mongodb_insert():
-    """ Api for storing sentiment analysis response to mongodb """
-    parsejson = request.get_json()
-    text = parsejson["text"]
-    response = sentiment_pipeline(text=text)
-    output_response = jsonify(response)
 
-    post_data = {'input_text': text, 'output_response': output_response}
-    db_instance = SentimentAnalysisSchema()
-    db_instance.insert_sentiment(post_data)
+@cors_preflight('POST,OPTIONS')
+@API.route('', methods=['POST', 'OPTIONS'])
+class SentimentAnalysisResource(Resource):
 
-    d = entity_category(text)
-    entity_response = sorted(d.items())
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    @auth.require
+    def post():
+        parsejson = request.get_json()
+        text = parsejson["text"]
+        topics = parsejson["topics"]
+        logging.info(text)
+        logging.info(topics)
+        response = SentimentAnalyserService.sentiment_pipeline(text=text)
+        output_response = jsonify(response)
+        logging.info(output_response.get_json())
 
-    for _, t in enumerate(entity_response):
-        k, value = t
-        for _, t in enumerate(value):
-            db_instance.insert_entity(k, t)
 
-    return "Data was entered into mongo db database", HTTPStatus.OK
+        post_data = {"input_text": text, "output_response": response}
+        db_instance = SentimentAnalysisSchema()
+        result = db_instance.insert_sentiment(post_data)
+        logging.info(result)
 
-@app.routes("sentiment/", methods=["POST", "GET"])
-def sentiment_analysis_api():
-    """ Api for fetching sentiment analysis response"""
-    parsejson = request.get_json()
-    text = parsejson["text"]
-    response = sentiment_pipeline(text=text)
-    return jsonify(response), HTTPStatus.OK
+        db_entity_instance = SentimentAnalysisSchema()
+        entity_response = entity_category(text, topics)
+        logging.info(entity_response)
+        db_entity_instance.insert_entity(entity_response)
+        return "Data was entered into mongo db database", HTTPStatus.OK

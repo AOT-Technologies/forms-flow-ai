@@ -10,6 +10,8 @@ import Loading from "../../containers/Loading";
 import {setApplicationDetailLoader} from "../../actions/applicationActions";
 import ProcessDiagram from "../BPMN/ProcessDiagram";
 import History from "./History";
+import View from "../Form/Item/Submission/Item/View";
+import {getForm, getSubmission} from "react-formio";
 
 //import { useDispatch } from 'react-redux'
 
@@ -22,7 +24,16 @@ const ViewApplication = () => {
 
   useEffect(()=>{
       dispatch(setApplicationDetailLoader(true));
-      dispatch(getApplicationById(applicationId));
+      dispatch(getApplicationById(applicationId,(err,res)=>{
+        if (!err) {
+          if (res.submissionId && res.formId) {
+            dispatch(getForm("form", res.formId));
+            dispatch(
+              getSubmission("submission", res.submissionId, res.formId)
+            );
+          }
+        }
+      }));
       dispatch(getApplicationFormDataByAppId(applicationId));
   },[applicationId, dispatch]);
 
@@ -49,8 +60,11 @@ const ViewApplication = () => {
         <Tab eventKey="details" title="Details">
           <Details application={applicationDetail}/>
         </Tab>
+        <Tab eventKey="form" title="Form">
+          <View page="application-detail"/>
+        </Tab>
         <Tab eventKey="history" title="History">
-            <History page="task-detail"/>
+            <History page="application-detail"/>
         </Tab>
         <Tab eventKey="process-diagram" title="Process Diagram">
           <ProcessDiagram

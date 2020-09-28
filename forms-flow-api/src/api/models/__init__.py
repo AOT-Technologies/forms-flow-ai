@@ -1,6 +1,6 @@
 """This exports all of the models used by the application."""
 
-from .db import db, ma
+from .db import db, ma, mongo
 from .form_process_mapper import FormProcessMapper
 from .application import Application
 from .application_communication import ApplicationCommunication

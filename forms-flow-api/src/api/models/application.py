@@ -50,22 +50,22 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     @classmethod
     def find_by_ids(cls, application_ids) -> Application:
         """Find application that matches the provided id."""
-        return cls.query.filter(cls.id.in_(application_ids))
+        return cls.query.filter(cls.id.in_(application_ids)).order_by(Application.id.desc())
 
     @classmethod
     def find_all(cls, page_no, limit):
         """Fetch all application."""
         if page_no == 0:
-            return cls.query.all()
+            return cls.query.order_by(Application.id.desc()).all()
         else:
-            return cls.query.paginate(page_no, limit, False).items
+            return cls.query.order_by(Application.id.desc()).paginate(page_no, limit, False).items
 
     @classmethod
     def find_all_by_user(cls, user_id, page_no, limit):
         if page_no == 0:
-            return cls.query.filter(Application.created_by == user_id)
+            return cls.query.filter(Application.created_by == user_id).order_by(Application.id.desc())
         else:
-            return cls.query.filter(Application.created_by == user_id).paginate(page_no, limit, False).items
+            return cls.query.filter(Application.created_by == user_id).order_by(Application.id.desc()).paginate(page_no, limit, False).items
 
     @classmethod
     def find_all_by_user_count(cls, user_id):
@@ -75,16 +75,16 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     @classmethod
     def find_by_form_id(cls, form_id, page_no, limit):
         if page_no == 0:
-            return cls.query.filter(Application.form_url.like('%'+form_id+'%'))
+            return cls.query.filter(Application.form_url.like('%'+form_id+'%')).order_by(Application.id.desc())
         else:
-            return cls.query.filter(Application.form_url.like('%'+form_id+'%')).paginate(page_no, limit, False).items
+            return cls.query.filter(Application.form_url.like('%'+form_id+'%')).order_by(Application.id.desc()).paginate(page_no, limit, False).items
 
     @classmethod
     def find_by_form_id_user(cls, form_id, user_id, page_no, limit):
         if page_no == 0:
-            return cls.query.filter(Application.form_url.like('%'+form_id+'%')).filter(Application.created_by == user_id)
+            return cls.query.filter(Application.form_url.like('%'+form_id+'%')).filter(Application.created_by == user_id).order_by(Application.id.desc())
         else:
-            return cls.query.filter(Application.form_url.like('%'+form_id+'%')).filter(Application.created_by == user_id).paginate(page_no, limit, False).items
+            return cls.query.filter(Application.form_url.like('%'+form_id+'%')).filter(Application.created_by == user_id).order_by(Application.id.desc()).paginate(page_no, limit, False).items
 
 
 

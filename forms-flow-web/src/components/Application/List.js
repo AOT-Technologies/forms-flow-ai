@@ -16,6 +16,9 @@ import {
   getoptions,
   defaultSortedBy,
 } from "./table";
+import {getUserRolePermission} from "../../helper/user";
+import {CLIENT} from "../../constants/constants";
+import {CLIENT_EDIT_STATUS} from "../../constants/applicationConstants";
 
 
 const ApplicationList = () => {
@@ -23,11 +26,24 @@ const ApplicationList = () => {
   const isApplicationListLoading = useSelector((state) => state.applications.isApplicationListLoading);
   const applicationCount = useSelector((state) => state.applications.applicationCount);
   const dispatch= useDispatch();
+  const userRoles = useSelector((state) => state.user.roles);
 
   useEffect(()=>{
     dispatch(setApplicationListLoader(true))
     dispatch(getAllApplications());
   },[dispatch]);
+
+  useEffect(()=>{
+
+  },[userRoles]);
+
+  const isClientEdit = (applicationStatus) => {
+    if (getUserRolePermission(userRoles, CLIENT)) {
+      return CLIENT_EDIT_STATUS.includes(applicationStatus)
+    }else {
+      return false;
+    }
+  };
 
   if (isApplicationListLoading) {
     return (
@@ -51,12 +67,18 @@ const ApplicationList = () => {
       </div>
     );
   };
+  const listApplications = (applications) => {
+    return applications.map(application => {
+      application.isClientEdit = isClientEdit(application.applicationStatus);
+      return application;
+    });
+  }
 
   return (
     applicationCount > 0 ? (
       <ToolkitProvider
         keyField="id"
-        data={applications}
+        data={listApplications(applications)}
         columns={columns}
         search
       >

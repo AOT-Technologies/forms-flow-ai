@@ -36,7 +36,7 @@ class ApplicationSchema(Schema):
     modified_by = fields.Str(data_key='modifiedBy')
     modified = fields.Str()
 
-    variables = fields.Raw(required=True)
+    variables = fields.Raw(required=False)
     form_id = fields.Str(data_key='formId')
     submission_id = fields.Str(data_key='submissionId')
 

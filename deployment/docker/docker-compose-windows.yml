@@ -154,6 +154,7 @@ services:
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
       WEB_API_BASE_URL: ${WEB_API_BASE_URL}
+      MONGODB_URI: ${MONGODB_URI}
     stdin_open: true # -i
     tty: true # -t
     networks:

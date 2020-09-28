@@ -90,7 +90,7 @@ def entity_category(text, topics):
         d[labels[i]].append(sentence[i])
 
     entity_response = sorted(d.items())
-    logging.info(d.items())
+    
 
     new = []
     for _, t in enumerate(entity_response):

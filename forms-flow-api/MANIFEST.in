@@ -20,3 +20,5 @@ include src/api/services/models/quick-spacy/vocab/lookups_extra.bin
 include src/api/services/models/quick-spacy/vocab/lookups.bin
 include src/api/services/models/quick-spacy/vocab/lookups.bin
 include src/api/services/models/quick-spacy/vocab/vectors
+include src/api/services/models/quick-spacy/vocab/*.json
+include src/api/services/models/quick-spacy/tokenizer

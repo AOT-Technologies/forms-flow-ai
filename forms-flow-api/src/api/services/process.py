@@ -5,7 +5,7 @@ import logging
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
-from ..schemas import ProcessActionListSchema, ProcessDefinitionSchema, ProcessListSchema,ProcessDefinitionXMLSchema
+from ..schemas import ProcessActionListSchema, ProcessDefinitionSchema, ProcessListSchema,ProcessDefinitionXMLSchema,ProcessActivityInstanceSchema
 from .external import BPMService
 
 
@@ -79,3 +79,16 @@ class ProcessService():
     def post_message(data, token):
         """Get process details."""
         return BPMService.send_message(data, token)
+
+    @staticmethod
+    def get_process_activity_instances(process_instace_id, token):
+        """Get process actions."""
+        logging.debug('get_process_activity_instances '+process_instace_id)
+        activity_instances = BPMService.get_process_activity_instances(process_instace_id, token)
+        logging.debug(activity_instances)
+        if activity_instances:
+            return ProcessActivityInstanceSchema().dump(activity_instances)
+
+        raise BusinessException('No activity instances available for process', HTTPStatus.BAD_REQUEST)    
+
+        

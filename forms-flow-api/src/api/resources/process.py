@@ -79,6 +79,20 @@ class ProcessEventResource(Resource):
             return err.error, err.status_code
 
 
+@cors_preflight('GET,OPTIONS')
+@API.route('/process-instance/<string:process_InstanceId>/activity-instances', methods=['GET', 'OPTIONS'])
+class ProcessInstanceResource(Resource):
+    """Get Process Activity Instances."""
+
+    @staticmethod
+    @cors.crossdomain(origin='*')
+    @auth.require
+    def get(process_InstanceId):
+        """Get states by process and task key."""
+        try:
+            return ProcessService.get_process_activity_instances(process_InstanceId,request.headers["Authorization"]), HTTPStatus.OK
+        except BusinessException as err:
+            return err.error, err.status_code
 
 
 

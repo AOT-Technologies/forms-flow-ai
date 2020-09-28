@@ -18,6 +18,7 @@ class BPMEndpointType(IntEnum):
     TaskVariables = 5
     ProcessDefinitionXML = 6
     MessageEvent = 7
+    ProcessInstance = 8
 
 
 class BPMService(BaseBPMService):
@@ -104,6 +105,12 @@ class BPMService(BaseBPMService):
         return cls.post_request(url, token, data)
 
     @classmethod
+    def get_process_activity_instances(cls, process_instace_id, token):
+        """Get task."""
+        url = cls._get_url_(BPMEndpointType.ProcessInstance) + process_instace_id + '/activity-instances'
+        return cls.get_request(url, token)    
+
+    @classmethod
     def _get_url_(cls, endpoint_type: BPMEndpointType):
         """Get Url."""
         bpm_api_base = current_app.config.get('BPM_API_BASE')
@@ -123,6 +130,8 @@ class BPMService(BaseBPMService):
             url = bpm_api_base + 'engine-rest/process-definition/key/'    
         elif endpoint_type == BPMEndpointType.MessageEvent:
             url = bpm_api_base + 'engine-rest/message/'
+        elif endpoint_type == BPMEndpointType.ProcessInstance:
+            url = bpm_api_base + 'engine-rest/process-instance/'    
         if not url.endswith('/'):
             url += '/'
 

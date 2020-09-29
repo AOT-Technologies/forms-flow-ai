@@ -40,14 +40,14 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
 
     @Override
     public void execute(DelegateExecution execution) throws Exception {
-        List<TextSentimentRequest> textSentimentRequests = prepareRequest(execution);
-        if(CollectionUtils.isNotEmpty(textSentimentRequests)) {
-            httpServiceInvoker.execute(getUrl(), HttpMethod.POST,textSentimentRequests.get(0));
+        TextSentimentRequest textSentimentRequest = prepareRequest(execution);
+        if(textSentimentRequest != null) {
+            httpServiceInvoker.execute(getUrl(), HttpMethod.POST,textSentimentRequest);
         }
     }
 
-    private List<TextSentimentRequest> prepareRequest(DelegateExecution execution) throws JsonProcessingException {
-        List<TextSentimentRequest> reqEntries = new ArrayList();
+    private TextSentimentRequest prepareRequest(DelegateExecution execution) throws JsonProcessingException {
+        List<TextSentimentData> txtRecords = new ArrayList();
             String submission = formSubmissionService.readSubmission(String.valueOf(execution.getVariables().get("formUrl")));
             if(submission.isEmpty()) {
                 throw new RuntimeException("Unable to retrieve submission");
@@ -57,21 +57,27 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
             while (dataElements.hasNext()) {
                 Map.Entry<String, JsonNode> entry = dataElements.next();
                 if(entry.getValue().has("type") && getSentimentCategory().equals(entry.getValue().get("type").asText())) {
-                    reqEntries.add(CreateTextSentimentRequest(((Integer) execution.getVariable("applicationId")).intValue(),
-                            String.valueOf(execution.getVariable("formUrl")), entry.getKey(),
+                    txtRecords.add(CreateTextSentimentData(entry.getKey(),
                             getObjectMapper().readValue(entry.getValue().get("topics").toString(), List.class), entry.getValue().get("text").asText()));
                 }
         }
-
-        return reqEntries;
+        if(CollectionUtils.isNotEmpty(txtRecords)) {
+            return CreateTextSentimentRequest(((Integer) execution.getVariable("applicationId")).intValue(),
+                    String.valueOf(execution.getVariable("formUrl")),txtRecords);
+        }
+        return null;
     }
 
     private ObjectMapper getObjectMapper(){
         return new ObjectMapper();
     }
 
-    public TextSentimentRequest CreateTextSentimentRequest(Integer applicationId, String formUrl, String elementId, List<String> topics, String text) {
-        return new TextSentimentRequest(applicationId, formUrl, elementId, topics, text);
+    public TextSentimentRequest CreateTextSentimentRequest(Integer applicationId, String formUrl, List<TextSentimentData> data) {
+        return new TextSentimentRequest(applicationId, formUrl, data);
+    }
+
+    public TextSentimentData CreateTextSentimentData(String elementId, List<String> topics, String text) {
+        return new TextSentimentData(elementId, topics, text);
     }
 
     private String getUrl(){
@@ -91,8 +97,19 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
 class TextSentimentRequest{
     private Integer applicationId;
     private String formUrl;
+    private List<TextSentimentData> data;
+}
+
+@Scope("prototype")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+class TextSentimentData{
     private String elementId;
     private List<String> topics;
     private String text;
 }
+
+
+
 

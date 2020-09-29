@@ -46,7 +46,7 @@ const linkSubmission = (cell,row) => {
 
 
 function timeFormatter(cell) {
-  const localdate = new Date(cell.replace(' ','T')+'Z').toLocaleString()
+  const localdate = cell? new Date(cell.replace(' ','T')+'Z').toLocaleString(): '-' ;
   return <label title={cell}>{localdate}</label>;
 }
 

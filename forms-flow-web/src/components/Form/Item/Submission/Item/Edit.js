@@ -12,8 +12,8 @@ import {getUserRolePermission} from "../../../../../helper/user";
 import {CLIENT, STAFF_REVIEWER} from "../../../../../constants/constants";
 import {
   CLIENT_EDIT_STATUS,
-  RESUBMITTED_STATUS_EVENT,
-  RETURNED_STATUS
+  UPDATE_EVENT_STATUS,
+  getProcessDataReq
 } from "../../../../../constants/applicationConstants";
 import {useParams} from "react-router-dom";
 import {updateApplicationEvent} from "../../../../../apiManager/services/applicationServices";
@@ -98,16 +98,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onSubmit: (submission,applicationDetail) => {
-      console.log("applicationDetail", applicationDetail);
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
           dispatch(setUpdateLoader(true));
 
-          if(applicationDetail.applicationStatus===RETURNED_STATUS){
-            const data = {
-              "messageName" : RESUBMITTED_STATUS_EVENT,
-              "processInstanceId": applicationDetail.processInstanceId
-            }
+          if(UPDATE_EVENT_STATUS.includes(applicationDetail.applicationStatus)){
+            const data = getProcessDataReq(applicationDetail);
             dispatch(updateApplicationEvent(data,()=>{
               dispatch(resetSubmissions('submission'));
               dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))

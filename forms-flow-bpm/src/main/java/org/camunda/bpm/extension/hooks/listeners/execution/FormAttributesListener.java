@@ -1,11 +1,14 @@
 package org.camunda.bpm.extension.hooks.listeners.execution;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
+import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -30,15 +33,17 @@ public class FormAttributesListener implements ExecutionListener {
 
     private final Logger LOGGER = Logger.getLogger(FormAttributesListener.class.getName());
 
+    private Expression fields;
+
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
     @Override
     public void notify(DelegateExecution execution) throws Exception {
         LOGGER.info("FormAttributesListener input : "+execution.getVariables());
-        String  formUrl= MapUtils.getString(execution.getVariables(),"form_url", null);
+        String  formUrl= MapUtils.getString(execution.getVariables(),"formUrl", null);
         if(StringUtils.isBlank(formUrl)) {
-            LOGGER.log(Level.SEVERE,"Unable to read submission for "+execution.getVariables().get("form_url"));
+            LOGGER.log(Level.SEVERE,"Unable to read submission for "+execution.getVariables().get("formUrl"));
             return;
         }
         ResponseEntity<String> response =  httpServiceInvoker.execute(getUrl(execution), HttpMethod.PATCH, getModifiedFormElements(execution));
@@ -50,12 +55,18 @@ public class FormAttributesListener implements ExecutionListener {
 
 
     private String getUrl(DelegateExecution execution){
-        return String.valueOf(execution.getVariables().get("form_url"));
+        return String.valueOf(execution.getVariables().get("formUrl"));
     }
 
-    private List<FormElement> getModifiedFormElements(DelegateExecution execution) {
+    private List<FormElement> getModifiedFormElements(DelegateExecution execution) throws JsonProcessingException {
         List<FormElement> elements = new ArrayList<>();
-        elements.add(new FormElement(FormAttributes.application_id.getElementId(),String.valueOf(execution.getVariable("application_id"))));
+        ObjectMapper objectMapper = new ObjectMapper();
+        List<String> injectableFields =  this.fields != null && this.fields.getValue(execution) != null ?
+                objectMapper.readValue(String.valueOf(this.fields.getValue(execution)),List.class): null;
+        for(String entry: injectableFields) {
+            elements.add(new FormElement(entry,String.valueOf(execution.getVariable(entry))));
+        }
+
         return elements;
     }
 
@@ -78,16 +89,4 @@ class FormElement{
 
 }
 
-enum FormAttributes {
-    application_id("applicationId");
 
-    private final String elementId;
-
-    private FormAttributes(String elementId) {
-        this.elementId = elementId;
-    }
-
-    public String getElementId() {
-        return this.elementId;
-    }
-}

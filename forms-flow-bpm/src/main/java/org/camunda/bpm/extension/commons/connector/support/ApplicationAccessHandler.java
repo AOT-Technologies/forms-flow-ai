@@ -10,7 +10,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
- * This component serves for interaction with application services.
+ * This class serves as gateway for all application service interactions.
  *
  * @author sumathi.thirumani@aot-technologies.com
  */

@@ -38,8 +38,8 @@ public class ApplicationAuditListener {
     }
 
     private ApplicationAudit prepareApplicationAudit(DelegateExecution execution) {
-            applicationAudit.setApplicationStatus(String.valueOf(execution.getVariable("application_status")));
-            applicationAudit.setFormUrl(String.valueOf(execution.getVariable("form_url")));
+            applicationAudit.setApplicationStatus(String.valueOf(execution.getVariable("applicationStatus")));
+            applicationAudit.setFormUrl(String.valueOf(execution.getVariable("formUrl")));
             return applicationAudit;
     }
 
@@ -48,7 +48,7 @@ public class ApplicationAuditListener {
     }
 
     private String getUrl(DelegateExecution execution){
-        return getHTTPServiceInvoker().getProperties().getProperty("api.url")+"/application/"+execution.getVariable("application_id")+"/history";
+        return getHTTPServiceInvoker().getProperties().getProperty("api.url")+"/application/"+execution.getVariable("applicationId")+"/history";
     }
 
 

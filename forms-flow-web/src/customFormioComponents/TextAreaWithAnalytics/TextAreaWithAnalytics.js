@@ -14,17 +14,13 @@ import settingsForm from './TextAreaWithAnalytics.settingsForm';
  */
 
 const SentimentAnalytics = (props) => {
-  // const [comment, updateComment] = useState(props.value||'');
-  const {onChange, value, data, disabled, name} = props;
+  const {onChange, data, disabled, name} = props;
   const {type, sentimentAnalyticTopics, key} = props.component;
-  //TODO text mapping to check
-  console.log("props", props, sentimentAnalyticTopics, type,key, value,data, typeof data, data[key],data[2], data.reviewFood);
-
   const updateCommentData = (input) =>{
     const updateVal = {
       type:type,
       text:input,
-      topic:sentimentAnalyticTopics
+      topics:sentimentAnalyticTopics
     };
     onChange(updateVal);
   };
@@ -86,7 +82,6 @@ export default class TextAreaWithAnalytics extends ReactComponent {
    * #returns ReactInstance
    */
   attachReact(element) {
-    console.log("attach", this);
     return ReactDOM.render(
       <SentimentAnalytics
         component={this.component} // These are the component settings if you want to use them to render the component.

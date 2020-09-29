@@ -68,6 +68,17 @@
           <text>"{'status':[{'name': 'Re-Submit','value': 'Re-Submitted'}]}"</text>
         </outputEntry>
       </rule>
+      <rule id="DecisionRule_0gtjbuc">
+        <inputEntry id="UnaryTests_1oobi8h">
+          <text>"onestep-sr-ai.enabled"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_04pt1az">
+          <text>"Reviewer"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0zrbk7q">
+          <text>"{'status':[{'name': 'Request Processed','value': 'Processed'},{'name': 'Send Back for Update','value': 'Returned'}]}"</text>
+        </outputEntry>
+      </rule>
     </decisionTable>
   </decision>
 </definitions>

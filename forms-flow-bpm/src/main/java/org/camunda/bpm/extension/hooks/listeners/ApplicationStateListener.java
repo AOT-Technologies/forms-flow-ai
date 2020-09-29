@@ -45,13 +45,13 @@ public class ApplicationStateListener extends ApplicationAuditListener implement
     }
 
     private Application prepareApplication(DelegateExecution execution) {
-        application.setApplicationStatus(String.valueOf(execution.getVariable("application_status")));
-        application.setFormUrl(String.valueOf(execution.getVariable("form_url")));
+        application.setApplicationStatus(String.valueOf(execution.getVariable("applicationStatus")));
+        application.setFormUrl(String.valueOf(execution.getVariable("formUrl")));
         return application;
     }
 
     private String getUrl(DelegateExecution execution){
-        return getHTTPServiceInvoker().getProperties().getProperty("api.url")+"/application/"+execution.getVariable("application_id");
+        return getHTTPServiceInvoker().getProperties().getProperty("api.url")+"/application/"+execution.getVariable("applicationId");
     }
 
 

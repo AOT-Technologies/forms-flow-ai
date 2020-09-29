@@ -12,7 +12,7 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
- * This class prepares the payloac and invokes respective access handler based on the service ID.
+ * This class prepares the payload and invokes the respective access handler based on the service ID.
  *
  * @author  sumathi.thirumani@aot-technologies.com
  */

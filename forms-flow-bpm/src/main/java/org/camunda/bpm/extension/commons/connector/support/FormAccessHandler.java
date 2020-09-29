@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This component serves for interaction with Formio services.
+ * This class serves as gateway for all formio interactions.
  *
  * @author sumathi.thirumani@aot-technologies.com
  */

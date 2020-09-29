@@ -29,20 +29,28 @@ class SentimentAnalysisResource(Resource):
         for inputs in inputjson["data"]:
             text = inputs["text"]
             topics = inputs["topics"]
+            inputs["applicationId"] = inputjson["applicationId"]
+            inputs["formUrl"] = inputjson["formUrl"]
             # processing topics in ML model format
             new_topics = [t[:3].upper() for t in topics]
 
             response = SentimentAnalyserService.sentiment_pipeline(text=text)
             if response["sentiment"]=={}:
-                post_data = {"sentiment": "null", "overall_sentiment":response["overall_sentiment"]}
+                response_data = {"sentiment": "null", "overall_sentiment":response["overall_sentiment"]}
+                response_data["applicationId"] = inputjson["applicationId"]
+                response_data["formUrl"] = inputjson["formUrl"]
+                response_data["elementId"] = inputs["elementId"]
+                post_data = {"input_text": inputs, "output_response": response_data}
                 db_instance = SentimentAnalysisSchema()
                 result = db_instance.insert_sentiment(post_data)
 
             else:
+                response["applicationId"] = inputjson["applicationId"]
+                response["formUrl"] = inputjson["formUrl"]
                 response["elementId"] = inputs["elementId"]
                 output_response = jsonify(response)
 
-                post_data = {"input_text": inputs["text"], "output_response": response}
+                post_data = {"input_text": inputs, "output_response": response}
                 db_instance = SentimentAnalysisSchema()
                 result = db_instance.insert_sentiment(post_data)
 

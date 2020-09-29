@@ -35,3 +35,8 @@ export const getRelevantApplications = (applications, submissionData) => {
   }).filter(submission=>submission);
   return submissionData;
 }
+
+
+export const getLocalDateTime = (date) => {
+  return date?new Date(date.replace(' ','T')+'Z').toLocaleString(): "-";
+}

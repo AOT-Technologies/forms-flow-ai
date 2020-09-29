@@ -54,7 +54,7 @@ class SentimentAnalyserService():
 def load_model_output(text):
     # uncomment when working in linux and remove subsequent two lines
     # nlp = spacy.load("../models/quick-spacy/")
-    model_path = Path(__file__).parent.absolute()/'models/quick-spacy/'
+    model_path = Path(__file__).parent.absolute()/'models/quick-fourlabels/'
     nlp = spacy.load(model_path)
     doc = nlp(text)
     sentence = [ent.text for ent in doc.ents]

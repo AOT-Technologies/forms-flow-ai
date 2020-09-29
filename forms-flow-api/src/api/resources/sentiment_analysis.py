@@ -26,24 +26,30 @@ class SentimentAnalysisResource(Resource):
     @auth.require
     def post():
         inputjson = request.get_json()
-        text = inputjson["text"]
-        topics = inputjson["topics"]
+        for inputs in inputjson["data"]:
+            text = inputs["text"]
+            topics = inputs["topics"]
+            # processing topics in ML model format
+            new_topics = [t[:3].upper() for t in topics]
 
-        response = SentimentAnalyserService.sentiment_pipeline(text=text)
-        response["applicationId"] = inputjson["applicationId"]
-        response["formUrl"] = inputjson["formUrl"]
-        output_response = jsonify(response)
+            response = SentimentAnalyserService.sentiment_pipeline(text=text)
+            if response["sentiment"]=={}:
+                post_data = {"sentiment": "null", "overall_sentiment":response["overall_sentiment"]}
+                db_instance = SentimentAnalysisSchema()
+                result = db_instance.insert_sentiment(post_data)
 
+            else:
+                response["elementId"] = inputs["elementId"]
+                output_response = jsonify(response)
 
+                post_data = {"input_text": inputs["text"], "output_response": response}
+                db_instance = SentimentAnalysisSchema()
+                result = db_instance.insert_sentiment(post_data)
 
-        post_data = {"input_text": inputjson, "output_response": response}
-        db_instance = SentimentAnalysisSchema()
-        result = db_instance.insert_sentiment(post_data)
-
-
-        db_entity_instance = SentimentAnalysisSchema()
-        entity_response = entity_category(text, topics)
-
-        db_entity_instance.insert_entity(entity_response)
-        return output_response, HTTPStatus.OK
-
+                entity_response = entity_category(text, new_topics)
+                if entity_response==[]:
+                    pass
+                else:
+                    db_entity_instance = SentimentAnalysisSchema()
+                    db_entity_instance.insert_entity(entity_response)
+                    return output_response, HTTPStatus.OK

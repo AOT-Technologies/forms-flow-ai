@@ -82,9 +82,9 @@ const mapDispatchToProps = (dispatch) => {
               );
 
               dispatch(
-                getApplicationFormDataByAppId(res.application_id)
+                getApplicationFormDataByAppId(res.applicationId)
               );
-              dispatch(getApplicationById(res.application_id,(err,res)=>{
+              dispatch(getApplicationById(res.applicationId,(err,res)=>{
                 if (!err) {
                   if (res.submissionId && res.formId) {
                     dispatch(getForm("form", res.formId));

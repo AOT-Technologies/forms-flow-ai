@@ -41,9 +41,9 @@ public class FormAttributesListener implements ExecutionListener {
     @Override
     public void notify(DelegateExecution execution) throws Exception {
         LOGGER.info("FormAttributesListener input : "+execution.getVariables());
-        String  formUrl= MapUtils.getString(execution.getVariables(),"form_url", null);
+        String  formUrl= MapUtils.getString(execution.getVariables(),"formUrl", null);
         if(StringUtils.isBlank(formUrl)) {
-            LOGGER.log(Level.SEVERE,"Unable to read submission for "+execution.getVariables().get("form_url"));
+            LOGGER.log(Level.SEVERE,"Unable to read submission for "+execution.getVariables().get("formUrl"));
             return;
         }
         ResponseEntity<String> response =  httpServiceInvoker.execute(getUrl(execution), HttpMethod.PATCH, getModifiedFormElements(execution));
@@ -55,7 +55,7 @@ public class FormAttributesListener implements ExecutionListener {
 
 
     private String getUrl(DelegateExecution execution){
-        return String.valueOf(execution.getVariables().get("form_url"));
+        return String.valueOf(execution.getVariables().get("formUrl"));
     }
 
     private List<FormElement> getModifiedFormElements(DelegateExecution execution) throws JsonProcessingException {

@@ -25,6 +25,7 @@ const ProcessDiagram = class extends Component {
 
     const {
       process_key,
+      markers,
       diagramXML
     } = this.props;
 
@@ -42,6 +43,12 @@ const ProcessDiagram = class extends Component {
       }
 
       // this.bpmnViewer.get('canvas').zoom('fit-viewport');
+      if (markers) {
+        for (var i=0; i < markers.length; i++) {
+          this.bpmnViewer.get('canvas').addMarker(markers[i].activityId, 'highlight');
+        } 
+      }
+      
       // console.log("canvas",this.bpmnViewer.get('canvas'))
       // if(this.bpmnViewer.get('canvas') && this.bpmnViewer.get('canvas')._viewport&&this.bpmnViewer.get('canvas')._viewport.getCTM()){
       // this.bpmnViewer.get('canvas').zoom(1);

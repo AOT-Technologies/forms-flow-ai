@@ -86,7 +86,7 @@ const mapDispatchToProps = (dispatch) => {
               );
               dispatch(getApplicationById(res.application_id,(err,res)=>{
                 if (!err) {
-                  if (res.submissionId && res.formId) { //TODO update this as form and submission ids are not populated now
+                  if (res.submissionId && res.formId) {
                     dispatch(getForm("form", res.formId));
                     dispatch(
                       getSubmission("submission", res.submissionId, res.formId)

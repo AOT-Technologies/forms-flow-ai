@@ -49,11 +49,11 @@ const Item = (props) => {
   return (
     <div>
       <ul className="nav nav-tabs">
-        <li className="nav-item">
+        {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<li className="nav-item">
           <Link className="nav-link" to={`/form/${formId}/submission`}>
             <i className="fa fa-chevron-left"/>
           </Link>
-        </li>
+        </li>:null}
         {(path.indexOf("edit") > 0) ?
           <li className="nav-item">
             <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}`}>

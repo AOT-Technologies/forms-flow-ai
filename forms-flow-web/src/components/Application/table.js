@@ -32,18 +32,21 @@ const linkApplication = (cell, row) => {
 }
 
 
-const linkSubmision = (cell) => {
+const linkSubmission = (cell,row) => {
+  const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
+  const buttonText = row.isClientEdit ? 'Edit' : 'View'
+  const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
-    <div title={cell} onClick={()=> window.open(cell, "_blank")}>
+  <div onClick={()=> window.open(url, "_blank")}>
         <span className="btn btn-primary btn-sm form-btn"><span><i
-          className="fa fa-eye"/>&nbsp;</span>View Submission</span>
-    </div>
+          className={icon}/>&nbsp;</span>{buttonText}</span>
+  </div>
   );
 }
 
 
 function timeFormatter(cell) {
-  const localdate = new Date(cell.replace(' ','T')+'Z').toLocaleString() 
+  const localdate = new Date(cell.replace(' ','T')+'Z').toLocaleString()
   return <label title={cell}>{localdate}</label>;
 }
 
@@ -64,6 +67,7 @@ export const columns_history = [
     sort: true,
   },
 ];
+
 export const columns = [
   {
     dataField: "id",
@@ -110,9 +114,9 @@ export const columns = [
   {
     dataField: "formUrl",
     text: "Link to Form Submission",
-    formatter: linkSubmision,
+    formatter: linkSubmission,
   },
- 
+
   {
     dataField: "modified",
     text: "Last Modified",
@@ -161,36 +165,5 @@ export const clearFilter = () => {
     statusFilter("");
     idFilter("");
     nameFilter("");
-};
-export const ApplicatioSearch = (props) => {
-  let input;
-  let id = props.id;
-
-  const statusChange = () => {
-	clearFilter();
-  //   if (input.value === "Username") {
-	//   props.onSearch(userName);
-  //   } else {
-	// 	props.onSearch(input.value);
-	// 	if(input.value === "Active") {
-	// 	statusFilter("Active")
-	// 	} else {
-	// 	statusFilter("")
-	// 	}
-	//  }
-  };
-
-  return (
-    <div>
-      <select id="taskfilter"
-        className="form-control"
-        ref={(n) => (input = n)}
-        onChange={statusChange} defaultValue="Active"
-      >
-        <option value=" ">All tasks</option>
-        <option value="Active">Active tasks</option>
-        <option value="Username">My assigned tasks</option>
-      </select>
-    </div>
-  );
+    modifiedDateFilter("");
 };

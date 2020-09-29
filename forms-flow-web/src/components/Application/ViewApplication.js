@@ -6,6 +6,7 @@ import startCase from "lodash/startCase";
 import {Tabs, Tab} from "react-bootstrap";
 import Details from "./Details";
 import {getApplicationById,getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
+import {getProcessActivities} from "../../apiManager/services/processServices";
 import Loading from "../../containers/Loading";
 import {setApplicationDetailLoader} from "../../actions/applicationActions";
 import ProcessDiagram from "../BPMN/ProcessDiagram";
@@ -20,6 +21,7 @@ const ViewApplication = () => {
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
   const applicationProcess = useSelector(state => state.applications.applicationProcess);
+  const processActivityList = useSelector(state => state.process.processActivityList);
   const dispatch= useDispatch();
 
   useEffect(()=>{
@@ -32,6 +34,10 @@ const ViewApplication = () => {
               getSubmission("submission", res.submissionId, res.formId)
             );
           }
+          console.log('app detail processInstanceId>>'+res.processInstanceId)
+          dispatch(
+            getProcessActivities(res.processInstanceId)
+          );
         }
       }));
       dispatch(getApplicationFormDataByAppId(applicationId));
@@ -40,6 +46,29 @@ const ViewApplication = () => {
   if (isApplicationDetailLoading) {
     return <Loading/>;
   }
+
+  console.log('activity list'+processActivityList);
+  console.log('applicationDetail.process_instance_id >>'+applicationDetail.processInstanceId);
+  
+
+  // const process_activity_instances = [
+  //   {'id': 'Approver:a35e50e5-fe99-11ea-9b25-0242ac1d0003', 
+  //   'parentActivityInstanceId': '1d8358d8-fe99-11ea-9b25-0242ac1d0003',
+  //    'activityId': 'Approver', 
+  //    'activityType': 'userTask', 
+  //    'processInstanceId': '1d8358d8-fe99-11ea-9b25-0242ac1d0003', 
+  //    'processDefinitionId': 'two-step-approval:9:abdc5a6c-fe38-11ea-9b25-0242ac1d0003', 
+  //    'childActivityInstances': [], 
+  //    'childTransitionInstances': [],
+  //     'executionIds': ['1d8358d8-fe99-11ea-9b25-0242ac1d0003'],
+  //      'activityName': 'Approve/Reject Applications', 
+  //      'incidentIds': [], 
+  //      'incidents': [], 'name': 'Approve/Reject Applications'}];
+
+  // const process_activity_instances = processActivityList.childActivityInstances;
+  // const json_formatted =  process_activity_instances && process_activity_instances.replace(/'/g, '"');
+  
+  // var myObject = JSON.parse(process_activity_instances);
 
   return (
     <div className="container">
@@ -69,6 +98,7 @@ const ViewApplication = () => {
         <Tab eventKey="process-diagram" title="Process Diagram">
           <ProcessDiagram
               process_key={applicationProcess.processKey}
+              process_instance_id={applicationDetail.processInstanceId}
           />
         </Tab>
       </Tabs>

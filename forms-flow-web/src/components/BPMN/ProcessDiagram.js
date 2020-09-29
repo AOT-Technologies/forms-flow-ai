@@ -25,6 +25,7 @@ const ProcessDiagram = class extends Component {
 
     const {
       process_key,
+      process_instance_id,
       markers,
       diagramXML
     } = this.props;
@@ -43,8 +44,15 @@ const ProcessDiagram = class extends Component {
       }
 
       // this.bpmnViewer.get('canvas').zoom('fit-viewport');
+
+      console.log('process_instance_id in bpm '+process_instance_id);
+      console.log('process_key in bpm '+process_key);
+
       if (markers) {
+        console.log('adding markers '+markers);
+        console.log('adding markers '+markers.length);
         for (var i=0; i < markers.length; i++) {
+          console.log('markers[i].activityId '+markers[i].activityId);
           this.bpmnViewer.get('canvas').addMarker(markers[i].activityId, 'highlight');
         } 
       }
@@ -57,9 +65,19 @@ const ProcessDiagram = class extends Component {
       return this.handleShown(warnings);
     });
 
-    if (process_key) {
-      return this.fetchDiagram(process_key);
+    console.log('fetchDiagram >>');
+
+    if (process_key ) {
+      return this.fetchDiagram(process_key) ;
     }
+
+    console.log('fetching active instances >>');
+
+    if (process_instance_id) {
+      console.log('fetching active instances');
+      return this.fetchActiveInstances(process_instance_id);
+    }
+
 
     if (diagramXML) {
       return this.displayDiagram(diagramXML);
@@ -80,6 +98,10 @@ const ProcessDiagram = class extends Component {
 
     if (props.process_key !== prevProps.process_key) {
       return this.fetchDiagram(props.process_key);
+    }
+
+    if (props.process_instance_id !== prevProps.process_instance_id) {
+      return this.fetchActiveInstances(props.process_instance_id);
     }
 
     const currentXML = props.diagramXML || state.diagramXML;
@@ -107,6 +129,24 @@ const ProcessDiagram = class extends Component {
       })})
       .then(res => res.json())
       .then(resJson => this.setState({ diagramXML: resJson.bpmn20Xml }))
+      .then(this.fetchActiveInstances())
+      .catch(err => this.handleError(err));
+      
+  }
+
+  fetchActiveInstances() {
+    console.log('fetchActiveInstances >> '+this.props.process_instance_id);
+    const url =API.PROCESSES+'/process-instance'+this.props.process_instance_id+'/activity-instances';
+
+    this.handleLoading();
+
+    fetch(url, { 
+      method: 'get', 
+      headers: new Headers({
+        'Authorization': 'Bearer '+UserService.getToken()
+      })})
+      .then(res => res.json())
+      .then(resJson => this.setState({ markers: resJson.childActivityInstances }))
       .catch(err => this.handleError(err));
       
   }

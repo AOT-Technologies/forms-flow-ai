@@ -1,7 +1,7 @@
 import spacy
 import nltk
 
-import os
+from pathlib import Path
 
 nltk.downloader.download("vader_lexicon")
 nltk.downloader.download("punkt")
@@ -54,7 +54,7 @@ class SentimentAnalyserService():
 def load_model_output(text):
     # uncomment when working in linux and remove subsequent two lines
     # nlp = spacy.load("../models/quick-spacy/")
-    model_path = Path(os.path.dirname(os.path.realpath(__file__))+"/models/quick-spacy/")
+    model_path = Path(__file__).parent.absolute()/'models/quick-spacy/'
     nlp = spacy.load(model_path)
     doc = nlp(text)
     sentence = [ent.text for ent in doc.ents]
@@ -90,7 +90,7 @@ def entity_category(text, topics):
         d[labels[i]].append(sentence[i])
 
     entity_response = sorted(d.items())
-    logging.info(d.items())
+    
 
     new = []
     for _, t in enumerate(entity_response):

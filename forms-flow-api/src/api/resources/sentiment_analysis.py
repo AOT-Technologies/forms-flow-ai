@@ -30,6 +30,8 @@ class SentimentAnalysisResource(Resource):
         topics = inputjson["topics"]
 
         response = SentimentAnalyserService.sentiment_pipeline(text=text)
+        response["applicationId"] = inputjson["applicationId"]
+        response["formUrl"] = inputjson["formUrl"]
         output_response = jsonify(response)
 
 

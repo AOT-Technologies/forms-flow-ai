@@ -1,7 +1,7 @@
-import CheckMatrix from './CheckMatrix';
+//import CheckMatrix from './CheckMatrix';
 import TextAreaWithAnalytics from "./ReactExample/TextAreaWithAnalytics";
 
 export default {
-  checkmatrix: CheckMatrix,
+  //checkmatrix: CheckMatrix,
   textAreaWithAnalytics: TextAreaWithAnalytics,
 }

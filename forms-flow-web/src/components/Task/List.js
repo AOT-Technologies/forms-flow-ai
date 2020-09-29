@@ -21,7 +21,7 @@ import {
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
 import { setUpdateLoader } from "../../actions/taskActions";
-import moment from "moment";
+import {getLocalDateTime} from "../../apiManager/services/formatterService";
 
 const List = class extends Component {
   UNSAFE_componentWillMount() {
@@ -46,9 +46,7 @@ const List = class extends Component {
             taskStatus: task.status === "completed" ? 'Completed' : "Active",
             taskAssignee: task.assignee,
             submittedBy: task.submitterName || "---",
-            submissionDate: moment(task.submissionDate).format(
-              "DD-MMM-YYYY HH:mm:ss"
-            ),
+            submissionDate: getLocalDateTime(task.submissionDate),
             // dueDate: (task.due || "Set due date"),
             form: task.formName || "---",
             userName: userDetail.preferred_username,

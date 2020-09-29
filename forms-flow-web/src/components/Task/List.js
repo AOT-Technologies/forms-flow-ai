@@ -41,16 +41,16 @@ const List = class extends Component {
         const data = tasks.map((task) => {
           return {
             id: task.id,
-            applicationId: task.application_id || "--", //to do update to application/submission id
+            applicationId: task.applicationId || "--", //to do update to application/submission id
             taskTitle: task.name,
             taskStatus: task.status === "completed" ? 'Completed' : "Active",
             taskAssignee: task.assignee,
-            submittedBy: task.submitter_name || "---",
-            submissionDate: moment(task.submission_date).format(
+            submittedBy: task.submitterName || "---",
+            submissionDate: moment(task.submissionDate).format(
               "DD-MMM-YYYY HH:mm:ss"
             ),
             // dueDate: (task.due || "Set due date"),
-            form: task.form_name || "---",
+            form: task.formName || "---",
             userName: userDetail.preferred_username,
             assignToMeFn: onClaim,
             unAssignFn: onUnclaim,

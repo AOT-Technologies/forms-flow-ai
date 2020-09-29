@@ -70,29 +70,29 @@ const View = (props) => {
       <tr>
         <td className="border-0">Application Id</td>
         <td className="border-0">:</td>
-        <td className="border-0">{task.application_id}</td>
+        <td className="border-0">{task.applicationId}</td>
         {/*TODO update*/}
       </tr>
       <tr>
         <td className="border-0">Application Name</td>
         <td className="border-0">:</td>
-        <td className="border-0">{task.form_name || "---"}</td>
+        <td className="border-0">{task.formName || "---"}</td>
       </tr>
       <tr>
         <td className="border-0">Applicant</td>
         <td className="border-0">:</td>
-        <td className="border-0">{task.submitter_name || "---"}</td>
+        <td className="border-0">{task.submitterName || "---"}</td>
       </tr>
       <tr>
         <td className="border-0">Application Status</td>
         <td className="border-0">:</td>
-        <td className="border-0">{task.application_status || "---"}</td>
+        <td className="border-0">{task.applicationStatus || "---"}</td>
       </tr>
       <tr>
         <td className="border-0">Submitted On</td>
         <td className="border-0">:</td>
         <td className="border-0">
-         {new Date(task.submission_date).toLocaleString()}
+         {new Date(task.submissionDate).toLocaleString()}
         </td>
       </tr>
       <tr>

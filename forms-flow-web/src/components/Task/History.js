@@ -22,7 +22,7 @@ import { setUpdateHistoryLoader } from "../../actions/taskActions";
 const HistoryList = () => {
   const dispatch = useDispatch();
 
-  const application_id = useSelector(state => state.tasks.taskDetail.application_id);
+  const application_id = useSelector(state => state.tasks.taskDetail.applicationId);
   const isTaskLoading = useSelector(state => state.tasks.isTaskLoading);
   const isHistoryListLoading = useSelector(state => state.tasks.isHistoryListLoading);
   const appHistory = useSelector(state => state.tasks.appHistory);

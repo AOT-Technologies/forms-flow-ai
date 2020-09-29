@@ -14,8 +14,8 @@ import settingsForm from './TextAreaWithAnalytics.settingsForm';
  */
 
 const SentimentAnalytics = (props) => {
-  const {onChange, data, disabled, name} = props;
-  const {type, sentimentAnalyticTopics, key} = props.component;
+  const {onChange, disabled, name} = props;
+  const {type, sentimentAnalyticTopics} = props.component;
   const updateCommentData = (input) =>{
     const updateVal = {
       type:type,
@@ -26,7 +26,6 @@ const SentimentAnalytics = (props) => {
   };
 
   return (
-    <>
       <textarea
         name={name}
         rows="3"
@@ -34,8 +33,6 @@ const SentimentAnalytics = (props) => {
         onChange={e=>updateCommentData(e.target.value)}
         disabled={disabled}
       />
-      <h1>{data[key]}</h1>
-      </>
   );
 }
 

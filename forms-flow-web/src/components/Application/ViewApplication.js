@@ -43,32 +43,13 @@ const ViewApplication = () => {
       dispatch(getApplicationFormDataByAppId(applicationId));
   },[applicationId, dispatch]);
 
-  if (isApplicationDetailLoading) {
+  if (isApplicationDetailLoading && processActivityList) {
     return <Loading/>;
   }
 
   console.log('activity list'+processActivityList);
   console.log('applicationDetail.process_instance_id >>'+applicationDetail.processInstanceId);
   
-
-  // const process_activity_instances = [
-  //   {'id': 'Approver:a35e50e5-fe99-11ea-9b25-0242ac1d0003', 
-  //   'parentActivityInstanceId': '1d8358d8-fe99-11ea-9b25-0242ac1d0003',
-  //    'activityId': 'Approver', 
-  //    'activityType': 'userTask', 
-  //    'processInstanceId': '1d8358d8-fe99-11ea-9b25-0242ac1d0003', 
-  //    'processDefinitionId': 'two-step-approval:9:abdc5a6c-fe38-11ea-9b25-0242ac1d0003', 
-  //    'childActivityInstances': [], 
-  //    'childTransitionInstances': [],
-  //     'executionIds': ['1d8358d8-fe99-11ea-9b25-0242ac1d0003'],
-  //      'activityName': 'Approve/Reject Applications', 
-  //      'incidentIds': [], 
-  //      'incidents': [], 'name': 'Approve/Reject Applications'}];
-
-  // const process_activity_instances = processActivityList.childActivityInstances;
-  // const json_formatted =  process_activity_instances && process_activity_instances.replace(/'/g, '"');
-  
-  // var myObject = JSON.parse(process_activity_instances);
 
   return (
     <div className="container">
@@ -96,10 +77,10 @@ const ViewApplication = () => {
             <History page="application-detail"/>
         </Tab>
         <Tab eventKey="process-diagram" title="Process Diagram">
-          <ProcessDiagram
+        {processActivityList  && <ProcessDiagram
               process_key={applicationProcess.processKey}
-              process_instance_id={applicationDetail.processInstanceId}
-          />
+              markers={processActivityList}
+          />}
         </Tab>
       </Tabs>
     </div>

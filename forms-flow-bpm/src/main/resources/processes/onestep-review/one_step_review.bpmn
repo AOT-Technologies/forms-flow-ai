@@ -4,7 +4,7 @@
     <bpmn:startEvent id="StartEvent_1" name="Start Request">
       <bpmn:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="javascript">execution.setVariable('application_status', "new");</camunda:script>
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "new");</camunda:script>
         </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0ociprs</bpmn:outgoing>
@@ -23,7 +23,7 @@
           </camunda:field>
         </camunda:taskListener>
         <camunda:taskListener event="complete">
-          <camunda:script scriptFormat="groovy">task.execution.setVariable('application_status', "Request Processed");
+          <camunda:script scriptFormat="groovy">task.execution.setVariable('applicationStatus', "Request Processed");
 task.execution.setVariable('deleteReason', "completed");</camunda:script>
         </camunda:taskListener>
       </bpmn:extensionElements>

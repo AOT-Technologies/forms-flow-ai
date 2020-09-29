@@ -67,15 +67,19 @@ execution.setVariable('sendback_by', "Clerk");</camunda:script>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
       </bpmn:extensionElements>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_11xoshb" name="Processed" sourceRef="Reviewer" targetRef="IntermediateThrowEvent_0n29a1l">
+    <bpmn:sequenceFlow id="SequenceFlow_11xoshb" name="Processed - Awaiting Acknowledgement" sourceRef="Reviewer" targetRef="IntermediateThrowEvent_0n29a1l">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', execution.getVariable('action'));</camunda:script>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'Awaiting Acknowledgement');</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.execution.FormAttributesListener" event="take">
           <camunda:field name="fields">
-            <camunda:string>["applicationStatus"]</camunda:string>
+            <camunda:expression>["applicationStatus"]</camunda:expression>
           </camunda:field>
         </camunda:executionListener>
       </bpmn:extensionElements>
@@ -157,7 +161,7 @@ execution.setVariable('sendback_by', "Clerk");</camunda:script>
         <di:waypoint x="620" y="360" />
         <di:waypoint x="620" y="158" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="553" y="342" width="53" height="14" />
+          <dc:Bounds x="542" y="310" width="76" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1ae1mfk_di" bpmnElement="EndEvent_1ae1mfk">

@@ -1,7 +1,7 @@
 import React from "react";
 import {Table} from "react-bootstrap";
-import moment from "moment";
 import startCase from "lodash/startCase";
+import {getLocalDateTime} from "../../../apiManager/services/formatterService";
 //import {setUpdateLoader} from "../../../actions/taskActions";
 
 
@@ -35,7 +35,14 @@ const ApplicationDetails = (props) => {
         <td className="border-0">Submitted On</td>
         <td className="border-0">:</td>
         <td className="border-0">
-          {moment(application.created).format("DD-MMM-YYYY")}
+          {getLocalDateTime(application.created)}
+        </td>
+      </tr>
+      <tr>
+        <td className="border-0">Modified On</td>
+        <td className="border-0">:</td>
+        <td className="border-0">
+          {getLocalDateTime(application.modified)}
         </td>
       </tr>
       </tbody>

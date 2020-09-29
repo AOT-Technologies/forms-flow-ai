@@ -1,4 +1,5 @@
 import React from "react";
+import {getLocalDateTime} from "../../apiManager/services/formatterService";
 
 
 export const defaultSortedBy = [
@@ -18,8 +19,8 @@ const linkSubmision = (cell) => {
 }
 
 function timeFormatter(cell) {
-  const localdate = new Date(cell.replace(' ','T')+'Z').toLocaleString() 
-  return <label title={cell}>{localdate}</label>;
+  const localDate = getLocalDateTime(cell);
+  return <label title={cell}>{localDate}</label>;
 }
 
 // History table columns

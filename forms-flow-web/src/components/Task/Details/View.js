@@ -9,6 +9,7 @@ import {
   getTaskDetail,
   unClaimTask
 } from "../../../apiManager/services/taskServices";
+import {getLocalDateTime} from "../../../apiManager/services/formatterService";
 
 const taskStatus = (task) => {
   switch (task.status) {
@@ -92,7 +93,7 @@ const View = (props) => {
         <td className="border-0">Submitted On</td>
         <td className="border-0">:</td>
         <td className="border-0">
-         {new Date(task.submissionDate).toLocaleString()}
+          {getLocalDateTime(task.submissionDate)}
         </td>
       </tr>
       <tr>

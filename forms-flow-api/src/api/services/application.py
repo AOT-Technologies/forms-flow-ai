@@ -26,7 +26,8 @@ class ApplicationService():
 
         application = Application.create_from_dict(data)
 
-        payload = {'variables': {"applicationId": {'value': application.id}, "formUrl": {'value': application.form_url}}}
+        payload = {'variables': {"applicationId": {'value': application.id}, "formUrl": {'value': application.form_url},
+        "formName": {'value': application.application_name},"submitterName": {'value': application.created_by},"submissionDate": {'value': application.created}}
         response = BPMService.post_process_start(mapper.process_key, payload, token)
 
         application.update({'process_instance_id': response['id']})

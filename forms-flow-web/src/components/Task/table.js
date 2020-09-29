@@ -94,7 +94,7 @@ function buttonFormatter(cell) {
 }
 
 function timeFormatter(cell) {
-  const localdate = new Date(cell).toLocaleString() 
+  const localdate = new Date(cell).toLocaleString()
   return <label title={cell}>{localdate}</label>;
 }
 
@@ -134,7 +134,7 @@ export const clearFilter = () => {
 };
 export const columns_history = [
   {
-    dataField: "application_name",
+    dataField: "applicationName",
     text: "Application Name",
        sort: true,
     filter: textFilter({
@@ -147,7 +147,7 @@ export const columns_history = [
     }),
   },
   {
-    dataField: "application_status",
+    dataField: "applicationStatus",
     text: "Application Status",
     sort: true,
     formatter: buttonFormatter,

@@ -1,20 +1,19 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
+import BpmnJS from 'bpmn-js';
 
 import UserService from "../../services/UserService";
 import API from "../../apiManager/endpoints";
 import "./bpm.scss"
+import {selectRoot} from "react-formio";
 
 
 const ProcessDiagram = class extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = { };
-
     this.containerRef = React.createRef();
   }
 
@@ -50,9 +49,9 @@ const ProcessDiagram = class extends Component {
         for (var i=0; i < markers.length; i++) {
           console.log('markers[i].activityId '+markers[i].activityId);
           this.bpmnViewer.get('canvas').addMarker(markers[i].activityId, 'highlight');
-        } 
+        }
       }
-      
+
       // console.log("canvas",this.bpmnViewer.get('canvas'))
       // if(this.bpmnViewer.get('canvas') && this.bpmnViewer.get('canvas')._viewport&&this.bpmnViewer.get('canvas')._viewport.getCTM()){
       // this.bpmnViewer.get('canvas').zoom(1);
@@ -69,14 +68,14 @@ const ProcessDiagram = class extends Component {
 
     console.log('fetching active instances >>');
 
-    
+
 
     if (diagramXML) {
       return this.displayDiagram(diagramXML);
     }
 
   }
-  
+
 
   componentWillUnmount() {
     this.bpmnViewer.destroy();
@@ -103,6 +102,7 @@ const ProcessDiagram = class extends Component {
     if (currentXML && currentXML !== previousXML) {
       return this.displayDiagram(currentXML);
     }
+
   }
 
   displayDiagram(diagramXML) {
@@ -114,15 +114,15 @@ const ProcessDiagram = class extends Component {
 
     this.handleLoading();
 
-    fetch(url, { 
-      method: 'get', 
+    fetch(url, {
+      method: 'get',
       headers: new Headers({
         'Authorization': 'Bearer '+UserService.getToken()
       })})
       .then(res => res.json())
       .then(resJson => this.setState({ diagramXML: resJson.bpmn20Xml }))
       .catch(err => this.handleError(err));
-      
+
   }
 
   handleLoading() {
@@ -151,14 +151,21 @@ const ProcessDiagram = class extends Component {
   }
 
   render() {
-
+   console.log("props.marker",this.props.markers);
     return (
-      <div className="react-bpmn-diagram-container bpm-container" ref={ this.containerRef }></div>
+      <div className="react-bpmn-diagram-container bpm-container" ref={ this.containerRef }/>
     );
   }
 };
 
+
+const mapStateToProps = (state) => {
+  return {
+    markers: selectRoot("process", state).processActivityList
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   null,
 )(ProcessDiagram);

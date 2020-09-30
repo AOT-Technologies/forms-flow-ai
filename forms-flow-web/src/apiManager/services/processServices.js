@@ -119,8 +119,10 @@ export const getProcessActivities = (process_instance_id, ...rest) => {
         } else {
           dispatch(setProcessLoadError(true));
         }
+        done(null,res.data);
       })
       .catch((error) => {
+        done(error);
         dispatch(setProcessLoadError(true));
       });
   };

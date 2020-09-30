@@ -21,7 +21,6 @@ const ViewApplication = () => {
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
   const applicationProcess = useSelector(state => state.applications.applicationProcess);
-  const processActivityList = useSelector(state => state.process.processActivityList);
   const dispatch= useDispatch();
 
   useEffect(()=>{
@@ -43,13 +42,11 @@ const ViewApplication = () => {
       dispatch(getApplicationFormDataByAppId(applicationId));
   },[applicationId, dispatch]);
 
-  if (isApplicationDetailLoading && processActivityList) {
+  if (isApplicationDetailLoading) {
     return <Loading/>;
   }
-
-  console.log('activity list'+processActivityList);
   console.log('applicationDetail.process_instance_id >>'+applicationDetail.processInstanceId);
-  
+
 
   return (
     <div className="container">
@@ -77,10 +74,9 @@ const ViewApplication = () => {
             <History page="application-detail"/>
         </Tab>
         <Tab eventKey="process-diagram" title="Process Diagram">
-        {processActivityList  && <ProcessDiagram
+        <ProcessDiagram
               process_key={applicationProcess.processKey}
-              markers={processActivityList}
-          />}
+          />
         </Tab>
       </Tabs>
     </div>

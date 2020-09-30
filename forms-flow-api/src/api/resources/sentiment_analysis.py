@@ -32,12 +32,10 @@ class SentimentAnalysisResource(Resource):
             dataInput = {"applicationId": inputJson["applicationId"], "formUrl" : inputJson["formUrl"], "elementId" : data["elementId"], "topics": topics, "text":text}
 
             # processing topics in ML model format
-            new_topics = [t[:3].upper() for t in topics]
+            new_topics = [t.lower() for t in topics]
 
-            response = SentimentAnalyserService.sentiment_pipeline(text=text)
+            response = SentimentAnalyserService.sentiment_pipeline(text=text, topics=new_topics)
             response["elementId"] = data["elementId"]
-            if response["sentiment"]=={}:
-                response["sentiment"] = None
 
             responseJson["data"].append(dict(response))
             response["applicationId"] = inputJson["applicationId"]

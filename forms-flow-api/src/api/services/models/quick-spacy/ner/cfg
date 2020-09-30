@@ -4,10 +4,7 @@
   "beam_update_prob":1.0,
   "cnn_maxout_pieces":3,
   "nr_feature_tokens":6,
-  "deprecation_fixes":{
-    "vectors_name":null
-  },
-  "nr_class":82,
+  "nr_class":22,
   "hidden_depth":1,
   "token_vector_width":96,
   "hidden_width":64,

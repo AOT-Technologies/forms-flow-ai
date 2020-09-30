@@ -12,6 +12,14 @@ export const setFormSubmissionError = (data) => dispatch =>{
         payload:data
     })
 }
+
+export const setFormSubmissionLoading = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_FORM_SUBMISSION_LOADING,
+    payload:data
+  })
+}
+
 export const setFormDeleteStatus = (data) => dispatch =>{
     dispatch({
         type:ACTION_CONSTANTS.FORM_DELETE,

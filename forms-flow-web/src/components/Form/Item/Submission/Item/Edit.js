@@ -5,9 +5,8 @@ import { push } from 'connected-react-router';
 
 import Loading from '../../../../../containers/Loading'
 
-import { setFormSubmissionError } from '../../../../../actions/formActions';
+import {setFormSubmissionError, setFormSubmissionLoading} from '../../../../../actions/formActions';
 import SubmissionError from '../../../../../containers/SubmissionError';
-import { setUpdateLoader } from "../../../../../actions/taskActions";
 import {getUserRolePermission} from "../../../../../helper/user";
 import {CLIENT, STAFF_REVIEWER} from "../../../../../constants/constants";
 import {
@@ -35,7 +34,7 @@ const Edit = (props) => {
     return selectRoot("user", state).roles;
   });
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
-
+  const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
   useEffect(() => {
     if (applicationStatus) {
       if (getUserRolePermission(userRoles, STAFF_REVIEWER) && CLIENT_EDIT_STATUS.includes(applicationStatus)) {
@@ -46,7 +45,7 @@ const Edit = (props) => {
     }
   }, [applicationStatus, userRoles, dispatch, submissionId, formId ]);
 
-  if (isFormActive || isSubActive) {
+  if (isFormActive || isSubActive || isFormSubmissionLoading) {
       return <Loading />;
   }
 
@@ -98,22 +97,24 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onSubmit: (submission,applicationDetail) => {
+      dispatch(setFormSubmissionLoading(true));
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
-          dispatch(setUpdateLoader(true));
-
           if(UPDATE_EVENT_STATUS.includes(applicationDetail.applicationStatus)){
             const data = getProcessDataReq(applicationDetail);
             dispatch(updateApplicationEvent(data,()=>{
               dispatch(resetSubmissions('submission'));
+              dispatch(setFormSubmissionLoading(false));
               dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
             }));
           }else{
             dispatch(resetSubmissions('submission'));
+            dispatch(setFormSubmissionLoading(false));
             dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
           }
         }
         else {
+          dispatch(setFormSubmissionLoading(false));
           const ErrorDetails = { modalOpen: true, message: "Submission cannot be done" }
           dispatch(setFormSubmissionError(ErrorDetails))
         }

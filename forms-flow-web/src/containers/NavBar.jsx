@@ -57,13 +57,13 @@ const NavBar = () => {
           <Nav className="d-none d-md-block">
             {isAuthenticated ? (
           <>
-            <NavDropdown title={user.name || user.preferred_username} id="collasible-nav-dropdown" alignRight >
-              <NavDropdown.Item href="#"> {user.name || user.preferred_username}<br/>
-                <i className="fa fa-users fa-fw"></i><b>{getUserRoleName(userRoles)}</b>
+            <NavDropdown title={user.name || user.preferred_username || ""} id="collasible-nav-dropdown" alignRight >
+              <NavDropdown.Item> {user.name || user.preferred_username}<br/>
+                <i className="fa fa-users fa-fw"/><b>{getUserRoleName(userRoles)}</b>
               </NavDropdown.Item>
 
               <NavDropdown.Divider />
-            <NavDropdown.Item href="#" onClick ={logout}><i className="fa fa-sign-out fa-fw"></i> Logout</NavDropdown.Item>
+            <NavDropdown.Item onClick ={logout}><i className="fa fa-sign-out fa-fw"/> Logout</NavDropdown.Item>
             </NavDropdown>
           </>
             ) : (

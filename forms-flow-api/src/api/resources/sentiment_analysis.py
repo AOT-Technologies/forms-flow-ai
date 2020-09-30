@@ -27,7 +27,7 @@ class SentimentAnalysisResource(Resource):
         inputJson = request.get_json()
         responseJson = {"applicationId": inputJson["applicationId"], "formUrl" : inputJson["formUrl"], "data":[]}
         for data in inputJson["data"]:
-            text = data["text"]
+            text = data["text"].lower()
             topics = data["topics"]
             dataInput = {"applicationId": inputJson["applicationId"], "formUrl" : inputJson["formUrl"], "elementId" : data["elementId"], "topics": topics, "text":text}
 

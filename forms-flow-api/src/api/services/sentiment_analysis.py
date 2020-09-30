@@ -16,38 +16,55 @@ from nltk import tokenize
 class SentimentAnalyserService():
 
     @staticmethod
-    def sentiment_pipeline(text):
+    def sentiment_pipeline(text, topics):
+        """
+            sentiment analysis result
+        """
         sentence, labels = load_model_output(text)
-        ent = sentence.copy()
-        full_sentence = []
-        full_text = text.split(".")
+        ent = []
 
-        for i in range(len(ent)):
-            temp = ""
-            for t in full_text:
-                if len(full_text) >= 1:
-                    if ent[i] in t.lstrip():
-                        temp += t
-                        full_sentence.append(temp)
+        for i, v in enumerate(labels):
+        if v in topics:
+            ent.append(sentence[i])
+            
+            
+        if ent==[]:
+            response = {}
+            response["sentiment"] = None
+            response["overall_sentiment"] = overall_sentiment(text)
+            return response
 
-        sid = SentimentIntensityAnalyzer()
-        full_text = full_sentence
-        sentiment_output = {}
+        else:
+            full_sentence = []
+            full_text = text.split(".")
 
-        for i, t in enumerate(full_text):
-            ss = sid.polarity_scores(t)
-            item = ent[i]
-            if ss["compound"] >= 0.15:
-                sentiment_output[item] = "positive"
-            elif ss["compound"] <= -0.01:
-                sentiment_output[item] = "negative"
-            else:
-                sentiment_output[item] = "neutral"
-        ans = {}
-        ans["sentiment"] = sentiment_output
-        ans["overall_sentiment"] = overall_sentiment(text)
+            # code to match entities based on splliting point `.`. Scope for further improvement
+            for i in range(len(ent)): 
+                temp = ""
+                for t in full_text:
+                    if len(full_text) >= 1:
+                        if ent[i] in t.lstrip():
+                            temp += t
+                            full_sentence.append(temp)
 
-        return ans
+            sid = SentimentIntensityAnalyzer()
+            full_text = full_sentence
+            sentiment_output = {}
+
+            for i, t in enumerate(full_text):
+                ss = sid.polarity_scores(t)
+                item = ent[i]
+                if ss["compound"] >= 0.15:
+                    sentiment_output[item] = "positive"
+                elif ss["compound"] <= -0.01:
+                    sentiment_output[item] = "negative"
+                else:
+                    sentiment_output[item] = "neutral"
+            response = {}
+            response["sentiment"] = sentiment_output
+            response["overall_sentiment"] = overall_sentiment(text)
+
+            return response
 
 
 
@@ -78,9 +95,15 @@ def overall_sentiment(text):
 
 def entity_category(text, topics):
     """ function to return the associated entities under each topic
-    final output=>
-        defaultdict(<class 'list'>, {'FAC': ['flat sheets', 'comforter Gym', 'Views'], 
-        'PERSON': ['staff'], 'SER': ['Room service'], 'FOOD': ['Cerise Bar']})
+    params text: Input text
+    params topic: Suitable topics
+
+    Output response:
+        [
+            {"topic": "staff", "entity": "frontdesk"},
+            {"topic": "facility", "entity": "restroom"},
+            {"topic": "service", "entity": "driving license application"}
+        ]
     """
     sentence, labels = load_model_output(text)
     # check docs to know more about defaultdict: https://docs.python.org/3/library/collections.html#collections.defaultdict

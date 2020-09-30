@@ -24,8 +24,8 @@ class SentimentAnalyserService():
         ent = []
 
         for i, v in enumerate(labels):
-        if v in topics:
-            ent.append(sentence[i])
+            if v in topics:
+                ent.append(sentence[i])
             
             
         if ent==[]:
@@ -53,7 +53,7 @@ class SentimentAnalyserService():
 
             for i, t in enumerate(full_text):
                 ss = sid.polarity_scores(t)
-                item = labels[i] #returns topic instead of entity view
+                item = labels[i] #returns topic value instead of entity value
                 if ss["compound"] >= 0.15:
                     sentiment_output[item] = "positive"
                 elif ss["compound"] <= -0.01:

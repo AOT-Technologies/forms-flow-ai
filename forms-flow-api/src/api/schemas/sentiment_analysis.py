@@ -4,9 +4,9 @@ from ..models import mongo
 
 
 class SentimentAnalysisSchema(object):
-    """Schema for creating pymongo database instance
-    with fields
-    methods like update, find, delete can be added later
+    """Schema for creating pymongo database instance with associated fields.
+    
+    Methods like update, find, delete can be added later to support CRUD operation.
     """
 
     def __init__(self):

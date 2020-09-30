@@ -1,24 +1,23 @@
 import React from 'react';
-import { Component } from 'react';
-import { connect } from 'react-redux'
+import {connect, useSelector} from 'react-redux'
 import {selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors} from 'react-formio';
 import {push} from 'connected-react-router';
 import {Button} from "react-bootstrap";
 
 import Loading from '../../../../../containers/Loading'
 import PdfDownloadService from "../../../../../services/PdfDownloadService"
+import {setFormSubmissionLoading} from "../../../../../actions/formActions";
 
-const View = class extends Component {
-  render() {
+const View = (props) => {
     const {
       hideComponents,
       onSubmit, options,
       errors,
       form: {form, isActive: isFormActive},
       submission: {submission, isActive: isSubActive, url}
-    } = this.props;
-
-    if (isFormActive || isSubActive) {
+    } = props;
+    const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
+    if (isFormActive || isSubActive || isFormSubmissionLoading) {
       return <Loading />;
     }
 
@@ -40,7 +39,6 @@ const View = class extends Component {
         />
       </div>
     );
-  }
 }
 
 const mapStateToProps = (state) => {
@@ -60,10 +58,14 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onSubmit: (submission) => {
+      dispatch(setFormSubmissionLoading(true));
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
           dispatch(resetSubmissions('submission'));
+          dispatch(setFormSubmissionLoading(false));
           dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+        }else {
+          dispatch(setFormSubmissionLoading(false));
         }
       }));
     }

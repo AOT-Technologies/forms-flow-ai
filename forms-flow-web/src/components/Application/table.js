@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import startCase from "lodash/startCase";
 import { textFilter , selectFilter } from "react-bootstrap-table2-filter";
+import {getLocalDateTime} from "../../apiManager/services/formatterService";
 
 let statusFilter,
     idFilter,
@@ -46,7 +47,7 @@ const linkSubmission = (cell,row) => {
 
 
 function timeFormatter(cell) {
-  const localdate = cell? new Date(cell.replace(' ','T')+'Z').toLocaleString(): '-' ;
+  const localdate = getLocalDateTime(cell) ;
   return <label title={cell}>{localdate}</label>;
 }
 

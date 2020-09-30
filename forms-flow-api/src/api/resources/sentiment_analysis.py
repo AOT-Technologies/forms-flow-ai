@@ -13,7 +13,6 @@ from ..utils.util import cors_preflight
 import json
 
 
-
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 
 
@@ -25,25 +24,26 @@ class SentimentAnalysisResource(Resource):
     @cors.crossdomain(origin='*')
     @auth.require
     def post():
-        inputjson = request.get_json()
-        text = inputjson["text"]
-        topics = inputjson["topics"]
+        inputJson = request.get_json()
+        responseJson = {"applicationId": inputJson["applicationId"], "formUrl" : inputJson["formUrl"], "data":[]}
+        for data in inputJson["data"]:
+            text = data["text"].lower()
+            topics = data["topics"]
+            dataInput = {"applicationId": inputJson["applicationId"], "formUrl" : inputJson["formUrl"], "elementId" : data["elementId"], "topics": topics, "text":text}
 
-        response = SentimentAnalyserService.sentiment_pipeline(text=text)
-        response["applicationId"] = inputjson["applicationId"]
-        response["formUrl"] = inputjson["formUrl"]
-        output_response = jsonify(response)
+            # processing topics in ML model format
+            new_topics = [t[:3].upper() for t in topics]
 
+            response = SentimentAnalyserService.sentiment_pipeline(text=text)
+            response["elementId"] = data["elementId"]
+            if response["sentiment"]=={}:
+                response["sentiment"] = None
 
+            responseJson["data"].append(dict(response))
+            response["applicationId"] = inputJson["applicationId"]
+            response["formUrl"] = inputJson["formUrl"]
+            post_data = {"input_text": dataInput, "output_response": response}
+            db_instance = SentimentAnalysisSchema()
+            db_instance.insert_sentiment(post_data)
 
-        post_data = {"input_text": inputjson, "output_response": response}
-        db_instance = SentimentAnalysisSchema()
-        result = db_instance.insert_sentiment(post_data)
-
-
-        db_entity_instance = SentimentAnalysisSchema()
-        entity_response = entity_category(text, topics)
-
-        db_entity_instance.insert_entity(entity_response)
-        return output_response, HTTPStatus.OK
-
+        return jsonify(responseJson), HTTPStatus.OK

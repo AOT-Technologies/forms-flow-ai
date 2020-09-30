@@ -53,7 +53,7 @@ class SentimentAnalyserService():
 
             for i, t in enumerate(full_text):
                 ss = sid.polarity_scores(t)
-                item = ent[i]
+                item = labels[i] #returns topic instead of entity view
                 if ss["compound"] >= 0.15:
                     sentiment_output[item] = "positive"
                 elif ss["compound"] <= -0.01:

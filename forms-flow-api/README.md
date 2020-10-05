@@ -91,3 +91,23 @@ Content-Type : application/json
 Authorization: Bearer {access token}
 ``` 
 
+## Steps for enabling Sentiment Analysis component in Formsflow.ai
+
+One of the unique features of the Formsflow.ai framework is Sentiment Analysis. It can
+analyze the sentiment from forms based on specific topics mentioned by the designer
+during form creation.
+
+- A form designer can drag and drop **Text Area with Analytics component** and in section
+**Data** add key topics for Sentiment Analysis like facility, service, etc. This activates
+sentiment analysis component.
+- Based on the input responses of the user Formsflow.ai process sentiment associated
+ with each user's responses and stores it MongoDB database using **Python API**.
+- You can take data stored in mongodb and create **meaningful visualization** based on the 
+output of sentiment API in python from Redash(analytics server). This information can be
+found in the Insights section.
+
+### About Sentiment Analysis model
+
+Currently, the ML model is build leveraging libraries like Spacy and NLTK. It uses a two
+stage pipeline process to find the entities belonging to a topic and their associated
+sentiment.

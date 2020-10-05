@@ -13,12 +13,20 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk import tokenize
 
 
-class SentimentAnalyserService():
-
+class SentimentAnalyserService:
     @staticmethod
     def sentiment_pipeline(text, topics):
-        """
-            sentiment analysis result
+        """A input pipeline which returns for a given text blob, output of
+        aspect based sentiment analaysis as list of entities with associated
+        sentiment.
+
+        :params text: The input text blob being entered by user
+        :params topic: Associated topics for which sentiment is being calculated
+
+            Usage:
+                >> sentiment_pipeline(text="awesome location and great staff. Staff provided excellent service.")
+                {'sentiment': {'location': 'positive', 'facility': 'positive'},
+                'overall_sentiment': 'positive'}
         """
         sentence, labels = load_model_output(text)
         ent = []
@@ -26,9 +34,8 @@ class SentimentAnalyserService():
         for i, v in enumerate(labels):
             if v in topics:
                 ent.append(sentence[i])
-            
-            
-        if ent==[]:
+
+        if ent == []:
             response = {}
             response["sentiment"] = None
             response["overall_sentiment"] = overall_sentiment(text)
@@ -39,7 +46,7 @@ class SentimentAnalyserService():
             full_text = text.split(".")
 
             # code to match entities based on splliting point `.`. Scope for further improvement
-            for i in range(len(ent)): 
+            for i in range(len(ent)):
                 temp = ""
                 for t in full_text:
                     if len(full_text) >= 1:
@@ -53,13 +60,18 @@ class SentimentAnalyserService():
 
             for i, t in enumerate(full_text):
                 ss = sid.polarity_scores(t)
-                item = labels[i] #returns topic value instead of entity value
+                item = labels[i]  # returns topic value instead of entity value
+                # sentiment_output.setdefault(item, [])
                 if ss["compound"] >= 0.15:
                     sentiment_output[item] = "positive"
+                    # sentiment_output[item].append("positive")
                 elif ss["compound"] <= -0.01:
                     sentiment_output[item] = "negative"
+                    # sentiment_output[item].append("negative")
                 else:
                     sentiment_output[item] = "neutral"
+                    # sentiment_output[item].append("neutral")
+
             response = {}
             response["sentiment"] = sentiment_output
             response["overall_sentiment"] = overall_sentiment(text)
@@ -67,11 +79,15 @@ class SentimentAnalyserService():
             return response
 
 
-
 def load_model_output(text):
+    """Function to load the trained machine learning model for inference and
+    return the output as the necessary entities and topics for each element
+
+    param text: The input text blob being entered by user
+    """
     # uncomment when working in linux and remove subsequent two lines
     # nlp = spacy.load("../models/quick-spacy/")
-    model_path = Path(__file__).parent.absolute()/'models/quick-spacy/'
+    model_path = Path(__file__).parent.absolute() / "models/quick-spacy/"
     nlp = spacy.load(model_path)
     doc = nlp(text)
     sentence = [ent.text for ent in doc.ents]
@@ -80,10 +96,13 @@ def load_model_output(text):
 
 
 def overall_sentiment(text):
+    """Function to calculate the overall sentiment using NLTK's vader library.
+
+    param text: The input text blob being entered by user
+    """
     sid = SentimentIntensityAnalyzer()
     ss = sid.polarity_scores(text)
-    for k in sorted(ss):
-    # print('{0}: {1}, '.format(k, ss[k]), end='')
+    for _ in sorted(ss):
         if ss["compound"] >= 0.15:
             return "positive"
         elif ss["compound"] <= -0.01:
@@ -92,11 +111,11 @@ def overall_sentiment(text):
             return "neutral"
 
 
-
 def entity_category(text, topics):
-    """ function to return the associated entities under each topic
-    params text: Input text
-    params topic: Suitable topics
+    """Function to return the associated entities under each topic
+
+    params text: The input text blob being entered by user
+    params topic: Associated topics for which sentiment is being calculated
 
     Output response:
         [
@@ -113,13 +132,12 @@ def entity_category(text, topics):
         d[labels[i]].append(sentence[i])
 
     entity_response = sorted(d.items())
-    
 
     new = []
     for _, t in enumerate(entity_response):
         k, value = t
         if k in topics:
             for _, t in enumerate(value):
-                entity_object = {"topic":k, "entity":t}
+                entity_object = {"topic": k, "entity": t}
                 new.append(entity_object)
     return new

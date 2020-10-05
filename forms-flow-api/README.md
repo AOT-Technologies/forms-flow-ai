@@ -103,8 +103,8 @@ sentiment analysis component.
 - Based on the input responses of the user Formsflow.ai process sentiment associated
  with each user's responses and stores it MongoDB database using **Python API**.
 - You can take data stored in mongodb and create **meaningful visualization** based on the 
-output of sentiment API in python from Redash(analytics server). This information can be
-found in the Insights section.
+output of sentiment API in Redash dashboards. This information can be found in the Insights
+section of Formsflow.ai.
 
 ### About Sentiment Analysis model
 

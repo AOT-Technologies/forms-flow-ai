@@ -16,17 +16,21 @@ import json
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 
 
-@cors_preflight('POST,OPTIONS')
-@API.route('', methods=['POST', 'OPTIONS'])
+@cors_preflight("POST,OPTIONS")
+@API.route("", methods=["POST", "OPTIONS"])
 class SentimentAnalysisResource(Resource):
     """Resource for generating Sentiment Analysis """
+
     @staticmethod
-    @cors.crossdomain(origin='*')
+    @cors.crossdomain(origin="*")
     @auth.require
     def post():
         input_json = request.get_json()
-        response_json = dict(application_id=input_json["applicationId"],
-                             form_url=input_json["formUrl"], data=[])
+        response_json = dict(
+            application_id=input_json["applicationId"],
+            form_url=input_json["formUrl"],
+            data=[],
+        )
 
         for data in input_json["data"]:
             text = data["text"].lower()
@@ -36,7 +40,9 @@ class SentimentAnalysisResource(Resource):
             # processing topics in ML model format
             new_topics = [t.lower() for t in topics]
 
-            response = SentimentAnalyserService.sentiment_pipeline(text=text, topics=new_topics)
+            response = SentimentAnalyserService.sentiment_pipeline(
+                text=text, topics=new_topics
+            )
             response["elementId"] = data["elementId"]
 
             response_json["data"].append(dict(response))

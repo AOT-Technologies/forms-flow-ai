@@ -16,6 +16,7 @@ import {
 } from "../../../../../constants/applicationConstants";
 import {useParams} from "react-router-dom";
 import {updateApplicationEvent} from "../../../../../apiManager/services/applicationServices";
+import LoadingOverlay from "react-loading-overlay";
 
 const Edit = (props) => {
   const dispatch = useDispatch();
@@ -45,7 +46,7 @@ const Edit = (props) => {
     }
   }, [applicationStatus, userRoles, dispatch, submissionId, formId ]);
 
-  if (isFormActive || isSubActive || isFormSubmissionLoading) {
+  if ((isFormActive ||  (isSubActive && !isFormSubmissionLoading))) {
       return <Loading />;
   }
 
@@ -60,6 +61,8 @@ const Edit = (props) => {
           <h3 className="task-head">{form.title}</h3>
         </div>
         <Errors errors={errors} />
+        <LoadingOverlay active={isFormSubmissionLoading} spinner text='Loading...' className="col-12">
+          <div className="ml-4 mr-4">
         <Form
           form={form}
           submission={submission}
@@ -68,6 +71,8 @@ const Edit = (props) => {
           onSubmit={(submission)=>onSubmit(submission,applicationDetail)}
           options={{ ...options }}
         />
+          </div>
+        </LoadingOverlay>
       </div>
     );
 }

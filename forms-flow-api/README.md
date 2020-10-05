@@ -46,6 +46,9 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret
 `KEYCLOAK_WEB_CLIENTID`|Client ID for FormsFlow to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
 `CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda`
+`WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://localhost:5000`
+`MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis||`mongodb://username:password@host:port/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
+
 
  **Additionally, you may want to change these**  
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)

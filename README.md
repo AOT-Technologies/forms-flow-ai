@@ -3,16 +3,12 @@
 
 ## Table of Contents
 * [About the Project](#about-the-project)
-  * [Project Dependencies](#project-dependencies)
+  * [Features](#features)
+* [Download and Installation](#download-and-installation)
   * [Project Tree](#project-tree)
-* [Features](#features)
 * [System Architecture](#system-architecture)
 * [User and Roles](#users-and-roles)
 * [System Operation](#system-operation)
-* [Deployment and Configuration](#deployment-and-configuration)
-  * [Prerequisites](#prerequisites)
-  * [Deployment](#deployment)
-* [Verifying the Application](#verifying-the-application)
 * [Managing Forms](#managing-forms)
 * [Managing Workflows](#managing-workflows)
 * [Managing Analytics Dashboard](#managing-analytics-dashboard)
@@ -34,15 +30,18 @@ The project was initiated by AOT Technologies as a means of addressing the gener
 * Surveys
 * Case Management
 
-### Project Dependencies
+### Features
 
+-  Drag-and-drop forms-builder with rich UI components
+-  Lightweight server-based workflow engine with full capabilities including human, parallel, asynchronous and timed flows, decision engine, and graphical designer
+-  Notifications engine for notifications, reminders, and alerts on tasks and even data thresholds.
+-  Metrics and data visualization dashboards for the display of key workflow and form data
+-  (future) Multi-tenancy isolation
+-  Containerized deployment with docker, docker-compose, and Openshift
+-  Flexible Identity Management uses existing IDM systems for authentication and single sign-on
 
-- [form.io](https://www.form.io/opensource) (included under ./forms-flow-forms)
-- [Camunda](https://camunda.com/) (included under ./forms-flow-bpm)
-- [Redash](https://redash.io) (included under ./forms-flow-analytics)
-- [Keycloak](https://www.keycloak.org/) (existing Keycloak server required)
-- [Python](https://www.python.org/) (included under ./forms-flow-api)
-- *Optional*: [Nginx](https://www.nginx.com) (included under ./deployment/nginx) 
+## Download and Installation
+If you want to download and setup, follow the [installation guide](./deployment) you will find step-by-step instructions to download and install.
 
 ### Project Tree
 
@@ -178,32 +177,6 @@ These users are responsible for accessing the native capabilities of the embedde
 * For the forms designer, the FormFlow UI recognizes the additional role of formsflow-designer and enables a form design capability
 * For Redash and Camunda, there is a mapping in the configuration file which needs to be setup between formsflow-analyst and formsflow-bpm and the corresponding groups in Redash and Camunda respectively. This is all covered in the installation instructions.
 
-
-
-## Deployment and Configuration
- The framework installs the products mentioned above (except for Keycloak which must either be pre-existing or installed and configured in advance).
-
-The products are installed with a default configuration so that the base system works "out-the-box", however, the advanced configuration and management of the products require the relevant product documentation. 
-
-#### Prerequisites
-
-* Admin access to a local or remote server (can be local PC or Mac provided it is 64-bit with at least 16GB RAM and 100GB HDD) where [docker-compose](https://docker.com) and [docker](https://docker.com) are installed and configured. 
-* Admin access to a [Keycloak](https://www.keycloak.org/) server  (ability to create realms, users etc.)
-
-#### Deployment
-
-* Clone this github repo
-* Change directory   to deployment/docker folder  ```cd ./deployment/docker```
-* Follow the instructions in the [README](./deployment/docker/README.md)
-* If deploying to a remote server, you can use nginx as a reverse proxy and SSL engine. To help you, follow the instructions in the nginx [README](./deployment/nginx/README.md)
-
-
-## Verifying the Application
-* The following applications will be started and can be accessed in your browser.
-         - http://localhost:3000 - FormsFlow UI (+ forms designer) 
-         - http://localhost:7000 - Redash analytics
-         - https://localhost:8000/camunda - Camunda BPM
-    
 ## Managing Forms
 
   * Login to **http://localhost:3000/** using valid **designer** credentials

@@ -35,7 +35,7 @@ The products are installed with a default configuration so that the base system 
 This section describes how to install different components individually and full deployment of formsflow.ai
 
 ### Docker
-####Choose from the following components listed below.
+#### Choose from the following components listed below.
  * [forms-flow-analytics](./forms-flow-analytics) Redash analytics components
  * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
  * [forms-flow-api](./forms-flow-api) REST API of formsflow.ai
@@ -45,7 +45,7 @@ This section describes how to install different components individually and full
  Follow the instructions on [docker installation guide](./docker)
  
 ### Openshift
-####Full Deployment
+#### Full Deployment
  Follow the instructions on [openshift installation guide](./openshift)
  
 ## Verifying the Installation status

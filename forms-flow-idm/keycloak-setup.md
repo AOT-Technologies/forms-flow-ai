@@ -63,16 +63,14 @@ Create a forms-flow-analytics Client.
 	* Settings Tab  
 		* Name = forms-flow-analytics  
 		* Description = Redash-Analytics  
-		* Enabled = ON  
-		* Include AuthStatement = ON  
 		* Sign Assertions = ON  
-		* Signature Algorithm = RSA_SHA256  
-		* SAML Signature Key Name = KEY_ID  
-		* Canonicalization Method = EXCLUSIVE_WITH_COMMENTS  
+			* Signature Algorithm = RSA_SHA256  
+			* SAML Signature Key Name = KEY_ID  
+			* Canonicalization Method = EXCLUSIVE_WITH_COMMENTS  
 		* Name ID Format = email 	  
 		* Valid Redirect URIs  eg. http://localhost:7000/*  
-		* Valid Master SAML Processing URL = localhost:7000/saml/callback?org_slug=default   
-		* Note: All other settings should be turned off and empty  
+		* Master SAML Processing URL = http://localhost:7000/saml/callback?org_slug=default   
+		* Note: All other settings like Force POST BINDING, Client Signature Required, Front Channel Logout should be turned off and empty.
 		* Click Save  
 	* Mappers Tab  
 		* Click Add Builtin  

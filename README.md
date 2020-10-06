@@ -5,7 +5,7 @@
 * [About the Project](#about-the-project)
   * [Features](#features)
 * [Download and Installation](#download-and-installation)
-  * [Project Tree](#project-tree)
+* [Project Tree](#project-tree)
 * [System Architecture](#system-architecture)
 * [User and Roles](#users-and-roles)
 * [System Operation](#system-operation)

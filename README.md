@@ -9,9 +9,9 @@
 * [System Architecture](#system-architecture)
 * [User and Roles](#users-and-roles)
 * [System Operation](#system-operation)
-* [Managing Forms](#managing-forms)
-* [Managing Workflows](#managing-workflows)
-* [Managing Analytics Dashboard](#managing-analytics-dashboard)
+    * [Managing Forms](#managing-forms)
+    * [Managing Workflows](#managing-workflows)
+    * [Managing Analytics Dashboard](#managing-analytics-dashboard)
 * [License](#license)
 * [Links](#links)
 
@@ -144,7 +144,7 @@ formsflow-client|formsflow-client| Able to access form fill-in only
 
 In general, the operation is as follows :
 
-**Note** The URL links assume a local installation on the default ports as per the [installation instructions](./deployment/docker/README.md ):
+**Note** The URL links assume a local installation on the default ports as per the [installation instructions](./deployment ):
 
 #### End-user
 * End-user logs into FormsFlow UI at URL- http://localhost:3000/
@@ -177,7 +177,7 @@ These users are responsible for accessing the native capabilities of the embedde
 * For the forms designer, the FormFlow UI recognizes the additional role of formsflow-designer and enables a form design capability
 * For Redash and Camunda, there is a mapping in the configuration file which needs to be setup between formsflow-analyst and formsflow-bpm and the corresponding groups in Redash and Camunda respectively. This is all covered in the installation instructions.
 
-## Managing Forms
+### Managing Forms
 
   * Login to **http://localhost:3000/** using valid **designer** credentials
   * Navigate to menu **Forms**
@@ -186,13 +186,13 @@ These users are responsible for accessing the native capabilities of the embedde
 
 To know more about form.io, go to https://help.form.io/userguide/introduction/.
 
-## Managing Workflows
+### Managing Workflows
 
 * You would need the Camunda Modeler to design your BPMN: https://camunda.com/download/modeler/
 * To learn about designing your BPMN, go to https://docs.camunda.org/get-started/quick-start/service-task/
 * To learn about deploying your BPMN, go to https://docs.camunda.org/get-started/quick-start/deploy/. Note that your default endpoint for Camunda's REST API is http://localhost:8000/camunda/engine-rest
 
-## Managing Analytics Dashboard
+### Managing Analytics Dashboard
 
 * Login to **http://localhost:3000/** using valid **designer** credentials
 * Create the dashboard by following the [userguide](https://redash.io/help/user-guide/getting-started) 

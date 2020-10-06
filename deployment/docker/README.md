@@ -124,9 +124,9 @@ Variable name | Meaning | Possible values | Default value |
 
 ### Running the application
 * For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+   * Run `docker-compose -f docker-compose-linux.yml up --build -d` to start.
 * For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+   * Run `docker-compose -f docker-compose-windows.yml up --build -d` to start.
    
 #### To stop the application
 * For Linux,

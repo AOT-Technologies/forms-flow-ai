@@ -33,8 +33,8 @@ Not applicable.
  
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own|Can be blank|
-`FORMIO_MONGO_PASSWORD`|Mongo Root Password|Can be blank|
+`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own||admin
+`FORMIO_MONGO_PASSWORD`|Mongo Root Password||changeme
 `FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
 `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`

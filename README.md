@@ -16,7 +16,6 @@
 * [Managing Forms](#managing-forms)
 * [Managing Workflows](#managing-workflows)
 * [Managing Analytics Dashboard](#managing-analytics-dashboard)
-* [Linking Forms to Workflows](#linking-forms-to-workflows)
 * [License](#license)
 * [Links](#links)
 
@@ -224,63 +223,6 @@ To know more about form.io, go to https://help.form.io/userguide/introduction/.
 
 * Login to **http://localhost:3000/** using valid **designer** credentials
 * Create the dashboard by following the [userguide](https://redash.io/help/user-guide/getting-started) 
-
-
-## Linking Forms to Workflows
-* Get the jwt token from formio resource **/user/login**
-```
-POST http://localhost:3001/user/login
-{
-    "data": {
-        "email": {{email}},
-        "password": {{password}}
-    }
-}
-```
-* Get the form ID of the form' from formio resource **/form** 
-```
-GET http://localhost:3001/form
-
-Headers:
-Content-Type : application/json
-x-jwt-token: {x-jwt-token}
-```
-* Get the process definition key from .bpmn
-
-* Get the access token
-```
-POST {Keycloak URL}/auth/realms/forms-flow-ai/protocol/openid-connect/token
-
-Body:
-grant_type: client_credentials
-client_secret: a3413dbd-caf2-41a8-ae54-e7aa448154d8
-client_id: forms-flow-bpm
-
-Headers:
-Content-Type : application/x-www-form-urlencoded
-```   
-* Create a form using the resource **/form**
-```
-POST http://localhost:5000/form
-
-Body:
-{
-  "created_by": "userid",
-  "formId": "5ee10121d8f7fa73e2402a52",
-  "formName": "Feedback Form",
-  "formRevisionNumber": "V1",
-  "processKey": "onestepapproval",
-  "processName": "One Step Approval",
-  "comments": "OK"
-}
-
-Headers:
-Content-Type : application/json
-Authorization: Bearer {access_token}
-
-```
-
-
 
  ## License
 

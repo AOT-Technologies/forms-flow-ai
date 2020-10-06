@@ -1,7 +1,6 @@
 import React from "react";
 import {Table} from "react-bootstrap";
 import {connect} from "react-redux";
-import moment from "moment";
 
 import {setUpdateLoader} from "../../../actions/taskActions";
 import {
@@ -94,17 +93,6 @@ const View = (props) => {
         <td className="border-0">:</td>
         <td className="border-0">
           {getLocalDateTime(task.submissionDate)}
-        </td>
-      </tr>
-      <tr>
-        <td className="border-0">Due date</td>
-        <td className="border-0">:</td>
-        <td className="border-0">
-          {task.due ? (
-            moment(task.due).format("DD-MMM-YYYY")
-          ) : (
-            <p className="mb-0">Set due date</p>
-          )}
         </td>
       </tr>
       </tbody>

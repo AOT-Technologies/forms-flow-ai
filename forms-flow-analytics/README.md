@@ -15,10 +15,10 @@ your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.
 
 ## Prerequisites
 
-We are assuming [docker-compose](https://docs.docker.com/compose/) and [Docker](https://docker.com)
-are already installed, which is required to run and deploy **formsflow.ai**
-analytics engine. It's also needed to have a [Keycloak](https://www.keycloak.org/)
-server available with admin privileges (to create realms, users etc. in Keycloak).
+We are assuming [docker-compose](https://docs.docker.com/compose/) and [docker](https://docker.com)
+is already installed, which is required to run and deploy the system. It's also
+needed to have a [Keycloak](https://www.keycloak.org/) server available with
+admin privileges (to create realms, users etc. in Keycloak).
 
 ## Solution Setup
 

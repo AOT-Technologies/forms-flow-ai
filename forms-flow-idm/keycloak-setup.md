@@ -19,8 +19,6 @@ Create a forms-flow-web Client.
 		* Name = forms-flow-web  
 		* Description = React based FormIO web components  
 		* Access Type = public  
-		* Standard Flow Enabled = ON  
-		* Direct Access Grants Enabled = ON  
 		* Valid Redirect URIs  eg. http://localhost:3000/*
 		* Valid Web Origins  = *
 		* Click Save  
@@ -38,10 +36,7 @@ Create a forms-flow-web Client.
     * Name = Role  
     * Mapper Type = User Client Role  
     * Client ID = forms-flow-web  
-    * Token Claim role = role  
-    * Add to ID token = ON  
-    * Add to access token = ON
-    * Add to userinfo = ON
+    * Token Claim Name = role  
     * Click Save  
 * Configure > Clients 
 * Select forms-flow-web Client
@@ -63,16 +58,14 @@ Create a forms-flow-analytics Client.
 	* Settings Tab  
 		* Name = forms-flow-analytics  
 		* Description = Redash-Analytics  
-		* Enabled = ON  
-		* Include AuthStatement = ON  
 		* Sign Assertions = ON  
-		* Signature Algorithm = RSA_SHA256  
-		* SAML Signature Key Name = KEY_ID  
-		* Canonicalization Method = EXCLUSIVE_WITH_COMMENTS  
+			* Signature Algorithm = RSA_SHA256  
+			* SAML Signature Key Name = KEY_ID  
+			* Canonicalization Method = EXCLUSIVE_WITH_COMMENTS  
 		* Name ID Format = email 	  
 		* Valid Redirect URIs  eg. http://localhost:7000/*  
-		* Valid Master SAML Processing URL = localhost:7000/saml/callback?org_slug=default   
-		* Note: All other settings should be turned off and empty  
+		* Master SAML Processing URL = http://localhost:7000/saml/callback?org_slug=default   
+		* Note: All other settings like Force POST BINDING, Client Signature Required, Front Channel Logout should be turned off and empty.
 		* Click Save  
 	* Mappers Tab  
 		* Click Add Builtin  
@@ -100,9 +93,7 @@ Create a forms-flow-bpm Client.
 	* Settings Tab  
 		* Name = forms-flow-bpm  
 		* Description = Camunda Process Engine Components  
-		* Access Type = confidential  
-		* Standard Flow Enabled = ON  
-		* Direct Access Grants Enabled = ON  
+		* Access Type = confidential   
 		* Service Accounts Enabled = ON  
 		* Valid Redirect URIs  eg. http://localhost:8000/camunda/*
 		* Web Origins = *  
@@ -114,9 +105,6 @@ Create a forms-flow-bpm Client.
 				* Property = username  
 				* Token Claim Name = preferred_username  
 				* Claim JSON Type = String  
-				* Add to ID Token = ON  
-				* Add to access Token = ON  
-				* Add to userinfo = ON  
 				* Click Save  
 	* Service Accounts Tab  
 		* Select Client roles as "realm-management"  

@@ -1,7 +1,9 @@
 # formsflow.ai Rest API 
+
 **formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
 
-The goal of the REST API is to provide access to all relevant interfaces of the system.
+The goal of the REST API is to provide access to all relevant interfaces of 
+the system. It's build using Python 🐍.
 
 ## Table of Content
 * [Prerequisites](#prerequisites)
@@ -10,22 +12,23 @@ The goal of the REST API is to provide access to all relevant interfaces of the 
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Verify the Application Status](#verify-the-application-status) 
-<!--* [How-to export roles and Forms](#how-to-export-roles-and-forms)   -->
+* [Steps for enabling sentiment analysis component](#steps-for-enabling-sentiment-analysis-component)
 
 ## Prerequisites
 
-The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
+We are assuming [docker-compose](https://docs.docker.com/compose/) and [docker](https://docker.com)
+is already installed, which is required to run and deploy the system.
 
 ## Solution Setup
 
 ### Keycloak Setup
 
-Not specific client creation required.  
-Audience has been added for clients **forms-flow-web** and **forms-flow-bpm**.  
+No specific client creation is required. Audience has been added for clients 
+**forms-flow-web** and **forms-flow-bpm**.  
 
 ### Environment Configuration
 
-Environment variables are set in **.env** and read by system.
+Environment variables are set in **.env** and read by the system.
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-webapi".
@@ -94,23 +97,24 @@ Content-Type : application/json
 Authorization: Bearer {access token}
 ``` 
 
-## Steps for enabling Sentiment Analysis component in Formsflow.ai
+## Steps for enabling Sentiment Analysis component
 
-One of the unique features of the Formsflow.ai framework is Sentiment Analysis. It can
+One of the unique features of the formsflow.ai framework is Sentiment Analysis. It can
 analyze the sentiment from forms based on specific topics mentioned by the designer
 during form creation.
 
 - A form designer can drag and drop **Text Area with Analytics component** and in section
 **Data** add key topics for Sentiment Analysis like facility, service, etc. This activates
 sentiment analysis component.
-- Based on the input responses of the user Formsflow.ai process sentiment associated
+- Based on the input responses of the user formsflow.ai process sentiment associated
  with each user's responses and stores it MongoDB database using **Python API**.
 - You can take data stored in mongodb and create **meaningful visualization** based on the 
-output of sentiment API in Redash dashboards. This information can be found in the Insights
-section of Formsflow.ai.
+output of sentiment API in Redash dashboards. This information can be found in the **Insights section**
+for staff user formsflow.ai.
 
 ### About Sentiment Analysis model
 
 Currently, the ML model is build leveraging libraries like Spacy and NLTK. It uses a two
 stage pipeline process to find the entities belonging to a topic and their associated
-sentiment.
+sentiment. We use a named entity recognition model(NER) to train to identify the topics,
+and further sentiment analysis is being done for individual entities.

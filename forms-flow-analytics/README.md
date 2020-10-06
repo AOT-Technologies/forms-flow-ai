@@ -1,7 +1,8 @@
 # Analytics Engine
-**formsflow.ai** leverages Redash for getting insight and data visualization.
 
-To know more about Redash, go to https://github.com/getredash/redash.
+**formsflow.ai** leverages [Redash](https://github.com/getredash/redash) to build interactive
+dashboards and gain insights. To create meaningful visualization for
+your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.io/help/).
 
 ## Table of Content
 * [Prerequisites](#prerequisites)
@@ -14,15 +15,17 @@ To know more about Redash, go to https://github.com/getredash/redash.
 
 ## Prerequisites
 
-The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
-There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
+We are assuming [docker-compose](https://docs.docker.com/compose/) and [Docker](https://docker.com)
+are already installed, which is required to run and deploy **formsflow.ai**
+analytics engine. It's also needed to have a [Keycloak](https://www.keycloak.org/)
+server available with admin privileges (to create realms, users etc. in Keycloak).
 
 ## Solution Setup
 
 ### Keycloak Setup
 
 * Login to KeyCloak Realm with admin privileges  
-* For client **forms-flow-analytics** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md) 
+* For client **forms-flow-analytics** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md#create-forms-flow-analytics-client) 
 
 
 ### Installation

@@ -83,7 +83,7 @@ Variable name | Meaning | Possible values | Default value |
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
-`CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda/engine-rest/`
+`CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda`
 `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://localhost:3001`
 `WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://localhost:5000`
 `MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis||`mongodb://username:password@host:port/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`

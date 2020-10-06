@@ -19,8 +19,6 @@ Create a forms-flow-web Client.
 		* Name = forms-flow-web  
 		* Description = React based FormIO web components  
 		* Access Type = public  
-		* Standard Flow Enabled = ON  
-		* Direct Access Grants Enabled = ON  
 		* Valid Redirect URIs  eg. http://localhost:3000/*
 		* Valid Web Origins  = *
 		* Click Save  
@@ -38,7 +36,7 @@ Create a forms-flow-web Client.
     * Name = Role  
     * Mapper Type = User Client Role  
     * Client ID = forms-flow-web  
-    * Token Claim role = role  
+    * Token Claim Name = role  
     * Add to ID token = ON  
     * Add to access token = ON
     * Add to userinfo = ON

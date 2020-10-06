@@ -37,9 +37,6 @@ Create a forms-flow-web Client.
     * Mapper Type = User Client Role  
     * Client ID = forms-flow-web  
     * Token Claim Name = role  
-    * Add to ID token = ON  
-    * Add to access token = ON
-    * Add to userinfo = ON
     * Click Save  
 * Configure > Clients 
 * Select forms-flow-web Client
@@ -96,9 +93,7 @@ Create a forms-flow-bpm Client.
 	* Settings Tab  
 		* Name = forms-flow-bpm  
 		* Description = Camunda Process Engine Components  
-		* Access Type = confidential  
-		* Standard Flow Enabled = ON  
-		* Direct Access Grants Enabled = ON  
+		* Access Type = confidential   
 		* Service Accounts Enabled = ON  
 		* Valid Redirect URIs  eg. http://localhost:8000/camunda/*
 		* Web Origins = *  
@@ -110,9 +105,6 @@ Create a forms-flow-bpm Client.
 				* Property = username  
 				* Token Claim Name = preferred_username  
 				* Claim JSON Type = String  
-				* Add to ID Token = ON  
-				* Add to access Token = ON  
-				* Add to userinfo = ON  
 				* Click Save  
 	* Service Accounts Tab  
 		* Select Client roles as "realm-management"  

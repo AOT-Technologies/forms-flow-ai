@@ -12,7 +12,7 @@ To know more about form.io, go to https://github.com/formio/formio.
   * [Step 4 : Health Check](#health-check)
   * [Step 5 : Import of predefined roles and Forms](#import-of-predefined-roles-and-forms)   
 * [How-to export roles and Forms](#how-to-export-roles-and-forms)
-* [Using custom component for Sentiment Analysis](#using-custom-component-for-sentiment-analysis)   
+* [Custom components](#custom-components)   
 
 ## Prerequisites
 
@@ -111,20 +111,15 @@ Content-Type : application/json
 x-jwt-token: {x-jwt-token}
 ``` 
 
-## Using custom component for Sentiment Analysis
+## Custom Components
 
-Currently, formsflow.ai supports a custom component for designer to enable
-fields for sentiment analysis. To use the custom component in **formsflow.ai**
-follow the below steps:
+<mention what is custom compoent?>
+A few custom componets are available on top of **formsflow.ai** are mentioned mentioned below:
 
-- Login with the designer role
-- Choose a new/existing form and click edit forms button
-- Drag and drop **Text Area with Analytics** component from the Basic section 
-in left panel
-- Choose the **settings icon** of Text Area with Analytics component and go to 
-section Data
-- Add the **Key topics for Sentiment Analysis** like facility, service etc.
-- Click the save button.
+|Component Name | About | Detailed link |
+|--- | --- | --- |
+|**Text Area with Analytics** | a custom component for designer to enable fields for sentiment analysis | [link](./custom-components/text-area-with-analytics/README.md)|
+
 
 If you are interested in adding custom component in **formsflow.ai** we highly
 recommend you to take a look at [Custom Component Docs](https://formio.github.io/formio.js/app/examples/customcomponent.html)

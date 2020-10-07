@@ -13,18 +13,16 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
 
 ## 3.0.0 - 2020-10-07
 `Added`
-* Logo & Themes
-* Introduced applications and summary
-* Versioning of form changes
+* Logo & UI Styling
+* Introduced Applications menu
+* Versioning of form submissions
+* Task menu - Process Diagram, Application History
 * UI for configuration of forms with workflow (Designer)
-* Custom component TextArea with Sentiment Analytics - supporting topic(Facility, Staff, Location, Service)
+* Custom component `Text Area with analytics` (with configurable topics)
 * Sentiment analysis API
 
-`Changed`
-* Task (Changes) - Process Diagram, Application History
-
 `Known Issues`
-* Custom Component not retaining the value after submission
+* Custom component (Text Area with analytics) not retaining the value after submission
 * Cosmetic changes to show success message after loading is completed
 
 

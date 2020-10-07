@@ -154,7 +154,7 @@ To know more about form.io, go to https://help.form.io/userguide/introduction/.
 
 ### Managing Analytics Dashboard
 
-* Login to **http://localhost:8000/** using valid **admin** credentials
+* Login to **http://localhost:7000/** using valid **admin** credentials
 * Create the dashboard by following the Redash [userguide](https://redash.io/help/user-guide/getting-started) 
 
  ## Quick Start

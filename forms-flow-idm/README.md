@@ -36,8 +36,6 @@ Here are some important notes about the interaction between users, groups, and r
 * In the current implementation ONLY members of group camunda-admins can access the Camunda UI directly
 * There is some "under-the-covers" authorization going on concerning access between the  FormsFlow UI, the FormsFlow API, and Camunda with the addition of audience mapping - basically allowing communication between components 
 
-By convention we use the following strategy in our Keycloak setup instructions (it can of course be modified as needed ):
-
 ### User Groups
 There are two groups
  * `camunda-admin`

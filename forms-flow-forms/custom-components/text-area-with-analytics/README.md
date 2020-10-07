@@ -1,8 +1,9 @@
 ## Text area with analytics component
 
-This custom component is used in formsflow.ai to supports the designer to enable
-fields for Natural language processing based on sentiment analysis. To use
-the custom component in **formsflow.ai** follow the below steps:
+This custom component is used for processing the data in the Text area
+fields to be used for **Sentiment Analysis**. 
+
+To use the custom component in **formsflow.ai** follow the below steps:
 
 - Login with the designer role
 - Choose a new/existing form and click the edit forms button
@@ -15,7 +16,8 @@ section Data
 
 ![Custom component setting](../.images/settings.png)
 
-- Add the **Key topics for Sentiment Analysis** like facility, service, etc.
+- Select the **Key topics for Sentiment Analysis** like facility, service, location, etc.
 
 ![Topics for custom component](../.images/topics.png)
+
 - Click the save button.

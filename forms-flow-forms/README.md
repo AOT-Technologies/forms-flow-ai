@@ -120,7 +120,7 @@ Custom componets are available on top of **formsflow.ai** are mentioned mentione
 
 |Component Name | About | Detailed link |
 |--- | --- | --- |
-|**Text Area with Analytics** | To enable fields for sentiment analysis processing | [link](./custom-components/text-area-with-analytics/README.md)|
+|**Text Area with Analytics** | To enable Text fields for sentiment analysis processing | [link](./custom-components/text-area-with-analytics/README.md)|
 
 
 If you are interested in adding custom components for your use case in **formsflow.ai** we highly

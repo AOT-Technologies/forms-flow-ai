@@ -26,7 +26,7 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0byzagb</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="Clerk" name="Review Applications" camunda:candidateGroups="Clerk">
+    <bpmn:userTask id="Clerk" name="Review Applications" camunda:candidateGroups="formsflow/formsflow-reviewer/clerk">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.task.NotifyListener" event="create">
           <camunda:field name="messageId">
@@ -55,7 +55,7 @@
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
       </bpmn:extensionElements>
     </bpmn:sequenceFlow>
-    <bpmn:userTask id="Approver" name="Approve/Reject Applications" camunda:candidateGroups="Approver">
+    <bpmn:userTask id="Approver" name="Approve/Reject Applications" camunda:candidateGroups="formsflow/formsflow-reviewer/approver">
       <bpmn:extensionElements>
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.task.NotifyListener" event="create">
           <camunda:field name="messageId">

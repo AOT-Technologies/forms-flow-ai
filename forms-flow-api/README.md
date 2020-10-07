@@ -1,5 +1,7 @@
 # formsflow.ai Rest API 
 
+![Python](https://img.shields.io/badge/python-3.8-blue)
+
 **formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
 
 The goal of the REST API is to provide access to all relevant interfaces of 

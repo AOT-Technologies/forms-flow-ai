@@ -1,6 +1,7 @@
 # formsflow.ai Web Application
+![React](https://img.shields.io/badge/React-16.12.0-blue)
 
-**formsflow.ai** delivers progressive web application with React version `16.3` and `create-react-app`
+**formsflow.ai** delivers progressive web application with React version `16.12` and `create-react-app`. Also currently uses  [form.io](https://github.com/formio/formio) version `1.70.0`.
 
 A React library for rendering out forms based on the form.io platform.
 
@@ -24,7 +25,13 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 * Login to KeyCloak Realm with admin privileges
 * For client **forms-flow-web** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md)
+* Once the above step is completed rename the file **public/config/kc/keycloak-sample.json** to **public/config/kc/keycloak.json** and follow below client adapter configuration to get values from keycloak.
 
+Steps to get the client adapter configuration from Keycloak:
+  - Login to Keycloak
+  - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
+  - Copy the JSON data
+  - Update the content in file **public/config/kc/keycloak.json**
 
 ### Installation
 
@@ -48,13 +55,6 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
  `INSIGHT_API_BASE`|Insight Api base end-point||`http://localhost:7000`
  `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
  `WEB_API_BASE_URL`|FormsFlow Rest API URI||`http://localhost:5000/api`
-* Update Keycloak configuration in file **public/config/kc/keycloak.json**
-
-Steps to get the client adapter configuration from Keycloak:
-  - Login to Keycloak
-  - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
-  - Copy the JSON data
-  - Update the content in file **public/config/kc/keycloak.json**
 
 ### Running the application
    * Run `docker-compose up -d` to start.

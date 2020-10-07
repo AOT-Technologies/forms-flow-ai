@@ -23,15 +23,8 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ### Keycloak Setup
 
-* Login to KeyCloak Realm with admin privileges
-* For client **forms-flow-web** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md)
-* Once the above step is completed rename the file **public/config/kc/keycloak-sample.json** to **public/config/kc/keycloak.json** and follow below client adapter configuration to get values from keycloak.
-
-Steps to get the client adapter configuration from Keycloak:
-  - Login to Keycloak
-  - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
-  - Copy the JSON data
-  - Update the content in file **public/config/kc/keycloak.json**
+* Detailed instructions on setting up Keycloak for **formsflow.ai web application**
+is mentioned on the [link](../forms-flow-idm/keycloak-setup.md#create-forms-flow-web-client).
 
 ### Installation
 

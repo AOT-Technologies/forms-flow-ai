@@ -12,6 +12,7 @@
     * [Managing Forms](#managing-forms)
     * [Managing Workflows](#managing-workflows)
     * [Managing Analytics Dashboard](#managing-analytics-dashboard)
+* [Quick Start](#quick-start)
 * [License](#license)
 * [Links](#links)
 
@@ -154,6 +155,9 @@ To know more about form.io, go to https://help.form.io/userguide/introduction/.
 * Login to **http://localhost:3000/** using valid **designer** credentials
 * Create the dashboard by following the [userguide](https://redash.io/help/user-guide/getting-started) 
 
+ ## Quick Start
+ We recommend you visit [Web site](https://www.aot-technologies.com/) and read the "Getting Started" page.
+ 
  ## License
 
 Copyright 2020 AppsOnTime-Technologies 2020

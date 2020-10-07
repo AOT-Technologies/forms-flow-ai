@@ -1,4 +1,4 @@
-## formsflow.ai Keycloak Setup
+# formsflow.ai Keycloak Setup
 
 Create a realm **forms-flow-ai**
 
@@ -46,6 +46,18 @@ Create a forms-flow-web Client.
         * Mapper Type = Audience
        	* Included Custom Audience = forms-flow-web
        	* Click Save
+
+### Key cloak configuration for formsflow.ai UI setup
+
+- Once the forms-flow-web client is created for keycloak.
+- Rename the file **public/config/kc/keycloak-sample.json** to **public/config/kc/keycloak.json**
+  in [forms-flow-web](../forms-flow-web)
+- Follow below steps to get client adapter configuration to get values from keycloak:
+  - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web"
+  - Go to Installation tab --> Select Format option as Keycloak OIDC JSON
+  - Copy the JSON data
+  - Update the content in file **public/config/kc/keycloak.json** in [forms-flow-web](../forms-flow-web)
+
 ## Create forms-flow-analytics Client  
 
 Create a forms-flow-analytics Client.     
@@ -183,7 +195,7 @@ formsflow-client|formsflow-client| Able to access form fill-in only
 
 
 
-### Test forms-flow-web access in Postman  
+## Test forms-flow-web access in Postman  
 
 * Open Postman  
 * Create new Request  
@@ -205,7 +217,7 @@ formsflow-client|formsflow-client| Able to access form fill-in only
 			* Should see resource_access[] > roles[] > list of Effective Roles  
  
 
-### Test forms-flow-bpm access in Postman  
+## Test forms-flow-bpm access in Postman  
 
 * Open Postman  
 * Create new Request  

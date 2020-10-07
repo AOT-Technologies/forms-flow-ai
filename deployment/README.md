@@ -29,7 +29,7 @@ The products are installed with a default configuration so that the base system 
 ## Download the formsflow.ai
 
 * Clone this github repo:  https://github.com/AOT-Technologies/forms-flow-ai
-* If deploying to a remote server, you can use nginx as a reverse proxy and SSL engine. To help you, follow the instructions in the nginx [README](./deployment/nginx/README.md)
+* If deploying to a remote server, you can use nginx as a reverse proxy and SSL engine. To help you, follow the instructions in the nginx [README](./nginx/README.md)
 
 ## Installation
 This section describes how to install different components individually and full deployment of formsflow.ai

@@ -113,15 +113,17 @@ x-jwt-token: {x-jwt-token}
 
 ## Custom Components
 
-<mention what is custom compoent?>
-A few custom componets are available on top of **formsflow.ai** are mentioned mentioned below:
+**formsflow.ai** has custom components supported which is created by extending the
+base components within Form.io and then registering them within the core renderer.
+
+Custom componets are available on top of **formsflow.ai** are mentioned mentioned below:
 
 |Component Name | About | Detailed link |
 |--- | --- | --- |
-|**Text Area with Analytics** | a custom component for designer to enable fields for sentiment analysis | [link](./custom-components/text-area-with-analytics/README.md)|
+|**Text Area with Analytics** | To enable fields for sentiment analysis processing | [link](./custom-components/text-area-with-analytics/README.md)|
 
 
-If you are interested in adding custom component in **formsflow.ai** we highly
+If you are interested in adding custom components for your use case in **formsflow.ai** we highly
 recommend you to take a look at [Custom Component Docs](https://formio.github.io/formio.js/app/examples/customcomponent.html)
 to understand how  Form.io renderer allows for the creation of Custom components.
 You can also take a look at [formio.contrib](https://github.com/formio/contrib)

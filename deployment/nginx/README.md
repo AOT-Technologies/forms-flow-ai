@@ -1,7 +1,7 @@
 # Hosted Server Setup
 ## Typical Setup
 
-A common deployment option for the FormsFlow.IO solution is a cloud or hosted solution. Many of the cloud-based solutions have proprietory web-server/storage/networking etc. which is beyond the scope of this project (with the exception of Openshift where we do have more detailed deployment instructions) .
+A common deployment option for the formsflow.ai.solution is a cloud or hosted solution. Many of the cloud-based solutions have proprietory web-server/storage/networking etc. which is beyond the scope of this project (with the exception of Openshift where we do have more detailed deployment instructions) .
 
 This section describes and contains code for a setup which uses a web-accessible server fronting nginx to reverse-proxy to each of the components in a docker environment, each component running as a separate server with its own SSL connection certificate.
  Obviously there are individual preferences involved with such deployments, however the nginx setup here might prove helpful as a starting point. 
@@ -20,10 +20,10 @@ The following table lists the required placeholder mappings
 
 Placeholder | Meaning | Sample 
 --- | --- | --- 
-`http://localhost:3000`| Replace with the ip /host / port of the FormsFlow UI|   `http://<hostname>:3000`
-`http://localhost:5000` | Replace with the ip/ host / portf the FormsFlow API|  `http://<hostname>:5000`
-`<forms-flow-web hostname fullchain.pem>`|SSL certificate public key for FormsFlow UI component|`/etc/nginx/certs/app1.<hostname>/fullchain.pem`
-`<forms-flow-web hostname privkey.pem>`|SSL certificate private key for FormsFlow UI component| `/etc/nginx/certs/app1.<hostname>/privkey.pem`
+`http://localhost:3000`| Replace with the ip /host / port of the formsflow.ai UI|   `http://<hostname>:3000`
+`http://localhost:5000` | Replace with the ip/ host / portf the formsflow.ai API|  `http://<hostname>:5000`
+`<forms-flow-web hostname fullchain.pem>`|SSL certificate public key for formsflow.ai UI component|`/etc/nginx/certs/app1.<hostname>/fullchain.pem`
+`<forms-flow-web hostname privkey.pem>`|SSL certificate private key for formsflow.ai UI component| `/etc/nginx/certs/app1.<hostname>/privkey.pem`
 `<forms hostname>`| Hostname of form.io server | `forms1.<hostname>`
 `http://localhost:3001`| Replace with the ip/ host / port of the form.io server|  `http://<hostname>:3001`
 `<forms-flow-forms hostname fullchain.pem>`|SSL certificate public key for form.io component| `/etc/nginx/certs/forms1.<hostname>/fullchain.pem`

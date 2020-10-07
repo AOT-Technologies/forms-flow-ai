@@ -158,7 +158,7 @@ To know more about form.io, go to https://help.form.io/userguide/introduction/.
 * Create the dashboard by following the Redash [userguide](https://redash.io/help/user-guide/getting-started) 
 
  ## Quick Start
- We recommend you visit [Web site](https://www.aot-technologies.com/) and read the "Getting Started" page.
+ We recommend you visit [Web site](https://formsflow.ai/) and read the "Getting Started" page.
  
  ## License
 
@@ -178,6 +178,6 @@ limitations under the License.
 
 ## Links
 
-* [Web site](https://www.aot-technologies.com/)
+* [Web site](https://formsflow.ai/)
 * [Source code](https://github.com/AOT-Technologies/forms-flow-ai)
 

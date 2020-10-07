@@ -52,8 +52,8 @@ Openshift
  
 ## Verifying the Installation status
 * The following applications will be started and can be accessed in your browser.
-         - http://localhost:7000 - Redash analytics
-         - http://localhost:8000/camunda - Camunda BPM
-         - http://localhost:5000 - REST API of formsflow.ai
-         - http://localhost:3000 - formsflow.ai UI (+ forms designer) 
+   * http://localhost:7000 - Redash analytics
+   * http://localhost:8000/camunda - Camunda BPM
+   * http://localhost:5000 - REST API of formsflow.ai
+   * http://localhost:3000 - formsflow.ai UI (+ forms designer) 
                   

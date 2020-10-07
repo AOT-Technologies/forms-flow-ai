@@ -1,6 +1,6 @@
 {
-  "realm": "forms-flow-ai-test",
-  "auth-server-url": "https://iam.aot-technologies.com/auth/",
+  "realm": "<REALM_NAME_HERE>",
+  "auth-server-url": "<AUTH SERVER URL>",
   "ssl-required": "external",
   "resource": "forms-flow-web",
   "public-client": true,

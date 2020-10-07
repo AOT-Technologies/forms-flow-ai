@@ -1,8 +1,7 @@
 # Workflow Engine
-
+![Camunda](https://img.shields.io/badge/Camunda-7.13.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.2.7.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
 **formsflow.ai** leverages Camunda for workflow and decision automation.
-It is currently based on camunda version `7.13.0` , Keycloak, Spring boot `2.2.7.RELEASE` and PostgreSQL (latest).
- 
+
 To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identity-keycloak.
 
 ## Table of Content

@@ -32,13 +32,13 @@ Not applicable.
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. Details below,
  
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own||`admin`
-`FORMIO_MONGO_PASSWORD`|Mongo Root Password||`changeme`
-`FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
-`FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
-`FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
+|Variable name | Meaning | Possible values | Default value |
+|--- | --- | --- | ---
+|`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own||`admin`
+|`FORMIO_MONGO_PASSWORD`|Mongo Root Password||`changeme`
+|`FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
+|`FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
+|`FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
 
 **Additionally, you may want to change these**
 * The value of Mongo database details (especially if this instance is not just for testing purposes)
@@ -113,14 +113,14 @@ x-jwt-token: {x-jwt-token}
 
 ## Custom Components
 
-**formsflow.ai** has custom components supported which is created by extending the
+**formsflow.ai** has custom components supported which are created by extending the
 base components within Form.io and then registering them within the core renderer.
 
-Custom componets are available on top of **formsflow.ai** are mentioned mentioned below:
+Custom componets available in **formsflow.ai** are:
 
 |Component Name | About | Detailed link |
 |--- | --- | --- |
-|**Text Area with Analytics** | To enable fields for sentiment analysis processing | [link](./custom-components/text-area-with-analytics/README.md)|
+|`Text Area with Analytics` | To enable fields for sentiment analysis processing | [link](./custom-components/text-area-with-analytics/README.md)|
 
 
 If you are interested in adding custom components for your use case in **formsflow.ai** we highly

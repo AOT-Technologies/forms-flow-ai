@@ -37,10 +37,10 @@ This section describes how to install different components individually and full
 Docker
 ------------------
 #### Choose from the following components listed below.
- * [forms-flow-analytics](./forms-flow-analytics) Redash analytics components
- * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
- * [forms-flow-api](./forms-flow-api) REST API of formsflow.ai
- * [forms-flow-web](./forms-flow-web) formsflow.ai integration web UI
+ * [forms-flow-analytics](../forms-flow-forms) Redash analytics components
+ * [forms-flow-bpm](../forms-flow-bpm) Camunda Workflow deployment and integration
+ * [forms-flow-api](../forms-flow-api) REST API of formsflow.ai
+ * [forms-flow-web](../forms-flow-web) formsflow.ai integration web UI
 
  #### Full Deployment
  Follow the instructions on [docker installation guide](./docker)

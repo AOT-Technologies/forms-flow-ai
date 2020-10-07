@@ -1,5 +1,5 @@
 # Identity Management
-The **formsflow.ai** framework could be hooked up with any OpenID Connect compliant Identity Management Server. To date we have only tested [Keycloak](https://github.com/keycloak/keycloak)
+The **formsflow.ai** framework could be hooked up with any OpenID Connect compliant Identity Management Server. To date, we have only tested [Keycloak](https://github.com/keycloak/keycloak)
 
 ## Table of Contents
 * [Authentication](#authentication)
@@ -9,10 +9,10 @@ The **formsflow.ai** framework could be hooked up with any OpenID Connect compli
 * [Keycloak Setup](#keycloak-setup)
 
 ## Authentication
-All the resources in the formsflow.ai solution requires authentication i.e. user must be a member of realm.
+All the resources in the formsflow.ai solution require authentication i.e. users must be a member of a realm.
  
 ## Authorization
-Roles and Groups together play a vital role in granting or restricting user with access of choice. 
+Roles and Groups together play a vital role in granting or restricting users with access of choice. 
 ### User Roles
 The framework defines user roles which are standardized across all the products. During the installation process, component-specific variants of these roles are set up, these need to be added to the .env file to provide seamless integration:
 

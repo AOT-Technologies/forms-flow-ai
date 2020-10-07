@@ -154,8 +154,8 @@ To know more about form.io, go to https://help.form.io/userguide/introduction/.
 
 ### Managing Analytics Dashboard
 
-* Login to **http://localhost:3000/** using valid **designer** credentials
-* Create the dashboard by following the [userguide](https://redash.io/help/user-guide/getting-started) 
+* Login to **http://localhost:8000/** using valid **admin** credentials
+* Create the dashboard by following the Redash [userguide](https://redash.io/help/user-guide/getting-started) 
 
  ## Quick Start
  We recommend you visit [Web site](https://www.aot-technologies.com/) and read the "Getting Started" page.

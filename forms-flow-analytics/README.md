@@ -38,7 +38,7 @@ admin privileges (to create realms, users etc. in Keycloak).
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://localhost:7000/redash
+`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://localhost:7000/
 `PYTHONUNBUFFERED`|Log buffering setup|1 or 0 | 1
 `REDASH_LOG_LEVEL`|Logging level|`CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET` | ERROR
 `REDASH_REDIS_URL`|Redis URL|Used on installation to create the database.Choose your own.|`redis://redis:6379/0`

@@ -1,5 +1,5 @@
 
-<img width="180" height="80" src=".images/logo.png"/>
+<img src=".images/logo.png"/>
 
 ![version](https://img.shields.io/badge/version-v3.0.0-blue)
 <hr> 

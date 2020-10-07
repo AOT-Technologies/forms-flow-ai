@@ -3,8 +3,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
 ## Unreleased
 `Added`
 * Openshift deployment
-* Support for form.io enterprise
-* Multi-tenant support
 
 ## Future Release
 * Render the form workflow association in readonly and give option to edit
@@ -19,7 +17,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
 * Task menu - Process Diagram, Application History
 * UI for configuration of forms with workflow (Designer)
 * Custom component `Text Area with analytics` (with configurable topics)
-* Sentiment analysis API
+* Sentiment analysis API using nltk and spacy 
 
 `Known Issues`
 * Custom component (Text Area with analytics) not retaining the value after submission

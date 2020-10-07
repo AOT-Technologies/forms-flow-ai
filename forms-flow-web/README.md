@@ -1,4 +1,5 @@
 # formsflow.ai Web Application
+![React](https://img.shields.io/badge/React-16.12.0-blue)
 
 **formsflow.ai** delivers progressive web application with React version `16.3` and `create-react-app`
 

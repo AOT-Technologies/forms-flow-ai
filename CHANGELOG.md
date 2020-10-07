@@ -16,8 +16,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
 `Added`
 * ReDash implementation under forms-flow-analytics
 * Deployment folder with docker and nginx
-* FormsFlow UI task dashboard
-* FormsFlow UI metrics dashboard 
+* formsflow.ai UI task dashboard
+* formsflow.ai UI metrics dashboard 
 * Single component installations with docker and docker-compose
 * Native windows intallation docker-compose-windows.yml  
 * Native Linux installation docker-compose-linux.yml

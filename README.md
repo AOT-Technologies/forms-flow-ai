@@ -72,14 +72,14 @@ Features
 ## System Architecture
 
 
-![FormsFlow AI Component Architecture](./.images/formsflow-ai-components.png)
+![formsflowai component architecture](./.images/formsflow-ai-components.png)
 
 ## Components 
 
 The components of the system are:
-#### FormsFlow UI
+#### formsflow UI
 Browser-based React integration web UI
-Most of the day-to-day end-user and review tasks are performed from this application,  built specifically to act as a common UI combining forms, workflow, and analytics functionality. The web application is written as a [progressive](https://en.wikipedia.org/wiki/Progressive_web_application) app with the potential for offline data-entry. FormsFlow UI accesses the individual system component data through native API's using OIDC or SAML access tokens.
+Most of the day-to-day end-user and review tasks are performed from this application,  built specifically to act as a common UI combining forms, workflow, and analytics functionality. The web application is written as a [progressive](https://en.wikipedia.org/wiki/Progressive_web_application) app with the potential for offline data-entry. formsflow UI accesses the individual system component data through native API's using OIDC or SAML access tokens.
 
 #### Redash Admin UI
 The native admin interface to Redash (bundled and unchanged). Use this to build analytics dashboards.
@@ -90,7 +90,7 @@ The REST interface to the form.io core
 #### Camunda Admin UI
 The native admin interface to Camunda (bundled and unchanged) . Use this to define workflows and to manage workflow tasks as an admin.
 #### REST API
-Python REST API providing business logic around the internal FormsFlow Postgres database. This API is used extensively by the FormsFlow UI to synchronize, maintain state, extend functionality, and integrate between components.
+Python REST API providing business logic around the internal formsflow.ai Postgres database. This API is used extensively by the formsflow.ai UI to synchronize, maintain state, extend functionality, and integrate between components.
 #### Nginx Web server (optional)
 Webserver providing reverse-proxy redirection and SSL to components for remote deployments. ( bundled and configured ) 
 
@@ -107,7 +107,7 @@ In general, the operation is as follows :
 **Note** The URL links assume a local installation on the default ports as per the [installation instructions](./deployment ):
 
 #### End-user
-* End-user logs into FormsFlow UI at URL- http://localhost:3000/
+* End-user logs into formsflow.ai UI at URL- http://localhost:3000/
 * User is redirected to Keycloak via OIDC where user's roles are returned as OIDC claims in a JWT
 * User selects a form from the list of forms available. The available forms can be filtered by the user group with advanced configuration, by default the user sees all forms published. Form details are provided through form.io 
 * The user fills in the form and submits it
@@ -117,12 +117,12 @@ In general, the operation is as follows :
 
 #### Reviewer
 
-* Reviewer logs into FormsFlow UI at URL- http://localhost:3000/
+* Reviewer logs into formsflow.ai UI at URL- http://localhost:3000/
 * Reviewer is redirected to Keycloak via OIDC where the user's roles are returned as OIDC claims in a JWT. The fact that the reviewer has a reviewer role from Keycloak enables additional capabilities in the UI.
 * Reviewer accesses task from task list. Tasks are retrieved through the Camunda API, filtered by the reviewer group memberships mapped between Keycloak and native Camunda. 
 * Reviewer claims a task and processes it. The task moves to the next step in the workflow, with appropriate notifications and actions specific to that workflow.
 * Reviewer can access forms from the forms list, filtered by the group permissions of the user groups as per advanced configuration.
-* Reviewer can access metrics data from the Postgres database filtered according to the configuration. FormsFlow UI renders these metrics into usable pages. 
+* Reviewer can access metrics data from the Postgres database filtered according to the configuration. formsflow.ai UI renders these metrics into usable pages. 
 * Reviewer can access Redash analytics dashboards (as iframes). 
 
 #### Designers / Administrators
@@ -131,7 +131,7 @@ These users are responsible for accessing the native capabilities of the embedde
 
 * Access product URL as follows:
   * Camunda: http://localhost:8000/camunda/
-  * form.io: http://localhost:3001/ (the form designer is embedded into the FormsFlow UI)
+  * form.io: http://localhost:3001/ (the form designer is embedded into the formsflow.ai UI)
   * Redash: http://localhost:7000/
 * The login process is the same for all of them, redirect to Keycloak as OIDC (SAML for Redash), and obtain the appropriate JWT + claims. 
 * For the forms designer, the FormFlow UI recognizes the additional role of formsflow-designer and enables a form design capability

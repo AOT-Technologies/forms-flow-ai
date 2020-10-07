@@ -73,10 +73,10 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`WEB_API_DATABASE_URL`|JDBC DB Connection URL for FormsFlow||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/formsflow`
-`WEB_API_POSTGRES_USER`|FormsFlow database postgres user|Used on installation to create the database.Choose your own|`postgres`
-`WEB_API_POSTGRES_PASSWORD`|FormsFlow database postgres password|ditto|`changeme`
-`WEB_API_POSTGRES_DB`|FormsFlow database name||`formsflow`
+`WEB_API_DATABASE_URL`|JDBC DB Connection URL for formsflow.ai||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/formsflow`
+`WEB_API_POSTGRES_USER`|formsflow.ai database postgres user|Used on installation to create the database.Choose your own|`postgres`
+`WEB_API_POSTGRES_PASSWORD`|formsflow.ai database postgres password|ditto|`changeme`
+`WEB_API_POSTGRES_DB`|formsflow.ai database name||`formsflow`
 
 **formsflow.ai Integration Settings:**
 
@@ -98,7 +98,7 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_JWT_OIDC_ISSUER`|The issuer of JWT's from Keycloak for your realm|Plug in your realm and Keycloak base url|`{Keycloak URL}/auth/realms/forms-flow-ai`
 `KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|must be set to your Keycloak client id
 `KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret
-`KEYCLOAK_WEB_CLIENTID`|Client ID for FormsFlow to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
+`KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
 
 **BPM (Camunda) Datastore Settings:**
 
@@ -138,6 +138,6 @@ Variable name | Meaning | Possible values | Default value |
   * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
   * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/
   * FormIO should be up and available for use at port defaulted to 3001 i.e. http://localhost:3001/
-  * FormsFlow Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
-  * FormsFlow web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
+  * formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
+  * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   

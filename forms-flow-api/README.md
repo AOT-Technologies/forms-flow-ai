@@ -1,7 +1,11 @@
-# FormsFlow.AI Rest API 
-**FormsFlow.AI** has built this adaptive tier for correlating form management, BPM and analytics together.
+# formsflow.ai Rest API 
 
-The goal of the REST API is to provide access to all relevant interfaces of the system.
+![Python](https://img.shields.io/badge/python-3.8-blue) ![Flask](https://img.shields.io/badge/Flask-1.1.1-blue) ![postgres](https://img.shields.io/badge/postgres-latest-blue)
+
+**formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
+
+The goal of the REST API is to provide access to all relevant interfaces of 
+the system. It's build using Python 🐍.
 
 ## Table of Content
 * [Prerequisites](#prerequisites)
@@ -10,22 +14,23 @@ The goal of the REST API is to provide access to all relevant interfaces of the 
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Verify the Application Status](#verify-the-application-status) 
-<!--* [How-to export roles and Forms](#how-to-export-roles-and-forms)   -->
+* [Steps for enabling sentiment analysis component](#steps-for-enabling-sentiment-analysis-component)
 
 ## Prerequisites
 
-The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
+We are assuming [docker-compose](https://docs.docker.com/compose/) and [docker](https://docker.com)
+is already installed, which is required to run and deploy the system.
 
 ## Solution Setup
 
 ### Keycloak Setup
 
-Not specific client creation required.  
-Audience has been added for clients **forms-flow-web** and **forms-flow-bpm**.  
+No specific client creation is required. Audience has been added for clients 
+**forms-flow-web** and **forms-flow-bpm**.  
 
 ### Environment Configuration
 
-Environment variables are set in **.env** and read by system.
+Environment variables are set in **.env** and read by the system.
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-webapi".
@@ -45,7 +50,10 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|must be set to your Keycloak client id
 `KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret
 `KEYCLOAK_WEB_CLIENTID`|Client ID for FormsFlow to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
-`CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda/engine-rest/`
+`CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda`
+`WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://localhost:5000`
+`MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis||`mongodb://username:password@host:port/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
+
 
  **Additionally, you may want to change these**  
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)
@@ -75,7 +83,7 @@ POST {Keycloak URL}/auth/realms/process-engine/protocol/openid-connect/token
 
 Body:
 grant_type: client_credentials
-client_secret: a3413dbd-caf2-41a8-ae54-e7aa448154d8
+client_secret: {set client token}
 client_id: forms-flow-bpm
 
 Headers:
@@ -91,3 +99,24 @@ Content-Type : application/json
 Authorization: Bearer {access token}
 ``` 
 
+## Steps for enabling Sentiment Analysis component
+
+One of the unique features of the formsflow.ai framework is Sentiment Analysis. It can
+analyze the sentiment from forms based on specific topics mentioned by the designer
+during form creation.
+
+- A form designer can drag and drop **Text Area with Analytics component** and in section
+**Data** add key topics for Sentiment Analysis like facility, service, etc. This activates
+sentiment analysis component.
+- Based on the input responses of the user formsflow.ai process sentiment associated
+ with each user's responses and stores it MongoDB database using **Python API**.
+- You can take data stored in mongodb and create **meaningful visualization** based on the 
+output of sentiment API in Redash dashboards. This information can be found in the **Insights section**
+for staff user formsflow.ai.
+
+### About Sentiment Analysis model
+
+Currently, the ML model is build leveraging libraries like Spacy and NLTK. It uses a two
+stage pipeline process to find the entities belonging to a topic and their associated
+sentiment. We use a named entity recognition model(NER) to train to identify the topics,
+and further sentiment analysis is being done for individual entities.

@@ -27,7 +27,7 @@ class ApplicationSchema(Schema):
     application_name = fields.Str(data_key='applicationName')
     application_status = fields.Str(data_key='applicationStatus')
     form_process_mapper_id = fields.Str(data_key='formProcessMapperId')
-    form_submission_id = fields.Str(data_key='formSubmissionId', required=True)
+    form_url = fields.Str(data_key='formUrl')
     process_instance_id = fields.Str(data_key='processInstanceId')
     revision_no = fields.Str(data_key='revisionNo')
 
@@ -36,8 +36,9 @@ class ApplicationSchema(Schema):
     modified_by = fields.Str(data_key='modifiedBy')
     modified = fields.Str()
 
-    variables = fields.Raw(required=True)
-    form_id = fields.Str(data_key='formId', required=True)
+    variables = fields.Raw(required=False)
+    form_id = fields.Str(data_key='formId')
+    submission_id = fields.Str(data_key='submissionId')
 
 
 class ApplicationUpdateSchema(Schema):
@@ -49,3 +50,4 @@ class ApplicationUpdateSchema(Schema):
         unknown = EXCLUDE
 
     application_status = fields.Str(data_key='applicationStatus', required=True)
+    form_url = fields.Str(data_key='formUrl', required=False)

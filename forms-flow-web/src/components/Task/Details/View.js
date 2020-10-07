@@ -1,7 +1,6 @@
 import React from "react";
 import {Table} from "react-bootstrap";
 import {connect} from "react-redux";
-import moment from "moment";
 
 import {setUpdateLoader} from "../../../actions/taskActions";
 import {
@@ -9,33 +8,20 @@ import {
   getTaskDetail,
   unClaimTask
 } from "../../../apiManager/services/taskServices";
+import {getLocalDateTime} from "../../../apiManager/services/formatterService";
 
 const taskStatus = (task) => {
-  switch (task.task_status) {
-    case "Completed":
-    case "Approved":
-    case "Rejected":
+  switch (task.status) {
+    case "completed":
       return (
-        <label className="text-success font-weight-bold text-uppercase task-btn">
-          {task.task_status || "Completed"}
-        </label>
-      );
-    case "In-Progress":
-      return (
-        <label className="text-info font-weight-bold text-uppercase">
-          {task.task_status || "In-Progress"}
-        </label>
-    );
-    case "New":
-      return (
-        <label className="text-primary font-weight-bold text-uppercase task-btn">
-          {task.task_status || "New"}
+        <label className="text-success font-weight-bold text-capitalize task-btn">
+          {"Completed"}
         </label>
       );
     default:
       return (
-        <label className="text-primary font-weight-bold text-uppercase task-btn">
-          {task.task_status || "New"}
+        <label className="text-primary font-weight-bold text-capitalize task-btn">
+          {"Active"}
         </label>
       );
   }
@@ -58,7 +44,7 @@ const View = (props) => {
           {task.assignee}
           {task.assignee ? (
             task.assignee === props.userName &&
-            props.detail.deleteReason !== "completed" ? (
+            props.detail.status !== "completed" ? (
               <p
                 className="mb-0 ml-3"
                 onClick={() => props.onUnclaim(task.id)}
@@ -69,7 +55,7 @@ const View = (props) => {
           ) : (
             <p
               className="mb-0"
-              onClick={() => props.onClaim(task.id, props.userName, task.application_id)}
+              onClick={() => props.onClaim(task.id, props.userName)}
             >
               Assign to me
             </p>
@@ -84,35 +70,29 @@ const View = (props) => {
       <tr>
         <td className="border-0">Application Id</td>
         <td className="border-0">:</td>
-        <td className="border-0">{task.application_id}</td>
+        <td className="border-0">{task.applicationId}</td>
         {/*TODO update*/}
       </tr>
       <tr>
         <td className="border-0">Application Name</td>
         <td className="border-0">:</td>
-        <td className="border-0">{task.form_name || "---"}</td>
+        <td className="border-0">{task.formName || "---"}</td>
       </tr>
       <tr>
         <td className="border-0">Applicant</td>
         <td className="border-0">:</td>
-        <td className="border-0">{task.submitter_name || "---"}</td>
+        <td className="border-0">{task.submitterName || "---"}</td>
+      </tr>
+      <tr>
+        <td className="border-0">Application Status</td>
+        <td className="border-0">:</td>
+        <td className="border-0">{task.applicationStatus || "---"}</td>
       </tr>
       <tr>
         <td className="border-0">Submitted On</td>
         <td className="border-0">:</td>
         <td className="border-0">
-          {moment(task.submission_date).format("DD-MMM-YYYY")}
-        </td>
-      </tr>
-      <tr>
-        <td className="border-0">Due date</td>
-        <td className="border-0">:</td>
-        <td className="border-0">
-          {task.due ? (
-            moment(task.due).format("DD-MMM-YYYY")
-          ) : (
-            <p className="mb-0">Set due date</p>
-          )}
+          {getLocalDateTime(task.submissionDate)}
         </td>
       </tr>
       </tbody>
@@ -128,7 +108,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch) => {
   return {
-    onClaim: (id, userName, applicationId) => {
+    onClaim: (id, userName) => {
       dispatch(setUpdateLoader(true));
       dispatch(
         claimTask(id, userName, (err, res) => {

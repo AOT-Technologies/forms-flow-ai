@@ -32,6 +32,7 @@ const Insights = (props) => {
   }
   return (
     <>
+    <div class="container mb-4" id="main">
       <div className="insights mb-2">
         <div className="row ">
           <div className="col-12">
@@ -73,6 +74,7 @@ const Insights = (props) => {
             }
           </LoadingOverlay>
         </div>
+      </div>
       </div>
     </>
   );

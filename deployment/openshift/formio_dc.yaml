@@ -1,0 +1,210 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: forms-flow-forms
+objects:
+- 
+  apiVersion: v1
+  kind: Secret
+  stringData:
+    DEBUG: formio:*
+    NODE_CONFIG: '{"mongo": "mongodb://forms-flow-forms-mdb:27017/formio"}'
+    ROOT_EMAIL: ${FORMIO_ADMIN_EMAIL}
+    ROOT_PASSWORD: ${FORMIO_ADMIN_PASSWORD}
+  metadata:
+    name: ${NAME}
+
+- 
+  apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    replicas: 1
+    selector:
+      app: ${NAME}
+    strategy:
+      type: Rolling
+      rollingParams:
+        updatePeriodSeconds: 1
+        intervalSeconds: 1
+        timeoutSeconds: 600
+        maxUnavailable: 25%
+        maxSurge: 25%
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: ${NAME}
+      spec:
+        containers:
+        - env:
+          - name: DEBUG
+            valueFrom:
+              secretKeyRef:
+                key: DEBUG
+                name: ${NAME}
+          - name: NODE_CONFIG
+            valueFrom:
+              secretKeyRef:
+                key: NODE_CONFIG
+                name: ${NAME}
+          - name: ROOT_EMAIL
+            valueFrom:
+              secretKeyRef:
+                key: ROOT_EMAIL
+                name: ${NAME}
+          - name: ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: ROOT_PASSWORD
+                name: ${NAME}
+          image: docker-registry.default.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+          name: ${NAME}
+          ports:
+          - containerPort: 3001
+          resources:
+            requests:
+              cpu: "${CPU_REQUEST}"
+              memory: "${MEMORY_REQUEST}"
+            limits:
+              cpu: "${CPU_LIMIT}"
+              memory: "${MEMORY_LIMIT}"
+          livenessProbe:
+            tcpSocket:
+              path: "/ops/healthz"
+              port: 3001
+              scheme: HTTP
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            tcpSocket:
+              path: "/ops/readyz"
+              port: 3001
+              scheme: HTTP
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: "/dev/termination-log"
+          terminationMessagePolicy: File
+          imagePullPolicy: Always
+          stdin: true
+          tty: true
+        restartPolicy: Always
+        terminationGracePeriodSeconds: 30
+        dnsPolicy: ClusterFirst
+        securityContext: {}
+        schedulerName: default-scheduler
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${NAME}
+        from:
+          kind: ImageStreamTag
+          namespace: "${IMAGE_NAMESPACE}"
+          name: "${NAME}:${TAG_NAME}"
+      type: ImageChange
+  status: {}
+
+- 
+  apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    ports:
+    - name: "3001"
+      port: 3001
+      targetPort: 3001
+    selector:
+      app: ${NAME}
+  status:
+    loadBalancer: {}
+
+- kind: Route
+  apiVersion: route.openshift.io/v1
+  metadata:
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    host: sbcfff.pathfinder.gov.bc.ca
+    to:
+      kind: Service
+      name: ${NAME}
+      weight: 100
+    port:
+      targetPort: 3001-tcp
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: Redirect
+    wildcardPolicy: None
+
+parameters:
+- name: NAME
+  displayName: Name
+  description: The name assigned to all of the OpenShift resources associated to the
+    server instance.
+  required: true
+  value: forms-flow-forms
+- name: IMAGE_NAMESPACE
+  displayName: Image Namespace
+  required: true
+  description: The namespace of the OpenShift project containing the imagestream for
+    the application.
+  value: nzpnbz-tools
+- name: TAG_NAME
+  displayName: Environment TAG name
+  description: The TAG name for this environment, e.g., dev, test, prod
+  required: true
+  value: latest
+- name: CPU_REQUEST
+  displayName: Resources CPU Request
+  description: The resources CPU request (in cores) for this build.
+  required: true
+  value: 100m
+- name: CPU_LIMIT
+  displayName: Resources CPU Limit
+  description: The resources CPU limit (in cores) for this build.
+  required: true
+  value: 750m
+- name: MEMORY_REQUEST
+  displayName: Resources Memory Request
+  description: The resources Memory request (in Mi, Gi, etc) for this build.
+  required: true
+  value: 100Mi
+- name: MEMORY_LIMIT
+  displayName: Resources Memory Limit
+  description: The resources Memory limit (in Mi, Gi, etc) for this build.
+  required: true
+  value: 2Gi
+- name: FORMIO_ADMIN_EMAIL
+  displayName: Formio admin email
+  description: Formio needs an email login
+  required: true
+  value: admin@example.com
+- name: FORMIO_ADMIN_PASSWORD
+  displayName: Formio default password
+  description: Formio needs a default password to login
+  generate: expression
+  from: "[a-zA-Z0-9]{16}"
+  required: true
+  value: CHANGEME
+- name: MONGODB_SECRET_NAME
+  displayName: Name of mongodb secret
+  required: true
+  value: mongodb

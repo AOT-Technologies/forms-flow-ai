@@ -4,9 +4,10 @@ import { connect } from "react-redux";
 import { selectRoot } from "react-formio";
 
 import List from "./List";
-import Create from "./Create";
+// import Create from "./Create";
+import Stepper from "./Stepper";
 import Item from "./Item/index";
-import { STAFF_DESIGNER } from "../../constants/constants";
+import { STAFF_DESIGNER, STAFF_REVIEWER, CLIENT } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 import { setUserAuth, setCurrentPage } from "../../actions/bpmActions";
 
@@ -15,12 +16,15 @@ let user = "";
 const CreateFormRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
-    render={(props) =>
-      user.includes(STAFF_DESIGNER) ? (
-        <Component {...props} />
-      ) : (
-        <Redirect exact to="/" />
-      )
+    render={(props) => {
+      if(user.includes(STAFF_DESIGNER)){
+        return <Component {...props} />;
+      } else if(user.includes(STAFF_REVIEWER) || user.includes(CLIENT) ){
+        return <Route path="/form/:formId" component={Item} />
+      } else {
+        return <Redirect exact to="/" />
+      }
+    }
     }
   />
 );
@@ -34,8 +38,12 @@ const Form = (props) => {
     <div className="container" id="main">
       <Switch>
         <Route exact path="/form" component={List} />
-        <CreateFormRoute exact path="/form/create" component={Create} />
-        <Route path="/form/:formId" component={Item} />
+        <CreateFormRoute
+          path="/form/:formId?/:step?"
+          component={Stepper}
+        />
+
+        {/* <Route path="/form/:formId" component={Item} /> */}
       </Switch>
     </div>
   );

@@ -37,10 +37,38 @@ export const setTaskDetail = (data) => dispatch =>{
 
 export const serviceActionError = (data) => dispatch => {
    //TODO update to a common file
-    console.log(data);
     dispatch({
       type: ACTION_CONSTANTS.ERROR,
       payload: 'Error Handling API'
     })
 }
 
+
+
+export const setApplicationAuditList = (data) => (dispatch) => {
+    dispatch({
+      type: ACTION_CONSTANTS.APPLICATION_AUDIT_LIST,
+      payload: data,
+    });
+  }
+
+  export const setApplicationHistoryList = (data) => dispatch =>{
+    dispatch({
+        type:ACTION_CONSTANTS.LIST_APPLICATION_HISTORY,
+        payload:data
+    })
+}
+
+export const setApplicationHistoryDetail = (data) => dispatch =>{
+    dispatch({
+        type:ACTION_CONSTANTS.APPLICATION_HISTORY_DETAIL,
+        payload:data
+    })
+};
+
+export const setUpdateHistoryLoader = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_HISTORY_LOADING,
+    payload:data
+  })
+}

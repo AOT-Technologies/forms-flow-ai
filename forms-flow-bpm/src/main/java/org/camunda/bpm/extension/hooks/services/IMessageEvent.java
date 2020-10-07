@@ -1,12 +1,8 @@
 package org.camunda.bpm.extension.hooks.services;
 
 import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.engine.identity.User;
-import org.joda.time.DateTime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +14,7 @@ import java.util.logging.Logger;
  *
  * @author yichun.zhao@aot-technologies.com, sumathi.thirumani@aot-technologies.com
  */
-public interface IMessageEvent extends IUser{
+public interface IMessageEvent extends IUser {
 
     Logger log = Logger.getLogger(IMessageEvent.class.getName());
 

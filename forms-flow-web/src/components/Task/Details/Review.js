@@ -1,10 +1,11 @@
-import React, {Component} from "react";
-import {connect} from "react-redux";
+import React, { useEffect, useState} from "react";
+import {connect, useSelector} from "react-redux";
 import Select from "react-select";
 
 import {completeTask} from "../../../apiManager/services/taskServices";
 
 import {
+  setUpdateHistoryLoader,
   setUpdateLoader
 } from "../../../actions/taskActions";
 import {
@@ -15,59 +16,49 @@ import SubmissionError from "../../../containers/SubmissionError";
 import Loading from "../../Loading";
 import Error from "../../Error";
 
-class Review extends Component {
-  constructor(props) {
-    super();
-    this.state = {
-      selectedOption: {value: "", label: ""},
-      options: [
-        {value: "approve", label: "Approve"},
-        {value: "reject", label: "Reject"},
-      ],
-    };
-  }
+const Review = (props) => {
+  const [selectedOption, changeSelectedOption]= useState({value: "", label: ""})
+  const [options,setOptions] = useState([]);
 
-  UNSAFE_componentWillReceiveProps(nextProps) {
-    this.setState({
-      selectedOption: this.state.options.find(
-        (ele) => ele.value === nextProps.detail.action
-      ),
-    });
-  }
+  const detail = useSelector(state => state.tasks.taskDetail);
+  const status = useSelector(state => state.tasks.taskDetail.status)
+  const detailAction = useSelector(state=>state.tasks.taskDetail.action)
+  const userName = useSelector(state=>state.user.userDetail.preferred_username);
+  const submissionError = useSelector(state=>state.formDelete.formSubmissionError);
+  const isProcessLoading= useSelector(state=>state.process.isProcessLoading);
+  const processStatusList = useSelector(state=> state.process.processStatusList);
+  const processLoadError= useSelector(state=> state.process.processLoadError);
 
-  static getDerivedStateFromProps(props, state) {
-    const {processStatusList} = props;
-    const {options} = state;
-
-    if (processStatusList !== options) {
-      return {
-        options: processStatusList,
-      };
+  useEffect(()=>{
+    if(detailAction && status ==="completed"){
+      const option= options.find(
+        (ele) => ele.value === detailAction
+      );
+      changeSelectedOption(option);
     }
-  }
+  },[options, detailAction, status]);
 
-  handleChange = (selectedOption) => {
-    this.setState({selectedOption});
-  };
+  useEffect(()=>{
+    if (processStatusList !== options){
+      setOptions(processStatusList);
+    }
+  },[processStatusList, options]);
 
-  render() {
-    const {selectedOption, options} = this.state;
-    const {processLoadError, isProcessLoading} = this.props;
 
     return (
       <div className="review-section">
         <section className="review-box">
           <SubmissionError
-            modalOpen={this.props.submissionError.modalOpen}
-            message={this.props.submissionError.message}
-            onConfirm={this.props.onConfirm}
+            modalOpen={submissionError.modalOpen}
+            message={submissionError.message}
+            onConfirm={props.onConfirm}
           />
           <section className="row">
             <p
               className="col-md-6"
               style={{fontSize: "21px", fontWeight: "bolder"}}
             >
-              {this.props.detail.name}
+              {detail.name}
             </p>
           </section>
           {/* <section>
@@ -78,7 +69,7 @@ class Review extends Component {
           <div className="review-status">
             <div className="row col-md-12">
               <div className="col-md-4">
-                <label>Review Status</label>
+                <label>Review Status:</label>
               </div>
               <div className="col-md-6">
                 {processLoadError && (
@@ -87,7 +78,7 @@ class Review extends Component {
                 {isProcessLoading && <Loading/>}
                 {!processLoadError && !isProcessLoading && (
                   <Select
-                    onChange={this.handleChange}
+                    onChange={changeSelectedOption}
                     className="basic-single"
                     classNamePrefix="select"
                     value={
@@ -101,10 +92,10 @@ class Review extends Component {
                     getOptionValue={(option) => `${option.value}`}
                     isSearchable={false}
                     isDisabled={
-                      this.props.detail.assignee === null ||
+                      detail.assignee === null ||
                       !(
-                        this.props.detail.assignee === this.props.userName &&
-                        this.props.detail.deleteReason !== "completed"
+                        detail.assignee === userName &&
+                        detail.status !== "completed"
                       )
                     }
                     theme={(theme) => ({
@@ -118,18 +109,18 @@ class Review extends Component {
                   />
                 )}
               </div>
+
               <div className="col-md-2">
-                {this.props.detail.assignee &&
-                this.props.detail.assignee === this.props.userName &&
-                this.props.detail.deleteReason !== "completed" ? (
+                {detail.assignee &&
+                detail.assignee === userName &&
+                detail.status !== "completed" ? (
                   <button
                     className="btn btn-primary"
-                    disabled={this.state.status === " "}
+                    disabled={selectedOption?.value === ""}
                     onClick={() =>
-                      this.props.onCompleteTask(
-                        this.props.detail.id,
-                        this.state.selectedOption.value,
-                        this.props.detail.application_id,
+                      props.onCompleteTask(
+                        detail.id,
+                        selectedOption.value
                       )
                     }
                   >
@@ -142,22 +133,11 @@ class Review extends Component {
         </section>
       </div>
     );
-  }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    detail: state.tasks.taskDetail,
-    userName: state.user.userDetail.preferred_username,
-    submissionError: state.formDelete.formSubmissionError,
-    isProcessLoading: state.process.isProcessLoading,
-    processStatusList: state.process.processStatusList,
-    processLoadError: state.process.processLoadError,
-  };
-};
 const mapDispatchToProps = (dispatch) => {
   return {
-    onCompleteTask: (id, status, applicationId) => {
+    onCompleteTask: (id, status) => {
       dispatch(setUpdateLoader(true));
       dispatch(
         completeTask(id, status, (err, response) => {
@@ -173,6 +153,7 @@ const mapDispatchToProps = (dispatch) => {
                 getTaskDetail(id, (err, res) => {
                   if (!err) {
                     dispatch(setUpdateLoader(false));
+                    dispatch(setUpdateHistoryLoader(true));
                   }
                 })
               );
@@ -187,4 +168,4 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Review);
+export default connect(null, mapDispatchToProps)(Review);

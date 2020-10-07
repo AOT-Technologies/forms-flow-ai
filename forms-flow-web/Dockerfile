@@ -18,5 +18,8 @@ RUN npm install --silent
 
 COPY . /forms-flow-web/app/
 
+#RUN set -x \
+#	&& chmod -R 777 /forms-flow-web/app/
+
 # start app
 CMD ["npm", "start", "--prefix", "/forms-flow-web/app"]

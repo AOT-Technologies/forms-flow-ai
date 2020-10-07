@@ -1,0 +1,24 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: forms-flow-web-redash-v9-config
+objects:
+- 
+  apiVersion: v1
+  kind: ConfigMap
+  metadata:
+    name: "forms-flow-web-redash-v9-config"
+  data:
+    formatterService.js: |-
+      export const taskSubmissionFormatter = (taskSubmissionData) =>{
+        const res = {};
+        taskSubmissionData.forEach(taskSubmission => res[taskSubmission.name] = taskSubmission.value);
+        return res;
+      }
+
+      export const insightDashboardFormatter = (dashboardsData) =>{
+        const dashboards = dashboardsData.map(dashboard => {
+          return  {value:dashboard.id, label:dashboard.name}
+        });
+        return dashboards;
+      }

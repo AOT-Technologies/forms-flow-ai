@@ -1,0 +1,23 @@
+.paper-root {
+  padding: 30px;
+  margin-top: 50px;
+  min-height: calc(100vh - 200px);
+}
+.save-buttons {
+  justify-content: flex-end;
+  align-items: flex-end;
+  display: flex;
+}
+.next-btn {
+  justify-content: flex-end;
+  display: flex;
+}
+.text-field,
+.text-label {
+  width: 100%;
+  margin: 10px 0;
+  font-weight: bold;
+}
+.card-overflow {
+  overflow: visible !important;
+}

@@ -1,0 +1,199 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: forms-flow-webapi
+objects:
+- 
+  apiVersion: v1
+  kind: Secret
+  stringData:
+    BPM_API_BASE: ''
+    BPM_CLIENT_ID: 'forms-flow-bpm'
+    BPM_CLIENT_SECRET: ''
+    BPM_TOKEN_API: ''
+    DATABASE_URL: 'postgresql://postgres:postgres@postgresql:5432/app'
+    JWT_OIDC_ALGORITHMS: RS256
+    JWT_OIDC_AUDIENCE: forms-flow-web
+    JWT_OIDC_CACHING_ENABLED: "True"
+    JWT_OIDC_ISSUER: 'https://iam.aot-technologies.com/auth/realms/forms-flow-ai'
+    JWT_OIDC_JWKS_CACHE_TIMEOUT: "300"
+    JWT_OIDC_JWKS_URI: 'https://iam.aot-technologies.com/auth/realms/forms-flow-ai/protocol/openid-connect/certs'
+    JWT_OIDC_WELL_KNOWN_CONFIG: 'https://iam.aot-technologies.com/auth/realms/forms-flow-ai/.well-known/openid-configuration'
+  metadata:
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+
+- 
+  apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+    creationTimestamp: null
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    replicas: 1
+    selector:
+      app: ${NAME}
+    strategy:
+      resources: {}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          app: ${NAME}
+      spec:
+        containers:
+        - env:
+          - name: BPM_API_BASE
+            valueFrom:
+              secretKeyRef:
+                key: BPM_API_BASE
+                name: ${NAME}
+          - name: BPM_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                key: BPM_CLIENT_ID
+                name: ${NAME}
+          - name: BPM_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: BPM_CLIENT_SECRET
+                name: ${NAME}
+          - name: BPM_TOKEN_API
+            valueFrom:
+              secretKeyRef:
+                key: BPM_TOKEN_API
+                name: ${NAME}
+          - name: DATABASE_URL
+            valueFrom:
+              secretKeyRef:
+                key: DATABASE_URL
+                name: ${NAME}
+          - name: JWT_OIDC_ALGORITHMS
+            valueFrom:
+              secretKeyRef:
+                key: JWT_OIDC_ALGORITHMS
+                name: ${NAME}
+          - name: JWT_OIDC_AUDIENCE
+            valueFrom:
+              secretKeyRef:
+                key: JWT_OIDC_AUDIENCE
+                name: ${NAME}
+          - name: JWT_OIDC_CACHING_ENABLED
+            valueFrom:
+              secretKeyRef:
+                key: JWT_OIDC_CACHING_ENABLED
+                name: ${NAME}
+          - name: JWT_OIDC_ISSUER
+            valueFrom:
+              secretKeyRef:
+                key: JWT_OIDC_ISSUER
+                name: ${NAME}
+          - name: JWT_OIDC_JWKS_CACHE_TIMEOUT
+            valueFrom:
+              secretKeyRef:
+                key: JWT_OIDC_JWKS_CACHE_TIMEOUT
+                name: ${NAME}
+          - name: JWT_OIDC_JWKS_URI
+            valueFrom:
+              secretKeyRef:
+                key: JWT_OIDC_JWKS_URI
+                name: ${NAME}
+          - name: JWT_OIDC_WELL_KNOWN_CONFIG
+            valueFrom:
+              secretKeyRef:
+                key: JWT_OIDC_WELL_KNOWN_CONFIG
+                name: ${NAME}
+          image: docker-registry.default.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+          name: ${NAME}
+          ports:
+          - containerPort: 5000
+          resources: {}
+          stdin: true
+          tty: true
+        restartPolicy: Always
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${NAME}
+        from:
+          kind: ImageStreamTag
+          namespace: "${IMAGE_NAMESPACE}"
+          name: "${NAME}:${TAG_NAME}"
+      type: ImageChange
+  status: {}
+
+- 
+  apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${NAME}
+  spec:
+    selector:
+      app: ${NAME}
+    ports:
+      - protocol: TCP
+        port: 5000
+        targetPort: 5000
+
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    labels:
+      app: ${NAME}
+    name: ${NAME}
+  spec:
+    host: sbcffwa.pathfinder.gov.bc.ca
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
+      name: ${NAME}
+    wildcardPolicy: None
+
+parameters:
+  - name: NAME
+    displayName: Name
+    description: The name assigned to all of the OpenShift resources associated to the
+      server instance.
+    required: true
+    value: forms-flow-webapi
+  - name: IMAGE_NAMESPACE
+    displayName: Image Namespace
+    required: true
+    description: The namespace of the OpenShift project containing the imagestream for
+      the application.
+    value: nzpnbz-tools
+  - name: TAG_NAME
+    displayName: Environment TAG name
+    description: The TAG name for this environment, e.g., dev, test, prod
+    required: true
+    value: latest
+  - name: CPU_REQUEST
+    displayName: Resources CPU Request
+    description: The resources CPU request (in cores) for this build.
+    required: true
+    value: 100m
+  - name: CPU_LIMIT
+    displayName: Resources CPU Limit
+    description: The resources CPU limit (in cores) for this build.
+    required: true
+    value: 750m
+  - name: MEMORY_REQUEST
+    displayName: Resources Memory Request
+    description: The resources Memory request (in Mi, Gi, etc) for this build.
+    required: true
+    value: 100Mi
+  - name: MEMORY_LIMIT
+    displayName: Resources Memory Limit
+    description: The resources Memory limit (in Mi, Gi, etc) for this build.
+    required: true
+    value: 2Gi

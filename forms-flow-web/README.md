@@ -1,6 +1,7 @@
-# FormsFlow.AI Web Application
+# formsflow.ai Web Application
+![React](https://img.shields.io/badge/React-16.12.0-blue)
 
-**FormsFlow.AI** delivers progressive web application with React version `16.3` and `create-react-app`
+**formsflow.ai** delivers progressive web application with React version `16.12` and `create-react-app`. Also currently uses  [form.io](https://github.com/formio/formio) version `1.70.0`.
 
 A React library for rendering out forms based on the form.io platform.
 
@@ -22,9 +23,8 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ### Keycloak Setup
 
-* Login to KeyCloak Realm with admin privileges
-* For client **forms-flow-web** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md)
-
+* Detailed instructions on setting up Keycloak for **formsflow.ai web application**
+is mentioned on the [link](../forms-flow-idm/keycloak-setup.md#create-forms-flow-web-client).
 
 ### Installation
 
@@ -41,20 +41,13 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
  `REVIEWER_ROLE`|The role name used for staff/reviewer users||`formsflow-reviewer`
  `REVIEWER_ROLE_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|must get the value from form.io resource **http://localhost:3001/role**
  `DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
- `DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the value from form.io resource **http://localhost:3001http://localhost:3001/role**
+ `DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the value from form.io resource **http://localhost:3001/role**
  `ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the value from form.io resource **http://localhost:3001/role**
  `USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource **http://localhost:3001/user**
  `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://localhost:3001`
  `INSIGHT_API_BASE`|Insight Api base end-point||`http://localhost:7000`
  `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
  `WEB_API_BASE_URL`|FormsFlow Rest API URI||`http://localhost:5000/api`
-* Update Keycloak configuration in file **public/config/kc/keycloak.json**
-
-Steps to get the client adapter configuration from Keycloak:
-  - Login to Keycloak
-  - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web" --> Go to Installation tab --> Select Format option as Keycloak OIDC JSON
-  - Copy the JSON data
-  - Update the content in file **public/config/kc/keycloak.json**
 
 ### Running the application
    * Run `docker-compose up -d` to start.

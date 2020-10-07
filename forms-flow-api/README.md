@@ -83,7 +83,7 @@ POST {Keycloak URL}/auth/realms/process-engine/protocol/openid-connect/token
 
 Body:
 grant_type: client_credentials
-client_secret: a3413dbd-caf2-41a8-ae54-e7aa448154d8
+client_secret: {set client token}
 client_id: forms-flow-bpm
 
 Headers:

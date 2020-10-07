@@ -188,9 +188,9 @@ Mapping different roles to group/subgroups:
 Group|Roles|Description
 ---|---|---
 camunda-admin||Able to administer Camunda directly and create new workflows
-formsflow-analyst|formsflow-analyst, formsflow-client|Able to access the Redash dashboard and FormsFlow UI
-formsflow-designer|formsflow-client, formsflow-designer, formsflow-reviewer| Able to access all elements of the FormsFlow UI including forms design, task list and forms access
-formsflow-reviewer|formsflow-reviewer| Able to access task list and forms access of FormsFlow UI
+formsflow-analyst|formsflow-analyst, formsflow-client|Able to access the Redash dashboard and formsflow UI
+formsflow-designer|formsflow-client, formsflow-designer, formsflow-reviewer| Able to access all elements of the formsflow UI including forms design, task list and forms access
+formsflow-reviewer|formsflow-reviewer| Able to access task list and forms access of formsflow UI
 formsflow-client|formsflow-client| Able to access form fill-in only
 
 

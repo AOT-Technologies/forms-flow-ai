@@ -19,6 +19,8 @@ A React library for rendering out forms based on the form.io platform.
 The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available.
 There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
 
+Also, please make sure the formio server is up and running.
+
 ## Solution Setup
 
 ### Keycloak Setup
@@ -50,7 +52,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak-setup.md#create-forms-flow
  `WEB_API_BASE_URL`|FormsFlow Rest API URI||`http://localhost:5000/api`
 
 ### Running the application
-   * Run `docker-compose up -d` to start.
+   * Run `docker-compose up --build -d` to start.
 
 #### To stop the application
    * Run `docker-compose down` to stop.

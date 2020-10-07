@@ -1,4 +1,4 @@
-<img width="180" height="80" src=".images/formsflow.ai_icon.svg"/><p>formsflow.ai</p>
+<table style="border:none;"><tr ><td ><img width="180" height="80" src=".images/formsflow.ai_icon.svg"/></td><td><h1>formsflow.ai</h1></td></tr></table>
 ![version](https://img.shields.io/badge/version-v3.0.0-blue)
 <hr> 
 **formsflow.ai** is an open source solution framework developed and maintained by [AOT Technologies](https://www.aot-technologies.com/). The framework combines selected open source Forms, Workflow, Analytics, and Security products with custom-built integration code to provide a seamless solution that provides a viable alternative to expensive, enterprise software products.

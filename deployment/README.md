@@ -4,7 +4,7 @@ In the following document, we’ll describe about the different project dependen
 ## Table of Contents
 * [Prerequisites](#prerequisites)
 * [Project Dependencies](#project-dependencies)
-* [Download the formsflow.ai](#download-the-formsflow.ai)
+* [Download the formsflow.ai](#download-the-formsflowai)
 * [Installation](#installation)
 * [Verifying the Installation Status](#verifying-the-installation-status)
 
@@ -19,11 +19,11 @@ The products are installed with a default configuration so that the base system 
 
 
 ## Project Dependencies
-- [form.io](https://www.form.io/opensource) (included under ./forms-flow-forms)
-- [Camunda](https://camunda.com/) (included under ./forms-flow-bpm)
-- [Redash](https://redash.io) (included under ./forms-flow-analytics)
+- [form.io](https://www.form.io/opensource) (included under ../.forms-flow-forms)
+- [Camunda](https://camunda.com/) (included under ../.forms-flow-bpm)
+- [Redash](https://redash.io) (included under ../.forms-flow-analytics)
 - [Keycloak](https://www.keycloak.org/) (existing Keycloak server required)
-- [Python](https://www.python.org/) (included under ./forms-flow-api)
+- [Python](https://www.python.org/) (included under ../.forms-flow-api)
 - *Optional*: [Nginx](https://www.nginx.com) (included under ./deployment/nginx) 
 
 ## Download the formsflow.ai

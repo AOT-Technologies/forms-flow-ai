@@ -9,6 +9,11 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
 * Show  task navigation in workflow diagram
 * Support to access formsflow.ai solution in mobile
 
+## 3.0.1 - 2020-10-08
+`Modified`
+* In application dashboard, the "Application Status" column search component has been enhanced to show all possible values in dropdown (Component : forms-flow-web)
+* In application dashboard, the button label has been modified to show as "Acknowledge" for status "Awaiting Acknowledgement" (Component : forms-flow-web)
+
 ## 3.0.0 - 2020-10-07
 `Added`
 * Logo & UI Styling

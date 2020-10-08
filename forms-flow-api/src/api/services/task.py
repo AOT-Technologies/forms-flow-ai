@@ -18,11 +18,6 @@ class TaskService():
         if tasks:
             task_schema = TaskSchema()
             task_list = task_schema.dump(tasks, many=True)
-            for entry in task_list:
-                task_variables = BPMService.get_task_variables(entry['processInstanceId'], token)
-                task_variable_schema = TaskVariableSchema()
-                task_variable_list = task_variable_schema.dump(task_variables, many=True)
-                entry['variables'] = task_variable_list
         return task_list
 
     @staticmethod
@@ -32,12 +27,7 @@ class TaskService():
         task_list = None
         if task:
             task_schema = TaskSchema()
-            task_list = task_schema.dump(task, many=True)
-            for entry in task_list:
-                task_variables = BPMService.get_task_variables(entry['processInstanceId'], token)
-                task_variable_schema = TaskVariableSchema()
-                task_variable_list = task_variable_schema.dump(task_variables, many=True)
-                entry['variables'] = task_variable_list
+            task_list = task_schema.dump(task)
         return task_list
 
     @staticmethod

@@ -1,21 +1,35 @@
-import React, {Component} from "react";
-import {Link} from "react-router-dom";
+import React, {useEffect} from "react";
+import {Link, useParams} from "react-router-dom";
 import {Tabs, Tab} from "react-bootstrap";
-import {connect} from "react-redux";
-import {selectError, getSubmission, getForm} from "react-formio";
-
+import {connect, useDispatch, useSelector} from "react-redux";
+import { getSubmission, getForm} from "react-formio";
 import Details from "./Details";
 import {getTaskDetail} from "../../apiManager/services/taskServices";
 import Loading from "../../containers/Loading";
 import {setLoader} from "../../actions/taskActions";
 import View from "../Form/Item/Submission/Item/View";
-
 import {getProcessStatusList} from "../../apiManager/services/processServices";
+import {getApplicationById, getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
+import History from './History';
+import ProcessDiagram from "../BPMN/ProcessDiagram";
 
-class ViewTask extends Component {
-  render() {
-    const {detail} = this.props;
-    if (this.props.isLoading) {
+const ViewTask = (props) => {
+    const {taskId} = useParams();
+    const taskDetail = useSelector(state => state.tasks.taskDetail);
+    const applicationProcess = useSelector(state => state.applications.applicationProcess);
+
+    const isLoading = useSelector(state => state.tasks.isLoading);
+    const dispatch = useDispatch();
+    const {getTask} = props;
+    useEffect(()=>{
+      if(taskDetail && taskDetail.id === taskId){
+        dispatch(setLoader(false));
+      }else{
+        getTask(taskId);
+      }
+    },[taskId, dispatch, taskDetail, getTask])
+
+    if (isLoading) {
       return <Loading/>;
     }
     return (
@@ -29,7 +43,7 @@ class ViewTask extends Component {
           </span>
           <h3>
             <span className="task-head-details">Tasks /</span>{" "}
-            {`${detail.name}`}
+            {`${taskDetail.name}`}
           </h3>
         </div>
         <br/>
@@ -40,40 +54,26 @@ class ViewTask extends Component {
           <Tab eventKey="form" title="Form">
             <View page="task-detail"/>
           </Tab>
-          <Tab eventKey="history" title="History" disabled>
-            <h1>History</h1>
+          <Tab eventKey="history" title="Application History">
+            <History page="task-detail"/>
+          </Tab>
+          <Tab eventKey="process-diagram" title="Process Diagram">
+            <ProcessDiagram
+                process_key={applicationProcess.processKey}
+            />
           </Tab>
         </Tabs>
       </div>
     );
-  }
 }
 
-const mapStateToProps = (state) => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    submission: state.submission,
-    form: state.form.form,
-    detail: state.tasks.taskDetail,
-    isLoading: state.tasks.isLoading,
-    options: {
-      readOnly: true,
-    },
-    errors: [selectError("submission", state), selectError("form", state)],
-  };
-};
-
-const isDataLoaded = (id) => {
-  return (dispatch, getState) => {
-    let task = getState().tasks.taskDetail;
-    if (task && task.id === id) {
-      dispatch(setLoader(false));
-    } else {
-      dispatch(setLoader(true));
-      dispatch(
-        getTaskDetail(id, (err, res) => {
-          if (!err) {
-            if (res.submission_id && res.form_id) {
-              dispatch(getForm("form", res.form_id));
+    getTask: (id) => {
+        dispatch(setLoader(true));
+        dispatch(
+          getTaskDetail(id, (err, res) => {
+            if (!err) {
               dispatch(
                 getProcessStatusList(
                   res.processDefinitionKey,
@@ -82,20 +82,23 @@ const isDataLoaded = (id) => {
               );
 
               dispatch(
-                getSubmission("submission", res.submission_id, res.form_id)
+                getApplicationFormDataByAppId(res.applicationId)
               );
+              dispatch(getApplicationById(res.applicationId,(err,res)=>{
+                if (!err) {
+                  if (res.submissionId && res.formId) {
+                    dispatch(getForm("form", res.formId));
+                    dispatch(
+                      getSubmission("submission", res.submissionId, res.formId)
+                    );
+                  }
+                }
+              }));
             }
-          }
-        })
-      );
+          })
+        );
     }
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getTask: dispatch(isDataLoaded(window.location.pathname.split("/")[2]))
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ViewTask);
+export default connect(null, mapDispatchToProps)(ViewTask);

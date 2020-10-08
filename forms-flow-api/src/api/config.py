@@ -58,6 +58,9 @@ class _Config():  # pylint: disable=too-few-public-methods
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', '')
     # SQLALCHEMY_ECHO = True
 
+    # MONGODB
+    MONGO_URI = os.getenv('MONGODB_URI')
+
     TESTING = False
     DEBUG = False
 
@@ -68,10 +71,7 @@ class _Config():  # pylint: disable=too-few-public-methods
     JWT_OIDC_ISSUER = os.getenv('JWT_OIDC_ISSUER')
     JWT_OIDC_AUDIENCE = os.getenv('JWT_OIDC_AUDIENCE')
     JWT_OIDC_CACHING_ENABLED = os.getenv('JWT_OIDC_CACHING_ENABLED')
-    try:
-        JWT_OIDC_JWKS_CACHE_TIMEOUT = int(os.getenv('JWT_OIDC_JWKS_CACHE_TIMEOUT'))
-    except ValueError:
-        JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
+    JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
 
     # Keycloak Service for BPM Camunda
     BPM_TOKEN_API = os.getenv('BPM_TOKEN_API')
@@ -81,6 +81,9 @@ class _Config():  # pylint: disable=too-few-public-methods
 
     # BPM Camunda Details
     BPM_API_BASE = os.getenv('BPM_API_BASE')
+
+    #API Base URL (Self)
+    WEB_API_BASE_URL = os.getenv('WEB_API_BASE_URL')
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

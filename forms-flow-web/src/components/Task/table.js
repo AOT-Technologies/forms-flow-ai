@@ -20,32 +20,42 @@ export const defaultSortedBy = [
 export const TaskSearch = (props) => {
   let input;
   let userName = props.user;
+
   const statusChange = () => {
+	clearFilter();
     if (input.value === "Username") {
-      props.onSearch(userName);
-    } else props.onSearch(input.value);
+	  props.onSearch(userName);
+    } else {
+		props.onSearch(input.value);
+		if(input.value === "Active") {
+		statusFilter("Active")
+		} else {
+		statusFilter("")
+		}
+	 }
   };
+
   return (
     <div>
-      <select
+      <select id="taskfilter"
         className="form-control"
         ref={(n) => (input = n)}
-        onChange={statusChange}
+        onChange={statusChange} defaultValue="Active"
       >
         <option value=" ">All tasks</option>
-        <option value="new">New tasks</option>
+        <option value="Active">Active tasks</option>
         <option value="Username">My assigned tasks</option>
       </select>
     </div>
   );
 };
 
+
 const selectOptions = [
-  { value: "new", label: "New" },
-  { value: "In-Progress", label: "In-Progress" },
-  { value: "Approved", label: "Approved" },
-  { value: "Rejected", label: "Rejected" },
-];
+  { value: "Active", label: "Active" },
+  { value: "Completed", label: "Completed" }
+]
+
 
 /*function linkDueDate(cell) {
   return <a href=" ">{cell}</a>;
@@ -68,22 +78,16 @@ function linkSubmisionId(cell) {
 }
 
 function buttonFormatter(cell) {
-  if (cell === "Completed" || cell=== "Rejected" || cell==="Approved") {
+  if (cell === "Completed") {
     return (
-      <label className="text-success font-weight-bold text-uppercase task-btn">
-        {cell}
-      </label>
-    );
-  } else if (cell==="In-Progress") {
-    return (
-      <label className="text-info font-weight-bold text-uppercase">
-        {cell}
+      <label className="text-success font-weight-bold text-capitalize task-btn">
+        {"Completed"}
       </label>
     );
   } else {
     return (
-      <label className="text-primary font-weight-bold text-uppercase task-btn">
-        {cell}
+      <label className="text-primary font-weight-bold text-capitalize task-btn">
+        {"Active"}
       </label>
     );
   }
@@ -99,7 +103,7 @@ function linkTaskAssignee(cell, row) {
       <div>
         {cell}
         {row.userName === row.taskAssignee &&
-        row.deleteReason !== "completed" ? (
+        row.taskStatus !== "Completed" ? (
           <p className="mb-0" onClick={() => row.unAssignFn(row.id)}>
             Unassign
           </p>
@@ -127,7 +131,35 @@ export const clearFilter = () => {
   submittedOnFilter("");
   apptypeFilter("");
 };
-
+export const columns_history = [
+  {
+    dataField: "applicationName",
+    text: "Application Name",
+       sort: true,
+    filter: textFilter({
+      placeholder: "\uf002 Application Name", // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      className: "icon-search",
+      getFilter: (filter) => {
+        titleFilter = filter;
+      },
+    }),
+  },
+  {
+    dataField: "applicationStatus",
+    text: "Application Status",
+    sort: true,
+    formatter: buttonFormatter,
+    filter: selectFilter({
+      options: selectOptions,
+      placeholder: "All",
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      getFilter: (filter) => {
+        statusFilter = filter;
+      },
+    }),
+  },
+];
 export const columns = [
   {
     dataField: "taskTitle",
@@ -165,6 +197,7 @@ export const columns = [
     filter: selectFilter({
       options: selectOptions,
       placeholder: "All",
+	  defaultValue: 'Active',
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       getFilter: (filter) => {
         statusFilter = filter;
@@ -188,6 +221,18 @@ export const columns = [
       className: "icon-search",
       getFilter: (filter) => {
         appidFilter = filter;
+      },
+    }),
+  },
+  {
+    dataField: "form",
+    text: "Application Name",
+    filter: textFilter({
+      placeholder: "\uf002 Application Name", // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      className: "icon-search",
+      getFilter: (filter) => {
+        apptypeFilter = filter;
       },
     }),
   },
@@ -219,25 +264,42 @@ export const columns = [
         submittedOnFilter = filter;
       },
     }),
-  },
-  {
-    dataField: "form",
-    text: "Application Name",
-    filter: textFilter({
-      placeholder: "\uf002 Application Name", // custom the input placeholder
-      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-      className: "icon-search",
-      getFilter: (filter) => {
-        apptypeFilter = filter;
-      },
-    }),
-  },
+  }
   // {
   //   dataField: 'dueDate',
   //   text: 'Due Date',
   //   formatter: linkDueDate,
   //   sort: true,
   // },
+  // {
+  //   dataField: "statusName",
+  //   text: "Application Status",
+  //   sort: true,
+  //   formatter: buttonFormatter,
+  //   filter: selectFilter({
+  //     options: selectOptions,
+  //     placeholder: "All",
+  //     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+  //     getFilter: (filter) => {
+  //       statusFilter = filter;
+  //     },
+  //   }),
+  // },
+  // {
+  //   dataField: "formName",
+  //   text: "Form Name",
+  //   sort: true,
+  //   formatter: buttonFormatter,
+  //   filter: selectFilter({
+  //     options: selectOptions,
+  //     placeholder: "All",
+  //     caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+  //     getFilter: (filter) => {
+  //       statusFilter = filter;
+  //     },
+  //   }),
+  // },
+
 ];
 
 const customTotal = (from, to, size) => (

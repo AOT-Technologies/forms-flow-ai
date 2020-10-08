@@ -42,9 +42,14 @@ class Auth():
             def wrapper(*args, **kwargs):
                 if jwt.contains_role(roles):
                     return f(*args, **kwargs)
+        
                 raise BusinessException('Access Denied', HTTPStatus.UNAUTHORIZED)
             return wrapper
         return decorated
+
+    @classmethod
+    def has_role(cls, role):
+        return jwt.validate_roles(role)
 
 
 auth = Auth()  # pylint: disable=invalid-name; lower case name as used by convention in most Flask apps

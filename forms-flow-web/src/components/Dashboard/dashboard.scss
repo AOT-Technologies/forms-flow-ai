@@ -1,16 +1,17 @@
 @import "./../../assets/styles/themes.scss";
 
 .dashboard {
-  background: #f3f3f3;
-  margin-top: 40px;
+  background: $white;
+  margin-top: 10px;
   & .line-hr {
-    border-top: 1px solid $yellow;
+    border-top: 1px solid $light-blue;
   }
   & .card-counter {
     width: 100%;
     margin: 25px 0px;
     & .white-box {
       background: $white;
+      border: 1px solid $light-blue;
       padding: 25px;
       margin-bottom: 30px;
       cursor: pointer;
@@ -48,10 +49,10 @@
   }
   & .application-title {
     margin-bottom: -5px;
-    color: $primary-blue;
+    color: $black;
   }
   & .dashboard-title {
-    color: $primary-blue;
+    color: $black;
   }
 
   & .app-title-container {
@@ -60,10 +61,10 @@
     align-items: center;
   }
   & .react-daterange-picker__wrapper {
-    color: #036;
+    color: $black;
     padding: 5px;
-    border: 1px solid white;
-    background: white;
+    border: 1px solid $black;
+    background: $white;
     & input {
       color: #036;
     }
@@ -86,7 +87,7 @@
       align-self: center;
       flex-direction: row;
       flex-wrap: wrap;
-      border: 1px solid #b9b7b7;
+      border: 1px solid $black;
       padding: 30px;
       border-radius: 10px;
       & .legent {

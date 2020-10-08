@@ -3,9 +3,10 @@
 import os
 
 from flask import Flask
+from flask_cors import CORS
 
 from . import config, models
-from .models import db, ma
+from .models import db, ma, mongo
 from .resources import API
 from .utils.auth import jwt
 from .utils.logging import setup_logging
@@ -18,10 +19,12 @@ setup_logging(os.path.join(os.path.abspath(
 def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
     """Return a configured Flask App using the Factory method."""
     app = Flask(__name__)
+    CORS(app)
     app.config.from_object(config.CONFIGURATION[run_mode])
 
     db.init_app(app)
     ma.init_app(app)
+    mongo.init_app(app)
 
     API.init_app(app)
     setup_jwt_manager(app, jwt)

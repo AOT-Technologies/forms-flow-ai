@@ -1,4 +1,4 @@
-# Contributing to FormsFlow.AI
+# Contributing to formsflow.ai
 
 * Please raise bugs / new feature requests in Github Issues for this project
 * Please contact the product owner @sumathi-thirumani-aot prior to contributing so that you can follow our branching strategy. 

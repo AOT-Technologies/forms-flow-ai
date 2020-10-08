@@ -5,6 +5,7 @@ import List from './List'
 import Item from './Item/index'
 
 const Form = () => (
+  /*TODO remove submission List Route for client*/
   <div>
     <Switch>
       <Route exact path="/form/:formId/submission" component={List} />

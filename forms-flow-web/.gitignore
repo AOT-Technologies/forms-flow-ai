@@ -14,8 +14,10 @@
 .env.local
 .env.development.local
 .env.test.local
+.env.test.server
 .env.production.local
 .env
+/public/config/kc/keycloak.json
 
 npm-debug.log*
 yarn-debug.log*

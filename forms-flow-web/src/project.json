@@ -1,8 +1,8 @@
 {
-  "title": "Forms Flow ai",
+  "title": "formsflow.ai",
   "version": "1.0.0",
   "description": "",
-  "name": "Forms flow ai",
+  "name": "formsflow.ai",
   "roles": {
     "administrator": {
       "title": "Administrator",

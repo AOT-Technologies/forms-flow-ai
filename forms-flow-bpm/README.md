@@ -1,8 +1,7 @@
 # Workflow Engine
+![Camunda](https://img.shields.io/badge/Camunda-7.13.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.2.7.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
+**formsflow.ai** leverages Camunda for workflow and decision automation.
 
-**FormsFlow.AI** leverages Camunda for workflow and decision automation.
-It is currently based on camunda version `7.13.0` , Keycloak, Spring boot `2.2.7.RELEASE` and PostgreSQL (latest).
- 
 To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identity-keycloak.
 
 ## Table of Content
@@ -47,7 +46,10 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
  `CAMUNDA_POSTGRES_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
  `CAMUNDA_POSTGRES_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
  `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`camunda`
-
+ `WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://localhost:5000`
+ `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://localhost:3001`
+ `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
+ `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
    
  **Additionally, you may want to change these**  

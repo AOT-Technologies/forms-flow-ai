@@ -15,6 +15,17 @@ spring.datasource:
 #spring.h2.console.enabled: true
 
 
+formsflow.ai:
+  api:
+    url: ${FORMSFLOW_API_URL}
+  formio:
+    url: ${FORMIO_URL}
+    security:
+      accessTokenUri: ${FORMIO_URL}/user/login
+      username: ${FORMIO_ROOT_EMAIL}
+      password: ${FORMIO_ROOT_PASSWORD}
+
+
 spring:
   jersey:
     application-path: /engine-rest

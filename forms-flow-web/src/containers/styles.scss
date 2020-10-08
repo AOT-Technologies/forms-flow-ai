@@ -3,7 +3,7 @@
 #sidebar {
   & .navbar {
     padding: 15px 10px;
-    background: #fff;
+    background: $light-grey;
     border: none;
     border-radius: 0;
     margin-bottom: 40px;
@@ -29,29 +29,29 @@
   }
 
   & .nav-profile {
-    max-width: 270px;
+    max-width: 229px;
     margin-bottom: 30px;
     & .nav-link {
+      background: $light-blue 0% 0% no-repeat padding-box;
+      border-radius: 10px;
+      opacity: 1;
       display: -webkit-box;
       display: -ms-flexbox;
       display: flex;
-      border-radius: 3px;
-      border: 1px solid $yellow;
-
-      color: #fff;
-      padding: 15px 25px;
+      color: $white;
+      padding: 10px;
 
       & .profile-image {
         margin-right: 15px;
         position: relative;
         & img {
-          width: 58px;
+          width: 49px;
+          border: 2px solid white
         }
       }
       & .text-wrapper p {
-        font-weight: 500;
         font-size: 14px;
-        color: #fff;
+        color: $white;
         margin-bottom: 0;
         word-break: break-all;
         & p {
@@ -59,7 +59,8 @@
         }
       }
       & .profile-role {
-        color: $yellow !important;
+        font-weight: bolder !important;
+        color: $white !important;
       }
     }
   }
@@ -77,10 +78,10 @@
 }
 
 #sidebar {
-  min-width: 250px;
+  min-width: 220px;
   max-width: 250px;
-  background: $primary-blue;
-  color: #fff;
+  background: $light-grey;
+  color: $black;
   transition: all 0.3s;
   height: 100%;
 }
@@ -101,6 +102,7 @@
 }
 
 #sidebar ul li a {
+  font-weight: bolder;
   text-align: left;
 }
 
@@ -132,7 +134,7 @@
 
 #sidebar .sidebar-header {
   padding: 20px;
-  background: $primary-blue;
+  background: $light-grey;
 }
 
 #sidebar .sidebar-header strong {
@@ -156,8 +158,8 @@
 
 #sidebar ul li.active > a,
 #sidebar a[aria-expanded="true"] {
-  color: $yellow !important;
-  background: $primary-blue;
+  color: $light-blue !important;
+  background: $light-grey;
 }
 
 #sidebar a[data-toggle="collapse"] {
@@ -175,7 +177,7 @@
 #sidebar ul ul a {
   font-size: 0.9em !important;
   padding-left: 30px !important;
-  background: $primary-blue;
+  background: $light-grey;
 }
 
 #sidebar ul.CTAs {
@@ -192,8 +194,8 @@
 
 #sidebar a.article,
 #sidebar a.article:hover {
-  background: $primary-blue !important;
-  color: #fff !important;
+  background: $light-grey !important;
+  color: $black !important;
 }
 
 /* ---------------------------------------------------
@@ -262,4 +264,32 @@
   #sidebarCollapse span {
     display: none;
   }
+}
+.topheading-border-bottom{
+  padding: 0.8rem 1rem !important;
+  border-bottom: 2px solid $light-blue !important;
+}
+
+.navbar-expand-lg .navbar-nav .nav-link {
+  padding-right: 2.5rem !important;
+  padding-left: .8rem !important;
+}
+
+.topheading-border-bottom{
+  padding: 0.8rem 1rem !important;
+  border-bottom: 2px solid $light-blue !important;
+}
+
+.navbar-expand-lg .navbar-nav .nav-link {
+  padding-right: 2.5rem !important;
+  padding-left: .8rem !important;
+}
+
+.dropdown-toggle {
+  margin-top: -15px;
+  margin-left: -30px;
+}
+
+.navbar-nav .nav-link:hover, .navbar-nav .nav-link:focus {
+  text-decoration: none !important;
 }

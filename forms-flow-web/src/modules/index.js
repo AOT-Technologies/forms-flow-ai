@@ -8,13 +8,14 @@ import formDelete from "./formReducer";
 import insights from "./insightReducer";
 import metrics from "./metricsReducer";
 import process from "./processReducer";
-
+import applications from './applicationsReducer';
 const createRootReducer = (history) =>
   combineReducers({
     user,
     tasks,
     insights,
     formDelete,
+    applications,
     form: form({ name: "form" }),
     forms: forms({ name: "forms", query: { type: "form", tags: "common" } }),
     submission: submission({ name: "submission" }),

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import startCase from "lodash/startCase";
 import { textFilter , selectFilter } from "react-bootstrap-table2-filter";
 import {getLocalDateTime} from "../../apiManager/services/formatterService";
+import {AWAITING_ACKNOWLEDGEMENT} from "../../constants/applicationConstants";
 
 let statusFilter,
     idFilter,
@@ -35,7 +36,7 @@ const linkApplication = (cell, row) => {
 
 const linkSubmission = (cell,row) => {
   const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
-  const buttonText = row.isClientEdit ? 'Edit' : 'View'
+  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':'Edit') : 'View'
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
   <div onClick={()=> window.open(url, "_blank")}>

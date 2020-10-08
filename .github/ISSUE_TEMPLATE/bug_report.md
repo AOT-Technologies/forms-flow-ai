@@ -1,6 +1,6 @@
 ---
 name: "\U0001F41B Bug Report"
-about: Create a bug report to help us improve Formsflow.ai
+about: Create a bug report to help us improve formsflow.ai
 ---
 
 ## Bug Report

@@ -49,7 +49,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak-setup.md#create-forms-flow
  `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://localhost:3001`
  `INSIGHT_API_BASE`|Insight Api base end-point||`http://localhost:7000`
  `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
- `WEB_API_BASE_URL`|FormsFlow Rest API URI||`http://localhost:5000/api`
+ `WEB_API_BASE_URL`|formsflow Rest API URI||`http://localhost:5000/api`
 
 ### Running the application
    * Run `docker-compose up --build -d` to start.

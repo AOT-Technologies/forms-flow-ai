@@ -120,7 +120,7 @@ base components within Form.io and then registering them within the core rendere
 
 Custom componets available in **formsflow.ai** are:
 
-|Component Name | About | Detailed link |
+|Component Name | About | How to use |
 |--- | --- | --- |
 |**Text Area with Analytics** | To enable Text fields for sentiment analysis processing | [link](./custom-components/text-area-with-analytics/README.md)|
 

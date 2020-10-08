@@ -30,11 +30,11 @@ Roles are derived from claims extracted from the JWT's returned during the login
 Here are some important notes about the interaction between users, groups, and roles
 
 * Groups (and if needed, subgroups) are associated with roles
-* Note that there is no client for form.io - there is no direct login capability on Keycloak for form.io. All form administration is performed from the FormsFlow UI
+* Note that there is no client for form.io - there is no direct login capability on Keycloak for form.io. All form administration is performed from the formsflow UI
 * In practice, users are assigned to groups and thereby inherit the roles
 * Groups are also synced to Camunda so are available for task filtering, email notifications, etc.
 * In the current implementation ONLY members of group camunda-admins can access the Camunda UI directly
-* There is some "under-the-covers" authorization going on concerning access between the  FormsFlow UI, the FormsFlow API, and Camunda with the addition of audience mapping - basically allowing communication between components 
+* There is some "under-the-covers" authorization going on concerning access between the  formsflow UI, the formsflow API, and Camunda with the addition of audience mapping - basically allowing communication between components 
 
 ### User Groups
 There are two groups
@@ -45,7 +45,7 @@ Group | Sub Group | Roles | Description |
 --- | --- | --- | ---
 `camunda-admin`| | |Able to administer Camunda directly and create new workflows
 `formsflow`|`formsflow-designer` |formsflow-bpm|Able to design forms and publish for use.
-`formsflow`|`formsflow-reviewer` |formsflow-bpm|Able to access applications, tasks, metrics and Insight of FormsFlow UI
+`formsflow`|`formsflow-reviewer` |formsflow-bpm|Able to access applications, tasks, metrics and Insight of formsflow UI
 `formsflow`|`formsflow-client` |formsflow-client|Able to access form fill-in only
      
 * Please note, it is possible to assign a user to multiple groups say `formsflow-designer` and `formsflow-reviewer`, in order to provide access to both designer and staff behavior. 

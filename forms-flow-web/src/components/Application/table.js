@@ -17,13 +17,14 @@ export const defaultSortedBy = [
   },
 ];
 
-const selectOptions = [
-  { value: "Approved", label: "Approved" },
-  { value: "New", label: "New" },
-  { value: "Reviewed", label: "Reviewed" },
-  { value: "Returned", label: "Returned" }
-]
-
+const getApplicationStatusOptions = (rows) => {
+  const statusArray =  rows.map(row=>row.applicationStatus)
+  const uniqueStatusArray = [...new Set(statusArray)];
+  const selectOptions = uniqueStatusArray.map(option => {
+    return {value:option,label:option}
+  })
+  return selectOptions;
+}
 
 const linkApplication = (cell, row) => {
   return (
@@ -70,7 +71,7 @@ export const columns_history = [
   },
 ];
 
-export const columns = [
+export const columns  = (rows) => [
   {
     dataField: "id",
     text: "Application ID",
@@ -104,7 +105,7 @@ export const columns = [
     text: "Application Status",
     sort: true,
     filter: selectFilter({
-      options: selectOptions,
+      options: getApplicationStatusOptions(rows),
       placeholder: "All",
 	    defaultValue: 'All',
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE

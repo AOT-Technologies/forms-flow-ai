@@ -79,7 +79,7 @@ const ApplicationList = () => {
       <ToolkitProvider
         keyField="id"
         data={listApplications(applications)}
-        columns={columns}
+        columns={columns(applications)}
         search
       >
         {(props) => (

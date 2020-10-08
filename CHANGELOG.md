@@ -42,7 +42,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
 * Custom component (Text Area with analytics) not retaining the value after submission
 * Cosmetic changes to show success message after loading is completed
 
-
 ## 2.0.1 - 2020-07-27
 `Added`
 * This file (CHANGELOG.md)

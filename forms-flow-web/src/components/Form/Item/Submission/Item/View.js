@@ -7,38 +7,45 @@ import {Button} from "react-bootstrap";
 import Loading from '../../../../../containers/Loading'
 import PdfDownloadService from "../../../../../services/PdfDownloadService"
 import {setFormSubmissionLoading} from "../../../../../actions/formActions";
+import LoadingOverlay from "react-loading-overlay";
 
 const View = (props) => {
-    const {
-      hideComponents,
-      onSubmit, options,
-      errors,
-      form: {form, isActive: isFormActive},
-      submission: {submission, isActive: isSubActive, url}
-    } = props;
-    const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
-    if (isFormActive || isSubActive || isFormSubmissionLoading) {
-      return <Loading />;
-    }
+  const {
+    hideComponents,
+    onSubmit, options,
+    errors,
+    form: {form, isActive: isFormActive},
+    submission: {submission, isActive: isSubActive, url}
+  } = props;
+  const isFormSubmissionLoading = useSelector(state => state.formDelete.isFormSubmissionLoading);
+  if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
+    return <Loading/>;
+  }
 
-    return (
-            <div className="container">
-        <div className="main-header">
-          <h3 className="task-head"> { form.title }</h3>
-          <div className="btn-right"><Button className="btn btn-primary btn-sm form-btn pull-right btn-right" onClick={()=>PdfDownloadService.getPdf(form,submission)}><i className="fa fa-print" aria-hidden="true"></i> Print As PDF</Button></div>
-        </div>
-
-        <Errors errors={errors} />
-        <Form
-          form={form}
-          submission={submission}
-          url={url}
-          hideComponents={hideComponents}
-          onSubmit={onSubmit}
-          options={{...options}}
-        />
+  return (
+    <div className="container">
+      <div className="main-header">
+        <h3 className="task-head"> {form.title}</h3>
+        <div className="btn-right">
+          <Button className="btn btn-primary btn-sm form-btn pull-right btn-right" onClick={() => PdfDownloadService.getPdf(form, submission)}>
+          <i className="fa fa-print" aria-hidden="true"/> Print As PDF</Button></div>
       </div>
-    );
+
+      <Errors errors={errors}/>
+      <LoadingOverlay active={isFormSubmissionLoading} spinner text='Loading...' className="col-12">
+        <div className="ml-4 mr-4">
+          <Form
+            form={form}
+            submission={submission}
+            url={url}
+            hideComponents={hideComponents}
+            onSubmit={onSubmit}
+            options={{...options}}
+          />
+        </div>
+      </LoadingOverlay>
+    </div>
+  );
 }
 
 const mapStateToProps = (state) => {
@@ -64,7 +71,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(resetSubmissions('submission'));
           dispatch(setFormSubmissionLoading(false));
           dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
-        }else {
+        } else {
           dispatch(setFormSubmissionLoading(false));
         }
       }));

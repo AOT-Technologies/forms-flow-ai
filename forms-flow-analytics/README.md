@@ -1,7 +1,10 @@
 # Analytics Engine
-**formsflow.ai** leverages Redash for getting insight and data visualization.
 
-To know more about Redash, go to https://github.com/getredash/redash.
+![Redash](https://img.shields.io/badge/Redash-8.0.0%2Bb(latest)-blue)
+
+**formsflow.ai** leverages [Redash](https://github.com/getredash/redash) to build interactive
+dashboards and gain insights. To create meaningful visualization for
+your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.io/help/).
 
 ## Table of Content
 * [Prerequisites](#prerequisites)
@@ -14,15 +17,17 @@ To know more about Redash, go to https://github.com/getredash/redash.
 
 ## Prerequisites
 
-The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
-There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
+We are assuming [docker-compose](https://docs.docker.com/compose/) and [docker](https://docker.com)
+is already installed, which is required to run and deploy the system. It's also
+needed to have a [Keycloak](https://www.keycloak.org/) server available with
+admin privileges (to create realms, users etc. in Keycloak).
 
 ## Solution Setup
 
 ### Keycloak Setup
 
 * Login to KeyCloak Realm with admin privileges  
-* For client **forms-flow-analytics** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md) 
+* For client **forms-flow-analytics** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md#create-forms-flow-analytics-client) 
 
 
 ### Installation
@@ -33,7 +38,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://localhost:7000/redash
+`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://localhost:7000/
 `PYTHONUNBUFFERED`|Log buffering setup|1 or 0 | 1
 `REDASH_LOG_LEVEL`|Logging level|`CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET` | ERROR
 `REDASH_REDIS_URL`|Redis URL|Used on installation to create the database.Choose your own.|`redis://redis:6379/0`

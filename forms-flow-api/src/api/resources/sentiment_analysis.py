@@ -16,34 +16,40 @@ import json
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 
 
-@cors_preflight('POST,OPTIONS')
-@API.route('', methods=['POST', 'OPTIONS'])
+@cors_preflight("POST,OPTIONS")
+@API.route("", methods=["POST", "OPTIONS"])
 class SentimentAnalysisResource(Resource):
+    """Resource for generating Sentiment Analysis """
 
     @staticmethod
-    @cors.crossdomain(origin='*')
+    @cors.crossdomain(origin="*")
     @auth.require
     def post():
-        inputJson = request.get_json()
-        responseJson = {"applicationId": inputJson["applicationId"], "formUrl" : inputJson["formUrl"], "data":[]}
-        for data in inputJson["data"]:
+        input_json = request.get_json()
+        response_json = dict(
+            application_id=input_json["applicationId"],
+            form_url=input_json["formUrl"],
+            data=[],
+        )
+
+        for data in input_json["data"]:
             text = data["text"].lower()
             topics = data["topics"]
-            dataInput = {"applicationId": inputJson["applicationId"], "formUrl" : inputJson["formUrl"], "elementId" : data["elementId"], "topics": topics, "text":text}
+            data_input = dict(elementId=data["elementId"], topics=topics, text=text)
 
             # processing topics in ML model format
-            new_topics = [t[:3].upper() for t in topics]
+            new_topics = [t.lower() for t in topics]
 
-            response = SentimentAnalyserService.sentiment_pipeline(text=text)
+            response = SentimentAnalyserService.sentiment_pipeline(
+                text=text, topics=new_topics
+            )
             response["elementId"] = data["elementId"]
-            if response["sentiment"]=={}:
-                response["sentiment"] = None
 
-            responseJson["data"].append(dict(response))
-            response["applicationId"] = inputJson["applicationId"]
-            response["formUrl"] = inputJson["formUrl"]
-            post_data = {"input_text": dataInput, "output_response": response}
+            response_json["data"].append(dict(response))
+            response["applicationId"] = input_json["applicationId"]
+            response["formUrl"] = input_json["formUrl"]
+            post_data = {"input_text": data_input, "output_response": response}
             db_instance = SentimentAnalysisSchema()
             db_instance.insert_sentiment(post_data)
 
-        return jsonify(responseJson), HTTPStatus.OK
+        return jsonify(response_json), HTTPStatus.OK

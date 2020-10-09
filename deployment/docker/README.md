@@ -36,8 +36,8 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own|Can be blank|
-`FORMIO_MONGO_PASSWORD`|Mongo Root Password|Can be blank|
+`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own||`admin`
+`FORMIO_MONGO_PASSWORD`|Mongo Root Password||`changeme`
 `FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
 `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
@@ -73,19 +73,20 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`WEB_API_DATABASE_URL`|JDBC DB Connection URL for FormsFlow||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/formsflow`
-`WEB_API_POSTGRES_USER`|FormsFlow database postgres user|Used on installation to create the database.Choose your own|`postgres`
-`WEB_API_POSTGRES_PASSWORD`|FormsFlow database postgres password|ditto|`changeme`
-`WEB_API_POSTGRES_DB`|FormsFlow database name||`formsflow`
+`WEB_API_DATABASE_URL`|JDBC DB Connection URL for formsflow.ai||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/formsflow`
+`WEB_API_POSTGRES_USER`|formsflow.ai database postgres user|Used on installation to create the database.Choose your own|`postgres`
+`WEB_API_POSTGRES_PASSWORD`|formsflow.ai database postgres password|ditto|`changeme`
+`WEB_API_POSTGRES_DB`|formsflow.ai database name||`formsflow`
 
 **formsflow.ai Integration Settings:**
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
-`CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda/engine-rest/`
+`CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda`
 `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://localhost:3001`
-`REACT_APP_WEB_BASE_URL`|FormsFlow Rest API URI||`http://localhost:5000/api`
+`WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://localhost:5000`
+`MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis||`mongodb://username:password@host:port/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
 **Authentication Provider (Keycloak) Settings:**
 
@@ -97,7 +98,7 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_JWT_OIDC_ISSUER`|The issuer of JWT's from Keycloak for your realm|Plug in your realm and Keycloak base url|`{Keycloak URL}/auth/realms/forms-flow-ai`
 `KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|must be set to your Keycloak client id
 `KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret
-`KEYCLOAK_WEB_CLIENTID`|Client ID for FormsFlow to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
+`KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
 
 **BPM (Camunda) Datastore Settings:**
 
@@ -123,9 +124,9 @@ Variable name | Meaning | Possible values | Default value |
 
 ### Running the application
 * For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+   * Run `docker-compose -f docker-compose-linux.yml up --build -d` to start.
 * For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+   * Run `docker-compose -f docker-compose-windows.yml up --build -d` to start.
    
 #### To stop the application
 * For Linux,
@@ -137,6 +138,6 @@ Variable name | Meaning | Possible values | Default value |
   * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
   * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/
   * FormIO should be up and available for use at port defaulted to 3001 i.e. http://localhost:3001/
-  * FormsFlow Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
-  * FormsFlow web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
+  * formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
+  * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   

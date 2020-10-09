@@ -10,11 +10,9 @@ import { getUserRolePermission } from "../helper/user";
 
 import "./styles.scss";
 
-const SideBar = (props) => {
+const SideBar = () => {
   const location = useLocation();
-
   const { pathname } = location;
-
 
   const userRoles = useSelector((state) => {
     return selectRoot("user", state).roles;

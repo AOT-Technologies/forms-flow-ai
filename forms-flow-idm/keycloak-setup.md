@@ -1,4 +1,4 @@
-## formsflow.ai Keycloak Setup
+# formsflow.ai Keycloak Setup
 
 Create a realm **forms-flow-ai**
 
@@ -6,9 +6,9 @@ Create a realm **forms-flow-ai**
 * Click the button "Create Realm" to add new realm **forms-flow-ai**
 * Click Create   
   
-## Create forms-flow-web Client  
+## Create key cloak setup for formsflow.ai web application
 
-Create a forms-flow-web Client.     
+### Create a forms-flow-web Client.     
 
 * Login to KeyCloak Realm with admin privileges  
 * Configure > Clients > Create  
@@ -19,8 +19,6 @@ Create a forms-flow-web Client.
 		* Name = forms-flow-web  
 		* Description = React based FormIO web components  
 		* Access Type = public  
-		* Standard Flow Enabled = ON  
-		* Direct Access Grants Enabled = ON  
 		* Valid Redirect URIs  eg. http://localhost:3000/*
 		* Valid Web Origins  = *
 		* Click Save  
@@ -38,10 +36,7 @@ Create a forms-flow-web Client.
     * Name = Role  
     * Mapper Type = User Client Role  
     * Client ID = forms-flow-web  
-    * Token Claim role = role  
-    * Add to ID token = ON  
-    * Add to access token = ON
-    * Add to userinfo = ON
+    * Token Claim Name = role  
     * Click Save  
 * Configure > Clients 
 * Select forms-flow-web Client
@@ -51,9 +46,21 @@ Create a forms-flow-web Client.
         * Mapper Type = Audience
        	* Included Custom Audience = forms-flow-web
        	* Click Save
-## Create forms-flow-analytics Client  
 
-Create a forms-flow-analytics Client.     
+### Key cloak configuration for formsflow.ai UI setup
+
+- Once the forms-flow-web client is created for keycloak.
+- Rename the file **public/config/kc/keycloak-sample.json** to **public/config/kc/keycloak.json**
+  in [forms-flow-web](../forms-flow-web/public/config/kc/keycloak-sample.json)
+- Follow below steps to get client adapter configuration to get values from keycloak:
+  - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web"
+  - Go to Installation tab --> Select Format option as Keycloak OIDC JSON
+  - Copy the JSON data
+  - Update the content in file **public/config/kc/keycloak.json** in [forms-flow-web](../forms-flow-web/public/config/kc)
+
+## Create Key cloak setup for formsflow.ai analytics  
+
+### Create a forms-flow-analytics Client.     
 
 * Login to KeyCloak Realm with admin privileges  
 * Configure > Clients > Create  
@@ -63,16 +70,14 @@ Create a forms-flow-analytics Client.
 	* Settings Tab  
 		* Name = forms-flow-analytics  
 		* Description = Redash-Analytics  
-		* Enabled = ON  
-		* Include AuthStatement = ON  
 		* Sign Assertions = ON  
-		* Signature Algorithm = RSA_SHA256  
-		* SAML Signature Key Name = KEY_ID  
-		* Canonicalization Method = EXCLUSIVE_WITH_COMMENTS  
+			* Signature Algorithm = RSA_SHA256  
+			* SAML Signature Key Name = KEY_ID  
+			* Canonicalization Method = EXCLUSIVE_WITH_COMMENTS  
 		* Name ID Format = email 	  
 		* Valid Redirect URIs  eg. http://localhost:7000/*  
-		* Valid Master SAML Processing URL = localhost:7000/saml/callback?org_slug=default   
-		* Note: All other settings should be turned off and empty  
+		* Master SAML Processing URL = http://localhost:7000/saml/callback?org_slug=default   
+		* Note: All other settings like Force POST BINDING, Client Signature Required, Front Channel Logout should be turned off and empty.
 		* Click Save  
 	* Mappers Tab  
 		* Click Add Builtin  
@@ -88,9 +93,9 @@ Create a forms-flow-analytics Client.
 			* Click Save  
  
 
-## Create forms-flow-bpm Client  
+## Create key cloak setup for formsflow.ai BPM engine
 
-Create a forms-flow-bpm Client.     
+### Create a forms-flow-bpm Client.     
 
 * Login to KeyCloak Realm with admin privileges  
 * Configure > Clients > Create  
@@ -100,9 +105,7 @@ Create a forms-flow-bpm Client.
 	* Settings Tab  
 		* Name = forms-flow-bpm  
 		* Description = Camunda Process Engine Components  
-		* Access Type = confidential  
-		* Standard Flow Enabled = ON  
-		* Direct Access Grants Enabled = ON  
+		* Access Type = confidential   
 		* Service Accounts Enabled = ON  
 		* Valid Redirect URIs  eg. http://localhost:8000/camunda/*
 		* Web Origins = *  
@@ -114,9 +117,6 @@ Create a forms-flow-bpm Client.
 				* Property = username  
 				* Token Claim Name = preferred_username  
 				* Claim JSON Type = String  
-				* Add to ID Token = ON  
-				* Add to access Token = ON  
-				* Add to userinfo = ON  
 				* Click Save  
 	* Service Accounts Tab  
 		* Select Client roles as "realm-management"  
@@ -188,14 +188,14 @@ Mapping different roles to group/subgroups:
 Group|Roles|Description
 ---|---|---
 camunda-admin||Able to administer Camunda directly and create new workflows
-formsflow-analyst|formsflow-analyst, formsflow-client|Able to access the Redash dashboard and FormsFlow UI
-formsflow-designer|formsflow-client, formsflow-designer, formsflow-reviewer| Able to access all elements of the FormsFlow UI including forms design, task list and forms access
-formsflow-reviewer|formsflow-reviewer| Able to access task list and forms access of FormsFlow UI
+formsflow-analyst|formsflow-analyst, formsflow-client|Able to access the Redash dashboard and formsflow UI
+formsflow-designer|formsflow-client, formsflow-designer, formsflow-reviewer| Able to access all elements of the formsflow UI including forms design, task list and forms access
+formsflow-reviewer|formsflow-reviewer| Able to access task list and forms access of formsflow UI
 formsflow-client|formsflow-client| Able to access form fill-in only
 
 
 
-### Test forms-flow-web access in Postman  
+## Test forms-flow-web access in Postman  
 
 * Open Postman  
 * Create new Request  
@@ -217,7 +217,7 @@ formsflow-client|formsflow-client| Able to access form fill-in only
 			* Should see resource_access[] > roles[] > list of Effective Roles  
  
 
-### Test forms-flow-bpm access in Postman  
+## Test forms-flow-bpm access in Postman  
 
 * Open Postman  
 * Create new Request  

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import startCase from "lodash/startCase";
 import { textFilter , selectFilter } from "react-bootstrap-table2-filter";
 import {getLocalDateTime} from "../../apiManager/services/formatterService";
+import {AWAITING_ACKNOWLEDGEMENT} from "../../constants/applicationConstants";
 
 let statusFilter,
     idFilter,
@@ -16,13 +17,14 @@ export const defaultSortedBy = [
   },
 ];
 
-const selectOptions = [
-  { value: "Approved", label: "Approved" },
-  { value: "New", label: "New" },
-  { value: "Reviewed", label: "Reviewed" },
-  { value: "Returned", label: "Returned" }
-]
-
+const getApplicationStatusOptions = (rows) => {
+  const statusArray =  rows.map(row=>row.applicationStatus)
+  const uniqueStatusArray = [...new Set(statusArray)];
+  const selectOptions = uniqueStatusArray.map(option => {
+    return {value:option,label:option}
+  })
+  return selectOptions;
+}
 
 const linkApplication = (cell, row) => {
   return (
@@ -35,7 +37,7 @@ const linkApplication = (cell, row) => {
 
 const linkSubmission = (cell,row) => {
   const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
-  const buttonText = row.isClientEdit ? 'Edit' : 'View'
+  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':'Edit') : 'View'
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
   <div onClick={()=> window.open(url, "_blank")}>
@@ -69,7 +71,7 @@ export const columns_history = [
   },
 ];
 
-export const columns = [
+export const columns  = (rows) => [
   {
     dataField: "id",
     text: "Application ID",
@@ -103,7 +105,7 @@ export const columns = [
     text: "Application Status",
     sort: true,
     filter: selectFilter({
-      options: selectOptions,
+      options: getApplicationStatusOptions(rows),
       placeholder: "All",
 	    defaultValue: 'All',
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE

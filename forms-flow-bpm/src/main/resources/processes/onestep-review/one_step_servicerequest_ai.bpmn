@@ -10,29 +10,19 @@
       </bpmn:lane>
       <bpmn:lane id="Lane_160scsv" name="Client">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>IntermediateThrowEvent_08kfluy</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>IntermediateThrowEvent_0n29a1l</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_1qi006b</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_1q5kbcj</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>EndEvent_1ae1mfk</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_1" name="Submit New Application">
       <bpmn:outgoing>SequenceFlow_173507q</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_08kfluy" name="Application Resubmitted">
-      <bpmn:incoming>SequenceFlow_0sqf47h</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0fuqfjz</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0cetvz3" messageRef="Message_066huhg" />
-    </bpmn:intermediateCatchEvent>
-    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_0n29a1l" name="Acknowledgement Received">
-      <bpmn:incoming>SequenceFlow_11xoshb</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1oh74eb</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="MessageEventDefinition_0jfyyjn" messageRef="Message_11aqnee" />
-    </bpmn:intermediateCatchEvent>
     <bpmn:userTask id="Reviewer" name="Review Submission" camunda:candidateGroups="formsflow/formsflow-reviewer">
       <bpmn:incoming>SequenceFlow_173507q</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_0fuqfjz</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_0sqf47h</bpmn:outgoing>
-      <bpmn:outgoing>SequenceFlow_11xoshb</bpmn:outgoing>
+      <bpmn:incoming>SequenceFlow_1o9rpsq</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1dvhc72</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_1eg7l43</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:sequenceFlow id="SequenceFlow_173507q" name="Inject Custom Fields" sourceRef="StartEvent_1" targetRef="Reviewer">
       <bpmn:extensionElements>
@@ -47,7 +37,7 @@
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
       </bpmn:extensionElements>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_0sqf47h" name="Returned" sourceRef="Reviewer" targetRef="IntermediateThrowEvent_08kfluy">
+    <bpmn:sequenceFlow id="SequenceFlow_1dvhc72" name="Returned" sourceRef="Reviewer" targetRef="Task_1qi006b">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Returned");
@@ -58,7 +48,7 @@ execution.setVariable('sendback_by', "Clerk");</camunda:script>
       </bpmn:extensionElements>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Returned'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_0fuqfjz" name="Resubmitted" sourceRef="IntermediateThrowEvent_08kfluy" targetRef="Reviewer">
+    <bpmn:sequenceFlow id="SequenceFlow_1o9rpsq" name="Resubmitted" sourceRef="Task_1qi006b" targetRef="Reviewer">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Resubmitted");</camunda:script>
@@ -67,7 +57,15 @@ execution.setVariable('sendback_by', "Clerk");</camunda:script>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
       </bpmn:extensionElements>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_11xoshb" name="Processed - Awaiting Acknowledgement" sourceRef="Reviewer" targetRef="IntermediateThrowEvent_0n29a1l">
+    <bpmn:receiveTask id="Task_1qi006b" name="Application Resubmitted" messageRef="Message_066huhg">
+      <bpmn:incoming>SequenceFlow_1dvhc72</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1o9rpsq</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:receiveTask id="Task_1q5kbcj" name="Acknowledgement Received" messageRef="Message_11aqnee">
+      <bpmn:incoming>SequenceFlow_1eg7l43</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0jtvrki</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1eg7l43" name="Processed - Awaiting Acknowledgement" sourceRef="Reviewer" targetRef="Task_1q5kbcj">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', execution.getVariable('action'));</camunda:script>
@@ -85,17 +83,22 @@ execution.setVariable('sendback_by', "Clerk");</camunda:script>
       </bpmn:extensionElements>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${action == 'Processed'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="SequenceFlow_1oh74eb" name="ml.sentiment Invocation" sourceRef="IntermediateThrowEvent_0n29a1l" targetRef="EndEvent_1ae1mfk">
+    <bpmn:sequenceFlow id="SequenceFlow_0jtvrki" name="ML.sentiment Invocation" sourceRef="Task_1q5kbcj" targetRef="EndEvent_1ae1mfk">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Acknowledged");</camunda:script>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.delegates.FormTextAnalysisDelegate" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.execution.FormAttributesListener" event="take">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationStatus"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
       </bpmn:extensionElements>
     </bpmn:sequenceFlow>
     <bpmn:endEvent id="EndEvent_1ae1mfk">
-      <bpmn:incoming>SequenceFlow_1oh74eb</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0jtvrki</bpmn:incoming>
     </bpmn:endEvent>
   </bpmn:process>
   <bpmn:message id="Message_066huhg" name="application_resubmitted" />
@@ -128,50 +131,46 @@ execution.setVariable('sendback_by', "Clerk");</camunda:script>
       <bpmndi:BPMNShape id="Lane_160scsv_di" bpmnElement="Lane_160scsv" isHorizontal="true">
         <dc:Bounds x="150" y="80" width="838" height="120" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="IntermediateCatchEvent_1v252wx_di" bpmnElement="IntermediateThrowEvent_08kfluy">
-        <dc:Bounds x="502" y="122" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="491" y="92" width="63" height="27" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="EndEvent_1ae1mfk_di" bpmnElement="EndEvent_1ae1mfk">
+        <dc:Bounds x="862" y="122" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_0sqf47h_di" bpmnElement="SequenceFlow_0sqf47h">
-        <di:waypoint x="440" y="320" />
-        <di:waypoint x="520" y="320" />
-        <di:waypoint x="520" y="158" />
+      <bpmndi:BPMNShape id="ReceiveTask_1jlfsbd_di" bpmnElement="Task_1qi006b">
+        <dc:Bounds x="350" y="100" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1dvhc72_di" bpmnElement="SequenceFlow_1dvhc72">
+        <di:waypoint x="440" y="330" />
+        <di:waypoint x="510" y="330" />
+        <di:waypoint x="510" y="140" />
+        <di:waypoint x="450" y="140" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="458" y="302" width="46" height="14" />
+          <dc:Bounds x="452" y="303" width="46" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_0fuqfjz_di" bpmnElement="SequenceFlow_0fuqfjz">
-        <di:waypoint x="502" y="140" />
-        <di:waypoint x="380" y="140" />
-        <di:waypoint x="380" y="300" />
+      <bpmndi:BPMNEdge id="SequenceFlow_1o9rpsq_di" bpmnElement="SequenceFlow_1o9rpsq">
+        <di:waypoint x="350" y="140" />
+        <di:waypoint x="310" y="140" />
+        <di:waypoint x="310" y="310" />
+        <di:waypoint x="340" y="310" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="410" y="122" width="63" height="14" />
+          <dc:Bounds x="318" y="223" width="63" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="IntermediateCatchEvent_0kpte9d_di" bpmnElement="IntermediateThrowEvent_0n29a1l">
-        <dc:Bounds x="602" y="122" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="576" y="92" width="87" height="27" />
-        </bpmndi:BPMNLabel>
+      <bpmndi:BPMNShape id="ReceiveTask_10m8did_di" bpmnElement="Task_1q5kbcj">
+        <dc:Bounds x="580" y="100" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_11xoshb_di" bpmnElement="SequenceFlow_11xoshb">
+      <bpmndi:BPMNEdge id="SequenceFlow_1eg7l43_di" bpmnElement="SequenceFlow_1eg7l43">
         <di:waypoint x="440" y="360" />
-        <di:waypoint x="620" y="360" />
-        <di:waypoint x="620" y="158" />
+        <di:waypoint x="630" y="360" />
+        <di:waypoint x="630" y="180" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="542" y="310" width="76" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="EndEvent_1ae1mfk_di" bpmnElement="EndEvent_1ae1mfk">
-        <dc:Bounds x="772" y="122" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_1oh74eb_di" bpmnElement="SequenceFlow_1oh74eb">
-        <di:waypoint x="638" y="140" />
-        <di:waypoint x="772" y="140" />
+      <bpmndi:BPMNEdge id="SequenceFlow_0jtvrki_di" bpmnElement="SequenceFlow_0jtvrki">
+        <di:waypoint x="680" y="140" />
+        <di:waypoint x="862" y="140" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="675" y="106" width="64" height="27" />
+          <dc:Bounds x="738" y="106" width="67" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

@@ -32,10 +32,11 @@ public class RestSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(final HttpSecurity http) throws Exception {
-        http.requestMatchers().antMatchers("/engine-rest/**","/engine-rest-ext/**","/engine-rest-ext/**").
+        http.requestMatchers().antMatchers("/engine-rest/**","/engine-rest-ext/**").
                 and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/engine-rest/**").permitAll()
                 .and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/engine-rest-ext/**").permitAll()
-                .anyRequest().authenticated().and().csrf().disable()
+                .antMatchers("/engine-rest/**","/engine-rest-ext/**")
+                .authenticated().and().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().oauth2ResourceServer()
                 .jwt().jwtAuthenticationConverter(grantedAuthoritiesExtractor());
     }

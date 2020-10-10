@@ -45,11 +45,6 @@ Docker
  #### Full Deployment
  Follow the instructions on [docker installation guide](./docker)
  
-Openshift
-------------------
-#### Full Deployment
- Follow the instructions on [openshift installation guide](./openshift)
- 
 ## Verifying the Installation status
 * The following applications will be started and can be accessed in your browser.
    * http://localhost:7000 - Redash analytics

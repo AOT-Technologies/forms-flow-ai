@@ -1,5 +1,3 @@
-from flask_pymongo import PyMongo
-
 from ..models import mongo
 
 
@@ -21,4 +19,4 @@ class SentimentAnalysisSchema(object):
     def insert_entity(self, entity_object):
         mongo_db = mongo.db.entity_ai  # entity_ai is the collection name
         inserted = mongo_db.insert_many(entity_object)
-        return f"Mongodb entity response created "
+        return "Mongodb entity response created "

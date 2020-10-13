@@ -6,10 +6,11 @@ from flask import g, jsonify, request
 from flask_restx import Namespace, Resource, cors
 
 from ..exceptions import BusinessException
+from ..schemas.process import ProcessMessageSchema
 from ..services import ProcessService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
-from ..schemas.process import ProcessMessageSchema
+
 
 API = Namespace('Process', description='Process')
 

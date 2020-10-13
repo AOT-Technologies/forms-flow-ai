@@ -1,5 +1,6 @@
 """API endpoints for managing application resource."""
 
+import json
 from http import HTTPStatus
 
 from flask import g, jsonify, request
@@ -9,11 +10,9 @@ from marshmallow import ValidationError
 from ..exceptions import BusinessException
 from ..schemas.aggregated_application import AggregatedApplicationReqSchema
 from ..schemas.application import ApplicationListReqSchema, ApplicationSchema, ApplicationUpdateSchema
-from ..services import ApplicationService, ApplicationAuditService
+from ..services import ApplicationAuditService, ApplicationService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
-
-import json
 
 
 API = Namespace('Application', description='Application')

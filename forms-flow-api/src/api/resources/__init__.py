@@ -16,7 +16,16 @@ from .process import API as PROCESS_API
 from .sentiment_analysis import API as SENTIMENT_API
 from .task import API as TASK_API
 from .tenant import API as TENANT_API
+from .application_history import API as APPLICATION_HISTORY_API
+from .sentiment_analysis import API as SENTIMENT_API
 
+
+class CustomApi(Api):
+    @property
+    def specs_url(self):
+        """Monkey patch for HTTPS"""
+        self_api_base = current_app.config.get('WEB_API_BASE_URL')
+        return url_for(self.endpoint('specs'), _external=True, _scheme=self_api_base.partition(':')[0])
 
 class CustomApi(Api):
     @property

@@ -13,7 +13,7 @@ import ProcessDiagram from "../BPMN/ProcessDiagram";
 import History from "./History";
 import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
-
+import {fetchApplicatinAuditHistoryList} from "../../apiManager/services/applicationAuditServices";
 //import { useDispatch } from 'react-redux'
 
 const ViewApplication = () => {
@@ -41,6 +41,7 @@ const ViewApplication = () => {
         }
       }));
       dispatch(getApplicationFormDataByAppId(applicationId));
+      dispatch(fetchApplicatinAuditHistoryList(applicationId));
   },[applicationId, dispatch]);
 
   if (isApplicationDetailLoading) {

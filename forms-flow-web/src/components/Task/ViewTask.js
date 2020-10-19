@@ -10,6 +10,7 @@ import {setLoader} from "../../actions/taskActions";
 import View from "../Form/Item/Submission/Item/View";
 import {getProcessStatusList} from "../../apiManager/services/processServices";
 import {getApplicationById, getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
+import {fetchApplicatinAuditHistoryList} from "../../apiManager/services/applicationAuditServices";
 import History from './History';
 import ProcessDiagram from "../BPMN/ProcessDiagram";
 
@@ -17,7 +18,7 @@ const ViewTask = (props) => {
     const {taskId} = useParams();
     const taskDetail = useSelector(state => state.tasks.taskDetail);
     const applicationProcess = useSelector(state => state.applications.applicationProcess);
-
+    const application_id = taskDetail.applicationId;
     const isLoading = useSelector(state => state.tasks.isLoading);
     const dispatch = useDispatch();
     const {getTask} = props;
@@ -27,6 +28,7 @@ const ViewTask = (props) => {
       }else{
         getTask(taskId);
       }
+      dispatch(fetchApplicatinAuditHistoryList(application_id));
     },[taskId, dispatch, taskDetail, getTask])
 
     if (isLoading) {

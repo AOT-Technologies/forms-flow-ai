@@ -21,6 +21,7 @@ const ViewApplication = () => {
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
   const applicationProcess = useSelector(state => state.applications.applicationProcess);
+  const processActivityList = useSelector(state => state.process.processActivityList);
   const dispatch= useDispatch();
 
   useEffect(()=>{
@@ -76,6 +77,7 @@ const ViewApplication = () => {
         <Tab eventKey="process-diagram" title="Process Diagram">
         <ProcessDiagram
               process_key={applicationProcess.processKey}
+              markers={processActivityList}
           />
         </Tab>
       </Tabs>

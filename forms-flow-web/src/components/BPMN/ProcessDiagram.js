@@ -43,30 +43,16 @@ const ProcessDiagram = class extends Component {
 
       // this.bpmnViewer.get('canvas').zoom('fit-viewport');
 
-      if (markers) {
-        console.log(markers);
-        console.log('adding markers '+markers);
-        for (var i=0; i < markers.length; i++) {
-          console.log('markers[i].activityId '+markers[i].activityId);
-          this.bpmnViewer.get('canvas').addMarker(markers[i].activityId, 'highlight');
-        }
-      }
-
-      // console.log("canvas",this.bpmnViewer.get('canvas'))
-      // if(this.bpmnViewer.get('canvas') && this.bpmnViewer.get('canvas')._viewport&&this.bpmnViewer.get('canvas')._viewport.getCTM()){
-      // this.bpmnViewer.get('canvas').zoom(1);
-    // }
+     
 
       return this.handleShown(warnings);
     });
 
-    console.log('fetchDiagram >>');
+    //console.log('fetchDiagram >>');
 
     if (process_key ) {
       return this.fetchDiagram(process_key) ;
     }
-
-    console.log('fetching active instances >>');
 
 
 
@@ -87,6 +73,23 @@ const ProcessDiagram = class extends Component {
       state
     } = this;
 
+    if (props.markers && props.markers[0] ) {
+      var marker =  props.markers;
+      marker = marker.replace(/'/g, '"')
+      const markerJson = JSON.parse(marker);
+      // if ((prevProps.markers[0] && props.markers[0].id == prevProps.markers[0].id)|| prevProps.markers[0] && (props.markers[0].id !== prevProps.markers[0].id)) {
+      if ((prevProps.markers[0] && props.markers[0].id == prevProps.markers[0].id)&& marker!=null){
+      for (let i=0; i < markerJson.length; i++) {
+         setTimeout(() => {
+          {this.bpmnViewer && this.bpmnViewer.get('canvas') && 
+            this.bpmnViewer.get('canvas').addMarker({'id':markerJson[i].activityId}, 'highlight');
+          }
+          
+        },0);
+      }
+    }
+  }
+
     if (props.process_key !== prevProps.process_key) {
       return this.fetchDiagram(props.process_key);
     }
@@ -98,7 +101,7 @@ const ProcessDiagram = class extends Component {
     const currentXML = props.diagramXML || state.diagramXML;
 
     const previousXML = prevProps.diagramXML || prevState.diagramXML;
-    // this.bpmnViewer.get('canvas').zoom('fit-viewport');
+    //this.bpmnViewer.get('canvas').zoom('fit-viewport');
     if (currentXML && currentXML !== previousXML) {
       return this.displayDiagram(currentXML);
     }
@@ -151,7 +154,7 @@ const ProcessDiagram = class extends Component {
   }
 
   render() {
-   console.log("props.marker",this.props.markers);
+   //console.log("props.marker",this.props.markers);
     return (
       <div className="react-bpmn-diagram-container bpm-container" ref={ this.containerRef }/>
     );

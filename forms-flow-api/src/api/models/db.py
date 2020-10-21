@@ -4,7 +4,6 @@ These will get initialized by the application using the models
 """
 
 from flask_marshmallow import Marshmallow
-from flask_pymongo import PyMongo
 from flask_sqlalchemy import SQLAlchemy
 from flask_pymongo import PyMongo 
 

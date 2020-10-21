@@ -1,20 +1,19 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
+import BpmnJS from 'bpmn-js';
 
 import UserService from "../../services/UserService";
 import API from "../../apiManager/endpoints";
 import "./bpm.scss"
+import {selectRoot} from "react-formio";
 
 
 const ProcessDiagram = class extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = { };
-
     this.containerRef = React.createRef();
   }
 
@@ -25,6 +24,7 @@ const ProcessDiagram = class extends Component {
 
     const {
       process_key,
+      markers,
       diagramXML
     } = this.props;
 
@@ -42,24 +42,26 @@ const ProcessDiagram = class extends Component {
       }
 
       // this.bpmnViewer.get('canvas').zoom('fit-viewport');
-      // console.log("canvas",this.bpmnViewer.get('canvas'))
-      // if(this.bpmnViewer.get('canvas') && this.bpmnViewer.get('canvas')._viewport&&this.bpmnViewer.get('canvas')._viewport.getCTM()){
-      // this.bpmnViewer.get('canvas').zoom(1);
-    // }
+
+     
 
       return this.handleShown(warnings);
     });
 
-    if (process_key) {
-      return this.fetchDiagram(process_key);
+    //console.log('fetchDiagram >>');
+
+    if (process_key ) {
+      return this.fetchDiagram(process_key) ;
     }
+
+
 
     if (diagramXML) {
       return this.displayDiagram(diagramXML);
     }
 
   }
-  
+
 
   componentWillUnmount() {
     this.bpmnViewer.destroy();
@@ -71,17 +73,39 @@ const ProcessDiagram = class extends Component {
       state
     } = this;
 
+    if (props.markers && props.markers[0] ) {
+      var marker =  props.markers;
+      marker = marker.replace(/'/g, '"')
+      const markerJson = JSON.parse(marker);
+      // if ((prevProps.markers[0] && props.markers[0].id == prevProps.markers[0].id)|| prevProps.markers[0] && (props.markers[0].id !== prevProps.markers[0].id)) {
+      if ((prevProps.markers[0] && props.markers[0].id == prevProps.markers[0].id)&& marker!=null){
+      for (let i=0; i < markerJson.length; i++) {
+         setTimeout(() => {
+          {this.bpmnViewer && this.bpmnViewer.get('canvas') && 
+            this.bpmnViewer.get('canvas').addMarker({'id':markerJson[i].activityId}, 'highlight');
+          }
+          
+        },0);
+      }
+    }
+  }
+
     if (props.process_key !== prevProps.process_key) {
       return this.fetchDiagram(props.process_key);
+    }
+
+    if (props.process_instance_id !== prevProps.process_instance_id) {
+      return this.fetchActiveInstances(props.process_instance_id);
     }
 
     const currentXML = props.diagramXML || state.diagramXML;
 
     const previousXML = prevProps.diagramXML || prevState.diagramXML;
-    // this.bpmnViewer.get('canvas').zoom('fit-viewport');
+    //this.bpmnViewer.get('canvas').zoom('fit-viewport');
     if (currentXML && currentXML !== previousXML) {
       return this.displayDiagram(currentXML);
     }
+
   }
 
   displayDiagram(diagramXML) {
@@ -93,15 +117,15 @@ const ProcessDiagram = class extends Component {
 
     this.handleLoading();
 
-    fetch(url, { 
-      method: 'get', 
+    fetch(url, {
+      method: 'get',
       headers: new Headers({
         'Authorization': 'Bearer '+UserService.getToken()
       })})
       .then(res => res.json())
       .then(resJson => this.setState({ diagramXML: resJson.bpmn20Xml }))
       .catch(err => this.handleError(err));
-      
+
   }
 
   handleLoading() {
@@ -130,14 +154,21 @@ const ProcessDiagram = class extends Component {
   }
 
   render() {
-
+   //console.log("props.marker",this.props.markers);
     return (
-      <div className="react-bpmn-diagram-container bpm-container" ref={ this.containerRef }></div>
+      <div className="react-bpmn-diagram-container bpm-container" ref={ this.containerRef }/>
     );
   }
 };
 
+
+const mapStateToProps = (state) => {
+  return {
+    markers: selectRoot("process", state).processActivityList
+  };
+};
+
 export default connect(
-  null,
+  mapStateToProps,
   null,
 )(ProcessDiagram);

@@ -5,7 +5,9 @@ import logging
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
-from ..schemas import ProcessActionListSchema, ProcessDefinitionSchema, ProcessListSchema,ProcessDefinitionXMLSchema,ProcessActivityInstanceSchema
+from ..schemas import (
+    ProcessActionListSchema, ProcessActivityInstanceSchema, ProcessDefinitionSchema, ProcessDefinitionXMLSchema,
+    ProcessListSchema)
 from .external import BPMService
 
 

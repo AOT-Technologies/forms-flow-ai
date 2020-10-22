@@ -1,16 +1,13 @@
 """" API endpoints for sentiment analysis """
 from http import HTTPStatus
 
-from flask import g, jsonify, request
-from flask_pymongo import PyMongo
+from flask import jsonify, request
 from flask_restx import Namespace, Resource, cors
 
-from ..models import mongo
 from ..schemas import SentimentAnalysisSchema
-from ..services import SentimentAnalyserService, entity_category
+from ..services import SentimentAnalyserService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
-import json
 
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
@@ -25,6 +22,7 @@ class SentimentAnalysisResource(Resource):
     @cors.crossdomain(origin="*")
     @auth.require
     def post():
+        """"Pass the input response for Sentiment Analysis API """
         input_json = request.get_json()
         response_json = dict(
             application_id=input_json["applicationId"],

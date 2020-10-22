@@ -6,14 +6,13 @@ import startCase from "lodash/startCase";
 import {Tabs, Tab} from "react-bootstrap";
 import Details from "./Details";
 import {getApplicationById,getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
-import {getProcessActivities} from "../../apiManager/services/processServices";
 import Loading from "../../containers/Loading";
 import {setApplicationDetailLoader} from "../../actions/applicationActions";
 import ProcessDiagram from "../BPMN/ProcessDiagram";
 import History from "./History";
 import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
-import {fetchApplicatinAuditHistoryList} from "../../apiManager/services/applicationAuditServices";
+
 //import { useDispatch } from 'react-redux'
 
 const ViewApplication = () => {
@@ -21,7 +20,6 @@ const ViewApplication = () => {
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
   const applicationProcess = useSelector(state => state.applications.applicationProcess);
-  const processActivityList = useSelector(state => state.process.processActivityList);
   const dispatch= useDispatch();
 
   useEffect(()=>{
@@ -34,21 +32,14 @@ const ViewApplication = () => {
               getSubmission("submission", res.submissionId, res.formId)
             );
           }
-          console.log('app detail processInstanceId>>'+res.processInstanceId)
-          dispatch(
-            getProcessActivities(res.processInstanceId)
-          );
         }
       }));
       dispatch(getApplicationFormDataByAppId(applicationId));
-      dispatch(fetchApplicatinAuditHistoryList(applicationId));
   },[applicationId, dispatch]);
 
   if (isApplicationDetailLoading) {
     return <Loading/>;
   }
-  console.log('applicationDetail.process_instance_id >>'+applicationDetail.processInstanceId);
-
 
   return (
     <div className="container">
@@ -76,9 +67,8 @@ const ViewApplication = () => {
             <History page="application-detail"/>
         </Tab>
         <Tab eventKey="process-diagram" title="Process Diagram">
-        <ProcessDiagram
+          <ProcessDiagram
               process_key={applicationProcess.processKey}
-              markers={processActivityList}
           />
         </Tab>
       </Tabs>

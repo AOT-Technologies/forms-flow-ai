@@ -7,7 +7,6 @@ import {
   setAllProcessList,
   setFormProcessesData,
   setFormProcessLoadError,
-  setProcessActivityData,
 } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
 import UserService from "../../services/UserService";
@@ -91,39 +90,6 @@ export const getFormProcesses = (formId, ...rest) => {
       .catch((error) => {
         // dispatch(setProcessStatusLoading(false));
         dispatch(setFormProcessLoadError(true));
-      });
-  };
-};
-
-/**
- *
- * @param  {...any} rest
- */
-export const getProcessActivities = (process_instance_id, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  const apiUrlProcessActivities= replaceUrl(
-    API.PROCESS_ACTIVITIES,
-    "<process_instance_id>",
-    process_instance_id
-  );
-  return (dispatch) => {
-    httpGETRequest(
-      apiUrlProcessActivities,
-      {},
-      UserService.getToken(),
-      true
-    )
-      .then((res) => {
-        if (res.data) {
-          dispatch(setProcessActivityData(res.data.childActivityInstances));
-        } else {
-          dispatch(setProcessLoadError(true));
-        }
-        done(null,res.data);
-      })
-      .catch((error) => {
-        done(error);
-        dispatch(setProcessLoadError(true));
       });
   };
 };

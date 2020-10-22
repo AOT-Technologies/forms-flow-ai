@@ -1,9 +1,10 @@
 """This exposes application service."""
+import logging
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
 from ..models import Application, FormProcessMapper
-from ..schemas import AggregatedApplicationSchema, ApplicationSchema
+from ..schemas import AggregatedApplicationSchema, ApplicationSchema, FormProcessMapperSchema
 from .external import BPMService
 from ..schemas import FormProcessMapperSchema
 

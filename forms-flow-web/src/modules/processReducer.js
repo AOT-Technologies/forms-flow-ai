@@ -7,7 +7,6 @@ const initialState = {
   processList: [],
   formProcessError: false,
   formProcessList: [],
-  processActivityList: []
 };
 
 export default (state = initialState, action) => {
@@ -24,8 +23,6 @@ export default (state = initialState, action) => {
       return { ...state, formProcessError: action.payload };
     case ACTION_CONSTANTS.FORM_PROCESS_LIST:
       return { ...state, formProcessList: action.payload };
-    case ACTION_CONSTANTS.PROCESS_ACTIVITIES:
-      return { ...state, processActivityList: action.payload };  
     default:
       return state;
   }

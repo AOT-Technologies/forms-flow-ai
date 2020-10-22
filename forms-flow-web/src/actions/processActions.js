@@ -48,10 +48,3 @@ export const setFormProcessesData = (data) => (dispatch) => {
     payload: data,
   });
 };
-
-export const setProcessActivityData = (data) => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.PROCESS_ACTIVITIES,
-    payload: data,
-  });
-};

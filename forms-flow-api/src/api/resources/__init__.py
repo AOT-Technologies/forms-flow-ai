@@ -3,20 +3,29 @@
 Uses restx namespaces to mount individual api endpoints into the service.
 """
 
-from flask import Flask, url_for, current_app
+from flask import Flask, current_app, url_for
 from flask_jwt_oidc import AuthError
 from flask_restx import Api
 
 from ..exceptions import BusinessException
 from .application import API as APPLICATION_API
+from .application_history import API as APPLICATION_HISTORY_API
 from .form_process_mapper import API as FORM_API
 from .formiotoken import API as FORMIOTOKEN_API
 from .process import API as PROCESS_API
+from .sentiment_analysis import API as SENTIMENT_API
 from .task import API as TASK_API
 from .tenant import API as TENANT_API
 from .application_history import API as APPLICATION_HISTORY_API
 from .sentiment_analysis import API as SENTIMENT_API
 
+
+class CustomApi(Api):
+    @property
+    def specs_url(self):
+        """Monkey patch for HTTPS"""
+        self_api_base = current_app.config.get('WEB_API_BASE_URL')
+        return url_for(self.endpoint('specs'), _external=True, _scheme=self_api_base.partition(':')[0])
 
 class CustomApi(Api):
     @property

@@ -1,20 +1,12 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
-## Unreleased
-`Added`
-* Openshift deployment
 
 ## Future Release
 * Render the form workflow association in readonly and give option to edit
 * Show  task navigation in workflow diagram
 * Support to access formsflow.ai solution in mobile
 
-## 3.0.1 - 2020-10-08
-`Modified`
-* In application dashboard, the "Application Status" column search component has been enhanced to show all possible values in dropdown (Component : forms-flow-web)
-* In application dashboard, the button label has been modified to show as "Acknowledge" for status "Awaiting Acknowledgement" (Component : forms-flow-web)
-
-## 3.0.0 - 2020-10-07
+## 3.0.0 - 2020-10-10
 `Added`
 * Logo & UI Styling
 * Introduced Applications menu
@@ -28,6 +20,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
 * Custom component (Text Area with analytics) not retaining the value after submission
 * Cosmetic changes to show success message after loading is completed
 
+`Known Issues`
+* Custom component (Text Area with analytics) not retaining the value after submission
+* Cosmetic changes to show success message after loading is completed
 
 ## 2.0.1 - 2020-07-27
 `Added`

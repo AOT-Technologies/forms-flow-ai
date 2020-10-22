@@ -36,15 +36,15 @@ const Insights = (props) => {
       <div className="insights mb-2">
         <div className="row ">
           <div className="col-12">
-            <h1 className="insights-title">
+            <h3 className="insights-title">
               <i className="fa fa-lightbulb-o"/> Insights
-            </h1>
+            </h3>
             <hr className="line-hr"/>
             <div className="col-12">
               <div className="app-title-container mt-3">
-                <h3 className="insight-title">
+                <h4 className="insight-title">
                   <i className="fa fa-bars mr-1"/> Dashboard
-                </h3>
+                </h4>
 
                 <div className="col-3 mb-2">
                   <Select

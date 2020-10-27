@@ -8,6 +8,8 @@ import {
   setFormProcessesData,
   setFormProcessLoadError,
   setProcessActivityData,
+  setProcessDiagramXML,
+  setProcessDiagramLoading,
 } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
 import UserService from "../../services/UserService";
@@ -127,3 +129,67 @@ export const getProcessActivities = (process_instance_id, ...rest) => {
       });
   };
 };
+
+/**
+ *
+ * @param  {...any} rest
+ */
+// export const fetchDiagram = (process_key, ...rest) => {
+//   console.log('inside fetchDiagram >>',process_key);
+//   const url =API.PROCESSES+'/'+process_key+'/xml';
+//   const done = rest.length ? rest[0] : () => {};
+//   console.log('inside fetchDiagram URL>>',url);
+//   return (dispatch) => {
+//     httpGETRequest(
+//       url,
+//       {},
+//       UserService.getToken(),
+//       true
+//     )
+//     .then((res) => {
+//       if (res.data) {
+//         dispatch(setProcessDiagramXML(res.data.bpmn20Xml));
+//         console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
+//       } else {
+//         //TODO
+//       }
+//       dispatch(setProcessDiagramLoading(false));
+//       done(null,res.data);
+//     })
+//     .catch((error) => {
+//         done(error);
+//         dispatch(setProcessDiagramLoading(false));
+//       });
+//   };
+// };
+
+export const fetchDiagram = (process_key, ...rest) => {
+  console.log('inside fetchDiagram >>',process_key);
+  const url =API.PROCESSES+'/'+process_key+'/xml';
+  const done = rest.length ? rest[0] : () => {};
+  console.log('inside fetchDiagram URL>>',url);
+  return (dispatch) => {
+    httpGETRequest(
+      url,
+      {},
+      UserService.getToken(),
+      true
+    )
+    .then((res) => {
+      if (res.data) {
+        dispatch(setProcessDiagramXML(res.data.bpmn20Xml));
+        // console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
+      } else {
+        //TODO
+      }
+      dispatch(setProcessDiagramLoading(false));
+      done(null,res.data);
+    })
+    .catch((error) => {
+        done(error);
+        dispatch(setProcessDiagramLoading(false));
+      });
+  };
+};
+
+

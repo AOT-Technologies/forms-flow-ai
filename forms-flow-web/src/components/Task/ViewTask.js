@@ -12,7 +12,8 @@ import {getProcessStatusList} from "../../apiManager/services/processServices";
 import {getApplicationById, getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
 import {fetchApplicatinAuditHistoryList} from "../../apiManager/services/applicationAuditServices";
 import History from './History';
-import ProcessDiagram from "../BPMN/ProcessDiagram";
+// import ProcessDiagram from "../BPMN/ProcessDiagram";
+import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 import {getProcessActivities} from "../../apiManager/services/processServices";
 
 const ViewTask = (props) => {
@@ -67,7 +68,7 @@ const ViewTask = (props) => {
           <Tab eventKey="process-diagram" title="Process Diagram">
             <ProcessDiagram
                 process_key={applicationProcess.processKey}
-                markers={processActivityList}
+                // markers={processActivityList}
             />
           </Tab>
         </Tabs>

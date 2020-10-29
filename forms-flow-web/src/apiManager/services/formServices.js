@@ -1,6 +1,7 @@
 import { httpPOSTRequest, httpPUTRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import { serviceActionError } from "../../actions/taskActions";
+import { setFormWorkflowSaved } from "../../actions/formActions";
 
 export const saveFormProcessMapper = (data, update = false, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -17,12 +18,14 @@ export const saveFormProcessMapper = (data, update = false, ...rest) => {
         // if (res.status === 200) {
         //TODO REMOVE
         done(null, res.data);
-        // }
+        dispatch(setFormWorkflowSaved(true));
+        // }setFormWorkflowSaved
       })
       .catch((error) => {
         console.log("Error", error);
         dispatch(serviceActionError(error));
         done(error);
+        dispatch(setFormWorkflowSaved(false));
       });
   };
 };

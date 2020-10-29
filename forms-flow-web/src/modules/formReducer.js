@@ -5,6 +5,7 @@ const initialState = {
   formDelete:{modalOpen:false,formId:"",formName:""},
   formSubmissionError:{modalOpen:false,message:""},
   isFormSubmissionLoading: false,
+  isFormWorkflowSaved: false,
 }
 
 export default (state = initialState, action)=> {
@@ -17,6 +18,8 @@ export default (state = initialState, action)=> {
       return {...state, formSubmissionError: action.payload};
     case ACTION_CONSTANTS.IS_FORM_SUBMISSION_LOADING:
       return {...state, isFormSubmissionLoading: action.payload};
+    case ACTION_CONSTANTS.IS_FORM_WORKFLOW_SAVED:
+      return {...state, isFormWorkflowSaved: action.payload};  
     default:
       return state;
   }

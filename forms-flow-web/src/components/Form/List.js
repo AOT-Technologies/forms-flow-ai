@@ -1,7 +1,10 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
+import { connect,useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import { Link } from "react-router-dom";
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
+
 import {
   indexForms,
   selectRoot,
@@ -22,10 +25,33 @@ import "../Form/List.scss";
 import { setFormDeleteStatus } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
 
+
+function Alert(props) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
+
 const List = class extends Component {
+
+  //isFormWorkflowSaved = useSelector(state=>state.form.isFormWorkflowSaved);
+  
+ 
+  constructor(props) {
+    //console.log('isFormWorkflowSaved',this.isFormWorkflowSaved);
+    super(props);
+    this.state = {
+      open:true
+    }
+  }
   UNSAFE_componentWillMount() {
     this.props.getForms(1);
   }
+
+  handleSucessClose = () => {
+    this.setState({open:false})
+  };
+  handleSucessOpen = () => {
+    this.setState({open:true})
+  };
 
   render() {
     const {
@@ -76,6 +102,11 @@ const List = class extends Component {
             operations={operations}
           />
         </section>
+        <Snackbar open={this.state.open} autoHideDuration={6000} onClose={this.handleSucessClose}>
+          <Alert onClose={this.handleSucessClose} severity="success">
+            Form is saved successfully! 
+          </Alert>
+        </Snackbar>
       </div>
     );
   }

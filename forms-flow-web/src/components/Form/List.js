@@ -24,11 +24,7 @@ import {
 import "../Form/List.scss";
 import { setFormDeleteStatus } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
-
-
-function Alert(props) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+import Toast from "../Toast/Toast";
 
 const List = class extends Component {
   
@@ -99,11 +95,8 @@ const List = class extends Component {
             operations={operations}
           />
         </section>
-        {this.props.isFormWorkflowSaved && (<Snackbar open={this.state.open} autoHideDuration={6000} onClose={this.handleSucessClose}>
-          <Alert onClose={this.handleSucessClose} severity="success">
-            Changes saved successfully! 
-          </Alert>
-        </Snackbar>)}
+        {this.props.isFormWorkflowSaved && (<Toast/>)}
+
       </div>
     );
   }

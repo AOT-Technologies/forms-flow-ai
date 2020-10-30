@@ -31,12 +31,9 @@ function Alert(props) {
 }
 
 const List = class extends Component {
-
-  //isFormWorkflowSaved = useSelector(state=>state.form.isFormWorkflowSaved);
   
  
   constructor(props) {
-    //console.log('isFormWorkflowSaved',this.isFormWorkflowSaved);
     super(props);
     this.state = {
       open:true
@@ -102,11 +99,11 @@ const List = class extends Component {
             operations={operations}
           />
         </section>
-        <Snackbar open={this.state.open} autoHideDuration={6000} onClose={this.handleSucessClose}>
+        {this.props.isFormWorkflowSaved && (<Snackbar open={this.state.open} autoHideDuration={6000} onClose={this.handleSucessClose}>
           <Alert onClose={this.handleSucessClose} severity="success">
-            Form is saved successfully! 
+            Changes saved successfully! 
           </Alert>
-        </Snackbar>
+        </Snackbar>)}
       </div>
     );
   }
@@ -135,6 +132,7 @@ const mapStateToProps = (state) => {
     modalOpen: selectRoot("formDelete", state).formDelete.modalOpen,
     formId: selectRoot("formDelete", state).formDelete.formId,
     formName: selectRoot("formDelete", state).formDelete.formName,
+    isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved,
   };
 };
 

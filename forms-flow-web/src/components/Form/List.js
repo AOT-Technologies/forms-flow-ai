@@ -95,7 +95,10 @@ const List = class extends Component {
             operations={operations}
           />
         </section>
-        {this.props.isFormWorkflowSaved && (<Toast/>)}
+        {this.props.isFormWorkflowSaved && (
+        <Toast 
+          severity='success'
+          message='Changes saved successfully'/>)}
 
       </div>
     );

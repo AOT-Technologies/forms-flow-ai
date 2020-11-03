@@ -2,21 +2,21 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import { makeStyles } from '@material-ui/core/styles';
+// import { makeStyles } from '@material-ui/core/styles';
 
 
 function Alert(props) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    '& > * + *': {
-      marginTop: theme.spacing(2),
-    },
-  },
-}));
+// const useStyles = makeStyles((theme) => ({
+//   root: {
+//     width: '100%',
+//     '& > * + *': {
+//       marginTop: theme.spacing(2),
+//     },
+//   },
+// }));
 
 
 const Toast = class extends Component {
@@ -33,22 +33,22 @@ const Toast = class extends Component {
   UNSAFE_componentWillMount() {
   }
 
-  componentDidMount() {
-    const {
-      severity,
-      message
-    } = this.props;
-  }
+  // componentDidMount() {
+  //   const {
+  //     severity,
+  //     message
+  //   } = this.props;
+  // }
 
   handleSucessClose = () => {
     this.setState({open:false})
   };
 
-  handleSucessOpen = () => {
-    const classes = useStyles();
-    const [open, setOpen] = React.useState(false);
-    this.setState({open:true})
-  };
+  // handleSucessOpen = () => {
+  //   const classes = useStyles();
+  //   const [open, setOpen] = React.useState(false);
+  //   this.setState({open:true})
+  // };
 
   render() {
     return (

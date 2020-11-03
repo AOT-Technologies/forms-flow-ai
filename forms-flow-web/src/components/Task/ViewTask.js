@@ -24,7 +24,7 @@ const ViewTask = (props) => {
     const isLoading = useSelector(state => state.tasks.isLoading);
     const dispatch = useDispatch();
     const {getTask} = props;
-    const processActivityList = useSelector(state => state.process.processActivityList);
+    // const processActivityList = useSelector(state => state.process.processActivityList);
     useEffect(()=>{
       if(taskDetail && taskDetail.id === taskId){
         dispatch(setLoader(false));
@@ -35,7 +35,7 @@ const ViewTask = (props) => {
       dispatch(
         getProcessActivities(taskDetail.processInstanceId)
       );
-    },[taskId, dispatch, taskDetail, getTask])
+    },[taskId, dispatch, taskDetail, getTask,application_id])
 
     if (isLoading) {
       return <Loading/>;

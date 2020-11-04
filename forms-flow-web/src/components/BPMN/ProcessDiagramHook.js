@@ -1,9 +1,9 @@
 
-import React, {useRef, useEffect} from 'react';
+import React, {useRef, useEffect, useLayoutEffect} from 'react';
 import {useDispatch,useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
+
 // import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
-import Loading from "../../containers/Loading";
+//import Loading from "../../containers/Loading";
 
 import {fetchDiagram} from "../../apiManager/services/processServices";
 import {setProcessDiagramLoading} from "../../actions/processActions";
@@ -12,18 +12,12 @@ import BpmnJS from 'bpmn-js';
 
 const ProcessDiagram = (props)=>{
   const process_key = props.process_key;
-  console.log("start",process_key);
   const containerRef = useRef(null);
-  console.log('containerRef current>>>>>>',containerRef.current);
-  console.log('containerRef >>>>>>',containerRef);
   const dispatch= useDispatch();
-  const isProcessDiagramLoading = useSelector(state=>state.process.isProcessDiagramLoading);
+  //const isProcessDiagramLoading = useSelector(state=>state.process.isProcessDiagramLoading);
   const diagramXML = useSelector(state => state.process.processDiagramXML);
 
   const container = containerRef.current;
-  const bpmnViewer = new BpmnJS({ container });
-  console.log('container >>>>>>',container);
-
 
 
   useEffect(()=>{
@@ -35,32 +29,25 @@ const ProcessDiagram = (props)=>{
     }
   },[process_key,dispatch])
 
- useEffect(()=>{
-   console.log('diagramXML >>',diagramXML)
-   const displayDiagram = (diagramXML)=>{
-     console.log('container 3>>>>>>',container);
-     // console.log('diagramXML >>>>>>',diagramXML);
-
+ useLayoutEffect(()=> {
+   if(diagramXML && container){
+     const bpmnViewer = new BpmnJS({ container });
      bpmnViewer.on('import.done', (event) => {
        console.log('import.done >>>>>>',event);
        const {
-         error,
-         warnings
+         error
        } = event;
        if (error) {
          console.log('inside bpmnViewer on error >', error);
          //return handleError(error);
        }
-       bpmnViewer.get('canvas').zoom('fit-viewport');
+     //  bpmnViewer.get('canvas').zoom('fit-viewport');
        //return handleShown(warnings);
      });
      bpmnViewer.importXML(diagramXML);
    }
-   if(diagramXML){
-     displayDiagram(diagramXML);
-   }
-   console.log('containerRef current 2>>>>>>',containerRef.current);
- },[diagramXML,bpmnViewer, container]);
+   console.log('containerRef current 2>>>>>>',container);
+ },[diagramXML,container]);
 
 
 
@@ -79,17 +66,15 @@ const ProcessDiagram = (props)=>{
     }
   }*/
 
-  if (isProcessDiagramLoading) {
+ /* if (isProcessDiagramLoading) {
     return <Loading/>;
-  }
+  }*/
 
   return (
-    <div> abcd
-
-    <div className="react-bpmn-diagram-container bpm-container" ref={containerRef}/>
+    <div>
+      <div className="react-bpmn-diagram-container bpm-container" ref={containerRef}/>
     </div>
   );
-
 };
 
 export default ProcessDiagram;

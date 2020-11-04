@@ -24,7 +24,6 @@ const ProcessDiagram = class extends Component {
 
     const {
       process_key,
-      markers,
       diagramXML
     } = this.props;
 
@@ -43,7 +42,7 @@ const ProcessDiagram = class extends Component {
 
       // this.bpmnViewer.get('canvas').zoom('fit-viewport');
 
-     
+
 
       return this.handleShown(warnings);
     });
@@ -74,17 +73,15 @@ const ProcessDiagram = class extends Component {
     } = this;
 
     if (props.markers && props.markers[0] ) {
-      var marker =  props.markers;
+      let marker =  props.markers;
       marker = marker.replace(/'/g, '"')
       const markerJson = JSON.parse(marker);
       // if ((prevProps.markers[0] && props.markers[0].id == prevProps.markers[0].id)|| prevProps.markers[0] && (props.markers[0].id !== prevProps.markers[0].id)) {
-      if ((prevProps.markers[0] && props.markers[0].id == prevProps.markers[0].id)&& marker!=null){
+      if ((prevProps.markers[0] && props.markers[0].id === prevProps.markers[0].id)&& marker!=null){
       for (let i=0; i < markerJson.length; i++) {
          setTimeout(() => {
-          {this.bpmnViewer && this.bpmnViewer.get('canvas') && 
-            this.bpmnViewer.get('canvas').addMarker({'id':markerJson[i].activityId}, 'highlight');
-          }
-          
+          this.bpmnViewer && this.bpmnViewer.get('canvas') &&
+          this.bpmnViewer.get('canvas').addMarker({'id':markerJson[i].activityId}, 'highlight');
         },0);
       }
     }

@@ -9,7 +9,7 @@ import {getApplicationById,getApplicationFormDataByAppId} from "../../apiManager
 import {getProcessActivities} from "../../apiManager/services/processServices";
 import Loading from "../../containers/Loading";
 import {setApplicationDetailLoader} from "../../actions/applicationActions";
-import ProcessDiagram from "../BPMN/ProcessDiagram";
+import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 import History from "./History";
 import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
@@ -76,10 +76,10 @@ const ViewApplication = () => {
             <History page="application-detail"/>
         </Tab>
         <Tab eventKey="process-diagram" title="Process Diagram">
-        <ProcessDiagram
+            <ProcessDiagram
               process_key={applicationProcess.processKey}
               markers={processActivityList}
-          />
+            />
         </Tab>
       </Tabs>
     </div>

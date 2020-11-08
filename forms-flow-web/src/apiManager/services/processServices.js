@@ -109,7 +109,9 @@ export const saveFormProcessMapper = (data, update = false, ...rest) => {
         // if (res.status === 200) {
         //TODO REMOVE
         done(null, res.data);
-        dispatch(setFormProcessesData(res.data));
+        //dispatch(setFormProcessesData(res.data));
+        dispatch(setFormProcessesData([]));
+        
         // }
       })
       .catch((error) => {

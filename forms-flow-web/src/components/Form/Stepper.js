@@ -16,6 +16,9 @@ import {
   getFormProcesses,
   saveFormProcessMapper
 } from "../../apiManager/services/processServices";
+import {
+  setFormProcessesData
+} from "../../actions/processActions";
 //import { saveFormProcessMapper } from "../../apiManager/services/formServices";
 import { selectRoot, saveForm, selectError, getForm } from "react-formio";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
@@ -59,6 +62,14 @@ class StepperPage extends Component {
     this.populateDropdown = this.populateDropdown.bind(this);
     this.handleBack = this.handleBack.bind(this);
   }
+
+  componentDidMount() {
+  }
+
+  componentWillUnmount() {
+    this.props.clearFormProcessData();
+  }
+
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let stateData = null;
@@ -414,6 +425,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
+    clearFormProcessData: () => dispatch(setFormProcessesData([])),
   };
 };
 

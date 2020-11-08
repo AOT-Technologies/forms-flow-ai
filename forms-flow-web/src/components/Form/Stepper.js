@@ -229,7 +229,7 @@ class StepperPage extends Component {
       formRevisionNumber: "V1", // to do
       processKey: workflow && workflow.value,
       processName: workflow && workflow.label,
-      status: processData.status,
+      status: processData.status === "" ? "active": processData.status,
       comments: processData.comments,
     };
     const isUpdate = formProcessList && formProcessList.id ? true : false;

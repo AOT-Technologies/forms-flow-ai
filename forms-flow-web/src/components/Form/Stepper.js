@@ -14,8 +14,12 @@ import Edit from "./Item/Edit.js";
 import {
   fetchAllBpmProcesses,
   getFormProcesses,
+  saveFormProcessMapper
 } from "../../apiManager/services/processServices";
-import { saveFormProcessMapper } from "../../apiManager/services/formServices";
+import {
+  setFormProcessesData
+} from "../../actions/processActions";
+//import { saveFormProcessMapper } from "../../apiManager/services/formServices";
 import { selectRoot, saveForm, selectError, getForm } from "react-formio";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
 import { push } from "connected-react-router";
@@ -29,24 +33,6 @@ import "./stepper.scss";
   { label: "Inactive", value: "inactive" },
 ];*/
 
-const initialState = {
-  // checked: false,
-  activeStep: 0,
-  workflow: null,
-  status: null,
-  previewMode: false,
-  editMode: false,
-  associateWorkFlow: "no",
-  processData: { status: "", isAnonymousAllowd: false, comments: "" },
-  formId: "",
-  processList: [],
-  processListLoaded: false,
-  displayMode: "create",
-  dataModified: false,
-  formProcessList: null,
-  disableWorkflowAssociation: false
-};
-
 class StepperPage extends Component {
   // UNSAFE_componentWillMount() {
   //   this.props.getAllProcesses();
@@ -54,20 +40,34 @@ class StepperPage extends Component {
 
   constructor(props) {
     super(props);
-    this.state = initialState;
-    this.setState({ disableWorkflowAssociation: props.disableWorkflowAssociation});
+    this.state = {
+      // checked: false,
+      activeStep: 0,
+      workflow: null,
+      status: null,
+      previewMode: false,
+      editMode: false,
+      associateWorkFlow: "no",
+      processData: { status: "", isAnonymousAllowd: false, comments: "" },
+      formId: "",
+      processList: [],
+      processListLoaded: false,
+      displayMode: "create",
+      dataModified: false,
+    };
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
     // for edit
     this.setEditMode = this.setEditMode.bind(this);
     this.populateDropdown = this.populateDropdown.bind(this);
     this.handleBack = this.handleBack.bind(this);
-    this.handleEditAssociation = this.handleEditAssociation.bind(this);
-    
   }
 
-  reset() {
-    this.setState(initialState);
+  componentDidMount() {
+  }
+
+  componentWillUnmount() {
+    this.props.clearFormProcessData();
   }
 
 
@@ -125,7 +125,6 @@ class StepperPage extends Component {
 
       if (!prevState.dataModified && nextProps.formProcessList) {
         if (nextProps.formProcessList.processKey) {
-          console.log('set associate flag yes>>');
           stateData = {
             ...stateData,
             workflow: {
@@ -163,11 +162,6 @@ class StepperPage extends Component {
   setEditMode(val) {
     this.setState({ editMode: val });
   }
-  handleEditAssociation() {
-    console.log('inside handleEditAssociation');
-    this.setState({ disableWorkflowAssociation: false });
-  };
-
   // handleCheckboxChange = (event) =>
   //   this.setState({ checked: event.target.checked });
   changeWorkFlowStatus = (e) => {
@@ -247,7 +241,7 @@ class StepperPage extends Component {
       formRevisionNumber: "V1", // to do
       processKey: workflow && workflow.value,
       processName: workflow && workflow.label,
-      status: processData.status,
+      status: processData.status === "" ? "active": processData.status,
       comments: processData.comments,
     };
     const isUpdate = formProcessList && formProcessList.id ? true : false;
@@ -263,7 +257,7 @@ class StepperPage extends Component {
       editMode,
       processData,
       activeStep,
-      workflow
+      workflow,
     } = this.state;
     // const { editMode } = this.state;
     const { form, formProcessList } = this.props;
@@ -285,8 +279,6 @@ class StepperPage extends Component {
         }
         return <Create setPreviewMode={this.setPreviewMode} />;
       case 1:
-        console.log('this.state.workflow ',this.state.workflow);
-        console.log('this.state.workflow ',this.state.workflow);
         return (
           <WorkFlow
             associateWorkFlow={this.state.associateWorkFlow}
@@ -295,12 +287,10 @@ class StepperPage extends Component {
             associateToWorkFlow={this.associateToWorkFlow}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
-            handleEditAssociation={this.handleEditAssociation}
             activeStep={activeStep}
             steps={this.getSteps().length}
             workflow={this.state.workflow}
             formProcessList={formProcessList}
-            disableWorkflowAssociation={this.state.disableWorkflowAssociation}
           />
         );
       case 2:
@@ -381,18 +371,12 @@ class StepperPage extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log('formProcessList ',state.process.formProcessList);
-  let disableEdit = false;
-  if(state.process.formProcessList && state.process.formProcessList.processKey){
-    disableEdit=true;
-  }
   return {
     form: selectRoot("form", state),
     saveText: "Next",
     errors: selectError("form", state),
     processList: state.process.processList,
     formProcessList: state.process.formProcessList,
-    disableWorkflowAssociation: disableEdit
   };
 };
 
@@ -441,6 +425,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
+    clearFormProcessData: () => dispatch(setFormProcessesData([])),
   };
 };
 

@@ -54,6 +54,7 @@ class StepperPage extends Component {
       processListLoaded: false,
       displayMode: "create",
       dataModified: false,
+      disableWorkflowAssociation: false,
     };
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
@@ -61,9 +62,16 @@ class StepperPage extends Component {
     this.setEditMode = this.setEditMode.bind(this);
     this.populateDropdown = this.populateDropdown.bind(this);
     this.handleBack = this.handleBack.bind(this);
+    this.handleEditAssociation = this.handleEditAssociation.bind(this);
   }
 
   componentDidMount() {
+    if(this.state && this.state.displayMode === "view"){
+
+      this.setState({ disableWorkflowAssociation: true });
+
+    }
+    
   }
 
   componentWillUnmount() {
@@ -162,6 +170,9 @@ class StepperPage extends Component {
   setEditMode(val) {
     this.setState({ editMode: val });
   }
+  handleEditAssociation() {
+    this.setState({ disableWorkflowAssociation: false });
+  };
   // handleCheckboxChange = (event) =>
   //   this.setState({ checked: event.target.checked });
   changeWorkFlowStatus = (e) => {
@@ -287,10 +298,12 @@ class StepperPage extends Component {
             associateToWorkFlow={this.associateToWorkFlow}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
+            handleEditAssociation={this.handleEditAssociation}
             activeStep={activeStep}
             steps={this.getSteps().length}
             workflow={this.state.workflow}
             formProcessList={formProcessList}
+            disableWorkflowAssociation={this.state.disableWorkflowAssociation}
           />
         );
       case 2:

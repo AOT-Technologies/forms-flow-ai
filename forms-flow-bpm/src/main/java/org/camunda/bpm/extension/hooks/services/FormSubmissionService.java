@@ -55,6 +55,22 @@ public class FormSubmissionService {
         }
         return null;
     }
+
+    public String createSubmission(String formUrl, String submission) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            ResponseEntity<String> response =  httpServiceInvoker.execute(getSubmissionUrl(formUrl), HttpMethod.POST, submission);
+            if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
+                JsonNode jsonNode = objectMapper.readTree(response.getBody());
+                String submissionId = jsonNode.get("_id").asText();
+                return submissionId;
+            }
+        } catch (JsonProcessingException e) {
+            LOGGER.log(Level.SEVERE,"Exception occurred in creating submission", e);
+        }
+        return null;
+    }
+
     private String getSubmissionUrl(String formUrl){
         return StringUtils.substringBeforeLast(formUrl,"/");
     }

@@ -3,6 +3,15 @@
 .footer {
   position: absolute;
   bottom: 0;
-  width: calc(100% - 250px);
   height: 2.5rem; /* Footer height */
+}
+@media (max-width: 576px) {
+  .footer{
+    width:100%
+  }
+}
+@media (min-width: 576px) {
+  .footer{
+    width:calc(100% - 250px);
+  }
 }

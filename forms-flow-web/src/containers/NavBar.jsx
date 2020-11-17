@@ -1,30 +1,37 @@
 import React from "react";
 import {Navbar, Dropdown, Container, Nav} from "react-bootstrap";
 import {Link} from "react-router-dom";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { selectRoot } from "react-formio";
 import UserService from "../services/UserService";
 import { getUserRoleName } from "../helper/user";
+import {toggleMenu} from "../actions/menuActions";
 
 import "./styles.scss";
 
 const NavBar = () => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+  const dispatch = useDispatch();
   const user = useSelector((state) => {
       return selectRoot("user", state).userDetail;
     });
-    const userRoles = useSelector((state) => {
+  const userRoles = useSelector((state) => {
       return selectRoot("user", state).roles;
-    });
-    const logout = () => {
+  });
+  const isMenuOpen = useSelector(state=>state.menu.isMenuOpen);
+
+  const logout = () => {
       UserService.userLogout();
-    }
+  }
+  const menuToggle = ()=>{
+   dispatch(toggleMenu(!isMenuOpen))
+  };
   return (
     <header>
-      <Navbar expand="lg" bg="white" className="topheading-border-bottom">
+      <Navbar expand="lg" bg="white" className="topheading-border-bottom" fixed="top">
         <Container fluid>
           <Nav className="d-lg-none">
-            <div className="mt-1">
+            <div className="mt-1" onClick={menuToggle}>
               <i className="fa fa-bars fa-lg"/>
             </div>
           </Nav>

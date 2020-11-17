@@ -4,6 +4,20 @@
 .content {
   padding-bottom: 2.5rem;
 }
+
+.main-container{
+  padding-top: 75px;
+  margin-left:250px !important;
+}
+
+
+
+@media (max-width: 768px) {
+  .main-container{
+    margin-left:0 !important;
+  }
+}
+
 #app {
   background: $white;
 }

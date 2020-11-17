@@ -8,7 +8,7 @@ import {
   fetchMetricsSubmissionStatusCount,
 } from "./../../apiManager/services/metricsServices";
 
-import Loading from "../Loading";
+import Loading from "../../containers/Loading";
 import LoadError from "../Error";
 
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";

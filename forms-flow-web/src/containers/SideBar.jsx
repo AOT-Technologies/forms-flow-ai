@@ -1,7 +1,7 @@
 import React from "react";
 
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { selectRoot } from "react-formio";
 import { useLocation } from "react-router-dom";
 
@@ -9,20 +9,30 @@ import {CLIENT, STAFF_REVIEWER } from "../constants/constants";
 import { getUserRolePermission } from "../helper/user";
 
 import "./styles.scss";
+import {toggleMenu} from "../actions/menuActions";
 
 const SideBar = () => {
   const location = useLocation();
   const { pathname } = location;
+  const dispatch = useDispatch();
 
   const userRoles = useSelector((state) => {
     return selectRoot("user", state).roles;
   });
+  const isMenuOpen = useSelector((state) => state.menu.isMenuOpen);
+
+  const menuToggle = ()=>{
+    dispatch(toggleMenu(false))
+  };
 
   return (
-    <div>
-      <nav id="sidebar">
+    <div className={isMenuOpen?'open-menu':''}>
+      <nav id="sidebar" className={isMenuOpen?'sidebar-container ml-0':'sidebar-container'}>
+        {isMenuOpen && <div className="close-menu" onClick={menuToggle}>
+          <i className="fa fa-times"/>
+        </div>}
         <ul className="list-unstyled components">
-          <li className={`${pathname.match(/^\/form/) ? "active" : ""}`}>
+          <li className={`${pathname.match(/^\/form/) ? "active" : ""}`} onClick={menuToggle}>
             <Link
               to="/form"
               className={`main-nav nav-link ${
@@ -33,7 +43,7 @@ const SideBar = () => {
               Forms
             </Link>
           </li>
-          <li className={`${pathname.match(/^\/application/) ? "active" : ""}`}>
+          <li className={`${pathname.match(/^\/application/) ? "active" : ""}`} onClick={menuToggle}>
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)? (
               <Link
                 to="/application"
@@ -46,7 +56,7 @@ const SideBar = () => {
               </Link>
             ) : null}
           </li>
-          <li className={`${pathname.match(/^\/task/) ? "active" : ""}`}>
+          <li className={`${pathname.match(/^\/task/) ? "active" : ""}`} onClick={menuToggle}>
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
                 to="/task"
@@ -63,6 +73,7 @@ const SideBar = () => {
             className={` ${
               pathname && pathname.match(/^\/metrics/) ? "active" : ""
             }`}
+            onClick={menuToggle}
           >
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
@@ -78,7 +89,7 @@ const SideBar = () => {
               </Link>
             ) : null}
           </li>
-          <li className={`${pathname.match(/^\/insights/) ? "active" : ""}`}>
+          <li className={`${pathname.match(/^\/insights/) ? "active" : ""}`} onClick={menuToggle}>
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
                 to="/insights"

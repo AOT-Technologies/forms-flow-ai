@@ -1,5 +1,5 @@
 import React from "react";
-import { Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {Navbar, Dropdown, Container, Nav} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {useSelector} from "react-redux";
 import { selectRoot } from "react-formio";
@@ -22,7 +22,12 @@ const NavBar = () => {
   return (
     <header>
       <Navbar expand="lg" bg="white" className="topheading-border-bottom">
-        <section className="container-fluid">
+        <Container fluid>
+          <Nav className="d-lg-none">
+            <div className="mt-1">
+              <i className="fa fa-bars fa-lg"/>
+            </div>
+          </Nav>
           <Navbar.Brand className="d-flex">
             <Link to="/">
               <img
@@ -33,18 +38,9 @@ const NavBar = () => {
                 alt="Logo"
               />
             </Link>
+            <div className="custom-app-name">formsflow.ai</div>
           </Navbar.Brand>
-          <Navbar.Brand className="d-flex">
-              <div className="custom-app-name">formsflow.ai</div>
-          </Navbar.Brand>
-          <Navbar.Toggle
-            aria-controls="responsive-navbar-nav"
-            className="navbar-dark custom-toggler"
-          />
-          <Navbar.Collapse
-            id="responsive-navbar-nav"
-            className="navbar-nav"
-          />
+         {/*
            <Navbar.Brand className="d-flex">
             <Link to="/">
                   <img
@@ -53,26 +49,31 @@ const NavBar = () => {
                     alt="profile"
                   />
             </Link>
-          </Navbar.Brand>
-          <Nav className="d-none d-md-block">
+          </Navbar.Brand>*/}
             {isAuthenticated ? (
-          <>
-            <NavDropdown title={user.name || user.preferred_username || ""} id="collasible-nav-dropdown" alignRight >
-              <NavDropdown.Item> {user.name || user.preferred_username}<br/>
-                <i className="fa fa-users fa-fw"/><b>{getUserRoleName(userRoles)}</b>
-              </NavDropdown.Item>
-
-              <NavDropdown.Divider />
-            <NavDropdown.Item onClick ={logout}><i className="fa fa-sign-out fa-fw"/> Logout</NavDropdown.Item>
-            </NavDropdown>
-          </>
-            ) : (
-              <>
-
-              </>
-            )}
-          </Nav>
-        </section>
+              <Dropdown alignRight>
+                <Dropdown.Toggle id="dropdown-basic" as="div">
+                   <span className="mr-1">
+                      <img
+                        className="img-xs rounded-circle"
+                        src="/assets/Images/user.svg"
+                        alt="profile"
+                      />
+                    </span>
+                    <span className="d-none d-lg-inline-block">
+                      {user.name || user.preferred_username || ""}
+                  </span>
+                </Dropdown.Toggle>
+                <Dropdown.Menu>
+                  <Dropdown.Item> {user.name || user.preferred_username}<br/>
+                    <i className="fa fa-users fa-fw"/>
+                    <b>{getUserRoleName(userRoles)}</b></Dropdown.Item>
+                  <Dropdown.Divider/>
+                  <Dropdown.Item onClick ={logout}><i className="fa fa-sign-out fa-fw"/> Logout</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>):
+              null}
+        </Container>
       </Navbar>
     </header>
   );

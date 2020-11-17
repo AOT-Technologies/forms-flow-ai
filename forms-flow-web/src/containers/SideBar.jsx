@@ -19,11 +19,9 @@ const SideBar = () => {
   });
 
   return (
-    <header>
+    <div>
       <nav id="sidebar">
         <ul className="list-unstyled components">
-
-
           <li className={`${pathname.match(/^\/form/) ? "active" : ""}`}>
             <Link
               to="/form"
@@ -95,7 +93,7 @@ const SideBar = () => {
           </li>
         </ul>
       </nav>
-    </header>
+    </div>
   );
 };
 

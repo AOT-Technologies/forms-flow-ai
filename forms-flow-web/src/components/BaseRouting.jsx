@@ -9,9 +9,6 @@ import SideBar from "../containers/SideBar";
 import NavBar from "../containers/NavBar";
 import Footer from "../components/Footer";
 
-
-
-
 const BaseRouting = ({store}) => {
   const isAuth = useSelector((state) => state.user.isAuthenticated);
   return (

@@ -4,14 +4,10 @@
   position: absolute;
   bottom: 0;
   height: 2.5rem; /* Footer height */
+  width:calc(100% - 250px);
 }
-@media (max-width: 576px) {
+@media (max-width: 768px) {
   .footer{
-    width:100%
-  }
-}
-@media (min-width: 576px) {
-  .footer{
-    width:calc(100% - 250px);
+    width:100% !important;
   }
 }

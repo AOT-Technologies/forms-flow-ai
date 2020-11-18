@@ -6,12 +6,21 @@
 }
 
 .main-container{
+  min-height: 95vh;
   padding-top: 75px;
   margin-left:250px !important;
 }
 
 
-
+.react-bootstrap-table table {
+  table-layout: auto !important;
+}
+.react-bootstrap-table{
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
 @media (max-width: 768px) {
   .main-container{
     margin-left:0 !important;

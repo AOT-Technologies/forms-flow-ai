@@ -28,7 +28,7 @@ const SideBar = () => {
   return (
     <div className={isMenuOpen?'open-menu':''}>
       <nav id="sidebar" className={isMenuOpen?'sidebar-container ml-0':'sidebar-container'}>
-        {isMenuOpen && <div className="close-menu" onClick={menuToggle}>
+        {isMenuOpen && <div className="close-menu d-lg-none" onClick={menuToggle}>
           <i className="fa fa-times"/>
         </div>}
         <ul className="list-unstyled components">

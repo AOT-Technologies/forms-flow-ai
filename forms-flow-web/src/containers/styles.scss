@@ -73,7 +73,7 @@
 .wrapper {
   display: flex;
   align-items: stretch;
-  min-height: 94vh;
+  min-height: 100vh;
   position: relative;
 }
 
@@ -293,11 +293,11 @@ margin-right: 1rem;
   .close-menu{
     position: absolute;
     z-index: 1300;
-    right: -35px;
-    padding: 5px;
-    top: 65px;
+    right: -50px;
+    padding: 5px 13px;
+    top: 67px;
     background: #fff;
-    border-radius: 8px;
+    border-radius: 10px;
     font-size: x-large;
   }
 }

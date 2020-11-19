@@ -17,12 +17,17 @@ depends_on = None
 
 
 def upgrade():
-    op.alter_column('form-process-mapper', 'process_key',
+    op.alter_column('form_process_mapper', 'process_key',
                existing_type=sa.String(length=50),
                nullable=True)
-
+    op.alter_column('form_process_mapper', 'process_name',
+               existing_type=sa.String(length=100),
+               nullable=True)
 
 def downgrade():
-    op.alter_column('form-process-mapper', 'process_key',
+    op.alter_column('form_process_mapper', 'process_key',
                existing_type=sa.String(length=50),
+               nullable=False)
+    op.alter_column('form_process_mapper', 'process_name',
+               existing_type=sa.String(length=100),
                nullable=False)

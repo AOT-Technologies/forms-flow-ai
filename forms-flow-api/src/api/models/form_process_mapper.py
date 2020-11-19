@@ -36,7 +36,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             mapper.form_name = mapper_info["form_name"]
             mapper.form_revision_number = mapper_info["form_revision_number"]
             mapper.process_key = mapper_info.get("process_key")
-            mapper.process_name = mapper_info["process_name"]
+            mapper.process_name = mapper_info.get("process_name")
             mapper.status = mapper_info["status"]
             mapper.comments = mapper_info.get("comments")
             mapper.created_by = mapper_info["created_by"]

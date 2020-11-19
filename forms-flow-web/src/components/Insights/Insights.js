@@ -6,7 +6,7 @@ import NoData from './nodashboard';
 import {fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/services/insightServices";
 import {setInsightDetailLoader, setInsightDashboardListLoader} from "../../actions/insightActions";
 import LoadingOverlay from "react-loading-overlay";
-import Loading from "../Loading";
+import Loading from "../../containers/Loading";
 
 const Insights = (props) => {
   const {getDashboardsList, getDashboardDetail, dashboards, activeDashboard, isInsightLoading, isDashboardLoading} = props;
@@ -32,7 +32,7 @@ const Insights = (props) => {
   }
   return (
     <>
-    <div class="container mb-4" id="main">
+    <div className="container mb-4" id="main">
       <div className="insights mb-2">
         <div className="row ">
           <div className="col-12">

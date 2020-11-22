@@ -1,4 +1,4 @@
-import { httpGETRequest } from "../httpRequestHandler";
+import { httpGETRequest,httpPOSTRequest, httpPUTRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import {
   setProcessStatusLoading,
@@ -7,9 +7,6 @@ import {
   setAllProcessList,
   setFormProcessesData,
   setFormProcessLoadError,
-  setProcessActivityData,
-  setProcessDiagramXML,
-  setProcessDiagramLoading,
 } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
 import UserService from "../../services/UserService";
@@ -97,99 +94,30 @@ export const getFormProcesses = (formId, ...rest) => {
   };
 };
 
-/**
- *
- * @param  {...any} rest
- */
-export const getProcessActivities = (process_instance_id, ...rest) => {
+export const saveFormProcessMapper = (data, update = false, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const apiUrlProcessActivities= replaceUrl(
-    API.PROCESS_ACTIVITIES,
-    "<process_instance_id>",
-    process_instance_id
-  );
   return (dispatch) => {
-    httpGETRequest(
-      apiUrlProcessActivities,
-      {},
-      UserService.getToken(),
-      true
-    )
+    let request;
+
+    if (update) {
+      request = httpPUTRequest(`${API.FORM}/${data.id}`, data);
+    } else {
+      request = httpPOSTRequest(`${API.FORM}`, data);
+    }
+    request
       .then((res) => {
-        if (res.data) {
-          dispatch(setProcessActivityData(res.data.childActivityInstances));
-        } else {
-          dispatch(setProcessLoadError(true));
-        }
-        done(null,res.data);
+        // if (res.status === 200) {
+        //TODO REMOVE
+        done(null, res.data);
+        //dispatch(setFormProcessesData(res.data));
+        dispatch(setFormProcessesData([]));
+        
+        // }
       })
       .catch((error) => {
+        console.log("Error", error);
+        dispatch(setFormProcessLoadError(true));
         done(error);
-        dispatch(setProcessLoadError(true));
       });
   };
 };
-
-/**
- *
- * @param  {...any} rest
- */
-// export const fetchDiagram = (process_key, ...rest) => {
-//   console.log('inside fetchDiagram >>',process_key);
-//   const url =API.PROCESSES+'/'+process_key+'/xml';
-//   const done = rest.length ? rest[0] : () => {};
-//   console.log('inside fetchDiagram URL>>',url);
-//   return (dispatch) => {
-//     httpGETRequest(
-//       url,
-//       {},
-//       UserService.getToken(),
-//       true
-//     )
-//     .then((res) => {
-//       if (res.data) {
-//         dispatch(setProcessDiagramXML(res.data.bpmn20Xml));
-//         console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
-//       } else {
-//         //TODO
-//       }
-//       dispatch(setProcessDiagramLoading(false));
-//       done(null,res.data);
-//     })
-//     .catch((error) => {
-//         done(error);
-//         dispatch(setProcessDiagramLoading(false));
-//       });
-//   };
-// };
-
-export const fetchDiagram = (process_key, ...rest) => {
-  console.log('inside fetchDiagram >>',process_key);
-  const url =API.PROCESSES+'/'+process_key+'/xml';
-  const done = rest.length ? rest[0] : () => {};
-  console.log('inside fetchDiagram URL>>',url);
-  return (dispatch) => {
-    httpGETRequest(
-      url,
-      {},
-      UserService.getToken(),
-      true
-    )
-    .then((res) => {
-      if (res.data) {
-        dispatch(setProcessDiagramXML(res.data.bpmn20Xml));
-        // console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
-      } else {
-        //TODO
-      }
-      dispatch(setProcessDiagramLoading(false));
-      done(null,res.data);
-    })
-    .catch((error) => {
-        done(error);
-        dispatch(setProcessDiagramLoading(false));
-      });
-  };
-};
-
-

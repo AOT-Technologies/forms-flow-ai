@@ -14,8 +14,12 @@ import Edit from "./Item/Edit.js";
 import {
   fetchAllBpmProcesses,
   getFormProcesses,
+  saveFormProcessMapper
 } from "../../apiManager/services/processServices";
-import { saveFormProcessMapper } from "../../apiManager/services/formServices";
+import {
+  setFormProcessesData
+} from "../../actions/processActions";
+//import { saveFormProcessMapper } from "../../apiManager/services/formServices";
 import { selectRoot, saveForm, selectError, getForm } from "react-formio";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
 import { push } from "connected-react-router";
@@ -58,6 +62,14 @@ class StepperPage extends Component {
     this.populateDropdown = this.populateDropdown.bind(this);
     this.handleBack = this.handleBack.bind(this);
   }
+
+  componentDidMount() {
+  }
+
+  componentWillUnmount() {
+    this.props.clearFormProcessData();
+  }
+
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let stateData = null;
@@ -229,7 +241,7 @@ class StepperPage extends Component {
       formRevisionNumber: "V1", // to do
       processKey: workflow && workflow.value,
       processName: workflow && workflow.label,
-      status: processData.status,
+      status: processData.status === "" ? "active": processData.status,
       comments: processData.comments,
     };
     const isUpdate = formProcessList && formProcessList.id ? true : false;
@@ -413,6 +425,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
+    clearFormProcessData: () => dispatch(setFormProcessesData([])),
   };
 };
 

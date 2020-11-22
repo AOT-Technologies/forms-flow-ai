@@ -16,6 +16,8 @@ const ProcessDiagram = (props)=>{
   const dispatch= useDispatch();
   //const isProcessDiagramLoading = useSelector(state=>state.process.isProcessDiagramLoading);
   const diagramXML = useSelector(state => state.process.processDiagramXML);
+  const markers =  useSelector(state => state.process.processActivityList); 
+  //console.log('markers ',markers);
 
   const container = containerRef.current;
 
@@ -33,7 +35,7 @@ const ProcessDiagram = (props)=>{
    if(diagramXML && container){
      const bpmnViewer = new BpmnJS({ container });
      bpmnViewer.on('import.done', (event) => {
-       console.log('import.done >>>>>>',event);
+       //console.log('import.done >>>>>>',event);
        const {
          error
        } = event;
@@ -45,9 +47,23 @@ const ProcessDiagram = (props)=>{
        //return handleShown(warnings);
      });
      bpmnViewer.importXML(diagramXML);
+     if (markers && markers[0] ) {
+      let marker = markers;
+      marker = marker.replace(/'/g, '"')
+      const markerJson = JSON.parse(marker);
+     // if ((prevProps.markers[0] && props.markers[0].id === prevProps.markers[0].id)&& marker!=null){
+      for (let i=0; i < markerJson.length; i++) {
+        setTimeout(() => {
+          bpmnViewer && bpmnViewer.get('canvas') &&
+          bpmnViewer.get('canvas').addMarker({'id':markerJson[i].activityId}, 'highlight');
+        },0);
+      }
+   // }
+  }
    }
-   console.log('containerRef current 2>>>>>>',container);
- },[diagramXML,container]);
+   
+   //console.log('containerRef current 2>>>>>>',container);
+ },[diagramXML,container,markers]);
 
 
 

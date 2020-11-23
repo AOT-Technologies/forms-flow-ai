@@ -9,6 +9,7 @@ import {fetchDiagram} from "../../apiManager/services/processServices";
 import {setProcessDiagramLoading} from "../../actions/processActions";
 import "./bpm.scss"
 import BpmnJS from 'bpmn-js';
+import usePrevious from "./UsePrevious";
 
 const ProcessDiagram = (props)=>{
   const process_key = props.process_key;
@@ -17,7 +18,9 @@ const ProcessDiagram = (props)=>{
   //const isProcessDiagramLoading = useSelector(state=>state.process.isProcessDiagramLoading);
   const diagramXML = useSelector(state => state.process.processDiagramXML);
   const markers =  useSelector(state => state.process.processActivityList); 
-  //console.log('markers ',markers);
+  const prevMarkers = usePrevious(markers);
+  console.log('markers ',markers);
+  console.log('prevMarkers ',prevMarkers);
 
   const container = containerRef.current;
 
@@ -49,21 +52,21 @@ const ProcessDiagram = (props)=>{
      bpmnViewer.importXML(diagramXML);
      if (markers && markers[0] ) {
       let marker = markers;
-      marker = marker.replace(/'/g, '"')
+      marker = marker.replace(/'/g, '"');
       const markerJson = JSON.parse(marker);
-     // if ((prevProps.markers[0] && props.markers[0].id === prevProps.markers[0].id)&& marker!=null){
+     if ((prevMarkers[0] && markers[0].id === prevMarkers[0].id)&& marker!=null){
       for (let i=0; i < markerJson.length; i++) {
         setTimeout(() => {
           bpmnViewer && bpmnViewer.get('canvas') &&
           bpmnViewer.get('canvas').addMarker({'id':markerJson[i].activityId}, 'highlight');
         },0);
       }
-   // }
+    }
   }
    }
    
    //console.log('containerRef current 2>>>>>>',container);
- },[diagramXML,container,markers]);
+ },[diagramXML,container,markers,prevMarkers]);
 
 
 

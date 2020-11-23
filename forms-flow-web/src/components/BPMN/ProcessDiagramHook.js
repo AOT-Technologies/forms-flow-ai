@@ -26,6 +26,7 @@ const ProcessDiagram = (props)=>{
 
 
   useEffect(()=>{
+    console.log('inside useEffect');
     dispatch(setProcessDiagramLoading(true));
     // console.log('process_key >>',process_key);
     if(process_key){
@@ -35,10 +36,11 @@ const ProcessDiagram = (props)=>{
   },[process_key,dispatch])
 
  useLayoutEffect(()=> {
+   console.log('inside useLayoutEffect');
    if(diagramXML && container){
      const bpmnViewer = new BpmnJS({ container });
      bpmnViewer.on('import.done', (event) => {
-       //console.log('import.done >>>>>>',event);
+       console.log('import.done >>>>>>',event);
        const {
          error
        } = event;
@@ -51,18 +53,19 @@ const ProcessDiagram = (props)=>{
      });
      bpmnViewer.importXML(diagramXML);
      if (markers && markers[0] ) {
-      let marker = markers;
-      marker = marker.replace(/'/g, '"');
-      const markerJson = JSON.parse(marker);
-     if ((prevMarkers[0] && markers[0].id === prevMarkers[0].id)&& marker!=null){
-      for (let i=0; i < markerJson.length; i++) {
-        setTimeout(() => {
-          bpmnViewer && bpmnViewer.get('canvas') &&
-          bpmnViewer.get('canvas').addMarker({'id':markerJson[i].activityId}, 'highlight');
-        },0);
+        let marker = markers;
+        marker = marker.replace(/'/g, '"');
+        const markerJson = JSON.parse(marker);
+      if ((!prevMarkers || (prevMarkers[0] && markers[0].id === prevMarkers[0].id))&& marker!=null){
+        console.log('inside highlight if');
+        for (let i=0; i < markerJson.length; i++) {
+          setTimeout(() => {
+            bpmnViewer && bpmnViewer.get('canvas') &&
+            bpmnViewer.get('canvas').addMarker({'id':markerJson[i].activityId}, 'highlight');
+          },0);
+        }
       }
     }
-  }
    }
    
    //console.log('containerRef current 2>>>>>>',container);

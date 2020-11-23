@@ -57,7 +57,8 @@ const ViewApplication = () => {
           <img src="/back.svg" alt="back"/>
         </Link>
         <span className="ml-3">
-          <img src="/clipboard.svg" alt="Task"/>
+          {/* <img src="/clipboard.svg" alt="Task"/> */}
+          <i class="fa fa-list-alt" alt="Task"></i>
         </span>
         <h3>
           <span className="application-head-details">Applications /</span>{" "}

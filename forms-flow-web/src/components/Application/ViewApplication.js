@@ -58,9 +58,10 @@ const ViewApplication = () => {
         </Link>
         <span className="ml-3">
           {/* <img src="/clipboard.svg" alt="Task"/> */}
-          <i class="fa fa-list-alt" alt="Task"></i>
+          {/* <i class="fa fa-list-alt" alt="Task"></i> */}
         </span>
         <h3>
+        <i class="fa fa-list-alt" alt="Application" aria-hidden="true"></i>
           <span className="application-head-details">Applications /</span>{" "}
           {`${startCase(applicationDetail.applicationName)}`}
         </h3>

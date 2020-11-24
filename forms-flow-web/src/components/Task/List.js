@@ -90,9 +90,8 @@ const List = class extends Component {
           {(props) => (
             <div className="container">
               <div className="main-header">
-                {/* <img src="/clipboard.svg" width="30" height="30" alt="task" /> */}
-                <i class="fa fa-list-alt" alt="Task"></i>
-                <h3 className="task-head">
+              <h3 className="task-head">
+                <i class="fa fa-list" alt="Task" aria-hidden="true"></i>
                   Tasks
                   <div className="col-md-1 task-count">({tasks.length})</div>
                 </h3>

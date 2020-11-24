@@ -68,9 +68,8 @@ const HistoryList = () => {
           {(props) => (
             <div className="container">
               <div className="main-header">
-                {/* <img src="/clipboard.svg" width="30" height="30" alt="task" /> */}
-                <i class="fa fa-list-alt" alt="Task"></i>
                 <h3 className="task-head">
+                <i class="fa fa-list" alt="Task" aria-hidden="true"></i>
                   Application History
                 </h3>
                </div>

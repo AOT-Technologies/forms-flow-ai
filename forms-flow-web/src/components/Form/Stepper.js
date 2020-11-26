@@ -55,6 +55,7 @@ class StepperPage extends Component {
       displayMode: "create",
       dataModified: false,
       disableWorkflowAssociation: false,
+      disablePreview: true,
     };
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
@@ -321,6 +322,7 @@ class StepperPage extends Component {
             workflow={workflow}
             submitData={this.submitData}
             formProcessList={formProcessList}
+            disablePreview={this.state.disablePreview}
           />
         );
       default:

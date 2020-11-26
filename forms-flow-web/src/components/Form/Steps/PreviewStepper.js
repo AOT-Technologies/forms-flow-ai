@@ -21,7 +21,10 @@ const Preview = (props) => {
     workflow,
     formData,
     submitData,
+    disablePreview
   } = props;
+
+  console.log('disablePreview',disablePreview);
 
   return (
     <Grid
@@ -45,7 +48,7 @@ const Preview = (props) => {
           isLastStep={true}
         />
       </Grid>
-      <Grid item xs={12} sm={8} spacing={3}>
+      <Grid item xs={12} sm={8} spacing={3} disabled="true">
         <Card variant="outlined">
           <CardContent>
             <form noValidate autoComplete="off">

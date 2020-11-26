@@ -29,7 +29,6 @@ const WorkFlow = (props) => {
     disableWorkflowAssociation
   } = props;
 
-  console.log('disableWorkflowAssociation',disableWorkflowAssociation);
 
   return (
     <Grid container direction="row" justify="flex-start" alignItems="baseline">

@@ -55,7 +55,7 @@ class StepperPage extends Component {
       displayMode: "create",
       dataModified: false,
       disableWorkflowAssociation: false,
-      disablePreview: true,
+      disablePreview: false,
     };
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
@@ -64,12 +64,14 @@ class StepperPage extends Component {
     this.populateDropdown = this.populateDropdown.bind(this);
     this.handleBack = this.handleBack.bind(this);
     this.handleEditAssociation = this.handleEditAssociation.bind(this);
+    this.handleEditPreview = this.handleEditPreview.bind(this);
   }
 
   componentDidMount() {
     if(this.state && this.state.displayMode === "view"){
 
       this.setState({ disableWorkflowAssociation: true });
+      this.setState({ disablePreview: true });
 
     }
     
@@ -173,6 +175,9 @@ class StepperPage extends Component {
   }
   handleEditAssociation() {
     this.setState({ disableWorkflowAssociation: false });
+  };
+  handleEditPreview() {
+    this.setState({ disablePreview: false });
   };
   // handleCheckboxChange = (event) =>
   //   this.setState({ checked: event.target.checked });
@@ -314,6 +319,7 @@ class StepperPage extends Component {
             setSelectedStatus={this.setSelectedStatus}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
+            handleEditPreview={this.handleEditPreview}
             activeStep={activeStep}
             steps={this.getSteps().length}
             processData={processData}

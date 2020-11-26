@@ -21,10 +21,10 @@ const Preview = (props) => {
     workflow,
     formData,
     submitData,
+    handleEditPreview,
     disablePreview
   } = props;
 
-  console.log('disablePreview',disablePreview);
 
   return (
     <Grid
@@ -35,7 +35,7 @@ const Preview = (props) => {
       spacing={3}
     >
       <Grid item xs={12} sm={1} spacing={3}>
-       <button class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" >Edit</button>
+       <button class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" onClick={handleEditPreview}>Edit</button>
       </Grid>
       <Grid item  xs={12} sm={8} spacing={3}/>
       <Grid item xs={12} sm={3} className="next-btn">
@@ -48,7 +48,7 @@ const Preview = (props) => {
           isLastStep={true}
         />
       </Grid>
-      <Grid item xs={12} sm={8} spacing={3} disabled="true">
+      <Grid item xs={12} sm={8} spacing={3} disabled={disablePreview}>
         <Card variant="outlined">
           <CardContent>
             <form noValidate autoComplete="off">

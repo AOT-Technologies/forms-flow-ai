@@ -17,8 +17,8 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     form_id = db.Column(db.String(50), nullable=False)
     form_name = db.Column(db.String(100), nullable=False)
     form_revision_number = db.Column(db.String(10), nullable=False)
-    process_key = db.Column(db.String(50), nullable=True)
-    process_name = db.Column(db.String(100), nullable=True)
+    process_key = db.Column(db.String(50), nullable=False)
+    process_name = db.Column(db.String(100), nullable=False)
     status = db.Column(db.String(10), nullable=False)
     comments = db.Column(db.String(300), nullable=True)
     tenant_id = db.Column(db.Integer, nullable=True)
@@ -36,7 +36,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             mapper.form_name = mapper_info["form_name"]
             mapper.form_revision_number = mapper_info["form_revision_number"]
             mapper.process_key = mapper_info.get("process_key")
-            mapper.process_name = mapper_info["process_name"]
+            mapper.process_name = mapper_info.get("process_name")
             mapper.status = mapper_info["status"]
             mapper.comments = mapper_info.get("comments")
             mapper.created_by = mapper_info["created_by"]

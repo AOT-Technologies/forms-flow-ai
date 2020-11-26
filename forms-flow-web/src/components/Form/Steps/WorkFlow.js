@@ -35,11 +35,11 @@ const WorkFlow = (props) => {
     <Grid container direction="row" justify="flex-start" alignItems="baseline">
       {/* <FormControl component="fieldset"> */}
 
-      <Grid item xs={1} spacing={3}>
-       <Button color="primary" onClick={handleEditAssociation}>Edit</Button>
+      <Grid item xs={12} sm={1} spacing={3}>
+       <button class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" onClick={handleEditAssociation}>Edit</button>
       </Grid>
-      <Grid item xs={8} spacing={3}/>
-      <Grid item xs={3} className="next-btn">
+      <Grid item xs={12} sm={8} spacing={3}/>
+      <Grid item xs={12} sm={3} className="next-btn">
         <SaveNext
           handleBack={handleBack}
           handleNext={handleNext}
@@ -47,10 +47,11 @@ const WorkFlow = (props) => {
           steps={steps}
         />
       </Grid>
-      <Grid item sm={10} xs={12} spacing={3} disabled={disableWorkflowAssociation}>
+      <Grid item xs={12} sm={12} spacing={3}><br/></Grid>
+      <Grid item xs={12} sm={12} spacing={3} disabled={disableWorkflowAssociation}>
         <Card variant="outlined" className="card-overflow">
           <CardContent>
-            <Grid item sm={8} xs={12} spacing={3}>
+            <Grid item xs={12} sm={12} spacing={3}>
               <FormLabel component="legend">
                 Do you want to associate form with a workflow ?
               </FormLabel>
@@ -76,7 +77,7 @@ const WorkFlow = (props) => {
 
             {associateWorkFlow === "yes" && (
               <>
-                <Grid item xs={12} spacing={3}>
+                <Grid item xs={12} sm={6} spacing={3}>
                   <h5> Please select from one of the following workflows. </h5>
                   <Select
                     options={populateDropdown()}
@@ -85,6 +86,7 @@ const WorkFlow = (props) => {
                     disabled={disableWorkflowAssociation}
                   />
                 </Grid>
+                <Grid item xs={12} sm={6} spacing={3}/>
                 <br/>
                 {workflow && workflow.value && (
                   <Grid item xs={12} spacing={3}>

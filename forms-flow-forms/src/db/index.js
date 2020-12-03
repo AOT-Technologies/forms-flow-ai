@@ -3,7 +3,7 @@
 const async = require('async');
 const MongoClient = require('mongodb').MongoClient;
 const semver = require('semver');
-const request = require('request');
+const fetch = require('../util/fetch');
 const _ = require('lodash');
 const fs = require('fs');
 const debug = {
@@ -93,37 +93,114 @@ module.exports = function(formio) {
       }
     );
   };
-
   /**
    * Fetch the SA certificate.
    *
    * @param next
    * @return {*}
    */
-  const getSA = function(next) {
-    if (!config.mongoSA) {
+  const getCA = function(next) {
+    // Handle reverse compatability.
+    const CA = config.mongoSA || config.mongoCA;
+    if (!CA) {
       return next();
     }
 
     // If they provide the SA url, then fetch it from there.
-    if (config.mongoSA.indexOf('http') === 0) {
-      debug.db(`Fetching SA Certificate ${config.mongoSA}`);
-      request.get(config.mongoSA, (err, response, body) => {
-        if (err || !body) {
-          debug.db(`Unable to fetch SA Certificate: ${err}`);
-          unlock(function() {
-            throw new Error(`Unable to fetch the SA Certificate: ${config.mongoSA}.`);
+    if (CA.indexOf('http') === 0) {
+      debug.db(`Fetching MongoDB Public Key ${CA}`);
+      fetch(CA)
+        .then((response) => {
+          if (response.ok) {
+            return response.text();
+          }
+          throw new Error(response.statusText);
+        })
+        .then((body) => {
+          if (body) {
+            debug.db('Fetched MongoDB Public Key');
+            config.mongoSA = config.mongoCA = body;
+            return next();
+          }
+          throw new Error('Empty Body');
+        })
+        .catch((error) => {
+          debug.db(`Unable to fetch MongoDB Public Key: ${error}`);
+          unlock(() => {
+            throw new Error(`Unable to fetch the SA Certificate: ${CA}.`);
           });
-        }
-
-        debug.db('Fetched SA Certificate');
-        config.mongoSA = body;
-        return next();
-      });
+          config.mongoSA = config.mongoCA = '';
+          return next();
+        });
+    }
+    else if (CA.indexOf('/') === 0) {
+      // This is a file path, load it directly.
+      try {
+        config.mongoSA = config.mongoCA = fs.readFileSync(CA);
+      }
+      catch (err) {
+        debug.db(`Unable to read MongoDB Public Key: ${err}`);
+        unlock(() => {
+          throw new Error(`Unable to read the MongoDB Public Key: ${CA}. ${err}`);
+        });
+        config.mongoSA = config.mongoCA = '';
+      }
+      return next();
     }
     else {
       return next();
     }
+  };
+
+  /**
+   * Fetch the SSL certificates from local dir.
+   *
+   * @param next
+   * @return {*}
+   */
+  const getSSL = function(next) {
+    if (!config.mongoSSL) {
+      return next();
+    }
+
+    console.log('Loading Mongo SSL Certificates');
+
+    const certs = {
+      sslValidate: !!config.mongoSSLValidate,
+      ssl: true,
+    };
+
+    if (config.mongoSSLPassword) {
+      certs.sslPass = config.mongoSSLPassword;
+    }
+
+    const files = {
+      sslCA: 'ca.pem',
+      sslCert: 'cert.pem',
+      sslCRL: 'crl.pem',
+      sslKey: 'key.pem',
+    };
+
+    // Load each file into its setting.
+    Object.keys(files).forEach((key) => {
+      const file = files[key];
+      if (fs.existsSync(path.join(config.mongoSSL, file))) {
+        console.log(' > Reading', path.join(config.mongoSSL, file));
+        if (key === 'sslCA') {
+          certs[key] = [fs.readFileSync(path.join(config.mongoSSL, file))];
+        }
+        else {
+          certs[key] = fs.readFileSync(path.join(config.mongoSSL, file));
+        }
+      }
+      else {
+        console.log(' > Could not find', path.join(config.mongoSSL, file), 'skipping');
+      }
+    });
+    console.log('');
+
+    config.mongoSSL = certs;
+    return next();
   };
 
   /**
@@ -147,7 +224,7 @@ module.exports = function(formio) {
       : config.mongo[0];
 
     debug.db(`Opening new connection to ${dbUrl}`);
-    const mongoConfig = config.mongoConfig ? JSON.parse(config.mongoConfig) : {};
+    let mongoConfig = config.mongoConfig ? JSON.parse(config.mongoConfig) : {};
     if (!mongoConfig.hasOwnProperty('connectTimeoutMS')) {
       mongoConfig.connectTimeoutMS = 300000;
     }
@@ -157,9 +234,15 @@ module.exports = function(formio) {
     if (!mongoConfig.hasOwnProperty('useNewUrlParser')) {
       mongoConfig.useNewUrlParser = true;
     }
-    if (config.mongoSA) {
+    if (config.mongoSA || config.mongoCA) {
       mongoConfig.sslValidate = true;
-      mongoConfig.sslCA = config.mongoSA;
+      mongoConfig.sslCA = config.mongoSA || config.mongoCA;
+    }
+    if (config.mongoSSL) {
+      mongoConfig = {
+        ...mongoConfig,
+        ...config.mongoSSL,
+      };
     }
 
     mongoConfig.useUnifiedTopology = true;
@@ -262,10 +345,17 @@ module.exports = function(formio) {
   const sanityCheck = function sanityCheck(req, res, next) {
     // Determine if a response is expected by the request path.
     const response = (req.path === '/health');
+    const {verboseHealth} = req;
 
     // Skip functionality if testing.
     if (process.env.TEST_SUITE) {
       debug.db('Skipping for TEST_SUITE');
+
+      if (response && verboseHealth) {
+        res.status(200);
+        return next();
+      }
+
       return response
         ? res.sendStatus(200)
         : next();
@@ -280,6 +370,16 @@ module.exports = function(formio) {
      * @returns {*}
      */
     const handleResponse = function(err) {
+      if (response && verboseHealth) {
+        if (err) {
+          res.status(400);
+        }
+        else {
+          res.status(200);
+        }
+        return next();
+      }
+
       if (err) {
         return res.status(400).send(err);
       }
@@ -621,7 +721,8 @@ module.exports = function(formio) {
     }
 
     async.series([
-      getSA,
+      getCA,
+      getSSL,
       connection,
       checkSetup,
       checkEncryption,

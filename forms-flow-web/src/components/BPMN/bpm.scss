@@ -2,6 +2,7 @@
     height: 400px;
 }
 
-// a.bjs-powered-by {
-//     display: none !important;
-// }
+.highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
+    fill: rgb(56,89,138) !important;
+}
+

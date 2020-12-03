@@ -27,3 +27,10 @@ export const setFormDeleteStatus = (data) => dispatch =>{
     })
 }
 
+export const setFormWorkflowSaved = (data) => dispatch =>{
+    dispatch({
+        type:ACTION_CONSTANTS.IS_FORM_WORKFLOW_SAVED,
+        payload:data
+    })
+}
+

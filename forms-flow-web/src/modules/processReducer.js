@@ -7,6 +7,9 @@ const initialState = {
   processList: [],
   formProcessError: false,
   formProcessList: [],
+  processActivityList: [],
+  processDiagramXML: "",
+  isProcessDiagramLoading: true
 };
 
 export default (state = initialState, action) => {
@@ -23,6 +26,12 @@ export default (state = initialState, action) => {
       return { ...state, formProcessError: action.payload };
     case ACTION_CONSTANTS.FORM_PROCESS_LIST:
       return { ...state, formProcessList: action.payload };
+    case ACTION_CONSTANTS.PROCESS_ACTIVITIES:
+      return { ...state, processActivityList: action.payload };  
+    case ACTION_CONSTANTS.PROCESS_DIAGRAM_XML:
+      return { ...state, processDiagramXML: action.payload }; 
+    case ACTION_CONSTANTS.IS_PROCESS_DIAGRAM_LOADING:
+      return { ...state, isProcessDiagramLoading: action.payload };   
     default:
       return state;
   }

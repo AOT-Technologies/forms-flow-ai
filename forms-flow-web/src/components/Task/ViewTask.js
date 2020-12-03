@@ -10,24 +10,32 @@ import {setLoader} from "../../actions/taskActions";
 import View from "../Form/Item/Submission/Item/View";
 import {getProcessStatusList} from "../../apiManager/services/processServices";
 import {getApplicationById, getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
+import {fetchApplicatinAuditHistoryList} from "../../apiManager/services/applicationAuditServices";
 import History from './History';
-import ProcessDiagram from "../BPMN/ProcessDiagram";
+// import ProcessDiagram from "../BPMN/ProcessDiagram";
+import ProcessDiagram from "../BPMN/ProcessDiagramHook";
+import {getProcessActivities} from "../../apiManager/services/processServices";
 
 const ViewTask = (props) => {
     const {taskId} = useParams();
     const taskDetail = useSelector(state => state.tasks.taskDetail);
     const applicationProcess = useSelector(state => state.applications.applicationProcess);
-
+    const application_id = taskDetail.applicationId;
     const isLoading = useSelector(state => state.tasks.isLoading);
     const dispatch = useDispatch();
     const {getTask} = props;
+    // const processActivityList = useSelector(state => state.process.processActivityList);
     useEffect(()=>{
       if(taskDetail && taskDetail.id === taskId){
         dispatch(setLoader(false));
       }else{
         getTask(taskId);
       }
-    },[taskId, dispatch, taskDetail, getTask])
+      dispatch(fetchApplicatinAuditHistoryList(application_id));
+      dispatch(
+        getProcessActivities(taskDetail.processInstanceId)
+      );
+    },[taskId, dispatch, taskDetail, getTask,application_id])
 
     if (isLoading) {
       return <Loading/>;
@@ -39,9 +47,12 @@ const ViewTask = (props) => {
             <img src="/back.svg" alt="back"/>
           </Link>
           <span className="ml-3">
-            <img src="/clipboard.svg" alt="Task"/>
+            {/* <img src="/clipboard.svg" alt="Task"/> */}
+            {/* <i class="fa fa-list-alt" alt="Task"></i>
+             */}
           </span>
           <h3>
+          <i class="fa fa-list" alt="Task" aria-hidden="true"></i>
             <span className="task-head-details">Tasks /</span>{" "}
             {`${taskDetail.name}`}
           </h3>
@@ -60,6 +71,7 @@ const ViewTask = (props) => {
           <Tab eventKey="process-diagram" title="Process Diagram">
             <ProcessDiagram
                 process_key={applicationProcess.processKey}
+                // markers={processActivityList}
             />
           </Tab>
         </Tabs>

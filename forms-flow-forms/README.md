@@ -1,11 +1,13 @@
 # Form Management Platform
-![Formio](https://img.shields.io/badge/formio-1.70.0-blue)
+
+![Formio](https://img.shields.io/badge/formio-2.0.0--rc.34-blue)
 
 **formsflow.ai** leverages form.io to build "serverless" data management applications using a simple drag-and-drop form builder interface.
 
 To know more about form.io, go to https://github.com/formio/formio.
 
 ## Table of Content
+
 * [Prerequisites](#prerequisites)
 * [Solution Setup](#solution-setup)
   * [Step 1 : Keycloak Setup](#keycloak-setup)
@@ -29,10 +31,10 @@ Not applicable.
 
 ### Installation
 
-   * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is "forms-flow-forms".
-   * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. Details below,
+* Make sure you have a Docker machine up and running.
+* Make sure your current working directory is "forms-flow-forms".
+* Rename the file **sample.env** to **.env**.
+* Modify the configuration values as needed. Details below,
  
 |Variable name | Meaning | Possible values | Default value |
 |--- | --- | --- | ---
@@ -47,6 +49,7 @@ Not applicable.
 * The value of ROOT user account details (especially if this instance is not just for testing purposes)
   
 ### Running the application
+
 * For Linux,
    * Run `docker-compose -f docker-compose-linux.yml build` to build.
    * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
@@ -130,3 +133,9 @@ recommend you to take a look at [Custom Component Docs](https://formio.github.io
 to understand how  Form.io renderer allows for the creation of Custom components.
 You can also take a look at [formio.contrib](https://github.com/formio/contrib)
 to look for examples and even contribute the custom components you create.
+
+## LICENSE
+
+We have build formsflow.ai form management platform leveraging [formio](https://github.com/formio/formio).
+We use the OSL-v3 license similar to formio to ensure appropriate attribution is
+provided to form.io. Please read the [license](./LICENSE.txt) for more information.

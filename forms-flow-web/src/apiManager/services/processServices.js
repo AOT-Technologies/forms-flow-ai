@@ -7,6 +7,9 @@ import {
   setAllProcessList,
   setFormProcessesData,
   setFormProcessLoadError,
+  setProcessActivityData,
+  setProcessDiagramXML,
+  setProcessDiagramLoading,
 } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
 import UserService from "../../services/UserService";
@@ -118,6 +121,68 @@ export const saveFormProcessMapper = (data, update = false, ...rest) => {
         console.log("Error", error);
         dispatch(setFormProcessLoadError(true));
         done(error);
+      });
+  };
+};
+
+/**
+ *
+ * @param  {...any} rest
+ */
+export const getProcessActivities = (process_instance_id, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const apiUrlProcessActivities= replaceUrl(
+    API.PROCESS_ACTIVITIES,
+    "<process_instance_id>",
+    process_instance_id
+  );
+  return (dispatch) => {
+    httpGETRequest(
+      apiUrlProcessActivities,
+      {},
+      UserService.getToken(),
+      true
+    )
+      .then((res) => {
+        if (res.data) {
+          dispatch(setProcessActivityData(res.data.childActivityInstances));
+        } else {
+          dispatch(setProcessLoadError(true));
+        }
+        done(null,res.data);
+      })
+      .catch((error) => {
+        done(error);
+        dispatch(setProcessLoadError(true));
+      });
+  };
+};
+
+export const fetchDiagram = (process_key, ...rest) => {
+  console.log('inside fetchDiagram >>',process_key);
+  const url =API.PROCESSES+'/'+process_key+'/xml';
+  const done = rest.length ? rest[0] : () => {};
+  console.log('inside fetchDiagram URL>>',url);
+  return (dispatch) => {
+    httpGETRequest(
+      url,
+      {},
+      UserService.getToken(),
+      true
+    )
+    .then((res) => {
+      if (res.data) {
+        dispatch(setProcessDiagramXML(res.data.bpmn20Xml));
+        // console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
+      } else {
+        //TODO
+      }
+      dispatch(setProcessDiagramLoading(false));
+      done(null,res.data);
+    })
+    .catch((error) => {
+        done(error);
+        dispatch(setProcessDiagramLoading(false));
       });
   };
 };

@@ -85,9 +85,9 @@ const Dashboard = () => {
       <div className="dashboard mb-2">
         <div className="row ">
           <div className="col-12">
-            <h3 className="dashboard-title">
+            <h1 className="dashboard-title">
               <i className="fa fa-pie-chart" aria-hidden="true"/> Metrics
-            </h3>
+            </h1>
             <hr className="line-hr"/>
             <div className="row ">
               <div className="col-12 col-lg-6 ">

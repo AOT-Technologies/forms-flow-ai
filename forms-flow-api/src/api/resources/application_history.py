@@ -9,10 +9,9 @@ from marshmallow import ValidationError
 from ..exceptions import BusinessException
 from ..schemas.aggregated_application import AggregatedApplicationReqSchema
 from ..schemas.application_audit import ApplicationAuditSchema
-from ..services import ApplicationAuditService, ApplicationService
+from ..services import ApplicationService, ApplicationAuditService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
-
 
 #keeping the base path same for application history and application/
 API = Namespace('Application', description='Application')

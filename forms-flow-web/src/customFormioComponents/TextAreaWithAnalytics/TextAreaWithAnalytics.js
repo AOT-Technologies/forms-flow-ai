@@ -2,8 +2,39 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { ReactComponent } from 'react-formio';
 import settingsForm from './TextAreaWithAnalytics.settingsForm';
-import SentimentAnalytics from "./TextAreaWithAnalyticsInputComponent";
 
+/**
+ * An Text Area With Analytics React component
+ *
+ * Replace this with your custom react component. It needs to have two things.
+ * 1. The value should be stored is state as "value"
+ * 2. When the value changes, call props.onChange(null, newValue);
+ *
+ * This component has a text Area used for sentiment Analysis.
+ */
+
+const SentimentAnalytics = (props) => {
+  const {onChange, disabled, name} = props;
+  const {type, sentimentAnalyticTopics} = props.component;
+  const updateCommentData = (input) =>{
+    const updateVal = {
+      type:type,
+      text:input,
+      topics:sentimentAnalyticTopics
+    };
+    onChange(updateVal);
+  };
+
+  return (
+      <textarea
+        name={name}
+        rows="3"
+        className="form-control"
+        onChange={e=>updateCommentData(e.target.value)}
+        disabled={disabled}
+      />
+  );
+}
 
 export default class TextAreaWithAnalytics extends ReactComponent {
   /**
@@ -47,7 +78,7 @@ export default class TextAreaWithAnalytics extends ReactComponent {
    * @param DOMElement
    * #returns ReactInstance
    */
-  attachReact (element) {
+  attachReact(element) {
     return ReactDOM.render(
       <SentimentAnalytics
         component={this.component} // These are the component settings if you want to use them to render the component.

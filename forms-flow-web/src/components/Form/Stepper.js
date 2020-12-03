@@ -54,6 +54,8 @@ class StepperPage extends Component {
       processListLoaded: false,
       displayMode: "create",
       dataModified: false,
+      disableWorkflowAssociation: false,
+      disablePreview: false,
     };
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
@@ -61,9 +63,18 @@ class StepperPage extends Component {
     this.setEditMode = this.setEditMode.bind(this);
     this.populateDropdown = this.populateDropdown.bind(this);
     this.handleBack = this.handleBack.bind(this);
+    this.handleEditAssociation = this.handleEditAssociation.bind(this);
+    this.handleEditPreview = this.handleEditPreview.bind(this);
   }
 
   componentDidMount() {
+    if(this.state && this.state.displayMode === "view"){
+
+      this.setState({ disableWorkflowAssociation: true });
+      this.setState({ disablePreview: true });
+
+    }
+    
   }
 
   componentWillUnmount() {
@@ -162,6 +173,12 @@ class StepperPage extends Component {
   setEditMode(val) {
     this.setState({ editMode: val });
   }
+  handleEditAssociation() {
+    this.setState({ disableWorkflowAssociation: false });
+  };
+  handleEditPreview() {
+    this.setState({ disablePreview: false });
+  };
   // handleCheckboxChange = (event) =>
   //   this.setState({ checked: event.target.checked });
   changeWorkFlowStatus = (e) => {
@@ -287,10 +304,12 @@ class StepperPage extends Component {
             associateToWorkFlow={this.associateToWorkFlow}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
+            handleEditAssociation={this.handleEditAssociation}
             activeStep={activeStep}
             steps={this.getSteps().length}
             workflow={this.state.workflow}
             formProcessList={formProcessList}
+            disableWorkflowAssociation={this.state.disableWorkflowAssociation}
           />
         );
       case 2:
@@ -300,6 +319,7 @@ class StepperPage extends Component {
             setSelectedStatus={this.setSelectedStatus}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
+            handleEditPreview={this.handleEditPreview}
             activeStep={activeStep}
             steps={this.getSteps().length}
             processData={processData}
@@ -308,6 +328,7 @@ class StepperPage extends Component {
             workflow={workflow}
             submitData={this.submitData}
             formProcessList={formProcessList}
+            disablePreview={this.state.disablePreview}
           />
         );
       default:

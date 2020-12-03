@@ -9,6 +9,7 @@ const debug = {
   loadFormByAlias: require('debug')('formio:cache:loadFormByAlias'),
   loadSubmission: require('debug')('formio:cache:loadSubmission'),
   loadSubmissions: require('debug')('formio:cache:loadSubmissions'),
+  loadSubForms: require('debug')('formio:cache:loadSubForms'),
   error: require('debug')('formio:error')
 };
 
@@ -138,34 +139,44 @@ module.exports = function(router) {
 
     loadFormRevisions(req, revs, cb) {
       if (!revs || !revs.length || !router.formio.resources.formrevision) {
+        debug.loadSubForms(`Form revisions not used.`);
         return cb();
       }
 
+      const formRevs = {};
       async.each(revs, (rev, next) => {
+        const formRevision = parseInt(rev.revision || rev.formRevision);
+        debug.loadSubForms(`Loading form ${util.idToBson(rev.form)} revision ${formRevision}`);
         router.formio.resources.formrevision.model.findOne(
           hook.alter('formQuery', {
             _rid: util.idToBson(rev.form),
-            _vid: rev.formRevision,
+            _vid: formRevision,
             deleted: {$eq: null}
           }, req)
         ).lean().exec((err, result) => {
           if (err) {
+            debug.loadSubForms(err);
             return next(err);
           }
           if (!result) {
+            debug.loadSubForms(
+              `Cannot find form revision for form ${rev.form} revision ${formRevision}`,
+            );
             return next();
           }
 
-          rev.components = result.components;
+          debug.loadSubForms(`Loaded revision for form ${rev.form} revision ${formRevision}`);
+          formRevs[rev.form.toString()] = result;
           next();
         });
       }, (err) => {
         if (err) {
+          debug.loadSubForms(err);
           debug.loadFormRevisions(err);
           return cb(err);
         }
 
-        cb();
+        cb(null, formRevs);
       });
     },
 
@@ -174,7 +185,7 @@ module.exports = function(router) {
       if (req.params.formId) {
         formId = req.params.formId;
       }
-      else if (req.body.data.formId) {
+      else if (req.body.data && req.body.data.formId) {
         formId = req.body.data.formId;
       }
       else if (req.query.formId) {
@@ -184,6 +195,7 @@ module.exports = function(router) {
         return '';
       }
       req.formId = formId;
+      req.params.formId = formId;
       return formId;
     },
 
@@ -394,9 +406,10 @@ module.exports = function(router) {
      * @param depth
      * @returns {*}
      */
-    loadSubForms(form, req, next, depth, forms) {
+    loadAllForms(form, req, next, depth, forms) {
       depth = depth || 0;
       forms = forms || {};
+      debug.loadSubForms(`Loading subforms for ${form._id}`);
 
       // Only allow 5 deep.
       if (depth >= 5) {
@@ -404,20 +417,17 @@ module.exports = function(router) {
       }
 
       // Get all of the form components.
-      const comps = {};
       const formIds = [];
       const formRevs = [];
       util.eachComponent(form.components, function(component) {
         if ((component.type === 'form') && component.form) {
           const formId = component.form.toString();
-          if (!comps[formId]) {
-            comps[formId] = [];
-            formIds.push(formId);
-            if (component.formRevision) {
-              formRevs.push(component);
-            }
+          formIds.push(formId);
+          debug.loadSubForms(`Found subform ${formId}`);
+          // TO-DO: Figure out why there are two revisions here?...
+          if (component.revision || component.formRevision) {
+            formRevs.push(component);
           }
-          comps[formId].push(component);
         }
       }, true);
 
@@ -427,32 +437,54 @@ module.exports = function(router) {
       }
 
       // Load all subforms in this form.
+      debug.loadSubForms(`Loading subforms ${formIds.join(', ')}`);
       this.loadForms(req, formIds, (err, result) => {
         if (err) {
           return next();
         }
 
         // Load all form revisions.
-        this.loadFormRevisions(req, formRevs, () => {
+        this.loadFormRevisions(req, formRevs, (err, revs) => {
+          if (err) {
+            return next();
+          }
+
           // Iterate through all subforms.
+          revs = revs || {};
           async.each(result, (subForm, done) => {
             const formId = subForm._id.toString();
-            if (!comps[formId]) {
-              return done();
-            }
-            comps[formId].forEach((comp) => {
-              if (!comp.components || !comp.components.length) {
-                comp.components = subForm.components;
-              }
-            });
             if (forms[formId]) {
+              debug.loadSubForms(`Subforms already loaded for ${formId}.`);
               return done();
             }
-            forms[formId] = true;
-            this.loadSubForms(subForm, req, done, depth + 1, forms);
+            forms[formId] = revs[formId] ? revs[formId] : subForm;
+            this.loadAllForms(subForm, req, done, depth + 1, forms);
           }, next);
         });
       });
+    },
+
+    setFormComponents(components, forms) {
+      util.eachComponent(components, (component) => {
+        if ((component.type === 'form') && component.form) {
+          const formId = component.form.toString();
+          if (forms[formId]) {
+            component.components = forms[formId].components;
+            this.setFormComponents(component.components, forms);
+          }
+        }
+      }, true);
+    },
+
+    loadSubForms(form, req, next) {
+      const forms = {};
+      this.loadAllForms(form, req, (err) => {
+        if (err) {
+          return next(err);
+        }
+        this.setFormComponents(form.components, forms);
+        next(null, form);
+      }, 0, forms);
     },
 
     /**

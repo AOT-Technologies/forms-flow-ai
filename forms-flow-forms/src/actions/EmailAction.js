@@ -1,5 +1,5 @@
 'use strict';
-const request = require('request');
+const fetch = require('../util/fetch');
 
 const LOG_EVENT = 'Email Action';
 
@@ -178,12 +178,16 @@ module.exports = (router) => {
           return next(err);
         }
 
+        // Save off the req.params since they get deleted after the response and we need them later.
+        const reqParams = req.params;
+
         // Dont block on sending emails.
         next(); // eslint-disable-line callback-return
 
         // Get the email parameters.
         emailer.getParams(req, res, form, req.body)
           .then((params) => {
+            req.params = reqParams;
             const query = {
               _id: params.owner,
               deleted: {$eq: null},
@@ -199,21 +203,20 @@ module.exports = (router) => {
                   params.owner = owner;
                 }
 
-                return new Promise((resolve, reject) => {
-                  if (!this.settings.template) {
-                    return resolve(this.settings.message);
-                  }
+                if (!this.settings.template) {
+                  return this.settings.message;
+                }
 
-                  return request(this.settings.template, (error, response, body) => {
-                    if (!error && response.statusCode === 200) {
-                      // Save the content before overwriting the message.
-                      params.content = this.settings.message;
-                      return resolve(body);
-                    }
-
-                    return resolve(this.settings.message);
-                  });
-                });
+                return fetch(this.settings.template)
+                    .then((response) => response.ok ? response.text() : null)
+                    .then((body) => {
+                      if (body) {
+                        // Save the content before overwriting the message.
+                        params.content = this.settings.message;
+                      }
+                      return body || this.settings.message;
+                    })
+                    .catch(() => this.settings.message);
               })
               .then((template) => {
                 this.settings.message = template;

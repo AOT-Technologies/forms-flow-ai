@@ -1,53 +1,15 @@
 {
   "port": 3001,
   "appPort": 8080,
-  "host": "localhost",
+  "host": "localhost:3001",
   "protocol": "http",
   "allowedOrigins": ["*"],
   "domain": "http://localhost:3001",
   "basePath": "",
   "mongo": "mongodb://localhost:27017/formioapp",
   "mongoConfig": "",
-  "mongoSA": "",
-  "mongoSecret": "aot-admin",
-  "roles": {
-    "administrator": {
-      "title": "Administrator",
-      "description": "A role for Administrative Users.",
-      "admin": true,
-      "default": false
-    },
-    "authenticated": {
-      "title": "Authenticated",
-      "description": "A role for Authenticated Users.",
-      "admin": false,
-      "default": false
-    },
-    "anonymous": {
-      "title": "Anonymous",
-      "description": "A role for Anonymous Users.",
-      "admin": false,
-      "default": true
-    },
-    "staffDesigner": {
-      "title": "Staff Designer",
-      "description": "A role for Staff Designer who would be designing the forms.",
-      "admin": true,
-      "default": false
-    },
-    "staffReviewer": {
-      "title": "Staff Reviewer",
-      "description": "A role for form submission reviewer.",
-      "admin": false,
-      "default": false
-    },
-    "client": {
-      "title": "Client",
-      "description": "A role for Clients to submit forms.",
-      "admin": false,
-      "default": true
-    }
-  },
+  "mongoCA": "",
+  "mongoSecret": "--- change me now ---",
   "reservedForms": [
     "submission",
     "exists",

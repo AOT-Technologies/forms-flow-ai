@@ -47,13 +47,11 @@ const ViewTask = (props) => {
             <img src="/back.svg" alt="back"/>
           </Link>
           <span className="ml-3">
-            {/* <img src="/clipboard.svg" alt="Task"/> */}
-            {/* <i class="fa fa-list-alt" alt="Task"></i>
              */}
           </span>
           <h3>
-          <i class="fa fa-list" alt="Task" aria-hidden="true"></i>
-            <span className="task-head-details">Tasks /</span>{" "}
+          <i className="fa fa-list" />
+            <span className="task-head-details"> &nbsp;Tasks /</span>{" "}
             {`${taskDetail.name}`}
           </h3>
         </div>

@@ -81,7 +81,7 @@ const List = (props) => {
           <img src="/back.svg" alt="back"/>
         </Link>
         <span className="ml-3">
-                        <i class="fa fa-wpforms"></i>
+                        <img src="/form.svg" width="30" height="30" alt="form" />
                     </span>
         <h3>
           <span className="task-head-details">Forms /</span> {form.title}

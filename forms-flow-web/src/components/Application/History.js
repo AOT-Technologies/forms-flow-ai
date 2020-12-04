@@ -70,8 +70,9 @@ const HistoryList = () => {
           <div className="container">
             <div className="main-header">
               <h3 className="task-head">
-              <i class="fa fa-list-alt" alt="Task" aria-hidden="true"></i>
-                Application History
+              {/* <i class="fa fa-list-alt" alt="Task" aria-hidden="true"></i> */}
+              <i className="fa fa-list-alt" />
+              &nbsp;Application History
               </h3>
             </div>
             <br/>

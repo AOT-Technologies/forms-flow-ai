@@ -85,11 +85,10 @@ const ApplicationList = () => {
         {(props) => (
             <div className="container">
               <div className="main-header">
-                {/* <img src="/clipboard.svg" width="30" height="30" alt="application" /> */}
-                {/* <i class="fa fa-list-alt"></i> */}
                 <h3 className="application-head">
-                <i class="fa fa-list-alt" alt="application" aria-hidden="true"></i>
-                  Applications
+                <i className="fa fa-list-alt" />
+                 
+              &nbsp;Applications
                   <div className="col-md-1 application-count">({applicationCount})</div>
                 </h3>
               </div>

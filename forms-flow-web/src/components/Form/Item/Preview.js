@@ -63,17 +63,17 @@ const Preview = class extends Component {
           {/* <Link to="/form">
             <img src="/back.svg" alt="back" />
           </Link> */}
-          <span>
+{/*          <span>
            <img src="/form.svg" width="30" height="30" alt="form" />
-          </span>
-          <h3 className="task-head">{form.title}</h3>
+          </span>*/}
+          <h3 className="task-head"> <i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; {form.title}</h3>
           <Button
             className="btn btn-primary btn-sm form-btn pull-right btn-right"
             onClick={() => {
               dispatch(push(`/form/${form._id}/edit`));
             }}
           >
-            <i className="fa fa-pencil" aria-hidden="true"></i>
+            <i className="fa fa-pencil" aria-hidden="true"/>
             &nbsp;&nbsp;Edit Form
           </Button>
           {/* <Button className="btn btn-primary btn-sm form-btn pull-right btn-right"
@@ -82,10 +82,9 @@ const Preview = class extends Component {
             &nbsp;&nbsp;Next
         </Button> */}
           <Button
-            // variant="contained"
-            // color="primary"
+            variant="contained"
             onClick={handleNext}
-            className="ml-3"
+            className="ml-3 btn btn-primary btn-sm form-btn"
           >
             {(this.state.activeStep === 1, "Next")}
           </Button>

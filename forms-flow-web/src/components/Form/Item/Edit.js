@@ -19,7 +19,7 @@ const Edit = (props) => (
             <img src="/back.svg" alt="back" />
           </Link> */}
       <span className="ml-3">
-            <i class="fa fa-wpforms"></i>
+        <img src="/form.svg" alt="Forms" />
       </span>
       <h3 className="task-head">{props.form.title}</h3>
     </div>

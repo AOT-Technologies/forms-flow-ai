@@ -64,7 +64,7 @@ const Preview = class extends Component {
             <img src="/back.svg" alt="back" />
           </Link> */}
           <span>
-           <i class="fa fa-wpforms"></i>
+           <img src="/form.svg" width="30" height="30" alt="form" />
           </span>
           <h3 className="task-head">{form.title}</h3>
           <Button

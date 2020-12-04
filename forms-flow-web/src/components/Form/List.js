@@ -75,8 +75,8 @@ const List = class extends Component {
           onYes={() => onYes(formId, forms)}
         />
         <div className="main-header">
-          {/* <img src="/form.svg" width="30" height="30" alt="form" /> */}
-          <i class="fa fa-wpforms"></i>
+          <img src="/form.svg" width="30" height="30" alt="form" />
+          {/* <i class="fa fa-wpforms"></i> */}
           <h3 className="task-head">Forms</h3>
           {userRoles.includes(STAFF_DESIGNER) && (
             <Link

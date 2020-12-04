@@ -39,7 +39,8 @@ const SideBar = () => {
                 pathname.match(/^\/form/) ? "active-tab" : ""
               }`}
             >
-              <i className="fa fa-wpforms" />
+               <img src="/form.svg" width="30" height="30" alt="form" />
+              {/* <i className="fa fa-wpforms" /> */}
               Forms
             </Link>
           </li>

@@ -46,12 +46,13 @@ const ViewTask = (props) => {
           <Link to="/task">
             <img src="/back.svg" alt="back"/>
           </Link>
-          <span className="ml-3">
-             */}
-          </span>
-          <h3>
-          <i className="fa fa-list" />
-            <span className="task-head-details"> &nbsp;Tasks /</span>{" "}
+{/*          <span className="ml-3">
+               <img src="/clipboard.svg" alt="Task"/>
+             <i class="fa fa-list-alt" alt="Task"></i>
+
+          </span>*/}
+          <h3 className="ml-3">
+            <span className="task-head-details"> <i className="fa fa-list"/> Tasks /</span>{" "}
             {`${taskDetail.name}`}
           </h3>
         </div>

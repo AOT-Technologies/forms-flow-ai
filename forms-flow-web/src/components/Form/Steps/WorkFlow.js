@@ -1,5 +1,5 @@
 import React from "react";
-import { Button } from 'reactstrap';
+/*import { Button } from 'reactstrap';*/
 import {
   FormLabel,
   FormControlLabel,
@@ -35,7 +35,7 @@ const WorkFlow = (props) => {
       {/* <FormControl component="fieldset"> */}
 
       <Grid item xs={12} sm={1} spacing={3}>
-       <button class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" onClick={handleEditAssociation}>Edit</button>
+       <button className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" onClick={handleEditAssociation}>Edit</button>
       </Grid>
       <Grid item xs={12} sm={8} spacing={3}/>
       <Grid item xs={12} sm={3} className="next-btn">

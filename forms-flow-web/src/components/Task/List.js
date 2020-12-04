@@ -91,8 +91,8 @@ const List = class extends Component {
             <div className="container">
               <div className="main-header">
               <h3 className="task-head">
-              <i className="fa fa-list" />
-                &nbsp;Tasks
+              <i className="fa fa-list" aria-hidden="true"/>
+                &nbsp; Tasks
                   <div className="col-md-1 task-count">({tasks.length})</div>
                 </h3>
                 <div className="col-md-2 btn-group">

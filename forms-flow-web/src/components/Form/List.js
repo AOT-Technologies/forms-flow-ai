@@ -27,8 +27,8 @@ import Confirm from "../../containers/Confirm";
 import Toast from "../Toast/Toast";
 
 const List = class extends Component {
-  
- 
+
+
   constructor(props) {
     super(props);
     this.state = {
@@ -75,9 +75,8 @@ const List = class extends Component {
           onYes={() => onYes(formId, forms)}
         />
         <div className="main-header">
-          <img src="/form.svg" width="30" height="30" alt="form" />
-          {/* <i class="fa fa-wpforms"></i> */}
-          <h3 className="task-head">Forms</h3>
+          {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
+          <h3 className="task-head"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms</h3>
           {userRoles.includes(STAFF_DESIGNER) && (
             <Link
               to="/form/create"
@@ -97,7 +96,7 @@ const List = class extends Component {
           />
         </section>
         {this.props.isFormWorkflowSaved && (
-        <Toast 
+        <Toast
           severity='success'
           message='Changes saved successfully'/>)}
 

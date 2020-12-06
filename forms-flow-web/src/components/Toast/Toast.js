@@ -52,11 +52,11 @@ const Toast = class extends Component {
 
   render() {
     return (
-      <div className="classes.root">
+      <div className="container">
         <Snackbar 
           anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'center'
+            vertical: 'bottom',
+            horizontal: 'right'
           }}
           open={this.state.open} 
           autoHideDuration={6000} 

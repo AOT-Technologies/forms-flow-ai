@@ -19,7 +19,6 @@ import {
 import {
   setFormProcessesData
 } from "../../actions/processActions";
-import {setFormWorkflowSaved} from "../../actions/formActions";
 //import { saveFormProcessMapper } from "../../apiManager/services/formServices";
 import { selectRoot, saveForm, selectError, getForm } from "react-formio";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
@@ -418,7 +417,6 @@ const mapDispatchToProps = (dispatch) => {
         saveFormProcessMapper(data, update, (err, res) => {
           if (!err) {
             dispatch(push(`/form`));
-            dispatch(setFormWorkflowSaved(true));
           }
         })
       );

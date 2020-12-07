@@ -11,7 +11,7 @@ import {
 } from "@material-ui/core";
 import Select from "react-dropdown-select";
 import SaveNext from "./SaveNext";
-import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
+import ProcessDiagram from "../../BPMN/ProcessDiagram";
 
 const WorkFlow = (props) => {
 

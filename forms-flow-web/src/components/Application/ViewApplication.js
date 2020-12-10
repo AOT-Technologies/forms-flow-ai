@@ -34,7 +34,6 @@ const ViewApplication = () => {
               getSubmission("submission", res.submissionId, res.formId)
             );
           }
-          console.log('app detail processInstanceId>>'+res.processInstanceId)
           dispatch(
             getProcessActivities(res.processInstanceId)
           );
@@ -47,7 +46,6 @@ const ViewApplication = () => {
   if (isApplicationDetailLoading) {
     return <Loading/>;
   }
-  console.log('applicationDetail.process_instance_id >>'+applicationDetail.processInstanceId);
 
 
   return (

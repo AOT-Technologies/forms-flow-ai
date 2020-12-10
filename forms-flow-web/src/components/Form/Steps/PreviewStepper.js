@@ -35,7 +35,7 @@ const Preview = (props) => {
       spacing={3}
     >
       <Grid item xs={12} sm={1} spacing={3}>
-       <button class="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" onClick={handleEditPreview}>Edit</button>
+       <button className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" onClick={handleEditPreview}>Edit</button>
       </Grid>
       <Grid item  xs={12} sm={8} spacing={3}/>
       <Grid item xs={12} sm={3} className="next-btn">

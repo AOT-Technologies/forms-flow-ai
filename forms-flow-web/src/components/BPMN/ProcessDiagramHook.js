@@ -1,58 +1,66 @@
 
-import React, {useRef, useEffect, useLayoutEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {useDispatch,useSelector} from "react-redux";
 
-// import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
-//import Loading from "../../containers/Loading";
+import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
+import Loading from "../../containers/Loading";
 
 import {fetchDiagram} from "../../apiManager/services/processServices";
 import {setProcessDiagramLoading} from "../../actions/processActions";
 import "./bpm.scss"
-import BpmnJS from 'bpmn-js';
+//import BpmnJS from 'bpmn-js';
 import usePrevious from "./UsePrevious";
 
 const ProcessDiagram = (props)=>{
   const process_key = props.process_key;
-  const containerRef = useRef(null);
   const dispatch= useDispatch();
-  //const isProcessDiagramLoading = useSelector(state=>state.process.isProcessDiagramLoading);
+  const isProcessDiagramLoading = useSelector(state=>state.process.isProcessDiagramLoading);
   const diagramXML = useSelector(state => state.process.processDiagramXML);
-  const markers =  useSelector(state => state.process.processActivityList); 
+  const markers =  useSelector(state => state.process.processActivityList);
   const prevMarkers = usePrevious(markers);
-  console.log('markers ',markers);
-  console.log('prevMarkers ',prevMarkers);
+  const [bpmnViewer, setBpmnViewer] = useState(null);
 
-  const container = containerRef.current;
+  const containerRef = useCallback(node => {
+    if (node !== null) {
+      setBpmnViewer(new BpmnJS({ container:"#process-diagram-container" }));
+    }
+  }, []);
+
+  useEffect(()=>{
+    if(bpmnViewer){
+      bpmnViewer.on('import.done', (event) => {
+        const {
+          error
+        } = event;
+        if (error) {
+          console.log('inside bpmnViewer on error >', error);
+          //return handleError(error);
+        }
+        //bpmnViewer.get('canvas').zoom('fit-viewport');
+        //return handleShown(warnings);
+      });
+    }
+    return ()=>{
+      bpmnViewer && bpmnViewer.destroy();
+    }
+  },[bpmnViewer])
 
 
   useEffect(()=>{
-    console.log('inside useEffect');
     dispatch(setProcessDiagramLoading(true));
-    // console.log('process_key >>',process_key);
     if(process_key){
       dispatch(fetchDiagram(process_key));
-      //console.log('diagramXML >>',diagramXML);
     }
   },[process_key,dispatch])
 
- useLayoutEffect(()=> {
-   console.log('inside useLayoutEffect');
-   if(diagramXML && container){
-     const bpmnViewer = new BpmnJS({ container });
-     bpmnViewer.on('import.done', (event) => {
-       console.log('import.done >>>>>>',event);
-       const {
-         error
-       } = event;
-       if (error) {
-         console.log('inside bpmnViewer on error >', error);
-         //return handleError(error);
-       }
-     //  bpmnViewer.get('canvas').zoom('fit-viewport');
-       //return handleShown(warnings);
-     });
+ useEffect(()=>{
+   if(diagramXML && bpmnViewer) {
      bpmnViewer.importXML(diagramXML);
-     if (markers && markers[0] ) {
+   }
+ },[diagramXML,bpmnViewer])
+
+  useEffect(()=> {
+    if(diagramXML && bpmnViewer && markers && markers[0]) {
         let marker = markers;
         marker = marker.replace(/'/g, '"');
         const markerJson = JSON.parse(marker);
@@ -65,11 +73,9 @@ const ProcessDiagram = (props)=>{
           },0);
         }
       }
-    }
    }
-   
    //console.log('containerRef current 2>>>>>>',container);
- },[diagramXML,container,markers,prevMarkers]);
+ },[diagramXML,bpmnViewer,markers,prevMarkers]);
 
 
 
@@ -88,13 +94,17 @@ const ProcessDiagram = (props)=>{
     }
   }*/
 
- /* if (isProcessDiagramLoading) {
-    return <Loading/>;
-  }*/
+  if (isProcessDiagramLoading) {
+    return <div className="bpmn-viewer-container">
+      <div className="bpm-container">
+      <Loading/>
+      </div>
+    </div>
+  }
 
   return (
-    <div>
-      <div className="react-bpmn-diagram-container bpm-container" ref={containerRef}/>
+    <div className="bpmn-viewer-container">
+      <div id="process-diagram-container" className="bpm-container grab-cursor" ref={containerRef}/>
     </div>
   );
 };

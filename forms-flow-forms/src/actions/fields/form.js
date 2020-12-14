@@ -1,6 +1,5 @@
 'use strict';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+
 const _ = require('lodash');
 const util = require('../../util/util');
 

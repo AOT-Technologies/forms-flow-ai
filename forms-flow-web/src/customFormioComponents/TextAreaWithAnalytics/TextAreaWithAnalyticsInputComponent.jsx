@@ -13,7 +13,7 @@ export default class extends Component {
 
   updateCommentData = (event) => {
     const {type, sentimentAnalyticTopics} = this.props.component;
-    this.setState({value: {text:event.target.value,type,sentimentAnalyticTopics}}, () => this.props.onChange(this.state.value));
+    this.setState({value: {text:event.target.value,type,topics:sentimentAnalyticTopics}}, () => this.props.onChange(this.state.value));
   };
 
   render() {

@@ -36,12 +36,11 @@ AUTHORIZATIONS = {
 }
 
 API = CustomApi(
-    title='FORMIO API',
+    title='formsflow.ai API',
     version='1.0',
-    description='The API for FORMIO',
+    description='The API for formsflow.ai. Checkout: formsflow.ai to know more',
     security=['apikey'],
-    authorizations=AUTHORIZATIONS, doc='/swagger/')
-
+    authorizations=AUTHORIZATIONS, doc='/api/swagger/')
 
 @API.errorhandler(BusinessException)
 def handle_business_exception(error: BusinessException):

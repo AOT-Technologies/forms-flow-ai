@@ -1,13 +1,17 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
-## Unreleased
-`Added`
-* Openshift deployment
 
-## Future Release
-* Render the form workflow association in readonly and give option to edit
-* Show  task navigation in workflow diagram
-* Support to access formsflow.ai solution in mobile
+## 3.1.0 - 2020-12-15
+`Modified`
+* Formio upgraded to latest version-2.0.0.rc34 (Component : forms-flow-forms)
+* In application dashboard, forms process diagram highlight feature (Component : forms-flow-web)
+* Updated menu icons (Component: forms-flow-web)
+* Render the form workflow association in readonly and give option to edit (Component: forms-flow-web)
+
+`Fixed`
+* Mobile responsive updates to forms-flow-ai(Component: forms-flow-web)
+* Sentiment Analysis API response not getting saved in mongodb
+* Update swagger docs
 
 ## 3.0.1 - 2020-10-08
 `Modified`

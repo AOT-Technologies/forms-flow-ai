@@ -40,7 +40,7 @@ API = CustomApi(
     version='1.0',
     description='The API for formsflow.ai. Checkout: formsflow.ai to know more',
     security=['apikey'],
-    authorizations=AUTHORIZATIONS, doc='/api/swagger/')
+    authorizations=AUTHORIZATIONS, doc='/swagger/')
 
 @API.errorhandler(BusinessException)
 def handle_business_exception(error: BusinessException):

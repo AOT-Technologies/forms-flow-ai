@@ -30,6 +30,7 @@ export const getProcessStatusList = (processId, taskId) => {
       .then((res) => {
         if (res.data) {
           dispatch(setProcessStatusLoading(false));
+          dispatch(setProcessLoadError(false));
           dispatch(setProcessList(res.data.status));
         } else {
           dispatch(setProcessStatusLoading(false));
@@ -114,7 +115,7 @@ export const saveFormProcessMapper = (data, update = false, ...rest) => {
         done(null, res.data);
         //dispatch(setFormProcessesData(res.data));
         dispatch(setFormProcessesData([]));
-        
+
         // }
       })
       .catch((error) => {

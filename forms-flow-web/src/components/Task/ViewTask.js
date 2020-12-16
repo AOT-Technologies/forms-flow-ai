@@ -10,8 +10,7 @@ import {setLoader} from "../../actions/taskActions";
 import View from "../Form/Item/Submission/Item/View";
 import {getProcessStatusList} from "../../apiManager/services/processServices";
 import {getApplicationById, getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
-import {fetchApplicatinAuditHistoryList} from "../../apiManager/services/applicationAuditServices";
-import History from './History';
+import History from '../Application/ApplicationHistory';
 // import ProcessDiagram from "../BPMN/ProcessDiagram";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 import {getProcessActivities} from "../../apiManager/services/processServices";
@@ -20,7 +19,7 @@ const ViewTask = (props) => {
     const {taskId} = useParams();
     const taskDetail = useSelector(state => state.tasks.taskDetail);
     const applicationProcess = useSelector(state => state.applications.applicationProcess);
-    const application_id = taskDetail.applicationId;
+    const applicationId = taskDetail.applicationId;
     const isLoading = useSelector(state => state.tasks.isLoading);
     const dispatch = useDispatch();
     const {getTask} = props;
@@ -31,11 +30,10 @@ const ViewTask = (props) => {
       }else{
         getTask(taskId);
       }
-      dispatch(fetchApplicatinAuditHistoryList(application_id));
-      dispatch(
+      taskDetail.processInstanceId && dispatch(
         getProcessActivities(taskDetail.processInstanceId)
       );
-    },[taskId, dispatch, taskDetail, getTask,application_id])
+    },[taskId, dispatch, taskDetail, getTask])
 
     if (isLoading) {
       return <Loading/>;
@@ -65,7 +63,7 @@ const ViewTask = (props) => {
             <View page="task-detail"/>
           </Tab>
           <Tab eventKey="history" title="Application History">
-            <History page="task-detail"/>
+            <History page="task-detail" applicationId={applicationId}/>
           </Tab>
           <Tab eventKey="process-diagram" title="Process Diagram">
             <ProcessDiagram

@@ -1,6 +1,5 @@
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {useParams} from "react-router-dom";
 
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
@@ -10,7 +9,7 @@ import LoadingOverlay from "react-loading-overlay";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 
 import {
-  fetchApplicatinAuditHistoryList
+  fetchApplicationAuditHistoryList
 } from "../../apiManager/services/applicationAuditServices";
 import {
   columns_history,
@@ -22,24 +21,21 @@ import Nodata from "./nodata";
 import {setUpdateHistoryLoader} from "../../actions/taskActions";
 
 
-const HistoryList = () => {
+const HistoryList = (props) => {
   const dispatch = useDispatch();
-  const {applicationId} = useParams();
-  const isTaskLoading = useSelector(state => state.tasks.isTaskLoading);
   const isHistoryListLoading = useSelector(state => state.tasks.isHistoryListLoading);
   const appHistory = useSelector(state => state.tasks.appHistory);
+  const applicationId = props.applicationId;
+
+  useEffect(()=>{
+    dispatch(setUpdateHistoryLoader(true));
+  },[dispatch]);
 
   useEffect(() => {
-    if (isHistoryListLoading || isTaskLoading) {
-      dispatch(
-        fetchApplicatinAuditHistoryList(applicationId, (err, res) => {
-          if (!err) {
-            dispatch(setUpdateHistoryLoader(false));
-          }
-        })
-      )
+    if(applicationId && isHistoryListLoading) {
+        dispatch(fetchApplicationAuditHistoryList(applicationId));
     }
-  }, [applicationId, isHistoryListLoading, isTaskLoading, dispatch]);
+  }, [applicationId, isHistoryListLoading, dispatch]);
 
   if (isHistoryListLoading) {
     return <Loading/>;
@@ -48,16 +44,14 @@ const HistoryList = () => {
   const getNoDataIndicationContent = () => {
     return (
       <div className="div-no-task">
-        <label className="lbl-no-task"> No tasks found </label>
-        <br/>
-        <label className="lbl-no-task-desc">
-          {" "}
-          Please change the selected filters to view tasks{" "}
-        </label>
+        <label className="lbl-no-task"> No History found </label>
         <br/>
       </div>
     );
   };
+
+
+
   return (
     appHistory.length > 0 ? (
       <ToolkitProvider

@@ -10,10 +10,9 @@ import {getProcessActivities} from "../../apiManager/services/processServices";
 import Loading from "../../containers/Loading";
 import {setApplicationDetailLoader} from "../../actions/applicationActions";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
-import History from "./History";
+import History from "./ApplicationHistory";
 import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
-import {fetchApplicatinAuditHistoryList} from "../../apiManager/services/applicationAuditServices";
 //import { useDispatch } from 'react-redux'
 
 const ViewApplication = () => {
@@ -40,7 +39,6 @@ const ViewApplication = () => {
         }
       }));
       dispatch(getApplicationFormDataByAppId(applicationId));
-      dispatch(fetchApplicatinAuditHistoryList(applicationId));
   },[applicationId, dispatch]);
 
   if (isApplicationDetailLoading) {
@@ -68,7 +66,7 @@ const ViewApplication = () => {
           <View page="application-detail"/>
         </Tab>
         <Tab eventKey="history" title="History">
-            <History page="application-detail"/>
+            <History page="application-detail" applicationId={applicationId}/>
         </Tab>
         <Tab eventKey="process-diagram" title="Process Diagram">
             <ProcessDiagram

@@ -13,7 +13,6 @@ WORKDIR /forms-flow-forms/app
 # (note: using pinned versions to ensure immutable build environment)
 RUN apk update && \
     apk upgrade && \
-    apk add python=2.7.18-r0 && \
     apk add make=4.2.1-r2 && \
     apk add g++=8.3.0-r0
 
@@ -49,4 +48,4 @@ RUN set -x \
 
 # This will initialize the application based on
 # some questions to the user (login email, password, etc.)
-ENTRYPOINT [ "node", "main.js" ]
+ENTRYPOINT [ "node", "main" ]

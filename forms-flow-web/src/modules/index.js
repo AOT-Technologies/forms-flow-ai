@@ -9,6 +9,8 @@ import insights from "./insightReducer";
 import metrics from "./metricsReducer";
 import process from "./processReducer";
 import applications from './applicationsReducer';
+import menu from './menuReducer';
+
 const createRootReducer = (history) =>
   combineReducers({
     user,
@@ -23,6 +25,7 @@ const createRootReducer = (history) =>
     router: connectRouter(history),
     metrics,
     process,
+    menu
   });
 
 export default createRootReducer;

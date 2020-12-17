@@ -2,6 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import { Link } from "react-router-dom";
+// import Snackbar from '@material-ui/core/Snackbar';
+// import MuiAlert from '@material-ui/lab/Alert';
+
 import {
   indexForms,
   selectRoot,
@@ -21,11 +24,27 @@ import {
 import "../Form/List.scss";
 import { setFormDeleteStatus } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
+import Toast from "../Toast/Toast";
 
 const List = class extends Component {
+
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      open:true
+    }
+  }
   UNSAFE_componentWillMount() {
     this.props.getForms(1);
   }
+
+  handleSucessClose = () => {
+    this.setState({open:false})
+  };
+  handleSucessOpen = () => {
+    this.setState({open:true})
+  };
 
   render() {
     const {
@@ -56,11 +75,11 @@ const List = class extends Component {
           onYes={() => onYes(formId, forms)}
         />
         <div className="main-header">
-          <img src="/form.svg" width="30" height="30" alt="form" />
-          <h3 className="task-head">Forms</h3>
+          {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
+          <h3 className="task-head"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms</h3>
           {userRoles.includes(STAFF_DESIGNER) && (
             <Link
-              to="/form/create"
+              to="/formflow/create"
               className="btn btn-primary btn-right btn-sm"
             >
               <i className="fa fa-plus" /> Create Form
@@ -76,6 +95,11 @@ const List = class extends Component {
             operations={operations}
           />
         </section>
+        {this.props.isFormWorkflowSaved && (
+        <Toast
+          severity='success'
+          message='Changes saved successfully'/>)}
+
       </div>
     );
   }
@@ -104,6 +128,7 @@ const mapStateToProps = (state) => {
     modalOpen: selectRoot("formDelete", state).formDelete.modalOpen,
     formId: selectRoot("formDelete", state).formDelete.formId,
     formName: selectRoot("formDelete", state).formDelete.formName,
+    isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved,
   };
 };
 
@@ -132,7 +157,7 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(setFormDeleteStatus(formDetails));
           break;
         case "viewForm":
-          dispatch(push(`/form/${form._id}/view-edit`));
+          dispatch(push(`/formflow/${form._id}/view-edit`));
           break;
         default:
       }

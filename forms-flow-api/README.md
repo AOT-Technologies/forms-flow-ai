@@ -1,11 +1,11 @@
-# formsflow.ai Rest API 
+# formsflow.ai API 
 
 ![Python](https://img.shields.io/badge/python-3.8-blue) ![Flask](https://img.shields.io/badge/Flask-1.1.1-blue) ![postgres](https://img.shields.io/badge/postgres-latest-blue)
 
 **formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
 
 The goal of the REST API is to provide access to all relevant interfaces of 
-the system. It's build using Python 🐍.
+the system. It's build using Python :snake: .
 
 ## Table of Content
 * [Prerequisites](#prerequisites)
@@ -99,6 +99,8 @@ Content-Type : application/json
 Authorization: Bearer {access token}
 ``` 
 
+   * Checkout out the API documentation which can be accessed at **/swagger** endpoint.
+   
 ## Steps for enabling Sentiment Analysis component
 
 One of the unique features of the formsflow.ai framework is Sentiment Analysis. It can

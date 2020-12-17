@@ -16,7 +16,7 @@ const CardFormCounter = (props) => {
           }`}
         >
           <div className="name">
-            <i className="fa fa-wpforms mr-2" aria-hidden="true"></i>
+            <img src="/form.svg" width="30" height="30" alt="form" />
 
             <OverlayTrigger
               placement="top"

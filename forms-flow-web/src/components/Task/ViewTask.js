@@ -10,23 +10,29 @@ import {setLoader} from "../../actions/taskActions";
 import View from "../Form/Item/Submission/Item/View";
 import {getProcessStatusList} from "../../apiManager/services/processServices";
 import {getApplicationById, getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
-import History from './History';
-import ProcessDiagram from "../BPMN/ProcessDiagram";
+import History from '../Application/ApplicationHistory';
+// import ProcessDiagram from "../BPMN/ProcessDiagram";
+import ProcessDiagram from "../BPMN/ProcessDiagramHook";
+import {getProcessActivities} from "../../apiManager/services/processServices";
 
 const ViewTask = (props) => {
     const {taskId} = useParams();
     const taskDetail = useSelector(state => state.tasks.taskDetail);
     const applicationProcess = useSelector(state => state.applications.applicationProcess);
-
+    const applicationId = taskDetail.applicationId;
     const isLoading = useSelector(state => state.tasks.isLoading);
     const dispatch = useDispatch();
     const {getTask} = props;
+    // const processActivityList = useSelector(state => state.process.processActivityList);
     useEffect(()=>{
       if(taskDetail && taskDetail.id === taskId){
         dispatch(setLoader(false));
       }else{
         getTask(taskId);
       }
+      taskDetail.processInstanceId && dispatch(
+        getProcessActivities(taskDetail.processInstanceId)
+      );
     },[taskId, dispatch, taskDetail, getTask])
 
     if (isLoading) {
@@ -38,11 +44,13 @@ const ViewTask = (props) => {
           <Link to="/task">
             <img src="/back.svg" alt="back"/>
           </Link>
-          <span className="ml-3">
-            <img src="/clipboard.svg" alt="Task"/>
-          </span>
-          <h3>
-            <span className="task-head-details">Tasks /</span>{" "}
+{/*          <span className="ml-3">
+               <img src="/clipboard.svg" alt="Task"/>
+             <i class="fa fa-list-alt" alt="Task"></i>
+
+          </span>*/}
+          <h3 className="ml-3">
+            <span className="task-head-details"> <i className="fa fa-list"/> Tasks /</span>{" "}
             {`${taskDetail.name}`}
           </h3>
         </div>
@@ -55,11 +63,12 @@ const ViewTask = (props) => {
             <View page="task-detail"/>
           </Tab>
           <Tab eventKey="history" title="Application History">
-            <History page="task-detail"/>
+            <History page="task-detail" applicationId={applicationId}/>
           </Tab>
           <Tab eventKey="process-diagram" title="Process Diagram">
             <ProcessDiagram
                 process_key={applicationProcess.processKey}
+                // markers={processActivityList}
             />
           </Tab>
         </Tabs>

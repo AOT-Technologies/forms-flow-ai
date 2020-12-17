@@ -59,7 +59,7 @@ h4 {
 }
 #main {
   margin-top: 30px;
-  // min-height: 85vh;
+  min-height: 85vh;
   padding-bottom: 2.5rem;
 }
 body {
@@ -326,8 +326,8 @@ i.fa.fa-question-circle.text-muted {
   margin-left: 0px !important;
   display: flex;
   margin-top: 10px;
-  margin-bottom: 30px;
-  height: 35px;
+  margin-bottom: 25px;
+  height: 30px;
 }
 .task-head {
   font-weight: bold;
@@ -399,6 +399,7 @@ header nav{
 }
 
 .topheading-border-bottom{
+  z-index: 2000;
   border-bottom: 2px solid #4d61fc !important;
   padding: 0rem 0.5rem !important;
   box-shadow: 0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12);
@@ -415,8 +416,14 @@ header nav{
 .custom-app-name {
   font-size: 30px;
   font-weight: 600;
-  margin-left: -15px!important;
+  /*margin-left: -15px!important;*/
   color: black;
+}
+
+div[disabled]
+{
+  pointer-events: none;
+  opacity: 0.7;
 }
 
 

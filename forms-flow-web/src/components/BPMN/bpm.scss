@@ -1,7 +1,19 @@
 .bpm-container{
-    height: 400px;
+  height:100%;
+  position: absolute;
+  width: 100%;
+  overflow:hidden;
+}
+.bpmn-viewer-container{
+  min-height: 400px;
+  position:relative;
 }
 
-// a.bjs-powered-by {
-//     display: none !important;
-// }
+ .grab-cursor {
+   cursor: move;
+   cursor: grab;
+ }
+.highlight:not(.djs-connection) .djs-visual > :nth-child(1) {
+    fill: rgb(56,89,138) !important;
+}
+

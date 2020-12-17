@@ -1,6 +1,6 @@
-import React, { Component } from "react";
+import React, {useEffect}from "react";
 import { Route, Redirect } from "react-router-dom";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import UserService from "../services/UserService";
 import Form from "./Form";
@@ -12,73 +12,62 @@ import DashboardPage from "./Dashboard";
 import InsightsPage from "./Insights";
 import Application from "./Application";
 
-class PrivateRoute extends Component {
-  UNSAFE_componentWillMount() {
-    UserService.initKeycloak(this.props.store, (err, res) => {
-      this.props.setUserAuth(res.authenticated);
+const PrivateRoute = (props) => {
+  const dispatch = useDispatch();
+  const isAuth = useSelector((state) => state.user.isAuthenticated);
+  const userRoles=useSelector((state) => state.user.roles || []);
+
+  const ReviewerRoute = ({ component: Component, ...rest }) => (
+    <Route
+      {...rest}
+      render={(props) =>
+        userRoles.includes(STAFF_REVIEWER) ? (
+          <Component {...props} />
+        ) : (
+          <Redirect exact to="/" />
+        )
+      }
+    />
+  );
+
+  const ClientReviewerRoute = ({ component: Component, ...rest }) => (
+    <Route
+      {...rest}
+      render={(props) =>
+        userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT) ? (
+          <Component {...props} />
+        ) : (
+          <Redirect exact to="/" />
+        )
+      }
+    />
+  );
+
+  useEffect(()=>{
+    UserService.initKeycloak(props.store, (err, res) => {
+      dispatch(setUserAuth(res.authenticated));
     });
-  }
-  ReviewerRoute = ({ component: Component, ...rest }) => (
-    <Route
-      {...rest}
-      render={(props) =>
-        this.props.userRoles.includes(STAFF_REVIEWER) ? (
-          <Component {...props} />
-        ) : (
-          <Redirect exact to="/" />
-        )
-      }
-    />
-  );
+  },[props.store, dispatch]);
 
-  ClientReviewerRoute = ({ component: Component, ...rest }) => (
-    <Route
-      {...rest}
-      render={(props) =>
-        this.props.userRoles.includes(STAFF_REVIEWER) || this.props.userRoles.includes(CLIENT) ? (
-          <Component {...props} />
-        ) : (
-          <Redirect exact to="/" />
-        )
-      }
-    />
-  );
-
-  render() {
-    return (
+  return (
       <>
-        {this.props.isAuth ? (
+        {isAuth ? (
           <>
             <Route path="/form" component={Form} />
-            <this.ClientReviewerRoute path="/application" component={Application} />
-            <this.ReviewerRoute path="/metrics" component={DashboardPage} />
-            <this.ReviewerRoute path="/task" component={Task} />
+            <Route path="/formflow" component={Form} />
+            <ClientReviewerRoute path="/application" component={Application} />
+            <ReviewerRoute path="/metrics" component={DashboardPage} />
+            <ReviewerRoute path="/task" component={Task} />
             <Route exact path="/">
               <Redirect to="/form" />
             </Route>
-            <this.ReviewerRoute path="/insights" component={InsightsPage} />
+            <ReviewerRoute path="/insights" component={InsightsPage} />
           </>
         ) : (
           <Loading />
         )}
       </>
     );
-  }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    userRoles: state.user.roles || [],
-    isAuth: state.user.isAuthenticated,
-  };
-};
-
-const mapStateToDispatch = (dispatch) => {
-  return {
-    setUserAuth: (value) => {
-      dispatch(setUserAuth(value));
-    },
-  };
-};
-
-export default connect(mapStateToProps, mapStateToDispatch)(PrivateRoute);
+export default PrivateRoute;

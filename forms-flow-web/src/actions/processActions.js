@@ -21,6 +21,14 @@ export const setProcessLoadError = (data) => (dispatch) => {
   });
 };
 
+
+export const setProcessActivityLoadError = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.IS_PROCESS_ACTIVITY_LOAD_ERROR,
+    payload: data,
+  });
+};
+
 export const setAllProcessList = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.PROCESS_LIST,

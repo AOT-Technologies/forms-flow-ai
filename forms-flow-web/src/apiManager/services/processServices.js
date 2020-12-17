@@ -3,6 +3,7 @@ import API from "../endpoints";
 import {
   setProcessStatusLoading,
   setProcessList,
+  setProcessActivityLoadError,
   setProcessLoadError,
   setAllProcessList,
   setFormProcessesData,
@@ -147,14 +148,15 @@ export const getProcessActivities = (process_instance_id, ...rest) => {
       .then((res) => {
         if (res.data) {
           dispatch(setProcessActivityData(res.data.childActivityInstances));
+          dispatch(setProcessActivityLoadError(false));
         } else {
-          dispatch(setProcessLoadError(true));
+          dispatch(setProcessActivityLoadError(true));
         }
         done(null,res.data);
       })
       .catch((error) => {
         done(error);
-        dispatch(setProcessLoadError(true));
+        dispatch(setProcessActivityLoadError(true));
       });
   };
 };

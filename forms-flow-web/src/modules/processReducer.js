@@ -9,6 +9,7 @@ const initialState = {
   formProcessList: [],
   processActivityList: [],
   processDiagramXML: "",
+  processActivityLoadError: false,
   isProcessDiagramLoading: true
 };
 
@@ -20,6 +21,8 @@ export default (state = initialState, action) => {
       return { ...state, processStatusList: action.payload };
     case ACTION_CONSTANTS.IS_PROCESS_STATUS_LOAD_ERROR:
       return { ...state, processLoadError: action.payload };
+    case ACTION_CONSTANTS.IS_PROCESS_ACTIVITY_LOAD_ERROR:
+      return { ...state, processActivityLoadError: action.payload };
     case ACTION_CONSTANTS.PROCESS_LIST:
       return { ...state, processList: action.payload };
     case ACTION_CONSTANTS.IS_FORM_PROCESS_STATUS_LOAD_ERROR:
@@ -27,11 +30,11 @@ export default (state = initialState, action) => {
     case ACTION_CONSTANTS.FORM_PROCESS_LIST:
       return { ...state, formProcessList: action.payload };
     case ACTION_CONSTANTS.PROCESS_ACTIVITIES:
-      return { ...state, processActivityList: action.payload };  
+      return { ...state, processActivityList: action.payload };
     case ACTION_CONSTANTS.PROCESS_DIAGRAM_XML:
-      return { ...state, processDiagramXML: action.payload }; 
+      return { ...state, processDiagramXML: action.payload };
     case ACTION_CONSTANTS.IS_PROCESS_DIAGRAM_LOADING:
-      return { ...state, isProcessDiagramLoading: action.payload };   
+      return { ...state, isProcessDiagramLoading: action.payload };
     default:
       return state;
   }

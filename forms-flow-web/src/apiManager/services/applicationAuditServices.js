@@ -3,14 +3,13 @@ import API from "../endpoints";
 import {
   setApplicationHistoryList,
   serviceActionError,
-  setLoader,
-  // setApplicationHistoryDetail,
+  setUpdateHistoryLoader
 } from "../../actions/taskActions";
 import UserService from "../../services/UserService";
 import { replaceUrl } from "../../helper/helper";
 
 
-export const fetchApplicatinAuditHistoryList = (applicationId, ...rest) => {
+export const fetchApplicationAuditHistoryList = (applicationId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     const apiUrlAppHistory = replaceUrl(
@@ -27,16 +26,16 @@ export const fetchApplicatinAuditHistoryList = (applicationId, ...rest) => {
           return { ...app};
         });
         dispatch(setApplicationHistoryList(data));
-        //dispatch(setLoader(false));
+        dispatch(setUpdateHistoryLoader(false))
         done(null, res.data);
       } else {
         dispatch(serviceActionError(res));
-        dispatch(setLoader(false));
+        dispatch(setUpdateHistoryLoader(false));
       }
       })
       .catch((error) => {
         dispatch(serviceActionError(error));
-        dispatch(setLoader(false));
+        dispatch(setUpdateHistoryLoader(false))
         done(error);
       });
   };

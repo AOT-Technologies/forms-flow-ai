@@ -18,10 +18,10 @@ const Edit = (props) => (
       {/* <Link to="/form">
             <img src="/back.svg" alt="back" />
           </Link> */}
-      <span className="ml-3">
+     {/* <span className="ml-3">
         <img src="/form.svg" alt="Forms" />
-      </span>
-      <h3 className="task-head">{props.form.title}</h3>
+      </span>*/}
+      <h3  className="ml-3 task-head"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; {props.form.title}</h3>
     </div>
 
     <hr />
@@ -47,7 +47,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         saveForm("form", form, (err, form) => {
           if (!err) {
             // TODO: Display a save success message here.
-            dispatch(push(`/form/${form._id}/preview`));
+            dispatch(push(`/formflow/${form._id}/preview`));
             // ownProps.setPreviewMode(true);
           }
         })

@@ -14,6 +14,7 @@ const API = {
   GET_ALL_APPLICATIONS: `${WEB_BASE_URL}/application`,
   GET_PROCESS_MAPPER_FOR_APPLICATION: `${WEB_BASE_URL}/application/<application_id>/process`,
   PROCESSES: `${WEB_BASE_URL}/process`,
+  PROCESS_ACTIVITIES: `${WEB_BASE_URL}/process/process-instance/<process_instance_id>/activity-instances`,
   FORM: `${WEB_BASE_URL}/form`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
   APPLICATION_EVENT_UPDATE:`${WEB_BASE_URL}/process/event`,

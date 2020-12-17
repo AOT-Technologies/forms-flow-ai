@@ -11,6 +11,7 @@ RUN apk update && apk upgrade && \
     apk add --no-cache bash git openssh
 
 # install and cache app dependencies
+COPY package-lock.json /forms-flow-web/app/package-lock.json
 COPY package.json /forms-flow-web/app/package.json
 COPY forms-flow-util/package.json /forms-flow-web/app/forms-flow-util/package.json
 RUN npm install --silent

@@ -48,11 +48,11 @@ const View = (props) => {
             :
             null
           }
-          <span className="ml-3">
-            <img src="/form.svg" alt="Forms" />
-          </span>
-          <h3>
-            <span className="task-head-details">Forms /</span> {form.title}
+{/*          <span className="ml-3">
+            <img src="/form.svg" width="30" height="30" alt="form" />
+          </span>*/}
+          <h3 className="ml-3">
+            <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms /</span> {form.title}
           </h3>
         </div>
         <Errors errors={errors} />

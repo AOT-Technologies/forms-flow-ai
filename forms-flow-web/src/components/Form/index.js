@@ -19,15 +19,21 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
     render={(props) => {
       if(user.includes(STAFF_DESIGNER)){
         return <Component {...props} />;
-      } else if(user.includes(STAFF_REVIEWER) || user.includes(CLIENT) ){
-        return <Route path="/form/:formId" component={Item} />
-      } else {
+      } else{
         return <Redirect exact to="/" />
       }
     }
     }
   />
 );
+const FormSubmissionRoute = ({ component: Component, ...rest }) => (
+  <Route {...rest} render={(props) => (
+    user.includes(STAFF_REVIEWER) || user.includes(CLIENT)
+      ? <Component {...props} />
+      : <Redirect exact to='/' />
+  )} />
+);
+
 
 const Form = (props) => {
   user = props.user;
@@ -39,10 +45,10 @@ const Form = (props) => {
       <Switch>
         <Route exact path="/form" component={List} />
         <CreateFormRoute
-          path="/form/:formId?/:step?"
+          path="/formflow/:formId?/:step?"
           component={Stepper}
         />
-
+        <FormSubmissionRoute path="/form/:formId/" component={Item}/>
         {/* <Route path="/form/:formId" component={Item} /> */}
       </Switch>
     </div>

@@ -1,12 +1,35 @@
 # Changelog for formsflow.ai
-Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
+Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
-## Future Release
-* Render the form workflow association in readonly and give option to edit
-* Show  task navigation in workflow diagram
-* Support to access formsflow.ai solution in mobile
+## 3.1.0 - 2020-12-17
+`Modified`
+* Formio upgraded to latest version-2.0.0.rc34 (Component : forms-flow-forms)
+* In application & task dashboard, the process diagram navigation is highlighted on the diagram (Component : forms-flow-web)
+* Made cosmetic changes to menu icons (Component: forms-flow-web)
+* Update on swagger documentation (Component: forms-flow-api)
+* For the designer's edit scenario, by default the workflow selection & association is rendered as read-only with an option to toggle and edit(Component: forms-flow-web)
 
-## 3.0.0 - 2020-10-10
+`Untested Features`
+* Support to associate an unique form at every manual task in workflow process (Component: forms-flow-bpm)
+
+`Fixed`
+* Support to access forms-flow-ai solution in mobile(Component: forms-flow-web)
+* Forms flow Edit/submission Routing Fix for User with Multiple Role (Component: forms-flow-web)
+
+`Upcoming Features`
+* Refactoring python api to use module *flask-resk-jsonapi* (Component: forms-flow-api)
+* Enhanced sorting, searching and pagination  (Component: forms-flow-web)
+
+`Known Issues`
+* Custom component (Text Area with analytics) not retaining the value after submission
+* Cosmetic changes to show success message after loading is completed
+
+## 3.0.1 - 2020-10-08
+`Modified`
+* In application dashboard, the "Application Status" column search component has been enhanced to show all possible values in dropdown (Component : forms-flow-web)
+* In application dashboard, the button label has been modified to show as "Acknowledge" for status "Awaiting Acknowledgement" (Component : forms-flow-web)
+
+## 3.0.0 - 2020-10-07
 `Added`
 * Logo & UI Styling
 * Introduced Applications menu

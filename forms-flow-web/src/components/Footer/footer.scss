@@ -1,8 +1,15 @@
 @import "./../../assets/styles/themes.scss";
 
 .footer {
+  padding-bottom: 15px;
+  padding-top: 15px;
   position: absolute;
   bottom: 0;
-  width: calc(100% - 250px);
   height: 2.5rem; /* Footer height */
+  width:calc(100% - 250px);
+}
+@media (max-width: 768px) {
+  .footer{
+    width:100% !important;
+  }
 }

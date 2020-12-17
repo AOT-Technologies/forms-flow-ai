@@ -79,7 +79,7 @@ const List = class extends Component {
           <h3 className="task-head"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms</h3>
           {userRoles.includes(STAFF_DESIGNER) && (
             <Link
-              to="/form/create"
+              to="/formflow/create"
               className="btn btn-primary btn-right btn-sm"
             >
               <i className="fa fa-plus" /> Create Form
@@ -157,7 +157,7 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(setFormDeleteStatus(formDetails));
           break;
         case "viewForm":
-          dispatch(push(`/form/${form._id}/view-edit`));
+          dispatch(push(`/formflow/${form._id}/view-edit`));
           break;
         default:
       }

@@ -47,7 +47,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         saveForm("form", form, (err, form) => {
           if (!err) {
             // TODO: Display a save success message here.
-            dispatch(push(`/form/${form._id}/preview`));
+            dispatch(push(`/formflow/${form._id}/preview`));
             // ownProps.setPreviewMode(true);
           }
         })

@@ -70,7 +70,7 @@ const Preview = class extends Component {
           <Button
             className="btn btn-primary btn-sm form-btn pull-right btn-right"
             onClick={() => {
-              dispatch(push(`/form/${form._id}/edit`));
+              dispatch(push(`/formflow/${form._id}/edit`));
             }}
           >
             <i className="fa fa-pencil" aria-hidden="true"/>

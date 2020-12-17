@@ -74,7 +74,7 @@ class StepperPage extends Component {
       this.setState({ disablePreview: true });
 
     }
-    
+
   }
 
   componentWillUnmount() {
@@ -338,7 +338,6 @@ class StepperPage extends Component {
 
   render() {
     // const { process } = this.props;
-
     const steps = this.getSteps();
 
     const handleReset = () => {
@@ -431,7 +430,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveForm("form", newForm, (err, form) => {
           if (!err) {
-            dispatch(push(`/form/${form._id}/preview`));
+            dispatch(push(`/formflow/${form._id}/preview`));
           }
         })
       );

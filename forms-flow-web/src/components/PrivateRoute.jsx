@@ -54,6 +54,7 @@ const PrivateRoute = (props) => {
         {isAuth ? (
           <>
             <Route path="/form" component={Form} />
+            <Route path="/formflow" component={Form} />
             <ClientReviewerRoute path="/application" component={Application} />
             <ReviewerRoute path="/metrics" component={DashboardPage} />
             <ReviewerRoute path="/task" component={Task} />

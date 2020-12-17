@@ -1,17 +1,28 @@
 # Changelog for formsflow.ai
-Mark  items as `Added`, `Changed`, `Fixed`, `Removed`
+Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
-## 3.1.0 - 2020-12-15
+## 3.1.0 - 2020-12-17
 `Modified`
 * Formio upgraded to latest version-2.0.0.rc34 (Component : forms-flow-forms)
-* In application dashboard, forms process diagram highlight feature (Component : forms-flow-web)
-* Updated menu icons (Component: forms-flow-web)
-* Render the form workflow association in readonly and give option to edit (Component: forms-flow-web)
+* In application & task dashboard, the process diagram navigation is highlighted on the diagram (Component : forms-flow-web)
+* Made cosmetic changes to menu icons (Component: forms-flow-web)
+* Update on swagger documentation (Component: forms-flow-api)
+* For the designer's edit scenario, by default the workflow selection & association is rendered as read-only with an option to toggle and edit(Component: forms-flow-web)
+
+`Untested Features`
+* Support to associate an unique form at every manual task in workflow process (Component: forms-flow-bpm)
 
 `Fixed`
-* Mobile responsive updates to forms-flow-ai(Component: forms-flow-web)
-* Sentiment Analysis API response not getting saved in mongodb
-* Update swagger docs
+* Support to access forms-flow-ai solution in mobile(Component: forms-flow-web)
+* Forms flow Edit/submission Routing Fix for User with Multiple Role (Component: forms-flow-web)
+
+`Upcoming Features`
+* Refactoring python api to use module *flask-resk-jsonapi* (Component: forms-flow-api)
+* Enhanced sorting, searching and pagination  (Component: forms-flow-web)
+
+`Known Issues`
+* Custom component (Text Area with analytics) not retaining the value after submission
+* Cosmetic changes to show success message after loading is completed
 
 ## 3.0.1 - 2020-10-08
 `Modified`

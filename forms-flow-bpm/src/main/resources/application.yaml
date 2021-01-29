@@ -5,9 +5,9 @@ keycloak.url.realm: ${KEYCLOAK_URL_REALM}
 keycloak.clientId: ${KEYCLOAK_CLIENTID}
 keycloak.clientSecret: ${KEYCLOAK_CLIENTSECRET}
 
-formbuilder.pipeline.service.username: ${FORMBUILDER_PIPELINE_USERNAME}
-formbuilder.pipeline.service.password: ${FORMBUILDER_PIPELINE_PASSWORD}
-formbuilder.pipeline.service.bpm-url: ${FORMBUILDER_PIPELINE_BPM_URL}
+formbuilder.pipeline.service.username: ${CAMUNDA_FORMBUILDER_PIPELINE_USERNAME}
+formbuilder.pipeline.service.password: ${CAMUNDA_FORMBUILDER_PIPELINE_PASSWORD}
+formbuilder.pipeline.service.bpm-url: ${CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL}
 
 spring.datasource:
   jdbc-url: ${CAMUNDA_JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
@@ -21,26 +21,26 @@ spring.datasource:
   validationTimeout: ${CAMUNDA_HIKARI_VALID_TIMEOUT:5000}
 
 session.datasource:
-  jdbc-url: ${SESSION_JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
-  username: ${SESSION_JDBC_USER:sa}
-  password: ${SESSION_JDBC_PASSWORD:sa}
-  driverClassName: ${SESSION_JDBC_DRIVER:org.h2.Driver}
+  jdbc-url: ${CAMUNDA_SESSION_JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+  username: ${CAMUNDA_SESSION_JDBC_USER:sa}
+  password: ${CAMUNDA_SESSION_JDBC_PASSWORD:sa}
+  driverClassName: ${CAMUNDA_SESSION_JDBC_DRIVER:org.h2.Driver}
   type: com.zaxxer.hikari.HikariDataSource
-  connectionTimeout: ${SESSION_HIKARI_CONN_TIMEOUT:30000}
-  idleTimeout: ${SESSION_HIKARI_IDLE_TIMEOUT:600000}
-  maximumPoolSize: ${SESSION_HIKARI_MAX_POOLSIZE:10}
-  validationTimeout: ${SESSION_HIKARI_VALID_TIMEOUT:5000}
+  connectionTimeout: ${CAMUNDA_SESSION_HIKARI_CONN_TIMEOUT:30000}
+  idleTimeout: ${CAMUNDA_SESSION_HIKARI_IDLE_TIMEOUT:600000}
+  maximumPoolSize: ${CAMUNDA_SESSION_HIKARI_MAX_POOLSIZE:10}
+  validationTimeout: ${CAMUNDA_SESSION_HIKARI_VALID_TIMEOUT:5000}
 
 analytics.datasource:
-  jdbc-url: ${ANALYTICS_JDBC_URL}
-  username: ${ANALYTICS_JDBC_USER}
-  password: ${ANALYTICS_JDBC_PASSWORD}
-  driverClassName: ${ANALYTICS_JDBC_DRIVER}
+  jdbc-url: ${CAMUNDA_ANALYTICS_JDBC_URL}
+  username: ${CAMUNDA_ANALYTICS_JDBC_USER}
+  password: ${CAMUNDA_ANALYTICS_JDBC_PASSWORD}
+  driverClassName: ${CAMUNDA_ANALYTICS_JDBC_DRIVER}
   type: com.zaxxer.hikari.HikariDataSource
-  connectionTimeout: ${ANALYTICS_HIKARI_CONN_TIMEOUT:30000}
-  idleTimeout: ${ANALYTICS_HIKARI_IDLE_TIMEOUT:600000}
-  maximumPoolSize: ${ANALYTICS_HIKARI_MAX_POOLSIZE:10}
-  validationTimeout: ${ANALYTICS_HIKARI_VALID_TIMEOUT:5000}
+  connectionTimeout: ${CAMUNDA_ANALYTICS_HIKARI_CONN_TIMEOUT:30000}
+  idleTimeout: ${CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT:600000}
+  maximumPoolSize: ${CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE:10}
+  validationTimeout: ${CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT:5000}
 
 
 formsflow.ai:
@@ -66,8 +66,8 @@ spring:
     allow-bean-definition-overriding: true
   session:
     jdbc.initialize-schema: always
-    store-type: ${SESSION_STORE_TYPE:none}
-    timeout.seconds: ${SESSION_STORE_TIMEOUT:28800}
+    store-type: ${CAMUNDA_SESSION_STORE_TYPE:none}
+    timeout.seconds: ${CAMUNDA_SESSION_STORE_TIMEOUT:28800}
 
 management:
   health:
@@ -95,10 +95,10 @@ info:
 #    port: ${REDIS_PORT:6379}
 
 camunda.bpm:
-  history-level: ${BPM_HISTORY_LEVEL}
+  history-level: ${CAMUNDA_BPM_HISTORY_LEVEL}
   authorization:
-    enabled: ${AUTHORIZATION_FLAG:true}
-    authorization-check-revokes: ${AUTHORIZATION_REVOKE_CHECK_FLAG:auto}
+    enabled: ${CAMUNDA_AUTHORIZATION_FLAG:true}
+    authorization-check-revokes: ${CAMUNDA_AUTHORIZATION_REVOKE_CHECK_FLAG:auto}
   filter:
     create: All tasks
   webapp:
@@ -114,15 +114,15 @@ camunda.bpm:
         frame-ancestors 'none';
         object-src 'none'
   job-execution:
-    core-pool-size: ${JOB_CORE_POOL_SIZE:3}
-    lock-time-in-millis: ${JOB_LOCK_TIME_MILLIS:300000}
-    max-jobs-per-acquisition: ${JOB_MAXJOBS_PER_ACQUISITION:3}
-    max-pool-size: ${JOB_MAX_POOL_SIZE:10}
-    queue-capacity: ${JOB_QUEUE_SIZE:3}
-    wait-time-in-millis: ${JOB_WAIT_TIME_MILLIS:5000}
-    max-wait: ${JOB_MAX_WAIT:60000}
+    core-pool-size: ${CAMUNDA_JOB_CORE_POOL_SIZE:3}
+    lock-time-in-millis: ${CAMUNDA_JOB_LOCK_TIME_MILLIS:300000}
+    max-jobs-per-acquisition: ${CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION:3}
+    max-pool-size: ${CAMUNDA_JOB_MAX_POOL_SIZE:10}
+    queue-capacity: ${CAMUNDA_JOB_QUEUE_SIZE:3}
+    wait-time-in-millis: ${CAMUNDA_JOB_WAIT_TIME_MILLIS:5000}
+    max-wait: ${CAMUNDA_JOB_MAX_WAIT:60000}
   metrics:
-    enabled: ${METRICS_FLAG:true}
+    enabled: ${CAMUNDA_METRICS_FLAG:true}
 server:
   port: 8080
   servlet.context-path: /camunda
@@ -151,10 +151,10 @@ rest.security:
 
 logging:
   level:
-    org.springframework.security: ${APP_ROOT_LOG_FLAG}
-    org.springframework.web: ${APP_ROOT_LOG_FLAG}
-    org.springframework.jdbc: ${APP_ROOT_LOG_FLAG}
-    org.camunda.bpm.extension: ${APP_ROOT_LOG_FLAG}
+    org.springframework.security: ${CAMUNDA_APP_ROOT_LOG_FLAG}
+    org.springframework.web: ${CAMUNDA_APP_ROOT_LOG_FLAG}
+    org.springframework.jdbc: ${CAMUNDA_APP_ROOT_LOG_FLAG}
+    org.camunda.bpm.extension: ${CAMUNDA_APP_ROOT_LOG_FLAG}
 
 plugin.identity.keycloak.rest:
   userNameClaim: preferred_username

@@ -34,12 +34,11 @@ fieldset[disabled] .btn-primary.active{
 
  .navbar-brand {
   text-indent: -999em;
-  background-image: url(./formsflow.ai_icon.svg);
+  background-image: url(./gov_bc_logo.svg);
   background-repeat: no-repeat;
   background-position: center center;
-  width: 50px;
-  background-size: contain;
-  margin: 3px 10px 3px 10px;
+  width: 200px;
+  margin: 3px 2px;
 }
 
 [cam-widget-header] .navbar-brand .brand-logo svg {
@@ -48,11 +47,11 @@ fieldset[disabled] .btn-primary.active{
 
 [cam-widget-header] {
   border-top: #355992;
-  background-color: #FFFFFF;
+  background-color: #003366;
 }
 
 [cam-widget-header] a, [cam-widget-header] a:hover, [cam-widget-header] a:focus{
-  color: #000000;
+  color: #fff;
 }
 
 .three-cols-layout .column-left .list-unstyled>.item.active, .three-cols-layout .column-center .list-unstyled>li.active, .three-cols-layout .column-left .list-unstyled>.item.active:hover, .three-cols-layout .column-center .list-unstyled>li.active:hover {
@@ -68,10 +67,10 @@ aside li.active>a {
 }
 
 .navbar-header:after {
-  content: "formsflow.ai";
+  content: "Service Flow";
   display: inline-flex;
-  color: #000000;
-  font-size: 30px;
+  color: #fff;
+  font-size: 35px;
   padding: 7px;
   line-height: 36px;
 }

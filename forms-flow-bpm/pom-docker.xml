@@ -136,8 +136,29 @@
 
 		<!-- Keycloak Identity Prover Plugin  -->
 		<dependency>
-			<groupId>org.camunda.bpm.extension</groupId>
-			<artifactId>camunda-bpm-identity-keycloak</artifactId>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-jdbc</artifactId>
+		</dependency>
+
+	<!-- MongoDB Session Cache 
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-mongodb</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+	-->
+
+		<!-- Keycloak Identity Prover Plugin  -->
+		<dependency>
+	        <groupId>org.camunda.bpm.extension</groupId>
+	        <artifactId>camunda-bpm-identity-keycloak</artifactId>
 		</dependency>
 
 		<!-- Add Email Component -->
@@ -282,6 +303,12 @@
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
 			<version>2.10.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.4</version>
 		</dependency>
 
 		<dependency>

@@ -15,7 +15,6 @@
     "bootstrap-vue": "^2.21.2",
     "node-sass": "^4.14.1",
     "sass-loader": "^7.1.0",
-    "semantic-ui-vue": "^0.7.0",
     "vee-validate": "^2.1.5",
     "vue": "^2.6.12",
     "vue-router": "^3.0.2"

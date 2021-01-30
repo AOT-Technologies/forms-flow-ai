@@ -1,61 +1,47 @@
-<template>
-  <div>
-    <sui-grid>
-      <sui-grid-row :columns="2">
-        <sui-grid-column :width="5">
-          <sui-segment >
-            <sui-list divided relaxed v-if="tasks && tasks.length">
-              <sui-list-item v-for="task in tasks" :key="task">
-                <sui-list-content>
+<template v-slot:button-content>
+
+  <b-container>
+    <b-row class="text-left" align-v="start">
+      <b-col cols="4">
+            Created
+            <b-list-group v-if="tasks && tasks.length">
+              <b-list-group-item v-for="task in tasks" :key="task">
                   <p><strong>
                     <router-link :to="`/tasklist/${task.id}`">{{task.name}}</router-link><br>
                     <p>My Process</p>
-                    {{task.name}}
                     <p>Created on: {{ timeDifference(task.created) }}</p>
                   </strong></p>
-                </sui-list-content>
-              </sui-list-item>
-            </sui-list>
-          </sui-segment>
-        </sui-grid-column>
-        <sui-grid-column :width="11">
-          <sui-segment raised>
-            <h2> Approve Data</h2>
-            <h2> MyData</h2>
-            <sui-list v-if="processdefinitions && processdefinitions.length">
-                    <sui-list-item :key="processdefinition.id" v-for="processdefinition of processdefinitions">
-                      <p>{{ processdefinition.name }}</p>
-                    </sui-list-item>
-                     </sui-list>
-            <sui-menu :widths="4">
-            <sui-list-item>
-              <sui-list-icon name="calendar alternate" />
-              <sui-list-content> Set follow-up date</sui-list-content>
-            </sui-list-item>
-            <sui-list-item>
-              <sui-list-icon name="bell" />
-              <sui-list-content> Due date</sui-list-content>
-            </sui-list-item>
-            <sui-list-item icon="th" content="Add groups"></sui-list-item>
-            <sui-list-item icon="user" content="Claim"></sui-list-item>
-            </sui-menu>
+              </b-list-group-item>
+            </b-list-group>
 
-            <sui-menu>
-            <sui-menu-item>Form</sui-menu-item>
-            <sui-menu-item>History</sui-menu-item>
-            <sui-menu-item active>Diagrams</sui-menu-item>
-            <sui-menu-item>Description</sui-menu-item>
-            </sui-menu>
 
-            <generic-form v-if="this.$route.params.taskId" :taskId="this.$route.params.taskId" :formKey="taskFormKey"></generic-form>
+            <div class="overflow-auto">
+              <b-pagination
+                v-model="currentPage"
+                :total-rows="rows"
+                :per-page="perpage">
+              </b-pagination>
+          </div>
+          <p class="mt-3">Current Page: {{ currentPage }}</p>
+      </b-col>
+
+      <b-col cols="8">
+          <h1> Detailed view</h1>
+          <div class="h2 mb-0">
+              <button type="button" class="btn btn-primary"><b-icon :icon="'calendar'"></b-icon> Set Follow-up date </button>
+              <button type="button" class="btn btn-primary"><b-icon :icon="'bell'"></b-icon> Due Date </button>
+              <button type="button" class="btn btn-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </button>
+              <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button>
+          </div>
+
+          <generic-form v-if="this.$route.params.taskId" :taskId="this.$route.params.taskId" :formKey="taskFormKey"></generic-form>
             <div v-if="!this.$route.params.taskId">
               <p>Please choose task.</p>
             </div>
-          </sui-segment>
-        </sui-grid-column>
-      </sui-grid-row>
-    </sui-grid>
-  </div>
+      </b-col>
+    </b-row>
+  </b-container>
+ 
 </template>
 
 <script>
@@ -68,9 +54,8 @@
         tasks: [],
         taskFormKey: '',
         processdefinitions: [],
-        page: 1,
-        perPage: 15,
-        pages: [],
+        perPage: 5,
+        currentPage: 1
       };
     },
     components: {

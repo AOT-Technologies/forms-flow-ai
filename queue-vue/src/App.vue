@@ -1,12 +1,14 @@
 <template>
   <div id="app">
-    <div is="sui-header">
-      <sui-menu inverted fluid top fixed>
-        <sui-menu-item>Camunda</sui-menu-item>
-        <sui-menu-item><router-link to="/">Home</router-link></sui-menu-item>
-        <sui-menu-item><router-link to="/startprocess">Start Process</router-link></sui-menu-item>
-        <sui-menu-item><router-link to="/tasklist">Tasklist</router-link></sui-menu-item>
-      </sui-menu>
+    <div>
+       <b-navbar>
+        <b-navbar-brand tag="h1" class="mb-0">
+          <router-link to="/">Home</router-link>
+        </b-navbar-brand>
+        <b-navbar-brand tag="h1" class="mb-0">
+          <router-link to="/tasklist">Tasklist</router-link>
+        </b-navbar-brand>
+      </b-navbar>
     </div>
     <router-view/>
   </div>

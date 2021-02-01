@@ -3,36 +3,56 @@
   <b-container>
     <b-row class="text-left" align-v="start">
       <b-col cols="4">
-            Created
+            <b-card>
+            Created <b-icon :icon="'chevron-down'"></b-icon>
+            </b-card>
             <b-list-group v-if="tasks && tasks.length">
+              <div>
+                <form>
+                  <input placeholder="Filter Tasks">
+                  <span>{{tasks.length}}</span>
+                </form>
+              </div>
               <b-list-group-item v-for="task in tasks" :key="task">
-                  <p><strong>
-                    <router-link :to="`/tasklist/${task.id}`">{{task.name}}</router-link><br>
-                    <p>My Process</p>
-                    <p>Created on: {{ timeDifference(task.created) }}</p>
-                  </strong></p>
+                    <h4><router-link :to="`/tasklist/${task.id}`">{{task.name}}</router-link><br></h4>
+                    <div class="d-flex w-100 justify-content-between">
+                    <h6 class="mb-1"><strong>My Process</strong></h6>
+                    <p class="mb-1"><strong> {{task.assignee}} </strong></p>
+                    </div>
+                    <div class="d-flex w-100 justify-content-between">
+                    Created on: {{ timeDifference(task.created) }}
+                    <p class="mb-1"> {{ task.priority }} </p>
+                    </div>
               </b-list-group-item>
             </b-list-group>
 
 
-            <div class="overflow-auto">
+            <!-- <div class="overflow-auto">
               <b-pagination
                 v-model="currentPage"
                 :total-rows="rows"
                 :per-page="perpage">
               </b-pagination>
           </div>
-          <p class="mt-3">Current Page: {{ currentPage }}</p>
+          <p class="mt-3">Current Page: {{ currentPage }}</p> -->
       </b-col>
 
       <b-col cols="8">
+        <b-card>  
+        </b-card>
           <h1> Detailed view</h1>
+          {{ task }}
+          <b-list-group-item>
+              {{this.$route.params.taskId}}
+          </b-list-group-item>
           <div class="h2 mb-0">
-              <button type="button" class="btn btn-primary"><b-icon :icon="'calendar'"></b-icon> Set Follow-up date </button>
+              <button type="button" class="btn btn-primary"><b-icon :icon="'calendar3'"></b-icon> Set Follow-up date </button>
               <button type="button" class="btn btn-primary"><b-icon :icon="'bell'"></b-icon> Due Date </button>
               <button type="button" class="btn btn-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </button>
               <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button>
           </div>
+
+          {{ this.$route.params.taskId}}
 
           <generic-form v-if="this.$route.params.taskId" :taskId="this.$route.params.taskId" :formKey="taskFormKey"></generic-form>
             <div v-if="!this.$route.params.taskId">
@@ -54,8 +74,8 @@
         tasks: [],
         taskFormKey: '',
         processdefinitions: [],
-        perPage: 5,
-        currentPage: 1
+        // perPage: 5,
+        // currentPage: 1
       };
     },
     components: {
@@ -89,17 +109,17 @@
         var seconds = date_diff.getSeconds();
 
         if(days===0&&hours===0&&minutes===0){
-          return seconds+ " Seconds"
+          return seconds+ " seconds ago"
         }
         else if (days===0&&hours===0) {
-          return minutes+ " Minutes"
+          return minutes+ " minutes ago"
         }
         
         else if(days ===0){
-          return hours+ " Hours"
+          return hours+ " hours ago"
         }
         else {
-          return days+ " Days"
+          return days+ " days ago"
         }
       }
     },
@@ -113,7 +133,6 @@
         CamundaRest.getProcessDefinitions().then((response)=>{
           this.processdefinitions = response.data;
         }).catch(() => {});
-        this.getPosts();
     }
   };
 

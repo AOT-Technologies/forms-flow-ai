@@ -16,10 +16,9 @@
               <b-list-group-item v-for="task in tasks" :key="task">
                     <h4><router-link :to="`/tasklist/${task.id}`">{{task.name}}</router-link><br></h4>
                     <div class="d-flex w-100 justify-content-between">
-                    <!-- <h6 class="mb-1"><strong>My Process</strong></h6> -->
+                    <h6 class="mb-1"><strong>My Process</strong></h6>
                     <!-- Ask with abhi about promises and how to obtain value from there -->
-                    <h6 class="mb-1"><strong>{{pid(task.processDefinitionId)}}</strong></h6>
-                    <!-- {{ routertask }} -->
+                    <!-- <h6 class="mb-1"><strong>{{pid(task.processDefinitionId)}}</strong></h6> -->
                     <p class="mb-1"><strong> {{task.assignee}} </strong></p>
                     </div>
                     <div class="d-flex w-100 justify-content-between">
@@ -42,27 +41,24 @@
 
       <b-col cols="8">
         <b-card>  
-        </b-card>
-          <h1> Detailed view</h1>
-          <!-- {{ task }}
-          <b-list-group-item>
-              {{this.$route.params.taskId}}
-          </b-list-group-item> -->
-          {{taskName}}
-          <b/>
-          {{taskProcess}}
+          <h1>{{taskName}}</h1>
+          <h3>{{taskProcess}}</h3>
+
+          <br>
           <div class="h2 mb-0">
               <button type="button" class="btn btn-primary"><b-icon :icon="'calendar3'"></b-icon> Set Follow-up date </button>
               <button type="button" class="btn btn-primary"><b-icon :icon="'bell'"></b-icon> Due Date </button>
               <button type="button" class="btn btn-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </button>
               <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button>
           </div>
-
-          {{ this.$route.params.taskId}}
+        
+        </b-card>
           <generic-form v-if="this.$route.params.taskId" :taskId="this.$route.params.taskId" :formKey="taskFormKey"></generic-form>
-            <div v-if="!this.$route.params.taskId">
+            <!-- <div v-if="!this.$route.params.taskId">
               <p>Please choose task.</p>
-            </div>
+            </div> -->
+
+            <formio src="https://examples.form.io/example" />
       </b-col>
     </b-row>
   </b-container>
@@ -71,8 +67,8 @@
 
 <script>
   import CamundaRest from '../services/camunda-rest';
+  import { Form } from 'vue-formio';
   import GenericForm from './GenericForm';
-  import axios from 'axios';
 
   export default {
     data() {
@@ -81,19 +77,16 @@
         taskFormKey: '',
         taskName: '',
         taskProcess: '',
-        processdefinitions: [],
         // perPage: 5,
         // currentPage: 1
       };
     },
     components: {
-      'generic-form': GenericForm
+      'generic-form': GenericForm,
+      formio: Form
     },
     watch: {
       '$route': 'fetchData',
-      tasks() {
-        this.setPages()
-      }
     },
     methods: {
       fetchData() {
@@ -136,27 +129,13 @@
         else {
           return days+ " days ago"
         }
-      },
-      pid(processDefinitionId){
-        axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}process-definition/${processDefinitionId}`)
-                .then((res) => {
-                  // this.routertask =  res.data.name;
-                  return res.data.name
-                })
-                .catch(() => {});
-    }
+      }
     },
     mounted() {
       CamundaRest.getTasks().then((result) => {
         this.tasks = result.data;
       });
       this.fetchData();
-      // this.pid();
-    },
-    created() {
-        CamundaRest.getProcessDefinitions().then((response)=>{
-          this.processdefinitions = response.data;
-        }).catch(() => {});
     }
   };
 

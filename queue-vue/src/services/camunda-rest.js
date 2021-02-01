@@ -7,6 +7,10 @@ class CamundaRest {
     return axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}process-definition?latestVersion=true`);
   }
 
+  static getProcessDefinitionById(processDefinitionId) {
+    return axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}process-definition/${processDefinitionId}`);
+  }
+
   static deployProcessDefinition(file) {
     return axios.post(`${CamundaRest.ENGINE_REST_ENDPOINT}deployment/create`, file);
   }
@@ -23,8 +27,8 @@ class CamundaRest {
     return axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}task?sortBy=created&sortOrder=desc&maxResults=10`);
   }
 
-  static getTaskFormKey(taskId) {
-    return axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}task/${taskId}/form`);
+  static getTask(taskId) {
+    return axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}task/${taskId}`);
   }
 
   static postCompleteTask(taskId, values) {

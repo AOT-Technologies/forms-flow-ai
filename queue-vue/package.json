@@ -13,10 +13,13 @@
     "axios": "^0.18.0",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
+    "jquery": "^3.5.1",
     "node-sass": "^4.14.1",
+    "popper.js": "^1.16.1",
     "sass-loader": "^7.1.0",
     "vee-validate": "^2.1.5",
     "vue": "^2.6.12",
+    "vue-formio": "^4.0.7",
     "vue-router": "^3.0.2"
   },
   "devDependencies": {

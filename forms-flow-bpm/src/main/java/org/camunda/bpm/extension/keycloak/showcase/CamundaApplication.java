@@ -57,7 +57,7 @@ public class CamundaApplication {
 		LOG.info("========================================");
 		LOG.info("Successfully started Camunda Showcase");
 		LOG.info("========================================\n");
-		//authorizeServiceAccount();
+		authorizeServiceAccount();
 	}
 	
 	/**
@@ -141,7 +141,7 @@ public class CamundaApplication {
 	}
 
 
-	/*private static void authorizeServiceAccount() {
+	private static void authorizeServiceAccount() {
 		LOG.info("Setting authorization for service account...");
 		ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
 
@@ -186,5 +186,5 @@ public class CamundaApplication {
 			authorizationService.saveAuthorization(auth);
 		}
 		LOG.info("Authorization set!\n");
-	}*/
+	}
 }

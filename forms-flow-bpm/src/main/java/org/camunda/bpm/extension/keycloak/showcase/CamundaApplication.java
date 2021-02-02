@@ -57,7 +57,7 @@ public class CamundaApplication {
 		LOG.info("========================================");
 		LOG.info("Successfully started Camunda Showcase");
 		LOG.info("========================================\n");
-		//authorizeServiceAccount();
+		authorizeServiceAccount();
 	}
 	
 	/**

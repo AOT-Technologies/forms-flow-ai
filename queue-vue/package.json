@@ -14,6 +14,7 @@
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
     "jquery": "^3.5.1",
+    "keycloak-js": "^12.0.2",
     "node-sass": "^4.14.1",
     "popper.js": "^1.16.1",
     "sass-loader": "^7.1.0",

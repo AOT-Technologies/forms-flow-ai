@@ -45,10 +45,10 @@ public class RestApiSecurityConfig extends ResourceServerConfigurerAdapter {
 
 	@Override
 	public void configure(final HttpSecurity http) throws Exception {
-		http.requestMatchers().antMatchers("/engine-rest/**","/engine-ext-rest/**").
+		http.requestMatchers().antMatchers("/engine-rest/**","/engine-rest-ext/**").
 				and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/engine-rest/**").permitAll()
 				.and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/engine-rest-ext/**").permitAll()
-				.antMatchers("/engine-rest/**","/engine-ext-rest/**")
+				.antMatchers("/engine-rest/**","/engine-rest-ext/**")
 				.authenticated().and().csrf().disable()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	}
@@ -91,7 +91,7 @@ public class RestApiSecurityConfig extends ResourceServerConfigurerAdapter {
 		FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
 		filterRegistration.setFilter(new KeycloakAuthenticationFilter(identityService));
 		filterRegistration.setOrder(102); // make sure the filter is registered after the Spring Security Filter Chain
-		filterRegistration.addUrlPatterns("/engine-rest/*","/engine-ext-rest/*");
+		filterRegistration.addUrlPatterns("/engine-rest/*","/engine-rest-ext/*");
 		return filterRegistration;
 	}
 

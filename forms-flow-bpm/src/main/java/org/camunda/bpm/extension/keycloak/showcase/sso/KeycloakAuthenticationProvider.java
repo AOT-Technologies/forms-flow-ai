@@ -52,7 +52,7 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 
         // Authentication successful
         AuthenticationResult authenticationResult = new AuthenticationResult(userId, true);
-        authenticationResult.setGroups(getUserGroups(userId, engine));
+        authenticationResult.setGroups(getUserGroups());
 
         return authenticationResult;
     }
@@ -62,6 +62,22 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
         // query groups using KeycloakIdentityProvider plugin
         engine.getIdentityService().createGroupQuery().groupMember(userId).list().forEach(g -> groupIds.add(g.getId()));
         return groupIds;
+    }
+
+    private List<String> getUserGroups() {
+
+        List<String> groupIds = new ArrayList<String>();
+
+        org.springframework.security.core.Authentication authentication = SecurityContextHolder.getContext()
+                .getAuthentication();
+
+        groupIds = authentication.getAuthorities().stream().map(res -> res.getAuthority())
+                .map(res -> res.substring(this.authorityPrefix.length())) // Strip Prefix
+                .collect(Collectors.toList());
+
+        log.info(groupIds.toString());
+        return groupIds;
+
     }
 
 }

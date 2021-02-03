@@ -8,6 +8,7 @@
         <b-navbar-brand tag="h1" class="mb-0">
           <router-link to="/tasklist">Tasklist</router-link>
         </b-navbar-brand>
+         <button variant="outline-primary" @click="keycloak.logout()">Logout</button>
       </b-navbar>
     </div>
     <router-view/>
@@ -16,7 +17,8 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  props: ["keycloak"],
 };
 </script>
 

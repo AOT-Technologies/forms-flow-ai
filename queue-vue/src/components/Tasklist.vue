@@ -45,18 +45,23 @@
           <h3>{{taskProcess}}</h3>
 
           <br>
-          <div class="h2 mb-0">
+          <div class="row">
+              <div class="col-md-auto">
               <button type="button" class="btn btn-primary"><b-icon :icon="'calendar3'"></b-icon> Set Follow-up date </button>
+              </div>
+              <div class="col-md">
               <button type="button" class="btn btn-primary"><b-icon :icon="'bell'"></b-icon> Due Date </button>
+              </div>
+              <div class="col-md">
               <button type="button" class="btn btn-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </button>
+              </div>
+              <div class="col-md">
               <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button>
+              </div>
           </div>
         
         </b-card>
           <generic-form v-if="this.$route.params.taskId" :taskId="this.$route.params.taskId" :formKey="taskFormKey"></generic-form>
-            <!-- <div v-if="!this.$route.params.taskId">
-              <p>Please choose task.</p>
-            </div> -->
 
             <formio src="https://examples.form.io/example" />
       </b-col>
@@ -128,6 +133,16 @@
         }
         else {
           return days+ " days ago"
+        }
+      }
+    },
+    computed: {
+      inDetail() {
+        if(this.taskName===''){
+          return 0;
+        }
+        else{
+          return 1;
         }
       }
     },

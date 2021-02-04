@@ -23,7 +23,8 @@
     "vue": "^2.6.12",
     "vue-formio": "^4.0.5",
     "vue-router": "^3.0.2",
-    "vuejs-logger": "^1.5.5"
+    "vuejs-logger": "^1.5.5",
+    "vuex": "^3.6.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.5.0",

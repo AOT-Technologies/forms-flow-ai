@@ -1,8 +1,8 @@
 {
   "name": "camunda-vue-app",
   "version": "1.0.0",
-  "description": "Example Camunda Tasklist based on Vue.js",
-  "author": "Felix Mueller <felix.mueller@camunda.com>",
+  "description": "Camunda Tasklist based on Vue.js",
+  "author": "Kurian Benoy",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -20,14 +20,14 @@
     "sass-loader": "^7.1.0",
     "vee-validate": "^2.1.5",
     "vue": "^2.6.12",
-    "vue-formio": "^4.0.7",
+    "vue-formio": "^4.0.5",
     "vue-router": "^3.0.2",
     "vuejs-logger": "^1.5.5"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.2.0",
-    "@vue/cli-plugin-eslint": "^3.2.0",
-    "@vue/cli-service": "^3.2.0",
+    "@vue/cli-plugin-babel": "^4.5.0",
+    "@vue/cli-plugin-eslint": "^4.5.0",
+    "@vue/cli-service": "^4.5.0",
     "babel-eslint": "^10.0.1",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",

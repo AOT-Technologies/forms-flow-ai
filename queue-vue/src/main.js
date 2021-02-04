@@ -53,7 +53,7 @@ keycloak.init({ onLoad: initOptions.onLoad }).then((auth) =>{
 
 
   setInterval(() =>{
-    keycloak.updateToken(1000).then((refreshed)=>{
+    keycloak.updateToken(70).then((refreshed)=>{
       if (refreshed) {
         Vue.$log.debug('Token refreshed');
       } else {
@@ -65,7 +65,7 @@ keycloak.init({ onLoad: initOptions.onLoad }).then((auth) =>{
     });
 
 
-  }, 1000)
+  }, 6000)
 
 }).catch(() =>{
 Vue.$log.error("Authenticated Failed");

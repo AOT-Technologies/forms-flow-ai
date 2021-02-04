@@ -3,6 +3,7 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import Vue from 'vue';
 import VueLogger from 'vuejs-logger';
 import App from './App';
+// import authenticateFormio from './services/formio';
 import router from './router';
 
 import 'bootstrap/dist/css/bootstrap.css'
@@ -43,13 +44,34 @@ keycloak.init({ onLoad: initOptions.onLoad }).then((auth) =>{
     Vue.$log.info("Authenticated");
   }
 
-  new Vue({
-    router,
-    render: h => h(App, {props: {keycloak: keycloak}}),
-  }).$mount('#app')
+  let ANONYMOUS_ID = process.env.VUE_APP_ANONYMOUS_ID
+  const roles = [ANONYMOUS_ID];
+
+  var jwt = require('jsonwebtoken');
+  const USER_RESOURCE_FORM_ID = process.env.VUE_APP_USER_RESOURCE_FORM_ID
+
+  var token = jwt.sign(
+    {
+      form: {
+        _id: USER_RESOURCE_FORM_ID, // form.io form Id of user resource
+      },
+      user: {
+        _id: "anonymous", // keep it like that
+        roles: roles,
+      },
+    },  'JWT_SECRET'
+  );
+  // eslint-disable-next-line no-console
+  console.log(token)
 
   localStorage.setItem("vue-token", keycloak.token)
   localStorage.setItem("vue-refresh-token", keycloak.refreshToken)
+  localStorage.setItem("formio-token", token)
+
+  new Vue({
+    router,
+    render: h => h(App, {props: {keycloak: keycloak, formio_token: token}}),
+  }).$mount('#app')
 
 
   setInterval(() =>{

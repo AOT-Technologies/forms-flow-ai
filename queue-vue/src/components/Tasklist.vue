@@ -59,6 +59,17 @@
               <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button>
               </div>
           </div>
+
+          <br>
+          <br>
+          <div>
+          <b-tabs content-class="mt-3">
+            <b-tab title="Form" active></b-tab>
+            <b-tab title="History"></b-tab>
+            <b-tab title="Diagram"></b-tab>
+            <b-tab title="Description"></b-tab>
+          </b-tabs>
+        </div>
         
         </b-card>
           <generic-form v-if="this.$route.params.taskId" :taskId="this.$route.params.taskId" :formKey="taskFormKey"></generic-form>

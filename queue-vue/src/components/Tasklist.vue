@@ -198,9 +198,7 @@
 
       CamundaRest.getProcessDefinitions().then((response) => {
         this.processDefinitionList = response.data;
-        }).catch(() => {
-    //console.error(e);
-      });
+        });
 
       CamundaRest.getUserList().then((response) => {
         this.userList = response.data;

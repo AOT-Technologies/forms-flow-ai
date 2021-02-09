@@ -47,6 +47,10 @@ class CamundaRest {
     return axios.post(`${CamundaRest.ENGINE_REST_ENDPOINT}task/${taskId}/unclaim`);
   }
 
+  static getFormioProcessUrl(taskId) {
+    return axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}task/${taskId}/variables`);
+  }
+
 }
 
 export default CamundaRest;

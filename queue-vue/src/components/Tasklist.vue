@@ -43,6 +43,7 @@
         <b-card>  
           <h1>{{taskName}}</h1>
           <h3>{{taskProcess}}</h3>
+          {{formid}}
 
           <br>
           <div class="row">
@@ -64,7 +65,10 @@
           <br>
           <div>
           <b-tabs content-class="mt-3">
-            <b-tab title="Form" active></b-tab>
+            <b-tab title="Form" active>
+              <formio src="https://forms2.aot-technologies.com/form/601871fe3dd9a85a1fa622be/submission/6020d93d3080f7e21b066143">
+              </formio>
+            </b-tab>
             <b-tab title="History"></b-tab>
             <b-tab title="Diagram"></b-tab>
             <b-tab title="Description"></b-tab>
@@ -74,7 +78,6 @@
         </b-card>
           <generic-form v-if="this.$route.params.taskId" :taskId="this.$route.params.taskId" :formKey="taskFormKey"></generic-form>
 
-            <formio src="https://examples.form.io/example" />
       </b-col>
     </b-row>
   </b-container>
@@ -86,6 +89,8 @@
   import { Form } from 'vue-formio';
   import GenericForm from './GenericForm';
 
+  // Form.setProjectUrl(process.env.VUE_APP_PROJECT_URL);
+  // Form.setBaseUrl(process.env.VUE_APP_API_URL);
   export default {
     data() {
       return {
@@ -93,13 +98,16 @@
         taskFormKey: '',
         taskName: '',
         taskProcess: '',
+        formId: '',
+        submissionId: '',
+        Url: '',
         // perPage: 5,
         // currentPage: 1
       };
     },
     components: {
       'generic-form': GenericForm,
-      formio: Form
+      formio: Form,
     },
     watch: {
       '$route': 'fetchData',
@@ -109,17 +117,31 @@
         CamundaRest.getTasks().then((result) => {
           this.tasks = result.data;
         });
-        if (this.$route.params.taskId) {
+        if (this.$route.params.taskId) {         
           CamundaRest.getTask(this.$route.params.taskId).then((result) => {
             this.taskFormKey = result.data.formKey;
             this.taskName = result.data.name;
             }).catch(() => {});
+          
           CamundaRest.getTask(this.$route.params.taskId)
           .then((result) => {CamundaRest.getProcessDefinitionById(result.data.processDefinitionId)
           .then((res) => {
             this.taskProcess = res.data.name;
           });
           })
+
+          CamundaRest.getFormioProcessUrl(this.$route.params.taskId)
+          .then((result)=> {
+              this.Url = result.data["formUrl"].value;
+              this.formId, this.submissionId = getFormIdSubmissionIdFromFormURL(this.url);
+          }).catch(() => {});
+        }
+
+        const getFormIdSubmissionIdFromFormURL = (formUrl) => {
+          const formArr = formUrl.split("/");
+          const formId = formArr[4];
+          const submissionId = formArr[6];
+          return {formId,submissionId};
         }
       },
       timeDifference(givendate) {      

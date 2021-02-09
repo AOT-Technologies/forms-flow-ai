@@ -35,24 +35,10 @@ let initOptions = {
 const STAFF_REVIEWER_ID = process.env.VUE_APP_REVIEWER_ROLE_ID
 const STAFF_REVIEWER = process.env.VUE_APP_REVIEWER_ROLE
 
-const STAFF_DESIGNER_ID = process.env.VUE_APP_DESIGNER_ROLE_ID
-const STAFF_DESIGNER = process.env.VUE_APP_DESIGNER_ROLE
-
-const CLIENT_ID = process.env.VUE_APP_CLIENT_ROLE_ID
-const CLIENT = process.env.VUE_APP_CLIENT_ROLE
-
 const ROLES = [
   {
     id: STAFF_REVIEWER_ID,
     title: STAFF_REVIEWER,
-  },
-  {
-    id: STAFF_DESIGNER_ID,
-    title: STAFF_DESIGNER,
-  },
-  {
-    id: CLIENT_ID,
-    title: CLIENT,
   },
 ];
 

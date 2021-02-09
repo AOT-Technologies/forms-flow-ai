@@ -51,6 +51,10 @@ class CamundaRest {
     return axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}task/${taskId}/variables`);
   }
 
+  static getUserList() {
+    return axios.get(`${CamundaRest.ENGINE_REST_ENDPOINT}user`)
+  }
+
 }
 
 export default CamundaRest;

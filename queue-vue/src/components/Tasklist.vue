@@ -16,7 +16,9 @@
               <b-list-group-item v-for="task in tasks" :key="task">
                     <h4><router-link :to="`/tasklist/${task.id}`">{{task.name}}</router-link><br></h4>
                     <div class="d-flex w-100 justify-content-between">
-                    <h6 class="mb-1"><strong>My Process</strong></h6>
+                    <h6 class="mb-1"><strong>
+                      {{ getProcessDataFromList(processDefinitionList, task.processDefinitionId, 'name') }}
+                      </strong></h6>
                     <!-- Ask with abhi about promises and how to obtain value from there -->
                     <!-- <h6 class="mb-1"><strong>{{pid(task.processDefinitionId)}}</strong></h6> -->
                     <p class="mb-1"><strong> {{task.assignee}} </strong></p>
@@ -26,8 +28,7 @@
                     <p class="mb-1"> {{ task.priority }} </p>
                     </div>
               </b-list-group-item>
-            </b-list-group>
-
+          </b-list-group>
 
             <!-- <div class="overflow-auto">
               <b-pagination
@@ -101,6 +102,8 @@
         formId: '',
         submissionId: '',
         Url: '',
+        processDefinitionList: [],
+        userList: []
         // perPage: 5,
         // currentPage: 1
       };
@@ -167,6 +170,14 @@
         else {
           return days+ " days ago"
         }
+      },
+      getProcessDataFromList(processList,processId,dataKey){
+        const process = processList.find(process=>process.id===processId);
+        return process && process[dataKey] ;
+      },
+      getUserNamefromList(userList,userId){
+        const user = userList.find(user=>user.id===userId);
+        return user.firstName + " " + user.lastName;
       }
     },
     computed: {
@@ -184,7 +195,17 @@
         this.tasks = result.data;
       });
       this.fetchData();
-    }
+
+      CamundaRest.getProcessDefinitions().then((response) => {
+        this.processDefinitionList = response.data;
+        }).catch(() => {
+    //console.error(e);
+      });
+
+      CamundaRest.getUserList().then((response) => {
+        this.userList = response.data;
+      }).catch(() => {});
+  }
   };
 
 </script>

@@ -1,34 +1,38 @@
 import VeeValidate from 'vee-validate';
+import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import Vue from 'vue';
 import VueLogger from 'vuejs-logger';
 import App from './App';
 import router from './router';
 import store from './store';
-import BootstrapVue from 'bootstrap-vue';
 
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Keycloak from 'keycloak-js';
 
-
-const options = {
-  isEnabled: true, logLevel : Vue.config.productionTip  ? 'error' : 'debug', stringifyArguments : false, showLogLevel : true, showMethodName : true, separator: '|', showConsoleColors: true
-};
-
 Vue.config.productionTip = false;
+const options = {
+  isEnabled: true,
+  logLevel : Vue.config.productionTip  ? 'error' : 'debug',
+  stringifyArguments : false,
+  showLogLevel : true,
+  showMethodName : true,
+  separator: '|',
+  showConsoleColors: true
+};
 Vue.use(VueLogger, options);
+Vue.use(VeeValidate);
 Vue.use(BootstrapVue)
-Vue.use(VeeValidate)
+Vue.use(IconsPlugin)
 
-// var jwt = rsequire("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 let initOptions = {
   url: process.env.VUE_APP_KEYCLOAK_URL,
   realm: process.env.VUE_APP_KEYCLOAK_REALM ,
   clientId: process.env.VUE_APP_KEYCLOAK_CLIENT_ID ,
-  onLoad: 'login-required'
+  onLoad: 'login-required',
   // onLoad: 'check-sso'
 }
-
 // const STAFF_REVIEWER_ID = process.env.VUE_APP_REVIEWER_ROLE_ID
 // const STAFF_REVIEWER = process.env.VUE_APP_REVIEWER_ROLE
 
@@ -37,7 +41,14 @@ let initOptions = {
 
 // const CLIENT_ID = process.env.VUE_APP_CLIENT_ROLE_ID
 // const CLIENT = process.env.VUE_APP_CLIENT_ROLE
-
+const STAFF_REVIEWER_ID = process.env.VUE_APP_REVIEWER_ROLE_ID
+const STAFF_REVIEWER = process.env.VUE_APP_REVIEWER_ROLE
+const ROLES = [
+  {
+    id: STAFF_REVIEWER_ID,
+    title: STAFF_REVIEWER,
+  }
+];
 // const ROLES = [
 //   {
 //     id: STAFF_REVIEWER_ID,
@@ -63,37 +74,56 @@ keycloak.init({ onLoad: initOptions.onLoad }).then((auth) =>{
     Vue.$log.info("Authenticated");
   }
 
+
+  const USER_RESOURCE_FORM_ID = process.env.VUE_APP_USER_RESOURCE_FORM_ID
+
+  const email = keycloak.tokenParsed.email
+  const Keycloak_Client = process.env.VUE_APP_KEYCLOAK_CLIENT_ID
+  
+  // let roles = [];
+  // for (let i = 0; i < UserRoles.length; i++) {
+  //   const roleData = ROLES.find((x) => x.title === UserRoles[i]);
+  //   if (roleData) {
+  //     roles = roles.concat(roleData.id);
+  //   }
+  // authenticateFormio(email, roles);
+
+  if(keycloak.resourceAccess[Keycloak_Client]) {
+    const UserRoles = keycloak.resourceAccess[Keycloak_Client].roles;
+    console.log(UserRoles)
+    let roles = [];
+    for (let i = 0; i < UserRoles.length; i++) {
+      const roleData = ROLES.find((x) => x.title === UserRoles[i]);
+      if (roleData) {
+        roles = roles.concat(roleData.id);
+      }
+    }
+    authenticateFormio(email, roles);
+  }
+    
+  else {
+    console.log("Didnt enter main loop");
+  }
+
+  const authenticateFormio = (user, roles) => {
+    const FORMIO_TOKEN = jwt.sign(
+      {
+        form: {
+          _id: USER_RESOURCE_FORM_ID, // form.io form Id of user resource
+        },
+        user: {
+          _id: user, // keep it like that
+          roles: roles,
+        },
+      },
+      "--- change me now ---"
+    ); // JWT secret key
+    //TODO remove this token from local Storage on logout and try to move to redux store as well
+    localStorage.setItem("formioToken", FORMIO_TOKEN);
+  };
+
   localStorage.setItem("vue-token", keycloak.token)
   localStorage.setItem("vue-refresh-token", keycloak.refreshToken)
-
-  const email = keycloak.tokenParsed.email; 
-  // const USER_RESOURCE_FORM_ID = process.env.VUE_APP_USER_RESOURCE_FORM_ID;
-
-  const REVIEWER_ROLE_ID = process.env.VUE_APP_DESIGNER_ROLE;
-  const roles = [REVIEWER_ROLE_ID];
-  
-  console.log(email)
-  console.log(roles);
-  //  authenticateFormio(email, roles);
-
-
-  // const authenticateFormio = (user, roles) => {
-  //   const FORMIO_TOKEN = jwt.sign(
-  //     {
-  //       form: {
-  //         _id: USER_RESOURCE_FORM_ID, // form.io form Id of user resource
-  //       },
-  //       user: {
-  //         _id: user, // keep it like that
-  //         roles: roles,
-  //       },
-  //     },
-  //     "--- change me now ---"
-  //   ); // JWT secret key
-  //   //TODO remove this token from local Storage on logout and try to move to redux store as well
-  //   console.log(FORMIO_TOKEN);
-  //   localStorage.setItem("formioToken", FORMIO_TOKEN);
-  // };
 
   new Vue({
     router,

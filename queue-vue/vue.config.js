@@ -4,7 +4,8 @@ module.exports = {
     port: '3000',
     proxy: {
       '/engine-rest': {
-        target: 'http://localhost:8080/',
+        target: 'https://bpm3.aot-technologies.com/camunda',
+        ws: true,
         changeOrigin: true,
         pathRewrite: {
 

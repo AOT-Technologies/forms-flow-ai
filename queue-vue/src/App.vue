@@ -3,9 +3,6 @@
     <div>
        <b-navbar>
         <b-navbar-brand tag="h1" class="mb-0">
-          <router-link to="/">Home</router-link>
-        </b-navbar-brand>
-        <b-navbar-brand tag="h1" class="mb-0">
           <router-link to="/tasklist">Tasklist</router-link>
         </b-navbar-brand>
          <button variant="outline-primary" @click="keycloak.logout()">Logout</button>

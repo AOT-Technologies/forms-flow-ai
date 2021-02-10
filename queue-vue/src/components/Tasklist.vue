@@ -19,8 +19,6 @@
                     <h6 class="mb-1"><strong>
                       {{ getProcessDataFromList(processDefinitionList, task.processDefinitionId, 'name') }}
                       </strong></h6>
-                    <!-- Ask with abhi about promises and how to obtain value from there -->
-                    <!-- <h6 class="mb-1"><strong>{{pid(task.processDefinitionId)}}</strong></h6> -->
                     <p class="mb-1"><strong> {{task.assignee}} </strong></p>
                     </div>
                     <div class="d-flex w-100 justify-content-between">
@@ -67,7 +65,7 @@
           <div>
           <b-tabs content-class="mt-3">
             <b-tab title="Form" active>
-              <formio src="https://forms2.aot-technologies.com/form/601871fe3dd9a85a1fa622be/submission/6020d93d3080f7e21b066143">
+              <formio src="https://forms2.aot-technologies.com/form/601871fe3dd9a85a1fa622be">
               </formio>
             </b-tab>
             <b-tab title="History"></b-tab>
@@ -80,12 +78,12 @@
       </b-col>
     </b-row>
   </b-container>
- 
 </template>
 
 <script>
   import CamundaRest from '../services/camunda-rest';
   import { Form } from 'vue-formio';
+  // import { Component, Vue } from 'vue-property-decorator';
 
 
   export default {
@@ -112,23 +110,24 @@
     },
     methods: {
       fetchData() {
-        CamundaRest.getTasks().then((result) => {
+        // CamundaRest.getTask().then(())
+        CamundaRest.getTasks(localStorage.getItem('vue-token')).then((result) => {
           this.tasks = result.data;
         });
         if (this.$route.params.taskId) {         
-          CamundaRest.getTask(this.$route.params.taskId).then((result) => {
+          CamundaRest.getTaskById(localStorage.getItem('vue-token'), this.$route.params.taskId).then((result) => {
             this.taskFormKey = result.data.formKey;
             this.taskName = result.data.name;
             }).catch(() => {});
           
-          CamundaRest.getTask(this.$route.params.taskId)
-          .then((result) => {CamundaRest.getProcessDefinitionById(result.data.processDefinitionId)
+          CamundaRest.getTaskById(localStorage.getItem('vue-token'), this.$route.params.taskId)
+          .then((result) => {CamundaRest.getProcessDefinitionById(localStorage.getItem('vue-token'), result.data.processDefinitionId)
           .then((res) => {
             this.taskProcess = res.data.name;
           });
           })
 
-          CamundaRest.getFormioProcessUrl(this.$route.params.taskId)
+          CamundaRest.getVariablesByTaskId(localStorage.getItem('vue-token'), this.$route.params.taskId)
           .then((result)=> {
               this.Url = result.data["formUrl"].value;
               this.formId, this.submissionId = getFormIdSubmissionIdFromFormURL(this.url);
@@ -186,16 +185,16 @@
       }
     },
     mounted() {
-      CamundaRest.getTasks().then((result) => {
+      CamundaRest.getTasks(localStorage.getItem('vue-token')).then((result) => {
         this.tasks = result.data;
       });
       this.fetchData();
 
-      CamundaRest.getProcessDefinitions().then((response) => {
+      CamundaRest.getProcessDefinition(localStorage.getItem('vue-token')).then((response) => {
         this.processDefinitionList = response.data;
         });
 
-      CamundaRest.getUserList().then((response) => {
+      CamundaRest.getUserList(localStorage.getItem('vue-token')).then((response) => {
         this.userList = response.data;
       }).catch(() => {});
   }

@@ -77,8 +77,6 @@
         </div>
         
         </b-card>
-          <generic-form v-if="this.$route.params.taskId" :taskId="this.$route.params.taskId" :formKey="taskFormKey"></generic-form>
-
       </b-col>
     </b-row>
   </b-container>
@@ -88,10 +86,8 @@
 <script>
   import CamundaRest from '../services/camunda-rest';
   import { Form } from 'vue-formio';
-  import GenericForm from './GenericForm';
 
-  // Form.setProjectUrl(process.env.VUE_APP_PROJECT_URL);
-  // Form.setBaseUrl(process.env.VUE_APP_API_URL);
+
   export default {
     data() {
       return {
@@ -109,7 +105,6 @@
       };
     },
     components: {
-      'generic-form': GenericForm,
       formio: Form,
     },
     watch: {

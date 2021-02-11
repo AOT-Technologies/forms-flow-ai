@@ -5,6 +5,7 @@ import router from './router';
 import store from './store';
 import jwt from 'jsonwebtoken'
 import Keycloak from 'keycloak-js';
+import {authenticateFormio} from "@/services/formio-token";
 
 Vue.config.productionTip = false;
 
@@ -52,18 +53,7 @@ keycloak.init({onLoad: "login-required"}).then((auth) =>{
         }
       }
 
-    const FORMIO_TOKEN = jwt.sign(
-        {
-          form: {
-            _id: USER_RESOURCE_FORM_ID, // form.io form Id of user resource
-          },
-          user: {
-            _id: email, // keep it like that
-            roles: roles,
-          },
-        },
-      ); 
-      sessionStorage.setItem("formioToken", FORMIO_TOKEN);
+      authenticateFormio(email,roles);
     }
     
     else {

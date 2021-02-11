@@ -83,26 +83,26 @@
 
 <script lang="ts">
 import CamundaRest from '../services/camunda-rest';
-import { Form } from 'vue-formio';
-import { Component, Prop, Vue } from 'vue-property-decorator'
+// import { Form } from 'vue-formio';
+import { Component, Vue } from 'vue-property-decorator'
 
 @Component
 export default class Tasklist extends Vue {
-  private tasks: Array<Object> = []
-  private getProcessDefinitions: Array<Object> = []
+    private tasks: Array<Object> = []
+    private getProcessDefinitions: Array<Object> = []
 
   
   
 
   timeDifference(givendate) {      
-    var diff = Math.abs(new Date() - new Date(givendate));
-    var msec = diff;
-    var days = Math.floor(msec / 1000 / 60 / (60 * 24))
-    var date_diff = new Date(msec);
+    const diff = Math.abs(new Date() - new Date(givendate));
+    const msec = diff;
+    const days = Math.floor(msec / 1000 / 60 / (60 * 24))
+    const dateDiff = new Date(msec);
 
-    var hours = date_diff.getHours();
-    var minutes = date_diff.getMinutes();
-    var seconds = date_diff.getSeconds();
+    const hours = dateDiff.getHours();
+    const minutes = dateDiff.getMinutes();
+    const seconds = dateDiff.getSeconds();
 
     if(days === 0 && hours === 0 && minutes === 0) {
       return seconds+ " seconds ago"
@@ -132,9 +132,8 @@ export default class Tasklist extends Vue {
     CamundaRest.getTasks(sessionStorage.getItem('token')).then((result) => {
       this.tasks = result.data;      
     }); 
-  }
-  
-};
+  } 
+}
 
 </script>
 

@@ -1,51 +1,50 @@
-// import {bpmAxios} from '../axios';
+import {bpmAxios} from '../axios';
 
-// const CamundaRest = {   
+const CamundaRest = {   
 
-//   getProcessDefinitions(bearerToken) {
-//     return bpmAxios(bearerToken).get(`/process-definition?latestVersion=true`);
-//   },
+  getProcessDefinitions(bearerToken) {
+    return bpmAxios(bearerToken).get(`/process-definition?latestVersion=true`);
+  },
 
-//   getProcessDefinitionById: (bearerToken, processDefinitionId) => {
-//     return bpmAxios(bearerToken).get(`process-definition/${processDefinitionId}`);
-//   },   
+  getProcessDefinitionById: (bearerToken, processDefinitionId) => {
+    return bpmAxios(bearerToken).get(`process-definition/${processDefinitionId}`);
+  },   
    
-//   startProcess(bearerToken, processDefinitionKey, values) {
-//     return bpmAxios(bearerToken).post(`/process-definition/key/${processDefinitionKey}/start`, values);
-//   },
+  startProcess(bearerToken, processDefinitionKey, values) {
+    return bpmAxios(bearerToken).post(`/process-definition/key/${processDefinitionKey}/start`, values);
+  },
     
-//   getTasks(bearerToken) {
-//     return bpmAxios(bearerToken).get(`/task?sortBy=created&sortOrder=desc&maxResults=10`);
-//   },
+  getTasks(bearerToken) {
+    return bpmAxios(bearerToken).get(`/task?sortBy=created&sortOrder=desc&maxResults=10`);
+  },
     
-//   getTaskById(bearerToken, taskId) {
-//     return bpmAxios(bearerToken).get(`/task/${taskId}`);
-//   },
+  getTaskById(bearerToken, taskId) {
+    return bpmAxios(bearerToken).get(`/task/${taskId}`);
+  },
     
-//   complete(bearerToken, taskId, values) {
-//     return bpmAxios(bearerToken).post(`/task/${taskId}/complete`, values);
-//   },    
+  complete(bearerToken, taskId, values) {
+    return bpmAxios(bearerToken).post(`/task/${taskId}/complete`, values);
+  },    
   
-//   claim(bearerToken, taskId) {
-//     return bpmAxios(bearerToken).post(`/task/${taskId}/claim`);
-//   },
+  claim(bearerToken, taskId) {
+    return bpmAxios(bearerToken).post(`/task/${taskId}/claim`);
+  },
     
-//   unclaim(bearerToken, taskId) {
-//     return bpmAxios(bearerToken).post(`/task/${taskId}/unclaim`);
-//   },
+  unclaim(bearerToken, taskId) {
+    return bpmAxios(bearerToken).post(`/task/${taskId}/unclaim`);
+  },
     
-//   getVariablesByTaskId(bearerToken, taskId) {
-//     return bpmAxios(bearerToken).get(`/task/${taskId}/variables`);
-//   },
+  getVariablesByTaskId(bearerToken, taskId) {
+    return bpmAxios(bearerToken).get(`/task/${taskId}/variables`);
+  },
 
-//   getVariablesByProcessId(bearerToken, processInstanceId) {
-//     return bpmAxios(bearerToken).get(`/process-instance/${processInstanceId}/variables`);
-//   },
+  getVariablesByProcessId(bearerToken, processInstanceId) {
+    return bpmAxios(bearerToken).get(`/process-instance/${processInstanceId}/variables`);
+  },
 
-//   getUsers(bearerToken) {
-//     return bpmAxios(bearerToken).get(`/user`)
-//   }      
+  getUsers(bearerToken) {
+    return bpmAxios(bearerToken).get(`/user`)
+  }      
+}
 
-// }
-
-// export default CamundaRest;
+export default CamundaRest;

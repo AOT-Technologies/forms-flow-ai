@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'axios';
 
 export function bpmAxios (bearerToken) {
     
@@ -14,3 +14,4 @@ export function bpmAxios (bearerToken) {
     })
   )
 }  
+

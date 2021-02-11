@@ -3,14 +3,11 @@ module.exports = {
   devServer: {
     port: '3000',
     proxy: {
-      '/engine-rest': {
-        target: 'https://bpm3.aot-technologies.com/camunda',
-        ws: true,
-        changeOrigin: true,
-        pathRewrite: {
-
+        "/engine-rest": {
+          target: "http://localhost:8080",
+          ws: true,
+          changeOrigin: true,
         }
-      }
+      },
     }
   }
-}

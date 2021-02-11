@@ -42,7 +42,6 @@
         <b-card>  
           <h1>{{taskName}}</h1>
           <h3>{{taskProcess}}</h3>
-          {{formid}}
 
           <br>
           <div class="row">
@@ -110,7 +109,6 @@
     },
     methods: {
       fetchData() {
-        // CamundaRest.getTask().then(())
         CamundaRest.getTasks(localStorage.getItem('vue-token')).then((result) => {
           this.tasks = result.data;
         });

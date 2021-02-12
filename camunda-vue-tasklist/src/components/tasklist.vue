@@ -1,48 +1,52 @@
-<template v-slot:button-content>  
+<template v-slot:button-content>
+
   <b-container>
     <b-row class="text-left" align-v="start">
       <b-col cols="4">
-            <b-card>
-            Created <b-icon :icon="'chevron-down'"></b-icon>
-            </b-card>
-            <b-list-group v-if="tasks && tasks.length">
-              <div>
-                <form>
-                  <input placeholder="Filter Tasks">
-                  <span>{{tasks.length}}</span>
-                </form>
-              </div>
-              <b-list-group-item v-for="task in tasks" :key="task">
-                    <h4><router-link :to="`/tasklist/${task.id}`">{{task.name}}</router-link><br></h4>
-                     <div class="d-flex w-100 justify-content-between">
-                    <h6 class="mb-1"><strong>
-                    </strong></h6>
-                    <!-- Ask with abhi about promises and how to obtain value from there -->
-                    <!-- <h6 class="mb-1"><strong>{{pid(task.processDefinitionId)}}</strong></h6> -->
-                    <p class="mb-1"><strong> {{task.assignee}} </strong></p>
-                    </div>                    
-                    <div class="d-flex w-100 justify-content-between">
-                    Created on: {{ timeDifference(task.created) }}
-                    <p class="mb-1"> {{ task.priority }} </p>
-                    </div>
-              </b-list-group-item>
-          </b-list-group>
-
-            <!-- <div class="overflow-auto">
-              <b-pagination
-                v-model="currentPage"
-                :total-rows="rows"
-                :per-page="perpage">
-              </b-pagination>
+          <b-list-group  v-if="tasks && tasks.length" class="service-task-list">   
+          <div class="filter-container">
+                <input type="text" class="filter" placeholder="Filter Tasks"/>
+                {{tasks.length}}
           </div>
-          <p class="mt-3">Current Page: {{ currentPage }}</p> -->
+            <b-list-group-item button v-for="task in tasks" :key="task" v-bind:to="`/tasklist/${task.id}`">
+              <b-link v-bind:to="`/tasklist/${task.id}`">
+                  <b-row>
+                    <div class="col-12">
+                      <h5>
+                      <!-- <router-link :to="`/tasklist/${task.id}`"> -->
+                        {{ task.name }}
+                      </h5>
+                      <br>
+                    </div>
+                  </b-row>
+
+                  <b-row class="task-row-2">
+                    <div class="col-6 pr-0">
+                    {{ getProcessDataFromList(processDefinitionList, task.processDefinitionId, 'name') }}         
+                    </div>
+                    <div title="Task assignee" class="col-6 pr-0 text-right">
+                      {{task.assignee}}
+                    </div>
+                  </b-row>
+
+                  <b-row class="task-row-3">
+                    <b-col lg=8 xs=8 class="pr-0" title="task.created">
+                      Created on: {{ timeDifference(task.created) }}
+                    </b-col>
+                    <b-col lg=4 xs=4 sm=4 class="pr-0 text-right" title="priority">
+                      {{ task.priority }}
+                    </b-col>
+                  </b-row>
+                </b-link>
+            </b-list-group-item>
+        </b-list-group>
+
       </b-col>
 
-      <b-col cols="8">
+      <b-col cols="8" v-if="this.$route.params.taskId">
         <b-card>  
           <h1>{{taskName}}</h1>
           <h3>{{taskProcess}}</h3>
-          {{formid}}
 
           <br>
           <div class="row">
@@ -65,7 +69,7 @@
           <div>
           <b-tabs content-class="mt-3">
             <b-tab title="Form" active>
-              <formio src="https://forms2.aot-technologies.com/form/601871fe3dd9a85a1fa622be/submission/6020d93d3080f7e21b066143">
+              <formio src="https://forms3.aot-technologies.com/#/form/5ffa9f93e941362b0cbac81f/submission/5ffec546e941363e74bac854">
               </formio>
             </b-tab>
             <b-tab title="History"></b-tab>
@@ -76,9 +80,15 @@
         
         </b-card>
       </b-col>
+
+      <b-col cols="8" v-else>
+        <b-row class="not-selected mt-2 ml-1 row">
+          <b-icon icon="exclamation-circle-fill" variant="secondary" scale="1"></b-icon>
+       <p>Select a task in the list.</p>
+        </b-row>
+      </b-col>
     </b-row>
   </b-container>
- 
 </template>
 
 <script lang="ts">
@@ -88,8 +98,13 @@ import { Component, Vue } from 'vue-property-decorator'
 
 @Component
 export default class Tasklist extends Vue {
-    private tasks: Array<Object> = []
-    private getProcessDefinitions: Array<Object> = []
+    private tasks = []
+    private getProcessDefinitions = []
+    private taskName: ''
+    private taskProcess: ''
+    private formId: ''
+    private submissionId: ''
+    private Url: ''
 
   
   
@@ -138,7 +153,46 @@ export default class Tasklist extends Vue {
 </script>
 
 <style>
+
   #ul_top_hypers li {
     display: inline;
+}
+.not-selected{
+  border: 3px solid #b3b3b3;
+  padding: 10px;
+  color: #b3b3b3;
+  width: 100%;
+}
+
+.filter-container{
+  border: 1px solid #555;
+  border-radius: 5px;
+  width: 100%;
+  padding: 0;
+  margin: 0 5px 10px 5px;
+  font-size: 13px;
+}
+
+.filter{
+  width: 85%;
+  margin: 5px;
+  border: none;
+  font-style: italic;
+}
+.filter:focus{
+  outline: none;
+}
+
+.task-row-2 {
+  font-size: 15px;
+}
+.task-row-3 {
+  font-size: 11px;
+}
+
+.service-task-list {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 25px;
 }
 </style>

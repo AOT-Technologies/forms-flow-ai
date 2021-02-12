@@ -8,14 +8,13 @@
                 <input type="text" class="filter" placeholder="Filter Tasks"/>
                 {{tasks.length}}
           </div>
-            <b-list-group-item v-for="task in tasks" :key="task">
-                  <!-- <h4><router-link :to="`/tasklist/${task.id}`">{{task.name}}</router-link><br></h4> -->
+            <b-list-group-item button v-for="task in tasks" :key="task" v-bind:to="`/tasklist/${task.id}`">
+              <b-link v-bind:to="`/tasklist/${task.id}`">
                   <b-row>
                     <div class="col-12">
                       <h5>
-                      <router-link :to="`/tasklist/${task.id}`">
+                      <!-- <router-link :to="`/tasklist/${task.id}`"> -->
                         {{ task.name }}
-                        </router-link>
                       </h5>
                       <br>
                     </div>
@@ -38,7 +37,7 @@
                       {{ task.priority }}
                     </b-col>
                   </b-row>
-
+                </b-link>
             </b-list-group-item>
         </b-list-group>
 

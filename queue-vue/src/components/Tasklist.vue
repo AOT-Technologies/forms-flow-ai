@@ -44,30 +44,26 @@
       </b-col>
 
       <b-col cols="8" v-if="this.$route.params.taskId">
-        <b-card>  
-          <h1>{{taskName}}</h1>
-          <h3>{{taskProcess}}</h3>
+        <b-row class="ml-0 task-header"> {{taskName}}</b-row>
+        <b-row class="ml-0 task-name">{{taskProcess}}</b-row>
 
-          <br>
-          <div class="row">
-              <div class="col-md-auto">
-              <button type="button" class="btn btn-primary"><b-icon :icon="'calendar3'"></b-icon> Set Follow-up date </button>
-              </div>
-              <div class="col-md">
-              <button type="button" class="btn btn-primary"><b-icon :icon="'bell'"></b-icon> Due Date </button>
-              </div>
-              <div class="col-md">
-              <button type="button" class="btn btn-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </button>
-              </div>
-              <div class="col-md">
-              <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button>
-              </div>
-          </div>
+        <b-row class="actionable">
+            <div class="col-md-auto">
+            <button type="button" class="btn btn-primary"><b-icon :icon="'calendar3'"></b-icon> Set Follow-up date </button>
+            </div>
+            <div class="col-md">
+            <button type="button" class="btn btn-primary"><b-icon :icon="'bell'"></b-icon> Due Date </button>
+            </div>
+            <div class="col-md">
+            <button type="button" class="btn btn-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </button>
+            </div>
+            <div class="col-md">
+            <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button>
+            </div>
+        </b-row>
 
-          <br>
-          <br>
           <div>
-          <b-tabs content-class="mt-3">
+          <b-tabs content-class="mt-3" id="service-task-details">
             <b-tab title="Form" active>
               <formio src="https://forms3.aot-technologies.com/#/form/5ffa9f93e941362b0cbac81f/submission/5ffec546e941363e74bac854">
               </formio>
@@ -78,7 +74,6 @@
           </b-tabs>
         </div>
         
-        </b-card>
       </b-col>
 
       <b-col cols="8" v-else>
@@ -181,16 +176,6 @@
         return user.firstName + " " + user.lastName;
       }
     },
-    computed: {
-      inDetail() {
-        if(this.taskName===''){
-          return 0;
-        }
-        else{
-          return 1;
-        }
-      }
-    },
     mounted() {
       CamundaRest.getTasks().then((result) => {
         this.tasks = result.data;
@@ -249,4 +234,26 @@
   overflow-y: auto;
   padding-right: 25px;
 } 
+
+.task-header {
+  font-size: 30px;
+  font-weight: 600;
+}
+.task-name {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.actionable {
+  color: #1a5a96;
+  background-color: transparent;
+  cursor: pointer;
+  margin: 10px 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.selected {
+  border-left: 2px solid #003366 !important;
+}
 </style>

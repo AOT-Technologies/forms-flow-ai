@@ -1,0 +1,83 @@
+.not-selected{
+  border: 3px solid #b3b3b3;
+  padding: 10px;
+  color: #b3b3b3;
+  width: 100%;
+}
+.service-task-list {
+  max-height: 80vh;
+  overflow-y: auto;
+  padding-right: 25px;
+}
+.filter-container{
+  border: 1px solid #555;
+  border-radius: 5px;
+  width: 100%;
+  padding: 0;
+  margin: 0 5px 10px 5px;
+  font-size: 13px;
+}
+.filter{
+  width: 85%;
+  margin: 5px;
+  border: none;
+  font-style: italic;
+}
+.filter:focus{
+  outline: none;
+}
+.clickable {
+  cursor: pointer;
+  margin-bottom: 10px !important;
+  padding: 10px;
+  border-left: 2px solid transparent;
+}
+.clickable:hover {
+  border-left: 2px solid #155cb5;
+}
+.selected {
+  border-left: 2px solid #003366 !important;
+}
+.task-row-2 {
+  font-size: 15px;
+}
+.task-row-3 {
+  font-size: 11px;
+}
+
+.actionable {
+  color: #1a5a96;
+  // text-decoration: underline;
+  background-color: transparent;
+  cursor: pointer;
+  margin: 10px 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+.task-header {
+  font-size: 30px;
+  font-weight: 600;
+}
+.task-name {
+  font-size: 20px;
+  font-weight: 400;
+}
+.modal-text{
+  font-size: 13px;
+  font-style: italic;
+}
+.add{
+  color: #155cb5;
+  font-size: 13px;
+  cursor: pointer;
+}
+.text-color{
+  color: black;
+  width: 100%;
+  padding: 2px 5px;
+  outline: none;
+  cursor: default;
+}
+.react-datepicker{
+  width: max-content;
+}

@@ -70,6 +70,19 @@ const SideBar = () => {
               </Link>
             ) : null}
           </li>
+          <li className={`${pathname.match(/^\/service-flow-task/) ? "active" : ""}`} onClick={menuToggle}>
+            {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
+              <Link
+                to="/service-flow-task"
+                className={`main-nav nav-link ${
+                  pathname.match(/^\/service-flow-task/) ? "active-tab" : ""
+                }`}
+              >
+                <i className="fa fa-list" />
+                Service Flow
+              </Link>
+            ) : null}
+          </li>
           <li
             className={` ${
               pathname && pathname.match(/^\/metrics/) ? "active" : ""

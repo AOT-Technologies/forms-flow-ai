@@ -4,7 +4,7 @@ import ServiceFlowTaskDetails from "./ServiceTaskDetails";
 import {Col, Container, Row} from "react-bootstrap";
 import {Route} from "react-router-dom";
 import "./ServiceFlow.scss";
-import {fetchProcessDefinitionList, fetchUserList} from "../../apiManager/services/bpmTaskServices";
+import {fetchProcessDefinitionList} from "../../apiManager/services/bpmTaskServices";
 import {useDispatch} from "react-redux";
 
 const ServiceFlow = () => {
@@ -12,7 +12,6 @@ const ServiceFlow = () => {
 
   useEffect(()=>{
     dispatch(fetchProcessDefinitionList());
-    dispatch(fetchUserList());
   },[dispatch]);
 
   return (

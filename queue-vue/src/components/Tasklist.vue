@@ -4,16 +4,17 @@
     <b-row class="text-left" align-v="start">
       <b-col cols="4">
           <b-list-group  v-if="tasks && tasks.length" class="service-task-list">   
-          <div class="filter-container">
-                <input type="text" class="filter" placeholder="Filter Tasks"/>
-                {{tasks.length}}
-          </div>
-            <b-list-group-item button v-for="task in tasks" :key="task" v-bind:to="`/tasklist/${task.id}`">
-              <b-link v-bind:to="`/tasklist/${task.id}`">
+            <div class="filter-container">
+                  <input type="text" class="filter" placeholder="Filter Tasks"/>
+                  {{tasks.length}}
+            </div>
+            <b-list-group-item v-for="(task, idx) in tasks" v-bind:key="task"
+                v-on:click="toggle(idx)"
+                :class="{'selected': idx == activeIndex}">
+                  <router-link :to="`/tasklist/${task.id}`">  
                   <b-row>
                     <div class="col-12">
                       <h5>
-                      <!-- <router-link :to="`/tasklist/${task.id}`"> -->
                         {{ task.name }}
                       </h5>
                       <br>
@@ -37,7 +38,7 @@
                       {{ task.priority }}
                     </b-col>
                   </b-row>
-                </b-link>
+                  </router-link>
             </b-list-group-item>
         </b-list-group>
 
@@ -47,32 +48,7 @@
         <b-row class="ml-0 task-header"> {{taskName}}</b-row>
         <b-row class="ml-0 task-name">{{taskProcess}}</b-row>
 
-        <b-row class="actionable">
-            <div class="col-md-auto">
-            <button type="button" class="btn btn-primary"><b-icon :icon="'calendar3'"></b-icon> Set Follow-up date </button>
-            </div>
-            <div class="col-md">
-            <button type="button" class="btn btn-primary"><b-icon :icon="'bell'"></b-icon> Due Date </button>
-            </div>
-            <div class="col-md">
-            <button type="button" class="btn btn-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </button>
-            </div>
-            <div class="col-md">
-            <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button>
-            </div>
-        </b-row>
-
-          <div>
-          <b-tabs content-class="mt-3" id="service-task-details">
-            <b-tab title="Form" active>
-              <formio src="https://forms3.aot-technologies.com/#/form/5ffa9f93e941362b0cbac81f/submission/5ffec546e941363e74bac854">
-              </formio>
-            </b-tab>
-            <b-tab title="History"></b-tab>
-            <b-tab title="Diagram"></b-tab>
-            <b-tab title="Description"></b-tab>
-          </b-tabs>
-        </div>
+        <TaskDetail></TaskDetail>
         
       </b-col>
 
@@ -88,8 +64,7 @@
 
 <script>
   import CamundaRest from '../services/camunda-rest.js';
-  import { Form } from 'vue-formio';
-  // import { Component, Vue } from 'vue-property-decorator';
+  import TaskDetail from './TaskDetails.vue'
 
 
   export default {
@@ -102,17 +77,19 @@
         submissionId: '',
         Url: '',
         processDefinitionList: [],
-        // perPage: 5,
-        // currentPage: 1
+        activeIndex: null
       };
     },
     components: {
-      formio: Form,
+      TaskDetail,
     },
     watch: {
       '$route': 'fetchData',
     },
     methods: {
+      toggle: function(index){
+        this.activeIndex = index
+      },
       fetchData() {
         CamundaRest.getTasks().then((result) => {
           this.tasks = result.data;
@@ -134,6 +111,16 @@
               this.Url = result.data["formUrl"].value;
               this.formId, this.submissionId = getFormIdSubmissionIdFromFormURL(this.url);
           }).catch(() => {});
+
+          CamundaRest.getTask(this.$route.params.taskId)
+          .then((result) => {CamundaRest.getProcessDefinitionById(result.data.processDefinitionId)
+            .then((res) => {
+              CamundaRest.getProcessXML(res.data.key).then((r) => {
+                console.log(r.data.bpmn20Xml)
+              })
+            })
+          })
+
         }
 
         const getFormIdSubmissionIdFromFormURL = (formUrl) => {
@@ -242,15 +229,6 @@
 .task-name {
   font-size: 20px;
   font-weight: 400;
-}
-
-.actionable {
-  color: #1a5a96;
-  background-color: transparent;
-  cursor: pointer;
-  margin: 10px 0;
-  font-size: 14px;
-  font-weight: bold;
 }
 
 .selected {

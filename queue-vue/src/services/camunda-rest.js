@@ -57,8 +57,11 @@ class CamundaRest {
 
   static getUserList() {
     return axios.get(`/user`);
-  }      
+  }
 
+  static getProcessXML(processKey) {
+    return axios.get(`engine-rest/process-definition/key/${processKey}/xml`)
+  }
 }
 
 export default CamundaRest;

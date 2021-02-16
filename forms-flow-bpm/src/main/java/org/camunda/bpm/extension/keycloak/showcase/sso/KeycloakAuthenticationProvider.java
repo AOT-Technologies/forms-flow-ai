@@ -3,22 +3,29 @@ package org.camunda.bpm.extension.keycloak.showcase.sso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import javax.servlet.http.HttpServletRequest;
 
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.rest.security.auth.AuthenticationResult;
 import org.camunda.bpm.engine.rest.security.auth.impl.ContainerBasedAuthenticationProvider;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
  * OAuth2 Authentication Provider for usage with Keycloak and
  * KeycloakIdentityProviderPlugin.
  */
+@Component
 public class KeycloakAuthenticationProvider extends ContainerBasedAuthenticationProvider {
+
+    @Value("${plugin.identity.keycloak.rest.authorityPrefix:ROLE_}")
+    private String authorityPrefix;
 
     @Override
     public AuthenticationResult extractAuthenticatedUser(HttpServletRequest request, ProcessEngine engine) {
@@ -75,7 +82,6 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
                 .map(res -> res.substring(this.authorityPrefix.length())) // Strip Prefix
                 .collect(Collectors.toList());
 
-        log.info(groupIds.toString());
         return groupIds;
 
     }

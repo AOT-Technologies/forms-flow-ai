@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.keycloak.showcase.sso;
+package org.camunda.bpm.extension.keycloak.showcase.rest;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;

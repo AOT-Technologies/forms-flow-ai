@@ -1,47 +1,34 @@
 package org.camunda.bpm.extension.keycloak.showcase.rest;
 
-import javax.inject.Inject;
-import javax.ws.rs.HttpMethod;
 
-import org.camunda.bpm.engine.IdentityService;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.camunda.bpm.extension.keycloak.showcase.filter.StatelessUserAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
-import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.jwk.JwkTokenStore;
+import org.springframework.security.oauth2.jwt.Jwt;
 
-/**
- * Optional Security Configuration for Camunda REST Api.
- */
+import javax.ws.rs.HttpMethod;
+
+
 @Configuration
-@EnableResourceServer
 @EnableWebSecurity
-@Order(SecurityProperties.BASIC_AUTH_ORDER - 20)
-@ConditionalOnProperty(name = "rest.security.enabled", havingValue = "true", matchIfMissing = true)
-public class RestApiSecurityConfig extends ResourceServerConfigurerAdapter {
+@Order(SecurityProperties.BASIC_AUTH_ORDER - 25)
+public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	/** Configuration for REST Api security. */
-	@Inject
-	private RestApiSecurityConfigurationProperties configProps;
+	@Autowired
+	private StatelessUserAuthenticationFilter statelessUserAuthenticationFilter;
 
-	/** Access to Camunda's Identity Service. */
-	@Inject
-	private IdentityService identityService;
-
-	/**
-	 * {@inheritDoc}
-	 */
+	@Autowired
+	KeycloakAuthenticationConverter kcAuthenticationConverter;
 
 	@Override
 	public void configure(final HttpSecurity http) throws Exception {
@@ -50,48 +37,21 @@ public class RestApiSecurityConfig extends ResourceServerConfigurerAdapter {
 				.and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/engine-rest-ext/**").permitAll()
 				.antMatchers("/engine-rest/**","/engine-rest-ext/**")
 				.authenticated().and().csrf().disable()
-				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().oauth2ResourceServer()
+				.jwt().jwtAuthenticationConverter(grantedAuthoritiesExtractor());
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void configure(final ResourceServerSecurityConfigurer config) {
-		config
-				.tokenServices(tokenServices())
-				.resourceId(configProps.getRequiredAudience());
+	Converter<Jwt, AbstractAuthenticationToken> grantedAuthoritiesExtractor() {
+		return this.kcAuthenticationConverter;
 	}
 
-	/**
-	 * Configures the JWKS bases TokenStore.
-	 */
-	@Bean
-	public TokenStore tokenStore() {
-		return new JwkTokenStore(configProps.getJwkSetUrl());
-	}
-
-	/**
-	 * Creates JWKS based TokenServices.
-	 * @return DefaultTokenServices
-	 */
-	public ResourceServerTokenServices tokenServices() {
-		DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
-		defaultTokenServices.setTokenStore(tokenStore());
-		return defaultTokenServices;
-	}
-
-	/**
-	 * Registers the REST Api Keycloak Authentication Filter.
-	 * @return filter registration
-	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Bean
-	public FilterRegistrationBean keycloakAuthenticationFilter(){
+	public FilterRegistrationBean kcStatelessUserAuthenticationFilter() {
 		FilterRegistrationBean filterRegistration = new FilterRegistrationBean();
-		filterRegistration.setFilter(new KeycloakAuthenticationFilter(identityService));
-		filterRegistration.setOrder(102); // make sure the filter is registered after the Spring Security Filter Chain
-		filterRegistration.addUrlPatterns("/engine-rest/*","/engine-rest-ext/*");
+		filterRegistration.setFilter(statelessUserAuthenticationFilter);
+		filterRegistration.setOrder(103); // make sure the filter is registered after the Spring Security Filter Chain
+		filterRegistration.addUrlPatterns("/engine-rest/**","/engine-rest-ext/**");
 		return filterRegistration;
 	}
 

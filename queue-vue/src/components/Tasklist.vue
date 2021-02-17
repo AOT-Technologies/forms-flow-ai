@@ -64,7 +64,7 @@
 
 <script>
   import CamundaRest from '../services/camunda-rest.js';
-  import TaskDetail from './TaskDetails.vue'
+  import TaskDetail from './task-details.vue'
 
 
   export default {
@@ -91,28 +91,28 @@
         this.activeIndex = index
       },
       fetchData() {
-        CamundaRest.getTasks().then((result) => {
+        CamundaRest.getTasks(sessionStorage.getItem('token')).then((result) => {
           this.tasks = result.data;
         });
-        if (this.$route.params.taskId) {         
+        if (sessionStorage.getItem('token'), this.$route.params.taskId) {         
           CamundaRest.getTask(this.$route.params.taskId).then((result) => {
             this.taskName = result.data.name;
             }).catch(() => {});
           
-          CamundaRest.getTask(this.$route.params.taskId)
+          CamundaRest.getTask(sessionStorage.getItem('token'), this.$route.params.taskId)
           .then((result) => {CamundaRest.getProcessDefinitionById(result.data.processDefinitionId)
           .then((res) => {
             this.taskProcess = res.data.name;
           });
           })
 
-          CamundaRest.getVariablesByTaskId(this.$route.params.taskId)
+          CamundaRest.getVariablesByTaskId(sessionStorage.getItem('token'), this.$route.params.taskId)
           .then((result)=> {
               this.Url = result.data["formUrl"].value;
               this.formId, this.submissionId = getFormIdSubmissionIdFromFormURL(this.url);
           }).catch(() => {});
 
-          CamundaRest.getTask(this.$route.params.taskId)
+          CamundaRest.getTask(sessionStorage.getItem('token'), this.$route.params.taskId)
           .then((result) => {CamundaRest.getProcessDefinitionById(result.data.processDefinitionId)
             .then((res) => {
               CamundaRest.getProcessXML(res.data.key).then((r) => {

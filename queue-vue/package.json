@@ -13,6 +13,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "bootstrap-vue": "^2.21.2",
+    "bpmn-js": "^8.2.0",
     "jquery": "^3.5.1",
     "jsonwebtoken": "^8.5.1",
     "keycloak-js": "^10.0.2",

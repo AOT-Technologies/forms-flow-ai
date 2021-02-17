@@ -3,9 +3,7 @@ package org.camunda.bpm.extension.keycloak.showcase.sso;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,18 +12,13 @@ import org.camunda.bpm.engine.rest.security.auth.AuthenticationResult;
 import org.camunda.bpm.engine.rest.security.auth.impl.ContainerBasedAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 /**
  * OAuth2 Authentication Provider for usage with Keycloak and
  * KeycloakIdentityProviderPlugin.
  */
-@Component
 public class KeycloakAuthenticationProvider extends ContainerBasedAuthenticationProvider {
-
-    @Value("${plugin.identity.keycloak.rest.authorityPrefix:ROLE_}")
-    private String authorityPrefix;
 
     @Override
     public AuthenticationResult extractAuthenticatedUser(HttpServletRequest request, ProcessEngine engine) {
@@ -45,13 +38,13 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
         // requested user info
         @SuppressWarnings("unchecked")
         // String userId = ((HashMap<String, String>)
-        // userAuthentication.getDetails()).get("sub");
-        // String userId = ((HashMap<String, String>)
-        // userAuthentication.getDetails()).get("email"); // useEmailAsCamundaUserId =
-        // true
-        // String userId = ((HashMap<String, String>)
-        // userAuthentication.getDetails()).get("email");
-        String userId = ((HashMap<String, String>) userAuthentication.getDetails()).get("preferred_username");
+                // userAuthentication.getDetails()).get("sub");
+                // String userId = ((HashMap<String, String>)
+                // userAuthentication.getDetails()).get("email"); // useEmailAsCamundaUserId =
+                // true
+                // String userId = ((HashMap<String, String>)
+                // userAuthentication.getDetails()).get("email");
+                String userId = ((HashMap<String, String>) userAuthentication.getDetails()).get("preferred_username");
         // useUsernameAsCamundaUserId = true
         if (StringUtils.isEmpty(userId)) {
             return AuthenticationResult.unsuccessful();
@@ -59,7 +52,7 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 
         // Authentication successful
         AuthenticationResult authenticationResult = new AuthenticationResult(userId, true);
-        authenticationResult.setGroups(getUserGroups());
+        authenticationResult.setGroups(getUserGroups(userId, engine));
 
         return authenticationResult;
     }
@@ -71,19 +64,6 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
         return groupIds;
     }
 
-    private List<String> getUserGroups() {
 
-        List<String> groupIds = new ArrayList<String>();
-
-        org.springframework.security.core.Authentication authentication = SecurityContextHolder.getContext()
-                .getAuthentication();
-
-        groupIds = authentication.getAuthorities().stream().map(res -> res.getAuthority())
-                .map(res -> res.substring(this.authorityPrefix.length())) // Strip Prefix
-                .collect(Collectors.toList());
-
-        return groupIds;
-
-    }
 
 }

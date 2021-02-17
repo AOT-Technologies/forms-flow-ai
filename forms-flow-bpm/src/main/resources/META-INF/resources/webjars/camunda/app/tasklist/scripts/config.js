@@ -19,7 +19,7 @@ window.camTasklistConf = {
   },
 
   app: {
-    name: 'Service Flow',
+    name: 'Process Engine',
     vendor: ' '
   }
 };

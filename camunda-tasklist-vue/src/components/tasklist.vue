@@ -8,7 +8,9 @@
                 <input type="text" class="filter" placeholder="Filter Tasks"/>
                 {{tasks.length}}
           </div>
-            <b-list-group-item button v-for="task in tasks" :key="task" v-bind:to="`/tasklist/${task.id}`">
+            <b-list-group-item button v-for="(task, idx) in tasks" v-bind:key="task" 
+                v-on:click="toggle(idx)"
+                :class="{'selected': idx == activeIndex}">
               <b-link v-bind:to="`/tasklist/${task.id}`">
                   <b-row>
                     <div class="col-12">
@@ -44,41 +46,37 @@
       </b-col>
 
       <b-col cols="8" v-if="this.$route.params.taskId">
-        <b-card>  
-          <h1>{{taskName}}</h1>
-          <h3>{{taskProcess}}</h3>
-
-          <br>
-          <div class="row">
-              <div class="col-md-auto">
-              <button type="button" class="btn btn-primary"><b-icon :icon="'calendar3'"></b-icon> Set Follow-up date </button>
-              </div>
-              <div class="col-md">
-              <button type="button" class="btn btn-primary"><b-icon :icon="'bell'"></b-icon> Due Date </button>
-              </div>
-              <div class="col-md">
-              <button type="button" class="btn btn-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </button>
-              </div>
-              <div class="col-md">
-              <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button>
-              </div>
-          </div>
-
-          <br>
-          <br>
-          <div>
-          <b-tabs content-class="mt-3">
-            <b-tab title="Form" active>
-              <formio src="https://forms3.aot-technologies.com/#/form/5ffa9f93e941362b0cbac81f/submission/5ffec546e941363e74bac854">
-              </formio>
-            </b-tab>
-            <b-tab title="History"></b-tab>
-            <b-tab title="Diagram"></b-tab>
-            <b-tab title="Description"></b-tab>
-          </b-tabs>
-        </div>
+        <b-row class="ml-0 task-header"> {{taskName}}</b-row>
+        <b-row class="ml-0 task-name">{{taskProcess}}</b-row>
         
-        </b-card>
+        <div>
+        <b-row class="actionable">
+            <div class="col-md-auto">
+            <button type="button" class="btn btn-primary"><b-icon :icon="'calendar3'"></b-icon> Set Follow-up date </button>
+            </div>
+            <div class="col-md">
+            <button type="button" class="btn btn-primary"><b-icon :icon="'bell'"></b-icon> Due Date </button>
+            </div>
+            <div class="col-md">
+            <button type="button" class="btn btn-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </button>
+            </div>
+            <div class="col-md">
+            <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button>
+            </div>
+        </b-row>
+
+        <div>
+            <b-tabs content-class="mt-3" id="service-task-details">
+              <b-tab title="Form" active>
+                <formio src="https://forms2.aot-technologies.com/form/601871fe3dd9a85a1fa622be/submission/6020d93d3080f7e21b066143">
+                </formio>
+              </b-tab>
+              <b-tab title="History"></b-tab>
+              <b-tab title="Diagram"></b-tab>
+              <b-tab title="Description"></b-tab>
+            </b-tabs>
+          </div>
+        </div>     
       </b-col>
 
       <b-col cols="8" v-else>
@@ -102,15 +100,15 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
   }
 })
 export default class Tasklist extends Vue {
-    private tasks = []
-    private getProcessDefinitions = []
+    private tasks: Array<Object> = []
+    private getProcessDefinitions: Array<Object> = []
     private taskName = ''
     private taskProcess = ''
     private formId = ''
     private submissionId = ''
     private Url = ''
 
-  timeDifference(givendate: Date) {      
+  timeDifference(givendate) {      
     const diff = Math.abs(new Date() - new Date(givendate));
     const msec = diff;
     const days = Math.floor(msec / 1000 / 60 / (60 * 24))
@@ -133,6 +131,15 @@ export default class Tasklist extends Vue {
       return days+ " days ago"
     }
   }
+
+  getProcessDataFromList(processList,processId,dataKey) {
+    const process = processList.find(process => process.id === processId);
+    return process && process[dataKey];
+  }
+
+  toggle: function(index){
+        this.activeIndex = index
+      }
 
   fetchData() {
         CamundaRest.getTasks(sessionStorage.getItem('token')).then((result) => {
@@ -176,7 +183,6 @@ export default class Tasklist extends Vue {
 </script>
 
 <style>
-
   #ul_top_hypers li {
     display: inline;
 }
@@ -217,5 +223,18 @@ export default class Tasklist extends Vue {
   max-height: 80vh;
   overflow-y: auto;
   padding-right: 25px;
+} 
+
+.task-header {
+  font-size: 30px;
+  font-weight: 600;
+}
+.task-name {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.selected {
+  border-left: 2px solid #003366 !important;
 }
 </style>

@@ -21,7 +21,7 @@ const ServiceFlow = () => {
           <ServiceFlowTaskList/>
         </Col>
         <Col className="pl-0" lg={8} xs={12} sm={8} md={8} xl={8}>
-          <Route path={"/service-flow-task/:bpmTaskId?"}><ServiceFlowTaskDetails/></Route>
+          <Route path={"/task/:bpmTaskId?"}><ServiceFlowTaskDetails/></Route>
         </Col>
       </Row>
     </Container>

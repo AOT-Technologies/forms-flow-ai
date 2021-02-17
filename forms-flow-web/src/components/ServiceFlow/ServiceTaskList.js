@@ -24,7 +24,7 @@ const ServiceFlowTaskList = () => {
 
 
   const getTaskDetails = (bpmTaskId) =>{
-    dispatch(push(`/service-flow-task/${bpmTaskId}`));
+    dispatch(push(`/task/${bpmTaskId}`));
   }
 
   const renderTaskList = () =>{

@@ -57,13 +57,11 @@ public class CustomCorsFilter implements Filter {
 
     private String getOrigin(HttpServletRequest request){
         if(StringUtils.isNotBlank(customAllowOrigin)) {
-            LOGGER.info("Leveraging the customAllowOrigin : "+customAllowOrigin);
             return customAllowOrigin;
         }
         for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
             String headerName = (String) e.nextElement();
             if(StringUtils.isNotBlank(headerName) && "ORIGIN".equals(headerName.toUpperCase())) {
-                LOGGER.info("Leveraging the origin from header : "+request.getHeader(headerName));
                 return request.getHeader(headerName);
             }
         }

@@ -6,7 +6,7 @@
 
 	<groupId>org.camunda.bpm.extension.examples</groupId>
 	<artifactId>camunda-bpm-identity-keycloak-examples-sso-kubernetes</artifactId>
-	<version>1.5.0</version>
+	<version>2.0.0</version>
 
 	<name>camunda BPM - engine plugins - identity - keycloak - examples - showcase</name>
 	<description>Showcase for using Camunda Keycloak Identity Provider </description>
@@ -23,8 +23,8 @@
 		<!-- versions -->
 		<version.camunda>7.13.0</version.camunda>
 		<version.camundaSpringBoot>7.13.0</version.camundaSpringBoot>
-		<version.springBoot>2.2.7.RELEASE</version.springBoot>
-		<version.springSecurityOauth2>2.2.7.RELEASE</version.springSecurityOauth2>
+		<version.springBoot>2.3.4.RELEASE</version.springBoot>
+		<version.springSecurityOauth2>2.3.4.RELEASE</version.springSecurityOauth2>
 	</properties>
 
 	<dependencyManagement>

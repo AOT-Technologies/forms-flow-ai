@@ -94,22 +94,23 @@
 <script lang="ts">
 import CamundaRest from '../services/camunda-rest';
 import { Form } from 'vue-formio';
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 
-@Component
+@Component({
+  components: {
+    formio: Form
+  }
+})
 export default class Tasklist extends Vue {
     private tasks = []
     private getProcessDefinitions = []
-    private taskName: ''
-    private taskProcess: ''
-    private formId: ''
-    private submissionId: ''
-    private Url: ''
+    private taskName = ''
+    private taskProcess = ''
+    private formId = ''
+    private submissionId = ''
+    private Url = ''
 
-  
-  
-
-  timeDifference(givendate) {      
+  timeDifference(givendate: Date) {      
     const diff = Math.abs(new Date() - new Date(givendate));
     const msec = diff;
     const days = Math.floor(msec / 1000 / 60 / (60 * 24))
@@ -133,45 +134,33 @@ export default class Tasklist extends Vue {
     }
   }
 
-  getProcessDataFromList(processList,processId,dataKey) {
-    const process = processList.find(process => process.id === processId);
-    return process && process[dataKey];
-  }
-
-  getUserNamefromList(userList,userId) {
-    const user = userList.find(user => user.id === userId);
-    return user.firstName + " " + user.lastName;
-  }
-
-
+  fetchData() {
+        CamundaRest.getTasks(sessionStorage.getItem('token')).then((result) => {
+          this.tasks = result.data;
+        });
         if (this.$route.params.taskId) {         
           CamundaRest.getTaskById(sessionStorage.getItem('token'), this.$route.params.taskId).then((result) => {
             this.taskName = result.data.name;
-            }).catch(() => {});
+            });
           
           CamundaRest.getTaskById(sessionStorage.getItem('token'), this.$route.params.taskId)
-          .then((result) => {CamundaRest.getProcessDefinitionById(result.data.processDefinitionId)
+          .then((result) => {CamundaRest.getProcessDefinitionById(sessionStorage.getItem('token'), result.data.processDefinitionId)
           .then((res) => {
             this.taskProcess = res.data.name;
           });
           })
 
+
           CamundaRest.getVariablesByTaskId(sessionStorage.getItem('token'), this.$route.params.taskId)
           .then((result)=> {
               this.Url = result.data["formUrl"].value;
-              this.formId, this.submissionId = getFormIdSubmissionIdFromFormURL(this.Url);
-          }).catch(() => {});
-        }
+              // this.formId, this.submissionId = getFormIdSubmissionIdFromFormURL(this.url);
+          });
 
-        const getFormIdSubmissionIdFromFormURL = (formUrl) => {
-          const formArr = formUrl.split("/");
-          const formId = formArr[4];
-          const submissionId = formArr[6];
-          return {formId,submissionId};
         }
       }
-  
 
+  @Watch('fetchData')
   mounted() {
     CamundaRest.getTasks(sessionStorage.getItem('token')).then((result) => {
       this.tasks = result.data;      
@@ -179,12 +168,9 @@ export default class Tasklist extends Vue {
 
     CamundaRest.getProcessDefinitions(sessionStorage.getItem('token')).then((response) => {
         this.getProcessDefinitions = response.data;
-        });
+    });
   }
 
-  components: {
-      formio: Form;
-  }
 }
 
 </script>

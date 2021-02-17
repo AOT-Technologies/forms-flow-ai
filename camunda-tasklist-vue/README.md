@@ -1,23 +1,23 @@
-# vue
+# camunda-tasklist-vue
 
 ## Project setup
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+## Compiles and hot-reloads for development
 ```
 npm run serve
 ```
 
-### Compiles and minifies for production
+## build for production with minification
 ```
-npm 
+npm run build
 ```
 
-### Lints and fixes files
+## build for production and view the bundle analyzer report
 ```
-yarn lint
+npm run build --report
 ```
 
 ### Customize configuration

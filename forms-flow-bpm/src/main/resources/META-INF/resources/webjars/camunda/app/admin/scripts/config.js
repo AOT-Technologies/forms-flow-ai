@@ -19,7 +19,7 @@ window.camAdminConf = {
   },
 
   app: {
-    name: 'Service Flow',
+    name: 'Process Engine',
     vendor: ' '
   }
 };

@@ -24,7 +24,7 @@
 
                   <b-row class="task-row-2">
                     <div class="col-6 pr-0">
-                    {{ getProcessDataFromList(processDefinitionList, task.processDefinitionId, 'name') }}         
+                    {{ getProcessDataFromList(getProcessDefinitions, task.processDefinitionId, 'name') }}         
                     </div>
                     <div title="Task assignee" class="col-6 pr-0 text-right">
                       {{task.assignee}}
@@ -220,7 +220,14 @@ export default class Tasklist extends Vue {
   max-height: 80vh;
   overflow-y: auto;
   padding-right: 25px;
+  border-right: 2px solid #D0D0D0;
 } 
+
+#service-task-details {
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
 .task-header {
   font-size: 30px;

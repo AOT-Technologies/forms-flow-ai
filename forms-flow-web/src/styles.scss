@@ -426,4 +426,11 @@ div[disabled]
   opacity: 0.7;
 }
 
+.hide-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

@@ -66,7 +66,12 @@ const ServiceFlowTaskList = () => {
         </>
       )
     } else {
-      return (<ListGroup.Item> No tasks Found</ListGroup.Item>)
+      return (
+        <Row className="not-selected mt-2 ml-1">
+          <i className="fa fa-info-circle mr-2 mt-1"/>
+          No tasks Found
+        </Row>
+      )
     }
   }
 

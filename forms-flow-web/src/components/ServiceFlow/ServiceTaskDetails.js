@@ -46,10 +46,12 @@ const ServiceFlowTaskDetails = () => {
        Select a task in the list.
        </Row>
    }else if(isTaskLoading) {
-   return <Loading/>
+   return <div className="service-task-details">
+     <Loading/>
+   </div>
    }else{
      /*TODO split render*/
-     return (<>
+     return (<div className="service-task-details">
        <LoadingOverlay
          active={isTaskUpdating}
          spinner
@@ -73,7 +75,7 @@ const ServiceFlowTaskDetails = () => {
          </Tab>
        </Tabs>
        </LoadingOverlay>
-     </>)
+     </div>)
    }
 };
 

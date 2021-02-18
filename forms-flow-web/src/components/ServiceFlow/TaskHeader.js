@@ -90,7 +90,7 @@ const TaskHeader = ({ task }) => {
             onChange={(date) => setFollowUpDate(date)}
             showTimeSelect
             isClearable
-            popperPlacement="top-end"
+            popperPlacement="bottom-start"
             popperModifiers={{
               offset: {
                 enabled: true,
@@ -111,7 +111,7 @@ const TaskHeader = ({ task }) => {
             onChange={(date) => setDueDate(date)}
             showTimeSelect
             isClearable
-            popperPlacement="top-end"
+            popperPlacement="bottom-start"
             popperModifiers={{
               offset: {
                 enabled: true,

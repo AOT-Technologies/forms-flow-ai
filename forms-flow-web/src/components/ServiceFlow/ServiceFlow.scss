@@ -5,9 +5,19 @@
   width: 100%;
 }
 .service-task-list {
+  box-shadow: 0 0 10px 5px #D0D0D0;
+  clip-path: inset(0px -15px 0px 0px);
   max-height: 80vh;
+  min-height: 80vh;
   overflow-y: auto;
   padding-right: 25px;
+  border-right: 1px solid #D0D0D0;
+}
+.service-task-details {
+  min-height: 80vh;
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .filter-container{
   border: 1px solid #555;

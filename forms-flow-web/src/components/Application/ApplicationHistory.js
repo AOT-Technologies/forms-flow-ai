@@ -17,7 +17,7 @@ import {
   defaultSortedBy,
 } from "./historyTable";
 import Loading from "../../containers/Loading";
-import Nodata from "./nodata";
+import Nodata from '../../components/Nodata';
 import {setUpdateHistoryLoader} from "../../actions/taskActions";
 
 
@@ -37,6 +37,9 @@ const HistoryList = (props) => {
     }
   }, [applicationId, isHistoryListLoading, dispatch]);
 
+  if(!applicationId){
+    return <Nodata text={"No Application History found"} className={"div-no-application-list text-center"}/>
+  }
   if (isHistoryListLoading) {
     return <Loading/>;
   }
@@ -90,7 +93,7 @@ const HistoryList = (props) => {
         )}
       </ToolkitProvider>
     ) : (
-      <Nodata/>
+      <Nodata text={"No Application History found"} className={"div-no-application-list text-center"}/>
     )
   );
 };

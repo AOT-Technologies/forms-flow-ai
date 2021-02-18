@@ -9,7 +9,7 @@ import Loading from "../../containers/Loading";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 import {getFormIdSubmissionIdFromFormURL, getProcessDataFromList} from "../../apiManager/services/formatterService";
 import History from "../Application/ApplicationHistory";
-import View from "../Form/Item/Submission/Item/View";
+import FormEdit from "../Form/Item/Submission/Item/Edit";
 import LoadingOverlay from "react-loading-overlay";
 import {getForm, getSubmission} from "react-formio";
 
@@ -58,7 +58,7 @@ const ServiceFlowTaskDetails = () => {
        <TaskHeader task={task}/>
        <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
          <Tab eventKey="form" title="Form">
-           <View/>
+           <FormEdit onFormSubmit={()=>console.log('submitted')}/>
          </Tab>
          <Tab eventKey="history" title="History">
            <History applicationId={task.applicationId}/>

@@ -100,13 +100,16 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
   }
 })
 export default class Tasklist extends Vue {
+    @Watch('$route')
+    fetchData
+
     private tasks = []
     private getProcessDefinitions = []
-    private taskName = ''
-    private taskProcess = ''
-    private formId = ''
-    private submissionId = ''
-    private Url = ''
+    private taskName = null
+    private taskProcess = null
+    private formId = null
+    private submissionId = null
+    private Url = null
 
   timeDifference(givendate) {      
     const diff = Math.abs(new Date() - new Date(givendate));
@@ -164,12 +167,13 @@ export default class Tasklist extends Vue {
         }
       }
 
-  @Watch('fetchData')
   mounted() {
     CamundaRest.getTasks(sessionStorage.getItem('vue-token')).then((result) => {
       this.tasks = result.data;      
     }); 
 
+    this.fetchData();
+    
     CamundaRest.getProcessDefinitions(sessionStorage.getItem('vue-token')).then((response) => {
         this.getProcessDefinitions = response.data;
     });

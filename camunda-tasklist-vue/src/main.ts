@@ -3,7 +3,6 @@ import App from './App.vue';
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import router from './router';
 import store from './store';
-import jwt from 'jsonwebtoken'
 import Keycloak from 'keycloak-js';
 import {authenticateFormio} from "@/services/formio-token";
 

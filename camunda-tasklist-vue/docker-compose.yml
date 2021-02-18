@@ -4,13 +4,13 @@ services:
   camunda-vue-tasklist:
     container_name: forms-flow-vue
     build:
-      context: .
+      context: ./
       dockerfile: Dockerfile
     volumes:
       - ".:/app"
       - "/app/node_modules"
     ports:
-      - "3000:3000"
+      - "4000:4000"
     tty: true
     environment:
       - NODE_ENV=${NODE_ENV}

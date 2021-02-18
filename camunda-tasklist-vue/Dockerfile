@@ -19,5 +19,7 @@ RUN npm install --silent
 # copy project files
 COPY . /camunda-vue-tasklist/app/
 
+EXPOSE 4000
+
 # Run app
 CMD ["npm", "run", "serve"]

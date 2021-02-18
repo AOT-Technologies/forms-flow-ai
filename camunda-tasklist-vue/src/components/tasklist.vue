@@ -100,8 +100,8 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
   }
 })
 export default class Tasklist extends Vue {
-    private tasks: Array<Object> = []
-    private getProcessDefinitions: Array<Object> = []
+    private tasks = []
+    private getProcessDefinitions = []
     private taskName = ''
     private taskProcess = ''
     private formId = ''
@@ -137,28 +137,25 @@ export default class Tasklist extends Vue {
     return process && process[dataKey];
   }
 
-  toggle: function(index){
-        this.activeIndex = index
-      }
 
   fetchData() {
-        CamundaRest.getTasks(sessionStorage.getItem('token')).then((result) => {
+        CamundaRest.getTasks(sessionStorage.getItem('vue-token')).then((result) => {
           this.tasks = result.data;
         });
         if (this.$route.params.taskId) {         
-          CamundaRest.getTaskById(sessionStorage.getItem('token'), this.$route.params.taskId).then((result) => {
+          CamundaRest.getTaskById(sessionStorage.getItem('vue-token'), this.$route.params.taskId).then((result) => {
             this.taskName = result.data.name;
             });
           
-          CamundaRest.getTaskById(sessionStorage.getItem('token'), this.$route.params.taskId)
-          .then((result) => {CamundaRest.getProcessDefinitionById(sessionStorage.getItem('token'), result.data.processDefinitionId)
+          CamundaRest.getTaskById(sessionStorage.getItem('vue-token'), this.$route.params.taskId)
+          .then((result) => {CamundaRest.getProcessDefinitionById(sessionStorage.getItem('vue-token'), result.data.processDefinitionId)
           .then((res) => {
             this.taskProcess = res.data.name;
           });
           })
 
 
-          CamundaRest.getVariablesByTaskId(sessionStorage.getItem('token'), this.$route.params.taskId)
+          CamundaRest.getVariablesByTaskId(sessionStorage.getItem('vue-token'), this.$route.params.taskId)
           .then((result)=> {
               this.Url = result.data["formUrl"].value;
               // this.formId, this.submissionId = getFormIdSubmissionIdFromFormURL(this.url);
@@ -169,11 +166,11 @@ export default class Tasklist extends Vue {
 
   @Watch('fetchData')
   mounted() {
-    CamundaRest.getTasks(sessionStorage.getItem('token')).then((result) => {
+    CamundaRest.getTasks(sessionStorage.getItem('vue-token')).then((result) => {
       this.tasks = result.data;      
     }); 
 
-    CamundaRest.getProcessDefinitions(sessionStorage.getItem('token')).then((response) => {
+    CamundaRest.getProcessDefinitions(sessionStorage.getItem('vue-token')).then((response) => {
         this.getProcessDefinitions = response.data;
     });
   }

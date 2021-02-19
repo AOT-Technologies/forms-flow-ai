@@ -1,14 +1,14 @@
 package org.camunda.bpm.extension.hooks.delegates;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.Iterator;
+
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -32,28 +32,9 @@ public class FormDocumentTransformer  implements JavaDelegate {
      */
     @Override
     public void execute(DelegateExecution execution) throws Exception {
-        String submission = formSubmissionService.readSubmission(String.valueOf(execution.getVariables().get("formUrl")));
-        if(submission.isEmpty()) {
-            throw new RuntimeException("Unable to retrieve submission");
-        }
-        JsonNode dataNode = getObjectMapper().readTree(submission);
-        Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
-        while (dataElements.hasNext()) {
-            Map.Entry<String, JsonNode> entry = dataElements.next();
-            Object fieldValue = entry.getValue().isBoolean() ? entry.getValue().booleanValue() :
-                    entry.getValue().isInt() ? entry.getValue().intValue() :
-                    entry.getValue().isBinary() ? entry.getValue().binaryValue() :
-                    entry.getValue().isLong() ? entry.getValue().asLong() :
-                    entry.getValue().isDouble() ? entry.getValue().asDouble() :
-                    entry.getValue().isBigDecimal() ? entry.getValue().decimalValue() :
-                            entry.getValue().asText();
-
-            execution.setVariable(entry.getKey(), fieldValue);
+        Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
+        for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
+            execution.setVariable(entry.getKey(), entry.getValue());
         }
     }
-
-    private ObjectMapper getObjectMapper(){
-        return new ObjectMapper();
-    }
-
 }

@@ -8,6 +8,7 @@ import org.camunda.bpm.engine.delegate.*;
 import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.bpm.engine.variable.value.FileValue;
 import org.camunda.bpm.engine.variable.value.StringValue;
+import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.camunda.bpm.extension.hooks.services.IFileService;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.camunda.bpm.extension.hooks.services.analytics.IDataPipeline;
@@ -20,6 +21,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -34,6 +36,9 @@ import java.util.logging.Logger;
 public class AnalyticsListener implements TaskListener, ExecutionListener, IMessageEvent, IFileService {
 
     @Autowired
+    private FormSubmissionService formSubmissionService;
+
+    @Autowired
     private SimpleDBDataPipeline dbdatapipeline;
 
     private final Logger LOGGER = Logger.getLogger(AnalyticsListener.class.getName());
@@ -45,13 +50,14 @@ public class AnalyticsListener implements TaskListener, ExecutionListener, IMess
      * @param task
      */
     @Override
-    public void notify(DelegateTask task) {
+    public void notify(DelegateTask task)  {
         LOGGER.info("\n\n  ... AnalyticsDelegate invoked by task listener for "
                 + "processDefinitionId=" + task.getProcessDefinitionId()
                 + ", assignee=" + task.getAssignee()
                 + ", executionId=" + task.getId()
                 + ", variables=" + task.getVariables()
                 + " \n\n");
+        syncVariablesFromDocumentServer(task.getExecution());
         transformFiles(task);
         Map<String,Object> rspVariableMap = dbdatapipeline.execute(injectAdditionalProcessingFields(task.getExecution(),task.getExecution().getVariables()));
         notifyForAttention(task.getExecution(),rspVariableMap);
@@ -70,6 +76,7 @@ public class AnalyticsListener implements TaskListener, ExecutionListener, IMess
                 + ", executionId=" + execution.getId()
                 + ", variables=" + execution.getVariables()
                 + " \n\n");
+        syncVariablesFromDocumentServer(execution);
         Map<String,Object> rspVariableMap = dbdatapipeline.execute(injectAdditionalProcessingFields(execution,execution.getVariables()));
         notifyForAttention(execution,rspVariableMap);
     }
@@ -159,6 +166,19 @@ public class AnalyticsListener implements TaskListener, ExecutionListener, IMess
             LOGGER.info("\n\nMessage sent! " + "\n\n");
         }
     }
+
+    private void syncVariablesFromDocumentServer(DelegateExecution execution) {
+        Map<String,Object> dataMap = null;
+        try {
+            dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
+            for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
+                execution.setVariable(entry.getKey(), entry.getValue());
+            }
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE,"Exception occurred in transformation", e);
+        }
+    }
+
 
     private String getUniqueIdentifierForFile() {
         return UUID.randomUUID().toString();

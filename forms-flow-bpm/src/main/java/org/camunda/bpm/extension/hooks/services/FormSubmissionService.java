@@ -14,6 +14,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -75,6 +79,31 @@ public class FormSubmissionService {
         return StringUtils.substringBeforeLast(formUrl,"/");
     }
 
+    public Map<String,Object> retrieveFormValues(String formUrl) throws IOException {
+        Map<String,Object> fieldValues = new HashMap();
+        String submission = readSubmission(formUrl);
+        if(submission.isEmpty()) {
+            throw new RuntimeException("Unable to retrieve submission");
+        }
+        JsonNode dataNode = getObjectMapper().readTree(submission);
+        Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
+        while (dataElements.hasNext()) {
+            Map.Entry<String, JsonNode> entry = dataElements.next();
+            Object fieldValue = entry.getValue().isBoolean() ? entry.getValue().booleanValue() :
+                    entry.getValue().isInt() ? entry.getValue().intValue() :
+                            entry.getValue().isBinary() ? entry.getValue().binaryValue() :
+                                    entry.getValue().isLong() ? entry.getValue().asLong() :
+                                            entry.getValue().isDouble() ? entry.getValue().asDouble() :
+                                                    entry.getValue().isBigDecimal() ? entry.getValue().decimalValue() :
+                                                            entry.getValue().asText();
 
+            fieldValues.put(entry.getKey(), fieldValue);
+        }
+        return fieldValues;
+    }
+
+    private ObjectMapper getObjectMapper(){
+        return new ObjectMapper();
+    }
 
 }

@@ -61,7 +61,17 @@
             <button type="button" class="btn btn-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </button>
             </div>
             <div class="col-md">
-            <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button>
+            <!-- <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button> -->
+            <b-col>
+              {{task.assignee}}
+                 <button v-if="task.assignee" @click="onUnClaim">
+                   <b-icon :icon="'person-x-fill'"></b-icon>
+                 </button>
+                 <button v-else @click="onClaim">
+                   <b-icon :icon="'person-fill'"></b-icon>
+                 </button>
+                 Claim
+              </b-col>
             </div>
         </b-row>
 
@@ -93,6 +103,8 @@
 import CamundaRest from '../services/camunda-rest';
 import { Form } from 'vue-formio';
 import { Component, Vue, Watch } from 'vue-property-decorator'
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 @Component({
   components: {
@@ -140,6 +152,24 @@ export default class Tasklist extends Vue {
     return process && process[dataKey];
   }
 
+  onClaim() {
+    CamundaRest.claim(sessionStorage.getItem("vue-token") ,this.task.id, {userId: this.username}).then((result)=> 
+    console.log(result.data)
+    )
+    .catch((error) => {
+        console.log("Error", error);
+    })
+  }
+
+  onUnClaim(){ 
+    CamundaRest.unclaim(sessionStorage.getItem("vue-token") ,this.task.id).then((result)=>
+      console.log(result.data)
+    )
+    .catch((error) =>{
+      console.log("Error", error)
+    })
+  }
+
 
   fetchData() {
         CamundaRest.getTasks(sessionStorage.getItem('vue-token')).then((result) => {
@@ -176,7 +206,7 @@ export default class Tasklist extends Vue {
     
     CamundaRest.getProcessDefinitions(sessionStorage.getItem('vue-token')).then((response) => {
         this.getProcessDefinitions = response.data;
-    });
+    }); 
   }
 
 }

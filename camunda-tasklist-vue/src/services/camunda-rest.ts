@@ -26,8 +26,8 @@ const CamundaRest = {
     return bpmAxios(bearerToken).post(`/task/${taskId}/complete`, values);
   },    
   
-  claim(bearerToken, taskId) {
-    return bpmAxios(bearerToken).post(`/task/${taskId}/claim`);
+  claim(bearerToken, taskId, values) {
+    return bpmAxios(bearerToken).post(`/task/${taskId}/claim`, values);
   },
     
   unclaim(bearerToken, taskId) {

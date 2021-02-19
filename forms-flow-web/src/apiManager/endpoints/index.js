@@ -1,4 +1,4 @@
-import { INSIGHTS_BASE_API, INSIGHTS_API_KEY, WEB_BASE_URL } from "./config";
+import { INSIGHTS_BASE_API, INSIGHTS_API_KEY, WEB_BASE_URL, BPM_BASE_URL } from "./config";
 
 const API = {
   INSIGHTS_API_KEY: INSIGHTS_API_KEY,
@@ -18,6 +18,13 @@ const API = {
   FORM: `${WEB_BASE_URL}/form`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
   APPLICATION_EVENT_UPDATE:`${WEB_BASE_URL}/process/event`,
+  GET_BPM_TASKS:`${BPM_BASE_URL}/task`,
+  GET_BPM_TASK_DETAIL:`${BPM_BASE_URL}/task/<task_id>`,
+  GET_BPM_TASK_VARIABLES:`${BPM_BASE_URL}/task/<task_id>/variables`,
+  CLAIM_BPM_TASK:`${BPM_BASE_URL}/task/<task_id>/claim`,
+  UNCLAIM_BPM_TASK:`${BPM_BASE_URL}/task/<task_id>/unclaim`,
+  GET_BPM_PROCESS_LIST:`${BPM_BASE_URL}/process-definition`,
+  GET_BPM_USER_LIST:`${BPM_BASE_URL}/user`,
 };
 
 export default API;

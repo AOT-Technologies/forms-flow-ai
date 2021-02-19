@@ -4,6 +4,15 @@ export const taskSubmissionFormatter = (taskSubmissionData) =>{
   return res;
 }
 
+
+export const taskDetailVariableDataFormatter = (taskVariableData) =>{
+  const res = {};
+  for(let variable in taskVariableData){
+    res[variable] = taskVariableData[variable].value;
+  }
+  return res;
+}
+
 export const insightDashboardFormatter = (dashboardsData) =>{
   const dashboards = dashboardsData.map(dashboard => {
     return  {value:dashboard.slug, label:dashboard.name}
@@ -39,4 +48,22 @@ export const getRelevantApplications = (applications, submissionData) => {
 
 export const getLocalDateTime = (date) => {
   return date?new Date(date.replace(' ','T')+'Z').toLocaleString(): "-";
+}
+
+export const getProcessDataFromList = (processList,processId,dataKey) => {
+  const process = processList.find(process=>process.id===processId);
+  return process && process[dataKey] ;
+}
+
+export const getUserNamefromList = (userList,userId) => {
+  const user = userList.find(user=>user.id===userId);
+  return user?`${user.firstName} ${user.lastName}`: userId;
+}
+
+//formURl is of https://base-url/form/:formId/submission/:submissionId
+export const getFormIdSubmissionIdFromFormURL = (formUrl) => {
+  const formArr = formUrl.split("/");
+  const formId = formArr[4];
+  const submissionId = formArr[6];
+  return {formId,submissionId};
 }

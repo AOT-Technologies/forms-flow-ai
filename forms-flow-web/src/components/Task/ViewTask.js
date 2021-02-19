@@ -55,7 +55,7 @@ const ViewTask = (props) => {
           </h3>
         </div>
         <br/>
-        <Tabs id="task-details" defaultActiveKey="details">
+        <Tabs id="task-details" defaultActiveKey="details" mountOnEnter>
           <Tab eventKey="details" title="Details">
             <Details/>
           </Tab>

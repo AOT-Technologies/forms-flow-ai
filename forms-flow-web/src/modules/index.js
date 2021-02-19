@@ -10,6 +10,7 @@ import metrics from "./metricsReducer";
 import process from "./processReducer";
 import applications from './applicationsReducer';
 import menu from './menuReducer';
+import bpmTasks from './bpmTaskReducer';
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -18,6 +19,7 @@ const createRootReducer = (history) =>
     insights,
     formDelete,
     applications,
+    bpmTasks,
     form: form({ name: "form" }),
     forms: forms({ name: "forms", query: { type: "form", tags: "common" } }),
     submission: submission({ name: "submission" }),

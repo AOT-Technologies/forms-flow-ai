@@ -123,7 +123,7 @@ h5,
   color: white !important;
 }
 .text-muted {
-  color: #fff !important;
+  color: #868e96 !important;
 }
 
 i.fa.fa-question-circle.text-muted {
@@ -426,4 +426,11 @@ div[disabled]
   opacity: 0.7;
 }
 
+.hide-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

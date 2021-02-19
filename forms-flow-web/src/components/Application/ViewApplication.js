@@ -58,7 +58,7 @@ const ViewApplication = () => {
         </h3>
       </div>
       <br/>
-      <Tabs id="application-details" defaultActiveKey="details">
+      <Tabs id="application-details" defaultActiveKey="details" mountOnEnter>
         <Tab eventKey="details" title="Details">
           <Details application={applicationDetail}/>
         </Tab>

@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:
+  camunda-vue-tasklist:
+    container_name: forms-flow-vue
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    volumes:
+      - ".:/app"
+      - "/app/node_modules"
+    ports:
+      - "4000:4000"
+    tty: true
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - VUE_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE}
+      - VUE_APP_STAFF_REVIEWER_ID=${REVIEWER_ROLE_ID}
+      - VUE_APP_USER_RESOURCE_FORM_ID=${USER_RESOURCE_FORM_ID}
+      - VUE_APP_KEYCLOAK_CLIENT_ID=${KEYCLOAK_CLIENT_ID}
+      - VUE_APP_KEYCLOAK_URL=${KEYCLOAK_URL}
+      - VUE_APP_KEYCLOAK_REALM=${KEYCLOAK_REALM}

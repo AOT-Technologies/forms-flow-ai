@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 
 import UserService from "../services/UserService";
 import Form from "./Form";
-import Task from "./Task";
+// import Task from "./Task";
+import ServiceFlow from "./ServiceFlow"
 import { setUserAuth } from "../actions/bpmActions";
 import {CLIENT, STAFF_REVIEWER} from "../constants/constants";
 import Loading from "../containers/Loading";
@@ -57,7 +58,8 @@ const PrivateRoute = (props) => {
             <Route path="/formflow" component={Form} />
             <ClientReviewerRoute path="/application" component={Application} />
             <ReviewerRoute path="/metrics" component={DashboardPage} />
-            <ReviewerRoute path="/task" component={Task} />
+            <ReviewerRoute path="/task" component={ServiceFlow} />
+           {/* <ReviewerRoute path="/service-flow-task" component={ServiceFlow} />*/}
             <Route exact path="/">
               <Redirect to="/form" />
             </Route>

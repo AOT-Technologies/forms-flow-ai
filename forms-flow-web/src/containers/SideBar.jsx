@@ -57,6 +57,19 @@ const SideBar = () => {
               </Link>
             ) : null}
           </li>
+          {/*<li className={`${pathname.match(/^\/task/) ? "active" : ""}`} onClick={menuToggle}>
+            {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
+              <Link
+                to="/task"
+                className={`main-nav nav-link ${
+                  pathname.match(/^\/task/) ? "active-tab" : ""
+                }`}
+              >
+                <i className="fa fa-list" />
+                Tasks
+              </Link>
+            ) : null}
+          </li>*/}
           <li className={`${pathname.match(/^\/task/) ? "active" : ""}`} onClick={menuToggle}>
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link

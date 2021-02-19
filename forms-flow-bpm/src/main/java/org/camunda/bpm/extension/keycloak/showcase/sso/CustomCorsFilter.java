@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,7 @@ import org.springframework.stereotype.Component;
  * @author sumathi.thirumani@aot-technologies.com
  */
 @Component
-@Order(SecurityProperties.DEFAULT_FILTER_ORDER)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class CustomCorsFilter implements Filter {
 
     private final Logger LOGGER = Logger.getLogger(CustomCorsFilter.class.getName());
@@ -44,7 +45,8 @@ public class CustomCorsFilter implements Filter {
 
         response.setHeader("Access-Control-Allow-Origin",getOrigin(request));
         response.setHeader("Access-Control-Allow-Methods","POST, PUT, GET, OPTIONS");
-        response.setHeader("Access-Control-Allow-Headers","access-control-allow-methods,authorization,content-type");
+        //response.setHeader("Access-Control-Allow-Headers","access-control-allow-methods, access-control-allow-origin, authorization, Content-Type, Accept, X-Requested-With, Origin, Token, Auth-Token, Email, X-User-Token, X-User-Email");
+        response.setHeader("Access-Control-Allow-Headers","*");
         response.setHeader("Access-Control-Max-Age", "3600");
 
         if("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
@@ -56,13 +58,11 @@ public class CustomCorsFilter implements Filter {
 
     private String getOrigin(HttpServletRequest request){
         if(StringUtils.isNotBlank(customAllowOrigin)) {
-            LOGGER.info("Leveraging the customAllowOrigin : "+customAllowOrigin);
             return customAllowOrigin;
         }
         for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
             String headerName = (String) e.nextElement();
             if(StringUtils.isNotBlank(headerName) && "ORIGIN".equals(headerName.toUpperCase())) {
-                LOGGER.info("Leveraging the origin from header : "+request.getHeader(headerName));
                 return request.getHeader(headerName);
             }
         }

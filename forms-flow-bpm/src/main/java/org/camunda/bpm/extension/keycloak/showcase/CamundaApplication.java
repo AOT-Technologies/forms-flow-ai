@@ -25,6 +25,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.session.jdbc.config.annotation.SpringSessionDataSource;
 
 import javax.sql.DataSource;
 import java.util.Properties;
@@ -81,10 +82,40 @@ public class CamundaApplication {
 	}
 
 	/**
-	 * JDBC template for camunda datasource interaction.
-	 * @param camundaBpmDataSource
+	 * Session datasource.
+	 * Note: Bean name should not be changed.
 	 * @return
 	 */
+	@Bean(name="springSessionDataSource")
+	@ConfigurationProperties("session.datasource")
+	@SpringSessionDataSource
+	public DataSource springSessionDataSource(){
+		return DataSourceBuilder.create().build();
+	}
+
+
+	/**
+	 * Secondary datasource.
+	 * This is used only for publishing data to analytics.
+	 * @return
+	 */
+	@Bean("analyticsDS")
+	@ConfigurationProperties("analytics.datasource")
+	public DataSource analyticsDS(){
+		return DataSourceBuilder.create().build();
+	}
+
+
+	/**
+	 * JDBC template for analytics datasource interaction.
+	 * @param analyticsDS
+	 * @return
+	 */
+	@Bean("analyticsJdbcTemplate")
+	public NamedParameterJdbcTemplate analyticsJdbcTemplate(@Qualifier("analyticsDS") DataSource analyticsDS) {
+		return new NamedParameterJdbcTemplate(analyticsDS);
+	}
+
 	@Bean("bpmJdbcTemplate")
 	public NamedParameterJdbcTemplate bpmJdbcTemplate(@Qualifier("camundaBpmDataSource") DataSource camundaBpmDataSource) {
 		return new NamedParameterJdbcTemplate(camundaBpmDataSource);
@@ -108,6 +139,7 @@ public class CamundaApplication {
 		factoryBean.setServiceLocatorInterface(AccessHandlerFactory.class);
 		return factoryBean;
 	}
+
 
 	private static void authorizeServiceAccount() {
 		LOG.info("Setting authorization for service account...");

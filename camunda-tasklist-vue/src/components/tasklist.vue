@@ -53,25 +53,28 @@
         <div>
         <b-row class="actionable">
             <div class="col-md-auto">
-            <button type="button" class="btn btn-primary"><b-icon :icon="'calendar3'"></b-icon> Set Follow-up date </button>
+            <b-button variant="outline-primary"><b-icon :icon="'calendar3'"></b-icon> Set Follow-up date 
+            </b-button>
             </div>
             <div class="col-md">
-            <button type="button" class="btn btn-primary"><b-icon :icon="'bell'"></b-icon> Due Date </button>
+            <b-button variant="outline-primary"><b-icon :icon="'bell'"></b-icon> Due Date </b-button>
             </div>
             <div class="col-md">
-            <button type="button" class="btn btn-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </button>
+            <b-button variant="outline-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </b-button>
             </div>
             <div class="col-md">
             <!-- <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button> -->
             <b-col>
               {{task.assignee}}
-                 <button v-if="task.assignee" @click="onUnClaim">
+                 <b-button variant="outline-primary" v-if="task.assignee" @click="onUnClaim">
+                   <!-- <b-spinner label="Loading..."></b-spinner> -->
+                   {{task.assignee}}
                    <b-icon :icon="'person-x-fill'"></b-icon>
-                 </button>
-                 <button v-else @click="onClaim">
+                 </b-button>
+                 <b-button variant="outline-primary" v-else @click="onClaim">
                    <b-icon :icon="'person-fill'"></b-icon>
-                 </button>
-                 Claim
+                   Claim
+                 </b-button>
               </b-col>
             </div>
         </b-row>
@@ -126,6 +129,7 @@ export default class Tasklist extends Vue {
     private submissionId = null
     private Url = null
     private activeIndex = null
+    private username = sessionStorage.getItem("username")
 
   timeDifference(givendate) {      
     const diff = Math.abs(new Date() - new Date(givendate));

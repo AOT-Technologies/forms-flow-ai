@@ -42,6 +42,8 @@ keycloak.init({onLoad: "login-required"}).then((auth) =>{
 
     const USER_RESOURCE_FORM_ID = process.env.VUE_APP_USER_RESOURCE_FORM_ID
     const email = keycloak.tokenParsed.email
+    const preferredUsername = keycloak.tokenParsed.preferred_username
+    sessionStorage.setItem("username", preferredUsername)
     const KeycloakClient = process.env.VUE_APP_KEYCLOAK_CLIENT_ID
 
 

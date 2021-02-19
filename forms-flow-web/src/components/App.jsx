@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Provider } from "react-redux";
 import { ConnectedRouter } from "connected-react-router";
 import "../assets/styles/layouts.scss";
+import "../assets/styles/user-styles.css";
 import BaseRouting from "./BaseRouting";
 require("typeface-nunito-sans");
 

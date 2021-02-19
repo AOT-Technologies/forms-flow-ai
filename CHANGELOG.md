@@ -1,6 +1,17 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
+## 4.0.0-alpha - 2021-02-19
+`Ongoing`
+* Task dashboard has been revamped with new look and feel; which would allow more control on data and stream updates.
+
+`Added`
+* forms-flow-bpm has been enhanced with listed features,  
+   1. JDBC session management.
+   2. Support to capture the form data as audit in any relational database of interest.
+   3. Health check API
+   4. Upgrade of sprint boot version
+   
 ## 3.1.0 - 2020-12-17
 `Modified`
 * Formio upgraded to latest version-2.0.0.rc34 (Component : forms-flow-forms)

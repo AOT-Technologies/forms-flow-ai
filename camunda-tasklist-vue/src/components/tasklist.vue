@@ -79,7 +79,9 @@
         <div>
             <b-tabs content-class="mt-3" id="service-task-details">
               <b-tab title="Form" active>
-                <formio src="https://forms2.aot-technologies.com/form/601871fe3dd9a85a1fa622be/submission/6020d93d3080f7e21b066143">
+                <formio src="Url"
+                submission="submissionId"
+                form="formId">
                 </formio>
               </b-tab>
               <b-tab title="History"></b-tab>
@@ -197,8 +199,15 @@ export default class Tasklist extends Vue {
           CamundaRest.getVariablesByTaskId(sessionStorage.getItem('vue-token'), this.$route.params.taskId)
           .then((result)=> {
               this.Url = result.data["formUrl"].value;
-              // this.formId, this.submissionId = getFormIdSubmissionIdFromFormURL(this.url);
+              this.formId, this.submissionId = getFormIdSubmissionIdFromFormURL(this.url);
           });
+
+          const getFormIdSubmissionIdFromFormURL = (formUrl) => {
+          const formArr = formUrl.split("/");
+          const formId = formArr[4];
+          const submissionId = formArr[6];
+          return {formId,submissionId};
+        }
 
         }
       }

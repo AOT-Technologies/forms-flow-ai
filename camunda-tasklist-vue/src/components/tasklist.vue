@@ -24,7 +24,7 @@
 
                   <b-row class="task-row-2">
                     <div class="col-6 pr-0">
-                    {{ getProcessDataFromList(processDefinitionList, task.processDefinitionId, 'name') }}         
+                    {{ getProcessDataFromList(getProcessDefinitions, task.processDefinitionId, 'name') }}         
                     </div>
                     <div title="Task assignee" class="col-6 pr-0 text-right">
                       {{task.assignee}}
@@ -48,27 +48,43 @@
       <b-col cols="8" v-if="this.$route.params.taskId">
         <b-row class="ml-0 task-header"> {{taskName}}</b-row>
         <b-row class="ml-0 task-name">{{taskProcess}}</b-row>
+        <b-row class="ml-0 task-name">PID #{{task.processInstanceId}}</b-row>
         
         <div>
         <b-row class="actionable">
             <div class="col-md-auto">
-            <button type="button" class="btn btn-primary"><b-icon :icon="'calendar3'"></b-icon> Set Follow-up date </button>
+            <b-button variant="outline-primary"><b-icon :icon="'calendar3'"></b-icon> Set Follow-up date 
+            </b-button>
             </div>
             <div class="col-md">
-            <button type="button" class="btn btn-primary"><b-icon :icon="'bell'"></b-icon> Due Date </button>
+            <b-button variant="outline-primary"><b-icon :icon="'bell'"></b-icon> Due Date </b-button>
             </div>
             <div class="col-md">
-            <button type="button" class="btn btn-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </button>
+            <b-button variant="outline-primary"><b-icon :icon="'grid3x3-gap-fill'"></b-icon> Add groups </b-button>
             </div>
             <div class="col-md">
-            <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button>
+            <!-- <button type="button" class="btn btn-primary"><b-icon :icon="'person-fill'"></b-icon> Claim </button> -->
+            <b-col>
+              {{task.assignee}}
+                 <b-button variant="outline-primary" v-if="task.assignee" @click="onUnClaim">
+                   <!-- <b-spinner label="Loading..."></b-spinner> -->
+                   {{task.assignee}}
+                   <b-icon :icon="'person-x-fill'"></b-icon>
+                 </b-button>
+                 <b-button variant="outline-primary" v-else @click="onClaim">
+                   <b-icon :icon="'person-fill'"></b-icon>
+                   Claim
+                 </b-button>
+              </b-col>
             </div>
         </b-row>
 
         <div>
             <b-tabs content-class="mt-3" id="service-task-details">
               <b-tab title="Form" active>
-                <formio src="https://forms2.aot-technologies.com/form/601871fe3dd9a85a1fa622be/submission/6020d93d3080f7e21b066143">
+                <formio src="Url"
+                submission="submissionId"
+                form="formId">
                 </formio>
               </b-tab>
               <b-tab title="History"></b-tab>
@@ -93,6 +109,8 @@
 import CamundaRest from '../services/camunda-rest';
 import { Form } from 'vue-formio';
 import { Component, Vue, Watch } from 'vue-property-decorator'
+import Loading from 'vue-loading-overlay';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 @Component({
   components: {
@@ -100,13 +118,18 @@ import { Component, Vue, Watch } from 'vue-property-decorator'
   }
 })
 export default class Tasklist extends Vue {
+    @Watch('$route')
+    fetchData
+
     private tasks = []
     private getProcessDefinitions = []
-    private taskName = ''
-    private taskProcess = ''
-    private formId = ''
-    private submissionId = ''
-    private Url = ''
+    private taskName = null
+    private taskProcess = null
+    private formId = null
+    private submissionId = null
+    private Url = null
+    private activeIndex = null
+    private username = sessionStorage.getItem("username")
 
   timeDifference(givendate) {      
     const diff = Math.abs(new Date() - new Date(givendate));
@@ -137,6 +160,28 @@ export default class Tasklist extends Vue {
     return process && process[dataKey];
   }
 
+  toggle(index){
+      this.activeIndex = index
+    }
+
+  onClaim() {
+    CamundaRest.claim(sessionStorage.getItem("vue-token") ,this.task.id, {userId: this.username}).then((result)=> 
+    console.log(result.data)
+    )
+    .catch((error) => {
+        console.log("Error", error);
+    })
+  }
+
+  onUnClaim(){ 
+    CamundaRest.unclaim(sessionStorage.getItem("vue-token") ,this.task.id).then((result)=>
+      console.log(result.data)
+    )
+    .catch((error) =>{
+      console.log("Error", error)
+    })
+  }
+
 
   fetchData() {
         CamundaRest.getTasks(sessionStorage.getItem('vue-token')).then((result) => {
@@ -158,21 +203,29 @@ export default class Tasklist extends Vue {
           CamundaRest.getVariablesByTaskId(sessionStorage.getItem('vue-token'), this.$route.params.taskId)
           .then((result)=> {
               this.Url = result.data["formUrl"].value;
-              // this.formId, this.submissionId = getFormIdSubmissionIdFromFormURL(this.url);
+              this.formId, this.submissionId = getFormIdSubmissionIdFromFormURL(this.url);
           });
+
+          const getFormIdSubmissionIdFromFormURL = (formUrl) => {
+          const formArr = formUrl.split("/");
+          const formId = formArr[4];
+          const submissionId = formArr[6];
+          return {formId,submissionId};
+        }
 
         }
       }
 
-  @Watch('fetchData')
   mounted() {
     CamundaRest.getTasks(sessionStorage.getItem('vue-token')).then((result) => {
       this.tasks = result.data;      
     }); 
 
+    this.fetchData();
+    
     CamundaRest.getProcessDefinitions(sessionStorage.getItem('vue-token')).then((response) => {
         this.getProcessDefinitions = response.data;
-    });
+    }); 
   }
 
 }
@@ -220,7 +273,14 @@ export default class Tasklist extends Vue {
   max-height: 80vh;
   overflow-y: auto;
   padding-right: 25px;
+  border-right: 2px solid #D0D0D0;
 } 
+
+#service-task-details {
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
 .task-header {
   font-size: 30px;

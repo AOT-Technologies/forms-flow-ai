@@ -48,6 +48,7 @@
       <b-col cols="8" v-if="this.$route.params.taskId">
         <b-row class="ml-0 task-header"> {{taskName}}</b-row>
         <b-row class="ml-0 task-name">{{taskProcess}}</b-row>
+        <b-row class="ml-0 task-name">PID #{{task.processInstanceId}}</b-row>
         
         <div>
         <b-row class="actionable">
@@ -122,6 +123,7 @@ export default class Tasklist extends Vue {
     private formId = null
     private submissionId = null
     private Url = null
+    private activeIndex = null
 
   timeDifference(givendate) {      
     const diff = Math.abs(new Date() - new Date(givendate));
@@ -151,6 +153,10 @@ export default class Tasklist extends Vue {
     const process = processList.find(process => process.id === processId);
     return process && process[dataKey];
   }
+
+  toggle(index){
+      this.activeIndex = index
+    }
 
   onClaim() {
     CamundaRest.claim(sessionStorage.getItem("vue-token") ,this.task.id, {userId: this.username}).then((result)=> 

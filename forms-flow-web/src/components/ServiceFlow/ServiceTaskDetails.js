@@ -68,12 +68,12 @@ const ServiceFlowTaskDetails = () => {
            <FormEdit onFormSubmit={()=>onFormSubmitCallback()}/>
          </Tab>
          <Tab eventKey="history" title="History">
-           <History applicationId={task.applicationId}/>
+           <History applicationId={task?.applicationId}/>
          </Tab>
          <Tab eventKey="diagram" title="Diagram">
            <div>
              <ProcessDiagram
-               process_key={getProcessDataFromList(processList, task.processDefinitionId,'key')}
+               process_key={getProcessDataFromList(processList, task?.processDefinitionId,'key')}
                // markers={processActivityList}
              />
            </div>

@@ -88,7 +88,7 @@ const TaskHeader = ({ task }) => {
     <AddGroupModal modalOpen={showModal} onClose={()=>setModal(false)}/>
       <Row className="ml-0 task-header">{task?.name}</Row>
       <Row className="ml-0 task-name" title={"Process Name"}>
-        {getProcessDataFromList(processList, task.processDefinitionId, "name")}
+        {getProcessDataFromList(processList, task?.processDefinitionId, "name")}
       </Row>
       <Row className="ml-0" title="Process InstanceId">
         {task?.processInstanceId}

@@ -39,6 +39,8 @@ public class FormConnectorListener implements TaskListener {
     private static final Logger LOGGER = Logger.getLogger(FormConnectorListener.class.getName());
 
     private Expression fields;
+    private Expression propogateData;
+
 
     @Autowired
     private FormSubmissionService formSubmissionService;
@@ -74,7 +76,7 @@ public class FormConnectorListener implements TaskListener {
         for(String entry : supFields) {
             superVariables.put(entry, delegateTask.getExecution().getVariables().get(entry));
         }
-        return  formSubmissionService.createSubmission(targetFormUrl, createFormSubmissionData(submission, superVariables));
+        return  formSubmissionService.createSubmission(targetFormUrl, createFormSubmissionData(submission, superVariables, getPropogateData(delegateTask)));
     }
 
 
@@ -105,14 +107,20 @@ public class FormConnectorListener implements TaskListener {
         return new ObjectMapper();
     }
 
-      private String createFormSubmissionData(String submission, Map<String,Object> superVariables) {
+      private String createFormSubmissionData(String submission, Map<String,Object> superVariables, String propogateData) {
         try {
             JsonNode submissionNode = getObjectMapper().readTree(submission);
             JsonNode dataNode =submissionNode.get("data");
-            for(Map.Entry<String,Object> entry : superVariables.entrySet()) {
-                ((ObjectNode)dataNode).put(entry.getKey(), (String) entry.getValue());
+            if("Y".equals(propogateData)) {
+                for(Map.Entry<String,Object> entry : superVariables.entrySet()) {
+                    ((ObjectNode)dataNode).put(entry.getKey(), (String) entry.getValue());
+                }
+                return getObjectMapper().writeValueAsString(new FormSubmission(dataNode));
+            } else {
+                return getObjectMapper().writeValueAsString(new FormSubmission(getObjectMapper().convertValue(superVariables, JsonNode.class)));
             }
-            return getObjectMapper().writeValueAsString(new FormSubmission(dataNode));
+
+
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
@@ -131,6 +139,14 @@ public class FormConnectorListener implements TaskListener {
 
     private String getFormIdProperty() {
         return "formid";
+    }
+
+    private String getPropogateData(DelegateTask delegateTask){
+        if(this.propogateData != null &&
+                StringUtils.isNotBlank(String.valueOf(this.propogateData.getValue(delegateTask)))) {
+            return String.valueOf(this.propogateData.getValue(delegateTask));
+        }
+        return "N";
     }
 }
 

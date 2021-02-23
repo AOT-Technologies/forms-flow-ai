@@ -112,7 +112,7 @@ public class FormConnectorListener implements TaskListener {
             for(Map.Entry<String,Object> entry : superVariables.entrySet()) {
                 ((ObjectNode)dataNode).put(entry.getKey(), (String) entry.getValue());
             }
-            return getObjectMapper().writeValueAsString(new FormSubmission());
+            return getObjectMapper().writeValueAsString(new FormSubmission(dataNode));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

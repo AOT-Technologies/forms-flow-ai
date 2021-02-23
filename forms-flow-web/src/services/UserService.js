@@ -92,6 +92,7 @@ const userLogout = () => {
 const setApiBaseUrlToLocalStorage = ()=> {
   localStorage.setItem("bpmApiUrl", BPM_BASE_URL);
   localStorage.setItem("formioApiUrl", AppConfig.projectUrl);
+  localStorage.setItem("formsflow.ai.url",window.location.origin)
 }
 
 const getToken = () => _kc.token;

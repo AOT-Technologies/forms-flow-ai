@@ -8,7 +8,12 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
 import AddGroupModal from "./AddGroupModal";
-import {claimBPMTask, getBPMTaskDetail, unClaimBPMTask} from "../../apiManager/services/bpmTaskServices";
+import {
+  claimBPMTask,
+  fetchServiceTaskList,
+  getBPMTaskDetail,
+  unClaimBPMTask
+} from "../../apiManager/services/bpmTaskServices";
 import {setBPMTaskDetailUpdating} from "../../actions/bpmTaskActions";
 
 const TaskHeader = ({ task }) => {
@@ -43,6 +48,7 @@ const TaskHeader = ({ task }) => {
     dispatch(claimBPMTask(task.id,username,(err,response)=>{
       if(!err){
         dispatch(getBPMTaskDetail(task.id));
+        dispatch(fetchServiceTaskList());
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
       }
@@ -54,6 +60,7 @@ const TaskHeader = ({ task }) => {
     dispatch(unClaimBPMTask(task.id,(err,response)=>{
       if(!err){
         dispatch(getBPMTaskDetail(task.id));
+        dispatch(fetchServiceTaskList());
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
       }
@@ -80,8 +87,11 @@ const TaskHeader = ({ task }) => {
     <>
     <AddGroupModal modalOpen={showModal} onClose={()=>setModal(false)}/>
       <Row className="ml-0 task-header">{task?.name}</Row>
-      <Row className="ml-0 task-name">
+      <Row className="ml-0 task-name" title={"Process Name"}>
         {getProcessDataFromList(processList, task.processDefinitionId, "name")}
+      </Row>
+      <Row className="ml-0" title="Process InstanceId">
+        {task?.processInstanceId}
       </Row>
       <Row className="actionable">
         <Col>

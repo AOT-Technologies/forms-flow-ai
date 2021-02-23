@@ -14,7 +14,7 @@ import {taskDetailVariableDataFormatter} from "./formatterService";
 export const fetchServiceTaskList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpGETRequest(API.GET_BPM_TASKS, {}, UserService.getToken())
+    httpGETRequest(`${API.GET_BPM_TASKS}/?sortBy=created&sortOrder=desc`, {}, UserService.getToken())
       .then((res) => {
         if (res.data) {
           dispatch(setBPMTaskList(res.data));

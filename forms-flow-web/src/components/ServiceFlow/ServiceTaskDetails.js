@@ -3,7 +3,7 @@ import {Row, Tab, Tabs} from "react-bootstrap";
 import {useParams} from "react-router-dom";
 import TaskHeader from "./TaskHeader";
 import {setBPMTaskDetailLoader} from "../../actions/bpmTaskActions";
-import {getBPMTaskDetail} from "../../apiManager/services/bpmTaskServices";
+import {fetchServiceTaskList, getBPMTaskDetail} from "../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
 import Loading from "../../containers/Loading";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
@@ -39,6 +39,11 @@ const ServiceFlowTaskDetails = () => {
     }
   },[task, dispatch]);
 
+  const onFormSubmitCallback = () => {
+    dispatch(setBPMTaskDetailLoader(true))
+    dispatch(getBPMTaskDetail(task.id));
+    dispatch(fetchServiceTaskList());
+  }
 
    if(!bpmTaskId){
      return <Row className="not-selected mt-2 ml-1">
@@ -60,7 +65,7 @@ const ServiceFlowTaskDetails = () => {
        <TaskHeader task={task}/>
        <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
          <Tab eventKey="form" title="Form">
-           <FormEdit onFormSubmit={()=>console.log('submitted')}/>
+           <FormEdit onFormSubmit={()=>onFormSubmitCallback()}/>
          </Tab>
          <Tab eventKey="history" title="History">
            <History applicationId={task.applicationId}/>

@@ -46,7 +46,7 @@ public class SimpleDBDataPipeline extends AbstractDataPipeline {
         for(Map.Entry<String,Object> entry : variables.entrySet()) {
                     if(entry.getValue() != null) {
                         if(StringUtils.endsWith(entry.getKey(),"_date") || StringUtils.endsWith(entry.getKey(),"_date_time")) {
-                            if(StringUtils.isNotEmpty(String.valueOf(entry.getValue()))) {
+                            if(entry.getValue() != null && !"null".equalsIgnoreCase(String.valueOf(entry.getValue())) && StringUtils.isNotBlank(String.valueOf(entry.getValue()))) {
                                 DateTime ts = new DateTime(String.valueOf(entry.getValue()));
                                 dataMap.put(entry.getKey(), new Timestamp((ts.getMillis())));
                             }

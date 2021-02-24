@@ -8,7 +8,7 @@ const initialState = {
   isFormWorkflowSaved: false,
 }
 
-export default (state = initialState, action)=> {
+const formDelete = (state = initialState, action)=> {
   switch (action.type) {
     case ACTION_CONSTANTS.FORM_SUBMISSION_DELETE:
       return {...state, formSubMissionDelete: action.payload};
@@ -19,9 +19,10 @@ export default (state = initialState, action)=> {
     case ACTION_CONSTANTS.IS_FORM_SUBMISSION_LOADING:
       return {...state, isFormSubmissionLoading: action.payload};
     case ACTION_CONSTANTS.IS_FORM_WORKFLOW_SAVED:
-      return {...state, isFormWorkflowSaved: action.payload};  
+      return {...state, isFormWorkflowSaved: action.payload};
     default:
       return state;
   }
 }
 
+export default formDelete;

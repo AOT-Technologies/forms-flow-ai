@@ -1,11 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import { Col, Row } from 'react-bootstrap';
 
-export default class extends Component {
-  render() {
-    const { modalOpen=false, onClose } = this.props;
+const AddGroupModal= (props)=> {
+    const { modalOpen=false, onClose } = props;
     return (
       <>
           <Modal show={modalOpen}>
@@ -35,5 +34,5 @@ export default class extends Component {
           </Modal>
         </>
     )
-  }
 }
+export default AddGroupModal;

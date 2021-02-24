@@ -33,7 +33,7 @@ public class DataReaderController {
     @Autowired
     private NamedParameterJdbcTemplate analyticsJdbcTemplate;
 
-    @RequestMapping(value = "/engine-ext-rest/data", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/engine-rest-ext/data", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody List<Map<String, Object>> getData(@RequestBody DataRequest dataRequest) {
         if(dataRequest != null && StringUtils.isNotBlank(dataRequest.getQuery())) {
             if(checkForBlackListedWords(dataRequest.getQuery())) {

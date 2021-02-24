@@ -11,6 +11,8 @@ import {
   setUserToken,
   setUserDetails,
 } from "../actions/bpmActions";
+import {BPM_BASE_URL} from "../apiManager/endpoints/config";
+import {AppConfig} from '../config';
 
 const jwt = require("jsonwebtoken");
 
@@ -35,6 +37,8 @@ const initKeycloak = (store, ...rest) => {
           const UserRoles = KeycloakData.resourceAccess[Keycloak_Client].roles;
           store.dispatch(setUserRole(UserRoles));
           store.dispatch(setUserToken(KeycloakData.token));
+          //Set Cammunda/Formio Base URL
+          setApiBaseUrlToLocalStorage();
 
           let roles = [];
           for (let i = 0; i < UserRoles.length; i++) {
@@ -85,6 +89,12 @@ const userLogout = () => {
   doLogout();
 };
 
+const setApiBaseUrlToLocalStorage = ()=> {
+  localStorage.setItem("bpmApiUrl", BPM_BASE_URL);
+  localStorage.setItem("formioApiUrl", AppConfig.projectUrl);
+  localStorage.setItem("formsflow.ai.url",window.location.origin)
+}
+
 const getToken = () => _kc.token;
 
 const getFormioToken = () => localStorage.getItem("formioToken");
@@ -120,7 +130,8 @@ const authenticateFormio = (user, roles) => {
 };
 
 const KeycloakData = _kc;
-export default {
+
+const UserService ={
   initKeycloak,
   doLogin,
   userLogout,
@@ -131,3 +142,5 @@ export default {
   getUserEmail,
   authenticateAnonymousUser,
 };
+
+export default UserService;

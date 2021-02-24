@@ -14,7 +14,7 @@ const initialState = {
   userList:[]
 }
 
-export default (state = initialState, action)=> {
+const bpmTasks =(state = initialState, action)=> {
   switch (action.type) {
     case ACTION_CONSTANTS.IS_BPM_TASK_LOADING:
       return {...state, isTaskListLoading: action.payload};
@@ -42,4 +42,6 @@ export default (state = initialState, action)=> {
     default:
       return state;
   }
-}
+};
+
+export default bpmTasks;

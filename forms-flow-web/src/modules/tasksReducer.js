@@ -10,7 +10,8 @@ const initialState = {
   isHistoryListLoading: true
 }
 
-export default (state = initialState, action)=> {
+
+const tasks = (state = initialState, action)=> {
   switch (action.type) {
     case ACTION_CONSTANTS.IS_LOADING:
       return {...state, isLoading: action.payload};
@@ -30,3 +31,5 @@ export default (state = initialState, action)=> {
       return state;
   }
 }
+
+export default tasks ;

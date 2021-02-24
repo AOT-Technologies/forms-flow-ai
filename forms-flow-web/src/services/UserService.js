@@ -130,7 +130,8 @@ const authenticateFormio = (user, roles) => {
 };
 
 const KeycloakData = _kc;
-export default {
+
+const UserService ={
   initKeycloak,
   doLogin,
   userLogout,
@@ -141,3 +142,5 @@ export default {
   getUserEmail,
   authenticateAnonymousUser,
 };
+
+export default UserService;

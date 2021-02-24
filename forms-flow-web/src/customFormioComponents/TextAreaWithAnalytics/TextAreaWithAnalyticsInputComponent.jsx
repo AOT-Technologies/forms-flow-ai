@@ -3,7 +3,7 @@ import React, {Component} from 'react';
  * An example React component this is simply a controlled input element.
  *
  */
-export default class extends Component {
+export default class SentimentAnalytics extends Component {
   constructor(props) {
     super(props);
     this.state = {

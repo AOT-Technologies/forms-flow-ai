@@ -11,7 +11,8 @@ const initialState = {
   applicationCount:0
 }
 
-export default (state = initialState, action)=> {
+
+const applications = (state = initialState, action)=> {
   switch (action.type) {
     case ACTION_CONSTANTS.LIST_APPLICATIONS :
       return {...state, applicationsList: action.payload, isApplicationListLoading:false};
@@ -32,5 +33,6 @@ export default (state = initialState, action)=> {
     default:
       return state;
   }
-}
+};
+export default applications;
 

@@ -33,12 +33,8 @@ $light: $gray-100;
 $dark: $gray-800;
 
 @import "~bootstrap/scss/bootstrap.scss";
-$bcgov-font-path: "/node_modules/@bcgov/bootstrap-theme/dist/fonts/";
 @import "~font-awesome/scss/font-awesome";
 @import "~formiojs/dist/formio.full.min.css";
-@import "~@bcgov/bootstrap-theme/dist/scss/bootstrap-theme";
-@import "~@bcgov/bootstrap-theme/dist/scss/common";
-@import "~@bcgov/bootstrap-theme/dist/css/bootstrap-theme.min.css";
 
 .container,
 .container-sm,
@@ -48,8 +44,8 @@ $bcgov-font-path: "/node_modules/@bcgov/bootstrap-theme/dist/fonts/";
   max-width: 1350px;
 }
 .container {
-  padding-left: 0px;
-  padding-right: 0px;
+  padding-left: 0;
+  padding-right: 0;
 }
 .logo {
   height: 1.9em;
@@ -135,7 +131,6 @@ i.fa.fa-question-circle.text-muted {
   border: #38598a;
   color: white !important;
   padding: 0.75rem 1.25rem;
-  margin-bottom: 0;
   margin-bottom: 8px;
 }
 .formio-error-wrapper,
@@ -192,11 +187,11 @@ i.fa.fa-question-circle.text-muted {
   color: #003366;
   font-size: 15px;
   font-weight: bold;
-  padding: 0rem 0rem;
+  padding: 0 0;
 }
 .nav-user-email {
   font-size: 14px;
-  padding: 0rem 0rem;
+  padding: 0 0;
   color: #373a3c;
   white-space: nowrap;
   overflow: hidden;
@@ -204,19 +199,19 @@ i.fa.fa-question-circle.text-muted {
 }
 .nav-user-name {
   font-size: 20px;
-  padding: 0rem 0rem;
+  padding: 0 0;
   font-weight: 600;
   color: #373a3c;
 }
 .nav-logout {
   cursor: pointer;
-  padding: 0rem 0rem;
+  padding: 0 0;
   font-size: 16px;
 }
 .nav-tabs .nav-link.active {
   color: #4d4d4d;
   background-color: #f5f5f5;
-  border-color: 1px solid #f5f5f5 !important;
+  border-color: #f5f5f5 !important;
 }
 .nav-link {
   a {
@@ -300,7 +295,7 @@ i.fa.fa-question-circle.text-muted {
 .lbl-app-nanme {
   font-size: 20px;
   color: #ffff;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   font-weight: bold;
   margin-left: 20px;
 }
@@ -323,7 +318,7 @@ i.fa.fa-question-circle.text-muted {
   border-color: white;
 }
 .main-header {
-  margin-left: 0px !important;
+  margin-left: 0 !important;
   display: flex;
   margin-top: 10px;
   margin-bottom: 25px;
@@ -378,7 +373,7 @@ select option:hover {
 #main{
 background-color: #fff;
     padding: 24px;
-    box-shadow: 0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12);
+    box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12);
 }
 
 #sidebar {
@@ -401,8 +396,8 @@ header nav{
 .topheading-border-bottom{
   z-index: 2000;
   border-bottom: 2px solid #4d61fc !important;
-  padding: 0rem 0.5rem !important;
-  box-shadow: 0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12);
+  padding: 0 0.5rem !important;
+  box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12);
 }
 
 

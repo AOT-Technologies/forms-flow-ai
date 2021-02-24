@@ -13,7 +13,7 @@ const initialState = {
   // isTaskUpdating:false,
 };
 
-export default (state = initialState, action) => {
+const metrics = (state = initialState, action) => {
   switch (action.type) {
     case ACTION_CONSTANTS.IS_METRICS_LOADING:
       return { ...state, isMetricsLoading: action.payload };
@@ -33,3 +33,6 @@ export default (state = initialState, action) => {
       return state;
   }
 };
+
+
+export default metrics;

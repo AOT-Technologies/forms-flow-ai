@@ -25,8 +25,12 @@ function configureStore(preloadedState){
     createRootReducer(history),
     composedEnhancers
   );
-}
-export default {
+};
+
+const StoreService = {
   history,
   configureStore
-}
+};
+
+export default StoreService;
+

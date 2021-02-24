@@ -1,6 +1,7 @@
 import React from 'react';
 
-export default () => (
+
+const NoData = () => (
 <div className="h-100 col-12 text-center div-middle">
 <img src="/no-task-clipboard.svg" width="30" height="30" alt="dashboard"></img>
 <br></br>
@@ -8,3 +9,5 @@ export default () => (
 <label> No dashboard found </label>
     </div>
 )
+
+export default NoData;

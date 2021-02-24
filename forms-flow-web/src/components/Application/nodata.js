@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default () => (
+const Nodata = () => (
 <div className="div-no-application-list text-center">
 <img src="/no-task-clipboard.svg" width="30" height="30" alt="task"/>
 <br/>
@@ -10,3 +10,5 @@ export default () => (
   {/*  <label className="lbl-no-application-desc"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do </label>
   */}  </div>
 )
+
+export default Nodata;

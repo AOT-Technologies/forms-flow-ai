@@ -8,7 +8,8 @@ const initialState = {
   currentPage:'',
 }
 
-export default (state = initialState, action)=> {
+
+const user = (state = initialState, action)=> {
   switch (action.type) {
     case ACTION_CONSTANTS.SET_CURRENT_PAGE:
       return {...state, currentPage: action.payload};
@@ -25,3 +26,5 @@ export default (state = initialState, action)=> {
       return state;
   }
 }
+
+export default user;

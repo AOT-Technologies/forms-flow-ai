@@ -7,7 +7,7 @@ const initialState = {
   isInsightLoading:true,
 }
 
-export default (state = initialState, action)=> {
+const insights = (state = initialState, action)=> {
   switch (action.type) {
     case ACTION_CONSTANTS.IS_DASHBOARD_LOADING:
       return {...state, isLoading: action.payload};
@@ -21,3 +21,5 @@ export default (state = initialState, action)=> {
       return state;
   }
 }
+
+export default insights;

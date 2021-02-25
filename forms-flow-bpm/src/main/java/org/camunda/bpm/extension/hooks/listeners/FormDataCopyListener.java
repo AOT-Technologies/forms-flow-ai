@@ -17,10 +17,10 @@ import java.util.logging.Logger;
  *
  * @author sumathi.thirumani@aot-technologies.com
  */
-@Named("formDocumentTransformer")
-public class FormDocumentTransformer  implements TaskListener, ExecutionListener {
+@Named("FormDataCopyListener")
+public class FormDataCopyListener  implements TaskListener, ExecutionListener {
 
-    private final Logger LOGGER = Logger.getLogger(FormDocumentTransformer.class.getName());
+    private final Logger LOGGER = Logger.getLogger(FormDataCopyListener.class.getName());
 
     @Autowired
     private FormSubmissionService formSubmissionService;

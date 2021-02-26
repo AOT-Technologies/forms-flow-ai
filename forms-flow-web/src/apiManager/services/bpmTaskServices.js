@@ -5,7 +5,12 @@ import {
   setBPMTaskLoader,
   setBPMTaskList,
   serviceActionError,
-  setBPMTaskDetailLoader, setBPMTaskDetail, setBPMProcessList, setBPMUserList, setBPMTaskDetailUpdating
+  setBPMTaskDetailLoader,
+  setBPMTaskDetail,
+  setBPMProcessList,
+  setBPMUserList,
+  setBPMTaskDetailUpdating,
+  setBPMFilterList, setBPMFilterLoader
 } from "../../actions/bpmTaskActions";
 import {replaceUrl} from "../../helper/helper";
 import axios from "axios";
@@ -80,6 +85,34 @@ export const fetchUserList = (...rest) => {
       })
       .catch((error) => {
         console.log("Error", error);
+        dispatch(serviceActionError(error));
+        //dispatch(setBPMTaskLoader(false));
+        done(error);
+      });
+  };
+};
+
+export const fetchFilterList = (...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const getTaskFiltersAPI = `${API.GET_BPM_FILTERS}?resourceType=Task&itemCount=true`
+  return (dispatch) => {
+    httpGETRequest(getTaskFiltersAPI, {}, UserService.getToken())
+      .then((res) => {
+        if (res.data) {
+          dispatch(setBPMFilterList(res.data));
+          dispatch(setBPMFilterLoader(false));
+          //dispatch(setBPMLoader(false));
+          done(null, res.data);
+        } else {
+          console.log("Error", res);
+          dispatch(setBPMFilterLoader(false));
+          dispatch(serviceActionError(res));
+          //dispatch(setBPMTaskLoader(false));
+        }
+      })
+      .catch((error) => {
+        console.log("Error", error);
+        dispatch(setBPMFilterLoader(false));
         dispatch(serviceActionError(error));
         //dispatch(setBPMTaskLoader(false));
         done(error);

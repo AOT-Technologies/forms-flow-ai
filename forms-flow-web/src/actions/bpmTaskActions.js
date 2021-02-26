@@ -67,6 +67,19 @@ export const setBPMTaskDetail = (data) => dispatch =>{
     payload:data
   })
 }
+export const setBPMFilterLoader = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_BPM_FILTERS_LOADING,
+    payload:data
+  })
+}
+
+export const setBPMFilterList = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.BPM_FITER_LIST,
+    payload:data
+  })
+}
 
 export const serviceActionError = (data) => dispatch => {
   //TODO update to a common file

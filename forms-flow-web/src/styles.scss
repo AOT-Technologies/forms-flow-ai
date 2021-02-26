@@ -54,9 +54,12 @@ h4 {
   font-size: 1.2rem;
 }
 #main {
-  margin-top: 30px;
+  margin-top: 2px;
   min-height: 85vh;
-  padding-bottom: 2.5rem;
+/*  max-height: 85vh;*/
+  padding-bottom: 1.5rem;
+/*  overflow-y: auto;
+  overflow-x: hidden;*/
 }
 body {
   font-size: 16px;
@@ -181,7 +184,7 @@ i.fa.fa-question-circle.text-muted {
 .main-nav {
   text-decoration: none !important;
   color: $black !important;
-  font-size: 18px !important;
+  font-size: 20px !important;
 }
 .nav-user-role {
   color: #003366;
@@ -222,6 +225,7 @@ i.fa.fa-question-circle.text-muted {
   background-color: $white;
 }
 .active-tab {
+  color: $lightblue !important;
   border-bottom: 1px solid $lightblue;
   background-color: transparent;
 }
@@ -372,7 +376,7 @@ select option:hover {
 
 #main{
 background-color: #fff;
-    padding: 24px;
+    padding: 10px;
     box-shadow: 0 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12);
 }
 

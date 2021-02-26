@@ -5,7 +5,7 @@ import {useSelector} from "react-redux";
 // import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 
-import SideBar from "../containers/SideBar";
+/*import SideBar from "../containers/SideBar";*/
 import NavBar from "../containers/NavBar";
 import Footer from "../components/Footer";
 
@@ -15,7 +15,7 @@ const BaseRouting = ({store}) => {
     <>
       {isAuth?<NavBar/>:null}
       <div className="wrapper">
-        {isAuth?<SideBar store={store} />:null}
+        {/*{isAuth?<SideBar store={store} />:null}*/}
           <div className="container-fluid content main-container">
             <Switch>
               {/* <Route path="/public"><PublicRoute store={store}/></Route> */}

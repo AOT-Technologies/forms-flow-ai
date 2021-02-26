@@ -10,7 +10,7 @@ const initialState = {
 const insights = (state = initialState, action)=> {
   switch (action.type) {
     case ACTION_CONSTANTS.IS_DASHBOARD_LOADING:
-      return {...state, isLoading: action.payload};
+      return {...state, isDashboardLoading: action.payload};
     case ACTION_CONSTANTS.LIST_DASHBOARDS:
       return {...state, dashboardsList: action.payload, isDashboardLoading: false, isInsightLoading: false};
     case ACTION_CONSTANTS.DASHBOARD_DETAIL:

@@ -9,6 +9,7 @@ import moment from "moment";
 import {
   getProcessDataFromList,
 } from "../../apiManager/services/formatterService";
+import TaskFilterComponent from "./filter/TaskFilterComponent";
 
 const ServiceFlowTaskList = () => {
   const taskList = useSelector(state => state.bpmTasks.tasksList);
@@ -31,10 +32,7 @@ const ServiceFlowTaskList = () => {
     if (taskList.length) {
       return (
         <>
-        <div className="filter-container">
-          <input type="text" className="filter" placeholder="Filter Tasks"/>
-          {taskList.length}
-        </div>
+          <TaskFilterComponent totalTasks={taskList.length}/>
           {taskList.map((task,index)=> (
               <div className={`clickable ${task?.id === selectedTask?.id && "selected"}` } key={index} onClick={()=>getTaskDetails(task.id)}>
                 <Row>

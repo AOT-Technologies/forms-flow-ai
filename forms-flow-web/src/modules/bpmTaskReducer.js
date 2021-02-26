@@ -11,7 +11,9 @@ const initialState = {
   isTaskDetailLoading:true,
   isTaskDetailUpdating:false,
   processList:[],
-  userList:[]
+  userList:[],
+  filterList:[],
+  isFilterLoading:true
 }
 
 const bpmTasks =(state = initialState, action)=> {
@@ -22,7 +24,6 @@ const bpmTasks =(state = initialState, action)=> {
       return {...state, isTaskDetailLoading: action.payload};
     case ACTION_CONSTANTS.IS_BPM_TASK_DETAIL_UPDATING:
       return {...state, isTaskDetailUpdating: action.payload};
-
     case ACTION_CONSTANTS.BPM_LIST_TASKS:
       return {...state, tasksList: action.payload};
     case ACTION_CONSTANTS.BPM_PROCESS_LIST:
@@ -39,6 +40,10 @@ const bpmTasks =(state = initialState, action)=> {
       return {...state, isHistoryListLoading: action.payload};
     case ACTION_CONSTANTS.LIST_APPLICATION_HISTORY:
       return {...state, appHistory: action.payload};
+    case ACTION_CONSTANTS.BPM_FITER_LIST:
+      return {...state, filterList: action.payload};
+    case ACTION_CONSTANTS.IS_BPM_FILTERS_LOADING:
+      return {...state, isFilterLoading: action.payload};
     default:
       return state;
   }

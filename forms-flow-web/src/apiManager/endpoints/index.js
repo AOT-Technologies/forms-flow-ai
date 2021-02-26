@@ -25,6 +25,7 @@ const API = {
   UNCLAIM_BPM_TASK:`${BPM_BASE_URL}/task/<task_id>/unclaim`,
   GET_BPM_PROCESS_LIST:`${BPM_BASE_URL}/process-definition`,
   GET_BPM_USER_LIST:`${BPM_BASE_URL}/user`,
+  GET_BPM_FILTERS:`${BPM_BASE_URL}/filter`,
 };
 
 export default API;

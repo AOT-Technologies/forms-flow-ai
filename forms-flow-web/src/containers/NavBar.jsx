@@ -62,34 +62,34 @@ const NavBar = () => {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           {isAuthenticated?
             <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
-            <Nav className="mr-auto active" >
-              <Nav.Link as={Link} to='/form'  className={`main-nav nav-item nav-link ${
+            <Nav id="main-menu-nav" className="mr-auto active">
+              <Nav.Link as={Link} to='/form'  className={`main-nav nav-item ${
                 pathname.match(/^\/form/) ? "active-tab" : ""
               }`}><i className="fa fa-wpforms"/> Forms</Nav.Link>
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT) ?
-                <Nav.Link as={Link} to='/application'  className={`main-nav nav-item nav-link ${
+                <Nav.Link as={Link} to='/application'  className={`main-nav nav-item ${
                   pathname.match(/^\/application/) ? "active-tab" : ""
                 }`}><i className="fa fa-list-alt"/> Applications</Nav.Link>
                 :
                 null}
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <Nav.Link as={Link} to='/task'  className={`main-nav nav-item nav-link ${
+                <Nav.Link as={Link} to='/task'  className={`main-nav nav-item ${
                   pathname.match(/^\/task/) ? "active-tab" : ""
                 }`}><i className="fa fa-list"/> Tasks</Nav.Link>
                 :
                 null}
 
                 {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <Nav.Link as={Link} to='/metrics'  className={`main-nav nav-item nav-link ${
+                <Nav.Link as={Link} to='/metrics'  className={`main-nav nav-item ${
                   pathname.match(/^\/metrics/) ? "active-tab" : ""
                 }`}><i className="fa fa-pie-chart"/> Metrics</Nav.Link>
                 :
                 null}
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <Nav.Link as={Link} to='/insights'  className={`main-nav nav-item nav-link ${
+                <Nav.Link as={Link} to='/insights'  className={`main-nav nav-item ${
                   pathname.match(/^\/insights/) ? "active-tab" : ""
                 }`}><i className="fa fa-lightbulb-o"/> Insights</Nav.Link>
                 :

@@ -1,6 +1,6 @@
 @import "../assets/styles/themes.scss";
 
-#sidebar {
+/*#sidebar {
   & .navbar {
     padding: 15px 10px;
     background: $light-grey;
@@ -64,7 +64,7 @@
       }
     }
   }
-}
+}*/
 
 /* ---------------------------------------------------
     SIDEBAR STYLE
@@ -77,14 +77,14 @@
   position: relative;
 }
 
-#sidebar {
+/*#sidebar {
   min-width: 220px;
   max-width: 250px;
   background: $light-grey;
   color: $black;
   transition: all 0.3s;
   height: 100%;
-}
+}*/
 
 // #sidebar.active {
 //   min-width: 80px;
@@ -92,6 +92,7 @@
 //   text-align: center;
 // }
 
+/*
 #sidebar.active .sidebar-header h3,
 #sidebar.active .CTAs {
   display: none;
@@ -180,6 +181,7 @@
   background: $light-grey !important;
   color: $black !important;
 }
+*/
 
 /* ---------------------------------------------------
     CONTENT STYLE
@@ -302,3 +304,6 @@ margin-right: 1rem;
   }
 }
 
+#main-menu-nav .main-nav {
+  padding-right: 0.8rem !important;
+}

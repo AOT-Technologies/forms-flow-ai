@@ -20,12 +20,12 @@
   overflow-x: hidden;
 }
 .filter-container{
+  position: relative;
   border: 1px solid #555;
   border-radius: 5px;
   width: 100%;
   padding: 0;
   margin: 0 5px 10px 5px;
-  font-size: 13px;
 }
 .filter{
   width: 85%;
@@ -36,6 +36,17 @@
 .filter:focus{
   outline: none;
 }
+
+.filter-items{
+  width: 85%;
+  margin: 5px;
+  border: 1px solid #555;
+  position: absolute;
+  background-color: #fff;
+  background-clip: padding-box;
+  z-index: 5;
+}
+
 .clickable {
   cursor: pointer;
   margin-bottom: 10px !important;
@@ -90,4 +101,7 @@
 }
 .react-datepicker{
   width: max-content;
+}
+.added-filters{
+  margin-top:1px;
 }

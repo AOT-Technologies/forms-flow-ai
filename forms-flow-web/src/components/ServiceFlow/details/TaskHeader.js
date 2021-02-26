@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Row, Col } from "react-bootstrap";
 import {
   getProcessDataFromList
-} from "../../apiManager/services/formatterService";
+} from "../../../apiManager/services/formatterService";
 import {useDispatch, useSelector} from "react-redux";
 import DatePicker from "react-datepicker";
 import moment from "moment";
@@ -13,8 +13,8 @@ import {
   fetchServiceTaskList,
   getBPMTaskDetail,
   unClaimBPMTask
-} from "../../apiManager/services/bpmTaskServices";
-import {setBPMTaskDetailUpdating} from "../../actions/bpmTaskActions";
+} from "../../../apiManager/services/bpmTaskServices";
+import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
 
 const TaskHeader = ({ task }) => {
   /*if(!task){
@@ -91,7 +91,7 @@ const TaskHeader = ({ task }) => {
         {getProcessDataFromList(processList, task?.processDefinitionId, "name")}
       </Row>
       <Row className="ml-0" title="Process InstanceId">
-        {task?.processInstanceId}
+        PID# {task?.processInstanceId}
       </Row>
       <Row className="actionable">
         <Col>

@@ -75,6 +75,21 @@ public class FormSubmissionService {
         return null;
     }
 
+    public String getFormIdByName(String formUrl) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+        ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
+        if(response.getStatusCode().value() == HttpStatus.OK.value()) {
+            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+            String submissionId = jsonNode.get("_id").asText();
+            return submissionId;
+        }
+        } catch (JsonProcessingException e) {
+            LOGGER.log(Level.SEVERE,"Exception occurred in reading form", e);
+        }
+        return null;
+    }
+
     private String getSubmissionUrl(String formUrl){
         return StringUtils.substringBeforeLast(formUrl,"/");
     }
@@ -101,6 +116,8 @@ public class FormSubmissionService {
         }
         return fieldValues;
     }
+
+
 
     private ObjectMapper getObjectMapper(){
         return new ObjectMapper();

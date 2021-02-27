@@ -81,8 +81,8 @@ public class FormSubmissionService {
         ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
         if(response.getStatusCode().value() == HttpStatus.OK.value()) {
             JsonNode jsonNode = objectMapper.readTree(response.getBody());
-            String submissionId = jsonNode.get("_id").asText();
-            return submissionId;
+            String formId = jsonNode.get("_id").asText();
+            return formId;
         }
         } catch (JsonProcessingException e) {
             LOGGER.log(Level.SEVERE,"Exception occurred in reading form", e);

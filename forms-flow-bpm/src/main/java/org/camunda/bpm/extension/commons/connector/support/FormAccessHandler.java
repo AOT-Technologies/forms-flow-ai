@@ -79,7 +79,10 @@ public class FormAccessHandler implements IAccessHandler {
     }
 
     private String getDecoratedServerUrl(String url) {
-        return integrationCredentialProperties.getProperty("formio.url")+"/form/"+StringUtils.substringAfter(url,"/form/");
+        if(StringUtils.contains(url,"/form/")) {
+            return integrationCredentialProperties.getProperty("formio.url") + "/form/" + StringUtils.substringAfter(url, "/form/");
+        }
+            return integrationCredentialProperties.getProperty("formio.url") +"/"+ StringUtils.substringAfterLast(url, "/");
     }
 
 }

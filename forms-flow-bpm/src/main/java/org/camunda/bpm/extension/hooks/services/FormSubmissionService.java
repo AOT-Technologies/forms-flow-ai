@@ -112,7 +112,7 @@ public class FormSubmissionService {
                                 .file(bytes)
                                 .mimeType(fileNode.get("type").asText())
                                 .create();
-                        fileNames.add(StringUtils.substringBeforeLast(fileNode.get("originalName").asText(),".")+entry.getKey());
+                        fileNames.add(fileNode.get("originalName").asText());
                         fieldValues.put(StringUtils.substringBeforeLast(fileNode.get("originalName").asText(),".")+entry.getKey(), fileValue);
                         if(fileNames.size() > 0) {
                             fieldValues.put("file_"+entry.getKey()+"_name", StringUtils.join(fileNames, ","));

@@ -46,7 +46,6 @@ public class AnalyticsListener implements TaskListener, ExecutionListener, IMess
     @Autowired
     private SimpleDBDataPipeline dbdatapipeline;
 
-    private Expression skipDataSync;
 
     private final Logger LOGGER = Logger.getLogger(AnalyticsListener.class.getName());
 
@@ -175,7 +174,6 @@ public class AnalyticsListener implements TaskListener, ExecutionListener, IMess
     }
 
     private void syncVariablesFromDocumentServer(DelegateExecution execution) {
-        if(getSyncIndicator()) {
             Map<String, Object> dataMap = null;
             ObjectMapper objectMapper = new ObjectMapper();
             try {
@@ -186,16 +184,7 @@ public class AnalyticsListener implements TaskListener, ExecutionListener, IMess
             } catch (IOException e) {
                 LOGGER.log(Level.SEVERE, "Exception occurred in transformation", e);
             }
-        }
     }
-
-    private Boolean getSyncIndicator() {
-        if(this.skipDataSync != null && StringUtils.isNotBlank(this.skipDataSync.getExpressionText()) && "Y".equals(this.skipDataSync.getExpressionText())) {
-            return false;
-        }
-        return true;
-    }
-
 
     private String getUniqueIdentifierForFile() {
         return UUID.randomUUID().toString();

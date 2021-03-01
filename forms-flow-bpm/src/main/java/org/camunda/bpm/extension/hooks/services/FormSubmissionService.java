@@ -128,8 +128,8 @@ public class FormSubmissionService {
                                         entry.getValue().isLong() ? entry.getValue().asLong() :
                                                 entry.getValue().isDouble() ? entry.getValue().asDouble() :
                                                         entry.getValue().isBigDecimal() ? entry.getValue().decimalValue() :
-                                                                entry.getValue().asText();
-
+                                                                entry.getValue().isTextual() ? entry.getValue().asText():
+                                                                entry.getValue().toString();
                 fieldValues.put(entry.getKey(), fieldValue);
             }
         }

@@ -13,7 +13,8 @@ const initialState = {
   processList:[],
   userList:[],
   filterList:[],
-  isFilterLoading:true
+  isFilterLoading:true,
+  selectedFilter:{}
 }
 
 const bpmTasks =(state = initialState, action)=> {
@@ -44,6 +45,8 @@ const bpmTasks =(state = initialState, action)=> {
       return {...state, filterList: action.payload};
     case ACTION_CONSTANTS.IS_BPM_FILTERS_LOADING:
       return {...state, isFilterLoading: action.payload};
+    case ACTION_CONSTANTS.BPM_SELECTED_FILTER:
+      return {...state, selectedFilter: action.payload};
     default:
       return state;
   }

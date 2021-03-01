@@ -91,7 +91,7 @@ const TaskHeader = ({ task }) => {
         {getProcessDataFromList(processList, task?.processDefinitionId, "name")}
       </Row>
       <Row className="ml-0" title="Process InstanceId">
-        PID# {task?.processInstanceId}
+        Application ID# {task?.applicationId}
       </Row>
       <Row className="actionable">
         <Col>

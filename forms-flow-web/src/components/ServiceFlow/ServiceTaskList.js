@@ -2,9 +2,8 @@ import React, {useEffect} from "react";
 import {ListGroup,Row, Col } from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
 import {fetchServiceTaskList} from "../../apiManager/services/bpmTaskServices";
-import {setBPMTaskLoader} from "../../actions/bpmTaskActions";
+import {setBPMTaskLoader, setSelectedTaskID} from "../../actions/bpmTaskActions";
 import Loading from "../../containers/Loading";
-import {push} from "connected-react-router";
 import moment from "moment";
 import {
   getProcessDataFromList,
@@ -17,19 +16,22 @@ const ServiceFlowTaskList = () => {
   const dispatch= useDispatch();
   const processList = useSelector(state=>state.bpmTasks.processList);
   let selectedTask = useSelector(state=>state.bpmTasks.taskDetail);
+  const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
 
   useEffect(()=>{
-    dispatch(setBPMTaskLoader(true))
-    dispatch(fetchServiceTaskList());
-  },[dispatch]);
+    if(selectedFilter){
+      dispatch(setBPMTaskLoader(true))
+      dispatch(fetchServiceTaskList(selectedFilter.id));
+    }
+  },[dispatch, selectedFilter]);
 
 
   const getTaskDetails = (bpmTaskId) =>{
-    dispatch(push(`/task/${bpmTaskId}`));
+    dispatch(setSelectedTaskID(bpmTaskId));
   }
 
   const renderTaskList = () =>{
-    if (taskList.length) {
+    if (taskList.length && selectedFilter) {
       return (
         <>
           <TaskFilterComponent totalTasks={taskList.length}/>
@@ -52,7 +54,7 @@ const ServiceFlowTaskList = () => {
                 </Row>
                 <Row className="task-row-3">
                   <Col lg={8} xs={8} sm={8} md={8} xl={8} className="pr-0" title={task.created}>
-                    {task.due? `Due in ${moment(task.due).fromNow()}, `:''} {task.followUp? `Follow-up in ${moment(task.followUp).fromNow()}, `:''}Created {moment(task.created).fromNow()}
+                    {task.due? `Due ${moment(task.due).fromNow()}, `:''} {task.followUp? `Follow-up ${moment(task.followUp).fromNow()}, `:''}Created {moment(task.created).fromNow()}
                   </Col>
                   <Col lg={4} xs={4} sm={4} md={4} xl={4} className="pr-0 text-right" title="priority">
                     {task.priority}
@@ -67,7 +69,7 @@ const ServiceFlowTaskList = () => {
       return (
         <Row className="not-selected mt-2 ml-1">
           <i className="fa fa-info-circle mr-2 mt-1"/>
-          No tasks Found
+          No task matching filters found.
         </Row>
       )
     }

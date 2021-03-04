@@ -88,6 +88,15 @@ export const setSelectedBPMFilter = (data) => dispatch =>{
   })
 }
 
+export const setSelectedTaskID = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.SELECTED_TASK_ID,
+    payload:data
+  })
+}
+
+
+
 export const serviceActionError = (data) => dispatch => {
   //TODO update to a common file
   dispatch({

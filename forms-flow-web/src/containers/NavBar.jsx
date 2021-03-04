@@ -1,33 +1,31 @@
 import React from "react";
-import {Navbar, Dropdown, Container, Nav} from "react-bootstrap";
+import {Navbar, Dropdown, Container, Nav, NavDropdown} from "react-bootstrap";
 import {Link, useLocation} from "react-router-dom";
-import {useSelector} from "react-redux";
-import { selectRoot } from "react-formio";
+import {useDispatch, useSelector} from "react-redux";
 import UserService from "../services/UserService";
 import {getUserRoleName, getUserRolePermission} from "../helper/user";
-//import {toggleMenu} from "../actions/menuActions";
 
 import "./styles.scss";
 import {CLIENT, STAFF_REVIEWER} from "../constants/constants";
+import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
+import {push} from "connected-react-router";
 
 const NavBar = () => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const location = useLocation();
   const { pathname } = location;
-  const user = useSelector((state) => {
-      return selectRoot("user", state).userDetail;
-    });
-  const userRoles = useSelector((state) => {
-      return selectRoot("user", state).roles;
-  });
-/*  const isMenuOpen = useSelector(state=>state.menu.isMenuOpen);*/
+  const user = useSelector((state) => state.user.userDetail);
+  const userRoles = useSelector((state) => state.user.roles);
+  const dispatch= useDispatch();
 
   const logout = () => {
       UserService.userLogout();
   }
-/*  const menuToggle = ()=>{
-   dispatch(toggleMenu(!isMenuOpen))
-  };*/
+
+  const goToTask = () => {
+    dispatch(push(`/task`));
+  }
+
   return (
     <header>
       <Navbar expand="lg" bg="white" className="topheading-border-bottom" fixed="top">
@@ -74,26 +72,29 @@ const NavBar = () => {
                 :
                 null}
 
-              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
+{/*              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
                 <Nav.Link as={Link} to='/task'  className={`main-nav nav-item ${
                   pathname.match(/^\/task/) ? "active-tab" : ""
                 }`}><i className="fa fa-list"/> Tasks</Nav.Link>
                 :
-                null}
-
-                {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <Nav.Link as={Link} to='/metrics'  className={`main-nav nav-item ${
-                  pathname.match(/^\/metrics/) ? "active-tab" : ""
-                }`}><i className="fa fa-pie-chart"/> Metrics</Nav.Link>
-                :
-                null}
+                null}*/}
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <Nav.Link as={Link} to='/insights'  className={`main-nav nav-item ${
-                  pathname.match(/^\/insights/) ? "active-tab" : ""
-                }`}><i className="fa fa-lightbulb-o"/> Insights</Nav.Link>
-                :
-                null}
+                <NavDropdown title={<><i className="fa fa-list"/> Tasks</>} id="task-dropdown"
+                             className={`main-nav nav-item ${pathname.match(/^\/task/) ? "selected-tag" : ""}`} onClick={goToTask}>
+                  <ServiceFlowFilterListDropDown/>
+              </NavDropdown>:null}
+
+              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><i className="fa fa-dashboard"/> Dashboards</>} id="dashboard-dropdown" className={`main-nav nav-item ${
+                  pathname.match(/^\/metrics/)|| pathname.match(/^\/insights/) ? "selected-tag" : ""
+                }`}>
+                <NavDropdown.Item as={Link} to='/metrics' className={`main-nav nav-item ${
+                  pathname.match(/^\/metrics/) ? "" : ""
+                }`}><i className="fa fa-pie-chart"/> Metrics</NavDropdown.Item>
+                <NavDropdown.Item as={Link} to='/insights' className={`main-nav nav-item ${
+                  pathname.match(/^\/insights/) ? "" : ""
+                }`}><i className="fa fa-lightbulb-o"/> Insights</NavDropdown.Item>
+              </NavDropdown>:null}
             </Nav>
             <Nav className="ml-auto">
                   <Dropdown alignRight>

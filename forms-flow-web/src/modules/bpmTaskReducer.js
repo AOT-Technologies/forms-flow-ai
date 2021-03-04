@@ -1,7 +1,7 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
-  isTaskListLoading:true,
+  isTaskListLoading:false,
   tasksList:[],
   tasksCount:0,
   taskDetail: null,
@@ -14,7 +14,8 @@ const initialState = {
   userList:[],
   filterList:[],
   isFilterLoading:true,
-  selectedFilter:{}
+  selectedFilter:null,
+  taskId:null
 }
 
 const bpmTasks =(state = initialState, action)=> {
@@ -47,6 +48,8 @@ const bpmTasks =(state = initialState, action)=> {
       return {...state, isFilterLoading: action.payload};
     case ACTION_CONSTANTS.BPM_SELECTED_FILTER:
       return {...state, selectedFilter: action.payload};
+    case ACTION_CONSTANTS.SELECTED_TASK_ID:
+      return {...state, taskId: action.payload};
     default:
       return state;
   }

@@ -41,7 +41,7 @@ $dark: $gray-800;
 .container-md,
 .container-lg,
 .container-xl {
-  max-width: 1350px;
+  max-width: 100vw;
 }
 .container {
   padding-left: 0;
@@ -225,6 +225,11 @@ i.fa.fa-question-circle.text-muted {
   background-color: $white;
 }
 .active-tab {
+  color: $lightblue !important;
+  border-bottom: 1px solid $lightblue;
+  background-color: transparent;
+}
+.selected-tag  a:first-child {
   color: $lightblue !important;
   border-bottom: 1px solid $lightblue;
   background-color: transparent;

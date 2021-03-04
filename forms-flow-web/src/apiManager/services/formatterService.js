@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const taskSubmissionFormatter = (taskSubmissionData) =>{
   const res = {};
   taskSubmissionData.forEach(taskSubmission => res[taskSubmission.name] = taskSubmission.value);
@@ -67,3 +69,12 @@ export const getFormIdSubmissionIdFromFormURL = (formUrl) => {
   const submissionId = formArr[6];
   return {formId,submissionId};
 }
+
+export const getISODateTime=(date)=>{
+  const dateTimeFormat = moment(date).format("yyyy-MM-DD[T]HH:mm:ss.SSSZ");
+  const dateTimeArr = dateTimeFormat.split('+')
+  const replaceTimezone = dateTimeArr[1].replace(':', '')
+  return dateTimeFormat.replace(dateTimeArr[1], replaceTimezone)
+  //return new Date(date).toISOString();
+};
+

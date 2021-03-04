@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import { Row, Col } from "react-bootstrap";
 import {
+  getISODateTime,
   getProcessDataFromList
 } from "../../../apiManager/services/formatterService";
 import {useDispatch, useSelector} from "react-redux";
@@ -12,43 +13,30 @@ import {
   claimBPMTask,
   fetchServiceTaskList,
   getBPMTaskDetail,
-  unClaimBPMTask
+  unClaimBPMTask,
+  updateBPMTask
 } from "../../../apiManager/services/bpmTaskServices";
 import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
 
 const TaskHeader = ({ task }) => {
-  /*if(!task){
-  return <div>No task found</div>
-}*/
   const processList = useSelector((state) => state.bpmTasks.processList);
   const username = useSelector((state) => state.user?.userDetail?.preferred_username || '');
-
-  const [followUpDate, setFollowUpDate] = useState(null);
-  const [dueDate, setDueDate] = useState(null);
-/*  const [followUp, setFollowUpCalendar] = useState(false);
-  const [due, setDueCalendar] = useState(false);*/
+  const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
+  const followUp = task?.followUp ? new Date(task?.followUp):null;
+  const due = task?.due ? new Date(task?.due): null;
+  const [followUpDate, setFollowUpDate] = useState(followUp);
+  const [dueDate, setDueDate] = useState(due);
   const [showModal, setModal] = useState(false);
   const dispatch= useDispatch();
-
-/*  const handleCalendar = (type) => {
-    if (type === "follow-up") {
-      setFollowUpCalendar(true);
-      setDueCalendar(false);
-    } else if (type === "due") {
-      setFollowUpCalendar(false);
-      setDueCalendar(true);
-    } else {
-      setFollowUpCalendar(false);
-      setDueCalendar(false);
-    }
-  };*/
 
   const onClaim = () => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(claimBPMTask(task.id,username,(err,response)=>{
       if(!err){
-        dispatch(getBPMTaskDetail(task.id));
-        dispatch(fetchServiceTaskList());
+        if(selectedFilter){
+          dispatch(getBPMTaskDetail(task.id));
+          dispatch(fetchServiceTaskList(selectedFilter.id));
+        }
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
       }
@@ -59,29 +47,59 @@ const TaskHeader = ({ task }) => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(unClaimBPMTask(task.id,(err,response)=>{
       if(!err){
-        dispatch(getBPMTaskDetail(task.id));
-        dispatch(fetchServiceTaskList());
+        if(selectedFilter){
+          dispatch(getBPMTaskDetail(task.id));
+          dispatch(fetchServiceTaskList(selectedFilter.id));
+        }
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
       }
     }));
   }
 
-  const FollowUpDateInput=({onClick})=>{
-   return    <div onClick={onClick}>
+  const onFollowUpDateUpdate = (followUpDate)=>{
+    setFollowUpDate(followUpDate);
+    dispatch(setBPMTaskDetailUpdating(true));
+    const updatedTask = {...task, ...{followUp:getISODateTime(followUpDate)}};
+    dispatch(updateBPMTask(task.id,updatedTask,(err,response)=>{
+      if(!err){
+        dispatch(getBPMTaskDetail(task.id));
+        dispatch(fetchServiceTaskList(selectedFilter.id));
+      }else{
+        dispatch(setBPMTaskDetailUpdating(false));
+      }
+    }))
+  };
+
+  const onDueDateUpdate = (dueDate)=>{
+    setDueDate(dueDate);
+    dispatch(setBPMTaskDetailUpdating(true));
+    const updatedTask = {...task, ...{due:getISODateTime(dueDate)}};
+    dispatch(updateBPMTask(task.id,updatedTask,(err,response)=>{
+      if(!err){
+        dispatch(getBPMTaskDetail(task.id));
+        dispatch(fetchServiceTaskList(selectedFilter.id));
+      }else{
+        dispatch(setBPMTaskDetailUpdating(false));
+      }
+    }))
+  };
+
+  const FollowUpDateInput= React.forwardRef(({ value, onClick }, ref) =>{
+   return    <div onClick={onClick} ref={ref}>
       <i className="fa fa-calendar" />{" "}
       {followUpDate
         ? <span className="mr-4">{moment(followUpDate).fromNow()}</span>
         : "Set follow-up Date"}
     </div>
-  };
+  });
 
-  const DueDateInput=({onClick})=>{
-    return    <div onClick={onClick}>
+  const DueDateInput=React.forwardRef(({ value, onClick }, ref) =>{
+    return    <div onClick={onClick} ref={ref}>
       <i className="fa fa-bell" />{" "}
       {dueDate ? <span className="mr-4">{moment(dueDate).fromNow()}</span> : "Set Due date"}
     </div>
-  };
+  });
 
   return (
     <>
@@ -97,7 +115,7 @@ const TaskHeader = ({ task }) => {
         <Col>
           <DatePicker
             selected={followUpDate}
-            onChange={(date) => setFollowUpDate(date)}
+            onChange={onFollowUpDateUpdate}
             showTimeSelect
             isClearable
             popperPlacement="bottom-start"
@@ -118,9 +136,10 @@ const TaskHeader = ({ task }) => {
         <Col>
           <DatePicker
             selected={dueDate}
-            onChange={(date) => setDueDate(date)}
+            onChange={onDueDateUpdate}
             showTimeSelect
             isClearable
+            shouldCloseOnSelect
             popperPlacement="bottom-start"
             popperModifiers={{
               offset: {

@@ -1,12 +1,17 @@
 @import "./../../assets/styles/themes.scss";
 
 .footer {
+  border-top: solid 4px #F8F8F8;
   padding-bottom: 15px;
   padding-top: 15px;
-  position: absolute;
+  position: fixed;
+  background-color: white;
   bottom: 0;
-  height: 2.5rem; /* Footer height */
+  height: 2.3rem; /* Footer height */
   width:100%;
+}
+.text-align{
+  bottom: 10px;
 }
 @media (max-width: 768px) {
   .footer{

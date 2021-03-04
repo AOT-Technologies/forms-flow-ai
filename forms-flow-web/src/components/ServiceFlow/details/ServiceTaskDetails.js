@@ -1,6 +1,5 @@
 import React, {useEffect} from "react";
 import {Row, Tab, Tabs} from "react-bootstrap";
-import {useParams} from "react-router-dom";
 import TaskHeader from "./TaskHeader";
 import {setBPMTaskDetailLoader} from "../../../actions/bpmTaskActions";
 import {fetchServiceTaskList, getBPMTaskDetail} from "../../../apiManager/services/bpmTaskServices";
@@ -17,13 +16,14 @@ import {getForm, getSubmission} from "react-formio";
 
 const ServiceFlowTaskDetails = () => {
 
-  const {bpmTaskId} = useParams();
+  const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const task = useSelector(state => state.bpmTasks.taskDetail);
   const processList = useSelector(state=>state.bpmTasks.processList);
   const isTaskLoading = useSelector(state => state.bpmTasks.isTaskDetailLoading);
   const isTaskUpdating = useSelector(state => state.bpmTasks.isTaskDetailUpdating);
   const dispatch= useDispatch();
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
+  const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
 
   useEffect(()=>{
     if(bpmTaskId){
@@ -42,9 +42,11 @@ const ServiceFlowTaskDetails = () => {
   },[task, dispatch]);
 
   const onFormSubmitCallback = () => {
-    dispatch(setBPMTaskDetailLoader(true))
-    dispatch(getBPMTaskDetail(task.id));
-    dispatch(fetchServiceTaskList());
+    if(selectedFilter){
+      dispatch(setBPMTaskDetailLoader(true))
+      dispatch(getBPMTaskDetail(task.id));
+      dispatch(fetchServiceTaskList(selectedFilter.id));
+    }
   }
 
    if(!bpmTaskId){
@@ -67,7 +69,9 @@ const ServiceFlowTaskDetails = () => {
        <TaskHeader task={task}/>
        <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
          <Tab eventKey="form" title="Form">
-           {task.assignee===currentUser?<FormEdit onFormSubmit={()=>onFormSubmitCallback()}/>:<FormView showPrintButton={false}/>}
+           <LoadingOverlay active={task.assignee!==currentUser}>
+             {task.assignee===currentUser?<FormEdit onFormSubmit={()=>onFormSubmitCallback()}/>:<FormView showPrintButton={false}/>}
+           </LoadingOverlay>
          </Tab>
          <Tab eventKey="history" title="History">
            <History applicationId={task?.applicationId}/>

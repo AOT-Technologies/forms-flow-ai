@@ -5,7 +5,7 @@ const Footer = () => {
   const today = new Date();
   return (
     <div className="row footer">
-      <div className="col-12 text-center">
+      <div className="col-12 text-center text-align">
         Copyright &copy; AOT Technologies {today.getFullYear()}
       </div>
     </div>

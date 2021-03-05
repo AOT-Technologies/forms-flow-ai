@@ -47,4 +47,6 @@ export const taskFilters= [
   "Delegation State",
   "Tenant ID",
   "Without Tenant ID"
-]
+];
+
+export const ALL_TASKS="All Tasks"

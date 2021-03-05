@@ -3,15 +3,10 @@ import nltk
 
 from pathlib import Path
 
-nltk.downloader.download("vader_lexicon")
-nltk.downloader.download("punkt")
-nltk.downloader.download("subjectivity")
 
 from pathlib import Path
 from collections import defaultdict
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from nltk import tokenize
-
 
 class SentimentAnalyserService:
     @staticmethod

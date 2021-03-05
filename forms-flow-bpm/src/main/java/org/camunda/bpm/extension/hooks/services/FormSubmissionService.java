@@ -4,20 +4,19 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.variable.Variables;
+import org.camunda.bpm.engine.variable.value.FileValue;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -75,6 +74,21 @@ public class FormSubmissionService {
         return null;
     }
 
+    public String getFormIdByName(String formUrl) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        try {
+            ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
+            if(response.getStatusCode().value() == HttpStatus.OK.value()) {
+                JsonNode jsonNode = objectMapper.readTree(response.getBody());
+                String formId = jsonNode.get("_id").asText();
+                return formId;
+            }
+        } catch (JsonProcessingException e) {
+            LOGGER.log(Level.SEVERE,"Exception occurred in reading form", e);
+        }
+        return null;
+    }
+
     private String getSubmissionUrl(String formUrl){
         return StringUtils.substringBeforeLast(formUrl,"/");
     }
@@ -89,18 +103,40 @@ public class FormSubmissionService {
         Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
         while (dataElements.hasNext()) {
             Map.Entry<String, JsonNode> entry = dataElements.next();
-            Object fieldValue = entry.getValue().isBoolean() ? entry.getValue().booleanValue() :
-                    entry.getValue().isInt() ? entry.getValue().intValue() :
-                            entry.getValue().isBinary() ? entry.getValue().binaryValue() :
-                                    entry.getValue().isLong() ? entry.getValue().asLong() :
-                                            entry.getValue().isDouble() ? entry.getValue().asDouble() :
-                                                    entry.getValue().isBigDecimal() ? entry.getValue().decimalValue() :
-                                                            entry.getValue().asText();
+            if(StringUtils.endsWithIgnoreCase(entry.getKey(),"_file")) {
+                List<String> fileNames = new ArrayList();
+                if(entry.getValue().isArray()) {
+                    for (JsonNode fileNode : entry.getValue()) {
+                        byte[] bytes = Base64.getDecoder().decode(StringUtils.substringAfterLast(fileNode.get("url").asText(), "base64,"));
+                        FileValue fileValue = Variables.fileValue(fileNode.get("originalName").asText())
+                                .file(bytes)
+                                .mimeType(fileNode.get("type").asText())
+                                .create();
+                        fileNames.add(fileNode.get("originalName").asText());
+                        fieldValues.put(StringUtils.substringBeforeLast(fileNode.get("originalName").asText(),".")+entry.getKey(), fileValue);
+                        if(fileNames.size() > 0) {
+                            fieldValues.put("file_"+entry.getKey()+"_name", StringUtils.join(fileNames, ","));
+                            fieldValues.put(entry.getKey()+"_id",dataNode.get("_id").asText());
+                        }
+                    }
 
-            fieldValues.put(entry.getKey(), fieldValue);
+                }
+            } else{
+                Object fieldValue = entry.getValue().isBoolean() ? entry.getValue().booleanValue() :
+                        entry.getValue().isInt() ? entry.getValue().intValue() :
+                                entry.getValue().isBinary() ? entry.getValue().binaryValue() :
+                                        entry.getValue().isLong() ? entry.getValue().asLong() :
+                                                entry.getValue().isDouble() ? entry.getValue().asDouble() :
+                                                        entry.getValue().isBigDecimal() ? entry.getValue().decimalValue() :
+                                                                entry.getValue().isTextual() ? entry.getValue().asText():
+                                                                entry.getValue().toString();
+                fieldValues.put(entry.getKey(), fieldValue);
+            }
         }
         return fieldValues;
     }
+
+
 
     private ObjectMapper getObjectMapper(){
         return new ObjectMapper();

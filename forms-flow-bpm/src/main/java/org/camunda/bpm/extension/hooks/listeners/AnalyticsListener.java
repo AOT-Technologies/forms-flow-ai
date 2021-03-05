@@ -2,6 +2,8 @@ package org.camunda.bpm.extension.hooks.listeners;
 
 
 
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.*;
@@ -13,11 +15,14 @@ import org.camunda.bpm.extension.hooks.services.IFileService;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.camunda.bpm.extension.hooks.services.analytics.IDataPipeline;
 import org.camunda.bpm.extension.hooks.services.analytics.SimpleDBDataPipeline;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Named;
+
 import java.io.IOException;
 import java.io.InputStream;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -40,6 +45,7 @@ public class AnalyticsListener implements TaskListener, ExecutionListener, IMess
 
     @Autowired
     private SimpleDBDataPipeline dbdatapipeline;
+
 
     private final Logger LOGGER = Logger.getLogger(AnalyticsListener.class.getName());
 
@@ -168,17 +174,17 @@ public class AnalyticsListener implements TaskListener, ExecutionListener, IMess
     }
 
     private void syncVariablesFromDocumentServer(DelegateExecution execution) {
-        Map<String,Object> dataMap = null;
-        try {
-            dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
-            for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
-                execution.setVariable(entry.getKey(), entry.getValue());
+            Map<String, Object> dataMap = null;
+            ObjectMapper objectMapper = new ObjectMapper();
+            try {
+                dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
+                for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
+                    execution.setVariable(entry.getKey(), entry.getValue());
+                }
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Exception occurred in transformation", e);
             }
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE,"Exception occurred in transformation", e);
-        }
     }
-
 
     private String getUniqueIdentifierForFile() {
         return UUID.randomUUID().toString();

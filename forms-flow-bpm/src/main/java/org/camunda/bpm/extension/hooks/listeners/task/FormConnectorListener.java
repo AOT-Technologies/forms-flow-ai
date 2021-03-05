@@ -81,7 +81,6 @@ public class FormConnectorListener implements TaskListener {
 
 
     private String getFormId(DelegateTask delegateTask) {
-
         CamundaProperties camundaProperties = delegateTask.getExecution()
                     .getBpmnModelElementInstance()
                     .getExtensionElements()
@@ -97,7 +96,8 @@ public class FormConnectorListener implements TaskListener {
 
 
             if(CollectionUtils.isNotEmpty(userTaskExtensionProperties)) {
-                return userTaskExtensionProperties.get(0).getCamundaValue();
+                String formName = userTaskExtensionProperties.get(0).getCamundaValue();
+                return formSubmissionService.getFormIdByName(StringUtils.substringBefore(getFormUrl(delegateTask),"/form/")+"/"+formName);
             }
 
             return null;
@@ -129,8 +129,7 @@ public class FormConnectorListener implements TaskListener {
 
     private String getModifiedFormUrl(DelegateTask delegateTask) {
         String formUrl = getFormUrl(delegateTask);
-        return StringUtils.replace(formUrl, StringUtils.substringBetween(formUrl, "form/", "/submission"), getFormId(delegateTask));
-
+       return StringUtils.replace(formUrl, StringUtils.substringBetween(formUrl, "form/", "/submission"), getFormId(delegateTask));
     }
 
     private String getFormUrl(DelegateTask delegateTask) {
@@ -138,7 +137,7 @@ public class FormConnectorListener implements TaskListener {
     }
 
     private String getFormIdProperty() {
-        return "formid";
+        return "formName";
     }
 
     private String getPropogateData(DelegateTask delegateTask){

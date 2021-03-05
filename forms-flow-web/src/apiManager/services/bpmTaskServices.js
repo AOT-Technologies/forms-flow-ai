@@ -1,4 +1,4 @@
-import {httpGETRequest, httpPOSTRequest} from "../httpRequestHandler";
+import {httpGETRequest, httpPOSTRequest, httpPUTRequest} from "../httpRequestHandler";
 import API from "../endpoints";
 import UserService from "../../services/UserService";
 import {
@@ -16,10 +16,15 @@ import {replaceUrl} from "../../helper/helper";
 import axios from "axios";
 import {taskDetailVariableDataFormatter} from "./formatterService";
 
-export const fetchServiceTaskList = (...rest) => {
+export const fetchServiceTaskList = (filterId,...rest) => {
   const done = rest.length ? rest[0] : () => {};
+  const apiUrlgetTaskList = replaceUrl(
+    API.GET_BPM_TASK_LIST_WITH_FILTER,
+    "<filter_id>",
+    filterId
+  );
   return (dispatch) => {
-    httpPOSTRequest(`${API.GET_BPM_TASKS}`, {"sorting":
+    httpPOSTRequest(apiUrlgetTaskList, {"sorting":
         [{"sortBy": "created",
           "sortOrder": "desc"
         }]
@@ -185,6 +190,31 @@ export const claimBPMTask = (taskId, user, ...rest) => {
       });
   };
 };
+
+
+export const updateBPMTask = (taskId, task, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const taskDetailAPI = replaceUrl(
+    API.GET_BPM_TASK_DETAIL,
+    "<task_id>",
+    taskId
+  );
+  return (dispatch) => {
+    httpPUTRequest(taskDetailAPI, task)
+      .then((res) => {
+        // if (res.status === 200) {
+        //TODO REMOVE
+        done(null, res.data);
+        // }
+      })
+      .catch((error) => {
+        console.log("Error", error);
+        dispatch(serviceActionError(error));
+        done(error);
+      });
+  };
+};
+
 
 export const unClaimBPMTask = (taskId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};

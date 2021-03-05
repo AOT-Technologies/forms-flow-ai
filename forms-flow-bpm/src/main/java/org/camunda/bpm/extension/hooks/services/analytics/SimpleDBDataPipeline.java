@@ -44,17 +44,17 @@ public class SimpleDBDataPipeline extends AbstractDataPipeline {
         LOGGER.info("Inside transformation for pid :"+ getIdentityKey(variables) +" : map: "+variables);
         Map<String,Object> dataMap = new HashMap<>();
         for(Map.Entry<String,Object> entry : variables.entrySet()) {
-                    if(entry.getValue() != null) {
-                        if(StringUtils.endsWith(entry.getKey(),"_date") || StringUtils.endsWith(entry.getKey(),"_date_time")) {
-                            if(entry.getValue() != null && !"null".equalsIgnoreCase(String.valueOf(entry.getValue())) && StringUtils.isNotBlank(String.valueOf(entry.getValue()))) {
-                                DateTime ts = new DateTime(String.valueOf(entry.getValue()));
-                                dataMap.put(entry.getKey(), new Timestamp((ts.getMillis())));
-                            }
-                        } else {
-                            dataMap.put(entry.getKey(), entry.getValue());
-                        }
-
+            if(entry.getValue() != null) {
+                if(StringUtils.endsWith(entry.getKey(),"_date") || StringUtils.endsWith(entry.getKey(),"_date_time")) {
+                    if(entry.getValue() != null && !"null".equalsIgnoreCase(String.valueOf(entry.getValue())) && StringUtils.isNotBlank(String.valueOf(entry.getValue()))) {
+                        DateTime ts = new DateTime(String.valueOf(entry.getValue()));
+                        dataMap.put(entry.getKey(), new Timestamp((ts.getMillis())));
+                    }
+                } else {
+                    dataMap.put(entry.getKey(), entry.getValue());
                 }
+
+            }
         }
         LOGGER.info("Post transformation:"+ dataMap);
         return dataMap;
@@ -84,7 +84,7 @@ public class SimpleDBDataPipeline extends AbstractDataPipeline {
                         lobData.put("file_size",data.get(fileNamePrefix.concat("_size")));
                         lobData.put("stream_id",data.get(fileNamePrefix.concat("_stream_id")));
                         lobData.put("files_entity_key",data.get("files_entity_key"));
-                        nonLobMap.put(fileNamePrefix.concat("_file_id"), data.get(fileNamePrefix.concat("_stream_id")));
+                        //nonLobMap.put(fileNamePrefix.concat("_file_id"), data.get(fileNamePrefix.concat("_stream_id")));
                         lobMap.put(entry.getKey(),lobData);
                     }
                 } else {
@@ -184,28 +184,28 @@ public class SimpleDBDataPipeline extends AbstractDataPipeline {
      * @throws SQLException
      */
     private Map<String,Object> getColumns(String formKey,String pkName, String pkValue) throws SQLException {
-            SqlParameterSource namedParameters = new MapSqlParameterSource(pkName, pkValue);
-                Map<String, Object> resp = analyticsJdbcTemplate.query(getValidationQuery(formKey,pkName), namedParameters,new ResultSetExtractor<Map<String,Object>>(){
-                    @Override
-                    public Map<String,Object> extractData(ResultSet rs) throws SQLException, DataAccessException {
-                        Map<String,Object> dataMap=new HashMap<>();
-                        ResultSetMetaData resultSetMetaData = rs.getMetaData();
-                        for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
-                            dataMap.put(rs.getMetaData().getColumnName(i).toLowerCase(), null);
-                        }
-                      while(rs.next()) {
-                        for (int j = 1; j <= resultSetMetaData.getColumnCount(); j++) {
-                            if(StringUtils.endsWith(rs.getMetaData().getColumnName(j),"_file")) {
-                                //Not-loading the lob objects on retrieve to keep the metadata lightweight.
-                                dataMap.put(rs.getMetaData().getColumnName(j), null);
-                            } else {
-                                dataMap.put(rs.getMetaData().getColumnName(j), JdbcUtils.getResultSetValue(rs, j));
-                            }
+        SqlParameterSource namedParameters = new MapSqlParameterSource(pkName, pkValue);
+        Map<String, Object> resp = analyticsJdbcTemplate.query(getValidationQuery(formKey,pkName), namedParameters,new ResultSetExtractor<Map<String,Object>>(){
+            @Override
+            public Map<String,Object> extractData(ResultSet rs) throws SQLException, DataAccessException {
+                Map<String,Object> dataMap=new HashMap<>();
+                ResultSetMetaData resultSetMetaData = rs.getMetaData();
+                for (int i = 1; i <= resultSetMetaData.getColumnCount(); i++) {
+                    dataMap.put(rs.getMetaData().getColumnName(i).toLowerCase(), null);
+                }
+                while(rs.next()) {
+                    for (int j = 1; j <= resultSetMetaData.getColumnCount(); j++) {
+                        if(StringUtils.endsWith(rs.getMetaData().getColumnName(j),"_file")) {
+                            //Not-loading the lob objects on retrieve to keep the metadata lightweight.
+                            dataMap.put(rs.getMetaData().getColumnName(j), null);
+                        } else {
+                            dataMap.put(rs.getMetaData().getColumnName(j), JdbcUtils.getResultSetValue(rs, j));
                         }
                     }
-                        return dataMap;
-                    }
-                });
+                }
+                return dataMap;
+            }
+        });
         return resp;
     }
 

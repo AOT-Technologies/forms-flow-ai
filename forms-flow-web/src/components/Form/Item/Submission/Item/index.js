@@ -36,10 +36,11 @@ const Item = (props) => {
   }, [applicationId, dispatch]);
 
   useEffect(() => {
+    if (getUserRolePermission(userRoles, STAFF_REVIEWER)) {
+      setEditAllowed(true);
+    }
     if (applicationStatus) {
-      if (getUserRolePermission(userRoles, STAFF_REVIEWER)) {
-        setEditAllowed(!CLIENT_EDIT_STATUS.includes(applicationStatus));
-      } else if (getUserRolePermission(userRoles, CLIENT)) {
+       if (getUserRolePermission(userRoles, CLIENT)) {
         setEditAllowed(CLIENT_EDIT_STATUS.includes(applicationStatus));
       }
     }

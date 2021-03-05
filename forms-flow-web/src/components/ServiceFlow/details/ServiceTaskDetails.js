@@ -1,8 +1,7 @@
 import React, {useEffect} from "react";
 import {Row, Tab, Tabs} from "react-bootstrap";
-import {useParams} from "react-router-dom";
 import TaskHeader from "./TaskHeader";
-import {setBPMTaskDetailLoader} from "../../../actions/bpmTaskActions";
+import {setBPMTaskDetailLoader, setSelectedTaskID} from "../../../actions/bpmTaskActions";
 import {fetchServiceTaskList, getBPMTaskDetail} from "../../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
 import Loading from "../../../containers/Loading";
@@ -13,17 +12,19 @@ import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
 import LoadingOverlay from "react-loading-overlay";
 import {getForm, getSubmission} from "react-formio";
+import {CUSTOM_EVENT_TYPE} from "../constants/customEventTypes";
 
 
 const ServiceFlowTaskDetails = () => {
 
-  const {bpmTaskId} = useParams();
+  const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const task = useSelector(state => state.bpmTasks.taskDetail);
   const processList = useSelector(state=>state.bpmTasks.processList);
   const isTaskLoading = useSelector(state => state.bpmTasks.isTaskDetailLoading);
   const isTaskUpdating = useSelector(state => state.bpmTasks.isTaskDetailUpdating);
   const dispatch= useDispatch();
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
+  const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
 
   useEffect(()=>{
     if(bpmTaskId){
@@ -41,10 +42,34 @@ const ServiceFlowTaskDetails = () => {
     }
   },[task, dispatch]);
 
+  const reloadTasks = () => {
+    dispatch(setBPMTaskDetailLoader(true));
+    dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
+    dispatch(fetchServiceTaskList(selectedFilter.id)); //Refreshes the Tasks
+  }
+
+  const reloadCurrentTask = () => {
+    if(selectedFilter) {
+      dispatch(setBPMTaskDetailLoader(true))
+      dispatch(getBPMTaskDetail(task.id)); // Refresh the Task Selected
+      dispatch(fetchServiceTaskList(selectedFilter.id)); //Refreshes the Tasks
+    }
+  }
+
+  const onCustomEventCallBack = (customEvent) => {
+     switch(customEvent.type){
+       case CUSTOM_EVENT_TYPE.RELOAD_TASKS:
+         reloadTasks();
+         break;
+       case CUSTOM_EVENT_TYPE.RELOAD_CURRENT_TASK:
+         reloadCurrentTask();
+         break;
+       default: return;
+     }
+  };
+
   const onFormSubmitCallback = () => {
-    dispatch(setBPMTaskDetailLoader(true))
-    dispatch(getBPMTaskDetail(task.id));
-    dispatch(fetchServiceTaskList());
+    reloadCurrentTask();
   }
 
    if(!bpmTaskId){
@@ -67,7 +92,9 @@ const ServiceFlowTaskDetails = () => {
        <TaskHeader task={task}/>
        <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
          <Tab eventKey="form" title="Form">
-           {task.assignee===currentUser?<FormEdit onFormSubmit={()=>onFormSubmitCallback()}/>:<FormView showPrintButton={false}/>}
+           <LoadingOverlay active={task.assignee!==currentUser}>
+             {task.assignee===currentUser?<FormEdit onFormSubmit={onFormSubmitCallback} onCustomEvent={onCustomEventCallBack}/>:<FormView showPrintButton={false}/>}
+           </LoadingOverlay>
          </Tab>
          <Tab eventKey="history" title="History">
            <History applicationId={task?.applicationId}/>

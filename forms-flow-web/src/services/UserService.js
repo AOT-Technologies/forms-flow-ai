@@ -13,6 +13,7 @@ import {
 } from "../actions/bpmActions";
 import {BPM_BASE_URL} from "../apiManager/endpoints/config";
 import {AppConfig} from '../config';
+import {WEB_BASE_URL} from "../apiManager/endpoints/config";
 
 const jwt = require("jsonwebtoken");
 
@@ -93,6 +94,7 @@ const setApiBaseUrlToLocalStorage = ()=> {
   localStorage.setItem("bpmApiUrl", BPM_BASE_URL);
   localStorage.setItem("formioApiUrl", AppConfig.projectUrl);
   localStorage.setItem("formsflow.ai.url",window.location.origin)
+  localStorage.setItem("formsflow.ai.api.url", WEB_BASE_URL);
 }
 
 const getToken = () => _kc.token;

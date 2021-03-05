@@ -24,7 +24,7 @@ const View = (props) => {
   }
 
   return (
-    <div className="container">
+    <div className="container row">
       <div className="main-header">
         <h3 className="task-head"> {form.title}</h3>
         {showPrintButton?<div className="btn-right">
@@ -34,7 +34,7 @@ const View = (props) => {
 
       <Errors errors={errors}/>
       <LoadingOverlay active={isFormSubmissionLoading} spinner text='Loading...' className="col-12">
-        <div className="ml-4 mr-4">
+        <div className="sub-container">
           <Form
             form={form}
             submission={submission}

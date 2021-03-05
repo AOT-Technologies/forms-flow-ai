@@ -8,6 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
+import "./../ServiceFlow.scss";
 import AddGroupModal from "./AddGroupModal";
 import {
   claimBPMTask,
@@ -155,10 +156,10 @@ const TaskHeader = ({ task }) => {
             customInput={<DueDateInput/>}
           />
         </Col>
-        <Col onClick={()=>setModal(true)}>
+        <Col className="center-position" onClick={()=>setModal(true)}>
           <i className="fa fa-group" /> Add groups
         </Col>
-        <Col>
+        <Col className="right-side">
           <i className="fa fa-user mr-1" />
           {task?.assignee ? (
             <span>

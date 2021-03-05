@@ -85,14 +85,16 @@ const NavBar = () => {
                   <ServiceFlowFilterListDropDown/>
               </NavDropdown>:null}
 
-              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><i className="fa fa-dashboard"/> Dashboards</>} id="dashboard-dropdown" className={`main-nav nav-item ${
-                  pathname.match(/^\/metrics/)|| pathname.match(/^\/insights/) ? "selected-tag" : ""
-                }`}>
+              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><i className="fa fa-dashboard"/> Dashboards</>}
+                                                                              id="dashboard-dropdown"
+                                                                              className={`main-nav nav-item ${
+                                                                                pathname.match(/^\/metrics/) || pathname.match(/^\/insights/) ? "active-tab-dropdown" : ""
+                                                                              }`}>
                 <NavDropdown.Item as={Link} to='/metrics' className={`main-nav nav-item ${
-                  pathname.match(/^\/metrics/) ? "" : ""
+                  pathname.match(/^\/metrics/) ? "active-tab" : ""
                 }`}><i className="fa fa-pie-chart"/> Metrics</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to='/insights' className={`main-nav nav-item ${
-                  pathname.match(/^\/insights/) ? "" : ""
+                  pathname.match(/^\/insights/) ? "active-tab" : ""
                 }`}><i className="fa fa-lightbulb-o"/> Insights</NavDropdown.Item>
               </NavDropdown>:null}
             </Nav>

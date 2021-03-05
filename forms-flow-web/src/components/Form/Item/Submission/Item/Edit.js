@@ -8,7 +8,7 @@ import Loading from '../../../../../containers/Loading'
 import {setFormSubmissionError, setFormSubmissionLoading} from '../../../../../actions/formActions';
 import SubmissionError from '../../../../../containers/SubmissionError';
 import {getUserRolePermission} from "../../../../../helper/user";
-import {CLIENT, STAFF_REVIEWER} from "../../../../../constants/constants";
+import {CLIENT} from "../../../../../constants/constants";
 import {
   CLIENT_EDIT_STATUS,
   UPDATE_EVENT_STATUS,
@@ -27,6 +27,7 @@ const Edit = (props) => {
     options,
     errors,
     onFormSubmit,
+    onCustomEvent,
     form: { form, isActive: isFormActive },
     submission: { submission, isActive: isSubActive, url }
   } = props;
@@ -39,9 +40,7 @@ const Edit = (props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
   useEffect(() => {
     if (applicationStatus && !onFormSubmit) {
-      if (getUserRolePermission(userRoles, STAFF_REVIEWER) && CLIENT_EDIT_STATUS.includes(applicationStatus)) {
-        dispatch(push(`/form/${formId}/submission/${submissionId}`));
-      } else if (getUserRolePermission(userRoles, CLIENT) && !CLIENT_EDIT_STATUS.includes(applicationStatus)) {
+      if (getUserRolePermission(userRoles, CLIENT) && !CLIENT_EDIT_STATUS.includes(applicationStatus)) {
         dispatch(push(`/form/${formId}/submission/${submissionId}`));
       }
     }
@@ -71,12 +70,17 @@ const Edit = (props) => {
           hideComponents={hideComponents}
           onSubmit={(submission)=>onSubmit(submission,applicationDetail,onFormSubmit,form._id)}
           options={{ ...options }}
+          onCustomEvent={onCustomEvent}
         />
           </div>
         </LoadingOverlay>
       </div>
     );
 }
+
+Edit.defaultProps = {
+  onCustomEvent: ()=>{}
+};
 
 const mapStateToProps = (state) => {
   return {

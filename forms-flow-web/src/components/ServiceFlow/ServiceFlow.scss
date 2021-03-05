@@ -65,7 +65,10 @@
 .task-row-3 {
   font-size: 11px;
 }
-
+.row {
+  // margin-left: 0 !important;
+  // margin-right: 0 !important;
+}
 .actionable {
   color: #1a5a96;
   // text-decoration: underline;
@@ -108,4 +111,14 @@
 
 .react-datepicker-popper{
   z-index:801;
+}
+.react-datepicker__close-icon{
+  padding-right: 0;
+}
+.right-side{
+  text-align: right;
+  margin-right: 3em;
+}
+.center-position{
+  text-align: center;
 }

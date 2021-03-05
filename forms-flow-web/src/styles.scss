@@ -229,6 +229,11 @@ i.fa.fa-question-circle.text-muted {
   border-bottom: 1px solid $lightblue;
   background-color: transparent;
 }
+.active-tab-dropdown>#dashboard-dropdown {
+  color: $lightblue !important;
+  border-bottom: 1px solid $lightblue;
+  background-color: transparent;
+}
 .selected-tag  a:first-child {
   color: $lightblue !important;
   border-bottom: 1px solid $lightblue;
@@ -327,11 +332,14 @@ i.fa.fa-question-circle.text-muted {
   border-color: white;
 }
 .main-header {
-  margin-left: 0 !important;
+  margin-left: 15px !important;
   display: flex;
   margin-top: 10px;
   margin-bottom: 25px;
   height: 30px;
+}
+.sub-container{
+  margin-left: 15px;
 }
 .task-head {
   font-weight: bold;

@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {Row, Tab, Tabs} from "react-bootstrap";
 import TaskHeader from "./TaskHeader";
-import {setBPMTaskDetailLoader} from "../../../actions/bpmTaskActions";
+import {setBPMTaskDetailLoader, setSelectedTaskID} from "../../../actions/bpmTaskActions";
 import {fetchServiceTaskList, getBPMTaskDetail} from "../../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
 import Loading from "../../../containers/Loading";
@@ -12,6 +12,7 @@ import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
 import LoadingOverlay from "react-loading-overlay";
 import {getForm, getSubmission} from "react-formio";
+import {CUSTOM_EVENT_TYPE} from "../constants/customEventTypes";
 
 
 const ServiceFlowTaskDetails = () => {
@@ -41,12 +42,34 @@ const ServiceFlowTaskDetails = () => {
     }
   },[task, dispatch]);
 
-  const onFormSubmitCallback = () => {
-    if(selectedFilter){
+  const reloadTasks = () => {
+    dispatch(setBPMTaskDetailLoader(true));
+    dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
+    dispatch(fetchServiceTaskList(selectedFilter.id)); //Refreshes the Tasks
+  }
+
+  const reloadCurrentTask = () => {
+    if(selectedFilter) {
       dispatch(setBPMTaskDetailLoader(true))
-      dispatch(getBPMTaskDetail(task.id));
-      dispatch(fetchServiceTaskList(selectedFilter.id));
+      dispatch(getBPMTaskDetail(task.id)); // Refresh the Task Selected
+      dispatch(fetchServiceTaskList(selectedFilter.id)); //Refreshes the Tasks
     }
+  }
+
+  const onCustomEventCallBack = (customEvent) => {
+     switch(customEvent.type){
+       case CUSTOM_EVENT_TYPE.RELOAD_TASKS:
+         reloadTasks();
+         break;
+       case CUSTOM_EVENT_TYPE.RELOAD_CURRENT_TASK:
+         reloadCurrentTask();
+         break;
+       default: return;
+     }
+  };
+
+  const onFormSubmitCallback = () => {
+    reloadCurrentTask();
   }
 
    if(!bpmTaskId){
@@ -70,7 +93,7 @@ const ServiceFlowTaskDetails = () => {
        <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
          <Tab eventKey="form" title="Form">
            <LoadingOverlay active={task.assignee!==currentUser}>
-             {task.assignee===currentUser?<FormEdit onFormSubmit={()=>onFormSubmitCallback()}/>:<FormView showPrintButton={false}/>}
+             {task.assignee===currentUser?<FormEdit onFormSubmit={onFormSubmitCallback} onCustomEvent={onCustomEventCallBack}/>:<FormView showPrintButton={false}/>}
            </LoadingOverlay>
          </Tab>
          <Tab eventKey="history" title="History">

@@ -42,7 +42,7 @@ public class HTTPServiceInvoker {
     }
 
     private String getServiceId(String url) {
-        if(StringUtils.contains(url,"/api/")) {
+        if(StringUtils.contains(url, getProperties().getProperty("api.url"))) {
             return "applicationAccessHandler";
         }
         return "formAccessHandler";

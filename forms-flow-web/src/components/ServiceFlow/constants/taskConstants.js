@@ -49,4 +49,4 @@ export const taskFilters= [
   "Without Tenant ID"
 ];
 
-export const ALL_TASKS="All Tasks"
+export const ALL_TASKS="All tasks"

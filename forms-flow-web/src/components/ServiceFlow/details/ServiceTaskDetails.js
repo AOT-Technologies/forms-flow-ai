@@ -92,8 +92,8 @@ const ServiceFlowTaskDetails = () => {
        <TaskHeader task={task}/>
        <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
          <Tab eventKey="form" title="Form">
-           <LoadingOverlay active={task.assignee!==currentUser}>
-             {task.assignee===currentUser?<FormEdit onFormSubmit={onFormSubmitCallback} onCustomEvent={onCustomEventCallBack}/>:<FormView showPrintButton={false}/>}
+           <LoadingOverlay active={task?.assignee!==currentUser}>
+             {task?.assignee===currentUser?<FormEdit onFormSubmit={onFormSubmitCallback} onCustomEvent={onCustomEventCallBack}/>:<FormView showPrintButton={false}/>}
            </LoadingOverlay>
          </Tab>
          <Tab eventKey="history" title="History">

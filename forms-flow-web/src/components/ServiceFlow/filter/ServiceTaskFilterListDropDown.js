@@ -1,9 +1,8 @@
 import React /*{useEffect}*/ from "react";
 import {NavDropdown} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
-//import {fetchFilterList, fetchServiceTaskList} from "../../../apiManager/services/bpmTaskServices";
-import {/*setBPMFilterLoader, setBPMTaskLoader,*/ setSelectedBPMFilter} from "../../../actions/bpmTaskActions";
-import {Link} from "react-router-dom";
+import {setSelectedBPMFilter, setSelectedTaskID} from "../../../actions/bpmTaskActions";
+/*import {Link} from "react-router-dom";*/
 
 
 const ServiceFlowFilterListDropDown = () => {
@@ -14,6 +13,7 @@ const ServiceFlowFilterListDropDown = () => {
 
   const changeFilterSelection = (filter)=>{
     dispatch(setSelectedBPMFilter(filter));
+    dispatch(setSelectedTaskID(null));
   }
 
 
@@ -22,7 +22,7 @@ const ServiceFlowFilterListDropDown = () => {
       return (
         <>
           {filterList.map((filter,index)=> (
-              <NavDropdown.Item as={Link} to='/task' className={`clickable ml-1 ${filter?.id === selectedFilter?.id && "selected"}` } key={index} onClick={()=>changeFilterSelection(filter)}>
+              <NavDropdown.Item className={`clickable ml-1 ${filter?.id === selectedFilter?.id && "selected selected-tag"}` } key={index} onClick={()=>changeFilterSelection(filter)}>
                       {filter?.name} {`(${filter?.itemCount})`}
               </NavDropdown.Item>
             )

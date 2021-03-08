@@ -49,7 +49,7 @@ const bpmTasks =(state = initialState, action)=> {
     case ACTION_CONSTANTS.BPM_SELECTED_FILTER:
       return {...state, selectedFilter: action.payload};
     case ACTION_CONSTANTS.SELECTED_TASK_ID:
-      return {...state, taskId: action.payload};
+      return {...state, taskId: action.payload, taskDetail:null};
     default:
       return state;
   }

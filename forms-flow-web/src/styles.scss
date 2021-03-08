@@ -234,7 +234,12 @@ i.fa.fa-question-circle.text-muted {
   border-bottom: 1px solid $lightblue;
   background-color: transparent;
 }
-.selected-tag  a:first-child {
+.active-tab-dropdown>#task-dropdown{
+  color: $lightblue !important;
+  border-bottom: 1px solid $lightblue;
+  background-color: transparent;
+}
+.selected-tag{
   color: $lightblue !important;
   border-bottom: 1px solid $lightblue;
   background-color: transparent;

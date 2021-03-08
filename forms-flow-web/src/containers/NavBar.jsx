@@ -81,7 +81,7 @@ const NavBar = () => {
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
                 <NavDropdown title={<><i className="fa fa-list"/> Tasks</>} id="task-dropdown"
-                             className={`main-nav nav-item ${pathname.match(/^\/task/) ? "selected-tag" : ""}`} onClick={goToTask}>
+                             className={`main-nav nav-item ${pathname.match(/^\/task/) ? "active-tab-dropdown" : ""}`} onClick={goToTask}>
                   <ServiceFlowFilterListDropDown/>
               </NavDropdown>:null}
 

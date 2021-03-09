@@ -5,14 +5,10 @@ export const sortingList = [
   {key:"assignee",label:"Assignee"},
   {key:"name",label:"Task name"},
   {key:"followUpDate",label:"Follow-up date"},
-  {key:"processVariable",label:"Process Variable"},
-  {key:"executionVariable",label:"Execution Variable"},
-  {key:"taskVariable",label:"Task Variable"},
-  {key: "caseExecutionVariable",label:"Case Execution Variable"},
-  {key:"caseInstanceVariable",label:"Case Instance Variable"}];
+  {key:"taskVariable",label:"Task Variable"}];
 
 
-//{sortBy: "processVariable", sortOrder: "asc/desc", parameters: {variable: "varName", type: "String"}}
+//{sortBy: "processVariable", sortOrder: "asc/desc", parameProcess**ters: {variable: "varName", type: "String"}}
 
 export const variableTypes = ["Boolean","Double","Integer","String","Date","Long","Short"];
 

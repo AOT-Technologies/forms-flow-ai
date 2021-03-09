@@ -102,9 +102,13 @@ const TaskHeader = ({ task }) => {
     </div>
   });
 
+  const getGroups = (groups)=>{
+    return groups?.map(group=>group.groupId).join(", ");
+  }
+
   return (
     <>
-    <AddGroupModal modalOpen={showModal} onClose={()=>setModal(false)}/>
+    <AddGroupModal modalOpen={showModal} onClose={()=>setModal(false)} groups={task?.groups}/>
       <Row className="ml-0 task-header">{task?.name}</Row>
       <Row className="ml-0 task-name" title={"Process Name"}>
         {getProcessDataFromList(processList, task?.processDefinitionId, "name")}
@@ -156,8 +160,9 @@ const TaskHeader = ({ task }) => {
             customInput={<DueDateInput/>}
           />
         </Col>
-        <Col className="center-position" onClick={()=>setModal(true)}>
-          <i className="fa fa-group" /> Add groups
+        <Col className="center-position" onClick={()=>setModal(true)} title={"groups"}>
+          <i className="fa fa-group mr-1"/>
+          { task?.groups.length === 0? <span>Add groups</span>:<span>{getGroups(task?.groups)}</span>}
         </Col>
         <Col className="right-side">
           <i className="fa fa-user mr-1" />

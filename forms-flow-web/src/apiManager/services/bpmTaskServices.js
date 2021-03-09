@@ -10,7 +10,7 @@ import {
   setBPMProcessList,
   setBPMUserList,
   setBPMTaskDetailUpdating,
-  setBPMFilterList, setBPMFilterLoader
+  setBPMFilterList, setBPMFilterLoader, updateBPMTaskGroups
 } from "../../actions/bpmTaskActions";
 import {replaceUrl} from "../../helper/helper";
 import axios from "axios";
@@ -139,12 +139,18 @@ export const getBPMTaskDetail = (taskId, ...rest) => {
     taskId
   );
 
+  const apiUrlgetGroups = replaceUrl(
+    API.BPM_GROUP,
+    "<task_id>",
+    taskId
+  );
+
   const taskDetailReq =   httpGETRequest(apiUrlgetTaskDetail);
   const taskDetailsWithVariableReq =   httpGETRequest(apiUrlgetTaskVariables);
-
+  const getGroupsReq = httpGETRequest(`${apiUrlgetGroups}?type=candidate`);
 
   return (dispatch) => {
-    axios.all([taskDetailReq,taskDetailsWithVariableReq])
+    axios.all([taskDetailReq,taskDetailsWithVariableReq, getGroupsReq])
       .then(axios.spread(
         (...responses) => {
         if (responses[0]?.data) {
@@ -153,6 +159,10 @@ export const getBPMTaskDetail = (taskId, ...rest) => {
             let taskDetailUpdates = responses[1]?.data;
             taskDetail = {...taskDetail,...taskDetailVariableDataFormatter(taskDetailUpdates)};
           }
+          if (responses[2]?.data){
+            taskDetail = {...taskDetail,...{groups:responses[2]?.data}}
+          }
+
           dispatch(setBPMTaskDetail(taskDetail));
           dispatch(setBPMTaskDetailLoader(false));
           dispatch(setBPMTaskDetailUpdating(false));
@@ -167,6 +177,104 @@ export const getBPMTaskDetail = (taskId, ...rest) => {
   };
 };
 
+
+export const getBPMGroups = (taskId, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+
+  const apiUrlgetGroups = replaceUrl(
+    API.BPM_GROUP,
+    "<task_id>",
+    taskId
+  );
+
+  return (dispatch) => {
+    httpGETRequest(`${apiUrlgetGroups}?type=candidate`)
+      .then(responses => {
+            if (responses?.data){
+              const groups = responses.data;
+              dispatch(updateBPMTaskGroups(groups));
+              dispatch(setBPMTaskDetailLoader(false));
+              dispatch(setBPMTaskDetailUpdating(false));
+              done(null, groups);
+            }else{
+              dispatch(setBPMTaskDetailLoader(false));
+              dispatch(setBPMTaskDetailUpdating(false));
+              done(null,[]);
+            }
+          }
+        )
+      .catch((error) => {
+        dispatch(serviceActionError(error));
+        dispatch(setBPMTaskDetailLoader(false));
+        dispatch(setBPMTaskDetailUpdating(false));
+        done(error);
+      });
+  };
+};
+
+export const removeBPMGroup = (taskId, group, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+
+  const apiUrlDeleteGroup = replaceUrl(
+    API.DELETE_BPM_GROUP,
+    "<task_id>",
+    taskId
+  );
+
+  return (dispatch) => {
+    httpPOSTRequest(apiUrlDeleteGroup, group)
+      .then(responses => {
+          if (responses?.data){
+            dispatch(setBPMTaskDetailLoader(false));
+            dispatch(setBPMTaskDetailUpdating(false));
+            done(null, responses?.data);
+          }else{
+            dispatch(setBPMTaskDetailLoader(false));
+            dispatch(setBPMTaskDetailUpdating(false));
+            done(null,[]);
+          }
+        }
+      )
+      .catch((error) => {
+        dispatch(serviceActionError(error));
+        dispatch(setBPMTaskDetailLoader(false));
+        dispatch(setBPMTaskDetailUpdating(false));
+        done(error);
+      });
+  };
+};
+
+export const addBPMGroup = (taskId, group, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+
+  const apiUrlAddGroup = replaceUrl(
+    API.BPM_GROUP,
+    "<task_id>",
+    taskId
+  );
+
+  return (dispatch) => {
+    httpPOSTRequest(apiUrlAddGroup, group)
+      .then(responses => {
+          if (responses?.data){
+            dispatch(setBPMTaskDetailLoader(false));
+            dispatch(setBPMTaskDetailUpdating(false));
+            done(null, responses?.data);
+          }else{
+            dispatch(setBPMTaskDetailLoader(false));
+            dispatch(setBPMTaskDetailUpdating(false));
+            done(null,[]);
+          }
+        }
+      )
+      .catch((error) => {
+        dispatch(serviceActionError(error));
+        dispatch(setBPMTaskDetailLoader(false));
+        dispatch(setBPMTaskDetailUpdating(false));
+        done(error);
+      });
+  };
+};
 
 export const claimBPMTask = (taskId, user, ...rest) => {
   const done = rest.length ? rest[0] : () => {};

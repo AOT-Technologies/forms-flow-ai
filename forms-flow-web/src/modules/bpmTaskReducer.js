@@ -10,6 +10,7 @@ const initialState = {
   isHistoryListLoading: true,
   isTaskDetailLoading:true,
   isTaskDetailUpdating:false,
+  isGroupLoading:false,
   processList:[],
   userList:[],
   filterList:[],
@@ -50,6 +51,10 @@ const bpmTasks =(state = initialState, action)=> {
       return {...state, selectedFilter: action.payload};
     case ACTION_CONSTANTS.SELECTED_TASK_ID:
       return {...state, taskId: action.payload, taskDetail:null};
+    case ACTION_CONSTANTS.IS_TASK_GROUP_LOADING:
+      return {...state, isGroupLoading: action.payload};
+    case ACTION_CONSTANTS.SET_TASK_GROUP:
+      return {...state, taskDetail:{...state.taskDetail,...{groups:action.payload}},isGroupLoading:false}
     default:
       return state;
   }

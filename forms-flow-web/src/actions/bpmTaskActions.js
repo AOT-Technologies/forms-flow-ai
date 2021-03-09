@@ -14,6 +14,22 @@ export const setBPMTaskDetailLoader = (data) => dispatch =>{
   })
 }
 
+export const updateBPMTaskGroups = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.SET_TASK_GROUP,
+    payload:data
+  })
+}
+
+
+export const setBPMTaskGroupsLoading = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_TASK_GROUP_LOADING,
+    payload:data
+  })
+}
+
+
 export const setBPMTaskDetailUpdating = (data) => dispatch =>{
   dispatch({
     type:ACTION_CONSTANTS.IS_BPM_TASK_DETAIL_UPDATING,

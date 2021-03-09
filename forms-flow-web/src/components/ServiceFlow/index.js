@@ -13,6 +13,7 @@ const ServiceFlow = () => {
   const filterList = useSelector(state=> state.bpmTasks.filterList);
   const isFilterLoading = useSelector(state=> state.bpmTasks.isFilterLoading);
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
+  const taskList = useSelector(state => state.bpmTasks.tasksList);
 
   useEffect(()=>{
     dispatch(setBPMFilterLoader(true));
@@ -38,12 +39,12 @@ const ServiceFlow = () => {
   return (
     <Container fluid id="main">
       <Row>
-        <Col lg={3} xs={12} sm={12} md={4} xl={3}>
+        <Col lg={taskList.length?3:12} xs={12} sm={12} md={4} xl={taskList.length?3:12}>
           <ServiceFlowTaskList/>
         </Col>
-        <Col className="pl-0" lg={9} xs={12} sm={12} md={8} xl={9}>
+        {taskList.length?<Col className="pl-0" lg={9} xs={12} sm={12} md={6} xl={9}>
           <ServiceFlowTaskDetails/>
-        </Col>
+        </Col>:null}
       </Row>
     </Container>
   )

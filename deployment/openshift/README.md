@@ -1,6 +1,6 @@
 # formsflow.ai
 
-This page elaborates how to setup the overall solution on Red Hat Openshift.
+This page describes the setup of Forms Flow AI on Red Hat Openshift.
 
 
 ## Table of Contents
@@ -25,7 +25,15 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
       
 ### Installation
 
-   * Make sure you have a Docker machine up and running.
+   * Download all the build and deployment templates from the current folder on the local machine. 
+   * On command line, navigate to the folder where the templates were downloaded from the previous step. 
+   * Follow the below order for deploying the componenets
+     * Mongo DB and Postgresql. In case of HA, please deploy patroni instances using the build/deployment configs from [here](../../deployment/openshift/patroni)
+     * Forms Flow BPM
+     * Forms Flow API
+     * Forms Flow Forms
+     * Forms Flow Web
+     * Forms Flow Analytics
    * Start the **analytics server** by following the instructions given on  [README](../../forms-flow-analytics/README.md)
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.

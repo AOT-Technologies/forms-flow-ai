@@ -4,7 +4,6 @@ import TaskSort from "./TaskSort";
 
 const getOptions = (options) => {
   const optionsArray = [];
-  console.log(sortingList,options);
   sortingList.forEach(sortOption=>{
     if(!options.some(option=>option.sortBy===sortOption.sortBy)){
       optionsArray.push({...sortOption})

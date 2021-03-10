@@ -68,14 +68,15 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
     @classmethod
     def find_all(cls, page_number, limit):
-        """Fetch all active form process mapper."""
-        return (
-            cls.query.filter(
-                FormProcessMapper.status == FormProcessMapperStatus.Active.value
-            )
-            .paginate(page_number, limit, False)
-            .items
-        )  # pylint: disable=no-member
+        if page_number == 0:
+            return cls.query.order_by(FormProcessMapper.id.desc()).all()
+        else:
+            return cls.query.order_by(FormProcessMapper.id.desc()).paginate(page_number, limit, False).items
+
+    @classmethod
+    def find_all_count(cls):
+        """Fetch all application."""
+        return cls.query.filter(FormProcessMapper.status == str(FormProcessMapperStatus.Active.value)).count()
 
     @classmethod
     def find_by_id(cls, form_process_mapper_id) -> FormProcessMapper:
@@ -83,7 +84,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         return cls.query.filter(
             and_(
                 FormProcessMapper.id == form_process_mapper_id,
-                FormProcessMapper.status == FormProcessMapperStatus.Active.value,
+                FormProcessMapper.status == str(FormProcessMapperStatus.Active.value),
             )
         ).first()  # pylint: disable=no-member
 
@@ -93,7 +94,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         return cls.query.filter(
             and_(
                 FormProcessMapper.form_id == form_id,
-                FormProcessMapper.status == FormProcessMapperStatus.Active.value,
+                FormProcessMapper.status == str(FormProcessMapperStatus.Active.value),
             )
         ).first()  # pylint: disable=no-member
 

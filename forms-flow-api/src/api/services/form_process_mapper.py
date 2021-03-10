@@ -25,7 +25,7 @@ class FormProcessMapperService():
     @staticmethod
     def get_mapper_count():
         """Get form process mapper count."""
-        return FormProcessMapper.query.filter_by(status=FormProcessMapperStatus.Active).count()
+        return FormProcessMapper.find_all_count()
 
     @staticmethod
     def get_mapper(form_process_mapper_id):

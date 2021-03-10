@@ -28,15 +28,25 @@ class FormResource(Resource):
         """Get form process mapper."""
         try:
             request_schema = ApplicationListReqSchema()
-            dict_data = request_schema.load(request.args)
-            page_no = dict_data['page_no']
-            limit = dict_data['limit']
-            return jsonify({
-                'applications': FormProcessMapperService.get_all_mappers(page_no, limit),
-                'totalCount': FormProcessMapperService.get_mapper_count(),
-                'pageNo': page_no,
-                'limit': limit
-            }), HTTPStatus.OK
+            if request.args:
+                dict_data = request_schema.load(request.args)
+                page_no = dict_data['page_no']
+                limit = dict_data['limit']
+            else:
+                page_no = 0
+                limit = 0
+            if page_no > 0:
+                return jsonify({
+                    'forms': FormProcessMapperService.get_all_mappers(page_no, limit),
+                    'totalCount': FormProcessMapperService.get_mapper_count(),
+                    'pageNo': page_no,
+                    'limit': limit
+             }), HTTPStatus.OK
+            else:
+                return jsonify({
+                    'forms': FormProcessMapperService.get_all_mappers(page_no, limit),
+                    'totalCount': FormProcessMapperService.get_mapper_count(),
+                }), HTTPStatus.OK
         except ValidationError as form_err:
             return {'systemErrors': form_err.messages}, HTTPStatus.BAD_REQUEST
 

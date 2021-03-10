@@ -60,7 +60,6 @@ public class AdminController {
         List<String> groups = getGroups(principal);
         List<Authorization> authorizationList =  getAuthorization(groups);
         List<AuthorizedAction> formList = new ArrayList<>();
-        List<AuthorizedAction> formList = new ArrayList<>();
         List<AuthorizedAction> filteredList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         try {

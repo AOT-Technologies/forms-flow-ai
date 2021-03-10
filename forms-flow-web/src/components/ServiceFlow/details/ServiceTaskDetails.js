@@ -2,17 +2,18 @@ import React, {useEffect} from "react";
 import {Row, Tab, Tabs} from "react-bootstrap";
 import TaskHeader from "./TaskHeader";
 import {setBPMTaskDetailLoader, setSelectedTaskID} from "../../../actions/bpmTaskActions";
-import {fetchServiceTaskList, getBPMTaskDetail} from "../../../apiManager/services/bpmTaskServices";
+import {fetchServiceTaskList, getBPMTaskDetail, onBPMTaskFormSubmit} from "../../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
 import Loading from "../../../containers/Loading";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
-import {getFormIdSubmissionIdFromFormURL, getProcessDataFromList} from "../../../apiManager/services/formatterService";
+import {getFormIdSubmissionIdFromURL, getProcessDataFromList} from "../../../apiManager/services/formatterService";
 import History from "../../Application/ApplicationHistory";
 import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
 import LoadingOverlay from "react-loading-overlay";
 import {getForm, getSubmission} from "react-formio";
 import {CUSTOM_EVENT_TYPE} from "../constants/customEventTypes";
+import {getTaskSubmitFormReq} from "../../../apiManager/services/bpmServices";
 
 
 const ServiceFlowTaskDetails = () => {
@@ -36,7 +37,7 @@ const ServiceFlowTaskDetails = () => {
 
   useEffect(()=>{
     if(task?.formUrl){
-      const {formId,submissionId} =getFormIdSubmissionIdFromFormURL(task?.formUrl);
+      const {formId,submissionId} =getFormIdSubmissionIdFromURL(task?.formUrl);
       dispatch(getForm('form',formId));
       dispatch(getSubmission('submission', submissionId, formId))
     }
@@ -69,6 +70,10 @@ const ServiceFlowTaskDetails = () => {
   };
 
   const onFormSubmitCallback = () => {
+    if(bpmTaskId){
+      console.log("to call form Submit")
+      dispatch(onBPMTaskFormSubmit(bpmTaskId,getTaskSubmitFormReq(task?.formUrl,task?.applicationId)));
+    }
     reloadCurrentTask();
   }
 

@@ -7,7 +7,7 @@ import {fetchFilterList, fetchProcessDefinitionList} from "../../apiManager/serv
 import {useDispatch, useSelector} from "react-redux";
 import {setBPMFilterLoader, setSelectedBPMFilter} from "../../actions/bpmTaskActions";
 import {ALL_TASKS} from "./constants/taskConstants";
-import TaskSortSelectedList from "./filter/TaskSortSelectedList";
+//import TaskSortSelectedList from "./filter/TaskSortSelectedList";
 
 const ServiceFlow = () => {
   const dispatch= useDispatch();
@@ -42,10 +42,9 @@ const ServiceFlow = () => {
       <Row>
         <Col lg={taskList.length?3:12} xs={12} sm={12} md={4} xl={taskList.length?3:12}>
           <section>
-            <header className="task-section-top">
+            {/*<header className="task-section-top">
               <TaskSortSelectedList/>
-              {/*<TaskSort/>*/}
-            </header>
+            </header>*/}
             <ServiceFlowTaskList/>
           </section>
         </Col>

@@ -32,7 +32,7 @@ const TaskHeader = ({ task }) => {
 
   const onClaim = () => {
     dispatch(setBPMTaskDetailUpdating(true));
-    dispatch(claimBPMTask(task.id,username,(err,response)=>{
+    dispatch(claimBPMTask(task?.id,username,(err,response)=>{
       if(!err){
         if(selectedFilter){
           dispatch(getBPMTaskDetail(task.id));
@@ -46,10 +46,10 @@ const TaskHeader = ({ task }) => {
 
   const onUnClaimTask = () =>{
     dispatch(setBPMTaskDetailUpdating(true));
-    dispatch(unClaimBPMTask(task.id,(err,response)=>{
+    dispatch(unClaimBPMTask(task?.id,(err,response)=>{
       if(!err){
         if(selectedFilter){
-          dispatch(getBPMTaskDetail(task.id));
+          dispatch(getBPMTaskDetail(task?.id));
           dispatch(fetchServiceTaskList(selectedFilter.id));
         }
       }else{
@@ -62,7 +62,7 @@ const TaskHeader = ({ task }) => {
     setFollowUpDate(followUpDate);
     dispatch(setBPMTaskDetailUpdating(true));
     const updatedTask = {...task, ...{followUp:getISODateTime(followUpDate)}};
-    dispatch(updateBPMTask(task.id,updatedTask,(err,response)=>{
+    dispatch(updateBPMTask(task?.id,updatedTask,(err,response)=>{
       if(!err){
         dispatch(getBPMTaskDetail(task.id));
         dispatch(fetchServiceTaskList(selectedFilter.id));

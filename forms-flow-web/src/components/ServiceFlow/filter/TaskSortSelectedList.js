@@ -2,12 +2,24 @@ import React, {useEffect, useRef, useState} from "react";
 import {sortingList} from "../constants/taskConstants";
 import TaskSort from "./TaskSort";
 
+const getOptions = (options) => {
+  const optionsArray = [];
+  sortingList.forEach(sortOption=>{
+    if(!options.some(option=>option.sortBy===sortOption.sortBy)){
+      optionsArray.push({...sortOption})
+    }
+  });
+  return optionsArray;
+};
+
+
 const TaskSortSelectedList = () => {
   const createNode = useRef();
 
-  const [sortList,updateSortList] = useState([]);
+  const [sortList,updateSortList] = useState([sortingList[0]]);
   const [showSortListDropdown,setShowSortListDropdown] = useState(false);
   const [showSortListDropdownIndex, setShowSortListDropdownIndex] = useState(null);
+  const [sortOptions,setSortOptions]=useState(getOptions([sortingList[0]]));
 
   const handleClick = e => {
     if (createNode.current.contains(e.target)) {
@@ -37,6 +49,7 @@ const TaskSortSelectedList = () => {
 
   useEffect(() => {
     console.log("sortListChanged", sortList);
+    setSortOptions(getOptions(sortList));
   }, [sortList]);
 
   const updateSortOrder = (index,sortOrder)=>{
@@ -55,7 +68,6 @@ const TaskSortSelectedList = () => {
   }
 
   const updateSort = (sort,index)=>{
-    console.log("update",sortList, sort, index, sortingList);
     let updatedSortList = [...sortList];
     updatedSortList[index].label=sort.label;
     updateSortList(updatedSortList)
@@ -74,7 +86,7 @@ const TaskSortSelectedList = () => {
      <div className="mr-3" key={index}>
        {sortList.length>1 ?<span className="mr-1 font-weight-bold click-element" title="Remove sorting" onClick={()=>deleteSort(sort,index)}>x</span>:null}
        <span className="mr-1 click-element" onClick={()=>showSortList(index)}>
-         {sort.label}{showSortListDropdownIndex===index?<TaskSort handleClick={(sortToUpdate)=>updateSort(sortToUpdate,index)} options={sortingList}/>:null}
+         {sort.label}{showSortListDropdownIndex===index?<TaskSort handleClick={(sortToUpdate)=>updateSort(sortToUpdate,index)} options={sortOptions}/>:null}
        </span>
        <span className="click-element">
          {sort.sortOrder==="asc"?<i className="fa fa-angle-up fa-lg font-weight-bold" title="Ascending" onClick={()=>updateSortOrder(index,"desc")}/>:
@@ -88,7 +100,7 @@ const TaskSortSelectedList = () => {
     {selectedSortList()}
     <div className="ml-1">
       <i className="fa fa-plus fa-sm click-element" onClick={()=>setShowSortListDropdown(!showSortListDropdown)} title="Add sorting"/>
-     {showSortListDropdown?<TaskSort handleClick={addSort} options={sortingList}/>:null}
+     {showSortListDropdown?<TaskSort handleClick={addSort} options={sortOptions}/>:null}
     </div>
   </div>)
 };

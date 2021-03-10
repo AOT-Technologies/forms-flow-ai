@@ -59,17 +59,14 @@ public class AdminController {
     List<AuthorizedAction> getForms(@AuthenticationPrincipal Jwt principal) {
         List<String> groups = getGroups(principal);
         List<Authorization> authorizationList =  getAuthorization(groups);
-        LOGGER.info("===================>"+authorizationList.size());
         List<AuthorizedAction> formList = new ArrayList<>();
-        LOGGER.info("===================>"+formList.size());
+        List<AuthorizedAction> formList = new ArrayList<>();
         List<AuthorizedAction> filteredList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, null);
             if (response.getStatusCode().value() == HttpStatus.OK.value()) {
                 JsonNode jsonNode = objectMapper.readTree(response.getBody());
-                LOGGER.info(jsonNode.toString());
-                LOGGER.info("--->"+jsonNode.get("totalCount").asInt());
                 if (jsonNode.get("totalCount") != null && jsonNode.get("totalCount").asInt() > 0) {
                     JsonNode arrayNode = jsonNode.get("forms");
                     if (arrayNode.isArray()) {

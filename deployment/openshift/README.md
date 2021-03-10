@@ -25,44 +25,22 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
       
 ### Installation
 
-   * Download all the build and deployment templates from the current folder on the local machine. 
+   * Download the build and deployment templates from the current folder on the local machine. 
    * On command line, navigate to the folder where the templates were downloaded from the previous step. 
-   * Follow the below order for deploying the componenets
+   * Follow the below order for deploying the components
      * Mongo DB and Postgresql. In case of HA, please deploy patroni instances using the build/deployment configs from [here](../../deployment/openshift/patroni)
      * Forms Flow BPM
      * Forms Flow API
      * Forms Flow Forms
      * Forms Flow Web
      * Forms Flow Analytics
-   * Start the **analytics server** by following the instructions given on  [README](../../forms-flow-analytics/README.md)
-   * Make sure your current working directory is "/deployment/docker".
-   * Rename the file **sample.env** to **.env**.
-   * Start the **form.io server** by modifying listed form.io related environment variables **(Skip this step if the pre-defined template i.e.sample.json is already imported and role IDs are mapped in this .env)**    
-    (**Note: This step is required only if the installation is is done for the first time or new volume mounts**)   
-       
-**formsflow.ai form.io Server Variables:**  
-
- Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own||`admin`
-`FORMIO_MONGO_PASSWORD`|Mongo Root Password||`changeme`
-`FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
-`FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
-`FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
- * Build all the services.
-    * For Linux,
-        * Run `docker-compose -f docker-compose-linux.yml build` to build.
-    * For Windows,
-        * Run `docker-compose -f docker-compose-windows.yml build` to build.
- *  Follow the listed sub-instructions for mapping the pre-defined role IDs. **(Skip this step if the pre-defined template i.e.sample.json is already imported and role IDs are mapped in this .env)**   
-      *  Start the form.io service.  
-        For Linux,  
-        Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
-        For Windows,  
-        Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
-        * Do a [health check for forms-flow-forms](../../forms-flow-forms#health-check)
-      * Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
- * Modify the configuration values as needed. Details below,
+   * Configure the build on Openshift using the below command. Set the values of the parameters in the build config based on the repository and branch being used. 
+     oc process -f template_bc.yaml | oc create -f -
+     Verify if the build is successful for each of the components on Openshift. 
+   * Deploy each of the components using the below command. Set the values of the parameters in the parameter file and the deployment config based on the environment. 
+     oc process -f template_dc.yaml --param-file=template_params.yaml | oc create -f -
+   * Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
+   * Modify the configuration values as needed. Details below. 
  
 **formsflow.ai Role Mapping:**
 
@@ -129,18 +107,6 @@ Variable name | Meaning | Possible values | Default value |
    **Additionally, you may want to change these**
    * The value of database details (especially if this instance is not just for testing purposes)
   
-
-### Running the application
-* For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml up --build -d` to start.
-* For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml up --build -d` to start.
-   
-#### To stop the application
-* For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
-* For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
   
 ### Health Check
   * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/

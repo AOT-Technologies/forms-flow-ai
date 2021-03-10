@@ -347,6 +347,29 @@ export const unClaimBPMTask = (taskId, ...rest) => {
   };
 };
 
+export const onBPMTaskFormSubmit = (taskId, formReq, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const apiUrlOnFormSubmit = replaceUrl(
+    API.BPM_FORM_SUBMIT,
+    "<task_id>",
+    taskId
+  );
+  return (dispatch) => {
+    httpPOSTRequest(apiUrlOnFormSubmit,formReq)
+      .then((res) => {
+        // if (res.status === 204) {
+        //TODO REMOVE
+        done(null, res.data);
+        // }
+      })
+      .catch((error) => {
+        console.log("Error", error);
+        dispatch(serviceActionError(error));
+        done(error);
+      });
+  };
+};
+
 /*export const completeTask = (id, reviewStatus, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const data = {

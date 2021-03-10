@@ -1,11 +1,11 @@
 export const sortingList = [
-  {key:"created",label:"Created"},
-  {key:"priority",label:"Priority"},
-  {key:"dueDate",label:"Due date"},
-  {key:"assignee",label:"Assignee"},
-  {key:"name",label:"Task name"},
-  {key:"followUpDate",label:"Follow-up date"},
-  {key:"taskVariable",label:"Task Variable"}];
+  {sortBy:"created",label:"Created", sortOrder:"asc"},
+  {sortBy:"priority",label:"Priority", sortOrder:"asc"},
+  {sortBy:"dueDate",label:"Due date", sortOrder:"asc"},
+  {sortBy:"assignee",label:"Assignee", sortOrder:"asc"},
+  {sortBy:"name",label:"Task name", sortOrder:"asc"},
+  {sortBy:"followUpDate",label:"Follow-up date", sortOrder:"asc"},
+ /* {sortBy:"taskVariable",label:"Task Variable", sortOrder:"asc"}*/];
 
 
 //{sortBy: "processVariable", sortOrder: "asc/desc", parameProcess**ters: {variable: "varName", type: "String"}}

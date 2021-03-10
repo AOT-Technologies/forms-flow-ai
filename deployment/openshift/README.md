@@ -35,10 +35,10 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
      * Forms Flow Web
      * Forms Flow Analytics
    * Configure the build on Openshift using the below command. Set the values of the parameters in the build config based on the repository and branch being used. 
-     oc process -f template_bc.yaml | oc create -f -
      Verify if the build is successful for each of the components on Openshift. 
+     * oc process -f template_bc.yaml | oc create -f -   
    * Deploy each of the components using the below command. Set the values of the parameters in the parameter file and the deployment config based on the environment. 
-     oc process -f template_dc.yaml --param-file=template_params.yaml | oc create -f -
+     * oc process -f template_dc.yaml --param-file=template_params.yaml | oc create -f -
    * Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
    * Modify the configuration values as needed. Details below. 
  
@@ -110,7 +110,7 @@ Variable name | Meaning | Possible values | Default value |
   
 ### Health Check
   * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
-  * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/
+  * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8080/camunda/
   * FormIO should be up and available for use at port defaulted to 3001 i.e. http://localhost:3001/
   * formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
   * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/

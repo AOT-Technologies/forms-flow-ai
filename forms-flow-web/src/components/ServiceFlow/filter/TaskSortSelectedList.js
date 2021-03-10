@@ -4,6 +4,7 @@ import TaskSort from "./TaskSort";
 
 const getOptions = (options) => {
   const optionsArray = [];
+  console.log(sortingList,options);
   sortingList.forEach(sortOption=>{
     if(!options.some(option=>option.sortBy===sortOption.sortBy)){
       optionsArray.push({...sortOption})
@@ -16,15 +17,15 @@ const getOptions = (options) => {
 const TaskSortSelectedList = () => {
   const createNode = useRef();
 
-  const [sortList,updateSortList] = useState([sortingList[0]]);
+  const [sortList,updateSortList] = useState([{...sortingList[0]}]);
   const [showSortListDropdown,setShowSortListDropdown] = useState(false);
   const [showSortListDropdownIndex, setShowSortListDropdownIndex] = useState(null);
-  const [sortOptions,setSortOptions]=useState(getOptions([sortingList[0]]));
+  const [sortOptions,setSortOptions]=useState([]);
 
   const handleClick = e => {
     if (createNode.current.contains(e.target)) {
       return;
-    };
+    }
     // outside click
     setShowSortListDropdown(null);
     setShowSortListDropdownIndex(null);
@@ -48,7 +49,6 @@ const TaskSortSelectedList = () => {
 
 
   useEffect(() => {
-    console.log("sortListChanged", sortList);
     setSortOptions(getOptions(sortList));
   }, [sortList]);
 
@@ -70,6 +70,7 @@ const TaskSortSelectedList = () => {
   const updateSort = (sort,index)=>{
     let updatedSortList = [...sortList];
     updatedSortList[index].label=sort.label;
+    updatedSortList[index].sortBy=sort.sortBy;
     updateSortList(updatedSortList)
     setShowSortListDropdown(null);
     setShowSortListDropdownIndex(null);
@@ -98,10 +99,10 @@ const TaskSortSelectedList = () => {
 
   return  (<div className="d-flex flex-wrap" ref={createNode}>
     {selectedSortList()}
-    <div className="ml-1">
+    {sortOptions.length?<div className="ml-1">
       <i className="fa fa-plus fa-sm click-element" onClick={()=>setShowSortListDropdown(!showSortListDropdown)} title="Add sorting"/>
      {showSortListDropdown?<TaskSort handleClick={addSort} options={sortOptions}/>:null}
-    </div>
+    </div>:null}
   </div>)
 };
 

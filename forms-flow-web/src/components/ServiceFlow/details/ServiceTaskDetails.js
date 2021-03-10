@@ -71,7 +71,6 @@ const ServiceFlowTaskDetails = () => {
 
   const onFormSubmitCallback = () => {
     if(bpmTaskId){
-      console.log("to call form Submit")
       dispatch(onBPMTaskFormSubmit(bpmTaskId,getTaskSubmitFormReq(task?.formUrl,task?.applicationId)));
     }
     reloadCurrentTask();

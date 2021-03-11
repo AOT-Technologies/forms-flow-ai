@@ -143,11 +143,7 @@ security:
       userInfoUri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/userinfo
   headers:
     hsts: domain
-# Camunda Rest API
-rest.security:
-  enabled: true
-  jwk-set-url: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/certs
-  required-audience: camunda-rest-api
+
 
 logging:
   level:
@@ -156,6 +152,14 @@ logging:
     org.springframework.jdbc: ${CAMUNDA_APP_ROOT_LOG_FLAG}
     org.camunda.bpm.extension: ${CAMUNDA_APP_ROOT_LOG_FLAG}
 
+
+# Camunda Rest API
+rest.security:
+  enabled: true
+  jwk-set-url: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/certs
+  required-audience: camunda-rest-api
+
+  
 plugin.identity.keycloak.rest:
   userNameClaim: preferred_username
   authorityPrefix: "ROLE_"
@@ -173,4 +177,9 @@ plugin.identity.keycloak:
   disableSSLCertificateValidation: true
   
 app.security.origin: ${APP_SECURITY_ORIGIN}
+
+websocket:
+  security:
+    origin: ${WEBSOCKET_SECURITY_ORIGIN}
+  messageType: ${WEBSOCKET_MESSAGE_TYPE}
 

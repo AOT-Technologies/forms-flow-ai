@@ -1,6 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
 import {sortingList} from "../constants/taskConstants";
 import TaskSort from "./TaskSort";
+import {useDispatch, useSelector} from "react-redux";
+import {setFilterListSortParams} from "../../../actions/bpmTaskActions";
 
 const getOptions = (options) => {
   const optionsArray = [];
@@ -15,11 +17,12 @@ const getOptions = (options) => {
 
 const TaskSortSelectedList = () => {
   const createNode = useRef();
-
-  const [sortList,updateSortList] = useState([{...sortingList[0]}]);
+  const sortingData = useSelector(state => state.bpmTasks.filterListSortParams.sorting);
+  const [sortList,updateSortList] = useState(sortingData);
   const [showSortListDropdown,setShowSortListDropdown] = useState(false);
   const [showSortListDropdownIndex, setShowSortListDropdownIndex] = useState(null);
   const [sortOptions,setSortOptions]=useState([]);
+  const dispatch= useDispatch();
 
   const handleClick = e => {
     if (createNode.current.contains(e.target)) {
@@ -49,6 +52,7 @@ const TaskSortSelectedList = () => {
 
   useEffect(() => {
     setSortOptions(getOptions(sortList));
+    dispatch(setFilterListSortParams(sortList));
   }, [sortList]);
 
   const updateSortOrder = (index,sortOrder)=>{

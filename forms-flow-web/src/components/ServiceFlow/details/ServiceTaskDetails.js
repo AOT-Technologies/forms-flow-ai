@@ -23,9 +23,11 @@ const ServiceFlowTaskDetails = () => {
   const processList = useSelector(state=>state.bpmTasks.processList);
   const isTaskLoading = useSelector(state => state.bpmTasks.isTaskDetailLoading);
   const isTaskUpdating = useSelector(state => state.bpmTasks.isTaskDetailUpdating);
+  const reqData = useSelector(state => state.bpmTasks.filterListSortParams);
   const dispatch= useDispatch();
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
+
 
   useEffect(()=>{
     if(bpmTaskId){
@@ -46,14 +48,14 @@ const ServiceFlowTaskDetails = () => {
   const reloadTasks = () => {
     dispatch(setBPMTaskDetailLoader(true));
     dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
-    dispatch(fetchServiceTaskList(selectedFilter.id)); //Refreshes the Tasks
+    dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Tasks
   }
 
   const reloadCurrentTask = () => {
     if(selectedFilter) {
       dispatch(setBPMTaskDetailLoader(true))
       dispatch(getBPMTaskDetail(task.id)); // Refresh the Task Selected
-      dispatch(fetchServiceTaskList(selectedFilter.id)); //Refreshes the Tasks
+      dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Tasks
     }
   }
 

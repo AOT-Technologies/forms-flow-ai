@@ -2,6 +2,7 @@ import React /*{useEffect}*/ from "react";
 import {NavDropdown} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
 import {setSelectedBPMFilter, setSelectedTaskID} from "../../../actions/bpmTaskActions";
+import {Link} from "react-router-dom";
 /*import {Link} from "react-router-dom";*/
 
 
@@ -22,9 +23,10 @@ const ServiceFlowFilterListDropDown = () => {
       return (
         <>
           {filterList.map((filter,index)=> (
-              <NavDropdown.Item className={`clickable ml-1 ${filter?.id === selectedFilter?.id && "selected selected-tag"}` } key={index} onClick={()=>changeFilterSelection(filter)}>
-                      {filter?.name} {`(${filter?.itemCount})`}
-              </NavDropdown.Item>
+            <NavDropdown.Item as={Link} to='/task' className={`main-nav nav-item ${filter?.id === selectedFilter?.id ? "active-tab" : ""}`}
+                              key={index} onClick={()=>changeFilterSelection(filter)}>
+              {filter?.name} {`(${filter?.itemCount})`}
+            </NavDropdown.Item>
             )
           )}
         </>

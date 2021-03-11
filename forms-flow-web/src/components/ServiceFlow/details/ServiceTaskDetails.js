@@ -98,7 +98,14 @@ const ServiceFlowTaskDetails = () => {
        <TaskHeader task={task}/>
        <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
          <Tab eventKey="form" title="Form">
-           <LoadingOverlay active={task?.assignee!==currentUser}>
+           <LoadingOverlay active={task?.assignee!==currentUser}
+                           styles={{
+                             overlay: (base) => ({
+                               ...base,
+                               background: 'rgba(0, 0, 0, 0.2)',
+                               cursor:"not-allowed !important"
+                             })
+                           }}>
              {task?.assignee===currentUser?<FormEdit onFormSubmit={onFormSubmitCallback} onCustomEvent={onCustomEventCallBack}/>:<FormView showPrintButton={false}/>}
            </LoadingOverlay>
          </Tab>

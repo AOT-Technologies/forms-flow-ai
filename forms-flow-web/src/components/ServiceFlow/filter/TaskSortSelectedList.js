@@ -53,7 +53,7 @@ const TaskSortSelectedList = () => {
   useEffect(() => {
     setSortOptions(getOptions(sortList));
     dispatch(setFilterListSortParams(sortList));
-  }, [sortList]);
+  }, [sortList, dispatch]);
 
   const updateSortOrder = (index,sortOrder)=>{
    let updatedSortList = [...sortList];

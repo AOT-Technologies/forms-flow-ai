@@ -1,4 +1,5 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
+import {TASK_FILTER_LIST_DEFAULT_PARAM} from "../constants/taskConstants";
 
 const initialState = {
   isTaskListLoading:false,
@@ -16,7 +17,8 @@ const initialState = {
   filterList:[],
   isFilterLoading:true,
   selectedFilter:null,
-  taskId:null
+  taskId:null,
+  filterListSortParams:{sorting:TASK_FILTER_LIST_DEFAULT_PARAM}
 }
 
 const bpmTasks =(state = initialState, action)=> {
@@ -55,6 +57,8 @@ const bpmTasks =(state = initialState, action)=> {
       return {...state, isGroupLoading: action.payload};
     case ACTION_CONSTANTS.SET_TASK_GROUP:
       return {...state, taskDetail:{...state.taskDetail,...{groups:action.payload}},isGroupLoading:false}
+    case ACTION_CONSTANTS.UPDATE_FILTER_LIST_SORT_PARAMS:
+      return {...state, filterListSortParams:{sorting:action.payload}}
     default:
       return state;
   }

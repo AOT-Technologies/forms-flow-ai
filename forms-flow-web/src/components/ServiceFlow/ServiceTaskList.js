@@ -13,6 +13,7 @@ import TaskFilterComponent from "./filter/TaskFilterComponent";
 const ServiceFlowTaskList = () => {
   const taskList = useSelector(state => state.bpmTasks.tasksList);
   const isTaskListLoading = useSelector(state => state.bpmTasks.isTaskListLoading);
+  const reqData = useSelector(state => state.bpmTasks.filterListSortParams);
   const dispatch= useDispatch();
   const processList = useSelector(state=>state.bpmTasks.processList);
   let selectedTask = useSelector(state=>state.bpmTasks.taskDetail);
@@ -21,10 +22,9 @@ const ServiceFlowTaskList = () => {
   useEffect(()=>{
     if(selectedFilter){
       dispatch(setBPMTaskLoader(true))
-      dispatch(fetchServiceTaskList(selectedFilter.id));
+      dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
     }
-  },[dispatch, selectedFilter]);
-
+  },[dispatch, selectedFilter, reqData]);
 
   const getTaskDetails = (bpmTaskId) =>{
     dispatch(setSelectedTaskID(bpmTaskId));

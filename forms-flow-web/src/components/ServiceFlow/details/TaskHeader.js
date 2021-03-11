@@ -23,6 +23,7 @@ const TaskHeader = ({ task }) => {
   const processList = useSelector((state) => state.bpmTasks.processList);
   const username = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
+  const reqData = useSelector(state => state.bpmTasks.filterListSortParams);
   const followUp = task?.followUp ? new Date(task?.followUp):null;
   const due = task?.due ? new Date(task?.due): null;
   const [followUpDate, setFollowUpDate] = useState(followUp);
@@ -36,7 +37,7 @@ const TaskHeader = ({ task }) => {
       if(!err){
         if(selectedFilter){
           dispatch(getBPMTaskDetail(task.id));
-          dispatch(fetchServiceTaskList(selectedFilter.id));
+          dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
         }
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
@@ -50,7 +51,7 @@ const TaskHeader = ({ task }) => {
       if(!err){
         if(selectedFilter){
           dispatch(getBPMTaskDetail(task?.id));
-          dispatch(fetchServiceTaskList(selectedFilter.id));
+          dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
         }
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
@@ -65,7 +66,7 @@ const TaskHeader = ({ task }) => {
     dispatch(updateBPMTask(task?.id,updatedTask,(err,response)=>{
       if(!err){
         dispatch(getBPMTaskDetail(task.id));
-        dispatch(fetchServiceTaskList(selectedFilter.id));
+        dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
       }
@@ -79,7 +80,7 @@ const TaskHeader = ({ task }) => {
     dispatch(updateBPMTask(task.id,updatedTask,(err,response)=>{
       if(!err){
         dispatch(getBPMTaskDetail(task.id));
-        dispatch(fetchServiceTaskList(selectedFilter.id));
+        dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
       }

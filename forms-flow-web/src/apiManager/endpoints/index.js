@@ -1,4 +1,4 @@
-import { INSIGHTS_BASE_API, INSIGHTS_API_KEY, WEB_BASE_URL, BPM_BASE_URL } from "./config";
+import { INSIGHTS_BASE_API, INSIGHTS_API_KEY, WEB_BASE_URL, BPM_BASE_URL, BPM_BASE_URL_EXT } from "./config";
 
 const API = {
   INSIGHTS_API_KEY: INSIGHTS_API_KEY,
@@ -29,7 +29,8 @@ const API = {
   GET_BPM_TASK_LIST_WITH_FILTER:`${BPM_BASE_URL}/filter/<filter_id>/list`,
   BPM_GROUP:`${BPM_BASE_URL}/task/<task_id>/identity-links`,
   DELETE_BPM_GROUP:`${BPM_BASE_URL}/task/<task_id>/identity-links/delete`,
-  BPM_FORM_SUBMIT:`${BPM_BASE_URL}/task/<task_id>/submit-form`
+  BPM_FORM_SUBMIT:`${BPM_BASE_URL}/task/<task_id>/submit-form`,
+  BPM_FORM_LIST:`${BPM_BASE_URL_EXT}/form`,
 };
 
 export default API;

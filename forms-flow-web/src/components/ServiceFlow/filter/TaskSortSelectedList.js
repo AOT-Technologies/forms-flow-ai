@@ -1,6 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
 import {sortingList} from "../constants/taskConstants";
 import TaskSort from "./TaskSort";
+import {useDispatch, useSelector} from "react-redux";
+import {setFilterListSortParams} from "../../../actions/bpmTaskActions";
 
 const getOptions = (options) => {
   const optionsArray = [];
@@ -15,16 +17,17 @@ const getOptions = (options) => {
 
 const TaskSortSelectedList = () => {
   const createNode = useRef();
-
-  const [sortList,updateSortList] = useState([sortingList[0]]);
+  const sortingData = useSelector(state => state.bpmTasks.filterListSortParams.sorting);
+  const [sortList,updateSortList] = useState(sortingData);
   const [showSortListDropdown,setShowSortListDropdown] = useState(false);
   const [showSortListDropdownIndex, setShowSortListDropdownIndex] = useState(null);
-  const [sortOptions,setSortOptions]=useState(getOptions([sortingList[0]]));
+  const [sortOptions,setSortOptions]=useState([]);
+  const dispatch= useDispatch();
 
   const handleClick = e => {
     if (createNode.current.contains(e.target)) {
       return;
-    };
+    }
     // outside click
     setShowSortListDropdown(null);
     setShowSortListDropdownIndex(null);
@@ -48,9 +51,9 @@ const TaskSortSelectedList = () => {
 
 
   useEffect(() => {
-    console.log("sortListChanged", sortList);
     setSortOptions(getOptions(sortList));
-  }, [sortList]);
+    dispatch(setFilterListSortParams(sortList));
+  }, [sortList, dispatch]);
 
   const updateSortOrder = (index,sortOrder)=>{
    let updatedSortList = [...sortList];
@@ -70,6 +73,7 @@ const TaskSortSelectedList = () => {
   const updateSort = (sort,index)=>{
     let updatedSortList = [...sortList];
     updatedSortList[index].label=sort.label;
+    updatedSortList[index].sortBy=sort.sortBy;
     updateSortList(updatedSortList)
     setShowSortListDropdown(null);
     setShowSortListDropdownIndex(null);
@@ -98,10 +102,10 @@ const TaskSortSelectedList = () => {
 
   return  (<div className="d-flex flex-wrap" ref={createNode}>
     {selectedSortList()}
-    <div className="ml-1">
+    {sortOptions.length?<div className="ml-1">
       <i className="fa fa-plus fa-sm click-element" onClick={()=>setShowSortListDropdown(!showSortListDropdown)} title="Add sorting"/>
      {showSortListDropdown?<TaskSort handleClick={addSort} options={sortOptions}/>:null}
-    </div>
+    </div>:null}
   </div>)
 };
 

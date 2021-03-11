@@ -16,7 +16,7 @@ import {replaceUrl} from "../../helper/helper";
 import axios from "axios";
 import {taskDetailVariableDataFormatter} from "./formatterService";
 
-export const fetchServiceTaskList = (filterId,...rest) => {
+export const fetchServiceTaskList = (filterId,reqData,...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const apiUrlgetTaskList = replaceUrl(
     API.GET_BPM_TASK_LIST_WITH_FILTER,
@@ -24,11 +24,7 @@ export const fetchServiceTaskList = (filterId,...rest) => {
     filterId
   );
   return (dispatch) => {
-    httpPOSTRequest(apiUrlgetTaskList, {"sorting":
-        [{"sortBy": "created",
-          "sortOrder": "desc"
-        }]
-    }, UserService.getToken())
+    httpPOSTRequest(apiUrlgetTaskList, reqData, UserService.getToken())
       .then((res) => {
         if (res.data) {
           dispatch(setBPMTaskList(res.data));

@@ -23,9 +23,11 @@ const ServiceFlowTaskDetails = () => {
   const processList = useSelector(state=>state.bpmTasks.processList);
   const isTaskLoading = useSelector(state => state.bpmTasks.isTaskDetailLoading);
   const isTaskUpdating = useSelector(state => state.bpmTasks.isTaskDetailUpdating);
+  const reqData = useSelector(state => state.bpmTasks.filterListSortParams);
   const dispatch= useDispatch();
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
+
 
   useEffect(()=>{
     if(bpmTaskId){
@@ -46,14 +48,14 @@ const ServiceFlowTaskDetails = () => {
   const reloadTasks = () => {
     dispatch(setBPMTaskDetailLoader(true));
     dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
-    dispatch(fetchServiceTaskList(selectedFilter.id)); //Refreshes the Tasks
+    dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Tasks
   }
 
   const reloadCurrentTask = () => {
     if(selectedFilter) {
       dispatch(setBPMTaskDetailLoader(true))
       dispatch(getBPMTaskDetail(task.id)); // Refresh the Task Selected
-      dispatch(fetchServiceTaskList(selectedFilter.id)); //Refreshes the Tasks
+      dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Tasks
     }
   }
 
@@ -71,7 +73,6 @@ const ServiceFlowTaskDetails = () => {
 
   const onFormSubmitCallback = () => {
     if(bpmTaskId){
-      console.log("to call form Submit")
       dispatch(onBPMTaskFormSubmit(bpmTaskId,getTaskSubmitFormReq(task?.formUrl,task?.applicationId)));
     }
     reloadCurrentTask();
@@ -97,7 +98,14 @@ const ServiceFlowTaskDetails = () => {
        <TaskHeader task={task}/>
        <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
          <Tab eventKey="form" title="Form">
-           <LoadingOverlay active={task?.assignee!==currentUser}>
+           <LoadingOverlay active={task?.assignee!==currentUser}
+                           styles={{
+                             overlay: (base) => ({
+                               ...base,
+                               background: 'rgba(0, 0, 0, 0.2)',
+                               cursor:"not-allowed !important"
+                             })
+                           }}>
              {task?.assignee===currentUser?<FormEdit onFormSubmit={onFormSubmitCallback} onCustomEvent={onCustomEventCallBack}/>:<FormView showPrintButton={false}/>}
            </LoadingOverlay>
          </Tab>

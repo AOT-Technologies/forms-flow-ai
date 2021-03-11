@@ -111,6 +111,16 @@ export const setSelectedTaskID = (data) => dispatch =>{
   })
 }
 
+export const setFilterListSortParams = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.UPDATE_FILTER_LIST_SORT_PARAMS,
+    payload:data
+  })
+}
+
+
+
+
 
 
 export const serviceActionError = (data) => dispatch => {

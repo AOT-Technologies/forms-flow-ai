@@ -11,6 +11,7 @@ import process from "./processReducer";
 import applications from './applicationsReducer';
 import menu from './menuReducer';
 import bpmTasks from './bpmTaskReducer';
+import bpmForms from './bpmFormReducer';
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -20,6 +21,7 @@ const createRootReducer = (history) =>
     formDelete,
     applications,
     bpmTasks,
+    bpmForms,
     form: form({ name: "form" }),
     forms: forms({ name: "forms", query: { type: "form", tags: "common" } }),
     submission: submission({ name: "submission" }),

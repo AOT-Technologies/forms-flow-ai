@@ -30,7 +30,7 @@ const API = {
   BPM_GROUP:`${BPM_BASE_URL}/task/<task_id>/identity-links`,
   DELETE_BPM_GROUP:`${BPM_BASE_URL}/task/<task_id>/identity-links/delete`,
   BPM_FORM_SUBMIT:`${BPM_BASE_URL}/task/<task_id>/submit-form`,
-  BPM_FORM_LIST:`${BPM_BASE_URL_EXT}/form`,
+  GET_BPM_FORM_LIST:`${BPM_BASE_URL_EXT}/form`,
 };
 
 export default API;

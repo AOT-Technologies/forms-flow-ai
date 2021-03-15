@@ -1,17 +1,17 @@
-.not-selected{
+.not-selected {
   border: 3px solid #b3b3b3;
   padding: 10px;
   color: #b3b3b3;
   width: 100%;
 }
 .service-task-list {
-  box-shadow: 0 0 10px 5px #D0D0D0;
+  box-shadow: 0 0 10px 5px #d0d0d0;
   clip-path: inset(0px -15px 0px 0px);
   max-height: 80vh;
   min-height: 80vh;
   overflow-y: auto;
   padding-right: 25px;
-  border-right: 1px solid #D0D0D0;
+  border-right: 1px solid #d0d0d0;
 }
 .service-task-details {
   min-height: 80vh;
@@ -19,7 +19,7 @@
   overflow-y: auto;
   overflow-x: hidden;
 }
-.filter-container{
+.filter-container {
   position: relative;
   border: 1px solid #555;
   border-radius: 5px;
@@ -27,35 +27,39 @@
   padding: 0;
   margin: 0 5px 10px 5px;
 }
-.filter{
+.filter {
   width: 85%;
   margin: 5px;
   border: none;
   font-style: italic;
 }
-.filter:focus{
+.filter:focus {
   outline: none;
 }
 
-.filter-items{
+.filter-items {
   width: 85%;
   margin: 5px;
   border: 1px solid #555;
+  border-radius: 5px;
   position: absolute;
   background-color: #fff;
   background-clip: padding-box;
   z-index: 5;
 }
 
-.sort-items{
-  border: 1px solid #555;
+.sort-items {
+  border: 1px solid #949494;
+  border-radius: 3%;
   position: absolute;
   background-color: #fff;
   background-clip: padding-box;
   z-index: 5;
+  padding: 5px;
+  width: 12rem;
 }
 
-.task-section-top{
+.task-section-top {
   //min-height: 35px;
   padding: calc(6px + 2px) 15px calc(6px - 2px) 15px;
   //border: none;
@@ -68,19 +72,19 @@
   margin-bottom: 0.5rem;
   //height: auto;
 
-.header-wrapper{
-  //display: grid;
-  //grid-template-columns: auto auto auto;
-  ul{
-    li{
-      max-width: 200px;
-      white-space: nowrap;
-      display: block;
-      float: left;
-      padding: 0 1.5em;
+  .header-wrapper {
+    //display: grid;
+    //grid-template-columns: auto auto auto;
+    ul {
+      li {
+        max-width: 200px;
+        white-space: nowrap;
+        display: block;
+        float: left;
+        padding: 0 1.5em;
+      }
     }
   }
-}
 }
 
 .clickable {
@@ -122,39 +126,86 @@
   font-size: 20px;
   font-weight: 400;
 }
-.modal-text{
+.modal-text {
   font-size: 13px;
   font-style: italic;
 }
-.add{
+.add {
   color: #155cb5;
   font-size: 13px;
   cursor: pointer;
 }
-.text-color{
+.text-color {
   color: black;
   width: 100%;
   padding: 2px 5px;
   outline: none;
   cursor: default;
 }
-.react-datepicker{
+.react-datepicker {
   width: max-content;
 }
-.added-filters{
-  margin-top:1px;
+.added-filters {
+  margin-top: 1px;
 }
 
-.react-datepicker-popper{
-  z-index:801;
+.react-datepicker-popper {
+  z-index: 801;
 }
-.react-datepicker__close-icon{
+.react-datepicker__close-icon {
   padding-right: 0;
 }
-.right-side{
+.right-side {
   text-align: right;
   margin-right: 3em;
 }
-.center-position{
+.center-position {
   text-align: center;
+}
+.filter-details {
+  background-color: #f2dede;
+  border-color: #ebccd1;
+  margin: 0.5em;
+  margin-bottom: 0;
+  padding: 0 8px 4px 8px;
+  font-size: 14px;
+  color: #155cb5;
+  .close-btn {
+    font-size: 12px;
+    margin-right: 8px;
+  }
+  .btn {
+    background-color: white;
+    font-size: 12px;
+    padding: 0 2px;
+    border: 1px solid #a79f9f;
+    width: 18px;
+  }
+  input {
+    border: none;
+    outline: none;
+  }
+}
+
+.pagination-wrapper {
+  margin-left: auto;
+  .pagination {
+    li {
+      border: 1px solid #efefef;
+      padding: 0 4px;
+    }
+    .active {
+      background-color: #2185d0;
+      a {
+        color: white;
+      }
+    }
+    .disabled {
+      cursor: not-allowed;
+      a {
+        cursor: not-allowed;
+        color: #d4d4d5;
+      }
+    }
+  }
 }

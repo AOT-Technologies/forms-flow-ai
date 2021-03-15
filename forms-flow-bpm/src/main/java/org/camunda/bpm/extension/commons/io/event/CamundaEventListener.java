@@ -14,7 +14,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -43,7 +43,7 @@ public class CamundaEventListener {
             if(isAllowed("TASK_EVENT")) {
                 this.template.convertAndSend("/topic/task-event",  getObjectMapper().writeValueAsString(getTaskEventMessage(taskDelegate)));
             }
-         } catch (JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
     }
@@ -54,9 +54,9 @@ public class CamundaEventListener {
 
     private TaskMessage getTaskMessage(DelegateTask taskDelegate) {
         TaskMessage taskObj = new TaskMessage();
-         BeanUtils.copyProperties(taskDelegate, taskObj);
-         taskObj.setVariables(taskDelegate.getVariables());
-         return taskObj;
+        BeanUtils.copyProperties(taskDelegate, taskObj);
+        taskObj.setVariables(getVariables(taskDelegate));
+        return taskObj;
     }
 
     private TaskEventMessage getTaskEventMessage(DelegateTask taskDelegate) {
@@ -70,6 +70,21 @@ public class CamundaEventListener {
         return Arrays.asList(StringUtils.split(messageCategory,",")).contains(category);
     }
 
+
+    private Map<String,Object> getVariables(DelegateTask taskDelegate) {
+        List<String> configMap =getElements();
+        Map<String,Object> variables = new HashMap<>();
+        for(String entry : configMap) {
+            if(taskDelegate.getVariables().containsKey(entry)) {
+                variables.put(entry, taskDelegate.getVariable(entry));
+            }
+        }
+        return variables;
+    }
+
+    private List<String> getElements() {
+        return new ArrayList<>(Arrays. asList("applicationId", "formUrl", "applicationStatus"));
+    }
 
 
 }

@@ -136,6 +136,17 @@ public class FormSubmissionService {
         return fieldValues;
     }
 
+    public String createFormSubmissionData(Map<String,Object> bpmVariables) {
+        try {
+            Map<String, Map<String,Object>> data = new HashMap<>();
+            data.put("data",bpmVariables);
+            return getObjectMapper().writeValueAsString(data);
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return  null;
+    }
+
 
 
     private ObjectMapper getObjectMapper(){

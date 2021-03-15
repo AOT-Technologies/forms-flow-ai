@@ -1,0 +1,60 @@
+package org.camunda.bpm.extension.hooks.listeners.execution;
+
+import org.apache.commons.lang.StringUtils;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.ExecutionListener;
+import org.camunda.bpm.engine.delegate.Expression;
+import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.inject.Named;
+
+
+import java.util.logging.Logger;
+
+/**
+ * This class supports creation of submission for instances created from external system
+ * @author sumathi.thirumani@aot-technologies.com
+ */
+@Named("ExternalSubmissionListener")
+public class ExternalSubmissionListener implements ExecutionListener {
+
+    private final Logger LOGGER = Logger.getLogger(ExternalSubmissionListener.class.getName());
+
+    @Autowired
+    private FormSubmissionService formSubmissionService;
+
+    @Autowired
+    private HTTPServiceInvoker httpServiceInvoker;
+
+
+    private Expression formName;
+
+    @Override
+    public void notify(DelegateExecution execution) throws Exception {
+        if(isExists(execution) == false) {
+            String formUrl = getFormUrl(execution);
+            String submissionId = formSubmissionService.createSubmission(formUrl, formSubmissionService.createFormSubmissionData(execution.getVariables()));
+            if(StringUtils.isNotBlank(submissionId)){
+                execution.getVariables().put("formUrl", formUrl+"/"+submissionId);
+            }
+
+        }
+    }
+
+    private boolean isExists(DelegateExecution execution) {
+        return execution.getVariables().containsKey("formUrl");
+    }
+
+    private String getFormId(DelegateExecution execution) {
+        String formName =  String.valueOf(this.formName.getValue(execution));
+        return formSubmissionService.getFormIdByName(httpServiceInvoker.getProperties().getProperty("formio.url")+"/"+formName);
+    }
+
+    private String getFormUrl(DelegateExecution execution) {
+       return httpServiceInvoker.getProperties().getProperty("formio.url")+"/form/"+getFormId(execution)+"/submission";
+
+    }
+
+}

@@ -22,3 +22,9 @@ export const getTaskSubmitFormReq = (formUrl,applicationId) => {
   return formRequestFormat;
 }
 
+export const formatForms = (forms) => {
+  return forms.map(form=> {
+    return {"_id":form.formId , "title": form.formName, processKey:form.processKey}
+  });
+}
+

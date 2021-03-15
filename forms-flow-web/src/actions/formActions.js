@@ -34,3 +34,19 @@ export const setFormWorkflowSaved = (data) => dispatch =>{
     })
 }
 
+export const setBPMFormList = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.BPM_FORM_LIST,
+    payload:data
+  })
+}
+
+export const setBPMFormListLoading = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_BPM_FORM_LIST_LOADING,
+    payload:data
+  })
+}
+
+
+

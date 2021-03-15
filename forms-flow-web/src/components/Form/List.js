@@ -1,9 +1,7 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, {useEffect} from "react";
+import {connect, /*useDispatch, */useSelector} from "react-redux";
 import { push } from "connected-react-router";
 import { Link } from "react-router-dom";
-// import Snackbar from '@material-ui/core/Snackbar';
-// import MuiAlert from '@material-ui/lab/Alert';
 
 import {
   indexForms,
@@ -22,53 +20,67 @@ import {
   STAFF_REVIEWER,
 } from "../../constants/constants";
 import "../Form/List.scss";
-import { setFormDeleteStatus } from "../../actions/formActions";
+import {/*setBPMFormListLoading,*/ setFormDeleteStatus} from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
-import Toast from "../Toast/Toast";
+//import {fetchBPMFormList} from "../../apiManager/services/bpmFormServices";
 
-const List = class extends Component {
-
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      open:true
-    }
+const getOperations = (userRoles) => {
+  let operations = [];
+  if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {
+    operations.push(OPERATIONS.insert);
   }
-  UNSAFE_componentWillMount() {
-    this.props.getForms(1);
+  if (userRoles.includes(STAFF_REVIEWER)) {
+    operations.push(OPERATIONS.submission);
   }
+  if (userRoles.includes(STAFF_DESIGNER)) {
+    operations.push(OPERATIONS.viewForm, OPERATIONS.delete); //  OPERATIONS.edit,
+  }
+  return operations;
+}
 
-  handleSucessClose = () => {
-    this.setState({open:false})
-  };
-  handleSucessOpen = () => {
-    this.setState({open:true})
-  };
+const List = (props)=> {
+  //const dispatch = useDispatch();
+  const {
+    forms,
+    onAction,
+    getForms,
+    errors,
+    userRoles,
+    formId,
+    onNo,
+    onYes,
+  } = props;
+  const isBPMFormListLoading = useSelector(state=> state.bpmForms.isFormLoading);
+  //const formList = useSelector(state=> state.bpmForms.formList);
+ // const isDesigner = userRoles.includes(STAFF_DESIGNER);
+  const operations = getOperations(userRoles);
+/*
+  const getFormsList = (page,query)=>{
+    console.log(page, query);
+  }*/
 
-  render() {
-    const {
-      forms,
-      onAction,
-      getForms,
-      errors,
-      userRoles,
-      formId,
-      onNo,
-      onYes,
-    } = this.props;
-    const operations = this.getOperations(userRoles);
-    if (forms.isActive) {
+  useEffect(()=>{
+    getForms(1);
+    /*if(isDesigner){
+      props.getForms(1);
+    }else {
+      dispatch(setBPMFormListLoading(true))
+      dispatch(fetchBPMFormList());
+    }*/
+  },[getForms])
+
+
+  if (forms.isActive || isBPMFormListLoading) {
       return <Loading />;
-    }
+  }
 
     return (
       <div className="container">
         <Confirm
-          modalOpen={this.props.modalOpen}
+          modalOpen={props.modalOpen}
           message={
             "Are you sure you wish to delete the form " +
-            this.props.formName +
+            props.formName +
             "?"
           }
           onNo={() => onNo()}
@@ -88,6 +100,12 @@ const List = class extends Component {
         </div>
         <section className="custom-grid grid-forms">
           <Errors errors={errors} />
+{/*          <FormGrid
+            forms={{forms:formList, limit: 5, pagination: {numPages: 2, page: 2, total: formList.length}}}
+            onAction={onAction}
+            getForms={getFormsList}
+            operations={operations}
+          />*/}
           <FormGrid
             forms={forms}
             onAction={onAction}
@@ -95,28 +113,8 @@ const List = class extends Component {
             operations={operations}
           />
         </section>
-        {this.props.isFormWorkflowSaved && (
-        <Toast
-          severity='success'
-          message='Changes saved successfully'/>)}
-
       </div>
     );
-  }
-
-  getOperations(userRoles) {
-    let operations = [];
-    if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {
-      operations.push(OPERATIONS.insert);
-    }
-    if (userRoles.includes(STAFF_REVIEWER)) {
-      operations.push(OPERATIONS.submission);
-    }
-    if (userRoles.includes(STAFF_DESIGNER)) {
-      operations.push(OPERATIONS.viewForm, OPERATIONS.delete); //  OPERATIONS.edit,
-    }
-    return operations;
-  }
 };
 
 const mapStateToProps = (state) => {

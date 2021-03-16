@@ -23,13 +23,14 @@ class ApplicationService():
         # temperory until the frontend can provide form_process_mapper_id
         data['form_process_mapper_id'] = mapper.id
         data['application_name'] = mapper.form_name
-
         application = Application.create_from_dict(data)
+        if 'process_instance_id' in data:
+             application.update({'process_instance_id':  data['process_instance_id']})
+        else:
+            payload = {'variables': {"applicationId": {'value': application.id}, "formUrl": {'value': application.form_url},"formName": {'value': application.application_name},"submitterName": {'value': application.created_by},"submissionDate": {'value': application.created.__str__()}}}
+            response = BPMService.post_process_start(mapper.process_key, payload, token)
 
-        payload = {'variables': {"applicationId": {'value': application.id}, "formUrl": {'value': application.form_url},"formName": {'value': application.application_name},"submitterName": {'value': application.created_by},"submissionDate": {'value': application.created.__str__()}}}
-        response = BPMService.post_process_start(mapper.process_key, payload, token)
-
-        application.update({'process_instance_id': response['id']})
+            application.update({'process_instance_id': response['id']})
 
         return application
 

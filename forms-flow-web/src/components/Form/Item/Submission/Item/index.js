@@ -38,8 +38,7 @@ const Item = (props) => {
   useEffect(() => {
     if (getUserRolePermission(userRoles, STAFF_REVIEWER)) {
       setEditAllowed(true);
-    }
-    if (applicationStatus) {
+    }else if (applicationStatus) {
        if (getUserRolePermission(userRoles, CLIENT)) {
         setEditAllowed(CLIENT_EDIT_STATUS.includes(applicationStatus));
       }
@@ -50,11 +49,11 @@ const Item = (props) => {
   return (
     <div>
       <ul className="nav nav-tabs">
-        {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<li className="nav-item">
+{/*        {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<li className="nav-item">
           <Link className="nav-link" to={`/form/${formId}/submission`}>
             <i className="fa fa-chevron-left"/>
           </Link>
-        </li>:null}
+        </li>:null}*/}
         {(path.indexOf("edit") > 0) ?
           <li className="nav-item">
             <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}`}>

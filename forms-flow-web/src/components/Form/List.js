@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import {connect, /*useDispatch, */useSelector} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 import { push } from "connected-react-router";
 import { Link } from "react-router-dom";
 
@@ -20,9 +20,14 @@ import {
   STAFF_REVIEWER,
 } from "../../constants/constants";
 import "../Form/List.scss";
-import {/*setBPMFormListLoading,*/ setFormDeleteStatus} from "../../actions/formActions";
+import {
+  setBPMFormLimit,
+  setBPMFormListLoading,
+  setBPMFormListPage, setBPMFormListSort,
+  setFormDeleteStatus
+} from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
-//import {fetchBPMFormList} from "../../apiManager/services/bpmFormServices";
+import {fetchBPMFormList} from "../../apiManager/services/bpmFormServices";
 
 const getOperations = (userRoles) => {
   let operations = [];
@@ -39,7 +44,7 @@ const getOperations = (userRoles) => {
 }
 
 const List = (props)=> {
-  //const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const {
     forms,
     onAction,
@@ -50,25 +55,32 @@ const List = (props)=> {
     onNo,
     onYes,
   } = props;
-  const isBPMFormListLoading = useSelector(state=> state.bpmForms.isFormLoading);
-  //const formList = useSelector(state=> state.bpmForms.formList);
- // const isDesigner = userRoles.includes(STAFF_DESIGNER);
+  const isBPMFormListLoading = useSelector(state=> state.bpmForms.isActive);
+  const bpmForms = useSelector(state=> state.bpmForms);
+  const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const operations = getOperations(userRoles);
-/*
+
   const getFormsList = (page,query)=>{
-    console.log(page, query);
-  }*/
+    if(page){
+      dispatch(setBPMFormListPage(page));
+    }
+    if(query){
+      dispatch(setBPMFormListSort(query.sort||''));
+    }
+  }
+
+  const onPageSizeChanged=(pageSize)=>{
+    dispatch(setBPMFormLimit(pageSize));
+  }
 
   useEffect(()=>{
-    getForms(1);
-    /*if(isDesigner){
-      props.getForms(1);
+    if(isDesigner){
+      getForms(1);
     }else {
       dispatch(setBPMFormListLoading(true))
       dispatch(fetchBPMFormList());
-    }*/
-  },[getForms])
-
+    }
+  },[getForms,dispatch, isDesigner])
 
   if (forms.isActive || isBPMFormListLoading) {
       return <Loading />;
@@ -100,17 +112,12 @@ const List = (props)=> {
         </div>
         <section className="custom-grid grid-forms">
           <Errors errors={errors} />
-{/*          <FormGrid
-            forms={{forms:formList, limit: 5, pagination: {numPages: 2, page: 2, total: formList.length}}}
-            onAction={onAction}
-            getForms={getFormsList}
-            operations={operations}
-          />*/}
           <FormGrid
-            forms={forms}
+            forms={isDesigner?forms:bpmForms}
             onAction={onAction}
-            getForms={getForms}
+            getForms={isDesigner?getForms:getFormsList}
             operations={operations}
+            onPageSizeChanged={isDesigner?()=>{}:onPageSizeChanged}
           />
         </section>
       </div>

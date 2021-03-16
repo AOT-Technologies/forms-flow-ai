@@ -84,7 +84,7 @@ public class SimpleDBDataPipeline extends AbstractDataPipeline {
                         lobData.put("file_size",data.get(fileNamePrefix.concat("_size")));
                         lobData.put("stream_id",data.get(fileNamePrefix.concat("_stream_id")));
                         lobData.put("files_entity_key",data.get("files_entity_key"));
-                        nonLobMap.put(fileNamePrefix.concat("_file_id"), data.get(fileNamePrefix.concat("_stream_id")));
+                        //nonLobMap.put(StringUtils..concat("_id"), data.get(fileNamePrefix.concat("_stream_id")));
                         lobMap.put(entry.getKey(),lobData);
                     }
                 } else {

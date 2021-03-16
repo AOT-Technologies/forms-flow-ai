@@ -116,7 +116,7 @@ public class FormSubmissionService {
                         fieldValues.put(StringUtils.substringBeforeLast(fileNode.get("originalName").asText(),".")+entry.getKey(), fileValue);
                         if(fileNames.size() > 0) {
                             fieldValues.put(entry.getKey()+"_uploadname", StringUtils.join(fileNames, ","));
-                            fieldValues.put(entry.getKey()+"_id",dataNode.get("_id").asText());
+                            //fieldValues.put(entry.getKey()+"_id",dataNode.get("_id").asText());
                         }
                     }
 

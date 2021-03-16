@@ -24,7 +24,7 @@ const ServiceFlowTaskList = () => {
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
 
   const [activePage, setCurrentPage] = useState(1);
-  const tasksPerPage = 5;
+  const tasksPerPage = 15;
   // Logic for displaying current todos
   const indexOfLastTodo = activePage * tasksPerPage;
   const indexOfFirstTodo = indexOfLastTodo - tasksPerPage;

@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.hooks.services;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import freemarker.template.utility.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.bpm.engine.variable.value.FileValue;
@@ -90,6 +91,9 @@ public class FormSubmissionService {
     }
 
     private String getSubmissionUrl(String formUrl){
+        if(StringUtils.endsWith(formUrl,"submission")) {
+            return formUrl;
+        }
         return StringUtils.substringBeforeLast(formUrl,"/");
     }
 

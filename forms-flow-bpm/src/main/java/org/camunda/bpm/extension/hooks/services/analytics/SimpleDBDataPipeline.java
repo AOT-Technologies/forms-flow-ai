@@ -84,13 +84,31 @@ public class SimpleDBDataPipeline extends AbstractDataPipeline {
                         lobData.put("file_size",data.get(fileNamePrefix.concat("_size")));
                         lobData.put("stream_id",data.get(fileNamePrefix.concat("_stream_id")));
                         lobData.put("files_entity_key",data.get("files_entity_key"));
-                        nonLobMap.put(fileNamePrefix.concat("_file_id"), data.get(fileNamePrefix.concat("_stream_id")));
+                         //nonLobMap.put(StringUtils.concat("_id"), data.get(fileNamePrefix.concat("_stream_id")));
+
                         lobMap.put(entry.getKey(),lobData);
                     }
                 } else {
                     nonLobMap.put(entry.getKey(), entry.getValue());
                 }
+
+                if(StringUtils.endsWith(entry.getKey(),"_uploadname")) {
+                    if(entry.getValue() != null && StringUtils.isNotBlank(String.valueOf(entry.getValue())) && !"null".equals(String.valueOf(entry.getValue()))) {
+                        String filename = String.valueOf(entry.getValue());
+                        List<String> fieldValue = new ArrayList<>();
+                        for(String fentry : filename.split(",")) {
+                            String name = StringUtils.substringBefore(fentry,".");
+                            String prefix = StringUtils.substringBefore(entry.getKey(),"_file_uploadname");
+                            fieldValue.add(String.valueOf(data.get(name+prefix+"_stream_id")));
+                        }
+                        nonLobMap.put(StringUtils.substringBefore(entry.getKey(),"_file_uploadname")+"_file_id", String.join(",",fieldValue));
+                    }
+
+                }
             }
+
+
+
             //Non-lob objects block
             String query = getQuery(String.valueOf(nonLobMap.get("entity_key")),nonLobMap,"pid",getIdentityKey(data));
             LOGGER.info("Non-lob query:"+ query);

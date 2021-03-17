@@ -111,7 +111,7 @@ public class SimpleDBDataPipeline extends AbstractDataPipeline {
 
             //Non-lob objects block
             String query = getQuery(String.valueOf(nonLobMap.get("entity_key")),nonLobMap,"pid",getIdentityKey(data));
-            LOGGER.debug("Non-lob query:"+ query);
+            LOGGER.info("Non-lob query:"+ query);
             analyticsJdbcTemplate.update(query,nonLobMap);
             // Lob objects
             handleFileObject(lobMap);

@@ -67,8 +67,8 @@ const AddGroupModal= (props)=> {
                   </Col>
                   {groups?.length?
                     <Col lg={{ span: 8, offset: 4 }} xs={12} sm={{ span: 8, offset: 4 }} md={{ span: 8, offset: 4 }} xl={{ span: 8, offset: 4 }} >
-                      {groups.map(group=>
-                        <div className="mt-1">
+                      {groups.map((group,index)=>
+                        <div className="mt-1" key={index}>
                           <i className="fa fa-times mr-2 click-element text-blue" onClick={()=>onDeleteGroup(group)}/>
                           <span>{group.groupId}</span>
                         </div>

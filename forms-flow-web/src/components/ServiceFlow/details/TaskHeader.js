@@ -22,6 +22,7 @@ import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
 const TaskHeader = ({ task }) => {
   const processList = useSelector((state) => state.bpmTasks.processList);
   const username = useSelector((state) => state.user?.userDetail?.preferred_username || '');
+  const taskGroups = useSelector(state=>state.bpmTasks.taskGroups);
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
   const reqData = useSelector(state => state.bpmTasks.filterListSortParams);
   const followUp = task?.followUp ? new Date(task?.followUp):null;
@@ -109,7 +110,7 @@ const TaskHeader = ({ task }) => {
 
   return (
     <>
-    <AddGroupModal modalOpen={showModal} onClose={()=>setModal(false)} groups={task?.groups}/>
+    <AddGroupModal modalOpen={showModal} onClose={()=>setModal(false)} groups={taskGroups}/>
       <Row className="ml-0 task-header">{task?.name}</Row>
       <Row className="ml-0 task-name" title={"Process Name"}>
         {getProcessDataFromList(processList, task?.processDefinitionId, "name")}
@@ -163,7 +164,7 @@ const TaskHeader = ({ task }) => {
         </Col>
         <Col className="center-position" onClick={()=>setModal(true)} title={"groups"}>
           <i className="fa fa-group mr-1"/>
-          { task?.groups.length === 0? <span>Add groups</span>:<span>{getGroups(task?.groups)}</span>}
+          { taskGroups.length === 0? <span>Add groups</span>:<span>{getGroups(taskGroups)}</span>}
         </Col>
         <Col className="right-side">
           <i className="fa fa-user mr-1" />

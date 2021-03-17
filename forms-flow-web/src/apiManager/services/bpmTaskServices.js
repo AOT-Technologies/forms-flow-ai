@@ -10,7 +10,7 @@ import {
   setBPMProcessList,
   setBPMUserList,
   setBPMTaskDetailUpdating,
-  setBPMFilterList, setBPMFilterLoader, updateBPMTaskGroups
+  setBPMFilterList, setBPMFilterLoader, updateBPMTaskGroups, setBPMTaskGroupsLoading
 } from "../../actions/bpmTaskActions";
 import {replaceUrl} from "../../helper/helper";
 import axios from "axios";
@@ -135,18 +135,11 @@ export const getBPMTaskDetail = (taskId, ...rest) => {
     taskId
   );
 
-  const apiUrlgetGroups = replaceUrl(
-    API.BPM_GROUP,
-    "<task_id>",
-    taskId
-  );
-
   const taskDetailReq =   httpGETRequest(apiUrlgetTaskDetail);
   const taskDetailsWithVariableReq =   httpGETRequest(apiUrlgetTaskVariables);
-  const getGroupsReq = httpGETRequest(`${apiUrlgetGroups}?type=candidate`);
 
   return (dispatch) => {
-    axios.all([taskDetailReq,taskDetailsWithVariableReq, getGroupsReq])
+    axios.all([taskDetailReq,taskDetailsWithVariableReq])
       .then(axios.spread(
         (...responses) => {
         if (responses[0]?.data) {
@@ -154,9 +147,6 @@ export const getBPMTaskDetail = (taskId, ...rest) => {
           if(responses[1]?.data){
             let taskDetailUpdates = responses[1]?.data;
             taskDetail = {...taskDetail,...taskDetailVariableDataFormatter(taskDetailUpdates)};
-          }
-          if (responses[2]?.data){
-            taskDetail = {...taskDetail,...{groups:responses[2]?.data}}
           }
 
           dispatch(setBPMTaskDetail(taskDetail));
@@ -189,20 +179,16 @@ export const getBPMGroups = (taskId, ...rest) => {
             if (responses?.data){
               const groups = responses.data;
               dispatch(updateBPMTaskGroups(groups));
-              dispatch(setBPMTaskDetailLoader(false));
-              dispatch(setBPMTaskDetailUpdating(false));
               done(null, groups);
             }else{
-              dispatch(setBPMTaskDetailLoader(false));
-              dispatch(setBPMTaskDetailUpdating(false));
+              dispatch(setBPMTaskGroupsLoading(false));
               done(null,[]);
             }
           }
         )
       .catch((error) => {
         dispatch(serviceActionError(error));
-        dispatch(setBPMTaskDetailLoader(false));
-        dispatch(setBPMTaskDetailUpdating(false));
+        dispatch(setBPMTaskGroupsLoading(false));
         done(error);
       });
   };

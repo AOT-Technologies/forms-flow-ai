@@ -2,7 +2,12 @@ import React, {useEffect} from "react";
 import {Row, Tab, Tabs} from "react-bootstrap";
 import TaskHeader from "./TaskHeader";
 import {setBPMTaskDetailLoader, setSelectedTaskID} from "../../../actions/bpmTaskActions";
-import {fetchServiceTaskList, getBPMTaskDetail, onBPMTaskFormSubmit} from "../../../apiManager/services/bpmTaskServices";
+import {
+  fetchServiceTaskList,
+  getBPMGroups,
+  getBPMTaskDetail,
+  onBPMTaskFormSubmit
+} from "../../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
 import Loading from "../../../containers/Loading";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
@@ -33,6 +38,7 @@ const ServiceFlowTaskDetails = () => {
     if(bpmTaskId){
       dispatch(setBPMTaskDetailLoader(true))
       dispatch(getBPMTaskDetail(bpmTaskId));
+      dispatch(getBPMGroups(bpmTaskId))
     }
   },[bpmTaskId, dispatch]);
 
@@ -55,6 +61,7 @@ const ServiceFlowTaskDetails = () => {
     if(selectedFilter) {
       dispatch(setBPMTaskDetailLoader(true))
       dispatch(getBPMTaskDetail(task.id)); // Refresh the Task Selected
+      dispatch(getBPMGroups(task.id))
       dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Tasks
     }
   }
@@ -87,7 +94,7 @@ const ServiceFlowTaskDetails = () => {
    return <div className="service-task-details">
      <Loading/>
    </div>
-   }else{
+   } else{
      /*TODO split render*/
      return (<div className="service-task-details">
        <LoadingOverlay

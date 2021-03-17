@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.hooks.listeners.execution;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -10,6 +11,8 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import javax.inject.Named;
 
@@ -42,7 +45,7 @@ public class ExternalSubmissionListener implements ExecutionListener {
             String formUrl = getFormUrl(execution);
             String submissionId = formSubmissionService.createSubmission(formUrl, formSubmissionService.createFormSubmissionData(execution.getVariables()));
             if(StringUtils.isNotBlank(submissionId)){
-                execution.getVariables().put("formUrl", formUrl+"/"+submissionId);
+                execution.setVariable("formUrl", formUrl+"/"+submissionId);
                 createApplication(execution);
             }
 
@@ -71,7 +74,12 @@ public class ExternalSubmissionListener implements ExecutionListener {
         data.put("submissionId",StringUtils.substringAfter(formUrl, "/submission/"));
         data.put("processInstanceId",execution.getProcessInstanceId());
         try {
-            httpServiceInvoker.execute(httpServiceInvoker.getProperties().getProperty("api.url")+"/application", HttpMethod.POST, getObjectMapper().writeValueAsString(data));
+            ResponseEntity<String> response = httpServiceInvoker.execute(httpServiceInvoker.getProperties().getProperty("api.url")+"/application/create", HttpMethod.POST, getObjectMapper().writeValueAsString(data));
+            if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
+                JsonNode jsonNode = getObjectMapper().readTree(response.getBody());
+                String applicationId = jsonNode.get("id").asText();
+                execution.setVariable("applicationId", applicationId);
+            }
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }

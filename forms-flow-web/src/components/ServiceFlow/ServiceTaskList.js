@@ -11,6 +11,7 @@ import moment from "moment";
 import { getProcessDataFromList } from "../../apiManager/services/formatterService";
 import TaskFilterComponent from "./filter/TaskFilterComponent";
 import Pagination from "react-js-pagination";
+import SocketIOService from "../../services/SocketIOService";
 
 const ServiceFlowTaskList = () => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
@@ -29,12 +30,22 @@ const ServiceFlowTaskList = () => {
   const indexOfLastTodo = activePage * tasksPerPage;
   const indexOfFirstTodo = indexOfLastTodo - tasksPerPage;
   const currentTaskList = taskList.slice(indexOfFirstTodo, indexOfLastTodo);
+
   useEffect(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
       dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
     }
   }, [dispatch, selectedFilter, reqData]);
+
+  useEffect(()=>{
+    SocketIOService.connect();
+    return ()=>{
+      SocketIOService.disconnect();
+    }
+  },[])
+
+
 
   const getTaskDetails = (bpmTaskId) => {
     dispatch(setSelectedTaskID(bpmTaskId));

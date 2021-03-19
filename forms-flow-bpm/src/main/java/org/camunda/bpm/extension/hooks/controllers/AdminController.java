@@ -85,18 +85,28 @@ public class AdminController {
                 for(Authorization authObj : authorizationList) {
                     for(AuthorizedAction formObj : formList) {
                         if(authObj.getResourceId().equals(formObj.getProcessKey())) {
-                            filteredList.add(formObj);
+                            if(isExists(filteredList, formObj.getFormId()) == false) {
+                                filteredList.add(formObj);
+                            }
                         }
                     }
                 }
 
                 return filteredList;
-
             }
         } catch (JsonProcessingException e) {
             LOGGER.log(Level.SEVERE, "Exception occurred in reading form", e);
         }
         return filteredList;
+    }
+
+    private boolean isExists(List<AuthorizedAction> filteredList, String formId) {
+        for(AuthorizedAction entry : filteredList) {
+            if(entry.getFormId().equals(formId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<String> getGroups(Jwt principal) {

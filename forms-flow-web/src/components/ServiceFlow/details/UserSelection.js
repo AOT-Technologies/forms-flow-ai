@@ -9,6 +9,12 @@ const UserSelection = (props)=>{
   const options = userList.map((user)=>{
     return {value:user.id, label:user.id}
   });
+  const customThemeFn = (theme) => ({
+    ...theme,
+    spacing: {
+      controlHeight: 25,
+    }
+  })
   const [selectedValue, changeSelectedValue] =useState({value:currentUser,label:currentUser});
   return (<>
             <button className="btn" title="Update User" onClick={()=>onChangeClaim(selectedValue.value)}>
@@ -18,6 +24,7 @@ const UserSelection = (props)=>{
               <i className="fa fa-times" aria-hidden="true"/>
             </button>
             <Select options={options}
+                    theme={customThemeFn}
                     isClearable
                     isSearchable
                     value={selectedValue}

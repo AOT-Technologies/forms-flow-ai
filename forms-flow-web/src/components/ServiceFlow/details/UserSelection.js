@@ -17,7 +17,7 @@ const UserSelection = (props)=>{
   })
   const [selectedValue, changeSelectedValue] =useState({value:currentUser,label:currentUser});
   return (<>
-            <button className="btn" title="Update User" onClick={()=>onChangeClaim(selectedValue.value)}>
+            <button className="btn" title="Update User" onClick={()=>onChangeClaim(selectedValue?.value||null)}>
               <i className="fa fa-check" aria-hidden="true"/>
             </button>
             <button className="btn" onClick={onClose} title="Close">

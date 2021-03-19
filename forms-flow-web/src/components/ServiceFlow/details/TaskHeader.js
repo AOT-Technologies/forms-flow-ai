@@ -49,17 +49,19 @@ const TaskHeader = ({ task }) => {
   }
   const onChangeClaim = (userId) => {
     setIsEditAssignee(false);
-    dispatch(setBPMTaskDetailUpdating(true));
-    dispatch(updateAssigneeBPMTask(task?.id,userId,(err,response)=>{
-      if(!err){
-        if(selectedFilter){
-          dispatch(getBPMTaskDetail(task.id));
-          dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
-        }
-      }else{
-        dispatch(setBPMTaskDetailUpdating(false));
-      }
-    }));
+   if(userId && userId!==username){
+     dispatch(setBPMTaskDetailUpdating(true));
+     dispatch(updateAssigneeBPMTask(task?.id,userId,(err,response)=>{
+       if(!err){
+         if(selectedFilter){
+           dispatch(getBPMTaskDetail(task.id));
+           dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+         }
+       }else{
+         dispatch(setBPMTaskDetailUpdating(false));
+       }
+     }));
+   }
   }
 
   const onUnClaimTask = () =>{

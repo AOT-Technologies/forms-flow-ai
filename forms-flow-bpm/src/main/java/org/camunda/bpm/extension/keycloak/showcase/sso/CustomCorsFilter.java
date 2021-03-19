@@ -57,8 +57,10 @@ public class CustomCorsFilter implements Filter {
             } else {
                 chain.doFilter(req, res);
             }
+
+        } else {
+            chain.doFilter(req, res);
         }
-        chain.doFilter(req, res);
     }
 
     private String getOrigin(HttpServletRequest request){

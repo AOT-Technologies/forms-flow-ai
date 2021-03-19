@@ -117,6 +117,8 @@
   margin: 10px 0;
   font-size: 14px;
   font-weight: bold;
+  height: 71px;
+  position: relative;
 }
 .task-header {
   font-size: 30px;
@@ -158,9 +160,14 @@
 .right-side {
   text-align: right;
   margin-right: 3em;
+  align-self: flex-end;
 }
 .center-position {
   text-align: center;
+  align-self: flex-end;
+}
+.date-container{
+  align-self: flex-end;
 }
 .filter-details {
   background-color: #f2dede;

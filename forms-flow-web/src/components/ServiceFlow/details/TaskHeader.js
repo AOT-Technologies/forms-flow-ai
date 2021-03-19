@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, {useState} from "react";
 import { Row, Col } from "react-bootstrap";
 import {
   getISODateTime,
@@ -14,10 +14,11 @@ import {
   claimBPMTask,
   fetchServiceTaskList,
   getBPMTaskDetail,
-  unClaimBPMTask,
+  unClaimBPMTask, updateAssigneeBPMTask,
   updateBPMTask
 } from "../../../apiManager/services/bpmTaskServices";
 import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
+import UserSelection from "./UserSelection";
 
 const TaskHeader = ({ task }) => {
   const processList = useSelector((state) => state.bpmTasks.processList);
@@ -30,6 +31,7 @@ const TaskHeader = ({ task }) => {
   const [followUpDate, setFollowUpDate] = useState(followUp);
   const [dueDate, setDueDate] = useState(due);
   const [showModal, setModal] = useState(false);
+  const [isEditAssignee, setIsEditAssignee]=useState(false);
   const dispatch= useDispatch();
 
   const onClaim = () => {
@@ -44,6 +46,22 @@ const TaskHeader = ({ task }) => {
         dispatch(setBPMTaskDetailUpdating(false));
       }
     }));
+  }
+  const onChangeClaim = (userId) => {
+    setIsEditAssignee(false);
+   if(userId && userId!==username){
+     dispatch(setBPMTaskDetailUpdating(true));
+     dispatch(updateAssigneeBPMTask(task?.id,userId,(err,response)=>{
+       if(!err){
+         if(selectedFilter){
+           dispatch(getBPMTaskDetail(task.id));
+           dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+         }
+       }else{
+         dispatch(setBPMTaskDetailUpdating(false));
+       }
+     }));
+   }
   }
 
   const onUnClaimTask = () =>{
@@ -97,6 +115,8 @@ const TaskHeader = ({ task }) => {
     </div>
   });
 
+
+
   const DueDateInput=React.forwardRef(({ value, onClick }, ref) =>{
     return    <div onClick={onClick} ref={ref}>
       <i className="fa fa-bell" />{" "}
@@ -119,7 +139,7 @@ const TaskHeader = ({ task }) => {
         Application ID# {task?.applicationId}
       </Row>
       <Row className="actionable">
-        <Col>
+        <Col className='date-container'>
           <DatePicker
             selected={followUpDate}
             onChange={onFollowUpDateUpdate}
@@ -140,7 +160,7 @@ const TaskHeader = ({ task }) => {
             customInput={<FollowUpDateInput/>}
           />
         </Col>
-        <Col>
+        <Col className='date-container'>
           <DatePicker
             selected={dueDate}
             onChange={onDueDateUpdate}
@@ -167,13 +187,20 @@ const TaskHeader = ({ task }) => {
           { taskGroups.length === 0? <span>Add groups</span>:<span>{getGroups(taskGroups)}</span>}
         </Col>
         <Col className="right-side">
+          {isEditAssignee?(task?.assignee? <span>
+              <UserSelection onClose={()=>setIsEditAssignee(false)}
+                             currentUser={task.assignee}
+                             onChangeClaim={onChangeClaim}/></span>:
+            <span onClick={onClaim}> Claim</span>):
+            (<>
           <i className="fa fa-user mr-1" />
-          {task?.assignee ? (
-            <span>
-              {task.assignee}
-              <i className="fa fa-times ml-1" onClick={onUnClaimTask}/></span>
-          ) : <span onClick={onClaim}> Claim</span>
+          {task?.assignee ? (<span>
+              <span onClick={()=>setIsEditAssignee(true)} title="Click to Change Assignee">{task.assignee}</span>
+              <i className="fa fa-times ml-1" onClick={onUnClaimTask} title="Reset Assignee"/></span>) :
+              <span onClick={onClaim}> Claim</span>
             }
+            </>)
+          }
         </Col>
       </Row>
     </>

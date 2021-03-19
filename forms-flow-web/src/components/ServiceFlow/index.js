@@ -3,7 +3,7 @@ import ServiceFlowTaskList from "./ServiceTaskList";
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import {Col, Container, Row} from "react-bootstrap";
 import "./ServiceFlow.scss";
-import {fetchFilterList, fetchProcessDefinitionList} from "../../apiManager/services/bpmTaskServices";
+import {fetchFilterList, fetchProcessDefinitionList, fetchUserList} from "../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
 import {setBPMFilterLoader, setSelectedBPMFilter} from "../../actions/bpmTaskActions";
 import {ALL_TASKS} from "./constants/taskConstants";
@@ -20,6 +20,7 @@ const ServiceFlow = () => {
     dispatch(setBPMFilterLoader(true));
     dispatch(fetchFilterList());
     dispatch(fetchProcessDefinitionList());
+    dispatch(fetchUserList());
   },[dispatch]);
 
   useEffect(()=>{

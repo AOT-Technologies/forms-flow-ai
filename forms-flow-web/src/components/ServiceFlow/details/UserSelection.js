@@ -17,10 +17,10 @@ const UserSelection = (props)=>{
   })
   const [selectedValue, changeSelectedValue] =useState({value:currentUser,label:currentUser});
   return (<>
-            <button className="btn" title="Update User" onClick={()=>onChangeClaim(selectedValue?.value||null)}>
+            <button className="btn btn-pos" title="Update User" onClick={()=>onChangeClaim(selectedValue?.value||null)}>
               <i className="fa fa-check" aria-hidden="true"/>
             </button>
-            <button className="btn" onClick={onClose} title="Close">
+            <button className="btn btn-pos" onClick={onClose} title="Close">
               <i className="fa fa-times" aria-hidden="true"/>
             </button>
             <Select options={options}

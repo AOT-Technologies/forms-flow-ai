@@ -13,7 +13,6 @@ const connect = ()=>{
   stompClient = Stomp.over(socket);
   console.log("stompClient", stompClient);
   stompClient.connect({"Authorization": `Bearer ${accessToken}`}, (frame) => {
-    //stompClient.connect({}, function (frame) {
     console.log('Connected: ' + frame);
     stompClient.subscribe('/topic/task-event-details', function(output){
       console.log("test task",output,JSON.parse(output.body));

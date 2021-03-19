@@ -11,7 +11,7 @@ import moment from "moment";
 import { getProcessDataFromList } from "../../apiManager/services/formatterService";
 import TaskFilterComponent from "./filter/TaskFilterComponent";
 import Pagination from "react-js-pagination";
-import SocketIOService from "../../services/SocketIOService";
+/*import SocketIOService from "../../services/SocketIOService";*/
 
 const ServiceFlowTaskList = () => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
@@ -38,12 +38,12 @@ const ServiceFlowTaskList = () => {
     }
   }, [dispatch, selectedFilter, reqData]);
 
-  useEffect(()=>{
+ /* useEffect(()=>{
     SocketIOService.connect();
     return ()=>{
       SocketIOService.disconnect();
     }
-  },[])
+  },[])*/
 
 
 

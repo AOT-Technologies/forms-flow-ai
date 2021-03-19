@@ -34,9 +34,9 @@ const getOperations = (userRoles) => {
   if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {
     operations.push(OPERATIONS.insert);
   }
-/*  if (userRoles.includes(STAFF_REVIEWER)) {
+  if (userRoles.includes(STAFF_REVIEWER)) {
     operations.push(OPERATIONS.submission);
-  }*/
+  }
   if (userRoles.includes(STAFF_DESIGNER)) {
     operations.push(OPERATIONS.viewForm, OPERATIONS.delete); //  OPERATIONS.edit,
   }

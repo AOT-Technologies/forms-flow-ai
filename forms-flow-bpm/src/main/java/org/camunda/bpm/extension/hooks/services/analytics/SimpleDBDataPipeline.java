@@ -92,21 +92,24 @@ public class SimpleDBDataPipeline extends AbstractDataPipeline {
                     nonLobMap.put(entry.getKey(), entry.getValue());
                 }
 
-                if(StringUtils.endsWith(entry.getKey(),"_uploadname")) {
-                    if(entry.getValue() != null && StringUtils.isNotBlank(String.valueOf(entry.getValue())) && !"null".equals(String.valueOf(entry.getValue()))) {
+
+            }
+
+            for(Map.Entry<String,Object> entry : data.entrySet()) {
+                if (StringUtils.endsWith(entry.getKey(), "_uploadname")) {
+                    if (entry.getValue() != null && StringUtils.isNotBlank(String.valueOf(entry.getValue())) && !"null".equals(String.valueOf(entry.getValue()))) {
                         String filename = String.valueOf(entry.getValue());
                         List<String> fieldValue = new ArrayList<>();
-                        for(String fentry : filename.split(",")) {
-                            String name = StringUtils.substringBefore(fentry,".");
-                            String prefix = StringUtils.substringBefore(entry.getKey(),"_file_uploadname");
-                            fieldValue.add(String.valueOf(data.get(name+prefix+"_stream_id")));
+                        for (String fentry : filename.split(",")) {
+                            String name = StringUtils.substringBefore(fentry, ".");
+                            String prefix = StringUtils.substringBefore(entry.getKey(), "_file_uploadname");
+                            fieldValue.add(String.valueOf(data.get(name + prefix + "_stream_id")));
                         }
-                        nonLobMap.put(StringUtils.substringBefore(entry.getKey(),"_file_uploadname")+"_file_id", String.join(",",fieldValue));
+                        nonLobMap.put(StringUtils.substringBefore(entry.getKey(), "_file_uploadname") + "_file_id", String.join(",", fieldValue));
                     }
 
                 }
             }
-
 
 
             //Non-lob objects block

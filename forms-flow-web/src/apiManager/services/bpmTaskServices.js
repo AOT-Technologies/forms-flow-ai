@@ -95,7 +95,7 @@ export const fetchUserList = (...rest) => {
 
 export const fetchFilterList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const getTaskFiltersAPI = `${API.GET_BPM_FILTERS}?resourceType=Task&itemCount=true`
+  const getTaskFiltersAPI = `${API.GET_BPM_FILTERS}?itemCount=false&resourceType=Task&sortBy=name&sortOrder=asc`
   return (dispatch) => {
     httpGETRequest(getTaskFiltersAPI, {}, UserService.getToken())
       .then((res) => {

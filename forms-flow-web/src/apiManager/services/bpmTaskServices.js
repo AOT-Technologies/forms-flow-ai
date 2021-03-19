@@ -281,6 +281,29 @@ export const claimBPMTask = (taskId, user, ...rest) => {
   };
 };
 
+export const updateAssigneeBPMTask = (taskId, user, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const apiUrlClaimTask = replaceUrl(
+    API.UPDATE_ASSIGNEE_BPM_TASK,
+    "<task_id>",
+    taskId
+  );
+  return (dispatch) => {
+    httpPOSTRequest(apiUrlClaimTask, { userId: user })
+      .then((res) => {
+        // if (res.status === 200) {
+        //TODO REMOVE
+        done(null, res.data);
+        // }
+      })
+      .catch((error) => {
+        console.log("Error", error);
+        dispatch(serviceActionError(error));
+        done(error);
+      });
+  };
+};
+
 
 export const updateBPMTask = (taskId, task, ...rest) => {
   const done = rest.length ? rest[0] : () => {};

@@ -137,7 +137,7 @@ const TaskHeader = ({ task }) => {
         Application ID# {task?.applicationId}
       </Row>
       <Row className="actionable">
-        <Col>
+        <Col className='date-container'>
           <DatePicker
             selected={followUpDate}
             onChange={onFollowUpDateUpdate}
@@ -158,7 +158,7 @@ const TaskHeader = ({ task }) => {
             customInput={<FollowUpDateInput/>}
           />
         </Col>
-        <Col>
+        <Col className='date-container'>
           <DatePicker
             selected={dueDate}
             onChange={onDueDateUpdate}

@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
@@ -40,20 +39,26 @@ public class CustomCorsFilter implements Filter {
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 
+
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
+        String requestURL = request.getRequestURL().toString();
+        if(StringUtils.contains(requestURL,"/engine-rest/") ||
+                StringUtils.contains(requestURL,"/engine-rest-ext/") ||
+                StringUtils.contains(requestURL,"/form-builder/")) {
+            response.setHeader("Access-Control-Allow-Origin", getOrigin(request));
+            response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS");
+            //response.setHeader("Access-Control-Allow-Headers","access-control-allow-methods, access-control-allow-origin, authorization, Content-Type, Accept, X-Requested-With, Origin, Token, Auth-Token, Email, X-User-Token, X-User-Email");
+            response.setHeader("Access-Control-Allow-Headers", "*");
+            response.setHeader("Access-Control-Max-Age", "3600");
 
-        response.setHeader("Access-Control-Allow-Origin",getOrigin(request));
-        response.setHeader("Access-Control-Allow-Methods","POST, PUT, GET, OPTIONS");
-        //response.setHeader("Access-Control-Allow-Headers","access-control-allow-methods, access-control-allow-origin, authorization, Content-Type, Accept, X-Requested-With, Origin, Token, Auth-Token, Email, X-User-Token, X-User-Email");
-        response.setHeader("Access-Control-Allow-Headers","*");
-        response.setHeader("Access-Control-Max-Age", "3600");
-
-        if("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            chain.doFilter(req, res);
+            if ("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
+                response.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                chain.doFilter(req, res);
+            }
         }
+        chain.doFilter(req, res);
     }
 
     private String getOrigin(HttpServletRequest request){

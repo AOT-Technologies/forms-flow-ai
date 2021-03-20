@@ -70,6 +70,10 @@ export const getFormIdSubmissionIdFromURL = (formUrl) => {
   return {formId,submissionId};
 }
 
+export const getFormUrl = (formId, submissionId) => {
+  return `${window.location.origin}/form/${formId}/submission/${submissionId}`;
+}
+
 export const getISODateTime=(date)=>{
   const dateTimeFormat = moment(date).format("yyyy-MM-DD[T]HH:mm:ss.SSSZ");
   const dateTimeArr = dateTimeFormat.split('+')

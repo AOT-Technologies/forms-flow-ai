@@ -34,6 +34,7 @@ const ServiceFlowTaskList = () => {
   useEffect(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
+      setCurrentPage(1);
       dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
     }
   }, [dispatch, selectedFilter, reqData]);

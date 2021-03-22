@@ -46,6 +46,7 @@ $dark: $gray-800;
 .container {
   padding-left: 0;
   padding-right: 0;
+  height: 300px;
 }
 .logo {
   height: 1.9em;
@@ -56,7 +57,7 @@ h4 {
 #main {
   /* margin-top: 2px;*/
   min-height: 85vh;
-  max-height: 85vh;
+  //max-height: 85vh;
   padding-bottom: 1.5rem;
   overflow-y: auto;
   overflow-x: hidden;

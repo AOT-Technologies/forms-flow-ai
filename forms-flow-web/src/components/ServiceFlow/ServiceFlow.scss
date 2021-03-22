@@ -15,7 +15,7 @@
 }
 .service-task-details {
   min-height: 80vh;
-  max-height: 80vh;
+  max-height: 85vh;
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -58,7 +58,9 @@
   padding: 5px;
   width: 12rem;
 }
-
+.row-position{
+  //position: fixed;
+}
 .task-section-top {
   //min-height: 35px;
   padding: calc(6px + 2px) 15px calc(6px - 2px) 15px;

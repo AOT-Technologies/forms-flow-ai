@@ -1,8 +1,11 @@
 package org.camunda.bpm.extension.keycloak.showcase.sso;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Logger;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -12,7 +15,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -31,6 +36,12 @@ public class CustomCorsFilter implements Filter {
 
     @Value("${app.security.origin}")
     private String customAllowOrigin;
+
+    @Value("${websocket.security.secretKey}")
+    private String socketSecretKey;
+
+    @Autowired
+    private AESUtils aesUtils;
 
     public CustomCorsFilter() {
         LOGGER.info("Initialization of cors filter");
@@ -58,6 +69,20 @@ public class CustomCorsFilter implements Filter {
                 chain.doFilter(req, res);
             }
 
+        }  else if(StringUtils.contains(requestURL,"/forms-flow-bpm-socket/")) {
+         CustomHttpRequestWrapper customHttpRequestWrapper =new CustomHttpRequestWrapper(request);
+
+            if( StringUtils.isNotBlank(request.getQueryString())) {
+                List<String> queryParams = Arrays.asList(request.getQueryString().split("&"));
+                for(String param : queryParams) {
+                    if("accesstoken".equals(StringUtils.substringBefore(param,"="))) {
+                       String decryptedToken = aesUtils.decryptText(StringUtils.substringAfter(param,"="),socketSecretKey);
+                        customHttpRequestWrapper.addHeader("Authorization", "Bearer " +decryptedToken);
+                    }
+                }
+
+            }
+            chain.doFilter(customHttpRequestWrapper, res);
         } else {
             chain.doFilter(req, res);
         }

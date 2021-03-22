@@ -181,5 +181,6 @@ app.security.origin: ${APP_SECURITY_ORIGIN}
 websocket:
   security:
     origin: ${WEBSOCKET_SECURITY_ORIGIN}
+    secretKey: ${WEBSOCKET_ENCRYPT_KEY}
   messageType: ${WEBSOCKET_MESSAGE_TYPE}
 

@@ -103,7 +103,7 @@ const TaskSortSelectedList = () => {
   return  (<div className="d-flex flex-wrap" ref={createNode}>
     {selectedSortList()}
     {sortOptions.length?<div className="ml-1">
-      <i className="fa fa-plus fa-sm click-element" onClick={()=>setShowSortListDropdown(!showSortListDropdown)} title="Add sorting"/>
+      <i className="fa fa-plus fa-sm click-element" onClick={()=>setShowSortListDropdown(!showSortListDropdown)} dat-title="Add sorting"/>
      {showSortListDropdown?<TaskSort handleClick={addSort} options={sortOptions}/>:null}
     </div>:null}
   </div>)

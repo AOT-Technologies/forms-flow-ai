@@ -75,10 +75,15 @@ export const getFormUrl = (formId, submissionId) => {
 }
 
 export const getISODateTime=(date)=>{
-  const dateTimeFormat = moment(date).format("yyyy-MM-DD[T]HH:mm:ss.SSSZ");
+  const dateTimeFormat = moment(date).format("YYYY-MM-DD[T]hh:mm:ss.SSSZ");
   const dateTimeArr = dateTimeFormat.split('+')
   const replaceTimezone = dateTimeArr[1].replace(':', '')
   return dateTimeFormat.replace(dateTimeArr[1], replaceTimezone)
   //return new Date(date).toISOString();
 };
 
+export const getFormattedDateAndTime = (date)=>{
+
+  return new Date(date).toLocaleDateString('en-us',  {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',hour: '2-digit', minute: '2-digit', hour12: true});
+
+};

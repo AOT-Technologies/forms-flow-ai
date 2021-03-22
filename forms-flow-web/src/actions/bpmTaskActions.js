@@ -69,8 +69,6 @@ export const setBPMUserList = (data) => dispatch =>{
   })
 }
 
-
-
 export const setBPMTaskCount = (data) => dispatch =>{
   dispatch({
     type:ACTION_CONSTANTS.BPM_TASKS_COUNT,
@@ -117,11 +115,6 @@ export const setFilterListSortParams = (data) => dispatch =>{
     payload:data
   })
 }
-
-
-
-
-
 
 export const serviceActionError = (data) => dispatch => {
   //TODO update to a common file

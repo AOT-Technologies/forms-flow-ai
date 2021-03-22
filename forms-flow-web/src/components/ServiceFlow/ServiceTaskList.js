@@ -8,7 +8,7 @@ import {
 } from "../../actions/bpmTaskActions";
 import Loading from "../../containers/Loading";
 import moment from "moment";
-import { getProcessDataFromList } from "../../apiManager/services/formatterService";
+import { getProcessDataFromList,getFormattedDateAndTime } from "../../apiManager/services/formatterService";
 import TaskFilterComponent from "./filter/TaskFilterComponent";
 import Pagination from "react-js-pagination";
 /*import SocketIOService from "../../services/SocketIOService";*/
@@ -34,11 +34,12 @@ const ServiceFlowTaskList = () => {
   useEffect(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
+      setCurrentPage(1);
       dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
     }
   }, [dispatch, selectedFilter, reqData]);
 
- /* useEffect(()=>{
+/*  useEffect(()=>{
     SocketIOService.connect();
     return ()=>{
       SocketIOService.disconnect();
@@ -80,7 +81,7 @@ const ServiceFlowTaskList = () => {
                     "name"
                   )}
                 </div>
-                <div title="Task assignee" className="col-6 pr-0 text-right">
+                <div data-title="Task assignee" className="col-6 pr-0 text-right">
                   {task.assignee}
                 </div>
               </Row>
@@ -92,13 +93,12 @@ const ServiceFlowTaskList = () => {
                   md={8}
                   xl={8}
                   className="pr-0"
-                  title={task.created}
                 >
-                  {task.due ? `Due ${moment(task.due).fromNow()}, ` : ""}{" "}
-                  {task.followUp
+                 <span className="tooltiptext" data-title={task.due?getFormattedDateAndTime(task.due):''}> {task.due ? `Due ${moment(task.due).fromNow()}, ` : ""}{" "}</span>
+                 <span className="tooltiptext" data-title={task.followUp?getFormattedDateAndTime(task.followUp):''}> {task.followUp
                     ? `Follow-up ${moment(task.followUp).fromNow()}, `
-                    : ""}
-                  Created {moment(task.created).fromNow()}
+                    : ""} </span>
+                 <span className="tooltiptext" data-title={task.created?getFormattedDateAndTime(task.created):''}>  Created {moment(task.created).fromNow()}</span>
                 </Col>
                 <Col
                   lg={4}
@@ -106,8 +106,8 @@ const ServiceFlowTaskList = () => {
                   sm={4}
                   md={4}
                   xl={4}
-                  className="pr-0 text-right"
-                  title="priority"
+                  className="pr-0 text-right tooltips"
+                  dat-title="priority"
                 >
                   {task.priority}
                 </Col>

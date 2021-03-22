@@ -2,7 +2,8 @@ import React, {useState} from "react";
 import { Row, Col } from "react-bootstrap";
 import {
   getISODateTime,
-  getProcessDataFromList
+  getProcessDataFromList,
+  getFormattedDateAndTime
 } from "../../../apiManager/services/formatterService";
 import {useDispatch, useSelector} from "react-redux";
 import DatePicker from "react-datepicker";
@@ -21,6 +22,7 @@ import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
 import UserSelection from "./UserSelection";
 
 const TaskHeader = ({ task }) => {
+  const taskId = useSelector((state) => state.bpmTasks.taskId);
   const processList = useSelector((state) => state.bpmTasks.processList);
   const username = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const taskGroups = useSelector(state=>state.bpmTasks.taskGroups);
@@ -36,10 +38,10 @@ const TaskHeader = ({ task }) => {
 
   const onClaim = () => {
     dispatch(setBPMTaskDetailUpdating(true));
-    dispatch(claimBPMTask(task?.id,username,(err,response)=>{
+    dispatch(claimBPMTask(taskId,username,(err,response)=>{
       if(!err){
         if(selectedFilter){
-          dispatch(getBPMTaskDetail(task.id));
+          dispatch(getBPMTaskDetail(taskId));
           dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
         }else{
           dispatch(setBPMTaskDetailUpdating(false));
@@ -53,10 +55,10 @@ const TaskHeader = ({ task }) => {
     setIsEditAssignee(false);
    if(userId && userId!==username){
      dispatch(setBPMTaskDetailUpdating(true));
-     dispatch(updateAssigneeBPMTask(task?.id,userId,(err,response)=>{
+     dispatch(updateAssigneeBPMTask(taskId,userId,(err,response)=>{
        if(!err){
          if(selectedFilter){
-           dispatch(getBPMTaskDetail(task.id));
+           dispatch(getBPMTaskDetail(taskId));
            dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
          }
        }else{
@@ -68,10 +70,10 @@ const TaskHeader = ({ task }) => {
 
   const onUnClaimTask = () =>{
     dispatch(setBPMTaskDetailUpdating(true));
-    dispatch(unClaimBPMTask(task?.id,(err,response)=>{
+    dispatch(unClaimBPMTask(taskId,(err,response)=>{
       if(!err){
         if(selectedFilter){
-          dispatch(getBPMTaskDetail(task?.id));
+          dispatch(getBPMTaskDetail(taskId));
           dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
         }
       }else{
@@ -84,9 +86,9 @@ const TaskHeader = ({ task }) => {
     setFollowUpDate(followUpDate);
     dispatch(setBPMTaskDetailUpdating(true));
     const updatedTask = {...task, ...{followUp:getISODateTime(followUpDate)}};
-    dispatch(updateBPMTask(task?.id,updatedTask,(err,response)=>{
+    dispatch(updateBPMTask(taskId,updatedTask,(err,response)=>{
       if(!err){
-        dispatch(getBPMTaskDetail(task.id));
+        dispatch(getBPMTaskDetail(taskId));
         dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
@@ -98,9 +100,9 @@ const TaskHeader = ({ task }) => {
     setDueDate(dueDate);
     dispatch(setBPMTaskDetailUpdating(true));
     const updatedTask = {...task, ...{due:getISODateTime(dueDate)}};
-    dispatch(updateBPMTask(task.id,updatedTask,(err,response)=>{
+    dispatch(updateBPMTask(taskId,updatedTask,(err,response)=>{
       if(!err){
-        dispatch(getBPMTaskDetail(task.id));
+        dispatch(getBPMTaskDetail(taskId));
         dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
@@ -141,7 +143,7 @@ const TaskHeader = ({ task }) => {
         Application ID# {task?.applicationId}
       </Row>
       <Row className="actionable">
-        <Col className='date-container'>
+        <Col data-title={getFormattedDateAndTime(followUpDate)} className='date-container'>
           <DatePicker
             selected={followUpDate}
             onChange={onFollowUpDateUpdate}
@@ -162,7 +164,7 @@ const TaskHeader = ({ task }) => {
             customInput={<FollowUpDateInput/>}
           />
         </Col>
-        <Col className='date-container'>
+        <Col data-title={getFormattedDateAndTime(dueDate)} className='date-container'>
           <DatePicker
             selected={dueDate}
             onChange={onDueDateUpdate}

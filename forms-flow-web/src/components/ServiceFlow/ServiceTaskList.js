@@ -8,7 +8,7 @@ import {
 } from "../../actions/bpmTaskActions";
 import Loading from "../../containers/Loading";
 import moment from "moment";
-import { getProcessDataFromList } from "../../apiManager/services/formatterService";
+import { getProcessDataFromList,getFormattedDateAndTime } from "../../apiManager/services/formatterService";
 import TaskFilterComponent from "./filter/TaskFilterComponent";
 import Pagination from "react-js-pagination";
 /*import SocketIOService from "../../services/SocketIOService";*/
@@ -93,13 +93,12 @@ const ServiceFlowTaskList = () => {
                   md={8}
                   xl={8}
                   className="pr-0"
-                  title={task.created}
                 >
-                  {task.due ? `Due ${moment(task.due).fromNow()}, ` : ""}{" "}
-                  {task.followUp
+                 <span className="tooltiptext" data-title={task.due?getFormattedDateAndTime(task.due):''}> {task.due ? `Due ${moment(task.due).fromNow()}, ` : ""}{" "}</span>
+                 <span className="tooltiptext" data-title={task.followUp?getFormattedDateAndTime(task.followUp):''}> {task.followUp
                     ? `Follow-up ${moment(task.followUp).fromNow()}, `
-                    : ""}
-                  Created {moment(task.created).fromNow()}
+                    : ""} </span>
+                 <span className="tooltiptext" data-title={task.created?getFormattedDateAndTime(task.created):''}>  Created {moment(task.created).fromNow()}</span>
                 </Col>
                 <Col
                   lg={4}

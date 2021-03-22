@@ -82,3 +82,8 @@ export const getISODateTime=(date)=>{
   //return new Date(date).toISOString();
 };
 
+export const getFormattedDateAndTime = (date)=>{
+
+  return new Date(date).toLocaleDateString('en-us',  {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',hour: '2-digit', minute: '2-digit', hour12: true});
+
+};

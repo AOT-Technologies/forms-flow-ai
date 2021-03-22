@@ -2,7 +2,8 @@ import React, {useState} from "react";
 import { Row, Col } from "react-bootstrap";
 import {
   getISODateTime,
-  getProcessDataFromList
+  getProcessDataFromList,
+  getFormattedDateAndTime
 } from "../../../apiManager/services/formatterService";
 import {useDispatch, useSelector} from "react-redux";
 import DatePicker from "react-datepicker";
@@ -142,7 +143,7 @@ const TaskHeader = ({ task }) => {
         Application ID# {task?.applicationId}
       </Row>
       <Row className="actionable">
-        <Col className='date-container'>
+        <Col data-title={getFormattedDateAndTime(followUpDate)} className='date-container'>
           <DatePicker
             selected={followUpDate}
             onChange={onFollowUpDateUpdate}
@@ -163,7 +164,7 @@ const TaskHeader = ({ task }) => {
             customInput={<FollowUpDateInput/>}
           />
         </Col>
-        <Col className='date-container'>
+        <Col data-title={getFormattedDateAndTime(dueDate)} className='date-container'>
           <DatePicker
             selected={dueDate}
             onChange={onDueDateUpdate}

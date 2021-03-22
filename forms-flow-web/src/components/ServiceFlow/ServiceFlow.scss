@@ -210,11 +210,34 @@ span[data-title]:hover:after {
   top: 100%;
   white-space: nowrap;
   z-index: 1;
-  //-moz-border-radius: 5px;
+  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
   border-radius: 5px;
-  //-moz-box-shadow: 0px 0px 4px #222;
-  //-webkit-box-shadow: 0px 0px 4px #222;
+  -moz-box-shadow: 0px 0px 4px #222;
+  -webkit-box-shadow: 0px 0px 4px #222;
+  box-shadow: 0px 0px 4px #222;
+  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
+  background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
+}
+.date-container:hover:after {
+  content: attr(data-title);
+  padding: 4px 8px;
+  color: rgb(255, 255, 255);
+  position: absolute;
+  background-color: black;
+  left: 1rem;
+  top: 100%;
+  white-space: nowrap;
+  z-index: 1;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -moz-box-shadow: 0px 0px 4px #222;
+  -webkit-box-shadow: 0px 0px 4px #222;
   box-shadow: 0px 0px 4px #222;
   background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));

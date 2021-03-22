@@ -107,10 +107,7 @@
 .task-row-3 {
   font-size: 11px;
 }
-.row {
-  // margin-left: 0 !important;
-  // margin-right: 0 !important;
-}
+
 .actionable {
   color: #1a5a96;
   // text-decoration: underline;
@@ -199,14 +196,16 @@ span:hover {
   color: rgb(1, 111, 255);
   position: relative;
 }
-
-span[data-title]:hover:after {
+.tooltips{
+  color: black;
+}
+.date-container:hover:after,div[data-title]:hover:after,span[data-title]:hover:after {
   content: attr(data-title);
   padding: 4px 8px;
   color: rgb(255, 255, 255);
   position: absolute;
   background-color: black;
-  left: 0;
+  left: 1rem;
   top: 100%;
   white-space: nowrap;
   z-index: 1;
@@ -223,13 +222,36 @@ span[data-title]:hover:after {
   background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
 }
-.date-container:hover:after {
-  content: attr(data-title);
+span[dat-title]:hover:after {
+  content: attr(dat-title);
   padding: 4px 8px;
   color: rgb(255, 255, 255);
   position: absolute;
-  background-color: black;
-  left: 1rem;
+  background-color: rgb(0, 0, 0);
+  right: 0rem;
+  top: 100%;
+  white-space: nowrap;
+  z-index: 1;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -moz-box-shadow: 0px 0px 4px #222;
+  -webkit-box-shadow: 0px 0px 4px #222;
+  box-shadow: 0px 0px 4px #222;
+  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
+  background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
+}
+.tooltips[dat-title]:hover:after {
+  content: attr(dat-title);
+  padding: 4px 8px;
+  color: rgb(255, 255, 255);
+  position: absolute;
+  background-color: rgb(0, 0, 0);
+  right: 0rem;
   top: 100%;
   white-space: nowrap;
   z-index: 1;

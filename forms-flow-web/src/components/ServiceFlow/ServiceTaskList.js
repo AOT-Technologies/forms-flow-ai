@@ -81,7 +81,7 @@ const ServiceFlowTaskList = () => {
                     "name"
                   )}
                 </div>
-                <div title="Task assignee" className="col-6 pr-0 text-right">
+                <div data-title="Task assignee" className="col-6 pr-0 text-right">
                   {task.assignee}
                 </div>
               </Row>
@@ -106,8 +106,8 @@ const ServiceFlowTaskList = () => {
                   sm={4}
                   md={4}
                   xl={4}
-                  className="pr-0 text-right"
-                  title="priority"
+                  className="pr-0 text-right tooltips"
+                  dat-title="priority"
                 >
                   {task.priority}
                 </Col>

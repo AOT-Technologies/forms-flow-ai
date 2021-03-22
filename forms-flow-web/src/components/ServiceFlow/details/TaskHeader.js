@@ -41,6 +41,8 @@ const TaskHeader = ({ task }) => {
         if(selectedFilter){
           dispatch(getBPMTaskDetail(task.id));
           dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+        }else{
+          dispatch(setBPMTaskDetailUpdating(false));
         }
       }else{
         dispatch(setBPMTaskDetailUpdating(false));

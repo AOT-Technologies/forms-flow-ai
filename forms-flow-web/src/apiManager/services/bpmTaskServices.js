@@ -158,6 +158,7 @@ export const getBPMTaskDetail = (taskId, ...rest) => {
       .catch((error) => {
          dispatch(serviceActionError(error));
          dispatch(setBPMTaskDetailLoader(false));
+        dispatch(setBPMTaskDetailUpdating(false));
         done(error);
       });
   };
@@ -276,6 +277,7 @@ export const claimBPMTask = (taskId, user, ...rest) => {
       .catch((error) => {
         console.log("Error", error);
         dispatch(serviceActionError(error));
+        dispatch(setBPMTaskDetailUpdating(false));
         done(error);
       });
   };
@@ -299,6 +301,7 @@ export const updateAssigneeBPMTask = (taskId, user, ...rest) => {
       .catch((error) => {
         console.log("Error", error);
         dispatch(serviceActionError(error));
+        dispatch(setBPMTaskDetailUpdating(false));
         done(error);
       });
   };

@@ -34,5 +34,6 @@ window["_env_"] = {
   //web Api End point
   REACT_APP_WEB_BASE_URL: "Web Api base end-point",
   //bpm base api
-  REACT_APP_CAMUNDA_API_URI:"Camunda base API"
+  REACT_APP_CAMUNDA_API_URI:"Camunda base API",
+  REACT_APP_WEBSOCKET_ENCRYPT_KEY:"Web Socket encrypt key for Socket IO"
 };

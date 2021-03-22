@@ -46,7 +46,7 @@ const TaskFilterComponent = (props) => {
             onFocus={() => setShowFilterItems(false)}
             onBlur={() => setShowFilterItems(false)}
           />
-          <span title="Total number of results">{totalTasks}</span>
+          <span dat-title="Total number of results">{totalTasks}</span>
         </div>
         {showFilterItems ? (
           <TaskFilterDropdown onFilterSelect={setFilter} />

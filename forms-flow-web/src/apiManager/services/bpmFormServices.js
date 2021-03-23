@@ -5,7 +5,7 @@ import {
   serviceActionError,
 } from "../../actions/bpmTaskActions";
 
-import {setBPMFormList} from "../../actions/formActions";
+import {setBPMFormList, setBPMFormListLoading} from "../../actions/formActions";
 
 export const fetchBPMFormList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -14,9 +14,11 @@ export const fetchBPMFormList = (...rest) => {
       .then((res) => {
         if (res.data) {
           dispatch(setBPMFormList(res.data));
+          dispatch(setBPMFormListLoading(false));
           //dispatch(setBPMLoader(false));
           done(null, res.data);
         } else {
+          dispatch(setBPMFormListLoading(false));
           console.log("Error", res);
           dispatch(serviceActionError(res));
           //dispatch(setBPMTaskLoader(false));
@@ -24,6 +26,7 @@ export const fetchBPMFormList = (...rest) => {
       })
       .catch((error) => {
         console.log("Error", error);
+        dispatch(setBPMFormListLoading(false));
         dispatch(serviceActionError(error));
         //dispatch(setBPMTaskLoader(false));
         done(error);

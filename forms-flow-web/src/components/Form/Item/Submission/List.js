@@ -20,11 +20,11 @@ import {setApplicationListLoader} from "../../../../actions/applicationActions";
 
 
 const getOperations = (userRoles) => {
-  let operations = []
-  if (userRoles.includes(CLIENT)) {
-    operations.push(OPERATIONS.view)
-  } else if (userRoles.includes(STAFF_REVIEWER)) {
+  let operations = [];
+  if (userRoles.includes(STAFF_REVIEWER)) {
     operations.push(OPERATIONS.view, OPERATIONS.deleteSubmission)
+  }else if (userRoles.includes(CLIENT)) {
+    operations.push(OPERATIONS.view)
   }
   return operations;
 }

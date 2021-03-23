@@ -53,7 +53,7 @@ const TaskHeader = ({ task }) => {
   }
   const onChangeClaim = (userId) => {
     setIsEditAssignee(false);
-   if(userId && userId!==username){
+   if(userId && userId!==task.assignee){
      dispatch(setBPMTaskDetailUpdating(true));
      dispatch(updateAssigneeBPMTask(taskId,userId,(err,response)=>{
        if(!err){

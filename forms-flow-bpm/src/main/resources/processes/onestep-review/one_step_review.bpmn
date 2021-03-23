@@ -11,6 +11,14 @@
     </bpmn:startEvent>
     <bpmn:userTask id="reviewer" name="Review Submission" camunda:candidateGroups="formsflow/formsflow-reviewer">
       <bpmn:extensionElements>
+        <camunda:taskListener event="create">
+          <camunda:script scriptFormat="javascript">task.execution.setVariable('task_id', task.getId());</camunda:script>
+        </camunda:taskListener>
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.task.FormConnectorListener" event="create">
+          <camunda:field name="fields">
+            <camunda:expression>["pid","applicationId","task_id"]</camunda:expression>
+          </camunda:field>
+        </camunda:taskListener>
         <camunda:formData>
           <camunda:formField id="action" label="Action" type="string" />
         </camunda:formData>
@@ -26,6 +34,9 @@
           <camunda:script scriptFormat="groovy">task.execution.setVariable('applicationStatus', "Request Processed");
 task.execution.setVariable('deleteReason', "completed");</camunda:script>
         </camunda:taskListener>
+        <camunda:properties>
+          <camunda:property name="formName" value="feedbackReview" />
+        </camunda:properties>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0ociprs</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0jg4sg3</bpmn:outgoing>

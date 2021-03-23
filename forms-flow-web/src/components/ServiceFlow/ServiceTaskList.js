@@ -50,7 +50,6 @@ const ServiceFlowTaskList = () => {
   },[selectedFilter?.id,reqData,bpmTaskId, dispatch]);
 
  useEffect(()=>{
-   alert("executing");
     SocketIOService.connect(reloadOnSocketCallback);
     return ()=>{
       SocketIOService.disconnect();

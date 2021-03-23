@@ -111,8 +111,8 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
   `CAMUNDA_AUTHORIZATION_FLAG`|Engine Configuration Properties||`auto`
   
  Reference: 
- https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/job-executor/#job-executor-configuration-properties
- https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/process-engine/
+ * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/job-executor/#job-executor-configuration-properties
+ * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/process-engine/
  
 #### Camunda formsflow.ai Integration Settings  
  

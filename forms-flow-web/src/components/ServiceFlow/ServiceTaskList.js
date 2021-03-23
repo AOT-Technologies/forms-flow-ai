@@ -54,7 +54,7 @@ const ServiceFlowTaskList = () => {
     return ()=>{
       SocketIOService.disconnect();
     }
-  },[reloadOnSocketCallback]);
+  },[]);
 
 
 

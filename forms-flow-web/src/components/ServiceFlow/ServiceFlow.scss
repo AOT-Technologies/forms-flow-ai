@@ -200,6 +200,7 @@ span:hover {
   color: black;
 }
 .date-container:hover:after,div[data-title]:hover:after,span[data-title]:hover:after {
+  font-size: 12px;
   content: attr(data-title);
   padding: 4px 8px;
   color: rgb(255, 255, 255);
@@ -222,7 +223,32 @@ span:hover {
   background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
 }
-span[dat-title]:hover:after {
+.change-tooltip:hover:after {
+  font-size: 12px;
+  content: attr(data-title);
+  padding: 4px 8px;
+  color: rgb(255, 255, 255);
+  position: absolute;
+  background-color: black;
+  top: 100%;
+  //margin-left: 7rem;
+  white-space: nowrap;
+  z-index: 1;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  -moz-box-shadow: 0px 0px 4px #222;
+  -webkit-box-shadow: 0px 0px 4px #222;
+  box-shadow: 0px 0px 4px #222;
+  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0, #eeeeee),color-stop(1, #cccccc));
+  background-image: -webkit-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
+  background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
+}
+span[dat-title]:hover:after,.ml-1[dat-title]:hover:after,.tooltips[dat-title]:hover:after,.task-name[dat-title]:hover:after {
+  font-size: 12px;
   content: attr(dat-title);
   padding: 4px 8px;
   color: rgb(255, 255, 255);
@@ -245,13 +271,14 @@ span[dat-title]:hover:after {
   background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
 }
-.tooltips[dat-title]:hover:after {
+.change-tooltip[dat-title]:hover:after,.center-position:hover:after {
+  font-size: 12px;
   content: attr(dat-title);
   padding: 4px 8px;
   color: rgb(255, 255, 255);
   position: absolute;
   background-color: rgb(0, 0, 0);
-  right: 0rem;
+  right: 3rem;
   top: 100%;
   white-space: nowrap;
   z-index: 1;

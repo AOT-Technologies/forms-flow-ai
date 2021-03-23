@@ -24,7 +24,7 @@ const View = (props) => {
   }
 
   return (
-    <div className="container row">
+    <div className="container row task-container">
       <div className="main-header">
         <h3 className="task-head"> {form.title}</h3>
         {showPrintButton?<div className="btn-right">

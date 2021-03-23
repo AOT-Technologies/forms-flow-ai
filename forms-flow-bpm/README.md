@@ -35,22 +35,112 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. Details below,
    
+#### Keycloak Integration
+
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `KEYCLOAK_URL`| URL to your Keycloak server |eg. https://iam.aot-technologies.com | must be set to your Keycloak serve
  `KEYCLOAK_URL_REALM`|	The Keyvcloak realm to use|eg. forms-flow-ai | must be set to your Keycloak realm
  `KEYCLOAK_BPM_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | must be set to your Keycloak client id
  `KEYCLOAK_BPM_CLIENTSECRET`|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret
- `CAMUNDA_JDBC_URL`|Postgres JDBC DB Connection URL|Used on installation to create the database.Choose your own|`jdbc:postgresql://forms-flow-bpm-db:5432/postgres`
+
+#### Database Connection Details(The solution manages 3 connections)
+ 
+##### CAMUNDA_JDBC : Dedicated camunda database (Prefixed with CAMUNDA_).
+
+   Variable name | Meaning | Possible values | Default value |
+ --- | --- | --- | ---
+ `CAMUNDA_JDBC_URL`|Postgres JDBC DB Connection URL|Used on installation to create the database.Choose your own|`jdbc:postgresql://forms-flow-bpm-db:5432/formsflow-bpm`
  `CAMUNDA_JDBC_DRIVER`|Postgres JDBC Database Driver||`org.postgresql.Driver`
  `CAMUNDA_POSTGRES_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
  `CAMUNDA_POSTGRES_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
- `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`camunda`
- `WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://localhost:5000`
+ `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`formsflow-bpm`
+ `CAMUNDA_HIKARI_CONN_TIMEOUT`|Hikari Connection optimization setting||`30000`
+ `CAMUNDA_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
+ `CAMUNDA_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
+ `CAMUNDA_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
+
+##### CAMUNDA_SESSION_JDBC : Session Management (High Availability) (Prefixed with CAMUNDA_SESSION_).
+
+   Variable name | Meaning | Possible values | Default value |
+ --- | --- | --- | ---
+ `CAMUNDA_SESSION_JDBC_URL`|Postgres JDBC DB Connection URL|Used on installation to create the database.Choose your own|`jdbc:postgresql://forms-flow-bpm-db:5432/formsflow-bpm-session`
+ `CAMUNDA_SESSION_JDBC_DRIVER`|Postgres JDBC Database Driver||`org.postgresql.Driver`
+ `CAMUNDA_SESSION_JDBC_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
+ `CAMUNDA_SESSION_JDBC_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
+ `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`formsflow-bpm-session`
+ `CAMUNDA_SESSION_HIKARI_CONN_TIMEOUT`|Hikari Connection optimization setting||`30000`
+ `CAMUNDA_SESSION_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
+ `CAMUNDA_SESSION_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
+ `CAMUNDA_SESSION_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
+
+##### CAMUNDA_ANALYTICS_JDBC : Application's Audit Management (Only Cam variables) (Prefixed with CAMUNDA_ANALYTICS_).
+
+   Variable name | Meaning | Possible values | Default value |
+ --- | --- | --- | ---
+ `CAMUNDA_ANALYTICS_JDBC_URL`|Postgres JDBC DB Connection URL|Used on installation to create the database.Choose your own|`jdbc:postgresql://forms-flow-bpm-db:5432/formsflow-bpm-analytics`
+ `CAMUNDA_ANALYTICS_JDBC_DRIVER`|Postgres JDBC Database Driver||`org.postgresql.Driver`
+ `CAMUNDA_ANALYTICS_JDBC_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
+ `CAMUNDA_ANALYTICS_JDBC_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
+ `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`formsflow-bpm-analytics`
+ `CAMUNDA_ANALYTICS_HIKARI_CONN_TIMEOUT`|Hikari Connection optimization setting||`30000`
+ `CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
+ `CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
+ `CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
+
+#### Session Management
+   Variable name | Meaning | Possible values | Default value |
+ --- | --- | --- | ---
+ `CAMUNDA_SESSION_STORE_TYPE`| Store type for holding the state | | `jdbc`
+ `CAMUNDA_SESSION_STORE_TIMEOUT`| Timeout Setting in seconds| | `30`
+
+#### Camunda System Tuning  
+ 
+   Variable name | Meaning | Possible values | Default value |
+ --- | --- | --- | ---
+  `CAMUNDA_JOB_CORE_POOL_SIZE`|Job-Executor Configuration Properties||`10`
+  `CAMUNDA_JOB_MAX_POOL_SIZE`|Job-Executor Configuration Properties||`20`
+  `CAMUNDA_JOB_QUEUE_SIZE`|Job-Executor Configuration Properties||`10`
+  `CAMUNDA_JOB_LOCK_TIME_MILLIS`|Job-Executor Configuration Properties||`300000`
+  `CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION`|Job-Executor Configuration Properties||`10`
+  `CAMUNDA_JOB_WAIT_TIME_MILLIS`|Job-Executor Configuration Properties||`5000`
+  `CAMUNDA_JOB_MAX_WAIT`|Job-Executor Configuration Properties||`60000`
+  `CAMUNDA_METRICS_FLAG`|Job-Executor Configuration Properties||`false`
+  `CAMUNDA_BPM_HISTORY_LEVEL`|Engine Configuration Properties||`none`
+  `CAMUNDA_AUTHORIZATION_FLAG`|Engine Configuration Properties||`true`
+  `CAMUNDA_AUTHORIZATION_FLAG`|Engine Configuration Properties||`auto`
+  
+ Reference: 
+ * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/job-executor/#job-executor-configuration-properties
+ * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/process-engine/
+ 
+#### Camunda formsflow.ai Integration Settings  
+ 
+   Variable name | Meaning | Possible values | Default value |
+ --- | --- | --- | ---
+ `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://localhost:5000`
  `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://localhost:3001`
  `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
  `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
+ `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting|`http://localhost:3000`|
+ `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type |`TASK_EVENT` `TASK_EVENT_DETAILS`|`TASK_EVENT`
+ `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
+ 
+#### Camunda - Orbeon Integration Settings  
+ 
+   Variable name | Meaning | Possible values | Default value |
+ --- | --- | --- | ---
+ `CAMUNDA_FORMBUILDER_PIPELINE_USERNAME`|Basic Authentication Support. Username||`http://localhost:5000`
+ `CAMUNDA_FORMBUILDER_PIPELINE_PASSWORD`|Basic Authentication Support. Password||`http://localhost:5000`
+ `CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL`|Engine Context URL.Leverages elevated admin account.||`http://username:password@localhost:8000/camunda`
+ 
+#### Camunda - General Settings  
+ 
+   Variable name | Meaning | Possible values | Default value |
+ --- | --- | --- | ---
+ `APP_SECURITY_ORIGIN`|CORS setup||`*` 
+ `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
    
  **Additionally, you may want to change these**  
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)

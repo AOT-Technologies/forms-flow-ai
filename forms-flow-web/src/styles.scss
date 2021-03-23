@@ -48,6 +48,9 @@ $dark: $gray-800;
   padding-right: 0;
   height: 300px;
 }
+.task-container{
+  height: 100% !important;
+}
 .logo {
   height: 1.9em;
 }
@@ -466,4 +469,7 @@ div[disabled] {
   &::-webkit-scrollbar {
     display: none;
   }
+}
+.css-79elbk {
+ // position: none;
 }

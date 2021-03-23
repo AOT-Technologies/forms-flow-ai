@@ -35,13 +35,15 @@
 .click-element {
   cursor: pointer;
 }
-.click-element[dat-title]:hover:after {
+.click-element[dat-title]:hover:after,i[dat-title]:hover:after {
+  font-size: 12px;
+  font-weight: 300;
   content: attr(dat-title);
   padding: 4px 8px;
   color: rgb(255, 255, 255);
   position: absolute;
   background-color: black;
-  left: 10rem;
+  //left: 1rem;
   white-space: nowrap;
   z-index: 1;
   -moz-border-radius: 5px;

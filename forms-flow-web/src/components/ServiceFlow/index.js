@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useCallback, useEffect} from 'react'
 import ServiceFlowTaskList from "./ServiceTaskList";
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import {Col, Container, Row} from "react-bootstrap";
@@ -47,7 +47,7 @@ const ServiceFlow = () => {
   },[filterList,isFilterLoading,selectedFilter,dispatch]);
 
 
-  const reloadOnSocketCallback = (refreshedTaskId) => {
+  const reloadOnSocketCallback = useCallback((refreshedTaskId) => {
     if(selectedFilter?.id){
       dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Task
     }
@@ -55,7 +55,7 @@ const ServiceFlow = () => {
       dispatch(getBPMTaskDetail(bpmTaskId));
       dispatch(getBPMGroups(bpmTaskId))
     }
-  };
+  },[selectedFilter,bpmTaskId,reqData,dispatch]);
 
   return (
     <Container fluid id="main" className="pt-0">

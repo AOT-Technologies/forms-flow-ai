@@ -39,8 +39,6 @@ const ServiceFlowTaskList = ({reloadOnSocketCallback}) => {
     }
   }, [dispatch, selectedFilter, reqData]);
 
-
-
  useEffect(()=>{
     SocketIOService.connect(reloadOnSocketCallback);
     return ()=>{

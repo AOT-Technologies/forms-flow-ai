@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState} from "react";
 import { ListGroup, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchServiceTaskList } from "../../apiManager/services/bpmTaskServices";
+import {fetchServiceTaskList, getBPMGroups, getBPMTaskDetail} from "../../apiManager/services/bpmTaskServices";
 import {
   setBPMTaskLoader,
   setSelectedTaskID,
@@ -11,17 +11,17 @@ import moment from "moment";
 import { getProcessDataFromList,getFormattedDateAndTime } from "../../apiManager/services/formatterService";
 import TaskFilterComponent from "./filter/TaskFilterComponent";
 import Pagination from "react-js-pagination";
-/*import SocketIOService from "../../services/SocketIOService";*/
+import SocketIOService from "../../services/SocketIOService";
 
 const ServiceFlowTaskList = () => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
+  const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const isTaskListLoading = useSelector(
     (state) => state.bpmTasks.isTaskListLoading
   );
   const reqData = useSelector((state) => state.bpmTasks.filterListSortParams);
   const dispatch = useDispatch();
   const processList = useSelector((state) => state.bpmTasks.processList);
-  let selectedTask = useSelector((state) => state.bpmTasks.taskDetail);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
 
   const [activePage, setCurrentPage] = useState(1);
@@ -39,17 +39,29 @@ const ServiceFlowTaskList = () => {
     }
   }, [dispatch, selectedFilter, reqData]);
 
-/*  useEffect(()=>{
-    SocketIOService.connect();
+  const reloadOnSocketCallback = (refreshedTaskId) => {
+    if(selectedFilter?.id){
+      dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Task
+    }
+    if(bpmTaskId && refreshedTaskId===bpmTaskId) { //Refreshes task if its selected
+      dispatch(getBPMTaskDetail(bpmTaskId));
+      dispatch(getBPMGroups(bpmTaskId))
+    }
+  };
+
+ useEffect(()=>{
+    SocketIOService.connect(reloadOnSocketCallback);
     return ()=>{
       SocketIOService.disconnect();
     }
-  },[])*/
+  },[]);
 
 
 
-  const getTaskDetails = (bpmTaskId) => {
-    dispatch(setSelectedTaskID(bpmTaskId));
+  const getTaskDetails = (taskId) => {
+    if(taskId!==bpmTaskId){
+      dispatch(setSelectedTaskID(taskId));
+    }
   };
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
@@ -63,7 +75,7 @@ const ServiceFlowTaskList = () => {
           {currentTaskList.map((task, index) => (
             <div
               className={`clickable ${
-                task?.id === selectedTask?.id && "selected"
+                task?.id === bpmTaskId && "selected"
               }`}
               key={index}
               onClick={() => getTaskDetails(task.id)}

@@ -94,7 +94,7 @@ const TaskSortSelectedList = () => {
        </span>
        <span className="click-element">
          {sort.sortOrder==="asc"?<i className="fa fa-angle-up fa-lg font-weight-bold" title="Ascending" onClick={()=>updateSortOrder(index,"desc")}/>:
-           <i title="Descending" onClick={()=>updateSortOrder(index,"asc")} className="fa fa-angle-down fa-lg font-weight-bold"/>}
+           <i dat-title="Descending" onClick={()=>updateSortOrder(index,"asc")} className="fa fa-angle-down fa-lg font-weight-bold"/>}
        </span>
      </div>
    ))

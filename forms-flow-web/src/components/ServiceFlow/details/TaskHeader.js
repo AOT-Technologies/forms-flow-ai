@@ -136,11 +136,11 @@ const TaskHeader = ({ task }) => {
     <>
     <AddGroupModal modalOpen={showModal} onClose={()=>setModal(false)} groups={taskGroups}/>
       <Row className="ml-0 task-header">{task?.name}</Row>
-      <Row className="ml-0 task-name" title={"Process Name"}>
-        {getProcessDataFromList(processList, task?.processDefinitionId, "name")}
+      <Row className="ml-0 task-name" >
+      <span dat-title={"Process Name"}> {getProcessDataFromList(processList, task?.processDefinitionId, "name")}</span>
       </Row>
-      <Row className="ml-0" title="Application Id">
-        Application ID# {task?.applicationId}
+      <Row className="ml-0" >
+      <span data-title="Application Id"> Application ID# {task?.applicationId}</span>
       </Row>
       <Row className="actionable">
         <Col data-title={getFormattedDateAndTime(followUpDate)} className='date-container'>
@@ -186,7 +186,7 @@ const TaskHeader = ({ task }) => {
             customInput={<DueDateInput/>}
           />
         </Col>
-        <Col className="center-position" onClick={()=>setModal(true)} title={"groups"}>
+        <Col className="center-position" onClick={()=>setModal(true)} dat-title={"groups"}>
           <i className="fa fa-group mr-1"/>
           { taskGroups.length === 0? <span>Add groups</span>:<span>{getGroups(taskGroups)}</span>}
         </Col>
@@ -199,8 +199,8 @@ const TaskHeader = ({ task }) => {
             (<>
           <i className="fa fa-user mr-1" />
           {task?.assignee ? (<span>
-              <span onClick={()=>setIsEditAssignee(true)} title="Click to Change Assignee">{task.assignee}</span>
-              <i className="fa fa-times ml-1" onClick={onUnClaimTask} title="Reset Assignee"/></span>) :
+              <span class="change-tooltip" onClick={()=>setIsEditAssignee(true)} dat-title="Click to Change Assignee">{task.assignee}</span>
+              <i className="fa fa-times ml-1" onClick={onUnClaimTask} dat-title="Reset Assignee"/></span>) :
               <span onClick={onClaim}> Claim</span>
             }
             </>)

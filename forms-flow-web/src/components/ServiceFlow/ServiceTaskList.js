@@ -1,7 +1,7 @@
 import React, { useEffect, useState} from "react";
 import { ListGroup, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import {fetchServiceTaskList, getBPMGroups, getBPMTaskDetail} from "../../apiManager/services/bpmTaskServices";
+import {fetchServiceTaskList} from "../../apiManager/services/bpmTaskServices";
 import {
   setBPMTaskLoader,
   setSelectedTaskID,
@@ -13,7 +13,7 @@ import TaskFilterComponent from "./filter/TaskFilterComponent";
 import Pagination from "react-js-pagination";
 import SocketIOService from "../../services/SocketIOService";
 
-const ServiceFlowTaskList = () => {
+const ServiceFlowTaskList = ({reloadOnSocketCallback}) => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const isTaskListLoading = useSelector(
@@ -39,15 +39,7 @@ const ServiceFlowTaskList = () => {
     }
   }, [dispatch, selectedFilter, reqData]);
 
-  const reloadOnSocketCallback = (refreshedTaskId) => {
-    if(selectedFilter?.id){
-      dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Task
-    }
-    if(bpmTaskId && refreshedTaskId===bpmTaskId) { //Refreshes task if its selected
-      dispatch(getBPMTaskDetail(bpmTaskId));
-      dispatch(getBPMGroups(bpmTaskId))
-    }
-  };
+
 
  useEffect(()=>{
     SocketIOService.connect(reloadOnSocketCallback);

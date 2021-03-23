@@ -3,7 +3,12 @@ import ServiceFlowTaskList from "./ServiceTaskList";
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import {Col, Container, Row} from "react-bootstrap";
 import "./ServiceFlow.scss";
-import {fetchFilterList, fetchProcessDefinitionList, fetchUserList} from "../../apiManager/services/bpmTaskServices";
+import {
+  fetchFilterList,
+  fetchProcessDefinitionList,
+  fetchServiceTaskList,
+  fetchUserList, getBPMGroups, getBPMTaskDetail
+} from "../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
 import {setBPMFilterLoader, setSelectedBPMFilter} from "../../actions/bpmTaskActions";
 import {ALL_TASKS} from "./constants/taskConstants";
@@ -15,6 +20,9 @@ const ServiceFlow = () => {
   const isFilterLoading = useSelector(state=> state.bpmTasks.isFilterLoading);
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
   const taskList = useSelector(state => state.bpmTasks.tasksList);
+  const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
+  const reqData = useSelector((state) => state.bpmTasks.filterListSortParams);
+
 
   useEffect(()=>{
     dispatch(setBPMFilterLoader(true));
@@ -38,6 +46,17 @@ const ServiceFlow = () => {
     }
   },[filterList,isFilterLoading,selectedFilter,dispatch]);
 
+
+  const reloadOnSocketCallback = (refreshedTaskId) => {
+    if(selectedFilter?.id){
+      dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Task
+    }
+    if(bpmTaskId && refreshedTaskId===bpmTaskId) { //Refreshes task if its selected
+      dispatch(getBPMTaskDetail(bpmTaskId));
+      dispatch(getBPMGroups(bpmTaskId))
+    }
+  };
+
   return (
     <Container fluid id="main" className="pt-0">
       <Row>
@@ -46,7 +65,7 @@ const ServiceFlow = () => {
             <header className="task-section-top">
               <TaskSortSelectedList/>
             </header>
-              <ServiceFlowTaskList/>
+              <ServiceFlowTaskList reloadOnSocketCallback={reloadOnSocketCallback}/>
           </section>
         </Col>
         {taskList.length?<Col className="pl-0" lg={9} xs={12} sm={12} md={6} xl={9}>

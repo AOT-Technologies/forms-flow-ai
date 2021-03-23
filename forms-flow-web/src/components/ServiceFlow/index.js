@@ -46,7 +46,7 @@ const ServiceFlow = () => {
             <header className="task-section-top">
               <TaskSortSelectedList/>
             </header>
-            <ServiceFlowTaskList/>
+              <ServiceFlowTaskList/>
           </section>
         </Col>
         {taskList.length?<Col className="pl-0" lg={9} xs={12} sm={12} md={6} xl={9}>

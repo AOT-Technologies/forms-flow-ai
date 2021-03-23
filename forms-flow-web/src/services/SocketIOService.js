@@ -7,36 +7,20 @@ import AES from 'crypto-js/aes';
 
 let stompClient = null;
 
-const connect = ()=>{
+const connect = (reloadCallback)=>{
   const accessToken= AES.encrypt(UserService.getToken(),WEBSOCKET_ENCRYPT_KEY).toString();
-  console.log("CryptoJS.AES.encrypt",accessToken);
-  const socket = new SockJS(`${BPM_BASE_URL_SOCKET_IO}?accesstoken=${accessToken}`);
-  console.log("socket", socket);
-
-
+  const socketUrl=`${BPM_BASE_URL_SOCKET_IO}?accesstoken=${accessToken}`;
+  const socket = new SockJS(socketUrl);
   stompClient = Stomp.over(socket);
-  console.log("stompClient", stompClient);
-  stompClient.connect(function(frame){
-    console.log("frame hereeeeeeee");
-    stompClient.subscribe('/topic/task-event-details', function(output){
-      console.log("test task event",output,JSON.parse(output.body));
-    });
-    stompClient.subscribe('/topic/task-event', function(output){
-      alert("event");
-      console.log("test task event",output,JSON.parse(output.body));
-    });
-  })
   stompClient.connect({}, function(frame){
-    console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/task-event-details', function(output){
-      console.log("test task event",output,JSON.parse(output.body));
-    });
+    console.log('Connected- frame: ' + frame);
     stompClient.subscribe('/topic/task-event', function(output){
-      alert("event");
-      console.log("test task event",output,JSON.parse(output.body));
+      const taskUpdate = JSON.parse(output.body);
+      reloadCallback(taskUpdate.id);
     });
   });
 }
+
 
 const disconnect = ()=>{
   stompClient.disconnect();

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { ListGroup, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import {fetchServiceTaskList, getBPMGroups, getBPMTaskDetail} from "../../apiManager/services/bpmTaskServices";
@@ -39,7 +39,7 @@ const ServiceFlowTaskList = () => {
     }
   }, [dispatch, selectedFilter, reqData]);
 
-  const reloadOnSocketCallback = (refreshedTaskId) => {
+  const reloadOnSocketCallback = useCallback((refreshedTaskId) => {
     if(selectedFilter?.id){
       dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Task
     }
@@ -47,14 +47,15 @@ const ServiceFlowTaskList = () => {
       dispatch(getBPMTaskDetail(bpmTaskId));
       dispatch(getBPMGroups(bpmTaskId))
     }
-  }
+  },[selectedFilter?.id,reqData,bpmTaskId, dispatch]);
 
  useEffect(()=>{
+   alert("executing");
     SocketIOService.connect(reloadOnSocketCallback);
     return ()=>{
       SocketIOService.disconnect();
     }
-  },[]);
+  },[reloadOnSocketCallback]);
 
 
 

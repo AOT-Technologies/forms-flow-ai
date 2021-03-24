@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import ServiceFlowTaskList from "./ServiceTaskList";
+import ServiceFlowTaskList from "./list/ServiceTaskList";
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import {Col, Container, Row} from "react-bootstrap";
 import "./ServiceFlow.scss";

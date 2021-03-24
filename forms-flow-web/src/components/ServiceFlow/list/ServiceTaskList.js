@@ -1,18 +1,18 @@
 import React, { useEffect, useState} from "react";
 import { ListGroup, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import {fetchServiceTaskList} from "../../apiManager/services/bpmTaskServices";
+import {fetchServiceTaskList} from "../../../apiManager/services/bpmTaskServices";
 import {
   setBPMTaskLoader,
   setSelectedTaskID,
-} from "../../actions/bpmTaskActions";
-import Loading from "../../containers/Loading";
+} from "../../../actions/bpmTaskActions";
+import Loading from "../../../containers/Loading";
 import moment from "moment";
-import { getProcessDataFromList,getFormattedDateAndTime } from "../../apiManager/services/formatterService";
-import TaskFilterComponent from "./filter/TaskFilterComponent";
+import { getProcessDataFromList,getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
+import TaskFilterComponent from "../filter/TaskFilterComponent";
 import Pagination from "react-js-pagination";
 
-const ServiceFlowTaskList = ({reloadOnSocketCallback}) => {
+const ServiceFlowTaskList = () => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const isTaskListLoading = useSelector(

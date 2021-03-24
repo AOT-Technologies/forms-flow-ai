@@ -22,12 +22,12 @@ const TaskFilterComponent = (props) => {
               <span type="button" className="close-btn">
               <i className="fa fa-times" aria-hidden="true"/>
             </span>
-              Process Definition {{filter}}
+              {filter}
               <span> = </span>
               {/* <span>like</span>
             <span>in</span> */}
               <span>??</span>
-              {/* <span>
+            <span>
             <button className="btn">
               <i className="fa fa-check" aria-hidden="true"></i>
             </button>
@@ -35,7 +35,7 @@ const TaskFilterComponent = (props) => {
               <i className="fa fa-times" aria-hidden="true"></i>
             </button>
             <input type="text" />
-            </span> */}
+            </span>
             </div>
           ))}
           <input
@@ -43,8 +43,8 @@ const TaskFilterComponent = (props) => {
             className="filter"
             placeholder="Filter Tasks"
             onClick={() => {}}
-            onFocus={() => setShowFilterItems(false)}
-            onBlur={() => setShowFilterItems(false)}
+            onFocus={() => setShowFilterItems(true)}
+            /*onBlur={() => setShowFilterItems(false)}*/
           />
           <span dat-title="Total number of results">{totalTasks}</span>
         </div>

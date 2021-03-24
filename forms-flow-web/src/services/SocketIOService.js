@@ -14,11 +14,12 @@ const connect = (reloadCallback)=>{
   stompClient = Stomp.over(socket);
   stompClient.connect({}, function(frame){
     console.log('Connected- frame: ' + frame);
-    stompClient.subscribe('/topic/task-event', function(output){
-      const taskUpdate = JSON.parse(output.body);
-      reloadCallback(taskUpdate.id);
-    });
-    return stompClient;
+    if(isConnected()){
+      stompClient.subscribe('/topic/task-event', function(output){
+        const taskUpdate = JSON.parse(output.body);
+        reloadCallback(taskUpdate.id);
+      });
+    }
   });
 }
 

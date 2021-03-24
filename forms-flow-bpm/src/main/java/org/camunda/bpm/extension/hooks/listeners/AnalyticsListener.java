@@ -11,7 +11,6 @@ import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.bpm.engine.variable.value.FileValue;
 import org.camunda.bpm.engine.variable.value.StringValue;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
-import org.camunda.bpm.extension.hooks.services.IFileService;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.camunda.bpm.extension.hooks.services.analytics.IDataPipeline;
 import org.camunda.bpm.extension.hooks.services.analytics.SimpleDBDataPipeline;
@@ -38,7 +37,7 @@ import java.util.logging.Logger;
  * @author sumathi.thirumani@aot-technologies.com
  */
 @Named("analyticsDelegate")
-public class AnalyticsListener implements TaskListener, ExecutionListener, IMessageEvent, IFileService {
+public class AnalyticsListener implements TaskListener, ExecutionListener, IMessageEvent {
 
     @Autowired
     private FormSubmissionService formSubmissionService;
@@ -64,7 +63,6 @@ public class AnalyticsListener implements TaskListener, ExecutionListener, IMess
                 + ", variables=" + task.getVariables()
                 + " \n\n");
         syncVariablesFromDocumentServer(task.getExecution());
-        transformFiles(task);
         Map<String,Object> rspVariableMap = dbdatapipeline.execute(injectAdditionalProcessingFields(task.getExecution(),task.getExecution().getVariables()));
         notifyForAttention(task.getExecution(),rspVariableMap);
     }

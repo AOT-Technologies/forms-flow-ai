@@ -14,13 +14,18 @@ const connect = (reloadCallback)=>{
   stompClient = Stomp.over(socket);
   stompClient.connect({}, function(frame){
     console.log('Connected- frame: ' + frame);
-    stompClient.subscribe('/topic/task-event', function(output){
-      const taskUpdate = JSON.parse(output.body);
-      reloadCallback(taskUpdate.id);
-    });
+    if(isConnected()){
+      stompClient.subscribe('/topic/task-event', function(output){
+        const taskUpdate = JSON.parse(output.body);
+        reloadCallback(taskUpdate.id);
+      });
+    }
   });
 }
 
+const isConnected = ()=>{
+ return stompClient?.connected||null;
+};
 
 const disconnect = ()=>{
   stompClient.disconnect();
@@ -29,7 +34,8 @@ const disconnect = ()=>{
 
 const SocketIOService = {
   connect,
-  disconnect
+  disconnect,
+  isConnected
 };
 
 export default SocketIOService;

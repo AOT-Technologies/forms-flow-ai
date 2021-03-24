@@ -11,7 +11,6 @@ import moment from "moment";
 import { getProcessDataFromList,getFormattedDateAndTime } from "../../apiManager/services/formatterService";
 import TaskFilterComponent from "./filter/TaskFilterComponent";
 import Pagination from "react-js-pagination";
-import SocketIOService from "../../services/SocketIOService";
 
 const ServiceFlowTaskList = ({reloadOnSocketCallback}) => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
@@ -23,7 +22,6 @@ const ServiceFlowTaskList = ({reloadOnSocketCallback}) => {
   const dispatch = useDispatch();
   const processList = useSelector((state) => state.bpmTasks.processList);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
-
   const [activePage, setCurrentPage] = useState(1);
   const tasksPerPage = 15;
   // Logic for displaying current todos
@@ -38,15 +36,6 @@ const ServiceFlowTaskList = ({reloadOnSocketCallback}) => {
       dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
     }
   }, [dispatch, selectedFilter, reqData]);
-
-
-
- useEffect(()=>{
-    SocketIOService.connect(reloadOnSocketCallback);
-    return ()=>{
-      SocketIOService.disconnect();
-    }
-  },[]);
 
 
 

@@ -18,9 +18,13 @@ const connect = (reloadCallback)=>{
       const taskUpdate = JSON.parse(output.body);
       reloadCallback(taskUpdate.id);
     });
+    return stompClient;
   });
 }
 
+const isConnected = ()=>{
+ return stompClient?.connected||null;
+};
 
 const disconnect = ()=>{
   stompClient.disconnect();
@@ -29,7 +33,8 @@ const disconnect = ()=>{
 
 const SocketIOService = {
   connect,
-  disconnect
+  disconnect,
+  isConnected
 };
 
 export default SocketIOService;

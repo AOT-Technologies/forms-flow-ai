@@ -10,7 +10,7 @@ const TaskFilterDropdown = ({ onFilterSelect }) => {
           className="clickable p-0 mb-2"
           onClick={() => onFilterSelect(filter)}
         >
-          {filter}
+          {filter.label}
         </div>
       ))}
     </div>

@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import TaskFilterDropdown from "./TaskFilterDropdown";
 import TaskFilterSearch from "./TaskFilterSearch";
 import Checkbox from "@material-ui/core/Checkbox";
-import {QUERY_TYPES} from "../constants/taskConstants";
+import {Filter_Search_Types, QUERY_TYPES} from "../constants/taskConstants";
 
 const TaskFilterComponent = (props) => {
   const {totalTasks} = props;
@@ -12,7 +12,13 @@ const TaskFilterComponent = (props) => {
   const [queryType, setQueryType] = useState(QUERY_TYPES.ALL);
   const [variableNameIgnoreCase,setVariableNameIgnoreCase] = useState(false);
   const [variableValueIgnoreCase,setVariableValueIgnoreCase] = useState(false);
+  const [isVariableTypeInFilter, setIsVariableTypeInFilter] = useState(false);
 
+
+  useEffect(()=>{
+    const isVariablesFilterAvailable = filterSelections.some(filter=>filter.type===Filter_Search_Types.VARIABLES);
+    setIsVariableTypeInFilter(isVariablesFilterAvailable);
+  },[filterSelections]);
 
   const setFilter = (filter) => {
     const updatedArray = [...filterSelections, filter];
@@ -48,7 +54,7 @@ const TaskFilterComponent = (props) => {
         {showFilterItems ? (
           <TaskFilterDropdown onFilterSelect={setFilter}/>
         ) : null}
-        {filterSelections.length ? <div>
+        {filterSelections.length && isVariableTypeInFilter? <div>
           <span className="name-value-container">For Variables, ignore case of
             <Checkbox
               className="check-box-design"

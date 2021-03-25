@@ -1,58 +1,70 @@
 import React from "react";
+import {Filter_Search_Types} from "../constants/taskConstants";
 
-const TaskFilterSearch = ({filterSelections=[]}) => {
- const _handleKeyDown = (e)=> {
+const TaskFilterSearch = ({filterSelections = []}) => {
+
+
+  const _handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-    console.log('we need to hide the text box and show the content');
+      console.log('we need to hide the text box and show the content');
     }
   };
-  return  (
+  return (
     <>
-      {filterSelections.map((filter,index) => (
-         <div>
-      <div className="filter-details" key={index}>
-        <div className="close-container"> <span type="button" className="close-btn">
+      {filterSelections.map((filter, index) => (
+        <div>
+          <div className="filter-details" key={index}>
+            <div className="close-container">
+              <span className="close-btn click-element">
               <i className="fa fa-times" aria-hidden="true"/>
-            </span></div><div className="box-container">
-
-        {filter}
-
-{        <span>
+             </span>
+            </div>
+            <div className="box-container">
+              {filter.label}
+              <span>
             <span className="btn-container">
-            <button className="btn">
-              <i className="fa fa-check" aria-hidden="true"/>
-            </button>
-            <button className="btn">
-              <i className="fa fa-times" aria-hidden="true"/>
-            </button></span>
-            <input type="text" />
+              {filter.type===Filter_Search_Types.VARIABLES?<>
+                <button className="btn">
+                  <i className="fa fa-check" aria-hidden="true"/>
+                </button>
+                <button className="btn">
+                  <i className="fa fa-times" aria-hidden="true"/>
+                </button>
+                </>:null
+              }
+            </span>
+                {filter.type===Filter_Search_Types.VARIABLES?<input type="text"/>:""}
             <span className="condition-container">
             <span className="btn-container second-box">
-        <button className="btn">
+        {filter.type===Filter_Search_Types.VARIABLES?<button className="btn">
               <i className="fa fa-calendar" aria-hidden="true"/>
-            </button>
+            </button>:null}
             <button className="btn">
               <i className="fa fa-check" aria-hidden="true"/>
             </button>
             <button className="btn">
               <i className="fa fa-times" aria-hidden="true"/>
             </button></span>
-            <span> = </span>
-       {/* <span>like</span>
+            <span> {filter.option} </span>
+              {/* <span>like</span>
             <span>in</span>*/}
-        <span type="button">??</span><span><input
-            type="text"
-            className="filters"
-            placeholder="Filter Tasks"
-            onKeyDown={_handleKeyDown}
-            onClick={() => {}}
-            /*onBlur={() => setShowFilterItems(false)}*/
-          /></span></span>
-            </span>}
-      </div></div>
-      </div>
-    ))}
-      </>)
+              {filter.value?null:<span className="click-element">??</span>}
+              <span>
+                <input
+                  type="text"
+                  className="filters"
+                  placeholder=""
+                  onChange={_handleKeyDown}
+                  /*onBlur={() => setShowFilterItems(false)}*/
+                />
+              </span>
+             </span>
+             </span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </>)
 
 };
 

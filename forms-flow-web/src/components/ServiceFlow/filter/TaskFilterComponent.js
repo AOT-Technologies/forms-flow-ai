@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import TaskFilterDropdown from "./TaskFilterDropdown";
+import TaskFilterSearch from "./TaskFilterSearch";
 
 const TaskFilterComponent = (props) => {
   const { totalTasks } = props;
@@ -17,27 +18,7 @@ const TaskFilterComponent = (props) => {
     <>
       <div className="filter-container">
         <div>
-          {filterSelections.map((filter,index) => (
-            <div className="filter-details" key={index}>
-              <span type="button" className="close-btn">
-              <i className="fa fa-times" aria-hidden="true"/>
-            </span>
-              {filter}
-              <span> = </span>
-              {/* <span>like</span>
-            <span>in</span> */}
-              <span>??</span>
-            <span>
-            <button className="btn">
-              <i className="fa fa-check" aria-hidden="true"></i>
-            </button>
-            <button className="btn">
-              <i className="fa fa-times" aria-hidden="true"></i>
-            </button>
-            <input type="text" />
-            </span>
-            </div>
-          ))}
+        <TaskFilterSearch filterSelections={filterSelections}/>
           <input
             type="text"
             className="filter"

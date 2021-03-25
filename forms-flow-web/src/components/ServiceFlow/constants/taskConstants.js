@@ -10,9 +10,9 @@ export const sortingList = [
 
 //{sortBy: "processVariable", sortOrder: "asc/desc", parameProcess**ters: {variable: "varName", type: "String"}}
 
-export const variableTypes = ["Boolean","Double","Integer","String","Date","Long","Short"];
+//export const variableTypes = ["Boolean","Double","Integer","String","Date","Long","Short"];
 
-export const taskFilters= [
+/*export const taskFilters= [
   "Process Variable",
   "Task Variable",
   "Case Variable",
@@ -43,6 +43,19 @@ export const taskFilters= [
   "Delegation State",
   "Tenant ID",
   "Without Tenant ID"
-];
-
+];*/
+export const taskFilters = [
+  "Process Variables",
+  "Task Variables",
+  "Process Definition Name",
+  "Assignee",
+  "Candidate Group",
+  "Candidate User",
+  "Name",
+  "Description",
+  "Priority",
+  "Due Date",
+  "Follow up Date",
+  "Created",
+]
 export const ALL_TASKS="All tasks"

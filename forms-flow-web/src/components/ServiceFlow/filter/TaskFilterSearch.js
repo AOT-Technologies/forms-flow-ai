@@ -1,7 +1,11 @@
 import React from "react";
 
 const TaskFilterSearch = ({filterSelections=[]}) => {
-
+ const _handleKeyDown = (e)=> {
+    if (e.key === 'Enter') {
+    console.log('we need to hide the text box and show the content');
+    }
+  };
   return  (
     <>
       {filterSelections.map((filter,index) => (
@@ -40,6 +44,7 @@ const TaskFilterSearch = ({filterSelections=[]}) => {
             type="text"
             className="filters"
             placeholder="Filter Tasks"
+            onKeyDown={_handleKeyDown}
             onClick={() => {}}
             /*onBlur={() => setShowFilterItems(false)}*/
           /></span></span>

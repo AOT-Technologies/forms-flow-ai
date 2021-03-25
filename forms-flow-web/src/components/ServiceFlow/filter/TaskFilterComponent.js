@@ -21,10 +21,16 @@ const TaskFilterComponent = (props) => {
   },[filterSelections]);
 
   const setFilter = (filter) => {
-    const updatedArray = [...filterSelections, filter];
-    setFilterSelections(updatedArray);
+    const updatedSelectionsArray = [...filterSelections, {...filter}];
+    setFilterSelections(updatedSelectionsArray);
     setShowFilterItems(false);
   };
+
+  const deleteSearchFilter = (filter,index)=>{
+    let updatedSelectionsArray = [...filterSelections];
+    updatedSelectionsArray.splice(index,1);
+    setFilterSelections(updatedSelectionsArray)
+  }
 
   const changeQueryType= () => {
     queryType===QUERY_TYPES.ALL? setQueryType(QUERY_TYPES.ANY):setQueryType(QUERY_TYPES.ALL);
@@ -39,7 +45,7 @@ const TaskFilterComponent = (props) => {
               <span className="button click-element" onClick={changeQueryType}>{queryType}</span>
               <span> of the criteria are met.</span>
             </div> : null}
-          <TaskFilterSearch filterSelections={filterSelections}/>
+          <TaskFilterSearch filterSelections={filterSelections} deleteSearchFilter={deleteSearchFilter}/>
           <input
             type="text"
             className="filter"

@@ -1,7 +1,7 @@
 import React from "react";
 import {Filter_Search_Types} from "../constants/taskConstants";
 
-const TaskFilterSearch = ({filterSelections = []}) => {
+const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter}) => {
 
 
   const _handleKeyDown = (e) => {
@@ -14,8 +14,8 @@ const TaskFilterSearch = ({filterSelections = []}) => {
       {filterSelections.map((filter, index) => (
         <div>
           <div className="filter-details" key={index}>
-            <div className="close-container">
-              <span className="close-btn click-element">
+            <div className="close-container  click-element" onClick={()=>deleteSearchFilter(filter,index)}>
+              <span className="close-btn">
               <i className="fa fa-times" aria-hidden="true"/>
              </span>
             </div>

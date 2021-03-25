@@ -44,7 +44,7 @@ const TaskFilterComponent = (props) => {
             placeholder="Filter Tasks"
             onClick={() => {}}
             onFocus={() => setShowFilterItems(true)}
-            /*onBlur={() => setShowFilterItems(false)}*/
+            onBlur={() => setShowFilterItems(false)}
           />
           <span dat-title="Total number of results">{totalTasks}</span>
         </div>

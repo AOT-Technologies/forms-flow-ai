@@ -2,20 +2,26 @@ import React, {useState} from "react";
 import TaskFilterDropdown from "./TaskFilterDropdown";
 import TaskFilterSearch from "./TaskFilterSearch";
 import Checkbox from "@material-ui/core/Checkbox";
+import {QUERY_TYPES} from "../constants/taskConstants";
 
 const TaskFilterComponent = (props) => {
   const {totalTasks} = props;
 
   const [filterSelections, setFilterSelections] = useState([]);
   const [showFilterItems, setShowFilterItems] = useState(false);
+  const [queryType, setQueryType] = useState(QUERY_TYPES.ALL);
+  const [variableNameIgnoreCase,setVariableNameIgnoreCase] = useState(false);
+  const [variableValueIgnoreCase,setVariableValueIgnoreCase] = useState(false);
+
 
   const setFilter = (filter) => {
     const updatedArray = [...filterSelections, filter];
     setFilterSelections(updatedArray);
     setShowFilterItems(false);
   };
-  const handleNameChange = () => {
-    return true;
+
+  const changeQueryType= () => {
+    queryType===QUERY_TYPES.ALL? setQueryType(QUERY_TYPES.ANY):setQueryType(QUERY_TYPES.ALL);
   };
 
   return (
@@ -23,7 +29,10 @@ const TaskFilterComponent = (props) => {
       <div className="filter-container">
         <div>
           {filterSelections.length ?
-            <div><span className="button" type="button">ALL</span><span> of the criteria are met.</span></div> : null}
+            <div>
+              <span className="button click-element" onClick={changeQueryType}>{queryType}</span>
+              <span> of the criteria are met.</span>
+            </div> : null}
           <TaskFilterSearch filterSelections={filterSelections}/>
           <input
             type="text"
@@ -40,17 +49,21 @@ const TaskFilterComponent = (props) => {
           <TaskFilterDropdown onFilterSelect={setFilter}/>
         ) : null}
         {filterSelections.length ? <div>
-          <span className="name-value-container">For Variables, ignore case of<Checkbox
-            className="check-box-design"
-            checked={false}
-            onChange={handleNameChange()}
-            inputProps={{'aria-label': 'primary checkbox'}}
-          />  name<Checkbox
-            className="check-box-design"
-            checked={false}
-            onChange={handleNameChange()}
-            inputProps={{'aria-label': 'primary checkbox'}}
-          />  value.</span>
+          <span className="name-value-container">For Variables, ignore case of
+            <Checkbox
+              className="check-box-design"
+              checked={variableNameIgnoreCase}
+              onChange={()=>setVariableNameIgnoreCase(!variableNameIgnoreCase)}
+              inputProps={{'aria-label': 'primary checkbox'}}
+            />
+            name
+            <Checkbox
+              className="check-box-design"
+              checked={variableValueIgnoreCase}
+              onChange={()=>setVariableValueIgnoreCase(!variableValueIgnoreCase)}
+              inputProps={{'aria-label': 'primary checkbox'}}
+            />  value.
+          </span>
           {/*<span className="filter-action-container">  <i className="fa fa-link item-pos" aria-hidden="true"/><i
             className="fa fa-floppy-o item-pos" aria-hidden="true"/></span>*/}
         </div> : null}

@@ -59,3 +59,25 @@
   background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
 }
+.operator-container{
+
+}
+.operator-selector{
+  border:none;
+  -o-appearance: none;
+   -ms-appearance: none;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+   width: 50px;
+  padding: 0 0 0 3px;
+  background-color: #f2dede;
+  outline: none;
+
+}
+.operator-selector select {
+  display: none; /*hide original SELECT element:*/
+}
+.selection-item{
+  background-color: white;
+}

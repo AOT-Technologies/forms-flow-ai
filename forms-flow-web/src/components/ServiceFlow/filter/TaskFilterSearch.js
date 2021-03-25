@@ -1,18 +1,22 @@
-import React from "react";
+import React,{useState} from "react";
 import {Filter_Search_Types} from "../constants/taskConstants";
+import OperatorFilterDropDown from "./OperatorFilterDropdown";
 
 const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter}) => {
 
-
+  let [showtextBox]=useState(true);
   const _handleKeyDown = (e) => {
     if (e.key === 'Enter') {
+      console.log(showtextBox);
+      showtextBox = false;
+      console.log(showtextBox);
       console.log('we need to hide the text box and show the content');
     }
   };
   return (
     <>
       {filterSelections.map((filter, index) => (
-        <div>
+        <div key={index}>
           <div className="filter-details" key={index}>
             <div className="close-container  click-element" onClick={()=>deleteSearchFilter(filter,index)}>
               <span className="close-btn">
@@ -45,18 +49,19 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter}) => {
             <button className="btn">
               <i className="fa fa-times" aria-hidden="true"/>
             </button></span>
-            <span> {filter.option} </span>
+            <span>  <OperatorFilterDropDown/> </span>
               {/* <span>like</span>
             <span>in</span>*/}
               {filter.value?null:<span className="click-element">??</span>}
               <span>
-                <input
+              {showtextBox?<input
                   type="text"
                   className="filters"
-                  placeholder=""
-                  onChange={_handleKeyDown}
+                  placeholder="dd"
+                  onKeyDown={_handleKeyDown}
                   /*onBlur={() => setShowFilterItems(false)}*/
-                />
+                />:<span>dddd</span>}
+
               </span>
              </span>
              </span>

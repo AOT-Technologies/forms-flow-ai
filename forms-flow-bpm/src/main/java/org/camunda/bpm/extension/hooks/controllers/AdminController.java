@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.spin.Spin;
+import org.camunda.spin.SpinList;
+import org.camunda.spin.json.SpinJsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -18,8 +21,12 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,8 +63,9 @@ public class AdminController {
 
     @RequestMapping(value = "/engine-rest-ext/form", method = RequestMethod.GET, produces = "application/json")
     private @ResponseBody
-    List<AuthorizedAction> getForms(@AuthenticationPrincipal Jwt principal) {
-        List<String> groups = getGroups(principal);
+    List<AuthorizedAction> getForms() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> groups = getGroups(authentication);
         List<Authorization> authorizationList =  getAuthorization(groups);
         List<AuthorizedAction> formList = new ArrayList<>();
         List<AuthorizedAction> filteredList = new ArrayList<>();
@@ -80,18 +88,24 @@ public class AdminController {
 
                 }
                 if(CollectionUtils.isNotEmpty(groups) && groups.contains(adminGroupName)) {
-                    return formList;
-                }
-                for(Authorization authObj : authorizationList) {
                     for(AuthorizedAction formObj : formList) {
-                        if(authObj.getResourceId().equals(formObj.getProcessKey())) {
-                            if(isExists(filteredList, formObj.getFormId()) == false) {
-                                filteredList.add(formObj);
+                        if(isExists(filteredList, formObj.getFormId()) == false) {
+                            filteredList.add(formObj);
+                        }
+
+                    }
+                }
+                else {
+                    for (Authorization authObj : authorizationList) {
+                        for (AuthorizedAction formObj : formList) {
+                            if (authObj.getResourceId().equals(formObj.getProcessKey())) {
+                                if (isExists(filteredList, formObj.getFormId()) == false) {
+                                    filteredList.add(formObj);
+                                }
                             }
                         }
                     }
                 }
-
                 return filteredList;
             }
         } catch (JsonProcessingException e) {
@@ -109,19 +123,25 @@ public class AdminController {
         return false;
     }
 
-    private List<String> getGroups(Jwt principal) {
-        List<String> rawgroups = principal.getClaim("groups");
+    private List<String> getGroups(Authentication authentication) {
+        OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
+        String accessToken = details.getTokenValue();
+        String claims = JwtHelper.decode(accessToken).getClaims();
         List<String> groups = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(rawgroups)) {
-            for(String entry: rawgroups) {
-                String groupName = StringEscapeUtils.unescapeJava(entry);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            JsonNode dataNode = mapper.readTree(claims);
+            for (final JsonNode objNode : dataNode.get("groups")) {
+                System.out.println(objNode);
+                String groupName = StringEscapeUtils.unescapeJava(objNode.asText());
                 if(StringUtils.startsWith(groupName,"/")) {
                     groups.add(StringUtils.substring(groupName,1));
                 } else {
                     groups.add(groupName);
                 }
-
             }
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
         }
         return groups;
     }

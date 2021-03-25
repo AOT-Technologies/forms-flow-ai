@@ -60,6 +60,7 @@
   border: none;
   font-style: italic;
 }
+
 .filter:focus {
   outline: none;
 }
@@ -67,14 +68,20 @@
 .filter-items {
   width: 85%;
   margin: 5px;
-  border: 1px solid #555;
+  border: 1px solid rgb(185, 185, 185);
   border-radius: 5px;
   position: absolute;
   background-color: #fff;
   background-clip: padding-box;
   z-index: 5;
+    border-radius: 0px;
+    margin-top: 0px;
 }
-
+.filters{
+  margin-top: 3px;
+  border-color: #555;
+  //border: bold 1px solid;
+}
 .sort-items {
   border: 1px solid #949494;
   border-radius: 3%;
@@ -217,6 +224,11 @@
   .btn-container{
     float: right;
   }
+  .second-box{
+    display: block;
+    width: 44%;
+    float: right;
+  }
   .btn {
     background-color: white;
     font-size: 12px;
@@ -226,8 +238,10 @@
     border-radius: 0px;
   }
   input {
-    border: none;
+    //border: none;
     outline: none;
+    border: 1px solid;
+    //border-color: #555;
   }
   .close-container {
     position: absolute;

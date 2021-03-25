@@ -23,10 +23,26 @@ const TaskFilterSearch = ({filterSelections=[]}) => {
             </button></span>
             <input type="text" />
             <span className="condition-container">
+            <span className="btn-container second-box">
+        <button className="btn">
+              <i className="fa fa-calendar" aria-hidden="true"/>
+            </button>
+            <button className="btn">
+              <i className="fa fa-check" aria-hidden="true"/>
+            </button>
+            <button className="btn">
+              <i className="fa fa-times" aria-hidden="true"/>
+            </button></span>
             <span> = </span>
        {/* <span>like</span>
             <span>in</span>*/}
-        <span>??</span></span>
+        <span type="button">??</span><span><input
+            type="text"
+            className="filters"
+            placeholder="Filter Tasks"
+            onClick={() => {}}
+            /*onBlur={() => setShowFilterItems(false)}*/
+          /></span></span>
             </span>}
       </div></div>
       </div>

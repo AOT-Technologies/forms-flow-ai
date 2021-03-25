@@ -63,7 +63,6 @@ public class FormBuilderPipelineController {
             }
             LOGGER.info("Received XML Document-------->"+formXML);
             Map<String,Object> processVariables = prepareRequestVariableMap(formXML);
-            processVariables.put("entered_by", "orbeon");
             Boolean status = createProcessInstance(processVariables);
             if(status == false) {
                 //Email the form to support group for manual processing
@@ -153,6 +152,7 @@ public class FormBuilderPipelineController {
             variables.put("subprocess_entity_key", new VariableData("cciiissue"));
             variables.put("files_entity_key", new VariableData("cciifiles"));
             variables.put("submit_date_time", new VariableData(new DateTime().toString()));
+            variables.put("entered_by", new VariableData("orbeon"));
         }
         return variables;
     }

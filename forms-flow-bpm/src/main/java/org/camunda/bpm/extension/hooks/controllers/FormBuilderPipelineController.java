@@ -63,6 +63,7 @@ public class FormBuilderPipelineController {
             }
             LOGGER.info("Received XML Document-------->"+formXML);
             Map<String,Object> processVariables = prepareRequestVariableMap(formXML);
+
             Boolean status = createProcessInstance(processVariables);
             if(status == false) {
                 //Email the form to support group for manual processing

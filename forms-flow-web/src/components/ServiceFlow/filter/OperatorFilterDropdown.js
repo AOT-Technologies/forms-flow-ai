@@ -1,22 +1,20 @@
 import React from "react";
 
-const handleChange = () =>{
-console.log('hiii');
-};
 
-const OperatorFilterDropDown = () => {
+const OperatorFilterDropDown = ({compareOptions}) => {
+
+  const handleChange = (e) =>{
+    console.log('hiii', e);
+  };
   return (
     <div className="operator-container">
     <select className="operator-selector"
-      onChange={()=>handleChange()}
+      onChange={(e)=>handleChange(e)}
     >
-     <option className="selection-item" value="=">=</option>
-     <option className="selection-item" value="!=">!=</option>
-      <option className="selection-item" value=">">{'>'}</option>
-      <option className="selection-item" value=">=">{'>='}</option>
-      <option className="selection-item" value="<">{'<'}</option>
-      <option className="selection-item" value="=<">{'=<'}</option>
-      <option className="selection-item" value="like">like</option>
+      {compareOptions.map(compareOption=>(
+        <option className="selection-item" value={compareOption}>{compareOption}</option>
+      ))
+      }
     </select>
     </div>
   );

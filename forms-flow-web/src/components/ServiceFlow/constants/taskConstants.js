@@ -7,31 +7,49 @@ export const sortingList = [
   {sortBy:"followUpDate",label:"Follow-up date", sortOrder:"asc"},
 ];
 
-//TODO update to further constants
-export const filterOptions = {
-  variables:["=", "like"],
-  date:["before", "after"],
-  string:["=","like"]
-};
+export const searchData = [
+  {"label": "Task Variables", "compares": [">", ">=", "=","!=", "<", "<="]},
+  {"label": "Process Variables", "compares": [">", ">=", "=","!=", "<", "<="]},
+  {"label": "Process Definition Name", "compares": ["like", "="], "values": ["processDefinitionNameLike", "processDefinitionName"]},
+  {"label": "Assignee", "compares": ["like", "="], "values": ["assigneeLike", "assignee"]},
+  {"label":"Candidate Group", "compares": ["="], "values": ["candidateGroup"]},
+  {"label":"Candidate User", "compares": ["="], "values": ["candidateUser"]},
+  {"label":"Name", "compares": ["like", "="], "values": ["nameLike", "name"]},
+  {"label": "Description","compares": ["like", "="], "values": ["descriptionLike", "description"] },
+  {"label":"Priority", "compares": ["="], "values": ["priority"]},
+  {"label":"Due Date", "compares": ["before", "after"], "values": ["due"]},
+  {"label":"Follow up Date", "compares": ["before", "after"], "values": ["followUp"]},
+  {"label":"Created", "compares": ["before", "after"], "values": ["created"]},
+]
+
 export const Filter_Search_Types = {
   VARIABLES:"variables",
   STRING:"string",
-  DATE:"date"
+  DATE:"date",
+  NORMAL:"normal"
 }
+//TODO update to further constants
+export const FILTER_COMPARE_OPTIONS = {
+  [Filter_Search_Types.VARIABLES]:[">", ">=", "=","!=", "<", "<="],
+  [Filter_Search_Types.DATE]:["before", "after"],
+  [Filter_Search_Types.STRING]:["=","like"],
+  [Filter_Search_Types.NORMAL]:["="]
+};
+
 
 export const taskFilters = [
-  {label:"Process Variables",key:"", option:"in", type:Filter_Search_Types.VARIABLES, value:"", name:""},
-  {label:"Task Variables", key:"",option:"in", type:Filter_Search_Types.VARIABLES, value:"", name:""},
-  {label:"Process Definition Name",key:"", option:"like",type:Filter_Search_Types.STRING, value:"" },
-  {label:"Assignee",key:"",option:"like", type:Filter_Search_Types.STRING,value:"", },
-  {label:"Candidate Group",key:"",option:"like",type:Filter_Search_Types.STRING, value:""},
-  {label:"Candidate User",key:"",option:"like",type:Filter_Search_Types.STRING, value:""},
-  {label:"Name",key:"",option:"like",type:Filter_Search_Types.STRING,value:""},
-  {label:"Description",key:"",option:"like",type:Filter_Search_Types.STRING, value:""},
-  {label:"Priority",key:"",option:"like",type:Filter_Search_Types.STRING, value:""},
-  {label:"Due Date",key:"",option:"like", type:Filter_Search_Types.DATE, value:""},
-  {label:"Follow up Date",key:"",option:"like", type:Filter_Search_Types.DATE, value:""},
-  {label:"Created",key:"",option:"like",type:Filter_Search_Types.STRING, value:"" },
+  {label:"Process Variables",key:"processVariables", operator:"=", type:Filter_Search_Types.VARIABLES, value:"", name:""},
+  {label:"Task Variables", key:"taskVariables",operator:"=", type:Filter_Search_Types.VARIABLES, value:"", name:""},
+  {label:"Process Definition Name",key:"processDefinitionName", operator:"like",type:Filter_Search_Types.STRING, value:"" },
+  {label:"Assignee",key:"assignee",operator:"like", type:Filter_Search_Types.STRING,value:"", },
+  {label:"Candidate Group",key:"candidateGroup",operator:"=",type:Filter_Search_Types.NORMAL, value:""},
+  {label:"Candidate User",key:"candidateUser",operator:"=",type:Filter_Search_Types.NORMAL, value:""},
+  {label:"Name",key:"name",operator:"like",type:Filter_Search_Types.STRING,value:""},
+  {label:"Description",key:"description",operator:"like",type:Filter_Search_Types.STRING, value:""},
+  {label:"Priority",key:"priority",operator:"=",type:Filter_Search_Types.NORMAL, value:""},
+  {label:"Due Date",key:"due",operator:"before", type:Filter_Search_Types.DATE, value:""},
+  {label:"Follow up Date",key:"followUp",operator:"before", type:Filter_Search_Types.DATE, value:""},
+  {label:"Created",key:"created",operator:"before",type:Filter_Search_Types.DATE, value:"" },
 ];
 
 export const ALL_TASKS="All tasks"

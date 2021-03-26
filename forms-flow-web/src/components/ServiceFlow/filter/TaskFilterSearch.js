@@ -1,5 +1,5 @@
 import React,{useState} from "react";
-import {Filter_Search_Types} from "../constants/taskConstants";
+import {FILTER_COMPARE_OPTIONS, Filter_Search_Types} from "../constants/taskConstants";
 import OperatorFilterDropDown from "./OperatorFilterDropdown";
 
 const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter}) => {
@@ -48,7 +48,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter}) => {
             <button className="btn">
               <i className="fa fa-times" aria-hidden="true"/>
             </button></span>
-            <span>  <OperatorFilterDropDown/> </span>
+            <span>  <OperatorFilterDropDown compareOptions={FILTER_COMPARE_OPTIONS[filter.type]} /> </span>
               {/* <span>like</span>
             <span>in</span>*/}
               {filter.value||valueBoxIndex===index?null:<span className="click-element" onClick={()=>setShowValueBoxIndex(index)}>??</span>}

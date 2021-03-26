@@ -4,12 +4,11 @@ import OperatorFilterDropDown from "./OperatorFilterDropdown";
 
 const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter}) => {
 
-  let [showtextBox]=useState(true);
+  let [valueBoxIndex,setShowValueBoxIndex]=useState(null);
+
   const _handleKeyDown = (e) => {
     if (e.key === 'Enter') {
-      console.log(showtextBox);
-      showtextBox = false;
-      console.log(showtextBox);
+      setShowValueBoxIndex(null)
       console.log('we need to hide the text box and show the content');
     }
   };
@@ -52,16 +51,15 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter}) => {
             <span>  <OperatorFilterDropDown/> </span>
               {/* <span>like</span>
             <span>in</span>*/}
-              {filter.value?null:<span className="click-element">??</span>}
+              {filter.value||valueBoxIndex===index?null:<span className="click-element" onClick={()=>setShowValueBoxIndex(index)}>??</span>}
               <span>
-              {showtextBox?<input
+              {valueBoxIndex===index ?<input
                   type="text"
                   className="filters"
-                  placeholder="dd"
+                  placeholder=""
                   onKeyDown={_handleKeyDown}
-                  /*onBlur={() => setShowFilterItems(false)}*/
-                />:<span>dddd</span>}
-
+                  onBlur={() => setShowValueBoxIndex(null)}
+                />:filter.value?<span>dddd</span>:null}
               </span>
              </span>
              </span>

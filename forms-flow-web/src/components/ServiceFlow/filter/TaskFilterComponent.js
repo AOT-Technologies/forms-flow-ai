@@ -32,6 +32,12 @@ const TaskFilterComponent = (props) => {
     setFilterSelections(updatedSelectionsArray)
   }
 
+  const updateSearchFilterData = (value,index)=>{
+    let updatedSelectionsArray = [...filterSelections];
+    updatedSelectionsArray[index].value=value;
+    setFilterSelections(updatedSelectionsArray);
+  }
+
   const changeQueryType= () => {
     queryType===QUERY_TYPES.ALL? setQueryType(QUERY_TYPES.ANY):setQueryType(QUERY_TYPES.ALL);
   };
@@ -45,7 +51,7 @@ const TaskFilterComponent = (props) => {
               <span className="button click-element" onClick={changeQueryType}>{queryType}</span>
               <span> of the criteria are met.</span>
             </div> : null}
-          <TaskFilterSearch filterSelections={filterSelections} deleteSearchFilter={deleteSearchFilter}/>
+          <TaskFilterSearch updateSearchFilterData={updateSearchFilterData} filterSelections={filterSelections} deleteSearchFilter={deleteSearchFilter}/>
           <input
             type="text"
             className="filter"

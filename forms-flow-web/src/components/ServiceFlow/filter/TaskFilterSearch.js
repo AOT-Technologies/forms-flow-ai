@@ -2,14 +2,24 @@ import React,{useState} from "react";
 import {FILTER_COMPARE_OPTIONS, Filter_Search_Types} from "../constants/taskConstants";
 import OperatorFilterDropDown from "./OperatorFilterDropdown";
 
-const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter}) => {
+const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSearchFilterData}) => {
 
   let [valueBoxIndex,setShowValueBoxIndex]=useState(null);
+  let [lhsValueBoxIndex,setShowLHSValueBoxIndex]=useState(null);
 
-  const _handleKeyDown = (e) => {
+
+  const handleKeyDownRHS = (e,index) => {
     if (e.key === 'Enter') {
       setShowValueBoxIndex(null)
-      console.log('we need to hide the text box and show the content');
+      console.log(e.target.value);
+      updateSearchFilterData(e.target.value,index);
+      console.log('we need to hide the text box and show the content rhs');
+    }
+  };
+  const handleKeyDownLHS = (e) => {
+    if (e.key === 'Enter') {
+      setShowLHSValueBoxIndex(null)
+      console.log('we need to hide the text box and show the content lhs');
     }
   };
   return (
@@ -36,7 +46,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter}) => {
                 </>:null
               }
             </span>
-                {filter.type===Filter_Search_Types.VARIABLES?<input type="text"/>:""}
+                {filter.type===Filter_Search_Types.VARIABLES?lhsValueBoxIndex!==index?<input onKeyDown={handleKeyDownLHS} type="text"/>:'':""}
             <span className="condition-container">
             <span className="btn-container second-box">
         {filter.type===Filter_Search_Types.VARIABLES?<button className="btn">
@@ -51,15 +61,16 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter}) => {
             <span>  <OperatorFilterDropDown compareOptions={FILTER_COMPARE_OPTIONS[filter.type]} /> </span>
               {/* <span>like</span>
             <span>in</span>*/}
-              {filter.value||valueBoxIndex===index?null:<span className="click-element" onClick={()=>setShowValueBoxIndex(index)}>??</span>}
+              {filter.value||valueBoxIndex===index?null:<span className="click-element" onClick={()=>setShowValueBoxIndex(index)}>{valueBoxIndex===index?filter.value:'??'}</span>}
               <span>
               {valueBoxIndex===index ?<input
                   type="text"
                   className="filters"
                   placeholder=""
-                  onKeyDown={_handleKeyDown}
+                  value={filter.value}
+                  onKeyDown={(e)=>handleKeyDownRHS(e,index)}
                   onBlur={() => setShowValueBoxIndex(null)}
-                />:filter.value?<span>dddd</span>:null}
+                />:filter.value?<span className="click-element" onClick={()=>setShowValueBoxIndex(index)}>{filter.value}</span>:null}
               </span>
              </span>
              </span>

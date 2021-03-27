@@ -51,7 +51,9 @@ const TaskFilterComponent = (props) => {
               <span className="button click-element" onClick={changeQueryType}>{queryType}</span>
               <span> of the criteria are met.</span>
             </div> : null}
-          <TaskFilterSearch updateSearchFilterData={updateSearchFilterData} filterSelections={filterSelections} deleteSearchFilter={deleteSearchFilter}/>
+          <TaskFilterSearch updateSearchFilterData={updateSearchFilterData}
+                            filterSelections={filterSelections}
+                            deleteSearchFilter={deleteSearchFilter}/>
           <input
             type="text"
             className="filter"

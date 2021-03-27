@@ -9,7 +9,7 @@ const OperatorFilterDropDown = ({compareOptions, operator}) => {
   return (
     <div className="operator-container">
     <select className="operator-selector"
-      onChange={handleChange} value={operator}
+      onChange={handleChange} defaultValue={operator}
     >
       {compareOptions.map((compareOption,index)=>(
         <option key={index} className="selection-item" value={compareOption}>{compareOption}</option>

@@ -17,7 +17,7 @@ export const taskDetailVariableDataFormatter = (taskVariableData) =>{
 
 export const insightDashboardFormatter = (dashboardsData) =>{
   const dashboards = dashboardsData.map(dashboard => {
-    return  {value:dashboard.slug, label:dashboard.name}
+    return  {value:dashboard.id, label:dashboard.name}
   });
   return dashboards;
 }

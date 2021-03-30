@@ -40,7 +40,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class aims at exposing forms based on user authorization
+ * This class assist with admin operations of formsflow.ai: Giving all authorized form details
  *
  * @author sumathi.thirumani@aot-technologies.com
  */
@@ -62,8 +62,7 @@ public class AdminController {
     private String adminGroupName;
 
     @RequestMapping(value = "/engine-rest-ext/form", method = RequestMethod.GET, produces = "application/json")
-    private @ResponseBody
-    List<AuthorizedAction> getForms() {
+    private @ResponseBody List<AuthorizedAction> getForms() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
         List<Authorization> authorizationList =  getAuthorization(groups);
@@ -94,14 +93,11 @@ public class AdminController {
                         }
 
                     }
-                }
-                else {
+                } else {
                     for (Authorization authObj : authorizationList) {
                         for (AuthorizedAction formObj : formList) {
-                            if (authObj.getResourceId().equals(formObj.getProcessKey())) {
-                                if (isExists(filteredList, formObj.getFormId()) == false) {
+                            if (authObj.getResourceId().equals(formObj.getProcessKey()) && isExists(filteredList, formObj.getFormId()) == false)  {
                                     filteredList.add(formObj);
-                                }
                             }
                         }
                     }
@@ -114,6 +110,13 @@ public class AdminController {
         return filteredList;
     }
 
+    /**
+     * Utility method to avoid duplicate form entry in response.
+     *
+     * @param filteredList
+     * @param formId
+     * @return
+     */
     private boolean isExists(List<AuthorizedAction> filteredList, String formId) {
         for(AuthorizedAction entry : filteredList) {
             if(entry.getFormId().equals(formId)) {
@@ -123,6 +126,11 @@ public class AdminController {
         return false;
     }
 
+    /**
+     * Return groups associated with authentication object.
+     * @param authentication
+     * @return
+     */
     private List<String> getGroups(Authentication authentication) {
         OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
         String accessToken = details.getTokenValue();
@@ -146,6 +154,11 @@ public class AdminController {
         return groups;
     }
 
+    /**
+     * This method returns all authorization details of Groups.
+     * @param groups
+     * @return
+     */
     private List<Authorization> getAuthorization(List<String> groups) {
         String query = "select group_id_ groupid, user_id_ userid, resource_id_  resourceid from act_ru_authorization where resource_type_=6 and  group_id_ IN (:groups) ";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
@@ -153,6 +166,9 @@ public class AdminController {
         return bpmJdbcTemplate.query(query, parameters, new AuthorizationMapper());
     }
 
+    /**
+     * Mapper associated with querying authorization.
+     */
     private final class AuthorizationMapper implements RowMapper<Authorization> {
         public AdminController.Authorization mapRow(ResultSet rs, int rowNum) throws SQLException {
             Authorization auth = new Authorization();

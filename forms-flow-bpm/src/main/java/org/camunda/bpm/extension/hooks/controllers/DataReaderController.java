@@ -33,6 +33,7 @@ public class DataReaderController {
     @Autowired
     private NamedParameterJdbcTemplate analyticsJdbcTemplate;
 
+
     @RequestMapping(value = "/engine-rest-ext/data", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody List<Map<String, Object>> getData(@RequestBody DataRequest dataRequest) {
         if(dataRequest != null && StringUtils.isNotBlank(dataRequest.getQuery())) {
@@ -46,6 +47,11 @@ public class DataReaderController {
                 HttpStatus.BAD_REQUEST, "Invalid Input");
     }
 
+    /**
+     * validation for blacklisted operations
+     * @param query
+     * @return
+     */
     private boolean checkForBlackListedWords(String query) {
         String[] breachWords = new String[] {"delete","update","insert","drop","create","truncate","grant"};
         List<String> words = Arrays.asList(StringUtils.split(query.toLowerCase()));

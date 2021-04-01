@@ -77,17 +77,17 @@ const List = (props) => {
       >
       </Confirm>
       <div className="main-header">
-        <Link to="/form">
-          <img src="/back.svg" alt="back"/>
+        <Link className="back-icon" to="/form">
+          <img  src="/back.svg" alt="back"/>
         </Link>
 {/*        <span className="ml-3">
                         <img src="/form.svg" width="30" height="30" alt="form" />
                     </span>*/}
         <h3 className="ml-3">
-          <span className="task-head-details"> <i className="fa fa-wpforms" aria-hidden="true"/>&nbsp; Forms /</span> {form.title}
+          <span className="task-head-details"> <img className="icon-wp-forms" src="/webfonts/fa-wpforms.svg" alt="back"/><span className="forms-text">Forms /</span></span> {form.title}
         </h3>
         {userRoles.includes(CLIENT) ? <Link className="btn btn-primary form-btn btn-right" to={`/form/${formId}`}>
-          <i className='fa fa-plus' aria-hidden='true'/> New Submisssion
+        <img src="/webfonts/fa_plus.svg" alt="back"/> New Submisssion
         </Link> : null}
       </div>
 

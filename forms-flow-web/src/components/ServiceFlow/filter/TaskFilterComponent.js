@@ -20,7 +20,7 @@ const TaskFilterComponent = (props) => {
           {filterSelections.map((filter,index) => (
             <div className="filter-details" key={index}>
               <span type="button" className="close-btn">
-              <i className="fa fa-times" aria-hidden="true"/>
+              <img src="/webfonts/fa_times.svg" alt="back"/>
             </span>
               Process Definition {{filter}}
               <span> = </span>

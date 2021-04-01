@@ -50,7 +50,7 @@ const ViewTask = (props) => {
 
           </span>*/}
           <h3 className="ml-3">
-            <span className="task-head-details"> <i className="fa fa-list"/> Tasks /</span>{" "}
+            <span className="task-head-details"> <img src="/webfonts/fa-solid_list.svg" alt="back"/> Tasks /</span>{" "}
             {`${taskDetail.name}`}
           </h3>
         </div>

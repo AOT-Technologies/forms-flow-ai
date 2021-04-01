@@ -37,7 +37,7 @@ const Insights = (props) => {
         <div className="row ">
           <div className="col-12">
             <h1 className="insights-title">
-              <i className="fa fa-lightbulb-o"/> Insights
+            <img className="dashboard-icon-style" src="/webfonts/fa_lightbulb-o.svg" alt="back"/> Insights
             </h1>
             <hr className="line-hr"/>
             <div className="col-12">

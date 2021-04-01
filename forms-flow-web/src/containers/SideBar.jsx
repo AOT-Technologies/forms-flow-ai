@@ -111,7 +111,7 @@ const SideBar = () => {
                   pathname.match(/^\/insights/) ? "active-tab" : ""
                 }`}
               >
-                <i className="fa fa-lightbulb-o" />
+                <img src="/webfonts/fa_lightbulb-o.svg" alt="back"/>
                 Insights
               </Link>
             ) : null}

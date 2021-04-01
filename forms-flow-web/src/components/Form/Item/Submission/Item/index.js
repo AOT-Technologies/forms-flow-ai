@@ -51,19 +51,19 @@ const Item = (props) => {
       <ul className="nav nav-tabs">
         {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<li className="nav-item">
           <Link className="nav-link" to={`/form/${formId}/submission`}>
-            <i className="fa fa-chevron-left"/>
+            <img src="/webfonts/fa_chevron-left.svg" alt="back"/>
           </Link>
         </li>:null}
         {(path.indexOf("edit") > 0) ?
           <li className="nav-item">
             <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}`}>
-              <i className="fa fa-eye"/> View
+            <img src="/webfonts/fa_eye.svg" alt="back"/> View
             </Link>
           </li>
           :
           editAllowed ? (<li className="nav-item">
             <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}/edit`}>
-              <i className="fa fa-edit"/> Edit
+              <img src="/webfonts/fa_edit.svg" alt="back"/> Edit
             </Link>
           </li>) : null
         }

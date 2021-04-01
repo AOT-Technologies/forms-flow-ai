@@ -100,13 +100,15 @@ const List = (props)=> {
         />
         <div className="main-header">
           {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
-          <h3 className="task-head"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms</h3>
+          <h3 className="task-head">
+          <img className="icon-wp-forms" src="/webfonts/fa-wpforms.svg" alt="back"/>
+             <span className="forms-text">Forms</span></h3>
           {userRoles.includes(STAFF_DESIGNER) && (
             <Link
               to="/formflow/create"
               className="btn btn-primary btn-right btn-sm"
             >
-              <i className="fa fa-plus" /> Create Form
+              <img src="/webfonts/fa_plus.svg" alt="back"/>Create Form
             </Link>
           )}
         </div>

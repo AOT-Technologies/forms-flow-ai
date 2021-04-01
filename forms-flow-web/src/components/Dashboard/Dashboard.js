@@ -86,7 +86,9 @@ const Dashboard = () => {
         <div className="row ">
           <div className="col-12">
             <h1 className="dashboard-title">
-              <i className="fa fa-pie-chart" aria-hidden="true"/> Metrics
+            <img className="dashboard-icon-style" src="/webfonts/fa_pie-chart.svg" alt="back"/>
+              {/* <i className="fa fa-pie-chart" aria-hidden="true"/> */}
+               Metrics
             </h1>
             <hr className="line-hr"/>
             <div className="row ">
@@ -103,7 +105,7 @@ const Dashboard = () => {
                   rangeDivider=" - "
                   clearIcon={null}
                   calendarIcon={
-                    <i className="fa fa-calendar" aria-hidden="true"/>
+                    <img src="/webfonts/fa_calendar.svg" alt="back"/>
                   }
                 />
               </div>

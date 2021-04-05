@@ -112,7 +112,7 @@ const TaskHeader = ({ task }) => {
 
   const FollowUpDateInput= React.forwardRef(({ value, onClick }, ref) =>{
    return    <div onClick={onClick} ref={ref}>
-      <i className="fa fa-calendar" />{" "}
+      <img src="/webfonts/fa_calendar.svg" alt="back"/>{" "}
       {followUpDate
         ? <span className="mr-4">{moment(followUpDate).fromNow()}</span>
         : "Set follow-up Date"}
@@ -123,7 +123,7 @@ const TaskHeader = ({ task }) => {
 
   const DueDateInput=React.forwardRef(({ value, onClick }, ref) =>{
     return    <div onClick={onClick} ref={ref}>
-      <i className="fa fa-bell" />{" "}
+     <img src="/webfonts/fa_bell.svg" alt="back"/>{" "}
       {dueDate ? <span className="mr-4">{moment(dueDate).fromNow()}</span> : "Set Due date"}
     </div>
   });

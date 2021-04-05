@@ -58,13 +58,13 @@ public class FormAttributesListener implements ExecutionListener {
         return String.valueOf(execution.getVariables().get("formUrl"));
     }
 
-    private List<FormElement> getModifiedFormElements(DelegateExecution execution) throws JsonProcessingException {
-        List<FormElement> elements = new ArrayList<>();
+    private List<FormXElement> getModifiedFormElements(DelegateExecution execution) throws JsonProcessingException {
+        List<FormXElement> elements = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         List<String> injectableFields =  this.fields != null && this.fields.getValue(execution) != null ?
                 objectMapper.readValue(String.valueOf(this.fields.getValue(execution)),List.class): null;
         for(String entry: injectableFields) {
-            elements.add(new FormElement(entry,String.valueOf(execution.getVariable(entry))));
+            elements.add(new FormXElement(entry,String.valueOf(execution.getVariable(entry))));
         }
 
         return elements;
@@ -76,12 +76,12 @@ public class FormAttributesListener implements ExecutionListener {
 @Scope("prototype")
 @Data
 @NoArgsConstructor
-class FormElement{
+class FormXElement{
     private String op;
     private String path;
     private String value;
 
-    FormElement(String elementId, String value) {
+    FormXElement(String elementId, String value) {
         this.op = "replace";
         this.path = "/data/"+elementId;
         this.value = value;

@@ -86,8 +86,8 @@ const ApplicationList = () => {
             <div className="container">
               <div className="main-header">
                 <h3 className="application-head">
-                <i className="fa fa-list-alt" aria-hidden="true"/>
-              &nbsp; Applications
+                <img className="solid-list-icon" src="/webfonts/fa-solid_list.svg" alt="back"/>
+              <span className="application-text">Applications</span>
                   <div className="col-md-1 application-count">({applicationCount})</div>
                 </h3>
               </div>

@@ -53,7 +53,7 @@ const ViewApplication = () => {
           <img src="/back.svg" alt="back"/>
         </Link>
         <h3 className="ml-3">
-          <span className="application-head-details"><i className="fa fa-list-alt" />&nbsp; Applications /</span>{" "}
+          <span className="application-head-details"><img src="/webfonts/fa-regular_list-alt.svg" alt="back"/>&nbsp; Applications /</span>{" "}
           {`${startCase(applicationDetail.applicationName)}`}
         </h3>
       </div>

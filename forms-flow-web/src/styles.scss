@@ -229,19 +229,22 @@ i.fa.fa-question-circle.text-muted {
   background-color: $white;
 }
 .active-tab {
-  color: $lightblue !important;
-  border-bottom: 1px solid $lightblue;
+  //color: $lightblue !important;
+  border-bottom: 1px solid red;
   background-color: transparent;
+  filter: invert(36%) sepia(38%) saturate(7152%) hue-rotate(227deg) brightness(101%) contrast(98%);
 }
 .active-tab-dropdown > #dashboard-dropdown {
-  color: $lightblue !important;
-  border-bottom: 1px solid $lightblue;
+  //color: $lightblue !important;
+  border-bottom: 1px solid red;
   background-color: transparent;
+  filter: invert(36%) sepia(38%) saturate(7152%) hue-rotate(227deg) brightness(101%) contrast(98%);
 }
 .active-tab-dropdown > #task-dropdown {
-  color: $lightblue !important;
-  border-bottom: 1px solid $lightblue;
+  //color: $lightblue !important;
+  border-bottom: 1px solid red;
   background-color: transparent;
+  filter: invert(36%) sepia(38%) saturate(7152%) hue-rotate(227deg) brightness(101%) contrast(98%);
 }
 .selected-tag {
   color: $lightblue !important;
@@ -284,6 +287,17 @@ i.fa.fa-question-circle.text-muted {
   .dropdown-menu::before {
     left: 10%;
     right: 100%;
+  }
+  .dasboard-icon-dropdown{
+    margin-bottom: 5px;
+  }
+  .task-dropdown-icon{
+    margin-bottom: 1px;
+  }
+  .applications-icon-header{
+    width: 23px;
+    height: 23px;
+    margin-bottom: 5px;
   }
   .dropdown-menu::after {
     left: 10%;
@@ -362,6 +376,9 @@ i.fa.fa-question-circle.text-muted {
   height: 30px;
   width: 100%;
 }
+.back-icon{
+  display: flex;
+}
 .sub-container {
   margin-left: 15px;
 }
@@ -369,12 +386,31 @@ i.fa.fa-question-circle.text-muted {
   font-weight: bold;
   font-size: 30px;
   margin-left: 10px !important;
-  display: flex;
+  //display: flex;
+}
+.icon-wp-forms{
+  height: 30px;
+}
+.forms-text{
+  vertical-align: bottom;
+  margin-left: 10px;
+  margin-bottom: 0px;
+}
+.task-head-icons{
+  height: 30px;
+  width: 30px;
 }
 .task-head-details {
   font-weight: bold;
   font-size: 30px;
   margin-left: 10px !important;
+}
+.icon-wp-forms{
+  height: 30px;
+}
+.forms-text{
+  vertical-align: middle;
+  margin-left: 10px;
 }
 .btn-right {
   float: right;

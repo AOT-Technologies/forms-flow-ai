@@ -68,7 +68,7 @@ const HistoryList = (props) => {
             <div className="main-header">
               <h3 className="task-head">
               {/* <i class="fa fa-list-alt" alt="Task" aria-hidden="true"></i> */}
-              <i className="fa fa-list-alt" />
+              <img src="/webfonts/fa-solid_list.svg" alt="back"/>
               &nbsp;Application History
               </h3>
             </div>

@@ -63,12 +63,12 @@ const NavBar = () => {
             <Nav id="main-menu-nav" className="mr-auto active">
               <Nav.Link as={Link} to='/form'  className={`main-nav nav-item ${
                 pathname.match(/^\/form/) ? "active-tab" : ""
-              }`}><i className="fa fa-wpforms"/> Forms</Nav.Link>
+              }`}>  <img className="header-forms-icon" src="/webfonts/fa-wpforms.svg" alt="back"/> Forms</Nav.Link>
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT) ?
                 <Nav.Link as={Link} to='/application'  className={`main-nav nav-item ${
                   pathname.match(/^\/application/) ? "active-tab" : ""
-                }`}><i className="fa fa-list-alt"/> Applications</Nav.Link>
+                }`}> <img className="applications-icon-header" src="/webfonts/fa-regular_list-alt.svg" alt="back"/> Applications</Nav.Link>
                 :
                 null}
 
@@ -80,22 +80,22 @@ const NavBar = () => {
                 null}*/}
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <NavDropdown title={<><i className="fa fa-list"/> Tasks</>} id="task-dropdown"
+                <NavDropdown title={<><img className="task-dropdown-icon" src="/webfonts/fa-solid_list.svg" alt="back"/> Tasks</>} id="task-dropdown"
                              className={`main-nav nav-item taskDropdown ${pathname.match(/^\/task/) ? "active-tab-dropdown" : ""}`} onClick={goToTask}>
                   <ServiceFlowFilterListDropDown/>
               </NavDropdown>:null}
 
-              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><i className="fa fa-dashboard"/> Dashboards</>}
+              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><img className="dasboard-icon-dropdown" src="/webfonts/fa_dashboard.svg" alt="back"/> Dashboards</>}
                                                                               id="dashboard-dropdown"
                                                                               className={`main-nav nav-item ${
                                                                                 pathname.match(/^\/metrics/) || pathname.match(/^\/insights/) ? "active-tab-dropdown" : ""
                                                                               }`}>
                 <NavDropdown.Item as={Link} to='/metrics' className={`main-nav nav-item ${
                   pathname.match(/^\/metrics/) ? "active-tab" : ""
-                }`}><i className="fa fa-pie-chart"/> Metrics</NavDropdown.Item>
+                }`}><img src="/webfonts/fa_pie-chart.svg" alt="back"/> Metrics</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to='/insights' className={`main-nav nav-item ${
                   pathname.match(/^\/insights/) ? "active-tab" : ""
-                }`}><i className="fa fa-lightbulb-o"/> Insights</NavDropdown.Item>
+                }`}><img src="/webfonts/fa_lightbulb-o.svg" alt="back"/> Insights</NavDropdown.Item>
               </NavDropdown>:null}
             </Nav>
             <Nav className="ml-auto">

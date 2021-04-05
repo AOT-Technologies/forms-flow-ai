@@ -1,0 +1,414 @@
+{
+  "clients": [
+    {
+      "clientId": "forms-flow-web",
+      "rootUrl": "https://dev-sbc-serviceflow.apps.silver.devops.gov.bc.ca",
+      "adminUrl": "https://dev-sbc-serviceflow.apps.silver.devops.gov.bc.ca",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "redirectUris": [
+        "https://dev-sbc-serviceflow.apps.silver.devops.gov.bc.ca/*"
+      ],
+      "webOrigins": [
+        "*",
+        "https://dev-sbc-serviceflow.apps.silver.devops.gov.bc.ca"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "publicClient": true,
+      "frontchannelLogout": false,
+      "protocol": "openid-connect",
+      "attributes": {
+        "saml.assertion.signature": "false",
+        "saml.multivalued.roles": "false",
+        "saml.force.post.binding": "false",
+        "saml.encrypt": "false",
+        "saml.server.signature": "false",
+        "saml.server.signature.keyinfo.ext": "false",
+        "exclude.session.state.from.auth.response": "false",
+        "client_credentials.use_refresh_token": "false",
+        "saml_force_name_id_format": "false",
+        "saml.client.signature": "false",
+        "tls.client.certificate.bound.access.tokens": "false",
+        "saml.authnstatement": "false",
+        "display.on.consent.screen": "false",
+        "saml.onetimeuse.condition": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "protocolMappers": [
+        {
+          "name": "groups",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-group-membership-mapper",
+          "consentRequired": false,
+          "config": {
+            "full.path": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "groups",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "flowsflow-api-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "included.custom.audience": "forms-flow-web"
+          }
+        },
+        {
+          "name": "camunda-rest-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "included.custom.audience": "camunda-rest-api"
+          }
+        },
+        {
+          "name": "Role",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-client-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "multivalued": "true",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "role",
+            "usermodel.clientRoleMapping.clientId": "forms-flow-web"
+          }
+        }
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "role_list",
+        "profile",
+        "roles",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ],
+      "access": {
+        "view": true,
+        "configure": true,
+        "manage": true
+      }
+    },
+    {
+      "clientId": "forms-flow-bpm",
+      "name": "forms-flow-bpm",
+      "description": "Camunda",
+      "rootUrl": "https://dev-sbc-ffa-bpm.apps.silver.devops.gov.bc.ca",
+      "adminUrl": "https://dev-sbc-ffa-bpm.apps.silver.devops.gov.bc.ca",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "redirectUris": [
+        "https://dev-sbc-ffa-bpm.apps.silver.devops.gov.bc.ca/*"
+      ],
+      "webOrigins": [
+        "https://dev-sbc-ffa-bpm.apps.silver.devops.gov.bc.ca/camunda/*",
+        "https://dev-sbc-ffa-bpm.apps.silver.devops.gov.bc.ca",
+        "*"
+      ],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "publicClient": false,
+      "frontchannelLogout": false,
+      "protocol": "openid-connect",
+      "attributes": {
+        "saml.assertion.signature": "false",
+        "saml.multivalued.roles": "false",
+        "saml.force.post.binding": "false",
+        "saml.encrypt": "false",
+        "saml.server.signature": "false",
+        "saml.server.signature.keyinfo.ext": "false",
+        "exclude.session.state.from.auth.response": "false",
+        "client_credentials.use_refresh_token": "true",
+        "saml_force_name_id_format": "false",
+        "saml.client.signature": "false",
+        "tls.client.certificate.bound.access.tokens": "false",
+        "saml.authnstatement": "false",
+        "display.on.consent.screen": "false",
+        "saml.onetimeuse.condition": "false"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "protocolMappers": [
+        {
+          "name": "Client Host",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientHost",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientHost",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "email",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "email",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "email",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "Client IP Address",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientAddress",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientAddress",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "group",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-group-membership-mapper",
+          "consentRequired": false,
+          "config": {
+            "full.path": "true",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "group",
+            "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "flowsflow-api-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "included.custom.audience": "forms-flow-web"
+          }
+        },
+        {
+          "name": "camunda-rest-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "included.custom.audience": "camunda-rest-api"
+          }
+        },
+        {
+          "name": "Client ID",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usersessionmodel-note-mapper",
+          "consentRequired": false,
+          "config": {
+            "user.session.note": "clientId",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "clientId",
+            "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "username",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "userinfo.token.claim": "true",
+            "user.attribute": "username",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "preferred_username",
+            "jsonType.label": "String"
+          }
+        }
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "role_list",
+        "profile",
+        "roles",
+        "camunda-rest-api",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ],
+      "access": {
+        "view": true,
+        "configure": true,
+        "manage": true
+      }
+    },
+    {
+      "id": "bd8ddcf4-2df5-413c-b36c-eccd98649b1b",
+      "clientId": "https://dev-sbc-ffa-analytics.apps.silver.devops.gov.bc.ca/saml/callback?org_slug=default",
+      "name": "https://dev-sbc-ffa-analytics.apps.silver.devops.gov.bc.ca/saml/callback?org_slug=default",
+      "description": "forms-flow-analytics",
+      "rootUrl": "",
+      "adminUrl": "https://dev-sbc-ffa-analytics.apps.silver.devops.gov.bc.ca/saml/callback?org_slug=default",
+      "baseUrl": "",
+      "surrogateAuthRequired": false,
+      "enabled": true,
+      "alwaysDisplayInConsole": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "**********",
+      "redirectUris": [
+        "https://dev-sbc-ffa-analytics.apps.silver.devops.gov.bc.ca/*"
+      ],
+      "webOrigins": [],
+      "notBefore": 0,
+      "bearerOnly": false,
+      "consentRequired": false,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "publicClient": false,
+      "frontchannelLogout": false,
+      "protocol": "saml",
+      "attributes": {
+        "saml.assertion.signature": "true",
+        "saml.force.post.binding": "false",
+        "saml.multivalued.roles": "false",
+        "saml.encrypt": "false",
+        "saml.server.signature": "true",
+        "saml_idp_initiated_sso_url_name": "",
+        "saml.server.signature.keyinfo.ext": "false",
+        "exclude.session.state.from.auth.response": "false",
+        "saml.signing.certificate": "MIICtzCCAZ8CBgF3hItT3jANBgkqhkiG9w0BAQsFADAfMR0wGwYDVQQDDBRmb3Jtcy1mbG93LWFuYWx5dGljczAeFw0yMTAyMDkwMjA1NTlaFw0zMTAyMDkwMjA3MzlaMB8xHTAbBgNVBAMMFGZvcm1zLWZsb3ctYW5hbHl0aWNzMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwgcQGL9akzuKbvCQM10gWXTcjvKsoCWUiJNXtgEj0loY4BbHQU0LaGx8j4yEBkqEIBObddTxnpVpokOaSs4PmdWMfQNw9TkLR4JeyyhBYVpAlj0MzuNcHAAhIRcAlDzBSq/03a/tQtSqADfQb3Mer+cRgR550HMp6t7jZBVQkZq+NIiz4o8/wQbHUuwO4a8LwkonjQwOjTPMCR0qlUcJ+l1CHG0pluaB8ANmBRlnvPI/dM1qLkjJFxVWToJcvqbs/kD1HZ75L4uqs6dF1GYnvchKqxnidyTWUTqRh2H04e4hKz4/+GaHEya8PEM6EkQ6NOmrOUqBH2Q8moJ6V2XCNwIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQAlZnoJwFvNwfyJv+yWoVuRJHoA1LcuT8dNXNlnyBmGsvJ5lIKsUb3ljQBWwst0vZRJCDla03ZjMHq4wn++EbpZ50hkaCCk1D9yzOYT5Q5AkKCb5ZDpfpOhvR2zAxxdB5LoohVDiYva8yA2bDVlFKFbcmG4B9OKgzMkuB+XryzfuptcA3iyxZwV3o8An3+yb8eCRgPwgV+uVt/J6B19jaxyLte3MOKByxKcdc1heYPzUJN4UEdXWNhh8zPNe4N2q1ZnedDvKED5wT1KRpA6JcuE0ZtQoj3rJwAmSKdkL7LFjlIETMYcvC9fkiBMdfHht672eZt/nAZJ40n/2kDP0z90",
+        "saml.signature.algorithm": "RSA_SHA256",
+        "client_credentials.use_refresh_token": "false",
+        "saml_force_name_id_format": "false",
+        "saml.client.signature": "false",
+        "tls.client.certificate.bound.access.tokens": "false",
+        "saml.authnstatement": "true",
+        "display.on.consent.screen": "false",
+        "saml.signing.private.key": "MIIEpAIBAAKCAQEAwgcQGL9akzuKbvCQM10gWXTcjvKsoCWUiJNXtgEj0loY4BbHQU0LaGx8j4yEBkqEIBObddTxnpVpokOaSs4PmdWMfQNw9TkLR4JeyyhBYVpAlj0MzuNcHAAhIRcAlDzBSq/03a/tQtSqADfQb3Mer+cRgR550HMp6t7jZBVQkZq+NIiz4o8/wQbHUuwO4a8LwkonjQwOjTPMCR0qlUcJ+l1CHG0pluaB8ANmBRlnvPI/dM1qLkjJFxVWToJcvqbs/kD1HZ75L4uqs6dF1GYnvchKqxnidyTWUTqRh2H04e4hKz4/+GaHEya8PEM6EkQ6NOmrOUqBH2Q8moJ6V2XCNwIDAQABAoIBAQCG7/aH33yUbJIn+XGv5xI6ZIWHfMoFTl1wZlhXoY9SGYq3PeAxT+2hH+G4y5Z98ZDV5gz187Rd/7dJPA6v+4LqD5P21U/Xm2Z2wvo9+68Mj4HfenHP6FsEtipUIvUqIt6inKCFFHbDRbc9E5QIDl3HI8IOtC0vhQgf6gbmcdRojalpWtq+BcXi6TVtvNjCOk0tt3UavYtBCQO8PEzeIMWuKILJji0wfpwuAmBdEAOYf+eIumnZOLbLJQqfK0vdXIQOEkmLgyGmcdbzJd7KNNq6nnGn6sdp8UOaxpLq7+ne4mu5lhSznszTvI3pnqvmeMRFj1SD3Le1g4MHwJ9f5ESxAoGBAOl6CW1S6+UPxcG4MDNVqYc2W7EX2fo/KFkjhxKs7KVLgxlb6y8xRhF7ctHegj3tHPDUVhKBJFW7uHii2g00vzkNTW5Qz+AZ/ZpJ8ivZPpFP6hcGSsWdgHl/Wrg5xNTUL91dMtCx/NnH0DJk7rwiPgaqeUb+POVM+edtkZI7BK09AoGBANS+yXBG/9zROsYvodaKwegewshFKzc3HZvqHPqbuGKN/j9AlikXQHTgupniCqaxEUhVH5sOjllARLzYWEFKeooDuHOox4UkOo7IvPccpMeUIkZvdXCDXXK2sxiprcTJ0AtHJI0XJSOOtXDhHHNk56oeoiqswGofqUVaCMKiD0yDAoGBAKNhb9ld7o9Tkzp1jt1Nc52X72Ak5beVnMGL+Aick9kz12DWjuRuYa74KSgtwgxdsiPhIv49+tQ30eYxZ89X+vyMj4PD70POTEY8usfudTcwqgpEr+xLxEzBTxWd71xTw87vWhDqjJtFlS6+rMVgXPFDOCzy2mBHlpVZekXPIP2tAoGAEn8sAGkL4eUHGSgXCBI0Xbwe706kPT67gkzOjDNxyo/R5Sn2ZEgzQHYxgyOWDXwjpohQISkY00W1ND4THkodcVZ1eQjZoAfQV424cDu7T+bfPASAz3F8dHbSB3jpNMzfG7vpv6KdhgPoXpIT6SyCv9W9/7vZVuC91NvJGzL/5YUCgYAgvBY3Zj34as4X+G4DJQWVg/RAM4qUPBT1Vi6nmm26pfWo7+CwYl7QB+Bi2Aeljlzfco3gPh1qcRTSG4hFa3nPlUxOh7LFsIvF6iWuj5XNmUQbmFlHtcHLQsr3BOsbPhPrBrCSj1MDVE23tCioJvz+3jwLmZd/4HQ8ZYbFjS3cGA==",
+        "saml_name_id_format": "email",
+        "saml.onetimeuse.condition": "false",
+        "saml_signature_canonicalization_method": "http://www.w3.org/2001/10/xml-exc-c14n#WithComments"
+      },
+      "authenticationFlowBindingOverrides": {},
+      "fullScopeAllowed": true,
+      "nodeReRegistrationTimeout": -1,
+      "protocolMappers": [
+        {
+          "id": "2951c2aa-1122-4b77-81fb-97b8d9ec2f28",
+          "name": "X500 givenName",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "attribute.nameformat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+            "user.attribute": "firstName",
+            "friendly.name": "FirstName",
+            "attribute.name": "FirstName"
+          }
+        },
+        {
+          "id": "48f3d6d4-7822-4a32-8dae-7ba2b5fa6327",
+          "name": "X500 surname",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "consentRequired": false,
+          "config": {
+            "attribute.nameformat": "urn:oasis:names:tc:SAML:2.0:attrname-format:uri",
+            "user.attribute": "lastName",
+            "friendly.name": "LastName",
+            "attribute.name": "LastName"
+          }
+        }
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "role_list",
+        "profile",
+        "roles",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "microprofile-jwt"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "c18ab5ea-4390-402b-a632-7dfefdfec352",
+      "createdTimestamp": 1612593856776,
+      "username": "service-account-forms-flow-bpm",
+      "enabled": true,
+      "totp": false,
+      "emailVerified": false,
+      "serviceAccountClientId": "forms-flow-bpm",
+      "disableableCredentialTypes": [],
+      "requiredActions": [],
+      "realmRoles": [
+        "uma_authorization",
+        "offline_access"
+      ],
+      "clientRoles": {
+        "realm-management": [
+          "query-clients",
+          "query-groups",
+          "manage-users",
+          "view-users"
+        ],
+        "account": [
+          "view-profile",
+          "manage-account"
+        ]
+      },
+      "notBefore": 0,
+      "groups": []
+    }
+    ]
+}

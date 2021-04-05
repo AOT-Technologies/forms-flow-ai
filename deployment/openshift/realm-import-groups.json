@@ -1,0 +1,67 @@
+{
+  "groups": [
+    {
+      "id": "7792f7cd-ec78-4ccd-b5d9-78734df85439",
+      "name": "formsflow",
+      "path": "/formsflow",
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {},
+      "subGroups": [
+        {
+          "id": "6c6c9749-45b7-4504-8173-deb5a4eb7bae",
+          "name": "formsflow-client",
+          "path": "/formsflow/formsflow-client",
+          "attributes": {},
+          "realmRoles": [],
+          "clientRoles": {
+            "forms-flow-web": [
+              "formsflow-client"
+            ]
+          },
+          "subGroups": []
+        },
+        {
+          "id": "ff0e2f9d-8670-4053-840f-50b3bd2a67dd",
+          "name": "formsflow-analyst",
+          "path": "/formsflow/formsflow-analyst",
+          "attributes": {},
+          "realmRoles": [],
+          "clientRoles": {
+            "forms-flow-web": [
+              "formsflow-analyst",
+              "formsflow-client"
+            ]
+          },
+          "subGroups": []
+        },
+        {
+          "id": "37d8ba48-3cd2-47f2-b867-fa6140222874",
+          "name": "formsflow-designer",
+          "path": "/formsflow/formsflow-designer",
+          "attributes": {},
+          "realmRoles": [],
+          "clientRoles": {
+            "forms-flow-web": [
+              "formsflow-designer"
+            ]
+          },
+          "subGroups": []
+        },
+        {
+          "id": "79c4b757-811e-4466-bd93-217183767af8",
+          "name": "formsflow-reviewer",
+          "path": "/formsflow/formsflow-reviewer",
+          "attributes": {},
+          "realmRoles": [],
+          "clientRoles": {
+            "forms-flow-web": [
+              "formsflow-reviewer"
+            ]
+          },
+          "subGroups": []
+        }
+      ]
+    }
+  ]
+}

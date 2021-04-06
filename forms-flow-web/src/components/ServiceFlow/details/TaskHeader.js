@@ -85,7 +85,7 @@ const TaskHeader = ({ task }) => {
   const onFollowUpDateUpdate = (followUpDate)=>{
     setFollowUpDate(followUpDate);
     dispatch(setBPMTaskDetailUpdating(true));
-    const updatedTask = {...task, ...{followUp:getISODateTime(followUpDate)}};
+    const updatedTask = {...task, ...{followUp:followUpDate?getISODateTime(followUpDate):null}};
     dispatch(updateBPMTask(taskId,updatedTask,(err,response)=>{
       if(!err){
         dispatch(getBPMTaskDetail(taskId));
@@ -99,7 +99,7 @@ const TaskHeader = ({ task }) => {
   const onDueDateUpdate = (dueDate)=>{
     setDueDate(dueDate);
     dispatch(setBPMTaskDetailUpdating(true));
-    const updatedTask = {...task, ...{due:getISODateTime(dueDate)}};
+    const updatedTask = {...task, ...{due:dueDate?getISODateTime(dueDate):null}};
     dispatch(updateBPMTask(taskId,updatedTask,(err,response)=>{
       if(!err){
         dispatch(getBPMTaskDetail(taskId));

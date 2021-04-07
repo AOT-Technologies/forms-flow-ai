@@ -103,10 +103,10 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
             </button>
               </span> : null}
 
-                  <span title="Operator" className="operator-container">
+            <span title="Operator" className="operator-container">
               <OperatorFilterDropDown compareOptions={FILTER_COMPARE_OPTIONS[filter.type]} operator={filter.operator} changeOperator={(value)=>updateOperator(index,value)}/>
             </span>
-          <span>
+            <span>
               {valueBoxIndex === index ? <input
                   type="text"
                   className="filters"

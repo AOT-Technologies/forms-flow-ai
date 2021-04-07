@@ -22,6 +22,12 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
     setSelectedFilterInputValue('');
   };
 
+  const updateOperator = (index, value) => {
+    updateSearchFilterData( index, 'operator', value);
+  };
+
+
+
   const updateFilterName = (index) => {
     updateSearchFilterData( index, 'name', selectedFilterInputName);
     setShowNameBoxIndex(null);
@@ -98,7 +104,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
               </span> : null}
 
                   <span title="Operator" className="operator-container">
-              <OperatorFilterDropDown compareOptions={FILTER_COMPARE_OPTIONS[filter.type]}/>
+              <OperatorFilterDropDown compareOptions={FILTER_COMPARE_OPTIONS[filter.type]} operator={filter.operator} changeOperator={(value)=>updateOperator(index,value)}/>
             </span>
           <span>
               {valueBoxIndex === index ? <input

@@ -1,0 +1,538 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: forms-flow-bpm
+objects:
+  - apiVersion: v1
+    data:
+      mail-config.properties: |
+        # send mails via SMTP
+        mail.transport.protocol=smtp
+        mail.smtp.host=${SMTP_SERVER}
+        mail.smtp.port=25
+        mail.smtp.auth=false
+        mail.smtp.ssl.enable=false
+        #mail.smtp.socketFactory.port=465
+        #mail.smtp.socketFactory.class=javax.net.ssl.SSLSocketFactory
+        # poll mails via IMAPS
+        #mail.store.protocol=imaps
+        # mail.imaps.host=imap.gmail.com
+        #mail.imaps.port=993
+        #mail.imaps.timeout=10000
+        # additional config
+        #mail.poll.folder=INBOX
+        mail.sender=donotreply@gov.bc.ca
+        mail.sender.alias=DoNotReply
+        mail.attachment.download=true
+        mail.attachment.path=attachments
+        # credentials
+        mail.user=
+        mail.password=
+    kind: ConfigMap
+    metadata:
+      labels:
+        app: ${NAME}
+      name: ${NAME}-mail-config
+
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      labels:
+        app: ${NAME}
+      name: ${NAME}
+    spec:
+      host: ${CAMUNDA_URL}
+      path: /camunda
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+      to:
+        kind: Service
+        name: ${NAME}
+      wildcardPolicy: None
+
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        app: ${NAME}
+      name: ${NAME}
+    spec:
+      ports:
+        - name: web
+          port: 8080
+          targetPort: 8080
+      selector:
+        app: ${NAME}
+
+  - apiVersion: v1
+    kind: DeploymentConfig
+    metadata:
+      annotations:
+      labels:
+        app: ${NAME}
+      name: ${NAME}
+    spec:
+      replicas: 1
+      revisionHistoryLimit: 10
+      selector:
+        app: ${NAME}
+      strategy:
+        activeDeadlineSeconds: 21600
+        resources: {}
+        rollingParams:
+          intervalSeconds: 1
+          maxSurge: 25%
+          maxUnavailable: 25%
+          timeoutSeconds: 600
+          updatePeriodSeconds: 1
+        type: Rolling
+      template:
+        metadata:
+          labels:
+            app: ${NAME}
+        spec:
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: name
+                        operator: In
+                        values:
+                          - ${NAME}
+                  topologyKey: kubernetes.io/hostname
+          containers:
+            - env:
+                - name: APP_SECURITY_ORIGIN
+                  value: '*'
+                - name: JDBC_DRIVER
+                  value: ${DATABASE_DRIVER}
+                - name: JDBC_URL
+                  value: jdbc:postgresql://${DATABASE_SERVICE_NAME}:${DATABASE_PORT}/${DATABASE_NAME}
+                - name: CAMUNDA_JDBC_URL
+                  value: jdbc:postgresql://${DATABASE_SERVICE_NAME}:${DATABASE_PORT}/${DATABASE_NAME}
+                - name: CAMUNDA_SESSION_JDBC_URL
+                  value: jdbc:postgresql://${DATABASE_SERVICE_NAME}:${DATABASE_PORT}/${DATABASE_NAME}
+                - name: JDBC_USER
+                  valueFrom:
+                    secretKeyRef:
+                      key: db_username
+                      name: ${FORMIO_SECRET}
+                - name: JDBC_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: db_password
+                      name: ${FORMIO_SECRET}
+                - name: WAIT_FOR
+                  value: ${DATABASE_SERVICE_NAME}:${DATABASE_PORT}
+                - name: KEYCLOAK_URL
+                  value: ${KEYCLOAK_URL}
+                - name: KEYCLOAK_URL_REALM
+                  valueFrom:
+                    secretKeyRef:
+                      key: keycloak_realm
+                      name: ${FORMIO_SECRET}
+                - name: KEYCLOAK_CLIENTID
+                  valueFrom:
+                    secretKeyRef:
+                      key: keycloak_clientid
+                      name: ${FORMIO_SECRET}
+                - name: KEYCLOAK_CLIENTSECRET
+                  valueFrom:
+                    secretKeyRef:
+                      key: keycloak_clientsecret
+                      name: ${FORMIO_SECRET}
+                - name: DEBUG
+                  value: "False"
+                - name: MAIL_CONFIG
+                  value: /app/mail-config.properties
+                - name: TZ
+                  value: UTC
+                - name: APP_ROOT_LOG_FLAG
+                  value: ${APP_ROOT_LOG_FLAG}
+                - name: BPM_HISTORY_LEVEL
+                  value: ${BPM_HISTORY_LEVEL}
+                - name: CAMUNDA_MAX_POOLSIZE
+                  value: ${CAMUNDA_MAX_POOLSIZE}
+                - name: SESSION_STORE_TIMEOUT
+                  value: ${SESSION_STORE_TIMEOUT}
+                - name: CAMUNDA_CONN_TIMEOUT
+                  value: ${CAMUNDA_CONN_TIMEOUT}
+                - name: CAMUNDA_HIKARI_MAX_POOLSIZE
+                  value: ${CAMUNDA_HIKARI_MAX_POOLSIZE}
+                - name: CAMUNDA_ANALYTICS_JDBC_URL
+                  value: ${CAMUNDA_ANALYTICS_JDBC_URL}
+                - name: CAMUNDA_FORMBUILDER_PIPELINE_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      key: camunda_formbuilder_pipeline_username
+                      name: ${FORMIO_SECRET}
+                - name: CAMUNDA_JOB_CORE_POOL_SIZE
+                  value: ${CAMUNDA_JOB_CORE_POOL_SIZE}
+                - name: CAMUNDA_JOB_LOCK_TIME_MILLIS
+                  value: ${CAMUNDA_JOB_LOCK_TIME_MILLIS}
+                - name: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
+                  value: ${CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT}
+                - name: CAMUNDA_JDBC_DRIVER
+                  value: ${CAMUNDA_JDBC_DRIVER}
+                - name: FORMIO_ROOT_EMAIL
+                  valueFrom:
+                    secretKeyRef:
+                      key: formio_root_email
+                      name: ${FORMIO_SECRET}
+                - name: CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT
+                  value: ${CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT}
+                - name: FORMIO_ROOT_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: formio_root_password
+                      name: ${FORMIO_SECRET}
+                - name: CAMUNDA_JDBC_USER
+                  value: ${CAMUNDA_JDBC_USER}
+                - name: CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE
+                  value: ${CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE}
+                - name: CAMUNDA_FORMBUILDER_PIPELINE_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: camunda_formbuilder_pipeline_password
+                      name: ${FORMIO_SECRET}
+                - name: CAMUNDA_ANALYTICS_JDBC_DRIVER
+                  value: ${CAMUNDA_ANALYTICS_JDBC_DRIVER}
+                - name: CAMUNDA_HIKARI_VALID_TIMEOUT
+                  value: ${CAMUNDA_HIKARI_VALID_TIMEOUT}
+                - name: CAMUNDA_SESSION_HIKARI_CONN_TIMEOUT
+                  value: ${CAMUNDA_SESSION_HIKARI_CONN_TIMEOUT}
+                - name: CAMUNDA_ANALYTICS_JDBC_USER
+                  valueFrom:
+                    secretKeyRef:
+                      key: camunda_analytics_jdbc_user
+                      name: ${FORMIO_SECRET}
+                - name: CAMUNDA_SESSION_JDBC_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: db_password
+                      name: ${FORMIO_SECRET}
+                - name: CAMUNDA_JOB_WAIT_TIME_MILLIS
+                  value: ${CAMUNDA_JOB_WAIT_TIME_MILLIS}
+                - name: CAMUNDA_JOB_QUEUE_SIZE
+                  value: ${CAMUNDA_JOB_QUEUE_SIZE}
+                - name: CAMUNDA_JOB_MAX_WAIT
+                  value: ${CAMUNDA_JOB_MAX_WAIT}
+                - name: CAMUNDA_BPM_HISTORY_LEVEL
+                  value: ${CAMUNDA_BPM_HISTORY_LEVEL}
+                - name: CAMUNDA_SESSION_STORE_TIMEOUT
+                  value: ${CAMUNDA_SESSION_STORE_TIMEOUT}
+                - name: CAMUNDA_SESSION_HIKARI_VALID_TIMEOUT
+                  value: ${CAMUNDA_SESSION_HIKARI_VALID_TIMEOUT}
+                - name: CAMUNDA_SESSION_HIKARI_IDLE_TIMEOUT
+                  value: ${CAMUNDA_SESSION_HIKARI_IDLE_TIMEOUT}
+                - name: CAMUNDA_JDBC_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: db_password
+                      name: '${FORMIO_SECRET}'
+                - name: CAMUNDA_HIKARI_CONN_TIMEOUT
+                  value: ${CAMUNDA_HIKARI_CONN_TIMEOUT}
+                - name: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
+                  value: ${CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL}
+                - name: CAMUNDA_SESSION_HIKARI_MAX_POOLSIZE
+                  value: ${CAMUNDA_SESSION_HIKARI_MAX_POOLSIZE}
+                - name: CAMUNDA_JDBC_DB
+                  value: ${DATABASE_NAME}
+                - name: FORMSFLOW_API_URL
+                  value: ${FORMSFLOW_API_URL}
+                - name: CAMUNDA_SESSION_JDBC_DRIVER
+                  value: ${CAMUNDA_SESSION_JDBC_DRIVER}
+                - name: CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION
+                  value: ${CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION}
+                - name: CAMUNDA_SESSION_JDBC_USER
+                  value: ${CAMUNDA_JDBC_USER}
+                - name: FORMIO_URL
+                  value: ${FORMIO_URL}
+                - name: CAMUNDA_ANALYTICS_JDBC_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      key: camunda_analytics_jdbc_password
+                      name: ${FORMIO_SECRET}
+                - name: CAMUNDA_APP_ROOT_LOG_FLAG
+                  value: ${CAMUNDA_APP_ROOT_LOG_FLAG}
+                - name: CAMUNDA_ANALYTICS_HIKARI_CONN_TIMEOUT
+                  value: ${CAMUNDA_ANALYTICS_HIKARI_CONN_TIMEOUT}
+                - name: CAMUNDA_SESSION_STORE_TYPE
+                  value: ${CAMUNDA_SESSION_STORE_TYPE}
+                - name: CAMUNDA_HIKARI_IDLE_TIMEOUT
+                  value: ${CAMUNDA_HIKARI_IDLE_TIMEOUT}
+                - name: CAMUNDA_JOB_MAX_POOL_SIZE
+                  value: ${CAMUNDA_JOB_MAX_POOL_SIZE}
+                - name: WEBSOCKET_ENCRYPT_KEY
+                  value: ${WEBSOCKET_ENCRYPT_KEY}
+                - name: WEBSOCKET_MESSAGE_TYPE
+                  value: ${WEBSOCKET_MESSAGE_TYPE}
+                - name: WEBSOCKET_SECURITY_ORIGIN
+                  value: ${WEBSOCKET_SECURITY_ORIGIN}
+              imagePullPolicy: Always
+              livenessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /camunda/actuator/health
+                  port: 8080
+                  scheme: HTTP
+                initialDelaySeconds: 60
+                periodSeconds: 10
+                successThreshold: 1
+                timeoutSeconds: 3
+              name: ${NAME}
+              ports:
+                - containerPort: 8080
+                  protocol: TCP
+              readinessProbe:
+                failureThreshold: 3
+                httpGet:
+                  path: /camunda/actuator/health
+                  port: 8080
+                  scheme: HTTP
+                initialDelaySeconds: 60
+                periodSeconds: 60
+                successThreshold: 1
+                timeoutSeconds: 3
+              resources:
+                limits:
+                  cpu: 750m
+                  memory: 4Gi
+                requests:
+                  cpu: 200m
+                  memory: 2Gi
+              terminationMessagePath: /dev/termination-log
+              terminationMessagePolicy: File
+              volumeMounts:
+                - mountPath: /app/mail-config.properties
+                  name: ${NAME}-mail-config
+                  subPath: mail-config.properties
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+          schedulerName: default-scheduler
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+          volumes:
+            - configMap:
+                defaultMode: 420
+                items:
+                  - key: mail-config.properties
+                    path: mail-config.properties
+                name: ${NAME}-mail-config
+              name: ${NAME}-mail-config
+      test: false
+      triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+          - ${NAME}
+          from:
+            kind: ImageStreamTag
+            name: ${NAME}:${IMAGE_TAG}
+            namespace: ${TOOLS_WORKSPACE}
+        type: ImageChange
+        
+parameters:
+  - name: NAME
+    description: The name for all created objects.
+    required: true
+    value: forms-flow-bpm
+  - name: FORMIO_SECRET
+    description: Secrets are referred from this.
+    required: true
+    value: forms-flow-ai
+  - name: IMAGE_TAG
+    description: The image tag to pull for the deployment.
+    required: true
+    value: latest
+  - name: TOOLS_WORKSPACE
+    description: The location for your image streams (Tools Workspace).
+    required: true
+    value: nzpnbz-tools
+  - name: SMTP_SERVER
+    description: The domain name of the SMTP server for sending emails.
+    required: true
+    value: apps.smtp.gov.bc.ca
+  - name: DATABASE_DRIVER
+    description: The database driver used to connnect to the persistent storage.
+    required: true
+    value: org.postgresql.Driver
+  - name: DATABASE_SERVICE_NAME
+    description: The Service name used to connect to the database.
+    required: true
+    value: patroni-master-001
+  - name: DATABASE_NAME
+    description: The name of the database to connect to.
+    required: true
+    value: camunda
+  - name: DATABASE_PORT
+    description: The port that the database is running on.
+    required: true
+    value: "5432"
+  - name: APP_ROOT_LOG_FLAG
+    description: The log4j logging level to use for the application logs.
+    required: true
+    value: INFO
+  - name: BPM_HISTORY_LEVEL
+    description: The history level used in Camunda BPM.
+    required: true
+    value: auto
+  - name: CAMUNDA_MAX_POOLSIZE
+    description: The maximum size of the hikari database connection pool.
+    required: true
+    value: "20"
+  - name: CAMUNDA_CONN_TIMEOUT
+    description: The maximum milliseconds to wait for a connection from the pool.
+    required: true
+    value: "5000"
+  - name: CAMUNDA_HIKARI_MAX_POOLSIZE
+    description: CAMUNDA_HIKARI_MAX_POOLSIZE.
+    required: true
+    value: "10"
+  - name: CAMUNDA_ANALYTICS_JDBC_URL
+    description: CAMUNDA_ANALYTICS_JDBC_URL
+    required: true
+  - name: CAMUNDA_JOB_CORE_POOL_SIZE
+    description: CAMUNDA_JOB_CORE_POOL_SIZE
+    required: true
+    value: "3"
+  - name: CAMUNDA_JOB_LOCK_TIME_MILLIS
+    description: CAMUNDA_JOB_LOCK_TIME_MILLIS
+    required: true
+    value: "300000"
+  - name: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
+    description: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
+    required: true
+    value: "20000"
+  - name: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
+    description: CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT
+    required: true
+    value: "20000"
+  - name: CAMUNDA_JDBC_DRIVER
+    description: CAMUNDA_JDBC_DRIVER
+    required: true
+    value: "org.postgresql.Driver"
+  - name: CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT
+    description: CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT
+    required: true
+    value: "600000"
+  - name: CAMUNDA_JDBC_USER
+    description: CAMUNDA_JDBC_USER
+    required: true
+  - name: CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE
+    description: CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE
+    required: true
+    value: "10"
+  - name: CAMUNDA_ANALYTICS_JDBC_DRIVER
+    description: CAMUNDA_ANALYTICS_JDBC_DRIVER
+    required: true
+    value: "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+  - name: CAMUNDA_HIKARI_VALID_TIMEOUT
+    description: CAMUNDA_HIKARI_VALID_TIMEOUT
+    required: true
+    value: "20000"
+  - name: CAMUNDA_SESSION_HIKARI_CONN_TIMEOUT
+    description: CAMUNDA_SESSION_HIKARI_CONN_TIMEOUT
+    required: true
+    value: "20000"
+  - name: CAMUNDA_JOB_WAIT_TIME_MILLIS
+    value: "5000"
+    description: CAMUNDA_JOB_WAIT_TIME_MILLIS
+    required: true
+  - name: CAMUNDA_JOB_QUEUE_SIZE
+    description: CAMUNDA_JOB_QUEUE_SIZE
+    required: true
+    value: "3"
+  - name: CAMUNDA_JOB_MAX_WAIT
+    description: CAMUNDA_JOB_MAX_WAIT
+    required: true
+    value: "60000"
+  - name: CAMUNDA_BPM_HISTORY_LEVEL
+    description: CAMUNDA_BPM_HISTORY_LEVEL
+    required: true
+    value: "auto"
+  - name: CAMUNDA_SESSION_STORE_TIMEOUT
+    description: CAMUNDA_SESSION_STORE_TIMEOUT
+    required: true
+    value: "28800"
+  - name: CAMUNDA_SESSION_HIKARI_VALID_TIMEOUT
+    description: CAMUNDA_SESSION_HIKARI_VALID_TIMEOUT
+    required: true
+    value: "20000"
+  - name: CAMUNDA_SESSION_HIKARI_IDLE_TIMEOUT
+    description: CAMUNDA_SESSION_HIKARI_IDLE_TIMEOUT
+    required: true
+    value: "600000"
+  - name: CAMUNDA_HIKARI_CONN_TIMEOUT
+    description: CAMUNDA_HIKARI_CONN_TIMEOUT
+    required: true
+    value: "20000"
+  - name: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
+    description: CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL
+    required: true
+  - name: CAMUNDA_SESSION_HIKARI_MAX_POOLSIZE
+    description: CAMUNDA_SESSION_HIKARI_MAX_POOLSIZE
+    required: true
+    value: "10"
+  - name: FORMSFLOW_API_URL
+    description: FORMSFLOW_API_URL
+    required: true
+  - name: CAMUNDA_SESSION_JDBC_DRIVER
+    description: CAMUNDA_SESSION_JDBC_DRIVER
+    required: true
+    value: "org.postgresql.Driver"
+  - name: CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION
+    description: CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION
+    required: true
+    value: "3"
+  - name: FORMIO_URL
+    description: FORMIO_URL
+    required: true
+  - name: CAMUNDA_APP_ROOT_LOG_FLAG
+    description: CAMUNDA_APP_ROOT_LOG_FLAG
+    required: true
+    value: "info"
+  - name: CAMUNDA_ANALYTICS_HIKARI_CONN_TIMEOUT
+    description: CAMUNDA_ANALYTICS_HIKARI_CONN_TIMEOUT
+    required: true
+    value: "20000"
+  - name: CAMUNDA_SESSION_STORE_TYPE
+    description: CAMUNDA_SESSION_STORE_TYPE
+    required: true
+    value: "jdbc"
+  - name: CAMUNDA_HIKARI_IDLE_TIMEOUT
+    description: CAMUNDA_HIKARI_IDLE_TIMEOUT
+    required: true
+    value: "600000"
+  - name: CAMUNDA_JOB_MAX_POOL_SIZE
+    description: CAMUNDA_JOB_MAX_POOL_SIZE
+    required: true
+    value: "10"
+  - name: SESSION_STORE_TIMEOUT
+    description: The spring session timeout for browser connections, in seconds.
+    required: true
+    value: "28800"
+  - name: KEYCLOAK_URL
+    description: The URL used to connnect to the OIDC provider.
+    required: true
+    value: https://sso-dev.pathfinder.gov.bc.ca
+  - name: CAMUNDA_URL
+    displayName: CAMUNDA_URL
+    description:
+      Route to access Camunda
+    required: true
+  - name: WEBSOCKET_ENCRYPT_KEY
+    description: WEBSOCKET_ENCRYPT_KEY
+    required: true
+    value: ""
+  - name: WEBSOCKET_MESSAGE_TYPE
+    description: WEBSOCKET_MESSAGE_TYPE
+    required: true
+    value: "TASK_EVENT"
+  - name: WEBSOCKET_SECURITY_ORIGIN
+    description: WEBSOCKET_SECURITY_ORIGIN
+    required: true
+    value: ""

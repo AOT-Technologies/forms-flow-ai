@@ -7,7 +7,6 @@ const OperatorFilterDropDown = ({compareOptions, operator}) => {
     console.log('operator selected', e.target.value);
   };
   return (
-    <div className="operator-container">
     <select className="operator-selector click-element"
       onChange={handleChange} defaultValue={operator}
     >
@@ -16,7 +15,6 @@ const OperatorFilterDropDown = ({compareOptions, operator}) => {
       ))
       }
     </select>
-    </div>
   );
 };
 

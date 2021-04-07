@@ -32,9 +32,9 @@ const TaskFilterComponent = (props) => {
     setFilterSelections(updatedSelectionsArray)
   }
 
-  const updateSearchFilterData = (value,index)=>{
+  const updateSearchFilterData = (index, key, value)=>{
     let updatedSelectionsArray = [...filterSelections];
-    updatedSelectionsArray[index].value=value;
+    updatedSelectionsArray[index][key]=value;
     setFilterSelections(updatedSelectionsArray);
   }
 

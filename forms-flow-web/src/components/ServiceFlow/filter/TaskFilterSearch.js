@@ -77,7 +77,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
             </div>
 
             <div className="box-container">
-              <span className="click-element mr-1" title="Property" onClick={()=>showFilterList(index)}>
+              <span className="click-element mr-1 list-span" title="Property" onClick={()=>showFilterList(index)}>
                 {filter.label} {filter.type === Filter_Search_Types.VARIABLES?' :':null}
                 {showFilterDropdownIndex===index?<TaskFilterDropdown onFilterSelect={(filterToUpdate)=>handleFilterUpdate(filterToUpdate,index)}/>:null}
               </span>

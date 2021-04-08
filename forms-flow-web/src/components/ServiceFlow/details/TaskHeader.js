@@ -143,7 +143,7 @@ const TaskHeader = ({ task }) => {
       <span data-title="Application Id"> Application ID# {task?.applicationId}</span>
       </Row>
       <Row className="actionable">
-        <Col data-title={getFormattedDateAndTime(followUpDate)} className='date-container'>
+        <Col data-title={followUpDate?getFormattedDateAndTime(followUpDate):'Set FollowUp Date'} className='date-container'>
           <DatePicker
             selected={followUpDate}
             onChange={onFollowUpDateUpdate}
@@ -164,7 +164,7 @@ const TaskHeader = ({ task }) => {
             customInput={<FollowUpDateInput/>}
           />
         </Col>
-        <Col data-title={getFormattedDateAndTime(dueDate)} className='date-container'>
+        <Col data-title={dueDate?getFormattedDateAndTime(dueDate):'Set Due Date'} className='date-container'>
           <DatePicker
             selected={dueDate}
             onChange={onDueDateUpdate}

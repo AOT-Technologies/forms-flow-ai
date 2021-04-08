@@ -67,7 +67,7 @@
 }
 
 .filter-items {
-  width: 85%;
+  //width: 85%;
   margin: 5px;
   border: 1px solid rgb(185, 185, 185);
   border-radius: 5px;
@@ -254,10 +254,13 @@
     position: relative;
     margin-left: 20px;
   }
+  .list-span{
+    position: none !important;
+    }
 }
 span:hover {
   color: rgb(13, 13, 14);
-  position: relative;
+  position: none;
 }
 .tooltips{
   color: black;

@@ -1,10 +1,9 @@
 import React, {useState} from "react";
 import {FILTER_COMPARE_OPTIONS, Filter_Search_Types} from "../constants/taskConstants";
 import OperatorFilterDropDown from "./OperatorFilterDropdown";
-import TaskSort from "./TaskSort";
 import TaskFilterDropdown from "./TaskFilterDropdown";
 
-const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSearchFilterData}) => {
+const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSearchFilterData, updateFilter}) => {
 
   let [valueBoxIndex, setShowValueBoxIndex] = useState(null);
   let [nameBoxIndex, setShowNameBoxIndex] = useState(null);
@@ -59,9 +58,11 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
     setShowNameBoxIndex(index);
     setSelectedFilterInputName(value);
   };
-const handleFilterUpdate =(filter,index)=>{
-  console.log(filter,index);
-}
+
+ const handleFilterUpdate =(filter,index)=>{
+   updateFilter(filter,index);
+   setShowFilterDropdownIndex(null);
+ }
 
   return (
     <>

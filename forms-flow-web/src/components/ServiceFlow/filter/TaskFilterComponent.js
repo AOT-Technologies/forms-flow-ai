@@ -38,6 +38,14 @@ const TaskFilterComponent = (props) => {
     setFilterSelections(updatedSelectionsArray);
   }
 
+  const updateFilter = (filter,index)=>{
+    let updatedSelectionsArray = [...filterSelections];
+    updatedSelectionsArray[index].label=filter.label;
+    updatedSelectionsArray[index].type=filter.type;
+    updatedSelectionsArray[index].operator=filter.operator;
+    setFilterSelections(updatedSelectionsArray);
+  }
+
   const changeQueryType= () => {
     queryType===QUERY_TYPES.ALL? setQueryType(QUERY_TYPES.ANY):setQueryType(QUERY_TYPES.ALL);
   };
@@ -53,7 +61,8 @@ const TaskFilterComponent = (props) => {
             </div> : null}
           <TaskFilterSearch updateSearchFilterData={updateSearchFilterData}
                             filterSelections={filterSelections}
-                            deleteSearchFilter={deleteSearchFilter}/>
+                            deleteSearchFilter={deleteSearchFilter}
+                            updateFilter={updateFilter}/>
           <input
             type="text"
             className="filter"

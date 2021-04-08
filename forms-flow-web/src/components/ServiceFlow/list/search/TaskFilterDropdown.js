@@ -1,4 +1,4 @@
-import { taskFilters } from "../constants/taskConstants";
+import { taskFilters } from "../../constants/taskConstants";
 import React from "react";
 
 const TaskFilterDropdown = ({ onFilterSelect }) => {

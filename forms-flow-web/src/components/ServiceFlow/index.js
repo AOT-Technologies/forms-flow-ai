@@ -12,7 +12,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {setBPMFilterLoader, setSelectedBPMFilter} from "../../actions/bpmTaskActions";
 import {ALL_TASKS} from "./constants/taskConstants";
-import TaskSortSelectedList from "./filter/TaskSortSelectedList";
+import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 
 const ServiceFlow = () => {

@@ -9,7 +9,7 @@ import {
 import Loading from "../../../containers/Loading";
 import moment from "moment";
 import { getProcessDataFromList,getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
-import TaskFilterComponent from "../filter/TaskFilterComponent";
+import TaskFilterComponent from "./search/TaskFilterComponent";
 import Pagination from "react-js-pagination";
 
 const ServiceFlowTaskList = () => {
@@ -52,7 +52,6 @@ const ServiceFlowTaskList = () => {
     if (taskList.length && selectedFilter) {
       return (
         <>
-          <TaskFilterComponent totalTasks={taskList.length} />
           {currentTaskList.map((task, index) => (
             <div
               className={`clickable ${
@@ -133,6 +132,7 @@ const ServiceFlowTaskList = () => {
   return (
     <>
       <ListGroup as="ul" className="service-task-list">
+        <TaskFilterComponent totalTasks={isTaskListLoading?0:taskList.length} />
         {isTaskListLoading ? <Loading /> : renderTaskList()}
       </ListGroup>
     </>

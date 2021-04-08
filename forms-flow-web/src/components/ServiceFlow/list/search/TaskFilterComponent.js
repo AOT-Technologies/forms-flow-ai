@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import TaskFilterDropdown from "./TaskFilterDropdown";
 import TaskFilterSearch from "./TaskFilterSearch";
 import Checkbox from "@material-ui/core/Checkbox";
-import {Filter_Search_Types, QUERY_TYPES} from "../constants/taskConstants";
+import {Filter_Search_Types, QUERY_TYPES} from "../../constants/taskConstants";
 
 const TaskFilterComponent = (props) => {
   const {totalTasks} = props;
@@ -37,6 +37,11 @@ const TaskFilterComponent = (props) => {
     setIsVariableTypeInFilter(isVariablesFilterAvailable);
   },[filterSelections]);
 
+  useEffect(()=>{
+    console.log("filter Selections", filterSelections);
+  },[filterSelections]);
+
+
   const setFilter = (filter) => {
     const updatedSelectionsArray = [...filterSelections, {...filter}];
     setFilterSelections(updatedSelectionsArray);
@@ -60,6 +65,7 @@ const TaskFilterComponent = (props) => {
     updatedSelectionsArray[index].label=filter.label;
     updatedSelectionsArray[index].type=filter.type;
     updatedSelectionsArray[index].operator=filter.operator;
+    updatedSelectionsArray[index].key=filter.operator;
     setFilterSelections(updatedSelectionsArray);
   }
 
@@ -89,7 +95,6 @@ const TaskFilterComponent = (props) => {
               onClick={() => {
               }}
               onFocus={() => setShowFilterItems(true)}
-              /*onBlur={() => setShowFilterItems(false)}*/
             />
             {showFilterItems ? (
               <TaskFilterDropdown onFilterSelect={setFilter}/>

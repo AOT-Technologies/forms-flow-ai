@@ -1,7 +1,7 @@
 import React, {useState} from "react";
-import {FILTER_COMPARE_OPTIONS, Filter_Search_Types} from "../constants/taskConstants";
-import OperatorFilterDropDown from "./OperatorFilterDropdown";
-import TaskFilterDropdown from "./TaskFilterDropdown";
+import {FILTER_COMPARE_OPTIONS, Filter_Search_Types} from "../../constants/taskConstants";
+import OperatorFilterDropDown from "../../filter/OperatorFilterDropdown";
+import TaskFilterSearchType from "./TaskFilterSearchType";
 
 const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSearchFilterData, updateFilter}) => {
 
@@ -9,7 +9,6 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
   let [nameBoxIndex, setShowNameBoxIndex] = useState(null);
   let [selectedFilterInputValue, setSelectedFilterInputValue] = useState('');
   let [selectedFilterInputName, setSelectedFilterInputName] = useState('');
-  let [showFilterDropdownIndex, setShowFilterDropdownIndex] = useState(null);
 
   const handleFilterValueChange = (e, index) => {
     if (e.key === 'Enter') {
@@ -27,14 +26,6 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
   const updateOperator = (index, value) => {
     updateSearchFilterData( index, 'operator', value);
   };
-
-  const showFilterList = (index)=>{
-    if(index!==showFilterDropdownIndex){
-      setShowFilterDropdownIndex(index)
-    }else{
-      setShowFilterDropdownIndex(null)
-    }
-  }
 
   const updateFilterName = (index) => {
     updateSearchFilterData( index, 'name', selectedFilterInputName);
@@ -61,7 +52,6 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
 
  const handleFilterUpdate =(filter,index)=>{
    updateFilter(filter,index);
-   setShowFilterDropdownIndex(null);
  }
 
   return (
@@ -77,10 +67,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
             </div>
 
             <div className="box-container">
-              <span className="click-element mr-1 list-span" title="Property" onClick={()=>showFilterList(index)}>
-                {filter.label} {filter.type === Filter_Search_Types.VARIABLES?' :':null}
-                {showFilterDropdownIndex===index?<TaskFilterDropdown onFilterSelect={(filterToUpdate)=>handleFilterUpdate(filterToUpdate,index)}/>:null}
-              </span>
+              <TaskFilterSearchType filter={filter} index={index} handleFilterUpdate={handleFilterUpdate}/>
               <span>
                <span className="btn-container">
                {filter.type === Filter_Search_Types.VARIABLES && nameBoxIndex === index? <>
@@ -103,7 +90,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
                     onChange={(e) => setSelectedFilterInputName(e.target.value)}
                     onKeyDown={(e) => handleFilterNameChange(e, index)}
                   />
-                  : <span title="Key" className="click-element"
+                  : <span title="Property" className="click-element"
                           onClick={() => handleNameInput(index, filter.name)}>{filter.name ? filter.name : '??'}</span>:null}
 
                 <span className="condition-container">

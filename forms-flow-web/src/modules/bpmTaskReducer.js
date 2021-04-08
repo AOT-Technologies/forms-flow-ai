@@ -1,6 +1,7 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 import {TASK_FILTER_LIST_DEFAULT_PARAM} from "../constants/taskConstants";
 import {getFormattedParams} from "../apiManager/services/taskSearchParamsFormatter";
+import {QUERY_TYPES} from "../components/ServiceFlow/constants/taskConstants";
 
 const initialState = {
   isTaskListLoading:false,
@@ -22,6 +23,9 @@ const initialState = {
   filterListSortParams:{sorting:TASK_FILTER_LIST_DEFAULT_PARAM},
   filterSearchSelections:[],
   filterListSearchParams:{},
+  searchQueryType:QUERY_TYPES.ALL,
+  variableNameIgnoreCase:false,
+  variableValueIgnoreCase:false,
   taskGroups:[]
 }
 

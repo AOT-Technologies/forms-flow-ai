@@ -122,7 +122,26 @@ export const setFilterListSearchParams = (data) => dispatch =>{
     payload:data
   })
 }
+export const setSearchQueryType = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.UPDATE_SEARCH_QUERY_TYPE,
+    payload:data
+  })
+}
 
+export const setVariableNameIgnoreCase = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.UPDATE_VARIABLE_NAME_IGNORE_CASE,
+    payload:data
+  })
+}
+
+export const setVariableValueIgnoreCase = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.UPDATE_VARIABLE_VALUE_IGNORE_CASE,
+    payload:data
+  })
+}
 
 export const serviceActionError = (data) => dispatch => {
   //TODO update to a common file

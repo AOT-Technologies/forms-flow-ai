@@ -137,10 +137,10 @@ const TaskHeader = ({ task }) => {
     <AddGroupModal modalOpen={showModal} onClose={()=>setModal(false)} groups={taskGroups}/>
       <Row className="ml-0 task-header">{task?.name}</Row>
       <Row className="ml-0 task-name" >
-      <span dat-title={"Process Name"}> {getProcessDataFromList(processList, task?.processDefinitionId, "name")}</span>
+      <span class="application-id" dat-title={"Process Name"}> {getProcessDataFromList(processList, task?.processDefinitionId, "name")}</span>
       </Row>
       <Row className="ml-0" >
-      <span data-title="Application Id"> Application ID# {task?.applicationId}</span>
+      <span data-title="Application Id" class="application-id"> Application ID# {task?.applicationId}</span>
       </Row>
       <Row className="actionable">
         <Col data-title={followUpDate?getFormattedDateAndTime(followUpDate):'Set FollowUp Date'} className='date-container'>

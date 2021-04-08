@@ -19,6 +19,7 @@ const initialState = {
   selectedFilter:null,
   taskId:null,
   filterListSortParams:{sorting:TASK_FILTER_LIST_DEFAULT_PARAM},
+  filterListSearchParams:null,
   taskGroups:[]
 }
 
@@ -60,6 +61,8 @@ const bpmTasks =(state = initialState, action)=> {
       return {...state, taskGroups:action.payload,isGroupLoading:false}
     case ACTION_CONSTANTS.UPDATE_FILTER_LIST_SORT_PARAMS:
       return {...state, filterListSortParams:{sorting:action.payload}}
+    case ACTION_CONSTANTS.UPDATE_FILTER_LIST_SEARCH_PARAMS:
+      return {...state, filterListSearchParams:action.payload}
     default:
       return state;
   }

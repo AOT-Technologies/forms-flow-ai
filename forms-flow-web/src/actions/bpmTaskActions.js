@@ -116,6 +116,14 @@ export const setFilterListSortParams = (data) => dispatch =>{
   })
 }
 
+export const setFilterListSearchParams = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.UPDATE_FILTER_LIST_SEARCH_PARAMS,
+    payload:data
+  })
+}
+
+
 export const serviceActionError = (data) => dispatch => {
   //TODO update to a common file
   dispatch({

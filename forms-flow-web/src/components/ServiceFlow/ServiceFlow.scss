@@ -83,6 +83,9 @@
   border-color: #555;
   //border: bold 1px solid;
 }
+.position-box{
+  margin-left: 2.3rem;
+}
 .sort-items {
   border: 1px solid #949494;
   border-radius: 3%;
@@ -226,12 +229,13 @@
   .btn-container{
     float: right;
     display: block;
+    margin-right: 5.4rem;
   }
 
   .second-box{
-    float: none;
+    float: right;
     .second-inner-box{
-      margin-left: 10.3rem;
+      //margin-left: 10.3rem;
     }
   }
   .btn {

@@ -84,7 +84,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
                 {filter.type === Filter_Search_Types.VARIABLES?
                   nameBoxIndex === index ? <input
                     type="text"
-                    className="filters"
+                    className="filters position-box"
                     placeholder=""
                     value={selectedFilterInputName}
                     onChange={(e) => setSelectedFilterInputName(e.target.value)}
@@ -106,7 +106,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
               <i className="fa fa-times" aria-hidden="true"/>
             </button></span>
               </span> : null}
-
+            <div className="operator-box-container">
             <span title="Operator" className="operator-container">
               <OperatorFilterDropDown compareOptions={FILTER_COMPARE_OPTIONS[filter.type]} operator={filter.operator} changeOperator={(value)=>updateOperator(index,value)}/>
             </span>
@@ -123,6 +123,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
                 : <span title="Value" className="click-element"
                         onClick={() => handleValueInput(index, filter.value)}>{filter.value ? filter.value : '??'}</span>}
              </span>
+             </div>
              </span>
              </span>
             </div>

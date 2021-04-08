@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import TaskFilterDropdown from "./TaskFilterDropdown";
 import TaskFilterSearch from "./TaskFilterSearch";
 import Checkbox from "@material-ui/core/Checkbox";
@@ -7,6 +7,7 @@ import {Filter_Search_Types, QUERY_TYPES} from "../constants/taskConstants";
 const TaskFilterComponent = (props) => {
   const {totalTasks} = props;
 
+  const createSearchNode = useRef();
   const [filterSelections, setFilterSelections] = useState([]);
   const [showFilterItems, setShowFilterItems] = useState(false);
   const [queryType, setQueryType] = useState(QUERY_TYPES.ALL);
@@ -14,6 +15,22 @@ const TaskFilterComponent = (props) => {
   const [variableValueIgnoreCase,setVariableValueIgnoreCase] = useState(false);
   const [isVariableTypeInFilter, setIsVariableTypeInFilter] = useState(false);
 
+  const handleClick = e => {
+    if (createSearchNode.current.contains(e.target)) {
+      return;
+    }
+    // outside click
+    setShowFilterItems(null);
+  };
+
+  useEffect(() => {
+    // add when mounted
+    document.addEventListener("mousedown", handleClick);
+    // return function to be called when unmounted
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, []);
 
   useEffect(()=>{
     const isVariablesFilterAvailable = filterSelections.some(filter=>filter.type===Filter_Search_Types.VARIABLES);
@@ -59,24 +76,30 @@ const TaskFilterComponent = (props) => {
               <span className="button click-element" onClick={changeQueryType}>{queryType}</span>
               <span> of the criteria are met.</span>
             </div> : null}
+
           <TaskFilterSearch updateSearchFilterData={updateSearchFilterData}
                             filterSelections={filterSelections}
                             deleteSearchFilter={deleteSearchFilter}
                             updateFilter={updateFilter}/>
-          <input
-            type="text"
-            className="filter"
-            placeholder="Filter Tasks"
-            onClick={() => {
-            }}
-            onFocus={() => setShowFilterItems(true)}
-            /*onBlur={() => setShowFilterItems(false)}*/
-          />
-          <span dat-title="Total number of results">{totalTasks}</span>
+          <div ref={createSearchNode}>
+            <input
+              type="text"
+              className="filter"
+              placeholder="Filter Tasks"
+              onClick={() => {
+              }}
+              onFocus={() => setShowFilterItems(true)}
+              /*onBlur={() => setShowFilterItems(false)}*/
+            />
+            {showFilterItems ? (
+              <TaskFilterDropdown onFilterSelect={setFilter}/>
+            ) : null}
+            <span dat-title="Total number of results">{totalTasks}</span>
+          </div>
+
+
         </div>
-        {showFilterItems ? (
-          <TaskFilterDropdown onFilterSelect={setFilter}/>
-        ) : null}
+
         {filterSelections.length && isVariableTypeInFilter? <div>
           <span className="name-value-container">For Variables, ignore case of
             <Checkbox

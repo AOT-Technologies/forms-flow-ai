@@ -1,5 +1,6 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 import {TASK_FILTER_LIST_DEFAULT_PARAM} from "../constants/taskConstants";
+import {getFormattedParams} from "../apiManager/services/taskSearchParamsFormatter";
 
 const initialState = {
   isTaskListLoading:false,
@@ -19,7 +20,8 @@ const initialState = {
   selectedFilter:null,
   taskId:null,
   filterListSortParams:{sorting:TASK_FILTER_LIST_DEFAULT_PARAM},
-  filterListSearchParams:null,
+  filterSearchSelections:[],
+  filterListSearchParams:{},
   taskGroups:[]
 }
 
@@ -62,7 +64,7 @@ const bpmTasks =(state = initialState, action)=> {
     case ACTION_CONSTANTS.UPDATE_FILTER_LIST_SORT_PARAMS:
       return {...state, filterListSortParams:{sorting:action.payload}}
     case ACTION_CONSTANTS.UPDATE_FILTER_LIST_SEARCH_PARAMS:
-      return {...state, filterListSearchParams:action.payload}
+      return {...state, filterListSearchParams:getFormattedParams(action.payload), filterSearchSelections:action.payload}
     default:
       return state;
   }

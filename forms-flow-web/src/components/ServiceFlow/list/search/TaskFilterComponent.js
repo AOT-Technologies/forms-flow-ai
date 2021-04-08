@@ -3,17 +3,20 @@ import TaskFilterDropdown from "./TaskFilterDropdown";
 import TaskFilterSearch from "./TaskFilterSearch";
 import Checkbox from "@material-ui/core/Checkbox";
 import {Filter_Search_Types, QUERY_TYPES} from "../../constants/taskConstants";
+import {setFilterListSearchParams} from "../../../../actions/bpmTaskActions";
+import {useDispatch, useSelector} from "react-redux";
 
-const TaskFilterComponent = (props) => {
-  const {totalTasks} = props;
-
+const TaskFilterComponent = ({totalTasks}) => {
   const createSearchNode = useRef();
-  const [filterSelections, setFilterSelections] = useState([]);
+  const filterSearchSelections = useSelector(state => state.bpmTasks.filterSearchSelections);
+  const [filterSelections, setFilterSelections] = useState(filterSearchSelections);
   const [showFilterItems, setShowFilterItems] = useState(false);
   const [queryType, setQueryType] = useState(QUERY_TYPES.ALL);
   const [variableNameIgnoreCase,setVariableNameIgnoreCase] = useState(false);
   const [variableValueIgnoreCase,setVariableValueIgnoreCase] = useState(false);
   const [isVariableTypeInFilter, setIsVariableTypeInFilter] = useState(false);
+  const dispatch= useDispatch();
+
 
   const handleClick = e => {
     if (createSearchNode.current.contains(e.target)) {
@@ -38,8 +41,8 @@ const TaskFilterComponent = (props) => {
   },[filterSelections]);
 
   useEffect(()=>{
-    console.log("filter Selections", filterSelections);
-  },[filterSelections]);
+    dispatch(setFilterListSearchParams(filterSelections));
+  },[filterSelections, dispatch]);
 
 
   const setFilter = (filter) => {

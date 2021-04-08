@@ -95,6 +95,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
 
                 <span className="condition-container">
               {valueBoxIndex === index ? <span className="btn-container second-box">
+                <span className="second-inner-box">
               {filter.type === Filter_Search_Types.VARIABLES ? <button className="btn">
                 <i className="fa fa-calendar" aria-hidden="true"/>
               </button> : null}
@@ -103,7 +104,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
             </button>
             <button className="btn click-element" onClick={() => setShowValueBoxIndex(null)}>
               <i className="fa fa-times" aria-hidden="true"/>
-            </button>
+            </button></span>
               </span> : null}
 
             <span title="Operator" className="operator-container">

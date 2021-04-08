@@ -229,9 +229,10 @@
   }
 
   .second-box{
-    display: block;
-    width: 44%;
-    float: right;
+    float: none;
+    .second-inner-box{
+      margin-left: 10.3rem;
+    }
   }
   .btn {
     background-color: white;

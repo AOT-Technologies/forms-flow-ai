@@ -230,21 +230,26 @@ i.fa.fa-question-circle.text-muted {
 }
 .active-tab {
   //color: $lightblue !important;
-  border-bottom: 1px solid red;
+  //border-bottom: 1px solid red;
   background-color: transparent;
   filter: invert(36%) sepia(38%) saturate(7152%) hue-rotate(227deg) brightness(101%) contrast(98%);
 }
+
 .active-tab-dropdown > #dashboard-dropdown {
   //color: $lightblue !important;
-  border-bottom: 1px solid red;
+  //border-bottom: 1px solid red;
   background-color: transparent;
   filter: invert(36%) sepia(38%) saturate(7152%) hue-rotate(227deg) brightness(101%) contrast(98%);
 }
 .active-tab-dropdown > #task-dropdown {
   //color: $lightblue !important;
-  border-bottom: 1px solid red;
+  //border-bottom: 1px solid red;
   background-color: transparent;
   filter: invert(36%) sepia(38%) saturate(7152%) hue-rotate(227deg) brightness(101%) contrast(98%);
+}
+.dropdown-item:hover{
+  filter: none;
+  background-color: #e9ecef;
 }
 .selected-tag {
   color: $lightblue !important;

@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react'
-import ServiceFlowTaskList from "./ServiceTaskList";
+import React, {useEffect} from 'react'
+import ServiceFlowTaskList from "./list/ServiceTaskList";
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import {Col, Container, Row} from "react-bootstrap";
 import "./ServiceFlow.scss";
@@ -10,10 +10,11 @@ import {
   fetchUserList, getBPMGroups, getBPMTaskDetail
 } from "../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
-import {setBPMFilterLoader, setSelectedBPMFilter} from "../../actions/bpmTaskActions";
+import {setBPMFilterLoader, setFilterListParams, setSelectedBPMFilter} from "../../actions/bpmTaskActions";
 import {ALL_TASKS} from "./constants/taskConstants";
-import TaskSortSelectedList from "./filter/TaskSortSelectedList";
+import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
+import isEqual from 'lodash/isEqual';
 
 const ServiceFlow = () => {
   const dispatch= useDispatch();
@@ -23,8 +24,18 @@ const ServiceFlow = () => {
   const selectedFilterId=useSelector(state=>state.bpmTasks.selectedFilter?.id||null);
   const taskList = useSelector(state => state.bpmTasks.tasksList);
   const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
-  const reqData = useSelector((state) => state.bpmTasks.filterListSortParams);
+  const reqData = useSelector((state) => state.bpmTasks.listReqParams);
+  const sortParams = useSelector((state) => state.bpmTasks.filterListSortParams);
+  const searchParams = useSelector((state) => state.bpmTasks.filterListSearchParams);
+  const listReqParams = useSelector((state) => state.bpmTasks.listReqParams);
 
+
+  useEffect(()=>{
+    const reqParamData={...sortParams,...searchParams};
+    if(!isEqual(reqParamData,listReqParams)){
+      dispatch(setFilterListParams(reqParamData))
+    }
+  },[searchParams,sortParams,dispatch,listReqParams])
 
   useEffect(()=>{
     dispatch(setBPMFilterLoader(true));

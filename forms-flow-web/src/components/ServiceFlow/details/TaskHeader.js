@@ -27,7 +27,7 @@ const TaskHeader = ({ task }) => {
   const username = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const taskGroups = useSelector(state=>state.bpmTasks.taskGroups);
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
-  const reqData = useSelector(state => state.bpmTasks.filterListSortParams);
+  const reqData = useSelector(state => state.bpmTasks.listReqParams);
   const followUp = task?.followUp ? new Date(task?.followUp):null;
   const due = task?.due ? new Date(task?.due): null;
   const [followUpDate, setFollowUpDate] = useState(followUp);
@@ -85,7 +85,7 @@ const TaskHeader = ({ task }) => {
   const onFollowUpDateUpdate = (followUpDate)=>{
     setFollowUpDate(followUpDate);
     dispatch(setBPMTaskDetailUpdating(true));
-    const updatedTask = {...task, ...{followUp:getISODateTime(followUpDate)}};
+    const updatedTask = {...task, ...{followUp:followUpDate?getISODateTime(followUpDate):null}};
     dispatch(updateBPMTask(taskId,updatedTask,(err,response)=>{
       if(!err){
         dispatch(getBPMTaskDetail(taskId));
@@ -99,7 +99,7 @@ const TaskHeader = ({ task }) => {
   const onDueDateUpdate = (dueDate)=>{
     setDueDate(dueDate);
     dispatch(setBPMTaskDetailUpdating(true));
-    const updatedTask = {...task, ...{due:getISODateTime(dueDate)}};
+    const updatedTask = {...task, ...{due:dueDate?getISODateTime(dueDate):null}};
     dispatch(updateBPMTask(taskId,updatedTask,(err,response)=>{
       if(!err){
         dispatch(getBPMTaskDetail(taskId));
@@ -137,13 +137,13 @@ const TaskHeader = ({ task }) => {
     <AddGroupModal modalOpen={showModal} onClose={()=>setModal(false)} groups={taskGroups}/>
       <Row className="ml-0 task-header">{task?.name}</Row>
       <Row className="ml-0 task-name" >
-      <span dat-title={"Process Name"}> {getProcessDataFromList(processList, task?.processDefinitionId, "name")}</span>
+      <span class="application-id" dat-title={"Process Name"}> {getProcessDataFromList(processList, task?.processDefinitionId, "name")}</span>
       </Row>
       <Row className="ml-0" >
-      <span data-title="Application Id"> Application ID# {task?.applicationId}</span>
+      <span data-title="Application Id" class="application-id"> Application ID# {task?.applicationId}</span>
       </Row>
       <Row className="actionable">
-        <Col data-title={getFormattedDateAndTime(followUpDate)} className='date-container'>
+        <Col data-title={followUpDate?getFormattedDateAndTime(followUpDate):'Set FollowUp Date'} className='date-container'>
           <DatePicker
             selected={followUpDate}
             onChange={onFollowUpDateUpdate}
@@ -164,7 +164,7 @@ const TaskHeader = ({ task }) => {
             customInput={<FollowUpDateInput/>}
           />
         </Col>
-        <Col data-title={getFormattedDateAndTime(dueDate)} className='date-container'>
+        <Col data-title={dueDate?getFormattedDateAndTime(dueDate):'Set Due Date'} className='date-container'>
           <DatePicker
             selected={dueDate}
             onChange={onDueDateUpdate}

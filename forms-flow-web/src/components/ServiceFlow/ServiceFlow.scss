@@ -25,7 +25,35 @@
   border-radius: 5px;
   width: 100%;
   padding: 0;
-  margin: 0 5px 10px 5px;
+  margin: 0 5px 10px 15px;
+  .button {
+    border: 1px solid #555;
+    background-color: white;
+    color: #555;
+    text-align: center;
+    text-decoration: none;
+    margin:0px 5px;
+    display: inline-block;
+    font-size: 12px;
+    font-family: Nunito Sans, SemiBold;
+  }
+  .name-value-container{
+    font-size: 12px;
+    margin-left: 5px;
+    display: block;
+  }
+
+  .check-box-design{
+    padding:0px;
+  }
+  .filter-action-container {
+    display:block;
+    float: right;
+    padding: 5px;
+    .item-pos{
+      padding: 5px;
+    }
+  }
 }
 .filter {
   width: 85%;
@@ -33,21 +61,31 @@
   border: none;
   font-style: italic;
 }
+
 .filter:focus {
   outline: none;
 }
 
 .filter-items {
-  width: 85%;
+  //width: 85%;
   margin: 5px;
-  border: 1px solid #555;
+  border: 1px solid rgb(185, 185, 185);
   border-radius: 5px;
   position: absolute;
   background-color: #fff;
   background-clip: padding-box;
   z-index: 5;
+    border-radius: 0px;
+    margin-top: 0px;
 }
-
+.filters{
+  margin-top: 3px;
+  border-color: #555;
+  //border: bold 1px solid;
+}
+.position-box{
+  margin-left: 2.3rem;
+}
 .sort-items {
   border: 1px solid #949494;
   border-radius: 3%;
@@ -171,14 +209,34 @@
 .filter-details {
   background-color: #f2dede;
   border-color: #ebccd1;
-  margin: 0.5em;
+ // margin: 0.5em;
+ margin-top: 15px;
+ margin-left: 5px;
+ margin-right: 5px;
   margin-bottom: 0;
-  padding: 0 8px 4px 8px;
+  padding: 0 0px 4px 8px;
   font-size: 14px;
   color: #155cb5;
+  //border-radius: 5px;
   .close-btn {
     font-size: 12px;
     margin-right: 8px;
+  }
+  .condition-container{
+    z-index: 2;
+    display: block;
+  }
+  .btn-container{
+    float: right;
+    display: block;
+    margin-right: 5.4rem;
+  }
+
+  .second-box{
+    float: right;
+    .second-inner-box{
+      //margin-left: 10.3rem;
+    }
   }
   .btn {
     background-color: white;
@@ -186,15 +244,28 @@
     padding: 0 2px;
     border: 1px solid #a79f9f;
     width: 18px;
+    border-radius: 0px;
   }
   input {
-    border: none;
+    //border: none;
     outline: none;
+    border: 1px solid;
+    //border-color: #555;
   }
+  .close-container {
+    position: absolute;
+  }
+  .box-container{
+    position: relative;
+    margin-left: 20px;
+  }
+  .list-span{
+    position: none !important;
+    }
 }
 span:hover {
-  color: rgb(1, 111, 255);
-  position: relative;
+  color: rgb(13, 13, 14);
+  position: none;
 }
 .tooltips{
   color: black;

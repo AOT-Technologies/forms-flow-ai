@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
-import {sortingList} from "../constants/taskConstants";
+import {sortingList} from "../../constants/taskConstants";
 import TaskSort from "./TaskSort";
 import {useDispatch, useSelector} from "react-redux";
-import {setFilterListSortParams} from "../../../actions/bpmTaskActions";
+import {setFilterListSortParams} from "../../../../actions/bpmTaskActions";
 
 const getOptions = (options) => {
   const optionsArray = [];

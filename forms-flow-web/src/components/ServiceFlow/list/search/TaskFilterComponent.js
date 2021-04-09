@@ -3,17 +3,21 @@ import TaskFilterDropdown from "./TaskFilterDropdown";
 import TaskFilterSearch from "./TaskFilterSearch";
 import Checkbox from "@material-ui/core/Checkbox";
 import {Filter_Search_Types, QUERY_TYPES} from "../../constants/taskConstants";
-import {setFilterListSearchParams} from "../../../../actions/bpmTaskActions";
+import {
+  setFilterListSearchParams,
+  setIsVariableNameIgnoreCase, setIsVariableValueIgnoreCase,
+  setSearchQueryType
+} from "../../../../actions/bpmTaskActions";
 import {useDispatch, useSelector} from "react-redux";
 
 const TaskFilterComponent = ({totalTasks}) => {
   const createSearchNode = useRef();
   const filterSearchSelections = useSelector(state => state.bpmTasks.filterSearchSelections);
+  const queryType = useSelector(state => state.bpmTasks.searchQueryType);
+  const variableNameIgnoreCase = useSelector(state => state.bpmTasks.variableNameIgnoreCase);
+  const variableValueIgnoreCase = useSelector(state => state.bpmTasks.variableValueIgnoreCase);
   const [filterSelections, setFilterSelections] = useState(filterSearchSelections);
   const [showFilterItems, setShowFilterItems] = useState(false);
-  const [queryType, setQueryType] = useState(QUERY_TYPES.ALL);
-  const [variableNameIgnoreCase,setVariableNameIgnoreCase] = useState(false);
-  const [variableValueIgnoreCase,setVariableValueIgnoreCase] = useState(false);
   const [isVariableTypeInFilter, setIsVariableTypeInFilter] = useState(false);
   const dispatch= useDispatch();
 
@@ -25,6 +29,7 @@ const TaskFilterComponent = ({totalTasks}) => {
     // outside click
     setShowFilterItems(null);
   };
+
 
   useEffect(() => {
     // add when mounted
@@ -70,6 +75,18 @@ const TaskFilterComponent = ({totalTasks}) => {
     updatedSelectionsArray[index].operator=filter.operator;
     updatedSelectionsArray[index].key=filter.operator;
     setFilterSelections(updatedSelectionsArray);
+  }
+
+  const setQueryType=(type)=>{
+    dispatch(setSearchQueryType(type));
+  }
+
+  const setVariableNameIgnoreCase=(isIgnoreCase)=>{
+    dispatch(setIsVariableNameIgnoreCase(isIgnoreCase))
+  }
+
+  const setVariableValueIgnoreCase = (isIgnoreCase)=>{
+    dispatch(setIsVariableValueIgnoreCase(isIgnoreCase))
   }
 
   const changeQueryType= () => {

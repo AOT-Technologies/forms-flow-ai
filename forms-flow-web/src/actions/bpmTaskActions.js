@@ -129,14 +129,14 @@ export const setSearchQueryType = (data) => dispatch =>{
   })
 }
 
-export const setVariableNameIgnoreCase = (data) => dispatch =>{
+export const setIsVariableNameIgnoreCase = (data) => dispatch =>{
   dispatch({
     type:ACTION_CONSTANTS.UPDATE_VARIABLE_NAME_IGNORE_CASE,
     payload:data
   })
 }
 
-export const setVariableValueIgnoreCase = (data) => dispatch =>{
+export const setIsVariableValueIgnoreCase = (data) => dispatch =>{
   dispatch({
     type:ACTION_CONSTANTS.UPDATE_VARIABLE_VALUE_IGNORE_CASE,
     payload:data

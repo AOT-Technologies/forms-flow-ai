@@ -2,13 +2,14 @@ import React, {useEffect, useRef, useState} from "react";
 import TaskFilterDropdown from "./TaskFilterDropdown";
 import TaskFilterSearch from "./TaskFilterSearch";
 import Checkbox from "@material-ui/core/Checkbox";
-import {Filter_Search_Types, QUERY_TYPES} from "../../constants/taskConstants";
+import {QUERY_TYPES} from "../../constants/taskConstants";
 import {
   setFilterListSearchParams,
   setIsVariableNameIgnoreCase, setIsVariableValueIgnoreCase,
   setSearchQueryType
 } from "../../../../actions/bpmTaskActions";
 import {useDispatch, useSelector} from "react-redux";
+import {isVariableTypeAvailable} from "../../../../apiManager/services/taskSearchParamsFormatterService";
 
 const TaskFilterComponent = ({totalTasks}) => {
   const createSearchNode = useRef();
@@ -41,8 +42,7 @@ const TaskFilterComponent = ({totalTasks}) => {
   }, []);
 
   useEffect(()=>{
-    const isVariablesFilterAvailable = filterSelections.some(filter=>filter.type===Filter_Search_Types.VARIABLES);
-    setIsVariableTypeInFilter(isVariablesFilterAvailable);
+    setIsVariableTypeInFilter(isVariableTypeAvailable(filterSelections));
   },[filterSelections]);
 
   useEffect(()=>{

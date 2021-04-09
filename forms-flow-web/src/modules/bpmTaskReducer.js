@@ -1,6 +1,6 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 import {TASK_FILTER_LIST_DEFAULT_PARAM} from "../constants/taskConstants";
-import {getFormattedParams} from "../apiManager/services/taskSearchParamsFormatter";
+import {getFormattedParams} from "../apiManager/services/taskSearchParamsFormatterService";
 import {QUERY_TYPES} from "../components/ServiceFlow/constants/taskConstants";
 
 const initialState = {

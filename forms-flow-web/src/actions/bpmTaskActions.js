@@ -122,6 +122,14 @@ export const setFilterListSearchParams = (data) => dispatch =>{
     payload:data
   })
 }
+
+export const setFilterListParams = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.UPDATE_LIST_PARAMS,
+    payload:data
+  })
+}
+
 export const setSearchQueryType = (data) => dispatch =>{
   dispatch({
     type:ACTION_CONSTANTS.UPDATE_SEARCH_QUERY_TYPE,

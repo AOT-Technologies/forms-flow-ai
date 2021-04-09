@@ -27,7 +27,7 @@ const TaskHeader = ({ task }) => {
   const username = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const taskGroups = useSelector(state=>state.bpmTasks.taskGroups);
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
-  const reqData = useSelector(state => state.bpmTasks.filterListSortParams);
+  const reqData = useSelector(state => state.bpmTasks.listReqParams);
   const followUp = task?.followUp ? new Date(task?.followUp):null;
   const due = task?.due ? new Date(task?.due): null;
   const [followUpDate, setFollowUpDate] = useState(followUp);

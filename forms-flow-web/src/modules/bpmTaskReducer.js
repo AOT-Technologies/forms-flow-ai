@@ -23,6 +23,7 @@ const initialState = {
   filterListSortParams:{sorting:TASK_FILTER_LIST_DEFAULT_PARAM},
   filterSearchSelections:[],
   filterListSearchParams:{},
+  listReqParams:{sorting:TASK_FILTER_LIST_DEFAULT_PARAM},
   searchQueryType:QUERY_TYPES.ALL,
   variableNameIgnoreCase:false,
   variableValueIgnoreCase:false,
@@ -75,6 +76,8 @@ const bpmTasks =(state = initialState, action)=> {
       return {...state, filterListSearchParams:getFormattedParams(state.filterSearchSelections,state.searchQueryType,action.payload, state.variableValueIgnoreCase), variableNameIgnoreCase:action.payload}
     case ACTION_CONSTANTS.UPDATE_VARIABLE_VALUE_IGNORE_CASE:
       return {...state, filterListSearchParams:getFormattedParams(state.filterSearchSelections,state.searchQueryType,state.variableNameIgnoreCase,action.payload), variableValueIgnoreCase:action.payload}
+    case ACTION_CONSTANTS.UPDATE_LIST_PARAMS:
+      return {...state, listReqParams:action.payload}
     default:
       return state;
   }

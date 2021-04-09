@@ -28,7 +28,7 @@ const ServiceFlowTaskDetails = () => {
   const processList = useSelector(state=>state.bpmTasks.processList);
   const isTaskLoading = useSelector(state => state.bpmTasks.isTaskDetailLoading);
   const isTaskUpdating = useSelector(state => state.bpmTasks.isTaskDetailUpdating);
-  const reqData = useSelector(state => state.bpmTasks.filterListSortParams);
+  const reqData = useSelector(state => state.bpmTasks.listReqParams);
   const dispatch= useDispatch();
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);

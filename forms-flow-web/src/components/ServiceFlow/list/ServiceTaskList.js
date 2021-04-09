@@ -18,7 +18,7 @@ const ServiceFlowTaskList = () => {
   const isTaskListLoading = useSelector(
     (state) => state.bpmTasks.isTaskListLoading
   );
-  const reqData = useSelector((state) => state.bpmTasks.filterListSortParams);
+  const reqData = useSelector((state) => state.bpmTasks.listReqParams);
   const dispatch = useDispatch();
   const processList = useSelector((state) => state.bpmTasks.processList);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
@@ -36,7 +36,6 @@ const ServiceFlowTaskList = () => {
       dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
     }
   }, [dispatch, selectedFilter, reqData]);
-
 
 
   const getTaskDetails = (taskId) => {

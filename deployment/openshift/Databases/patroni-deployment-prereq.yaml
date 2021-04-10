@@ -1,0 +1,140 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    description: |-
+      Patroni Postgresql database cluster (pre-requisites)
+    iconClass: icon-postgresql
+    openshift.io/display-name: Patroni Postgresql pre-requisites
+    openshift.io/long-description: This template deploys patroni pre-requisites for an HA DB (secret, service account, role)
+    tags: postgresql
+  name: patroni-pgsql-pre-requisite
+labels:
+  app.kubernetes.io/component: database
+  app.kubernetes.io/name: patroni
+  app.kubernetes.io/managed-by: template
+objects:
+- apiVersion: v1
+  kind: Secret
+  metadata:
+    labels:
+      app: ${NAME}${SUFFIX}
+      cluster-name: ${NAME}${SUFFIX}
+    annotations:
+      as-copy-of: "template.${NAME}-patroni"
+    name: ${NAME}${SUFFIX}
+  stringData:
+    replication-username: ${PATRONI_REPLICATION_USERNAME}
+    replication-password: ${PATRONI_REPLICATION_PASSWORD}
+    superuser-username: ${PATRONI_SUPERUSER_USERNAME}
+    superuser-password: ${PATRONI_SUPERUSER_PASSWORD}
+    app-db-name: ${APP_DB_NAME}
+    app-db-username: ${APP_DB_USERNAME}
+    app-db-password: ${APP_DB_PASSWORD}
+- apiVersion: v1
+  kind: ServiceAccount
+  metadata:
+    labels:
+      cluster-name: ${NAME}${SUFFIX}
+    name: ${NAME}${SUFFIX}
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: Role
+  metadata:
+    labels:
+      cluster-name: ${NAME}${SUFFIX}
+    name: ${NAME}${SUFFIX}
+  rules:
+  - apiGroups:
+    - ""
+    resources:
+    - services
+    verbs:
+    - create
+    - get
+    - list
+    - patch
+    - update
+    - watch
+    - delete
+  - apiGroups:
+    - ""
+    resources:
+    - configmaps
+    verbs:
+    - create
+    - get
+    - list
+    - patch
+    - update
+    - watch
+    - delete
+  - apiGroups:
+    - ""
+    resources:
+    - endpoints
+    verbs:
+    - get
+    - patch
+    - update
+    - create
+    - list
+    - watch
+    - delete
+  - apiGroups:
+    - ""
+    resources:
+    - pods
+    verbs:
+    - get
+    - list
+    - patch
+    - update
+    - watch
+- apiVersion: rbac.authorization.k8s.io/v1
+  kind: RoleBinding
+  metadata:
+    labels:
+      cluster-name: ${NAME}${SUFFIX}
+    name: ${NAME}${SUFFIX}
+  roleRef:
+    apiGroup: rbac.authorization.k8s.io
+    kind: Role
+    name: ${NAME}${SUFFIX}
+  subjects:
+  - kind: ServiceAccount
+    name: ${NAME}${SUFFIX}
+parameters:
+- description: The name of the application for labelling all artifacts.
+  displayName: Application Name
+  name: NAME
+  value: patroni
+- name: SUFFIX
+- description: Username of the superuser account for initialization.
+  displayName: Superuser Username
+  name: PATRONI_SUPERUSER_USERNAME
+  value: postgres
+#  generate: expression
+#  from: super-[a-zA-Z0-9]{6}
+- description: Password of the superuser account for initialization.
+  displayName: Superuser Passsword
+  name: PATRONI_SUPERUSER_PASSWORD
+  generate: expression
+  from: '[a-zA-Z0-9]{32}'
+- description: Username of the replication account for initialization.
+  displayName: Replication Username
+  name: PATRONI_REPLICATION_USERNAME
+  value: replication
+#  generate: expression
+#  from: rep-[a-zA-Z0-9]{6}
+- description: Password of the replication account for initialization.
+  displayName: Repication Passsword
+  name: PATRONI_REPLICATION_PASSWORD
+  generate: expression
+  from: '[a-zA-Z0-9]{32}'
+- name: APP_DB_USERNAME
+  value: app
+- name: APP_DB_NAME
+  value: app
+- name: APP_DB_PASSWORD
+  generate: expression
+  from: '[a-zA-Z0-9]{32}'

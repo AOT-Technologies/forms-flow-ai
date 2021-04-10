@@ -81,7 +81,7 @@ export const getFormattedParams = (searchOptionList, searchQueryType, variableNa
   if(searchQueryType===QUERY_TYPES.ALL){
     resultList=paramList;
   }else if(searchQueryType===QUERY_TYPES.ANY){
-    resultList={orQueries:paramList}
+    resultList={orQueries:[paramList]}
   }
   return isParamsHasValue?resultList:{};
 }

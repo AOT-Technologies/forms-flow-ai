@@ -15,6 +15,7 @@ import {ALL_TASKS} from "./constants/taskConstants";
 import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 import isEqual from 'lodash/isEqual';
+import cloneDeep from 'lodash/cloneDeep';
 
 const ServiceFlow = () => {
   const dispatch= useDispatch();
@@ -31,9 +32,9 @@ const ServiceFlow = () => {
 
 
   useEffect(()=>{
-    const reqParamData={...sortParams,...searchParams};
+    const reqParamData={...{sorting:[...sortParams.sorting]},...searchParams};
     if(!isEqual(reqParamData,listReqParams)){
-      dispatch(setFilterListParams(reqParamData))
+      dispatch(setFilterListParams(cloneDeep(reqParamData)))
     }
   },[searchParams,sortParams,dispatch,listReqParams])
 

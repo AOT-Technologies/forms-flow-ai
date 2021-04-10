@@ -1,0 +1,302 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  annotations:
+    description: |-
+      Patroni Postgresql database cluster, with persistent storage.
+    iconClass: icon-postgresql
+    openshift.io/display-name: Patroni Postgresql (Persistent)
+    openshift.io/long-description: This template deploys a patroni postgresql HA
+      cluster with persistent storage.
+    tags: postgresql
+  name: patroni-pgsql-persistent
+labels:
+  app: ${NAME}${SUFFIX}
+  phase: deploy
+  app.kubernetes.io/instance: ${NAME}${SUFFIX}
+  app.kubernetes.io/component: database
+  app.kubernetes.io/name: patroni  
+  app.kubernetes.io/managed-by: template
+objects:
+# It doesn't seem to be used/needed - remote it?
+#- apiVersion: v1
+#  kind: Service
+#  metadata:
+#    creationTimestamp: null
+#    labels:
+#      cluster-name: ${NAME}${SUFFIX}
+#    name: ${NAME}${SUFFIX}
+#  spec:
+#    ports:
+#    - name: 'postgresql'
+#      port: 5432
+#      protocol: TCP
+#      targetPort: 5432
+#    sessionAffinity: None
+#    type: ClusterIP
+#  status:
+#    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    creationTimestamp: null
+    labels:
+      cluster-name: ${NAME}${SUFFIX}
+    name: ${NAME}-master${SUFFIX}
+  spec:
+    ports:
+    - port: 5432
+#      name: 'postgresql'
+      protocol: TCP
+      targetPort: 5432
+    selector:
+      cluster-name: ${NAME}${SUFFIX}
+      role: master
+      app.kubernetes.io/name: patroni
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+#- apiVersion: v1
+#  kind: Service
+#  metadata:
+#    creationTimestamp: null
+#    labels:
+#      cluster-name: ${NAME}${SUFFIX}
+#    name: ${NAME}-replica${SUFFIX}
+#  spec:
+#    ports:
+#    - port: 5432
+##      name: 'postgresql'
+#      protocol: TCP
+#      targetPort: 5432
+#    selector:
+#      cluster-name: ${NAME}${SUFFIX}
+#      app.kubernetes.io/name: patroni
+#      role: replica
+#    sessionAffinity: None
+#    type: ClusterIP
+#  status:
+#    loadBalancer: {}
+# - apiVersion: v1
+#   kind: ConfigMap
+#   metadata:
+#     name: ${NAME}${SUFFIX}-config
+# - apiVersion: v1
+#   kind: ConfigMap
+#   metadata:
+#     name: ${NAME}${SUFFIX}-leader
+- apiVersion: apps/v1
+  kind: StatefulSet
+  metadata:
+    creationTimestamp: null
+    generation: 3
+    labels:
+      cluster-name: ${NAME}${SUFFIX}
+    name: ${NAME}${SUFFIX}
+  spec:
+    podManagementPolicy: OrderedReady
+    replicas: ${{REPLICAS}}
+    revisionHistoryLimit: 10
+    selector:
+      matchLabels:
+        statefulset: ${NAME}${SUFFIX}
+    serviceName: ${NAME}${SUFFIX}
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          statefulset: ${NAME}${SUFFIX}
+          cluster-name: ${NAME}${SUFFIX}
+          app.kubernetes.io/name: patroni
+      spec:
+        affinity:
+          podAntiAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: statefulset
+                  operator: In
+                  values: 
+                  - ${NAME}${SUFFIX}
+              topologyKey: "kubernetes.io/hostname"
+        containers:
+        - env:
+          #TODO: Remove POD_IP in favor of PATRONI_KUBERNETES_POD_IP
+          - name: POD_IP
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: status.podIP
+#          - name: PATRONI_KUBERNETES_USE_ENDPOINTS
+#            value: 'true'
+#          - name: PATRONI_KUBERNETES_POD_IP
+#            valueFrom:
+#              fieldRef:
+#                apiVersion: v1
+#                fieldPath: status.podIP
+#          - name: PATRONI_KUBERNETES_PORTS
+#            value: '{[{"name": "postgresql", "port": 5432}]}'
+          - name: PATRONI_KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: PATRONI_KUBERNETES_LABELS
+            value: '{"cluster-name": "${NAME}${SUFFIX}", "app.kubernetes.io/name": "patroni"}'
+          - name: PATRONI_SUPERUSER_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: superuser-username
+                name: ${NAME}${SUFFIX}
+          - name: PATRONI_SUPERUSER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: superuser-password
+                name: ${NAME}${SUFFIX}
+          - name: PATRONI_REPLICATION_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: replication-username
+                name: ${NAME}${SUFFIX}
+          - name: PATRONI_REPLICATION_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: replication-password
+                name: ${NAME}${SUFFIX}
+          - name: APP_USER
+            valueFrom:
+              secretKeyRef:
+                key: app-db-username
+                name: ${NAME}${SUFFIX}
+          - name: APP_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: app-db-password
+                name: ${NAME}${SUFFIX}
+          - name: APP_DATABASE
+            valueFrom:
+              secretKeyRef:
+                key: app-db-name
+                name: ${NAME}${SUFFIX}
+          - name: PATRONI_SCOPE
+            value: ${NAME}${SUFFIX}
+          - name: PATRONI_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.name
+          - name: PATRONI_LOG_LEVEL
+            value: WARNING
+          - name: PATRONI_POSTGRESQL_DATA_DIR
+            value: /home/postgres/pgdata/pgroot/data
+          - name: PATRONI_POSTGRESQL_PGPASS
+            value: /tmp/pgpass
+          - name: PATRONI_POSTGRESQL_LISTEN
+            value: 0.0.0.0:5432
+          - name: PATRONI_RESTAPI_LISTEN
+            value: 0.0.0.0:8008
+          image: ${IMAGE_REGISTRY}/${IMAGE_STREAM_NAMESPACE}/${IMAGE_STREAM_TAG}
+          # Because we are using image reference to a tag, we need to always pull the image otherwise
+          #   we end up with outdated/out-of-sync image depending on the node where it is running
+          imagePullPolicy: Always
+          name: postgresql
+          ports:
+          - containerPort: 8008
+            protocol: TCP
+          - containerPort: 5432
+            protocol: TCP
+          resources:
+            requests:
+              cpu: ${CPU_REQUEST}
+              memory: ${MEMORY_REQUEST}
+            limits:
+              cpu: ${CPU_LIMIT}
+              memory: ${MEMORY_LIMIT}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          readinessProbe:
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 4
+            exec:
+              command:
+                - /usr/share/scripts/patroni/health_check.sh
+          volumeMounts:
+          - mountPath: /home/postgres/pgdata
+            name: postgresql
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        serviceAccountName: ${NAME}${SUFFIX}
+        terminationGracePeriodSeconds: 0
+    updateStrategy:
+      type: RollingUpdate
+    volumeClaimTemplates:
+    - metadata:
+        annotations:
+          volume.beta.kubernetes.io/storage-class: ${STORAGE_CLASS}
+        labels:
+          app: ${NAME}${SUFFIX}
+        name: postgresql
+      spec:
+        storageClassName: ${STORAGE_CLASS}
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: ${PVC_SIZE}
+# It doesn't seem to be used/needed - remote it?
+#- apiVersion: v1
+#  kind: Endpoints
+#  metadata:
+#    labels:
+#      app: ${NAME}${SUFFIX}
+#      cluster-name: ${NAME}${SUFFIX}
+#    name: ${NAME}${SUFFIX}
+#  subsets: []
+parameters:
+- description: The name of the application for labelling all artifacts.
+  displayName: Application Name
+  name: NAME
+  value: patroni
+- name: SUFFIX
+  description: A suffix appended to all artifact's name (NAME)
+- name: REPLICAS
+  displayName: REPLICAS
+  description: The number of statefulSet replicas to use.
+  value: '3'
+- description: Starting amount of CPU the container can use.
+  displayName: CPU REQUEST
+  name: CPU_REQUEST
+  value: '250m'
+- description: Maximum amount of CPU the container can use.
+  displayName: CPU Limit
+  name: CPU_LIMIT
+  value: '1'
+- description: Starting amount of memory the container can use.
+  displayName: Memory Request
+  name: MEMORY_REQUEST
+  value: 512Mi
+- description: Maximum amount of memory the container can use.
+  displayName: Memory Limit
+  name: MEMORY_LIMIT
+  value: 512Mi
+- description: The OpenShift Namespace where the patroni and postgresql ImageStream
+    resides.
+  displayName: ImageStream Namespace
+  name: IMAGE_STREAM_NAMESPACE
+  value: "bcgov"
+- name: IMAGE_STREAM_TAG
+  description: Patroni ImageTag
+  value: patroni:v11-stable
+- description: The size of the persistent volume to create.
+  displayName: Persistent Volume Size
+  name: PVC_SIZE
+  value: 1Gi
+- name: STORAGE_CLASS
+  value: netapp-block-standard
+- name: IMAGE_REGISTRY
+  #ocp3#docker-registry.default.svc:5000
+  value: image-registry.openshift-image-registry.svc:5000

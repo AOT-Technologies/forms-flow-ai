@@ -1,0 +1,91 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: patroni
+labels:
+  app: ${NAME}${SUFFIX}
+  phase: build
+  app.kubernetes.io/component: database
+  app.kubernetes.io/name: patroni
+  app.kubernetes.io/managed-by: template
+  app.kubernetes.io/version: "${PG_VERSION}"
+parameters:
+  - name: NAME
+    value: patroni
+  - name: SUFFIX
+  - name: OUT_VERSION
+    description: Ouput version
+    value: "v10-latest"
+  - name: GIT_URI
+    value: https://github.com/BCDevOps/platform-services.git
+  - name: GIT_REF
+    value: master
+  - name: PG_VERSION
+    value: "10"
+objects:
+#Postgres ImageStream is created if it doesn't already exist
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    name: postgres
+  spec:
+    lookupPolicy:
+      local: false
+- apiVersion: v1
+  kind: ImageStreamTag
+  lookupPolicy:
+    local: false
+  metadata:
+    name: postgres:${PG_VERSION}
+  tag:
+    annotations: null
+    from:
+      kind: DockerImage
+      name: registry.hub.docker.com/library/postgres:${PG_VERSION}
+    importPolicy:
+      scheduled: true
+    name: "${PG_VERSION}"
+    referencePolicy:
+      type: Source
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    creationTimestamp: null
+    name: ${NAME}
+  spec:
+    lookupPolicy:
+      local: false
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    creationTimestamp: null
+    name: ${NAME}${SUFFIX}
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: "${NAME}:${OUT_VERSION}"
+    postCommit: {}
+    resources: {}
+    source:
+      contextDir: apps/pgsql/patroni/docker
+      git:
+        ref: ${GIT_REF}
+        uri: ${GIT_URI}
+      type: Git
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: postgres:${PG_VERSION}
+      type: Docker
+    triggers:
+    - type: ConfigChange
+    - imageChange: {}
+      type: ImageChange
+  status:
+    lastVersion: 0

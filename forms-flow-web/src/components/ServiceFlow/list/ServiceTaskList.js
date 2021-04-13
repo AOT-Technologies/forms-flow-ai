@@ -1,24 +1,24 @@
 import React, { useEffect, useState} from "react";
 import { ListGroup, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import {fetchServiceTaskList} from "../../apiManager/services/bpmTaskServices";
+import {fetchServiceTaskList} from "../../../apiManager/services/bpmTaskServices";
 import {
   setBPMTaskLoader,
   setSelectedTaskID,
-} from "../../actions/bpmTaskActions";
-import Loading from "../../containers/Loading";
+} from "../../../actions/bpmTaskActions";
+import Loading from "../../../containers/Loading";
 import moment from "moment";
-import { getProcessDataFromList,getFormattedDateAndTime } from "../../apiManager/services/formatterService";
-import TaskFilterComponent from "./filter/TaskFilterComponent";
+import { getProcessDataFromList,getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
+import TaskFilterComponent from "./search/TaskFilterComponent";
 import Pagination from "react-js-pagination";
 
-const ServiceFlowTaskList = ({reloadOnSocketCallback}) => {
+const ServiceFlowTaskList = () => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const isTaskListLoading = useSelector(
     (state) => state.bpmTasks.isTaskListLoading
   );
-  const reqData = useSelector((state) => state.bpmTasks.filterListSortParams);
+  const reqData = useSelector((state) => state.bpmTasks.listReqParams);
   const dispatch = useDispatch();
   const processList = useSelector((state) => state.bpmTasks.processList);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
@@ -38,7 +38,6 @@ const ServiceFlowTaskList = ({reloadOnSocketCallback}) => {
   }, [dispatch, selectedFilter, reqData]);
 
 
-
   const getTaskDetails = (taskId) => {
     if(taskId!==bpmTaskId){
       dispatch(setSelectedTaskID(taskId));
@@ -52,7 +51,6 @@ const ServiceFlowTaskList = ({reloadOnSocketCallback}) => {
     if (taskList.length && selectedFilter) {
       return (
         <>
-          <TaskFilterComponent totalTasks={taskList.length} />
           {currentTaskList.map((task, index) => (
             <div
               className={`clickable ${
@@ -133,6 +131,7 @@ const ServiceFlowTaskList = ({reloadOnSocketCallback}) => {
   return (
     <>
       <ListGroup as="ul" className="service-task-list">
+        <TaskFilterComponent totalTasks={isTaskListLoading?0:taskList.length} />
         {isTaskListLoading ? <Loading /> : renderTaskList()}
       </ListGroup>
     </>

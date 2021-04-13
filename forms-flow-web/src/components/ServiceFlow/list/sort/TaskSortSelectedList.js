@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from "react";
-import {sortingList} from "../constants/taskConstants";
+import {sortingList} from "../../constants/taskConstants";
 import TaskSort from "./TaskSort";
 import {useDispatch, useSelector} from "react-redux";
-import {setFilterListSortParams} from "../../../actions/bpmTaskActions";
+import {setFilterListSortParams} from "../../../../actions/bpmTaskActions";
 
 const getOptions = (options) => {
   const optionsArray = [];
@@ -94,7 +94,7 @@ const TaskSortSelectedList = () => {
        </span>
        <span className="click-element">
          {sort.sortOrder==="asc"?<i className="fa fa-angle-up fa-lg font-weight-bold" title="Ascending" onClick={()=>updateSortOrder(index,"desc")}/>:
-           <i dat-title="Descending" onClick={()=>updateSortOrder(index,"asc")} className="fa fa-angle-down fa-lg font-weight-bold"/>}
+           <img className="down-size" dat-title="Descending" onClick={()=>updateSortOrder(index,"asc")} src="/webfonts/fa_angle-down.svg" alt="back"/>}
        </span>
      </div>
    ))
@@ -103,7 +103,8 @@ const TaskSortSelectedList = () => {
   return  (<div className="d-flex flex-wrap" ref={createNode}>
     {selectedSortList()}
     {sortOptions.length?<div className="ml-1">
-      <i className="fa fa-plus fa-sm click-element" onClick={()=>setShowSortListDropdown(!showSortListDropdown)} dat-title="Add sorting"/>
+    <img className="click-element" src="/webfonts/fa_plus.svg" dat-title="Add sorting" onClick={()=>setShowSortListDropdown(!showSortListDropdown)} alt="back"/>
+
      {showSortListDropdown?<TaskSort handleClick={addSort} options={sortOptions}/>:null}
     </div>:null}
   </div>)

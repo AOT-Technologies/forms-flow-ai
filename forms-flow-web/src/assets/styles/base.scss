@@ -35,6 +35,10 @@
 .click-element {
   cursor: pointer;
 }
+.down-size{
+  width: 13px;
+  height: 15px;
+}
 .click-element[dat-title]:hover:after,i[dat-title]:hover:after {
   font-size: 12px;
   font-weight: 300;
@@ -58,4 +62,30 @@
   background-image: -moz-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -ms-linear-gradient(top, #eeeeee, #cccccc);
   background-image: -o-linear-gradient(top, #eeeeee, #cccccc);
+}
+.operator-container{
+
+}
+.operator-box-container{
+  display: inline-block;
+}
+.operator-selector{
+  border:none;
+  -o-appearance: none;
+   -ms-appearance: none;
+   -webkit-appearance: none;
+   -moz-appearance: none;
+   appearance: none;
+  //  width: 45px;
+  padding: 0 0 0 3px;
+  padding-right: 12px;
+  background-color: #f2dede;
+  outline: none;
+  color: #155cb5;
+}
+.operator-selector select {
+  display: none; /*hide original SELECT element:*/
+}
+.selection-item{
+  background-color: white;
 }

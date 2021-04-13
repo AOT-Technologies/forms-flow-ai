@@ -116,6 +116,41 @@ export const setFilterListSortParams = (data) => dispatch =>{
   })
 }
 
+export const setFilterListSearchParams = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.UPDATE_FILTER_LIST_SEARCH_PARAMS,
+    payload:data
+  })
+}
+
+export const setFilterListParams = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.UPDATE_LIST_PARAMS,
+    payload:data
+  })
+}
+
+export const setSearchQueryType = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.UPDATE_SEARCH_QUERY_TYPE,
+    payload:data
+  })
+}
+
+export const setIsVariableNameIgnoreCase = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.UPDATE_VARIABLE_NAME_IGNORE_CASE,
+    payload:data
+  })
+}
+
+export const setIsVariableValueIgnoreCase = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.UPDATE_VARIABLE_VALUE_IGNORE_CASE,
+    payload:data
+  })
+}
+
 export const serviceActionError = (data) => dispatch => {
   //TODO update to a common file
   dispatch({

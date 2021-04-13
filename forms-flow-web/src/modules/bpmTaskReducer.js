@@ -1,5 +1,7 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 import {TASK_FILTER_LIST_DEFAULT_PARAM} from "../constants/taskConstants";
+import {getFormattedParams} from "../apiManager/services/taskSearchParamsFormatterService";
+import {QUERY_TYPES} from "../components/ServiceFlow/constants/taskConstants";
 
 const initialState = {
   isTaskListLoading:false,
@@ -18,7 +20,13 @@ const initialState = {
   isFilterLoading:true,
   selectedFilter:null,
   taskId:null,
-  filterListSortParams:{sorting:TASK_FILTER_LIST_DEFAULT_PARAM},
+  filterListSortParams:{sorting:[{...TASK_FILTER_LIST_DEFAULT_PARAM}]},
+  filterSearchSelections:[],
+  filterListSearchParams:{},
+  listReqParams:{sorting:[{...TASK_FILTER_LIST_DEFAULT_PARAM}]},
+  searchQueryType:QUERY_TYPES.ALL,
+  variableNameIgnoreCase:false,
+  variableValueIgnoreCase:false,
   taskGroups:[]
 }
 
@@ -60,6 +68,16 @@ const bpmTasks =(state = initialState, action)=> {
       return {...state, taskGroups:action.payload,isGroupLoading:false}
     case ACTION_CONSTANTS.UPDATE_FILTER_LIST_SORT_PARAMS:
       return {...state, filterListSortParams:{sorting:action.payload}}
+    case ACTION_CONSTANTS.UPDATE_FILTER_LIST_SEARCH_PARAMS:
+      return {...state, filterListSearchParams:getFormattedParams(action.payload,state.searchQueryType,state.variableNameIgnoreCase, state.variableValueIgnoreCase), filterSearchSelections:action.payload}
+    case ACTION_CONSTANTS.UPDATE_SEARCH_QUERY_TYPE:
+      return {...state, filterListSearchParams:getFormattedParams(state.filterSearchSelections,action.payload,state.variableNameIgnoreCase, state.variableValueIgnoreCase), searchQueryType:action.payload}
+    case ACTION_CONSTANTS.UPDATE_VARIABLE_NAME_IGNORE_CASE:
+      return {...state, filterListSearchParams:getFormattedParams(state.filterSearchSelections,state.searchQueryType,action.payload, state.variableValueIgnoreCase), variableNameIgnoreCase:action.payload}
+    case ACTION_CONSTANTS.UPDATE_VARIABLE_VALUE_IGNORE_CASE:
+      return {...state, filterListSearchParams:getFormattedParams(state.filterSearchSelections,state.searchQueryType,state.variableNameIgnoreCase,action.payload), variableValueIgnoreCase:action.payload}
+    case ACTION_CONSTANTS.UPDATE_LIST_PARAMS:
+      return {...state, listReqParams:action.payload}
     default:
       return state;
   }

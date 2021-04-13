@@ -59,7 +59,7 @@ const AddGroupModal= (props)=> {
                   <Col lg={4} xs={12} sm={4} md={4} xl={4} className="text-right">
                     <button className="add btn btn-link" onClick={onAddGroup} disabled={!groupToAdd}>
                       <span>Add a group</span>
-                      <span><i className="fa fa-plus ml-1 mt-1" /></span>
+                      <span><img className="ml-1 mt-1" src="/webfonts/fa_plus.svg"/></span>
                     </button>
                   </Col>
                   <Col lg={8} xs={12} sm={8} md={8} xl={8}>

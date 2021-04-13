@@ -137,10 +137,10 @@ const TaskHeader = ({ task }) => {
     <AddGroupModal modalOpen={showModal} onClose={()=>setModal(false)} groups={taskGroups}/>
       <Row className="ml-0 task-header">{task?.name}</Row>
       <Row className="ml-0 task-name" >
-      <span class="application-id" dat-title={"Process Name"}> {getProcessDataFromList(processList, task?.processDefinitionId, "name")}</span>
+      <span className="application-id" dat-title={"Process Name"}> {getProcessDataFromList(processList, task?.processDefinitionId, "name")}</span>
       </Row>
       <Row className="ml-0" >
-      <span data-title="Application Id" class="application-id"> Application ID# {task?.applicationId}</span>
+      <span data-title="Application Id" className="application-id"> Application ID# {task?.applicationId}</span>
       </Row>
       <Row className="actionable">
         <Col data-title={followUpDate?getFormattedDateAndTime(followUpDate):'Set FollowUp Date'} className='date-container'>
@@ -199,7 +199,7 @@ const TaskHeader = ({ task }) => {
             (<>
           <i className="fa fa-user mr-1" />
           {task?.assignee ? (<span>
-              <span class="change-tooltip" onClick={()=>setIsEditAssignee(true)} dat-title="Click to Change Assignee">{task.assignee}</span>
+              <span className="change-tooltip" onClick={()=>setIsEditAssignee(true)} dat-title="Click to Change Assignee">{task.assignee}</span>
               <i className="fa fa-times ml-1" onClick={onUnClaimTask} dat-title="Reset Assignee"/></span>) :
               <span onClick={onClaim}> Claim</span>
             }

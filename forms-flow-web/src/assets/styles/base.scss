@@ -35,6 +35,10 @@
 .click-element {
   cursor: pointer;
 }
+.down-size{
+  width: 13px;
+  height: 15px;
+}
 .click-element[dat-title]:hover:after,i[dat-title]:hover:after {
   font-size: 12px;
   font-weight: 300;

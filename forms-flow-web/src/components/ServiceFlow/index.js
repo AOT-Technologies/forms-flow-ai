@@ -23,7 +23,6 @@ const ServiceFlow = () => {
   const isFilterLoading = useSelector(state=> state.bpmTasks.isFilterLoading);
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
   const selectedFilterId=useSelector(state=>state.bpmTasks.selectedFilter?.id||null);
-  const taskList = useSelector(state => state.bpmTasks.tasksList);
   const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const reqData = useSelector((state) => state.bpmTasks.listReqParams);
   const sortParams = useSelector((state) => state.bpmTasks.filterListSortParams);
@@ -96,7 +95,7 @@ const ServiceFlow = () => {
   return (
     <Container fluid id="main" className="pt-0">
       <Row>
-        <Col lg={taskList.length?3:12} xs={12} sm={12} md={4} xl={taskList.length?3:12}>
+        <Col lg={3} xs={12} sm={12} md={4} xl={3}>
           <section>
             <header className="task-section-top">
               <TaskSortSelectedList/>
@@ -104,9 +103,9 @@ const ServiceFlow = () => {
               <ServiceFlowTaskList/>
           </section>
         </Col>
-        {taskList.length?<Col className="pl-0" lg={9} xs={12} sm={12} md={6} xl={9}>
+        <Col className="pl-0" lg={9} xs={12} sm={12} md={8} xl={9}>
           <ServiceFlowTaskDetails/>
-        </Col>:null}
+        </Col>
       </Row>
     </Container>
   )

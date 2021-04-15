@@ -64,7 +64,7 @@ const TaskFilterComponent = ({totalTasks}) => {
     updatedSelectionsArray[index].label=filter.label;
     updatedSelectionsArray[index].type=filter.type;
     updatedSelectionsArray[index].operator=filter.operator;
-    updatedSelectionsArray[index].key=filter.operator;
+    updatedSelectionsArray[index].key=filter.key;
     setFilterSelections(updatedSelectionsArray);
   }
 

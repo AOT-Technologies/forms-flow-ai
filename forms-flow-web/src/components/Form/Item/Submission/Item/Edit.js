@@ -127,7 +127,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             if(onFormSubmit){
              onFormSubmit();
             }else{
-              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
             }
           }
         }

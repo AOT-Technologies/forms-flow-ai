@@ -83,7 +83,7 @@ const doProcessActions = (submission, ownProps) => {
           if (!err) {
             if (IsAuth) {
               dispatch(setFormSubmissionLoading(false));
-              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
             }else{
               dispatch(setFormSubmissionLoading(false));
             }
@@ -91,7 +91,7 @@ const doProcessActions = (submission, ownProps) => {
           } else { //TO DO Update to show error message
             if (IsAuth) {
               dispatch(setFormSubmissionLoading(false));
-              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
             }else{
               dispatch(setFormSubmissionLoading(false));
             }

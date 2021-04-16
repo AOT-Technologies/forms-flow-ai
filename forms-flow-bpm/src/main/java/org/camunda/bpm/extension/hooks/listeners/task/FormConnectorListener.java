@@ -200,8 +200,8 @@ public class FormConnectorListener implements TaskListener {
      * @return
      */
     private String getModifiedFormUrl(DelegateTask delegateTask, String submissionId) {
-        String formUrl = getFormUrl(delegateTask);
-        return StringUtils.replace(formUrl, StringUtils.substringBetween(formUrl, "form/", "/submission"), getFormId(delegateTask))+ "/" + submissionId;
+        String formUrl = StringUtils.substringBefore(getFormUrl(delegateTask),"/form/");
+        return formUrl+ "/form/" + getFormId(delegateTask) + "/submission/" + submissionId;
     }
 
 }

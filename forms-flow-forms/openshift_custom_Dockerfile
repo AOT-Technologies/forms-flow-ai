@@ -45,7 +45,7 @@ RUN ln -sf $NPM_PACKAGES/node_modules node_modules
 #   DEBUG=formio:*
 ENV DEBUG=""
 
-RUN cp /forms/forms-flow-forms/* /forms-flow-forms/app/
+RUN cp /forms/forms-flow-forms/* /forms-flow-forms/app
 
 RUN set -x \
 	&& chmod -R 777 /forms-flow-forms/app/

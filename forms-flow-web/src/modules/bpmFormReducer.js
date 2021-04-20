@@ -16,14 +16,15 @@ const initialState = {
   select:'',
   sort:'',
   totalForms:"",
+  maintainPagination:false
 };
 
 const bpmForms = (state = initialState, action)=> {
   switch (action.type) {
     case ACTION_CONSTANTS.BPM_FORM_LIST:
-      return {...state, forms: getPaginatedForms(formatForms(action.payload),state.limit,1, state.sort), formsFullList:formatForms(action.payload), isActive: false,  totalForms:action.payload.length,  pagination: {
+      return {...state, forms: getPaginatedForms(formatForms(action.payload),state.limit, state.maintainPagination? state.pagination.page:1, state.sort), formsFullList:formatForms(action.payload), isActive: false,  totalForms:action.payload.length,  pagination: {
           numPages: Math.ceil(action.payload.length/ state.limit),
-          page: 1,
+          page: state.maintainPagination? state.pagination.page:1,
           total: action.payload.length,
         }};
     case ACTION_CONSTANTS.IS_BPM_FORM_LIST_LOADING:
@@ -39,6 +40,8 @@ const bpmForms = (state = initialState, action)=> {
         }, forms:getPaginatedForms(state.formsFullList,action.payload,1, state.sort)}
     case ACTION_CONSTANTS.BPM_FORM_LIST_SORT_CHANGE:
       return {...state, sort:action.payload,forms:getPaginatedForms(state.formsFullList,state.limit,state.pagination.page, action.payload)};
+    case ACTION_CONSTANTS.BPM_MAINTAIN_PAGINATION:
+      return {...state, maintainPagination: action.payload};
     default:
       return state;
   }

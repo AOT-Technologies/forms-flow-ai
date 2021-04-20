@@ -1,12 +1,16 @@
 import React, {useEffect} from 'react';
-import {connect, useSelector} from 'react-redux'
+import {connect, useDispatch, useSelector} from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors, getForm } from 'react-formio';
 import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
 
 import Loading from '../../../containers/Loading';
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
-import {setFormSubmissionError, setFormSubmissionLoading} from "../../../actions/formActions";
+import {
+  setFormSubmissionError,
+  setFormSubmissionLoading,
+  setMaintainBPMFormPagination
+} from "../../../actions/formActions";
 import SubmissionError from '../../../containers/SubmissionError';
 import {applicationCreate} from "../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay";
@@ -23,16 +27,19 @@ const View = (props) => {
       form: { form, isActive, url },
       getForm
     } = props;
+   const dispatch = useDispatch();
 
    useEffect(()=>{
     if (!isAuthenticated) {
       getForm();
     }
-   },[getForm, isAuthenticated])
+     dispatch(setMaintainBPMFormPagination(true));
+   },[getForm, isAuthenticated, dispatch])
 
     if (isActive) {
       return <Loading />;
     }
+
     return (
       <div className="container">
         <div className="main-header">
@@ -83,7 +90,9 @@ const doProcessActions = (submission, ownProps) => {
           if (!err) {
             if (IsAuth) {
               dispatch(setFormSubmissionLoading(false));
-              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
+              dispatch(setMaintainBPMFormPagination(true));
+              /*dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))*/
+              dispatch(push(`/form`));
             }else{
               dispatch(setFormSubmissionLoading(false));
             }
@@ -91,7 +100,9 @@ const doProcessActions = (submission, ownProps) => {
           } else { //TO DO Update to show error message
             if (IsAuth) {
               dispatch(setFormSubmissionLoading(false));
-              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
+              dispatch(setMaintainBPMFormPagination(true));
+              //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
+              dispatch(push(`/form`));
             }else{
               dispatch(setFormSubmissionLoading(false));
             }

@@ -15,7 +15,7 @@ import {CLIENT_EDIT_STATUS} from "../../../../../constants/applicationConstants"
 const Item = (props) => {
   const {formId, submissionId} = useParams();
   const dispatch = useDispatch();
-  const path = props.location.pathname;
+  //const path = props.location.pathname;
   const applicationId = useSelector((state) => selectRoot('submission', state)?.submission?.data?.applicationId || null);
   const userRoles = useSelector((state) => {
     return selectRoot("user", state).roles;
@@ -54,7 +54,7 @@ const Item = (props) => {
             <img src="/webfonts/fa_chevron-left.svg" alt="back"/>
           </Link>
         </li>:null}
-        {(path.indexOf("edit") > 0) ?
+        {/*{(path.indexOf("edit") > 0) ?
           <li className="nav-item">
             <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}`}>
             <img src="/webfonts/fa_eye.svg" alt="back"/> View
@@ -66,7 +66,7 @@ const Item = (props) => {
               <img src="/webfonts/fa_edit.svg" alt="back"/> Edit
             </Link>
           </li>) : null
-        }
+        }*/}
       </ul>
       <Switch>
         <Route exact path="/form/:formId/submission/:submissionId" component={View}/>

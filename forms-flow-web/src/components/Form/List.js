@@ -49,6 +49,7 @@ const List = (props)=> {
     forms,
     onAction,
     getForms,
+    getFormsInit,
     errors,
     userRoles,
     formId,
@@ -58,6 +59,9 @@ const List = (props)=> {
   const isBPMFormListLoading = useSelector(state=> state.bpmForms.isActive);
   const bpmForms = useSelector(state=> state.bpmForms);
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
+ /* const formPagination = useSelector(state=> state.forms.pagination);
+  const maintainPagination = useSelector(state=>state.bpmForms.maintainPagination)
+*/
   const operations = getOperations(userRoles);
 
   const getFormsList = (page,query)=>{
@@ -75,12 +79,12 @@ const List = (props)=> {
 
   useEffect(()=>{
     if(isDesigner){
-      getForms(1);
+      getFormsInit(1);
     }else {
       dispatch(setBPMFormListLoading(true))
       dispatch(fetchBPMFormList());
     }
-  },[getForms,dispatch, isDesigner])
+  },[getFormsInit, dispatch, isDesigner])
 
   if (forms.isActive || isBPMFormListLoading) {
       return <Loading />;
@@ -138,10 +142,22 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const getInitForms =  (page=1, query)=>{
+  return (dispatch, getState) => {
+    const state = getState();
+    const currentPage =state.forms.pagination.page;
+    const maintainPagination = state.bpmForms.maintainPagination;
+    dispatch(indexForms("forms", maintainPagination?currentPage:page, query));
+  }
+}
+
+const mapDispatchToProps = (dispatch,ownProps) => {
   return {
     getForms: (page, query) => {
       dispatch(indexForms("forms", page, query));
+    },
+    getFormsInit: (page, query) => {
+      dispatch(getInitForms( page, query));
     },
     onAction: (form, action) => {
       switch (action) {

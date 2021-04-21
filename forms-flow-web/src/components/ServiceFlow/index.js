@@ -11,7 +11,6 @@ import {
 } from "../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
 import {setBPMFilterLoader, setFilterListParams, setSelectedBPMFilter} from "../../actions/bpmTaskActions";
-import {ALL_TASKS} from "./constants/taskConstants";
 import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 import isEqual from 'lodash/isEqual';
@@ -46,16 +45,7 @@ const ServiceFlow = () => {
 
   useEffect(()=>{
     if(!isFilterLoading && filterList.length && !selectedFilter){
-      let filterSelected;
-      if(filterList.length>1){
-        filterSelected = filterList.find(filter=> filter.name===ALL_TASKS);
-        if(!filterSelected){
-          filterSelected=filterList[0];
-        }
-      }else {
-        filterSelected = filterList[0];
-      }
-      dispatch(setSelectedBPMFilter(filterSelected));
+      dispatch(setSelectedBPMFilter(filterList[0]));
     }
   },[filterList,isFilterLoading,selectedFilter,dispatch]);
 

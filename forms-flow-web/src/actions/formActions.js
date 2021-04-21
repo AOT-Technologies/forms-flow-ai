@@ -62,6 +62,13 @@ export const setBPMFormLimit = (pageLimit) => dispatch =>{
   })
 }
 
+export const setMaintainBPMFormPagination = (maintainList) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.BPM_MAINTAIN_PAGINATION,
+    payload:maintainList
+  })
+}
+
 export const setBPMFormListSort = (sort) => dispatch =>{
   dispatch({
     type:ACTION_CONSTANTS.BPM_FORM_LIST_SORT_CHANGE,

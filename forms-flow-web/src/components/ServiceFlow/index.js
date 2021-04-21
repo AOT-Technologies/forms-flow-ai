@@ -11,7 +11,6 @@ import {
 } from "../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
 import {setBPMFilterLoader, setFilterListParams, setSelectedBPMFilter} from "../../actions/bpmTaskActions";
-import {ALL_TASKS} from "./constants/taskConstants";
 import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 import isEqual from 'lodash/isEqual';

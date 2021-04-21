@@ -46,16 +46,7 @@ const ServiceFlow = () => {
 
   useEffect(()=>{
     if(!isFilterLoading && filterList.length && !selectedFilter){
-      let filterSelected;
-      if(filterList.length>1){
-        filterSelected = filterList.find(filter=> filter.name===ALL_TASKS);
-        if(!filterSelected){
-          filterSelected=filterList[0];
-        }
-      }else {
-        filterSelected = filterList[0];
-      }
-      dispatch(setSelectedBPMFilter(filterSelected));
+      dispatch(setSelectedBPMFilter(filterList[0]));
     }
   },[filterList,isFilterLoading,selectedFilter,dispatch]);
 

@@ -31,7 +31,8 @@ public class NotifyListener implements TaskListener, IMessageEvent {
     private Expression messageId;
     private Expression category;
 
-    private Expression additionalEmailGroups;
+    private Expression emailGroups;
+    private Expression groupsOnly;
 
     /**
      * This provides the necessary information to send message.
@@ -39,13 +40,21 @@ public class NotifyListener implements TaskListener, IMessageEvent {
      * @param delegateTask: The task which sends the message
      */
     public void notify(DelegateTask delegateTask) {
-         List<String> toEmails =  getEmailsOfUnassignedTask(delegateTask);
-        if(CollectionUtils.isNotEmpty(getAdditionalEmailGroups(delegateTask))) {
-            for(String entry : getAdditionalEmailGroups(delegateTask)) {
-                toEmails.addAll(getEmailsForGroup(delegateTask.getExecution(), entry));
-            }
+        List<String> toEmails =  new ArrayList<>();
+        if(!"Y".equals(getGroupsOnly(delegateTask))) {
+            toEmails.addAll(getEmailsOfUnassignedTask(delegateTask));
+
         }
-            sendEmailNotification(delegateTask, getEmailsOfUnassignedTask(delegateTask),delegateTask.getId());
+
+            if (CollectionUtils.isNotEmpty(getEmailGroups(delegateTask))) {
+                for (String entry : getEmailGroups(delegateTask)) {
+                    toEmails.addAll(getEmailsForGroup(delegateTask.getExecution(), entry));
+                }
+            }
+            sendEmailNotification(delegateTask, toEmails ,delegateTask.getId());
+
+
+
     }
 
     /**
@@ -86,18 +95,28 @@ public class NotifyListener implements TaskListener, IMessageEvent {
         return String.valueOf(this.messageId.getValue(delegateTask));
     }
 
-    private List<String>  getAdditionalEmailGroups(DelegateTask delegateTask){
-        List<String> additionalGroups = new ArrayList<>();
+    private List<String> getEmailGroups(DelegateTask delegateTask){
+        List<String> emailGroups = new ArrayList<>();
         try {
-            if(this.additionalEmailGroups != null &&
-                    StringUtils.isNotBlank(String.valueOf(this.additionalEmailGroups.getValue(delegateTask)))) {
-                additionalGroups = this.additionalEmailGroups != null && this.additionalEmailGroups.getValue(delegateTask) != null ?
-                        getObjectMapper().readValue(String.valueOf(this.additionalEmailGroups.getValue(delegateTask)), List.class) : null;
+            if(this.emailGroups != null &&
+                    StringUtils.isNotBlank(String.valueOf(this.emailGroups.getValue(delegateTask)))) {
+                emailGroups = this.emailGroups != null && this.emailGroups.getValue(delegateTask) != null ?
+                        getObjectMapper().readValue(String.valueOf(this.emailGroups.getValue(delegateTask)), List.class) : null;
             }
         } catch (JsonProcessingException e) {
             LOGGER.log(Level.SEVERE, "Exception occured in reading additionalEmailGroups" , e);
         }
-        return  additionalGroups;
+        return  emailGroups;
+    }
+
+    private String getGroupsOnly(DelegateTask delegateTask){
+
+        if(this.groupsOnly != null &&
+                StringUtils.isNotBlank(String.valueOf(this.groupsOnly.getValue(delegateTask)))) {
+            return this.groupsOnly != null && this.groupsOnly.getValue(delegateTask) != null ?
+                    String.valueOf(this.groupsOnly.getValue(delegateTask)) : null;
+        }
+        return  "N";
     }
 
     /**

@@ -24,7 +24,7 @@ import {
   setBPMFormLimit,
   setBPMFormListLoading,
   setBPMFormListPage, setBPMFormListSort,
-  setFormDeleteStatus
+  setFormDeleteStatus, setMaintainBPMFormPagination
 } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
 import {fetchBPMFormList} from "../../apiManager/services/bpmFormServices";
@@ -179,6 +179,7 @@ const mapDispatchToProps = (dispatch,ownProps) => {
           dispatch(setFormDeleteStatus(formDetails));
           break;
         case "viewForm":
+          dispatch(setMaintainBPMFormPagination(true));
           dispatch(push(`/formflow/${form._id}/view-edit`));
           break;
         default:

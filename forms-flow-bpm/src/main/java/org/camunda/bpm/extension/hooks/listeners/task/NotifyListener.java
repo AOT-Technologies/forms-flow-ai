@@ -43,13 +43,15 @@ public class NotifyListener implements TaskListener, IMessageEvent {
         List<String> toEmails =  new ArrayList<>();
         if(!"Y".equals(getGroupsOnly(delegateTask))) {
             toEmails.addAll(getEmailsOfUnassignedTask(delegateTask));
+
         }
-        if(CollectionUtils.isNotEmpty(getEmailGroups(delegateTask))) {
-            for(String entry : getEmailGroups(delegateTask)) {
-                toEmails.addAll(getEmailsForGroup(delegateTask.getExecution(), entry));
+
+            if (CollectionUtils.isNotEmpty(getEmailGroups(delegateTask))) {
+                for (String entry : getEmailGroups(delegateTask)) {
+                    toEmails.addAll(getEmailsForGroup(delegateTask.getExecution(), entry));
+                }
             }
-        }
-        sendEmailNotification(delegateTask, toEmails, delegateTask.getId());
+            sendEmailNotification(delegateTask, toEmails, delegateTask.getId());
     }
 
     /**

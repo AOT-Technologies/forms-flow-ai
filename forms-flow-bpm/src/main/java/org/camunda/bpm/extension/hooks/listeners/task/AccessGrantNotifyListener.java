@@ -54,9 +54,9 @@ public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
         LOGGER.info("Current Group="+excludeGroupValue+"|Modified GroupData=" + modifedGroupStr);
 
         if(StringUtils.isBlank(delegateTask.getAssignee()) && CollectionUtils.isNotEmpty(accessGroupList)) {
-                for (String entry : accessGroupList) {
-                    notifyGrp.addAll(getEmailsForGroup(delegateTask.getExecution(), entry));
-                }
+            for (String entry : accessGroupList) {
+                notifyGrp.addAll(getEmailsForGroup(delegateTask.getExecution(), entry));
+            }
         }
 
         if(CollectionUtils.isNotEmpty(notifyGrp)) {

@@ -11,7 +11,7 @@ class ApplicationAudit(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     application_id = db.Column(db.Integer,nullable=False)
-    application_status = db.Column(db.String(50), nullable=False)
+    application_status = db.Column(db.String(100), nullable=False)
     form_url = db.Column(db.String(500), nullable=False)
     
 

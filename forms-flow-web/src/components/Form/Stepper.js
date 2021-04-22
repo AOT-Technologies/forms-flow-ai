@@ -27,6 +27,7 @@ import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
 
 import "./stepper.scss";
+import {Link} from "react-router-dom";
 
 /*const statusList = [
   { label: "Active", value: "active" },
@@ -347,6 +348,13 @@ class StepperPage extends Component {
     return (
       <>
         <div>
+          {this.props.isAuthenticated ?
+            <Link to="/form" title="Back to Form List">
+              <img src="/back.svg" alt="back" />
+            </Link>
+            :
+            null
+          }
           <Paper elevation={3} className="paper-root">
             <Grid
               container
@@ -397,6 +405,7 @@ const mapStateToProps = (state) => {
     errors: selectError("form", state),
     processList: state.process.processList,
     formProcessList: state.process.formProcessList,
+    isAuthenticated: state.user.isAuthenticated
   };
 };
 

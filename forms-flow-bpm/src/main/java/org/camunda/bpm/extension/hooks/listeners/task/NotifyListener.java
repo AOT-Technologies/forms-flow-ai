@@ -49,7 +49,7 @@ public class NotifyListener implements TaskListener, IMessageEvent {
                 toEmails.addAll(getEmailsForGroup(delegateTask.getExecution(), entry));
             }
         }
-        sendEmailNotification(delegateTask, getEmailsOfUnassignedTask(delegateTask),delegateTask.getId());
+        sendEmailNotification(delegateTask, toEmails, delegateTask.getId());
     }
 
     /**

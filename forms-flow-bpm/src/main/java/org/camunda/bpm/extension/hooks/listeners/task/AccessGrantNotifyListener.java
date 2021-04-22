@@ -23,7 +23,8 @@ import java.util.logging.Logger;
 public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
 
     private Expression excludeGroup;
-    private Expression messageName;
+    private Expression messageId;
+    private Expression category;
 
     private static final Logger LOGGER = Logger.getLogger(AccessGrantNotifyListener.class.getName());
 
@@ -71,7 +72,7 @@ public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
         if(StringUtils.isNotEmpty(toAddress)) {
             Map<String, Object> emailAttributes = new HashMap<>();
             emailAttributes.put("to", toAddress);
-            emailAttributes.put("category", "accessgrant_notification");
+            emailAttributes.put("category", getCategory(execution));
             emailAttributes.put("name",getDefaultAddresseName());
             emailAttributes.put("taskid",taskId);
             log.info("Inside notify attributes:" + emailAttributes);
@@ -105,6 +106,10 @@ public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
     }
 
     private String getMessageId(DelegateExecution execution){
-        return String.valueOf(this.messageName.getValue(execution));
+        return String.valueOf(this.messageId.getValue(execution));
+    }
+
+    private String getCategory(DelegateExecution execution){
+        return String.valueOf(this.category.getValue(execution));
     }
 }

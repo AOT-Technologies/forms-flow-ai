@@ -19,6 +19,7 @@ const NavBar = () => {
   const dispatch= useDispatch();
 
   const logout = () => {
+      dispatch(push(`/`));
       UserService.userLogout();
   }
 

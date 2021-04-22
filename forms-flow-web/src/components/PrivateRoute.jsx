@@ -61,7 +61,7 @@ const PrivateRoute = (props) => {
             <ReviewerRoute path="/task" component={ServiceFlow} />
            {/* <ReviewerRoute path="/service-flow-task" component={ServiceFlow} />*/}
             <Route exact path="/">
-              <Redirect to="/form" />
+              <Redirect to={userRoles.includes(STAFF_REVIEWER)?'/task':'/form'} />
             </Route>
             <ReviewerRoute path="/insights" component={InsightsPage} />
           </>

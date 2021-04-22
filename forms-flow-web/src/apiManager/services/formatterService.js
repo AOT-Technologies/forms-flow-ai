@@ -82,13 +82,20 @@ export const getISODateTime=(date)=>{
       const replaceTimezone = dateTimeArr[1]?.replace(':', '');
       return dateTimeFormat.replace(dateTimeArr[1], replaceTimezone);
     }else{
-      return dateTimeFormat;
+      const dateTimeArr = dateTimeFormat.split('-');
+      if(dateTimeArr && dateTimeArr[1]){
+        const replaceTimezone = dateTimeArr[1]?.replace(':', '');
+        return dateTimeFormat.replace(dateTimeArr[1], replaceTimezone);
+      }else{
+        return dateTimeFormat;
+      }
     }
   }else{
     return null
   }
   //return new Date(date).toISOString();
 };
+
 
 export const getFormattedDateAndTime = (date)=>{
   return new Date(date).toLocaleDateString('en-us',  {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',hour: '2-digit', minute: '2-digit', hour12: true});

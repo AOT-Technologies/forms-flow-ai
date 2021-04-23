@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.TaskListener;
@@ -41,17 +42,17 @@ public class NotifyListener implements TaskListener, IMessageEvent {
      */
     public void notify(DelegateTask delegateTask) {
         List<String> toEmails =  new ArrayList<>();
-        if(!"Y".equals(getGroupsOnly(delegateTask))) {
+        if(!"Y".equals(getGroupsOnly(delegateTask.getExecution()))) {
             toEmails.addAll(getEmailsOfUnassignedTask(delegateTask));
 
         }
 
-            if (CollectionUtils.isNotEmpty(getEmailGroups(delegateTask))) {
-                for (String entry : getEmailGroups(delegateTask)) {
-                    toEmails.addAll(getEmailsForGroup(delegateTask.getExecution(), entry));
-                }
+        if (CollectionUtils.isNotEmpty(getEmailGroups(delegateTask.getExecution()))) {
+            for (String entry : getEmailGroups(delegateTask.getExecution())) {
+                toEmails.addAll(getEmailsForGroup(delegateTask.getExecution(), entry));
             }
-            sendEmailNotification(delegateTask, toEmails ,delegateTask.getId());
+        }
+        sendEmailNotification(delegateTask, toEmails ,delegateTask.getId());
 
 
 
@@ -68,40 +69,34 @@ public class NotifyListener implements TaskListener, IMessageEvent {
         if(StringUtils.isNotEmpty(toAddress)) {
             Map<String, Object> emailAttributes = new HashMap<>();
             emailAttributes.put("email_to", toAddress);
-            emailAttributes.put("category", getCategory(delegateTask));
+            emailAttributes.put("category", getCategory(delegateTask.getExecution()));
             emailAttributes.put("name",getDefaultAddresseName());
             emailAttributes.put("taskid",taskId);
             if(StringUtils.isNotBlank(toAddress) && StringUtils.indexOf(toAddress,"@") > 0) {
-                sendMessage(delegateTask.getExecution(), emailAttributes,getMessageId(delegateTask));
+                sendMessage(delegateTask.getExecution(), emailAttributes,getMessageId(delegateTask.getExecution()));
             }
         }
     }
-
-    /**
-     *
-     * @param delegateTask
-     * @return
-     */
-    private String getCategory(DelegateTask delegateTask){
-        return String.valueOf(this.category.getValue(delegateTask));
+    private String getCategory(DelegateExecution delegateExecution){
+        return String.valueOf(this.category.getValue(delegateExecution));
     }
 
     /**
      *
-     * @param delegateTask
+     * @param delegateExecution
      * @return
      */
-    private String getMessageId(DelegateTask delegateTask){
-        return String.valueOf(this.messageId.getValue(delegateTask));
+    private String getMessageId(DelegateExecution delegateExecution){
+        return String.valueOf(this.messageId.getValue(delegateExecution));
     }
 
-    private List<String> getEmailGroups(DelegateTask delegateTask){
+    private List<String> getEmailGroups(DelegateExecution delegateExecution){
         List<String> emailGroups = new ArrayList<>();
         try {
             if(this.emailGroups != null &&
-                    StringUtils.isNotBlank(String.valueOf(this.emailGroups.getValue(delegateTask)))) {
-                emailGroups = this.emailGroups != null && this.emailGroups.getValue(delegateTask) != null ?
-                        getObjectMapper().readValue(String.valueOf(this.emailGroups.getValue(delegateTask)), List.class) : null;
+                    StringUtils.isNotBlank(String.valueOf(this.emailGroups.getValue(delegateExecution)))) {
+                emailGroups = this.emailGroups != null && this.emailGroups.getValue(delegateExecution) != null ?
+                        getObjectMapper().readValue(String.valueOf(this.emailGroups.getValue(delegateExecution)), List.class) : null;
             }
         } catch (JsonProcessingException e) {
             LOGGER.log(Level.SEVERE, "Exception occured in reading additionalEmailGroups" , e);
@@ -109,12 +104,12 @@ public class NotifyListener implements TaskListener, IMessageEvent {
         return  emailGroups;
     }
 
-    private String getGroupsOnly(DelegateTask delegateTask){
+    private String getGroupsOnly(DelegateExecution delegateExecution){
 
         if(this.groupsOnly != null &&
-                StringUtils.isNotBlank(String.valueOf(this.groupsOnly.getValue(delegateTask)))) {
-            return this.groupsOnly != null && this.groupsOnly.getValue(delegateTask) != null ?
-                    String.valueOf(this.groupsOnly.getValue(delegateTask)) : null;
+                StringUtils.isNotBlank(String.valueOf(this.groupsOnly.getValue(delegateExecution)))) {
+            return this.groupsOnly != null && this.groupsOnly.getValue(delegateExecution) != null ?
+                    String.valueOf(this.groupsOnly.getValue(delegateExecution)) : null;
         }
         return  "N";
     }

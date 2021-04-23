@@ -23,7 +23,7 @@ import java.util.logging.Logger;
 public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
 
     private Expression excludeGroup;
-    private Expression messageName;
+    private Expression messageId;
 
 
     private static final Logger LOGGER = Logger.getLogger(AccessGrantNotifyListener.class.getName());
@@ -116,6 +116,6 @@ public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
     }
 
     private String getMessageId(DelegateExecution execution){
-        return String.valueOf(this.messageName.getValue(execution));
+        return String.valueOf(this.messageId.getValue(execution));
     }
 }

@@ -23,13 +23,14 @@ import java.util.logging.Logger;
 public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
 
     private Expression excludeGroup;
-    private Expression messageId;
-    private Expression category;
+    private Expression messageName;
+
 
     private static final Logger LOGGER = Logger.getLogger(AccessGrantNotifyListener.class.getName());
 
     @Value("${formbuilder.pipeline.service.bpm-url}")
     private String appcontexturl;
+    private Expression category;
 
     /**
      * This provides the necessary information to send message.
@@ -39,8 +40,8 @@ public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
     public void notify(DelegateTask delegateTask) {
         LOGGER.info("\n\nAccessGrantNotify listener invoked! " + delegateTask.getId());
         List<String> notifyGrp = new ArrayList<>();
-        String excludeGroupValue = this.excludeGroup != null && this.excludeGroup.getValue(delegateTask) != null ?
-                String.valueOf(this.excludeGroup.getValue(delegateTask)) : null;
+        String excludeGroupValue = this.excludeGroup != null && this.excludeGroup.getValue(delegateTask.getExecution()) != null ?
+                String.valueOf(this.excludeGroup.getValue(delegateTask.getExecution())) : null;
         List<String> exclusionGroupList = new ArrayList<>();
         if(StringUtils.isNotBlank(excludeGroupValue)) {exclusionGroupList.add(excludeGroupValue.trim());}
         if(delegateTask.getExecution().getVariables().containsKey(getTrackVariable(delegateTask))) {
@@ -63,16 +64,16 @@ public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
             if(CollectionUtils.isNotEmpty(accessGroupList)) {
                 delegateTask.getExecution().setVariable(getTrackVariable(delegateTask),modifedGroupStr);
             }
-            sendEmailNotification(delegateTask.getExecution(), notifyGrp, delegateTask.getId());
+            sendEmailNotification(delegateTask.getExecution(), notifyGrp, delegateTask.getId(), getCategory(delegateTask.getExecution()));
         }
     }
 
-    private void sendEmailNotification(DelegateExecution execution, List<String> toEmails, String taskId) {
+    private void sendEmailNotification(DelegateExecution execution, List<String> toEmails, String taskId, String category) {
         String toAddress = CollectionUtils.isNotEmpty(toEmails) ? StringUtils.join(toEmails,",") : null;
         if(StringUtils.isNotEmpty(toAddress)) {
             Map<String, Object> emailAttributes = new HashMap<>();
             emailAttributes.put("to", toAddress);
-            emailAttributes.put("category", getCategory(execution));
+            emailAttributes.put("category", category);
             emailAttributes.put("name",getDefaultAddresseName());
             emailAttributes.put("taskid",taskId);
             log.info("Inside notify attributes:" + emailAttributes);
@@ -85,6 +86,15 @@ public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
 
     private String getAPIContextURL() {
         return StringUtils.remove(StringUtils.remove(appcontexturl, StringUtils.substringBetween(appcontexturl,"://","@")),"@");
+    }
+
+    /**
+     *
+     * @param execution
+     * @return
+     */
+    private String getCategory(DelegateExecution execution){
+        return String.valueOf(this.category.getValue(execution));
     }
 
     private List<String> getModifiedGroupsForTask(DelegateTask delegateTask, List<String> exclusionGroup) {
@@ -106,10 +116,6 @@ public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
     }
 
     private String getMessageId(DelegateExecution execution){
-        return String.valueOf(this.messageId.getValue(execution));
-    }
-
-    private String getCategory(DelegateExecution execution){
-        return String.valueOf(this.category.getValue(execution));
+        return String.valueOf(this.messageName.getValue(execution));
     }
 }

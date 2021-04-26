@@ -123,6 +123,7 @@ const ServiceFlowTaskDetails = () => {
            <div>
              <ProcessDiagram
                process_key={getProcessDataFromList(processList, task?.processDefinitionId,'key')}
+               processInstanceId={task?.processInstanceId||''}
                // markers={processActivityList}
              />
            </div>

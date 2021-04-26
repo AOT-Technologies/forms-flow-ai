@@ -5,7 +5,7 @@ import {useDispatch,useSelector} from "react-redux";
 import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
 import Loading from "../../containers/Loading";
 
-import {fetchDiagram} from "../../apiManager/services/processServices";
+import {fetchDiagram, getProcessActivities} from "../../apiManager/services/processServices";
 import {setProcessDiagramLoading} from "../../actions/processActions";
 import "./bpm.scss"
 //import BpmnJS from 'bpmn-js';
@@ -13,6 +13,7 @@ import usePrevious from "./UsePrevious";
 
 const ProcessDiagram = (props)=>{
   const process_key = props.process_key;
+  const processInstanceId = props.processInstanceId;
   const dispatch= useDispatch();
   const isProcessDiagramLoading = useSelector(state=>state.process.isProcessDiagramLoading);
   const diagramXML = useSelector(state => state.process.processDiagramXML);
@@ -52,6 +53,13 @@ const ProcessDiagram = (props)=>{
       dispatch(fetchDiagram(process_key));
     }
   },[process_key,dispatch])
+
+  useEffect(()=>{
+    if(processInstanceId){
+      dispatch(getProcessActivities(processInstanceId));
+    }
+  },[processInstanceId,dispatch])
+
 
  useEffect(()=>{
    if(diagramXML && bpmnViewer) {

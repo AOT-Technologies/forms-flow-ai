@@ -19,10 +19,12 @@ import LoadingOverlay from "react-loading-overlay";
 import {getForm, getSubmission} from "react-formio";
 import {CUSTOM_EVENT_TYPE} from "../constants/customEventTypes";
 import {getTaskSubmitFormReq} from "../../../apiManager/services/bpmServices";
+import {useParams} from "react-router-dom";
+import {push} from "connected-react-router";
 
 
 const ServiceFlowTaskDetails = () => {
-
+  const {taskId} = useParams();
   const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const task = useSelector(state => state.bpmTasks.taskDetail);
   const processList = useSelector(state=>state.bpmTasks.processList);
@@ -33,6 +35,11 @@ const ServiceFlowTaskDetails = () => {
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
 
+ useEffect(()=>{
+    if(taskId){
+    dispatch(setSelectedTaskID(taskId));
+    }
+  },[taskId, dispatch]);
 
   useEffect(()=>{
     if(bpmTaskId){
@@ -55,6 +62,7 @@ const ServiceFlowTaskDetails = () => {
     dispatch(setBPMTaskDetailLoader(true));
     dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
     dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Tasks
+    dispatch(push(`/task/`));
   }
 
   const reloadCurrentTask = () => {

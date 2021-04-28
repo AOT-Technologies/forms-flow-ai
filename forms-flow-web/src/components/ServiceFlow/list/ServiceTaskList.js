@@ -3,14 +3,14 @@ import { ListGroup, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import {fetchServiceTaskList} from "../../../apiManager/services/bpmTaskServices";
 import {
-  setBPMTaskLoader,
-  setSelectedTaskID,
+  setBPMTaskLoader
 } from "../../../actions/bpmTaskActions";
 import Loading from "../../../containers/Loading";
 import moment from "moment";
 import { getProcessDataFromList,getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
 import TaskFilterComponent from "./search/TaskFilterComponent";
 import Pagination from "react-js-pagination";
+import {push} from "connected-react-router";
 
 const ServiceFlowTaskList = () => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
@@ -40,7 +40,7 @@ const ServiceFlowTaskList = () => {
 
   const getTaskDetails = (taskId) => {
     if(taskId!==bpmTaskId){
-      dispatch(setSelectedTaskID(taskId));
+      dispatch(push(`/task/${taskId}`));
     }
   };
   const handlePageChange = (pageNumber) => {

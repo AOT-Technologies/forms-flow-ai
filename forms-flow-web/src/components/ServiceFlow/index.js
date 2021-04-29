@@ -10,11 +10,13 @@ import {
   fetchUserList, getBPMGroups, getBPMTaskDetail
 } from "../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
+import {ALL_TASKS} from "./constants/taskConstants";
 import {setBPMFilterLoader, setFilterListParams, setSelectedBPMFilter} from "../../actions/bpmTaskActions";
 import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
+import {Route} from "react-router-dom";
 
 const ServiceFlow = () => {
   const dispatch= useDispatch();
@@ -45,7 +47,16 @@ const ServiceFlow = () => {
 
   useEffect(()=>{
     if(!isFilterLoading && filterList.length && !selectedFilter){
-      dispatch(setSelectedBPMFilter(filterList[0]));
+      let filterSelected;
+      if(filterList.length>1){
+        filterSelected = filterList.find(filter=> filter.name===ALL_TASKS);
+        if(!filterSelected){
+          filterSelected=filterList[0];
+        }
+      }else {
+        filterSelected = filterList[0];
+      }
+      dispatch(setSelectedBPMFilter(filterSelected));
     }
   },[filterList,isFilterLoading,selectedFilter,dispatch]);
 
@@ -94,7 +105,8 @@ const ServiceFlow = () => {
           </section>
         </Col>
         <Col className="pl-0" lg={9} xs={12} sm={12} md={8} xl={9}>
-          <ServiceFlowTaskDetails/>
+          <Route path={"/task/:taskId?"}><ServiceFlowTaskDetails/></Route>
+          {/*<ServiceFlowTaskDetails/>*/}
         </Col>
       </Row>
     </Container>

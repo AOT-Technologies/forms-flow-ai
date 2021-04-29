@@ -6,7 +6,6 @@ import startCase from "lodash/startCase";
 import {Tabs, Tab} from "react-bootstrap";
 import Details from "./Details";
 import {getApplicationById,getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
-import {getProcessActivities} from "../../apiManager/services/processServices";
 import Loading from "../../containers/Loading";
 import {setApplicationDetailLoader} from "../../actions/applicationActions";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
@@ -20,7 +19,6 @@ const ViewApplication = () => {
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
   const applicationProcess = useSelector(state => state.applications.applicationProcess);
-  const processActivityList = useSelector(state => state.process.processActivityList);
   const dispatch= useDispatch();
 
   useEffect(()=>{
@@ -33,9 +31,6 @@ const ViewApplication = () => {
               getSubmission("submission", res.submissionId, res.formId)
             );
           }
-          dispatch(
-            getProcessActivities(res.processInstanceId)
-          );
         }
       }));
       dispatch(getApplicationFormDataByAppId(applicationId));
@@ -71,7 +66,7 @@ const ViewApplication = () => {
         <Tab eventKey="process-diagram" title="Process Diagram">
             <ProcessDiagram
               process_key={applicationProcess.processKey}
-              markers={processActivityList}
+              processInstanceId={applicationDetail.processInstanceId}
             />
         </Tab>
       </Tabs>

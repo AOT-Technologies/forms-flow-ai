@@ -46,7 +46,8 @@ $dark: $gray-800;
 .container {
   padding-left: 0;
   padding-right: 0;
-  height: 300px;
+  //height: 100vh;
+  height: 100%;
 }
 .task-container{
   height: 100% !important;

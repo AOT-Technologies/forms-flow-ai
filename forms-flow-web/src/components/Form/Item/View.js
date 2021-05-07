@@ -14,6 +14,7 @@ import {
 import SubmissionError from '../../../containers/SubmissionError';
 import {applicationCreate} from "../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay";
+import {CUSTOM_EVENT_TYPE} from "../../ServiceFlow/constants/customEventTypes";
 
 const View = (props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
@@ -22,6 +23,7 @@ const View = (props) => {
       submission,
       hideComponents,
       onSubmit,
+      onCustomEvent,
       errors,
       options,
       form: { form, isActive, url },
@@ -72,6 +74,7 @@ const View = (props) => {
               options={{ ...options }}
               hideComponents={hideComponents}
               onSubmit={onSubmit}
+              onCustomEvent={onCustomEvent}
             />
           </div>
         </LoadingOverlay>
@@ -109,7 +112,7 @@ const doProcessActions = (submission, ownProps) => {
           }
     }));
   }
-}
+};
 
 const mapStateToProps = (state) => {
   return {
@@ -146,6 +149,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(setFormSubmissionError(ErrorDetails))
         }
       }));
+    },
+    onCustomEvent: (customEvent) => {
+        switch(customEvent.type){
+          case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
+            dispatch(push(`/form`));
+            break;
+          default: return;
+        }
     },
     onConfirm: () => {
       const ErrorDetails = { modalOpen: false, message: "" }

@@ -19,6 +19,7 @@ class BPMEndpointType(IntEnum):
     ProcessDefinitionXML = 6
     MessageEvent = 7
     ProcessInstance = 8
+    AuthFormDetails = 9
 
 
 class BPMService(BaseBPMService):
@@ -61,6 +62,12 @@ class BPMService(BaseBPMService):
         """Post process start."""
         url = f'{cls._get_url_(BPMEndpointType.ProcessDefinition)}key/{process_key}/start'
         return cls.post_request(url, token, payload=payload)
+
+    @classmethod
+    def get_auth_form_details(cls, token):
+        """Get authorized form details."""
+        url = cls._get_url_(BPMEndpointType.AuthFormDetails)
+        return cls.get_request(url, token)
 
     @classmethod
     def get_all_tasks(cls, token):
@@ -122,6 +129,8 @@ class BPMService(BaseBPMService):
             url = bpm_api_base + 'engine-rest/process-definition/'
         elif endpoint_type == BPMEndpointType.DecisionDefinition:
             url = bpm_api_base + 'engine-rest/decision-definition/'
+        elif endpoint_type == BPMEndpointType.AuthFormDetails:
+            url = bpm_api_base + 'engine-rest-ext/form'
         elif endpoint_type == BPMEndpointType.History:
             url = bpm_api_base + 'engine-rest-ext/task'
         elif endpoint_type == BPMEndpointType.Task:

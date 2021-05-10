@@ -183,7 +183,12 @@
 }
 .react-datepicker {
   width: max-content;
-  right: 7rem;
+}
+#task-search-input.date-with-value .react-datepicker {
+  right: 2rem;
+}
+#task-search-input .react-datepicker {
+  right: 5.8rem;
 }
 .added-filters {
   margin-top: 1px;

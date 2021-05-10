@@ -134,7 +134,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
                                       changeOperator={(value) => updateOperator(index, value)}/>
             </span>
 
-            <span>
+            <span id="task-search-input" className={filter.type === Filter_Search_Types.DATE && inputDate?'date-with-value':''}>
               {valueBoxIndex === index ? (
                   filter.type === Filter_Search_Types.DATE ?
                   <DatePicker

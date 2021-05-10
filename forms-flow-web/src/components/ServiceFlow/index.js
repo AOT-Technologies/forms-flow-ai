@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useCallback, useEffect, useRef} from 'react'
 import ServiceFlowTaskList from "./list/ServiceTaskList";
 import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import {Col, Container, Row} from "react-bootstrap";
@@ -29,6 +29,16 @@ const ServiceFlow = () => {
   const sortParams = useSelector((state) => state.bpmTasks.filterListSortParams);
   const searchParams = useSelector((state) => state.bpmTasks.filterListSearchParams);
   const listReqParams = useSelector((state) => state.bpmTasks.listReqParams);
+  const selectedFilterIdRef=useRef(selectedFilterId);
+  const bpmTaskIdRef=useRef(bpmTaskId);
+  const reqDataRef=useRef(reqData);
+
+  useEffect(()=>{
+    selectedFilterIdRef.current=selectedFilterId;
+    bpmTaskIdRef.current=bpmTaskId;
+    reqDataRef.current=reqData;
+  });
+
 
 
   useEffect(()=>{
@@ -60,37 +70,29 @@ const ServiceFlow = () => {
     }
   },[filterList,isFilterLoading,selectedFilter,dispatch]);
 
+  const SocketIOCallback = useCallback((refreshedTaskId) => {
+      if(selectedFilterIdRef.current){
+        dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current)); //Refreshes the Task
+      }
+      if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current) { //Refreshes task if its selected
+        dispatch(getBPMTaskDetail(bpmTaskIdRef.current));
+        dispatch(getBPMGroups(bpmTaskIdRef.current))
+      }
+    }
+  ,[dispatch]);
 
   useEffect(()=>{
-    if(selectedFilterId){
-      if(!SocketIOService.isConnected()){
-        SocketIOService.connect((refreshedTaskId) => {
-          if(selectedFilterId){
-            dispatch(fetchServiceTaskList(selectedFilterId, reqData)); //Refreshes the Task
-          }
-          if(bpmTaskId && refreshedTaskId===bpmTaskId) { //Refreshes task if its selected
-            dispatch(getBPMTaskDetail(bpmTaskId));
-            dispatch(getBPMGroups(bpmTaskId))
-          }
-        });
-      }else{
+    if(!SocketIOService.isConnected()){
+        SocketIOService.connect((refreshedTaskId) => SocketIOCallback(refreshedTaskId));
+    }else{
         SocketIOService.disconnect();
-        SocketIOService.connect((refreshedTaskId) => {
-          if(selectedFilterId){
-            dispatch(fetchServiceTaskList(selectedFilterId, reqData)); //Refreshes the Task
-          }
-          if(bpmTaskId && refreshedTaskId===bpmTaskId) { //Refreshes task if its selected
-            dispatch(getBPMTaskDetail(bpmTaskId));
-            dispatch(getBPMGroups(bpmTaskId))
-          }
-        });
-      }
+        SocketIOService.connect((refreshedTaskId) => SocketIOCallback(refreshedTaskId));
     }
     return ()=>{
       if(SocketIOService.isConnected())
         SocketIOService.disconnect();
     }
-  },[selectedFilterId,bpmTaskId,reqData,dispatch]);
+  },[SocketIOCallback,dispatch]);
 
 
   return (

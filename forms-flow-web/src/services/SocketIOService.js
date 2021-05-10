@@ -13,7 +13,6 @@ const connect = (reloadCallback)=>{
   const socket = new SockJS(socketUrl);
   stompClient = Stomp.over(socket);
   stompClient.connect({}, function(frame){
-    console.log('Connected- frame: ' + frame);
     if(isConnected()){
       stompClient.subscribe('/topic/task-event', function(output){
         const taskUpdate = JSON.parse(output.body);
@@ -29,7 +28,6 @@ const isConnected = ()=>{
 
 const disconnect = ()=>{
   stompClient.disconnect();
-  console.log("Disconnected");
 }
 
 const SocketIOService = {

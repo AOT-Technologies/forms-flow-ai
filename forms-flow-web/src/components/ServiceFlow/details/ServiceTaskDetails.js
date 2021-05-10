@@ -110,7 +110,7 @@ const ServiceFlowTaskDetails = () => {
          spinner
          text="Loading..."
        >
-       <TaskHeader task={task}/>
+       <TaskHeader />
        <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
          <Tab eventKey="form" title="Form">
            <LoadingOverlay active={task?.assignee!==currentUser}

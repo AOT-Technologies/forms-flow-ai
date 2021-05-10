@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { Row, Col } from "react-bootstrap";
 import {
   getISODateTime,
@@ -21,21 +21,30 @@ import {
 import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
 import UserSelection from "./UserSelection";
 
-const TaskHeader = ({ task }) => {
+const TaskHeader = () => {
+  const task = useSelector(state => state.bpmTasks.taskDetail);
   const taskId = useSelector((state) => state.bpmTasks.taskId);
   const processList = useSelector((state) => state.bpmTasks.processList);
   const username = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const taskGroups = useSelector(state=>state.bpmTasks.taskGroups);
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
   const reqData = useSelector(state => state.bpmTasks.listReqParams);
-  const followUp = task?.followUp ? new Date(task?.followUp):null;
-  const due = task?.due ? new Date(task?.due): null;
-  const [followUpDate, setFollowUpDate] = useState(followUp);
-  const [dueDate, setDueDate] = useState(due);
+  const [followUpDate, setFollowUpDate] = useState(null);
+  const [dueDate, setDueDate] = useState(null);
   const [showModal, setModal] = useState(false);
   const [isEditAssignee, setIsEditAssignee]=useState(false);
   const dispatch= useDispatch();
 
+  useEffect(()=>{
+    const followUp= task?.followUp ? new Date(task?.followUp):null;
+    setFollowUpDate(followUp);
+  },[task?.followUp])
+
+  useEffect(()=>{
+    const due= task?.due ? new Date(task?.due): null;
+    setDueDate(due);
+  },[task?.due]);
+  
   const onClaim = () => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(claimBPMTask(taskId,username,(err,response)=>{

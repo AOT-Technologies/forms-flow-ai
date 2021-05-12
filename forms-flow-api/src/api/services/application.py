@@ -60,7 +60,7 @@ class ApplicationService():
             form_ids = []
             for auth_form_detail in auth_form_details:
                 form_ids.append(auth_form_detail["formId"])
-            applications = Application.find_by_auth_group(form_ids, user_id, page_no, limit)
+            applications = Application.find_by_form_ids_user(form_ids, user_id, page_no, limit)
             application_schema = ApplicationSchema()
             return application_schema.dump(applications, many=True)
 

@@ -57,11 +57,10 @@ class ApplicationService():
         # logging.log(logging.DEBUG, 'authorized form for user details>>'+auth_form_details)
 
         if auth_form_details:
-            applications = Application()
+            form_ids = []
             for auth_form_detail in auth_form_details:
-                form_id = auth_form_detail["formId"]
-                applications.union(Application.find_by_form_id_user(form_id, user_id, page_no, limit))
-            
+                form_ids.append(auth_form_detail["formId"])
+            applications = Application.find_by_auth_group(form_ids, user_id, page_no, limit)
             application_schema = ApplicationSchema()
             return application_schema.dump(applications, many=True)
 

@@ -71,6 +71,19 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def find_all_by_user_count(cls, user_id):
         """Fetch all application."""
         return cls.query.filter(Application.created_by == user_id).count()
+ 
+    @classmethod
+    def find_by_auth_group(cls, form_ids, user_id, page_no, limit):
+        """Fetch application based on authorized group."""
+        
+        all_queries = []
+        for form_id in form_ids:
+            if page_no == 0:
+                all_queries.append(cls.query.filter(Application.form_url.like('%'+form_id+'%')).filter(Application.created_by == user_id).order_by(Application.id.desc()))
+            else:
+                all_queries.append(cls.query.filter(Application.form_url.like('%'+form_id+'%')).filter(Application.created_by == user_id).order_by(Application.id.desc()).paginate(page_no, limit, False).items)
+        return cls.query.union(*all_queries)
+            
 
     @classmethod
     def find_by_form_id(cls, form_id, page_no, limit):

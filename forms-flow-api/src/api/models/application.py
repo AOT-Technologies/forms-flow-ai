@@ -71,7 +71,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def find_all_by_user_count(cls, user_id):
         """Fetch all application."""
         return cls.query.filter(Application.created_by == user_id).count()
-
+            
     @classmethod
     def find_by_form_id(cls, form_id, page_no, limit):
         if page_no == 0:
@@ -86,7 +86,13 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         else:
             return cls.query.filter(Application.form_url.like('%'+form_id+'%')).filter(Application.created_by == user_id).order_by(Application.id.desc()).paginate(page_no, limit, False).items
 
-
+    @classmethod
+    def find_by_form_ids_user(cls, form_ids, user_id, page_no, limit):
+        """Fetch application based on multiple form ids."""
+        all_queries = []
+        for form_id in form_ids:
+            all_queries.append(cls.find_by_form_id_user(form_id, user_id, page_no, limit))
+        return cls.query.union(*all_queries)
 
 
     @classmethod

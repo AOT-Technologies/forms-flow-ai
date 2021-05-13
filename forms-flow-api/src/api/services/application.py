@@ -9,8 +9,6 @@ from ..schemas import FormProcessMapperSchema
 
 import logging
 
-
-
 class ApplicationService():
     """This class manages application service."""
 
@@ -48,16 +46,25 @@ class ApplicationService():
 
 
     @staticmethod
-    def get_all_applications_by_user(user_id, page_no, limit):
-        """Get all applications."""
+    def get_all_applications_by_user(user_id, page_no, limit, token):
+        """Get all applications authorized."""
         if page_no:
             page_no = int(page_no)
         if limit:
             limit = int(limit)
 
-        applications = Application.find_all_by_user(user_id, page_no, limit)
-        application_schema = ApplicationSchema()
-        return application_schema.dump(applications, many=True)
+        auth_form_details = BPMService.get_auth_form_details(token)
+        # logging.log(logging.DEBUG, 'authorized form for user details>>'+auth_form_details)
+
+        if auth_form_details:
+            form_ids = []
+            for auth_form_detail in auth_form_details:
+                form_ids.append(auth_form_detail["formId"])
+            applications = Application.find_by_form_ids_user(form_ids, user_id, page_no, limit)
+            application_schema = ApplicationSchema()
+            return application_schema.dump(applications, many=True)
+
+        raise BusinessException('Unable to get authorised form details', HTTPStatus.BAD_REQUEST)
 
 
     @staticmethod

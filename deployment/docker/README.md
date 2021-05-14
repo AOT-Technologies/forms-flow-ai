@@ -30,7 +30,8 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.
    * Start the **form.io server** by modifying listed form.io related environment variables **(Skip this step if the pre-defined template i.e.sample.json is already imported and role IDs are mapped in this .env)**    
-    (**Note: This step is required only if the installation is is done for the first time or new volume mounts**)   
+    (**Note: This step is required only if the installation is is done for the first time or new volume mounts**. The instruction to import forms to FORMIO are
+    [mentioned here](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms))   
        
 **formsflow.ai form.io Server Variables:**  
 

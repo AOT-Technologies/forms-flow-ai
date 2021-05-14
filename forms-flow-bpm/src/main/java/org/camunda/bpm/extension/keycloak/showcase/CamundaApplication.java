@@ -82,16 +82,18 @@ public class CamundaApplication {
 	}
 
 	/**
+	 * Uncomment this method to enable session management in JDBC.
+	 *
 	 * Session datasource.
 	 * Note: Bean name should not be changed.
 	 * @return
 	 */
-	@Bean(name="springSessionDataSource")
+	/*@Bean(name="springSessionDataSource")
 	@ConfigurationProperties("session.datasource")
 	@SpringSessionDataSource
 	public DataSource springSessionDataSource(){
 		return DataSourceBuilder.create().build();
-	}
+	}*/
 
 
 	/**

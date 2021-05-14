@@ -25,7 +25,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
-import org.springframework.session.jdbc.config.annotation.SpringSessionDataSource;
+//import org.springframework.session.jdbc.config.annotation.SpringSessionDataSource;
 
 import javax.sql.DataSource;
 import java.util.Properties;

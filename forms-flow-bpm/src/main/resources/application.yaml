@@ -152,7 +152,7 @@ rest.security:
   jwk-set-url: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/certs
   required-audience: camunda-rest-api
 
-  
+
 plugin.identity.keycloak.rest:
   userNameClaim: preferred_username
   authorityPrefix: "ROLE_"
@@ -168,7 +168,7 @@ plugin.identity.keycloak:
   useGroupPathAsCamundaGroupId: true
   administratorGroupName: camunda-admin
   disableSSLCertificateValidation: true
-  
+
 app.security.origin: ${APP_SECURITY_ORIGIN}
 
 websocket:

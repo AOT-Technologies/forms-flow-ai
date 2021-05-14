@@ -47,7 +47,7 @@ public class CamundaApplication {
 
 	/** This class' logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(CamundaApplication.class);
-	
+
 	/**
 	 * Post deployment work.
 	 * @param event
@@ -59,7 +59,7 @@ public class CamundaApplication {
 		LOG.info("========================================\n");
 		//authorizeServiceAccount();
 	}
-	
+
 	/**
 	 * Starts this application.
 	 * @param args arguments
@@ -82,16 +82,18 @@ public class CamundaApplication {
 	}
 
 	/**
+	 * Uncomment this method to enable session management in JDBC.
+	 *
 	 * Session datasource.
 	 * Note: Bean name should not be changed.
 	 * @return
 	 */
-	@Bean(name="springSessionDataSource")
+	/*@Bean(name="springSessionDataSource")
 	@ConfigurationProperties("session.datasource")
 	@SpringSessionDataSource
 	public DataSource springSessionDataSource(){
 		return DataSourceBuilder.create().build();
-	}
+	}*/
 
 
 	/**

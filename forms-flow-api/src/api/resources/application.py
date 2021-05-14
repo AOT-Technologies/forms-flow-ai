@@ -37,10 +37,10 @@ class ApplicationsResource(Resource):
             page_no = 0
             limit = 0
         if auth.has_role(['formsflow-reviewer']):
-            application_schema = ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications(page_no, limit))
+            application_schema = ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications(page_no, limit, request.headers["Authorization"]))
             application_count = ApplicationService.get_all_application_count()
         else:
-            application_schema = ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications_by_user(g.token_info.get('preferred_username'),page_no, limit, request.headers["Authorization"]))
+            application_schema = ApplicationService.apply_custom_attributes(ApplicationService.get_all_applications_by_user(g.token_info.get('preferred_username'),page_no, limit))
             application_count = ApplicationService.get_all_application_by_user_count(g.token_info.get('preferred_username'))
         if page_no > 0:
             return jsonify({

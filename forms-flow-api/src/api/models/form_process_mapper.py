@@ -87,7 +87,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         ).count()
 
     @classmethod
-    def find_by_id_active_form(cls, form_process_mapper_id) -> FormProcessMapper:
+    def find_form_by_id_active_status(cls, form_process_mapper_id) -> FormProcessMapper:
         """Find active form process mapper that matches the provided id."""
         return cls.query.filter(
             and_(
@@ -97,17 +97,16 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         ).first()  # pylint: disable=no-member
 
     @classmethod
-    def find_by_id_form(cls, form_process_mapper_id) -> FormProcessMapper:
+    def find_form_by_id(cls, form_process_mapper_id) -> FormProcessMapper:
         """Find form process mapper that matches the provided id."""
         return cls.query.filter(FormProcessMapper.id == form_process_mapper_id).first()
 
     @classmethod
-    def find_by_form_id(cls, form_id) -> FormProcessMapper:
+    def find_form_by_form_id(cls, form_id) -> FormProcessMapper:
         """Find active form process mapper that matches the provided form_id."""
         return cls.query.filter(
             and_(
                 FormProcessMapper.form_id == form_id,
-                FormProcessMapper.status == str(FormProcessMapperStatus.Active.value),
             )
         ).first()  # pylint: disable=no-member
 

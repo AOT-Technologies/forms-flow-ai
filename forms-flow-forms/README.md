@@ -87,13 +87,14 @@ POST http://localhost:3001/user/login
 ``` 
 POST http://localhost:3001/import
 
-"template":{{sample.json}}
+Body: Contents of sample.json
 
 Headers:
 Content-Type : application/json
 x-jwt-token: {x-jwt-token}
 ``` 
 
+Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user/login`
 
 ### How to Export Roles and Forms
 
@@ -116,6 +117,7 @@ Content-Type : application/json
 x-jwt-token: {x-jwt-token}
 ``` 
 
+Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user/login`
 ## Custom Components
 
 **formsflow.ai** has custom components supported which are created by extending the

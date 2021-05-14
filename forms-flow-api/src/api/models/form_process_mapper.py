@@ -54,6 +54,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "form_revision_number",
                 "process_key",
                 "process_name",
+                "status",
                 "comments",
                 "modified_by",
             ],
@@ -63,23 +64,30 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
     def mark_inactive(self):
         """Mark form process mapper as inactive."""
-        self.status = FormProcessMapperStatus.Inactive
+        self.status = str(FormProcessMapperStatus.Inactive.value)
         self.commit()
 
     @classmethod
     def find_all(cls, page_number, limit):
+        """Fetch all the form process mappers."""
         if page_number == 0:
             return cls.query.order_by(FormProcessMapper.id.desc()).all()
         else:
-            return cls.query.order_by(FormProcessMapper.id.desc()).paginate(page_number, limit, False).items
+            return (
+                cls.query.order_by(FormProcessMapper.id.desc())
+                .paginate(page_number, limit, False)
+                .items
+            )
 
     @classmethod
     def find_all_count(cls):
-        """Fetch all application."""
-        return cls.query.filter(FormProcessMapper.status == str(FormProcessMapperStatus.Active.value)).count()
+        """Fetch the total active form process mapper which are active."""
+        return cls.query.filter(
+            FormProcessMapper.status == str(FormProcessMapperStatus.Active.value)
+        ).count()
 
     @classmethod
-    def find_by_id(cls, form_process_mapper_id) -> FormProcessMapper:
+    def find_by_id_active_form(cls, form_process_mapper_id) -> FormProcessMapper:
         """Find active form process mapper that matches the provided id."""
         return cls.query.filter(
             and_(
@@ -87,6 +95,11 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 FormProcessMapper.status == str(FormProcessMapperStatus.Active.value),
             )
         ).first()  # pylint: disable=no-member
+
+    @classmethod
+    def find_by_id_form(cls, form_process_mapper_id) -> FormProcessMapper:
+        """Find form process mapper that matches the provided id."""
+        return cls.query.filter(FormProcessMapper.id == form_process_mapper_id).first()
 
     @classmethod
     def find_by_form_id(cls, form_id) -> FormProcessMapper:

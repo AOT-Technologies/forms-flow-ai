@@ -42,9 +42,9 @@ Create a realm **forms-flow-ai**
 * Select forms-flow-web Client
 * Select Mappers tab
     * Click Create
-        * Name = flowsflow-api-mapper
+        * Name = flowsflow-web-mapper
         * Mapper Type = Audience
-       	* Included Custom Audience = forms-flow-web
+       	* Included Client Audience = forms-flow-web
        	* Click Save
 
 ### Key cloak configuration for formsflow.ai UI setup

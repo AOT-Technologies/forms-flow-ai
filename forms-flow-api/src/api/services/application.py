@@ -17,7 +17,7 @@ class ApplicationService():
         """Create new application."""
         data['application_status'] = 'new'
 
-        mapper = FormProcessMapper.find_by_form_id(data['form_id'])
+        mapper = FormProcessMapper.find_form_by_form_id(data['form_id'])
         # temperory until the frontend can provide form_process_mapper_id
         data['form_process_mapper_id'] = mapper.id
         data['application_name'] = mapper.form_name
@@ -33,24 +33,42 @@ class ApplicationService():
         return application
 
     @staticmethod
-    def get_all_applications(page_no, limit, token):
-        """Get all applications only from authorized groups."""
+    def get_auth_applications_and_count(page_no, limit, token):
+        """Get applications only from authorized groups."""
         if page_no:
             page_no = int(page_no)
         if limit:
             limit = int(limit)
 
         auth_form_details = BPMService.get_auth_form_details(token)
+        logging.log(logging.INFO, auth_form_details)
 
-        if auth_form_details:
-            form_ids = []
-            for auth_form_detail in auth_form_details:
-                form_ids.append(auth_form_detail["formId"])
-            applications = Application.find_by_form_ids(form_ids, page_no, limit)
-            application_schema = ApplicationSchema()
-            return application_schema.dump(applications, many=True)
+        #if auth_form_details:
+        logging.log(logging.INFO, "auth_form_details retrieved")
+        form_ids = []
+        for auth_form_detail in auth_form_details:
+            form_ids.append(auth_form_detail["formId"])
+        logging.log(logging.INFO, "form ids:")
+        logging.log(logging.INFO, form_ids)
+        applications = Application.find_by_form_ids(form_ids, page_no, limit)
+        logging.log(logging.INFO, applications)
+        application_schema = ApplicationSchema()
+        logging.log(logging.INFO, applications.count())
+        return application_schema.dump(applications, many=True), applications.count()
 
-        raise BusinessException('Unable to get authorised form details', HTTPStatus.BAD_REQUEST)
+        #raise BusinessException('Unable to get authorised form details', HTTPStatus.BAD_REQUEST)
+
+    @staticmethod
+    def get_all_applications(page_no, limit):
+        """Get all applications."""
+        if page_no:
+            page_no = int(page_no)
+        if limit:
+            limit = int(limit)
+
+        applications = Application.find_all(page_no, limit)
+        application_schema = ApplicationSchema()
+        return application_schema.dump(applications, many=True)
 
     @staticmethod
     def get_all_applications_by_user(user_id, page_no, limit):

@@ -41,22 +41,12 @@ class ApplicationService():
             limit = int(limit)
 
         auth_form_details = BPMService.get_auth_form_details(token)
-        logging.log(logging.INFO, auth_form_details)
-
-        #if auth_form_details:
-        logging.log(logging.INFO, "auth_form_details retrieved")
         form_ids = []
         for auth_form_detail in auth_form_details:
             form_ids.append(auth_form_detail["formId"])
-        logging.log(logging.INFO, "form ids:")
-        logging.log(logging.INFO, form_ids)
         applications = Application.find_by_form_ids(form_ids, page_no, limit)
-        logging.log(logging.INFO, applications)
         application_schema = ApplicationSchema()
-        logging.log(logging.INFO, applications.count())
         return application_schema.dump(applications, many=True), applications.count()
-
-        #raise BusinessException('Unable to get authorised form details', HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def get_all_applications(page_no, limit):

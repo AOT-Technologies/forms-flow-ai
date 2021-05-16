@@ -54,4 +54,4 @@ Group | Sub Group | Roles | Description |
 
 Keycloak Setup
 ----------
-[Instructions for Keycloak setup](./keyclok/README.md)
+[Instructions for Keycloak setup](./keycloak/README.md)

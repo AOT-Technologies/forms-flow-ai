@@ -5,7 +5,7 @@
 **formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
 
 The goal of the REST API is to provide access to all relevant interfaces of 
-the system. It's build using Python :snake: .
+the system. It is built using Python :snake: .
 
 ## Table of Content
 * [Prerequisites](#prerequisites)
@@ -33,7 +33,7 @@ No specific client creation is required. Audience has been added for clients
 Environment variables are set in **.env** and read by the system.
 
    * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is "forms-flow-webapi".
+   * Make sure your current working directory is "forms-flow-api".
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. Details below,
 

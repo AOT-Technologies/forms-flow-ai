@@ -1,0 +1,45 @@
+# Author: Shibin Thomas
+version: "3.7"
+
+
+
+volumes:
+  postgres:
+  
+networks:
+  keycloak-network:
+    driver: 'bridge'
+
+
+
+services:
+  keycloak-db:
+    image: postgres
+    volumes:
+      - ./postgres/keycloak:/data/postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: changeit
+    ports:
+      - 5431:5431
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    volumes:
+      - ./imports:/opt/jboss/keycloak/imports
+    command: 
+      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: keycloak-db
+      DB_DATABASE: keycloak
+      DB_USER: postgres
+      DB_PASSWORD: changeit
+      KEYCLOAK_USER: admin
+      KEYCLOAK_PASSWORD: admin123
+    ports:
+      - 8080:8080
+    depends_on:
+      - keycloak-db
+   

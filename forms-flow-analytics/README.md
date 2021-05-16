@@ -27,7 +27,7 @@ admin privileges (to create realms, users etc. in Keycloak).
 ### Keycloak Setup
 
 * Login to KeyCloak Realm with admin privileges  
-* For client **forms-flow-analytics** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md#create-forms-flow-analytics-client) 
+* For client **forms-flow-analytics** creation, follow the instructions given on [link](../forms-flow-idm/keycloak/README.md#create-forms-flow-analytics-client) 
 
 
 ### Installation

@@ -24,7 +24,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 ### Keycloak Configuration
 
 1. Login to KeyCloak Realm with admin privileges
-2. For client **forms-flow-bpm** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md) 
+2. For client **forms-flow-bpm** creation, follow the instructions given on [link](../forms-flow-idm/keycloak/README.md) 
 
  NOTE: The default admin group "camunda-admin" has been referenced in application.yaml, and this needs to be available for use.
  

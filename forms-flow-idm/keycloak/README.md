@@ -1,5 +1,29 @@
 # formsflow.ai Keycloak Setup
 
+To setup keycloak there are two options
+
+* Automated keycloak setup
+* Manual keycloak setup
+
+## Automated keycloak setup
+
+### Starting the keycloak server
+* For Linux,
+   * Run `docker-compose -f docker-compose-linux.yml build` to build.
+   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+* For Windows,
+   * Run `docker-compose -f docker-compose-windows.yml build` to build.
+   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+
+#### To stop the keycloak server
+* For Linux,
+  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
+* For Windows,
+  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
+
+
+## Manual keycloak setup
+
 Create a realm **forms-flow-ai**
 
 * Login to keycloak with admin privileges

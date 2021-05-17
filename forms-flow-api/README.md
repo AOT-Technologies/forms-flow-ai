@@ -40,8 +40,8 @@ Environment variables are set in **.env** and read by the system.
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `WEB_API_POSTGRES_USER`|formsflow database postgres user|Used on installation to create the database.Choose your own|`postgres`
-`WEB_API_POSTGRES_PASSWORD`|formsflow database postgres password|ditto|`changeme`
-`WEB_API_POSTGRES_DB`|formsflow database name||`formsflow`
+`WEB_API_POSTGRES_PASSWORD`|formsflow database postgres password|Used on installation to create the database.Choose your own|`changeme`
+`WEB_API_POSTGRES_DB`|formsflow database name|Used on installation to create the database.Choose your own|`formsflow`
 `WEB_API_DATABASE_URL`|JDBC DB Connection URL for formsflow||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/formsflow`
 `KEYCLOAK_TOKEN_URL`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`{Keycloak URL}/auth/realms/<realm>/protocol/openid-connect/token`
 `KEYCLOAK_JWT_OIDC_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`{Keycloak URL}/auth/realms/<REALM>/.well-known/openid-configuration`

@@ -7,7 +7,32 @@ To setup keycloak there are two options
 
 ## Automated keycloak setup
 
+### Environment Configuration
+
+Environment variables are set in **.env** and read by the system.
+
+   * Make sure you have a Docker machine up and running.
+   * Make sure your current working directory is "forms-flow-idm/keycloak".
+   * Rename the file **sample.env** to **.env**.
+   * Modify the configuration values as needed. Details below,
+   
+#### Keycloak Database Connection Details
+   
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`KEYCLOAK_JDBC_DB`|keycloak database name|Used on installation to create the database.Choose your own|`keycloak`
+`KEYCLOAK_JDBC_USER`|keycloak database postgres user|Used on installation to create the database.Choose your own|`postgres`
+`KEYCLOAK_JDBC_PASSWORD`|keycloak database postgres password|Used on installation to create the database.Choose your own|`changeit`
+
+#### Keycloak Admin Details
+
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`KEYCLOAK_ADMIN_USER`|keycloak admin user name|Choose your own|`admin`
+`KEYCLOAK_ADMIN_PASSWORD`|keycloak admin password|Choose your own|`changeit`
+
 ### Starting the keycloak server
+   
 * For Linux,
    * Run `docker-compose -f docker-compose-linux.yml build` to build.
    * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
@@ -20,6 +45,13 @@ To setup keycloak there are two options
   * Run `docker-compose -f docker-compose-linux.yml down` to stop.
 * For Windows,
   * Run `docker-compose -f docker-compose-windows.yml down` to stop.
+  
+### Health Check
+
+   The application should be up and available for use at port defaulted to 8080 in application.yaml http://localhost:8080
+   
+   
+* **NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.**
 
 
 ## Manual keycloak setup

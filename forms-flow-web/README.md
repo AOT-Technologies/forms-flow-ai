@@ -26,6 +26,8 @@ Also, please make sure the formio server is up and running.
 
 ### Keycloak Setup
 
+* **NOTE: Skip this step if you are already having a setup ready.**
+
 * Detailed instructions on setting up Keycloak for **formsflow.ai web application**
 is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flow-web-client).
 

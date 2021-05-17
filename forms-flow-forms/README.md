@@ -83,7 +83,7 @@ POST http://localhost:3001/user/login
     }
 }
 ```   
-   * Import roles and forms using resource **/import** with the content provided in file sample.json.
+   * Import roles and forms using resource **/import** with the content provided in file [sample.json](./sample.json) .
 ``` 
 POST http://localhost:3001/import
 

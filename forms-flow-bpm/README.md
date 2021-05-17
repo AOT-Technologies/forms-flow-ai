@@ -62,11 +62,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
  `CAMUNDA_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
 
-##### CAMUNDA_SESSION_JDBC : Session Management (High Availability) (Prefixed with CAMUNDA_SESSION_).
-
-* Uncomment below variables if Session Management is required
-   * Uncomment environment variables from docker-compose-{Your Variant}.yml
-   
+##### CAMUNDA_SESSION_JDBC : Session Management (High Availability) (Prefixed with CAMUNDA_SESSION_) (Optional).
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
@@ -79,6 +75,9 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
  `CAMUNDA_SESSION_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
  `CAMUNDA_SESSION_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_SESSION_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
+ 
+ * Uncomment variables if Session Management is required
+    * Uncomment environment variables from docker-compose-{Your Variant}.yml
 
 ##### CAMUNDA_ANALYTICS_JDBC : Application's Audit Management (Only Cam variables) (Prefixed with CAMUNDA_ANALYTICS_).
 

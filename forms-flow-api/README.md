@@ -57,18 +57,17 @@ Variable name | Meaning | Possible values | Default value |
 
  **Additionally, you may want to change these**  
  
-*   Uncomment below variables if no external mongo db setup is available
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`WEBAPI_MONGO_USERNAME`|Mongo DB Connection username||`mongo`
-`WEBAPI_MONGO_PASSWORD`|Mongo DB Connection password||`changeme`
-`WEBAPI_MONGO_DATABASE`|Mongo DB Connection database name||`analytics`
-
+* Uncomment below variables if no external mongo db setup is available
    * Modify MONGODB_URI variable accordingly
    * Uncomment Analytics DB section from docker-compose-{Your Variant}.yml 
 
-*   The value of Datastore credentials (especially if this instance is not just for testing purposes)
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`WEBAPI_MONGO_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
+`WEBAPI_MONGO_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
+`WEBAPI_MONGO_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
+
+* The value of Datastore credentials (especially if this instance is not just for testing purposes)
 
 ### Running the Application
 * For Linux,

@@ -65,7 +65,8 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 ##### CAMUNDA_SESSION_JDBC : Session Management (High Availability) (Prefixed with CAMUNDA_SESSION_).
 
 * Uncomment below variables if Session Management is required
-   * Uncomment environment variables from docker-compose-{Your Variant}.yml 
+   * Uncomment environment variables from docker-compose-{Your Variant}.yml
+   
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---

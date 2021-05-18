@@ -89,7 +89,7 @@ POST http://localhost:3001/user/login
     
 ### Import of Predefined Roles and Forms
 
-   * [Get the jwt token](./README.md#import-of-predefined-roles-and-forms)
+   * [Get the jwt token](./README.md#how-to-get-jwt-token)
     
    * Import roles and forms using resource **/import** with the content provided in file [sample.json](./sample.json) .
 ``` 
@@ -106,7 +106,7 @@ Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user
 
 ### How to Export Roles and Forms
 
-   * [Get the jwt token](./README.md#import-of-predefined-roles-and-forms)
+   * [Get the jwt token](./README.md#how-to-get-jwt-token)
   
    * Export roles and forms using resource **/export**.
 ``` 
@@ -121,7 +121,7 @@ Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user
 
 ### How-to get role id
 
-   * [Get the jwt token](./README.md#import-of-predefined-roles-and-forms)
+   * [Get the jwt token](./README.md#how-to-get-jwt-token)
    
    * Get the role id using resource **/role**.
 

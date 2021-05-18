@@ -61,14 +61,14 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`CLIENT_ROLE`|	The role name used for client users|| formsflow-client
-`CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the value from form.io resource **http://{Your IP Address}:3001/role**
+`CLIENT_ROLE`|	The role name used for client users|| `formsflow-client`
+`CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the value from form.io resource [Get role id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `REVIEWER_ROLE`|The role name used for staff/reviewer users||`formsflow-reviewer`
-`REVIEWER_ROLE_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|must get the value from form.io resource **http://{Your IP Address}:3001/role**
+`REVIEWER_ROLE_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|must get the value from form.io resource [Get role id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
-`DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the value from form.io resource **http://{Your IP Address}:3001/role**
-`ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the value from form.io resource **http://{Your IP Address}:3001/role** 
-`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource **http://{Your IP Address}:3001/user**
+`DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the value from form.io resource [Get role id](../../forms-flow-forms/README.md#how-to-get-role-id)
+`ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the value from form.io resource [Get role id](../../forms-flow-forms/README.md#how-to-get-role-id)
+`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource **http://localhost:3001/user**
 
 **formsflow.ai Datastore Settings:**
 

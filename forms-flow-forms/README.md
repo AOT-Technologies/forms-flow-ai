@@ -15,7 +15,9 @@ To know more about form.io, go to https://github.com/formio/formio.
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Health Check](#health-check)
   * [Step 5 : Import of predefined roles and Forms](#import-of-predefined-roles-and-forms)   
+* [How-to get jwt token](#how-to-get-jwt-token)
 * [How-to export roles and Forms](#how-to-export-roles-and-forms)
+* [How-to get role id](#how-to-get-role-id)
 * [Custom components](#custom-components)   
 
 ## Prerequisites
@@ -70,9 +72,10 @@ Not applicable.
     
     FORMIO_ROOT_EMAIL: admin@example.com
     FORMIO_ROOT_PASSWORD: CHANGEME
-    
-### Import of Predefined Roles and Forms
-    
+	
+	
+### How-to get jwt token
+
    * Get the jwt token using resource **/user/login**
 ```
 POST http://localhost:3001/user/login
@@ -82,7 +85,12 @@ POST http://localhost:3001/user/login
         "password": {{password}}
     }
 }
-```   
+``` 
+    
+### Import of Predefined Roles and Forms
+
+   * [Get the jwt token](#import-of-predefined-roles-and-forms)
+    
    * Import roles and forms using resource **/import** with the content provided in file [sample.json](./sample.json) .
 ``` 
 POST http://localhost:3001/import
@@ -98,16 +106,8 @@ Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user
 
 ### How to Export Roles and Forms
 
-   * Get the jwt token using resource **/user/login**
-```
-POST http://localhost:3001/user/login
-{
-    "data": {
-        "email": {{email}},
-        "password": {{password}}
-    }
-}
-```   
+   * [Get the jwt token](#import-of-predefined-roles-and-forms)
+  
    * Export roles and forms using resource **/export**.
 ``` 
 GET http://localhost:3001/export
@@ -118,6 +118,23 @@ x-jwt-token: {x-jwt-token}
 ``` 
 
 Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user/login`
+
+### How-to get role id
+
+   * [Get the jwt token](#import-of-predefined-roles-and-forms)
+   
+   * Get the role id using resource **/role**.
+
+``` 
+GET http://localhost:3001/role
+
+Headers:
+Content-Type : application/json
+x-jwt-token: {x-jwt-token}
+``` 
+
+Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user/login`
+	
 ## Custom Components
 
 **formsflow.ai** has custom components supported which are created by extending the

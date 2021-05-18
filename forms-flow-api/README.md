@@ -5,7 +5,7 @@
 **formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
 
 The goal of the REST API is to provide access to all relevant interfaces of 
-the system. It's build using Python :snake: .
+the system. It is built using Python :snake: .
 
 ## Table of Content
 * [Prerequisites](#prerequisites)
@@ -33,15 +33,15 @@ No specific client creation is required. Audience has been added for clients
 Environment variables are set in **.env** and read by the system.
 
    * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is "forms-flow-webapi".
+   * Make sure your current working directory is "forms-flow-api".
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. Details below,
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `WEB_API_POSTGRES_USER`|formsflow database postgres user|Used on installation to create the database.Choose your own|`postgres`
-`WEB_API_POSTGRES_PASSWORD`|formsflow database postgres password|ditto|`changeme`
-`WEB_API_POSTGRES_DB`|formsflow database name||`formsflow`
+`WEB_API_POSTGRES_PASSWORD`|formsflow database postgres password|Used on installation to create the database.Choose your own|`changeme`
+`WEB_API_POSTGRES_DB`|formsflow database name|Used on installation to create the database.Choose your own|`formsflow`
 `WEB_API_DATABASE_URL`|JDBC DB Connection URL for formsflow||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/formsflow`
 `KEYCLOAK_TOKEN_URL`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`{Keycloak URL}/auth/realms/<realm>/protocol/openid-connect/token`
 `KEYCLOAK_JWT_OIDC_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`{Keycloak URL}/auth/realms/<REALM>/.well-known/openid-configuration`
@@ -56,7 +56,18 @@ Variable name | Meaning | Possible values | Default value |
 
 
  **Additionally, you may want to change these**  
-*   The value of Datastore credentials (especially if this instance is not just for testing purposes)
+ 
+* Uncomment below variables if no external mongo db setup is available
+   * Modify MONGODB_URI variable accordingly
+   * Uncomment Analytics DB section from docker-compose-{Your Variant}.yml 
+
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`WEBAPI_MONGO_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
+`WEBAPI_MONGO_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
+`WEBAPI_MONGO_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
+
+* The value of Datastore credentials (especially if this instance is not just for testing purposes)
 
 ### Running the Application
 * For Linux,

@@ -23,10 +23,10 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
 ### Keycloak Configuration
 
-1. Login to KeyCloak Realm with admin privileges
-2. For client **forms-flow-bpm** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md) 
+* **NOTE: Skip this step if you are already having a setup ready.**
 
- NOTE: The default admin group "camunda-admin" has been referenced in application.yaml, and this needs to be available for use.
+1. Login to KeyCloak Realm with admin privileges
+2. For client **forms-flow-bpm** creation, follow the instructions given on [link](../forms-flow-idm/keycloak/README.md) 
  
 ### Installation
 
@@ -39,9 +39,9 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `KEYCLOAK_URL`| URL to your Keycloak server |eg. https://iam.aot-technologies.com | must be set to your Keycloak serve
- `KEYCLOAK_URL_REALM`|	The Keyvcloak realm to use|eg. forms-flow-ai | must be set to your Keycloak realm
- `KEYCLOAK_BPM_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | must be set to your Keycloak client id
+ `KEYCLOAK_URL`| URL to your Keycloak server |eg. https://iam.aot-technologies.com | http://{your ip address}:8080
+ `KEYCLOAK_URL_REALM`|	The Keyvcloak realm to use|eg. forms-flow-ai | forms-flow-ai
+ `KEYCLOAK_BPM_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | forms-flow-bpm
  `KEYCLOAK_BPM_CLIENTSECRET`|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret
 
 #### Database Connection Details(The solution manages 3 connections)
@@ -54,13 +54,13 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
  `CAMUNDA_JDBC_DRIVER`|Postgres JDBC Database Driver||`org.postgresql.Driver`
  `CAMUNDA_POSTGRES_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
  `CAMUNDA_POSTGRES_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
- `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`formsflow-bpm`
+ `CAMUNDA_JDBC_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`formsflow-bpm`
  `CAMUNDA_HIKARI_CONN_TIMEOUT`|Hikari Connection optimization setting||`30000`
  `CAMUNDA_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
  `CAMUNDA_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
 
-##### CAMUNDA_SESSION_JDBC : Session Management (High Availability) (Prefixed with CAMUNDA_SESSION_).
+##### CAMUNDA_SESSION_JDBC : Session Management (High Availability) (Prefixed with CAMUNDA_SESSION_) (Optional).
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
@@ -68,11 +68,14 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
  `CAMUNDA_SESSION_JDBC_DRIVER`|Postgres JDBC Database Driver||`org.postgresql.Driver`
  `CAMUNDA_SESSION_JDBC_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
  `CAMUNDA_SESSION_JDBC_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
- `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`formsflow-bpm-session`
+ `CAMUNDA_JDBC_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`formsflow-bpm-session`
  `CAMUNDA_SESSION_HIKARI_CONN_TIMEOUT`|Hikari Connection optimization setting||`30000`
  `CAMUNDA_SESSION_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
  `CAMUNDA_SESSION_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_SESSION_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
+ 
+ * Uncomment variables if Session Management is required
+    * Uncomment environment variables from docker-compose-{Your Variant}.yml
 
 ##### CAMUNDA_ANALYTICS_JDBC : Application's Audit Management (Only Cam variables) (Prefixed with CAMUNDA_ANALYTICS_).
 
@@ -82,7 +85,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
  `CAMUNDA_ANALYTICS_JDBC_DRIVER`|Postgres JDBC Database Driver||`org.postgresql.Driver`
  `CAMUNDA_ANALYTICS_JDBC_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
  `CAMUNDA_ANALYTICS_JDBC_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
- `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`formsflow-bpm-analytics`
+ `CAMUNDA_JDBC_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`formsflow-bpm-analytics`
  `CAMUNDA_ANALYTICS_HIKARI_CONN_TIMEOUT`|Hikari Connection optimization setting||`30000`
  `CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
  `CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
@@ -108,7 +111,7 @@ There needs to be a [Keycloak](https://www.keycloak.org/) server available and y
   `CAMUNDA_METRICS_FLAG`|Job-Executor Configuration Properties||`false`
   `CAMUNDA_BPM_HISTORY_LEVEL`|Engine Configuration Properties||`none`
   `CAMUNDA_AUTHORIZATION_FLAG`|Engine Configuration Properties||`true`
-  `CAMUNDA_AUTHORIZATION_FLAG`|Engine Configuration Properties||`auto`
+  `CAMUNDA_AUTHORIZATION_REVOKE_CHECK_FLAG`|Engine Configuration Properties||`auto`
   
  Reference: 
  * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/job-executor/#job-executor-configuration-properties

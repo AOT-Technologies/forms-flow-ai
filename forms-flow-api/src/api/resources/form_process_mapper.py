@@ -90,7 +90,7 @@ class FormResource(Resource):
 @cors_preflight("GET,PUT,DELETE,OPTIONS")
 @API.route("/<int:mapper_id>", methods=["GET", "PUT", "DELETE", "OPTIONS"])
 class FormResourceById(Resource):
-    """Resource for managing form."""
+    """Resource for managing forms by mapper_id."""
 
     @staticmethod
     @cors.crossdomain(origin="*")
@@ -138,12 +138,12 @@ class FormResourceById(Resource):
 @cors_preflight("GET,OPTIONS")
 @API.route("/formid/<string:form_id>", methods=["GET", "OPTIONS"])
 class FormResourceByFormId(Resource):
-    """Resource for managing process details."""
+    """Resource for managing forms by corresponding form_id."""
 
     @staticmethod
     @cors.crossdomain(origin="*")
     def get(form_id):
-        """Get process detailsXML."""
+        """Get details of only form corresponding to a particular formId."""
         try:
             return FormProcessMapperService.get_mapper_by_formid(form_id), HTTPStatus.OK
         except BusinessException as err:

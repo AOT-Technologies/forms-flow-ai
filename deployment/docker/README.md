@@ -20,7 +20,7 @@ The system is deployed and run using [docker-compose](https://docker.com) and [D
 
 ### Keycloak Setup
 
-Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
+Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
 
       
 ### Installation
@@ -61,32 +61,32 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak-setup.md)
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`CLIENT_ROLE`|	The role name used for client users|| formsflow-client
-`CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the value from form.io resource **http://localhost:3001/role**
+`CLIENT_ROLE`|	The role name used for client users|| `formsflow-client`
+`CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the client role Id value from form.io resource. [Get client role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `REVIEWER_ROLE`|The role name used for staff/reviewer users||`formsflow-reviewer`
-`REVIEWER_ROLE_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|must get the value from form.io resource **http://localhost:3001/role**
+`REVIEWER_ROLE_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|must get the reviewer role Id value from form.io resource. [Get reviewer role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
-`DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the value from form.io resource **http://localhost:3001/role**
-`ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the value from form.io resource **http://localhost:3001/role** 
-`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource **http://localhost:3001/user**
+`DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the administrator role Id value from form.io resource. [Get administrator role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
+`ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the anonymous role Id value from form.io resource. [Get anonymous role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
+`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource. **http://localhost:3001/user**
 
 **formsflow.ai Datastore Settings:**
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`WEB_API_DATABASE_URL`|JDBC DB Connection URL for formsflow.ai||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/formsflow`
+`WEB_API_DATABASE_URL`|JDBC DB Connection URL for formsflow.ai||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi`
 `WEB_API_POSTGRES_USER`|formsflow.ai database postgres user|Used on installation to create the database.Choose your own|`postgres`
-`WEB_API_POSTGRES_PASSWORD`|formsflow.ai database postgres password|ditto|`changeme`
-`WEB_API_POSTGRES_DB`|formsflow.ai database name||`formsflow`
+`WEB_API_POSTGRES_PASSWORD`|formsflow.ai database postgres password|Used on installation to create the database.Choose your own|`changeme`
+`WEB_API_POSTGRES_DB`|formsflow.ai database name|Used on installation to create the database.Choose your own|`webapi`
 
 **formsflow.ai Integration Settings:**
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
-`CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda`
-`FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://localhost:3001`
-`WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://localhost:5000`
+`CAMUNDA_API_URI`|Camunda Rest API URI||`http://{Your IP Address}:8000/camunda`
+`FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://{Your IP Address}:3001`
+`WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://{Your IP Address}:5000`
 `MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis||`mongodb://username:password@host:port/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
 **Authentication Provider (Keycloak) Settings:**

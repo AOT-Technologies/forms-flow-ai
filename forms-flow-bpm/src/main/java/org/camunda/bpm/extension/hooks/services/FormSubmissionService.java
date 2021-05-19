@@ -122,7 +122,6 @@ public class FormSubmissionService {
                             fieldValues.put(entry.getKey()+"_uploadname", StringUtils.join(fileNames, ","));
                         }
                     }
-
                 }
             } else{
                 Object fieldValue = entry.getValue().isBoolean() ? entry.getValue().booleanValue() :
@@ -132,7 +131,8 @@ public class FormSubmissionService {
                                                 entry.getValue().isDouble() ? entry.getValue().asDouble() :
                                                         entry.getValue().isBigDecimal() ? entry.getValue().decimalValue() :
                                                                 entry.getValue().isTextual() ? entry.getValue().asText():
-                                                                entry.getValue().toString();
+                                                                    entry.getValue().toString();
+                if(fieldValue.equals("")) fieldValue = null;
                 fieldValues.put(entry.getKey(), fieldValue);
             }
         }

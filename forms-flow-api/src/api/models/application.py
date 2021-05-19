@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import sqlalchemy
+from sqlalchemy import or_
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
@@ -93,10 +93,10 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     @classmethod
     def find_by_form_ids(cls, form_ids, page_no, limit):
         """Fetch application based on multiple form ids."""
-        q = cls.query.filter(sqlalchemy.sql.false())
-        for form_id in form_ids:
-            q = q.union(cls.find_by_form_id(form_id, page_no, limit))
-        return q
+        if page_no == 0:
+            return cls.query.filter(or_(Application.form_url.like('%'+form_id+'%') for form_id in form_ids)).order_by(Application.id.desc())
+        else:
+            return cls.query.filter(or_(Application.form_url.like('%'+form_id+'%') for form_id in form_ids)).order_by(Application.id.desc()).paginate(page_no, limit, False).items
 
 
     @classmethod

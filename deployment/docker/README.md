@@ -89,6 +89,18 @@ Variable name | Meaning | Possible values | Default value |
 `WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://{Your IP Address}:5000`
 `MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis||`mongodb://username:password@host:port/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
+ **Additionally, you may want to change these**  
+ 
+* Uncomment below variables if no external mongo db setup is available
+   * Modify MONGODB_URI variable accordingly
+   * Uncomment Analytics DB section from docker-compose-{Your Variant}.yml 
+
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`WEBAPI_MONGO_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
+`WEBAPI_MONGO_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
+`WEBAPI_MONGO_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
+
 **Authentication Provider (Keycloak) Settings:**
 
 Variable name | Meaning | Possible values | Default value |
@@ -109,11 +121,11 @@ Variable name | Meaning | Possible values | Default value |
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
+ `CAMUNDA_JDBC_DB`|Postgres JDBC DB Name|Used on installation to create the database.Choose your own|`formsflow-bpm`
  `CAMUNDA_JDBC_URL`|Postgres JDBC DB Connection URL|Used on installation to create the database.Choose your own|`jdbc:postgresql://forms-flow-bpm-db:5432/formsflow-bpm`
  `CAMUNDA_JDBC_DRIVER`|Postgres JDBC Database Driver||`org.postgresql.Driver`
- `CAMUNDA_POSTGRES_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
- `CAMUNDA_POSTGRES_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
- `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`formsflow-bpm`
+ `CAMUNDA_JDBC_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
+ `CAMUNDA_JDBC_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
  `CAMUNDA_HIKARI_CONN_TIMEOUT`|Hikari Connection optimization setting||`30000`
  `CAMUNDA_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
  `CAMUNDA_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
@@ -167,7 +179,7 @@ Variable name | Meaning | Possible values | Default value |
   `CAMUNDA_METRICS_FLAG`|Job-Executor Configuration Properties||`false`
   `CAMUNDA_BPM_HISTORY_LEVEL`|Engine Configuration Properties||`none`
   `CAMUNDA_AUTHORIZATION_FLAG`|Engine Configuration Properties||`true`
-  `CAMUNDA_AUTHORIZATION_FLAG`|Engine Configuration Properties||`auto`
+  `CAMUNDA_AUTHORIZATION_REVOKE_CHECK_FLAG`|Engine Configuration Properties||`auto`
   
  Reference: 
  * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/job-executor/#job-executor-configuration-properties

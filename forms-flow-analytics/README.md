@@ -26,8 +26,10 @@ admin privileges (to create realms, users etc. in Keycloak).
 
 ### Keycloak Setup
 
+* **NOTE: Skip this step if you are already having a setup ready.**
+
 * Login to KeyCloak Realm with admin privileges  
-* For client **forms-flow-analytics** creation, follow the instructions given on [link](../forms-flow-idm/keycloak-setup.md#create-forms-flow-analytics-client) 
+* For client **forms-flow-analytics** creation, follow the instructions given on [link](../forms-flow-idm/keycloak/README.md#create-forms-flow-analytics-client) 
 
 
 ### Installation
@@ -38,15 +40,15 @@ admin privileges (to create realms, users etc. in Keycloak).
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://localhost:7000/
+`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://localhost:7000
 `PYTHONUNBUFFERED`|Log buffering setup|1 or 0 | 1
 `REDASH_LOG_LEVEL`|Logging level|`CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET` | ERROR
 `REDASH_REDIS_URL`|Redis URL|Used on installation to create the database.Choose your own.|`redis://redis:6379/0`
-`REDASH_DATABASE_URL`|Postgres database URL|ditto|`postgresql://postgres@postgres/postgres`
-`POSTGRES_PASSWORD`|Postgres database Password|ditto|`postgres`
-`POSTGRES_HOST_AUTH_METHOD`|Postgres authentication method|ditto|`trust`
-`REDASH_COOKIE_SECRET`|Encryption for all configuration|ditto|`redash-selfhosted`
-`REDASH_SECRET_KEY`|Encryption for datasource configuration|ditto|`redash-selfhosted`
+`REDASH_DATABASE_URL`|Postgres database URL|Used on installation to create the database.Choose your own.|`postgresql://postgres@postgres/postgres`
+`POSTGRES_PASSWORD`|Postgres database Password|Used on installation to create the database.Choose your own.|`postgres`
+`POSTGRES_HOST_AUTH_METHOD`|Postgres authentication method|Used on installation to create the database.Choose your own.|`trust`
+`REDASH_COOKIE_SECRET`|Encryption for all configuration|Used on installation to create the database.Choose your own.|`redash-selfhosted`
+`REDASH_SECRET_KEY`|Encryption for datasource configuration|Used on installation to create the database.Choose your own.|`redash-selfhosted`
   
   **Additionally, you may want to change these**  
    * The value of REDASH_COOKIE_SECRET (especially if this instance is not just for testing purposes)

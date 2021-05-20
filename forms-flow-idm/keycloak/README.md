@@ -56,6 +56,9 @@ Variable name | Meaning | Possible values | Default value |
 
 ## Manual keycloak setup
 
+
+To setup a remote keycloak server either download and import the [realm-export.json](./imports/realm-export.json) to keycloak or follow the manual steps below.
+
 Create a realm **forms-flow-ai**
 
 * Login to keycloak with admin privileges

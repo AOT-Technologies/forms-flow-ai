@@ -2,7 +2,6 @@ import {
   ROLES,
   USER_RESOURCE_FORM_ID,
   Keycloak_Client,
-  _kc,
   ANONYMOUS_USER,
   ANONYMOUS_ID,
 } from "../constants/constants";
@@ -14,6 +13,8 @@ import {
 import {BPM_BASE_URL} from "../apiManager/endpoints/config";
 import {AppConfig} from '../config';
 import {WEB_BASE_URL} from "../apiManager/endpoints/config";
+import Keycloak from "keycloak-js";
+import {tenantDetail} from "../constants/tenantConstant";
 
 const jwt = require("jsonwebtoken");
 
@@ -22,9 +23,11 @@ const jwt = require("jsonwebtoken");
  *
  * @param onAuthenticatedCallback
  */
+const KeycloakData = new Keycloak(tenantDetail);
+
 const initKeycloak = (store, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  _kc
+  KeycloakData
     .init({
       onLoad: "check-sso",
       promiseType: "native",
@@ -48,7 +51,7 @@ const initKeycloak = (store, ...rest) => {
               roles = roles.concat(roleData.id);
             }
           }
-          _kc.loadUserInfo().then((res) => store.dispatch(setUserDetails(res)));
+          KeycloakData.loadUserInfo().then((res) => store.dispatch(setUserDetails(res)));
           const email = KeycloakData.tokenParsed.email || "external";
           authenticateFormio(email, roles);
           // onAuthenticatedCallback();
@@ -66,7 +69,7 @@ const initKeycloak = (store, ...rest) => {
 let refreshInterval;
 const refreshToken = (store) => {
   refreshInterval = setInterval(() => {
-    _kc.updateToken(240).then((refreshed)=> {
+    KeycloakData.updateToken(240).then((refreshed)=> {
       if (refreshed) {
         store.dispatch(setUserToken(KeycloakData.token));
       }
@@ -76,9 +79,9 @@ const refreshToken = (store) => {
     });
   }, 6000);
 }
-const doLogin = _kc.login;
+const doLogin = KeycloakData.login;
 
-const doLogout = _kc.logout;
+const doLogout = KeycloakData.logout;
 
 /**
  * Logout function
@@ -97,14 +100,14 @@ const setApiBaseUrlToLocalStorage = ()=> {
   localStorage.setItem("formsflow.ai.api.url", WEB_BASE_URL);
 }
 
-const getToken = () => _kc.token;
+const getToken = () => KeycloakData.token;
 
 const getFormioToken = () => localStorage.getItem("formioToken");
 
-const getUserEmail = () => _kc.tokenParsed.email;
+const getUserEmail = () => KeycloakData.tokenParsed.email;
 
 const updateToken = (successCallback) => {
-  return _kc.updateToken(5).then(successCallback).catch(doLogin);
+  return KeycloakData.updateToken(5).then(successCallback).catch(doLogin);
 };
 
 const authenticateAnonymousUser = (store) => {
@@ -117,6 +120,7 @@ const authenticateAnonymousUser = (store) => {
 const authenticateFormio = (user, roles) => {
   const FORMIO_TOKEN = jwt.sign(
     {
+      external: true,
       form: {
         _id: USER_RESOURCE_FORM_ID, // form.io form Id of user resource
       },
@@ -126,12 +130,12 @@ const authenticateFormio = (user, roles) => {
       },
     },
     "--- change me now ---"
-  ); // JWT secret key
+  ); // TODO Move JWT secret key to COME From ENV
   //TODO remove this token from local Storage on logout and try to move to redux store as well
   localStorage.setItem("formioToken", FORMIO_TOKEN);
 };
 
-const KeycloakData = _kc;
+
 
 const UserService ={
   initKeycloak,

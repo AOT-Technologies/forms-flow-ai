@@ -7,13 +7,14 @@
       content="width=device-width,initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <meta name="description" content="forms-flow-web" />
+    <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="theme-color" content="#536878" />
     <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
-<!--    <link rel="apple-touch-icon" href="%PUBLIC_URL%/icons-192.png" />-->
-    <link rel="preconnect" href="https://iam.aot-technologies.com" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <title>formsflow.ai</title>
   </head>
   <body class="no-scroll">
@@ -30,16 +31,16 @@
             .then(
               (reg) => {
                 reg.addEventListener("updatefound", () => {
-                  console.log("update found");
+                  //console.log("update found");
                   // An updated service worker has appeared in reg.installing!
                   newWorker = reg.installing;
 
                   newWorker.addEventListener("statechange", () => {
-                    console.log(
+                    /*console.log(
                       "here",
                       newWorker.state,
                       navigator.serviceWorker
-                    );
+                    );*/
                     // Has service worker state changed?
                     switch (newWorker.state) {
                       case "installed":
@@ -58,13 +59,13 @@
                 navigator.serviceWorker.addEventListener(
                   "controllerchange",
                   function () {
-                    console.log("Worker update successful ", reg.scope);
+                    //console.log("Worker update successful ", reg.scope);
                     if (refreshing) return;
                     window.location.reload();
                     refreshing = true;
                   }
                 );
-                console.log("Worker registration successful", reg.scope);
+                //console.log("Worker registration successful", reg.scope);
               },
               (err) => {
                 console.log("Worker registration failed", err);

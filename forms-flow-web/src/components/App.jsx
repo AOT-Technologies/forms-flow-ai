@@ -7,7 +7,7 @@ import "../assets/styles/user-styles.css";
 import BaseRouting from "./BaseRouting";
 require("typeface-nunito-sans");
 
-const App = (props) => {
+const App = React.memo((props) => {
     const { store, history } = props;
     return (
       <div>
@@ -18,7 +18,7 @@ const App = (props) => {
         </Provider>
       </div>
     );
-};
+});
 
 App.propTypes = {
   history: PropTypes.any.isRequired,

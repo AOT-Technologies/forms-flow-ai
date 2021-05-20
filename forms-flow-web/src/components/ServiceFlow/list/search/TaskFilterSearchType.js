@@ -3,7 +3,7 @@ import {Filter_Search_Types} from "../../constants/taskConstants";
 import TaskFilterDropdown from "./TaskFilterDropdown";
 
 
-const TaskFilterSearchType = ({filter, index, handleFilterUpdate}) => {
+const TaskFilterSearchType = React.memo(({filter, index, handleFilterUpdate}) => {
   const createSearchNode = useRef();
   const [showFilterItems, setShowFilterItems]= useState(false);
 
@@ -35,6 +35,6 @@ const TaskFilterSearchType = ({filter, index, handleFilterUpdate}) => {
       {showFilterItems?<TaskFilterDropdown onFilterSelect={handleFilterSelect}/>:null}
               </span>)
 
-}
+})
 
 export default TaskFilterSearchType;

@@ -7,7 +7,7 @@ import {addBPMGroup, getBPMGroups, removeBPMGroup} from "../../../apiManager/ser
 import {setBPMTaskGroupsLoading} from "../../../actions/bpmTaskActions";
 import LoadingOverlay from "react-loading-overlay";
 
-const AddGroupModal= (props)=> {
+const AddGroupModal= React.memo((props)=> {
     const { modalOpen=false, onClose , groups} = props;
     const taskId = useSelector((state) => state.bpmTasks.taskId);
     const isGroupLoading = useSelector((state) => state.bpmTasks.isGroupLoading);
@@ -86,6 +86,6 @@ const AddGroupModal= (props)=> {
           </Modal>
         </>
     )
-};
+});
 
 export default AddGroupModal;

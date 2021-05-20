@@ -12,7 +12,8 @@ const connect = (reloadCallback)=>{
   const socketUrl=`${BPM_BASE_URL_SOCKET_IO}?accesstoken=${accessToken}`;
   const socket = new SockJS(socketUrl);
   stompClient = Stomp.over(socket);
-  stompClient.connect({}, function(frame){
+  stompClient.debug = null;
+  stompClient.connect({}, function(){
     if(isConnected()){
       stompClient.subscribe('/topic/task-event', function(output){
         const taskUpdate = JSON.parse(output.body);

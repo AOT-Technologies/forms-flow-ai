@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
 
-const SubmissionError =(props) => {
+const SubmissionError = React.memo((props) => {
     const { modalOpen=false, onConfirm, message } = props;
     return (
       <>
@@ -18,6 +18,6 @@ const SubmissionError =(props) => {
           </Modal>
         </>
     )
-}
+})
 
 export default SubmissionError;

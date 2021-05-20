@@ -12,8 +12,9 @@ import Loading from "../containers/Loading";
 import DashboardPage from "./Dashboard";
 import InsightsPage from "./Insights";
 import Application from "./Application";
+import 'semantic-ui-css/semantic.min.css';
 
-const PrivateRoute = (props) => {
+const PrivateRoute = React.memo((props) => {
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.user.isAuthenticated);
   const userRoles=useSelector((state) => state.user.roles || []);
@@ -70,6 +71,6 @@ const PrivateRoute = (props) => {
         )}
       </>
     );
-}
+})
 
 export default PrivateRoute;

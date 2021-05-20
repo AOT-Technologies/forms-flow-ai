@@ -3,7 +3,7 @@ import Select from 'react-select';
 import {useSelector} from "react-redux";
 import "./TaskDetail.scss";
 
-const UserSelection = (props)=>{
+const UserSelection = React.memo((props)=>{
   const {onClose, currentUser, onChangeClaim} = props;
   const userList = useSelector((state) => state.bpmTasks.userList);
   const options = userList.map((user)=>{
@@ -32,7 +32,7 @@ const UserSelection = (props)=>{
                     className="select-user"
             />
             </>);
-};
+});
 
 
 export default  UserSelection;

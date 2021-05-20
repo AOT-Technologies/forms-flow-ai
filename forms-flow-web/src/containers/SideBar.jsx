@@ -11,7 +11,7 @@ import { getUserRolePermission } from "../helper/user";
 import "./styles.scss";
 import {toggleMenu} from "../actions/menuActions";
 
-const SideBar = () => {
+const SideBar = React.memo(() => {
   const location = useLocation();
   const { pathname } = location;
   const dispatch = useDispatch();
@@ -120,6 +120,6 @@ const SideBar = () => {
       </nav>
     </div>
   );
-};
+});
 
 export default SideBar;

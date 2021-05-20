@@ -7,7 +7,7 @@ import ViewApplication from './ViewApplication';
 import './Application.scss';
 import { setCurrentPage } from '../../actions/bpmActions';
 
-const Application = () => {
+const Application = React.memo(() => {
   const dispatch= useDispatch();
 
   useEffect(()=>{
@@ -22,6 +22,6 @@ const Application = () => {
       </Switch>
     </div>
   )
-}
+})
 
 export default Application;

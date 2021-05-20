@@ -4,7 +4,7 @@ import Checkbox from "@material-ui/core/Checkbox";
 import {setIsVariableNameIgnoreCase, setIsVariableValueIgnoreCase} from "../../../../actions/bpmTaskActions";
 import {isVariableTypeAvailable} from "../../../../apiManager/services/taskSearchParamsFormatterService";
 
-const TaskIgnoreCaseComponent = ()=>{
+const TaskIgnoreCaseComponent = React.memo(()=>{
   const variableNameIgnoreCase = useSelector(state => state.bpmTasks.variableNameIgnoreCase);
   const variableValueIgnoreCase = useSelector(state => state.bpmTasks.variableValueIgnoreCase);
   const filterSelections = useSelector(state => state.bpmTasks.filterSearchSelections);
@@ -43,6 +43,6 @@ const TaskIgnoreCaseComponent = ()=>{
             className="fa fa-floppy-o item-pos" aria-hidden="true"/></span>*/}
   </div> : null}</>
 
-}
+})
 
 export default TaskIgnoreCaseComponent;

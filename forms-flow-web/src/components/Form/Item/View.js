@@ -16,7 +16,7 @@ import {applicationCreate} from "../../../apiManager/services/applicationService
 import LoadingOverlay from "react-loading-overlay";
 import {CUSTOM_EVENT_TYPE} from "../../ServiceFlow/constants/customEventTypes";
 
-const View = (props) => {
+const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
   const {
       isAuthenticated,
@@ -80,7 +80,7 @@ const View = (props) => {
         </LoadingOverlay>
       </div>
     );
-}
+})
 
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {

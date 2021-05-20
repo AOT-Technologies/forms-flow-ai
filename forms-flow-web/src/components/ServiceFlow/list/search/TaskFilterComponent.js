@@ -9,7 +9,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import TaskIgnoreCaseComponent from "./TaskIgnoreCaseComponent";
 
-const TaskFilterComponent = ({totalTasks}) => {
+const TaskFilterComponent = React.memo(({totalTasks}) => {
   const createSearchNode = useRef();
   const filterSearchSelections = useSelector(state => state.bpmTasks.filterSearchSelections);
   const queryType = useSelector(state => state.bpmTasks.searchQueryType);
@@ -109,6 +109,6 @@ const TaskFilterComponent = ({totalTasks}) => {
       </div>
     </>
   );
-};
+});
 
 export default TaskFilterComponent;

@@ -1,5 +1,4 @@
-import React from "react";
-import { Component } from "react";
+import React, {PureComponent} from "react";
 import { connect } from "react-redux";
 import { selectRoot, Form, selectError, Errors } from "react-formio";
 import { push } from "connected-react-router";
@@ -8,7 +7,7 @@ import { Button } from "react-bootstrap";
 import StepperPage from "../Stepper.js";*/
 import Loading from "../../../containers/Loading";
 
-const Preview = class extends Component {
+const Preview = class extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {

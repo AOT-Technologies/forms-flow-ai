@@ -6,7 +6,7 @@ import {Link} from "react-router-dom";
 /*import {Link} from "react-router-dom";*/
 
 
-const ServiceFlowFilterListDropDown = () => {
+const ServiceFlowFilterListDropDown = React.memo(() => {
   const dispatch= useDispatch();
   const filterList = useSelector(state=> state.bpmTasks.filterList);
   const isFilterLoading = useSelector(state=> state.bpmTasks.isFilterLoading);
@@ -43,6 +43,6 @@ const ServiceFlowFilterListDropDown = () => {
   return  <>
     {isFilterLoading? <NavDropdown.Item>Loading...</NavDropdown.Item>: renderFilterList()}
     </>
-};
+});
 
 export default ServiceFlowFilterListDropDown;

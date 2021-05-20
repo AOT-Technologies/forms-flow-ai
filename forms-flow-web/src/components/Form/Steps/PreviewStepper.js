@@ -1,15 +1,14 @@
 import React from "react";
-import {
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  Card,
-  CardContent,
-  TextField,
-} from "@material-ui/core";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import TextField from "@material-ui/core/TextField";
+
 import SaveNext from "./SaveNext";
 
-const Preview = (props) => {
+const Preview = React.memo((props) => {
   const {
     handleNext,
     handleBack,
@@ -128,5 +127,5 @@ const Preview = (props) => {
       </Grid>
     </Grid>
   );
-};
+});
 export default Preview;

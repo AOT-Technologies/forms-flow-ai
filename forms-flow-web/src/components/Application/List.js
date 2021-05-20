@@ -21,7 +21,7 @@ import {CLIENT} from "../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../constants/applicationConstants";
 
 
-const ApplicationList = () => {
+const ApplicationList = React.memo(() => {
   const applications = useSelector(state=> state.applications.applicationsList)
   const isApplicationListLoading = useSelector((state) => state.applications.isApplicationListLoading);
   const applicationCount = useSelector((state) => state.applications.applicationCount);
@@ -118,7 +118,7 @@ const ApplicationList = () => {
     )
 
   )
-}
+})
 
 
 export default ApplicationList;

@@ -8,7 +8,7 @@ import {setInsightDetailLoader, setInsightDashboardListLoader} from "../../actio
 import LoadingOverlay from "react-loading-overlay";
 import Loading from "../../containers/Loading";
 
-const Insights = (props) => {
+const Insights = React.memo((props) => {
   const {getDashboardsList, getDashboardDetail, dashboards, activeDashboard, isInsightLoading, isDashboardLoading} = props;
   const [dashboardSelected, setDashboardSelected] = useState(null);
 
@@ -78,7 +78,7 @@ const Insights = (props) => {
       </div>
     </>
   );
-};
+});
 
 const mapStateToProps = (state) => {
   return {

@@ -1,7 +1,7 @@
 # formsflow.ai Keycloak Setup
 
 ## Table of Contents
-* [Automated keycloak setup](#keycloak-auto-setup)
+* [Automated keycloak setup](#automated-keycloak-setup)
 * [Manual keycloak setup](#keycloak-manual-setup)
   * [Step 1 : Create Realm](#keycloak-realm-setup)
   * [Step 2 : Create key cloak setup for formsflow.ai web application](#keycloak-formsflow-web)

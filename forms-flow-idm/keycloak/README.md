@@ -73,7 +73,7 @@ Create a realm **forms-flow-ai**
 * Click the button "Create Realm" to add new realm **forms-flow-ai**
 * Click Create   
   
-## Create key cloak setup for formsflow.ai web application
+## Create Keycloak setup for formsflow web
 
 ### Create a forms-flow-web Client.     
 
@@ -125,7 +125,7 @@ Create a realm **forms-flow-ai**
   - Copy the JSON data
   - Update the content in file **public/config/kc/keycloak.json** in [forms-flow-web](../forms-flow-web/public/config/kc)
 
-## Create Key cloak setup for formsflow.ai analytics  
+## Create Keycloak setup for formsflow analytics
 
 ### Create a forms-flow-analytics Client.     
 
@@ -160,7 +160,7 @@ Create a realm **forms-flow-ai**
 			* Click Save  
  
 
-## Create key cloak setup for formsflow.ai BPM engine
+## Create Keycloak setup for formsflow bpm
 
 ### Create a forms-flow-bpm Client.     
 

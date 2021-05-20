@@ -2,13 +2,13 @@
 
 ## Table of Contents
 * [Automated keycloak setup](#automated-keycloak-setup)
-* [Manual keycloak setup](#keycloak-manual-setup)
-  * [Step 1 : Create Realm](#keycloak-realm-setup)
-  * [Step 2 : Create key cloak setup for formsflow.ai web application](#keycloak-formsflow-web)
-  * [Step 3 : Create Key cloak setup for formsflow.ai analytics](#keycloak-formsflow-analytics)
-  * [Step 4 : Create key cloak setup for formsflow.ai BPM engine](#keycloak-formsflow-bpm) 
-  * [Step 5 : Create Groups](#keycloak-group-setup) 
-  * [Step 6 : Test keycloak access in Postman](#keycloak-testing) 
+* [Manual keycloak setup](#manual-keycloak-setup)
+  * [Step 1 : Create Realm](#create-realm)
+  * [Step 2 : Create keycloak setup for formsflow web](#create-keycloak-setup-for-formsflow-web)
+  * [Step 3 : Create Keycloak setup for formsflow analytics](#create-keycloak-setup-for-formsflow-analytics)
+  * [Step 4 : Create keycloak setup for formsflow bpm ](#create-keycloak-setup-for-formsflow-bpm) 
+  * [Step 5 : Create groups](#create-groups) 
+  * [Step 6 : Test keycloak access in Postman](#test-keycloak-access-in-postman) 
 
 ## Automated keycloak setup
 

@@ -306,7 +306,7 @@ formsflow-client|formsflow-client| Able to access form fill-in only
 			* Should see resource_access[] > roles[] > list of Effective Roles  
 			
 			
-##Getting the client secret
+## Getting the client secret
 
 * Login to KeyCloak Realm with admin privileges 
 * Configure > Clients >   

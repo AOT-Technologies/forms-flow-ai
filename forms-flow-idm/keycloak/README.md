@@ -1,14 +1,15 @@
 # formsflow.ai Keycloak Setup
 
 ## Table of Contents
-* [Automated keycloak setup](#automated-keycloak-setup)
-* [Manual keycloak setup](#manual-keycloak-setup)
+* [Automated Keycloak setup](#automated-keycloak-setup)
+* [Manual Keycloak setup](#manual-keycloak-setup)
   * [Step 1 : Create Realm](#create-realm)
-  * [Step 2 : Create keycloak setup for formsflow web](#create-keycloak-setup-for-formsflow-web)
+  * [Step 2 : Create Keycloak setup for formsflow web](#create-keycloak-setup-for-formsflow-web)
   * [Step 3 : Create Keycloak setup for formsflow analytics](#create-keycloak-setup-for-formsflow-analytics)
-  * [Step 4 : Create keycloak setup for formsflow bpm ](#create-keycloak-setup-for-formsflow-bpm) 
+  * [Step 4 : Create Keycloak setup for formsflow bpm](#create-keycloak-setup-for-formsflow-bpm) 
   * [Step 5 : Create groups](#create-groups) 
   * [Step 6 : Test keycloak access in Postman](#test-keycloak-access-in-postman) 
+* [Getting the client secret](#getting-the-client-secret)
 
 ## Automated keycloak setup
 
@@ -303,3 +304,12 @@ formsflow-client|formsflow-client| Able to access form fill-in only
 			* Copy Access Token  
 			* Paste in jwt.io, and examine token  
 			* Should see resource_access[] > roles[] > list of Effective Roles  
+			
+			
+##Getting the client secret
+
+* Login to KeyCloak Realm with admin privileges 
+* Configure > Clients >   
+	* Click on Client ID = eg : forms-flow-bpm 
+	* Got to Credentials Tab
+	* Copy 	the secret value if present else click on Regenerate secret button and copy the value

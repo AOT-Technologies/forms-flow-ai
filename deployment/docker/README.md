@@ -29,9 +29,7 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
    * Start the **analytics server** by following the instructions given on  [README](../../forms-flow-analytics/README.md)
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.
-   * Start the **form.io server** by modifying listed form.io related environment variables **(Skip this step if the pre-defined template i.e.sample.json is already imported and role IDs are mapped in this .env)**    
-    (**Note: This step is required only if the installation is is done for the first time or new volume mounts**. The instruction to import forms to FORMIO are
-    [mentioned here](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms))   
+   * Modify the configuration values as needed. Details below,
        
 **formsflow.ai form.io Server Variables:**  
 
@@ -42,12 +40,13 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
 `FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
 `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
+
  * Build all the services.
     * For Linux,
         * Run `docker-compose -f docker-compose-linux.yml build` to build.
     * For Windows,
         * Run `docker-compose -f docker-compose-windows.yml build` to build.
- *  Follow the listed sub-instructions for mapping the pre-defined role IDs. **(Skip this step if the pre-defined template i.e.sample.json is already imported and role IDs are mapped in this .env)**   
+ *  Follow the listed sub-instructions for mapping the pre-defined role IDs. **(Skip this step if the [sample.json](../../forms-flow-forms/sample.json) is already imported and role IDs are mapped in this .env)**   
       *  Start the form.io service.  
         For Linux,  
         Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  

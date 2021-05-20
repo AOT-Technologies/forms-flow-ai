@@ -1,9 +1,14 @@
 # formsflow.ai Keycloak Setup
 
-To setup keycloak there are two options
-
-* Automated keycloak setup
-* Manual keycloak setup
+## Table of Contents
+* [Automated keycloak setup](#keycloak-auto-setup)
+* [Manual keycloak setup](#keycloak-manual-setup)
+  * [Step 1 : Create Realm](#keycloak-realm-setup)
+  * [Step 2 : Create key cloak setup for formsflow.ai web application](#keycloak-formsflow-web)
+  * [Step 3 : Create Key cloak setup for formsflow.ai analytics](#keycloak-formsflow-analytics)
+  * [Step 4 : Create key cloak setup for formsflow.ai BPM engine](#keycloak-formsflow-bpm) 
+  * [Step 5 : Create Groups](#keycloak-group-setup) 
+  * [Step 6 : Test keycloak access in Postman](#keycloak-testing) 
 
 ## Automated keycloak setup
 
@@ -57,7 +62,9 @@ Variable name | Meaning | Possible values | Default value |
 ## Manual keycloak setup
 
 
-To setup a remote keycloak server either download and import the [realm-export.json](./imports/realm-export.json) to keycloak or follow the manual steps below.
+To setup a remote keycloak server either download and import the [realm-export.json](./imports/realm-export.json) to keycloak or follow the manual steps below.'
+
+## Realm creation for keycloak
 
 Create a realm **forms-flow-ai**
 
@@ -253,8 +260,9 @@ formsflow-reviewer|formsflow-reviewer| Able to access task list and forms access
 formsflow-client|formsflow-client| Able to access form fill-in only
 
 
+## Test keycloak access in Postman
 
-## Test forms-flow-web access in Postman  
+### Test forms-flow-web access in Postman  
 
 * Open Postman  
 * Create new Request  
@@ -276,7 +284,7 @@ formsflow-client|formsflow-client| Able to access form fill-in only
 			* Should see resource_access[] > roles[] > list of Effective Roles  
  
 
-## Test forms-flow-bpm access in Postman  
+### Test forms-flow-bpm access in Postman  
 
 * Open Postman  
 * Create new Request  

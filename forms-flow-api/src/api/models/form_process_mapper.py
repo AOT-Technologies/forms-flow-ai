@@ -80,6 +80,22 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             )
 
     @classmethod
+    def find_all_active(cls, page_number, limit):
+        """Fetch all active form process mappers"""
+        if page_number == 0:
+            return cls.query.filter(
+                FormProcessMapper.status == str(FormProcessMapperStatus.Active.value)
+            ).order_by(FormProcessMapper.id.desc()).all()
+
+        else:
+            return (
+                cls.query.filter(
+                    FormProcessMapper.status == str(FormProcessMapperStatus.Active.value)
+                ).paginate(page_number, limit, False)
+                .items
+            )
+
+    @classmethod
     def find_all_count(cls):
         """Fetch the total active form process mapper which are active."""
         return cls.query.filter(

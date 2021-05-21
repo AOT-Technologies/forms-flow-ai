@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+/*
+import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -19,8 +20,8 @@ function Alert(props) {
 // }));
 
 
-const Toast = class extends Component {
- 
+const Toast = class extends PureComponent {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -53,13 +54,13 @@ const Toast = class extends Component {
   render() {
     return (
       <div className="classes.root">
-        <Snackbar 
+        <Snackbar
           anchorOrigin={{
             vertical: 'top',
             horizontal: 'center'
           }}
-          open={this.state.open} 
-          autoHideDuration={6000} 
+          open={this.state.open}
+          autoHideDuration={6000}
           onClose={this.handleSucessClose}>
           <Alert onClose={this.handleSucessClose} severity={this.props.severity} >
             {this.props.message}
@@ -67,7 +68,8 @@ const Toast = class extends Component {
         </Snackbar>
       </div>
     );
-  }  
-};
+  }
+});
 
-export default connect(null, null)(Toast);
+export default Toast;
+*/

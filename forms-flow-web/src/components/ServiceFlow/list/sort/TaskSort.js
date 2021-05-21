@@ -1,6 +1,6 @@
 import React from "react";
 
-const TaskSort = ({handleClick, options}) => {
+const TaskSort = React.memo(({handleClick, options}) => {
 
   const onSortSelect = (sortType) => {
     handleClick(sortType);
@@ -14,7 +14,7 @@ const TaskSort = ({handleClick, options}) => {
       )
     )}
   </div>)
-};
+});
 
 export default TaskSort;
 

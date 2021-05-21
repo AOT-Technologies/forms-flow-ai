@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, {PureComponent} from 'react'
 import { Route } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getForm } from 'react-formio'
@@ -6,7 +6,7 @@ import { getForm } from 'react-formio'
 import UserService from '../services/UserService'
 import View from '../components/Form/Item/View'
 
-class PublicRoute extends Component {
+class PublicRoute extends PureComponent {
 
     componentDidMount() {
         UserService.authenticateAnonymousUser(this.props.store)

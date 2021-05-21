@@ -14,7 +14,7 @@ import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
 //import { useDispatch } from 'react-redux'
 
-const ViewApplication = () => {
+const ViewApplication = React.memo(() => {
   const {applicationId} = useParams();
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
@@ -73,7 +73,6 @@ const ViewApplication = () => {
     </div>
 
   );
-}
+})
 
-export default ViewApplication ;
-// export default connect(mapStateToProps)(Details);
+export default ViewApplication;

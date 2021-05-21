@@ -26,6 +26,11 @@ window["_env_"] = {
   REACT_APP_API_PROJECT_URL: "http://localhost:3001",
   // Keycloak-client-name for web
   REACT_APP_KEYCLOAK_CLIENT: "forms-flow-web",
+  // Keycloak-Realm-name
+  REACT_APP_KEYCLOAK_URL_REALM:"forms-flow-ai",
+  // Keycloak URL
+  REACT_APP_KEYCLOAK_URL:"<Keycloak URL>",
+
   ////Environment Variables for forms-flow-bpm////
 
   //Insight Api End point

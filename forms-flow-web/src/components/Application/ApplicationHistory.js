@@ -21,7 +21,7 @@ import Nodata from '../../components/Nodata';
 import {setUpdateHistoryLoader} from "../../actions/taskActions";
 
 
-const HistoryList = (props) => {
+const HistoryList = React.memo((props) => {
   const dispatch = useDispatch();
   const isHistoryListLoading = useSelector(state => state.tasks.isHistoryListLoading);
   const appHistory = useSelector(state => state.tasks.appHistory);
@@ -96,6 +96,6 @@ const HistoryList = (props) => {
       <Nodata text={"No Application History found"} className={"div-no-application-list text-center"}/>
     )
   );
-};
+});
 
 export default HistoryList;

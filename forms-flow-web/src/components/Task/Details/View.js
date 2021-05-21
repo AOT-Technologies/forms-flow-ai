@@ -27,7 +27,7 @@ const taskStatus = (task) => {
   }
 };
 
-const View = (props) => {
+const View = React.memo((props) => {
   const task = props.detail;
   return (
     <Table responsive>
@@ -98,7 +98,7 @@ const View = (props) => {
       </tbody>
     </Table>
   );
-};
+});
 
 const mapStateToProps = (state) => {
   return {

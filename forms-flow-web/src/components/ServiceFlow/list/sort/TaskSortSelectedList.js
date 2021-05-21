@@ -15,7 +15,7 @@ const getOptions = (options) => {
 };
 
 
-const TaskSortSelectedList = () => {
+const TaskSortSelectedList = React.memo(() => {
   const createNode = useRef();
   const sortingData = useSelector(state => state.bpmTasks.filterListSortParams.sorting);
   const [sortList,updateSortList] = useState(sortingData);
@@ -108,7 +108,7 @@ const TaskSortSelectedList = () => {
      {showSortListDropdown?<TaskSort handleClick={addSort} options={sortOptions}/>:null}
     </div>:null}
   </div>)
-};
+});
 
 export default TaskSortSelectedList;
 

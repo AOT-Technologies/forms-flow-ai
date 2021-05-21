@@ -5,7 +5,7 @@ import TaskFilterSearchType from "./TaskFilterSearchType";
 import {getFormattedDateAndTime, getISODateTime} from "../../../../apiManager/services/formatterService";
 import DatePicker from "react-datepicker";
 
-const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSearchFilterData, updateFilter}) => {
+const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter, updateSearchFilterData, updateFilter}) => {
 
   const [valueBoxIndex, setShowValueBoxIndex] = useState(null);
   const [nameBoxIndex, setShowNameBoxIndex] = useState(null);
@@ -177,7 +177,7 @@ const TaskFilterSearch = ({filterSelections = [], deleteSearchFilter, updateSear
       ))}
     </>)
 
-};
+});
 
 export default TaskFilterSearch;
 

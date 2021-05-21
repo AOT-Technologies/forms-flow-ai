@@ -162,10 +162,8 @@ export const getProcessActivities = (process_instance_id, ...rest) => {
 };
 
 export const fetchDiagram = (process_key, ...rest) => {
-  console.log('inside fetchDiagram >>',process_key);
   const url =API.PROCESSES+'/'+process_key+'/xml';
   const done = rest.length ? rest[0] : () => {};
-  console.log('inside fetchDiagram URL>>',url);
   return (dispatch) => {
     httpGETRequest(
       url,

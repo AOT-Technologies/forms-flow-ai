@@ -29,7 +29,7 @@ const getOperations = (userRoles) => {
   return operations;
 }
 
-const List = (props) => {
+const List = React.memo((props) => {
   const dispatch = useDispatch();
   const {formId} = useParams();
   const {submissions, isLoading, onAction, getSubmissions, errors, userRoles, submissionFormId, submissionId, onNo, onYes} = props;
@@ -103,7 +103,7 @@ const List = (props) => {
       </section>
     </div>
   );
-}
+})
 
 const mapStateToProps = (state) => {
   const form = selectRoot('form', state);

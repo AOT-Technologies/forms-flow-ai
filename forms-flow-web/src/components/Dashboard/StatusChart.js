@@ -14,7 +14,7 @@ const COLORS = [
 ];
 
 // label={renderCustomizedLabel}
-const ChartForm = (props) => {
+const ChartForm = React.memo((props) => {
   const { submissionsStatusList } = props;
 
   const pieData = submissionsStatusList;
@@ -79,6 +79,6 @@ const ChartForm = (props) => {
       </div>
     </div>
   );
-};
+});
 
 export default ChartForm;

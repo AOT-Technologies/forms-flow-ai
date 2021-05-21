@@ -74,7 +74,6 @@ export const getApplicationById = (applicationId, ...rest) => {
       .then((res) => {
         if (res.data) {
           const application = res.data;
-          console.log("Application in api manager", application);
           dispatch(setApplicationDetail(application));
           done(null, application);
         } else {

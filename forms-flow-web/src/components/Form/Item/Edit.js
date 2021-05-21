@@ -12,7 +12,7 @@ import { push } from "connected-react-router";
 import { SUBMISSION_ACCESS } from "../../../constants/constants";
 import {addHiddenApplicationComponent} from "../../../constants/applicationComponent";
 
-const Edit = (props) => (
+const Edit = React.memo((props) => (
   <div className="container">
     <div className="main-header">
       {/* <Link to="/form">
@@ -28,7 +28,7 @@ const Edit = (props) => (
     <Errors errors={props.errors} />
     <FormEdit {...props} />
   </div>
-);
+));
 
 const mapStateToProps = (state) => {
   return {

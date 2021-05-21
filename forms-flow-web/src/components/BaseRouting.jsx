@@ -9,7 +9,7 @@ import PrivateRoute from "./PrivateRoute";
 import NavBar from "../containers/NavBar";
 import Footer from "../components/Footer";
 
-const BaseRouting = ({store}) => {
+const BaseRouting = React.memo(({store}) => {
   const isAuth = useSelector((state) => state.user.isAuthenticated);
   return (
     <>
@@ -28,7 +28,7 @@ const BaseRouting = ({store}) => {
       </div>
     </>
   );
-};
+});
 
 
 export default BaseRouting;

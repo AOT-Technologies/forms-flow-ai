@@ -3,7 +3,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
 
-const Confirm = (props)=>{
+const Confirm = React.memo((props)=>{
     const { modalOpen=false, onYes, onNo, message, yesText = 'Yes', noText = 'No' } = props;
     return (
       <>
@@ -19,6 +19,6 @@ const Confirm = (props)=>{
           </Modal>
         </>
     )
-}
+})
 
 export default Confirm;

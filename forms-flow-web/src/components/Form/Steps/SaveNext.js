@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from "@material-ui/core";
+import Button  from "@material-ui/core/Button";
 
-const SaveNext = (props) => {
+const SaveNext = React.memo((props) => {
   const { handleNext, handleBack, activeStep, isLastStep, submitData } = props;
 
   return (
@@ -18,5 +18,5 @@ const SaveNext = (props) => {
       </Button>
     </>
   );
-};
+});
 export default SaveNext;

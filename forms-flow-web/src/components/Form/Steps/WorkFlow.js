@@ -1,19 +1,17 @@
 import React from "react";
-/*import { Button } from 'reactstrap';*/
-import {
-  FormLabel,
-  FormControlLabel,
-  RadioGroup,
-  Radio,
-  Grid,
-  CardContent,
-  Card,
-} from "@material-ui/core";
+import FormLabel from "@material-ui/core/FormLabel";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import RadioGroup from "@material-ui/core/RadioGroup";
+import Radio from "@material-ui/core/Radio";
+import Grid from "@material-ui/core/Grid";
+import CardContent from "@material-ui/core/CardContent";
+import Card from "@material-ui/core/Card";
+
 import Select from "react-dropdown-select";
 import SaveNext from "./SaveNext";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
 
-const WorkFlow = (props) => {
+const WorkFlow = React.memo((props) => {
 
   const {
     associateWorkFlow,
@@ -102,5 +100,5 @@ const WorkFlow = (props) => {
       </Grid>
     </Grid>
   );
-};
+});
 export default WorkFlow;

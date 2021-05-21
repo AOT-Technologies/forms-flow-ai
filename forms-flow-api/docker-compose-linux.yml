@@ -18,23 +18,23 @@ services:
 
 #Analytics DB - Comment below if mongo db setup is available
 
-  # analytics-db:
-  #   image: mongo
-  #   restart: always
-  #   hostname: forms-flow-webapi-mongo-db
-  #   ports:
-  #      - '27019:27017'
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: ${WEBAPI_MONGO_USERNAME}
-  #     MONGO_INITDB_ROOT_PASSWORD: ${WEBAPI_MONGO_PASSWORD}
-  #     MONGO_INITDB_DATABASE: ${WEBAPI_MONGO_DATABASE}
-  #   volumes:
-  #     - ./mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
-  #     - mdb-data:/data/analytics/db/
-  #     - ./mongodb/data/log/:/var/log/mongodb/
-  #     - ./mongodb/mongod.conf:/etc/mongod.conf
-  #   networks:
-  #     - forms-flow-webapi-network
+  analytics-db:
+    image: mongo
+    restart: always
+    hostname: forms-flow-webapi-mongo-db
+    ports:
+       - '27019:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${WEBAPI_MONGO_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${WEBAPI_MONGO_PASSWORD}
+      MONGO_INITDB_DATABASE: ${WEBAPI_MONGO_DATABASE}
+    volumes:
+      - ./mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
+      - mdb-data:/data/analytics/db/
+      - ./mongodb/data/log/:/var/log/mongodb/
+      - ./mongodb/mongod.conf:/etc/mongod.conf
+    networks:
+      - forms-flow-webapi-network
 
   forms-flow-webapi:
     build:
@@ -43,7 +43,7 @@ services:
     restart: unless-stopped
     links:
       - forms-flow-webapi-db
-      # - analytics-db
+      - analytics-db
     ports:
       - '5000:5000'
     volumes:

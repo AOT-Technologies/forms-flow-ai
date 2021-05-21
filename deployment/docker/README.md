@@ -86,19 +86,11 @@ Variable name | Meaning | Possible values | Default value |
 `CAMUNDA_API_URI`|Camunda Rest API URI||`http://{Your IP Address}:8000/camunda`
 `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://{Your IP Address}:3001`
 `WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://{Your IP Address}:5000`
-`MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis||`mongodb://username:password@host:port/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
-
- **Additionally, you may want to change these**  
- 
-* Uncomment below variables if no external mongo db setup is available
-   * Modify MONGODB_URI variable accordingly
-   * Uncomment Analytics DB section from docker-compose-{Your Variant}.yml 
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
 `WEBAPI_MONGO_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
 `WEBAPI_MONGO_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
 `WEBAPI_MONGO_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
+`MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis|Used on installation to create the database.Choose your own|`mongodb://mongo:changeme@host:port/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
+
 
 **Authentication Provider (Keycloak) Settings:**
 

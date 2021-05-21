@@ -18,7 +18,7 @@ class FormProcessMapperService:
             page_number = int(page_number)
         if limit:
             limit = int(limit)
-        mappers = FormProcessMapper.find_all(page_number, limit)
+        mappers = FormProcessMapper.find_all_active(page_number, limit)
         mapper_schema = FormProcessMapperSchema()
         return mapper_schema.dump(mappers, many=True)
 

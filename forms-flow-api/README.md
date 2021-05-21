@@ -10,7 +10,7 @@ the system. It is built using Python :snake: .
 ## Table of Content
 * [Prerequisites](#prerequisites)
 * [Solution Setup](#solution-setup)
-  * [Step 1 : Installation](#intallation)
+  * [Step 1 : Installation](#installation)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Verify the Application Status](#verify-the-application-status) 
@@ -22,6 +22,23 @@ We are assuming [docker-compose](https://docs.docker.com/compose/) and [docker](
 is already installed, which is required to run and deploy the system.
 
 ## Solution Setup
+
+### Installation
+
+If you are interested in contributing to the project, you can install through docker or locally.
+The steps for a local installation are:
+
+```
+Install python 3.8+ and pip
+pip install psycopg2
+python setup.py install
+python manage.py db upgrage(do a python manage.py db init - if first installation)
+Run - python wsgi.py
+```
+
+It's recommended to download dev-packages to following Python coding styles by running:
+
+````python3 -m pip install -r requirements-dev.txt```
 
 ### Keycloak Setup
 

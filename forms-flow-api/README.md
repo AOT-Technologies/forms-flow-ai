@@ -38,7 +38,7 @@ Run - python wsgi.py
 
 It's recommended to download dev-packages to following Python coding styles by running:
 
-````python3 -m pip install -r requirements-dev.txt```
+```python3 -m pip install -r requirements-dev.txt```
 
 ### Keycloak Setup
 

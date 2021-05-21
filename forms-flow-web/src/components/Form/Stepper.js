@@ -1,11 +1,12 @@
-import React, { Component } from "react";
+import React, {PureComponent} from "react";
 import { connect } from "react-redux";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
-import { Grid, Paper } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
@@ -34,7 +35,7 @@ import {Link} from "react-router-dom";
   { label: "Inactive", value: "inactive" },
 ];*/
 
-class StepperPage extends Component {
+class StepperPage extends PureComponent {
   // UNSAFE_componentWillMount() {
   //   this.props.getAllProcesses();
   // }
@@ -448,7 +449,7 @@ const mapDispatchToProps = (dispatch) => {
     getFormProcessesDetails: (formId) => {
       dispatch(
         getFormProcesses(formId, (err, res) => {
-          if (!err) {
+          if (err) {
             console.log(err);
           }
         })

@@ -29,9 +29,7 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
    * Start the **analytics server** by following the instructions given on  [README](../../forms-flow-analytics/README.md)
    * Make sure your current working directory is "/deployment/docker".
    * Rename the file **sample.env** to **.env**.
-   * Start the **form.io server** by modifying listed form.io related environment variables **(Skip this step if the pre-defined template i.e.sample.json is already imported and role IDs are mapped in this .env)**    
-    (**Note: This step is required only if the installation is is done for the first time or new volume mounts**. The instruction to import forms to FORMIO are
-    [mentioned here](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms))   
+   * Modify the configuration values as needed. Details below,
        
 **formsflow.ai form.io Server Variables:**  
 
@@ -42,12 +40,13 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
 `FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
 `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
+
  * Build all the services.
     * For Linux,
         * Run `docker-compose -f docker-compose-linux.yml build` to build.
     * For Windows,
         * Run `docker-compose -f docker-compose-windows.yml build` to build.
- *  Follow the listed sub-instructions for mapping the pre-defined role IDs. **(Skip this step if the pre-defined template i.e.sample.json is already imported and role IDs are mapped in this .env)**   
+ *  Follow the listed sub-instructions for mapping the pre-defined role IDs. **(Skip this step if the [sample.json](../../forms-flow-forms/sample.json) is already imported and role IDs are mapped in this .env)**   
       *  Start the form.io service.  
         For Linux,  
         Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
@@ -68,7 +67,7 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
 `DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
 `DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the administrator role Id value from form.io resource. [Get administrator role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the anonymous role Id value from form.io resource. [Get anonymous role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
-`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource. **http://localhost:3001/user**
+`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource. [Get user resource Id](../../forms-flow-forms/README.md#how-to-get-resource-user-id)
 
 **formsflow.ai Datastore Settings:**
 
@@ -89,6 +88,18 @@ Variable name | Meaning | Possible values | Default value |
 `WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://{Your IP Address}:5000`
 `MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis||`mongodb://username:password@host:port/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
+ **Additionally, you may want to change these**  
+ 
+* Uncomment below variables if no external mongo db setup is available
+   * Modify MONGODB_URI variable accordingly
+   * Uncomment Analytics DB section from docker-compose-{Your Variant}.yml 
+
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`WEBAPI_MONGO_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
+`WEBAPI_MONGO_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
+`WEBAPI_MONGO_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
+
 **Authentication Provider (Keycloak) Settings:**
 
 Variable name | Meaning | Possible values | Default value |
@@ -98,7 +109,7 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_JWT_OIDC_JWKS_URI`|Keycloak JWKS URI|Plug in Keycloak base url plus realm|`{Keycloak URL}/auth/realms/<REALM>/protocol/openid-connect/certs`
 `KEYCLOAK_JWT_OIDC_ISSUER`|The issuer of JWT's from Keycloak for your realm|Plug in your realm and Keycloak base url|`{Keycloak URL}/auth/realms/<REALM>`
 `KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|must be set to your Keycloak client id
-`KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret
+`KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
 `KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
 
 **BPM (Camunda) Settings:**
@@ -109,11 +120,11 @@ Variable name | Meaning | Possible values | Default value |
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
+ `CAMUNDA_JDBC_DB`|Postgres JDBC DB Name|Used on installation to create the database.Choose your own|`formsflow-bpm`
  `CAMUNDA_JDBC_URL`|Postgres JDBC DB Connection URL|Used on installation to create the database.Choose your own|`jdbc:postgresql://forms-flow-bpm-db:5432/formsflow-bpm`
  `CAMUNDA_JDBC_DRIVER`|Postgres JDBC Database Driver||`org.postgresql.Driver`
- `CAMUNDA_POSTGRES_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
- `CAMUNDA_POSTGRES_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
- `CAMUNDA_POSTGRES_DB`|Postgres Database Name|Used on installation to create the database.Choose your own|`formsflow-bpm`
+ `CAMUNDA_JDBC_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
+ `CAMUNDA_JDBC_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
  `CAMUNDA_HIKARI_CONN_TIMEOUT`|Hikari Connection optimization setting||`30000`
  `CAMUNDA_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
  `CAMUNDA_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
@@ -167,7 +178,7 @@ Variable name | Meaning | Possible values | Default value |
   `CAMUNDA_METRICS_FLAG`|Job-Executor Configuration Properties||`false`
   `CAMUNDA_BPM_HISTORY_LEVEL`|Engine Configuration Properties||`none`
   `CAMUNDA_AUTHORIZATION_FLAG`|Engine Configuration Properties||`true`
-  `CAMUNDA_AUTHORIZATION_FLAG`|Engine Configuration Properties||`auto`
+  `CAMUNDA_AUTHORIZATION_REVOKE_CHECK_FLAG`|Engine Configuration Properties||`auto`
   
  Reference: 
  * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/job-executor/#job-executor-configuration-properties

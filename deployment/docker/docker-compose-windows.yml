@@ -130,30 +130,33 @@ services:
     build:
       context: ./../../forms-flow-web/
       dockerfile: Dockerfile
+      args:
+        - NODE_ENV=${NODE_ENV}
+        - GENERATE_SOURCEMAP=false
+        - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE}
+        - REACT_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE}
+        - REACT_APP_STAFF_DESIGNER_ROLE=${DESIGNER_ROLE}
+        - REACT_APP_CLIENT_ID=${CLIENT_ROLE_ID}
+        - REACT_APP_STAFF_REVIEWER_ID=${REVIEWER_ROLE_ID}
+        - REACT_APP_STAFF_DESIGNER_ID=${DESIGNER_ROLE_ID}
+        - REACT_APP_USER_RESOURCE_FORM_ID=${USER_RESOURCE_ID}
+        - REACT_APP_API_SERVER_URL=${FORMIO_DEFAULT_PROJECT_URL}
+        - REACT_APP_API_PROJECT_URL=${FORMIO_DEFAULT_PROJECT_URL}
+        - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENTID}
+        - REACT_APP_ANONYMOUS_ID=${ANONYMOUS_ID}
+        - REACT_APP_INSIGHT_API_BASE=${INSIGHT_API_BASE}
+        - REACT_APP_INSIGHTS_API_KEY=${INSIGHT_API_KEY}
+        - REACT_APP_WEB_BASE_URL=${WEB_API_BASE_URL}
+        - REACT_APP_CAMUNDA_API_URI=${CAMUNDA_API_URI}
+        - REACT_APP_WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY}
+        - REACT_APP_KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM}
+        - REACT_APP_KEYCLOAK_URL=${KEYCLOAK_URL}
     volumes:
       - '.:/app'
       - '/app/node_modules'
     ports:
       - '3000:3000'
     tty: true
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE}
-      - REACT_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE}
-      - REACT_APP_STAFF_DESIGNER_ROLE=${DESIGNER_ROLE}
-      - REACT_APP_CLIENT_ID=${CLIENT_ROLE_ID}
-      - REACT_APP_STAFF_REVIEWER_ID=${REVIEWER_ROLE_ID}
-      - REACT_APP_STAFF_DESIGNER_ID=${DESIGNER_ROLE_ID}
-      - REACT_APP_USER_RESOURCE_FORM_ID=${USER_RESOURCE_ID}
-      - REACT_APP_API_SERVER_URL=${FORMIO_DEFAULT_PROJECT_URL}
-      - REACT_APP_API_PROJECT_URL=${FORMIO_DEFAULT_PROJECT_URL}
-      - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENTID}
-      - REACT_APP_ANONYMOUS_ID=${ANONYMOUS_ID}
-      - REACT_APP_INSIGHT_API_BASE=${INSIGHT_API_BASE}
-      - REACT_APP_INSIGHTS_API_KEY=${INSIGHT_API_KEY}
-      - REACT_APP_WEB_BASE_URL=${WEB_API_BASE_URL}
-      - REACT_APP_CAMUNDA_API_URI=${CAMUNDA_API_URI}
-      - REACT_APP_WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY}
 
     networks:
       - forms-flow-web-network
@@ -172,6 +175,26 @@ services:
       - ./postgres/webapi:/data/postgres
     networks:
       - forms-flow-webapi-network
+      
+  #Analytics DB - Uncomment below if no mongo db setup is available
+
+#  analytics-db:
+#    image: mongo
+#    restart: always
+#    hostname: forms-flow-webapi-mongo-db
+#    ports:
+#       - '27019:27017'
+#    environment:
+#      MONGO_INITDB_ROOT_USERNAME: ${WEBAPI_MONGO_USERNAME}
+#      MONGO_INITDB_ROOT_PASSWORD: ${WEBAPI_MONGO_PASSWORD}
+#      MONGO_INITDB_DATABASE: ${WEBAPI_MONGO_DATABASE}
+#    volumes:
+#      - ./mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
+#      - mdb-data:/data/db/
+#      - ./mongodb/data/log/:/var/log/mongodb/
+#      - ./mongodb/mongod.conf:/etc/mongod.conf
+#    networks:
+#      - forms-flow-webapi-network
 
   forms-flow-webapi:
     build:
@@ -180,6 +203,7 @@ services:
     restart: unless-stopped
     links:
       - forms-flow-webapi-db
+      #- analytics-db
     ports:
       - '5000:5000'
     volumes:

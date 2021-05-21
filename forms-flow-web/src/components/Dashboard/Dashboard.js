@@ -18,7 +18,7 @@ const firsDay = moment().format("YYYY-MM-01");
 
 const lastDay = moment().endOf("month").format("YYYY-MM-DD");
 
-const Dashboard = () => {
+const Dashboard = React.memo(() => {
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrics.submissionsList);
   const submissionsStatusList = useSelector(
@@ -81,7 +81,7 @@ const Dashboard = () => {
   }
   return (
     <Fragment>
-      <div class="container mb-4" id="main">
+      <div className="container mb-4" id="main">
       <div className="dashboard mb-2">
         <div className="row ">
           <div className="col-12">
@@ -134,6 +134,6 @@ const Dashboard = () => {
       </div>
     </Fragment>
   );
-};
+});
 
 export default Dashboard;

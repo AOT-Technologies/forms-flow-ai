@@ -1,7 +1,7 @@
 import React from "react";
 
 
-const OperatorFilterDropDown = ({compareOptions, operator, changeOperator}) => {
+const OperatorFilterDropDown = React.memo(({compareOptions, operator, changeOperator}) => {
 
   const handleChange = (e) =>{
     changeOperator(e.target.value);
@@ -16,6 +16,6 @@ const OperatorFilterDropDown = ({compareOptions, operator, changeOperator}) => {
       }
     </select>
   );
-};
+});
 
 export default OperatorFilterDropDown;

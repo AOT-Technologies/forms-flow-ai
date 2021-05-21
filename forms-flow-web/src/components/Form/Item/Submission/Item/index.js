@@ -12,7 +12,7 @@ import {getUserRolePermission} from "../../../../../helper/user";
 import {CLIENT, STAFF_REVIEWER} from "../../../../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../../../../constants/applicationConstants";
 
-const Item = (props) => {
+const Item = React.memo((props) => {
   const {formId, submissionId} = useParams();
   const dispatch = useDispatch();
   //const path = props.location.pathname;
@@ -74,6 +74,6 @@ const Item = (props) => {
       </Switch>
     </div>
   );
-}
+})
 
 export default Item;

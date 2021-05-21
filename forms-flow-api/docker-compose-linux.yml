@@ -43,6 +43,7 @@ services:
     restart: unless-stopped
     links:
       - forms-flow-webapi-db
+        #- analytics-db
     ports:
       - '5000:5000'
     volumes:

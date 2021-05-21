@@ -6,7 +6,7 @@ import Review from './Review';
 import { connect } from 'react-redux';
 
 
-const Details = (props) => {
+const Details = React.memo((props) => {
     return (
         <LoadingOverlay active={props.isTaskUpdating} spinner text='Loading...'>
             <div className="row" style={{ marginTop: '26.5px', fontWeight: "500px" }}>
@@ -19,7 +19,7 @@ const Details = (props) => {
             </div>
         </LoadingOverlay>
     );
-}
+})
 
 const mapStateToProps = (state) =>{
     return{

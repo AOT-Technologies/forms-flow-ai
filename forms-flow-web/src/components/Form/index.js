@@ -35,7 +35,7 @@ const FormSubmissionRoute = ({ component: Component, ...rest }) => (
 );
 
 
-const Form = (props) => {
+const Form = React.memo((props) => {
   user = props.user;
   if (!props.isAuthenticated) {
     return <Loading />;
@@ -53,7 +53,7 @@ const Form = (props) => {
       </Switch>
     </div>
   );
-};
+});
 
 const mapStatetoProps = (state) => {
   return {

@@ -1,7 +1,7 @@
 import { taskFilters } from "../../constants/taskConstants";
 import React from "react";
 
-const TaskFilterDropdown = ({ onFilterSelect }) => {
+const TaskFilterDropdown = React.memo(({ onFilterSelect }) => {
   return (
     <div className="filter-items">
       {taskFilters.map((filter,index) => (
@@ -15,6 +15,6 @@ const TaskFilterDropdown = ({ onFilterSelect }) => {
       ))}
     </div>
   );
-};
+});
 
 export default TaskFilterDropdown;

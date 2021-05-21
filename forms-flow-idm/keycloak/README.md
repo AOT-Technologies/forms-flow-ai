@@ -1,9 +1,15 @@
 # formsflow.ai Keycloak Setup
 
-To setup keycloak there are two options
-
-* Automated keycloak setup
-* Manual keycloak setup 
+## Table of Contents
+* [Automated Keycloak setup](#automated-keycloak-setup)
+* [Manual Keycloak setup](#manual-keycloak-setup)
+  * [Step 1 : Create Realm](#create-realm)
+  * [Step 2 : Create Keycloak setup for formsflow web](#create-keycloak-setup-for-formsflow-web)
+  * [Step 3 : Create Keycloak setup for formsflow analytics](#create-keycloak-setup-for-formsflow-analytics)
+  * [Step 4 : Create Keycloak setup for formsflow bpm](#create-keycloak-setup-for-formsflow-bpm) 
+  * [Step 5 : Create groups](#create-groups) 
+  * [Step 6 : Test keycloak access in Postman](#test-keycloak-access-in-postman) 
+* [Getting the client secret](#getting-the-client-secret)
 
 ## Automated keycloak setup
 
@@ -59,8 +65,10 @@ Variable name | Meaning | Possible values | Default value |
 
 ## Manual keycloak setup
 
-:information_source: 
-> There is an existing Keycloak instance available and user want to configure a new realm for formsflow.ai usage
+
+To setup a remote keycloak server either download and import the [realm-export.json](./imports/realm-export.json) to keycloak or follow the manual steps below.'
+
+## Realm creation for keycloak
 
 Create a realm **forms-flow-ai**
 
@@ -68,7 +76,7 @@ Create a realm **forms-flow-ai**
 * Click the button "Create Realm" to add new realm **forms-flow-ai**
 * Click Create   
   
-## Create key cloak setup for formsflow.ai web application
+## Create Keycloak setup for formsflow web
 
 ### Create a forms-flow-web Client.     
 
@@ -120,7 +128,7 @@ Create a realm **forms-flow-ai**
   - Copy the JSON data
   - Update the content in file **public/config/kc/keycloak.json** in [forms-flow-web](../forms-flow-web/public/config/kc)
 
-## Create Key cloak setup for formsflow.ai analytics  
+## Create Keycloak setup for formsflow analytics
 
 ### Create a forms-flow-analytics Client.     
 
@@ -155,7 +163,7 @@ Create a realm **forms-flow-ai**
 			* Click Save  
  
 
-## Create key cloak setup for formsflow.ai BPM engine
+## Create Keycloak setup for formsflow bpm
 
 ### Create a forms-flow-bpm Client.     
 
@@ -256,8 +264,9 @@ formsflow-reviewer|formsflow-reviewer| Able to access task list and forms access
 formsflow-client|formsflow-client| Able to access form fill-in only
 
 
+## Test keycloak access in Postman
 
-## Test forms-flow-web access in Postman  
+### Test forms-flow-web access in Postman  
 
 * Open Postman  
 * Create new Request  
@@ -279,7 +288,7 @@ formsflow-client|formsflow-client| Able to access form fill-in only
 			* Should see resource_access[] > roles[] > list of Effective Roles  
  
 
-## Test forms-flow-bpm access in Postman  
+### Test forms-flow-bpm access in Postman  
 
 * Open Postman  
 * Create new Request  
@@ -298,3 +307,12 @@ formsflow-client|formsflow-client| Able to access form fill-in only
 			* Copy Access Token  
 			* Paste in jwt.io, and examine token  
 			* Should see resource_access[] > roles[] > list of Effective Roles  
+			
+			
+## Getting the client secret
+
+* Login to KeyCloak Realm with admin privileges 
+* Configure > Clients >   
+	* Click on Client ID = eg : forms-flow-bpm 
+	* Got to Credentials Tab
+	* Copy 	the secret value if present else click on Regenerate secret button and copy the value

@@ -21,7 +21,7 @@ services:
       - 5431:5431
 
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
+    image: quay.io/keycloak/keycloak:11.0.0
     volumes:
       - ./imports:/opt/jboss/keycloak/imports
     command: 

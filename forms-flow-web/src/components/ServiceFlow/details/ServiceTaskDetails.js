@@ -23,7 +23,7 @@ import {useParams} from "react-router-dom";
 import {push} from "connected-react-router";
 
 
-const ServiceFlowTaskDetails = () => {
+const ServiceFlowTaskDetails = React.memo(() => {
   const {taskId} = useParams();
   const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const task = useSelector(state => state.bpmTasks.taskDetail);
@@ -140,6 +140,6 @@ const ServiceFlowTaskDetails = () => {
        </LoadingOverlay>
      </div>)
    }
-};
+});
 
 export default ServiceFlowTaskDetails;

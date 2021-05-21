@@ -5,7 +5,7 @@ import ApplicationDetails from './ApplicationDetails'
 import {useSelector} from 'react-redux';
 
 
-const Details = (props) => {
+const Details = React.memo((props) => {
     const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
     return (
         <LoadingOverlay active={isApplicationDetailLoading} spinner text='Loading...'>
@@ -16,6 +16,6 @@ const Details = (props) => {
             </div>
         </LoadingOverlay>
     );
-}
+})
 
 export default Details;

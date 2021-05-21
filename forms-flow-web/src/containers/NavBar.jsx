@@ -10,7 +10,7 @@ import {CLIENT, STAFF_REVIEWER} from "../constants/constants";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import {push} from "connected-react-router";
 
-const NavBar = () => {
+const NavBar = React.memo(() => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const location = useLocation();
   const { pathname } = location;
@@ -127,6 +127,6 @@ const NavBar = () => {
       </Navbar>
     </header>
   );
-}
+})
 
 export default NavBar;

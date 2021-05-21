@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 
-const CardFormCounter = (props) => {
+const CardFormCounter = React.memo((props) => {
   const { submitionData, getStatusDetails, selectedMetricsId } = props;
   const { formName, mapperId, count } = submitionData;
   return (
@@ -39,5 +39,5 @@ const CardFormCounter = (props) => {
       </div>
     </Fragment>
   );
-};
+});
 export default CardFormCounter;

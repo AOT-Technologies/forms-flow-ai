@@ -14,11 +14,13 @@ To know more about form.io, go to https://github.com/formio/formio.
   * [Step 2 : Installation](#installation)
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Health Check](#health-check)
-  * [Step 5 : Import of predefined roles and Forms](#import-of-predefined-roles-and-forms)   
-* [How-to get jwt token](#how-to-get-jwt-token)
-* [How-to export roles and Forms](#how-to-export-roles-and-forms)
-* [How-to get role id](#how-to-get-role-id)
-* [Custom components](#custom-components)   
+  * [Step 5 : Import of predefined roles and Forms](#import-of-predefined-roles-and-forms)
+* [Formsflow form API List](#formsflow-form-api-list)  
+  * [How-to get jwt token](#how-to-get-jwt-token)
+  * [How-to export roles and Forms](#how-to-export-roles-and-forms)
+  * [How-to get role id](#how-to-get-role-id)
+  * [How-to get user resource id](#how-to-get-resource-user-id)
+  * [Custom components](#custom-components)   
 
 ## Prerequisites
 
@@ -72,6 +74,8 @@ Not applicable.
     
     FORMIO_ROOT_EMAIL: admin@example.com
     FORMIO_ROOT_PASSWORD: CHANGEME
+	
+## Formsflow form API List
 	
 	
 ### How-to get jwt token
@@ -127,6 +131,22 @@ Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user
 
 ``` 
 GET http://localhost:3001/role
+
+Headers:
+Content-Type : application/json
+x-jwt-token: {x-jwt-token}
+``` 
+
+Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user/login`
+
+### How-to get user resource id
+
+   * [Get the jwt token](./README.md#how-to-get-jwt-token)
+   
+   * Get the role id using resource **/user**.
+
+``` 
+GET http://localhost:3001/user
 
 Headers:
 Content-Type : application/json

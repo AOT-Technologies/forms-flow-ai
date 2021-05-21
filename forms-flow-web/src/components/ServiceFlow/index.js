@@ -18,7 +18,7 @@ import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
 import {Route} from "react-router-dom";
 
-const ServiceFlow = () => {
+const ServiceFlow = React.memo(() => {
   const dispatch= useDispatch();
   const filterList = useSelector(state=> state.bpmTasks.filterList);
   const isFilterLoading = useSelector(state=> state.bpmTasks.isFilterLoading);
@@ -113,6 +113,6 @@ const ServiceFlow = () => {
       </Row>
     </Container>
   )
-}
+})
 
 export default ServiceFlow;

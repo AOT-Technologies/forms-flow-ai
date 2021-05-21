@@ -21,7 +21,7 @@ import {
 import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
 import UserSelection from "./UserSelection";
 
-const TaskHeader = () => {
+const TaskHeader = React.memo(() => {
   const task = useSelector(state => state.bpmTasks.taskDetail);
   const taskId = useSelector((state) => state.bpmTasks.taskId);
   const processList = useSelector((state) => state.bpmTasks.processList);
@@ -44,7 +44,7 @@ const TaskHeader = () => {
     const due= task?.due ? new Date(task?.due): null;
     setDueDate(due);
   },[task?.due]);
-  
+
   const onClaim = () => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(claimBPMTask(taskId,username,(err,response)=>{
@@ -218,6 +218,6 @@ const TaskHeader = () => {
       </Row>
     </>
   );
-};
+});
 
 export default TaskHeader;

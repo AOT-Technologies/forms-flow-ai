@@ -43,7 +43,7 @@ const getOperations = (userRoles) => {
   return operations;
 }
 
-const List = (props)=> {
+const List = React.memo((props)=> {
   const dispatch = useDispatch();
   const {
     forms,
@@ -128,7 +128,7 @@ const List = (props)=> {
         </section>
       </div>
     );
-};
+});
 
 const mapStateToProps = (state) => {
   return {

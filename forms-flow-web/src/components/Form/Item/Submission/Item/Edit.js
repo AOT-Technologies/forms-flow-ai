@@ -18,7 +18,7 @@ import {useParams} from "react-router-dom";
 import {updateApplicationEvent} from "../../../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay";
 
-const Edit = (props) => {
+const Edit = React.memo((props) => {
   const dispatch = useDispatch();
   const {formId, submissionId} = useParams();
   const {
@@ -76,7 +76,7 @@ const Edit = (props) => {
         </LoadingOverlay>
       </div>
     );
-}
+})
 
 Edit.defaultProps = {
   onCustomEvent: ()=>{}

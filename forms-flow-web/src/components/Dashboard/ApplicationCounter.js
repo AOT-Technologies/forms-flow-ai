@@ -1,7 +1,7 @@
 import React, { Fragment } from "react";
 import CardFormCounter from "./CardFormCounter";
 import Nodata from "./../Nodata";
-const ApplicationCounter = (props) => {
+const ApplicationCounter = React.memo((props) => {
   const {
     application,
     getStatusDetails,
@@ -33,5 +33,5 @@ const ApplicationCounter = (props) => {
       </div>
     </Fragment>
   );
-};
+});
 export default ApplicationCounter;

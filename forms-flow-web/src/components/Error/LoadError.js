@@ -1,7 +1,7 @@
 import React from "react";
 import "./loadError.scss";
 
-const LoadError = ({
+const LoadError = React.memo(({
   text = "Something went wrong.",
   className = "",
   noStyle = false,
@@ -19,5 +19,5 @@ const LoadError = ({
       </div>
     </div>
   );
-};
+});
 export default LoadError;

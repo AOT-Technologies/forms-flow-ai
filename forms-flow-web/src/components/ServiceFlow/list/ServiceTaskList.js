@@ -12,7 +12,7 @@ import TaskFilterComponent from "./search/TaskFilterComponent";
 import Pagination from "react-js-pagination";
 import {push} from "connected-react-router";
 
-const ServiceFlowTaskList = () => {
+const ServiceFlowTaskList = React.memo(() => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const isTaskListLoading = useSelector(
@@ -136,6 +136,6 @@ const ServiceFlowTaskList = () => {
       </ListGroup>
     </>
   );
-};
+});
 
 export default ServiceFlowTaskList;

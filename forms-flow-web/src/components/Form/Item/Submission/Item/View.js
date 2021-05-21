@@ -9,7 +9,7 @@ import PdfDownloadService from "../../../../../services/PdfDownloadService"
 import {setFormSubmissionLoading} from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
 
-const View = (props) => {
+const View = React.memo((props) => {
   const {
     hideComponents,
     onSubmit, options,
@@ -47,7 +47,7 @@ const View = (props) => {
       </LoadingOverlay>
     </div>
   );
-}
+})
 
 View.defaultProps = {
   showPrintButton: true

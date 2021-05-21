@@ -7,7 +7,8 @@ To setup keycloak there are two options
 
 ## Automated keycloak setup
 
-:information_source: > There is no existing Keycloak instance available and user want to setup a new instance and use it with formsflow.ai
+:information_source:
+> There is no existing Keycloak instance available and user want to setup a new instance and use it with formsflow.ai
 
 ### Environment Configuration
 
@@ -58,7 +59,8 @@ Variable name | Meaning | Possible values | Default value |
 
 ## Manual keycloak setup
 
-:information_source: > There is an existing Keycloak instance available and user want to configure a new realm for formsflow.ai usage
+:information_source: 
+> There is an existing Keycloak instance available and user want to configure a new realm for formsflow.ai usage
 
 Create a realm **forms-flow-ai**
 

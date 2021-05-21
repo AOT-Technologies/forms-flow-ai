@@ -96,28 +96,6 @@ public class CamundaApplication {
 	}*/
 
 
-	/**
-	 * Secondary datasource.
-	 * This is used only for publishing data to analytics.
-	 * @return
-	 */
-	@Bean("analyticsDS")
-	@ConfigurationProperties("analytics.datasource")
-	public DataSource analyticsDS(){
-		return DataSourceBuilder.create().build();
-	}
-
-
-	/**
-	 * JDBC template for analytics datasource interaction.
-	 * @param analyticsDS
-	 * @return
-	 */
-	@Bean("analyticsJdbcTemplate")
-	public NamedParameterJdbcTemplate analyticsJdbcTemplate(@Qualifier("analyticsDS") DataSource analyticsDS) {
-		return new NamedParameterJdbcTemplate(analyticsDS);
-	}
-
 	@Bean("bpmJdbcTemplate")
 	public NamedParameterJdbcTemplate bpmJdbcTemplate(@Qualifier("camundaBpmDataSource") DataSource camundaBpmDataSource) {
 		return new NamedParameterJdbcTemplate(camundaBpmDataSource);

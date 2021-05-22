@@ -118,16 +118,11 @@ Headers:
 Content-Type : application/x-www-form-urlencoded
 
 ```   
-   * Access the **/checkpoint** endpoint for Health Check on API.
+   * Access the **/checkpoint** endpoint for a Health Check on API.
 ``` 
 GET http://localhost:5000/checkpoint
-
-Headers:
-Content-Type : application/json
-Authorization: Bearer {access token}
-
 ```
-   * Access the **/task** endpoint and verify response.
+   * Access the **/task** endpoint and verify response. Ensure Bearer token is passed along
 ``` 
 GET http://localhost:5000/task
 

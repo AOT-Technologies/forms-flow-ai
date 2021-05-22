@@ -104,7 +104,16 @@ Variable name | Meaning | Possible values | Default value |
 
    The application should be up and available for use at port defaulted to 5000 in docker-compose.yml (i.e. http://localhost:5000/)
   
-    
+  * Access the **/checkpoint** endpoint for a Health Check on API to see it's up and running.
+``` 
+GET http://localhost:5000/checkpoint
+
+RESPONSE
+
+{
+    "message": "Welcome to formsflow.ai API"
+}
+```
    * Get the access token
 ```
 POST {Keycloak URL}/auth/realms/process-engine/protocol/openid-connect/token
@@ -118,10 +127,6 @@ Headers:
 Content-Type : application/x-www-form-urlencoded
 
 ```   
-   * Access the **/checkpoint** endpoint for a Health Check on API.
-``` 
-GET http://localhost:5000/checkpoint
-```
    * Access the **/task** endpoint and verify response. Ensure Bearer token is passed along
 ``` 
 GET http://localhost:5000/task

@@ -89,7 +89,7 @@ Variable name | Meaning | Possible values | Default value |
 `WEBAPI_ANALYTICS_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
 `WEBAPI_ANALYTICS_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
 `WEBAPI_ANALYTICS_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
-`MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis|Used on installation to create the database.Choose your own|`mongodb://mongo:changeme@analytics-db:port/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
+`MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis|Used on installation to create the database.Choose your own|`mongodb://mongo:changeme@forms-flow-webapi-analytics-db:27019/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
 
 **Authentication Provider (Keycloak) Settings:**

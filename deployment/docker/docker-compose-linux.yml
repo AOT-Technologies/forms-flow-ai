@@ -178,10 +178,10 @@ services:
       
   #Analytics DB - Comment below if mongo db setup is available
 
-  analytics-db:
+  forms-flow-webapi-analytics-db:
     image: mongo
     restart: always
-    hostname: forms-flow-webapi-mongo-db
+    hostname: forms-flow-webapi-analytics-db
     ports:
        - '27019:27017'
     environment:
@@ -203,7 +203,7 @@ services:
     restart: unless-stopped
     links:
       - forms-flow-webapi-db
-     - analytics-db
+      - forms-flow-webapi-analytics-db
     ports:
       - '5000:5000'
     volumes:

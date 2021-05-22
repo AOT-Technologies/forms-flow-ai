@@ -185,9 +185,9 @@ services:
     ports:
        - '27019:27017'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${WEBAPI_MONGO_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${WEBAPI_MONGO_PASSWORD}
-      MONGO_INITDB_DATABASE: ${WEBAPI_MONGO_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${WEBAPI_ANALYTICS_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${WEBAPI_ANALYTICS_PASSWORD}
+      MONGO_INITDB_DATABASE: ${WEBAPI_ANALYTICS_DATABASE}
     volumes:
       - ./mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
       - mdb-data:/data/analytics/db/

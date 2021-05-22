@@ -16,7 +16,7 @@ services:
     networks:
       - forms-flow-webapi-network
 
-#Analytics DB - Comment below if mongo db setup is available
+#Analytics DB - UnComment below if mongo db setup is available
 
   forms-flow-webapi-analytics-db:
     image: mongo

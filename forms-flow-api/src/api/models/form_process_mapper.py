@@ -17,9 +17,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     form_id = db.Column(db.String(50), nullable=False)
     form_name = db.Column(db.String(100), nullable=False)
     form_revision_number = db.Column(db.String(10), nullable=False)
-    process_key = db.Column(db.String(50), nullable=False)
-    process_name = db.Column(db.String(100), nullable=False)
-    status = db.Column(db.String(10), nullable=False)
+    process_key = db.Column(db.String(50), nullable=True)
+    process_name = db.Column(db.String(100), nullable=True)
+    status = db.Column(db.String(10), nullable=True)
     comments = db.Column(db.String(300), nullable=True)
     tenant_id = db.Column(db.Integer, nullable=True)
 
@@ -76,6 +76,22 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             return (
                 cls.query.order_by(FormProcessMapper.id.desc())
                 .paginate(page_number, limit, False)
+                .items
+            )
+
+    @classmethod
+    def find_all_active(cls, page_number, limit):
+        """Fetch all active form process mappers"""
+        if page_number == 0:
+            return cls.query.filter(
+                FormProcessMapper.status == str(FormProcessMapperStatus.Active.value)
+            ).order_by(FormProcessMapper.id.desc()).all()
+
+        else:
+            return (
+                cls.query.filter(
+                    FormProcessMapper.status == str(FormProcessMapperStatus.Active.value)
+                ).paginate(page_number, limit, False)
                 .items
             )
 

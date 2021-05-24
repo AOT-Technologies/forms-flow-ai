@@ -9,13 +9,14 @@ from flask_restx import Api
 
 from ..exceptions import BusinessException
 from .application import API as APPLICATION_API
+from .application_history import API as APPLICATION_HISTORY_API
+from .checkpoint import API as CHECKPOINT_API
 from .form_process_mapper import API as FORM_API
 from .formiotoken import API as FORMIOTOKEN_API
 from .process import API as PROCESS_API
+from .sentiment_analysis import API as SENTIMENT_API
 from .task import API as TASK_API
 from .tenant import API as TENANT_API
-from .application_history import API as APPLICATION_HISTORY_API
-from .sentiment_analysis import API as SENTIMENT_API
 
 
 class CustomApi(Api):
@@ -66,11 +67,12 @@ def handle_auth_error(error: AuthError):
     )
 
 
-API.add_namespace(FORMIOTOKEN_API, path="/getformiotoken")
-API.add_namespace(FORM_API, path="/form")
 API.add_namespace(APPLICATION_API, path="/application")
+API.add_namespace(APPLICATION_HISTORY_API, path="/application")
+API.add_namespace(CHECKPOINT_API, path="/checkpoint")
+API.add_namespace(FORM_API, path="/form")
+API.add_namespace(FORMIOTOKEN_API, path="/getformiotoken")
 API.add_namespace(PROCESS_API, path="/process")
+API.add_namespace(SENTIMENT_API, path="/sentiment")
 API.add_namespace(TASK_API, path="/task")
 API.add_namespace(TENANT_API, path="/tenant")
-API.add_namespace(APPLICATION_HISTORY_API, path="/application")
-API.add_namespace(SENTIMENT_API, path="/sentiment")

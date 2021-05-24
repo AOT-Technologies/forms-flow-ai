@@ -99,11 +99,11 @@ public class FormSubmissionService {
 
     public Map<String,Object> retrieveFormValues(String formUrl) throws IOException {
         Map<String,Object> fieldValues = new HashMap();
-        String submission = readSubmission(formUrl);
+        String submission = readSubmission(formUrl);//FIXME -- null handler
         if(submission.isEmpty()) {
             throw new RuntimeException("Unable to retrieve submission");
         }
-        JsonNode dataNode = getObjectMapper().readTree(submission);
+        JsonNode dataNode = getObjectMapper().readTree(submission);//FIXME - parsing exception handler
         Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
         while (dataElements.hasNext()) {
             Map.Entry<String, JsonNode> entry = dataElements.next();
@@ -131,7 +131,7 @@ public class FormSubmissionService {
                                                 entry.getValue().isDouble() ? entry.getValue().asDouble() :
                                                         entry.getValue().isBigDecimal() ? entry.getValue().decimalValue() :
                                                                 entry.getValue().isTextual() ? entry.getValue().asText():
-                                                                    entry.getValue().toString();
+                                                                    entry.getValue().toString();//FIXME - Why this?
                 if(fieldValue.equals("")) fieldValue = null;
                 fieldValues.put(entry.getKey(), fieldValue);
             }

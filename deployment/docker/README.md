@@ -52,7 +52,7 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
         Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
         For Windows,  
         Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
-        * Do a [health check for forms-flow-forms](../../forms-flow-forms#health-check)
+        * Access formIO at port defaulted to 3001 i.e. http://localhost:3001/ with credentails FORMIO_ROOT_EMAIL/FORMIO_ROOT_PASSWORD
       * Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
  * Modify the configuration values as needed. Details below,
  

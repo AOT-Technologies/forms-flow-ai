@@ -36,7 +36,7 @@ The products are installed with a default configuration so that the base system 
 ## Installation
 This section describes how to install different components individually and full deployment of formsflow.ai
 
-###Docker
+### Docker
 ------------------
 
 #### Full Deployment
@@ -52,7 +52,7 @@ Choose from the following components listed below.
  * [forms-flow-api](../forms-flow-api) REST API of formsflow.ai
  * [forms-flow-web](../forms-flow-web) formsflow.ai integration web UI
  
-###Openshift
+### Openshift
 ------------------
 #### Full Deployment
  Follow the instructions on [openshift installation guide](./openshift)

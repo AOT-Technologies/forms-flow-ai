@@ -6,6 +6,8 @@ In the following document, we’ll describe about the different project dependen
 * [Project Dependencies](#project-dependencies)
 * [Download the formsflow.ai](#download-the-formsflowai)
 * [Installation](#installation)
+  * [Docker](#docker)
+  * [Openshift](#openshift)
 * [Verifying the Installation Status](#verifying-the-installation-status)
 
  The framework installs the products mentioned above (except for Keycloak which must either be pre-existing or installed and configured in advance).
@@ -22,7 +24,7 @@ The products are installed with a default configuration so that the base system 
 - [form.io](https://www.form.io/opensource) (included under ../.forms-flow-forms)
 - [Camunda](https://camunda.com/) (included under ../.forms-flow-bpm)
 - [Redash](https://redash.io) (included under ../.forms-flow-analytics)
-- [Keycloak](https://www.keycloak.org/) (existing Keycloak server required)
+- [Keycloak](https://www.keycloak.org/) (included under ../.forms-flow-idm/keycloak)
 - [Python](https://www.python.org/) (included under ../.forms-flow-api)
 - *Optional*: [Nginx](https://www.nginx.com) (included under ./deployment/nginx) 
 
@@ -34,18 +36,23 @@ The products are installed with a default configuration so that the base system 
 ## Installation
 This section describes how to install different components individually and full deployment of formsflow.ai
 
-Docker
+###Docker
 ------------------
-#### Choose from the following components listed below.
+
+#### Full Deployment
+
+ Follow the instructions on [docker installation guide](./docker)
+ 
+#### Service Deployment
+
+Choose from the following components listed below.
+ * [forms-flow-idm](../forms-flow-idm/keycloak) Identity keycloak components
  * [forms-flow-analytics](../forms-flow-forms) Redash analytics components
  * [forms-flow-bpm](../forms-flow-bpm) Camunda Workflow deployment and integration
  * [forms-flow-api](../forms-flow-api) REST API of formsflow.ai
  * [forms-flow-web](../forms-flow-web) formsflow.ai integration web UI
-
- #### Full Deployment
- Follow the instructions on [docker installation guide](./docker)
  
-Openshift
+###Openshift
 ------------------
 #### Full Deployment
  Follow the instructions on [openshift installation guide](./openshift)

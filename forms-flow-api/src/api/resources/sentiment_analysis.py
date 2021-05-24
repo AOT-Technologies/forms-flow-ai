@@ -19,7 +19,7 @@ API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 @cors_preflight("POST,OPTIONS")
 @API.route("", methods=["POST", "OPTIONS"])
 class SentimentAnalysisResource(Resource):
-    """Resource for generating Sentiment Analysis """
+    """Resource for generating Sentiment Analysis"""
 
     @staticmethod
     @cors.crossdomain(origin="*")

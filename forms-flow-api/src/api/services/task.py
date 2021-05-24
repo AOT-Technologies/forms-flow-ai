@@ -7,7 +7,7 @@ from ..schemas import TaskSchema, TaskVariableSchema
 from .external import BPMService
 
 
-class TaskService():
+class TaskService:
     """This class manages task service."""
 
     @staticmethod
@@ -35,24 +35,24 @@ class TaskService():
         """Claim a task."""
         task_claim = BPMService.claim_task(task_id, data, token)
         if task_claim:
-            return 'success'
+            return "success"
 
-        raise BusinessException('error', HTTPStatus.BAD_REQUEST)
+        raise BusinessException("error", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def unclaim_task(task_id, data, token):
         """Unclaim a task."""
         task_unclaim = BPMService.unclaim_task(task_id, data, token)
         if task_unclaim:
-            return 'success'
+            return "success"
 
-        raise BusinessException('error', HTTPStatus.BAD_REQUEST)
+        raise BusinessException("error", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def complete_task(task_id, data, token):
         """Complete a task."""
         task_complete = BPMService.complete_task(task_id, data, token)
         if task_complete:
-            return 'success'
+            return "success"
 
-        raise BusinessException('error', HTTPStatus.BAD_REQUEST)
+        raise BusinessException("error", HTTPStatus.BAD_REQUEST)

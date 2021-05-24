@@ -9,18 +9,19 @@ from ..services import FormIOTokenService
 from ..utils.util import cors_preflight
 
 
-API = Namespace('FormIOToken', description='FormIOToken')
+API = Namespace("FormIOToken", description="FormIOToken")
 
 
-@cors_preflight('GET,OPTIONS')
-@API.route('', methods=['GET', 'OPTIONS'])
+@cors_preflight("GET,OPTIONS")
+@API.route("", methods=["GET", "OPTIONS"])
 class ApplicationList(Resource):
     """Resource for generatiing formiotoken."""
 
     @staticmethod
-    @cors.crossdomain(origin='*')
+    @cors.crossdomain(origin="*")
     def get():
         """Get formio token."""
-        return jsonify({
-            'formioToken': FormIOTokenService.get_formio_token()
-        }), HTTPStatus.OK
+        return (
+            jsonify({"formioToken": FormIOTokenService.get_formio_token()}),
+            HTTPStatus.OK,
+        )

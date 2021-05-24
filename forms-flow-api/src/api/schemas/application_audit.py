@@ -23,8 +23,8 @@ class ApplicationAuditSchema(Schema):
         unknown = EXCLUDE
 
     id = fields.Int()
-    application_id = fields.Int(data_key='applicationId')
-    application_status = fields.Str(data_key='applicationStatus')
-    form_url = fields.Str(data_key='formUrl')
+    application_id = fields.Int(data_key="applicationId")
+    application_status = fields.Str(data_key="applicationStatus")
+    form_url = fields.Str(data_key="formUrl")
     created = fields.Str()
-    #count = fields.Int()
+    # count = fields.Int()

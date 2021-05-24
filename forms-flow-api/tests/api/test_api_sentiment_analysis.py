@@ -1,7 +1,9 @@
+from http import HTTPStatus
+
 import pytest
 
-from http import HTTPStatus
 from api.services import SentimentAnalyserService
+
 
 def test_sentiment_analysis_api(client, session):
     response = client.get('/sentiment', content_type='application/json')

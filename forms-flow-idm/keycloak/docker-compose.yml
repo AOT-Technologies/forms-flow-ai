@@ -27,7 +27,7 @@ services:
     volumes:
       - ./imports:/opt/jboss/keycloak/imports
     command: 
-      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/formsflow-ai-realm.json"
+      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/formsflow-ai-realm.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
     environment:
       - DB_VENDOR=POSTGRES
       - DB_ADDR=keycloak-db

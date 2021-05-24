@@ -476,54 +476,105 @@
   "webAuthnPolicyPasswordlessCreateTimeout": 0,
   "webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister": false,
   "webAuthnPolicyPasswordlessAcceptableAaguids": [],
-  "users": [
-    {
-      "createdTimestamp": 1621585233480,
-      "username": "service-account-forms-flow-bpm",
-      "enabled": true,
-      "totp": false,
-      "emailVerified": false,
-      "serviceAccountClientId": "forms-flow-bpm",
-      "disableableCredentialTypes": [],
-      "requiredActions": [],
-      "realmRoles": [
-        "offline_access",
-        "uma_authorization"
-      ],
-      "clientRoles": {
-        "realm-management": [
-          "query-users",
-          "query-groups",
-          "view-users"
-        ],
-        "account": [
-          "view-profile",
-          "manage-account"
-        ]
-      },
-      "notBefore": 0,
-      "groups": [
-        "/camunda-admin"
-      ]
-    }
-  ],
-  "scopeMappings": [
-    {
-      "clientScope": "offline_access",
-      "roles": [
-        "offline_access"
-      ]
-    }
-  ],
-  "clientScopeMappings": {
-    "account": [
-      {
-        "client": "account-console",
-        "roles": [
-          "manage-account"
-        ]
-      }
-    ]
+  "users" : [ {
+    "createdTimestamp" : 1621862607660,
+    "username" : "formsflow-client",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "Client",
+    "lastName" : "FFA",
+    "email" : "formsflow-client@aot-technologies.com",
+    "credentials" : [ {
+      "id" : "c5cdcd6f-2f42-466b-82c0-fc2ba09f5180",
+      "type" : "password",
+      "createdDate" : 1621863987325,
+      "secretData" : "{\"value\":\"9R9a8Onha7JcZt59SIq8ngfqwDJwPKiKb8mJ2WO6p2eI3S9qhzR1GPDFtKjOWq8qpm8vsGfp/a/DyHWQuIvmlA==\",\"salt\":\"R/OTBeSXHzsKtJOV/bufEA==\"}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "uma_authorization", "offline_access" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ "/camunda-admin", "/formsflow/formsflow-client" ]
+  }, {
+    "createdTimestamp" : 1621862546931,
+    "username" : "formsflow-designer",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "Designer",
+    "lastName" : "FFA",
+    "email" : "formsflow-designer@aot-technologies.com",
+    "credentials" : [ {
+      "id" : "503e77f7-efc2-4410-89cf-a54d06fe83a2",
+      "type" : "password",
+      "createdDate" : 1621864001408,
+      "secretData" : "{\"value\":\"XlcFXNSJAfv5YzTh5vd4NtyEjWm4B47CS9MA3aHmEjLNjdRMbnGFVFZwlZx3alXYBCg4Evs3md25DQ6Xvl+nZg==\",\"salt\":\"TefHE1L0xpqlAMg/h6w6BA==\"}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "uma_authorization", "offline_access" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ "/camunda-admin", "/formsflow/formsflow-designer" ]
+  }, {
+    "createdTimestamp" : 1621862578318,
+    "username" : "formsflow-reviewer",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "Reviewer",
+    "lastName" : "FFA",
+    "email" : "formsflow-reviewer@aot-technologies.com",
+    "credentials" : [ {
+      "id" : "e751c0d6-ea73-4313-a2eb-329f3f5fa3c4",
+      "type" : "password",
+      "createdDate" : 1621864014317,
+      "secretData" : "{\"value\":\"bXzhJ0BrMJBWMzRRjO2khWgCRgDAA6vfTrE0UNNO1DNRzp1aMrGCz5kF20H76PjyuqNDZaKF1nKApEjccg+KRA==\",\"salt\":\"gmoZwO3i7Y6B+jpgnsnixw==\"}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "realmRoles" : [ "uma_authorization", "offline_access" ],
+    "clientRoles" : {
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer" ]
+  }, {
+    "createdTimestamp" : 1621585233480,
+    "username" : "service-account-forms-flow-bpm",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "serviceAccountClientId" : "forms-flow-bpm",
+    "credentials" : [ ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ ],
+    "realmRoles" : [ "uma_authorization", "offline_access" ],
+    "clientRoles" : {
+      "realm-management" : [ "query-users", "query-groups", "view-users" ],
+      "account" : [ "view-profile", "manage-account" ]
+    },
+    "notBefore" : 0,
+    "groups" : [ "/camunda-admin" ]
+  } ],
+  "scopeMappings" : [ {
+    "clientScope" : "offline_access",
+    "roles" : [ "offline_access" ]
+  } ],
+  "clientScopeMappings" : {
+    "account" : [ {
+      "client" : "account-console",
+      "roles" : [ "manage-account" ]
+    } ]
   },
   "clients": [
     {

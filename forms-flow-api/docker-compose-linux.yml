@@ -16,8 +16,6 @@ services:
     networks:
       - forms-flow-webapi-network
 
-#Analytics DB - UnComment below if mongo db setup is available
-
   forms-flow-webapi-analytics-db:
     image: mongo
     restart: always
@@ -71,3 +69,6 @@ services:
 networks:
   forms-flow-webapi-network:
     driver: 'bridge'
+
+volumes:
+  mdb-data:

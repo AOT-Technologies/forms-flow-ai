@@ -6,12 +6,12 @@ In the following document, we’ll describe about the different project dependen
 2. [Project Dependencies](#project-dependencies)
 3. [Download the formsflow.ai](#download-the-formsflowai)
 4. [Installation](#installation)
-  i. [Docker](#docker)
-  ii. [Openshift](#openshift)
+    i. [Docker](#docker)
+    ii. [Openshift](#openshift)
 5. [Verifying the Installation Status](#verifying-the-installation-status)
 
 
-##1. ## Prerequisites
+## 1: Prerequisites
 
 * Admin access to a local or remote server (can be local PC or Mac provided it is 64-bit with at least 16GB RAM and 100GB HDD) where [docker-compose](https://docker.com) and [docker](https://docker.com) are installed and configured. 
 * Admin access to a [Keycloak](https://www.keycloak.org/) server. For local development / testing follow [Keycloak installtion](../forms-flow-idm/keycloak).

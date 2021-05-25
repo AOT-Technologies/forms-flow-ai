@@ -104,7 +104,7 @@ RESPONSE
 ```
    * Get the access token
 ```
-POST {Keycloak URL}/auth/realms/process-engine/protocol/openid-connect/token
+POST {Keycloak URL}/auth/realms/{Realm Name}/protocol/openid-connect/token
 
 Body:
 grant_type: client_credentials

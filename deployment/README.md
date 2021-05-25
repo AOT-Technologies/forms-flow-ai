@@ -2,13 +2,13 @@
 In the following document, we’ll describe about the different project dependencies, and the installation options being supported.
 
 ## Table of Contents
-* [1.Prerequisites](#prerequisites)
-* [2.Project Dependencies](#project-dependencies)
-* [3.Download the formsflow.ai](#download-the-formsflowai)
-* [4.Installation](#installation)
-  * [4.1.Docker](#docker)
-  * [4.2.Openshift](#openshift)
-* [5.Verifying the Installation Status](#verifying-the-installation-status)
+1. [Prerequisites](#prerequisites)
+2. [Project Dependencies](#project-dependencies)
+3. [Download the formsflow.ai](#download-the-formsflowai)
+4. [Installation](#installation)
+  4.1. [Docker](#docker)
+  4.2. [Openshift](#openshift)
+5. [Verifying the Installation Status](#verifying-the-installation-status)
 
 
 ## 1. Prerequisites

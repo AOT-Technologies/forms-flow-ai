@@ -9,9 +9,12 @@ def setup_logging(conf):
     """Create the services logger."""
     if conf and path.isfile(conf):
         logging.config.fileConfig(conf)
-        print('Configure logging, from conf:{}'.format(conf), file=sys.stdout)
+        print("Configure logging, from conf:{}".format(conf), file=sys.stdout)
     else:
-        print('Unable to configure logging, attempted conf:{}'.format(conf), file=sys.stderr)
+        print(
+            "Unable to configure logging, attempted conf:{}".format(conf),
+            file=sys.stderr,
+        )
 
 
 def log_error(msg):

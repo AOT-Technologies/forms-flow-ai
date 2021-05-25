@@ -35,7 +35,9 @@ class FormProcessMapperService:
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)
 
-        raise BusinessException("Invalid form process mapper id", HTTPStatus.BAD_REQUEST)
+        raise BusinessException(
+            "Invalid form process mapper id", HTTPStatus.BAD_REQUEST
+        )
 
     @staticmethod
     def get_mapper_by_formid(form_id):
@@ -68,7 +70,9 @@ class FormProcessMapperService:
     @staticmethod
     def mark_inactive(form_process_mapper_id):
         """Mark form process mapper as inactive."""
-        application = FormProcessMapper.find_form_by_id_active_status(form_process_mapper_id)
+        application = FormProcessMapper.find_form_by_id_active_status(
+            form_process_mapper_id
+        )
         if application:
             application.mark_inactive()
         else:

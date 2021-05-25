@@ -5,8 +5,12 @@ keycloak.url.realm: ${KEYCLOAK_URL_REALM}
 keycloak.clientId: ${KEYCLOAK_CLIENTID}
 keycloak.clientSecret: ${KEYCLOAK_CLIENTSECRET}
 
+formbuilder.pipeline.service.username: ${CAMUNDA_FORMBUILDER_PIPELINE_USERNAME}
+formbuilder.pipeline.service.password: ${CAMUNDA_FORMBUILDER_PIPELINE_PASSWORD}
+formbuilder.pipeline.service.bpm-url: ${CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL}
+
 spring.datasource:
-  jdbc-url: jdbc:postgresql://192.168.0.15:5435/camunda
+  jdbc-url: ${CAMUNDA_JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
   username: ${CAMUNDA_JDBC_USER:sa}
   password: ${CAMUNDA_JDBC_PASSWORD:sa}
   driverClassName: ${CAMUNDA_JDBC_DRIVER:org.h2.Driver}

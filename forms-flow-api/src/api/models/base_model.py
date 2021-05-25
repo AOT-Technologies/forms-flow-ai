@@ -3,7 +3,7 @@
 from .db import db
 
 
-class BaseModel():
+class BaseModel:
     """This class manages all of the base model functions."""
 
     @staticmethod
@@ -31,6 +31,6 @@ class BaseModel():
         for key in columns:
             exists = key in values
             if exists:
-                val = getattr(self, key, '~skip~it~')
-                if val != '~skip~it~':
+                val = getattr(self, key, "~skip~it~")
+                if val != "~skip~it~":
                     setattr(self, key, values[key])

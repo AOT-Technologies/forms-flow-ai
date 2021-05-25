@@ -3,7 +3,7 @@ from ..models import ApplicationAudit
 from ..schemas import ApplicationAuditSchema
 
 
-class ApplicationAuditService():
+class ApplicationAuditService:
     """This class manages application service."""
 
     @staticmethod

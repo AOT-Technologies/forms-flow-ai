@@ -6,6 +6,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -67,7 +68,7 @@ public class ApplicationStateListener extends ApplicationAuditListener implement
 
 }
 @Component
-@Scope("prototype")
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Data
 class Application{
     private String applicationStatus;

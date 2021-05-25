@@ -7,7 +7,8 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts --max_old_space_size=4096 start",
     "build": "react-scripts --max_old_space_size=4096 build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "preinstall": "npx npm-force-resolutions"
   },
   "author": {
     "name": "Abhilash"
@@ -63,6 +64,13 @@
     "source-map-explorer": "^2.5.2",
     "stompjs": "^2.3.3",
     "typeface-nunito-sans": "0.0.72"
+  },
+  "resolutions": {
+    "xmldom": "^0.5.0",
+    "underscore": "^1.12.1",
+    "jspdf": "^2.3.1",
+    "react-dom": "^17.0.2",
+    "react": "^17.0.2"
   },
   "browserslist": [
     ">0.2%",

@@ -155,7 +155,7 @@ services:
       - '.:/app'
       - '/app/node_modules'
     ports:
-      - '3000:3000'
+      - '3000:8080'
     tty: true
 
     networks:
@@ -178,16 +178,16 @@ services:
       
   #Analytics DB - Comment below if mongo db setup is available
 
-  analytics-db:
+  forms-flow-webapi-analytics-db:
     image: mongo
     restart: always
-    hostname: forms-flow-webapi-mongo-db
+    hostname: forms-flow-webapi-analytics-db
     ports:
        - '27019:27017'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${WEBAPI_MONGO_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${WEBAPI_MONGO_PASSWORD}
-      MONGO_INITDB_DATABASE: ${WEBAPI_MONGO_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${WEBAPI_ANALYTICS_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${WEBAPI_ANALYTICS_PASSWORD}
+      MONGO_INITDB_DATABASE: ${WEBAPI_ANALYTICS_DATABASE}
     volumes:
       - ./mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
       - mdb-data:/data/analytics/db/
@@ -203,7 +203,7 @@ services:
     restart: unless-stopped
     links:
       - forms-flow-webapi-db
-      - analytics-db
+      - forms-flow-webapi-analytics-db
     ports:
       - '5000:5000'
     volumes:

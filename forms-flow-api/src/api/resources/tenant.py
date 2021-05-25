@@ -10,30 +10,28 @@ from ..services import TenantService
 from ..utils.util import cors_preflight
 
 
-API = Namespace('Tenant', description='Tenant')
+API = Namespace("Tenant", description="Tenant")
 
 
-@cors_preflight('GET,OPTIONS')
-@API.route('', methods=['GET', 'OPTIONS'])
+@cors_preflight("GET,OPTIONS")
+@API.route("", methods=["GET", "OPTIONS"])
 class TenantsResource(Resource):
     """Resource for managing tenants."""
 
     @staticmethod
-    @cors.crossdomain(origin='*')
+    @cors.crossdomain(origin="*")
     def get():
         """Get tenants."""
-        return jsonify({
-            'tenants': TenantService.get_all()
-        }), HTTPStatus.OK
+        return jsonify({"tenants": TenantService.get_all()}), HTTPStatus.OK
 
 
-@cors_preflight('GET,OPTIONS')
-@API.route('/<int:tenant_id>', methods=['GET', 'OPTIONS'])
+@cors_preflight("GET,OPTIONS")
+@API.route("/<int:tenant_id>", methods=["GET", "OPTIONS"])
 class TenantResource(Resource):
     """Resource for managing tenant."""
 
     @staticmethod
-    @cors.crossdomain(origin='*')
+    @cors.crossdomain(origin="*")
     def get(tenant_id):
         """Get tenant by id."""
         try:

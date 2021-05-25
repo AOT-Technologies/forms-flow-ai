@@ -1,12 +1,10 @@
-import spacy
-import nltk
-
-from pathlib import Path
-
-
-from pathlib import Path
 from collections import defaultdict
+from pathlib import Path
+
+import nltk
+import spacy
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
 
 class SentimentAnalyserService:
     @staticmethod

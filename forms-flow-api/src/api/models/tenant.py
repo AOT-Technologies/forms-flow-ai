@@ -10,9 +10,9 @@ class Tenant(BaseModel, db.Model):  # pylint: disable=too-few-public-methods
     """This class manages tenant."""
 
     id = db.Column(db.Integer, primary_key=True)
-    tenant_name = db.Column('tenant_name', db.String(), nullable=False)
-    relam = db.Column('relam', db.String(), nullable=False)
-    audience = db.Column('audience', db.String(), nullable=False)
+    tenant_name = db.Column("tenant_name", db.String(), nullable=False)
+    relam = db.Column("relam", db.String(), nullable=False)
+    audience = db.Column("audience", db.String(), nullable=False)
 
     @classmethod
     def find_all(cls):

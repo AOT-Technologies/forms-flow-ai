@@ -5,11 +5,17 @@ import logging
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
-from ..schemas import ProcessActionListSchema, ProcessDefinitionSchema, ProcessListSchema,ProcessDefinitionXMLSchema,ProcessActivityInstanceSchema
+from ..schemas import (
+    ProcessActionListSchema,
+    ProcessActivityInstanceSchema,
+    ProcessDefinitionSchema,
+    ProcessDefinitionXMLSchema,
+    ProcessListSchema,
+)
 from .external import BPMService
 
 
-class ProcessService():
+class ProcessService:
     """This class manages process service."""
 
     @staticmethod
@@ -21,30 +27,32 @@ class ProcessService():
             seen = set()
             new_result = []
             for data in result:
-                if data['key'] not in seen:
-                    seen.add(data['key'])
+                if data["key"] not in seen:
+                    seen.add(data["key"])
                     new_result.append(data)
             return new_result
 
         return process
 
-    @staticmethod   
+    @staticmethod
     def get_process(process_key, token):
         """Get process details."""
         process_details = BPMService.get_process_details(process_key, token)
         if process_details:
             return ProcessDefinitionSchema().dump(process_details)
 
-        raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
+        raise BusinessException("Invalid process", HTTPStatus.BAD_REQUEST)
 
-    @staticmethod 
+    @staticmethod
     def get_process_definition_xml(process_key, token):
         """Get process details."""
-        process_definition_xml = BPMService.get_process_definition_xml(process_key, token)
+        process_definition_xml = BPMService.get_process_definition_xml(
+            process_key, token
+        )
         if process_definition_xml:
             return ProcessDefinitionXMLSchema().dump(process_definition_xml)
 
-        raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
+        raise BusinessException("Invalid process", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def get_process_action(process_key, token):
@@ -53,27 +61,26 @@ class ProcessService():
         if process_details:
             return ProcessActionListSchema().dump(process_details)
 
-        raise BusinessException('Invalid process', HTTPStatus.BAD_REQUEST)
+        raise BusinessException("Invalid process", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def get_states(process_key, task_key, token):
         """Get states."""
         payload = {
-            'variables': {
-                'process': {'value': process_key},
-                'task': {'value': task_key}
+            "variables": {
+                "process": {"value": process_key},
+                "task": {"value": task_key},
             }
         }
         data = BPMService.post_process_evaluate(payload, token)
         if data:
-            value = data[0].get('state', {}).get('value')
+            value = data[0].get("state", {}).get("value")
             # Since we are receiving a string instead of json and the string contain single quote
             # instead of double quote.
             value = value.replace("'", '"')
             return json.loads(value)
 
-        raise BusinessException('error', HTTPStatus.BAD_REQUEST)
-
+        raise BusinessException("error", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
     def post_message(data, token):
@@ -83,12 +90,14 @@ class ProcessService():
     @staticmethod
     def get_process_activity_instances(process_instace_id, token):
         """Get process actions."""
-        logging.debug('get_process_activity_instances '+process_instace_id)
-        activity_instances = BPMService.get_process_activity_instances(process_instace_id, token)
+        logging.debug("get_process_activity_instances " + process_instace_id)
+        activity_instances = BPMService.get_process_activity_instances(
+            process_instace_id, token
+        )
         logging.debug(activity_instances)
         if activity_instances:
             return ProcessActivityInstanceSchema().dump(activity_instances)
 
-        raise BusinessException('No activity instances available for process', HTTPStatus.BAD_REQUEST)    
-
-        
+        raise BusinessException(
+            "No activity instances available for process", HTTPStatus.BAD_REQUEST
+        )

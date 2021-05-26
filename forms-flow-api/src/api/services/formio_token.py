@@ -8,7 +8,7 @@ import jwt
 from ..models.formio_token import FormIOToken
 
 
-class FormIOTokenService():
+class FormIOTokenService:
     """This class manages application service."""
 
     @staticmethod
@@ -19,7 +19,7 @@ class FormIOTokenService():
         new_formiotoken = FormIOToken(
             keycloak_role="userDetails['given_name']",
             formio_token=formio_token,
-            formio_role='',
+            formio_role="",
             created=datetime.datetime.utcnow(),
         )
         new_formiotoken.save()
@@ -32,17 +32,13 @@ class FormIOTokenService():
         :return: string
         """
         try:
-            sec_key = os.getenv('SECRET_KEY')
+            sec_key = os.getenv("SECRET_KEY")
             payload = {
-                'form': {'_id': '5e8eb76190b24438847463c8'},
-                'user': {'_id': 'anonymous', 'roles': ['5e8eb76190b24438847463c7']}
+                "form": {"_id": "5e8eb76190b24438847463c8"},
+                "user": {"_id": "anonymous", "roles": ["5e8eb76190b24438847463c7"]},
             }
 
-            auth_key = jwt.encode(
-                payload,
-                sec_key,
-                algorithm='HS256'
-            )
+            auth_key = jwt.encode(payload, sec_key, algorithm="HS256")
             return auth_key
 
         except Exception as e:

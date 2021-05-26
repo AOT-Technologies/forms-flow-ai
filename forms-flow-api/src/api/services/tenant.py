@@ -7,14 +7,14 @@ from ..models import Tenant
 from ..schemas import TenantSchema
 
 
-class TenantService():
+class TenantService:
     """This class manages tenant service."""
 
     @staticmethod
     def get_all():
         """Get tenants."""
         tenants = Tenant.find_all()
-        tenant_schema = TenantSchema(only=('id', 'tenant_name'))
+        tenant_schema = TenantSchema(only=("id", "tenant_name"))
         return tenant_schema.dump(tenants, many=True)
 
     @staticmethod
@@ -25,4 +25,4 @@ class TenantService():
             tenant_schema = TenantSchema()
             return tenant_schema.dump(tenant)
 
-        raise BusinessException('Invalid tenant', HTTPStatus.BAD_REQUEST)
+        raise BusinessException("Invalid tenant", HTTPStatus.BAD_REQUEST)

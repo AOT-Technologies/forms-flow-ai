@@ -11,6 +11,7 @@ import org.camunda.bpm.engine.delegate.*;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpMethod;
 
@@ -86,7 +87,7 @@ public class BPMFormDataPipelineListener implements TaskListener, ExecutionListe
 }
 
 @Component
-@Scope("prototype")
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Data
 @NoArgsConstructor
 class FormElement {

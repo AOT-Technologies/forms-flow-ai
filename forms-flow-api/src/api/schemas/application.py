@@ -11,7 +11,7 @@ class ApplicationListReqSchema(Schema):
 
         unknown = EXCLUDE
 
-    page_no = fields.Int(data_key='pageNo', required=False, allow_none=True)
+    page_no = fields.Int(data_key="pageNo", required=False, allow_none=True)
     limit = fields.Int(required=False, allow_none=True)
 
 
@@ -24,21 +24,21 @@ class ApplicationSchema(Schema):
         unknown = EXCLUDE
 
     id = fields.Int()
-    application_name = fields.Str(data_key='applicationName')
-    application_status = fields.Str(data_key='applicationStatus')
-    form_process_mapper_id = fields.Str(data_key='formProcessMapperId')
-    form_url = fields.Str(data_key='formUrl')
-    process_instance_id = fields.Str(data_key='processInstanceId')
-    revision_no = fields.Str(data_key='revisionNo')
+    application_name = fields.Str(data_key="applicationName")
+    application_status = fields.Str(data_key="applicationStatus")
+    form_process_mapper_id = fields.Str(data_key="formProcessMapperId")
+    form_url = fields.Str(data_key="formUrl")
+    process_instance_id = fields.Str(data_key="processInstanceId")
+    revision_no = fields.Str(data_key="revisionNo")
 
-    created_by = fields.Str(data_key='createdBy')
+    created_by = fields.Str(data_key="createdBy")
     created = fields.Str()
-    modified_by = fields.Str(data_key='modifiedBy')
+    modified_by = fields.Str(data_key="modifiedBy")
     modified = fields.Str()
 
     variables = fields.Raw(required=False)
-    form_id = fields.Str(data_key='formId')
-    submission_id = fields.Str(data_key='submissionId')
+    form_id = fields.Str(data_key="formId")
+    submission_id = fields.Str(data_key="submissionId")
 
 
 class ApplicationUpdateSchema(Schema):
@@ -49,5 +49,5 @@ class ApplicationUpdateSchema(Schema):
 
         unknown = EXCLUDE
 
-    application_status = fields.Str(data_key='applicationStatus', required=True)
-    form_url = fields.Str(data_key='formUrl', required=False)
+    application_status = fields.Str(data_key="applicationStatus", required=True)
+    form_url = fields.Str(data_key="formUrl", required=False)

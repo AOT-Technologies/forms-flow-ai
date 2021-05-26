@@ -7,8 +7,6 @@ const urlsToCache = [
   "/form",
   "/task",
   "/application",
-  "/static/js",
-  "/static/js/bundle.js",
   "/manifest.json",
   "/favicon.ico",
   "/config/kc/keycloak.json",

@@ -5,7 +5,7 @@ volumes:
   postgres:
   
 networks:
-  keycloak-network:
+  keycloak-server-network:
     driver: 'bridge'
 
 services:
@@ -19,13 +19,15 @@ services:
       POSTGRES_PASSWORD: ${KEYCLOAK_JDBC_PASSWORD}
     ports:
       - 5431:5431
+    networks:
+      - keycloak-server-network
 
   keycloak:
     image: quay.io/keycloak/keycloak:11.0.0
     volumes:
       - ./imports:/opt/jboss/keycloak/imports
     command: 
-      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/realm-export.json"
+      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/formsflow-ai-realm.json"
     environment:
       - DB_VENDOR=POSTGRES
       - DB_ADDR=keycloak-db
@@ -38,4 +40,6 @@ services:
       - 8080:8080
     depends_on:
       - keycloak-db
+    networks:
+      - keycloak-server-network
    

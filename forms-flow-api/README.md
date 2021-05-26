@@ -10,7 +10,7 @@ the system. It is built using Python :snake: .
 ## Table of Content
 * [Prerequisites](#prerequisites)
 * [Solution Setup](#solution-setup)
-  * [Step 1 : Installation](#intallation)
+  * [Step 1 : Installation](#installation)
   * [Step 2 : Environment Configuration](#environment-configuration)
   * [Step 3 : Running the Application](#running-the-application)
   * [Step 4 : Verify the Application Status](#verify-the-application-status) 
@@ -22,6 +22,23 @@ We are assuming [docker-compose](https://docs.docker.com/compose/) and [docker](
 is already installed, which is required to run and deploy the system.
 
 ## Solution Setup
+
+### Installation
+
+If you are interested in contributing to the project, you can install through docker or locally.
+The steps for a local installation are:
+
+```
+Install python 3.8+ and pip
+pip install psycopg2
+python setup.py install
+python manage.py db upgrage(do a python manage.py db init - if first installation)
+Run - python wsgi.py
+```
+
+It's recommended to download dev-packages to following Python coding styles by running:
+
+```python3 -m pip install -r requirements-dev.txt```
 
 ### Keycloak Setup
 
@@ -52,22 +69,10 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
 `CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda`
 `WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://localhost:5000`
-`MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis||`mongodb://username:password@host:port/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
-
-
- **Additionally, you may want to change these**  
- 
-* Uncomment below variables if no external mongo db setup is available
-   * Modify MONGODB_URI variable accordingly
-   * Uncomment Analytics DB section from docker-compose-{Your Variant}.yml 
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`WEBAPI_MONGO_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
-`WEBAPI_MONGO_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
-`WEBAPI_MONGO_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
-
-* The value of Datastore credentials (especially if this instance is not just for testing purposes)
+`WEBAPI_ANALYTICS_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
+`WEBAPI_ANALYTICS_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
+`WEBAPI_ANALYTICS_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
+`MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis|Used on installation to create the database.Choose your own|`mongodb://mongo:changeme@forms-flow-webapi-analytics-db:27019/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
 ### Running the Application
 * For Linux,
@@ -87,10 +92,19 @@ Variable name | Meaning | Possible values | Default value |
 
    The application should be up and available for use at port defaulted to 5000 in docker-compose.yml (i.e. http://localhost:5000/)
   
-    
+  * Access the **/checkpoint** endpoint for a Health Check on API to see it's up and running.
+``` 
+GET http://localhost:5000/checkpoint
+
+RESPONSE
+
+{
+    "message": "Welcome to formsflow.ai API"
+}
+```
    * Get the access token
 ```
-POST {Keycloak URL}/auth/realms/process-engine/protocol/openid-connect/token
+POST {Keycloak URL}/auth/realms/{Realm Name}/protocol/openid-connect/token
 
 Body:
 grant_type: client_credentials
@@ -101,7 +115,7 @@ Headers:
 Content-Type : application/x-www-form-urlencoded
 
 ```   
-   * Access the **/task** endpoint and verify response.
+   * Access the **/task** endpoint and verify response. Ensure Bearer token is passed along
 ``` 
 GET http://localhost:5000/task
 
@@ -109,8 +123,6 @@ Headers:
 Content-Type : application/json
 Authorization: Bearer {access token}
 ``` 
-
-   * Checkout out the API documentation which can be accessed at **/swagger** endpoint.
    
 ## Steps for enabling Sentiment Analysis component
 

@@ -12,6 +12,6 @@ class TenantSchema(Schema):
         unknown = EXCLUDE
 
     id = fields.Int()
-    tenant_name = fields.Str(data_key='tenantName')
+    tenant_name = fields.Str(data_key="tenantName")
     relam = fields.Str()
     audience = fields.Str()

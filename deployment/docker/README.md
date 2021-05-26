@@ -52,7 +52,7 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
         Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
         For Windows,  
         Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
-        * Do a [health check for forms-flow-forms](../../forms-flow-forms#health-check)
+        * Access formIO at port defaulted to 3001 i.e. http://localhost:3001/ with credentails FORMIO_ROOT_EMAIL/FORMIO_ROOT_PASSWORD
       * Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
  * Modify the configuration values as needed. Details below,
  
@@ -86,19 +86,11 @@ Variable name | Meaning | Possible values | Default value |
 `CAMUNDA_API_URI`|Camunda Rest API URI||`http://{Your IP Address}:8000/camunda`
 `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://{Your IP Address}:3001`
 `WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://{Your IP Address}:5000`
-`MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis||`mongodb://username:password@host:port/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
+`WEBAPI_ANALYTICS_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
+`WEBAPI_ANALYTICS_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
+`WEBAPI_ANALYTICS_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
+`MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis|Used on installation to create the database.Choose your own|`mongodb://mongo:changeme@forms-flow-webapi-analytics-db:27019/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
- **Additionally, you may want to change these**  
- 
-* Uncomment below variables if no external mongo db setup is available
-   * Modify MONGODB_URI variable accordingly
-   * Uncomment Analytics DB section from docker-compose-{Your Variant}.yml 
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`WEBAPI_MONGO_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
-`WEBAPI_MONGO_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
-`WEBAPI_MONGO_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
 
 **Authentication Provider (Keycloak) Settings:**
 

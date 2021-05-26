@@ -41,10 +41,11 @@ class ApplicationsResource(Resource):
             page_no = 0
             limit = 0
         if auth.has_role(["formsflow-reviewer"]):
-            application_schema_dump, application_count = ApplicationService.get_auth_applications_and_count(
-                page_no, 
-                limit, 
-                request.headers["Authorization"]
+            (
+                application_schema_dump,
+                application_count,
+            ) = ApplicationService.get_auth_applications_and_count(
+                page_no, limit, request.headers["Authorization"]
             )
             application_schema = ApplicationService.apply_custom_attributes(
                 application_schema_dump
@@ -52,9 +53,7 @@ class ApplicationsResource(Resource):
         else:
             application_schema = ApplicationService.apply_custom_attributes(
                 ApplicationService.get_all_applications_by_user(
-                    g.token_info.get("preferred_username"),
-                    page_no,
-                    limit
+                    g.token_info.get("preferred_username"), page_no, limit
                 )
             )
             application_count = ApplicationService.get_all_application_by_user_count(

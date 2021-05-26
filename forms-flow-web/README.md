@@ -54,6 +54,9 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
  `WEB_API_BASE_URL`|formsflow Rest API URI||`http://localhost:5000/api`
  `CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda`
+ `KEYCLOAK_URL`| URL to your Keycloak server |eg. https://iam.aot-technologies.com | http://{your ip address}:8080
+ `KEYCLOAK_URL_REALM`|	The Keyvcloak realm to use|eg. forms-flow-ai | forms-flow-ai
+ `KEYCLOAK_WEB_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-web | forms-flow-web
 
 ### Running the application
    * Run `docker-compose up --build -d` to start.

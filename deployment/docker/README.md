@@ -5,7 +5,7 @@ This page elaborates how to setup the overall solution using docker.
 
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
-2 [Solution Setup](#solution-setup)
+2. [Solution Setup](#solution-setup)
    * [Step 1 : Keycloak Setup](#keycloak-setup)
    * [Step 2 : Installation](#installation)
    * [Step 3 : Running the Application](#running-the-application)
@@ -38,22 +38,22 @@ This page elaborates how to setup the overall solution using docker.
 `FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own||`admin`
 `FORMIO_MONGO_PASSWORD`|Mongo Root Password||`changeme`
 `FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
-`FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
-`FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
+`FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`admin@example.com`
+`FORMIO_ROOT_PASSWORD`|form.io admin password|eg.changeme|`changeme`
 
  * Build all the services.
-    * For Linux,
-        * Run `docker-compose -f docker-compose-linux.yml build` to build.
-    * For Windows,
-        * Run `docker-compose -f docker-compose-windows.yml build` to build.
- *  Follow the listed sub-instructions for mapping the pre-defined role IDs. **(Skip this step if the [sample.json](../../forms-flow-forms/sample.json) is already imported and role IDs are mapped in this .env)**   
-      *  Start the form.io service.  
-        For Linux,  
-        Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
-        For Windows,  
-        Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
-        * Access formIO at port defaulted to 3001 i.e. http://your-ip-address:3001/ with credentails FORMIO_ROOT_EMAIL/FORMIO_ROOT_PASSWORD
-      * Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
+    * For Linux
+        Run `docker-compose -f docker-compose-linux.yml build` to build.
+    * For Windows
+        Run `docker-compose -f docker-compose-windows.yml build` to build.
+ *  Follow the below steps for mapping the role IDs. ***Skip this step if the [sample.json](../../forms-flow-forms/sample.json) is already imported and role IDs are mapped in this .env***   
+      i.  Start the form.io service.  
+          - For Linux
+             Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
+          - For Windows  
+             Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
+      ii.  Access formIO at port defaulted to 3001 i.e. http://your-ip-address:3001/ with credentails FORMIO_ROOT_EMAIL/FORMIO_ROOT_PASSWORD
+      iii. Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
  * Modify the configuration values as needed. Details below,
  
 **formsflow.ai Role Mapping:**

@@ -4,7 +4,7 @@
 
 **formsflow.ai** leverages form.io to build "serverless" data management applications using a simple drag-and-drop form builder interface.
 
-To know more about form.io, go to https://github.com/formio/formio.
+To know more about form.io, go to  https://form.io.
 
 ## Table of Content
 
@@ -69,10 +69,12 @@ Not applicable.
 ### Health Check
 
    The application should be up and available for use at port defaulted to 3001 in  (i.e. http://your-ip-address:3001/)
-    and login using valid root credentials setup in .env
-    
-    FORMIO_ROOT_EMAIL: admin@example.com
-    FORMIO_ROOT_PASSWORD: changeme
+       ```
+        Login Credentials
+        -----------------
+        User Name / Email : admin@example.com
+        Password  : changeme
+       ```
 	
 ## Formsflow form API List
 	

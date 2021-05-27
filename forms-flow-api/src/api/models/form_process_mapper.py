@@ -1,9 +1,11 @@
 """This manages appication Data."""
 
 from __future__ import annotations
+from http import HTTPStatus
 
 from sqlalchemy import and_
 
+from ..exceptions import BusinessException
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
 from .db import db
@@ -22,7 +24,6 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     status = db.Column(db.String(10), nullable=True)
     comments = db.Column(db.String(300), nullable=True)
     tenant_id = db.Column(db.Integer, nullable=True)
-
     application = db.relationship(
         "Application", backref="form_process_mapper", lazy=True
     )
@@ -30,20 +31,27 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     @classmethod
     def create_from_dict(cls, mapper_info: dict) -> FormProcessMapper:
         """Create new mapper between form and process."""
-        if mapper_info:
-            mapper = FormProcessMapper()
-            mapper.form_id = mapper_info["form_id"]
-            mapper.form_name = mapper_info["form_name"]
-            mapper.form_revision_number = mapper_info["form_revision_number"]
-            mapper.process_key = mapper_info.get("process_key")
-            mapper.process_name = mapper_info.get("process_name")
-            mapper.status = mapper_info["status"]
-            mapper.comments = mapper_info.get("comments")
-            mapper.created_by = mapper_info["created_by"]
-            mapper.tenant_id = mapper_info.get("tenant_id")
-            mapper.save()
-            return mapper
-        return None
+        try:
+            if mapper_info:
+                mapper = FormProcessMapper()
+                mapper.form_id = mapper_info["form_id"]
+                mapper.form_name = mapper_info["form_name"]
+                mapper.form_revision_number = mapper_info["form_revision_number"]
+                mapper.process_key = mapper_info.get("process_key")
+                mapper.process_name = mapper_info.get("process_name")
+                mapper.status = mapper_info.get("status")
+                mapper.comments = mapper_info.get("comments")
+                mapper.created_by = mapper_info["created_by"]
+                mapper.tenant_id = mapper_info.get("tenant_id")
+                mapper.save()
+                return mapper
+        except BaseException as form_err:
+            response, status = {
+                "type": "Bad Request Error",
+                "message": "Invalid application request passed"
+            }, HTTPStatus.BAD_REQUEST
+        return response, status
+
 
     def update(self, mapper_info: dict):
         """Update form process mapper."""

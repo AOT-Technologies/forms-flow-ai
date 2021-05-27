@@ -2,7 +2,7 @@
 
 ## Table of Content
 1. [Prerequisites](#prerequisites)
-2. [Local Keycloak setup](#automated-keycloak-setup)
+2. [Local Keycloak setup](#local-keycloak-setup)
 3. [Server Keycloak setup](#server-keycloak-setup)
    - [Step 1 : Create Realm](#create-realm)
    - [Step 2 : Create Keycloak setup for formsflow web](#create-keycloak-setup-for-formsflow-web)
@@ -46,7 +46,7 @@ Variable name | Meaning | Possible values | Default value |
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `KEYCLOAK_ADMIN_USER`|keycloak admin user name|Choose your own|`admin`
-`KEYCLOAK_ADMIN_PASSWORD`|keycloak admin password|Choose your own|`changeit`
+`KEYCLOAK_ADMIN_PASSWORD`|keycloak admin password|Choose your own|`changeme`
 
 ### Starting the keycloak server
    
@@ -60,7 +60,12 @@ Variable name | Meaning | Possible values | Default value |
 ### Health Check
 
    The application should be up and available for use at port defaulted to 8080 in application.yaml http://localhost:8080
-   
+   ```
+    Login Credentials
+    -----------------
+    User Name : admin
+    Password  : changeme
+   ```
    
 * **NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.**
 
@@ -70,7 +75,7 @@ Variable name | Meaning | Possible values | Default value |
 
 To setup a remote keycloak server either download and import the [formsflow-ai-realm.json](./imports/formsflow-ai-realm.json) to keycloak or follow the manual steps below.'
 
-## Realm creation for keycloak
+## Create Realm
 
 Create a realm **forms-flow-ai**
 

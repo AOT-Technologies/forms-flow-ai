@@ -80,8 +80,8 @@ User Role | User Name | Password |
 
 ## Server keycloak setup
 
-Make sure you downloaded and installed [Keycloak](https://www.keycloak.org/downloads). 
-To setup a remote keycloak server either download and import the [formsflow-ai-realm.json](./imports/formsflow-ai-realm.json) to keycloak or follow the manual steps below.'
+* Make sure you downloaded and installed [Keycloak](https://www.keycloak.org/downloads). 
+* To setup a remote keycloak server either download and import the ***[formsflow-ai-realm.json](./imports/formsflow-ai-realm.json)*** to keycloak or follow the manual steps below.'
 
 ### Create Realm
 

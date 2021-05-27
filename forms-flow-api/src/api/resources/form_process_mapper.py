@@ -61,7 +61,7 @@ class FormResource(Resource):
                     ),
                     HTTPStatus.OK,
                 )
-        except ValidationError as form_err:
+        except BaseException as form_err:
             return {"systemErrors": form_err.messages}, HTTPStatus.BAD_REQUEST
 
     @staticmethod
@@ -80,7 +80,7 @@ class FormResource(Resource):
             mapper = FormProcessMapperService.create_mapper(dict_data)
 
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
-        except ValidationError as form_err:
+        except BaseException as form_err:
             response, status = {
                 "systemErrors": form_err.messages
             }, HTTPStatus.BAD_REQUEST

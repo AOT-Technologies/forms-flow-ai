@@ -82,28 +82,28 @@ class ApplicationsResource(Resource):
                 HTTPStatus.OK,
             )
 
-    @staticmethod
-    @cors.crossdomain(origin="*")
-    @auth.require
-    def post():
-        """Post a new application using the request body."""
-        application_json = request.get_json()
-        """Get applications."""
-        try:
-            return (
-                jsonify(
-                    {
-                        "applications": ApplicationService.apply_custom_attributes(
-                            ApplicationService.get_all_applications_ids(
-                                application_json["applicationIds"]
-                            )
-                        )
-                    }
-                ),
-                HTTPStatus.OK,
-            )
-        except BusinessException as err:
-            return err.error, err.status_code
+    # @staticmethod
+    # @cors.crossdomain(origin="*")
+    # @auth.require
+    # def post():
+    #     """Post a new application using the request body."""
+    #     application_json = request.get_json()
+    #     """Get applications."""
+    #     try:
+    #         return (
+    #             jsonify(
+    #                 {
+    #                     "applications": ApplicationService.apply_custom_attributes(
+    #                         ApplicationService.get_all_applications_ids(
+    #                             application_json["applicationIds"]
+    #                         )
+    #                     )
+    #                 }
+    #             ),
+    #             HTTPStatus.OK,
+    #         )
+    #     except BusinessException as err:
+    #         return err.error, err.status_code
 
 
 @cors_preflight("GET,PUT,OPTIONS")

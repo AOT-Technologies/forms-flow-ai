@@ -102,6 +102,11 @@ class ApplicationsResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
+        except KeyError as err:
+            return (
+                "Inavlid request",
+                HTTPStatus.BAD_REQUEST,
+            )
         except BusinessException as err:
             return err.error, err.status_code
 
@@ -140,7 +145,9 @@ class ApplicationResourceById(Resource):
             ApplicationService.update_application(application_id, dict_data)
             return "Updated successfully", HTTPStatus.OK
         except BaseException as submission_err:
-            return {"systemErrors": submission_err.messages}, HTTPStatus.BAD_REQUEST
+            return {
+                "message" : "Invalid request passed"
+            }, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight("GET,OPTIONS")
@@ -261,7 +268,9 @@ class AggregatedApplicationsResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as agg_err:
-            return {"systemErrors": agg_err.messages}, HTTPStatus.BAD_REQUEST
+            return {
+                "message" : "Data not available"
+            }, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight("GET,OPTIONS")
@@ -291,7 +300,9 @@ class AggregatedApplicationStatusResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as agg_err:
-            return {"systemErrors": agg_err.messages}, HTTPStatus.BAD_REQUEST
+            return {
+                "message" : "Data not available"
+            }, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight("GET,OPTIONS")

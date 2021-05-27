@@ -235,11 +235,17 @@ class ApplicationService:
 class ApplicationSchemaWrapper:
     @staticmethod
     def apply_attributes(application):
-        formurl = application["formUrl"]
-        application["formId"] = formurl[
-            formurl.find("/form/") + 6 : formurl.find("/submission/")
-        ]
-        application["submissionId"] = formurl[
-            formurl.find("/submission/") + 12 : len(formurl)
-        ]
-        return application
+        try:
+            formurl = application["formUrl"]
+            application["formId"] = formurl[
+                formurl.find("/form/") + 6 : formurl.find("/submission/")
+            ]
+            application["submissionId"] = formurl[
+                formurl.find("/submission/") + 12 : len(formurl)
+            ]
+            return application
+        except KeyError as err:
+            return (
+                "The required fields of Input request are not passed",
+                HTTPStatus.BAD_REQUEST,
+            )

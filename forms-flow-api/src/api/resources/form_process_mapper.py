@@ -132,7 +132,10 @@ class FormResourceById(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as mapper_err:
-            return {"systemErrors": mapper_err.messages}, HTTPStatus.BAD_REQUEST
+            return {
+                 "type": "Bad Request Error",
+                "message": "Invalid request passed"
+            }, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight("GET,OPTIONS")

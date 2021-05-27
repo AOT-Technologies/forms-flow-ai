@@ -70,12 +70,11 @@ Not applicable.
 
    The application should be up and available for use at port defaulted to 3001 in  (i.e. http://your-ip-address:3001/)
    
-       ```
         Login Credentials
         -----------------
         User Name / Email : admin@example.com
         Password  : changeme
-       ```
+        
 	
 ## Formsflow form API List
 	

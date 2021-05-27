@@ -155,7 +155,7 @@ services:
       - '.:/app'
       - '/app/node_modules'
     ports:
-      - '3000:3000'
+      - '3000:8080'
     tty: true
 
     networks:

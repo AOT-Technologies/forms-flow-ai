@@ -5,3 +5,4 @@ client*
 app*
 npm-debug.log
 .env
+mongodb

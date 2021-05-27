@@ -70,7 +70,7 @@ Not applicable.
 
    The application should be up and available for use at port defaulted to 3001 in  (i.e. http://your-ip-address:3001/)
    
-        Login Credentials
+        Default Login Credentials
         -----------------
         User Name / Email : admin@example.com
         Password  : changeme
@@ -83,15 +83,21 @@ Not applicable.
 ------------------------
 
    * Get the jwt token using resource **/user/login**
+   * Use the default forms.io credentials below for email / password
+   
+***Use API clients like [POSTMAN](https://www.postman.com/) to invoke below request***
+   
 ```
 POST http://localhost:3001/user/login
 {
     "data": {
-        "email": {{email}},
-        "password": {{password}}
+        "email": email,
+        "password": password
     }
 }
 ``` 
+
+   * Copy and use x-jwt-token from the response header.
     
 ### Import of Predefined Roles and Forms
 ----------------------------------------

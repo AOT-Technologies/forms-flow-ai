@@ -142,6 +142,9 @@ Variable name | Meaning | Possible values | Default value |
 
 ##### CAMUNDA_SESSION_JDBC : Session Management (High Availability) (Prefixed with CAMUNDA_SESSION_).
 -----------------------------------
+
+  - Uncomment variables if Session Management is required
+  - Uncomment environment variables from docker-compose-{Your Variant}.yml
   
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
@@ -155,8 +158,6 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_SESSION_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_SESSION_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
 
-* Uncomment variables if Session Management is required
-* Uncomment environment variables from docker-compose-{Your Variant}.yml
 
 <!--
 ##### CAMUNDA_ANALYTICS_JDBC : Application's Audit Management (Only Cam variables) (Prefixed with CAMUNDA_ANALYTICS_).

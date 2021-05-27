@@ -17,7 +17,7 @@ version: '3.7'
 services:
   forms-flow-forms-db:
     image: mongo
-    restart: always
+    restart: unless-stopped
     hostname: forms-flow-forms-db
     ports:
       - '27018:27017'
@@ -38,7 +38,7 @@ services:
       context: ./
       dockerfile: Dockerfile
     # The app will restart until Mongo is listening
-    restart: always
+    restart: unless-stopped
     links:
       - forms-flow-forms-db
     ports:

@@ -49,7 +49,7 @@ services:
     volumes:
       - ./:/app:rw
     environment:
-      DATABASE_URL: ${WEB_API_DATABASE_URL:postgresql://postgres:changeme@forms-flow-webapi-db:5432/formsflow}
+      DATABASE_URL: ${WEB_API_DATABASE_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/formsflow}
       BPM_TOKEN_API: ${KEYCLOAK_TOKEN_URL}
       BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENTID:-forms-flow-bpm}
       BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENTSECRET}
@@ -61,8 +61,8 @@ services:
       JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENTID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
-      FORMSFLOW_API_URL: ${FORMSFLOW_API_URL}
-      MONGODB_URI: ${MONGODB_URI}
+      FORMSFLOW_API_URL: ${FORMSFLOW_API_URL:-http://host.docker.internal:5000}
+      MONGODB_URI: ${MONGODB_URI:-mongodb://changeme:analytics@forms-flow-webapi-analytics-db:27019/analytics?authSource=the_database&authMechanism=SCRAM-SHA-256}
     stdin_open: true # -i
     tty: true # -t
     networks:

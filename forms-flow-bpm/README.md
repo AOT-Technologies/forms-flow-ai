@@ -7,7 +7,7 @@ To know more about Camunda, visit https://camunda.com/.
 <link rel="stylesheet" type="text/css" media="all" href="style.css" />
 
 ## Table of Content
-1. [Prerequisites](#1.-prerequisites)
+1. [Prerequisites](#prerequisites)
 2. [Solution setup](#solution-setup)
    - [Step 1 : Keycloak Configuration](#keycloak-configuration)
    - [Step 2 : Installation](#installation)
@@ -16,7 +16,7 @@ To know more about Camunda, visit https://camunda.com/.
 3. [How to Deploy Process](#how-to-deploy-process)
 4. [How to Enable SSL](#how-to-enable-ssl)
 
-## 1. Prerequisites
+## Prerequisites
 
 The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
 There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).

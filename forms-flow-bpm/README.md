@@ -2,17 +2,19 @@
 ![Camunda](https://img.shields.io/badge/Camunda-7.13.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.2.7.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
 **formsflow.ai** leverages Camunda for workflow and decision automation.
 
-To know more about Camunda, go to https://github.com/camunda/camunda-bpm-identity-keycloak.
+To know more about Camunda, visit https://camunda.com/.
+
+<link rel="stylesheet" type="text/css" media="all" href="style.css" />
 
 ## Table of Content
-* [Prerequisites](#prerequisites)
-* [Solution setup](#solution-setup)
-  * [Step 1 : Keycloak Configuration](#keycloak-configuration)
-  * [Step 2 : Installation](#installation)
-  * [Step 3 : Running the Application](#running-the-application)
-  * [Step 4 : Health Check](#health-check)
-* [How to Deploy Process](#how-to-deploy-process)
-* [How to Enable SSL](#how-to-enable-ssl)
+1. [Prerequisites](#prerequisites)
+2. [Solution setup](#solution-setup)
+   - [Step 1 : Keycloak Configuration](#keycloak-configuration)
+   - [Step 2 : Installation](#installation)
+   - [Step 3 : Running the Application](#running-the-application)
+   - [Step 4 : Health Check](#health-check)
+3. [How to Deploy Process](#how-to-deploy-process)
+4. [How to Enable SSL](#how-to-enable-ssl)
 
 ## Prerequisites
 

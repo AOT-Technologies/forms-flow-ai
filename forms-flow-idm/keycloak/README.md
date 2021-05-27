@@ -26,10 +26,11 @@ Environment variables are set in **.env** and read by the system.
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-idm/keycloak".
-   * [Optional] Rename the file **sample.env** to **.env**. ***Skip this for default setup***
-   * [Optional] Modify the configuration values as needed. Details below, 
+   * **[Optional]** Rename the file **sample.env** to **.env**. ***Skip this for default setup***
+   * **[Optional]** Modify the configuration values as needed. Details below, 
    
 #### Keycloak Database Connection Details
+-----------------------------------------
 
 ***Skip this for default setup***
 
@@ -40,6 +41,7 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_JDBC_PASSWORD`|keycloak database postgres password|Used on installation to create the database.Choose your own|`changeit`
 
 #### Keycloak Admin Details
+-----------------------------------------
 
 ***Skip this for default setup***
 
@@ -59,7 +61,7 @@ Variable name | Meaning | Possible values | Default value |
   
 ### Health Check
 
-   The application should be up and available for use at port defaulted to 8080 in application.yaml http://localhost:8080
+   The application should be up and available for use at port defaulted to 8080 in http://localhost:8080
    ```
     Login Credentials
     -----------------
@@ -72,7 +74,7 @@ Variable name | Meaning | Possible values | Default value |
 
 ## Server keycloak setup
 
-
+Make sure you downloaded and installed [Keycloak](https://www.keycloak.org/downloads). 
 To setup a remote keycloak server either download and import the [formsflow-ai-realm.json](./imports/formsflow-ai-realm.json) to keycloak or follow the manual steps below.'
 
 ## Create Realm

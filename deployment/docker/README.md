@@ -70,13 +70,13 @@ This page elaborates how to setup the overall solution using docker.
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `CLIENT_ROLE`|	The role name used for client users|| `formsflow-client`
-`CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|must get the client role Id value from form.io resource. [Get client role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
+`CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|`must get the client role Id value from form.io resource.` [Get client role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `REVIEWER_ROLE`|The role name used for staff/reviewer users||`formsflow-reviewer`
-`REVIEWER_ROLE_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|must get the reviewer role Id value from form.io resource. [Get reviewer role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
+`REVIEWER_ROLE_ID`|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|`must get the reviewer role Id value from form.io resource.` [Get reviewer role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
-`DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|must get the administrator role Id value from form.io resource. [Get administrator role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
-`ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the anonymous role Id value from form.io resource. [Get anonymous role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
-`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource. [Get user resource Id](../../forms-flow-forms/README.md#how-to-get-resource-user-id)
+`DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|`must get the administrator role Id value from form.io resource.` [Get administrator role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
+`ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|`must get the anonymous role Id value from form.io resource.` [Get anonymous role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
+`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from form.io resource.` [Get user resource Id](../../forms-flow-forms/README.md#how-to-get-resource-user-id)
 
 #### formsflow.ai Datastore Settings
 -----------------------------------
@@ -118,12 +118,12 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
 `KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
 
-**NOTE : For local setup replace <realm> with `forms-flow-ai`**
+**NOTE : For local setup replace `<realm>` with `forms-flow-ai`**
 
 #### BPM (Camunda) Settings
 ---------------------------
 
-* Database Connection Details(The solution manages 3 connections)
+* Database Connection Details(The solution manages CAMUNDA_JDBC & CAMUNDA_SESSION_JDBC connections)
  
 ##### CAMUNDA_JDBC : Dedicated camunda database (Prefixed with CAMUNDA_).
 --------------------------------------
@@ -143,7 +143,9 @@ Variable name | Meaning | Possible values | Default value |
 ##### CAMUNDA_SESSION_JDBC : Session Management (High Availability) (Prefixed with CAMUNDA_SESSION_).
 -----------------------------------
 
-  - Uncomment variables if Session Management is required
+  ***Skip this if session management is not required***
+  
+  - Uncomment variables from .env if Session Management is required
   - Uncomment environment variables from docker-compose-{Your Variant}.yml
   
    Variable name | Meaning | Possible values | Default value |
@@ -246,7 +248,7 @@ Variable name | Meaning | Possible values | Default value |
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `INSIGHT_API_BASE`|Insight Api base end-point||`http://your-ip-address:7000`
-`INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
+`INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `must be set to your ReDash API key`
    
 **Additionally, you may want to change these**
   * The value of database details (especially if this instance is not just for testing purposes)

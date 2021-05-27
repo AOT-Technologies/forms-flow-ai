@@ -45,10 +45,11 @@ This section describes how to install different components individually and full
 
 Choose from the following components listed below.
  * [Keycloak](../forms-flow-idm/keycloak) Identity keycloak components
- * [forms-flow-analytics](../forms-flow-forms) Redash analytics components
+ * [forms-flow-forms](../forms-flow-forms) formsflow.ai integration with form.io
  * [forms-flow-bpm](../forms-flow-bpm) Camunda Workflow deployment and integration
  * [forms-flow-api](../forms-flow-api) REST API of formsflow.ai
  * [forms-flow-web](../forms-flow-web) formsflow.ai integration web UI
+ * [forms-flow-analytics](../forms-flow-analytics) Redash analytics components
  
 ### Openshift
 ------------------

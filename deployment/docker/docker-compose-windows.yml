@@ -184,7 +184,7 @@ services:
     environment:
       POSTGRES_USER: ${WEB_API_POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${WEB_API_POSTGRES_PASSWORD:-changeme}
-      POSTGRES_DB: ${WEB_API_POSTGRES_DB:-formsflow}
+      POSTGRES_DB: ${WEB_API_POSTGRES_DB:-webapi}
       POSTGRES_HOST_AUTH_METHOD: 'trust'
     ports:
       - '6432:5432'

@@ -60,7 +60,7 @@ Variable name | Meaning | Possible values | Default value |
   
 ### Health Check
 
-   The application should be up and available for use at port defaulted to 8080 in http://localhost:8080
+   The application should be up and available for use at port defaulted to 8080 in http://your-ip-address:8080
    ```
     Login Credentials
     -----------------
@@ -68,7 +68,7 @@ Variable name | Meaning | Possible values | Default value |
     Password  : changeme
    ```
 
-####Default User Credentials
+#### Default User Credentials
 ----------------------------
 
 User Role | User Name | Password |

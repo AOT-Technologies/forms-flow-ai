@@ -21,7 +21,7 @@ services:
     build:
       context: ./../../forms-flow-bpm/
       dockerfile: Dockerfile
-    restart: always
+    restart: unless-stopped
     links:
       - forms-flow-bpm-db
     ports:
@@ -85,7 +85,7 @@ services:
  
   forms-flow-forms-db:
     image: mongo
-    restart: always
+    restart: unless-stopped
     hostname: forms-flow-forms-db
     ports:
       - '27018:27017'
@@ -95,7 +95,25 @@ services:
       MONGO_INITDB_DATABASE: ${FORMIO_MONGO_DATABASE:-formio}
     volumes:
       - ./../../forms-flow-forms/mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
-      - mdb-data:/data/db/
+      - ./mongodb/data/db/:/data/db/
+      - ./mongodb/data/log/:/var/log/mongodb/
+      - ./mongodb/mongod.conf:/etc/mongod.conf
+    networks:
+      - forms-flow-forms-network
+
+  forms-flow-forms-db:
+    image: mongo
+    restart: unless-stopped
+    hostname: forms-flow-forms-db
+    ports:
+      - '27018:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${FORMIO_MONGO_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${FORMIO_MONGO_PASSWORD:-changeme}
+      MONGO_INITDB_DATABASE: ${FORMIO_MONGO_DATABASE:-formio}
+    volumes:
+      - ./../../forms-flow-forms/mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
+      - ./mongodb/data/db/:/data/db/
       - ./mongodb/data/log/:/var/log/mongodb/
       - ./mongodb/mongod.conf:/etc/mongod.conf
     networks:
@@ -106,7 +124,7 @@ services:
       context: ./../../forms-flow-forms/
       dockerfile: Dockerfile
     # The app will restart until Mongo is listening
-    restart: always
+    restart: unless-stopped
     links:
       - forms-flow-forms-db
     ports:
@@ -180,7 +198,7 @@ services:
 
   forms-flow-webapi-analytics-db:
     image: mongo
-    restart: always
+    restart: unless-stopped
     hostname: forms-flow-webapi-analytics-db
     ports:
        - '27019:27017'

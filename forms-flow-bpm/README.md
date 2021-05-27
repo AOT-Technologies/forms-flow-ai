@@ -43,7 +43,7 @@ To know more about Camunda, visit https://camunda.com/.
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `KEYCLOAK_URL`| URL to your Keycloak server |eg. https://iam.aot-technologies.com | `http://your-ip-address:8080`
- `KEYCLOAK_URL_REALM`|	The Keyvcloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
+ `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
  `KEYCLOAK_BPM_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | `forms-flow-bpm`
  `KEYCLOAK_BPM_CLIENTSECRET`|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret`go to [link](../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
 

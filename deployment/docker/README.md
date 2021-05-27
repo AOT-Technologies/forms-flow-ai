@@ -4,23 +4,23 @@ This page elaborates how to setup the overall solution using docker.
 
 
 ## Table of Contents
-* [Prerequisites](#prerequisites)
-* [Solution Setup](#solution-setup)
-  * [Step 1 : Keycloak Setup](#keycloak-setup)
-  * [Step 2 : Installation](#installation)
-  * [Step 3 : Running the Application](#running-the-application)
-  * [Step 4 : Health Check](#health-check) 
+1. [Prerequisites](#prerequisites)
+2 [Solution Setup](#solution-setup)
+   * [Step 1 : Keycloak Setup](#keycloak-setup)
+   * [Step 2 : Installation](#installation)
+   * [Step 3 : Running the Application](#running-the-application)
+   * [Step 4 : Health Check](#health-check) 
 
 
 ## Prerequisites
 
-The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
+ * The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
 
 ## Solution Setup
 
 ### Keycloak Setup
 
-Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
+* Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
 
       
 ### Installation
@@ -52,7 +52,7 @@ Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
         Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
         For Windows,  
         Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
-        * Access formIO at port defaulted to 3001 i.e. http://localhost:3001/ with credentails FORMIO_ROOT_EMAIL/FORMIO_ROOT_PASSWORD
+        * Access formIO at port defaulted to 3001 i.e. http://your-ip-address:3001/ with credentails FORMIO_ROOT_EMAIL/FORMIO_ROOT_PASSWORD
       * Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
  * Modify the configuration values as needed. Details below,
  
@@ -96,13 +96,17 @@ Variable name | Meaning | Possible values | Default value |
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`KEYCLOAK_TOKEN_URL`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`{Keycloak URL}/auth/realms/<realm>/protocol/openid-connect/token`
-`KEYCLOAK_JWT_OIDC_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`{Keycloak URL}/auth/realms/<REALM>/.well-known/openid-configuration`
-`KEYCLOAK_JWT_OIDC_JWKS_URI`|Keycloak JWKS URI|Plug in Keycloak base url plus realm|`{Keycloak URL}/auth/realms/<REALM>/protocol/openid-connect/certs`
-`KEYCLOAK_JWT_OIDC_ISSUER`|The issuer of JWT's from Keycloak for your realm|Plug in your realm and Keycloak base url|`{Keycloak URL}/auth/realms/<REALM>`
-`KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|must be set to your Keycloak client id
+`KEYCLOAK_URL`| URL to your Keycloak server || `http://your-ip-address:8080`
+`KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
+`KEYCLOAK_TOKEN_URL`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`http://your-ip-address:8080/auth/realms/<realm>/protocol/openid-connect/token`
+`KEYCLOAK_JWT_OIDC_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`http://your-ip-address:8080/auth/realms/<realm>/.well-known/openid-configuration`
+`KEYCLOAK_JWT_OIDC_JWKS_URI`|Keycloak JWKS URI|Plug in Keycloak base url plus realm|`http://your-ip-address:8080/auth/realms/<realm>/protocol/openid-connect/certs`
+`KEYCLOAK_JWT_OIDC_ISSUER`|The issuer of JWT's from Keycloak for your realm|Plug in your realm and Keycloak base url|`http://your-ip-address:8080/auth/realms/<realm>`
+`KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
 `KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
-`KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
+`KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
+
+**NOTE : For local setup replace <realm> with `forms-flow-ai`**
 
 **BPM (Camunda) Settings:**
 
@@ -115,7 +119,7 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_JDBC_DB`|Postgres JDBC DB Name|Used on installation to create the database.Choose your own|`formsflow-bpm`
  `CAMUNDA_JDBC_URL`|Postgres JDBC DB Connection URL|Used on installation to create the database.Choose your own|`jdbc:postgresql://forms-flow-bpm-db:5432/formsflow-bpm`
  `CAMUNDA_JDBC_DRIVER`|Postgres JDBC Database Driver||`org.postgresql.Driver`
- `CAMUNDA_JDBC_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`postgres`
+ `CAMUNDA_JDBC_USER`|Postgres Database Username|Used on installation to create the database.Choose your own|`admin`
  `CAMUNDA_JDBC_PASSWORD`|Postgres Database Password|Used on installation to create the database.Choose your own|`changeme`
  `CAMUNDA_HIKARI_CONN_TIMEOUT`|Hikari Connection optimization setting||`30000`
  `CAMUNDA_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
@@ -180,23 +184,26 @@ Variable name | Meaning | Possible values | Default value |
  
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://localhost:5000`
- `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://localhost:3001`
- `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
- `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
- `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting|`http://localhost:3000`|
+ `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
+ `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://your-ip-address:3001`
+ `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`admin@example.com`
+ `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.changeme|`changeme`
+ `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting|`http://your-ip-address:3000`|
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type |`TASK_EVENT` `TASK_EVENT_DETAILS`|`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
+
+<!--
  
 #### Camunda - Orbeon Integration Settings  
  
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `CAMUNDA_FORMBUILDER_PIPELINE_USERNAME`|Basic Authentication Support. Username||`http://localhost:5000`
- `CAMUNDA_FORMBUILDER_PIPELINE_PASSWORD`|Basic Authentication Support. Password||`http://localhost:5000`
- `CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL`|Engine Context URL.Leverages elevated admin account.||`http://username:password@localhost:8000/camunda`
+ `CAMUNDA_FORMBUILDER_PIPELINE_USERNAME`|Basic Authentication Support. Username||`http://your-ip-address:5000`
+ `CAMUNDA_FORMBUILDER_PIPELINE_PASSWORD`|Basic Authentication Support. Password||`http://your-ip-address:5000`
+ `CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL`|Engine Context URL.Leverages elevated admin account.||`http://username:password@your-ip-address:8000/camunda`
  
+-->
 #### Camunda - General Settings  
  
    Variable name | Meaning | Possible values | Default value |
@@ -208,7 +215,7 @@ Variable name | Meaning | Possible values | Default value |
  
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`INSIGHT_API_BASE`|Insight Api base end-point||`http://localhost:7000`
+`INSIGHT_API_BASE`|Insight Api base end-point||`http://your-ip-address:7000`
 `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
    
    **Additionally, you may want to change these**
@@ -228,9 +235,9 @@ Variable name | Meaning | Possible values | Default value |
   * Run `docker-compose -f docker-compose-windows.yml down` to stop.
   
 ### Health Check
-  * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
-  * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/
-  * FormIO should be up and available for use at port defaulted to 3001 i.e. http://localhost:3001/
-  * formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
-  * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
+  * Analytics should be up and available for use at port defaulted to 7000 i.e. http://your-ip-address:7000/
+  * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://your-ip-address:8000/camunda/
+  * FormIO should be up and available for use at port defaulted to 3001 i.e. http://your-ip-address:3001/
+  * formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://your-ip-address:5000/api/
+  * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://your-ip-address:3000/
   

@@ -80,10 +80,10 @@ class _Config():  # pylint: disable=too-few-public-methods
     BPM_GRANT_TYPE = os.getenv('BPM_GRANT_TYPE')
 
     # BPM Camunda Details
-    BPM_API_BASE = os.getenv('BPM_API_BASE')
+    BPM_API_BASE = os.getenv('CAMUNDA_API_URI')
 
     #API Base URL (Self)
-    WEB_API_BASE_URL = os.getenv('WEB_API_BASE_URL')
+    FORMSFLOW_API_URL = os.getenv('FORMSFLOW_API_URL')
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

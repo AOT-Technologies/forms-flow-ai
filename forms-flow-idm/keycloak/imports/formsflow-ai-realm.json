@@ -1,6 +1,6 @@
 {
-  "id": "formsflow-ai",
-  "realm": "formsflow-ai",
+  "id": "forms-flow-ai",
+  "realm": "forms-flow-ai",
   "notBefore": 0,
   "revokeRefreshToken": false,
   "refreshTokenMaxReuse": 0,
@@ -47,7 +47,7 @@
         "description": "${role_offline-access}",
         "composite": false,
         "clientRole": false,
-        "containerId": "formsflow-ai",
+        "containerId": "forms-flow-ai",
         "attributes": {}
       },
       {
@@ -55,7 +55,7 @@
         "description": "${role_uma_authorization}",
         "composite": false,
         "clientRole": false,
-        "containerId": "formsflow-ai",
+        "containerId": "forms-flow-ai",
         "attributes": {}
       }
     ],
@@ -564,7 +564,7 @@
       "clientId": "account",
       "name": "${client_account}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/formsflow-ai/account/",
+      "baseUrl": "/realms/forms-flow-ai/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
@@ -575,7 +575,7 @@
         "manage-account"
       ],
       "redirectUris": [
-        "/realms/formsflow-ai/account/*"
+        "/realms/forms-flow-ai/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -610,14 +610,14 @@
       "clientId": "account-console",
       "name": "${client_account-console}",
       "rootUrl": "${authBaseUrl}",
-      "baseUrl": "/realms/formsflow-ai/account/",
+      "baseUrl": "/realms/forms-flow-ai/account/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "/realms/formsflow-ai/account/*"
+        "/realms/forms-flow-ai/account/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -1106,14 +1106,14 @@
       "clientId": "security-admin-console",
       "name": "${client_security-admin-console}",
       "rootUrl": "${authAdminUrl}",
-      "baseUrl": "/admin/formsflow-ai/console/",
+      "baseUrl": "/admin/forms-flow-ai/console/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "/admin/formsflow-ai/console/*"
+        "/admin/forms-flow-ai/console/*"
       ],
       "webOrigins": [
         "+"

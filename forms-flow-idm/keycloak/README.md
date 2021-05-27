@@ -52,8 +52,7 @@ Variable name | Meaning | Possible values | Default value |
 
 ### Starting the keycloak server
    
-   * Run `docker-compose build` to build.
-   * Run `docker-compose up -d` to start.
+* Run `docker-compose up --build -d` to start.
 
 #### To stop the keycloak server
 
@@ -68,6 +67,18 @@ Variable name | Meaning | Possible values | Default value |
     User Name : admin
     Password  : changeme
    ```
+
+####Default User Credentials
+----------------------------
+
+User Role | User Name | Password |
+--- | --- | --- | ---
+`Designer`|`formsflow-designer`|`changeme`
+`Client`|`formsflow-client`|`changeme`
+`Reviewer`|`formsflow-reviewer`|`changeme`
+
+   
+   
    
 * **NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.**
 
@@ -77,7 +88,7 @@ Variable name | Meaning | Possible values | Default value |
 Make sure you downloaded and installed [Keycloak](https://www.keycloak.org/downloads). 
 To setup a remote keycloak server either download and import the [formsflow-ai-realm.json](./imports/formsflow-ai-realm.json) to keycloak or follow the manual steps below.'
 
-## Create Realm
+### Create Realm
 
 Create a realm **forms-flow-ai**
 
@@ -85,9 +96,9 @@ Create a realm **forms-flow-ai**
 * Click the button "Create Realm" to add new realm **forms-flow-ai**
 * Click Create   
   
-## Create Keycloak setup for formsflow web
+### Create Keycloak setup for formsflow web
 
-### Create a forms-flow-web Client.     
+#### Create a forms-flow-web Client.     
 
 * Login to KeyCloak Realm with admin privileges  
 * Configure > Clients > Create  
@@ -126,7 +137,7 @@ Create a realm **forms-flow-ai**
        	* Included Client Audience = forms-flow-web
        	* Click Save
 
-### Key cloak configuration for formsflow.ai UI setup
+#### Key cloak configuration for formsflow.ai UI setup
 
 - Once the forms-flow-web client is created for keycloak.
 - Rename the file **public/config/kc/keycloak-sample.json** to **public/config/kc/keycloak.json**
@@ -137,9 +148,9 @@ Create a realm **forms-flow-ai**
   - Copy the JSON data
   - Update the content in file **public/config/kc/keycloak.json** in [forms-flow-web](../forms-flow-web/public/config/kc)
 
-## Create Keycloak setup for formsflow analytics
+### Create Keycloak setup for formsflow analytics
 
-### Create a forms-flow-analytics Client.     
+#### Create a forms-flow-analytics Client.     
 
 * Login to KeyCloak Realm with admin privileges  
 * Configure > Clients > Create  
@@ -172,9 +183,9 @@ Create a realm **forms-flow-ai**
 			* Click Save  
  
 
-## Create Keycloak setup for formsflow bpm
+### Create Keycloak setup for formsflow bpm
 
-### Create a forms-flow-bpm Client.     
+#### Create a forms-flow-bpm Client.     
 
 * Login to KeyCloak Realm with admin privileges  
 * Configure > Clients > Create  
@@ -227,7 +238,7 @@ Create a realm **forms-flow-ai**
        	* Included Custom Audience = forms-flow-web
        	* Click Save
 
-## Create Groups   
+### Create Groups   
 
 Create groups to support operations  
 
@@ -252,7 +263,7 @@ Create groups to support operations
 * Default Groups Tab (Assign Default Group to self-registering users)  
 	* From available groups; map the group "formsflow-client" to "Default Groups".  
 
-### Map roles to group  
+#### Map roles to group  
 
 Mapping different roles to group/subgroups:  
 

@@ -18,8 +18,8 @@ To know more about Camunda, visit https://camunda.com/.
 
 ## Prerequisites
 
-The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
-There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
+* The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
+* [Optional] There needs to be a [Keycloak](https://www.keycloak.org/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
 
 ## Solution Setup
 

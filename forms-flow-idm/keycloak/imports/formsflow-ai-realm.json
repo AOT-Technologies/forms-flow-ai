@@ -409,24 +409,7 @@
               "formsflow-reviewer"
             ]
           },
-          "subGroups": [
-            {
-              "name": "approver",
-              "path": "/formsflow/formsflow-reviewer/approver",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": []
-            },
-            {
-              "name": "clerk",
-              "path": "/formsflow/formsflow-reviewer/clerk",
-              "attributes": {},
-              "realmRoles": [],
-              "clientRoles": {},
-              "subGroups": []
-            }
-          ]
+          "subGroups": []
         }
       ]
     }

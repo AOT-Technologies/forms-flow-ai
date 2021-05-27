@@ -1,17 +1,24 @@
-# formsflow.ai Keycloak Setup
+# Formsflow.ai Keycloak Setup
 
-## Table of Contents
-* [Automated Keycloak setup](#automated-keycloak-setup)
-* [Manual Keycloak setup](#manual-keycloak-setup)
-  * [Step 1 : Create Realm](#create-realm)
-  * [Step 2 : Create Keycloak setup for formsflow web](#create-keycloak-setup-for-formsflow-web)
-  * [Step 3 : Create Keycloak setup for formsflow analytics](#create-keycloak-setup-for-formsflow-analytics)
-  * [Step 4 : Create Keycloak setup for formsflow bpm](#create-keycloak-setup-for-formsflow-bpm) 
-  * [Step 5 : Create groups](#create-groups) 
-  * [Step 6 : Test keycloak access in Postman](#test-keycloak-access-in-postman) 
-* [Getting the client secret](#getting-the-client-secret)
+## Table of Content
+1. [Prerequisites](#prerequisites)
+2. [Local Keycloak setup](#automated-keycloak-setup)
+3. [Server Keycloak setup](#server-keycloak-setup)
+   - [Step 1 : Create Realm](#create-realm)
+   - [Step 2 : Create Keycloak setup for formsflow web](#create-keycloak-setup-for-formsflow-web)
+   - [Step 3 : Create Keycloak setup for formsflow analytics](#create-keycloak-setup-for-formsflow-analytics)
+   - [Step 4 : Create Keycloak setup for formsflow bpm](#create-keycloak-setup-for-formsflow-bpm) 
+   - [Step 5 : Create groups](#create-groups) 
+   - [Step 6 : Test keycloak access in Postman](#test-keycloak-access-in-postman) 
+4. [Getting the client secret](#getting-the-client-secret)
 
-## Automated keycloak setup
+## Prerequisites
+
+* The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). This need to be installed. 
+
+## Local keycloak setup
+
+This setup is preferred for local development only. For server setup go to [Server Keycloak setup](#server-keycloak-setup).
 
 ### Environment Configuration
 
@@ -19,10 +26,12 @@ Environment variables are set in **.env** and read by the system.
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-idm/keycloak".
-   * Rename the file **sample.env** to **.env**.
+   * Rename the file **sample.env** to **.env**. **Skip this for default setup**
    * Modify the configuration values as needed. Details below,
    
 #### Keycloak Database Connection Details
+
+**Skip this for default setup**
    
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -32,6 +41,8 @@ Variable name | Meaning | Possible values | Default value |
 
 #### Keycloak Admin Details
 
+**Skip this for default setup**
+
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `KEYCLOAK_ADMIN_USER`|keycloak admin user name|Choose your own|`admin`
@@ -39,18 +50,12 @@ Variable name | Meaning | Possible values | Default value |
 
 ### Starting the keycloak server
    
-* For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml build` to build.
-   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
-* For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml build` to build.
-   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+   * Run `docker-compose build` to build.
+   * Run `docker-compose up -d` to start.
 
 #### To stop the keycloak server
-* For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
-* For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
+
+  * Run `docker-compose down` to stop.
   
 ### Health Check
 
@@ -60,7 +65,7 @@ Variable name | Meaning | Possible values | Default value |
 * **NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.**
 
 
-## Manual keycloak setup
+## Server keycloak setup
 
 
 To setup a remote keycloak server either download and import the [formsflow-ai-realm.json](./imports/formsflow-ai-realm.json) to keycloak or follow the manual steps below.'

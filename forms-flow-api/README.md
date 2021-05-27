@@ -18,8 +18,7 @@ the system. It is built using Python :snake: .
 
 ## Prerequisites
 
-We are assuming [docker-compose](https://docs.docker.com/compose/) and [docker](https://docker.com)
-is already installed, which is required to run and deploy the system.
+* The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). This need to be installed. 
 
 ## Solution Setup
 

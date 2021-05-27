@@ -72,16 +72,11 @@ Variable name | Meaning | Possible values | Default value |
 ----------------------------
 
 User Role | User Name | Password |
---- | --- | --- | ---
+--- | --- | ---
 `Designer`|`formsflow-designer`|`changeme`
 `Client`|`formsflow-client`|`changeme`
 `Reviewer`|`formsflow-reviewer`|`changeme`
-
-   
-   
-   
 * **NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.**
-
 
 ## Server keycloak setup
 

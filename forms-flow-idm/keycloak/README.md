@@ -26,7 +26,7 @@ Environment variables are set in **.env** and read by the system.
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-idm/keycloak".
-   * Rename the file **sample.env** to **.env**. **Skip this for default setup**
+   * [Optional] Rename the file **sample.env** to **.env**. **Skip this for default setup**
    * Modify the configuration values as needed. Details below,
    
 #### Keycloak Database Connection Details

@@ -31,7 +31,8 @@ This page elaborates how to setup the overall solution using docker.
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. Details below,
        
-**formsflow.ai form.io Server Variables:**  
+#### formsflow.ai form.io Server Variables
+-----------------------------------------
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -41,22 +42,30 @@ This page elaborates how to setup the overall solution using docker.
 `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`admin@example.com`
 `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.changeme|`changeme`
 
- * Build all the services.
-    * For Linux
-        Run `docker-compose -f docker-compose-linux.yml build` to build.
+* Build all the services.
+   * For Linux
+        - Run `docker-compose -f docker-compose-linux.yml build` to build.
     * For Windows
-        Run `docker-compose -f docker-compose-windows.yml build` to build.
- *  Follow the below steps for mapping the role IDs. ***Skip this step if the [sample.json](../../forms-flow-forms/sample.json) is already imported and role IDs are mapped in this .env***   
-      i.  Start the form.io service.  
-          - For Linux
-             Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
-          - For Windows  
-             Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
-      ii.  Access formIO at port defaulted to 3001 i.e. http://your-ip-address:3001/ with credentails FORMIO_ROOT_EMAIL/FORMIO_ROOT_PASSWORD
-      iii. Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
- * Modify the configuration values as needed. Details below,
+        - Run `docker-compose -f docker-compose-windows.yml build` to build.
+*  Follow the below steps for mapping the role IDs. ***Skip this step if the [sample.json](../../forms-flow-forms/sample.json) is already imported and role IDs are mapped in this .env***   
+   - Start the form.io service.  
+     - For Linux
+       - Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
+     - For Windows  
+       - Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
+   - Access formIO at port defaulted to 3001 i.e. http://your-ip-address:3001/ .
+   
+          ```
+           Login Credentials
+           -----------------
+           User Name / Email : admin@example.com
+           Password  : changeme
+          ```
+   - Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
+* Modify the configuration values as needed. Details below,
  
-**formsflow.ai Role Mapping:**
+#### formsflow.ai Role Mapping
+-----------------------------
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -69,7 +78,8 @@ This page elaborates how to setup the overall solution using docker.
 `ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|must get the anonymous role Id value from form.io resource. [Get anonymous role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|must get the value from form.io resource. [Get user resource Id](../../forms-flow-forms/README.md#how-to-get-resource-user-id)
 
-**formsflow.ai Datastore Settings:**
+#### formsflow.ai Datastore Settings
+-----------------------------------
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -78,21 +88,23 @@ Variable name | Meaning | Possible values | Default value |
 `WEB_API_POSTGRES_PASSWORD`|formsflow.ai database postgres password|Used on installation to create the database.Choose your own|`changeme`
 `WEB_API_POSTGRES_DB`|formsflow.ai database name|Used on installation to create the database.Choose your own|`webapi`
 
-**formsflow.ai Integration Settings:**
+#### formsflow.ai Integration Settings
+--------------------------------------
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
-`CAMUNDA_API_URI`|Camunda Rest API URI||`http://{Your IP Address}:8000/camunda`
-`FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://{Your IP Address}:3001`
-`WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://{Your IP Address}:5000`
+`CAMUNDA_API_URI`|Camunda Rest API URI||`http://your-ip-address:8000/camunda`
+`FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://your-ip-address:3001`
+`WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
 `WEBAPI_ANALYTICS_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
 `WEBAPI_ANALYTICS_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
 `WEBAPI_ANALYTICS_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
 `MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis|Used on installation to create the database.Choose your own|`mongodb://mongo:changeme@forms-flow-webapi-analytics-db:27019/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
 
-**Authentication Provider (Keycloak) Settings:**
+#### Authentication Provider (Keycloak) Settings
+------------------------------------------------
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -108,11 +120,13 @@ Variable name | Meaning | Possible values | Default value |
 
 **NOTE : For local setup replace <realm> with `forms-flow-ai`**
 
-**BPM (Camunda) Settings:**
+#### BPM (Camunda) Settings
+---------------------------
 
-#### Database Connection Details(The solution manages 3 connections)
+* Database Connection Details(The solution manages 3 connections)
  
 ##### CAMUNDA_JDBC : Dedicated camunda database (Prefixed with CAMUNDA_).
+--------------------------------------
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
@@ -127,7 +141,11 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
 
 ##### CAMUNDA_SESSION_JDBC : Session Management (High Availability) (Prefixed with CAMUNDA_SESSION_).
+-----------------------------------
 
+* Uncomment variables if Session Management is required
+* Uncomment environment variables from docker-compose-{Your Variant}.yml
+  
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `CAMUNDA_SESSION_JDBC_URL`|Postgres JDBC DB Connection URL|Used on installation to create the database.Choose your own|`jdbc:postgresql://forms-flow-bpm-db:5432/formsflow-bpm-session`
@@ -140,7 +158,10 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_SESSION_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_SESSION_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
 
+
+<!--
 ##### CAMUNDA_ANALYTICS_JDBC : Application's Audit Management (Only Cam variables) (Prefixed with CAMUNDA_ANALYTICS_).
+------------------------------------------------
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
@@ -153,14 +174,19 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
  `CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
+ 
+ -->
 
 #### Session Management
+-----------------------
+
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `CAMUNDA_SESSION_STORE_TYPE`| Store type for holding the state | | `jdbc`
  `CAMUNDA_SESSION_STORE_TIMEOUT`| Timeout Setting in seconds| | `30`
 
 #### Camunda System Tuning  
+----------------------------
  
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
@@ -181,7 +207,8 @@ Variable name | Meaning | Possible values | Default value |
  * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/process-engine/
  
 #### Camunda formsflow.ai Integration Settings  
- 
+------------------------------------------------
+
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
@@ -191,6 +218,7 @@ Variable name | Meaning | Possible values | Default value |
  `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting|`http://your-ip-address:3000`|
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type |`TASK_EVENT` `TASK_EVENT_DETAILS`|`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
+ 
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
 
 <!--
@@ -205,21 +233,23 @@ Variable name | Meaning | Possible values | Default value |
  
 -->
 #### Camunda - General Settings  
- 
+-------------------------------
+
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `APP_SECURITY_ORIGIN`|CORS setup||`*` 
  `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
 
-**Analytics (Redash) Integration Settings:**
+#### Analytics (Redash) Integration Settings
+--------------------------------------------
  
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `INSIGHT_API_BASE`|Insight Api base end-point||`http://your-ip-address:7000`
 `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
    
-   **Additionally, you may want to change these**
-   * The value of database details (especially if this instance is not just for testing purposes)
+**Additionally, you may want to change these**
+  * The value of database details (especially if this instance is not just for testing purposes)
   
 
 ### Running the application

@@ -68,7 +68,7 @@ To know more about Camunda, visit https://camunda.com/.
 -------------------------------------------------------------------------------------------------
 
 * Uncomment variables if Session Management is required
-  * Uncomment environment variables from docker-compose-{Your Variant}.yml
+* Uncomment environment variables from docker-compose-{Your Variant}.yml
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---

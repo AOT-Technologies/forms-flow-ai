@@ -5,7 +5,7 @@
    - [Prerequisites](#prerequisites)
    - [Step 1 : Environment Configuration](#environment-configuration)
    - [Step 2 : Environment Variables](#environment-variables)
-   - [Step 3 : Starting Keycloak server](#starting-or-stopping-keycloak-server)
+   - [Step 3 : Starting / Stopping Keycloak server](#starting-or-stopping-keycloak-server)
    - [Step 4 : Health Check](#health-check)
 2. [Server Keycloak setup](#server-keycloak-setup)
    - [Step 1 : Create Realm](#create-realm)
@@ -29,7 +29,7 @@
 ### Environment Configuration
 
    * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is "forms-flow-ai/forms-flow-idm/keycloak".
+   * Make sure your current working directory is [forms-flow-ai/forms-flow-idm/keycloak]().
    * *Optional*: Rename the file **sample.env** to **.env**. ***Skip this for default setup***
    * *Optional*: Modify the environment variables as needed. Details below, 
 
@@ -92,7 +92,7 @@ User Role | User Name | Password |
 ## Server keycloak setup
 
 * Make sure you downloaded and installed [Keycloak](https://www.keycloak.org/downloads). 
-* To setup a remote keycloak server either download and import the ***[formsflow-ai-realm.json](./imports/formsflow-ai-realm.json)*** to keycloak or follow the manual steps below.'
+* To setup a remote keycloak server either download and import the ***[formsflow-ai-realm.json](./imports/formsflow-ai-realm.json)*** to keycloak or follow the manual steps below.
 
 ### Create Realm
 

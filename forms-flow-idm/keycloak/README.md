@@ -256,10 +256,7 @@ Create groups to support operations
 	* Click Save  
 * Create Sub group by Clicking on Main group created on step-1 i.e. formsflow, and then click New  
 	* Name = formsflow-reviewer  
-	* Click Save 
-* Create Sub group by Clicking on Main group created on step-1 i.e. formsflow, and then click New  
-	* Name = formsflow-analyst  
-	* Click Save  
+	* Click Save   
 * Create Main group by Clicking New  
 	* Name = camunda-admin  
 	* Click Save  
@@ -276,12 +273,11 @@ Mapping different roles to group/subgroups:
     * Select forms-flow-web from the list of Client Roles selection  
     * Select formsflow-client role and click add selected  
     * The selected role will appear in assigned roles for that subgroup.  
-* Repeat the step 2 and 3 for subgroups formsflow-designer, formsflow-reviewer and formsflow-analyst and choose the respective roles for them according to the table :
+* Repeat the step 2 and 3 for subgroups formsflow-designer, formsflow-reviewer and choose the respective roles for them according to the table :
 
 Group|Roles|Description
 ---|---|---
 camunda-admin||Able to administer Camunda directly and create new workflows
-formsflow-analyst|formsflow-analyst, formsflow-client|Able to access the Redash dashboard and formsflow UI
 formsflow-designer|formsflow-client, formsflow-designer, formsflow-reviewer| Able to access all elements of the formsflow UI including forms design, task list and forms access
 formsflow-reviewer|formsflow-reviewer| Able to access task list and forms access of formsflow UI
 formsflow-client|formsflow-client| Able to access form fill-in only

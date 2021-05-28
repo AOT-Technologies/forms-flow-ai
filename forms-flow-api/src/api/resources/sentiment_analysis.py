@@ -53,12 +53,21 @@ class SentimentAnalysisResource(Resource):
                 response["applicationId"] = input_json["applicationId"]
                 response["formUrl"] = input_json["formUrl"]
                 post_data = {"input_text": data_input, "output_response": response}
-                db_instance = SentimentAnalysisSchema()
-                db_instance.insert_sentiment(sentiment_object=post_data)
+                try:
+                    db_instance = SentimentAnalysisSchema()
+                    db_instance.insert_sentiment(sentiment_object=post_data)
+                except ConnectionFailure:
+                    response, status = {
+                        "message": "Server selection time out",
+                    }, HTTPStatus.BAD_REQUEST
+                return response, status   
 
             return jsonify(response_json), HTTPStatus.OK
-        except ConnectionFailure:
-            response, status = {
-                "message": "Server selection time out",
-            }, HTTPStatus.BAD_REQUEST
-        return response, status
+        except KeyError as err:
+            return (
+                "The required fields of Input request are not passed",
+                HTTPStatus.BAD_REQUEST,
+            )
+        
+        except BusinessException as err:
+            return err.error, err.status_code

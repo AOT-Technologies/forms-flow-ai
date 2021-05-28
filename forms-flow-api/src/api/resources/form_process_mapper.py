@@ -82,7 +82,8 @@ class FormResource(Resource):
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
         except BaseException as form_err:
             response, status = {
-                "systemErrors": form_err.messages
+                "type": "Invalid Request data object",
+                "message":  form_err.messages
             }, HTTPStatus.BAD_REQUEST
         return response, status
 

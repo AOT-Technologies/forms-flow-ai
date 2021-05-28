@@ -97,7 +97,9 @@ These are the steps required to complete the installation and setup of forksflow
 
    - Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
  
-#### forms-flow-web, forms-flow-bpm & forms-flow-web Setup 
+#### forms-flow-web, forms-flow-bpm & forms-flow-web Setup
+-----------------------------------
+
 - [x] Keycloak setup
 - [x] forms-flow-analytics setup
 - [x] forms-flow-forms setup

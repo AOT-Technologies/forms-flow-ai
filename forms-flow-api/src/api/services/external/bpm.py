@@ -1,8 +1,8 @@
 """This exposes BPM Service."""
 
+import logging
 from enum import IntEnum
 
-import logging
 from flask import current_app
 
 from .base_bpm import BaseBPMService
@@ -132,9 +132,9 @@ class BPMService(BaseBPMService):
 
         url = ""
         if endpoint_type == BPMEndpointType.ProcessDefinition:
-            url = bpm_api_base + "engine-rest/process-definition/"
+            url = bpm_api_base + "engine-rest/process-definition"
         elif endpoint_type == BPMEndpointType.DecisionDefinition:
-            url = bpm_api_base + "engine-rest/decision-definition/"
+            url = bpm_api_base + "engine-rest/decision-definition"
         elif endpoint_type == BPMEndpointType.AuthFormDetails:
             url = bpm_api_base + "engine-rest-ext/form"
         elif endpoint_type == BPMEndpointType.History:
@@ -142,11 +142,11 @@ class BPMService(BaseBPMService):
         elif endpoint_type == BPMEndpointType.Task:
             url = bpm_api_base + "engine-rest/task"
         elif endpoint_type == BPMEndpointType.ProcessDefinitionXML:
-            url = bpm_api_base + "engine-rest/process-definition/key/"
+            url = bpm_api_base + "engine-rest/process-definition/key"
         elif endpoint_type == BPMEndpointType.MessageEvent:
-            url = bpm_api_base + "engine-rest/message/"
+            url = bpm_api_base + "engine-rest/message"
         elif endpoint_type == BPMEndpointType.ProcessInstance:
-            url = bpm_api_base + "engine-rest/process-instance/"
+            url = bpm_api_base + "engine-rest/process-instance"
         if not url.endswith("/"):
             url += "/"
 

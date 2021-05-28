@@ -2,13 +2,14 @@
 In the following document, we’ll describe about the different project dependencies, and the installation options being supported.
 
 ## Table of Contents
-* [Prerequisites](#prerequisites)
-* [Project Dependencies](#project-dependencies)
-* [Download the formsflow.ai](#download-the-formsflowai)
-* [Installation](#installation)
-  * [Docker](#docker)
-  * [Openshift](#openshift)
-* [Verifying the Installation Status](#verifying-the-installation-status)
+1. [Prerequisites](#prerequisites)
+2. [Project Dependencies](#project-dependencies)
+3. [Download the formsflow.ai](#download-the-formsflowai)
+4. [Installation](#installation)
+   * [Docker](#docker)
+   * [Openshift](#openshift)
+5. [Verifying the Installation Status](#verifying-the-installation-status)
+5. [Default Access Credentials](#default-access-credentials)
 
 
 ## Prerequisites
@@ -38,19 +39,20 @@ This section describes how to install different components individually and full
 
 ### Docker
 ------------------
+ * Choose any one of the deployment option.
 #### Full Deployment
 
  Follow the instructions on [docker installation guide](./docker)
  
 #### Individual Service Deployment
 
-Choose from the following components listed below.
+Install the components in the listed order. *(NOTE: Keycloak, form.io and redash dependencies are used on other components)*
  * [Keycloak](../forms-flow-idm/keycloak) Identity keycloak components
  * [forms-flow-forms](../forms-flow-forms) formsflow.ai integration with form.io
+ * [forms-flow-analytics](../forms-flow-analytics) Redash analytics components
  * [forms-flow-bpm](../forms-flow-bpm) Camunda Workflow deployment and integration
  * [forms-flow-api](../forms-flow-api) REST API of formsflow.ai
  * [forms-flow-web](../forms-flow-web) formsflow.ai integration web UI
- * [forms-flow-analytics](../forms-flow-analytics) Redash analytics components
  
 ### Openshift
 ------------------
@@ -59,8 +61,43 @@ Choose from the following components listed below.
  
 ## Verifying the Installation status
 * The following applications will be started and can be accessed in your browser.
+   * http://your-ip-address:8080 - Keycloak
    * http://your-ip-address:7000 - Redash analytics
    * http://your-ip-address:8000/camunda - Camunda BPM
    * http://your-ip-address:5000 - REST API of formsflow.ai
+   * http://your-ip-address:3001 - forms.io UI 
    * http://your-ip-address:3000 - formsflow.ai UI (+ forms designer) 
-                  
+   
+## Default Access Credentials
+
+Use the credentials below to login into local installation.
+
+   * http://your-ip-address:8080 - Keycloak
+
+   ```
+    Login Credentials
+    -----------------
+    User Name : admin
+    Password  : changeme
+   ```
+   * http://your-ip-address:8000/camunda - Camunda BPM             
+   ```
+    Login Credentials
+    -----------------
+    User Name : demo
+    Password  : demo
+   ```
+   * http://your-ip-address:3001 - forms.io UI 
+   ```
+    Login Credentials
+    -----------------
+    User Name / Email : admin@example.com
+    Password  : changeme
+   ```
+   * http://your-ip-address:3000 - formsflow.ai UI (+ forms designer) 
+   
+   User Role | User Name | Password |
+   --- | --- | ---
+   `Designer`|`formsflow-designer`|`changeme`
+   `Client`|`formsflow-client`|`changeme`
+   `Reviewer`|`formsflow-reviewer`|`changeme`

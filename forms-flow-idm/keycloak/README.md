@@ -31,7 +31,7 @@
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is [forms-flow-ai/forms-flow-idm/keycloak]().
    * *Optional*: Rename the file **sample.env** to **.env**. ***Skip this for default setup***
-   * *Optional*: Modify the environment variables as needed. Details below, 
+   * *Optional*: Modify the environment variables as needed. Details below,
 
 Environment variables are set in **.env** file and read by the system.
 
@@ -60,6 +60,7 @@ Variable name | Meaning | Possible values | Default value |
 
 ### Starting or Stopping Keycloak server
 
+* Keycloak server uses port 8080, make sure the port is available.
 * `cd {Your Directory}/forms-flow-ai/forms-flow-idm/keycloak`
 
 #### To start the keycloak server
@@ -72,20 +73,13 @@ Variable name | Meaning | Possible values | Default value |
   
 ### Health Check
 
-   The application should be up and available for use at port defaulted to 8080 in http://your-ip-address:8080
+   The application should be up and available for use in http://your-ip-address:8080
    ```
     Login Credentials
     -----------------
     User Name : admin
     Password  : changeme
    ```
-* Default User Credentials
-
-User Role | User Name | Password |
---- | --- | ---
-`Designer`|`formsflow-designer`|`changeme`
-`Client`|`formsflow-client`|`changeme`
-`Reviewer`|`formsflow-reviewer`|`changeme`
 
 * **NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.**
 

@@ -30,10 +30,10 @@
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-ai/forms-flow-idm/keycloak".
-   * **[Optional]** Rename the file **sample.env** to **.env**. ***Skip this for default setup***
-   * **[Optional]** Modify the environment variables as needed. Details below, 
+   * *Optional*: Rename the file **sample.env** to **.env**. ***Skip this for default setup***
+   * *Optional*: Modify the environment variables as needed. Details below, 
 
-Environment variables are set in **.env** and read by the system.
+Environment variables are set in **.env** file and read by the system.
 
 ### Environment Variables
    
@@ -58,7 +58,11 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_ADMIN_USER`|keycloak admin user name|Choose your own|`admin`
 `KEYCLOAK_ADMIN_PASSWORD`|keycloak admin password|Choose your own|`changeme`
 
-### Starting Keycloak server
+### Starting / Stopping Keycloak server
+
+* `cd {directory}/forms-flow-ai/forms-flow-idm/keycloak`
+
+#### To start the keycloak server
    
 * Run `docker-compose up --build -d` to start.
 

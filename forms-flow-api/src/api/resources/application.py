@@ -139,8 +139,8 @@ class ApplicationResourceById(Resource):
             dict_data["modified_by"] = sub
             ApplicationService.update_application(application_id, dict_data)
             return "Updated successfully", HTTPStatus.OK
-        except ValidationError as submission_err:
-            return {"systemErrors": submission_err.messages}, HTTPStatus.BAD_REQUEST
+        except BaseException as submission_err:
+            return {"message": "Invalid request passed"}, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight("GET,OPTIONS")
@@ -226,9 +226,10 @@ class ApplicationResourcesByIds(Resource):
             )
 
             response, status = application_schema.dump(application), HTTPStatus.CREATED
-        except ValidationError as application_err:
+        except BaseException as application_err:
             response, status = {
-                "systemErrors": application_err.messages
+                "type": "Bad Request Error",
+                "message": "Invalid application request passed",
             }, HTTPStatus.BAD_REQUEST
         return response, status
 
@@ -259,8 +260,8 @@ class AggregatedApplicationsResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except ValidationError as agg_err:
-            return {"systemErrors": agg_err.messages}, HTTPStatus.BAD_REQUEST
+        except BaseException as agg_err:
+            return {"message": "Data not available"}, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight("GET,OPTIONS")
@@ -289,8 +290,8 @@ class AggregatedApplicationStatusResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except ValidationError as agg_err:
-            return {"systemErrors": agg_err.messages}, HTTPStatus.BAD_REQUEST
+        except BaseException as agg_err:
+            return {"message": "Data not available"}, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight("GET,OPTIONS")

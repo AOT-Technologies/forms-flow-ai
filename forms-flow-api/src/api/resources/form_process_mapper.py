@@ -131,8 +131,11 @@ class FormResourceById(Resource):
                 f"Updated FormProcessMapper ID {mapper_id} successfully",
                 HTTPStatus.OK,
             )
-        except ValidationError as mapper_err:
-            return {"systemErrors": mapper_err.messages}, HTTPStatus.BAD_REQUEST
+        except BaseException as mapper_err:
+            return {
+                "type": "Bad Request Error",
+                "message": "Invalid request passed",
+            }, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight("GET,OPTIONS")

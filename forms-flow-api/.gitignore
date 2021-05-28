@@ -93,4 +93,4 @@ venv.bak/
 *.pyc
 
 # Mongodb
-mongodb
+mongodb/

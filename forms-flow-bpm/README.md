@@ -166,7 +166,7 @@ To know more about Camunda, visit https://camunda.com/.
 
 ### Running the application
 
-* Analytics server uses port 8000, make sure the port is available.
+* forms-flow-bpm service uses port 8000, make sure the port is available.
 * `cd {Your Directory}/forms-flow-ai/forms-flow-bpm`
 
 * For Linux,

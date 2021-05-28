@@ -55,7 +55,7 @@ Not applicable.
   
 ### Running the application
 
-* Analytics server uses port 3001, make sure the port is available.
+* forms-flow-forms service uses port 3001, make sure the port is available.
 * `cd {Your Directory}/forms-flow-ai/forms-flow-forms`
 
 * For Linux,

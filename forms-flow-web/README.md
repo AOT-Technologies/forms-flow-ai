@@ -60,7 +60,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 
 ### Running the application
 
-   * Analytics server uses port 5000, make sure the port is available.
+   * forms-flow-web service uses port 5000, make sure the port is available.
    * `cd {Your Directory}/forms-flow-ai/forms-flow-web`
    * Run `docker-compose up --build -d` to start.
 

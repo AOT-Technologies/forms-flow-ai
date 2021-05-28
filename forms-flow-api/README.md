@@ -77,7 +77,7 @@ Variable name | Meaning | Possible values | Default value |
 
 ### Running the Application
 
-* Analytics server uses port 5000, make sure the port is available.
+* forms-flow-api service uses port 5000, make sure the port is available.
 * `cd {Your Directory}/forms-flow-ai/forms-flow-api`
 
 * For Linux,

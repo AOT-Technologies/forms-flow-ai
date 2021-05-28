@@ -18,8 +18,8 @@ To know more about Camunda, visit https://camunda.com/.
 
 ## Prerequisites
 
-* The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
-* [Optional] There needs to be a [Keycloak](../forms-flow-idm/keycloak/) server available and you need admin privileges (to create realms, users etc. in Keycloak).
+* For docker installations [docker-compose](https://docker.com) and [Docker](https://docker.com) need to be installed.
+* Admin access to a [Keycloak](https://www.keycloak.org/) server. For local development / testing follow [Keycloak installation](../forms-flow-idm/keycloak).
 
 ## Solution Setup
 
@@ -165,6 +165,10 @@ To know more about Camunda, visit https://camunda.com/.
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)
 
 ### Running the application
+
+* Analytics server uses port 8000, make sure the port is available.
+* `cd {Your Directory}/forms-flow-ai/forms-flow-bpm`
+
 * For Linux,
    * Run `docker-compose -f docker-compose-linux.yml up --build -d` to start.
 * For Windows,

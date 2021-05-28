@@ -18,7 +18,7 @@ the system. It is built using Python :snake: .
 
 ## Prerequisites
 
-* The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). This need to be installed. 
+* For docker installations [docker-compose](https://docker.com) and [Docker](https://docker.com) need to be installed.
 
 ## Solution Setup
 
@@ -76,6 +76,10 @@ Variable name | Meaning | Possible values | Default value |
 **NOTE : Default realm is `forms-flow-ai`**
 
 ### Running the Application
+
+* Analytics server uses port 5000, make sure the port is available.
+* `cd {Your Directory}/forms-flow-ai/forms-flow-api`
+
 * For Linux,
    * Run `docker-compose -f docker-compose-linux.yml up --build -d` to start.
 * For Windows,

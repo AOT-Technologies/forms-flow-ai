@@ -24,7 +24,7 @@ To know more about form.io, go to  https://form.io.
 
 ## Prerequisites
 
-* The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
+* For docker installations [docker-compose](https://docker.com) and [Docker](https://docker.com) need to be installed.
 
 ## Solution Setup
 
@@ -54,6 +54,9 @@ Not applicable.
 * The value of ROOT user account details (especially if this instance is not just for testing purposes)
   
 ### Running the application
+
+* Analytics server uses port 3001, make sure the port is available.
+* `cd {Your Directory}/forms-flow-ai/forms-flow-forms`
 
 * For Linux,
    * Run `docker-compose -f docker-compose-linux.yml up --build -d` to start.

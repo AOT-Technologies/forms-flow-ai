@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "react-scripts --max_old_space_size=4096 start",
-    "build": "react-scripts --max_old_space_size=4096 build",
+    "start": "react-scripts start",
+    "build": "react-scripts --max_old_space_size=6144 build",
     "eject": "react-scripts eject",
     "preinstall": "npx npm-force-resolutions"
   },

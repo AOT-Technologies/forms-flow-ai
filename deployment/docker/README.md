@@ -7,7 +7,8 @@ This page elaborates how to setup the overall solution using docker.
 1. [Prerequisites](#prerequisites)
 2. [Solution Setup](#solution-setup)
    * [Step 1 : Keycloak Setup](#keycloak-setup)
-   * [Step 2 : Installation](#installation)
+   * [Step 2 : Installation Steps](#installation-steps)
+   * [Step 2 : Environment Variables](#environment-variables)
    * [Step 3 : Running the Application](#running-the-application)
    * [Step 4 : Health Check](#health-check) 
 
@@ -18,18 +19,33 @@ This page elaborates how to setup the overall solution using docker.
 
 ## Solution Setup
 
+* The application will be installed in the following order.
+
+ Srl No | Service Name | Dependency | Usage | Access | Details |
+--- | --- | --- | --- | --- | ---
+1|`Keycloak`||`Authentication`|`http://your-ip-address:8080`|[Keycloak](../../forms-flow-idm/keycloak/README.md)
+2|`forms-flow-forms`||`form.io form building, resource id's will be generated here`|`http://your-ip-address:3001`|[forms-flow-forms](../../forms-flow-forms/README.md)
+3|`forms-flow-analytics`|`Keycloak`|`Redash analytics server, redash key will be generate here`|`ttp://your-ip-address:7000`|[forms-flow-analytics](../../forms-flow-analytics/README.md)
+4|`forms-flow-web`|`Keycloak`,`forms-flow-forms`,`forms-flow-analytics`|`formsflow Landing web app`|`http://your-ip-address:3000`|[forms-flow-web](../../forms-flow-web/README.md)
+5|`forms-flow-api`|`Keycloak`|`API services`|`http://your-ip-address:5000`|[forms-flow-api](../../forms-flow-api/README.md)
+6|`forms-flow-bpm`|`Keycloak`|`Camunda integration`|`http://your-ip-address:8000/camunda`|[forms-flow-bpm](../../forms-flow-bpm/README.md)
+
 ### Keycloak Setup
 
 * Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
 
       
-### Installation
+### Installation Steps
 
    * Make sure you have a Docker machine up and running.
-   * Start the **analytics server** by following the instructions given on  [README](../../forms-flow-analytics/README.md)
-   * Make sure your current working directory is "/deployment/docker".
+   * Start the **analytics server** by following the instructions given on  [readme](../../forms-flow-analytics/README.md)
+   * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. Details below,
+   
+Environment variables are set in **.env** file and read by the system.
+
+### Environment Variables
        
 #### formsflow.ai form.io Server Variables
 -----------------------------------------

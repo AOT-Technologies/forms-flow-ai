@@ -31,7 +31,7 @@ In the following document, we’ll describe about the different project dependen
 ## Download the formsflow.ai
 
 * Clone this github repo:  https://github.com/AOT-Technologies/forms-flow-ai
-* If deploying to a remote server, you can use nginx as a reverse proxy and SSL engine. To help you, follow the instructions in the nginx [README](./nginx/README.md)
+* If deploying to a remote server, you can use nginx as a reverse proxy and SSL engine. To help you, follow the instructions in the nginx [readme](./nginx/README.md)
 
 ## Installation
 
@@ -40,11 +40,12 @@ This section describes how to install different components individually and full
 ### Docker
 ------------------
  * Choose any one of the deployment option.
-#### Full Deployment
-
- Follow the instructions on [docker installation guide](./docker)
  
-#### Individual Service Deployment
+#### Full Deployment:
+
+Follow the instructions on [docker installation guide](./docker)
+ 
+#### Individual Service Deployment:
 
 Install the components in the listed order. *(NOTE: Keycloak, form.io and redash dependencies are used on other components)*
  * [Keycloak](../forms-flow-idm/keycloak) Identity keycloak components

@@ -80,6 +80,14 @@ Variable name | Meaning | Possible values | Default value |
     User Name : admin
     Password  : changeme
    ```
+   
+  * Default User credentials are generated when keycloak started for the first time, you can change the values on your keycloak service. 
+   
+   User Role | User Name | Password |
+   --- | --- | ---
+   `Designer`|`formsflow-designer`|`changeme`
+   `Client`|`formsflow-client`|`changeme`
+   `Reviewer`|`formsflow-reviewer`|`changeme`
 
 * **NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.**
 

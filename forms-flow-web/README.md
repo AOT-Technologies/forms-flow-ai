@@ -66,7 +66,8 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 
 ### Health Check
 
-   The application should be up and available for use at port defaulted to 3000 in  http://your-ip-address:3000/
+   * The application should be up and available for use at port defaulted to 3000 in  http://your-ip-address:3000/
+   * Default user credentials are provided [here](../forms-flow-idm/keycloak/README.md#health-check).
 
 ### How to Create Your First Form
   * Login to **http://your-ip-address:3000/** using valid [designer](../forms-flow-idm/keycloak/README.md#default-user-credentials) credentials 

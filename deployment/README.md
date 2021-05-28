@@ -97,8 +97,4 @@ Use the credentials below to login into local installation.
    ```
    * http://your-ip-address:3000 - formsflow.ai UI (+ forms designer) 
    
-   User Role | User Name | Password |
-   --- | --- | ---
-   `Designer`|`formsflow-designer`|`changeme`
-   `Client`|`formsflow-client`|`changeme`
-   `Reviewer`|`formsflow-reviewer`|`changeme`
+     * Default user credentials are provided [here](../forms-flow-idm/keycloak/README.md#health-check).

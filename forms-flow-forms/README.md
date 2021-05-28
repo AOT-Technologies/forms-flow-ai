@@ -35,10 +35,10 @@ Not applicable.
 
 ### Installation
 
-* Make sure you have a Docker machine up and running.
-* Make sure your current working directory is "forms-flow-forms".
-* Rename the file **sample.env** to **.env**.
-* Modify the configuration values as needed. Details below,
+   * Make sure you have a Docker machine up and running.
+   * Make sure your current working directory is "forms-flow-ai/forms-flow-forms".
+   * Rename the file **sample.env** to **.env**.
+   * Modify the **.env** file using the instructions below.
  
 |Variable name | Meaning | Possible values | Default value |
 |--- | --- | --- | ---

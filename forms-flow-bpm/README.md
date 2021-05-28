@@ -33,9 +33,9 @@ To know more about Camunda, visit https://camunda.com/.
 ### Installation
 
    * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is forms-flow-bpm.
+   * Make sure your current working directory is "forms-flow-ai/forms-flow-bpm".
    * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. Details below,
+   * Modify the **.env** file using the instructions below.
    
 #### Keycloak Integration
 --------------------------

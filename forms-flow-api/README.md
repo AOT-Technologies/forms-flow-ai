@@ -46,13 +46,11 @@ No specific client creation is required. Audience has been added for clients
 
 ### Environment Configuration
 
-Environment variables are set in **.env** and read by the system.
-
    * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is "forms-flow-api".
+   * Make sure your current working directory is "forms-flow-ai/forms-flow-api".
    * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. Details below,
-
+   * Modify the **.env** file using the instructions below.
+   
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `WEB_API_POSTGRES_USER`|formsflow database postgres user|Used on installation to create the database.Choose your own|`postgres`

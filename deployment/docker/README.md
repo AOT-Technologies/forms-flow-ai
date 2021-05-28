@@ -31,43 +31,28 @@ This page elaborates how to setup the overall solution using docker.
 
 ### Installation Steps
 
-- [] Keycloak Setup & start
-- [] forms-flow-analytics setup & start
-- [] forms-flow-forms setup & start
-- [] forms-flow-web & api & bpm  setup and start
+- [x] Keycloak setup
+- [ ] forms-flow-analytics setup
+- [ ] forms-flow-forms setup
+- [ ] forms-flow-web, forms-flow-bpm, forms-flow-api setup
 
 > Make sure you have a Docker machine up and running.
 
 #### Keycloak Setup
 --------------------
 - [x] Keycloak setup
-- [] forms-flow-analytics setup
-- [] forms-flow-forms setup
-- [] forms-flow-web, forms-flow-bpm, forms-flow-api setup
+- [ ] forms-flow-analytics setup
+- [ ] forms-flow-forms setup
+- [ ] forms-flow-web, forms-flow-bpm, forms-flow-api setup
 
 * Follow the instructions given [here](../../forms-flow-idm/keycloak/README.md)
-* Modify the **.env** file using the instructions below.
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`KEYCLOAK_URL`| URL to your Keycloak server || `http://your-ip-address:8080`
-`KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
-`KEYCLOAK_TOKEN_URL`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`http://your-ip-address:8080/auth/realms/<realm>/protocol/openid-connect/token`
-`KEYCLOAK_JWT_OIDC_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`http://your-ip-address:8080/auth/realms/<realm>/.well-known/openid-configuration`
-`KEYCLOAK_JWT_OIDC_JWKS_URI`|Keycloak JWKS URI|Plug in Keycloak base url plus realm|`http://your-ip-address:8080/auth/realms/<realm>/protocol/openid-connect/certs`
-`KEYCLOAK_JWT_OIDC_ISSUER`|The issuer of JWT's from Keycloak for your realm|Plug in your realm and Keycloak base url|`http://your-ip-address:8080/auth/realms/<realm>`
-`KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
-`KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
-`KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
-
-**NOTE : For local setup replace `<realm>` with `forms-flow-ai`**, for server setup replace `<realm>` with your realm name.
 
 #### forms-flow-analytics Setup
 ------------------------------
 - [x] Keycloak setup
 - [x] forms-flow-analytics setup
-- [] forms-flow-forms setup
-- [] forms-flow-web, forms-flow-bpm, forms-flow-api setup
+- [ ] forms-flow-forms setup
+- [ ] forms-flow-web, forms-flow-bpm, forms-flow-api setup
  
  * Start the **analytics server** by following the instructions given [here](../../forms-flow-analytics/README.md)
    
@@ -76,7 +61,7 @@ Variable name | Meaning | Possible values | Default value |
 - [x] Keycloak setup
 - [x] forms-flow-analytics setup
 - [x] forms-flow-forms setup
-- [] forms-flow-web, forms-flow-bpm, forms-flow-api setup
+- [ ] forms-flow-web, forms-flow-bpm, forms-flow-api setup
 
    * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
    * Rename the file **sample.env** to **.env**. 
@@ -120,7 +105,24 @@ Variable name | Meaning | Possible values | Default value |
    * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
    * Modify the **.env** file using the instructions below.
 
-##### formsflow.ai analytics Settings
+##### formsflow.ai keycloak variable settings
+-----------------------------------
+
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`KEYCLOAK_URL`| URL to your Keycloak server || `http://your-ip-address:8080`
+`KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
+`KEYCLOAK_TOKEN_URL`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`http://your-ip-address:8080/auth/realms/<realm>/protocol/openid-connect/token`
+`KEYCLOAK_JWT_OIDC_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`http://your-ip-address:8080/auth/realms/<realm>/.well-known/openid-configuration`
+`KEYCLOAK_JWT_OIDC_JWKS_URI`|Keycloak JWKS URI|Plug in Keycloak base url plus realm|`http://your-ip-address:8080/auth/realms/<realm>/protocol/openid-connect/certs`
+`KEYCLOAK_JWT_OIDC_ISSUER`|The issuer of JWT's from Keycloak for your realm|Plug in your realm and Keycloak base url|`http://your-ip-address:8080/auth/realms/<realm>`
+`KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
+`KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
+`KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
+
+**NOTE : For local setup replace `<realm>` with `forms-flow-ai`**, for server setup replace `<realm>` with your `<realm name>`.
+
+##### formsflow.ai analytics variable settings
 -----------------------------------
  * Get the API_KEY from forms-flow-analytics (REDASH) by following the instructions given [here](../../forms-flow-analytics/README.md#getting-redash-api-key)
 
@@ -129,7 +131,7 @@ Variable name | Meaning | Possible values | Default value |
 `INSIGHT_API_BASE`|Insight Api base end-point||`http://your-ip-address:7000`
 `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `must be set to your ReDash API key`
 
-##### formsflow.ai forms Settings
+##### formsflow.ai forms variable settings
 -----------------------------------
 
 Variable name | Meaning | Possible values | Default value |
@@ -143,7 +145,7 @@ Variable name | Meaning | Possible values | Default value |
 `ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|`must get the anonymous role Id value from form.io resource.` [Get anonymous role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from form.io resource.` [Get user resource Id](../../forms-flow-forms/README.md#how-to-get-resource-user-id)
 
-##### formsflow.ai Datastore Settings
+##### formsflow.ai Datastore variable settings
 -----------------------------------
 
 Variable name | Meaning | Possible values | Default value |
@@ -153,7 +155,7 @@ Variable name | Meaning | Possible values | Default value |
 `WEB_API_POSTGRES_PASSWORD`|formsflow.ai database postgres password|Used on installation to create the database.Choose your own|`changeme`
 `WEB_API_POSTGRES_DB`|formsflow.ai database name|Used on installation to create the database.Choose your own|`webapi`
 
-##### formsflow.ai Integration Settings
+##### formsflow.ai Integration variable settings
 --------------------------------------
 
 Variable name | Meaning | Possible values | Default value |
@@ -168,7 +170,7 @@ Variable name | Meaning | Possible values | Default value |
 `MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis|Used on installation to create the database.Choose your own|`mongodb://mongo:changeme@forms-flow-webapi-analytics-db:27019/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
 
-##### BPM (Camunda) Settings
+##### BPM (Camunda) variable settings
 ---------------------------
 
 * Database Connection Details(The solution manages CAMUNDA_JDBC & CAMUNDA_SESSION_JDBC connections)
@@ -256,7 +258,7 @@ Variable name | Meaning | Possible values | Default value |
  * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/job-executor/#job-executor-configuration-properties
  * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/process-engine/
  
-##### Camunda formsflow.ai Integration Settings  
+##### Camunda formsflow.ai Integration variable settings  
 ------------------------------------------------
 
    Variable name | Meaning | Possible values | Default value |
@@ -283,7 +285,7 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL`|Engine Context URL.Leverages elevated admin account.||`http://username:password@your-ip-address:8000/camunda`
  
 -->
-##### Camunda - General Settings  
+##### Camunda - General variable settings  
 -------------------------------
 
    Variable name | Meaning | Possible values | Default value |

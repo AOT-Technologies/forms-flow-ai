@@ -5,7 +5,7 @@
    - [Prerequisites](#prerequisites)
    - [Step 1 : Environment Configuration](#environment-configuration)
    - [Step 2 : Environment Variables](#environment-variables)
-   - [Step 3 : Starting Keycloak server](#starting-keycloak-server)
+   - [Step 3 : Starting Keycloak server](#starting-or-stopping-keycloak-server)
    - [Step 4 : Health Check](#health-check)
 2. [Server Keycloak setup](#server-keycloak-setup)
    - [Step 1 : Create Realm](#create-realm)
@@ -58,9 +58,9 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_ADMIN_USER`|keycloak admin user name|Choose your own|`admin`
 `KEYCLOAK_ADMIN_PASSWORD`|keycloak admin password|Choose your own|`changeme`
 
-### Starting / Stopping Keycloak server
+### Starting or Stopping Keycloak server
 
-* `cd {directory}/forms-flow-ai/forms-flow-idm/keycloak`
+* `cd {Your Directory}/forms-flow-ai/forms-flow-idm/keycloak`
 
 #### To start the keycloak server
    

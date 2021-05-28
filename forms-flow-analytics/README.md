@@ -52,6 +52,10 @@ Variable name | Meaning | Possible values | Default value |
    * The value of REDASH_COOKIE_SECRET (especially if this instance is not just for testing purposes)
  
 ### Running the application
+
+* Analytics server uses port 7000, make sure the port is available.
+* `cd {Your Directory}/forms-flow-ai/forms-flow-analytics`
+
 * For Linux,
   * Run `docker-compose -f docker-compose-linux.yml run --rm server create_db` to setup database and to create tables.
   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.

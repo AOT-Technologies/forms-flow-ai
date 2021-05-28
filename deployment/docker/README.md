@@ -23,8 +23,8 @@ This page elaborates how to setup the overall solution using docker.
  Srl No | Service Name | Usage | Access | Dependency | Details |
 --- | --- | --- | --- | --- | ---
 1|`Keycloak`|Authentication|`http://your-ip-address:8080`||[Keycloak](../../forms-flow-idm/keycloak/README.md)
-2|`forms-flow-forms`|form.io form building, resource role id's will be generated here|`http://your-ip-address:3001`||[forms-flow-forms](../../forms-flow-forms/README.md)
-3|`forms-flow-analytics`|Redash analytics server, redash key will be generate here|`ttp://your-ip-address:7000`|Keycloak|[forms-flow-analytics](../../forms-flow-analytics/README.md)
+2|`forms-flow-forms`|form.io form building. This must be started earlier for resource role id's creation|`http://your-ip-address:3001`||[forms-flow-forms](../../forms-flow-forms/README.md)
+3|`forms-flow-analytics`|Redash analytics server, This must be started earlier for redash key creation|`ttp://your-ip-address:7000`|Keycloak|[forms-flow-analytics](../../forms-flow-analytics/README.md)
 4|`forms-flow-web`|formsflow Landing web app|`http://your-ip-address:3000`|Keycloak,forms-flow-forms,forms-flow-analytics|[forms-flow-web](../../forms-flow-web/README.md)
 5|`forms-flow-api`|API services|`http://your-ip-address:5000`|Keycloak|[forms-flow-api](../../forms-flow-api/README.md)
 6|`forms-flow-bpm`|Camunda integration|`http://your-ip-address:8000/camunda`|Keycloak|[forms-flow-bpm](../../forms-flow-bpm/README.md)

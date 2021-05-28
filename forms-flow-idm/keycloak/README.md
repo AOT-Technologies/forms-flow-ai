@@ -81,7 +81,7 @@ Variable name | Meaning | Possible values | Default value |
     Password  : changeme
    ```
    
-  * Default User credentials are generated when keycloak started for the first time, you can change the values on your keycloak service. 
+  * Default User credentials are generated when keycloak started for the first time, you can modify the values on your keycloak service. 
    
    User Role | User Name | Password |
    --- | --- | ---

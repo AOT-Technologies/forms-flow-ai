@@ -107,6 +107,7 @@ Variable name | Meaning | Possible values | Default value |
 ------------------------------
  
  * Start the **analytics server** by following the instructions given on  [readme](../../forms-flow-analytics/README.md)
+ * Get the API_KEY from REDASH by following the instructions given [here](../../forms-flow-analytics/README.md#getting-redash-api-key)
  * Modify the **.env** file using the instructions below.
  
  Variable name | Meaning | Possible values | Default value |

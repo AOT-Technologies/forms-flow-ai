@@ -6,11 +6,12 @@ This page elaborates how to setup the overall solution using docker.
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
 2. [Solution Setup](#solution-setup)
-   * [Step 1 : Keycloak Setup](#keycloak-setup)
-   * [Step 2 : Installation Steps](#installation-steps)
-   * [Step 2 : Environment Variables](#environment-variables)
-   * [Step 3 : Running the Application](#running-the-application)
-   * [Step 4 : Health Check](#health-check) 
+   * [Step 1 : Installation Steps](#installation-steps)
+   * [Step 2 : Keycloak Setup](#keycloak-setup)
+   * [Step 3 : forms-flow-forms Setup](#forms-flow-forms-setup)
+   * [Step 4 : forms-flow-analytics Setup](#forms-flow-analytics-setup)
+   * [Step 5 : Running the Application](#running-the-application)
+   * [Step 6 : Health Check](#health-check) 
 
 
 ## Prerequisites
@@ -20,35 +21,48 @@ This page elaborates how to setup the overall solution using docker.
 ## Solution Setup
 
 * The application will be installed in the following order.
+* Some of the services have dependencies, mentioned below.
 
  Srl No | Service Name | Dependency | Usage | Access | Details |
 --- | --- | --- | --- | --- | ---
-1|`Keycloak`||`Authentication`|`http://your-ip-address:8080`|[Keycloak](../../forms-flow-idm/keycloak/README.md)
-2|`forms-flow-forms`||`form.io form building, resource id's will be generated here`|`http://your-ip-address:3001`|[forms-flow-forms](../../forms-flow-forms/README.md)
-3|`forms-flow-analytics`|`Keycloak`|`Redash analytics server, redash key will be generate here`|`ttp://your-ip-address:7000`|[forms-flow-analytics](../../forms-flow-analytics/README.md)
-4|`forms-flow-web`|`Keycloak`,`forms-flow-forms`,`forms-flow-analytics`|`formsflow Landing web app`|`http://your-ip-address:3000`|[forms-flow-web](../../forms-flow-web/README.md)
-5|`forms-flow-api`|`Keycloak`|`API services`|`http://your-ip-address:5000`|[forms-flow-api](../../forms-flow-api/README.md)
-6|`forms-flow-bpm`|`Keycloak`|`Camunda integration`|`http://your-ip-address:8000/camunda`|[forms-flow-bpm](../../forms-flow-bpm/README.md)
+1|`Keycloak`||Authentication|`http://your-ip-address:8080`|[Keycloak](../../forms-flow-idm/keycloak/README.md)
+2|`forms-flow-forms`|form.io form building, resource role id's will be generated here|`http://your-ip-address:3001`|[forms-flow-forms](../../forms-flow-forms/README.md)
+3|`forms-flow-analytics`|Redash analytics server, redash key will be generate here|Keycloak|`ttp://your-ip-address:7000`|[forms-flow-analytics](../../forms-flow-analytics/README.md)
+4|`forms-flow-web`|formsflow Landing web app|Keycloak,forms-flow-forms,forms-flow-analytics|`http://your-ip-address:3000`|[forms-flow-web](../../forms-flow-web/README.md)
+5|`forms-flow-api`|API services|Keycloak|`http://your-ip-address:5000`|[forms-flow-api](../../forms-flow-api/README.md)
+6|`forms-flow-bpm`|Camunda integration|Keycloak|`http://your-ip-address:8000/camunda`|[forms-flow-bpm](../../forms-flow-bpm/README.md)
 
-### Keycloak Setup
-
-* Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
-
-      
 ### Installation Steps
 
    * Make sure you have a Docker machine up and running.
-   * Start the **analytics server** by following the instructions given on  [readme](../../forms-flow-analytics/README.md)
    * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
    * Rename the file **sample.env** to **.env**.
    * Modify the configuration values as needed. Details below,
    
 Environment variables are set in **.env** file and read by the system.
 
-### Environment Variables
-       
-#### formsflow.ai form.io Server Variables
------------------------------------------
+### Keycloak Setup
+
+* Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
+* Open **.env** file and change the values using the instructions below.
+
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`KEYCLOAK_URL`| URL to your Keycloak server || `http://your-ip-address:8080`
+`KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
+`KEYCLOAK_TOKEN_URL`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`http://your-ip-address:8080/auth/realms/<realm>/protocol/openid-connect/token`
+`KEYCLOAK_JWT_OIDC_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`http://your-ip-address:8080/auth/realms/<realm>/.well-known/openid-configuration`
+`KEYCLOAK_JWT_OIDC_JWKS_URI`|Keycloak JWKS URI|Plug in Keycloak base url plus realm|`http://your-ip-address:8080/auth/realms/<realm>/protocol/openid-connect/certs`
+`KEYCLOAK_JWT_OIDC_ISSUER`|The issuer of JWT's from Keycloak for your realm|Plug in your realm and Keycloak base url|`http://your-ip-address:8080/auth/realms/<realm>`
+`KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
+`KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
+`KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
+
+**NOTE : For local setup replace `<realm>` with `forms-flow-ai`**
+ 
+### forms-flow-forms Setup       
+
+* Open **.env** file and change the values using the instructions below.
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -63,8 +77,8 @@ Environment variables are set in **.env** file and read by the system.
         - Run `docker-compose -f docker-compose-linux.yml build` to build.
     * For Windows
         - Run `docker-compose -f docker-compose-windows.yml build` to build.
-*  Follow the below steps for mapping the role IDs. ***Skip this step if the [sample.json](../../forms-flow-forms/sample.json) is already imported and role IDs are mapped in this .env***   
-   - Start the form.io service.  
+*  Follow the below steps for mapping the role IDs.   
+   - Start the form.io service.
      - For Linux
        - Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
      - For Windows  
@@ -77,10 +91,7 @@ Environment variables are set in **.env** file and read by the system.
            Password  : changeme           
 
    - Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
-* Modify the configuration values as needed. Details below,
- 
-#### formsflow.ai Role Mapping
------------------------------
+* Modify the configuration values after the import is successful . Details below,
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -92,7 +103,20 @@ Environment variables are set in **.env** file and read by the system.
 `DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|`must get the administrator role Id value from form.io resource.` [Get administrator role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|`must get the anonymous role Id value from form.io resource.` [Get anonymous role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from form.io resource.` [Get user resource Id](../../forms-flow-forms/README.md#how-to-get-resource-user-id)
-
+ 
+ 
+### forms-flow-analytics Setup
+ 
+ * Start the **analytics server** by following the instructions given on  [readme](../../forms-flow-analytics/README.md)
+ * Open **.env** file and change the values using the instructions below.
+ 
+ Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`INSIGHT_API_BASE`|Insight Api base end-point||`http://your-ip-address:7000`
+`INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `must be set to your ReDash API key`
+   
+ * Once all the above steps are completed go through the below tables and change the **.env** file accordingly.    
+ 
 #### formsflow.ai Datastore Settings
 -----------------------------------
 
@@ -117,23 +141,6 @@ Variable name | Meaning | Possible values | Default value |
 `WEBAPI_ANALYTICS_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
 `MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis|Used on installation to create the database.Choose your own|`mongodb://mongo:changeme@forms-flow-webapi-analytics-db:27019/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
-
-#### Authentication Provider (Keycloak) Settings
-------------------------------------------------
-
-Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`KEYCLOAK_URL`| URL to your Keycloak server || `http://your-ip-address:8080`
-`KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
-`KEYCLOAK_TOKEN_URL`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`http://your-ip-address:8080/auth/realms/<realm>/protocol/openid-connect/token`
-`KEYCLOAK_JWT_OIDC_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`http://your-ip-address:8080/auth/realms/<realm>/.well-known/openid-configuration`
-`KEYCLOAK_JWT_OIDC_JWKS_URI`|Keycloak JWKS URI|Plug in Keycloak base url plus realm|`http://your-ip-address:8080/auth/realms/<realm>/protocol/openid-connect/certs`
-`KEYCLOAK_JWT_OIDC_ISSUER`|The issuer of JWT's from Keycloak for your realm|Plug in your realm and Keycloak base url|`http://your-ip-address:8080/auth/realms/<realm>`
-`KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
-`KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
-`KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
-
-**NOTE : For local setup replace `<realm>` with `forms-flow-ai`**
 
 #### BPM (Camunda) Settings
 ---------------------------
@@ -256,18 +263,6 @@ Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `APP_SECURITY_ORIGIN`|CORS setup||`*` 
  `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
-
-#### Analytics (Redash) Integration Settings
---------------------------------------------
- 
- Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`INSIGHT_API_BASE`|Insight Api base end-point||`http://your-ip-address:7000`
-`INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `must be set to your ReDash API key`
-   
-**Additionally, you may want to change these**
-  * The value of database details (especially if this instance is not just for testing purposes)
-  
 
 ### Running the application
 * For Linux,

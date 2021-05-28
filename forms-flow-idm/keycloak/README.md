@@ -137,16 +137,6 @@ Create a realm **forms-flow-ai**
        	* Included Client Audience = forms-flow-web
        	* Click Save
 
-#### Key cloak configuration for formsflow.ai UI setup
-
-- Once the forms-flow-web client is created for keycloak.
-- Rename the file **public/config/kc/keycloak-sample.json** to **public/config/kc/keycloak.json**
-  in [forms-flow-web](../forms-flow-web/public/config/kc/keycloak-sample.json)
-- Follow below steps to get client adapter configuration to get values from keycloak:
-  - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web"
-  - Go to Installation tab --> Select Format option as Keycloak OIDC JSON
-  - Copy the JSON data
-  - Update the content in file **public/config/kc/keycloak.json** in [forms-flow-web](../forms-flow-web/public/config/kc)
 
 ### Create Keycloak setup for formsflow analytics
 

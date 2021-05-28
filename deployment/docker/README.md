@@ -31,7 +31,8 @@ This page elaborates how to setup the overall solution using docker.
 
 ### Installation Steps
 
-- [x] Keycloak setup
+These are the steps required to complete the installation and setup of forksflow.ai solution
+- [ ] Keycloak setup
 - [ ] forms-flow-analytics setup
 - [ ] forms-flow-forms setup
 - [ ] forms-flow-web, forms-flow-bpm, forms-flow-api setup

@@ -27,6 +27,7 @@ services:
         - REACT_APP_WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY}
         - REACT_APP_KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM}
         - REACT_APP_KEYCLOAK_URL=${KEYCLOAK_URL}
+        - REACT_APP_APPLICATION_NAME=${APPLICATION_NAME}
     volumes:
       - ".:/app"
       - "/app/node_modules"

@@ -1,5 +1,10 @@
 //import Keycloak from "keycloak-js";
 
+//application details
+export const APPLICATION_NAME =
+  (window._env_ && window._env_.REACT_APP_APPLICATION_NAME) ||
+  process.env.REACT_APP_APPLICATION_NAME ||
+  "formsflow.ai";
 //keycloak
 export const Keycloak_Client =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_CLIENT) ||

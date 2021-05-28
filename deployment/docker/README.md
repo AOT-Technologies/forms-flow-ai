@@ -31,16 +31,21 @@ This page elaborates how to setup the overall solution using docker.
 
 ### Installation Steps
 
-   * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
-   * Rename the file **sample.env** to **.env**.
-   
-Environment variables are set in **.env** file and read by the system.
+- [] Keycloak Setup & start
+- [] forms-flow-analytics setup & start
+- [] forms-flow-forms setup & start
+- [] forms-flow-web & api & bpm  setup and start
+
+> Make sure you have a Docker machine up and running.
 
 #### Keycloak Setup
 --------------------
+- [x] Keycloak setup
+- [] forms-flow-analytics setup
+- [] forms-flow-forms setup
+- [] forms-flow-web, forms-flow-bpm, forms-flow-api setup
 
-* Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
+* Follow the instructions given [here](../../forms-flow-idm/keycloak/README.md)
 * Modify the **.env** file using the instructions below.
 
 Variable name | Meaning | Possible values | Default value |
@@ -56,11 +61,27 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
 
 **NOTE : For local setup replace `<realm>` with `forms-flow-ai`**, for server setup replace `<realm>` with your realm name.
+
+#### forms-flow-analytics Setup
+------------------------------
+- [x] Keycloak setup
+- [x] forms-flow-analytics setup
+- [] forms-flow-forms setup
+- [] forms-flow-web, forms-flow-bpm, forms-flow-api setup
  
+ * Start the **analytics server** by following the instructions given [here](../../forms-flow-analytics/README.md)
+   
 #### forms-flow-forms Setup       
 ---------------------------
+- [x] Keycloak setup
+- [x] forms-flow-analytics setup
+- [x] forms-flow-forms setup
+- [] forms-flow-web, forms-flow-bpm, forms-flow-api setup
 
-* Modify the **.env** file using the instructions below.
+   * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
+   * Rename the file **sample.env** to **.env**. 
+   * Modify the **.env** file using the instructions below.
+>Environment variables are set in **.env** file and read by the system.
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -72,9 +93,9 @@ Variable name | Meaning | Possible values | Default value |
 
 * Build all the services.
    * For Linux
-        - Run `docker-compose -f docker-compose-linux.yml build` to build.
+        - Run `docker-compose -f docker-compose-linux.yml build forms-flow-forms` to build.
     * For Windows
-        - Run `docker-compose -f docker-compose-windows.yml build` to build.
+        - Run `docker-compose -f docker-compose-windows.yml build forms-flow-forms` to build.
 *  Follow the below steps for mapping the role IDs.   
    - Start the form.io service.
      - For Linux
@@ -89,9 +110,29 @@ Variable name | Meaning | Possible values | Default value |
            Password  : changeme           
 
    - Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
-* Modify the **.env** file after the import is successful . Details below,
+ 
+#### forms-flow-web, forms-flow-bpm & forms-flow-web Setup 
+- [x] Keycloak setup
+- [x] forms-flow-analytics setup
+- [x] forms-flow-forms setup
+- [x] forms-flow-web, forms-flow-bpm, forms-flow-api setup
 
- Variable name | Meaning | Possible values | Default value |
+   * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
+   * Modify the **.env** file using the instructions below.
+
+##### formsflow.ai analytics Settings
+-----------------------------------
+ * Get the API_KEY from forms-flow-analytics (REDASH) by following the instructions given [here](../../forms-flow-analytics/README.md#getting-redash-api-key)
+
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`INSIGHT_API_BASE`|Insight Api base end-point||`http://your-ip-address:7000`
+`INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `must be set to your ReDash API key`
+
+##### formsflow.ai forms Settings
+-----------------------------------
+
+Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `CLIENT_ROLE`|	The role name used for client users|| `formsflow-client`
 `CLIENT_ROLE_ID`|form.io client role Id|eg. 10121d8f7fadb18402a4c|`must get the client role Id value from form.io resource.` [Get client role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
@@ -101,23 +142,8 @@ Variable name | Meaning | Possible values | Default value |
 `DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|`must get the administrator role Id value from form.io resource.` [Get administrator role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|`must get the anonymous role Id value from form.io resource.` [Get anonymous role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from form.io resource.` [Get user resource Id](../../forms-flow-forms/README.md#how-to-get-resource-user-id)
- 
- 
-#### forms-flow-analytics Setup
-------------------------------
- 
- * Start the **analytics server** by following the instructions given on  [readme](../../forms-flow-analytics/README.md)
- * Get the API_KEY from REDASH by following the instructions given [here](../../forms-flow-analytics/README.md#getting-redash-api-key)
- * Modify the **.env** file using the instructions below.
- 
- Variable name | Meaning | Possible values | Default value |
---- | --- | --- | ---
-`INSIGHT_API_BASE`|Insight Api base end-point||`http://your-ip-address:7000`
-`INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `must be set to your ReDash API key`
-   
- * Once all the above steps are completed go through the below tables and modify the **.env** file accordingly.    
- 
-#### formsflow.ai Datastore Settings
+
+##### formsflow.ai Datastore Settings
 -----------------------------------
 
 Variable name | Meaning | Possible values | Default value |
@@ -127,7 +153,7 @@ Variable name | Meaning | Possible values | Default value |
 `WEB_API_POSTGRES_PASSWORD`|formsflow.ai database postgres password|Used on installation to create the database.Choose your own|`changeme`
 `WEB_API_POSTGRES_DB`|formsflow.ai database name|Used on installation to create the database.Choose your own|`webapi`
 
-#### formsflow.ai Integration Settings
+##### formsflow.ai Integration Settings
 --------------------------------------
 
 Variable name | Meaning | Possible values | Default value |
@@ -142,12 +168,12 @@ Variable name | Meaning | Possible values | Default value |
 `MONGODB_URI`|Mongo DB Connection URL of formio for sentiment analysis|Used on installation to create the database.Choose your own|`mongodb://mongo:changeme@forms-flow-webapi-analytics-db:27019/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
 
-#### BPM (Camunda) Settings
+##### BPM (Camunda) Settings
 ---------------------------
 
 * Database Connection Details(The solution manages CAMUNDA_JDBC & CAMUNDA_SESSION_JDBC connections)
  
-##### CAMUNDA_JDBC : Dedicated camunda database (Prefixed with CAMUNDA_).
+###### CAMUNDA_JDBC : Dedicated camunda database (Prefixed with CAMUNDA_).
 --------------------------------------
 
    Variable name | Meaning | Possible values | Default value |
@@ -162,7 +188,7 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
 
-##### CAMUNDA_SESSION_JDBC : Session Management (High Availability) (Prefixed with CAMUNDA_SESSION_).
+###### CAMUNDA_SESSION_JDBC : Session Management (High Availability) (Prefixed with CAMUNDA_SESSION_).
 -----------------------------------
 
   ***Skip this if session management is not required***
@@ -201,7 +227,7 @@ Variable name | Meaning | Possible values | Default value |
  
  -->
 
-#### Session Management
+##### Camunda Session Management
 -----------------------
 
    Variable name | Meaning | Possible values | Default value |
@@ -209,7 +235,7 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_SESSION_STORE_TYPE`| Store type for holding the state | | `jdbc`
  `CAMUNDA_SESSION_STORE_TIMEOUT`| Timeout Setting in seconds| | `30`
 
-#### Camunda System Tuning  
+##### Camunda System Tuning  
 ----------------------------
  
    Variable name | Meaning | Possible values | Default value |
@@ -230,7 +256,7 @@ Variable name | Meaning | Possible values | Default value |
  * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/job-executor/#job-executor-configuration-properties
  * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/process-engine/
  
-#### Camunda formsflow.ai Integration Settings  
+##### Camunda formsflow.ai Integration Settings  
 ------------------------------------------------
 
    Variable name | Meaning | Possible values | Default value |
@@ -243,8 +269,9 @@ Variable name | Meaning | Possible values | Default value |
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type |`TASK_EVENT` `TASK_EVENT_DETAILS`|`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  
+ ```
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
-
+```
 <!--
  
 #### Camunda - Orbeon Integration Settings  
@@ -256,7 +283,7 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL`|Engine Context URL.Leverages elevated admin account.||`http://username:password@your-ip-address:8000/camunda`
  
 -->
-#### Camunda - General Settings  
+##### Camunda - General Settings  
 -------------------------------
 
    Variable name | Meaning | Possible values | Default value |

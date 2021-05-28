@@ -6,22 +6,22 @@
 
 
 ## Table of Contents
-* [About the Project](#about-the-project)
-  * [Features](#features)
-* [Download and Installation](#download-and-installation)
-* [Project Tree](#project-tree)
-* [System Architecture](#system-architecture)
-* [Security Instructions](#security-instructions)
-* [System Operation](#system-operation)
+1. [About the Project](#about-the-project)
+    * [Features](#features)
+2. [Download and Installation](#download-and-installation)
+3. [Project Tree](#project-tree)
+4. [System Architecture](#system-architecture)
+5. [Security Instructions](#security-instructions)
+6. [System Operation](#system-operation)
     * [Managing Forms](#managing-forms)
     * [Managing Workflows](#managing-workflows)
     * [Managing Analytics Dashboard](#managing-analytics-dashboard)
-* [Quick Start](#quick-start)
-* [License](#license)
-* [Links](#links)
+7. [Quick Start](#quick-start)
+8. [License](#license)
+9. [Links](#links)
 
 ## About the Project
-The project was initiated by AOT Technologies as a means of addressing the general situation whereby end-users fill in a form, the form is processed and there may be a requirement to report on the form metrics or data. Typical use cases are:
+The project was initiated by [AOT Technologies](https://www.aot-technologies.com/) as a means of addressing the general situation whereby end-users fill in a form, the form is processed and there may be a requirement to report on the form metrics or data. Typical use cases are:
 
 * Applications for licenses
 * Public submissions
@@ -54,12 +54,12 @@ If you want to download and setup, follow the [installation guide](./deployment)
     * [docker](./deployment/docker) Deployment using docker 
     * [nginx](./deployment/nginx) Deployment on a remote host using nginx
     * [Openshift](./deployment/openshift) Deployment using openshift platform
- * [forms-flow-analytics](./forms-flow-analytics) Redash analytics components
- * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
- * [forms-flow-forms](./forms-flow-forms) form.io deployment and  integration
  * [forms-flow-idm](./forms-flow-idm) Identity Management (Keycloak)
+ * [forms-flow-forms](./forms-flow-forms) form.io deployment and  integration
+ * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
  * [forms-flow-web](./forms-flow-web) formsflow.ai integration web UI
-* [forms-flow-api](./forms-flow-api) REST API to formsflow.ai integration components
+ * [forms-flow-api](./forms-flow-api) REST API to formsflow.ai integration components
+ * [forms-flow-analytics](./forms-flow-analytics) Redash analytics components
 
 Features 
 ------------------
@@ -97,7 +97,8 @@ Python REST API providing business logic around the internal formsflow.ai Postgr
 Webserver providing reverse-proxy redirection and SSL to components for remote deployments. ( bundled and configured ) 
 
 #### Keycloak Identity management server 
-The system uses an existing (your) Keycloak server which provides a common identity management capability. Provisioning of the Keycloak server is not part of this project, however, there are specific [Keycloak configuration tasks](./forms-flow-idm/keycloak-setup.md) which are required for this project. 
+The system uses an existing (your) Keycloak server which provides a common identity management capability. The system provides default installation and provisioning of the Keycloak serve for local setupr, steps are mentioned [here](./forms-flow-idm/keycloak/README.md#local-keycloak-setup). 
+However, you can setup your own Keycloak server and follow the provisioning steps [here](./forms-flow-idm/keycloak/README.md#server-keycloak-setup). 
 
 ## Security Instructions
 To secure formsflow.ai and understand authorization roles follow the documentation on [Security Setup](./forms-flow-idm ).

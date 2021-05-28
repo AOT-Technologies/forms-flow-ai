@@ -13,7 +13,8 @@ In the following document, we’ll describe about the different project dependen
 
 ## Prerequisites
 
-* Admin access to a local or remote server (can be local PC or Mac provided it is 64-bit with at least 16GB RAM and 100GB HDD) where [docker-compose](https://docker.com) and [docker](https://docker.com) are installed and configured. 
+* Admin access to a local or remote server (can be local PC or Mac provided it is **64**-bit with at least **16GB** RAM and **100GB** HDD) 
+* For docker installations **docker-compose** and **Docker** need to be installed.
 * Admin access to a [Keycloak](https://www.keycloak.org/) server. For local development / testing follow [Keycloak installtion](../forms-flow-idm/keycloak).
 
 

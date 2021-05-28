@@ -1,29 +1,30 @@
 # Formsflow.ai Keycloak Setup
 
 ## Table of Content
-1. [Prerequisites](#prerequisites)
-2. [Local Keycloak setup](#local-keycloak-setup)
+1. [Local Keycloak setup](#local-keycloak-setup)
+   - [Prerequisites](#prerequisites)
    - [Step 1 : Environment Configuration](#environment-configuration)
    - [Step 2 : Environment Variables](#environment-variables)
    - [Step 3 : Starting Keycloak server](#starting-keycloak-server)
    - [Step 4 : Health Check](#health-check)
-3. [Server Keycloak setup](#server-keycloak-setup)
+2. [Server Keycloak setup](#server-keycloak-setup)
    - [Step 1 : Create Realm](#create-realm)
    - [Step 2 : Create Keycloak setup for formsflow web](#create-keycloak-setup-for-formsflow-web)
    - [Step 3 : Create Keycloak setup for formsflow analytics](#create-keycloak-setup-for-formsflow-analytics)
    - [Step 4 : Create Keycloak setup for formsflow bpm](#create-keycloak-setup-for-formsflow-bpm) 
    - [Step 5 : Create groups](#create-groups) 
    - [Step 6 : Test keycloak access in Postman](#test-keycloak-access-in-postman) 
-4. [Getting the client secret](#getting-the-client-secret)
-
-## Prerequisites
-
-* The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). This need to be installed. 
+3. [Getting the client secret](#getting-the-client-secret)
 
 ## Local keycloak setup
 
 * This setup is preferred for local development only. For server setup go to [Server Keycloak setup](#server-keycloak-setup).
 * If you do not have the formsflow.ai project in local clone this github repo: https://github.com/AOT-Technologies/forms-flow-ai
+
+### Prerequisites
+
+* The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). This need to be installed. 
+
 
 ### Environment Configuration
 

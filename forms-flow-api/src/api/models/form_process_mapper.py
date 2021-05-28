@@ -48,10 +48,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         except BaseException as form_err:
             response, status = {
                 "type": "Bad Request Error",
-                "message": "Invalid application request passed"
+                "message": "Invalid application request passed",
             }, HTTPStatus.BAD_REQUEST
         return response, status
-
 
     def update(self, mapper_info: dict):
         """Update form process mapper."""
@@ -155,10 +154,17 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 {where_condition}
             """
         )
+        try:
+            result = []
+            for row in result_proxy:
+                info = dict(row)
+                result.append(info)
 
-        result = []
-        for row in result_proxy:
-            info = dict(row)
-            result.append(info)
-
-        return result[0]
+            return result[0]
+        except IndexError as err:
+            return (
+                "List index out of range",
+                HTTPStatus.BAD_REQUEST,
+            )
+        except BusinessException as err:
+            return err.error, err.status_code

@@ -133,8 +133,8 @@ class FormResourceById(Resource):
             )
         except BaseException as mapper_err:
             return {
-                 "type": "Bad Request Error",
-                "message": "Invalid request passed"
+                "type": "Bad Request Error",
+                "message": "Invalid request passed",
             }, HTTPStatus.BAD_REQUEST
 
 

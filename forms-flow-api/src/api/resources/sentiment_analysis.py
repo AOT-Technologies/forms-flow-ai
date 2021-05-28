@@ -5,6 +5,7 @@ from flask import g, jsonify, request
 from flask_pymongo import PyMongo
 from flask_restx import Namespace, Resource, cors
 
+from pymongo.errors import ConnectionFailure
 from ..exceptions import BusinessException
 from ..models import mongo
 from ..schemas import SentimentAnalysisSchema
@@ -27,8 +28,8 @@ class SentimentAnalysisResource(Resource):
     @cors.crossdomain(origin="*")
     # @auth.require
     def post():
-        input_json = request.get_json()
         try:
+            input_json = request.get_json()
             response_json = dict(
                 application_id=input_json["applicationId"],
                 form_url=input_json["formUrl"],
@@ -56,12 +57,8 @@ class SentimentAnalysisResource(Resource):
                 db_instance.insert_sentiment(sentiment_object=post_data)
 
             return jsonify(response_json), HTTPStatus.OK
-
-        except KeyError as err:
-            return (
-                "The required fields of Input request are not passed",
-                HTTPStatus.BAD_REQUEST,
-            )
-
-        except BusinessException as err:
-            return err.error, err.status_code
+        except ConnectionFailure:
+            response, status = {
+                "message": "Server selection time out",
+            }, HTTPStatus.BAD_REQUEST
+        return response, status

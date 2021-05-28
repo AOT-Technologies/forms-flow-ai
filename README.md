@@ -97,8 +97,8 @@ Python REST API providing business logic around the internal formsflow.ai Postgr
 Webserver providing reverse-proxy redirection and SSL to components for remote deployments. ( bundled and configured ) 
 
 #### Keycloak Identity management server 
-The system uses an existing (your) Keycloak server which provides a common identity management capability. The system provides default installation and provisioning of the Keycloak serve for local setupr, steps are mentioned [here](./forms-flow-idm/keycloak/README.md#local-keycloak-setup). 
-However, you can setup your own Keycloak server and follow the provisioning steps [here](./forms-flow-idm/keycloak/README.md#server-keycloak-setup). 
+The system uses an existing (your) Keycloak server which provides a common identity management capability. The system provides default installation and provisioning of the Keycloak server for local setup, steps are mentioned [here](./forms-flow-idm/keycloak/README.md#local-keycloak-setup). 
+However, you can setup your own Keycloak server and follow the provisioning steps [here](./forms-flow-idm/keycloak/README.md#server-keycloak-setup){:target="_blank" rel="noopener"}. 
 
 ## Security Instructions
 To secure formsflow.ai and understand authorization roles follow the documentation on [Security Setup](./forms-flow-idm ).

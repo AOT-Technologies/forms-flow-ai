@@ -88,8 +88,8 @@ Variable name | Meaning | Possible values | Default value |
  
  ## Getting Redash API Key
  
- - Login to redash hosted instance  (i.e. http://your-ip-address:7000/)
- - Go to Settings
-  - Go to Account Section
-   - Copy API Key to Clipboard
+ * Login to redash hosted instance  (i.e. http://your-ip-address:7000/)
+ * Go to Settings
+      * Go to Account Section
+      * Copy API Key to Clipboard
  

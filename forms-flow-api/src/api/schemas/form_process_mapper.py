@@ -17,10 +17,10 @@ class FormProcessMapperSchema(Schema):
     form_revision_number = fields.Str(data_key="formRevisionNumber", required=True)
     process_key = fields.Str(data_key="processKey")
     process_name = fields.Str(data_key="processName")
-    comments = fields.Str()
+    comments = fields.Str(data_key="comments")
 
-    status = fields.Str()  # active/inactive
-    created_by = fields.Str()
-    created = fields.Str()
-    modified_by = fields.Str()
-    modified = fields.Str()
+    status = fields.Str(data_key="status")  # active/inactive
+    created_by = fields.Str(data_key="createdBy")
+    created = fields.Str(data_key="created")
+    modified_by = fields.Str(data_key="modifiedBy")
+    modified = fields.Str(data_key="modified")

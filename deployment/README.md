@@ -58,8 +58,8 @@ Choose from the following components listed below.
  
 ## Verifying the Installation status
 * The following applications will be started and can be accessed in your browser.
-   * http://localhost:7000 - Redash analytics
-   * http://localhost:8000/camunda - Camunda BPM
-   * http://localhost:5000 - REST API of formsflow.ai
-   * http://localhost:3000 - formsflow.ai UI (+ forms designer) 
+   * http://your-ip-address:7000 - Redash analytics
+   * http://your-ip-address:8000/camunda - Camunda BPM
+   * http://your-ip-address:5000 - REST API of formsflow.ai
+   * http://your-ip-address:3000 - formsflow.ai UI (+ forms designer) 
                   

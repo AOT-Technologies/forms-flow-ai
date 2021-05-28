@@ -98,7 +98,7 @@ Webserver providing reverse-proxy redirection and SSL to components for remote d
 
 #### Keycloak Identity management server 
 The system uses an existing (your) Keycloak server which provides a common identity management capability. The system provides default installation and provisioning of the Keycloak server for local setup, steps are mentioned [here](./forms-flow-idm/keycloak/README.md#local-keycloak-setup). 
-However, you can setup your own Keycloak server and follow the provisioning steps [here](./forms-flow-idm/keycloak/README.md#server-keycloak-setup){:target="_blank" rel="noopener"}. 
+However, you can setup your own Keycloak server and follow the provisioning steps [here](./forms-flow-idm/keycloak/README.md#server-keycloak-setup). 
 
 ## Security Instructions
 To secure formsflow.ai and understand authorization roles follow the documentation on [Security Setup](./forms-flow-idm ).
@@ -110,7 +110,7 @@ In general, the operation is as follows :
 **Note** The URL links assume a local installation on the default ports as per the [installation instructions](./deployment ):
 
 #### End-user
-* End-user logs into formsflow.ai UI at URL- http://localhost:3000/
+* End-user logs into formsflow.ai UI at URL- http://your-ip-address:3000/
 * User is redirected to Keycloak via OIDC where user's roles are returned as OIDC claims in a JWT
 * User selects a form from the list of forms available. The available forms can be filtered by the user group with advanced configuration, by default the user sees all forms published. Form details are provided through form.io 
 * The user fills in the form and submits it
@@ -120,7 +120,7 @@ In general, the operation is as follows :
 
 #### Reviewer
 
-* Reviewer logs into formsflow.ai UI at URL- http://localhost:3000/
+* Reviewer logs into formsflow.ai UI at URL- http://your-ip-address:3000/
 * Reviewer is redirected to Keycloak via OIDC where the user's roles are returned as OIDC claims in a JWT. The fact that the reviewer has a reviewer role from Keycloak enables additional capabilities in the UI.
 * Reviewer accesses task from task list. Tasks are retrieved through the Camunda API, filtered by the reviewer group memberships mapped between Keycloak and native Camunda. 
 * Reviewer claims a task and processes it. The task moves to the next step in the workflow, with appropriate notifications and actions specific to that workflow.
@@ -133,16 +133,16 @@ In general, the operation is as follows :
 These users are responsible for accessing the native capabilities of the embedded products to configure analytics dashboards, create and manage workflows, and create and manage forms. It is beyond the scope of this document to describe the detailed functionality of these products, however, the general process is :
 
 * Access product URL as follows:
-  * Camunda: http://localhost:8000/camunda/
-  * form.io: http://localhost:3001/ (the form designer is embedded into the formsflow.ai UI)
-  * Redash: http://localhost:7000/
+  * Camunda: http://your-ip-address:8000/camunda/
+  * form.io: http://your-ip-address:3001/ (the form designer is embedded into the formsflow.ai UI)
+  * Redash: http://your-ip-address:7000/
 * The login process is the same for all of them, redirect to Keycloak as OIDC (SAML for Redash), and obtain the appropriate JWT + claims. 
 * For the forms designer, the FormFlow UI recognizes the additional role of formsflow-designer and enables a form design capability
 * For Redash and Camunda, there is a mapping in the configuration file which needs to be setup between formsflow-analyst and formsflow-bpm and the corresponding groups in Redash and Camunda respectively. This is all covered in the installation instructions.
 
 ### Managing Forms
 
-  * Login to **http://localhost:3000/** using valid **designer** credentials
+  * Login to **http://your-ip-address:3000/** using valid **designer** credentials
   * Navigate to menu **Forms**
   * Click the button **+ Create Form** to launch the form designer studio.
   * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
@@ -153,11 +153,11 @@ To know more about form.io, go to https://help.form.io/userguide/introduction/.
 
 * You would need the Camunda Modeler to design your BPMN: https://camunda.com/download/modeler/
 * To learn about designing your BPMN, go to https://docs.camunda.org/get-started/quick-start/service-task/
-* To learn about deploying your BPMN, go to https://docs.camunda.org/get-started/quick-start/deploy/. Note that your default endpoint for Camunda's REST API is http://localhost:8000/camunda/engine-rest
+* To learn about deploying your BPMN, go to https://docs.camunda.org/get-started/quick-start/deploy/. Note that your default endpoint for Camunda's REST API is http://your-ip-address:8000/camunda/engine-rest
 
 ### Managing Analytics Dashboard
 
-* Login to **http://localhost:7000/** using valid **admin** credentials
+* Login to **http://your-ip-address:7000/** using valid **admin** credentials
 * Create the dashboard by following the Redash [userguide](https://redash.io/help/user-guide/getting-started) 
 
  ## Quick Start

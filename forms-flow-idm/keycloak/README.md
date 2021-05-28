@@ -3,6 +3,10 @@
 ## Table of Content
 1. [Prerequisites](#prerequisites)
 2. [Local Keycloak setup](#local-keycloak-setup)
+   - [Step 1 : Environment Configuration](#environment-configuration)
+   - [Step 2 : Environment Variables](#environment-variables)
+   - [Step 3 : Starting Keycloak server](#starting-keycloak-server)
+   - [Step 4 : Health Check](#health-check)
 3. [Server Keycloak setup](#server-keycloak-setup)
    - [Step 1 : Create Realm](#create-realm)
    - [Step 2 : Create Keycloak setup for formsflow web](#create-keycloak-setup-for-formsflow-web)
@@ -18,16 +22,19 @@
 
 ## Local keycloak setup
 
-This setup is preferred for local development only. For server setup go to [Server Keycloak setup](#server-keycloak-setup).
+* This setup is preferred for local development only. For server setup go to [Server Keycloak setup](#server-keycloak-setup).
+* If you do not have the formsflow.ai project in local clone this github repo: https://github.com/AOT-Technologies/forms-flow-ai
 
 ### Environment Configuration
 
+   * Make sure you have a Docker machine up and running.
+   * Make sure your current working directory is "forms-flow-ai/forms-flow-idm/keycloak".
+   * **[Optional]** Rename the file **sample.env** to **.env**. ***Skip this for default setup***
+   * **[Optional]** Modify the environment variables as needed. Details below, 
+
 Environment variables are set in **.env** and read by the system.
 
-   * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is "forms-flow-idm/keycloak".
-   * **[Optional]** Rename the file **sample.env** to **.env**. ***Skip this for default setup***
-   * **[Optional]** Modify the configuration values as needed. Details below, 
+### Environment Variables
    
 #### Keycloak Database Connection Details
 -----------------------------------------
@@ -50,7 +57,7 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_ADMIN_USER`|keycloak admin user name|Choose your own|`admin`
 `KEYCLOAK_ADMIN_PASSWORD`|keycloak admin password|Choose your own|`changeme`
 
-### Starting the keycloak server
+### Starting Keycloak server
    
 * Run `docker-compose up --build -d` to start.
 
@@ -67,15 +74,14 @@ Variable name | Meaning | Possible values | Default value |
     User Name : admin
     Password  : changeme
    ```
-
-#### Default User Credentials
-----------------------------
+* Default User Credentials
 
 User Role | User Name | Password |
 --- | --- | ---
 `Designer`|`formsflow-designer`|`changeme`
 `Client`|`formsflow-client`|`changeme`
 `Reviewer`|`formsflow-reviewer`|`changeme`
+
 * **NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.**
 
 ## Server keycloak setup

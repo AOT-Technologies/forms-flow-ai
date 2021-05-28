@@ -18,7 +18,13 @@
     "url": "https://github.com/AOT-Technologies/forms-flow-ai"
   },
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "browserslist": "^4.16.6",
+    "dns-packet": "^5.2.4",
+    "jspdf": "^2.3.1",
+    "underscore": "^1.12.1",
+    "xmldom": "^0.5.0"
+  },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@wojtekmaj/react-daterange-picker": "^3.1.0",
@@ -70,7 +76,9 @@
     "underscore": "^1.12.1",
     "jspdf": "^2.3.1",
     "react-dom": "^17.0.2",
-    "react": "^17.0.2"
+    "react": "^17.0.2",
+    "browserslist": "^4.16.6",
+    "dns-packet": "^5.2.4"
   },
   "browserslist": [
     ">0.2%",

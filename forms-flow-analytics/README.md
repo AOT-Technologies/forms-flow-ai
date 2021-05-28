@@ -13,7 +13,8 @@ your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.
    * [Step 2 : Installation](#installation)
    * [Step 3 : Running the application](#running-the-application)
    * [Step 4 : Health Check](#health-check)
-   * [Step 5 : Configuration of Keycloak SAML Setup](#configuration-of-keycloak-saml-setup)   
+   * [Step 5 : Configuration of Keycloak SAML Setup](#configuration-of-keycloak-saml-setup)
+3. [Getting Redash API key](#getting-redash-api-key)
 
 ## Prerequisites
 
@@ -84,4 +85,11 @@ Variable name | Meaning | Possible values | Default value |
         * Set the field "SAML Entity ID" value to be `forms-flow-analytics`.
         * Set the field "SAML NameID Format" value to be `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`.
    * Logout and login again using valid keycloak user credentials, Default user credentials are provided [here](../forms-flow-idm/keycloak/README.md#health-check).
-   
+ 
+ ## Getting Redash API Key
+ 
+ - Login to redash hosted instance  (i.e. http://your-ip-address:7000/)
+ - Go to Settings
+  - Go to Account Section
+   - Copy API Key to Clipboard
+ 

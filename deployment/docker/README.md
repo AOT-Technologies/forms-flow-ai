@@ -5,20 +5,17 @@ This page elaborates how to setup the overall solution using docker.
 
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
-2. [Solution Setup](#solution-setup)
+2. [Application Setup](#application-setup)
    * [Step 1 : Installation Steps](#installation-steps)
-   * [Step 2 : Keycloak Setup](#keycloak-setup)
-   * [Step 3 : forms-flow-forms Setup](#forms-flow-forms-setup)
-   * [Step 4 : forms-flow-analytics Setup](#forms-flow-analytics-setup)
-   * [Step 5 : Running the Application](#running-the-application)
-   * [Step 6 : Health Check](#health-check) 
+   * [Step 3 : Running the Application](#running-the-application)
+   * [Step 4 : Health Check](#health-check) 
 
 
 ## Prerequisites
 
  * The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
 
-## Solution Setup
+## Application Setup
 
 * The application will be installed in the following order.
 * Some of the services have dependencies, mentioned below.
@@ -37,14 +34,14 @@ This page elaborates how to setup the overall solution using docker.
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
    * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. Details below,
    
 Environment variables are set in **.env** file and read by the system.
 
-### Keycloak Setup
+#### Keycloak Setup
+--------------------
 
 * Follow the instructions given on [link](../../forms-flow-idm/keycloak/README.md)
-* Open **.env** file and change the values using the instructions below.
+* Modify the **.env** file using the instructions below.
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -58,11 +55,12 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
 `KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
 
-**NOTE : For local setup replace `<realm>` with `forms-flow-ai`**
+**NOTE : For local setup replace `<realm>` with `forms-flow-ai`**, for server setup replace `<realm>` with your realm name.
  
-### forms-flow-forms Setup       
+#### forms-flow-forms Setup       
+---------------------------
 
-* Open **.env** file and change the values using the instructions below.
+* Modify the **.env** file using the instructions below.
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -91,7 +89,7 @@ Variable name | Meaning | Possible values | Default value |
            Password  : changeme           
 
    - Import the predefined Roles and Forms using [sample.json](../../forms-flow-forms/sample.json) using instructions from [Import the predefined Roles and Forms](../../forms-flow-forms/README.md#import-of-predefined-roles-and-forms)
-* Modify the configuration values after the import is successful . Details below,
+* Modify the **.env** file after the import is successful . Details below,
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -105,17 +103,18 @@ Variable name | Meaning | Possible values | Default value |
 `USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from form.io resource.` [Get user resource Id](../../forms-flow-forms/README.md#how-to-get-resource-user-id)
  
  
-### forms-flow-analytics Setup
+#### forms-flow-analytics Setup
+------------------------------
  
  * Start the **analytics server** by following the instructions given on  [readme](../../forms-flow-analytics/README.md)
- * Open **.env** file and change the values using the instructions below.
+ * Modify the **.env** file using the instructions below.
  
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `INSIGHT_API_BASE`|Insight Api base end-point||`http://your-ip-address:7000`
 `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `must be set to your ReDash API key`
    
- * Once all the above steps are completed go through the below tables and change the **.env** file accordingly.    
+ * Once all the above steps are completed go through the below tables and modify the **.env** file accordingly.    
  
 #### formsflow.ai Datastore Settings
 -----------------------------------
@@ -283,3 +282,4 @@ Variable name | Meaning | Possible values | Default value |
   * formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://your-ip-address:5000/api/
   * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://your-ip-address:3000/
   
+ * Access credentials are mentioned [here](../README.md#default-access-credentials).

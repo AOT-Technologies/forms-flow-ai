@@ -7,8 +7,8 @@ This page elaborates how to setup the overall solution using docker.
 1. [Prerequisites](#prerequisites)
 2. [Application Setup](#application-setup)
    * [Step 1 : Installation Steps](#installation-steps)
-   * [Step 3 : Running the Application](#running-the-application)
-   * [Step 4 : Health Check](#health-check) 
+   * [Step 2 : Running the Application](#running-the-application)
+   * [Step 3 : Health Check](#health-check) 
 
 
 ## Prerequisites

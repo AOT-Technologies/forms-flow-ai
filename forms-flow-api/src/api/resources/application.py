@@ -24,7 +24,7 @@ API = Namespace("Application", description="Application")
 
 
 @cors_preflight("GET,POST,OPTIONS")
-@API.route("", methods=["GET", "POST", "OPTIONS"])
+@API.route("", methods=["GET", "OPTIONS"])
 class ApplicationsResource(Resource):
     """Resource for managing applications."""
 
@@ -82,28 +82,28 @@ class ApplicationsResource(Resource):
                 HTTPStatus.OK,
             )
 
-    @staticmethod
-    @cors.crossdomain(origin="*")
-    @auth.require
-    def post():
-        """Post a new application using the request body."""
-        application_json = request.get_json()
-        """Get applications."""
-        try:
-            return (
-                jsonify(
-                    {
-                        "applications": ApplicationService.apply_custom_attributes(
-                            ApplicationService.get_all_applications_ids(
-                                application_json["applicationIds"]
-                            )
-                        )
-                    }
-                ),
-                HTTPStatus.OK,
-            )
-        except BusinessException as err:
-            return err.error, err.status_code
+    # @staticmethod
+    # @cors.crossdomain(origin="*")
+    # @auth.require
+    # def post():
+    #     """Post a new application using the request body."""
+    #     application_json = request.get_json()
+    #     """Get applications."""
+    #     try:
+    #         return (
+    #             jsonify(
+    #                 {
+    #                     "applications": ApplicationService.apply_custom_attributes(
+    #                         ApplicationService.get_all_applications_ids(
+    #                             application_json["applicationIds"]
+    #                         )
+    #                     )
+    #                 }
+    #             ),
+    #             HTTPStatus.OK,
+    #         )
+    #     except BusinessException as err:
+    #         return err.error, err.status_code
 
 
 @cors_preflight("GET,PUT,OPTIONS")
@@ -139,8 +139,8 @@ class ApplicationResourceById(Resource):
             dict_data["modified_by"] = sub
             ApplicationService.update_application(application_id, dict_data)
             return "Updated successfully", HTTPStatus.OK
-        except ValidationError as submission_err:
-            return {"systemErrors": submission_err.messages}, HTTPStatus.BAD_REQUEST
+        except BaseException as submission_err:
+            return {"message": "Invalid request passed"}, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight("GET,OPTIONS")
@@ -226,9 +226,10 @@ class ApplicationResourcesByIds(Resource):
             )
 
             response, status = application_schema.dump(application), HTTPStatus.CREATED
-        except ValidationError as application_err:
+        except BaseException as application_err:
             response, status = {
-                "systemErrors": application_err.messages
+                "type": "Bad Request Error",
+                "message": "Invalid application request passed",
             }, HTTPStatus.BAD_REQUEST
         return response, status
 
@@ -259,8 +260,8 @@ class AggregatedApplicationsResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except ValidationError as agg_err:
-            return {"systemErrors": agg_err.messages}, HTTPStatus.BAD_REQUEST
+        except BaseException as agg_err:
+            return {"message": "Data not available"}, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight("GET,OPTIONS")
@@ -289,23 +290,23 @@ class AggregatedApplicationStatusResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except ValidationError as agg_err:
-            return {"systemErrors": agg_err.messages}, HTTPStatus.BAD_REQUEST
+        except BaseException as agg_err:
+            return {"message": "Data not available"}, HTTPStatus.BAD_REQUEST
 
 
-@cors_preflight("GET,OPTIONS")
-@API.route("/<string:application_id>/process", methods=["GET", "OPTIONS"])
-class ProcessMapperResourceByApplicationId(Resource):
-    """Resource for managing process details."""
+# @cors_preflight("GET,OPTIONS")
+# @API.route("/<string:application_id>/process", methods=["GET", "OPTIONS"])
+# class ProcessMapperResourceByApplicationId(Resource):
+#     """Resource for managing process details."""
 
-    @staticmethod
-    @cors.crossdomain(origin="*")
-    def get(application_id):
+#     @staticmethod
+#     @cors.crossdomain(origin="*")
+#     def get(application_id):
 
-        try:
-            return (
-                ApplicationService.get_application_form_mapper_by_id(application_id),
-                HTTPStatus.OK,
-            )
-        except BusinessException as err:
-            return err.error, err.status_code
+#         try:
+#             return (
+#                 ApplicationService.get_application_form_mapper_by_id(application_id),
+#                 HTTPStatus.OK,
+#             )
+#         except BusinessException as err:
+#             return err.error, err.status_code

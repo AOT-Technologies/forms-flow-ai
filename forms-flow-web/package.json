@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "react-scripts --max_old_space_size=4096 start",
-    "build": "react-scripts --max_old_space_size=4096 build",
+    "start": "react-scripts start",
+    "build": "react-scripts --max_old_space_size=6144 build",
     "eject": "react-scripts eject",
     "preinstall": "npx npm-force-resolutions"
   },
@@ -18,7 +18,13 @@
     "url": "https://github.com/AOT-Technologies/forms-flow-ai"
   },
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "browserslist": "^4.16.6",
+    "dns-packet": "^5.2.4",
+    "jspdf": "^2.3.1",
+    "underscore": "^1.12.1",
+    "xmldom": "^0.6.0"
+  },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
     "@wojtekmaj/react-daterange-picker": "^3.1.0",
@@ -66,11 +72,13 @@
     "typeface-nunito-sans": "0.0.72"
   },
   "resolutions": {
-    "xmldom": "^0.5.0",
+    "xmldom": "^0.6.0",
     "underscore": "^1.12.1",
     "jspdf": "^2.3.1",
     "react-dom": "^17.0.2",
-    "react": "^17.0.2"
+    "react": "^17.0.2",
+    "browserslist": "^4.16.6",
+    "dns-packet": "^5.2.4"
   },
   "browserslist": [
     ">0.2%",

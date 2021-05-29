@@ -52,8 +52,15 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://localhost:3001`
  `INSIGHT_API_BASE`|Insight Api base end-point||`http://localhost:7000`
  `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
- `WEB_API_BASE_URL`|formsflow Rest API URI||`http://localhost:5000/api`
+ `FORMSFLOW_API_URL`|formsflow Rest API URI||`http://localhost:5000/api`
  `CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda`
+ `APPLICATION_NAME`|Application name is used to provide clients application name|
+
+###Logo change
+   * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web.
+     The default width and height of the logo is 50 and 55 also the image format is svg
+   * The icon can also be replaced to the users icon by replacing the favicon in the public folder of forms-flow-web
+
 
 ### Running the application
    * Run `docker-compose up --build -d` to start.

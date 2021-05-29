@@ -6,7 +6,7 @@ import UserService from "../services/UserService";
 import {getUserRoleName, getUserRolePermission} from "../helper/user";
 
 import "./styles.scss";
-import {CLIENT, STAFF_REVIEWER} from "../constants/constants";
+import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME} from "../constants/constants";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import {push} from "connected-react-router";
 
@@ -16,7 +16,9 @@ const NavBar = React.memo(() => {
   const { pathname } = location;
   const user = useSelector((state) => state.user.userDetail);
   const userRoles = useSelector((state) => state.user.roles);
-  const dispatch= useDispatch();
+  const dispatch = useDispatch();
+  const logoPath = "/logo.svg";
+  const appName = APPLICATION_NAME;
 
   const logout = () => {
       dispatch(push(`/`));
@@ -36,17 +38,17 @@ const NavBar = React.memo(() => {
               <i className="fa fa-bars fa-lg"/>
             </div>
           </Nav>*/}
-          <Navbar.Brand className="d-flex">
+          <Navbar.Brand className="d-flex" >
             <Link to="/">
               <img
                 className="img-fluid"
-                src="/formsflow.ai_icon.svg"
+                src={logoPath}
                 width="50"
                 height="55"
                 alt="Logo"
               />
             </Link>
-            <div className="custom-app-name">formsflow.ai</div>
+            <div className="custom-app-name">{appName}</div>
           </Navbar.Brand>
          {/*
            <Navbar.Brand className="d-flex">

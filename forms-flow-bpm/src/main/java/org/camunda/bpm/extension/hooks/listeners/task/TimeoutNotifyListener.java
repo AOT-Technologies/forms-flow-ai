@@ -12,7 +12,6 @@ import org.camunda.bpm.engine.delegate.*;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
@@ -28,8 +27,6 @@ public class TimeoutNotifyListener implements TaskListener, IMessageEvent {
     private Expression currentDate;
     private static final Logger log = Logger.getLogger(TimeoutNotifyListener.class.getName());
 
-    @Value("${formbuilder.pipeline.service.bpm-url}")
-    private String appcontexturl;
 
     /**
      * This calculates time logic
@@ -93,16 +90,12 @@ public class TimeoutNotifyListener implements TaskListener, IMessageEvent {
             emailAttributes.put("category", category);
             emailAttributes.put("taskid", taskId);
             log.info("Inside notify attributes:" + emailAttributes);
-            execution.setVariable("taskurl", getAPIContextURL()+"/app/tasklist/default/#/?task="+taskId);
             if(StringUtils.isNotBlank(toAddress) && StringUtils.indexOf(toAddress,"@") > 0) {
                 sendMessage(execution, emailAttributes,getMessageName(execution));
             }
         }
     }
 
-    private String getAPIContextURL() {
-        return StringUtils.remove(StringUtils.remove(appcontexturl, StringUtils.substringBetween(appcontexturl,"://","@")),"@");
-    }
 
     private String getMessageName(DelegateExecution execution){
         return String.valueOf(this.messageName.getValue(execution));

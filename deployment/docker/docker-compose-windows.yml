@@ -113,7 +113,7 @@ services:
       MONGO_INITDB_DATABASE: ${FORMIO_MONGO_DATABASE:-formio}
     volumes:
       - ./../../forms-flow-forms/mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
-      - ./mongodb/data/db/:/data/db/
+      - mdb-data:/data/db/
       - ./mongodb/data/log/:/var/log/mongodb/
       - ./mongodb/mongod.conf:/etc/mongod.conf
     networks:
@@ -203,7 +203,7 @@ services:
     ports:
        - '27019:27017'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${WEBAPI_ANALYTICS_USERNAME:-mongo}
+      MONGO_INITDB_ROOT_USERNAME: ${WEBAPI_ANALYTICS_USERNAME:-admin}
       MONGO_INITDB_ROOT_PASSWORD: ${WEBAPI_ANALYTICS_PASSWORD:-changeme}
       MONGO_INITDB_DATABASE: ${WEBAPI_ANALYTICS_DATABASE:-analytics}
     volumes:
@@ -240,7 +240,7 @@ services:
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
       FORMSFLOW_API_URL: ${FORMSFLOW_API_URL:-http://host.docker.internal:5000}
-      MONGODB_URI: ${MONGODB_URI:-mongodb://changeme:analytics@forms-flow-webapi-analytics-db:27019/analytics?authSource=the_database&authMechanism=SCRAM-SHA-256}
+      MONGODB_URI: ${MONGODB_URI:-mongodb://admin:changeme@forms-flow-webapi-analytics-db:27019/analytics?authSource=admin&authMechanism=SCRAM-SHA-256}
     stdin_open: true # -i
     tty: true # -t
     networks:

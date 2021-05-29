@@ -34,6 +34,8 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-ai/forms-flow-web".
+   * *Skip this if forms-flow-analytics setup is completed* - Start the **analytics server** by following the instructions given on  [readme](../../forms-flow-analytics/README.md)
+   * Get the API_KEY from REDASH by following the instructions given [here](../../forms-flow-analytics/README.md#getting-redash-api-key)   
    * Rename the file **sample.env** to **.env**.
    * Modify the **.env** file using the instructions below.
 

@@ -41,21 +41,23 @@ These are the steps required to complete the installation and setup of forksflow
 
 #### Keycloak Setup
 --------------------
+```
 - [x] Keycloak setup
-- [ ] forms-flow-analytics setup
-- [ ] forms-flow-forms setup
-- [ ] forms-flow-web, forms-flow-bpm, forms-flow-api setup
-
-* Follow the instructions given [here](../../forms-flow-idm/keycloak/README.md)
+- [ ] *forms-flow-analytics setup*
+- [ ] *forms-flow-forms setup*
+- [ ] *forms-flow-web, forms-flow-bpm, forms-flow-api setup*
+```
+Follow the instructions given [here](../../forms-flow-idm/keycloak/README.md)
 
 #### forms-flow-analytics Setup
 ------------------------------
-- [x] Keycloak setup
+```
+- [x] *Keycloak setup*
 - [x] forms-flow-analytics setup
-- [ ] forms-flow-forms setup
-- [ ] forms-flow-web, forms-flow-bpm, forms-flow-api setup
- 
- * Start the **analytics server** by following the instructions given [here](../../forms-flow-analytics/README.md)
+- [ ] *forms-flow-forms setup*
+- [ ] *forms-flow-web, forms-flow-bpm, forms-flow-api setup*
+``` 
+Start the **analytics server** by following the instructions given [here](../../forms-flow-analytics/README.md)
    
 #### forms-flow-forms Setup       
 ---------------------------
@@ -64,9 +66,9 @@ These are the steps required to complete the installation and setup of forksflow
 - [x] forms-flow-forms setup
 - [ ] forms-flow-web, forms-flow-bpm, forms-flow-api setup
 
-   * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
-   * Rename the file **sample.env** to **.env**. 
-   * Modify the **.env** file using the instructions below.
+* Make sure your current working directory is "/forms-flow-ai/deployment/docker".
+* Rename the file **sample.env** to **.env**. 
+* Modify the **.env** file using the instructions below.
 >Environment variables are set in **.env** file and read by the system.
 
  Variable name | Meaning | Possible values | Default value |
@@ -97,14 +99,14 @@ These are the steps required to complete the installation and setup of forksflow
 
 #### forms-flow-web, forms-flow-bpm & forms-flow-web Setup
 -----------------------------------
-
-- [x] Keycloak setup
-- [x] forms-flow-analytics setup
-- [x] forms-flow-forms setup
+```
+- [x] *Keycloak setup*
+- [x] *forms-flow-analytics setup*
+- [x] *forms-flow-forms setup*
 - [x] forms-flow-web, forms-flow-bpm, forms-flow-api setup
-
-   * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
-   * Modify the **.env** file using the instructions below.
+```
+* Make sure your current working directory is "/forms-flow-ai/deployment/docker".
+* Modify the **.env** file using the instructions below.
 
 ##### formsflow.ai keycloak variable settings
 -----------------------------------

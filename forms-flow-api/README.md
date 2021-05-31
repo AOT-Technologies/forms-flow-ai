@@ -8,18 +8,17 @@ The goal of the REST API is to provide access to all relevant interfaces of
 the system. It is built using Python :snake: .
 
 ## Table of Content
-* [Prerequisites](#prerequisites)
-* [Solution Setup](#solution-setup)
-  * [Step 1 : Installation](#installation)
-  * [Step 2 : Environment Configuration](#environment-configuration)
-  * [Step 3 : Running the Application](#running-the-application)
-  * [Step 4 : Verify the Application Status](#verify-the-application-status) 
-* [Steps for enabling sentiment analysis component](#steps-for-enabling-sentiment-analysis-component)
+1. [Prerequisites](#prerequisites)
+2. [Solution Setup](#solution-setup)
+   * [Step 1 : Installation](#installation)
+   * [Step 2 : Environment Configuration](#environment-configuration)
+   * [Step 3 : Running the Application](#running-the-application)
+   * [Step 4 : Verify the Application Status](#verify-the-application-status) 
+3. [Steps for enabling sentiment analysis component](#steps-for-enabling-sentiment-analysis-component)
 
 ## Prerequisites
 
-We are assuming [docker-compose](https://docs.docker.com/compose/) and [docker](https://docker.com)
-is already installed, which is required to run and deploy the system.
+* For docker installations [docker-compose](https://docker.com) and [Docker](https://docker.com) need to be installed.
 
 ## Solution Setup
 
@@ -47,54 +46,57 @@ No specific client creation is required. Audience has been added for clients
 
 ### Environment Configuration
 
-Environment variables are set in **.env** and read by the system.
-
    * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is "forms-flow-api".
+   * Make sure your current working directory is "forms-flow-ai/forms-flow-api".
    * Rename the file **sample.env** to **.env**.
-   * Modify the configuration values as needed. Details below,
-
+   * Modify the **.env** file using the instructions below.
+   
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `WEB_API_POSTGRES_USER`|formsflow database postgres user|Used on installation to create the database.Choose your own|`postgres`
 `WEB_API_POSTGRES_PASSWORD`|formsflow database postgres password|Used on installation to create the database.Choose your own|`changeme`
-`WEB_API_POSTGRES_DB`|formsflow database name|Used on installation to create the database.Choose your own|`formsflow`
-`WEB_API_DATABASE_URL`|JDBC DB Connection URL for formsflow||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/formsflow`
-`KEYCLOAK_TOKEN_URL`|Keycloak OIDC token API for clients|Plug in your Keycloak base url and realm name|`{Keycloak URL}/auth/realms/<realm>/protocol/openid-connect/token`
-`KEYCLOAK_JWT_OIDC_CONFIG`|Path to Keycloak well-know config for realm|Plug in your Keycloak URL plus realm|`{Keycloak URL}/auth/realms/<REALM>/.well-known/openid-configuration`
-`KEYCLOAK_JWT_OIDC_JWKS_URI`|Keycloak JWKS URI|Plug in Keycloak base url plus realm|`{Keycloak URL}/auth/realms/<REALM>/protocol/openid-connect/certs`
-`KEYCLOAK_JWT_OIDC_ISSUER`|The issuer of JWT's from Keycloak for your realm|Plug in your realm and Keycloak base url|`{Keycloak URL}/auth/realms/forms-flow-ai`
-`KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|must be set to your Keycloak client id
-`KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret
-`KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow to register with Keycloak|eg. forms-flow-web|must be set to your Keycloak client id
-`CAMUNDA_API_URI`|Camunda Rest API URI||`http://localhost:8000/camunda`
-`FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://localhost:5000`
+`WEB_API_POSTGRES_DB`|formsflow database name|Used on installation to create the database.Choose your own|`webapi`
+`WEB_API_DATABASE_URL`|JDBC DB Connection URL for formsflow||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi`
+`KEYCLOAK_URL`| URL to your Keycloak server || `http://your-ip-address:8080`
+`KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
+`KEYCLOAK_BPM_CLIENTID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
+`KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret`
+`KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
+`CAMUNDA_API_URI`|Camunda Rest API URI||`http://your-ip-address:8000/camunda`
+`FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
+`FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins || `['http://localhost:3000', 'https://app2.aot-technologies.com']`
 `WEBAPI_ANALYTICS_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
 `WEBAPI_ANALYTICS_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
 `WEBAPI_ANALYTICS_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
 `MONGODB_URI`|Mongo DB Connection URL for analytics database using for sentiment analysis component|Used on installation to create the Analytics database.Choose your own|`mongodb://mongo:changeme@forms-flow-webapi-analytics-db:27019/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
+**NOTE : Default realm is `forms-flow-ai`**
+
 ### Running the Application
+
+* forms-flow-api service uses port 5000, make sure the port is available.
+* `cd {Your Directory}/forms-flow-ai/forms-flow-api`
+
 * For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml build` to build.
    * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
 * For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml build` to build.
    * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
    
+*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+
 #### To Stop the Application
 * For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
+  * Run `docker-compose -f docker-compose-linux.yml stop` to stop.
 * For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
+  * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
    
 ### Verify the Application Status
 
-   The application should be up and available for use at port defaulted to 5000 in docker-compose.yml (i.e. http://localhost:5000/)
+   The application should be up and available for use at port defaulted to 5000 in http://your-ip-address:5000/
   
   * Access the **/checkpoint** endpoint for a Health Check on API to see it's up and running.
 ``` 
-GET http://localhost:5000/checkpoint
+GET http://your-ip-address:5000/checkpoint
 
 RESPONSE
 
@@ -104,7 +106,7 @@ RESPONSE
 ```
    * Get the access token
 ```
-POST {Keycloak URL}/auth/realms/{Realm Name}/protocol/openid-connect/token
+POST {Keycloak URL}/auth/realms/<realm>/protocol/openid-connect/token
 
 Body:
 grant_type: client_credentials
@@ -117,7 +119,7 @@ Content-Type : application/x-www-form-urlencoded
 ```   
    * Access the **/task** endpoint and verify response. Ensure Bearer token is passed along
 ``` 
-GET http://localhost:5000/task
+GET http://your-ip-address:5000/task
 
 Headers:
 Content-Type : application/json

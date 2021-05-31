@@ -8,6 +8,7 @@ from flask_restx import Namespace, Resource, cors
 from ..services import TaskService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
+from api.utils.constants import CORS_ORIGINS
 
 
 API = Namespace("Task", description="Task")
@@ -19,7 +20,7 @@ class TaskList(Resource):
     """Resource for managing tasks."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get():
         """List all tasks."""
@@ -37,7 +38,7 @@ class Task(Resource):
     """Resource for managing tasks."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get(task_id):
         """List specific tasks."""
@@ -59,7 +60,7 @@ class TaskClaim(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def post(task_id):
         """Claim a task."""
@@ -82,7 +83,7 @@ class TaskUnClaim(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def post(task_id):
         """Unclaim a task."""
@@ -105,7 +106,7 @@ class TaskComplete(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def post(task_id):
         """Complete a task."""

@@ -3,6 +3,7 @@
 from http import HTTPStatus
 
 from flask import g, jsonify, request
+from flask.globals import current_app
 from flask_restx import Namespace, Resource, cors
 from marshmallow import ValidationError
 
@@ -23,7 +24,7 @@ class ApplicationHistoryResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
     @auth.require
     def get(application_id):
         """Get application histry."""
@@ -39,7 +40,7 @@ class ApplicationHistoryResource(Resource):
         )
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
     @auth.require
     def post(application_id):
         """Post a new application using the request body."""

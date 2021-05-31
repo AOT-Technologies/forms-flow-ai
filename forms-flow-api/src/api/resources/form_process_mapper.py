@@ -3,6 +3,7 @@
 from http import HTTPStatus
 
 from flask import g, jsonify, request
+from flask.globals import current_app
 from flask_restx import Namespace, Resource, cors
 from marshmallow import ValidationError
 
@@ -22,7 +23,7 @@ class FormResource(Resource):
     """Resource for managing forms."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
     @auth.require
     def get():
         """Get form process mapper."""
@@ -65,7 +66,7 @@ class FormResource(Resource):
             return {"systemErrors": form_err.messages}, HTTPStatus.BAD_REQUEST
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
     @auth.require
     def post():
         """Post a form process mapper using the request body."""
@@ -94,7 +95,7 @@ class FormResourceById(Resource):
     """Resource for managing forms by mapper_id."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
     @auth.require
     def get(mapper_id):
         """Get form process mapper by id."""
@@ -104,7 +105,7 @@ class FormResourceById(Resource):
             return err.error, err.status_code
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
     @auth.require
     def delete(mapper_id):
         """Delete form process mapper."""
@@ -115,7 +116,7 @@ class FormResourceById(Resource):
             return err.error, err.status_code
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
     @auth.require
     def put(mapper_id):
         """Update form process mapper details."""
@@ -145,7 +146,7 @@ class FormResourceByFormId(Resource):
     """Resource for managing forms by corresponding form_id."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
     def get(form_id):
         """Get details of only form corresponding to a particular formId."""
         try:

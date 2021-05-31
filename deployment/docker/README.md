@@ -71,9 +71,10 @@ These are the steps required to complete the installation and setup of forksflow
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own||`admin`
-`FORMIO_MONGO_PASSWORD`|Mongo Root Password||`changeme`
+`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation, Choose your own||`admin`
+`FORMIO_MONGO_PASSWORD`|Mongo Root Password. Used on installation, Choose your own||`changeme`
 `FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
+`FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://your-ip-address:3001`
 `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`admin@example.com`
 `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.changeme|`changeme`
 
@@ -265,7 +266,6 @@ Variable name | Meaning | Possible values | Default value |
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
- `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://your-ip-address:3001`
  `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`admin@example.com`
  `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.changeme|`changeme`
  `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting|`http://your-ip-address:3000`|

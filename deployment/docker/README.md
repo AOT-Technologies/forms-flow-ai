@@ -74,9 +74,9 @@ Start the **analytics server** by following the instructions given [here](../../
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation, Choose your own||`admin`
-`FORMIO_MONGO_PASSWORD`|Mongo Root Password. Used on installation, Choose your own||`changeme`
-`FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
+`FORMIO_DB_USERNAME`|Mongo Root Username. Used on installation, Choose your own||`admin`
+`FORMIO_DB_PASSWORD`|Mongo Root Password. Used on installation, Choose your own||`changeme`
+`FORMIO_DB_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://your-ip-address:3001`
 `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`admin@example.com`
 `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.changeme|`changeme`
@@ -131,7 +131,7 @@ Variable name | Meaning | Possible values | Default value |
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`INSIGHT_API_BASE`|Insight Api base end-point||`http://your-ip-address:7000`
+`INSIGHT_API_URL`|Insight Api base end-point||`http://your-ip-address:7000`
 `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `must be set to your ReDash API key`
 
 ##### formsflow.ai forms variable settings
@@ -154,9 +154,9 @@ Variable name | Meaning | Possible values | Default value |
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `WEB_API_DATABASE_URL`|JDBC DB Connection URL for formsflow.ai||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi`
-`WEB_API_POSTGRES_USER`|formsflow.ai database postgres user|Used on installation to create the database.Choose your own|`postgres`
+`FORMSFLOW_API_DB_USER`|formsflow.ai database postgres user|Used on installation to create the database.Choose your own|`postgres`
 `WEB_API_POSTGRES_PASSWORD`|formsflow.ai database postgres password|Used on installation to create the database.Choose your own|`changeme`
-`WEB_API_POSTGRES_DB`|formsflow.ai database name|Used on installation to create the database.Choose your own|`webapi`
+`FORMSFLOW_API_DB_NAME`|formsflow.ai database name|Used on installation to create the database.Choose your own|`webapi`
 
 ##### formsflow.ai Integration variable settings
 --------------------------------------
@@ -166,7 +166,7 @@ Variable name | Meaning | Possible values | Default value |
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
 `APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
 `FORMSFLOW_API_CORS_ORIGIN`| Formsflow webapi cors origin || `*`
-`CAMUNDA_API_URI`|Camunda Rest API URI||`http://your-ip-address:8000/camunda`
+`CAMUNDA_API_URL`|Camunda Rest API URI||`http://your-ip-address:8000/camunda`
 `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
 `WEBAPI_ANALYTICS_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
 `WEBAPI_ANALYTICS_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`

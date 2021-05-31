@@ -69,9 +69,9 @@ services:
     ports:
       - '27018:27017'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${FORMIO_MONGO_USERNAME:-admin}
-      MONGO_INITDB_ROOT_PASSWORD: ${FORMIO_MONGO_PASSWORD:-changeme}
-      MONGO_INITDB_DATABASE: ${FORMIO_MONGO_DATABASE:-formio}
+      MONGO_INITDB_ROOT_USERNAME: ${FORMIO_DB_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${FORMIO_DB_PASSWORD:-changeme}
+      MONGO_INITDB_DATABASE: ${FORMIO_DB_DATABASE:-formio}
     volumes:
       - ./../../forms-flow-forms/mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
       - ./mongodb/data/db/:/data/db/
@@ -96,7 +96,7 @@ services:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_MONGO_USERNAME:-admin}:${FORMIO_MONGO_PASSWORD:-changeme}@forms-flow-forms-db:27017/${FORMIO_MONGO_DATABASE:-formio}?authMechanism=SCRAM-SHA-1&authSource=admin\"}"
+      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_DB_USERNAME:-admin}:${FORMIO_DB_PASSWORD:-changeme}@forms-flow-forms-db:27017/${FORMIO_DB_DATABASE:-formio}?authMechanism=SCRAM-SHA-1&authSource=admin\"}"
       ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_DOMAIN: ${FORMIO_DEFAULT_PROJECT_URL:-http://host.docker.internal:3001}
@@ -123,10 +123,10 @@ services:
         - REACT_APP_API_PROJECT_URL=${FORMIO_DEFAULT_PROJECT_URL:-http://host.docker.internal:3001}
         - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENTID:-forms-flow-web}
         - REACT_APP_ANONYMOUS_ID=${ANONYMOUS_ID}
-        - REACT_APP_INSIGHT_API_BASE=${INSIGHT_API_BASE:-http://host.docker.internal:7000}
+        - REACT_APP_INSIGHT_API_BASE=${INSIGHT_API_URL:-http://host.docker.internal:7000}
         - REACT_APP_INSIGHTS_API_KEY=${INSIGHT_API_KEY}
         - REACT_APP_WEB_BASE_URL=${FORMSFLOW_API_URL:-http://host.docker.internal:5000}
-        - REACT_APP_CAMUNDA_API_URI=${CAMUNDA_API_URI:-http://host.docker.internal:8000/camunda}
+        - REACT_APP_CAMUNDA_API_URI=${CAMUNDA_API_URL:-http://host.docker.internal:8000/camunda}
         - REACT_APP_WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
         - REACT_APP_KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
         - REACT_APP_KEYCLOAK_URL=${KEYCLOAK_URL:-http://host.docker.internal:8080}
@@ -144,9 +144,9 @@ services:
   forms-flow-webapi-db:
     image: postgres:11
     environment:
-      POSTGRES_USER: ${WEB_API_POSTGRES_USER:-postgres}
+      POSTGRES_USER: ${FORMSFLOW_API_DB_USER:-postgres}
       POSTGRES_PASSWORD: ${WEB_API_POSTGRES_PASSWORD:-changeme}
-      POSTGRES_DB: ${WEB_API_POSTGRES_DB:-formsflow}
+      POSTGRES_DB: ${FORMSFLOW_API_DB_NAME:-formsflow}
       POSTGRES_HOST_AUTH_METHOD: 'trust'
     ports:
       - '6432:5432'
@@ -189,7 +189,7 @@ services:
     volumes:
       - ./:/app:rw
     environment:
-      DATABASE_URL: ${WEB_API_DATABASE_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
       BPM_TOKEN_API: ${KEYCLOAK_TOKEN_URL}
       BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENTID:-forms-flow-bpm}
       BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENTSECRET}

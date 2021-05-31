@@ -10,6 +10,7 @@ from ..exceptions import BusinessException
 from ..services import ProcessService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
+from api.utils.constants import CORS_ORIGINS
 from ..schemas.process import ProcessMessageSchema
 
 API = Namespace("Process", description="Process")
@@ -23,7 +24,7 @@ class ProcessStateResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get(process_key, task_key):
         """Get states by process and task key."""
@@ -46,7 +47,7 @@ class ProcessResource(Resource):
     """Resource for managing process."""
 
     @staticmethod
-    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get():
         """Get all process."""
@@ -72,7 +73,7 @@ class ProcessDefinitionResource(Resource):
     """Resource for managing process details."""
 
     @staticmethod
-    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
+    @cors.crossdomain(origin=CORS_ORIGINS)
     def get(process_key):
         """Get process detailsXML."""
         try:
@@ -92,7 +93,7 @@ class ProcessEventResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def post():
         message_json = request.get_json()
@@ -121,7 +122,7 @@ class ProcessInstanceResource(Resource):
     """Get Process Activity Instances."""
 
     @staticmethod
-    @cors.crossdomain(origin=current_app.config.get("FORMSFLOW_API_CORS_ORIGIN"))
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get(process_InstanceId):
         """Get states by process and task key."""

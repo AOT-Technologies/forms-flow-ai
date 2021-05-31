@@ -19,7 +19,7 @@ To know more about form.io, go to  https://form.io.
    * [How-to get jwt token](#how-to-get-jwt-token)
    * [How-to export roles and Forms](#how-to-export-roles-and-forms)
    * [How-to get role id](#how-to-get-role-id)
-   * [How-to get user resource id](#how-to-get-resource-user-id)
+   * [How-to get user resource id](#how-to-get-user-resource-id)
    * [Custom components](#custom-components)   
 
 ## Prerequisites
@@ -59,15 +59,17 @@ Not applicable.
 * `cd {Your Directory}/forms-flow-ai/forms-flow-forms`
 
 * For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml up --build -d` to start.
+   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
 * For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml up --build -d` to start.
+   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+ 
+*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
    
 #### To stop the application
 * For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
+  * Run `docker-compose -f docker-compose-linux.yml stop` to stop.
 * For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
+  * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
 
 ### Health Check
 

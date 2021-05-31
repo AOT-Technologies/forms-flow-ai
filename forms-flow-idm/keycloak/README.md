@@ -65,11 +65,13 @@ Variable name | Meaning | Possible values | Default value |
 
 #### To start the keycloak server
    
-* Run `docker-compose up --build -d` to start.
+* Run `docker-compose up -d` to start.
+
+*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
 
 #### To stop the keycloak server
 
-  * Run `docker-compose down` to stop.
+  * Run `docker-compose stop` to stop.
   
 ### Health Check
 

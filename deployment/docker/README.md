@@ -146,7 +146,7 @@ Variable name | Meaning | Possible values | Default value |
 `DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
 `DESIGNER_ROLE_ID`|form.io administrator role Id|eg. 5ee090afee045f1597609cae|`must get the administrator role Id value from form.io resource.` [Get administrator role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
 `ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|`must get the anonymous role Id value from form.io resource.` [Get anonymous role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
-`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from form.io resource.` [Get user resource Id](../../forms-flow-forms/README.md#how-to-get-resource-user-id)
+`USER_RESOURCE_ID`|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from form.io resource.` [Get user resource Id](../../forms-flow-forms/README.md#how-to-get-user-resource-id)
 
 ##### formsflow.ai Datastore variable settings
 -----------------------------------

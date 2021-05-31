@@ -88,7 +88,7 @@ Variable name | Meaning | Possible values | Default value |
  
  ## Getting Redash API Key
  
- * Login to redash hosted instance  (i.e. http://your-ip-address:7000/)
+ * Login to redash hosted instance  (i.e. http://your-ip-address:7000/) using the admin credentials passed for registration / [Default Keycloak user credentials / SAML credentails](../forms-flow-idm/keycloak/README.md#health-check).
  * Go to Settings
       * Go to Account Section
       * Copy API Key to Clipboard

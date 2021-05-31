@@ -123,12 +123,11 @@ Variable name | Meaning | Possible values | Default value |
 
 ##### formsflow.ai analytics variable settings
 -----------------------------------
- * Get the API_KEY from forms-flow-analytics (REDASH) by following the instructions given [here](../../forms-flow-analytics/README.md#getting-redash-api-key)
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `INSIGHT_API_BASE`|Insight Api base end-point||`http://your-ip-address:7000`
-`INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `must be set to your ReDash API key`
+`INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `Get the API_KEY from forms-flow-analytics (REDASH) by following the instructions given `[here](../../forms-flow-analytics/README.md#getting-redash-api-key)
 
 ##### formsflow.ai forms variable settings
 -----------------------------------

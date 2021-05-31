@@ -44,7 +44,7 @@ Not applicable.
 |--- | --- | --- | ---
 |`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own||`admin`
 |`FORMIO_MONGO_PASSWORD`|Mongo Root Password||`changeme`
-|`FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
+|`FORMIO_DB_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 |`FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`admin@example.com`
 |`FORMIO_ROOT_PASSWORD`|form.io admin password|eg.changeme|`changeme`
 |`FORMIO_DEFAULT_PROJECT_URL`|form.io default url||`http://your-ip-address:3001`

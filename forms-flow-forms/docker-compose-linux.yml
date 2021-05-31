@@ -24,7 +24,7 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${FORMIO_MONGO_USERNAME:-admin}
       MONGO_INITDB_ROOT_PASSWORD: ${FORMIO_MONGO_PASSWORD:-changeme}
-      MONGO_INITDB_DATABASE: ${FORMIO_MONGO_DATABASE:-formio}
+      MONGO_INITDB_DATABASE: ${FORMIO_DB_DATABASE:-formio}
     volumes:
       - ./mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
       - ./mongodb/data/db/:/data/db/
@@ -49,7 +49,7 @@ services:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_MONGO_USERNAME:-admin}:${FORMIO_MONGO_PASSWORD:-changeme}@forms-flow-forms-db:27017/${FORMIO_MONGO_DATABASE:-formio}?authSource=admin\"}"
+      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_MONGO_USERNAME:-admin}:${FORMIO_MONGO_PASSWORD:-changeme}@forms-flow-forms-db:27017/${FORMIO_DB_DATABASE:-formio}?authSource=admin\"}"
       ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_DOMAIN: ${FORMIO_DEFAULT_PROJECT_URL:-http://host.docker.internal:3001}

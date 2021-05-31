@@ -3,7 +3,6 @@
 from http import HTTPStatus
 
 from flask import jsonify
-from flask.globals import current_app
 from flask_restx import Namespace, Resource, cors
 
 from api.utils.util import cors_preflight

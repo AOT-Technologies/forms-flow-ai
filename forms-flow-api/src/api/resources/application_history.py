@@ -3,7 +3,6 @@
 from http import HTTPStatus
 
 from flask import g, jsonify, request
-from flask.globals import current_app
 from flask_restx import Namespace, Resource, cors
 from marshmallow import ValidationError
 

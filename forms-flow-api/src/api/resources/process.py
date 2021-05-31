@@ -3,15 +3,14 @@
 from http import HTTPStatus
 
 from flask import g, jsonify, request
-from flask.globals import current_app
 from flask_restx import Namespace, Resource, cors
 
 from ..exceptions import BusinessException
 from ..services import ProcessService
-from ..utils.auth import auth
-from ..utils.util import cors_preflight
+from api.utils.auth import auth
+from api.utils.util import cors_preflight
 from api.utils.constants import CORS_ORIGINS
-from ..schemas.process import ProcessMessageSchema
+from api.schemas.process import ProcessMessageSchema
 
 API = Namespace("Process", description="Process")
 

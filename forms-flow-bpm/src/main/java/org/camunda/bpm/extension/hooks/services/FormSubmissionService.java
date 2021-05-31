@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.bpm.engine.variable.value.FileValue;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.connector.support.FormTokenAccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
@@ -31,6 +32,8 @@ public class FormSubmissionService {
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
+    @Autowired
+    private FormTokenAccessHandler formTokenAccessHandler;
 
     public String readSubmission(String formUrl) {
         ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
@@ -99,11 +102,11 @@ public class FormSubmissionService {
 
     public Map<String,Object> retrieveFormValues(String formUrl) throws IOException {
         Map<String,Object> fieldValues = new HashMap();
-        String submission = readSubmission(formUrl);//FIXME -- null handler
+        String submission = readSubmission(formUrl);
         if(submission.isEmpty()) {
             throw new RuntimeException("Unable to retrieve submission");
         }
-        JsonNode dataNode = getObjectMapper().readTree(submission);//FIXME - parsing exception handler
+        JsonNode dataNode = getObjectMapper().readTree(submission);
         Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
         while (dataElements.hasNext()) {
             Map.Entry<String, JsonNode> entry = dataElements.next();
@@ -131,7 +134,7 @@ public class FormSubmissionService {
                                                 entry.getValue().isDouble() ? entry.getValue().asDouble() :
                                                         entry.getValue().isBigDecimal() ? entry.getValue().decimalValue() :
                                                                 entry.getValue().isTextual() ? entry.getValue().asText():
-                                                                    entry.getValue().toString();//FIXME - Why this?
+                                                                    entry.getValue().toString();
                 if(fieldValue.equals("")) fieldValue = null;
                 fieldValues.put(entry.getKey(), fieldValue);
             }
@@ -151,6 +154,9 @@ public class FormSubmissionService {
     }
 
 
+    public String getAccessToken() {
+        return formTokenAccessHandler.getAccessToken();
+    }
 
     private ObjectMapper getObjectMapper(){
         return new ObjectMapper();

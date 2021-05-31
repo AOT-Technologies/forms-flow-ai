@@ -28,8 +28,6 @@ public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
 
     private static final Logger LOGGER = Logger.getLogger(AccessGrantNotifyListener.class.getName());
 
-    @Value("${formbuilder.pipeline.service.bpm-url}")
-    private String appcontexturl;
     private Expression category;
 
     /**
@@ -77,15 +75,10 @@ public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
             emailAttributes.put("name",getDefaultAddresseName());
             emailAttributes.put("taskid",taskId);
             log.info("Inside notify attributes:" + emailAttributes);
-            execution.setVariable("taskurl", getAPIContextURL()+"/app/tasklist/default/#/?task="+taskId);
             if(StringUtils.isNotBlank(toAddress) && StringUtils.indexOf(toAddress,"@") > 0) {
                 sendMessage(execution, emailAttributes,getMessageId(execution));
             }
         }
-    }
-
-    private String getAPIContextURL() {
-        return StringUtils.remove(StringUtils.remove(appcontexturl, StringUtils.substringBetween(appcontexturl,"://","@")),"@");
     }
 
     /**

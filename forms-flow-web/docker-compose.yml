@@ -27,6 +27,7 @@ services:
         - REACT_APP_WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY}
         - REACT_APP_KEYCLOAK_URL_REALM={KEYCLOAK_URL_REALM:-forms-flow-ai}
         - REACT_APP_KEYCLOAK_URL={KEYCLOAK_URL:-http://host.docker.internal:8080}
+        - REACT_APP_APPLICATION_NAME=${APPLICATION_NAME}
     volumes:
       - ".:/app"
       - "/app/node_modules"

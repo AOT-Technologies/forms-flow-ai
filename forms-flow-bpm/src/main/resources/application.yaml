@@ -5,10 +5,6 @@ keycloak.url.realm: ${KEYCLOAK_URL_REALM}
 keycloak.clientId: ${KEYCLOAK_CLIENTID}
 keycloak.clientSecret: ${KEYCLOAK_CLIENTSECRET}
 
-formbuilder.pipeline.service.username: ${CAMUNDA_FORMBUILDER_PIPELINE_USERNAME}
-formbuilder.pipeline.service.password: ${CAMUNDA_FORMBUILDER_PIPELINE_PASSWORD}
-formbuilder.pipeline.service.bpm-url: ${CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL}
-
 spring.datasource:
   jdbc-url: ${CAMUNDA_JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
   username: ${CAMUNDA_JDBC_USER:sa}
@@ -53,10 +49,10 @@ spring:
           issuer-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}
   main:
     allow-bean-definition-overriding: true
-  session:
-    jdbc.initialize-schema: always
-    store-type: ${CAMUNDA_SESSION_STORE_TYPE:none}
-    timeout.seconds: ${CAMUNDA_SESSION_STORE_TIMEOUT:28800}
+#  session:
+#    jdbc.initialize-schema: always
+#    store-type: ${CAMUNDA_SESSION_STORE_TYPE:none}
+#    timeout.seconds: ${CAMUNDA_SESSION_STORE_TIMEOUT:28800}
 
 management:
   health:
@@ -94,16 +90,16 @@ camunda.bpm:
         form-action 'self';
         frame-ancestors 'none';
         object-src 'none'
-  job-execution:
-    core-pool-size: ${CAMUNDA_JOB_CORE_POOL_SIZE:3}
-    lock-time-in-millis: ${CAMUNDA_JOB_LOCK_TIME_MILLIS:300000}
-    max-jobs-per-acquisition: ${CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION:3}
-    max-pool-size: ${CAMUNDA_JOB_MAX_POOL_SIZE:10}
-    queue-capacity: ${CAMUNDA_JOB_QUEUE_SIZE:3}
-    wait-time-in-millis: ${CAMUNDA_JOB_WAIT_TIME_MILLIS:5000}
-    max-wait: ${CAMUNDA_JOB_MAX_WAIT:60000}
-  metrics:
-    enabled: ${CAMUNDA_METRICS_FLAG:true}
+#  job-execution:
+#    core-pool-size: ${CAMUNDA_JOB_CORE_POOL_SIZE:3}
+#    lock-time-in-millis: ${CAMUNDA_JOB_LOCK_TIME_MILLIS:300000}
+#    max-jobs-per-acquisition: ${CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION:3}
+#    max-pool-size: ${CAMUNDA_JOB_MAX_POOL_SIZE:10}
+#    queue-capacity: ${CAMUNDA_JOB_QUEUE_SIZE:3}
+#    wait-time-in-millis: ${CAMUNDA_JOB_WAIT_TIME_MILLIS:5000}
+#    max-wait: ${CAMUNDA_JOB_MAX_WAIT:60000}
+#  metrics:
+#    enabled: ${CAMUNDA_METRICS_FLAG:true}
 server:
   port: 8080
   servlet.context-path: /camunda

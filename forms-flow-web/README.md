@@ -14,6 +14,7 @@ A React library for rendering out forms based on the form.io platform.
    - [Step 3 : Running the Application](#running-the-application)
    - [Step 4 : Health Check](#health-check)
 3. [How to Create Your First Form](#how-to-create-your-first-form)
+4. [Logo change](#logo-change)
 
 ## Prerequisites
 
@@ -53,12 +54,13 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  `FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://your-ip-address:3001`
  `INSIGHT_API_BASE`|Insight Api base end-point||`http://your-ip-address:7000`
  `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
- `WEB_API_BASE_URL`|formsflow Rest API URI||`http://your-ip-address:5000/api`
+ `FORMSFLOW_API_URL`|formsflow Rest API URI||`http://your-ip-address:5000/api`
  `CAMUNDA_API_URI`|Camunda Rest API URI||`http://your-ip-address:8000/camunda`
  `KEYCLOAK_URL`| URL to your Keycloak server || `http://your-ip-address:8080`
  `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
  `KEYCLOAK_WEB_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-web | `forms-flow-web`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token| | `giert989jkwrgb@DR55`
+ `APPLICATION_NAME`|Application name is used to provide clients application name|
 
 ### Running the application
 
@@ -79,6 +81,11 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
   * Navigate to menu **Forms**
   * Click the button **+ Create Form** to launch the form designer studio.
   * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
+  
+### Logo change
+  * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web.
+     The default width and height of the logo is 50 and 55 also the image format is svg
+  * The icon can also be replaced to the users icon by replacing the favicon in the public folder of forms-flow-web
 
 To know more about form.io, go to https://help.form.io/userguide/introduction/.
 

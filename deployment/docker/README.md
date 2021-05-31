@@ -119,8 +119,6 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_BPM_CLIENTSECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
 `KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
 
-**NOTE : For local setup replace `<realm>` with `forms-flow-ai`**, for server setup replace `<realm>` with your `<realm name>`.
-
 ##### formsflow.ai analytics variable settings
 -----------------------------------
 

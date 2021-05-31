@@ -5,8 +5,7 @@ from http import HTTPStatus
 from flask import jsonify
 from flask_restx import Namespace, Resource, cors
 
-from api.utils.util import cors_preflight
-from api.utils.constants import CORS_ORIGINS
+from ..utils.util import cors_preflight
 
 
 API = Namespace("Checkpoint", description="Checkpoint")
@@ -18,7 +17,7 @@ class HealthCheckpointResource(Resource):
     """Resource for managing healthcheckpoint."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cors.crossdomain(origin="*")
     def get():
         """Get the status of API."""
         return (

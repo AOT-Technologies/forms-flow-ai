@@ -12,7 +12,6 @@ from ..schemas.application_audit import ApplicationAuditSchema
 from ..services import ApplicationService, ApplicationAuditService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
-from api.utils.constants import CORS_ORIGINS
 
 # keeping the base path same for application history and application/
 API = Namespace("Application", description="Application")
@@ -24,7 +23,7 @@ class ApplicationHistoryResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cors.crossdomain(origin="*")
     @auth.require
     def get(application_id):
         """Get application histry."""
@@ -40,7 +39,7 @@ class ApplicationHistoryResource(Resource):
         )
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cors.crossdomain(origin="*")
     @auth.require
     def post(application_id):
         """Post a new application using the request body."""

@@ -1,47 +1,29 @@
-# Formsflow.ai Keycloak Setup
+# formsflow.ai Keycloak Setup
 
-## Table of Content
-1. [Local Keycloak setup](#local-keycloak-setup)
-   - [Prerequisites](#prerequisites)
-   - [Step 1 : Environment Configuration](#environment-configuration)
-   - [Step 2 : Environment Variables](#environment-variables)
-   - [Step 3 : Starting / Stopping Keycloak server](#starting-or-stopping-keycloak-server)
-   - [Step 4 : Health Check](#health-check)
-2. [Server Keycloak setup](#server-keycloak-setup)
-   - [Step 1 : Create Realm](#create-realm)
-   - [Step 2 : Create Keycloak setup for formsflow web](#create-keycloak-setup-for-formsflow-web)
-   - [Step 3 : Create Keycloak setup for formsflow analytics](#create-keycloak-setup-for-formsflow-analytics)
-   - [Step 4 : Create Keycloak setup for formsflow bpm](#create-keycloak-setup-for-formsflow-bpm) 
-   - [Step 5 : Create groups](#create-groups) 
-   - [Step 6 : Test keycloak access in Postman](#test-keycloak-access-in-postman) 
-3. [Getting the client secret](#getting-the-client-secret)
+## Table of Contents
+* [Automated Keycloak setup](#automated-keycloak-setup)
+* [Manual Keycloak setup](#manual-keycloak-setup)
+  * [Step 1 : Create Realm](#create-realm)
+  * [Step 2 : Create Keycloak setup for formsflow web](#create-keycloak-setup-for-formsflow-web)
+  * [Step 3 : Create Keycloak setup for formsflow analytics](#create-keycloak-setup-for-formsflow-analytics)
+  * [Step 4 : Create Keycloak setup for formsflow bpm](#create-keycloak-setup-for-formsflow-bpm) 
+  * [Step 5 : Create groups](#create-groups) 
+  * [Step 6 : Test keycloak access in Postman](#test-keycloak-access-in-postman) 
+* [Getting the client secret](#getting-the-client-secret)
 
-## Local keycloak setup
-
-* This setup is preferred for local development only. For server setup go to [Server Keycloak setup](#server-keycloak-setup).
-* If you do not have the formsflow.ai project in local clone this github repo: https://github.com/AOT-Technologies/forms-flow-ai
-
-### Prerequisites
-
-* The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). This need to be installed. 
-
+## Automated keycloak setup
 
 ### Environment Configuration
 
+Environment variables are set in **.env** and read by the system.
+
    * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is [forms-flow-ai/forms-flow-idm/keycloak]().
-   * *Optional*: Rename the file **sample.env** to **.env**. ***Skip this for default setup***
-   * *Optional*: Modify the environment variables as needed. Details below,
-
-Environment variables are set in **.env** file and read by the system.
-
-### Environment Variables
+   * Make sure your current working directory is "forms-flow-idm/keycloak".
+   * Rename the file **sample.env** to **.env**.
+   * Modify the configuration values as needed. Details below,
    
 #### Keycloak Database Connection Details
------------------------------------------
-
-***Skip this for default setup***
-
+   
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `KEYCLOAK_JDBC_DB`|keycloak database name|Used on installation to create the database.Choose your own|`keycloak`
@@ -49,56 +31,41 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_JDBC_PASSWORD`|keycloak database postgres password|Used on installation to create the database.Choose your own|`changeit`
 
 #### Keycloak Admin Details
------------------------------------------
-
-***Skip this for default setup***
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `KEYCLOAK_ADMIN_USER`|keycloak admin user name|Choose your own|`admin`
-`KEYCLOAK_ADMIN_PASSWORD`|keycloak admin password|Choose your own|`changeme`
+`KEYCLOAK_ADMIN_PASSWORD`|keycloak admin password|Choose your own|`changeit`
 
-### Starting or Stopping Keycloak server
-
-* Keycloak server uses port 8080, make sure the port is available.
-* `cd {Your Directory}/forms-flow-ai/forms-flow-idm/keycloak`
-
-#### To start the keycloak server
+### Starting the keycloak server
    
-* Run `docker-compose up -d` to start.
-
-*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+* For Linux,
+   * Run `docker-compose -f docker-compose-linux.yml build` to build.
+   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+* For Windows,
+   * Run `docker-compose -f docker-compose-windows.yml build` to build.
+   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
 
 #### To stop the keycloak server
-
-  * Run `docker-compose stop` to stop.
+* For Linux,
+  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
+* For Windows,
+  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
   
 ### Health Check
 
-   The application should be up and available for use in http://your-ip-address:8080
-   ```
-    Login Credentials
-    -----------------
-    User Name : admin
-    Password  : changeme
-   ```
+   The application should be up and available for use at port defaulted to 8080 in application.yaml http://localhost:8080
    
-  * Default User credentials are generated when keycloak started for the first time, you can modify the values on your keycloak service. 
    
-   User Role | User Name | Password |
-   --- | --- | ---
-   `Designer`|`formsflow-designer`|`changeme`
-   `Client`|`formsflow-client`|`changeme`
-   `Reviewer`|`formsflow-reviewer`|`changeme`
-
 * **NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.**
 
-## Server keycloak setup
 
-* Make sure you downloaded and installed [Keycloak](https://www.keycloak.org/downloads). 
-* To setup a remote keycloak server either download and import the ***[formsflow-ai-realm.json](./imports/formsflow-ai-realm.json)*** to keycloak or follow the manual steps below.
+## Manual keycloak setup
 
-### Create Realm
+
+To setup a remote keycloak server either download and import the [formsflow-ai-realm.json](./imports/formsflow-ai-realm.json) to keycloak or follow the manual steps below.'
+
+## Realm creation for keycloak
 
 Create a realm **forms-flow-ai**
 
@@ -106,9 +73,9 @@ Create a realm **forms-flow-ai**
 * Click the button "Create Realm" to add new realm **forms-flow-ai**
 * Click Create   
   
-### Create Keycloak setup for formsflow web
+## Create Keycloak setup for formsflow web
 
-#### Create a forms-flow-web Client.     
+### Create a forms-flow-web Client.     
 
 * Login to KeyCloak Realm with admin privileges  
 * Configure > Clients > Create  
@@ -147,9 +114,20 @@ Create a realm **forms-flow-ai**
        	* Included Client Audience = forms-flow-web
        	* Click Save
 
-### Create Keycloak setup for formsflow analytics
+### Key cloak configuration for formsflow.ai UI setup
 
-#### Create a forms-flow-analytics Client.     
+- Once the forms-flow-web client is created for keycloak.
+- Rename the file **public/config/kc/keycloak-sample.json** to **public/config/kc/keycloak.json**
+  in [forms-flow-web](../forms-flow-web/public/config/kc/keycloak-sample.json)
+- Follow below steps to get client adapter configuration to get values from keycloak:
+  - Select your realm --> Go to clients tab --> Click on your client ID i.e."forms-flow-web"
+  - Go to Installation tab --> Select Format option as Keycloak OIDC JSON
+  - Copy the JSON data
+  - Update the content in file **public/config/kc/keycloak.json** in [forms-flow-web](../forms-flow-web/public/config/kc)
+
+## Create Keycloak setup for formsflow analytics
+
+### Create a forms-flow-analytics Client.     
 
 * Login to KeyCloak Realm with admin privileges  
 * Configure > Clients > Create  
@@ -182,9 +160,9 @@ Create a realm **forms-flow-ai**
 			* Click Save  
  
 
-### Create Keycloak setup for formsflow bpm
+## Create Keycloak setup for formsflow bpm
 
-#### Create a forms-flow-bpm Client.     
+### Create a forms-flow-bpm Client.     
 
 * Login to KeyCloak Realm with admin privileges  
 * Configure > Clients > Create  
@@ -237,7 +215,7 @@ Create a realm **forms-flow-ai**
        	* Included Custom Audience = forms-flow-web
        	* Click Save
 
-### Create Groups   
+## Create Groups   
 
 Create groups to support operations  
 
@@ -252,14 +230,17 @@ Create groups to support operations
 	* Click Save  
 * Create Sub group by Clicking on Main group created on step-1 i.e. formsflow, and then click New  
 	* Name = formsflow-reviewer  
-	* Click Save   
+	* Click Save 
+* Create Sub group by Clicking on Main group created on step-1 i.e. formsflow, and then click New  
+	* Name = formsflow-analyst  
+	* Click Save  
 * Create Main group by Clicking New  
 	* Name = camunda-admin  
 	* Click Save  
 * Default Groups Tab (Assign Default Group to self-registering users)  
 	* From available groups; map the group "formsflow-client" to "Default Groups".  
 
-#### Map roles to group  
+### Map roles to group  
 
 Mapping different roles to group/subgroups:  
 
@@ -269,11 +250,12 @@ Mapping different roles to group/subgroups:
     * Select forms-flow-web from the list of Client Roles selection  
     * Select formsflow-client role and click add selected  
     * The selected role will appear in assigned roles for that subgroup.  
-* Repeat the step 2 and 3 for subgroups formsflow-designer, formsflow-reviewer and choose the respective roles for them according to the table :
+* Repeat the step 2 and 3 for subgroups formsflow-designer, formsflow-reviewer and formsflow-analyst and choose the respective roles for them according to the table :
 
 Group|Roles|Description
 ---|---|---
 camunda-admin||Able to administer Camunda directly and create new workflows
+formsflow-analyst|formsflow-analyst, formsflow-client|Able to access the Redash dashboard and formsflow UI
 formsflow-designer|formsflow-client, formsflow-designer, formsflow-reviewer| Able to access all elements of the formsflow UI including forms design, task list and forms access
 formsflow-reviewer|formsflow-reviewer| Able to access task list and forms access of formsflow UI
 formsflow-client|formsflow-client| Able to access form fill-in only

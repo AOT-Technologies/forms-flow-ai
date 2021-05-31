@@ -4,27 +4,27 @@
 
 **formsflow.ai** leverages form.io to build "serverless" data management applications using a simple drag-and-drop form builder interface.
 
-To know more about form.io, go to  https://form.io.
+To know more about form.io, go to https://github.com/formio/formio.
 
 ## Table of Content
 
-1. [Prerequisites](#prerequisites)
-2. [Solution Setup](#solution-setup)
-   * [Step 1 : Keycloak Setup](#keycloak-setup)
-   * [Step 2 : Installation](#installation)
-   * [Step 3 : Running the Application](#running-the-application)
-   * [Step 4 : Health Check](#health-check)
-   * [Step 5 : Import of predefined roles and Forms](#import-of-predefined-roles-and-forms)
-3. [Formsflow form API List](#formsflow-form-api-list)  
-   * [How-to get jwt token](#how-to-get-jwt-token)
-   * [How-to export roles and Forms](#how-to-export-roles-and-forms)
-   * [How-to get role id](#how-to-get-role-id)
-   * [How-to get user resource id](#how-to-get-user-resource-id)
-   * [Custom components](#custom-components)   
+* [Prerequisites](#prerequisites)
+* [Solution Setup](#solution-setup)
+  * [Step 1 : Keycloak Setup](#keycloak-setup)
+  * [Step 2 : Installation](#installation)
+  * [Step 3 : Running the Application](#running-the-application)
+  * [Step 4 : Health Check](#health-check)
+  * [Step 5 : Import of predefined roles and Forms](#import-of-predefined-roles-and-forms)
+* [Formsflow form API List](#formsflow-form-api-list)  
+  * [How-to get jwt token](#how-to-get-jwt-token)
+  * [How-to export roles and Forms](#how-to-export-roles-and-forms)
+  * [How-to get role id](#how-to-get-role-id)
+  * [How-to get user resource id](#how-to-get-resource-user-id)
+  * [Custom components](#custom-components)   
 
 ## Prerequisites
 
-* For docker installations [docker-compose](https://docker.com) and [Docker](https://docker.com) need to be installed.
+The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
 
 ## Solution Setup
 
@@ -35,19 +35,18 @@ Not applicable.
 
 ### Installation
 
-   * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is "forms-flow-ai/forms-flow-forms".
-   * Rename the file **sample.env** to **.env**.
-   * Modify the **.env** file using the instructions below.
+* Make sure you have a Docker machine up and running.
+* Make sure your current working directory is "forms-flow-forms".
+* Rename the file **sample.env** to **.env**.
+* Modify the configuration values as needed. Details below,
  
 |Variable name | Meaning | Possible values | Default value |
 |--- | --- | --- | ---
 |`FORMIO_MONGO_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own||`admin`
 |`FORMIO_MONGO_PASSWORD`|Mongo Root Password||`changeme`
-|`FORMIO_DB_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
-|`FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`admin@example.com`
-|`FORMIO_ROOT_PASSWORD`|form.io admin password|eg.changeme|`changeme`
-|`FORMIO_DEFAULT_PROJECT_URL`|form.io default url||`http://your-ip-address:3001`
+|`FORMIO_MONGO_DATABASE`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
+|`FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`must be set to whatever email address you want form.io to have as admin user`
+|`FORMIO_ROOT_PASSWORD`|form.io admin password|eg.CHANGEME|`must be set to whatever password you want for your form.io admin user`
 
 **Additionally, you may want to change these**
 * The value of Mongo database details (especially if this instance is not just for testing purposes)
@@ -55,57 +54,44 @@ Not applicable.
   
 ### Running the application
 
-* forms-flow-forms service uses port 3001, make sure the port is available.
-* `cd {Your Directory}/forms-flow-ai/forms-flow-forms`
-
 * For Linux,
+   * Run `docker-compose -f docker-compose-linux.yml build` to build.
    * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
 * For Windows,
+   * Run `docker-compose -f docker-compose-windows.yml build` to build.
    * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
- 
-*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
    
 #### To stop the application
 * For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml stop` to stop.
+  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
 * For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
+  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
 
 ### Health Check
 
-   The application should be up and available for use at port defaulted to 3001 in  (i.e. http://your-ip-address:3001/)
-   
-        Default Login Credentials
-        -----------------
-        User Name / Email : admin@example.com
-        Password  : changeme
-        
+   The application should be up and available for use at port defaulted to 3001 in docker-compose.yml (i.e. http://localhost:3001/)
+    and login using valid root credentials setup in .env
+    
+    FORMIO_ROOT_EMAIL: admin@example.com
+    FORMIO_ROOT_PASSWORD: CHANGEME
 	
 ## Formsflow form API List
 	
 	
 ### How-to get jwt token
-------------------------
 
    * Get the jwt token using resource **/user/login**
-   * Use the default forms.io credentials below for email / password
-   
-***Use API clients like [POSTMAN](https://www.postman.com/) to invoke below request***
-   
 ```
 POST http://localhost:3001/user/login
 {
     "data": {
-        "email": email,
-        "password": password
+        "email": {{email}},
+        "password": {{password}}
     }
 }
 ``` 
-
-   * Copy and use x-jwt-token from the response header.
     
 ### Import of Predefined Roles and Forms
-----------------------------------------
 
    * [Get the jwt token](./README.md#how-to-get-jwt-token)
     
@@ -123,7 +109,6 @@ x-jwt-token: {x-jwt-token}
 Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user/login`
 
 ### How to Export Roles and Forms
----------------------------------
 
    * [Get the jwt token](./README.md#how-to-get-jwt-token)
   
@@ -139,7 +124,6 @@ x-jwt-token: {x-jwt-token}
 Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user/login`
 
 ### How-to get role id
-----------------------
 
    * [Get the jwt token](./README.md#how-to-get-jwt-token)
    
@@ -156,7 +140,6 @@ x-jwt-token: {x-jwt-token}
 Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user/login`
 
 ### How-to get user resource id
---------------------------------
 
    * [Get the jwt token](./README.md#how-to-get-jwt-token)
    

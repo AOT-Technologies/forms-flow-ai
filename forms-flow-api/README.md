@@ -64,6 +64,7 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_WEB_CLIENTID`|Client ID for formsflow to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
 `CAMUNDA_API_URI`|Camunda Rest API URI||`http://your-ip-address:8000/camunda`
 `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
+`FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins || `['http://localhost:3000', 'https://app2.aot-technologies.com']`
 `WEBAPI_ANALYTICS_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
 `WEBAPI_ANALYTICS_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
 `WEBAPI_ANALYTICS_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`

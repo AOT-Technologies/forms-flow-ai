@@ -3,7 +3,6 @@
 import os
 
 from flask import Flask
-from flask_cors import CORS
 
 from . import config, models
 from .models import db, ma, mongo
@@ -20,7 +19,6 @@ setup_logging(
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     """Return a configured Flask App using the Factory method."""
     app = Flask(__name__)
-    CORS(app)
     app.config.from_object(config.CONFIGURATION[run_mode])
 
     db.init_app(app)

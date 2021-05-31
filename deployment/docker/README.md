@@ -81,11 +81,7 @@ Start the **analytics server** by following the instructions given [here](../../
 `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`admin@example.com`
 `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.changeme|`changeme`
 
-* Build all the services.
-   * For Linux
-        - Run `docker-compose -f docker-compose-linux.yml build forms-flow-forms` to build.
-    * For Windows
-        - Run `docker-compose -f docker-compose-windows.yml build forms-flow-forms` to build.
+
 *  Follow the below steps for mapping the role IDs.   
    - Start the form.io service.
      - For Linux
@@ -97,7 +93,9 @@ Start the **analytics server** by following the instructions given [here](../../
            Default Login Credentials
            -----------------
            User Name / Email : admin@example.com
-           Password  : changeme           
+           Password  : changeme   
+                   
+*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
 
 #### forms-flow-web, forms-flow-bpm & forms-flow-web Setup
 -----------------------------------
@@ -166,8 +164,9 @@ Variable name | Meaning | Possible values | Default value |
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
+`APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
+`FORMSFLOW_API_CORS_ORIGIN`| Formsflow webapi cors origin || `*`
 `CAMUNDA_API_URI`|Camunda Rest API URI||`http://your-ip-address:8000/camunda`
-`FORMIO_DEFAULT_PROJECT_URL`|The URL of the form.io server||`http://your-ip-address:3001`
 `WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
 `WEBAPI_ANALYTICS_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
 `WEBAPI_ANALYTICS_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
@@ -256,9 +255,11 @@ Variable name | Meaning | Possible values | Default value |
   `CAMUNDA_JOB_WAIT_TIME_MILLIS`|Job-Executor Configuration Properties||`5000`
   `CAMUNDA_JOB_MAX_WAIT`|Job-Executor Configuration Properties||`60000`
   `CAMUNDA_METRICS_FLAG`|Job-Executor Configuration Properties||`false`
+<!--
   `CAMUNDA_BPM_HISTORY_LEVEL`|Engine Configuration Properties||`none`
   `CAMUNDA_AUTHORIZATION_FLAG`|Engine Configuration Properties||`true`
-  `CAMUNDA_AUTHORIZATION_REVOKE_CHECK_FLAG`|Engine Configuration Properties||`auto`
+  `CAMUNDA_AUTHORIZATION_REVOKE_CHECK_FLAG`|Engine Configuration Properties||`auto` 
+-->
   
  Reference: 
  * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/job-executor/#job-executor-configuration-properties
@@ -270,8 +271,6 @@ Variable name | Meaning | Possible values | Default value |
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
- `FORMIO_ROOT_EMAIL`|form.io admin login|eg. admin@example.com|`admin@example.com`
- `FORMIO_ROOT_PASSWORD`|form.io admin password|eg.changeme|`changeme`
  `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting|`http://your-ip-address:3000`|
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type |`TASK_EVENT` `TASK_EVENT_DETAILS`|`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
@@ -300,15 +299,17 @@ Variable name | Meaning | Possible values | Default value |
 
 ### Running the application
 * For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml up --build -d` to start.
+   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
 * For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml up --build -d` to start.
+   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
    
+*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+
 #### To stop the application
 * For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml down` to stop.
+  * Run `docker-compose -f docker-compose-linux.yml stop` to stop.
 * For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml down` to stop.
+  * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
   
 ### Health Check
   * Analytics should be up and available for use at port defaulted to 7000 i.e. http://your-ip-address:7000/

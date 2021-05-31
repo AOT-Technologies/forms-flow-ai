@@ -144,17 +144,6 @@ To know more about Camunda, visit https://camunda.com/.
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type |`TASK_EVENT` `TASK_EVENT_DETAILS`|`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
-<!--
- 
-#### Camunda - Orbeon Integration Settings  
-------------------------------------------
- 
-   Variable name | Meaning | Possible values | Default value |
- --- | --- | --- | ---
- `CAMUNDA_FORMBUILDER_PIPELINE_USERNAME`|Basic Authentication Support. Username||`http://your-ip-address:5000`
- `CAMUNDA_FORMBUILDER_PIPELINE_PASSWORD`|Basic Authentication Support. Password||`http://your-ip-address:5000`
- `CAMUNDA_FORMBUILDER_PIPELINE_BPM_URL`|Engine Context URL.Leverages elevated admin account.||`http://username:password@your-ip-address:8000/camunda`
- -->
  
 #### Camunda - General Settings 
  ------------------------------

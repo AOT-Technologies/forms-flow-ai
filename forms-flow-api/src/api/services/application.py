@@ -46,7 +46,7 @@ class ApplicationService:
             except BaseException as application_err:
                 response, status = {
                     "systemErrors": application_err.messages,
-                    "message": "Camunda Process Mapper Key not provided"
+                    "message": "Camunda Process Mapper Key not provided",
                 }, HTTPStatus.BAD_REQUEST
             return response, status
 

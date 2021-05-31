@@ -2,7 +2,6 @@
 from http import HTTPStatus
 
 from flask import g, jsonify, request
-from flask_pymongo import PyMongo
 from flask_restx import Namespace, Resource, cors
 
 from pymongo.errors import ConnectionFailure
@@ -12,8 +11,8 @@ from ..schemas import SentimentAnalysisSchema
 from ..services import SentimentAnalyserService, entity_category
 
 # from ..utils.auth import auth
-from ..utils.util import cors_preflight
-import json
+from api.utils.util import cors_preflight
+from api.utils.constants import CORS_ORIGINS
 
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
@@ -25,7 +24,7 @@ class SentimentAnalysisResource(Resource):
     """Resource for generating Sentiment Analysis"""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     # @auth.require
     def post():
         try:

@@ -165,7 +165,7 @@ Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
 `APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
-`FORMSFLOW_API_CORS_ORIGIN`| Formsflow webapi cors origin || `*`
+`FORMSFLOW_API_CORS_ORIGINS`| Formsflow webapi cors origin || `*`
 `CAMUNDA_API_URL`|Camunda Rest API URI||`http://your-ip-address:8000/camunda`
 `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
 `WEBAPI_ANALYTICS_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`

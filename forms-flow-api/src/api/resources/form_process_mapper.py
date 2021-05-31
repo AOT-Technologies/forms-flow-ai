@@ -83,7 +83,7 @@ class FormResource(Resource):
         except BaseException as form_err:
             response, status = {
                 "type": "Invalid Request data object",
-                "message":  form_err.messages
+                "message": form_err.messages,
             }, HTTPStatus.BAD_REQUEST
         return response, status
 

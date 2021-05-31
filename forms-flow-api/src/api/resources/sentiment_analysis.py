@@ -60,14 +60,20 @@ class SentimentAnalysisResource(Resource):
                     response, status = {
                         "message": "Server selection time out",
                     }, HTTPStatus.BAD_REQUEST
-                return response, status   
+                return response, status
 
             return jsonify(response_json), HTTPStatus.OK
         except KeyError as err:
-            return (
-                "The required fields of Input request are not passed",
+            response, status = (
+                {
+                    "type": "Invalid Request Object",
+                    "message": "The required fields of Input request like - applicationId, form_url, data[]  are not passed",
+                },
                 HTTPStatus.BAD_REQUEST,
             )
-        
-        except BusinessException as err:
-            return err.error, err.status_code
+        except BaseException as err:
+            response, status = {
+                "type": "Bad Request Error",
+                "message": "Invalid request object passed passed",
+            }, HTTPStatus.BAD_REQUEST
+        return response, status

@@ -38,13 +38,15 @@ class ApplicationService:
                 }
             }
             try:
-                response = BPMService.post_process_start(
-                    process_key=mapper.process_key, payload=payload, token=token
-                )
-                application.update({"process_instance_id": response["id"]})
+                if mapper["process_key"]:
+                    response = BPMService.post_process_start(
+                        process_key=mapper.process_key, payload=payload, token=token
+                    )
+                    application.update({"process_instance_id": response["id"]})
             except BaseException as application_err:
                 response, status = {
-                    "systemErrors": application_err.messages
+                    "systemErrors": application_err.messages,
+                    "message": "Camunda Process Mapper Key not provided"
                 }, HTTPStatus.BAD_REQUEST
             return response, status
 

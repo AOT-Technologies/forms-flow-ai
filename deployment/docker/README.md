@@ -167,7 +167,7 @@ Variable name | Meaning | Possible values | Default value |
 `APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
 `FORMSFLOW_API_CORS_ORIGIN`| Formsflow webapi cors origin || `*`
 `CAMUNDA_API_URI`|Camunda Rest API URI||`http://your-ip-address:8000/camunda`
-`WEB_API_BASE_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
+`FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
 `WEBAPI_ANALYTICS_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
 `WEBAPI_ANALYTICS_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
 `WEBAPI_ANALYTICS_DATABASE`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`

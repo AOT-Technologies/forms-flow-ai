@@ -195,6 +195,8 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
 
+<!--
+
 ###### CAMUNDA_SESSION_JDBC : Session Management (High Availability) (Prefixed with CAMUNDA_SESSION_).
 -----------------------------------
 
@@ -216,7 +218,6 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_SESSION_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
 
 
-<!--
 ##### CAMUNDA_ANALYTICS_JDBC : Application's Audit Management (Only Cam variables) (Prefixed with CAMUNDA_ANALYTICS_).
 ------------------------------------------------
 
@@ -231,8 +232,6 @@ Variable name | Meaning | Possible values | Default value |
  `CAMUNDA_ANALYTICS_HIKARI_IDLE_TIMEOUT`|Hikari Connection optimization setting||`600000`
  `CAMUNDA_ANALYTICS_HIKARI_MAX_POOLSIZE`|Hikari Connection optimization setting||`10`
  `CAMUNDA_ANALYTICS_HIKARI_VALID_TIMEOUT`|Hikari Connection optimization setting||`5000`
- 
- -->
 
 ##### Camunda Session Management
 -----------------------
@@ -241,6 +240,8 @@ Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `CAMUNDA_SESSION_STORE_TYPE`| Store type for holding the state | | `jdbc`
  `CAMUNDA_SESSION_STORE_TIMEOUT`| Timeout Setting in seconds| | `30`
+ 
+-->
 
 ##### Camunda System Tuning  
 ----------------------------

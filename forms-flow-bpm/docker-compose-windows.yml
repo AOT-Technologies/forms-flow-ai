@@ -51,7 +51,7 @@ services:
 #      - CAMUNDA_METRICS_FLAG=${CAMUNDA_METRICS_FLAG}
       - CAMUNDA_APP_ROOT_LOG_FLAG=${CAMUNDA_APP_ROOT_LOG_FLAG:-error}
       - FORMSFLOW_API_URL=${FORMSFLOW_API_URL:-http://host.docker.internal:5000}
-      - FORMIO_URL=${FORMIO_DEFAULT_PROJECT_UR:-http://host.docker.internal:3001L}
+      - FORMIO_URL=${FORMIO_DEFAULT_PROJECT_URL:-http://host.docker.internal:3001L}
       - FORMIO_ROOT_EMAIL=${FORMIO_ROOT_EMAIL:-admin@example.com}
       - FORMIO_ROOT_PASSWORD=${FORMIO_ROOT_PASSWORD:-changeme}
       - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN:-*}

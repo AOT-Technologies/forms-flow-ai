@@ -2,7 +2,7 @@ version: "3.7"
 
 services:
   forms-flow-web:
-    container_name: forms-flow-ai
+    container_name: forms-flow-web
     build:
       context: .
       dockerfile: Dockerfile

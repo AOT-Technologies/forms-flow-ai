@@ -12,6 +12,7 @@ services:
   keycloak-db:
     image: postgres
     restart: unless-stopped
+    container_name: keycloak_db
     volumes:
       - ./postgres/keycloak:/data/postgres
     environment:
@@ -26,6 +27,7 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:11.0.0
     restart: unless-stopped
+    container_name: keycloak
     volumes:
       - ./imports:/opt/jboss/keycloak/imports
     command: 

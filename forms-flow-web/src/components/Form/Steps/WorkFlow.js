@@ -11,9 +11,7 @@ import Select from "react-dropdown-select";
 import SaveNext from "./SaveNext";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
 
-const WorkFlow = React.memo((props) => {
-
-  const {
+const WorkFlow = React.memo(({
     associateWorkFlow,
     changeWorkFlowStatus,
     populateDropdown,
@@ -25,8 +23,7 @@ const WorkFlow = React.memo((props) => {
     steps,
     workflow,
     disableWorkflowAssociation
-  } = props;
-
+}) => {
 
   return (
     <Grid container direction="row" justify="flex-start" alignItems="baseline">
@@ -56,7 +53,9 @@ const WorkFlow = React.memo((props) => {
                 aria-label="associateWorkFlow"
                 name="associateWorkFlow"
                 value={associateWorkFlow}
-                onChange={changeWorkFlowStatus}
+                onChange={(e)=>{
+                  changeWorkFlowStatus(e.target.value)}
+                }
                 row
               >
                 <FormControlLabel

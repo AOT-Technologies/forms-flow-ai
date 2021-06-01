@@ -8,22 +8,20 @@ import TextField from "@material-ui/core/TextField";
 
 import SaveNext from "./SaveNext";
 
-const Preview = React.memo((props) => {
-  const {
-    handleNext,
-    handleBack,
-    activeStep,
-    steps,
-    processData,
-    // handleAnonymous,
-    setProcessData,
-    workflow,
-    formData,
-    submitData,
-    handleEditPreview,
-    disablePreview
-  } = props;
-
+const Preview = React.memo(({
+                              handleNext,
+                              handleBack,
+                              activeStep,
+                              steps,
+                              processData,
+                              // handleAnonymous,
+                              setProcessData,
+                              workflow,
+                              formData,
+                              submitData,
+                              handleEditPreview,
+                              disablePreview
+                            }) => {
 
   return (
     <Grid
@@ -114,7 +112,7 @@ const Preview = React.memo((props) => {
                 rows={4}
                 variant="outlined"
                 className="text-field"
-                value={processData.comments}
+                value={processData.comments||""}
                 onChange={(e) =>
                   setProcessData({
                     comments: e.target.value,

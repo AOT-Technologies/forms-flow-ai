@@ -11,6 +11,8 @@ import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
 
+//TODO convert this code to functional component
+
 // for edit
 import {
   fetchAllBpmProcesses,
@@ -50,7 +52,7 @@ class StepperPage extends PureComponent {
       previewMode: false,
       editMode: false,
       associateWorkFlow: "no",
-      processData: { status: "", isAnonymousAllowd: false, comments: "" },
+      processData: { status: "inactive", isAnonymousAllowd: false, comments: "" },
       formId: "",
       processList: [],
       processListLoaded: false,
@@ -151,7 +153,7 @@ class StepperPage extends PureComponent {
         stateData = {
           ...stateData,
           processData: {
-            status: nextProps.formProcessList.status,
+            status: nextProps.formProcessList.status||"inactive",
             isAnonymousAllowd: false,
             comments: nextProps.formProcessList.comments,
           },
@@ -183,8 +185,8 @@ class StepperPage extends PureComponent {
   };
   // handleCheckboxChange = (event) =>
   //   this.setState({ checked: event.target.checked });
-  changeWorkFlowStatus = (e) => {
-    this.setState({ associateWorkFlow: e.target.value });
+  changeWorkFlowStatus = (isWorkFlowAssociated) => {
+    this.setState({workflow:null, associateWorkFlow: isWorkFlowAssociated, dataModified:true});
   };
 
   setProcessData = (data) => {
@@ -252,17 +254,20 @@ class StepperPage extends PureComponent {
 
   submitData = () => {
     const { form, onSaveFormProcessMapper, formProcessList } = this.props;
-    const { workflow, processData } = this.state;
-    // if (associateWorkFlow === "yes") {
+    const { workflow, processData, associateWorkFlow} = this.state;
     const data = {
       formId: form.id,
       formName: form.form && form.form.title,
       formRevisionNumber: "V1", // to do
-      processKey: workflow && workflow.value,
-      processName: workflow && workflow.label,
-      status: processData.status === "" ? "active": processData.status,
-      comments: processData.comments,
+      status: processData.status? processData.status:"inactive"
     };
+    if (associateWorkFlow === "yes" && workflow) {
+      data["processKey"]= workflow && workflow.value;
+      data["processName"]= workflow && workflow.label;
+    }
+    if(processData.comments){
+      data["comments"] = processData.comments;
+    }
     const isUpdate = formProcessList && formProcessList.id ? true : false;
     if (isUpdate) {
       data.id = formProcessList.id;

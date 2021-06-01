@@ -68,6 +68,9 @@ class FormProcessMapperService:
             data["process_key"] = None
             data["process_name"] = None
 
+        if not (data.get("comments")):
+            data["comments"] = None
+
         if mapper:
             mapper.update(data)
             return mapper

@@ -515,11 +515,3 @@ div[disabled] {
 .css-79elbk {
  // position: none;
 }
-//TODO Remove this when Semantic UI css is removed. Semantic UI css override formio css tooltip
-[data-tooltip]:before
-{
-  visibility: visible !important;
-  -webkit-transform:none !important;
-  transform:none !important;
-  opacity: unset;
-}

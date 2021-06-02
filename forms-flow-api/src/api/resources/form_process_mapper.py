@@ -29,6 +29,7 @@ class FormResource(Resource):
         """Get form process mapper."""
         try:
             request_schema = ApplicationListReqSchema()
+
             if request.args:
                 dict_data = request_schema.load(request.args)
                 page_no = dict_data["page_no"]
@@ -62,8 +63,20 @@ class FormResource(Resource):
                     ),
                     HTTPStatus.OK,
                 )
+        except KeyError as err:
+            response, status = (
+                {
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
         except BaseException as form_err:
-            return {"systemErrors": form_err.messages}, HTTPStatus.BAD_REQUEST
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }, HTTPStatus.BAD_REQUEST
+        return response, status
 
     @staticmethod
     @cors.crossdomain(origin=CORS_ORIGINS)
@@ -83,8 +96,8 @@ class FormResource(Resource):
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
         except BaseException as form_err:
             response, status = {
-                "type": "Invalid Request data object",
-                "message": form_err.messages,
+                "message": "Invalid request object passed for FormProcessmapper POST API",
+                "errors": form_err.messages,
             }, HTTPStatus.BAD_REQUEST
         return response, status
 
@@ -100,7 +113,10 @@ class FormResourceById(Resource):
     def get(mapper_id):
         """Get form process mapper by id."""
         try:
-            return FormProcessMapperService.get_mapper(mapper_id), HTTPStatus.OK
+            return (
+                FormProcessMapperService.get_mapper(form_process_mapper_id=mapper_id),
+                HTTPStatus.OK,
+            )
         except BusinessException as err:
             return err.error, err.status_code
 
@@ -108,9 +124,9 @@ class FormResourceById(Resource):
     @cors.crossdomain(origin="*")
     @auth.require
     def delete(mapper_id):
-        """Delete form process mapper."""
+        """Delete form process mapper by id."""
         try:
-            FormProcessMapperService.mark_inactive(mapper_id)
+            FormProcessMapperService.mark_inactive(form_process_mapper_id=mapper_id)
             return "Deleted", HTTPStatus.OK
         except BusinessException as err:
             return err.error, err.status_code
@@ -127,7 +143,9 @@ class FormResourceById(Resource):
             dict_data = mapper_schema.load(application_json)
             sub = g.token_info.get("preferred_username")
             dict_data["modified_by"] = sub
-            FormProcessMapperService.update_mapper(mapper_id, dict_data)
+            FormProcessMapperService.update_mapper(
+                form_process_mapper_id=mapper_id, data=dict_data
+            )
 
             return (
                 f"Updated FormProcessMapper ID {mapper_id} successfully",
@@ -150,6 +168,9 @@ class FormResourceByFormId(Resource):
     def get(form_id):
         """Get details of only form corresponding to a particular formId."""
         try:
-            return FormProcessMapperService.get_mapper_by_formid(form_id), HTTPStatus.OK
+            return (
+                FormProcessMapperService.get_mapper_by_formid(form_id=form_id),
+                HTTPStatus.OK,
+            )
         except BusinessException as err:
             return err.error, err.status_code

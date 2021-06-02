@@ -44,19 +44,21 @@ class ApplicationsResource(Resource):
                 application_schema_dump,
                 application_count,
             ) = ApplicationService.get_auth_applications_and_count(
-                page_no, limit, request.headers["Authorization"]
+                page_no=page_no, limit=limit, token=request.headers["Authorization"]
             )
             application_schema = ApplicationService.apply_custom_attributes(
-                application_schema_dump
+                application_schema=application_schema_dump
             )
         else:
             application_schema = ApplicationService.apply_custom_attributes(
                 ApplicationService.get_all_applications_by_user(
-                    g.token_info.get("preferred_username"), page_no, limit
+                    user_id=g.token_info.get("preferred_username"),
+                    page_no=page_no,
+                    limit=limit,
                 )
             )
             application_count = ApplicationService.get_all_application_by_user_count(
-                g.token_info.get("preferred_username")
+                user_id=g.token_info.get("preferred_username")
             )
         if page_no > 0:
             return (
@@ -118,7 +120,7 @@ class ApplicationResourceById(Resource):
         try:
             return (
                 ApplicationService.apply_custom_attributes(
-                    ApplicationService.get_application(application_id)
+                    ApplicationService.get_application(application_id=application_id)
                 ),
                 HTTPStatus.OK,
             )
@@ -136,10 +138,16 @@ class ApplicationResourceById(Resource):
             dict_data = application_schema.load(application_json)
             sub = g.token_info.get("preferred_username")
             dict_data["modified_by"] = sub
-            ApplicationService.update_application(application_id, dict_data)
+            ApplicationService.update_application(
+                application_id=application_id, data=dict_data
+            )
             return "Updated successfully", HTTPStatus.OK
         except BaseException as submission_err:
-            return {"message": "Invalid request passed"}, HTTPStatus.BAD_REQUEST
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data",
+            }, HTTPStatus.BAD_REQUEST
+        return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -162,20 +170,25 @@ class ApplicationResourceByFormId(Resource):
 
         if auth.has_role(["formsflow-reviewer"]):
             application_schema = ApplicationService.apply_custom_attributes(
-                ApplicationService.get_all_applications_form_id(form_id, page_no, limit)
+                ApplicationService.get_all_applications_form_id(
+                    form_id=form_id, page_no=page_no, limit=limit
+                )
             )
             application_count = ApplicationService.get_all_applications_form_id_count(
-                form_id
+                form_id=form_id
             )
         else:
             application_schema = ApplicationService.apply_custom_attributes(
                 ApplicationService.get_all_applications_form_id_user(
-                    form_id, g.token_info.get("preferred_username"), page_no, limit
+                    form_id=form_id,
+                    user_id=g.token_info.get("preferred_username"),
+                    page_no=page_no,
+                    limit=limit,
                 )
             )
             application_count = (
                 ApplicationService.get_all_applications_form_id_user_count(
-                    form_id, g.token_info.get("preferred_username")
+                    form_id=form_id, user_id=g.token_info.get("preferred_username")
                 )
             )
 
@@ -221,13 +234,13 @@ class ApplicationResourcesByIds(Resource):
             sub = g.token_info.get("preferred_username")
             dict_data["created_by"] = sub
             application = ApplicationService.create_application(
-                dict_data, request.headers["Authorization"]
+                data=dict_data, token=request.headers["Authorization"]
             )
 
             response, status = application_schema.dump(application), HTTPStatus.CREATED
         except BaseException as application_err:
             response, status = {
-                "type": "Bad Request Error",
+                "type": "Bad request error",
                 "message": "Invalid application request passed",
             }, HTTPStatus.BAD_REQUEST
         return response, status
@@ -253,14 +266,17 @@ class AggregatedApplicationsResource(Resource):
                 jsonify(
                     {
                         "applications": ApplicationService.get_aggregated_applications(
-                            from_date, to_date
+                            from_date=from_date, to_date=to_date
                         )
                     }
                 ),
                 HTTPStatus.OK,
             )
         except BaseException as agg_err:
-            return {"message": "Data not available"}, HTTPStatus.BAD_REQUEST
+            return {
+                "message": "Invalid request object for application metrics endpoint",
+                "errors": agg_err.messages,
+            }, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight("GET,OPTIONS")
@@ -283,14 +299,17 @@ class AggregatedApplicationStatusResource(Resource):
                 jsonify(
                     {
                         "applicationStatus": ApplicationService.get_aggregated_application_status(
-                            mapper_id, from_date, to_date
+                            mapper_id=mapper_id, from_date=from_date, to_date=to_date
                         )
                     }
                 ),
                 HTTPStatus.OK,
             )
         except BaseException as agg_err:
-            return {"message": "Data not available"}, HTTPStatus.BAD_REQUEST
+            return {
+                "message": "Invalid request object for application metrics endpoint",
+                "errors": agg_err.messages,
+            }, HTTPStatus.BAD_REQUEST
 
 
 # @cors_preflight("GET,OPTIONS")

@@ -5,10 +5,12 @@ from http import HTTPStatus
 from flask import jsonify, request
 from flask_restx import Namespace, Resource, cors
 
+from ..exceptions import BusinessException
 from api.services import TaskService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
 from api.utils.constants import CORS_ORIGINS
+
 
 
 API = Namespace("Task", description="Task")
@@ -26,7 +28,11 @@ class TaskList(Resource):
         """List all tasks."""
         return (
             jsonify(
-                {"tasks": TaskService.get_all_tasks(request.headers["Authorization"])}
+                {
+                    "tasks": TaskService.get_all_tasks(
+                    token = request.headers["Authorization"]
+                    )
+                }
             ),
             HTTPStatus.OK,
         )
@@ -46,7 +52,8 @@ class Task(Resource):
             jsonify(
                 {
                     "task": TaskService.get_task(
-                        task_id, request.headers["Authorization"]
+                        task_id = task_id, 
+                        token = request.headers["Authorization"]
                     )
                 }
             ),
@@ -65,16 +72,31 @@ class TaskClaim(Resource):
     def post(task_id):
         """Claim a task."""
         request_json = request.get_json()
-        return (
-            jsonify(
+        try:
+            return (
+                jsonify(
+                    {
+                        "tasks": TaskService.claim_task(
+                            task_id = task_id, 
+                            data = request_json, 
+                            token = request.headers["Authorization"]
+                        )
+                    }
+                ),
+                HTTPStatus.OK,
+            )
+        except KeyError as err:
+            response, status = (
                 {
-                    "tasks": TaskService.claim_task(
-                        task_id, request_json, request.headers["Authorization"]
-                    )
-                }
-            ),
-            HTTPStatus.OK,
-        )
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                    "errors": err.messages,
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+        except BusinessException as err:
+            return err.error, err.status_code
+        return response, status
 
 
 @cors_preflight("POST,OPTIONS")
@@ -88,16 +110,31 @@ class TaskUnClaim(Resource):
     def post(task_id):
         """Unclaim a task."""
         request_json = request.get_json()
-        return (
-            jsonify(
+        try:
+            return (
+                jsonify(
+                    {
+                        "tasks": TaskService.unclaim_task(
+                            task_id = task_id, 
+                            data = request_json, 
+                            token = request.headers["Authorization"]
+                        )
+                    }
+                ),
+                HTTPStatus.OK,
+            )
+        except KeyError as err:
+            response, status = (
                 {
-                    "tasks": TaskService.unclaim_task(
-                        task_id, request_json, request.headers["Authorization"]
-                    )
-                }
-            ),
-            HTTPStatus.OK,
-        )
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                    "errors": err.messages,
+                },HTTPStatus.BAD_REQUEST,
+            )
+        
+        except BusinessException as err:
+            return err.error, err.status_code
+        return response, status
 
 
 @cors_preflight("POST,OPTIONS")
@@ -111,13 +148,29 @@ class TaskComplete(Resource):
     def post(task_id):
         """Complete a task."""
         request_json = request.get_json()
-        return (
-            jsonify(
+        try:
+            return (
+                jsonify(
+                    {
+                        "tasks": TaskService.complete_task(
+                            task_id = task_id, 
+                            data = request_json, 
+                            token = request.headers["Authorization"]
+                        )
+                    }
+                ),
+                HTTPStatus.OK,
+            )
+        except KeyError as err:
+            response, status = (
                 {
-                    "tasks": TaskService.complete_task(
-                        task_id, request_json, request.headers["Authorization"]
-                    )
-                }
-            ),
-            HTTPStatus.OK,
-        )
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                    "errors": err.messages,
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+        except BusinessException as err:
+            return err.error, err.status_code
+        return response, status
+

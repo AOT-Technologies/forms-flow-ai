@@ -13,7 +13,9 @@ class TaskService:
     @staticmethod
     def get_all_tasks(token):
         """Get all tasks."""
-        tasks = BPMService.get_all_tasks(token)
+        tasks = BPMService.get_all_tasks(
+            token = token
+        )
         task_list = None
         if tasks:
             task_schema = TaskSchema()
@@ -23,7 +25,10 @@ class TaskService:
     @staticmethod
     def get_task(task_id, token):
         """Get task."""
-        task = BPMService.get_task(task_id, token)
+        task = BPMService.get_task(
+            task_id = task_id, 
+            token = token
+        )
         task_list = None
         if task:
             task_schema = TaskSchema()
@@ -33,7 +38,11 @@ class TaskService:
     @staticmethod
     def claim_task(task_id, data, token):
         """Claim a task."""
-        task_claim = BPMService.claim_task(task_id, data, token)
+        task_claim = BPMService.claim_task(
+            task_id = task_id, 
+            data = data, 
+            token = token
+        )
         if task_claim:
             return "success"
 
@@ -42,7 +51,11 @@ class TaskService:
     @staticmethod
     def unclaim_task(task_id, data, token):
         """Unclaim a task."""
-        task_unclaim = BPMService.unclaim_task(task_id, data, token)
+        task_unclaim = BPMService.unclaim_task(
+            task_id = task_id, 
+            data = data, 
+            token = token
+        )
         if task_unclaim:
             return "success"
 
@@ -51,7 +64,11 @@ class TaskService:
     @staticmethod
     def complete_task(task_id, data, token):
         """Complete a task."""
-        task_complete = BPMService.complete_task(task_id, data, token)
+        task_complete = BPMService.complete_task(
+            task_id = task_id, 
+            data = data, 
+            token = token
+        )
         if task_complete:
             return "success"
 

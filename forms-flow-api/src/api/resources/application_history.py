@@ -32,7 +32,7 @@ class ApplicationHistoryResource(Resource):
             jsonify(
                 {
                     "applications": ApplicationAuditService.get_application_history(
-                        application_id
+                        application_id = application_id
                     )
                 }
             ),
@@ -51,15 +51,26 @@ class ApplicationHistoryResource(Resource):
             dict_data = application_history_schema.load(application_history_json)
             dict_data["application_id"] = application_id
             application_history = ApplicationAuditService.create_application_history(
-                dict_data
+                data = dict_data
             )
 
             response, status = (
                 application_history_schema.dump(application_history),
                 HTTPStatus.CREATED,
             )
-        except ValidationError as application_err:
+        except KeyError as err:
+            response, status = (
+                {
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                    "errors": err.messages,
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+        except BaseException as application_err:
             response, status = {
-                "systemErrors": application_err.messages
+                "type": "Invalid Request Object",
+                "message": "Invalid Request Object Passed ",
+                "errors": application_err.messages,
             }, HTTPStatus.BAD_REQUEST
         return response, status

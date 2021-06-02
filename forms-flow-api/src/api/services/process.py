@@ -21,7 +21,9 @@ class ProcessService:
     @staticmethod
     def get_all_processes(token):
         """Get all processes."""
-        process = BPMService.get_all_process(token)
+        process = BPMService.get_all_process(
+            token = token
+        )
         if process:
             result = ProcessListSchema().dump(process, many=True)
             seen = set()
@@ -37,7 +39,10 @@ class ProcessService:
     @staticmethod
     def get_process(process_key, token):
         """Get process details."""
-        process_details = BPMService.get_process_details(process_key, token)
+        process_details = BPMService.get_process_details(
+            process_key = process_key, 
+            token = token
+        )
         if process_details:
             return ProcessDefinitionSchema().dump(process_details)
 
@@ -47,7 +52,8 @@ class ProcessService:
     def get_process_definition_xml(process_key, token):
         """Get process details."""
         process_definition_xml = BPMService.get_process_definition_xml(
-            process_key, token
+            process_key = process_key, 
+            token = token
         )
         if process_definition_xml:
             return ProcessDefinitionXMLSchema().dump(process_definition_xml)
@@ -57,7 +63,10 @@ class ProcessService:
     @staticmethod
     def get_process_action(process_key, token):
         """Get process actions."""
-        process_details = BPMService.get_process_actions(process_key, token)
+        process_details = BPMService.get_process_actions(
+            process_key = process_key, 
+            token = token
+        )
         if process_details:
             return ProcessActionListSchema().dump(process_details)
 
@@ -72,7 +81,10 @@ class ProcessService:
                 "task": {"value": task_key},
             }
         }
-        data = BPMService.post_process_evaluate(payload, token)
+        data = BPMService.post_process_evaluate(
+            payload = payload, 
+            token = token
+        )
         if data:
             value = data[0].get("state", {}).get("value")
             # Since we are receiving a string instead of json and the string contain single quote
@@ -85,18 +97,29 @@ class ProcessService:
     @staticmethod
     def post_message(data, token):
         """Get process details."""
-        return BPMService.send_message(data, token)
+        return BPMService.send_message(
+            data = data, 
+            token = token
+        )
 
     @staticmethod
     def get_process_activity_instances(process_instace_id, token):
         """Get process actions."""
         logging.debug("get_process_activity_instances " + process_instace_id)
         activity_instances = BPMService.get_process_activity_instances(
-            process_instace_id, token
+            process_instace_id = process_instace_id, 
+            token = token
         )
         logging.debug(activity_instances)
-        if activity_instances:
-            return ProcessActivityInstanceSchema().dump(activity_instances)
+        try:
+            if activity_instances:
+                return ProcessActivityInstanceSchema().dump(activity_instances)
+        except TypeError as err:
+            return{
+                "type": "Invalid request",
+                "message": "Invalid request object passed",
+                "errors": err.messages,
+            },HTTPStatus.BAD_REQUEST
 
         raise BusinessException(
             "No activity instances available for process", HTTPStatus.BAD_REQUEST

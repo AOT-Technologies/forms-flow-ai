@@ -55,7 +55,7 @@ class ProcessResource(Resource):
                 jsonify(
                     {
                         "process": ProcessService.get_all_processes(
-                            request.headers["Authorization"]
+                            token = request.headers["Authorization"]
                         )
                     }
                 ),
@@ -108,8 +108,18 @@ class ProcessEventResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
+        except KeyError as err:
+            response, status = (
+                {
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                    "errors": err.messages,
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
         except BusinessException as err:
             return err.error, err.status_code
+        return response, status
 
 
 @cors_preflight("GET,OPTIONS")

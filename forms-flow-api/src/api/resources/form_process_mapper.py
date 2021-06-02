@@ -9,8 +9,9 @@ from marshmallow import ValidationError
 from ..exceptions import BusinessException
 from ..schemas import ApplicationListReqSchema, FormProcessMapperSchema
 from ..services import FormProcessMapperService
-from ..utils.auth import auth
-from ..utils.util import cors_preflight
+from api.utils.auth import auth
+from api.utils.util import cors_preflight
+from api.utils.constants import CORS_ORIGINS
 
 
 API = Namespace("Form", description="Form")
@@ -22,7 +23,7 @@ class FormResource(Resource):
     """Resource for managing forms."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get():
         """Get form process mapper."""
@@ -65,7 +66,7 @@ class FormResource(Resource):
             return {"systemErrors": form_err.messages}, HTTPStatus.BAD_REQUEST
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def post():
         """Post a form process mapper using the request body."""
@@ -94,7 +95,7 @@ class FormResourceById(Resource):
     """Resource for managing forms by mapper_id."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get(mapper_id):
         """Get form process mapper by id."""
@@ -115,7 +116,7 @@ class FormResourceById(Resource):
             return err.error, err.status_code
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def put(mapper_id):
         """Update form process mapper details."""
@@ -145,7 +146,7 @@ class FormResourceByFormId(Resource):
     """Resource for managing forms by corresponding form_id."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     def get(form_id):
         """Get details of only form corresponding to a particular formId."""
         try:

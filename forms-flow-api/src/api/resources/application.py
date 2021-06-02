@@ -14,10 +14,9 @@ from ..schemas.application import (
     ApplicationUpdateSchema,
 )
 from ..services import ApplicationService, ApplicationAuditService
-from ..utils.auth import auth
-from ..utils.util import cors_preflight
-
-import json
+from api.utils.auth import auth
+from api.utils.util import cors_preflight
+from api.utils.constants import CORS_ORIGINS
 
 
 API = Namespace("Application", description="Application")
@@ -29,7 +28,7 @@ class ApplicationsResource(Resource):
     """Resource for managing applications."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get():
         """Get applications."""
@@ -112,7 +111,7 @@ class ApplicationResourceById(Resource):
     """Resource for submissions."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get(application_id):
         """Get application by id."""
@@ -127,7 +126,7 @@ class ApplicationResourceById(Resource):
             return err.error, err.status_code
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def put(application_id):
         """Update application details."""
@@ -149,7 +148,7 @@ class ApplicationResourceByFormId(Resource):
     """Resource for submissions."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get(form_id):
         """Get applications."""
@@ -210,7 +209,7 @@ class ApplicationResourcesByIds(Resource):
     """Resource for submissions."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def post():
         """Post a new application using the request body."""
@@ -240,7 +239,7 @@ class AggregatedApplicationsResource(Resource):
     """Resource for managing aggregated applications."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get():
         """Get aggregated applications."""
@@ -270,7 +269,7 @@ class AggregatedApplicationStatusResource(Resource):
     """Resource for managing aggregated applications."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get(mapper_id):
         """Get aggregated application status."""

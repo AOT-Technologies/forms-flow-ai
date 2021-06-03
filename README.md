@@ -117,8 +117,8 @@ In general, the operation is as follows :
 
 **Note** The URL links assume a local installation on the default ports as per the [installation instructions](./deployment ):
 
-#### End-user
-* End-user logs into formsflow.ai UI at URL- http://host.docker.internal:3000/
+#### Client
+* End-user logs into formsflow.ai UI at URL- http://localhost:3000/
 * User is redirected to Keycloak via OIDC where user's roles are returned as OIDC claims in a JWT
 * User selects a form from the list of forms available. The available forms can be filtered by the user group with advanced configuration, by default the user sees all forms published. Form details are provided through form.io 
 * The user fills in the form and submits it
@@ -128,7 +128,7 @@ In general, the operation is as follows :
 
 #### Reviewer
 
-* Reviewer logs into formsflow.ai UI at URL- http://host.docker.internal:3000/
+* Reviewer logs into formsflow.ai UI at URL- http://localhost:3000/
 * Reviewer is redirected to Keycloak via OIDC where the user's roles are returned as OIDC claims in a JWT. The fact that the reviewer has a reviewer role from Keycloak enables additional capabilities in the UI.
 * Reviewer accesses task from task list. Tasks are retrieved through the Camunda API, filtered by the reviewer group memberships mapped between Keycloak and native Camunda. 
 * Reviewer claims a task and processes it. The task moves to the next step in the workflow, with appropriate notifications and actions specific to that workflow.
@@ -136,21 +136,21 @@ In general, the operation is as follows :
 * Reviewer can access metrics data from the Postgres database filtered according to the configuration. formsflow.ai UI renders these metrics into usable pages. 
 * Reviewer can access Redash analytics dashboards (as iframes). 
 
-#### Designers / Administrators
+#### Designers
 
 These users are responsible for accessing the native capabilities of the embedded products to configure analytics dashboards, create and manage workflows, and create and manage forms. It is beyond the scope of this document to describe the detailed functionality of these products, however, the general process is :
 
 * Access product URL as follows:
-  * Camunda: http://host.docker.internal:8000/camunda/
-  * form.io: http://host.docker.internal:3001/ (the form designer is embedded into the formsflow.ai UI)
-  * Redash: http://host.docker.internal:7000/
-* The login process is the same for all of them, redirect to Keycloak as OIDC (SAML for Redash), and obtain the appropriate JWT + claims. 
-* For the forms designer, the FormFlow UI recognizes the additional role of formsflow-designer and enables a form design capability
-* For Redash and Camunda, there is a mapping in the configuration file which needs to be setup between formsflow-analytics and formsflow-bpm and the corresponding groups in Redash and Camunda respectively. This is all covered in the installation instructions.
+  * forms-flow-bpm: http://localhost:8000/camunda/
+  * forms-flow-forms: http://localhost:3001/ (the form designer is embedded into the formsflow.ai UI)
+  * forms-flow-analytics: http://localhost:7000/
+* The login process is the same for all of them except for forms-flow-forms where separate credentials can be configured, redirect to Keycloak as OIDC (SAML for Redash), and obtain the appropriate JWT + claims. 
+* For the forms designer, the FormFlow UI recognizes the additional role of forms-flow-designer and enables a form design capability
+* For Redash and Camunda, there is a mapping in the configuration file which needs to be setup between forms-flow-analytics and forms-flow-bpm and the corresponding groups in Redash and Camunda respectively. This is all covered in the installation instructions.
 
 ### Managing Forms
 
-  * Login to **http://host.docker.internal:3000/** using valid **designer** credentials
+  * Login to **http://localhost:3000/** using valid **[designer](./forms-flow-idm/keycloak/README.md#health-check)** credentials
   * Navigate to menu **Forms**
   * Click the button **+ Create Form** to launch the form designer studio.
   * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
@@ -161,11 +161,11 @@ To know more about form.io, go to https://help.form.io/userguide/introduction/.
 
 * You would need the Camunda Modeler to design your BPMN: https://camunda.com/download/modeler/
 * To learn about designing your BPMN, go to https://docs.camunda.org/get-started/quick-start/service-task/
-* To learn about deploying your BPMN, go to https://docs.camunda.org/get-started/quick-start/deploy/. Note that your default endpoint for Camunda's REST API is http://host.docker.internal:8000/camunda/engine-rest
+* To learn about deploying your BPMN, go to https://docs.camunda.org/get-started/quick-start/deploy/. Note that your default endpoint for Camunda's REST API is http://localhost:8000/camunda/engine-rest
 
 ### Managing Analytics Dashboard
 
-* Login to **http://host.docker.internal:7000/** using valid **admin** credentials
+* Login to **http://localhost:7000/** using valid **admin** credentials
 * Create the dashboard by following the Redash [userguide](https://redash.io/help/user-guide/getting-started) 
 
  ## Quick Start

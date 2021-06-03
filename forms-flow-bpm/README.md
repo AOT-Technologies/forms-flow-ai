@@ -34,13 +34,14 @@ To know more about Camunda, visit https://camunda.com/.
    * Make sure your current working directory is "forms-flow-ai/forms-flow-bpm".
    * Rename the file **sample.env** to **.env**.
    * Modify the **.env** file using the instructions below.
+   * **NOTE : {your-ip-address} on the .env variables have to be changed as per your host system IP address, for the systems with multiple network cards the IP address configurations have to be handled accordingly**
    
 #### Keycloak Integration
 --------------------------
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `KEYCLOAK_URL`| URL to your Keycloak server || `http://host.docker.internal:8080`
+ `KEYCLOAK_URL`| URL to your Keycloak server || `http://{your-ip-address}:8080`
  `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
  `KEYCLOAK_BPM_CLIENT_ID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | `forms-flow-bpm`
  `KEYCLOAK_BPM_CLIENT_SECRET`|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret`go to [link](../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
@@ -88,11 +89,11 @@ To know more about Camunda, visit https://camunda.com/.
  
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://host.docker.internal:5000`
- `FORMIO_DEFAULT_PROJECT_URL`|The URL of the forms-flow-forms server||`http://host.docker.internal:3001`
+ `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://{your-ip-address}:5000`
+ `FORMIO_DEFAULT_PROJECT_URL`|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
  `FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
  `FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
- `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting||`http://host.docker.internal:3000`
+ `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming, for multiple origins you can separate them using a comma |eg:`host1, host2`| `*`
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
@@ -102,7 +103,7 @@ To know more about Camunda, visit https://camunda.com/.
  
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `APP_SECURITY_ORIGIN`|CORS setup||`*` 
+ `APP_SECURITY_ORIGIN`|CORS setup, for multiple origins you can separate them using a comma |eg:`host1, host2`| `*`
  `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
    
  **Additionally, you may want to change these**  
@@ -129,7 +130,7 @@ To know more about Camunda, visit https://camunda.com/.
       
 ### Health Check
 
-   The application should be up and available for use at port defaulted to 8000 in http://host.docker.internal:8000/camunda/
+   The application should be up and available for use at port defaulted to 8000 in http://localhost:8000/camunda/
    
 ## How to Deploy Process
 
@@ -143,7 +144,7 @@ To know more about Camunda, visit https://camunda.com/.
 ```
    ##### 2. Post the process as file with HTTP verb POST.
 ```
-   curl -H "Authorization: Bearer ${token}" -H "Accept: application/json" -F "deployment-name=One Step Approval" -F "enable-duplicate-filtering=false" -F "deploy-changed-only=falses" -F "one_step_approval.bpmnn=@one_step_approval.bpmn"  http://host.docker.internal:8000/camunda/engine-rest/deployment/create
+   curl -H "Authorization: Bearer ${token}" -H "Accept: application/json" -F "deployment-name=One Step Approval" -F "enable-duplicate-filtering=false" -F "deploy-changed-only=falses" -F "one_step_approval.bpmnn=@one_step_approval.bpmn"  http://{your-ip-address}:8000/camunda/engine-rest/deployment/create
 ```
    
 * **NOTE: If POST request fails with permission issue, login to Camunda and go to Admin -> Authorizations -> Deployment. Then, verify the account existence under "deployment" service. If does not, please add it manually.**

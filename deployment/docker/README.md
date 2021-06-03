@@ -22,12 +22,12 @@ This page elaborates how to setup the overall solution using docker.
 
  Srl No | Service Name | Usage | Access | Dependency | Details |
 --- | --- | --- | --- | --- | ---
-1|`Keycloak`|Authentication|`http://host.docker.internal:8080`||[Keycloak](../../forms-flow-idm/keycloak/README.md)
-2|`forms-flow-forms`|form.io form building. This must be started earlier for resource role id's creation|`http://host.docker.internal:3001`||[forms-flow-forms](../../forms-flow-forms/README.md)
-3|`forms-flow-analytics`|Redash analytics server, This must be started earlier for redash key creation|`ttp://host.docker.internal:7000`|`Keycloak`|[forms-flow-analytics](../../forms-flow-analytics/README.md)
-4|`forms-flow-web`|formsflow Landing web app|`http://host.docker.internal:3000`|`Keycloak`, `forms-flow-forms`, `forms-flow-analytics`|[forms-flow-web](../../forms-flow-web/README.md)
-5|`forms-flow-api`|API services|`http://host.docker.internal:5000`|`Keycloak`|[forms-flow-api](../../forms-flow-api/README.md)
-6|`forms-flow-bpm`|Camunda integration|`http://host.docker.internal:8000/camunda`|`Keycloak`|[forms-flow-bpm](../../forms-flow-bpm/README.md)
+1|`Keycloak`|Authentication|`http://localhost:8080`||[Keycloak](../../forms-flow-idm/keycloak/README.md)
+2|`forms-flow-forms`|form.io form building. This must be started earlier for resource role id's creation|`http:/localhost:3001`||[forms-flow-forms](../../forms-flow-forms/README.md)
+3|`forms-flow-analytics`|Redash analytics server, This must be started earlier for redash key creation|`ttp://localhost:7000`|`Keycloak`|[forms-flow-analytics](../../forms-flow-analytics/README.md)
+4|`forms-flow-web`|formsflow Landing web app|`http://localhost:3000`|`Keycloak`, `forms-flow-forms`, `forms-flow-analytics`|[forms-flow-web](../../forms-flow-web/README.md)
+5|`forms-flow-api`|API services|`http://localhost:5000`|`Keycloak`|[forms-flow-api](../../forms-flow-api/README.md)
+6|`forms-flow-bpm`|Camunda integration|`http://localhost:8000/camunda`|`Keycloak`|[forms-flow-bpm](../../forms-flow-bpm/README.md)
 
 ### Installation Steps
 
@@ -70,6 +70,7 @@ Start the **analytics server** by following the instructions given [here](../../
 * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
 * Rename the file **sample.env** to **.env**. 
 * Modify the **.env** file using the instructions below.
+* **NOTE : {your-ip-address} on the .env variables have to be changed as per your host system IP address, for the systems with multiple network cards the IP address configurations have to be handled accordingly**
 >Environment variables are set in **.env** file and read by the system.
 
 
@@ -78,7 +79,7 @@ Start the **analytics server** by following the instructions given [here](../../
 `FORMIO_DB_USERNAME`|Mongo Root Username. Used on installation, Choose your own||`admin`
 `FORMIO_DB_PASSWORD`|Mongo Root Password. Used on installation, Choose your own||`changeme`
 `FORMIO_DB_NAME`|Mongo Database  Name. Used on installation to create the database. Choose your own||`formio`
-`FORMIO_DEFAULT_PROJECT_URL`|The URL of the forms-flow-forms server||`http://host.docker.internal:3001`
+`FORMIO_DEFAULT_PROJECT_URL`|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
 `FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 `FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
 
@@ -89,7 +90,7 @@ Start the **analytics server** by following the instructions given [here](../../
        - Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
      - For Windows  
        - Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
-   - Access formIO at port defaulted to 3001 i.e. http://host.docker.internal:3001/ .
+   - Access formIO at port defaulted to 3001 i.e. http://{your-ip-address}:3001/ .
    
            Default Login Credentials
            -----------------
@@ -114,7 +115,7 @@ Start the **analytics server** by following the instructions given [here](../../
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`KEYCLOAK_URL`| URL to your Keycloak server || `http://host.docker.internal:8080`
+`KEYCLOAK_URL`| URL to your Keycloak server || `http://{your-ip-address}:8080`
 `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
 `KEYCLOAK_BPM_CLIENT_ID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
 `KEYCLOAK_BPM_CLIENT_SECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
@@ -126,7 +127,7 @@ Variable name | Meaning | Possible values | Default value |
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`INSIGHT_API_URL`|Insight Api base end-point||`http://host.docker.internal:7000`
+`INSIGHT_API_URL`|Insight Api base end-point||`http://{your-ip-address}:7000`
 `INSIGHT_API_KEY`|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `must be set to your ReDash API key`
 
 ##### formsflow.ai forms variable settings
@@ -160,9 +161,9 @@ Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
 `APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
-`FORMSFLOW_API_CORS_ORIGINS`| Formsflow webapi cors origin || `*`
-`CAMUNDA_API_URL`|Camunda Rest API URI||`http://host.docker.internal:8000/camunda`
-`FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://host.docker.internal:5000`
+`FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for multiple origins you can separate host address using a comma |eg:`host1, host2`| `*`
+`CAMUNDA_API_URL`|Camunda Rest API URI||`http://{your-ip-address}:8000/camunda`
+`FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://{your-ip-address}:5000`
 `FORMSFLOW_API_ANALYTICS_DB_USERNAME`|Mongo DB Connection username|Used on installation to create the database. Choose your own|`mongo`
 `FORMSFLOW_API_ANALYTICS_DB_PASSWORD`|Mongo DB Connection password|Used on installation to create the database. Choose your own|`changeme`
 `FORMSFLOW_API_ANALYTICS_DB_NAME`|Mongo DB Connection database name|Used on installation to create the database. Choose your own|`analytics`
@@ -212,8 +213,8 @@ Variable name | Meaning | Possible values | Default value |
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://host.docker.internal:5000`
- `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting|`http://host.docker.internal:3000`|
+ `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://{your-ip-address}:5000`
+ `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`http://{your-ip-address}:3000`|
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  
@@ -226,7 +227,7 @@ Variable name | Meaning | Possible values | Default value |
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `APP_SECURITY_ORIGIN`|CORS setup||`*` 
+ `APP_SECURITY_ORIGIN`|CORS setup, for multiple origins you can separate host address using a comma |eg:`host1, host2`| `*` 
  `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
 
 ### Running the application
@@ -244,10 +245,10 @@ Variable name | Meaning | Possible values | Default value |
   * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
   
 ### Health Check
-  * Analytics should be up and available for use at port defaulted to 7000 i.e. http://host.docker.internal:7000/
-  * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://host.docker.internal:8000/camunda/
-  * FormIO should be up and available for use at port defaulted to 3001 i.e. http://host.docker.internal:3001/
-  * formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://host.docker.internal:5000/api/
-  * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://host.docker.internal:3000/
+  * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
+  * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/
+  * FormIO should be up and available for use at port defaulted to 3001 i.e. http://localhost:3001/
+  * formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
+  * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   
  * Access credentials are mentioned [here](../README.md#default-access-credentials).

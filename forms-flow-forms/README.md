@@ -38,6 +38,7 @@ Not applicable.
    * Make sure your current working directory is "forms-flow-ai/forms-flow-forms".
    * Rename the file **sample.env** to **.env**.
    * Modify the **.env** file using the instructions below.
+   * **NOTE : {your-ip-address} on the .env variables have to be changed as per your host system IP address, for the systems with multiple network cards the IP address configurations have to be handled accordingly**
  
 |Variable name | Meaning | Possible values | Default value |
 |--- | --- | --- | ---
@@ -46,7 +47,7 @@ Not applicable.
 |`FORMIO_DB_NAME`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 |`FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 |`FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
-|`FORMIO_DEFAULT_PROJECT_URL`|forms-flow-forms default url||`http://host.docker.internal:3001`
+|`FORMIO_DEFAULT_PROJECT_URL`|forms-flow-forms default url||`http://{your-ip-address}:3001`
 
 **Additionally, you may want to change these**
 * The value of Mongo database details (especially if this instance is not just for testing purposes)
@@ -72,7 +73,7 @@ Not applicable.
 
 ### Health Check
 
-   The application should be up and available for use at port defaulted to 3001 in  (i.e. http://host.docker.internal:3001/)
+   The application should be up and available for use at port defaulted to 3001 in  (i.e. http://localhost:3001/)
    
         Default Login Credentials
         -----------------
@@ -118,8 +119,6 @@ Content-Type : application/json
 x-jwt-token: {x-jwt-token}
 ``` 
 
-Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user/login`
-
 ### How-to get role id
 ----------------------
 
@@ -134,8 +133,6 @@ Headers:
 Content-Type : application/json
 x-jwt-token: {x-jwt-token}
 ``` 
-
-Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user/login`
 
 ### How-to get user resource id
 --------------------------------
@@ -152,8 +149,6 @@ Content-Type : application/json
 x-jwt-token: {x-jwt-token}
 ``` 
 
-Note: x-jwt-token can be obtained in headers of running `{formioProjectUrl}/user/login`
-	
 ## Custom Components
 
 **formsflow.ai** has custom components supported which are created by extending the

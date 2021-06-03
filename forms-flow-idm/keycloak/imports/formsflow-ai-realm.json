@@ -745,8 +745,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://localhost:7000/*",
-		"http://host.docker.internal:7000/*"
+        "http://localhost:7000/*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -827,8 +826,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://localhost:8000/camunda/*",
-		"http://host.docker.internal:8000/camunda/*"
+        "http://localhost:8000/camunda/*"
       ],
       "webOrigins": [
         "*"
@@ -980,8 +978,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://localhost:3000/*",
-		"http://host.docker.internal:3000/*"
+        "http://localhost:3000/*"
       ],
       "webOrigins": [
         "*"

@@ -1,4 +1,4 @@
-"""API endpoints for managing tenant resource."""
+# """API endpoints for managing tenant resource."""
 
 # from http import HTTPStatus
 

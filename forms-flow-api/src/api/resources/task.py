@@ -52,7 +52,7 @@ class Task(Resource):
             jsonify(
                 {
                     "task": TaskService.get_task(
-                        task_id = task_id, 
+                        task_id = task_id,
                         token = request.headers["Authorization"]
                     )
                 }
@@ -77,8 +77,8 @@ class TaskClaim(Resource):
                 jsonify(
                     {
                         "tasks": TaskService.claim_task(
-                            task_id = task_id, 
-                            data = request_json, 
+                            task_id = task_id,
+                            data = request_json,
                             token = request.headers["Authorization"]
                         )
                     }
@@ -115,8 +115,8 @@ class TaskUnClaim(Resource):
                 jsonify(
                     {
                         "tasks": TaskService.unclaim_task(
-                            task_id = task_id, 
-                            data = request_json, 
+                            task_id = task_id,
+                            data = request_json,
                             token = request.headers["Authorization"]
                         )
                     }
@@ -131,7 +131,7 @@ class TaskUnClaim(Resource):
                     "errors": err.messages,
                 },HTTPStatus.BAD_REQUEST,
             )
-        
+
         except BusinessException as err:
             return err.error, err.status_code
         return response, status
@@ -153,8 +153,8 @@ class TaskComplete(Resource):
                 jsonify(
                     {
                         "tasks": TaskService.complete_task(
-                            task_id = task_id, 
-                            data = request_json, 
+                            task_id = task_id,
+                            data = request_json,
                             token = request.headers["Authorization"]
                         )
                     }

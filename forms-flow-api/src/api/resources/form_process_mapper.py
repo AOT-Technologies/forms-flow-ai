@@ -4,7 +4,6 @@ from http import HTTPStatus
 
 from flask import g, jsonify, request
 from flask_restx import Namespace, Resource, cors
-from marshmallow import ValidationError
 
 from ..exceptions import BusinessException
 from ..schemas import ApplicationListReqSchema, FormProcessMapperSchema
@@ -121,7 +120,7 @@ class FormResourceById(Resource):
             return err.error, err.status_code
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def delete(mapper_id):
         """Delete form process mapper by id."""

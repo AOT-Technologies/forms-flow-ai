@@ -62,7 +62,7 @@ python-dotenv==0.10.3
 python-editor==1.0.4
 python-jose==3.1.0
 pytz==2019.3
-requests==2.22.0
+requests== 2.25.1
 rsa==4.7
 six==1.13.0
 snowballstemmer==2.0.0
@@ -72,7 +72,7 @@ testfixtures==6.10.3
 toml==0.10.2
 twython==3.8.2
 typed-ast==1.4.0
-urllib3==1.25.8
+urllib3==1.26.5
 wcwidth==0.1.8
 Werkzeug==0.16.0
 wrapt==1.11.2

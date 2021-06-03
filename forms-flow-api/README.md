@@ -57,13 +57,13 @@ Variable name | Meaning | Possible values | Default value |
 `FORMSFLOW_API_DB_PASSWORD`|formsflow database postgres password|Used on installation to create the database.Choose your own|`changeme`
 `FORMSFLOW_API_DB_NAME`|formsflow database name|Used on installation to create the database.Choose your own|`FORMSFLOW_API_DB`
 `FORMSFLOW_API_DB_URL`|JDBC DB Connection URL for formsflow||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi`
-`KEYCLOAK_URL`| URL to your Keycloak server || `http://your-ip-address:8080`
+`KEYCLOAK_URL`| URL to your Keycloak server || `http://host.docker.internal:8080`
 `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
 `KEYCLOAK_BPM_CLIENT_ID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
 `KEYCLOAK_BPM_CLIENT_SECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
 `KEYCLOAK_WEB_CLIENT_ID`|Client ID for formsflow to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
-`CAMUNDA_API_URL`|Camunda Rest API URI||`http://your-ip-address:8000/camunda`
-`FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://your-ip-address:5000`
+`CAMUNDA_API_URL`|Camunda Rest API URI||`http://host.docker.internal:8000/camunda`
+`FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://host.docker.internal:5000`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins || `['http://localhost:3000', 'https://app2.aot-technologies.com']`
 `FORMSFLOW_API_ANALYTICS_DB_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
 `FORMSFLOW_API_ANALYTICS_DB_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
@@ -92,11 +92,11 @@ Variable name | Meaning | Possible values | Default value |
    
 ### Verify the Application Status
 
-   The application should be up and available for use at port defaulted to 5000 in http://your-ip-address:5000/
+   The application should be up and available for use at port defaulted to 5000 in http://host.docker.internal:5000/
   
   * Access the **/checkpoint** endpoint for a Health Check on API to see it's up and running.
 ``` 
-GET http://your-ip-address:5000/checkpoint
+GET http://host.docker.internal:5000/checkpoint
 
 RESPONSE
 
@@ -119,7 +119,7 @@ Content-Type : application/x-www-form-urlencoded
 ```   
    * Access the **/task** endpoint and verify response. Ensure Bearer token is passed along
 ``` 
-GET http://your-ip-address:5000/task
+GET http://host.docker.internal:5000/task
 
 Headers:
 Content-Type : application/json

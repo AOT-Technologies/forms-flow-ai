@@ -75,7 +75,7 @@ Variable name | Meaning | Possible values | Default value |
   
 ### Health Check
 
-   The application should be up and available for use in http://your-ip-address:8080
+   The application should be up and available for use in http://host.docker.internal:8080
    ```
     Login Credentials
     -----------------

@@ -251,4 +251,4 @@ Variable name | Meaning | Possible values | Default value |
   * formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/api/
   * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   
- * Access credentials are mentioned [here](../README.md#default-access-credentials).
+ * Access credentials are mentioned [here](../README.md#verifying-the-installation-status).

@@ -136,7 +136,7 @@ In general, the operation is as follows :
 * Reviewer can access metrics data from the Postgres database filtered according to the configuration. formsflow.ai UI renders these metrics into usable pages. 
 * Reviewer can access Redash analytics dashboards (as iframes). 
 
-#### Designers
+#### Designer
 
 These users are responsible for accessing the native capabilities of the embedded products to configure analytics dashboards, create and manage workflows, and create and manage forms. It is beyond the scope of this document to describe the detailed functionality of these products, however, the general process is :
 

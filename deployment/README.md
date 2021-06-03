@@ -65,9 +65,9 @@ Install the components in the listed order. *(NOTE: Keycloak, form.io and redash
 
  Srl No | Service Name | Usage | Access | Default credentials (userName / Password)|
 --- | --- | --- | --- | --- 
-1|`Keycloak`|Authentication|`http://your-ip-address:8080`| `admin/changeme`
-2|`forms-flow-forms`|form.io form building. This must be started earlier for resource role id's creation|`http://your-ip-address:3001`|`admin@example.com/changeme`
-3|`forms-flow-analytics`|Redash analytics server, This must be started earlier for redash key creation|`http://your-ip-address:7000`|Use the credentials used for registration / [Default user credentials](../forms-flow-idm/keycloak/README.md#health-check)
-4|`forms-flow-web`|formsflow Landing web app|`http://your-ip-address:3000`|[Default user credentials](../forms-flow-idm/keycloak/README.md#health-check)
-5|`forms-flow-api`|API services|`http://your-ip-address:5000`|`NA`
-6|`forms-flow-bpm`|Camunda integration|`http://your-ip-address:8000/camunda`| `demo/demo` 
+1|`Keycloak`|Authentication|`http://localhost:8080`| `admin/changeme`
+2|`forms-flow-forms`|form.io form building. This must be started earlier for resource role id's creation|`http://localhost:3001`|`admin@example.com/changeme`
+3|`forms-flow-analytics`|Redash analytics server, This must be started earlier for redash key creation|`http://localhost:7000`|Use the credentials used for registration / [Default user credentials](../forms-flow-idm/keycloak/README.md#health-check)
+4|`forms-flow-web`|formsflow Landing web app|`http://localhost:3000`|[Default user credentials](../forms-flow-idm/keycloak/README.md#health-check)
+5|`forms-flow-api`|API services|`http://localhost:5000`|`NA`
+6|`forms-flow-bpm`|Camunda integration|`http://localhost:8000/camunda`| `demo/demo` 

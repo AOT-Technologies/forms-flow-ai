@@ -123,7 +123,7 @@ Variable name | Meaning | Possible values | Default value |
 
 ##### formsflow.ai analytics variable settings
 -----------------------------------
- * Get the API_KEY from forms-flow-analytics (REDASH) by following the instructions given [here](../../forms-flow-analytics/README.md#getting-redash-api-key)
+ * Get the INSIGHT_API_KEY from forms-flow-analytics (REDASH) by following the instructions given [here](../../forms-flow-analytics/README.md#getting-redash-api-key)
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---

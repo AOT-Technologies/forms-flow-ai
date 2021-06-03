@@ -36,10 +36,11 @@ your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-ai/forms-flow-analytics".
    * Modify the configuration values as needed in the redash.env file. Details below,
+   * **NOTE : {your-ip-address} on the redash.env have to be changed as per your host system IP address, for the systems with multiple network cards the IP address configurations have to be handled accordingly**
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://your-ip-address:7000
+`REDASH_HOST`| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://{your-ip-address}:7000
 `PYTHONUNBUFFERED`|Log buffering setup|1 or 0 | 1
 `REDASH_LOG_LEVEL`|Logging level|`CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET` | ERROR
 `REDASH_REDIS_URL`|Redis URL|Used on installation to create the database.Choose your own.|`redis://redis:6379/0`
@@ -74,7 +75,7 @@ Variable name | Meaning | Possible values | Default value |
 
 ### Health Check
 
-   The application should be up and available for use at port defaulted to 7000 in  (i.e. http://your-ip-address:7000/)
+   The application should be up and available for use at port defaulted to 7000 in  http://localhost:7000/
     and register with any valid credentials.
     
 ### Configuration of Keycloak SAML Setup
@@ -90,7 +91,7 @@ Variable name | Meaning | Possible values | Default value |
  
  ## Getting Redash API Key
  
- * Login to redash hosted instance  (i.e. http://your-ip-address:7000/) using the admin credentials passed for registration / SAML credentials
+ * Login to redash hosted instance  (i.e. http://localhost:7000/) using the admin credentials passed for registration / SAML credentials
  * Go to Settings
       * Go to Account Section
       * Copy API Key to Clipboard

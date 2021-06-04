@@ -30,8 +30,8 @@
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is [forms-flow-ai/forms-flow-idm/keycloak]().
-   * *Optional*: Rename the file [sample.env](./sample.env) to **.env**. Skip this step if you want to use the default values as mentioned in the table below.
-   * *Optional*: Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
+   >* *Optional*: Rename the file [sample.env](./sample.env) to **.env**. Skip this step if you want to use the default values as mentioned in the table below.
+   >* *Optional*: Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
 
 ### Environment Variables
    

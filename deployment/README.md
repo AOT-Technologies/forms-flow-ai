@@ -14,9 +14,8 @@ In the following document, we’ll describe about the different project dependen
 ## Prerequisites
 
 * Admin access to a local or remote server (can be local PC or Mac provided it is **64**-bit with at least **16GB** RAM and **100GB** HDD) 
-* For docker installation [docker-compose](https://docker.com) and [Docker](https://docker.com) need to be installed.
-* Admin access to a [Keycloak](https://www.keycloak.org/) server. For local development / testing follow [Keycloak installation](../forms-flow-idm/keycloak).
-
+* For docker installation [Docker](https://docker.com) need to be installed.
+  * For **docker for Mac** machines make sure the memory allocation is set to at least **16GB**.
 
 ## Project Dependencies
 
@@ -67,7 +66,7 @@ Install the components in the listed order. *(NOTE: Keycloak, form.io and redash
 --- | --- | --- | --- | --- 
 1|`Keycloak`|Authentication|`http://localhost:8080`| `admin/changeme`
 2|`forms-flow-forms`|form.io form building. This must be started earlier for resource role id's creation|`http://localhost:3001`|`admin@example.com/changeme`
-3|`forms-flow-analytics`|Redash analytics server, This must be started earlier for redash key creation|`http://localhost:7000`|Use the credentials used for registration / [Default user credentials](../forms-flow-idm/keycloak/README.md#health-check)
-4|`forms-flow-web`|formsflow Landing web app|`http://localhost:3000`|[Default user credentials](../forms-flow-idm/keycloak/README.md#health-check)
+3|`forms-flow-analytics`|Redash analytics server, This must be started earlier for redash key creation|`http://localhost:7000`|Use the credentials used for registration / [Default user credentials](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials)
+4|`forms-flow-web`|formsflow Landing web app|`http://localhost:3000`|[Default user credentials](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials)
 5|`forms-flow-api`|API services|`http://localhost:5000`|`Authorization tocken from keycloak role based user credentials`
 6|`forms-flow-bpm`|Camunda integration|`http://localhost:8000/camunda`| `demo/demo` 

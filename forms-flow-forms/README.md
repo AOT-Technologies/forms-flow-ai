@@ -14,16 +14,13 @@ To know more about form.io, go to  https://form.io.
    * [Step 2 : Installation](#installation)
    * [Step 3 : Running the Application](#running-the-application)
    * [Step 4 : Health Check](#health-check)
-3. [Formsflow form API List](#formsflow-form-api-list)  
-   * [How-to get jwt token](#how-to-get-jwt-token)
-   * [How-to export roles and Forms](#how-to-export-roles-and-forms)
-   * [How-to get role id](#how-to-get-role-id)
-   * [How-to get user resource id](#how-to-get-user-resource-id)
-   * [Custom components](#custom-components)   
+3. [Formsflow-forms API Requesting](#formsflow-forms-api-requesting)  
+   * [Using POSTMAN API client](#using-postman-api-client)
+   * [Using curl command](#using-curl-command)
 
 ## Prerequisites
 
-* For docker installation [docker-compose](https://docker.com) and [Docker](https://docker.com) need to be installed.
+* For docker installation [Docker](https://docker.com) need to be installed.
 
 ## Solution Setup
 
@@ -36,9 +33,9 @@ Not applicable.
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-ai/forms-flow-forms".
-   * Rename the file **sample.env** to **.env**.
-   * Modify the **.env** file using the instructions below.
-   * **NOTE : {your-ip-address} on the .env variables have to be changed as per your host system IP address, for the systems with multiple network cards the IP address configurations have to be handled accordingly**
+   * Rename the file [sample.env](./sample.env) to **.env**.
+   * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
+   * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
  
 |Variable name | Meaning | Possible values | Default value |
 |--- | --- | --- | ---
@@ -47,7 +44,7 @@ Not applicable.
 |`FORMIO_DB_NAME`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 |`FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 |`FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
-|`FORMIO_DEFAULT_PROJECT_URL` __*__|forms-flow-forms default url||`http://{your-ip-address}:3001`
+|`FORMIO_DEFAULT_PROJECT_URL`__*__|forms-flow-forms default url||`http://{your-ip-address}:3001`
 
 **Additionally, you may want to change these**
 * The value of Mongo database details (especially if this instance is not just for testing purposes)
@@ -81,73 +78,72 @@ Not applicable.
         Password  : changeme
         
 	
-## Formsflow form API List
-	
-	
-### How-to get jwt token
-------------------------
+## Formsflow-forms API Requesting
 
-   * Get the jwt token using resource **/user/login**
-   * Use the default forms.io credentials below for email / password
-   
-***Use API clients like [POSTMAN](https://www.postman.com/) to invoke below request***
-   
-```
-POST http://localhost:3001/user/login
-{
-    "data": {
-        "email": {email},
-        "password": {password}
-    }
-}
-``` 
+There are two ways in which you can access data from the formsflow-forms end points.
 
-   * Copy and use x-jwt-token from the response header.
-    
+* Using POSTMAN API client
+* Using curl command
 
-### How to Export Roles and Forms
----------------------------------
+### Using POSTMAN API client
 
-   * [Get the jwt token](./README.md#how-to-get-jwt-token)
-  
-   * Export roles and forms using resource **/export**.
-``` 
-GET http://localhost:3001/export
+* Download and install [Postman API client](https://www.postman.com/)
+* Import [formsflow-forms-postman-collection.json](./config/formsflow-forms-postman-collection.json) to your postman client.
+   - Open Postman -> Go to File
+      - Import -> Upload [formsflow-forms-postman-collection.json](./config/formsflow-forms-postman-collection.json) file
+      - Import successful.
+* Follow the instructions given below to fetch the role id's from [forms-flow-forms](http://localhost:3001) 
+   - Open Postman ->  Go to Workspaces -> My Workspaces
+      - Collections -> Open form.io collection 
+      - Get the jwt token using resource **http://localhost:3001/user/login** (*Click on Send to make a server request*)
+        - Copy the x-jwt-token from response Headers tab.
+      - Get the user resource id using resource **http://localhost:3001/user**.
+        - Replace the x-jwt-token in the Headers tab and click on send.
+        - Copy the **_id** from Response body and replace value for **USER_RESOURCE_ID** in the **.env** file.
+      - Get the user resource id using resource **http://localhost:3001/role**.
+        - Replace the x-jwt-token in the Headers tab and click on send.
+        - Copy the **_id** with title *Administrator* from Response body and replace value for **DESIGNER_ROLE_ID** in the **.env** file.
+        - Copy the **_id** with title *Anonymous* from Response body and replace value for **ANONYMOUS_ID** in the **.env** file.
+        - Copy the **_id** with title *formsflow Client* from Response body and replace value for **CLIENT_ROLE_ID** in the **.env** file.
+        - Copy the **_id** with title *formsflow Reviewer* from Response body and replace value for **REVIEWER_ROLE_ID** in the **.env** file.
+        
+> **Postman API calls are completed, You can skip the remaining sections in this page and continue with other installation steps.**
 
-Headers:
-Content-Type : application/json
-x-jwt-token: {x-jwt-token}
-``` 
+### Using curl command
 
-### How-to get role id
-----------------------
+* Download and install [curl](https://curl.se/download.html).
+* Get the jwt token using the command below
 
-   * [Get the jwt token](./README.md#how-to-get-jwt-token)
-   
-   * Get the role id using resource **/role**.
-
-``` 
-GET http://localhost:3001/role
-
-Headers:
-Content-Type : application/json
-x-jwt-token: {x-jwt-token}
-``` 
-
-### How-to get user resource id
---------------------------------
-
-   * [Get the jwt token](./README.md#how-to-get-jwt-token)
-   
-   * Get the role id using resource **/user**.
-
-``` 
-GET http://localhost:3001/user
-
-Headers:
-Content-Type : application/json
-x-jwt-token: {x-jwt-token}
-``` 
+  ```
+   curl -i POST 'http://localhost:3001/user/login' \
+   --header 'Content-Type: application/json' \
+   --data-raw '{
+       "data": {
+           "email": "admin@example.com",
+           "password": "CHANGEME"
+       }
+   }'
+  ```
+  - Copy the x-jwt-token from response.
+* Get the user resource id using command below.
+  - Replace the x-jwt-token in the header below and request.
+    ```
+     curl --location --request GET 'http://localhost:3001/user' \
+     --header 'x-jwt-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYwOWY2MjYwNGFiNTk3NjI1MTgyMWRiZCJ9LCJmb3JtIjp7Il9pZCI6IjYwOWY2MjVjNGFiNTk3YWViNzgyMWRiMyJ9LCJpYXQiOjE2MjI4MTQzMTYsImV4cCI6MTYyMjgyODcxNn0.v842ncr5bxpZj18Adp1CggLNCAdHk8QrRUJnb287Jrw'
+    ```
+  - Copy the **_id** from Response body and replace value for **USER_RESOURCE_ID** in the **.env** file.
+* Get the user resource id using command below.
+  - Replace the x-jwt-token in the header below and request.
+    ```
+     curl --location --request GET 'http://localhost:3001/role' \
+     --header 'x-jwt-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYwOWY2MjYwNGFiNTk3NjI1MTgyMWRiZCJ9LCJmb3JtIjp7Il9pZCI6IjYwOWY2MjVjNGFiNTk3YWViNzgyMWRiMyJ9LCJpYXQiOjE2MjI4MTQzMTYsImV4cCI6MTYyMjgyODcxNn0.v842ncr5bxpZj18Adp1CggLNCAdHk8QrRUJnb287Jrw'
+    ```
+  - Copy the **_id** with title *Administrator* from Response body and replace value for **DESIGNER_ROLE_ID** in the **.env** file.
+  - Copy the **_id** with title *Anonymous* from Response body and replace value for **ANONYMOUS_ID** in the **.env** file.
+  - Copy the **_id** with title *formsflow Client* from Response body and replace value for **CLIENT_ROLE_ID** in the **.env** file.
+  - Copy the **_id** with title *formsflow Reviewer* from Response body and replace value for **REVIEWER_ROLE_ID** in the **.env** file.
+         	
+> **curl requests are completed, You can skip the remaining sections in this page and continue with other installation steps.**	
 
 ## Custom Components
 

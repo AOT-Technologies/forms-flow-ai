@@ -14,33 +14,32 @@ your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.
    * [Step 3 : Running the application](#running-the-application)
    * [Step 4 : Health Check](#health-check)
    * [Step 5 : Configuration of Keycloak SAML Setup](#configuration-of-keycloak-saml-setup)
-3. [Getting Redash API key](#getting-redash-api-key)
+3. [Get the Redash API key](#get-the-redash-api-key)
 
 ## Prerequisites
 
-* For docker installations [docker-compose](https://docker.com) and [Docker](https://docker.com) need to be installed.
-* Admin access to a [Keycloak](https://www.keycloak.org/) server. For local development / testing follow [Keycloak installation](../forms-flow-idm/keycloak).
+* For docker installations [Docker](https://docker.com) need to be installed.
+* Admin access to [Keycloak](../forms-flow-idm/keycloak) server.
 
 ## Solution Setup
 
 ### Keycloak Setup
 
-* **NOTE: Skip this step if you are already having a setup ready.**
+> NOTE: Skip below steps and go to Installation if you are already configured Keycloak.
 
-* Login to KeyCloak Realm with admin privileges  
-* For client **forms-flow-analytics** creation, follow the instructions given on [link](../forms-flow-idm/keycloak/README.md#create-keycloak-setup-for-formsflow-analytics) 
-
+* If you have a Keycloak Instance and yet to configure it then login to KeyCloak with admin credentials.
+* Follow the instructions given [here](../forms-flow-idm/keycloak/README.md#create-keycloak-setup-for-formsflow-analytics) to configure **forms-flow-analytics** client.
 
 ### Installation
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-ai/forms-flow-analytics".
-   * Modify the configuration values as needed in the redash.env file. Details below,
-   * **NOTE : {your-ip-address} on the redash.env have to be changed as per your host system IP address, for the systems with multiple network cards the IP address configurations have to be handled accordingly**
+   * Modify the environment variables inside [redash.env](./redash.env) file if needed. Environment variables are given in the table below
+   * **NOTE : {your-ip-address} given inside the [redash.env](./redash.env) file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`REDASH_HOST` __*__| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://{your-ip-address}:7000
+`REDASH_HOST`__*__| Base address of your Redash instance (the DNS name or IP) with the protocol | | http://{your-ip-address}:7000
 `PYTHONUNBUFFERED`|Log buffering setup|1 or 0 | 1
 `REDASH_LOG_LEVEL`|Logging level|`CRITICAL, ERROR, WARNING, INFO, DEBUG, NOTSET` | ERROR
 `REDASH_REDIS_URL`|Redis URL|Used on installation to create the database.Choose your own.|`redis://redis:6379/0`
@@ -50,9 +49,6 @@ Variable name | Meaning | Possible values | Default value |
 `REDASH_COOKIE_SECRET`|Encryption for all configuration|Used on installation to create the database.Choose your own.|`redash-selfhosted`
 `REDASH_SECRET_KEY`|Encryption for datasource configuration|Used on installation to create the database.Choose your own.|`redash-selfhosted`
   
-  **Additionally, you may want to change these**  
-   * The value of REDASH_COOKIE_SECRET (especially if this instance is not just for testing purposes)
- 
 ### Running the application
 
 * Analytics service uses port 7000, make sure the port is available.
@@ -84,15 +80,17 @@ Variable name | Meaning | Possible values | Default value |
    * Click the menu icon to the left of the username and navigate to **Edit Profile**.
    * Go to tab "Settings", and then navigate to section "Authentication".
         * Check the option "SAML".
-        * Set the field "SAML Metadata URL" with value of Keycloak SAML descriptor URL. Example. `{Keycloak URL}/auth/realms/forms-flow-ai/protocol/saml/descriptor`.
+        * Set the field "SAML Metadata URL" with value of Keycloak SAML descriptor URL. Example. http://{your-ip-address}:8080/auth/realms/forms-flow-ai/protocol/saml/descriptor. {your-ip-address} should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards
         * Set the field "SAML Entity ID" value to be `forms-flow-analytics`.
         * Set the field "SAML NameID Format" value to be `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`.
-   * Logout and login again using valid keycloak user credentials, Default user credentials are provided [here](../forms-flow-idm/keycloak/README.md#health-check).
+   * Logout and login again using valid formsflow.ai keycloak user credentials. Default user credentials are provided [here](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
  
- ## Getting Redash API Key
+> forms-flow-analytic (REDASH) setup is successfully completed now. You can skip remaining sections in this page and continue with other installation steps.
+ 
+## Get the Redash API Key
  
  * Login to redash hosted instance  (i.e. http://localhost:7000/) using the admin credentials passed for registration / SAML credentials
- * Go to Settings
+ * Go to Profile -> Edit Profile -> Settings
       * Go to Account Section
       * Copy API Key to Clipboard
  

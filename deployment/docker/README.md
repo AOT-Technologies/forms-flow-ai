@@ -4,16 +4,10 @@ This page elaborates how to setup the overall solution using docker.
 
 
 ## Table of Contents
-1. [Prerequisites](#prerequisites)
-2. [Application Setup](#application-setup)
+1. [Application Setup](#application-setup)
    * [Step 1 : Installation Steps](#installation-steps)
    * [Step 2 : Running the Application](#running-the-application)
    * [Step 3 : Health Check](#health-check) 
-
-
-## Prerequisites
-
- * The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). These need to be available. 
 
 ## Application Setup
 
@@ -68,18 +62,17 @@ Start the **analytics server** by following the instructions given [here](../../
 - [ ] forms-flow-web, forms-flow-bpm, forms-flow-api setup
 ```
 * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
-* Rename the file **sample.env** to **.env**. 
-* Modify the **.env** file using the instructions below.
-* **NOTE : {your-ip-address} on the .env variables have to be changed as per your host system IP address, for the systems with multiple network cards the IP address configurations have to be handled accordingly**
->Environment variables are set in **.env** file and read by the system.
+* Rename the file [sample.env](./sample.env) to **.env**.
+* Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
 
+* **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `FORMIO_DB_USERNAME`|Mongo Root Username. Used on installation, Choose your own||`admin`
 `FORMIO_DB_PASSWORD`|Mongo Root Password. Used on installation, Choose your own||`changeme`
 `FORMIO_DB_NAME`|Mongo Database  Name. Used on installation to create the database. Choose your own||`formio`
-`FORMIO_DEFAULT_PROJECT_URL` __*__ |The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
+`FORMIO_DEFAULT_PROJECT_URL`__*__ |The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
 `FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 `FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
 
@@ -90,7 +83,10 @@ Start the **analytics server** by following the instructions given [here](../../
        - Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
      - For Windows  
        - Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
-   - Access formIO at port defaulted to 3001 i.e. http://{your-ip-address}:3001/ .
+       
+##### Health Check
+------------------
+   - Access forms-flow-forms at port defaulted to 3001 i.e. http://localhost:3001/ .
    
            Default Login Credentials
            -----------------
@@ -99,7 +95,7 @@ Start the **analytics server** by following the instructions given [here](../../
                    
 *NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
 
-#### forms-flow-web, forms-flow-bpm & forms-flow-web Setup
+#### forms-flow-web, forms-flow-bpm & forms-flow-api Setup
 -----------------------------------
 ```
 - [x] Keycloak setup
@@ -108,41 +104,43 @@ Start the **analytics server** by following the instructions given [here](../../
 - [x] forms-flow-web, forms-flow-bpm, forms-flow-api setup
 ```
 * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
-* Modify the **.env** file using the instructions below.
+* Modify the environment variables inside **.env** file if needed. Environment variables are given in the table below.
 
 ##### formsflow.ai keycloak variable settings
 -----------------------------------
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`KEYCLOAK_URL` __*__| URL to your Keycloak server || `http://{your-ip-address}:8080`
+`KEYCLOAK_URL`__*__| URL to your Keycloak server || `http://{your-ip-address}:8080`
 `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
 `KEYCLOAK_BPM_CLIENT_ID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
-`KEYCLOAK_BPM_CLIENT_SECRET` __*__|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
+`KEYCLOAK_BPM_CLIENT_SECRET`__*__|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the 'Get the keycloak client secret' steps from [Here](../../forms-flow-idm/keycloak/README.md#get-the-keycloak-client-secret)
 `KEYCLOAK_WEB_CLIENT_ID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
 
 ##### formsflow.ai analytics variable settings
 -----------------------------------
- * Get the INSIGHT_API_KEY from forms-flow-analytics (REDASH) by following the instructions given [here](../../forms-flow-analytics/README.md#getting-redash-api-key)
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`INSIGHT_API_URL` __*__|Insight Api base end-point||`http://{your-ip-address}:7000`
-`INSIGHT_API_KEY` __*__|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `must be set to your ReDash API key`
+`INSIGHT_API_URL`__*__|Insight Api base end-point||`http://{your-ip-address}:7000`
+`INSIGHT_API_KEY`__*__|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| `Get the api key from forms-flow-analytics (REDASH) by following the 'Get the Redash API Key' steps from `[here](../../forms-flow-analytics/README.md#get-the-redash-api-key)
 
 ##### formsflow.ai forms variable settings
 -----------------------------------
 
+* [STEP 1](): Getting **ROLE_ID** and **RESOURCE_ID** are mandatory for role based access. To generate ID go to ["Formsflow-forms API Requesting"](../../forms-flow-forms/README.md#formsflow-forms-api-requesting) and follow the steps.
+* [STEP 2](): Modify the environment variables using the values from step 1.
+
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `CLIENT_ROLE`|	The role name used for client users|| `formsflow-client`
-`CLIENT_ROLE_ID` __*__|forms-flow-forms client role Id|eg. 10121d8f7fadb18402a4c|`must get the client role Id value from forms-flow-forms resource.` [Get client role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
+`CLIENT_ROLE_ID`__*__|forms-flow-forms client role Id|eg. 10121d8f7fadb18402a4c|`must get the client role Id value from Prerequisites step 1 above.`)
 `REVIEWER_ROLE`|The role name used for reviewer users||`formsflow-reviewer`
-`REVIEWER_ROLE_ID` __*__|forms-flow-forms reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|`must get the reviewer role Id value from forms-flow-forms resource.` [Get reviewer role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
+`REVIEWER_ROLE_ID`__*__|forms-flow-forms reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|`must get the reviewer role Id value from Prerequisites step 1 above..`
 `DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
-`DESIGNER_ROLE_ID` __*__|forms-flow-forms administrator role Id|eg. 5ee090afee045f1597609cae|`must get the administrator role Id value from forms-flow-forms resource.` [Get administrator role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
-`ANONYMOUS_ID`|forms-flow-forms anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|`must get the anonymous role Id value from forms-flow-forms resource.` [Get anonymous role Id](../../forms-flow-forms/README.md#how-to-get-role-id)
-`USER_RESOURCE_ID` __*__|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from form.io resource.` [Get user resource Id](../../forms-flow-forms/README.md#how-to-get-user-resource-id)
+`DESIGNER_ROLE_ID`__*__|forms-flow-forms administrator role Id|eg. 5ee090afee045f1597609cae|`must get the administrator role Id value from Prerequisites step 1 above..`
+`ANONYMOUS_ID`|forms-flow-forms anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|`must get the anonymous role Id value from Prerequisites step 1 above..`
+`USER_RESOURCE_ID`__*__|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from the step 1 above..`
 
 ##### formsflow.ai Datastore variable settings
 -----------------------------------
@@ -162,8 +160,8 @@ Variable name | Meaning | Possible values | Default value |
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
 `APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for multiple origins you can separate host address using a comma |eg:`host1, host2`| `*`
-`CAMUNDA_API_URL` __*__|Camunda Rest API URI||`http://{your-ip-address}:8000/camunda`
-`FORMSFLOW_API_URL` __*__|formsflow.ai Rest API URI||`http://{your-ip-address}:5000`
+`CAMUNDA_API_URL`__*__|Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
+`FORMSFLOW_API_URL`__*__|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
 `FORMSFLOW_API_ANALYTICS_DB_USERNAME`|Mongo DB Connection username|Used on installation to create the database. Choose your own|`mongo`
 `FORMSFLOW_API_ANALYTICS_DB_PASSWORD`|Mongo DB Connection password|Used on installation to create the database. Choose your own|`changeme`
 `FORMSFLOW_API_ANALYTICS_DB_NAME`|Mongo DB Connection database name|Used on installation to create the database. Choose your own|`analytics`
@@ -203,7 +201,7 @@ Variable name | Meaning | Possible values | Default value |
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `FORMSFLOW_API_URL` __*__|formsflow.ai Rest API URI||`http://{your-ip-address}:5000`
+ `FORMSFLOW_API_URL`__*__|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
  `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`http://{your-ip-address}:3000`|
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`

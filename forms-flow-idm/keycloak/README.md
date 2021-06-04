@@ -7,6 +7,7 @@
    - [Step 2 : Environment Variables](#environment-variables)
    - [Step 3 : Starting / Stopping Keycloak server](#starting-or-stopping-keycloak-server)
    - [Step 4 : Health Check](#health-check)
+     - [formsflow-ai user credentials](#formsflow-ai-user-credentials)
 2. [Server Keycloak setup](#server-keycloak-setup)
    - [Step 1 : Create Realm](#create-realm)
    - [Step 2 : Create Keycloak setup for formsflow web](#create-keycloak-setup-for-formsflow-web)
@@ -14,26 +15,23 @@
    - [Step 4 : Create Keycloak setup for formsflow bpm](#create-keycloak-setup-for-formsflow-bpm) 
    - [Step 5 : Create groups](#create-groups) 
    - [Step 6 : Test keycloak access in Postman](#test-keycloak-access-in-postman) 
-3. [Getting the client secret](#getting-the-client-secret)
+3. [Get the Keycloak client secret](#get-the-keycloak-client-secret)
 
 ## Local keycloak setup
 
-* This setup is preferred for local development only. For server setup go to [Server Keycloak setup](#server-keycloak-setup).
-* If you do not have the formsflow.ai project in local clone this github repo: https://github.com/AOT-Technologies/forms-flow-ai
+* This setup is preferred for local development only. A docker instance will be created as part of setup. If you have existing Keycloak instance  go to [Server Keycloak setup](#server-keycloak-setup).
 
 ### Prerequisites
 
-* The system is deployed and run using [docker-compose](https://docker.com) and [Docker](https://docker.com). This need to be installed. 
+* The system is deployed and run using [Docker](https://docker.com). This need to be installed. 
 
 
 ### Environment Configuration
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is [forms-flow-ai/forms-flow-idm/keycloak]().
-   * *Optional*: Rename the file **sample.env** to **.env**. ***Skip this for default setup***
-   * *Optional*: Modify the environment variables as needed. Details below,
-
-Environment variables are set in **.env** file and read by the system.
+   * *Optional*: Rename the file [sample.env](./sample.env) to **.env**. Skip this step if you want to use the default values as mentioned in the table below.
+   * *Optional*: Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
 
 ### Environment Variables
    
@@ -83,6 +81,8 @@ Variable name | Meaning | Possible values | Default value |
     Password  : changeme
    ```
    
+#### formsflow-ai user credentials
+-----------------------------------
   * Default User credentials are generated when keycloak started for the first time, you can modify the values on your keycloak service. 
    
    User Role | User Name | Password |
@@ -91,7 +91,9 @@ Variable name | Meaning | Possible values | Default value |
    `Client`|`formsflow-client`|`changeme`
    `Reviewer`|`formsflow-reviewer`|`changeme`
 
-* **NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.**
+* *NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.*
+
+> **Local keycloak set up is successfully completed now. You can skip the remaining sections in this page and continue with other installation steps.**
 
 ## Server keycloak setup
 
@@ -322,10 +324,12 @@ formsflow-client|formsflow-client| Able to access form fill-in only
 			* Copy Access Token  
 			* Paste in jwt.io, and examine token  
 			* Should see resource_access[] > roles[] > list of Effective Roles  
-			
-			
-## Getting the client secret
 
+> **Server keycloak set up is successfully completed now. You can skip the remaining sections in this page and continue with other installation steps.**			
+			
+## Get the Keycloak client secret
+
+* Go to **http://localhost:8080** in the browser
 * Login to KeyCloak Realm with admin privileges 
 * Configure > Clients >   
 	* Click on Client ID = eg : forms-flow-bpm 

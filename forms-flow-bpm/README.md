@@ -16,8 +16,8 @@ To know more about Camunda, visit https://camunda.com/.
 
 ## Prerequisites
 
-* For docker installation [docker-compose](https://docker.com) and [Docker](https://docker.com) need to be installed.
-* Admin access to a [Keycloak](https://www.keycloak.org/) server. For local development / testing follow [Keycloak installation](../forms-flow-idm/keycloak).
+* For docker installation [Docker](https://docker.com) need to be installed.
+* Admin access to [Keycloak](../forms-flow-idm/keycloak) server.
 
 ## Solution Setup
 
@@ -32,19 +32,19 @@ To know more about Camunda, visit https://camunda.com/.
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-ai/forms-flow-bpm".
-   * Rename the file **sample.env** to **.env**.
-   * Modify the **.env** file using the instructions below.
-   * **NOTE : {your-ip-address} on the .env variables have to be changed as per your host system IP address, for the systems with multiple network cards the IP address configurations have to be handled accordingly**
+   * Rename the file [sample.env](./sample.env) to **.env**.
+   * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
+   * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
    
 #### Keycloak Integration
 --------------------------
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `KEYCLOAK_URL` __*__| URL to your Keycloak server || `http://{your-ip-address}:8080`
+ `KEYCLOAK_URL`__*__| URL to your Keycloak server || `http://{your-ip-address}:8080`
  `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
  `KEYCLOAK_BPM_CLIENT_ID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | `forms-flow-bpm`
- `KEYCLOAK_BPM_CLIENT_SECRET` __*__|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret`go to [link](../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
+ `KEYCLOAK_BPM_CLIENT_SECRET`__*__|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret`go to [link](../forms-flow-idm/keycloak/README.md#get-the-keycloak-client-secret)
 
 ##### CAMUNDA_JDBC : Dedicated camunda database (Prefixed with CAMUNDA_).
 -----------------------------------------------------------------------
@@ -74,17 +74,14 @@ To know more about Camunda, visit https://camunda.com/.
   `CAMUNDA_JOB_WAIT_TIME_MILLIS`|Job-Executor Configuration Properties||`5000`
   `CAMUNDA_JOB_MAX_WAIT`|Job-Executor Configuration Properties||`60000`
   `CAMUNDA_METRICS_FLAG`|Job-Executor Configuration Properties||`false`
-  `CAMUNDA_BPM_HISTORY_LEVEL`|Engine Configuration Properties||`none`
-  `CAMUNDA_AUTHORIZATION_FLAG`|Engine Configuration Properties||`true`
-  `CAMUNDA_AUTHORIZATION_REVOKE_CHECK_FLAG`|Engine Configuration Properties||`auto`
   
 #### Camunda formsflow.ai Integration Settings  
 ----------------------------------------------
  
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `FORMSFLOW_API_URL` __*__|formsflow.ai Rest API URI||`http://{your-ip-address}:5000`
- `FORMIO_DEFAULT_PROJECT_URL` __*__|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
+ `FORMSFLOW_API_URL`__*__|formsflow.ai Rest API URI||`http://{your-ip-address}:5000`
+ `FORMIO_DEFAULT_PROJECT_URL`__*__|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
  `FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
  `FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
  `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming, for multiple origins you can separate them using a comma |eg:`host1, host2`| `*`

@@ -18,7 +18,7 @@ A React library for rendering out forms based on the form.io platform.
 
 ## Prerequisites
 
-* For docker installation [docker-compose](https://docker.com) and [Docker](https://docker.com) need to be installed.
+* For docker installation [Docker](https://docker.com) need to be installed.
 * Admin access to a [Keycloak](https://www.keycloak.org/) server. For local development / testing follow [Keycloak installation](../forms-flow-idm/keycloak).
 * Please make sure the [Formio server](../forms-flow-forms/) is up and running.
 
@@ -36,32 +36,38 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-ai/forms-flow-web".
    * *Skip this if forms-flow-analytics setup is completed* - Start the **analytics server** by following the instructions given on  [readme](../../forms-flow-analytics/README.md)
-   * Get the API_KEY from REDASH by following the instructions given [here](../../forms-flow-analytics/README.md#getting-redash-api-key)   
-   * Rename the file **sample.env** to **.env**.
-   * Modify the **.env** file using the instructions below.
-   * **NOTE : {your-ip-address} on the .env variables have to be changed as per your host system IP address, for the systems with multiple network cards the IP address configurations have to be handled accordingly**
+   * Rename the file [sample.env](./sample.env) to **.env**.
+   * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
+   * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
  Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
- `CLIENT_ROLE`|	The role name used for client users|| `formsflow-client`
- `CLIENT_ROLE_ID` __*__|form.io client role Id|eg. 10121d8f7fadb18402a4c|`must get the value from forms-flow-forms resource ` **http://{your-ip-address}:3001/role**
- `REVIEWER_ROLE`|The role name used for staff/reviewer users||`formsflow-reviewer`
- `REVIEWER_ROLE_ID` __*__|form.io reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|`must get the value from forms-flow-forms resource ` **http://{your-ip-address}:3001/role**
- `DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
- `DESIGNER_ROLE_ID` __*__|form.io administrator role Id|eg. 5ee090afee045f1597609cae|`must get the value from forms-flow-forms resource ` **http://{your-ip-address}:3001/role**
- `ANONYMOUS_ID`|form.io anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|`must get the value from forms-flow-forms resource ` **http://{your-ip-address}:3001/role**
- `USER_RESOURCE_ID` __*__|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from forms-flow-forms resource `**http://{your-ip-address}:3001/user**
- `FORMIO_DEFAULT_PROJECT_URL` __*__|The URL of the form.io server||`http://{your-ip-address}:3001`
- `INSIGHT_API_URL` __*__|Insight Api base end-point||`http://{your-ip-address}:7000`
- `INSIGHT_API_KEY` __*__|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw| must be set to your ReDash API key
- `FORMSFLOW_API_URL` __*__|formsflow Rest API URI||`http://{your-ip-address}:5000/api`
- `CAMUNDA_API_URL` __*__|Camunda Rest API URI||`http://{your-ip-address}:8000/camunda`
- `KEYCLOAK_URL` __*__| URL to your Keycloak server || `http://{your-ip-address}:8080`
+ `FORMIO_DEFAULT_PROJECT_URL`__*__|The URL of the form.io server||`http://{your-ip-address}:3001`
+ `INSIGHT_API_URL`__*__|Insight Api base end-point||`http://{your-ip-address}:7000`
+ `INSIGHT_API_KEY`__*__|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw|`Get the api key from forms-flow-analytics (REDASH) by following the 'Get the Redash API Key' steps from `[here](../forms-flow-analytics/README.md#get-the-redash-api-key)
+ `FORMSFLOW_API_URL`__*__|formsflow Rest API URL||`http://{your-ip-address}:5000/api`
+ `CAMUNDA_API_URL`__*__|Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
+ `KEYCLOAK_URL`__*__| URL to your Keycloak server || `http://{your-ip-address}:8080`
  `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
  `KEYCLOAK_WEB_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-web | `forms-flow-web`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token| | `giert989jkwrgb@DR55`
  `APPLICATION_NAME`|Application name is used to provide clients application name|
+
+* [STEP 1](): Getting **ROLE_ID** and **RESOURCE_ID** are mandatory for role based access. To generate ID go to ["Formsflow-forms API Requesting"](../forms-flow-forms/README.md#formsflow-forms-api-requesting) and follow the steps.
+* [STEP 2](): Modify the environment variables using the values from step 1.
+
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`CLIENT_ROLE`|	The role name used for client users|| `formsflow-client`
+`CLIENT_ROLE_ID`__*__|forms-flow-forms client role Id|eg. 10121d8f7fadb18402a4c|`must get the client role Id value from Prerequisites step 1 above.`)
+`REVIEWER_ROLE`|The role name used for reviewer users||`formsflow-reviewer`
+`REVIEWER_ROLE_ID`__*__|forms-flow-forms reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|`must get the reviewer role Id value from Prerequisites step 1 above..`
+`DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
+`DESIGNER_ROLE_ID`__*__|forms-flow-forms administrator role Id|eg. 5ee090afee045f1597609cae|`must get the administrator role Id value from Prerequisites step 1 above..`
+`ANONYMOUS_ID`|forms-flow-forms anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|`must get the anonymous role Id value from Prerequisites step 1 above..`
+`USER_RESOURCE_ID`__*__|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from the step 1 above..`
+
 
 ### Running the application
 
@@ -77,7 +83,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 ### Health Check
 
    * The application should be up and available for use at port defaulted to 3000 in  http://localhost:3000/
-   * Default user credentials are provided [here](../forms-flow-idm/keycloak/README.md#health-check).
+   * Default user credentials are provided [here](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 
 ### How to Create Your First Form
   * Login to **http://localhost:3000/** using valid [designer](../forms-flow-idm/keycloak/README.md#default-user-credentials) credentials 

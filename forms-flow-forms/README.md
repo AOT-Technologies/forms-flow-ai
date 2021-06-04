@@ -80,7 +80,7 @@ Not applicable.
         Password  : changeme
         
 	
-## Formsflow-forms API Requesting
+## Formsflow-forms user/role API
 
 There are two ways in which you can access data from the formsflow-forms end points.
 

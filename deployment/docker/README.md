@@ -131,7 +131,7 @@ Variable name | Meaning | Possible values | Default value |
 ##### formsflow.ai forms variable settings
 -----------------------------------
 
-* [STEP 1](): Getting **ROLE_ID** and **RESOURCE_ID** are mandatory for role based access. To generate ID go to ["Formsflow-forms API Request"](../../forms-flow-forms/README.md#formsflow-forms-userrole-api) and follow the steps.
+* [STEP 1](): Getting **ROLE_ID** and **RESOURCE_ID** are mandatory for role based access. To generate ID go to ["Formsflow-forms user/role API"](../../forms-flow-forms/README.md#formsflow-forms-userrole-api) and follow the steps.
 * [STEP 2](): Modify the environment variables using the values from step 1.
 
 Variable name | Meaning | Possible values | Default value |

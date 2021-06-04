@@ -35,8 +35,10 @@ Not applicable.
    * Make sure your current working directory is "forms-flow-ai/forms-flow-forms".
    * Rename the file [sample.env](./sample.env) to **.env**.
    * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
-   * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
- 
+   * **NOTE : `{your-ip-address}` given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
+
+> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the redash.env file
+
 |Variable name | Meaning | Possible values | Default value |
 |--- | --- | --- | ---
 |`FORMIO_DB_USERNAME`|Mongo Root Username. Used on installation to create the database.Choose your own||`admin`
@@ -44,7 +46,7 @@ Not applicable.
 |`FORMIO_DB_NAME`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 |`FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 |`FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
-|`FORMIO_DEFAULT_PROJECT_URL`__*__|forms-flow-forms default url||`http://{your-ip-address}:3001`
+|`FORMIO_DEFAULT_PROJECT_URL` :triangular_flag_on_post:|forms-flow-forms default url||`http://{your-ip-address}:3001`
 
 **Additionally, you may want to change these**
 * The value of Mongo database details (especially if this instance is not just for testing purposes)
@@ -107,7 +109,7 @@ There are two ways in which you can access data from the formsflow-forms end poi
         - Copy the **_id** with title *formsflow Client* from Response body and replace value for **CLIENT_ROLE_ID** in the **.env** file.
         - Copy the **_id** with title *formsflow Reviewer* from Response body and replace value for **REVIEWER_ROLE_ID** in the **.env** file.
         
-> **Postman API calls are completed, You can skip the remaining sections in this page and continue with other installation steps.**
+> **Postman API calls are successfully completed. You can skip the remaining sections in this page and continue with other installation steps.**
 
 ### Using curl command
 
@@ -126,24 +128,24 @@ There are two ways in which you can access data from the formsflow-forms end poi
   ```
   - Copy the x-jwt-token from response header.
 * Get the user resource id using command below.
-  - Replace the `x-jwt-token` in the header below and request.
+  - Replace the `x-jwt-token value` in the header below and send request.
     ```
      curl --location --request GET 'http://localhost:3001/user' \
-     --header 'x-jwt-token:  `x-jwt-token`'
+     --header 'x-jwt-token:  <x-jwt-token value>'
     ```
   - Copy the **_id** from Response body and replace value for **USER_RESOURCE_ID** in the **.env** file.
 * Get the user role id's using command below.
-  - Replace the x-jwt-token in the header below and request.
+  - Replace the `<x-jwt-token value> in the header below and send request.
     ```
      curl --location --request GET 'http://localhost:3001/role' \
-     --header 'x-jwt-token:  `x-jwt-token`'
+     --header 'x-jwt-token:  <x-jwt-token value>'
     ```
   - Copy the **_id** with title *Administrator* from Response body and replace value for **DESIGNER_ROLE_ID** in the **.env** file.
   - Copy the **_id** with title *Anonymous* from Response body and replace value for **ANONYMOUS_ID** in the **.env** file.
   - Copy the **_id** with title *formsflow Client* from Response body and replace value for **CLIENT_ROLE_ID** in the **.env** file.
   - Copy the **_id** with title *formsflow Reviewer* from Response body and replace value for **REVIEWER_ROLE_ID** in the **.env** file.
          	
-> **curl requests are completed, You can skip the remaining sections in this page and continue with other installation steps.**	
+> **curl requests are successfully completed. You can skip the remaining sections in this page and continue with other installation steps.**	
 
 ## Custom Components
 

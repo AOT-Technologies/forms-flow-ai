@@ -124,19 +124,19 @@ There are two ways in which you can access data from the formsflow-forms end poi
        }
    }'
   ```
-  - Copy the x-jwt-token from response.
+  - Copy the x-jwt-token from response header.
 * Get the user resource id using command below.
-  - Replace the x-jwt-token in the header below and request.
+  - Replace the `x-jwt-token` in the header below and request.
     ```
      curl --location --request GET 'http://localhost:3001/user' \
-     --header 'x-jwt-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYwOWY2MjYwNGFiNTk3NjI1MTgyMWRiZCJ9LCJmb3JtIjp7Il9pZCI6IjYwOWY2MjVjNGFiNTk3YWViNzgyMWRiMyJ9LCJpYXQiOjE2MjI4MTQzMTYsImV4cCI6MTYyMjgyODcxNn0.v842ncr5bxpZj18Adp1CggLNCAdHk8QrRUJnb287Jrw'
+     --header 'x-jwt-token:  `x-jwt-token`'
     ```
   - Copy the **_id** from Response body and replace value for **USER_RESOURCE_ID** in the **.env** file.
 * Get the user role id's using command below.
   - Replace the x-jwt-token in the header below and request.
     ```
      curl --location --request GET 'http://localhost:3001/role' \
-     --header 'x-jwt-token:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYwOWY2MjYwNGFiNTk3NjI1MTgyMWRiZCJ9LCJmb3JtIjp7Il9pZCI6IjYwOWY2MjVjNGFiNTk3YWViNzgyMWRiMyJ9LCJpYXQiOjE2MjI4MTQzMTYsImV4cCI6MTYyMjgyODcxNn0.v842ncr5bxpZj18Adp1CggLNCAdHk8QrRUJnb287Jrw'
+     --header 'x-jwt-token:  `x-jwt-token`'
     ```
   - Copy the **_id** with title *Administrator* from Response body and replace value for **DESIGNER_ROLE_ID** in the **.env** file.
   - Copy the **_id** with title *Anonymous* from Response body and replace value for **ANONYMOUS_ID** in the **.env** file.

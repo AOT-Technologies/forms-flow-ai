@@ -1,6 +1,7 @@
 """API endpoints for managing form resource."""
 
 from http import HTTPStatus
+import logging
 
 from flask import g, jsonify, request
 from flask_restx import Namespace, Resource, cors
@@ -70,11 +71,20 @@ class FormResource(Resource):
                 },
                 HTTPStatus.BAD_REQUEST,
             )
+
+            logging.info(response)
+            logging.info(err)
+
+
         except BaseException as form_err:
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
+
+            logging.info(response)
+            logging.info(form_err)
+
         return response, status
 
     @staticmethod
@@ -98,6 +108,8 @@ class FormResource(Resource):
                 "message": "Invalid request object passed for FormProcessmapper POST API",
                 "errors": form_err.messages,
             }, HTTPStatus.BAD_REQUEST
+            logging.info(response)
+            logging.info(form_err)
         return response, status
 
 
@@ -117,7 +129,15 @@ class FormResourceById(Resource):
                 HTTPStatus.OK,
             )
         except BusinessException as err:
-            return err.error, err.status_code
+            response, status = (
+                {
+                    "type": "Invalid response data",
+                    "message": f"Invalid form id - {mapper_id}",
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+            logging.info(response)
+        return response, status
 
     @staticmethod
     @cors.crossdomain(origin=CORS_ORIGINS)
@@ -128,7 +148,15 @@ class FormResourceById(Resource):
             FormProcessMapperService.mark_inactive(form_process_mapper_id=mapper_id)
             return "Deleted", HTTPStatus.OK
         except BusinessException as err:
-            return err.error, err.status_code
+            response, status = (
+                {
+                    "type": "Invalid response data",
+                    "message": f"Invalid form id - {mapper_id}",
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+            logging.info(response)
+        return response, status
 
     @staticmethod
     @cors.crossdomain(origin=CORS_ORIGINS)
@@ -151,10 +179,13 @@ class FormResourceById(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as mapper_err:
-            return {
+            response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid request passed",
             }, HTTPStatus.BAD_REQUEST
+            logging.info(response)
+            logging.info(mapper_err)
+        return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -172,4 +203,12 @@ class FormResourceByFormId(Resource):
                 HTTPStatus.OK,
             )
         except BusinessException as err:
-            return err.error, err.status_code
+            response, status = (
+                {
+                    "type": "Invalid response data",
+                    "message": f"Invalid form id - {form_id}",
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+            logging.info(response)
+        return response, status

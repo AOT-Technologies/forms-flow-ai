@@ -1,6 +1,7 @@
 """API endpoints for managing application resource."""
 
 from http import HTTPStatus
+import logging
 
 from flask import g, jsonify, request
 from flask_restx import Namespace, Resource, cors
@@ -147,6 +148,10 @@ class ApplicationResourceById(Resource):
                 "type": "Bad request error",
                 "message": "Invalid request data",
             }, HTTPStatus.BAD_REQUEST
+
+            logging.info(response)
+            logging.info(submission_err)
+
         return response, status
 
 
@@ -243,6 +248,8 @@ class ApplicationResourcesByIds(Resource):
                 "type": "Bad request error",
                 "message": "Invalid application request passed",
             }, HTTPStatus.BAD_REQUEST
+            logging.info(response)
+            logging.info(application_err)
         return response, status
 
 
@@ -273,10 +280,14 @@ class AggregatedApplicationsResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as agg_err:
-            return {
+
+            response, status = {
                 "message": "Invalid request object for application metrics endpoint",
                 "errors": agg_err.messages,
             }, HTTPStatus.BAD_REQUEST
+            logging.info(response)
+            logging.info(agg_err)
+        return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -306,10 +317,14 @@ class AggregatedApplicationStatusResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as agg_err:
-            return {
+            response, status = {
                 "message": "Invalid request object for application metrics endpoint",
                 "errors": agg_err.messages,
             }, HTTPStatus.BAD_REQUEST
+            logging.info(response)
+            logging.info(agg_err)
+        return response, status
+
 
 
 # @cors_preflight("GET,OPTIONS")

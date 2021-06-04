@@ -1,5 +1,6 @@
 """API endpoints for managing process resource."""
 
+import logging
 from http import HTTPStatus
 
 from flask import g, jsonify, request
@@ -36,8 +37,14 @@ class ProcessStateResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except BusinessException as err:
-            return err.error, err.status_code
+        except BaseException as err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }, HTTPStatus.BAD_REQUEST
+            logging.info(response)
+            logging.info(err)
+        return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -55,14 +62,20 @@ class ProcessResource(Resource):
                 jsonify(
                     {
                         "process": ProcessService.get_all_processes(
-                            token = request.headers["Authorization"]
+                            token=request.headers["Authorization"]
                         )
                     }
                 ),
                 HTTPStatus.OK,
             )
-        except BusinessException as err:
-            return err.error, err.status_code
+        except BaseException as err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }
+            logging.info(response)
+            logging.info(err)
+        return response, status
 
 
 # API for getting process diagram xml -for displaying bpmn diagram in UI
@@ -82,8 +95,14 @@ class ProcessDefinitionResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except BusinessException as err:
-            return err.error, err.status_code
+        except BaseException as err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }
+            logging.info(response)
+            logging.info(err)
+        return response, status
 
 
 @cors_preflight("POST,OPTIONS")
@@ -117,8 +136,17 @@ class ProcessEventResource(Resource):
                 },
                 HTTPStatus.BAD_REQUEST,
             )
-        except BusinessException as err:
-            return err.error, err.status_code
+
+            logging.info(response)
+            logging.info(err)
+        except BaseException as err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }
+            logging.info(response)
+            logging.info(err)
+
         return response, status
 
 
@@ -142,8 +170,13 @@ class ProcessInstanceResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except BusinessException as err:
-            return err.error, err.status_code
+        except BaseException as err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }, HTTPStatus.BAD_REQUEST
+            logging.info(response)
+        return response, status
 
 
 # @cors_preflight('GET,OPTIONS')

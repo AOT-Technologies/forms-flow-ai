@@ -5,7 +5,7 @@ const Footer = React.memo(() => {
   return (
     <div className="row footer">
       <div className="col-12 text-center text-align">
-      Powered by<a href="https://formsflow.ai" target='_blank'  rel="noreferrer"> Formsflow.ai</a> {/*{today.getFullYear()}*/}
+      Powered by<a href="https://formsflow.ai" target='_blank'  rel="noreferrer"> formsflow.ai</a> {/*{today.getFullYear()}*/}
       </div>
     </div>
   );

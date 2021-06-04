@@ -128,14 +128,14 @@ There are two ways in which you can access data from the formsflow-forms end poi
   ```
   - Copy the x-jwt-token from response header.
 * Get the user resource id using command below.
-  - Replace the `x-jwt-token value` in the header below and send request.
+  - Replace the `<x-jwt-token value>` in the header below and send request.
     ```
      curl --location --request GET 'http://localhost:3001/user' \
      --header 'x-jwt-token:  <x-jwt-token value>'
     ```
   - Copy the **_id** from Response body and replace value for **USER_RESOURCE_ID** in the **.env** file.
 * Get the user role id's using command below.
-  - Replace the `<x-jwt-token value> in the header below and send request.
+  - Replace the `<x-jwt-token value>` in the header below and send request.
     ```
      curl --location --request GET 'http://localhost:3001/role' \
      --header 'x-jwt-token:  <x-jwt-token value>'

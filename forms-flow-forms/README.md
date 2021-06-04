@@ -47,7 +47,7 @@ Not applicable.
 |`FORMIO_DB_NAME`|Mongo Database  Name. Used on installation to create the database.Choose your own||`formio`
 |`FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 |`FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
-|`FORMIO_DEFAULT_PROJECT_URL`|forms-flow-forms default url||`http://{your-ip-address}:3001`
+|`FORMIO_DEFAULT_PROJECT_URL` __*__|forms-flow-forms default url||`http://{your-ip-address}:3001`
 
 **Additionally, you may want to change these**
 * The value of Mongo database details (especially if this instance is not just for testing purposes)

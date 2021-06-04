@@ -41,13 +41,11 @@ To know more about Camunda, visit https://camunda.com/.
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `KEYCLOAK_URL`| URL to your Keycloak server || `http://{your-ip-address}:8080`
+ `KEYCLOAK_URL` __*__| URL to your Keycloak server || `http://{your-ip-address}:8080`
  `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
  `KEYCLOAK_BPM_CLIENT_ID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | `forms-flow-bpm`
- `KEYCLOAK_BPM_CLIENT_SECRET`|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret`go to [link](../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
+ `KEYCLOAK_BPM_CLIENT_SECRET` __*__|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret`go to [link](../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
 
-#### Database Connection Details(The solution manages 3 connections)
- 
 ##### CAMUNDA_JDBC : Dedicated camunda database (Prefixed with CAMUNDA_).
 -----------------------------------------------------------------------
 
@@ -80,17 +78,13 @@ To know more about Camunda, visit https://camunda.com/.
   `CAMUNDA_AUTHORIZATION_FLAG`|Engine Configuration Properties||`true`
   `CAMUNDA_AUTHORIZATION_REVOKE_CHECK_FLAG`|Engine Configuration Properties||`auto`
   
- Reference: 
- * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/job-executor/#job-executor-configuration-properties
- * https://docs.camunda.org/manual/latest/reference/deployment-descriptors/tags/process-engine/
- 
 #### Camunda formsflow.ai Integration Settings  
 ----------------------------------------------
  
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `FORMSFLOW_API_URL`|formsflow.ai Rest API URI||`http://{your-ip-address}:5000`
- `FORMIO_DEFAULT_PROJECT_URL`|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
+ `FORMSFLOW_API_URL` __*__|formsflow.ai Rest API URI||`http://{your-ip-address}:5000`
+ `FORMIO_DEFAULT_PROJECT_URL` __*__|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
  `FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
  `FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
  `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming, for multiple origins you can separate them using a comma |eg:`host1, host2`| `*`

@@ -1,4 +1,5 @@
 """" API endpoints for sentiment analysis """
+import logging
 from http import HTTPStatus
 
 from flask import g, jsonify, request
@@ -59,6 +60,7 @@ class SentimentAnalysisResource(Resource):
                     response, status = {
                         "message": "Server selection time out",
                     }, HTTPStatus.BAD_REQUEST
+                    logging.info(response)
                 return response, status
 
             return jsonify(response_json), HTTPStatus.OK
@@ -70,9 +72,13 @@ class SentimentAnalysisResource(Resource):
                 },
                 HTTPStatus.BAD_REQUEST,
             )
+            logging.info(response)
+            logging.info(err)
         except BaseException as err:
             response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid request object passed passed",
             }, HTTPStatus.BAD_REQUEST
+            logging.info(response)
+            logging.info(err)
         return response, status

@@ -1,5 +1,5 @@
 """API endpoints for managing task resource."""
-
+import logging
 from http import HTTPStatus
 
 from flask import jsonify, request
@@ -10,7 +10,6 @@ from api.services import TaskService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
 from api.utils.constants import CORS_ORIGINS
-
 
 
 API = Namespace("Task", description="Task")
@@ -30,7 +29,7 @@ class TaskList(Resource):
             jsonify(
                 {
                     "tasks": TaskService.get_all_tasks(
-                    token = request.headers["Authorization"]
+                        token=request.headers["Authorization"]
                     )
                 }
             ),
@@ -52,8 +51,7 @@ class Task(Resource):
             jsonify(
                 {
                     "task": TaskService.get_task(
-                        task_id = task_id,
-                        token = request.headers["Authorization"]
+                        task_id=task_id, token=request.headers["Authorization"]
                     )
                 }
             ),
@@ -77,9 +75,9 @@ class TaskClaim(Resource):
                 jsonify(
                     {
                         "tasks": TaskService.claim_task(
-                            task_id = task_id,
-                            data = request_json,
-                            token = request.headers["Authorization"]
+                            task_id=task_id,
+                            data=request_json,
+                            token=request.headers["Authorization"],
                         )
                     }
                 ),
@@ -94,8 +92,17 @@ class TaskClaim(Resource):
                 },
                 HTTPStatus.BAD_REQUEST,
             )
-        except BusinessException as err:
-            return err.error, err.status_code
+
+            logging.info(response)
+            logging.info(err)
+        except BaseException as err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }, HTTPStatus.BAD_REQUEST
+            logging.info(response)
+            logging.info(err)
+
         return response, status
 
 
@@ -115,9 +122,9 @@ class TaskUnClaim(Resource):
                 jsonify(
                     {
                         "tasks": TaskService.unclaim_task(
-                            task_id = task_id,
-                            data = request_json,
-                            token = request.headers["Authorization"]
+                            task_id=task_id,
+                            data=request_json,
+                            token=request.headers["Authorization"],
                         )
                     }
                 ),
@@ -129,11 +136,21 @@ class TaskUnClaim(Resource):
                     "type": "Invalid Request Object",
                     "message": "Required fields are not passed",
                     "errors": err.messages,
-                },HTTPStatus.BAD_REQUEST,
+                },
+                HTTPStatus.BAD_REQUEST,
             )
 
-        except BusinessException as err:
-            return err.error, err.status_code
+            logging.info(response)
+            logging.info(err)
+
+        except BaseException as err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }, HTTPStatus.BAD_REQUEST
+            logging.info(response)
+            logging.info(err)
+
         return response, status
 
 
@@ -153,9 +170,9 @@ class TaskComplete(Resource):
                 jsonify(
                     {
                         "tasks": TaskService.complete_task(
-                            task_id = task_id,
-                            data = request_json,
-                            token = request.headers["Authorization"]
+                            task_id=task_id,
+                            data=request_json,
+                            token=request.headers["Authorization"],
                         )
                     }
                 ),
@@ -170,7 +187,15 @@ class TaskComplete(Resource):
                 },
                 HTTPStatus.BAD_REQUEST,
             )
-        except BusinessException as err:
-            return err.error, err.status_code
-        return response, status
 
+            logging.info(response)
+            logging.info(err)
+        except BaseException as err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }, HTTPStatus.BAD_REQUEST
+            logging.info(response)
+            logging.info(err)
+
+        return response, status

@@ -113,6 +113,8 @@ There are two ways in which you can access data from the formsflow-forms end poi
 
 ### Using curl command
 
+> This option is currently supported only on Linux machines
+
 * Download and install [curl](https://curl.se/download.html).
 * Get the jwt token using the command below
 

@@ -7,6 +7,8 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import { toast } from 'react-toastify';
+
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
@@ -73,12 +75,9 @@ class StepperPage extends PureComponent {
 
   componentDidMount() {
     if(this.state && this.state.displayMode === "view"){
-
       this.setState({ disableWorkflowAssociation: true });
       this.setState({ disablePreview: true });
-
     }
-
   }
 
   componentWillUnmount() {
@@ -206,7 +205,7 @@ class StepperPage extends PureComponent {
 
   populateDropdown() {
     const listProcess = (processes) => {
-      if (processes.length > 0) {
+      if (processes?.length > 0) {
         const data = processes.map((process) => {
           return {
             label: process.name,
@@ -420,7 +419,7 @@ const mapDispatchToProps = (dispatch) => {
     getAllProcesses: () => {
       dispatch(
         fetchAllBpmProcesses((err, res) => {
-          if (!err) {
+          if (err) {
             console.log(err);
           }
         })
@@ -430,7 +429,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveFormProcessMapper(data, update, (err, res) => {
           if (!err) {
+            toast.success('Form Workflow Association Saved.');
             dispatch(push(`/form`));
+          }else{
+            toast.error('Form Workflow Association Failed.');
           }
         })
       );
@@ -445,7 +447,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveForm("form", newForm, (err, form) => {
           if (!err) {
+            toast.success('Form Saved');
             dispatch(push(`/formflow/${form._id}/preview`));
+          }else{
+            toast.error("Error while saving Form")
           }
         })
       );
@@ -455,6 +460,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         getFormProcesses(formId, (err, res) => {
           if (err) {
+            toast.error('Error in getting Workflow Process.');
             console.log(err);
           }
         })

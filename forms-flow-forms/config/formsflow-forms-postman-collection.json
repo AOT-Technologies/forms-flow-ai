@@ -68,14 +68,14 @@
 					}
 				],
 				"url": {
-					"raw": "http://localhost:3001/user",
+					"raw": "http://localhost:3001/role",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
 					"port": "3001",
 					"path": [
-						"user"
+						"role"
 					]
 				}
 			},

@@ -205,10 +205,10 @@ class FormResourceByFormId(Resource):
         except BusinessException as err:
             response, status = (
                 {
-                    "type": "Invalid response data",
-                    "message": f"Invalid form id - {form_id}",
+                    "type": "No Response",
+                    "message": f"FormProcessMapper with FormID - {form_id} not stored in DB",
                 },
-                HTTPStatus.BAD_REQUEST,
+                HTTPStatus.NO_CONTENT,
             )
             logging.info(response)
         return response, status

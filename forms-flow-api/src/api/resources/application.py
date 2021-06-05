@@ -326,7 +326,6 @@ class AggregatedApplicationStatusResource(Resource):
         return response, status
 
 
-
 # @cors_preflight("GET,OPTIONS")
 # @API.route("/<string:application_id>/process", methods=["GET", "OPTIONS"])
 # class ProcessMapperResourceByApplicationId(Resource):

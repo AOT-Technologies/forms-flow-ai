@@ -25,17 +25,8 @@ the system. It is built using Python :snake: .
 ### Installation
 
 If you are interested in contributing to the project, you can install through docker or locally.
-The steps for a local installation are:
 
-```
-Install python 3.8+ and pip
-pip install psycopg2
-python setup.py install
-python manage.py db upgrage(do a python manage.py db init - if first installation)
-Run - python wsgi.py
-```
-
-It's recommended to download dev-packages to following Python coding styles by running:
+It's recommended to download dev-packages to follow Python coding standards for project like PEP8 by running the command:
 
 ```python3 -m pip install -r requirements-dev.txt```
 

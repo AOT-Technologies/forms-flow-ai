@@ -64,14 +64,12 @@ class ApplicationHistoryResource(Resource):
                 {
                     "type": "Invalid Request Object",
                     "message": "Required fields are not passed",
-
                 },
                 HTTPStatus.BAD_REQUEST,
             )
             logging.info(response)
             logging.info(err)
 
-                   
         except BaseException as application_err:
             response, status = {
                 "type": "Invalid Request Object",

@@ -60,15 +60,25 @@ class ApplicationService:
         if limit:
             limit = int(limit)
 
-        auth_form_details = BPMService.get_auth_form_details(token=token)
-        form_ids = []
-        for auth_form_detail in auth_form_details:
-            form_ids.append(auth_form_detail["formId"])
-        applications = Application.find_by_form_ids(
-            form_ids=form_ids, page_no=page_no, limit=limit
-        )
-        application_schema = ApplicationSchema()
-        return application_schema.dump(applications, many=True), applications.count()
+        try:
+            auth_form_details = BPMService.get_auth_form_details(token=token)
+            form_ids = []
+            for auth_form_detail in auth_form_details:
+                form_ids.append(auth_form_detail["formId"])
+            applications = Application.find_by_form_ids(
+                form_ids=form_ids, page_no=page_no, limit=limit
+            )
+            application_schema = ApplicationSchema()
+            return (
+                application_schema.dump(applications, many=True),
+                applications.count(),
+            )
+        except BaseException as application_err:
+            response, status = {
+                "type": "No Response",
+                "message": "No applicaiton found in DB",
+            }, HTTPStatus.NO_CONTENT
+            return response, status
 
     @staticmethod
     def get_all_applications(page_no, limit):

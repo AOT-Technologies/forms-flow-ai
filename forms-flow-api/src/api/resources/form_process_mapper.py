@@ -75,7 +75,6 @@ class FormResource(Resource):
             logging.info(response)
             logging.info(err)
 
-
         except BaseException as form_err:
             response, status = {
                 "type": "Bad request error",

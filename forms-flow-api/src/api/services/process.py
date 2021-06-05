@@ -105,7 +105,6 @@ class ProcessService:
         except TypeError as err:
 
             response, status = {
-
                 "type": "Invalid request",
                 "message": "Invalid request object passed",
                 "errors": err.messages,

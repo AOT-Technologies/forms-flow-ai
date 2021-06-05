@@ -85,6 +85,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     # API Base URL (Self)
     FORMSFLOW_API_URL = os.getenv("WEB_API_BASE_URL")
 
+
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""
 

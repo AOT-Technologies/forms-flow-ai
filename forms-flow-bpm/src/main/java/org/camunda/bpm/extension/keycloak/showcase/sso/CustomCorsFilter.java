@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.servlet.Filter;
@@ -55,7 +56,6 @@ public class CustomCorsFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
         String requestURL = request.getRequestURL().toString();
         if(StringUtils.contains(requestURL,"/engine-rest/") ||
-                StringUtils.contains(requestURL,"/engine/") ||
                 StringUtils.contains(requestURL,"/engine-rest-ext/") ||
                 StringUtils.contains(requestURL,"/form-builder/")) {
             response.setHeader("Access-Control-Allow-Origin", getOrigin(request));
@@ -100,8 +100,13 @@ public class CustomCorsFilter implements Filter {
                     break;
                 }
             }
-            List<String> allowedOrigins = Arrays.asList(customAllowOrigin.split(","));
-            return origin != null && allowedOrigins.contains(origin) ? origin : "";
+            if(Objects.equals(customAllowOrigin, "*")) {
+                return origin;
+            }
+            else {
+                List<String> allowedOrigins = Arrays.asList(customAllowOrigin.split(","));
+                return origin != null && allowedOrigins.contains(origin) ? origin : "";
+            }
         }
         LOGGER.info("Leveraging the wildcard : *");
         return "*";

@@ -26,7 +26,7 @@ the system. It is built using Python :snake: .
 
 If you are interested in contributing to the project, you can install through docker or locally.
 
-It's recommended to download dev-packages to follow Python coding standards for project like PEP8 by running the command:
+It's recommended to download dev-packages to follow Python coding standards for project like PEP8 by installing dev-packages using pip:
 
 ```python3 -m pip install -r requirements-dev.txt```
 

@@ -113,9 +113,25 @@ There are two ways in which you can access data from the formsflow-forms end poi
 
 ### Using curl command
 
-> This option is currently supported only for Linux machines
-
 * Download and install [curl](https://curl.se/download.html).
+
+> **For windows**
+
+* [Step 1]() Go to `forms-flow-forms/script` directory.
+* [Step 2]() Open command prompt and run `resourceId_windows.bat {user email} {password}` eg: resourceId_windows.bat admin@example.com changeme
+* [Step 3]() Copy the ID corresponding to Role Name from [Step 2]() and paste it against the Environment Variable name from the below table.
+
+|Role ID | Environment Variable Name |
+|--- |---
+|Administrator | DESIGNER_ROLE_ID 
+|Anonymous | ANONYMOUS_ID 
+|formsflow Client | CLIENT_ROLE_ID 
+|formsflow Reviewer | REVIEWER_ROLE_ID 
+|User | USER_RESOURCE_ID 
+
+
+> **For Linux**
+
 * Get the jwt token using the command below
 
   ```

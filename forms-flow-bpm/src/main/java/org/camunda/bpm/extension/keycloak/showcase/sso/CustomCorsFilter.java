@@ -101,15 +101,16 @@ public class CustomCorsFilter implements Filter {
                 }
             }
             if(Objects.equals(customAllowOrigin, "*")) {
-                return origin;
+                return origin == null?"*":origin;
             }
             else {
                 List<String> allowedOrigins = Arrays.asList(customAllowOrigin.split(","));
                 return origin != null && allowedOrigins.contains(origin) ? origin : "";
             }
+        } else {
+            LOGGER.info("Leveraging the wildcard : *");
+            return "*";
         }
-        LOGGER.info("Leveraging the wildcard : *");
-        return "*";
     }
 
     @Override

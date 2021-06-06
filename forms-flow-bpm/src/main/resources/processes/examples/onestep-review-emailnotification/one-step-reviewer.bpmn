@@ -6,7 +6,7 @@
     </bpmn:startEvent>
     <bpmn:userTask id="administrator" name="Administrator" camunda:candidateGroups="formsflow/formsflow-reviewer">
       <bpmn:extensionElements>
-         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="create">
+        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="create">
           <camunda:field name="fields">
             <camunda:expression>["applicationId"]</camunda:expression>
           </camunda:field>
@@ -17,7 +17,7 @@
             <camunda:expression>Message_Email</camunda:expression>
           </camunda:field>
           <camunda:field name="category">
-            <camunda:expression>submission_notification</camunda:expression>
+            <camunda:expression>assignment_notification</camunda:expression>
           </camunda:field>
           <camunda:field name="groupsOnly">
             <camunda:expression>N</camunda:expression>
@@ -25,7 +25,7 @@
           <camunda:field name="emailGroups">
             <camunda:expression>[]</camunda:expression>
           </camunda:field>
-        </camunda:taskListener>       
+        </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_11mc9p9</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0312sxm</bpmn:outgoing>

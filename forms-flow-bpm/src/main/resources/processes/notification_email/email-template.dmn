@@ -15,13 +15,13 @@
       <output id="OutputClause_1o2aisg" label="body" name="body" typeRef="string" />
       <rule id="DecisionRule_0ycnss6">
         <inputEntry id="UnaryTests_1g3piq1">
-          <text>"submission_notification"</text>
+          <text>"assignment_notification"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1w28m1k">
           <text></text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1czkz3j">
-          <text>"Submission Notification"</text>
+          <text>"Task Assignment"</text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1qfdlgl" expressionLanguage="juel">
           <text>"Hello @name,

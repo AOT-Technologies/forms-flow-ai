@@ -26,7 +26,7 @@ c. additionalEmailGroups [Mandatory = No]
 
 ### How to Use
 
-Below snapshot shows how to configure the **NotifyListener** to an task. 
+Below snapshot shows how to configure the **NotifyListener** to a task. 
 
 ##### FormConnectorListener being configured on create of task; with message event details. 
 

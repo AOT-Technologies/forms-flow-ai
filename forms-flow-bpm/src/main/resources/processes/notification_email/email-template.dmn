@@ -34,6 +34,59 @@ You have a new task for the process. Please click the following link to access y
 Best Regards"</text>
         </outputEntry>
       </rule>
+      <rule id="DecisionRule_1ntdgwj">
+        <inputEntry id="UnaryTests_05ov6ol">
+          <text>"activity_reminder"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0lljnoh">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1fjwonv">
+          <text>"Task Reminder"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1s9943x">
+          <text>"Dear @name,
+
+This is a reminder that your outstanding task is due in one day.
+
+Application Number : @applicationId
+
+            
+Please click the following link to access your new task.
+
+To access the task through formsflow.ai please follow this link:  http://localhost:3000/task/@pid
+
+   
+ Regards,   
+ "</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0tnom8n">
+        <inputEntry id="UnaryTests_03h5bd8">
+          <text>"activity_escalation"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0tzhose">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0grdcc8">
+          <text>"Task Escalation"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1bf9ywb">
+          <text>"Dear @name,
+     
+You have exceeded the deadline for the task.  
+
+Application Number : @applicationId
+
+            
+Please click the following link to access your new task.
+
+To access the task through formsflow.ai please follow this link:  http://localhost:3000/task/@pid
+   
+ Regards, 
+ "</text>
+        </outputEntry>
+      </rule>
     </decisionTable>
   </decision>
 </definitions>

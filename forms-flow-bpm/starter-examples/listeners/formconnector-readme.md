@@ -17,13 +17,13 @@ Task Listener
 ### How it Works
 
 This component relies on listed parameters.
-a. formName (Extension Property) : Should be the form name from formio. Mandatory = Yes
-b. copyDataIndicator (Listener field of type expression). Setting this value to "Y" will propagate all matching field values from existing formUrl to new form. Optional [Default Value = N]
-c. fields (Listener field of type expression). Takes in cam variables as array. For example. ["pid","applicationId","task_id"]. It would populate data from cam variables to form. Mandatory = Yes 
+* formName (Extension Property) : Should be the form name from formio. `Mandatory = Yes`
+* copyDataIndicator (Listener field of type expression). Possible Values: Y or N. Setting this value to "Y" will propagate all matching field values from existing formUrl to new form. 
+* fields (Listener field of type expression). Takes in cam variables as array. For example. ["pid","applicationId","task_id"]. It would populate data from cam variables to form. `Mandatory = Yes` 
 Note: pid is process instance id, task_id is task Id and applicationId is applicationId. It is important for forms associated with task to know about these.
 ### How to Use
 
-Below snapshot shows how to configure the **FormConnectorListener** to an task. 
+Below snapshot shows how to configure the **FormConnectorListener** to a task. 
 
 ##### FormConnectorListener being configured on create of task; with fields configured to populate task details into form' metadata fields.
 

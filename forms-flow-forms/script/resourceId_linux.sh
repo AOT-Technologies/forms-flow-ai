@@ -2,10 +2,11 @@
 
 email=$1
 password=$2
+host=http://localhost:3001
 
-response=$(curl  -s -D - -o /dev/null http://localhost:3001/user/login -H 'Content-Type: application/json' --data '{"data": {"email" : "'$1'","password": "'$2'"}}'  | grep ^x-jwt-token*)
+response=$(curl  -s -D - -o /dev/null "$host"/user/login -H 'Content-Type: application/json' --data '{"data": {"email" : "'$email'","password": "'$password'"}}'  | grep ^x-jwt-token*)
 token=${response:13}
-role_data=$(curl -H "x-jwt-token:${token//[$'\t\r\n ']}" -s  http://localhost:3001/role)
+role_data=$(curl -H "x-jwt-token:${token//[$'\t\r\n ']}" -s  "$host"/role)
 
 bkpIFS="$IFS"
 
@@ -28,7 +29,7 @@ do
 done
 
 
-user_data=$(curl -H "x-jwt-token:${token//[$'\t\r\n ']}" -s  http://localhost:3001/user)
+user_data=$(curl -H "x-jwt-token:${token//[$'\t\r\n ']}" -s  "$host"/user)
 
 bkpIFS="$IFS"
 

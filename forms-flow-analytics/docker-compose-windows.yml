@@ -2,7 +2,7 @@
 version: "3.7"
 
 x-redash-service: &redash-service
-  image: redash/redash:latest
+  build: https://github.com/AOT-Technologies/redash.git 
   depends_on:
       - postgres
       - redis

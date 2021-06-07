@@ -56,6 +56,9 @@ Variable name | Meaning | Possible values | Default value |
 * Analytics service uses port 7000, make sure the port is available.
 * `cd {Your Directory}/forms-flow-ai/forms-flow-analytics`
 
+> The forked version of redash is being used to overcome the limited cors support in redash. The forked repo fixes the cors issues. But if the environment is setup in such a way that redash resides in the same url origin as forms web application , redash can be built from any redash images.
+
+
 * For Linux,
   * Run `docker-compose -f docker-compose-linux.yml run --rm server create_db` to setup database and to create tables.
   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.

@@ -4,7 +4,8 @@ from http import HTTPStatus
 import logging
 
 from flask import g, jsonify, request
-from flask_restx import Namespace, Resource, cors
+from flask_restx import Namespace, Resource
+from flask_cors import *
 
 from ..exceptions import BusinessException
 from ..schemas import ApplicationListReqSchema, FormProcessMapperSchema
@@ -23,7 +24,7 @@ class FormResource(Resource):
     """Resource for managing forms."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """Get form process mapper."""
@@ -87,7 +88,7 @@ class FormResource(Resource):
         return response, status
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post():
         """Post a form process mapper using the request body."""
@@ -118,7 +119,7 @@ class FormResourceById(Resource):
     """Resource for managing forms by mapper_id."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(mapper_id):
         """Get form process mapper by id."""
@@ -139,7 +140,7 @@ class FormResourceById(Resource):
         return response, status
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def delete(mapper_id):
         """Delete form process mapper by id."""
@@ -158,7 +159,7 @@ class FormResourceById(Resource):
         return response, status
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def put(mapper_id):
         """Update form process mapper details."""
@@ -193,7 +194,7 @@ class FormResourceByFormId(Resource):
     """Resource for managing forms by corresponding form_id."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     def get(form_id):
         """Get details of only form corresponding to a particular formId."""
         try:

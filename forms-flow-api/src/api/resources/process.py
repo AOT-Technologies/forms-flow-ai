@@ -3,10 +3,10 @@
 import logging
 from http import HTTPStatus
 
-from flask import g, jsonify, request
-from flask_restx import Namespace, Resource, cors
+from flask import jsonify, request
+from flask_restx import Namespace, Resource
+from flask_cors import *
 
-from ..exceptions import BusinessException
 from ..services import ProcessService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
@@ -24,7 +24,7 @@ class ProcessStateResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(process_key, task_key):
         """Get states by process and task key."""
@@ -53,7 +53,7 @@ class ProcessResource(Resource):
     """Resource for managing process."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """Get all process."""
@@ -85,7 +85,7 @@ class ProcessDefinitionResource(Resource):
     """Resource for managing process details."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     def get(process_key):
         """Get process detailsXML."""
         try:
@@ -111,7 +111,7 @@ class ProcessEventResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post():
         message_json = request.get_json()
@@ -159,7 +159,7 @@ class ProcessInstanceResource(Resource):
     """Get Process Activity Instances."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(process_InstanceId):
         """Get states by process and task key."""
@@ -185,7 +185,6 @@ class ProcessInstanceResource(Resource):
 #     """Resource for managing process details."""
 
 #     @staticmethod
-#     @cors.crossdomain(origin='*')
 #     def get(process_key):
 #         """Get process details."""
 #         try:
@@ -200,7 +199,6 @@ class ProcessInstanceResource(Resource):
 #     """Resource for managing process ations."""
 
 #     @staticmethod
-#     @cors.crossdomain(origin='*')
 #     def get(process_key):
 #         """Get process action details."""
 #         try:

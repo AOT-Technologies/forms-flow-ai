@@ -3,9 +3,9 @@ import logging
 from http import HTTPStatus
 
 from flask import jsonify, request
-from flask_restx import Namespace, Resource, cors
+from flask_restx import Namespace, Resource
+from flask_cors import *
 
-from ..exceptions import BusinessException
 from api.services import TaskService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
@@ -21,7 +21,7 @@ class TaskList(Resource):
     """Resource for managing tasks."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """List all tasks."""
@@ -43,7 +43,7 @@ class Task(Resource):
     """Resource for managing tasks."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origin=CORS_ORIGINS)
     @auth.require
     def get(task_id):
         """List specific tasks."""
@@ -65,7 +65,7 @@ class TaskClaim(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(task_id):
         """Claim a task."""
@@ -112,7 +112,7 @@ class TaskUnClaim(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(task_id):
         """Unclaim a task."""
@@ -160,7 +160,7 @@ class TaskComplete(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(task_id):
         """Complete a task."""

@@ -3,7 +3,7 @@
 # from http import HTTPStatus
 
 # from flask import jsonify
-# from flask_restx import Namespace, Resource, cors
+# from flask_restx import Namespace, Resource
 
 # from ..exceptions import BusinessException
 # from ..services import TenantService
@@ -19,7 +19,6 @@
 #     """Resource for managing tenants."""
 
 #     @staticmethod
-#     @cors.crossdomain(origin="*")
 #     def get():
 #         """Get tenants."""
 #         return jsonify({"tenants": TenantService.get_all()}), HTTPStatus.OK
@@ -31,7 +30,6 @@
 #     """Resource for managing tenant."""
 
 #     @staticmethod
-#     @cors.crossdomain(origin="*")
 #     def get(tenant_id):
 #         """Get tenant by id."""
 #         try:

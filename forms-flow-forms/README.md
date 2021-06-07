@@ -84,8 +84,8 @@ Not applicable.
 
 There are two ways in which you can access data from the formsflow-forms end points.
 
-* Using POSTMAN API client
-* Using curl command
+* [Using POSTMAN API client](#using-postman-api-client)
+* [Using curl command](#using-curl-command)
 
 ### Using POSTMAN API client
 

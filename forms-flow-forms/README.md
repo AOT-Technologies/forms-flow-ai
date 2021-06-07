@@ -118,7 +118,7 @@ There are two ways in which you can access data from the formsflow-forms end poi
 > **For windows**
 
 * [Step 1]() Go to `forms-flow-forms/script` directory.
-* [Step 2]() Open command prompt and run `resourceId_windows.bat {user email} {password}` eg: resourceId_windows.bat admin@example.com changeme
+* [Step 2]() Open command prompt and run `resourceId_windows.bat {user email} {password}` eg: `resourceId_windows.bat admin@example.com changeme`
 * [Step 3]() Copy the ID corresponding to Role Name from [Step 2]() and paste it against the Environment Variable name from the below table.
 
 |Role ID | Environment Variable Name |

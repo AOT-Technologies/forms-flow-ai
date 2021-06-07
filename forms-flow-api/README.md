@@ -1,6 +1,6 @@
 # formsflow.ai API 
 
-![Python](https://img.shields.io/badge/python-3.8-blue) ![Flask](https://img.shields.io/badge/Flask-1.1.1-blue) ![postgres](https://img.shields.io/badge/postgres-latest-blue)
+![Python](https://img.shields.io/badge/python-3.8-blue) ![Flask](https://img.shields.io/badge/Flask-1.1.4-blue) ![postgres](https://img.shields.io/badge/postgres-latest-blue)
 
 **formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
 

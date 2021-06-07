@@ -35,7 +35,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-ai/forms-flow-web".
-   * *Skip this if forms-flow-analytics setup is completed* - Start the **analytics server** by following the instructions given on  [readme](../../forms-flow-analytics/README.md)
+   * *Skip this if forms-flow-analytics setup is completed* - Start the **analytics server** by following the instructions given on  [readme](../forms-flow-analytics/README.md)
    * Rename the file [sample.env](./sample.env) to **.env**.
    * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
    * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**

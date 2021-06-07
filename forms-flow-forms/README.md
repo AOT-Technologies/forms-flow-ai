@@ -84,8 +84,30 @@ Not applicable.
 
 There are two ways in which you can access data from the formsflow-forms end points.
 
-* [Using POSTMAN API client](#using-postman-api-client)
 * [Using curl command](#using-curl-command)
+* [Using POSTMAN API client](#using-postman-api-client)
+
+### Using curl command
+
+* Download and install [curl](https://curl.se/download.html).
+
+* [Step 1](#step-1) Go to `forms-flow-forms/script` directory.
+* [Step 2](#step-2)
+  * **For windows**
+     * Open command prompt and run `resourceId_windows.bat {user email} {password}` eg: `resourceId_windows.bat admin@example.com changeme`
+  * **For Linux**
+     * Open command prompt and run `./resourceId_linux.sh {user email} {password}` eg: `./resourceId_linux.sh admin@example.com changeme`
+* [Step 3](#step-3) Copy the ID corresponding to Role Name from [Step 2](./README.md#step-2) and paste it against the Environment Variable name from the below table.
+
+|Role Name | Environment Variable Name |
+|--- |---
+|Administrator | DESIGNER_ROLE_ID 
+|Anonymous | ANONYMOUS_ID 
+|formsflow Client | CLIENT_ROLE_ID 
+|formsflow Reviewer | REVIEWER_ROLE_ID 
+|User | USER_RESOURCE_ID 
+         	
+> **curl requests are successfully completed. You can skip the remaining sections in this page and continue with other installation steps.**
 
 ### Using POSTMAN API client
 
@@ -110,60 +132,6 @@ There are two ways in which you can access data from the formsflow-forms end poi
         - Copy the **_id** with title *formsflow Reviewer* from Response body and replace value for **REVIEWER_ROLE_ID** in the **.env** file.
         
 > **Postman API calls are successfully completed. You can skip the remaining sections in this page and continue with other installation steps.**
-
-### Using curl command
-
-* Download and install [curl](https://curl.se/download.html).
-
-> **For windows**
-
-* [Step 1]() Go to `forms-flow-forms/script` directory.
-* [Step 2]() Open command prompt and run `resourceId_windows.bat {user email} {password}` eg: `resourceId_windows.bat admin@example.com changeme`
-* [Step 3]() Copy the ID corresponding to Role Name from [Step 2]() and paste it against the Environment Variable name from the below table.
-
-|Role Name | Environment Variable Name |
-|--- |---
-|Administrator | DESIGNER_ROLE_ID 
-|Anonymous | ANONYMOUS_ID 
-|formsflow Client | CLIENT_ROLE_ID 
-|formsflow Reviewer | REVIEWER_ROLE_ID 
-|User | USER_RESOURCE_ID 
-
-
-> **For Linux**
-
-* Get the jwt token using the command below
-
-  ```
-   curl -i POST 'http://localhost:3001/user/login' \
-   --header 'Content-Type: application/json' \
-   --data-raw '{
-       "data": {
-           "email": "admin@example.com",
-           "password": "CHANGEME"
-       }
-   }'
-  ```
-  - Copy the x-jwt-token from response header.
-* Get the user resource id using command below.
-  - Replace the `<x-jwt-token value>` in the header below and send request.
-    ```
-     curl --location --request GET 'http://localhost:3001/user' \
-     --header 'x-jwt-token:  <x-jwt-token value>'
-    ```
-  - Copy the **_id** from Response body and replace value for **USER_RESOURCE_ID** in the **.env** file.
-* Get the user role id's using command below.
-  - Replace the `<x-jwt-token value>` in the header below and send request.
-    ```
-     curl --location --request GET 'http://localhost:3001/role' \
-     --header 'x-jwt-token:  <x-jwt-token value>'
-    ```
-  - Copy the **_id** with title *Administrator* from Response body and replace value for **DESIGNER_ROLE_ID** in the **.env** file.
-  - Copy the **_id** with title *Anonymous* from Response body and replace value for **ANONYMOUS_ID** in the **.env** file.
-  - Copy the **_id** with title *formsflow Client* from Response body and replace value for **CLIENT_ROLE_ID** in the **.env** file.
-  - Copy the **_id** with title *formsflow Reviewer* from Response body and replace value for **REVIEWER_ROLE_ID** in the **.env** file.
-         	
-> **curl requests are successfully completed. You can skip the remaining sections in this page and continue with other installation steps.**	
 
 ## Custom Components
 

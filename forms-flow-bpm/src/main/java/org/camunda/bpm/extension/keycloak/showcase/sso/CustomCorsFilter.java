@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 import javax.servlet.Filter;
@@ -70,13 +71,13 @@ public class CustomCorsFilter implements Filter {
             }
 
         }  else if(StringUtils.contains(requestURL,"/forms-flow-bpm-socket/")) {
-         CustomHttpRequestWrapper customHttpRequestWrapper =new CustomHttpRequestWrapper(request);
+            CustomHttpRequestWrapper customHttpRequestWrapper =new CustomHttpRequestWrapper(request);
 
             if( StringUtils.isNotBlank(request.getQueryString())) {
                 List<String> queryParams = Arrays.asList(request.getQueryString().split("&"));
                 for(String param : queryParams) {
                     if("accesstoken".equals(StringUtils.substringBefore(param,"="))) {
-                       String decryptedToken = aesUtils.decryptText(StringUtils.substringAfter(param,"="),socketSecretKey);
+                        String decryptedToken = aesUtils.decryptText(StringUtils.substringAfter(param,"="),socketSecretKey);
                         customHttpRequestWrapper.addHeader("Authorization", "Bearer " +decryptedToken);
                     }
                 }
@@ -89,17 +90,27 @@ public class CustomCorsFilter implements Filter {
     }
 
     private String getOrigin(HttpServletRequest request){
+
         if(StringUtils.isNotBlank(customAllowOrigin)) {
-            return customAllowOrigin;
-        }
-        for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
-            String headerName = (String) e.nextElement();
-            if(StringUtils.isNotBlank(headerName) && "ORIGIN".equals(headerName.toUpperCase())) {
-                return request.getHeader(headerName);
+            String origin = null;
+            for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
+                String headerName = (String) e.nextElement();
+                if(StringUtils.isNotBlank(headerName) && "ORIGIN".equals(headerName.toUpperCase())) {
+                    origin =  request.getHeader(headerName);
+                    break;
+                }
             }
+            if(Objects.equals(customAllowOrigin, "*")) {
+                return origin == null?"*":origin;
+            }
+            else {
+                List<String> allowedOrigins = Arrays.asList(customAllowOrigin.split(","));
+                return origin != null && allowedOrigins.contains(origin) ? origin : "";
+            }
+        } else {
+            LOGGER.info("Leveraging the wildcard : *");
+            return "*";
         }
-        LOGGER.info("Leveraging the wildcard : *");
-        return "*";
     }
 
     @Override

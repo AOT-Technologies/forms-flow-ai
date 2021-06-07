@@ -22,14 +22,14 @@
         "admin": false,
         "default": true
       },
-      "staffReviewer": {
-        "title": "Staff Reviewer",
+      "formsflowReviewer": {
+        "title": "formsflow Reviewer",
         "description": "A person who can view all form submissions.",
         "admin": false,
         "default": false
       },
-      "client": {
-        "title": "Client",
+      "formsflowClient": {
+        "title": "formsflow Client",
         "description": "A person who can do form submission.",
         "admin": false,
         "default": false
@@ -172,7 +172,2332 @@
             "type": "create_own"
           }
         ]
-      }
+      },
+      "productSurveyForm":{
+        "type": "form",
+        "tags": [
+            "common"
+        ],
+        "components": [
+            {
+                "title": "Product Survey Form",
+                "theme": "primary",
+                "tooltip": "",
+                "customClass": "",
+                "collapsible": false,
+                "hidden": false,
+                "hideLabel": false,
+                "disabled": false,
+                "modalEdit": false,
+                "key": "sampleForm",
+                "tags": [],
+                "properties": {},
+                "customConditional": "",
+                "conditional": {
+                    "json": "",
+                    "show": null,
+                    "when": null,
+                    "eq": ""
+                },
+                "logic": [],
+                "attributes": {},
+                "overlay": {
+                    "style": "",
+                    "page": "",
+                    "left": "",
+                    "top": "",
+                    "width": "",
+                    "height": ""
+                },
+                "type": "panel",
+                "label": "Product Survey Form",
+                "breadcrumb": "default",
+                "tabindex": "",
+                "input": false,
+                "tableView": false,
+                "components": [
+                    {
+                        "title": "Personal Details",
+                        "theme": "info",
+                        "tooltip": "",
+                        "customClass": "",
+                        "collapsible": true,
+                        "hidden": false,
+                        "hideLabel": false,
+                        "disabled": false,
+                        "modalEdit": false,
+                        "key": "personalDetails",
+                        "tags": [],
+                        "properties": {},
+                        "customConditional": "",
+                        "conditional": {
+                            "json": "",
+                            "show": null,
+                            "when": null,
+                            "eq": ""
+                        },
+                        "logic": [],
+                        "attributes": {},
+                        "overlay": {
+                            "style": "",
+                            "page": "",
+                            "left": "",
+                            "top": "",
+                            "width": "",
+                            "height": ""
+                        },
+                        "type": "panel",
+                        "label": "Personal Details",
+                        "breadcrumb": "default",
+                        "tabindex": "",
+                        "input": false,
+                        "tableView": false,
+                        "components": [
+                            {
+                                "label": "Table",
+                                "cellAlignment": "left",
+                                "key": "table",
+                                "type": "table",
+                                "input": false,
+                                "tableView": false,
+                                "rows": [
+                                    [
+                                        {
+                                            "components": [
+                                                {
+                                                    "label": "First Name",
+                                                    "labelPosition": "top",
+                                                    "placeholder": "Enter first name",
+                                                    "description": "",
+                                                    "tooltip": "",
+                                                    "prefix": "",
+                                                    "suffix": "",
+                                                    "widget": {
+                                                        "type": "input"
+                                                    },
+                                                    "inputMask": "",
+                                                    "allowMultipleMasks": false,
+                                                    "customClass": "",
+                                                    "tabindex": "",
+                                                    "autocomplete": "",
+                                                    "hidden": false,
+                                                    "hideLabel": false,
+                                                    "showWordCount": false,
+                                                    "showCharCount": false,
+                                                    "mask": false,
+                                                    "autofocus": false,
+                                                    "spellcheck": true,
+                                                    "disabled": false,
+                                                    "tableView": false,
+                                                    "modalEdit": false,
+                                                    "multiple": false,
+                                                    "persistent": true,
+                                                    "inputFormat": "plain",
+                                                    "protected": false,
+                                                    "dbIndex": false,
+                                                    "case": "",
+                                                    "encrypted": false,
+                                                    "redrawOn": "",
+                                                    "clearOnHide": true,
+                                                    "customDefaultValue": "",
+                                                    "calculateValue": "",
+                                                    "calculateServer": false,
+                                                    "allowCalculateOverride": false,
+                                                    "validateOn": "change",
+                                                    "validate": {
+                                                        "required": false,
+                                                        "pattern": "",
+                                                        "customMessage": "",
+                                                        "custom": "",
+                                                        "customPrivate": false,
+                                                        "json": "",
+                                                        "minLength": "",
+                                                        "maxLength": "",
+                                                        "strictDateValidation": false,
+                                                        "multiple": false,
+                                                        "unique": false
+                                                    },
+                                                    "unique": false,
+                                                    "errorLabel": "",
+                                                    "key": "firstName",
+                                                    "tags": [],
+                                                    "properties": {},
+                                                    "conditional": {
+                                                        "show": null,
+                                                        "when": null,
+                                                        "eq": "",
+                                                        "json": ""
+                                                    },
+                                                    "customConditional": "",
+                                                    "logic": [],
+                                                    "attributes": {},
+                                                    "overlay": {
+                                                        "style": "",
+                                                        "page": "",
+                                                        "left": "",
+                                                        "top": "",
+                                                        "width": "",
+                                                        "height": ""
+                                                    },
+                                                    "type": "textfield",
+                                                    "input": true,
+                                                    "refreshOn": "",
+                                                    "dataGridLabel": false,
+                                                    "inputType": "text",
+                                                    "id": "eb20czq",
+                                                    "defaultValue": ""
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "components": [
+                                                {
+                                                    "label": "Middle Name",
+                                                    "labelPosition": "top",
+                                                    "placeholder": "Enter middle name",
+                                                    "description": "",
+                                                    "tooltip": "",
+                                                    "prefix": "",
+                                                    "suffix": "",
+                                                    "widget": {
+                                                        "type": "input"
+                                                    },
+                                                    "inputMask": "",
+                                                    "allowMultipleMasks": false,
+                                                    "customClass": "",
+                                                    "tabindex": "",
+                                                    "autocomplete": "",
+                                                    "hidden": false,
+                                                    "hideLabel": false,
+                                                    "showWordCount": false,
+                                                    "showCharCount": false,
+                                                    "mask": false,
+                                                    "autofocus": false,
+                                                    "spellcheck": true,
+                                                    "disabled": false,
+                                                    "tableView": false,
+                                                    "modalEdit": false,
+                                                    "multiple": false,
+                                                    "persistent": true,
+                                                    "inputFormat": "plain",
+                                                    "protected": false,
+                                                    "dbIndex": false,
+                                                    "case": "",
+                                                    "encrypted": false,
+                                                    "redrawOn": "",
+                                                    "clearOnHide": true,
+                                                    "customDefaultValue": "",
+                                                    "calculateValue": "",
+                                                    "calculateServer": false,
+                                                    "allowCalculateOverride": false,
+                                                    "validateOn": "change",
+                                                    "validate": {
+                                                        "required": false,
+                                                        "pattern": "",
+                                                        "customMessage": "",
+                                                        "custom": "",
+                                                        "customPrivate": false,
+                                                        "json": "",
+                                                        "minLength": "",
+                                                        "maxLength": "",
+                                                        "strictDateValidation": false,
+                                                        "multiple": false,
+                                                        "unique": false
+                                                    },
+                                                    "unique": false,
+                                                    "errorLabel": "",
+                                                    "key": "middleName",
+                                                    "tags": [],
+                                                    "properties": {},
+                                                    "conditional": {
+                                                        "show": null,
+                                                        "when": null,
+                                                        "eq": "",
+                                                        "json": ""
+                                                    },
+                                                    "customConditional": "",
+                                                    "logic": [],
+                                                    "attributes": {},
+                                                    "overlay": {
+                                                        "style": "",
+                                                        "page": "",
+                                                        "left": "",
+                                                        "top": "",
+                                                        "width": "",
+                                                        "height": ""
+                                                    },
+                                                    "type": "textfield",
+                                                    "input": true,
+                                                    "refreshOn": "",
+                                                    "dataGridLabel": false,
+                                                    "inputType": "text",
+                                                    "id": "eugw65",
+                                                    "defaultValue": ""
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "components": [
+                                                {
+                                                    "label": "Last Name",
+                                                    "labelPosition": "top",
+                                                    "placeholder": "Enter last name",
+                                                    "description": "",
+                                                    "tooltip": "",
+                                                    "prefix": "",
+                                                    "suffix": "",
+                                                    "widget": {
+                                                        "type": "input"
+                                                    },
+                                                    "inputMask": "",
+                                                    "allowMultipleMasks": false,
+                                                    "customClass": "",
+                                                    "tabindex": "",
+                                                    "autocomplete": "",
+                                                    "hidden": false,
+                                                    "hideLabel": false,
+                                                    "showWordCount": false,
+                                                    "showCharCount": false,
+                                                    "mask": false,
+                                                    "autofocus": false,
+                                                    "spellcheck": true,
+                                                    "disabled": false,
+                                                    "tableView": false,
+                                                    "modalEdit": false,
+                                                    "multiple": false,
+                                                    "persistent": true,
+                                                    "inputFormat": "plain",
+                                                    "protected": false,
+                                                    "dbIndex": false,
+                                                    "case": "",
+                                                    "encrypted": false,
+                                                    "redrawOn": "",
+                                                    "clearOnHide": true,
+                                                    "customDefaultValue": "",
+                                                    "calculateValue": "",
+                                                    "calculateServer": false,
+                                                    "allowCalculateOverride": false,
+                                                    "validateOn": "change",
+                                                    "validate": {
+                                                        "required": false,
+                                                        "pattern": "",
+                                                        "customMessage": "",
+                                                        "custom": "",
+                                                        "customPrivate": false,
+                                                        "json": "",
+                                                        "minLength": "",
+                                                        "maxLength": "",
+                                                        "strictDateValidation": false,
+                                                        "multiple": false,
+                                                        "unique": false
+                                                    },
+                                                    "unique": false,
+                                                    "errorLabel": "",
+                                                    "key": "lastName",
+                                                    "tags": [],
+                                                    "properties": {},
+                                                    "conditional": {
+                                                        "show": null,
+                                                        "when": null,
+                                                        "eq": "",
+                                                        "json": ""
+                                                    },
+                                                    "customConditional": "",
+                                                    "logic": [],
+                                                    "attributes": {},
+                                                    "overlay": {
+                                                        "style": "",
+                                                        "page": "",
+                                                        "left": "",
+                                                        "top": "",
+                                                        "width": "",
+                                                        "height": ""
+                                                    },
+                                                    "type": "textfield",
+                                                    "input": true,
+                                                    "refreshOn": "",
+                                                    "dataGridLabel": false,
+                                                    "inputType": "text",
+                                                    "id": "e9mm62b",
+                                                    "defaultValue": ""
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                ],
+                                "numRows": 1,
+                                "placeholder": "",
+                                "prefix": "",
+                                "customClass": "",
+                                "suffix": "",
+                                "multiple": false,
+                                "defaultValue": null,
+                                "protected": false,
+                                "unique": false,
+                                "persistent": false,
+                                "hidden": false,
+                                "clearOnHide": true,
+                                "refreshOn": "",
+                                "redrawOn": "",
+                                "modalEdit": false,
+                                "dataGridLabel": false,
+                                "labelPosition": "top",
+                                "description": "",
+                                "errorLabel": "",
+                                "tooltip": "",
+                                "hideLabel": false,
+                                "tabindex": "",
+                                "disabled": false,
+                                "autofocus": false,
+                                "dbIndex": false,
+                                "customDefaultValue": "",
+                                "calculateValue": "",
+                                "calculateServer": false,
+                                "widget": null,
+                                "attributes": {},
+                                "validateOn": "change",
+                                "validate": {
+                                    "required": false,
+                                    "custom": "",
+                                    "customPrivate": false,
+                                    "strictDateValidation": false,
+                                    "multiple": false,
+                                    "unique": false
+                                },
+                                "conditional": {
+                                    "show": null,
+                                    "when": null,
+                                    "eq": ""
+                                },
+                                "overlay": {
+                                    "style": "",
+                                    "left": "",
+                                    "top": "",
+                                    "width": "",
+                                    "height": ""
+                                },
+                                "allowCalculateOverride": false,
+                                "encrypted": false,
+                                "showCharCount": false,
+                                "showWordCount": false,
+                                "properties": {},
+                                "allowMultipleMasks": false,
+                                "tree": false,
+                                "numCols": 3,
+                                "header": [],
+                                "caption": "",
+                                "cloneRows": false,
+                                "striped": false,
+                                "bordered": false,
+                                "hover": false,
+                                "condensed": false,
+                                "id": "e1on49g"
+                            },
+                            {
+                                "label": "Table",
+                                "cloneRows": false,
+                                "cellAlignment": "left",
+                                "customClass": "",
+                                "striped": false,
+                                "bordered": false,
+                                "hover": false,
+                                "condensed": false,
+                                "hidden": false,
+                                "hideLabel": false,
+                                "modalEdit": false,
+                                "key": "table1",
+                                "tags": [],
+                                "properties": {},
+                                "conditional": {
+                                    "show": null,
+                                    "when": null,
+                                    "eq": "",
+                                    "json": ""
+                                },
+                                "customConditional": "",
+                                "logic": [],
+                                "attributes": {},
+                                "overlay": {
+                                    "style": "",
+                                    "page": "",
+                                    "left": "",
+                                    "top": "",
+                                    "width": "",
+                                    "height": ""
+                                },
+                                "type": "table",
+                                "numRows": 1,
+                                "input": false,
+                                "placeholder": "",
+                                "prefix": "",
+                                "suffix": "",
+                                "multiple": false,
+                                "defaultValue": null,
+                                "protected": false,
+                                "unique": false,
+                                "persistent": false,
+                                "clearOnHide": true,
+                                "refreshOn": "",
+                                "redrawOn": "",
+                                "tableView": false,
+                                "dataGridLabel": false,
+                                "labelPosition": "top",
+                                "description": "",
+                                "errorLabel": "",
+                                "tooltip": "",
+                                "tabindex": "",
+                                "disabled": false,
+                                "autofocus": false,
+                                "dbIndex": false,
+                                "customDefaultValue": "",
+                                "calculateValue": "",
+                                "calculateServer": false,
+                                "widget": null,
+                                "validateOn": "change",
+                                "validate": {
+                                    "required": false,
+                                    "custom": "",
+                                    "customPrivate": false,
+                                    "strictDateValidation": false,
+                                    "multiple": false,
+                                    "unique": false
+                                },
+                                "allowCalculateOverride": false,
+                                "encrypted": false,
+                                "showCharCount": false,
+                                "showWordCount": false,
+                                "allowMultipleMasks": false,
+                                "tree": false,
+                                "rows": [
+                                    [
+                                        {
+                                            "components": [
+                                                {
+                                                    "label": "Email",
+                                                    "labelPosition": "top",
+                                                    "placeholder": "Enter email address",
+                                                    "description": "",
+                                                    "tooltip": "",
+                                                    "prefix": "",
+                                                    "suffix": "",
+                                                    "widget": {
+                                                        "type": "input"
+                                                    },
+                                                    "customClass": "",
+                                                    "tabindex": "",
+                                                    "autocomplete": "",
+                                                    "hidden": false,
+                                                    "hideLabel": false,
+                                                    "mask": false,
+                                                    "autofocus": false,
+                                                    "spellcheck": true,
+                                                    "disabled": false,
+                                                    "tableView": true,
+                                                    "modalEdit": false,
+                                                    "multiple": false,
+                                                    "persistent": true,
+                                                    "inputFormat": "plain",
+                                                    "protected": false,
+                                                    "dbIndex": false,
+                                                    "case": "",
+                                                    "encrypted": false,
+                                                    "redrawOn": "",
+                                                    "clearOnHide": true,
+                                                    "customDefaultValue": "",
+                                                    "calculateValue": "",
+                                                    "calculateServer": false,
+                                                    "allowCalculateOverride": false,
+                                                    "validateOn": "change",
+                                                    "validate": {
+                                                        "required": true,
+                                                        "pattern": "",
+                                                        "customMessage": "",
+                                                        "custom": "",
+                                                        "customPrivate": false,
+                                                        "json": "",
+                                                        "minLength": "",
+                                                        "maxLength": "",
+                                                        "strictDateValidation": false,
+                                                        "multiple": false,
+                                                        "unique": false
+                                                    },
+                                                    "unique": false,
+                                                    "kickbox": {
+                                                        "enabled": false
+                                                    },
+                                                    "errorLabel": "Enter your email",
+                                                    "key": "email",
+                                                    "tags": [],
+                                                    "properties": {},
+                                                    "conditional": {
+                                                        "show": null,
+                                                        "when": null,
+                                                        "eq": "",
+                                                        "json": ""
+                                                    },
+                                                    "customConditional": "",
+                                                    "logic": [],
+                                                    "attributes": {},
+                                                    "overlay": {
+                                                        "style": "",
+                                                        "page": "",
+                                                        "left": "",
+                                                        "top": "",
+                                                        "width": "",
+                                                        "height": ""
+                                                    },
+                                                    "type": "email",
+                                                    "input": true,
+                                                    "refreshOn": "",
+                                                    "dataGridLabel": false,
+                                                    "showCharCount": false,
+                                                    "showWordCount": false,
+                                                    "allowMultipleMasks": false,
+                                                    "inputType": "email",
+                                                    "inputMask": "",
+                                                    "id": "esieu2l",
+                                                    "defaultValue": ""
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "components": [
+                                                {
+                                                    "label": "Phone Number",
+                                                    "labelPosition": "top",
+                                                    "placeholder": "Enter phone number",
+                                                    "description": "",
+                                                    "tooltip": "",
+                                                    "prefix": "",
+                                                    "suffix": "",
+                                                    "widget": {
+                                                        "type": "input"
+                                                    },
+                                                    "inputMask": "(999) 999-9999",
+                                                    "allowMultipleMasks": false,
+                                                    "customClass": "",
+                                                    "tabindex": "",
+                                                    "autocomplete": "",
+                                                    "hidden": false,
+                                                    "hideLabel": false,
+                                                    "mask": false,
+                                                    "autofocus": false,
+                                                    "spellcheck": true,
+                                                    "disabled": false,
+                                                    "tableView": false,
+                                                    "modalEdit": false,
+                                                    "multiple": false,
+                                                    "persistent": true,
+                                                    "inputFormat": "plain",
+                                                    "protected": false,
+                                                    "dbIndex": false,
+                                                    "case": "",
+                                                    "encrypted": false,
+                                                    "redrawOn": "",
+                                                    "clearOnHide": true,
+                                                    "customDefaultValue": "",
+                                                    "calculateValue": "",
+                                                    "calculateServer": false,
+                                                    "allowCalculateOverride": false,
+                                                    "validateOn": "change",
+                                                    "validate": {
+                                                        "required": false,
+                                                        "customMessage": "",
+                                                        "custom": "",
+                                                        "customPrivate": false,
+                                                        "json": "",
+                                                        "strictDateValidation": false,
+                                                        "multiple": false,
+                                                        "unique": false,
+                                                        "minLength": "",
+                                                        "maxLength": "",
+                                                        "pattern": ""
+                                                    },
+                                                    "unique": false,
+                                                    "errorLabel": "",
+                                                    "key": "phoneNumber",
+                                                    "tags": [],
+                                                    "properties": {},
+                                                    "conditional": {
+                                                        "show": null,
+                                                        "when": null,
+                                                        "eq": "",
+                                                        "json": ""
+                                                    },
+                                                    "customConditional": "",
+                                                    "logic": [],
+                                                    "attributes": {},
+                                                    "overlay": {
+                                                        "style": "",
+                                                        "page": "",
+                                                        "left": "",
+                                                        "top": "",
+                                                        "width": "",
+                                                        "height": ""
+                                                    },
+                                                    "type": "phoneNumber",
+                                                    "input": true,
+                                                    "refreshOn": "",
+                                                    "dataGridLabel": false,
+                                                    "showCharCount": false,
+                                                    "showWordCount": false,
+                                                    "inputType": "tel",
+                                                    "id": "evh0ysq",
+                                                    "inputMaskPlaceholderChar": "",
+                                                    "defaultValue": ""
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                ],
+                                "header": [],
+                                "caption": "",
+                                "id": "eb1n41r",
+                                "numCols": 2
+                            },
+                            {
+                                "label": "Gender",
+                                "labelPosition": "left-left",
+                                "optionsLabelPosition": "right",
+                                "description": "",
+                                "tooltip": "",
+                                "customClass": "",
+                                "tabindex": "",
+                                "inline": true,
+                                "hidden": false,
+                                "hideLabel": false,
+                                "autofocus": false,
+                                "disabled": false,
+                                "tableView": false,
+                                "modalEdit": false,
+                                "values": [
+                                    {
+                                        "label": "Male",
+                                        "value": "male",
+                                        "shortcut": ""
+                                    },
+                                    {
+                                        "label": "Female",
+                                        "value": "female",
+                                        "shortcut": ""
+                                    },
+                                    {
+                                        "label": "Others",
+                                        "value": "others",
+                                        "shortcut": ""
+                                    }
+                                ],
+                                "dataType": "",
+                                "persistent": true,
+                                "protected": false,
+                                "dbIndex": false,
+                                "encrypted": false,
+                                "redrawOn": "",
+                                "clearOnHide": true,
+                                "customDefaultValue": "",
+                                "calculateValue": "",
+                                "calculateServer": false,
+                                "allowCalculateOverride": false,
+                                "validate": {
+                                    "required": false,
+                                    "onlyAvailableItems": false,
+                                    "customMessage": "",
+                                    "custom": "",
+                                    "customPrivate": false,
+                                    "json": "",
+                                    "strictDateValidation": false,
+                                    "multiple": false,
+                                    "unique": false
+                                },
+                                "errorLabel": "Enter gender",
+                                "key": "gender",
+                                "tags": [],
+                                "properties": {},
+                                "conditional": {
+                                    "show": null,
+                                    "when": null,
+                                    "eq": "",
+                                    "json": ""
+                                },
+                                "customConditional": "",
+                                "logic": [],
+                                "attributes": {},
+                                "overlay": {
+                                    "style": "",
+                                    "page": "",
+                                    "left": "",
+                                    "top": "",
+                                    "width": "",
+                                    "height": ""
+                                },
+                                "type": "radio",
+                                "labelWidth": 5,
+                                "labelMargin": 5,
+                                "input": true,
+                                "placeholder": "",
+                                "prefix": "",
+                                "suffix": "",
+                                "multiple": false,
+                                "unique": false,
+                                "refreshOn": "",
+                                "dataGridLabel": false,
+                                "widget": null,
+                                "validateOn": "change",
+                                "showCharCount": false,
+                                "showWordCount": false,
+                                "allowMultipleMasks": false,
+                                "inputType": "radio",
+                                "fieldSet": false,
+                                "id": "e8ojtv",
+                                "defaultValue": ""
+                            },
+                            {
+                                "label": "DOB",
+                                "hideInputLabels": false,
+                                "inputsLabelPosition": "top",
+                                "description": "",
+                                "useLocaleSettings": false,
+                                "tooltip": "",
+                                "customClass": "",
+                                "tabindex": "",
+                                "hidden": false,
+                                "hideLabel": false,
+                                "autofocus": false,
+                                "disabled": false,
+                                "tableView": false,
+                                "modalEdit": false,
+                                "fields": {
+                                    "day": {
+                                        "type": "number",
+                                        "placeholder": "",
+                                        "hide": false,
+                                        "required": false
+                                    },
+                                    "month": {
+                                        "type": "select",
+                                        "placeholder": "",
+                                        "hide": false,
+                                        "required": false
+                                    },
+                                    "year": {
+                                        "type": "number",
+                                        "placeholder": "",
+                                        "hide": false,
+                                        "required": false
+                                    }
+                                },
+                                "dayFirst": false,
+                                "defaultValue": "00/00/0000",
+                                "persistent": true,
+                                "protected": false,
+                                "dbIndex": false,
+                                "encrypted": false,
+                                "redrawOn": "",
+                                "clearOnHide": true,
+                                "customDefaultValue": "",
+                                "calculateValue": "",
+                                "calculateServer": false,
+                                "allowCalculateOverride": false,
+                                "validateOn": "change",
+                                "maxDate": "",
+                                "minDate": "",
+                                "unique": false,
+                                "errorLabel": "Enter date of birth",
+                                "validate": {
+                                    "customMessage": "Enter date of birth",
+                                    "custom": "",
+                                    "customPrivate": false,
+                                    "json": "",
+                                    "required": false,
+                                    "strictDateValidation": false,
+                                    "multiple": false,
+                                    "unique": false
+                                },
+                                "key": "dob",
+                                "tags": [],
+                                "properties": {},
+                                "conditional": {
+                                    "show": null,
+                                    "when": null,
+                                    "eq": "",
+                                    "json": ""
+                                },
+                                "customConditional": "",
+                                "logic": [],
+                                "attributes": {},
+                                "overlay": {
+                                    "style": "",
+                                    "page": "",
+                                    "left": "",
+                                    "top": "",
+                                    "width": "",
+                                    "height": ""
+                                },
+                                "type": "day",
+                                "input": true,
+                                "placeholder": "",
+                                "prefix": "",
+                                "suffix": "",
+                                "multiple": false,
+                                "refreshOn": "",
+                                "dataGridLabel": false,
+                                "labelPosition": "top",
+                                "widget": null,
+                                "showCharCount": false,
+                                "showWordCount": false,
+                                "allowMultipleMasks": false,
+                                "id": "eeg8cuh"
+                            },
+                            {
+                                "label": "Address",
+                                "labelPosition": "top",
+                                "placeholder": "Enter address",
+                                "description": "",
+                                "tooltip": "",
+                                "prefix": "",
+                                "suffix": "",
+                                "widget": {
+                                    "type": "input"
+                                },
+                                "inputMask": "",
+                                "allowMultipleMasks": false,
+                                "customClass": "",
+                                "tabindex": "",
+                                "autocomplete": "",
+                                "hidden": false,
+                                "hideLabel": false,
+                                "showWordCount": false,
+                                "showCharCount": false,
+                                "mask": false,
+                                "autofocus": false,
+                                "spellcheck": true,
+                                "disabled": false,
+                                "tableView": false,
+                                "modalEdit": false,
+                                "multiple": false,
+                                "persistent": true,
+                                "inputFormat": "plain",
+                                "protected": false,
+                                "dbIndex": false,
+                                "case": "",
+                                "encrypted": false,
+                                "redrawOn": "",
+                                "clearOnHide": true,
+                                "customDefaultValue": "",
+                                "calculateValue": "",
+                                "calculateServer": false,
+                                "allowCalculateOverride": false,
+                                "validateOn": "change",
+                                "validate": {
+                                    "required": false,
+                                    "pattern": "",
+                                    "customMessage": "Enter your address",
+                                    "custom": "",
+                                    "customPrivate": false,
+                                    "json": "",
+                                    "minLength": "",
+                                    "maxLength": "",
+                                    "strictDateValidation": false,
+                                    "multiple": false,
+                                    "unique": false
+                                },
+                                "unique": false,
+                                "errorLabel": "Enter your address",
+                                "key": "address",
+                                "tags": [],
+                                "properties": {},
+                                "conditional": {
+                                    "show": null,
+                                    "when": null,
+                                    "eq": "",
+                                    "json": ""
+                                },
+                                "customConditional": "",
+                                "logic": [],
+                                "attributes": {},
+                                "overlay": {
+                                    "style": "",
+                                    "page": "",
+                                    "left": "",
+                                    "top": "",
+                                    "width": "",
+                                    "height": ""
+                                },
+                                "type": "textfield",
+                                "input": true,
+                                "refreshOn": "",
+                                "dataGridLabel": false,
+                                "inputType": "text",
+                                "id": "eqf9b0q",
+                                "defaultValue": ""
+                            },
+                            {
+                                "label": "Table",
+                                "cellAlignment": "left",
+                                "key": "table2",
+                                "type": "table",
+                                "numRows": 2,
+                                "numCols": 2,
+                                "input": false,
+                                "tableView": false,
+                                "rows": [
+                                    [
+                                        {
+                                            "components": [
+                                                {
+                                                    "label": "City",
+                                                    "labelPosition": "top",
+                                                    "placeholder": "Enter your city",
+                                                    "description": "",
+                                                    "tooltip": "",
+                                                    "prefix": "",
+                                                    "suffix": "",
+                                                    "widget": {
+                                                        "type": "input"
+                                                    },
+                                                    "inputMask": "",
+                                                    "allowMultipleMasks": false,
+                                                    "customClass": "",
+                                                    "tabindex": "",
+                                                    "autocomplete": "",
+                                                    "hidden": false,
+                                                    "hideLabel": false,
+                                                    "showWordCount": false,
+                                                    "showCharCount": false,
+                                                    "mask": false,
+                                                    "autofocus": false,
+                                                    "spellcheck": true,
+                                                    "disabled": false,
+                                                    "tableView": false,
+                                                    "modalEdit": false,
+                                                    "multiple": false,
+                                                    "persistent": true,
+                                                    "inputFormat": "plain",
+                                                    "protected": false,
+                                                    "dbIndex": false,
+                                                    "case": "",
+                                                    "encrypted": false,
+                                                    "redrawOn": "",
+                                                    "clearOnHide": true,
+                                                    "customDefaultValue": "",
+                                                    "calculateValue": "",
+                                                    "calculateServer": false,
+                                                    "allowCalculateOverride": false,
+                                                    "validateOn": "change",
+                                                    "validate": {
+                                                        "required": false,
+                                                        "pattern": "",
+                                                        "customMessage": "",
+                                                        "custom": "",
+                                                        "customPrivate": false,
+                                                        "json": "",
+                                                        "minLength": "",
+                                                        "maxLength": "",
+                                                        "strictDateValidation": false,
+                                                        "multiple": false,
+                                                        "unique": false
+                                                    },
+                                                    "unique": false,
+                                                    "errorLabel": "",
+                                                    "key": "city",
+                                                    "tags": [],
+                                                    "properties": {},
+                                                    "conditional": {
+                                                        "show": null,
+                                                        "when": null,
+                                                        "eq": "",
+                                                        "json": ""
+                                                    },
+                                                    "customConditional": "",
+                                                    "logic": [],
+                                                    "attributes": {},
+                                                    "overlay": {
+                                                        "style": "",
+                                                        "page": "",
+                                                        "left": "",
+                                                        "top": "",
+                                                        "width": "",
+                                                        "height": ""
+                                                    },
+                                                    "type": "textfield",
+                                                    "input": true,
+                                                    "refreshOn": "",
+                                                    "dataGridLabel": false,
+                                                    "inputType": "text",
+                                                    "id": "eq3f0y",
+                                                    "defaultValue": ""
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "components": [
+                                                {
+                                                    "label": "State/Province",
+                                                    "labelPosition": "top",
+                                                    "placeholder": "Enter your state or province",
+                                                    "description": "",
+                                                    "tooltip": "",
+                                                    "prefix": "",
+                                                    "suffix": "",
+                                                    "widget": {
+                                                        "type": "input"
+                                                    },
+                                                    "inputMask": "",
+                                                    "allowMultipleMasks": false,
+                                                    "customClass": "",
+                                                    "tabindex": "",
+                                                    "autocomplete": "",
+                                                    "hidden": false,
+                                                    "hideLabel": false,
+                                                    "showWordCount": false,
+                                                    "showCharCount": false,
+                                                    "mask": false,
+                                                    "autofocus": false,
+                                                    "spellcheck": true,
+                                                    "disabled": false,
+                                                    "tableView": false,
+                                                    "modalEdit": false,
+                                                    "multiple": false,
+                                                    "persistent": true,
+                                                    "inputFormat": "plain",
+                                                    "protected": false,
+                                                    "dbIndex": false,
+                                                    "case": "",
+                                                    "encrypted": false,
+                                                    "redrawOn": "",
+                                                    "clearOnHide": true,
+                                                    "customDefaultValue": "",
+                                                    "calculateValue": "",
+                                                    "calculateServer": false,
+                                                    "allowCalculateOverride": false,
+                                                    "validateOn": "change",
+                                                    "validate": {
+                                                        "required": false,
+                                                        "pattern": "",
+                                                        "customMessage": "",
+                                                        "custom": "",
+                                                        "customPrivate": false,
+                                                        "json": "",
+                                                        "minLength": "",
+                                                        "maxLength": "",
+                                                        "strictDateValidation": false,
+                                                        "multiple": false,
+                                                        "unique": false
+                                                    },
+                                                    "unique": false,
+                                                    "errorLabel": "",
+                                                    "key": "stateProvince",
+                                                    "tags": [],
+                                                    "properties": {},
+                                                    "conditional": {
+                                                        "show": null,
+                                                        "when": null,
+                                                        "eq": "",
+                                                        "json": ""
+                                                    },
+                                                    "customConditional": "",
+                                                    "logic": [],
+                                                    "attributes": {},
+                                                    "overlay": {
+                                                        "style": "",
+                                                        "page": "",
+                                                        "left": "",
+                                                        "top": "",
+                                                        "width": "",
+                                                        "height": ""
+                                                    },
+                                                    "type": "textfield",
+                                                    "input": true,
+                                                    "refreshOn": "",
+                                                    "dataGridLabel": false,
+                                                    "inputType": "text",
+                                                    "id": "e7octaf",
+                                                    "defaultValue": ""
+                                                }
+                                            ]
+                                        }
+                                    ],
+                                    [
+                                        {
+                                            "components": [
+                                                {
+                                                    "label": "Postal / Zip Code",
+                                                    "labelPosition": "top",
+                                                    "placeholder": "Enter your Postal / Zip Code",
+                                                    "description": "",
+                                                    "tooltip": "",
+                                                    "prefix": "",
+                                                    "suffix": "",
+                                                    "widget": {
+                                                        "type": "input"
+                                                    },
+                                                    "inputMask": "",
+                                                    "allowMultipleMasks": false,
+                                                    "customClass": "",
+                                                    "tabindex": "",
+                                                    "autocomplete": "",
+                                                    "hidden": false,
+                                                    "hideLabel": false,
+                                                    "showWordCount": false,
+                                                    "showCharCount": false,
+                                                    "mask": false,
+                                                    "autofocus": false,
+                                                    "spellcheck": true,
+                                                    "disabled": false,
+                                                    "tableView": false,
+                                                    "modalEdit": false,
+                                                    "multiple": false,
+                                                    "persistent": true,
+                                                    "inputFormat": "plain",
+                                                    "protected": false,
+                                                    "dbIndex": false,
+                                                    "case": "",
+                                                    "encrypted": false,
+                                                    "redrawOn": "",
+                                                    "clearOnHide": true,
+                                                    "customDefaultValue": "",
+                                                    "calculateValue": "",
+                                                    "calculateServer": false,
+                                                    "allowCalculateOverride": false,
+                                                    "validateOn": "change",
+                                                    "validate": {
+                                                        "required": false,
+                                                        "pattern": "",
+                                                        "customMessage": "",
+                                                        "custom": "",
+                                                        "customPrivate": false,
+                                                        "json": "",
+                                                        "minLength": "",
+                                                        "maxLength": "",
+                                                        "strictDateValidation": false,
+                                                        "multiple": false,
+                                                        "unique": false
+                                                    },
+                                                    "unique": false,
+                                                    "errorLabel": "",
+                                                    "key": "postalZipCode",
+                                                    "tags": [],
+                                                    "properties": {},
+                                                    "conditional": {
+                                                        "show": null,
+                                                        "when": null,
+                                                        "eq": "",
+                                                        "json": ""
+                                                    },
+                                                    "customConditional": "",
+                                                    "logic": [],
+                                                    "attributes": {},
+                                                    "overlay": {
+                                                        "style": "",
+                                                        "page": "",
+                                                        "left": "",
+                                                        "top": "",
+                                                        "width": "",
+                                                        "height": ""
+                                                    },
+                                                    "type": "textfield",
+                                                    "input": true,
+                                                    "refreshOn": "",
+                                                    "dataGridLabel": false,
+                                                    "inputType": "text",
+                                                    "id": "e6o0e2",
+                                                    "defaultValue": ""
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "components": [
+                                                {
+                                                    "label": "Country",
+                                                    "labelPosition": "top",
+                                                    "widget": "choicesjs",
+                                                    "placeholder": "Choose your country",
+                                                    "description": "",
+                                                    "tooltip": "",
+                                                    "customClass": "",
+                                                    "tabindex": "",
+                                                    "hidden": false,
+                                                    "hideLabel": false,
+                                                    "uniqueOptions": false,
+                                                    "autofocus": false,
+                                                    "disabled": false,
+                                                    "tableView": false,
+                                                    "modalEdit": false,
+                                                    "multiple": false,
+                                                    "dataSrc": "values",
+                                                    "data": {
+                                                        "values": [
+                                                            {
+                                                                "label": "India",
+                                                                "value": "india"
+                                                            },
+                                                            {
+                                                                "label": "Canada",
+                                                                "value": "canada"
+                                                            },
+                                                            {
+                                                                "label": "America",
+                                                                "value": "america"
+                                                            },
+                                                            {
+                                                                "label": "Australia",
+                                                                "value": "australia"
+                                                            }
+                                                        ],
+                                                        "resource": "",
+                                                        "json": "",
+                                                        "url": "",
+                                                        "custom": ""
+                                                    },
+                                                    "dataType": "",
+                                                    "idPath": "id",
+                                                    "valueProperty": "",
+                                                    "template": "<span>{{ item.label }}</span>",
+                                                    "refreshOn": "",
+                                                    "refreshOnBlur": "",
+                                                    "clearOnRefresh": false,
+                                                    "searchEnabled": true,
+                                                    "selectThreshold": 0.3,
+                                                    "readOnlyValue": false,
+                                                    "customOptions": {},
+                                                    "useExactSearch": false,
+                                                    "persistent": true,
+                                                    "protected": false,
+                                                    "dbIndex": false,
+                                                    "encrypted": false,
+                                                    "clearOnHide": true,
+                                                    "customDefaultValue": "",
+                                                    "calculateValue": "",
+                                                    "calculateServer": false,
+                                                    "allowCalculateOverride": false,
+                                                    "validateOn": "change",
+                                                    "validate": {
+                                                        "required": false,
+                                                        "onlyAvailableItems": false,
+                                                        "customMessage": "",
+                                                        "custom": "",
+                                                        "customPrivate": false,
+                                                        "json": "",
+                                                        "strictDateValidation": false,
+                                                        "multiple": false,
+                                                        "unique": false
+                                                    },
+                                                    "unique": false,
+                                                    "errorLabel": "",
+                                                    "key": "country",
+                                                    "tags": [],
+                                                    "properties": {},
+                                                    "conditional": {
+                                                        "show": null,
+                                                        "when": null,
+                                                        "eq": "",
+                                                        "json": ""
+                                                    },
+                                                    "customConditional": "",
+                                                    "logic": [],
+                                                    "attributes": {},
+                                                    "overlay": {
+                                                        "style": "",
+                                                        "page": "",
+                                                        "left": "",
+                                                        "top": "",
+                                                        "width": "",
+                                                        "height": ""
+                                                    },
+                                                    "type": "select",
+                                                    "indexeddb": {
+                                                        "filter": {}
+                                                    },
+                                                    "selectFields": "",
+                                                    "searchField": "",
+                                                    "minSearch": 0,
+                                                    "filter": "",
+                                                    "limit": 100,
+                                                    "redrawOn": "",
+                                                    "input": true,
+                                                    "prefix": "",
+                                                    "suffix": "",
+                                                    "dataGridLabel": false,
+                                                    "showCharCount": false,
+                                                    "showWordCount": false,
+                                                    "allowMultipleMasks": false,
+                                                    "lazyLoad": true,
+                                                    "authenticate": false,
+                                                    "ignoreCache": false,
+                                                    "searchThreshold": 0.3,
+                                                    "fuseOptions": {
+                                                        "include": "score",
+                                                        "threshold": 0.3
+                                                    },
+                                                    "id": "exlyq3d",
+                                                    "defaultValue": ""
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                ],
+                                "placeholder": "",
+                                "prefix": "",
+                                "customClass": "",
+                                "suffix": "",
+                                "multiple": false,
+                                "defaultValue": null,
+                                "protected": false,
+                                "unique": false,
+                                "persistent": false,
+                                "hidden": false,
+                                "clearOnHide": true,
+                                "refreshOn": "",
+                                "redrawOn": "",
+                                "modalEdit": false,
+                                "dataGridLabel": false,
+                                "labelPosition": "top",
+                                "description": "",
+                                "errorLabel": "",
+                                "tooltip": "",
+                                "hideLabel": false,
+                                "tabindex": "",
+                                "disabled": false,
+                                "autofocus": false,
+                                "dbIndex": false,
+                                "customDefaultValue": "",
+                                "calculateValue": "",
+                                "calculateServer": false,
+                                "widget": null,
+                                "attributes": {},
+                                "validateOn": "change",
+                                "validate": {
+                                    "required": false,
+                                    "custom": "",
+                                    "customPrivate": false,
+                                    "strictDateValidation": false,
+                                    "multiple": false,
+                                    "unique": false
+                                },
+                                "conditional": {
+                                    "show": null,
+                                    "when": null,
+                                    "eq": ""
+                                },
+                                "overlay": {
+                                    "style": "",
+                                    "left": "",
+                                    "top": "",
+                                    "width": "",
+                                    "height": ""
+                                },
+                                "allowCalculateOverride": false,
+                                "encrypted": false,
+                                "showCharCount": false,
+                                "showWordCount": false,
+                                "properties": {},
+                                "allowMultipleMasks": false,
+                                "tree": false,
+                                "header": [],
+                                "caption": "",
+                                "cloneRows": false,
+                                "striped": false,
+                                "bordered": false,
+                                "hover": false,
+                                "condensed": false,
+                                "id": "elk8lrp"
+                            },
+                            {
+                                "label": "Enter your company's website link",
+                                "labelPosition": "top",
+                                "placeholder": "Enter your company's website link",
+                                "description": "",
+                                "tooltip": "",
+                                "prefix": "",
+                                "suffix": "",
+                                "widget": {
+                                    "type": "input"
+                                },
+                                "customClass": "",
+                                "tabindex": "",
+                                "autocomplete": "",
+                                "hidden": false,
+                                "hideLabel": false,
+                                "mask": false,
+                                "autofocus": false,
+                                "spellcheck": true,
+                                "disabled": false,
+                                "tableView": false,
+                                "modalEdit": false,
+                                "multiple": false,
+                                "persistent": true,
+                                "inputFormat": "plain",
+                                "protected": false,
+                                "dbIndex": false,
+                                "encrypted": false,
+                                "redrawOn": "",
+                                "clearOnHide": true,
+                                "customDefaultValue": "",
+                                "calculateValue": "",
+                                "calculateServer": false,
+                                "allowCalculateOverride": false,
+                                "validateOn": "change",
+                                "validate": {
+                                    "required": false,
+                                    "pattern": "",
+                                    "customMessage": "",
+                                    "custom": "",
+                                    "customPrivate": false,
+                                    "json": "",
+                                    "minLength": "",
+                                    "maxLength": "",
+                                    "strictDateValidation": false,
+                                    "multiple": false,
+                                    "unique": false
+                                },
+                                "unique": false,
+                                "errorLabel": "",
+                                "key": "enterYourCompanysWebsiteLink",
+                                "tags": [],
+                                "properties": {},
+                                "conditional": {
+                                    "show": null,
+                                    "when": null,
+                                    "eq": "",
+                                    "json": ""
+                                },
+                                "customConditional": "",
+                                "logic": [],
+                                "attributes": {},
+                                "overlay": {
+                                    "style": "",
+                                    "page": "",
+                                    "left": "",
+                                    "top": "",
+                                    "width": "",
+                                    "height": ""
+                                },
+                                "type": "url",
+                                "input": true,
+                                "refreshOn": "",
+                                "dataGridLabel": false,
+                                "showCharCount": false,
+                                "showWordCount": false,
+                                "allowMultipleMasks": false,
+                                "inputType": "url",
+                                "inputMask": "",
+                                "id": "e3mv7ur",
+                                "defaultValue": ""
+                            }
+                        ],
+                        "placeholder": "",
+                        "prefix": "",
+                        "suffix": "",
+                        "multiple": false,
+                        "defaultValue": null,
+                        "protected": false,
+                        "unique": false,
+                        "persistent": false,
+                        "clearOnHide": false,
+                        "refreshOn": "",
+                        "redrawOn": "",
+                        "dataGridLabel": false,
+                        "labelPosition": "top",
+                        "description": "",
+                        "errorLabel": "",
+                        "autofocus": false,
+                        "dbIndex": false,
+                        "customDefaultValue": "",
+                        "calculateValue": "",
+                        "calculateServer": false,
+                        "widget": null,
+                        "validateOn": "change",
+                        "validate": {
+                            "required": false,
+                            "custom": "",
+                            "customPrivate": false,
+                            "strictDateValidation": false,
+                            "multiple": false,
+                            "unique": false
+                        },
+                        "allowCalculateOverride": false,
+                        "encrypted": false,
+                        "showCharCount": false,
+                        "showWordCount": false,
+                        "allowMultipleMasks": false,
+                        "tree": false,
+                        "id": "e18hp3n",
+                        "collapsed": false
+                    },
+                    {
+                        "title": "Product Survey",
+                        "theme": "default",
+                        "tooltip": "",
+                        "customClass": "",
+                        "collapsible": true,
+                        "hidden": false,
+                        "hideLabel": false,
+                        "disabled": false,
+                        "modalEdit": false,
+                        "key": "productDetails",
+                        "tags": [],
+                        "properties": {},
+                        "customConditional": "",
+                        "conditional": {
+                            "json": "",
+                            "show": null,
+                            "when": null,
+                            "eq": ""
+                        },
+                        "logic": [],
+                        "attributes": {},
+                        "overlay": {
+                            "style": "",
+                            "page": "",
+                            "left": "",
+                            "top": "",
+                            "width": "",
+                            "height": ""
+                        },
+                        "type": "panel",
+                        "label": "Product Survey",
+                        "breadcrumb": "default",
+                        "tabindex": "",
+                        "input": false,
+                        "tableView": false,
+                        "components": [
+                            {
+                                "label": "Annual Household Income",
+                                "labelPosition": "top",
+                                "placeholder": "Enter your annual income",
+                                "description": "",
+                                "tooltip": "",
+                                "prefix": "",
+                                "suffix": "",
+                                "widget": {
+                                    "type": "input"
+                                },
+                                "customClass": "",
+                                "tabindex": "",
+                                "autocomplete": "",
+                                "hidden": false,
+                                "hideLabel": false,
+                                "mask": false,
+                                "autofocus": false,
+                                "spellcheck": true,
+                                "disabled": false,
+                                "tableView": false,
+                                "modalEdit": false,
+                                "multiple": false,
+                                "persistent": true,
+                                "currency": "USD",
+                                "inputFormat": "plain",
+                                "protected": false,
+                                "dbIndex": false,
+                                "case": "",
+                                "encrypted": false,
+                                "redrawOn": "",
+                                "clearOnHide": true,
+                                "customDefaultValue": "",
+                                "calculateValue": "",
+                                "calculateServer": false,
+                                "allowCalculateOverride": false,
+                                "validateOn": "change",
+                                "validate": {
+                                    "required": false,
+                                    "customMessage": "",
+                                    "custom": "",
+                                    "customPrivate": false,
+                                    "json": "",
+                                    "strictDateValidation": false,
+                                    "multiple": false,
+                                    "unique": false,
+                                    "min": "",
+                                    "max": "",
+                                    "step": "any",
+                                    "integer": ""
+                                },
+                                "unique": false,
+                                "errorLabel": "",
+                                "key": "annualHouseholdIncome",
+                                "tags": [],
+                                "properties": {},
+                                "conditional": {
+                                    "show": null,
+                                    "when": null,
+                                    "eq": "",
+                                    "json": ""
+                                },
+                                "customConditional": "",
+                                "logic": [],
+                                "attributes": {},
+                                "overlay": {
+                                    "style": "",
+                                    "page": "",
+                                    "left": "",
+                                    "top": "",
+                                    "width": "",
+                                    "height": ""
+                                },
+                                "type": "currency",
+                                "input": true,
+                                "delimiter": true,
+                                "refreshOn": "",
+                                "dataGridLabel": false,
+                                "showCharCount": false,
+                                "showWordCount": false,
+                                "allowMultipleMasks": false,
+                                "id": "eolta4d",
+                                "defaultValue": null
+                            },
+                            {
+                                "label": "Choose the day on which you use our product",
+                                "placeholder": "Please fill this option",
+                                "tableView": false,
+                                "enableMinDateInput": false,
+                                "datePicker": {
+                                    "disableWeekends": false,
+                                    "disableWeekdays": false,
+                                    "showWeeks": true,
+                                    "startingDay": 0,
+                                    "initDate": "",
+                                    "minMode": "day",
+                                    "maxMode": "year",
+                                    "yearRows": 4,
+                                    "yearColumns": 5,
+                                    "minDate": null,
+                                    "maxDate": null
+                                },
+                                "enableMaxDateInput": false,
+                                "key": "chooseTheDayOnWhichYouUseOurProduct",
+                                "type": "datetime",
+                                "input": true,
+                                "widget": {
+                                    "type": "calendar",
+                                    "displayInTimezone": "viewer",
+                                    "locale": "en",
+                                    "useLocaleSettings": false,
+                                    "allowInput": true,
+                                    "mode": "single",
+                                    "enableTime": true,
+                                    "noCalendar": false,
+                                    "format": "yyyy-MM-dd hh:mm a",
+                                    "hourIncrement": 1,
+                                    "minuteIncrement": 1,
+                                    "time_24hr": false,
+                                    "minDate": null,
+                                    "disableWeekends": false,
+                                    "disableWeekdays": false,
+                                    "maxDate": null
+                                },
+                                "prefix": "",
+                                "customClass": "",
+                                "suffix": "",
+                                "multiple": false,
+                                "defaultValue": "",
+                                "protected": false,
+                                "unique": false,
+                                "persistent": true,
+                                "hidden": false,
+                                "clearOnHide": true,
+                                "refreshOn": "",
+                                "redrawOn": "",
+                                "modalEdit": false,
+                                "dataGridLabel": false,
+                                "labelPosition": "top",
+                                "description": "",
+                                "errorLabel": "",
+                                "tooltip": "",
+                                "hideLabel": false,
+                                "tabindex": "",
+                                "disabled": false,
+                                "autofocus": false,
+                                "dbIndex": false,
+                                "customDefaultValue": "",
+                                "calculateValue": "",
+                                "calculateServer": false,
+                                "attributes": {},
+                                "validateOn": "change",
+                                "validate": {
+                                    "required": false,
+                                    "custom": "",
+                                    "customPrivate": false,
+                                    "strictDateValidation": false,
+                                    "multiple": false,
+                                    "unique": false
+                                },
+                                "conditional": {
+                                    "show": null,
+                                    "when": null,
+                                    "eq": ""
+                                },
+                                "overlay": {
+                                    "style": "",
+                                    "left": "",
+                                    "top": "",
+                                    "width": "",
+                                    "height": ""
+                                },
+                                "allowCalculateOverride": false,
+                                "encrypted": false,
+                                "showCharCount": false,
+                                "showWordCount": false,
+                                "properties": {},
+                                "allowMultipleMasks": false,
+                                "format": "yyyy-MM-dd hh:mm a",
+                                "useLocaleSettings": false,
+                                "allowInput": true,
+                                "enableDate": true,
+                                "enableTime": true,
+                                "defaultDate": "",
+                                "displayInTimezone": "viewer",
+                                "timezone": "",
+                                "datepickerMode": "day",
+                                "timePicker": {
+                                    "hourStep": 1,
+                                    "minuteStep": 1,
+                                    "showMeridian": true,
+                                    "readonlyInput": false,
+                                    "mousewheel": true,
+                                    "arrowkeys": true
+                                },
+                                "customOptions": {},
+                                "id": "e8j3cqg",
+                                "shortcutButtons": []
+                            },
+                            {
+                                "label": "Product survey",
+                                "tableView": false,
+                                "questions": [
+                                    {
+                                        "label": "Iam planning to buying this product again",
+                                        "value": "iamPlanningToBuyingThisProductAgain"
+                                    },
+                                    {
+                                        "label": "I'd recommend this product to someone else",
+                                        "value": "idRecommendThisProductToSomeoneElse"
+                                    },
+                                    {
+                                        "label": "Iam happy with the service I received",
+                                        "value": "iamHappyWithTheServiceIReceived"
+                                    }
+                                ],
+                                "values": [
+                                    {
+                                        "label": "Strongly Disagree",
+                                        "value": "stronglyDisagree"
+                                    },
+                                    {
+                                        "label": "Disagree",
+                                        "value": "disagree"
+                                    },
+                                    {
+                                        "label": "Neutral",
+                                        "value": "neutral"
+                                    },
+                                    {
+                                        "label": "Agree",
+                                        "value": "agree"
+                                    },
+                                    {
+                                        "label": "Strongly Agree",
+                                        "value": "stronglyAgree"
+                                    }
+                                ],
+                                "key": "survey",
+                                "type": "survey",
+                                "input": true,
+                                "placeholder": "",
+                                "prefix": "",
+                                "customClass": "",
+                                "suffix": "",
+                                "multiple": false,
+                                "defaultValue": null,
+                                "protected": false,
+                                "unique": false,
+                                "persistent": true,
+                                "hidden": false,
+                                "clearOnHide": true,
+                                "refreshOn": "",
+                                "redrawOn": "",
+                                "modalEdit": false,
+                                "dataGridLabel": false,
+                                "labelPosition": "top",
+                                "description": "",
+                                "errorLabel": "",
+                                "tooltip": "",
+                                "hideLabel": false,
+                                "tabindex": "",
+                                "disabled": false,
+                                "autofocus": false,
+                                "dbIndex": false,
+                                "customDefaultValue": "",
+                                "calculateValue": "",
+                                "calculateServer": false,
+                                "widget": null,
+                                "attributes": {},
+                                "validateOn": "change",
+                                "validate": {
+                                    "required": false,
+                                    "custom": "",
+                                    "customPrivate": false,
+                                    "strictDateValidation": false,
+                                    "multiple": false,
+                                    "unique": false
+                                },
+                                "conditional": {
+                                    "show": null,
+                                    "when": null,
+                                    "eq": ""
+                                },
+                                "overlay": {
+                                    "style": "",
+                                    "left": "",
+                                    "top": "",
+                                    "width": "",
+                                    "height": ""
+                                },
+                                "allowCalculateOverride": false,
+                                "encrypted": false,
+                                "showCharCount": false,
+                                "showWordCount": false,
+                                "properties": {},
+                                "allowMultipleMasks": false,
+                                "id": "evfozej"
+                            }
+                        ],
+                        "collapsed": true,
+                        "placeholder": "",
+                        "prefix": "",
+                        "suffix": "",
+                        "multiple": false,
+                        "defaultValue": null,
+                        "protected": false,
+                        "unique": false,
+                        "persistent": false,
+                        "clearOnHide": false,
+                        "refreshOn": "",
+                        "redrawOn": "",
+                        "dataGridLabel": false,
+                        "labelPosition": "top",
+                        "description": "",
+                        "errorLabel": "",
+                        "autofocus": false,
+                        "dbIndex": false,
+                        "customDefaultValue": "",
+                        "calculateValue": "",
+                        "calculateServer": false,
+                        "widget": null,
+                        "validateOn": "change",
+                        "validate": {
+                            "required": false,
+                            "custom": "",
+                            "customPrivate": false,
+                            "strictDateValidation": false,
+                            "multiple": false,
+                            "unique": false
+                        },
+                        "allowCalculateOverride": false,
+                        "encrypted": false,
+                        "showCharCount": false,
+                        "showWordCount": false,
+                        "allowMultipleMasks": false,
+                        "tree": false,
+                        "id": "exg77li"
+                    },
+                    {
+                        "label": "I acknowledge that given information are correct and valid",
+                        "tableView": false,
+                        "key": "iAcknowledgeThatGivenInformationAreCorrectAndValid",
+                        "type": "checkbox",
+                        "input": true,
+                        "defaultValue": false,
+                        "placeholder": "",
+                        "prefix": "",
+                        "customClass": "",
+                        "suffix": "",
+                        "multiple": false,
+                        "protected": false,
+                        "unique": false,
+                        "persistent": true,
+                        "hidden": false,
+                        "clearOnHide": true,
+                        "refreshOn": "",
+                        "redrawOn": "",
+                        "modalEdit": false,
+                        "dataGridLabel": true,
+                        "labelPosition": "right",
+                        "description": "",
+                        "errorLabel": "",
+                        "tooltip": "",
+                        "hideLabel": false,
+                        "tabindex": "",
+                        "disabled": false,
+                        "autofocus": false,
+                        "dbIndex": false,
+                        "customDefaultValue": "",
+                        "calculateValue": "",
+                        "calculateServer": false,
+                        "widget": null,
+                        "attributes": {},
+                        "validateOn": "change",
+                        "validate": {
+                            "required": false,
+                            "custom": "",
+                            "customPrivate": false,
+                            "strictDateValidation": false,
+                            "multiple": false,
+                            "unique": false
+                        },
+                        "conditional": {
+                            "show": null,
+                            "when": null,
+                            "eq": ""
+                        },
+                        "overlay": {
+                            "style": "",
+                            "left": "",
+                            "top": "",
+                            "width": "",
+                            "height": ""
+                        },
+                        "allowCalculateOverride": false,
+                        "encrypted": false,
+                        "showCharCount": false,
+                        "showWordCount": false,
+                        "properties": {},
+                        "allowMultipleMasks": false,
+                        "inputType": "checkbox",
+                        "value": "",
+                        "name": "",
+                        "id": "e1afgt"
+                    },
+                    {
+                        "label": "Signature",
+                        "footer": "Sign above",
+                        "labelPosition": "top",
+                        "width": "100%",
+                        "height": "150px",
+                        "backgroundColor": "rgb(245,245,235)",
+                        "penColor": "black",
+                        "description": "",
+                        "tooltip": "",
+                        "customClass": "",
+                        "tabindex": "",
+                        "hidden": false,
+                        "hideLabel": false,
+                        "disabled": false,
+                        "tableView": false,
+                        "modalEdit": false,
+                        "persistent": true,
+                        "protected": false,
+                        "encrypted": false,
+                        "redrawOn": "",
+                        "clearOnHide": true,
+                        "customDefaultValue": "",
+                        "calculateValue": "",
+                        "calculateServer": false,
+                        "allowCalculateOverride": false,
+                        "validate": {
+                            "required": false,
+                            "customMessage": "",
+                            "custom": "",
+                            "customPrivate": false,
+                            "json": "",
+                            "strictDateValidation": false,
+                            "multiple": false,
+                            "unique": false
+                        },
+                        "errorLabel": "",
+                        "key": "signature",
+                        "tags": [],
+                        "properties": {},
+                        "conditional": {
+                            "show": null,
+                            "when": null,
+                            "eq": "",
+                            "json": ""
+                        },
+                        "customConditional": "",
+                        "logic": [],
+                        "attributes": {},
+                        "overlay": {
+                            "style": "",
+                            "page": "",
+                            "left": "",
+                            "top": "",
+                            "width": "",
+                            "height": ""
+                        },
+                        "type": "signature",
+                        "input": true,
+                        "placeholder": "",
+                        "prefix": "",
+                        "suffix": "",
+                        "multiple": false,
+                        "defaultValue": null,
+                        "unique": false,
+                        "refreshOn": "",
+                        "dataGridLabel": false,
+                        "autofocus": false,
+                        "dbIndex": false,
+                        "widget": {
+                            "type": "input"
+                        },
+                        "validateOn": "change",
+                        "showCharCount": false,
+                        "showWordCount": false,
+                        "allowMultipleMasks": false,
+                        "minWidth": "0.5",
+                        "maxWidth": "2.5",
+                        "id": "epcq8rk"
+                    }
+                ],
+                "placeholder": "",
+                "prefix": "",
+                "suffix": "",
+                "multiple": false,
+                "defaultValue": null,
+                "protected": false,
+                "unique": false,
+                "persistent": false,
+                "clearOnHide": false,
+                "refreshOn": "",
+                "redrawOn": "",
+                "dataGridLabel": false,
+                "labelPosition": "top",
+                "description": "",
+                "errorLabel": "",
+                "autofocus": false,
+                "dbIndex": false,
+                "customDefaultValue": "",
+                "calculateValue": "",
+                "calculateServer": false,
+                "widget": null,
+                "validateOn": "change",
+                "validate": {
+                    "required": false,
+                    "custom": "",
+                    "customPrivate": false,
+                    "strictDateValidation": false,
+                    "multiple": false,
+                    "unique": false
+                },
+                "allowCalculateOverride": false,
+                "encrypted": false,
+                "showCharCount": false,
+                "showWordCount": false,
+                "allowMultipleMasks": false,
+                "tree": false,
+                "id": "enrn26q"
+            },
+            {
+                "type": "button",
+                "label": "Submit",
+                "key": "submit",
+                "size": "md",
+                "block": false,
+                "action": "submit",
+                "disableOnInvalid": true,
+                "theme": "primary",
+                "input": true,
+                "placeholder": "",
+                "prefix": "",
+                "customClass": "",
+                "suffix": "",
+                "multiple": false,
+                "defaultValue": null,
+                "protected": false,
+                "unique": false,
+                "persistent": false,
+                "hidden": false,
+                "clearOnHide": true,
+                "refreshOn": "",
+                "redrawOn": "",
+                "tableView": false,
+                "modalEdit": false,
+                "dataGridLabel": true,
+                "labelPosition": "top",
+                "description": "",
+                "errorLabel": "",
+                "tooltip": "",
+                "hideLabel": false,
+                "tabindex": "",
+                "disabled": false,
+                "autofocus": false,
+                "dbIndex": false,
+                "customDefaultValue": "",
+                "calculateValue": "",
+                "calculateServer": false,
+                "widget": {
+                    "type": "input"
+                },
+                "attributes": {},
+                "validateOn": "change",
+                "validate": {
+                    "required": false,
+                    "custom": "",
+                    "customPrivate": false,
+                    "strictDateValidation": false,
+                    "multiple": false,
+                    "unique": false
+                },
+                "conditional": {
+                    "show": null,
+                    "when": null,
+                    "eq": ""
+                },
+                "overlay": {
+                    "style": "",
+                    "left": "",
+                    "top": "",
+                    "width": "",
+                    "height": ""
+                },
+                "allowCalculateOverride": false,
+                "encrypted": false,
+                "showCharCount": false,
+                "showWordCount": false,
+                "properties": {},
+                "allowMultipleMasks": false,
+                "leftIcon": "",
+                "rightIcon": "",
+                "id": "eooywrd"
+            },
+            {
+                "label": "applicationId",
+                "customClass": "",
+                "modalEdit": false,
+                "persistent": true,
+                "protected": false,
+                "dbIndex": false,
+                "encrypted": false,
+                "redrawOn": "",
+                "customDefaultValue": "",
+                "calculateValue": "",
+                "calculateServer": false,
+                "key": "applicationId",
+                "tags": [],
+                "properties": {},
+                "logic": [],
+                "attributes": {},
+                "overlay": {
+                    "style": "",
+                    "page": "",
+                    "left": "",
+                    "top": "",
+                    "width": "",
+                    "height": ""
+                },
+                "type": "hidden",
+                "input": true,
+                "placeholder": "",
+                "prefix": "",
+                "suffix": "",
+                "multiple": false,
+                "unique": false,
+                "hidden": false,
+                "clearOnHide": true,
+                "refreshOn": "",
+                "tableView": false,
+                "labelPosition": "top",
+                "description": "",
+                "errorLabel": "",
+                "tooltip": "",
+                "hideLabel": false,
+                "tabindex": "",
+                "disabled": false,
+                "autofocus": false,
+                "widget": {
+                    "type": "input"
+                },
+                "validateOn": "change",
+                "validate": {
+                    "required": false,
+                    "custom": "",
+                    "customPrivate": false,
+                    "strictDateValidation": false,
+                    "multiple": false,
+                    "unique": false
+                },
+                "conditional": {
+                    "show": null,
+                    "when": null,
+                    "eq": ""
+                },
+                "allowCalculateOverride": false,
+                "showCharCount": false,
+                "showWordCount": false,
+                "allowMultipleMasks": false,
+                "inputType": "hidden",
+                "id": "em1y8gd",
+                "defaultValue": "",
+                "dataGridLabel": false
+            }
+        ],
+        "display": "form",
+        "title": "Product Survey Form",
+        "name": "productSurveyForm",
+        "path": "productsurveyform",
+        "submissionAccess": [
+            {
+                "roles": [
+                    "administrator"
+                ],
+                "type": "create_all"
+            },
+            {
+                "roles": [
+                    "formsflowReviewer"
+                ],
+                "type": "read_all"
+            },
+            {
+                "roles": [
+                    "formsflowReviewer"
+                ],
+                "type": "update_all"
+            },
+            {
+                "roles": [
+                    "administrator",
+                    "formsflowReviewer"
+                ],
+                "type": "delete_all"
+            },
+            {
+                "roles": [
+                    "formsflowClient"
+                ],
+                "type": "create_own"
+            },
+            {
+                "roles": [
+                    "formsflowClient"
+                ],
+                "type": "read_own"
+            },
+            {
+                "roles": [
+                    "formsflowClient"
+                ],
+                "type": "update_own"
+            },
+            {
+                "roles": [
+                    "formsflowReviewer"
+                ],
+                "type": "delete_own"
+            }
+        ],
+        "access": [
+            {
+                "roles": [
+                    "administrator",
+                    "authenticated",
+                    "anonymous",
+                    "formsflowClient",
+                    "formsflowReviewer"
+                ],
+                "type": "read_all"
+            }
+        ]
+    }
     },
     "actions": {
       "userSave": {
@@ -302,7 +2627,7 @@
         "form": "user",
         "settings": {
           "association": "new",
-          "role": "staffReviewer",
+          "role": "formsflowReviewer",
           "type": "add"
         },
         "priority": 1,
@@ -321,7 +2646,7 @@
         "settings": {
           "association": "existing",
           "type": "add",
-          "role": "staffReviewer"
+          "role": "formsflowReviewer"
         },
         "priority": 1,
         "method": [
@@ -332,10 +2657,10 @@
         ]
       },
 
-      "staffReviewer:save": {
+      "formsflowReviewer:save": {
         "title": "Save Submission",
         "name": "save",
-        "form": "staffReviewer",
+        "form": "formsflowReviewer",
         "priority": 10,
         "method": [
           "create",
@@ -345,14 +2670,14 @@
           "before"
         ]
       },
-      "staffReviewer:role": {
+      "formsflowReviewer:role": {
         "title": "Role Assignment",
         "name": "role",
-        "form": "staffReviewer",
+        "form": "formsflowReviewer",
         "settings": {
           "association": "new",
           "type": "add",
-          "role": "staffReviewer"
+          "role": "formsflowReviewer"
         },
         "priority": 1,
         "method": [
@@ -363,10 +2688,10 @@
         ]
       },
 
-      "client:save": {
+      "formsflowClient:save": {
         "title": "Save Submission",
         "name": "save",
-        "form": "client",
+        "form": "formsflowClient",
         "priority": 10,
         "method": [
           "create",
@@ -376,14 +2701,14 @@
           "before"
         ]
       },
-      "client:role": {
+      "formsflowClient:role": {
         "title": "Role Assignment",
         "name": "role",
-        "form": "client",
+        "form": "formsflowClient",
         "settings": {
           "association": "new",
           "type": "add",
-          "role": "client"
+          "role": "formsflowClient"
         },
         "priority": 1,
         "method": [
@@ -602,11 +2927,11 @@
           }
         ]
       },
-      "staffReviewer": {
-        "title": "Staff Reviewer",
+      "formsflowReviewer": {
+        "title": "formsflow Reviewer",
         "type": "resource",
-        "name": "staffReviewer",
-        "path": "staffreviewer",
+        "name": "formsflowReviewer",
+        "path": "formsflowReviewer",
         "display": "form",
         "tags": [
           "common"
@@ -693,8 +3018,8 @@
               "administrator",
               "authenticated",
               "anonymous",
-              "client",
-              "staffReviewer"
+              "formsflowClient",
+              "formsflowReviewer"
             ],
             "type": "read_all"
           }
@@ -706,58 +3031,58 @@
           },
           {
             "roles": [
-              "staffReviewer"
+              "formsflowReviewer"
             ],
             "type": "read_all"
           },
           {
             "roles": [
-              "staffReviewer"
+              "formsflowReviewer"
             ],
             "type": "update_all"
           },
           {
             "roles": [
-              "staffReviewer"
+              "formsflowReviewer"
             ],
             "type": "delete_all"
           },
           {
             "roles": [
-              "staffReviewer",
-              "client"
+              "formsflowReviewer",
+              "formsflowClient"
             ],
             "type": "create_own"
           },
           {
             "roles": [
-              "staffReviewer",
-              "client"
+              "formsflowReviewer",
+              "formsflowClient"
             ],
             "type": "read_own"
           },
           {
             "roles": [
-              "staffReviewer",
-              "client"
+              "formsflowReviewer",
+              "formsflowClient"
             ],
             "type": "update_own"
           },
           {
             "roles": [
-              "staffReviewer",
-              "client"
+              "formsflowReviewer",
+              "formsflowClient"
             ],
             "type": "delete_own"
           }
         ]
       },
 
-      "client": {
-        "title": "Client",
+      "formsflowClient": {
+        "title": "formsflow Client",
         "type": "resource",
-        "name": "client",
-        "path": "client",
+        "name": "formsflowClient",
+        "path": "formsflowClient",
         "display": "form",
         "tags": [
           "common"
@@ -844,8 +3169,8 @@
               "administrator",
               "authenticated",
               "anonymous",
-              "client",
-              "staffReviewer"
+              "formsflowClient",
+              "formsflowReviewer"
             ],
             "type": "read_all"
           }
@@ -857,47 +3182,47 @@
           },
           {
             "roles": [
-              "staffReviewer"
+              "formsflowReviewer"
             ],
             "type": "read_all"
           },
           {
             "roles": [
-              "staffReviewer"
+              "formsflowReviewer"
             ],
             "type": "update_all"
           },
           {
             "roles": [
-              "staffReviewer"
+              "formsflowReviewer"
             ],
             "type": "delete_all"
           },
           {
             "roles": [
-              "staffReviewer",
-              "client"
+              "formsflowReviewer",
+              "formsflowClient"
             ],
             "type": "create_own"
           },
           {
             "roles": [
-              "staffReviewer",
-              "client"
+              "formsflowReviewer",
+              "formsflowClient"
             ],
             "type": "read_own"
           },
           {
             "roles": [
-              "staffReviewer",
-              "client"
+              "formsflowReviewer",
+              "formsflowClient"
             ],
             "type": "update_own"
           },
           {
             "roles": [
-              "staffReviewer",
-              "client"
+              "formsflowReviewer",
+              "formsflowClient"
             ],
             "type": "delete_own"
           }

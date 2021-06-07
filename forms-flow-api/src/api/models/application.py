@@ -113,7 +113,20 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 .paginate(page_no, limit, False)
                 .items
             )
-
+    @classmethod
+    def find_by_form_names(cls, form_names, page_no, limit):
+        """Fetch application based on multiple form ids."""
+        if page_no == 0:
+            return cls.query.filter(Application.application_name.in_(form_names)).order_by(
+                Application.id.desc()
+            )
+        else:
+            return (
+                cls.query.filter(Application.application_name.in_(form_names))
+                .order_by(Application.id.desc())
+                .paginate(page_no, limit, False)
+                .items
+            )
     @classmethod
     def find_by_form_id_user(cls, form_id, user_id, page_no, limit):
         if page_no == 0:

@@ -7,9 +7,13 @@ import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import { toast } from 'react-toastify';
+
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
+
+//TODO convert this code to functional component
 
 // for edit
 import {
@@ -50,7 +54,7 @@ class StepperPage extends PureComponent {
       previewMode: false,
       editMode: false,
       associateWorkFlow: "no",
-      processData: { status: "", isAnonymousAllowd: false, comments: "" },
+      processData: { status: "inactive", isAnonymousAllowd: false, comments: "" },
       formId: "",
       processList: [],
       processListLoaded: false,
@@ -71,12 +75,9 @@ class StepperPage extends PureComponent {
 
   componentDidMount() {
     if(this.state && this.state.displayMode === "view"){
-
       this.setState({ disableWorkflowAssociation: true });
       this.setState({ disablePreview: true });
-
     }
-
   }
 
   componentWillUnmount() {
@@ -151,7 +152,7 @@ class StepperPage extends PureComponent {
         stateData = {
           ...stateData,
           processData: {
-            status: nextProps.formProcessList.status,
+            status: nextProps.formProcessList.status||"inactive",
             isAnonymousAllowd: false,
             comments: nextProps.formProcessList.comments,
           },
@@ -183,8 +184,8 @@ class StepperPage extends PureComponent {
   };
   // handleCheckboxChange = (event) =>
   //   this.setState({ checked: event.target.checked });
-  changeWorkFlowStatus = (e) => {
-    this.setState({ associateWorkFlow: e.target.value });
+  changeWorkFlowStatus = (isWorkFlowAssociated) => {
+    this.setState({workflow:null, associateWorkFlow: isWorkFlowAssociated, dataModified:true});
   };
 
   setProcessData = (data) => {
@@ -204,7 +205,7 @@ class StepperPage extends PureComponent {
 
   populateDropdown() {
     const listProcess = (processes) => {
-      if (processes.length > 0) {
+      if (processes?.length > 0) {
         const data = processes.map((process) => {
           return {
             label: process.name,
@@ -252,17 +253,20 @@ class StepperPage extends PureComponent {
 
   submitData = () => {
     const { form, onSaveFormProcessMapper, formProcessList } = this.props;
-    const { workflow, processData } = this.state;
-    // if (associateWorkFlow === "yes") {
+    const { workflow, processData, associateWorkFlow} = this.state;
     const data = {
       formId: form.id,
       formName: form.form && form.form.title,
       formRevisionNumber: "V1", // to do
-      processKey: workflow && workflow.value,
-      processName: workflow && workflow.label,
-      status: processData.status === "" ? "active": processData.status,
-      comments: processData.comments,
+      status: processData.status? processData.status:"inactive"
     };
+    if (associateWorkFlow === "yes" && workflow) {
+      data["processKey"]= workflow && workflow.value;
+      data["processName"]= workflow && workflow.label;
+    }
+    if(processData.comments){
+      data["comments"] = processData.comments;
+    }
     const isUpdate = formProcessList && formProcessList.id ? true : false;
     if (isUpdate) {
       data.id = formProcessList.id;
@@ -415,7 +419,7 @@ const mapDispatchToProps = (dispatch) => {
     getAllProcesses: () => {
       dispatch(
         fetchAllBpmProcesses((err, res) => {
-          if (!err) {
+          if (err) {
             console.log(err);
           }
         })
@@ -425,7 +429,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveFormProcessMapper(data, update, (err, res) => {
           if (!err) {
+            toast.success('Form Workflow Association Saved.');
             dispatch(push(`/form`));
+          }else{
+            toast.error('Form Workflow Association Failed.');
           }
         })
       );
@@ -440,7 +447,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveForm("form", newForm, (err, form) => {
           if (!err) {
+            toast.success('Form Saved');
             dispatch(push(`/formflow/${form._id}/preview`));
+          }else{
+            toast.error("Error while saving Form")
           }
         })
       );
@@ -450,6 +460,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         getFormProcesses(formId, (err, res) => {
           if (err) {
+            toast.error('Error in getting Workflow Process.');
             console.log(err);
           }
         })

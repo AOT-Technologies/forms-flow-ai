@@ -38,13 +38,15 @@ class ApplicationService:
                 }
             }
             try:
-                response = BPMService.post_process_start(
-                    process_key=mapper.process_key, payload=payload, token=token
-                )
-                application.update({"process_instance_id": response["id"]})
+                if mapper["process_key"]:
+                    response = BPMService.post_process_start(
+                        process_key=mapper.process_key, payload=payload, token=token
+                    )
+                    application.update({"process_instance_id": response["id"]})
             except BaseException as application_err:
                 response, status = {
-                    "systemErrors": application_err.messages
+                    "systemErrors": application_err.messages,
+                    "message": "Camunda Process Mapper Key not provided",
                 }, HTTPStatus.BAD_REQUEST
             return response, status
 
@@ -58,15 +60,29 @@ class ApplicationService:
         if limit:
             limit = int(limit)
 
+
         auth_form_details = BPMService.get_auth_form_details(token=token)
-        form_ids = []
-        for auth_form_detail in auth_form_details:
-            form_ids.append(auth_form_detail["formId"])
-        applications = Application.find_by_form_ids(
-            form_ids=form_ids, page_no=page_no, limit=limit
-        )
-        application_schema = ApplicationSchema()
-        return application_schema.dump(applications, many=True), applications.count()
+        form_names = []
+        if auth_form_details:
+            for auth_form_detail in auth_form_details:
+                form_names.append(auth_form_detail["formName"])
+            applications = Application.find_by_form_names(
+            form_names=form_names, page_no=page_no, limit=limit
+                )
+            resultSize=0
+            if isinstance(applications, list):
+                resultSize=len(applications)
+            application_schema = ApplicationSchema()
+            return (
+                application_schema.dump(applications, many=True),
+                resultSize
+            )
+        else:
+            application_schema = ApplicationSchema()
+            return (
+                application_schema.dump([], many=True),
+                0
+            )
 
     @staticmethod
     def get_all_applications(page_no, limit):

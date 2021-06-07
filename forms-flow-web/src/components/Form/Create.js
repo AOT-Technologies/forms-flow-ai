@@ -39,7 +39,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         saveForm("form", newForm, (err, form) => {
           if (!err) {
             // ownProps.setPreviewMode(true);
-            dispatch(push(`/form/${form._id}/preview`));
+            dispatch(push(`/formflow/${form._id}/view-edit/`));
           }
         })
       );

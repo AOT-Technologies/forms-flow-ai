@@ -3,14 +3,12 @@
 from http import HTTPStatus
 import logging
 
-from flask import g, jsonify, request
-from flask_restx import Namespace, Resource, cors
-from marshmallow import ValidationError
+from flask import jsonify, request
+from flask_restx import Namespace, Resource
+from flask_cors import *
 
-from ..exceptions import BusinessException
-from ..schemas.aggregated_application import AggregatedApplicationReqSchema
 from ..schemas.application_audit import ApplicationAuditSchema
-from ..services import ApplicationService, ApplicationAuditService
+from ..services import ApplicationAuditService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
 from api.utils.constants import CORS_ORIGINS
@@ -25,7 +23,7 @@ class ApplicationHistoryResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(application_id):
         """Get application histry."""
@@ -41,7 +39,7 @@ class ApplicationHistoryResource(Resource):
         )
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(application_id):
         """Post a new application using the request body."""

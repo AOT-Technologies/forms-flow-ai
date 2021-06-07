@@ -4,8 +4,8 @@ from http import HTTPStatus
 import logging
 
 from flask import g, jsonify, request
-from flask_restx import Namespace, Resource, cors
-from marshmallow import ValidationError
+from flask_restx import Namespace, Resource
+from flask_cors import *
 
 from ..exceptions import BusinessException
 from ..schemas.aggregated_application import AggregatedApplicationReqSchema
@@ -29,7 +29,7 @@ class ApplicationsResource(Resource):
     """Resource for managing applications."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """Get applications."""
@@ -85,7 +85,6 @@ class ApplicationsResource(Resource):
             )
 
     # @staticmethod
-    # @cors.crossdomain(origin="*")
     # @auth.require
     # def post():
     #     """Post a new application using the request body."""
@@ -114,7 +113,7 @@ class ApplicationResourceById(Resource):
     """Resource for submissions."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(application_id):
         """Get application by id."""
@@ -129,7 +128,7 @@ class ApplicationResourceById(Resource):
             return err.error, err.status_code
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def put(application_id):
         """Update application details."""
@@ -161,7 +160,7 @@ class ApplicationResourceByFormId(Resource):
     """Resource for submissions."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(form_id):
         """Get applications."""
@@ -227,7 +226,7 @@ class ApplicationResourcesByIds(Resource):
     """Resource for submissions."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post():
         """Post a new application using the request body."""
@@ -259,7 +258,7 @@ class AggregatedApplicationsResource(Resource):
     """Resource for managing aggregated applications."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """Get aggregated applications."""
@@ -296,7 +295,7 @@ class AggregatedApplicationStatusResource(Resource):
     """Resource for managing aggregated applications."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
+    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(mapper_id):
         """Get aggregated application status."""
@@ -332,7 +331,6 @@ class AggregatedApplicationStatusResource(Resource):
 #     """Resource for managing process details."""
 
 #     @staticmethod
-#     @cors.crossdomain(origin="*")
 #     def get(application_id):
 
 #         try:

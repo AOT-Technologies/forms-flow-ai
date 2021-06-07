@@ -50,11 +50,17 @@ Variable name | Meaning | Possible values | Default value |
 `POSTGRES_HOST_AUTH_METHOD`|Postgres authentication method|Used on installation to create the database.Choose your own.|`trust`
 `REDASH_COOKIE_SECRET`|Encryption for all configuration|Used on installation to create the database.Choose your own.|`redash-selfhosted`
 `REDASH_SECRET_KEY`|Encryption for datasource configuration|Used on installation to create the database.Choose your own.|`redash-selfhosted`
+`REDASH_CORS_ACCESS_CONTROL_ALLOW_ORIGIN`| To set allow origins to access Redash | `your-domain.com` | `*`
+`REDASH_REFERRER_POLICY`| To control how much referrer information should be included with Redash API requests | Choose your own. | `no-referrer-when-downgrade`
+`REDASH_CORS_ACCESS_CONTROL_ALLOW_HEADERS` | To control allowed headers to access Reash | Choose on your own | `Content-Type, Authorization`
   
 ### Running the application
 
 * Analytics service uses port 7000, make sure the port is available.
 * `cd {Your Directory}/forms-flow-ai/forms-flow-analytics`
+
+> The forked version of redash is being used to overcome the limited cors support in redash. The forked repo fixes the cors issues. But if the environment is setup in such a way that redash resides in the same url origin as forms web application , redash can be built from any redash images.
+
 
 * For Linux,
   * Run `docker-compose -f docker-compose-linux.yml run --rm server create_db` to setup database and to create tables.
@@ -92,7 +98,7 @@ Variable name | Meaning | Possible values | Default value |
 ## Get the Redash API Key
  
  * Login to redash hosted instance  (i.e. http://localhost:7000/) using the admin credentials passed for registration / SAML credentials
- * Go to Profile -> Edit Profile -> Settings
+ * Go to User Icon -> Profile -> Settings
       * Go to Account Section
       * Copy API Key to Clipboard
  

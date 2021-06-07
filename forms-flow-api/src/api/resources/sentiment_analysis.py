@@ -1,10 +1,12 @@
 """" API endpoints for sentiment analysis """
 import logging
+
+import sys, traceback
+
 from http import HTTPStatus
 
 from flask import g, jsonify, request
-from flask_restx import Namespace, Resource
-from flask_cors import *
+from flask_restx import Namespace, Resource, cors
 
 from pymongo.errors import ConnectionFailure
 from ..schemas import SentimentAnalysisSchema
@@ -23,7 +25,7 @@ class SentimentAnalysisResource(Resource):
     """Resource for generating Sentiment Analysis"""
 
     @staticmethod
-    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     # @auth.require
     def post():
         try:
@@ -63,6 +65,7 @@ class SentimentAnalysisResource(Resource):
 
             return jsonify(response_json), HTTPStatus.OK
         except KeyError as err:
+            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -72,11 +75,18 @@ class SentimentAnalysisResource(Resource):
             )
             logging.info(response)
             logging.info(err)
+
+            # traceback.print_tb(exc_traceback)
+
         except BaseException as err:
+            exc_traceback = sys.exc_info()
             response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid request object passed passed",
             }, HTTPStatus.BAD_REQUEST
             logging.info(response)
             logging.info(err)
+
+            # traceback.print_tb(exc_traceback)
+
         return response, status

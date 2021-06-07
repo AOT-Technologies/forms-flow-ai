@@ -1,10 +1,12 @@
 """API endpoints for managing task resource."""
 import logging
+
+import sys, traceback
+
 from http import HTTPStatus
 
 from flask import jsonify, request
-from flask_restx import Namespace, Resource
-from flask_cors import *
+from flask_restx import Namespace, Resource, cors
 
 from api.services import TaskService
 from api.utils.auth import auth
@@ -21,7 +23,7 @@ class TaskList(Resource):
     """Resource for managing tasks."""
 
     @staticmethod
-    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """List all tasks."""
@@ -43,7 +45,7 @@ class Task(Resource):
     """Resource for managing tasks."""
 
     @staticmethod
-    @cross_origin(origin=CORS_ORIGINS)
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get(task_id):
         """List specific tasks."""
@@ -65,7 +67,7 @@ class TaskClaim(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(task_id):
         """Claim a task."""
@@ -84,6 +86,7 @@ class TaskClaim(Resource):
                 HTTPStatus.OK,
             )
         except KeyError as err:
+            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -93,15 +96,22 @@ class TaskClaim(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.info(response)
-            logging.info(err)
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+
         except BaseException as err:
+            exc_traceback = sys.exc_info()
+
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
-            logging.info(response)
-            logging.info(err)
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+
 
         return response, status
 
@@ -112,7 +122,7 @@ class TaskUnClaim(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(task_id):
         """Unclaim a task."""
@@ -131,6 +141,7 @@ class TaskUnClaim(Resource):
                 HTTPStatus.OK,
             )
         except KeyError as err:
+            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -140,16 +151,22 @@ class TaskUnClaim(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.info(response)
-            logging.info(err)
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
 
         except BaseException as err:
+            exc_traceback = sys.exc_info()
+
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
-            logging.info(response)
-            logging.info(err)
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
 
         return response, status
 
@@ -160,7 +177,7 @@ class TaskComplete(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(task_id):
         """Complete a task."""
@@ -179,6 +196,7 @@ class TaskComplete(Resource):
                 HTTPStatus.OK,
             )
         except KeyError as err:
+            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -188,14 +206,21 @@ class TaskComplete(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.info(response)
-            logging.info(err)
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
         except BaseException as err:
+            exc_traceback = sys.exc_info()
+
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
-            logging.info(response)
-            logging.info(err)
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+
 
         return response, status

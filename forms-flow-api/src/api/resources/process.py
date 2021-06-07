@@ -7,8 +7,7 @@ import sys, traceback
 from http import HTTPStatus
 
 from flask import jsonify, request
-from flask_restx import Namespace, Resource
-from flask_cors import *
+from flask_restx import Namespace, Resource, cors
 
 from ..services import ProcessService
 from api.utils.auth import auth
@@ -27,7 +26,7 @@ class ProcessStateResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(process_key, task_key):
         """Get states by process and task key."""
@@ -51,7 +50,7 @@ class ProcessStateResource(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            traceback.print_tb(exc_traceback)
+            # traceback.print_tb(exc_traceback)
 
         return response, status
 
@@ -62,7 +61,7 @@ class ProcessResource(Resource):
     """Resource for managing process."""
 
     @staticmethod
-    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """Get all process."""
@@ -88,7 +87,7 @@ class ProcessResource(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            traceback.print_tb(exc_traceback)
+            # traceback.print_tb(exc_traceback)
 
         return response, status
 
@@ -100,7 +99,7 @@ class ProcessDefinitionResource(Resource):
     """Resource for managing process details."""
 
     @staticmethod
-    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     def get(process_key):
         """Get process detailsXML."""
         try:
@@ -121,7 +120,7 @@ class ProcessDefinitionResource(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            traceback.print_tb(exc_traceback)
+            # traceback.print_tb(exc_traceback)
 
         return response, status
 
@@ -132,7 +131,7 @@ class ProcessEventResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post():
         message_json = request.get_json()
@@ -161,7 +160,7 @@ class ProcessEventResource(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            traceback.print_tb(exc_traceback)
+            # traceback.print_tb(exc_traceback)
         except BaseException as err:
             exc_traceback = sys.exc_info()
 
@@ -172,7 +171,7 @@ class ProcessEventResource(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            traceback.print_tb(exc_traceback)
+            # traceback.print_tb(exc_traceback)
 
 
         return response, status
@@ -187,7 +186,7 @@ class ProcessInstanceResource(Resource):
     """Get Process Activity Instances."""
 
     @staticmethod
-    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(process_InstanceId):
         """Get states by process and task key."""
@@ -208,7 +207,7 @@ class ProcessInstanceResource(Resource):
             }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
-            traceback.print_tb(exc_traceback)
+            # traceback.print_tb(exc_traceback)
 
         return response, status
 

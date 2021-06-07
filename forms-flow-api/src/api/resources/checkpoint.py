@@ -3,8 +3,7 @@
 from http import HTTPStatus
 
 from flask import jsonify
-from flask_restx import Namespace, Resource
-from flask_cors import *
+from flask_restx import Namespace, Resource, cors
 
 from api.utils.util import cors_preflight
 from api.utils.constants import CORS_ORIGINS
@@ -19,7 +18,7 @@ class HealthCheckpointResource(Resource):
     """Resource for managing healthcheckpoint."""
 
     @staticmethod
-    @cross_origin(origins=CORS_ORIGINS, max_age=21600)
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     def get():
         """Get the status of API."""
         return (

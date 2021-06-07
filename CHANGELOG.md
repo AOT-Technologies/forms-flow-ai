@@ -1,16 +1,34 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
-## 4.0.0-alpha - 2021-02-19
-`Ongoing`
-* Task dashboard has been revamped with new look and feel; which would allow more control on data and stream updates.
+## 4.0.0 - 2021-06-07
+`Upcoming Features`
 
 `Added`
-* forms-flow-bpm has been enhanced with listed features,  
-   1. JDBC session management.
-   2. Support to capture the form data as audit in any relational database of interest.
-   3. Health check API
-   4. Upgrade of sprint boot version
+* Added support for http calls.
+* User can claim / view tasklist in realtime.
+* Automated installation steps for keycloak setup.
+* Automated manual steps for resource id generation, included batch / shell scripts to simplify the process. 
+   
+`Modified`
+* Task dashboard has been revamped with new look and feel; which would allow more control on data and stream updates.
+* React library upgraded to latest version-17.0.2 (Component : forms-flow-web)
+* Spring boot upgraded to latest version-2.4.2 (Component : forms-flow-bpm)
+* Redash upgraded to latest version:v9 (component : forms-flow-analytics)
+* Enhanced Form Process Mapper API and Application API endpoints (component : forms-flow-api)
+* Fixed Python security vulnerabilities and updated flask to 1.1.4 version (component : forms-flow-api)
+* Improved exception handling of python to provide meaningful error messages (component : forms-flow-api)
+* Added new API's for health check (component : forms-flow-api)
+* Improved README for better readability and easy installation.
+
+`Untested Features`
+
+
+`Fixed`
+* Cosmetic changes to show success message after loading is completed
+
+`Known Issues`
+* Custom component (Text Area with analytics) not retaining the value after submission
    
 ## 3.1.0 - 2020-12-17
 `Modified`

@@ -3,6 +3,9 @@
 from http import HTTPStatus
 import logging
 
+import sys, traceback
+
+
 from flask import g, jsonify, request
 from flask_restx import Namespace, Resource
 from flask_cors import *
@@ -143,13 +146,17 @@ class ApplicationResourceById(Resource):
             )
             return "Updated successfully", HTTPStatus.OK
         except BaseException as submission_err:
+            exc_traceback = sys.exc_info()
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.info(response)
-            logging.info(submission_err)
+
+            logging.exception(response)
+            logging.exception(submission_err)
+            traceback.print_tb(exc_traceback)
+
 
         return response, status
 
@@ -243,12 +250,16 @@ class ApplicationResourcesByIds(Resource):
 
             response, status = application_schema.dump(application), HTTPStatus.CREATED
         except BaseException as application_err:
+            exc_traceback = sys.exc_info()
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid application request passed",
             }, HTTPStatus.BAD_REQUEST
-            logging.info(response)
-            logging.info(application_err)
+
+            logging.exception(response)
+            logging.exception(application_err)
+            traceback.print_tb(exc_traceback)
+
         return response, status
 
 
@@ -280,12 +291,17 @@ class AggregatedApplicationsResource(Resource):
             )
         except BaseException as agg_err:
 
+            exc_traceback = sys.exc_info()
+
             response, status = {
                 "message": "Invalid request object for application metrics endpoint",
                 "errors": agg_err.messages,
             }, HTTPStatus.BAD_REQUEST
-            logging.info(response)
-            logging.info(agg_err)
+
+            logging.exception(response)
+            logging.exception(agg_err)
+            traceback.print_tb(exc_traceback)
+
         return response, status
 
 
@@ -316,12 +332,17 @@ class AggregatedApplicationStatusResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as agg_err:
+
+            exc_traceback = sys.exc_info()
+
             response, status = {
                 "message": "Invalid request object for application metrics endpoint",
                 "errors": agg_err.messages,
             }, HTTPStatus.BAD_REQUEST
-            logging.info(response)
-            logging.info(agg_err)
+
+            logging.exception(response)
+            logging.exception(agg_err)
+            traceback.print_tb(exc_traceback)
         return response, status
 
 

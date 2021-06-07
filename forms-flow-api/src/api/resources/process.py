@@ -1,6 +1,9 @@
 """API endpoints for managing process resource."""
 
 import logging
+
+import sys, traceback
+
 from http import HTTPStatus
 
 from flask import jsonify, request
@@ -38,12 +41,18 @@ class ProcessStateResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as err:
+
+            exc_traceback = sys.exc_info()
+
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
-            logging.info(response)
-            logging.info(err)
+
+            logging.exception(response)
+            logging.exception(err)
+            traceback.print_tb(exc_traceback)
+
         return response, status
 
 
@@ -69,12 +78,18 @@ class ProcessResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as err:
+
+            exc_traceback = sys.exc_info()
+
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }
-            logging.info(response)
-            logging.info(err)
+
+            logging.exception(response)
+            logging.exception(err)
+            traceback.print_tb(exc_traceback)
+
         return response, status
 
 
@@ -96,12 +111,18 @@ class ProcessDefinitionResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as err:
+
+            exc_traceback = sys.exc_info()
+
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }
-            logging.info(response)
-            logging.info(err)
+
+            logging.exception(response)
+            logging.exception(err)
+            traceback.print_tb(exc_traceback)
+
         return response, status
 
 
@@ -128,6 +149,7 @@ class ProcessEventResource(Resource):
                 HTTPStatus.OK,
             )
         except KeyError as err:
+            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -137,15 +159,21 @@ class ProcessEventResource(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.info(response)
-            logging.info(err)
+            logging.exception(response)
+            logging.exception(err)
+            traceback.print_tb(exc_traceback)
         except BaseException as err:
+            exc_traceback = sys.exc_info()
+
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }
-            logging.info(response)
-            logging.info(err)
+
+            logging.exception(response)
+            logging.exception(err)
+            traceback.print_tb(exc_traceback)
+
 
         return response, status
 
@@ -171,11 +199,17 @@ class ProcessInstanceResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as err:
+
+            exc_traceback = sys.exc_info()
+
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
-            logging.info(response)
+
+            logging.exception(response)
+            traceback.print_tb(exc_traceback)
+
         return response, status
 
 

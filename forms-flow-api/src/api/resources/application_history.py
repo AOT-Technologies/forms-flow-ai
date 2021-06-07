@@ -3,6 +3,9 @@
 from http import HTTPStatus
 import logging
 
+import sys, traceback
+
+
 from flask import jsonify, request
 from flask_restx import Namespace, Resource
 from flask_cors import *
@@ -58,6 +61,7 @@ class ApplicationHistoryResource(Resource):
                 HTTPStatus.CREATED,
             )
         except KeyError as err:
+            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -65,15 +69,20 @@ class ApplicationHistoryResource(Resource):
                 },
                 HTTPStatus.BAD_REQUEST,
             )
-            logging.info(response)
-            logging.info(err)
+            logging.exception(response)
+            logging.exception(err)
+            traceback.print_tb(exc_traceback)
 
         except BaseException as application_err:
+            exc_traceback = sys.exc_info()
             response, status = {
                 "type": "Invalid Request Object",
                 "message": "Invalid Request Object Passed ",
                 "errors": application_err.messages,
             }, HTTPStatus.BAD_REQUEST
-            logging.info(response)
-            logging.info(application_err)
+
+            logging.exception(response)
+            logging.exception(application_err)
+            traceback.print_tb(exc_traceback)
+
         return response, status

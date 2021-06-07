@@ -62,16 +62,19 @@ class ApplicationService:
 
         # try:
         auth_form_details = BPMService.get_auth_form_details(token=token)
-        form_ids = []
+        form_names = []
         for auth_form_detail in auth_form_details:
-            form_ids.append(auth_form_detail["formId"])
-        applications = Application.find_by_form_ids(
-            form_ids=form_ids, page_no=page_no, limit=limit
+            form_names.append(auth_form_detail["formName"])
+        applications = Application.find_by_form_names(
+            form_names=form_names, page_no=page_no, limit=limit
         )
+        resultSize=0
+        if isinstance(applications, list):
+            resultSize=len(applications)
         application_schema = ApplicationSchema()
         return (
             application_schema.dump(applications, many=True),
-            applications.count(),
+            resultSize
         )
         # except BaseException as application_err:
         #     response, status = {

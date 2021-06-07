@@ -1,15 +1,19 @@
 """API endpoints for managing process resource."""
 
+import logging
+
+import sys, traceback
+
 from http import HTTPStatus
 
-from flask import g, jsonify, request
+from flask import jsonify, request
 from flask_restx import Namespace, Resource, cors
 
-from ..exceptions import BusinessException
 from ..services import ProcessService
-from ..utils.auth import auth
-from ..utils.util import cors_preflight
-from ..schemas.process import ProcessMessageSchema
+from api.utils.auth import auth
+from api.utils.util import cors_preflight
+from api.utils.constants import CORS_ORIGINS
+from api.schemas.process import ProcessMessageSchema
 
 API = Namespace("Process", description="Process")
 
@@ -22,7 +26,7 @@ class ProcessStateResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(process_key, task_key):
         """Get states by process and task key."""
@@ -35,8 +39,20 @@ class ProcessStateResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except BusinessException as err:
-            return err.error, err.status_code
+        except BaseException as err:
+
+            exc_traceback = sys.exc_info()
+
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }, HTTPStatus.BAD_REQUEST
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+
+        return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -45,7 +61,7 @@ class ProcessResource(Resource):
     """Resource for managing process."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """Get all process."""
@@ -54,14 +70,26 @@ class ProcessResource(Resource):
                 jsonify(
                     {
                         "process": ProcessService.get_all_processes(
-                            request.headers["Authorization"]
+                            token=request.headers["Authorization"]
                         )
                     }
                 ),
                 HTTPStatus.OK,
             )
-        except BusinessException as err:
-            return err.error, err.status_code
+        except BaseException as err:
+
+            exc_traceback = sys.exc_info()
+
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+
+        return response, status
 
 
 # API for getting process diagram xml -for displaying bpmn diagram in UI
@@ -71,7 +99,7 @@ class ProcessDefinitionResource(Resource):
     """Resource for managing process details."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     def get(process_key):
         """Get process detailsXML."""
         try:
@@ -81,8 +109,20 @@ class ProcessDefinitionResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except BusinessException as err:
-            return err.error, err.status_code
+        except BaseException as err:
+
+            exc_traceback = sys.exc_info()
+
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+
+        return response, status
 
 
 @cors_preflight("POST,OPTIONS")
@@ -91,7 +131,7 @@ class ProcessEventResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post():
         message_json = request.get_json()
@@ -107,8 +147,34 @@ class ProcessEventResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except BusinessException as err:
-            return err.error, err.status_code
+        except KeyError as err:
+            exc_traceback = sys.exc_info()
+            response, status = (
+                {
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                    "errors": err.messages,
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+        except BaseException as err:
+            exc_traceback = sys.exc_info()
+
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+
+
+        return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -120,7 +186,7 @@ class ProcessInstanceResource(Resource):
     """Get Process Activity Instances."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(process_InstanceId):
         """Get states by process and task key."""
@@ -131,8 +197,19 @@ class ProcessInstanceResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except BusinessException as err:
-            return err.error, err.status_code
+        except BaseException as err:
+
+            exc_traceback = sys.exc_info()
+
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }, HTTPStatus.BAD_REQUEST
+
+            logging.exception(response)
+            # traceback.print_tb(exc_traceback)
+
+        return response, status
 
 
 # @cors_preflight('GET,OPTIONS')
@@ -141,7 +218,6 @@ class ProcessInstanceResource(Resource):
 #     """Resource for managing process details."""
 
 #     @staticmethod
-#     @cors.crossdomain(origin='*')
 #     def get(process_key):
 #         """Get process details."""
 #         try:
@@ -156,7 +232,6 @@ class ProcessInstanceResource(Resource):
 #     """Resource for managing process ations."""
 
 #     @staticmethod
-#     @cors.crossdomain(origin='*')
 #     def get(process_key):
 #         """Get process action details."""
 #         try:

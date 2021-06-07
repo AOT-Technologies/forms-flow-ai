@@ -40,7 +40,11 @@ class FormProcessMapperService:
             return mapper_schema.dump(mapper)
 
         raise BusinessException(
-            "Invalid form process mapper id", HTTPStatus.BAD_REQUEST
+            {
+                "type": "Invalid response data",
+                "message": f"Invalid form process mapper id - {form_process_mapper_id}",
+            },
+            HTTPStatus.BAD_REQUEST,
         )
 
     @staticmethod
@@ -51,7 +55,13 @@ class FormProcessMapperService:
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)
 
-        raise BusinessException(f"Invalid form id - {form_id}", HTTPStatus.BAD_REQUEST)
+        raise BusinessException(
+            {
+                "type": "No Response",
+                "message": f"FormProcessMapper with FormID - {form_id} not stored in DB",
+            },
+            HTTPStatus.NO_CONTENT,
+        )
 
     @staticmethod
     def create_mapper(data):
@@ -64,12 +74,22 @@ class FormProcessMapperService:
         mapper = FormProcessMapper.find_form_by_id(
             form_process_mapper_id=form_process_mapper_id
         )
+        if not ((data.get("process_key")) and (data.get("process_name"))):
+            data["process_key"] = None
+            data["process_name"] = None
+
+        if not (data.get("comments")):
+            data["comments"] = None
+
         if mapper:
             mapper.update(data)
             return mapper
 
         raise BusinessException(
-            f"Unable to updated FormProcessMapperId - {form_process_mapper_id}",
+            {
+                "type": "Invalid response data",
+                "message": f"Unable to updated FormProcessMapperId - {form_process_mapper_id}",
+            },
             HTTPStatus.BAD_REQUEST,
         )
 
@@ -83,6 +103,9 @@ class FormProcessMapperService:
             application.mark_inactive()
         else:
             raise BusinessException(
-                f"Unable to set FormProcessMapperId - {form_process_mapper_id} inactive",
+                {
+                    "type": "Invalid response data",
+                    "message": f"Unable to set FormProcessMapperId - {form_process_mapper_id} inactive",
+                },
                 HTTPStatus.BAD_REQUEST,
             )

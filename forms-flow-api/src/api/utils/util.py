@@ -2,6 +2,7 @@
 
 * CORS pre-flight decorator. A simple decorator to add the options method to a Request Class.
 """
+from .constants import CORS_ORIGINS
 
 
 def cors_preflight(methods: str = "GET"):
@@ -13,7 +14,7 @@ def cors_preflight(methods: str = "GET"):
                 {"Allow": "GET"},
                 200,
                 {
-                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Origin": CORS_ORIGINS,
                     "Access-Control-Allow-Methods": methods,
                     "Access-Control-Allow-Headers": "Authorization, Content-Type",
                 },

@@ -1,13 +1,17 @@
 """API endpoints for managing task resource."""
+import logging
+
+import sys, traceback
 
 from http import HTTPStatus
 
 from flask import jsonify, request
 from flask_restx import Namespace, Resource, cors
 
-from ..services import TaskService
-from ..utils.auth import auth
-from ..utils.util import cors_preflight
+from api.services import TaskService
+from api.utils.auth import auth
+from api.utils.util import cors_preflight
+from api.utils.constants import CORS_ORIGINS
 
 
 API = Namespace("Task", description="Task")
@@ -19,13 +23,17 @@ class TaskList(Resource):
     """Resource for managing tasks."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """List all tasks."""
         return (
             jsonify(
-                {"tasks": TaskService.get_all_tasks(request.headers["Authorization"])}
+                {
+                    "tasks": TaskService.get_all_tasks(
+                        token=request.headers["Authorization"]
+                    )
+                }
             ),
             HTTPStatus.OK,
         )
@@ -37,7 +45,7 @@ class Task(Resource):
     """Resource for managing tasks."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get(task_id):
         """List specific tasks."""
@@ -45,7 +53,7 @@ class Task(Resource):
             jsonify(
                 {
                     "task": TaskService.get_task(
-                        task_id, request.headers["Authorization"]
+                        task_id=task_id, token=request.headers["Authorization"]
                     )
                 }
             ),
@@ -59,21 +67,53 @@ class TaskClaim(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(task_id):
         """Claim a task."""
         request_json = request.get_json()
-        return (
-            jsonify(
+        try:
+            return (
+                jsonify(
+                    {
+                        "tasks": TaskService.claim_task(
+                            task_id=task_id,
+                            data=request_json,
+                            token=request.headers["Authorization"],
+                        )
+                    }
+                ),
+                HTTPStatus.OK,
+            )
+        except KeyError as err:
+            exc_traceback = sys.exc_info()
+            response, status = (
                 {
-                    "tasks": TaskService.claim_task(
-                        task_id, request_json, request.headers["Authorization"]
-                    )
-                }
-            ),
-            HTTPStatus.OK,
-        )
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                    "errors": err.messages,
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+
+        except BaseException as err:
+            exc_traceback = sys.exc_info()
+
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }, HTTPStatus.BAD_REQUEST
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+
+
+        return response, status
 
 
 @cors_preflight("POST,OPTIONS")
@@ -82,21 +122,53 @@ class TaskUnClaim(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(task_id):
         """Unclaim a task."""
         request_json = request.get_json()
-        return (
-            jsonify(
+        try:
+            return (
+                jsonify(
+                    {
+                        "tasks": TaskService.unclaim_task(
+                            task_id=task_id,
+                            data=request_json,
+                            token=request.headers["Authorization"],
+                        )
+                    }
+                ),
+                HTTPStatus.OK,
+            )
+        except KeyError as err:
+            exc_traceback = sys.exc_info()
+            response, status = (
                 {
-                    "tasks": TaskService.unclaim_task(
-                        task_id, request_json, request.headers["Authorization"]
-                    )
-                }
-            ),
-            HTTPStatus.OK,
-        )
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                    "errors": err.messages,
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+
+        except BaseException as err:
+            exc_traceback = sys.exc_info()
+
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }, HTTPStatus.BAD_REQUEST
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+
+        return response, status
 
 
 @cors_preflight("POST,OPTIONS")
@@ -105,18 +177,50 @@ class TaskComplete(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
+    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(task_id):
         """Complete a task."""
         request_json = request.get_json()
-        return (
-            jsonify(
+        try:
+            return (
+                jsonify(
+                    {
+                        "tasks": TaskService.complete_task(
+                            task_id=task_id,
+                            data=request_json,
+                            token=request.headers["Authorization"],
+                        )
+                    }
+                ),
+                HTTPStatus.OK,
+            )
+        except KeyError as err:
+            exc_traceback = sys.exc_info()
+            response, status = (
                 {
-                    "tasks": TaskService.complete_task(
-                        task_id, request_json, request.headers["Authorization"]
-                    )
-                }
-            ),
-            HTTPStatus.OK,
-        )
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                    "errors": err.messages,
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+        except BaseException as err:
+            exc_traceback = sys.exc_info()
+
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }, HTTPStatus.BAD_REQUEST
+
+            logging.exception(response)
+            logging.exception(err)
+            # traceback.print_tb(exc_traceback)
+
+
+        return response, status

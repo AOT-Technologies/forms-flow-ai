@@ -155,6 +155,6 @@ class BPMService(BaseBPMService):
 
         except BaseException as form_err:
             return {
-                "type": "Missing environment variable CAMUNDA_API_URI",
+                "type": "Missing environment variable CAMUNDA_API_URL",
                 "message": form_err.messages,
             }

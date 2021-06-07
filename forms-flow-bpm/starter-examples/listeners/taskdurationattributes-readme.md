@@ -21,7 +21,7 @@ Please note; this also creates a CAM variable **task_due_date** with the calcula
 
 ### How to Use
 
-Below snapshot shows how to configure the **TaskDurationAttributesListener** to an task. 
+Below snapshot shows how to configure the **TaskDurationAttributesListener** to a task. 
 
 ![Task Duraion Attributes listener - Snapshot](./images/taskdurationattributes-listener-snp1.jpg)
 

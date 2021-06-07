@@ -3,7 +3,7 @@
 # from http import HTTPStatus
 
 # from flask import jsonify
-# from flask_restx import Namespace, Resource, cors
+# from flask_restx import Namespace, Resource
 
 # from ..services import FormIOTokenService
 # from ..utils.util import cors_preflight
@@ -18,7 +18,6 @@
 #     """Resource for generatiing formiotoken."""
 
 #     @staticmethod
-#     @cors.crossdomain(origin="*")
 #     def get():
 #         """Get formio token."""
 #         return (

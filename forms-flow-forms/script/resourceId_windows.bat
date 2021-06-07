@@ -1,4 +1,4 @@
-:: Get all the resource id from http://localhost:3001
+:: This file is used to get resource id from http://localhost:3001
 @echo off
 rem required parameters : %1=admin@example.com %2=changeme
 
@@ -9,6 +9,7 @@ set token=nul
 
 setlocal ENABLEDELAYEDEXPANSION
 
+:: Getting x-jwt-token
 for /F "skip=1delims=" %%I in ('curl -d "{ \"data\": { \"email\": \"!email!\", \"password\": \"!password!\"} }" -H "Content-Type: application/json" -sSL -D - http://localhost:3001/user/login  -o null') do (
   set header=%%I
   if "!header:~0,11!"=="x-jwt-token" (
@@ -16,6 +17,7 @@ for /F "skip=1delims=" %%I in ('curl -d "{ \"data\": { \"email\": \"!email!\", \
   )
 )
 
+:: Getting role id's and mapping it into an array
 for /f "delims=" %%R in ('curl -H "x-jwt-token:!token!"  -sSL -D - http://localhost:3001/role') do (
 set "JSON=%%R"
 )
@@ -39,6 +41,7 @@ for %%a in (!JSON!) do (
    )
 )
 
+:: Getting user id's and mapping it into an array
 for /f "delims=" %%R in ('curl -H "x-jwt-token:!token!"  -sSL -D - http://localhost:3001/user') do (
 set "JSON=%%R"
 )

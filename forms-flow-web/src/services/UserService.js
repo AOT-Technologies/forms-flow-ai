@@ -33,6 +33,7 @@ const initKeycloak = (store, ...rest) => {
       silentCheckSsoRedirectUri:
         window.location.origin + "/silent-check-sso.html",
       pkceMethod: "S256",
+      checkLoginIframe: false
     })
     .then((authenticated) => {
       if (authenticated) {

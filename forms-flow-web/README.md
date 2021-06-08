@@ -40,15 +40,17 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
    * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
    * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
+> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the redash.env file
+   
  Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
- `FORMIO_DEFAULT_PROJECT_URL`__*__|The URL of the form.io server||`http://{your-ip-address}:3001`
- `INSIGHT_API_URL`__*__|Insight Api base end-point||`http://{your-ip-address}:7000`
- `INSIGHT_API_KEY`__*__|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw|`Get the api key from forms-flow-analytics (REDASH) by following the 'Get the Redash API Key' steps from `[here](../forms-flow-analytics/README.md#get-the-redash-api-key)
- `FORMSFLOW_API_URL`__*__|formsflow Rest API URL||`http://{your-ip-address}:5000/api`
- `CAMUNDA_API_URL`__*__|Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
- `KEYCLOAK_URL`__*__| URL to your Keycloak server || `http://{your-ip-address}:8080`
+ `FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|The URL of the form.io server||`http://{your-ip-address}:3001`
+ `INSIGHT_API_URL`:triangular_flag_on_post:|Insight Api base end-point||`http://{your-ip-address}:7000`
+ `INSIGHT_API_KEY`:triangular_flag_on_post:|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw|`Get the api key from forms-flow-analytics (REDASH) by following the 'Get the Redash API Key' steps from `[here](../forms-flow-analytics/README.md#get-the-redash-api-key)
+ `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow Rest API URL||`http://{your-ip-address}:5000/api`
+ `CAMUNDA_API_URL`:triangular_flag_on_post:|Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
+ `KEYCLOAK_URL`:triangular_flag_on_post:| URL to your Keycloak server || `http://{your-ip-address}:8080`
  `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
  `KEYCLOAK_WEB_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-web | `forms-flow-web`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token| | `giert989jkwrgb@DR55`
@@ -60,13 +62,13 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `CLIENT_ROLE`|	The role name used for client users|| `formsflow-client`
-`CLIENT_ROLE_ID`__*__|forms-flow-forms client role Id|eg. 10121d8f7fadb18402a4c|`must get the client role Id value from Prerequisites step 1 above.`)
+`CLIENT_ROLE_ID`:triangular_flag_on_post:|forms-flow-forms client role Id|eg. 10121d8f7fadb18402a4c|`must get the client role Id value from Prerequisites step 1 above.`)
 `REVIEWER_ROLE`|The role name used for reviewer users||`formsflow-reviewer`
-`REVIEWER_ROLE_ID`__*__|forms-flow-forms reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|`must get the reviewer role Id value from Prerequisites step 1 above..`
+`REVIEWER_ROLE_ID`:triangular_flag_on_post:|forms-flow-forms reviewer role Id|eg. 5ee10121d8f7fa03b3402a4d|`must get the reviewer role Id value from Prerequisites step 1 above..`
 `DESIGNER_ROLE`|The role name used for designer users||`formsflow-designer`
-`DESIGNER_ROLE_ID`__*__|forms-flow-forms administrator role Id|eg. 5ee090afee045f1597609cae|`must get the administrator role Id value from Prerequisites step 1 above..`
+`DESIGNER_ROLE_ID`:triangular_flag_on_post:|forms-flow-forms administrator role Id|eg. 5ee090afee045f1597609cae|`must get the administrator role Id value from Prerequisites step 1 above..`
 `ANONYMOUS_ID`|forms-flow-forms anonymous role Id|eg. 5ee090b0ee045f28ad609cb0|`must get the anonymous role Id value from Prerequisites step 1 above..`
-`USER_RESOURCE_ID`__*__|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from the step 1 above..`
+`USER_RESOURCE_ID`:triangular_flag_on_post:|User forms form-Id|eg. 5ee090b0ee045f51c5609cb1|`must get the value from the step 1 above..`
 
 
 ### Running the application

@@ -96,7 +96,9 @@
     "marked": "^2.0.5",
     "minimist": "^1.2.5",
     "qs": "^6.10.1",
-    "netmask": "^2.0.2"
+    "netmask": "^2.0.2",
+    "css-what": "^5.0.1",
+    "glob-parent": "^5.1.2"
   },
   "homepage": "https://github.com/formio/formio#readme",
   "pre-commit": [

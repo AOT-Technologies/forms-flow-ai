@@ -46,7 +46,6 @@ services:
     ports:
       - '3001:3001'
     # The application wants to download things to the local directory
-    # TODO: really wish I could mount this as read-only
     volumes:
       - ./:/app:rw
     environment:

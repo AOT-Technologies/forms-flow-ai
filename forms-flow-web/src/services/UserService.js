@@ -13,8 +13,7 @@ import {
 import {BPM_BASE_URL} from "../apiManager/endpoints/config";
 import {AppConfig} from '../config';
 import {WEB_BASE_URL} from "../apiManager/endpoints/config";
-import Keycloak from "keycloak-js";
-import {tenantDetail} from "../constants/tenantConstant";
+import {_kc} from "../constants/tenantConstant";
 
 const jwt = require("jsonwebtoken");
 
@@ -23,7 +22,7 @@ const jwt = require("jsonwebtoken");
  *
  * @param onAuthenticatedCallback
  */
-const KeycloakData = new Keycloak(tenantDetail);
+// const KeycloakData = new Keycloak(tenantDetail);
 
 const initKeycloak = (store, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -69,7 +68,7 @@ const initKeycloak = (store, ...rest) => {
 let refreshInterval;
 const refreshToken = (store) => {
   refreshInterval = setInterval(() => {
-    KeycloakData.updateToken(240).then((refreshed)=> {
+    KeycloakData && KeycloakData.updateToken(5).then((refreshed)=> {
       if (refreshed) {
         store.dispatch(setUserToken(KeycloakData.token));
       }
@@ -79,9 +78,7 @@ const refreshToken = (store) => {
     });
   }, 6000);
 }
-const doLogin = KeycloakData.login;
 
-const doLogout = KeycloakData.logout;
 
 /**
  * Logout function
@@ -100,15 +97,15 @@ const setApiBaseUrlToLocalStorage = ()=> {
   localStorage.setItem("formsflow.ai.api.url", WEB_BASE_URL);
 }
 
-const getToken = () => KeycloakData.token;
+
 
 const getFormioToken = () => localStorage.getItem("formioToken");
 
-const getUserEmail = () => KeycloakData.tokenParsed.email;
+//const getUserEmail = () => KeycloakData.tokenParsed.email;
 
-const updateToken = (successCallback) => {
+/*const updateToken = (successCallback) => {
   return KeycloakData.updateToken(5).then(successCallback).catch(doLogin);
-};
+};*/
 
 const authenticateAnonymousUser = (store) => {
   const user = ANONYMOUS_USER;
@@ -136,17 +133,18 @@ const authenticateFormio = (user, roles) => {
 };
 
 
+const KeycloakData= _kc;
+
+const doLogin = KeycloakData.login;
+const doLogout = KeycloakData.logout;
+const getToken = () => KeycloakData.token;
 
 const UserService ={
   initKeycloak,
-  doLogin,
   userLogout,
   getToken,
-  updateToken,
-  KeycloakData,
   getFormioToken,
-  getUserEmail,
-  authenticateAnonymousUser,
+  authenticateAnonymousUser
 };
 
 export default UserService;

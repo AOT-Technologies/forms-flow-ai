@@ -73,7 +73,7 @@ const Dashboard = React.memo(() => {
     setDateRange(date);
   };
 
-  const noOfApplicationsAvailable = submissionsList.length;
+  const noOfApplicationsAvailable = submissionsList?.length || 0;
   if (metricsLoadError) {
     return (
       <LoadError text="The operation couldn't be completed. Please try after sometime" />

@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ ($1) == () ] || [($2) == ()]
+   echo Please specify User Email and Password
+   exit 0
+fi
+
 email=$1
 password=$2
 host=http://localhost:3001

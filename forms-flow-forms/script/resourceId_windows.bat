@@ -2,6 +2,15 @@
 @echo off
 rem required parameters : %1=admin@example.com %2=changeme
 
+set hour=6
+set res=F
+if [%1] equ [] set res=T
+if [%2] equ [] set res=T
+if "%res%"=="T" (
+	echo Please specify User Email and Password
+	GOTO completed
+)
+
 SET email=%1
 SET password=%2
 SET host=http://localhost:3001
@@ -69,3 +78,5 @@ for /L %%a in (0,1,!i!) do (
 echo !title[%%a]!   -           !id[%%a]!
 )
 endlocal
+
+:completed

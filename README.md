@@ -91,14 +91,22 @@ The components of the system are:
 Browser-based React integration web UI
 Most of the day-to-day end-user and review tasks are performed from this application,  built specifically to act as a common UI combining forms, workflow, and analytics functionality. The web application is written as a [progressive](https://en.wikipedia.org/wiki/Progressive_web_application) app with the potential for offline data-entry. formsflow UI accesses the individual system component data through native API's using OIDC or SAML access tokens.
 
+#### formsflow UI Extension for Vue.js (optional)
+There is a Vue.js based web user interface for easy integration of formsflow.ai to your existing User Interface. This extension provides components
+for easily using Forms, Tasklist by installing as a package. To know more details checkout [formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue).
+
 #### Redash Admin UI
 The native admin interface to Redash (bundled and unchanged). Use this to build analytics dashboards.
+
 #### Redash API
 The REST interface to the Redash core. Bundled and unchanged
+
 #### Form.io API
 The REST interface to the form.io core
+
 #### Camunda Admin UI
 The native admin interface to Camunda (bundled and unchanged) . Use this to define workflows and to manage workflow tasks as an admin.
+
 #### REST API
 Python REST API providing business logic around the internal formsflow.ai Postgres database. This API is used extensively by the formsflow.ai UI to synchronize, maintain state, extend functionality, and integrate between components.
 #### Nginx Web server (optional)
@@ -107,6 +115,7 @@ Webserver providing reverse-proxy redirection and SSL to components for remote d
 #### Keycloak Identity management server 
 The system uses an existing (your) Keycloak server which provides a common identity management capability. The system provides default installation and provisioning of the Keycloak server for local setup, steps are mentioned [here](./forms-flow-idm/keycloak/README.md#local-keycloak-setup). 
 However, you can setup your own Keycloak server and follow the provisioning steps [here](./forms-flow-idm/keycloak/README.md#server-keycloak-setup). 
+
 
 ## Security Instructions
 To secure formsflow.ai and understand authorization roles follow the documentation on [Security Setup](./forms-flow-idm ).

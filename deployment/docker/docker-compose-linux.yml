@@ -3,7 +3,7 @@ version: '3.7'
 
 services:
   forms-flow-bpm-db:
-    image: postgres:latest
+    image: postgres:13
     container_name: forms-flow-bpm-db
     environment:
       POSTGRES_USER: ${CAMUNDA_JDBC_USER:-admin}

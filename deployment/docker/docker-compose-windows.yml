@@ -3,7 +3,7 @@ version: '3.7'
 
 services:
   forms-flow-bpm-db:
-    image: postgres:11
+    image: postgres:13
     container_name: forms-flow-bpm-db
     environment:
       POSTGRES_USER: ${CAMUNDA_JDBC_USER:-admin}
@@ -58,7 +58,7 @@ services:
       - FORMIO_ROOT_EMAIL=${FORMIO_ROOT_EMAIL:-admin@example.com}
       - FORMIO_ROOT_PASSWORD=${FORMIO_ROOT_PASSWORD:-changeme}
       - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN:-*}
-      - WEBSOCKET_SECURITY_ORIGIN=${WEBSOCKET_SECURITY_ORIGIN}
+      - WEBSOCKET_SECURITY_ORIGIN=${WEBSOCKET_SECURITY_ORIGIN:-*}
       - WEBSOCKET_MESSAGE_TYPE=${WEBSOCKET_MESSAGE_TYPE:-TASK_EVENT}
       - WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
     networks:

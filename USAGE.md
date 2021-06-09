@@ -54,7 +54,7 @@ In the following document, we’ll describe about the step by step instructions 
 
 ![Image 2](./.images/designer-feedback-1.PNG)
 
-* At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow if needed eg: One Step Review.
+* At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow if needed eg: One Step Review with Notifications (With Example).
 
 ![Image 3](./.images/designer-workflow.PNG)
 

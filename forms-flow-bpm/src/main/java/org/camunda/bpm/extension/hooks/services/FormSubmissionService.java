@@ -40,7 +40,7 @@ public class FormSubmissionService {
         if(response.getStatusCode().value() == HttpStatus.OK.value()) {
             return response.getBody();
         }
-        return "";
+        return null;
     }
 
     public String createRevision(String formUrl) {

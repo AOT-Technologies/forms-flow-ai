@@ -745,7 +745,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://localhost:7000/*"
+        "*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -826,7 +826,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://localhost:8000/camunda/*"
+        "*"
       ],
       "webOrigins": [
         "*"
@@ -978,7 +978,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://localhost:3000/*"
+        "*"
       ],
       "webOrigins": [
         "*"

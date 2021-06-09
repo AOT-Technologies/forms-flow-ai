@@ -25,7 +25,7 @@ services:
       - keycloak-server-network
 
   keycloak:
-    image: quay.io/keycloak/keycloak:11.0.0
+    image: jboss/keycloak
     restart: unless-stopped
     container_name: keycloak
     volumes:

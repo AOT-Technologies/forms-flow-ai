@@ -48,16 +48,25 @@ In the following document, we’ll describe about the step by step instructions 
 
 ![Image 1](./.images/designer-landing.PNG)]
 
+> Feedback form is already created, so the below step can be skipped
 * To create a form you can click on **Create Form Button** where you can use the integrated form.io library to create a form with ease.
 * Once the form creation is completed click on **Save & Preview Button**, you can modify the form by clicking on **Edit Button** or click on **Next Button** to proceed further at this point.
 
+![Image 2](./.images/designer-feedback-1.PNG)]
 
-* At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow if needed.
+* At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow if needed eg: One Step Review.
+
+![Image 3](./.images/designer-workflow.PNG)]
 
 * After the associate workflow is completed click on **Next Button** to Preview and Confirm.
 * You can click on **EDIT Button** and publish the form for clients to sent it for client usage.
 
+![Image 4](./.images/designer-publish.PNG)]
+
 * Click on **SAVE Button** to completed designing a form.
+
+![Image 4](./.images/designer-final-submit.PNG)]
+
 * Form designing is successfully completed, you can now Log out and go to [STEP 2](#)
 
 ### [STEP 2](#) Designer Task

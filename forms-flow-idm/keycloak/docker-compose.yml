@@ -10,7 +10,7 @@ networks:
 
 services:
   keycloak-db:
-    image: postgres
+    image: postgres:latest
     restart: unless-stopped
     container_name: keycloak_db
     volumes:

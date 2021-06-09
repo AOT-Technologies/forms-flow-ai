@@ -7,7 +7,8 @@ This page elaborates how to setup the overall solution using docker.
 1. [Application Setup](#application-setup)
    * [Step 1 : Installation Steps](#installation-steps)
    * [Step 2 : Running the Application](#running-the-application)
-   * [Step 3 : Health Check](#health-check) 
+   * [Step 3 : Health Check](#health-check)
+2. [Usage Instructions](#usage-instructions)
 
 ## Application Setup
 
@@ -243,3 +244,9 @@ Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resou
   * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   
  * Access credentials are mentioned [here](../README.md#verifying-the-installation-status).
+
+### Usage Instructions
+
+> End to end usage of formsflow.ai is mentioned in this section with sample forms and workflows.
+
+* The complete usage instructions with examples are mentioned [here](./../../USAGE.md).

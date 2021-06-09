@@ -294,7 +294,7 @@ class AggregatedApplicationsResource(Resource):
 
             response, status = {
                 "message": "Invalid request object for application metrics endpoint",
-                "errors": agg_err.messages,
+                "errors": agg_err,
             }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
@@ -336,7 +336,7 @@ class AggregatedApplicationStatusResource(Resource):
 
             response, status = {
                 "message": "Invalid request object for application metrics endpoint",
-                "errors": agg_err.messages,
+                "errors": agg_err,
             }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)

@@ -38,14 +38,13 @@ class ApplicationService:
                 }
             }
             try:
-                if mapper["process_key"]:
-                    response = BPMService.post_process_start(
-                        process_key=mapper.process_key, payload=payload, token=token
-                    )
-                    application.update({"process_instance_id": response["id"]})
+                response = BPMService.post_process_start(
+                    process_key=mapper.process_key, payload=payload, token=token
+                )
+                application.update({"process_instance_id": response["id"]})
             except BaseException as application_err:
                 response, status = {
-                    "systemErrors": application_err.messages,
+                    "systemErrors": application_err,
                     "message": "Camunda Process Mapper Key not provided",
                 }, HTTPStatus.BAD_REQUEST
             return response, status
@@ -192,7 +191,7 @@ class ApplicationService:
     def get_aggregated_application_status(mapper_id: int, from_date: str, to_date: str):
         """Get aggregated application status."""
         application_status = Application.find_aggregated_application_status(
-            mapper_id=mapper_id, from_data=from_date, to_date=to_date
+            mapper_id=mapper_id, from_date=from_date, to_date=to_date
         )
         schema = AggregatedApplicationSchema(exclude=("form_process_mapper_id",))
         return schema.dump(application_status, many=True)

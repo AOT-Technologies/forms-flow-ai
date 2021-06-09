@@ -1,5 +1,5 @@
-<p align="center"><img src=".images/logo.png"/><br/><img src="https://img.shields.io/badge/release-v4.0.0-blue"/></p> 
-<hr/>  
+# Usage Instructions
+In the following document, we’ll describe about the step by step instructions to set up a working sample in formsflow.ai solution.
 
 ## Table of Contents
 1. [Introduction](#introduction)

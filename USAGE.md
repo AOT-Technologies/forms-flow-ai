@@ -31,9 +31,9 @@ In the following document, we’ll describe about the step by step instructions 
    * This action is completed, you can now Log out and go to [STEP 3](#) if you have a user review mentioned in your workflow.
 ### [STEP 3](#) Reviewer Task
    * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-   * After the log in is successful you will be redirected to http://localhost:3000/form where you can View submissions / Submit a new form.
+   * After the log in is successful you will be redirected to http://localhost:3000/task where you can navigate to Applications tab to View submissions.
    * You can View the submissions against a form by clicking on **View Submissions Button**
-   * You can also submit a new form like [STEP 2](#).
+   * You can also submit a new form like [STEP 2](#) from the Forms Tab.
    * Reviewer action is completed.
 
 ## Usage Instructions with example
@@ -74,9 +74,13 @@ In the following document, we’ll describe about the step by step instructions 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for client](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can View and Submit a form.
 
+![Image 5](./.images/client-landing.PNG)
+
 * Click **Submit New Button** on the form which you wanted to submit.
 * The previous action will redirect you to the form, where you can fill the details and Submit.
 
+![Image 6](./.images/client-submission.PNG)
+![Image 7](./.images/client-submission-success.PNG)
 
 * Fill the details and Submit the form, You can repeat this action as per your requirement.
 * If you had associated a workflow with the form, the form will start the workflow.
@@ -85,11 +89,17 @@ In the following document, we’ll describe about the step by step instructions 
 ### [STEP 3](#) Designer Task
 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-* After the log in is successful you will be redirected to http://localhost:3000/form where you can View submissions / Submit a new form.
+* After the log in is successful you will be redirected to http://localhost:3000/task where you can navigate to Applications tab to View submissions.
+
+![Image 8](./.images/reviewer-landing.PNG)
 
 * You can View the submissions against a form by clicking on **View Submissions Button**
 
-* You can also submit a new form like [STEP 2](#).
+![Image 9](./.images/reviewer-view-forms.PNG)
+![Image 10](./.images/reviewer-form-view.PNG)
+![Image 11](./.images/reviewer-print.PNG)
+
+* You can also submit a new form like [STEP 2](#) from the Forms tab.
 * Reviewer action is completed.
 
 ## Links

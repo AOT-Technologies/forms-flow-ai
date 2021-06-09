@@ -77,7 +77,7 @@ class ApplicationHistoryResource(Resource):
             response, status = {
                 "type": "Invalid Request Object",
                 "message": "Invalid Request Object Passed ",
-                "errors": application_err.messages,
+                "errors": application_err,
             }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)

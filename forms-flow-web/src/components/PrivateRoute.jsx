@@ -46,9 +46,11 @@ const PrivateRoute = React.memo((props) => {
   );
 
   useEffect(()=>{
-    UserService.initKeycloak(props.store, (err, res) => {
-      dispatch(setUserAuth(res.authenticated));
-    });
+    if(props.store){
+      UserService.initKeycloak(props.store, (err, res) => {
+        dispatch(setUserAuth(res.authenticated));
+      });
+    }
   },[props.store, dispatch]);
 
   return (

@@ -15,6 +15,7 @@ import SubmissionError from '../../../containers/SubmissionError';
 import {applicationCreate} from "../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay";
 import {CUSTOM_EVENT_TYPE} from "../../ServiceFlow/constants/customEventTypes";
+import {toast} from "react-toastify";
 
 const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
@@ -95,16 +96,17 @@ const doProcessActions = (submission, ownProps) => {
               dispatch(setFormSubmissionLoading(false));
               dispatch(setMaintainBPMFormPagination(true));
               /*dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))*/
+              toast.success("Submission Saved.")
               dispatch(push(`/form`));
             }else{
               dispatch(setFormSubmissionLoading(false));
             }
-            console.log("Error")
           } else { //TO DO Update to show error message
             if (IsAuth) {
               dispatch(setFormSubmissionLoading(false));
               dispatch(setMaintainBPMFormPagination(true));
               //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
+              toast.success("Submission Saved.")
               dispatch(push(`/form`));
             }else{
               dispatch(setFormSubmissionLoading(false));
@@ -145,6 +147,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(doProcessActions(submission, ownProps))
         } else {
           const ErrorDetails = { modalOpen: true, message: "Submission cannot be done" }
+          toast.error("Error while Submission.");
           dispatch(setFormSubmissionLoading(false));
           dispatch(setFormSubmissionError(ErrorDetails))
         }
@@ -153,6 +156,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onCustomEvent: (customEvent) => {
         switch(customEvent.type){
           case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
+            toast.success("Submission Saved.")
             dispatch(push(`/form`));
             break;
           default: return;

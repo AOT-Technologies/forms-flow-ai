@@ -19,7 +19,7 @@ const ChartForm = React.memo((props) => {
 
   const pieData = submissionsStatusList;
 
-  if (pieData.length === 0) {
+  if (pieData?.length === 0) {
     return <div>No submission status</div>;
   }
 

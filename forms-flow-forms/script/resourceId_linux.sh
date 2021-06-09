@@ -1,5 +1,11 @@
 #!/bin/bash
 
+if [ -z $1 ] || [ -z $2 ]
+then
+   echo Please specify User Email and Password
+   exit 0
+fi
+
 email=$1
 password=$2
 host=http://localhost:3001
@@ -57,3 +63,4 @@ do
 	val=$id[$i]
 	echo "${role[$i]}"   -           "${id[$i]}"
 done
+echo -------------------------------------------

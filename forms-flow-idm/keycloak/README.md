@@ -332,6 +332,6 @@ formsflow-client|formsflow-client| Able to access form fill-in only
 * Go to **http://localhost:8080** in the browser
 * Login to KeyCloak Realm with admin privileges 
 * Configure > Clients >   
-	* Click on Client ID = eg : forms-flow-bpm 
+	* Click on Client ID = forms-flow-bpm 
 	* Got to Credentials Tab
 	* Copy 	the secret value if present else click on Regenerate secret button and copy the value

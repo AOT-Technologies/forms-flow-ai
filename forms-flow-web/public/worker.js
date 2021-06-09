@@ -1,18 +1,15 @@
-const CACHE_NAME = "FORMS-FLOW-AI-WEB";
+const CACHE_NAME = "FORMS-FLOW-AI-WEB-CACHE";
 // Set this to true for production
 const doCache = true;
 
 const urlsToCache = [
-  "/",
   "/form",
   "/task",
   "/application",
   "/manifest.json",
   "/favicon.ico",
-  "/config/kc/keycloak.json",
   "/spinner.gif",
-  "/logo.png",
-  "/simple-logo.png",
+  "/logo.svg"
 ];
 // Install a service worker
 self.addEventListener("install", event => {

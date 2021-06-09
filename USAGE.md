@@ -46,7 +46,7 @@ In the following document, we’ll describe about the step by step instructions 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can Create / View / Edit / Delete a form.
 
-[Image 1](./.images/designer-landing.PNG)]
+![Image 1](./.images/designer-landing.PNG)]
 
 * To create a form you can click on **Create Form Button** where you can use the integrated form.io library to create a form with ease.
 * Once the form creation is completed click on **Save & Preview Button**, you can modify the form by clicking on **Edit Button** or click on **Next Button** to proceed further at this point.

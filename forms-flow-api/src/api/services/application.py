@@ -69,13 +69,10 @@ class ApplicationService:
             applications = Application.find_by_form_names(
             form_names=form_names, page_no=page_no, limit=limit
                 )
-            resultSize=0
-            if isinstance(applications, list):
-                resultSize=len(applications)
             application_schema = ApplicationSchema()
             return (
                 application_schema.dump(applications, many=True),
-                resultSize
+                applications.count()
             )
         else:
             application_schema = ApplicationSchema()

@@ -39,7 +39,7 @@ services:
       dockerfile: Dockerfile
     # The app will restart until Mongo is listening
     restart: unless-stopped
-    depdends_on:
+    links:
       - forms-flow-forms-db
     ports:
       - '3001:3001'

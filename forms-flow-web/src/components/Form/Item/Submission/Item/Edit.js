@@ -17,6 +17,7 @@ import {
 import {useParams} from "react-router-dom";
 import {updateApplicationEvent} from "../../../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay";
+import {toast} from "react-toastify";
 
 const Edit = React.memo((props) => {
   const dispatch = useDispatch();
@@ -118,6 +119,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
               if(onFormSubmit){
                 onFormSubmit();
               }else{
+                toast.success("Submission Saved.");
                 dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
               }
             }));
@@ -127,6 +129,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             if(onFormSubmit){
              onFormSubmit();
             }else{
+              toast.success("Submission Saved.");
               dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
             }
           }
@@ -134,6 +137,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         else {
           dispatch(setFormSubmissionLoading(false));
           const ErrorDetails = { modalOpen: true, message: "Submission cannot be done" }
+          toast.error("Error while Submission.");
           dispatch(setFormSubmissionError(ErrorDetails))
         }
       }));

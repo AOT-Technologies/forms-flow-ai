@@ -450,7 +450,7 @@ const mapDispatchToProps = (dispatch) => {
             toast.success('Form Saved');
             dispatch(push(`/formflow/${form._id}/preview`));
           }else{
-            toast.error("Error while saving Form")
+            toast.error("Error while saving Form");
           }
         })
       );

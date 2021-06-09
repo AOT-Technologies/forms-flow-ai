@@ -3,7 +3,7 @@ version: '3.7'
 
 services:
   forms-flow-bpm-db:
-    image: postgres:11
+    image: postgres:latest
     container_name: forms-flow-bpm-db
     environment:
       POSTGRES_USER: ${CAMUNDA_JDBC_USER:-admin}
@@ -58,7 +58,7 @@ services:
       - FORMIO_ROOT_EMAIL=${FORMIO_ROOT_EMAIL:-admin@example.com}
       - FORMIO_ROOT_PASSWORD=${FORMIO_ROOT_PASSWORD:-changeme}
       - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN:-*}
-      - WEBSOCKET_SECURITY_ORIGIN=${WEBSOCKET_SECURITY_ORIGIN}
+      - WEBSOCKET_SECURITY_ORIGIN=${WEBSOCKET_SECURITY_ORIGIN:-*}
       - WEBSOCKET_MESSAGE_TYPE=${WEBSOCKET_MESSAGE_TYPE:-TASK_EVENT}
       - WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
     networks:
@@ -95,12 +95,11 @@ services:
     ports:
       - '3001:3001'
     # The application wants to download things to the local directory
-    # TODO: really wish I could mount this as read-only
     volumes:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_DB_USERNAME:-admin}:${FORMIO_DB_PASSWORD:-changeme}@forms-flow-forms-db:27017/${FORMIO_DB_NAME:-formio}?authMechanism=SCRAM-SHA-1&authSource=admin\"}"
+      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_DB_USERNAME:-admin}:${FORMIO_DB_PASSWORD:-changeme}@forms-flow-forms-db:27017/${FORMIO_DB_NAME:-formio}?authSource=admin&authMechanism=SCRAM-SHA-256\"}"
       ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_DOMAIN: ${FORMIO_DEFAULT_PROJECT_URL}
@@ -109,28 +108,6 @@ services:
     networks:
       - forms-flow-network
 
-
-      
-  #Analytics DB - Comment below if mongo db setup is available
-
-  forms-flow-webapi-analytics-db:
-    container_name: forms-flow-analytics-db
-    image: mongo
-    restart: always
-    hostname: forms-flow-webapi-analytics-db
-    ports:
-       - '27019:27017'
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${FORMSFLOW_API_ANALYTICS_DB_USERNAME:-admin}
-      MONGO_INITDB_ROOT_PASSWORD: ${FORMSFLOW_API_ANALYTICS_DB_PASSWORD:-changeme}
-      MONGO_INITDB_DATABASE: ${FORMSFLOW_API_ANALYTICS_DB_NAME:-analytics}
-    volumes:
-      - ./mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
-      - mdb-data:/data/analytics/db/
-      - ./mongodb/data/log/:/var/log/mongodb/
-      - ./mongodb/mongod.conf:/etc/mongod.conf
-    networks:
-      - forms-flow-network
 
   forms-flow-web:
     container_name: forms-flow-web
@@ -166,6 +143,26 @@ services:
       - '3000:8080'
     tty: true
 
+    networks:
+      - forms-flow-network
+
+  #Analytics DB - Comment below if mongo db setup is available
+  forms-flow-webapi-analytics-db:
+    container_name: forms-flow-analytics-db
+    image: mongo
+    restart: always
+    hostname: forms-flow-webapi-analytics-db
+    ports:
+       - '27019:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${FORMSFLOW_API_ANALYTICS_DB_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${FORMSFLOW_API_ANALYTICS_DB_PASSWORD:-changeme}
+      MONGO_INITDB_DATABASE: ${FORMSFLOW_API_ANALYTICS_DB_NAME:-analytics}
+    volumes:
+      - ./mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
+      - mdb-data:/data/analytics/db/
+      - ./mongodb/data/log/:/var/log/mongodb/
+      - ./mongodb/mongod.conf:/etc/mongod.conf
     networks:
       - forms-flow-network
 
@@ -213,7 +210,7 @@ services:
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
-      MONGODB_URI: ${FORMSFLOW_API_ANALYTICS_DB_URL:-mongodb://changeme:analytics@forms-flow-webapi-analytics-db:27019/analytics?authSource=admin&authMechanism=SCRAM-SHA-256}
+      MONGODB_URI: ${FORMSFLOW_API_ANALYTICS_DB_URL:-mongodb://changeme:analytics@forms-flow-webapi-analytics-db:27017/analytics?authSource=admin&authMechanism=SCRAM-SHA-256}
     stdin_open: true # -i
     tty: true # -t
     networks:

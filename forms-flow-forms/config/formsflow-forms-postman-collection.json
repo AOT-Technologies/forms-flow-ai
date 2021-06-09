@@ -1,12 +1,25 @@
 {
 	"info": {
-		"_postman_id": "afd13043-39cf-4eeb-9f7b-5e02c73b95ba",
+		"_postman_id": "7e3f55f2-2b45-4fb9-91a8-bc2a8b14ba25",
 		"name": "form.io collection",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
 			"name": "http://localhost:3001/user/login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var  token = pm.response.headers.get(\"x-jwt-token\");\r",
+							"pm.collectionVariables.set(\"token\", token)\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [
@@ -49,24 +62,24 @@
 		},
 		{
 			"name": "http://localhost:3001/role",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var Header = require('postman-collection').Header;\r",
+							"pm.request.headers.append(Header.create(pm.collectionVariables.get('token'),'x-jwt-token'));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
 				},
 				"method": "GET",
-				"header": [
-					{
-						"key": "x-jwt-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYwYjVmZjQ5MTg4OGJhMzFjZDEzYzg3YSJ9LCJmb3JtIjp7Il9pZCI6IjYwYjVmZjQ5MTg4OGJhODI4ZDEzYzg2NyJ9LCJpYXQiOjE2MjI1NjY0NTYsImV4cCI6MTYyMjU4MDg1Nn0.EOHjjJyBy3TBko07XtwQlOssXO0ifRySe51CgUZOZKQ",
-						"type": "text"
-					},
-					{
-						"key": "Content-Type",
-						"value": "application/json",
-						"type": "text",
-						"disabled": true
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "http://localhost:3001/role",
 					"protocol": "http",
@@ -83,18 +96,24 @@
 		},
 		{
 			"name": "http://localhost:3001/user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var Header = require('postman-collection').Header;\r",
+							"pm.request.headers.append(Header.create(pm.collectionVariables.get('token'),'x-jwt-token'));"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"
 				},
 				"method": "GET",
-				"header": [
-					{
-						"key": "x-jwt-token",
-						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYwYjVmZjQ5MTg4OGJhMzFjZDEzYzg3YSJ9LCJmb3JtIjp7Il9pZCI6IjYwYjVmZjQ5MTg4OGJhODI4ZDEzYzg2NyJ9LCJpYXQiOjE2MjI1NjY0NTYsImV4cCI6MTYyMjU4MDg1Nn0.EOHjjJyBy3TBko07XtwQlOssXO0ifRySe51CgUZOZKQ",
-						"type": "text"
-					}
-				],
+				"header": [],
 				"url": {
 					"raw": "http://localhost:3001/user",
 					"protocol": "http",
@@ -108,6 +127,12 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "token",
+			"value": ""
 		}
 	]
 }

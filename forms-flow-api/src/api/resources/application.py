@@ -345,18 +345,18 @@ class AggregatedApplicationStatusResource(Resource):
         return response, status
 
 
-# @cors_preflight("GET,OPTIONS")
-# @API.route("/<string:application_id>/process", methods=["GET", "OPTIONS"])
-# class ProcessMapperResourceByApplicationId(Resource):
-#     """Resource for managing process details."""
+@cors_preflight("GET,OPTIONS")
+@API.route("/<string:application_id>/process", methods=["GET", "OPTIONS"])
+class ProcessMapperResourceByApplicationId(Resource):
+    """Resource for managing process details."""
 
-#     @staticmethod
-#     def get(application_id):
+    @staticmethod
+    def get(application_id):
 
-#         try:
-#             return (
-#                 ApplicationService.get_application_form_mapper_by_id(application_id),
-#                 HTTPStatus.OK,
-#             )
-#         except BusinessException as err:
-#             return err.error, err.status_code
+        try:
+            return (
+                ApplicationService.get_application_form_mapper_by_id(application_id),
+                HTTPStatus.OK,
+            )
+        except BusinessException as err:
+            return err.error, err.status_code

@@ -14,7 +14,7 @@
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.FormBPMDataPipelineListener" event="create" />
         <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.task.NotifyListener" event="create">
           <camunda:field name="messageId">
-            <camunda:expression>Message_Email</camunda:expression>
+            <camunda:expression>CCII_Message_Email</camunda:expression>
           </camunda:field>
           <camunda:field name="category">
             <camunda:expression>assignment_notification</camunda:expression>

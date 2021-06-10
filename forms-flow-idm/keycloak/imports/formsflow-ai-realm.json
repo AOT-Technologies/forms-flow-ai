@@ -909,6 +909,17 @@
             "jsonType.label": "String"
           }
         },
+		{
+          "name": "camunda-rest-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "included.custom.audience": "camunda-rest-api"
+          }
+        },
         {
           "name": "username",
           "protocol": "openid-connect",

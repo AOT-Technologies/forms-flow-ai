@@ -247,7 +247,7 @@ class ApplicationResourcesByIds(Resource):
                 data=dict_data, token=request.headers["Authorization"]
             )
 
-            response = application_schema.dump(application), HTTPStatus.CREATED
+            response = application_schema.dump(application)
         except BaseException as application_err:
             exc_traceback = sys.exc_info()
             response = {

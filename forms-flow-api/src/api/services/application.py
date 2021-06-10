@@ -43,11 +43,11 @@ class ApplicationService:
                 )
                 application.update({"process_instance_id": response["id"]})
             except BaseException as application_err:
-                response, status = {
+                response = {
                     "systemErrors": application_err,
                     "message": "Camunda Process Mapper Key not provided",
                 }, HTTPStatus.BAD_REQUEST
-            return response, status
+            return response
 
         return application
 

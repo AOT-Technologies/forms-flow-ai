@@ -205,7 +205,7 @@ Variable name | Meaning | Possible values | Default value |
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`*`
+ `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`http://{your-ip-address}:3000`
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  
@@ -239,7 +239,7 @@ Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resou
   * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
   * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/
   * FormIO should be up and available for use at port defaulted to 3001 i.e. http://localhost:3001/
-  * formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/checkpoint/
+  * formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/checkpoint
   * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   
  * Access credentials are mentioned [here](../README.md#verifying-the-installation-status).

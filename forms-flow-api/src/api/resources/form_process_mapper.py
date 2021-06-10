@@ -93,7 +93,7 @@ class FormResource(Resource):
             # traceback.print_tb(exc_traceback)
 
 
-        return response, status
+            return response, status
 
     @staticmethod
     @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
@@ -122,7 +122,7 @@ class FormResource(Resource):
             logging.exception(form_err)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status
 
 
 @cors_preflight("GET,PUT,DELETE,OPTIONS")
@@ -155,7 +155,7 @@ class FormResourceById(Resource):
             logging.exception(response)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status
 
     @staticmethod
     @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
@@ -180,7 +180,7 @@ class FormResourceById(Resource):
             logging.exception(response)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status
 
     @staticmethod
     @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
@@ -215,7 +215,7 @@ class FormResourceById(Resource):
             logging.exception(mapper_err)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -245,4 +245,4 @@ class FormResourceByFormId(Resource):
             logging.exception(response)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status

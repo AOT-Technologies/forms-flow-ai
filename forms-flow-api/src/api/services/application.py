@@ -38,18 +38,18 @@ class ApplicationService:
                 }
             }
             try:
-                response = BPMService.post_process_start(
+                camunda_start_task = BPMService.post_process_start(
                     process_key=mapper.process_key, payload=payload, token=token
                 )
-                application.update({"process_instance_id": response["id"]})
+                application.update({"process_instance_id": camunda_start_task["id"]})
             except BaseException as application_err:
-                response, status = {
+                response = {
                     "systemErrors": application_err,
                     "message": "Camunda Process Mapper Key not provided",
                 }, HTTPStatus.BAD_REQUEST
-            return response, status
+                return response
 
-        return application
+            return application
 
     @staticmethod
     def get_auth_applications_and_count(page_no, limit, token):

@@ -93,7 +93,7 @@ Most of the day-to-day end-user and review tasks are performed from this applica
 
 #### formsflow UI Extension for Vue.js (optional)
 There is a Vue.js based web user interface for easy integration of formsflow.ai to your existing User Interface. This extension provides components
-for easily using Forms, Tasklist by installing as a package. To know more details checkout [formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue).
+for easily using Forms, Tasklist by installing as a npm package. To know more details checkout [formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue) and to install package [go here](https://www.npmjs.com/package/camunda-formio-tasklist-vue).
 
 #### Redash Admin UI
 The native admin interface to Redash (bundled and unchanged). Use this to build analytics dashboards.

@@ -156,7 +156,6 @@ class ApplicationResourceById(Resource):
             logging.exception(submission_err)
             # traceback.print_tb(exc_traceback)
 
-
             return response, status
 
 
@@ -247,7 +246,8 @@ class ApplicationResourcesByIds(Resource):
                 data=dict_data, token=request.headers["Authorization"]
             )
 
-            response = application_schema.dump(application)
+            response, status = application_schema.dump(application), HTTPStatus.CREATED
+            return response, status
         except BaseException as application_err:
             exc_traceback = sys.exc_info()
             response = {

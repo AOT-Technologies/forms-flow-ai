@@ -7,7 +7,8 @@ This page elaborates how to setup the overall solution using docker.
 1. [Application Setup](#application-setup)
    * [Step 1 : Installation Steps](#installation-steps)
    * [Step 2 : Running the Application](#running-the-application)
-   * [Step 3 : Health Check](#health-check) 
+   * [Step 3 : Health Check](#health-check)
+2. [Usage Instructions](#usage-instructions)
 
 ## Application Setup
 
@@ -163,7 +164,7 @@ Variable name | Meaning | Possible values | Default value |
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
 `APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for multiple origins you can separate host address using a comma |eg:`host1, host2`| `*`
-`CAMUNDA_API_URL` |Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
+`CAMUNDA_API_URL` :triangular_flag_on_post: |Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
 `FORMSFLOW_API_ANALYTICS_DB_USERNAME`|Mongo DB Connection username|Used on installation to create the database. Choose your own|`mongo`
 `FORMSFLOW_API_ANALYTICS_DB_PASSWORD`|Mongo DB Connection password|Used on installation to create the database. Choose your own|`changeme`
@@ -204,7 +205,6 @@ Variable name | Meaning | Possible values | Default value |
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
  `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`*`
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
@@ -243,3 +243,9 @@ Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resou
   * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
   
  * Access credentials are mentioned [here](../README.md#verifying-the-installation-status).
+
+### Usage Instructions
+
+> End to end usage of formsflow.ai is mentioned in this section with sample forms and workflows.
+
+* The complete usage instructions with examples are mentioned [here](./../../USAGE.md).

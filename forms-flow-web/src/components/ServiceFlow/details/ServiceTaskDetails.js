@@ -51,7 +51,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
 
   useEffect(()=>{
-    if(task?.formUrl){
+    if( task && task?.formUrl){
       const {formId,submissionId} =getFormIdSubmissionIdFromURL(task?.formUrl);
       dispatch(getForm('form',formId));
       dispatch(getSubmission('submission', submissionId, formId))
@@ -90,9 +90,12 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
   const onFormSubmitCallback = () => {
     if(bpmTaskId){
+      dispatch(setBPMTaskDetailLoader(true));
       dispatch(onBPMTaskFormSubmit(bpmTaskId,getTaskSubmitFormReq(task?.formUrl,task?.applicationId),(err)=>{
         if(!err){
           reloadTasks();
+        }else{
+          dispatch(setBPMTaskDetailLoader(false));
         }
       }));
     }else{

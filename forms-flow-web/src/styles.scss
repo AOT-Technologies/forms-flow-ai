@@ -188,7 +188,7 @@ i.fa.fa-question-circle.text-muted {
 }
 .main-nav {
   text-decoration: none !important;
-  color: $black !important;
+  color: $white !important;
   font-size: 20px !important;
 }
 .nav-user-role {
@@ -223,7 +223,7 @@ i.fa.fa-question-circle.text-muted {
 }
 .nav-link {
   a {
-    color: black;
+    color: white;
   }
 }
 .active {
@@ -299,6 +299,7 @@ i.fa.fa-question-circle.text-muted {
   }
   .task-dropdown-icon{
     margin-bottom: 1px;
+    color: white;
   }
   .applications-icon-header{
     width: 23px;
@@ -479,7 +480,7 @@ header nav {
 
 .topheading-border-bottom {
   z-index: 2000;
-  border-bottom: 2px solid #4d61fc !important;
+  border-bottom: 2px solid #fcba19 !important;
   padding: 0 0.5rem !important;
   box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2),
     0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
@@ -496,7 +497,7 @@ header nav {
   font-size: 30px;
   font-weight: 600;
   /*margin-left: -15px!important;*/
-  color: black;
+  color: white;
 }
 
 div[disabled] {

@@ -263,7 +263,8 @@
   text-decoration: none !important;
 }
 .dropdown-toggle{
-margin-right: 1rem;
+  margin-right: 1rem;
+  color: white;
 }
 .form-icons-active:active  {
   // fill: #4d61fc !important;
@@ -319,4 +320,10 @@ margin-right: 1rem;
   width: 23px;
   height: 23px;
   margin-bottom: 5px;
+}
+.service-bc-navbar-background {
+  background: #003366;
+}
+.white-text {
+  color: white;
 }

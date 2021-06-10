@@ -31,8 +31,8 @@ const NavBar = React.memo(() => {
 
   return (
     <header>
-      <Navbar expand="lg" bg="white" className="topheading-border-bottom" fixed="top">
-        <Container fluid>
+      <Navbar expand="lg" className="topheading-border-bottom" fixed="top">
+        <Container fluid className="service-bc-navbar-background">
           {/*<Nav className="d-lg-none">
             <div className="mt-1" onClick={menuToggle}>
               <i className="fa fa-bars fa-lg"/>
@@ -43,8 +43,10 @@ const NavBar = React.memo(() => {
               <img
                 className="img-fluid"
                 src={logoPath}
-                width="50"
-                height="55"
+                width="100px"
+                min-width="87px"
+                max-width="175px"
+                max-height="55px"
                 alt="Logo"
               />
             </Link>
@@ -63,7 +65,7 @@ const NavBar = React.memo(() => {
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           {isAuthenticated?
             <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
-            <Nav id="main-menu-nav" className="mr-auto active">
+            <Nav id="main-menu-nav" className="mr-auto">
               <Nav.Link as={Link} to='/form'  className={`main-nav nav-item ${
                 pathname.match(/^\/form/) ? "active-tab" : ""
               }`}>  <img className="header-forms-icon" src="/webfonts/fa-wpforms.svg" alt="back"/> Forms</Nav.Link>
@@ -83,12 +85,12 @@ const NavBar = React.memo(() => {
                 null}*/}
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <NavDropdown title={<><img className="task-dropdown-icon" src="/webfonts/fa-solid_list.svg" alt="back"/> Tasks</>} id="task-dropdown"
+                <NavDropdown title={<span className="white-text"><img className="task-dropdown-icon" src="/webfonts/fa-solid_list.svg" alt="back"/> Tasks</span>} id="task-dropdown"
                              className={`main-nav nav-item taskDropdown ${pathname.match(/^\/task/) ? "active-tab-dropdown" : ""}`} onClick={goToTask}>
                   <ServiceFlowFilterListDropDown/>
               </NavDropdown>:null}
 
-              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><img className="dasboard-icon-dropdown" src="/webfonts/fa_dashboard.svg" alt="back"/> Dashboards</>}
+              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<span className="white-text"><img className="dasboard-icon-dropdown" src="/webfonts/fa_dashboard.svg" alt="back"/> Dashboards</span>}
                                                                               id="dashboard-dropdown"
                                                                               className={`main-nav nav-item ${
                                                                                 pathname.match(/^\/metrics/) || pathname.match(/^\/insights/) ? "active-tab-dropdown" : ""

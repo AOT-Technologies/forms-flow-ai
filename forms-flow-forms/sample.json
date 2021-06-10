@@ -2207,61 +2207,37 @@
                             {
                               "label": "Country",
                               "labelPosition": "top",
-                              "widget": "choicesjs",
-                              "placeholder": "Choose your country",
+                              "placeholder": "",
                               "description": "",
                               "tooltip": "",
+                              "prefix": "",
+                              "suffix": "",
+                              "widget": {
+                                "type": "input"
+                              },
+                              "inputMask": "",
+                              "allowMultipleMasks": false,
                               "customClass": "",
                               "tabindex": "",
+                              "autocomplete": "",
                               "hidden": false,
                               "hideLabel": false,
-                              "uniqueOptions": false,
+                              "showWordCount": false,
+                              "showCharCount": false,
+                              "mask": false,
                               "autofocus": false,
+                              "spellcheck": true,
                               "disabled": false,
-                              "tableView": false,
+                              "tableView": true,
                               "modalEdit": false,
                               "multiple": false,
-                              "dataSrc": "values",
-                              "data": {
-                                "values": [
-                                  {
-                                    "label": "India",
-                                    "value": "india"
-                                  },
-                                  {
-                                    "label": "Canada",
-                                    "value": "canada"
-                                  },
-                                  {
-                                    "label": "America",
-                                    "value": "america"
-                                  },
-                                  {
-                                    "label": "Australia",
-                                    "value": "australia"
-                                  }
-                                ],
-                                "resource": "",
-                                "json": "",
-                                "url": "",
-                                "custom": ""
-                              },
-                              "dataType": "",
-                              "idPath": "id",
-                              "valueProperty": "",
-                              "template": "<span>{{ item.label }}</span>",
-                              "refreshOn": "",
-                              "refreshOnBlur": "",
-                              "clearOnRefresh": false,
-                              "searchEnabled": true,
-                              "selectThreshold": 0.3,
-                              "readOnlyValue": false,
-                              "customOptions": {},
-                              "useExactSearch": false,
                               "persistent": true,
+                              "inputFormat": "plain",
                               "protected": false,
                               "dbIndex": false,
+                              "case": "",
                               "encrypted": false,
+                              "redrawOn": "",
                               "clearOnHide": true,
                               "customDefaultValue": "",
                               "calculateValue": "",
@@ -2270,11 +2246,13 @@
                               "validateOn": "change",
                               "validate": {
                                 "required": false,
-                                "onlyAvailableItems": false,
+                                "pattern": "",
                                 "customMessage": "",
                                 "custom": "",
                                 "customPrivate": false,
                                 "json": "",
+                                "minLength": "",
+                                "maxLength": "",
                                 "strictDateValidation": false,
                                 "multiple": false,
                                 "unique": false
@@ -2301,32 +2279,12 @@
                                 "width": "",
                                 "height": ""
                               },
-                              "type": "select",
-                              "indexeddb": {
-                                "filter": {}
-                              },
-                              "selectFields": "",
-                              "searchField": "",
-                              "minSearch": 0,
-                              "filter": "",
-                              "limit": 100,
-                              "redrawOn": "",
+                              "type": "textfield",
                               "input": true,
-                              "prefix": "",
-                              "suffix": "",
+                              "refreshOn": "",
                               "dataGridLabel": false,
-                              "showCharCount": false,
-                              "showWordCount": false,
-                              "allowMultipleMasks": false,
-                              "lazyLoad": true,
-                              "authenticate": false,
-                              "ignoreCache": false,
-                              "searchThreshold": 0.3,
-                              "fuseOptions": {
-                                "include": "score",
-                                "threshold": 0.3
-                              },
-                              "id": "exlyq3d",
+                              "inputType": "text",
+                              "id": "ewq1ti5",
                               "defaultValue": ""
                             }
                           ]

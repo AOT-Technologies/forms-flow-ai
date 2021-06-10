@@ -47,9 +47,9 @@ class ApplicationService:
                     "systemErrors": application_err,
                     "message": "Camunda Process Mapper Key not provided",
                 }, HTTPStatus.BAD_REQUEST
-            return response
+                return response
 
-        return application
+            return application
 
     @staticmethod
     def get_auth_applications_and_count(page_no, limit, token):

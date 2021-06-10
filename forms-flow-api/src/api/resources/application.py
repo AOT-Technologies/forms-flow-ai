@@ -157,7 +157,7 @@ class ApplicationResourceById(Resource):
             # traceback.print_tb(exc_traceback)
 
 
-        return response, status
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -254,12 +254,10 @@ class ApplicationResourcesByIds(Resource):
                 "type": "Bad request error",
                 "message": "Invalid application request passed",
             }
-
             logging.exception(response)
             logging.exception(application_err)
             # traceback.print_tb(exc_traceback)
-
-        return response
+            return response
 
 
 @cors_preflight("GET,OPTIONS")
@@ -301,7 +299,7 @@ class AggregatedApplicationsResource(Resource):
             logging.exception(agg_err)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -342,7 +340,7 @@ class AggregatedApplicationStatusResource(Resource):
             logging.exception(response)
             logging.exception(agg_err)
             # traceback.print_tb(exc_traceback)
-        return response, status
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")

@@ -52,7 +52,7 @@ class ProcessStateResource(Resource):
             logging.exception(err)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -89,7 +89,7 @@ class ProcessResource(Resource):
             logging.exception(err)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status
 
 
 # API for getting process diagram xml -for displaying bpmn diagram in UI
@@ -122,7 +122,7 @@ class ProcessDefinitionResource(Resource):
             logging.exception(err)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status
 
 
 @cors_preflight("POST,OPTIONS")
@@ -174,7 +174,7 @@ class ProcessEventResource(Resource):
             # traceback.print_tb(exc_traceback)
 
 
-        return response, status
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -209,7 +209,7 @@ class ProcessInstanceResource(Resource):
             logging.exception(response)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status
 
 
 # @cors_preflight('GET,OPTIONS')

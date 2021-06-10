@@ -36,7 +36,7 @@ To know more about Camunda, visit https://camunda.com/.
    * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
    * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
  
-> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the redash.env file
+> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the .env file
      
 #### Keycloak Integration
 --------------------------
@@ -86,7 +86,7 @@ To know more about Camunda, visit https://camunda.com/.
  `FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
  `FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
  `FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
- `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming, for multiple origins you can separate them using a comma |eg:`host1, host2`| `*`
+ `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming, for multiple origins you can separate them using a comma |eg:`host1, host2`| `http://{your-ip-address}:3000`
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 

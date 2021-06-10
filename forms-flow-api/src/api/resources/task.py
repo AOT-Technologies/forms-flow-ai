@@ -113,7 +113,7 @@ class TaskClaim(Resource):
             # traceback.print_tb(exc_traceback)
 
 
-        return response, status
+            return response, status
 
 
 @cors_preflight("POST,OPTIONS")
@@ -168,7 +168,7 @@ class TaskUnClaim(Resource):
             logging.exception(err)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status
 
 
 @cors_preflight("POST,OPTIONS")
@@ -223,4 +223,4 @@ class TaskComplete(Resource):
             # traceback.print_tb(exc_traceback)
 
 
-        return response, status
+            return response, status

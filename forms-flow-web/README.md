@@ -42,7 +42,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
    * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
    * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
-> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the redash.env file
+> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the .env file
    
  Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---

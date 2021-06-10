@@ -21,62 +21,46 @@
     <div id="app" class="scrollable-page"></div>
     <script src="%PUBLIC_URL%/config/config.js"></script>
     <script>
-      let newWorker, refreshing;
+      // Check that service workers are supported
+      let newWorker;
 
-      if ("serviceWorker" in navigator) {
+      if ('serviceWorker' in navigator) {
         // Register the service worker
-        window.addEventListener("load", function () {
-          navigator.serviceWorker
-            .register(`/worker.js`)
-            .then(
-              (reg) => {
-                reg.addEventListener("updatefound", () => {
-                  //console.log("update found");
-                  // An updated service worker has appeared in reg.installing!
-                  newWorker = reg.installing;
+        navigator.serviceWorker.register('/service-worker.js').then(reg => {
+          reg.addEventListener('updatefound', () => {
+            // An updated service worker has appeared in reg.installing!
+            newWorker = reg.installing;
 
-                  newWorker.addEventListener("statechange", () => {
-                    /*console.log(
-                      "here",
-                      newWorker.state,
-                      navigator.serviceWorker
-                    );*/
-                    // Has service worker state changed?
-                    switch (newWorker.state) {
-                      case "installed":
-                        // There is a new service worker available, show the notification
-                        if (navigator.serviceWorker.controller) {
-                          self.postMessage({ action: "skipWaiting" });
-                        }
+            newWorker.addEventListener('statechange', () => {
 
-                        break;
-                    }
-                  });
-                });
+              // Has service worker state changed?
+              switch (newWorker.state) {
+                case 'installed':
 
-                // The event listener that is fired when the service worker updates
-                // Here we reload the page
-                navigator.serviceWorker.addEventListener(
-                  "controllerchange",
-                  function () {
-                    //console.log("Worker update successful ", reg.scope);
-                    if (refreshing) return;
-                    window.location.reload();
-                    refreshing = true;
+                  // There is a new service worker available, show the notification
+                  if (navigator.serviceWorker.controller) {
+                    newWorker.postMessage({ action: 'skipWaiting' });
                   }
-                );
-                //console.log("Worker registration successful", reg.scope);
-              },
-              (err) => {
-                console.log("Worker registration failed", err);
+
+                  break;
               }
-            )
-            .catch((err) => {
-              console.log(err);
             });
+          });
+        },(err) => {
+            console.log("Worker registration failed", err);
+        }).catch((err) => {
+          console.log(err);
         });
-      } else {
-        console.log("Service Worker is not supported by browser.");
+        let refreshing;
+        // The event listener that is fired when the service worker updates
+        // Here we reload the page
+        navigator.serviceWorker.addEventListener('controllerchange', function () {
+          if (refreshing) return;
+          window.location.reload();
+          refreshing = true;
+        });
+      }else{
+          console.log("Service Worker is not supported by browser.");
       }
     </script>
     <style>

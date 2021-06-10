@@ -5,7 +5,7 @@ import json
 import requests
 from flask import current_app
 
-from ...utils.logging import log_error, log_info
+from api.utils.logging import log_bpm_error
 
 
 class BaseBPMService:
@@ -21,7 +21,7 @@ class BaseBPMService:
         if response.ok:
             data = json.loads(response.text)
         else:
-            log_error(
+            log_bpm_error(
                 "ERROR:Create - status_code: "
                 + str(response.status_code)
                 + ", "
@@ -44,7 +44,7 @@ class BaseBPMService:
             else:
                 data = True
         else:
-            log_error(
+            log_bpm_error(
                 "ERROR:Create - status_code: "
                 + str(response.status_code)
                 + ", "

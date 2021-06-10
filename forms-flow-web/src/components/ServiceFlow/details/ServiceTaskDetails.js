@@ -16,7 +16,7 @@ import History from "../../Application/ApplicationHistory";
 import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
 import LoadingOverlay from "react-loading-overlay";
-import {getForm, getSubmission} from "react-formio";
+import {getForm, getSubmission, resetSubmissions} from "react-formio";
 import {CUSTOM_EVENT_TYPE} from "../constants/customEventTypes";
 import {getTaskSubmitFormReq} from "../../../apiManager/services/bpmServices";
 import {useParams} from "react-router-dom";
@@ -51,10 +51,12 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
 
   useEffect(()=>{
-    if(task?.formUrl){
+    if( task && task?.formUrl){
       const {formId,submissionId} =getFormIdSubmissionIdFromURL(task?.formUrl);
       dispatch(getForm('form',formId));
       dispatch(getSubmission('submission', submissionId, formId))
+    }else{
+      dispatch(resetSubmissions('submission'));
     }
   },[task, dispatch]);
 
@@ -88,9 +90,18 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
   const onFormSubmitCallback = () => {
     if(bpmTaskId){
-      dispatch(onBPMTaskFormSubmit(bpmTaskId,getTaskSubmitFormReq(task?.formUrl,task?.applicationId)));
+      dispatch(setBPMTaskDetailLoader(true));
+      dispatch(onBPMTaskFormSubmit(bpmTaskId,getTaskSubmitFormReq(task?.formUrl,task?.applicationId),(err)=>{
+        if(!err){
+          reloadTasks();
+        }else{
+          dispatch(setBPMTaskDetailLoader(false));
+        }
+      }));
+    }else{
+      reloadCurrentTask();
     }
-    reloadCurrentTask();
+
   }
 
    if(!bpmTaskId){

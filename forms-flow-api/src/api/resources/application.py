@@ -247,19 +247,19 @@ class ApplicationResourcesByIds(Resource):
                 data=dict_data, token=request.headers["Authorization"]
             )
 
-            response, status = application_schema.dump(application), HTTPStatus.CREATED
+            response = application_schema.dump(application)
         except BaseException as application_err:
             exc_traceback = sys.exc_info()
-            response, status = {
+            response = {
                 "type": "Bad request error",
                 "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
+            }
 
             logging.exception(response)
             logging.exception(application_err)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+        return response
 
 
 @cors_preflight("GET,OPTIONS")

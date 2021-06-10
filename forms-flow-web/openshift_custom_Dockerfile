@@ -1,3 +1,7 @@
+# Used as a reference for any custom logic to be done.
+# if the application is built from a source repo other than aot , use the custom copying.
+# steps : checkout the aot source code and use the copy logic.
+# -----------------------------------------------------------
 # base image
 FROM docker-remote.artifacts.developer.gov.bc.ca/node:12.2.0-alpine as build-stage
 

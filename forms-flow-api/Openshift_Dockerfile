@@ -1,13 +1,17 @@
+# the only difference in Openshift_Dockerfile and Dockerfile is where the image is read from.
+# In this case , bcgov artifactory is referred
 FROM docker-remote.artifacts.developer.gov.bc.ca/python:3.8
 
 WORKDIR /forms-flow-api/app
+COPY requirements.txt .
 
 RUN pip install --upgrade pip
 RUN pip install psycopg2
+RUN pip install -r requirements.txt
 
-RUN pip install -e .
-
-RUN mkdir /nltk_data && chmod 777 /nltk_data
+ADD . /forms-flow-api/app
+RUN pip install .
+RUN python -m nltk.downloader punkt vader_lexicon subjectivity
 
 EXPOSE 5000
 RUN chmod u+x ./entrypoint

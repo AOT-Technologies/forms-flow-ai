@@ -1,10 +1,11 @@
-# Used by docker-compose.yml to deploy the formio application
-# (When modified, you must include `--build` )
+# Used as a reference for any custom logic to be done.
+# if the application is built from a source repo other than aot , use the custom copying.
+# steps : checkout the aot source code and use the copy logic.
 # -----------------------------------------------------------
 
 # Use Node image, maintained by Docker:
 # hub.docker.com/r/_/node/
-FROM docker-remote.artifacts.developer.gov.bc.ca/node:12.2.0-alpine
+FROM docker.io/node:12.2.0-alpine
 
 # set working directory
 WORKDIR /forms-flow-forms/app

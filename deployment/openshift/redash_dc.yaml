@@ -1,592 +1,592 @@
 apiVersion: template.openshift.io/v1
-kind: Template
-metadata:
-  name: forms-flow-analytics
-objects:
-- kind: Secret
-  apiVersion: v1
-  stringData:
-    POSTGRES_HOST_AUTH_METHOD: trust
-    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    PYTHONUNBUFFERED: "0"
-    REDASH_COOKIE_SECRET: redash-selfhosted
-    REDASH_DATABASE_URL: '${REDASH_DATABASE_URL}'
-    REDASH_HOST: '${REDASH_HOST}'
-    REDASH_LOG_LEVEL: INFO
-    REDASH_REDIS_URL: ${REDASH_REDIS_URL}
-    REDASH_SECRET_KEY: redash-selfhosted
+  kind: Template
   metadata:
-    creationTimestamp: null
-    labels:
-      app: ${NAME}
-    name: ${NAME}
-
-- kind: DeploymentConfig
-  apiVersion: apps.openshift.io/v1
-  metadata:
-    name: ${NAME}
-    annotations:
-    creationTimestamp: null
-    labels:
-      app: ${NAME}
-  spec:
-    replicas: 1
-    selector:
-      app: ${NAME}
-    strategy:
-      type: Rolling
-      rollingParams:
-        updatePeriodSeconds: 1
-        intervalSeconds: 1
-        timeoutSeconds: 600
-        maxUnavailable: 25%
-        maxSurge: 25%
-        post:
-          execNewPod:
-            command:
-            - /bin/sh
-            - -c
-            - python ./manage.py database create_tables
-          failurePolicy: ignore
-      resources:
-        requests:
-          cpu: "${CPU_REQUEST}"
-          memory: "${MEMORY_REQUEST}"
-        limits:
-          cpu: "${CPU_LIMIT}"
-          memory: "${MEMORY_LIMIT}"
-      activeDeadlineSeconds: 21600
-    template:
-      metadata:
-        creationTimestamp: null
-        labels:
-          app: ${NAME}
-      spec:
-        containers:
-        - args:
-          - server
-          env:
-          - name: POSTGRES_HOST_AUTH_METHOD
-            valueFrom:
-              secretKeyRef:
-                key: POSTGRES_HOST_AUTH_METHOD
-                name: ${NAME}
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: POSTGRES_PASSWORD
-                name: ${NAME}
-          - name: PYTHONUNBUFFERED
-            valueFrom:
-              secretKeyRef:
-                key: PYTHONUNBUFFERED
-                name: ${NAME}
-          - name: REDASH_COOKIE_SECRET
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_COOKIE_SECRET
-                name: ${NAME}
-          - name: REDASH_DATABASE_URL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_DATABASE_URL
-                name: ${NAME}
-          - name: REDASH_HOST
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_HOST
-                name: ${NAME}
-          - name: REDASH_LOG_LEVEL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_LOG_LEVEL
-                name: ${NAME}
-          - name: REDASH_REDIS_URL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_REDIS_URL
-                name: ${NAME}
-          - name: REDASH_SECRET_KEY
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_SECRET_KEY
-                name: ${NAME}
-          - name: REDASH_WEB_WORKERS
-            value: "4"
-          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
-          name: ${NAME}
-          ports:
-          - containerPort: 5000
-            protocol: TCP
-          resources: {}
-      restartPolicy: Always
-    triggers:
-      - type: ConfigChange
-      - type: ImageChange
-        imageChangeParams:
-          automatic: true
-          containerNames:
-            - ${NAME}
-          from:
-              kind: ImageStreamTag
-              namespace: "${IMAGE_NAMESPACE}"
-              name: "${NAME}:${TAG_NAME}"
-  status: {}
-
-- kind: DeploymentConfig
-  apiVersion: apps.openshift.io/v1
-  metadata:
-    annotations:
-    creationTimestamp: null
-    labels:
-      app: ${NAME}-adhoc-worker
-    name: ${NAME}-adhoc-worker
-  spec:
-    replicas: 1
-    selector:
-      app: ${NAME}-adhoc-worker
-    strategy:
-      resources: {}
-    template:
-      metadata:
-        creationTimestamp: null
-        labels:
-          app: ${NAME}-adhoc-worker
-      spec:
-        containers:
-        - args:
-          - worker
-          env:
-          - name: POSTGRES_HOST_AUTH_METHOD
-            valueFrom:
-              secretKeyRef:
-                key: POSTGRES_HOST_AUTH_METHOD
-                name: ${NAME}
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: POSTGRES_PASSWORD
-                name: ${NAME}
-          - name: PYTHONUNBUFFERED
-            valueFrom:
-              secretKeyRef:
-                key: PYTHONUNBUFFERED
-                name: ${NAME}
-          - name: QUEUES
-            value: queries
-          - name: REDASH_COOKIE_SECRET
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_COOKIE_SECRET
-                name: ${NAME}
-          - name: REDASH_DATABASE_URL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_DATABASE_URL
-                name: ${NAME}
-          - name: REDASH_HOST
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_HOST
-                name: ${NAME}
-          - name: REDASH_LOG_LEVEL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_LOG_LEVEL
-                name: ${NAME}
-          - name: REDASH_REDIS_URL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_REDIS_URL
-                name: ${NAME}
-          - name: REDASH_SECRET_KEY
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_SECRET_KEY
-                name: ${NAME}
-          - name: WORKERS_COUNT
-            value: "2"
-          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
-          name: ${NAME}-adhoc-worker
-          resources: {}
-        restartPolicy: Always
-    test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - ${NAME}-adhoc-worker
-        from:
-          kind: ImageStreamTag
-          namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}:${TAG_NAME}"
-      type: ImageChange
-  status: {}
-
-- kind: DeploymentConfig
-  apiVersion: apps.openshift.io/v1
-  metadata:
-    annotations:
-    creationTimestamp: null
-    labels:
-      app: ${NAME}-scheduled-worker
-    name: ${NAME}-scheduled-worker
-  spec:
-    replicas: 1
-    selector:
-      app: ${NAME}-scheduled-worker
-    strategy:
-      resources: {}
-    template:
-      metadata:
-        creationTimestamp: null
-        labels:
-          app: ${NAME}-scheduled-worker
-      spec:
-        containers:
-        - args:
-          - worker
-          env:
-          - name: POSTGRES_HOST_AUTH_METHOD
-            valueFrom:
-              secretKeyRef:
-                key: POSTGRES_HOST_AUTH_METHOD
-                name: ${NAME}
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: POSTGRES_PASSWORD
-                name: ${NAME}
-          - name: PYTHONUNBUFFERED
-            valueFrom:
-              secretKeyRef:
-                key: PYTHONUNBUFFERED
-                name: ${NAME}
-          - name: QUEUES
-            value: scheduled_queries,schemas
-          - name: REDASH_COOKIE_SECRET
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_COOKIE_SECRET
-                name: ${NAME}
-          - name: REDASH_DATABASE_URL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_DATABASE_URL
-                name: ${NAME}
-          - name: REDASH_HOST
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_HOST
-                name: ${NAME}
-          - name: REDASH_LOG_LEVEL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_LOG_LEVEL
-                name: ${NAME}
-          - name: REDASH_REDIS_URL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_REDIS_URL
-                name: ${NAME}
-          - name: REDASH_SECRET_KEY
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_SECRET_KEY
-                name: ${NAME}
-          - name: WORKERS_COUNT
-          value: "1"
-          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
-          name: ${NAME}-scheduled-worker
-          resources: {}
-        restartPolicy: Always
-    test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - ${NAME}-scheduled-worker
-        from:
-          kind: ImageStreamTag
-          namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}:${TAG_NAME}"
-      type: ImageChange
-  status: {}
-
-- kind: DeploymentConfig
-  apiVersion: apps.openshift.io/v1
-  metadata:
-    annotations:
-    creationTimestamp: null
-    labels:
-      app: ${NAME}-scheduler
-    name: ${NAME}-scheduler
-  spec:
-    replicas: 1
-    selector:
-      app: ${NAME}-scheduler
-    strategy:
-      resources: {}
-    template:
-      metadata:
-        creationTimestamp: null
-        labels:
-          app: ${NAME}-scheduler
-      spec:
-        containers:
-        - args:
-          - scheduler
-          env:
-          - name: POSTGRES_HOST_AUTH_METHOD
-            valueFrom:
-              secretKeyRef:
-                key: POSTGRES_HOST_AUTH_METHOD
-                name: ${NAME}
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: POSTGRES_PASSWORD
-                name: ${NAME}
-          - name: PYTHONUNBUFFERED
-            valueFrom:
-              secretKeyRef:
-                key: PYTHONUNBUFFERED
-                name: ${NAME}
-          - name: REDASH_COOKIE_SECRET
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_COOKIE_SECRET
-                name: ${NAME}
-          - name: REDASH_DATABASE_URL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_DATABASE_URL
-                name: ${NAME}
-          - name: REDASH_HOST
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_HOST
-                name: ${NAME}
-          - name: REDASH_LOG_LEVEL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_LOG_LEVEL
-                name: ${NAME}
-          - name: REDASH_REDIS_URL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_REDIS_URL
-                name: ${NAME}
-          - name: REDASH_SECRET_KEY
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_SECRET_KEY
-                name: ${NAME}
-          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
-          name: ${NAME}-scheduler
-          resources: {}
-        restartPolicy: Always
-    test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - ${NAME}-scheduler
-        from:
-          kind: ImageStreamTag
-          namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}:${TAG_NAME}"
-      type: ImageChange
-  status: {}
-
-- kind: DeploymentConfig
-  apiVersion: apps.openshift.io/v1
-  metadata:
-    annotations:
-    creationTimestamp: null
-    labels:
-      app: ${NAME}-worker
-    name: ${NAME}-worker
-  spec:
-    replicas: 1
-    selector:
-      app: ${NAME}-worker
-    strategy:
-      resources: {}
-    template:
-      metadata:
-        creationTimestamp: null
-        labels:
-          app: ${NAME}-worker
-      spec:
-        containers:
-        - args:
-          - worker
-          env:
-          - name: POSTGRES_HOST_AUTH_METHOD
-            valueFrom:
-              secretKeyRef:
-                key: POSTGRES_HOST_AUTH_METHOD
-                name: ${NAME}
-          - name: POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: POSTGRES_PASSWORD
-                name: ${NAME}
-          - name: PYTHONUNBUFFERED
-            valueFrom:
-              secretKeyRef:
-                key: PYTHONUNBUFFERED
-                name: ${NAME}
-          - name: QUEUES
-            value: periodic emails default
-          - name: REDASH_COOKIE_SECRET
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_COOKIE_SECRET
-                name: ${NAME}
-          - name: REDASH_DATABASE_URL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_DATABASE_URL
-                name: ${NAME}
-          - name: REDASH_HOST
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_HOST
-                name: ${NAME}
-          - name: REDASH_LOG_LEVEL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_LOG_LEVEL
-                name: ${NAME}
-          - name: REDASH_REDIS_URL
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_REDIS_URL
-                name: ${NAME}
-          - name: REDASH_SECRET_KEY
-            valueFrom:
-              secretKeyRef:
-                key: REDASH_SECRET_KEY
-                name: ${NAME}
-          - name: WORKERS_COUNT
-            value: "1"
-          image: ' '
-          name: ${NAME}-worker
-          resources: {}
-        restartPolicy: Always
-    test: false
-    triggers:
-    - type: ConfigChange
-    - imageChangeParams:
-        automatic: true
-        containerNames:
-        - ${NAME}-worker
-        from:
-          kind: ImageStreamTag
-          namespace: "${IMAGE_NAMESPACE}"
-          name: "${NAME}:${TAG_NAME}"
-      type: ImageChange
-  status: {}
-
--   kind: Service
+    name: forms-flow-analytics
+  objects:
+  - kind: Secret
     apiVersion: v1
+    stringData:
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PYTHONUNBUFFERED: "0"
+      REDASH_COOKIE_SECRET: redash-selfhosted
+      REDASH_DATABASE_URL: '${REDASH_DATABASE_URL}'
+      REDASH_HOST: '${REDASH_HOST}'
+      REDASH_LOG_LEVEL: INFO
+      REDASH_REDIS_URL: ${REDASH_REDIS_URL}
+      REDASH_SECRET_KEY: redash-selfhosted
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: ${NAME}
+      name: ${NAME}
+
+  - kind: DeploymentConfig
+    apiVersion: apps.openshift.io/v1
     metadata:
       name: ${NAME}
-    annotations:
-    creationTimestamp: null
-    labels:
+      annotations:
+      creationTimestamp: null
+      labels:
         app: ${NAME}
-    name: ${NAME}
     spec:
-      ports:
-      - name: "7000"
-        port: 7000
-        targetPort: 5000
+      replicas: 1
       selector:
         app: ${NAME}
-      status:
-      loadBalancer: {}
+      strategy:
+        type: Rolling
+        rollingParams:
+          updatePeriodSeconds: 1
+          intervalSeconds: 1
+          timeoutSeconds: 600
+          maxUnavailable: 25%
+          maxSurge: 25%
+          post:
+            execNewPod:
+              command:
+              - /bin/sh
+              - -c
+              - python ./manage.py database create_tables
+            failurePolicy: ignore
+        resources:
+          requests:
+            cpu: "${CPU_REQUEST}"
+            memory: "${MEMORY_REQUEST}"
+          limits:
+            cpu: "${CPU_LIMIT}"
+            memory: "${MEMORY_LIMIT}"
+        activeDeadlineSeconds: 21600
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            app: ${NAME}
+        spec:
+          containers:
+          - args:
+            - server
+            env:
+            - name: POSTGRES_HOST_AUTH_METHOD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_HOST_AUTH_METHOD
+                  name: ${NAME}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: ${NAME}
+            - name: PYTHONUNBUFFERED
+              valueFrom:
+                secretKeyRef:
+                  key: PYTHONUNBUFFERED
+                  name: ${NAME}
+            - name: REDASH_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_COOKIE_SECRET
+                  name: ${NAME}
+            - name: REDASH_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_DATABASE_URL
+                  name: ${NAME}
+            - name: REDASH_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_HOST
+                  name: ${NAME}
+            - name: REDASH_LOG_LEVEL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_LOG_LEVEL
+                  name: ${NAME}
+            - name: REDASH_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_REDIS_URL
+                  name: ${NAME}
+            - name: REDASH_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_SECRET_KEY
+                  name: ${NAME}
+            - name: REDASH_WEB_WORKERS
+              value: "4"
+            image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+            name: ${NAME}
+            ports:
+            - containerPort: 5000
+              protocol: TCP
+            resources: {}
+        restartPolicy: Always
+      triggers:
+        - type: ConfigChange
+        - type: ImageChange
+          imageChangeParams:
+            automatic: true
+            containerNames:
+              - ${NAME}
+            from:
+                kind: ImageStreamTag
+                namespace: "${IMAGE_NAMESPACE}"
+                name: "${NAME}:${TAG_NAME}"
+    status: {}
 
-- apiVersion: route.openshift.io/v1
-  kind: Route
-  metadata:
-    labels:
-      app: ${NAME}
-    name: ${NAME}
-  spec:
-    host: ${FFA_ANALYTICS_URL}
-    path: /
-    tls:
-      insecureEdgeTerminationPolicy: Redirect
-      termination: edge
-    to:
-      kind: Service
+  - kind: DeploymentConfig
+    apiVersion: apps.openshift.io/v1
+    metadata:
+      annotations:
+      creationTimestamp: null
+      labels:
+        app: ${NAME}-adhoc-worker
+      name: ${NAME}-adhoc-worker
+    spec:
+      replicas: 1
+      selector:
+        app: ${NAME}-adhoc-worker
+      strategy:
+        resources: {}
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            app: ${NAME}-adhoc-worker
+        spec:
+          containers:
+          - args:
+            - worker
+            env:
+            - name: POSTGRES_HOST_AUTH_METHOD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_HOST_AUTH_METHOD
+                  name: ${NAME}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: ${NAME}
+            - name: PYTHONUNBUFFERED
+              valueFrom:
+                secretKeyRef:
+                  key: PYTHONUNBUFFERED
+                  name: ${NAME}
+            - name: QUEUES
+              value: queries
+            - name: REDASH_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_COOKIE_SECRET
+                  name: ${NAME}
+            - name: REDASH_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_DATABASE_URL
+                  name: ${NAME}
+            - name: REDASH_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_HOST
+                  name: ${NAME}
+            - name: REDASH_LOG_LEVEL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_LOG_LEVEL
+                  name: ${NAME}
+            - name: REDASH_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_REDIS_URL
+                  name: ${NAME}
+            - name: REDASH_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_SECRET_KEY
+                  name: ${NAME}
+            - name: WORKERS_COUNT
+              value: "2"
+            image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+            name: ${NAME}-adhoc-worker
+            resources: {}
+          restartPolicy: Always
+      test: false
+      triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+          - ${NAME}-adhoc-worker
+          from:
+            kind: ImageStreamTag
+            namespace: "${IMAGE_NAMESPACE}"
+            name: "${NAME}:${TAG_NAME}"
+        type: ImageChange
+    status: {}
+
+  - kind: DeploymentConfig
+    apiVersion: apps.openshift.io/v1
+    metadata:
+      annotations:
+      creationTimestamp: null
+      labels:
+        app: ${NAME}-scheduled-worker
+      name: ${NAME}-scheduled-worker
+    spec:
+      replicas: 1
+      selector:
+        app: ${NAME}-scheduled-worker
+      strategy:
+        resources: {}
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            app: ${NAME}-scheduled-worker
+        spec:
+          containers:
+          - args:
+            - worker
+            env:
+            - name: POSTGRES_HOST_AUTH_METHOD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_HOST_AUTH_METHOD
+                  name: ${NAME}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: ${NAME}
+            - name: PYTHONUNBUFFERED
+              valueFrom:
+                secretKeyRef:
+                  key: PYTHONUNBUFFERED
+                  name: ${NAME}
+            - name: QUEUES
+              value: scheduled_queries,schemas
+            - name: REDASH_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_COOKIE_SECRET
+                  name: ${NAME}
+            - name: REDASH_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_DATABASE_URL
+                  name: ${NAME}
+            - name: REDASH_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_HOST
+                  name: ${NAME}
+            - name: REDASH_LOG_LEVEL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_LOG_LEVEL
+                  name: ${NAME}
+            - name: REDASH_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_REDIS_URL
+                  name: ${NAME}
+            - name: REDASH_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_SECRET_KEY
+                  name: ${NAME}
+            - name: WORKERS_COUNT
+            value: "1"
+            image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+            name: ${NAME}-scheduled-worker
+            resources: {}
+          restartPolicy: Always
+      test: false
+      triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+          - ${NAME}-scheduled-worker
+          from:
+            kind: ImageStreamTag
+            namespace: "${IMAGE_NAMESPACE}"
+            name: "${NAME}:${TAG_NAME}"
+        type: ImageChange
+    status: {}
+
+  - kind: DeploymentConfig
+    apiVersion: apps.openshift.io/v1
+    metadata:
+      annotations:
+      creationTimestamp: null
+      labels:
+        app: ${NAME}-scheduler
+      name: ${NAME}-scheduler
+    spec:
+      replicas: 1
+      selector:
+        app: ${NAME}-scheduler
+      strategy:
+        resources: {}
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            app: ${NAME}-scheduler
+        spec:
+          containers:
+          - args:
+            - scheduler
+            env:
+            - name: POSTGRES_HOST_AUTH_METHOD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_HOST_AUTH_METHOD
+                  name: ${NAME}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: ${NAME}
+            - name: PYTHONUNBUFFERED
+              valueFrom:
+                secretKeyRef:
+                  key: PYTHONUNBUFFERED
+                  name: ${NAME}
+            - name: REDASH_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_COOKIE_SECRET
+                  name: ${NAME}
+            - name: REDASH_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_DATABASE_URL
+                  name: ${NAME}
+            - name: REDASH_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_HOST
+                  name: ${NAME}
+            - name: REDASH_LOG_LEVEL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_LOG_LEVEL
+                  name: ${NAME}
+            - name: REDASH_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_REDIS_URL
+                  name: ${NAME}
+            - name: REDASH_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_SECRET_KEY
+                  name: ${NAME}
+            image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+            name: ${NAME}-scheduler
+            resources: {}
+          restartPolicy: Always
+      test: false
+      triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+          - ${NAME}-scheduler
+          from:
+            kind: ImageStreamTag
+            namespace: "${IMAGE_NAMESPACE}"
+            name: "${NAME}:${TAG_NAME}"
+        type: ImageChange
+    status: {}
+
+  - kind: DeploymentConfig
+    apiVersion: apps.openshift.io/v1
+    metadata:
+      annotations:
+      creationTimestamp: null
+      labels:
+        app: ${NAME}-worker
+      name: ${NAME}-worker
+    spec:
+      replicas: 1
+      selector:
+        app: ${NAME}-worker
+      strategy:
+        resources: {}
+      template:
+        metadata:
+          creationTimestamp: null
+          labels:
+            app: ${NAME}-worker
+        spec:
+          containers:
+          - args:
+            - worker
+            env:
+            - name: POSTGRES_HOST_AUTH_METHOD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_HOST_AUTH_METHOD
+                  name: ${NAME}
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: POSTGRES_PASSWORD
+                  name: ${NAME}
+            - name: PYTHONUNBUFFERED
+              valueFrom:
+                secretKeyRef:
+                  key: PYTHONUNBUFFERED
+                  name: ${NAME}
+            - name: QUEUES
+              value: periodic emails default
+            - name: REDASH_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_COOKIE_SECRET
+                  name: ${NAME}
+            - name: REDASH_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_DATABASE_URL
+                  name: ${NAME}
+            - name: REDASH_HOST
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_HOST
+                  name: ${NAME}
+            - name: REDASH_LOG_LEVEL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_LOG_LEVEL
+                  name: ${NAME}
+            - name: REDASH_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_REDIS_URL
+                  name: ${NAME}
+            - name: REDASH_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  key: REDASH_SECRET_KEY
+                  name: ${NAME}
+            - name: WORKERS_COUNT
+              value: "1"
+            image: ' '
+            name: ${NAME}-worker
+            resources: {}
+          restartPolicy: Always
+      test: false
+      triggers:
+      - type: ConfigChange
+      - imageChangeParams:
+          automatic: true
+          containerNames:
+          - ${NAME}-worker
+          from:
+            kind: ImageStreamTag
+            namespace: "${IMAGE_NAMESPACE}"
+            name: "${NAME}:${TAG_NAME}"
+        type: ImageChange
+    status: {}
+
+  -   kind: Service
+      apiVersion: v1
+      metadata:
+        name: ${NAME}
+      annotations:
+      creationTimestamp: null
+      labels:
+          app: ${NAME}
       name: ${NAME}
-    port:
-      targetPort: '7000'
-    wildcardPolicy: None
+      spec:
+        ports:
+        - name: "7000"
+          port: 7000
+          targetPort: 5000
+        selector:
+          app: ${NAME}
+        status:
+        loadBalancer: {}
 
-parameters:
-  - name: NAME
-    displayName: Name
-    description: The name assigned to all of the OpenShift resources associated to the
-      server instance.
-    required: true
-    value: forms-flow-analytics
-  - name: IMAGE_NAMESPACE
-    displayName: Image Namespace
-    required: true
-    description: The namespace of the OpenShift project containing the imagestream for
-      the application.
-    value: nzpnbz-tools
-  - name: TAG_NAME
-    displayName: Environment TAG name
-    description: The TAG name for this environment, e.g., dev, test, prod
-    required: true
-    value: latest
-  - name: CPU_REQUEST
-    displayName: Resources CPU Request
-    description: The resources CPU request (in cores) for this build.
-    required: true
-    value: 500m
-  - name: CPU_LIMIT
-    displayName: Resources CPU Limit
-    description: The resources CPU limit (in cores) for this build.
-    required: true
-    value: 1000m
-  - name: MEMORY_REQUEST
-    displayName: Resources Memory Request
-    description: The resources Memory request (in Mi, Gi, etc) for this build.
-    required: true
-    value: 1Gi
-  - name: MEMORY_LIMIT
-    displayName: Resources Memory Limit
-    description: The resources Memory limit (in Mi, Gi, etc) for this build.
-    required: true
-    value: 2Gi
-  - name: FFA_ANALYTICS_URL
-    displayName: FFA_ANALYTICS_URL
-    description:
-      Route to access FFA WEB API
-    required: true
-  - name: POSTGRES_PASSWORD
-    displayName: POSTGRES_PASSWORD
-    description: Postgres Password
-    required: true
-  - name: REDASH_DATABASE_URL
-    displayName: REDASH_DATABASE_URL
-    description: REDASH_DATABASE_URL
-    required: true
-  - name: REDASH_HOST
-    displayName: REDASH_HOST
-    description: REDASH_HOST
-    required: true
-  - name: REDASH_REDIS_URL
-    displayName: REDASH_REDIS_URL
-    description: REDASH_REDIS_URL
-    required: true
+  - apiVersion: route.openshift.io/v1
+    kind: Route
+    metadata:
+      labels:
+        app: ${NAME}
+      name: ${NAME}
+    spec:
+      host: ${FFA_ANALYTICS_URL}
+      path: /
+      tls:
+        insecureEdgeTerminationPolicy: Redirect
+        termination: edge
+      to:
+        kind: Service
+        name: ${NAME}
+      port:
+        targetPort: '7000'
+      wildcardPolicy: None
+
+  parameters:
+    - name: NAME
+      displayName: Name
+      description: The name assigned to all of the OpenShift resources associated to the
+        server instance.
+      required: true
+      value: forms-flow-analytics
+    - name: IMAGE_NAMESPACE
+      displayName: Image Namespace
+      required: true
+      description: The namespace of the OpenShift project containing the imagestream for
+        the application.
+      value: nzpnbz-tools
+    - name: TAG_NAME
+      displayName: Environment TAG name
+      description: The TAG name for this environment, e.g., dev, test, prod
+      required: true
+      value: latest
+    - name: CPU_REQUEST
+      displayName: Resources CPU Request
+      description: The resources CPU request (in cores) for this build.
+      required: true
+      value: 500m
+    - name: CPU_LIMIT
+      displayName: Resources CPU Limit
+      description: The resources CPU limit (in cores) for this build.
+      required: true
+      value: 1000m
+    - name: MEMORY_REQUEST
+      displayName: Resources Memory Request
+      description: The resources Memory request (in Mi, Gi, etc) for this build.
+      required: true
+      value: 1Gi
+    - name: MEMORY_LIMIT
+      displayName: Resources Memory Limit
+      description: The resources Memory limit (in Mi, Gi, etc) for this build.
+      required: true
+      value: 2Gi
+    - name: FFA_ANALYTICS_URL
+      displayName: FFA_ANALYTICS_URL
+      description:
+        Route to access FFA WEB API
+      required: true
+    - name: POSTGRES_PASSWORD
+      displayName: POSTGRES_PASSWORD
+      description: Postgres Password
+      required: true
+    - name: REDASH_DATABASE_URL
+      displayName: REDASH_DATABASE_URL
+      description: REDASH_DATABASE_URL
+      required: true
+    - name: REDASH_HOST
+      displayName: REDASH_HOST
+      description: REDASH_HOST
+      required: true
+    - name: REDASH_REDIS_URL
+      displayName: REDASH_REDIS_URL
+      description: REDASH_REDIS_URL
+      required: true

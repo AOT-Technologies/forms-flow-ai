@@ -469,7 +469,6 @@
     "lastName" : "FFA",
     "email" : "formsflow-client@example.com",
     "credentials" : [ {
-      "id" : "c5cdcd6f-2f42-466b-82c0-fc2ba09f5180",
       "type" : "password",
       "createdDate" : 1621863987325,
       "secretData" : "{\"value\":\"9R9a8Onha7JcZt59SIq8ngfqwDJwPKiKb8mJ2WO6p2eI3S9qhzR1GPDFtKjOWq8qpm8vsGfp/a/DyHWQuIvmlA==\",\"salt\":\"R/OTBeSXHzsKtJOV/bufEA==\"}",
@@ -493,7 +492,6 @@
     "lastName" : "FFA",
     "email" : "formsflow-designer@example.com",
     "credentials" : [ {
-      "id" : "503e77f7-efc2-4410-89cf-a54d06fe83a2",
       "type" : "password",
       "createdDate" : 1621864001408,
       "secretData" : "{\"value\":\"XlcFXNSJAfv5YzTh5vd4NtyEjWm4B47CS9MA3aHmEjLNjdRMbnGFVFZwlZx3alXYBCg4Evs3md25DQ6Xvl+nZg==\",\"salt\":\"TefHE1L0xpqlAMg/h6w6BA==\"}",
@@ -517,7 +515,6 @@
     "lastName" : "FFA",
     "email" : "formsflow-reviewer@example.com",
     "credentials" : [ {
-      "id" : "e751c0d6-ea73-4313-a2eb-329f3f5fa3c4",
       "type" : "password",
       "createdDate" : 1621864014317,
       "secretData" : "{\"value\":\"bXzhJ0BrMJBWMzRRjO2khWgCRgDAA6vfTrE0UNNO1DNRzp1aMrGCz5kF20H76PjyuqNDZaKF1nKApEjccg+KRA==\",\"salt\":\"gmoZwO3i7Y6B+jpgnsnixw==\"}",
@@ -745,7 +742,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://localhost:7000/*"
+        "*"
       ],
       "webOrigins": [],
       "notBefore": 0,
@@ -826,7 +823,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://localhost:8000/camunda/*"
+        "*"
       ],
       "webOrigins": [
         "*"
@@ -912,6 +909,17 @@
             "jsonType.label": "String"
           }
         },
+		{
+          "name": "camunda-rest-api",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "id.token.claim": "false",
+            "access.token.claim": "true",
+            "included.custom.audience": "camunda-rest-api"
+          }
+        },
         {
           "name": "username",
           "protocol": "openid-connect",
@@ -978,7 +986,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://localhost:3000/*"
+        "*"
       ],
       "webOrigins": [
         "*"

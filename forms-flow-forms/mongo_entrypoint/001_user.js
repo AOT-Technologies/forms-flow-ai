@@ -1,6 +1,6 @@
 require('dotenv').config();
-const user  = process.env("FORMIO_DB_USERNAME");
-const password = process.env("FORMIO_DB_PASSWORD");
+const user  = process.env("MONGO_INITDB_ROOT_USERNAME");
+const password = process.env("MONGO_INITDB_ROOT_PASSWORD");
 
 db.createUser(
     {

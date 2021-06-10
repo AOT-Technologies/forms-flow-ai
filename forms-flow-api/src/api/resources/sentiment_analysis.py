@@ -61,7 +61,7 @@ class SentimentAnalysisResource(Resource):
                         "message": "Server selection time out",
                     }, HTTPStatus.BAD_REQUEST
                     logging.info(response)
-                return response, status
+                    return response, status
 
             return jsonify(response_json), HTTPStatus.OK
         except KeyError as err:
@@ -89,4 +89,4 @@ class SentimentAnalysisResource(Resource):
 
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status

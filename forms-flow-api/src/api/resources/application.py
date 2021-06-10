@@ -156,8 +156,7 @@ class ApplicationResourceById(Resource):
             logging.exception(submission_err)
             # traceback.print_tb(exc_traceback)
 
-
-        return response, status
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -248,18 +247,17 @@ class ApplicationResourcesByIds(Resource):
             )
 
             response, status = application_schema.dump(application), HTTPStatus.CREATED
+            return response, status
         except BaseException as application_err:
             exc_traceback = sys.exc_info()
-            response, status = {
+            response = {
                 "type": "Bad request error",
                 "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
-
+            }
             logging.exception(response)
             logging.exception(application_err)
             # traceback.print_tb(exc_traceback)
-
-        return response, status
+            return response
 
 
 @cors_preflight("GET,OPTIONS")
@@ -294,14 +292,14 @@ class AggregatedApplicationsResource(Resource):
 
             response, status = {
                 "message": "Invalid request object for application metrics endpoint",
-                "errors": agg_err.messages,
+                "errors": agg_err,
             }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
             logging.exception(agg_err)
             # traceback.print_tb(exc_traceback)
 
-        return response, status
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -336,27 +334,27 @@ class AggregatedApplicationStatusResource(Resource):
 
             response, status = {
                 "message": "Invalid request object for application metrics endpoint",
-                "errors": agg_err.messages,
+                "errors": agg_err,
             }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
             logging.exception(agg_err)
             # traceback.print_tb(exc_traceback)
-        return response, status
+            return response, status
 
 
-# @cors_preflight("GET,OPTIONS")
-# @API.route("/<string:application_id>/process", methods=["GET", "OPTIONS"])
-# class ProcessMapperResourceByApplicationId(Resource):
-#     """Resource for managing process details."""
+@cors_preflight("GET,OPTIONS")
+@API.route("/<string:application_id>/process", methods=["GET", "OPTIONS"])
+class ProcessMapperResourceByApplicationId(Resource):
+    """Resource for managing process details."""
 
-#     @staticmethod
-#     def get(application_id):
+    @staticmethod
+    def get(application_id):
 
-#         try:
-#             return (
-#                 ApplicationService.get_application_form_mapper_by_id(application_id),
-#                 HTTPStatus.OK,
-#             )
-#         except BusinessException as err:
-#             return err.error, err.status_code
+        try:
+            return (
+                ApplicationService.get_application_form_mapper_by_id(application_id),
+                HTTPStatus.OK,
+            )
+        except BusinessException as err:
+            return err.error, err.status_code

@@ -35,16 +35,18 @@ To know more about Camunda, visit https://camunda.com/.
    * Rename the file [sample.env](./sample.env) to **.env**.
    * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
    * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
-   
+ 
+> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the .env file
+     
 #### Keycloak Integration
 --------------------------
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `KEYCLOAK_URL`__*__| URL to your Keycloak server || `http://{your-ip-address}:8080`
+ `KEYCLOAK_URL`:triangular_flag_on_post:| URL to your Keycloak server || `http://{your-ip-address}:8080`
  `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
  `KEYCLOAK_BPM_CLIENT_ID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | `forms-flow-bpm`
- `KEYCLOAK_BPM_CLIENT_SECRET`__*__|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret`go to [link](../forms-flow-idm/keycloak/README.md#get-the-keycloak-client-secret)
+ `KEYCLOAK_BPM_CLIENT_SECRET`:triangular_flag_on_post:|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret`go to [link](../forms-flow-idm/keycloak/README.md#get-the-keycloak-client-secret)
 
 ##### CAMUNDA_JDBC : Dedicated camunda database (Prefixed with CAMUNDA_).
 -----------------------------------------------------------------------
@@ -80,11 +82,11 @@ To know more about Camunda, visit https://camunda.com/.
  
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `FORMSFLOW_API_URL`__*__|formsflow.ai Rest API URI||`http://{your-ip-address}:5000`
- `FORMIO_DEFAULT_PROJECT_URL`__*__|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
+ `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URI||`http://{your-ip-address}:5000`
+ `FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
  `FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
  `FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
- `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming, for multiple origins you can separate them using a comma |eg:`host1, host2`| `*`
+ `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming, for multiple origins you can separate them using a comma |eg:`host1, host2`| `http://{your-ip-address}:3000`
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 

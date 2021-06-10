@@ -4,6 +4,7 @@
 
 # Use Node image, maintained by Docker:
 # hub.docker.com/r/_/node/
+
 FROM docker.io/node:12.2.0-alpine
 
 # set working directory

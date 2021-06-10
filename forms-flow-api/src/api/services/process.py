@@ -113,7 +113,7 @@ class ProcessService:
             logging.exception(response)
             logging.exception(err)
             traceback.print_tb(exc_traceback)
-        return response, status
+            return response, status
 
         # raise BusinessException(
         #    "No activity instances available for process", HTTPStatus.BAD_REQUEST

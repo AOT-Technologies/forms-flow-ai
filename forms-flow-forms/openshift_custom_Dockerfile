@@ -1,6 +1,6 @@
 # Used as a reference for any custom logic to be done.
 # if the application is built from a source repo other than aot , use the custom copying.
-# checkout the aot source code and use the copy logic.
+# steps : checkout the aot source code and use the copy logic.
 # -----------------------------------------------------------
 
 # Use Node image, maintained by Docker:

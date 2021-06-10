@@ -9,6 +9,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * User can claim / view tasklist in realtime.
 * Automated installation steps for keycloak setup.
 * Automated manual steps for resource id generation, included batch / shell scripts to simplify the process. 
+* New User Interface based on Vue.js for easy integration of formsflow.ai to your existing User Interface. This extension provides components for easily using Forms, Tasklist by installing as a package.
    
 `Modified`
 * Task dashboard has been revamped with new look and feel; which would allow more control on data and stream updates.

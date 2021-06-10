@@ -11,6 +11,7 @@
         </inputExpression>
       </input>
       <output id="OutputClause_1aekr4b" label="to" name="to" typeRef="string" />
+      <output id="OutputClause_03zviem" label="cc" name="cc" typeRef="string" />
       <output id="OutputClause_0f8t1qe" label="subject" name="subject" typeRef="string" />
       <output id="OutputClause_1o2aisg" label="body" name="body" typeRef="string" />
       <rule id="DecisionRule_0ycnss6">
@@ -18,6 +19,9 @@
           <text>"assignment_notification"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_1w28m1k">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_08f869r">
           <text></text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1czkz3j">
@@ -39,6 +43,9 @@ Best Regards"</text>
           <text>"activity_reminder"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0lljnoh">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_18fvdhg">
           <text></text>
         </outputEntry>
         <outputEntry id="LiteralExpression_1fjwonv">
@@ -66,6 +73,9 @@ To access the task through formsflow.ai please follow this link:  http://localho
           <text>"activity_escalation"</text>
         </inputEntry>
         <outputEntry id="LiteralExpression_0tzhose">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_023tlbr">
           <text></text>
         </outputEntry>
         <outputEntry id="LiteralExpression_0grdcc8">

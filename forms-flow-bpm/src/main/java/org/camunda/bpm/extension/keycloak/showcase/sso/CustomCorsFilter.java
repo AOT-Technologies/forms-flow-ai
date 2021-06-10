@@ -55,9 +55,9 @@ public class CustomCorsFilter implements Filter {
         if(StringUtils.contains(requestURL,"/engine-rest/") ||
                 StringUtils.contains(requestURL,"/engine-rest-ext/") ||
                 StringUtils.contains(requestURL,"/form-builder/")) {
-            response.setHeader("Access-Control-Allow-Origin", getOrigin(request));
-            //String origin = request.getHeader("Origin");
-            //response.setHeader("Access-Control-Allow-Origin", getAllowedOrigins().contains(origin)? origin : getAllowedOrigins().contains("*") ? origin : "");
+            //response.setHeader("Access-Control-Allow-Origin", getOrigin(request));
+            String origin = request.getHeader("Origin");
+            response.setHeader("Access-Control-Allow-Origin", getAllowedOrigins().contains(origin)? origin : getAllowedOrigins().contains("*") ? origin : "");
             response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS");
             //response.setHeader("Access-Control-Allow-Headers","access-control-allow-methods, access-control-allow-origin, authorization, Content-Type, Accept, X-Requested-With, Origin, Token, Auth-Token, Email, X-User-Token, X-User-Email");
             response.setHeader("Access-Control-Allow-Headers", "*");

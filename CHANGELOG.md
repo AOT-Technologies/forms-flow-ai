@@ -2,7 +2,6 @@
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
 ## 4.0.0 - 2021-06-11
-`Upcoming Features`
 
 `Added`
 * Added support for http calls.

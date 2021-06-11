@@ -8,10 +8,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * User can *claim/view* the Tasklist in realtime. (component: forms-flow-web)
 * Automated installation steps for keycloak setup.
 * Automated manual steps for resource id generation, included batch and shell scripts to simplify the process. 
-* New UI for formsflow.ai based on Vue.js for easy integration of formsflow.ai to existing projects. (component: forms-flow-web)
-* New API for health check point (component : forms-flow-api)
+* New UI for formsflow.ai based on Vue.js for easy integration of formsflow.ai to existing projects. To know more details checkout [formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue) and to install our [NPM package go here](https://www.npmjs.com/package/camunda-formio-tasklist-vue).(component: forms-flow-web)
+* New API for health check has been include in formsflow.ai-API. (component : forms-flow-api)
 * Toast message in Form Save,Submission Save and Form-Workflow Association. (component: forms-flow-web)
-* Users can click on External shared link like in email to get redirected to a particular task/submission/form if the user has right permissions.(component: forms-flow-web)
+* Users can click on External shared link like in email to get redirected to a particular task/submission/form if the user has right permissions. (component: forms-flow-web)
 * Claiming of tasks are restricted to users belonging to reviewer group(formsflow/formsflow-reviewer) of keycloak.(component: forms-flow-web)
 * Application/Submission view for client role users are restricted to own submission view.(component: forms-flow-bpm, forms-flow-web)
 * Added Semantic UI css for forms design (component: forms-flow-web)

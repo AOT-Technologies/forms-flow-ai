@@ -75,8 +75,8 @@ class SentimentAnalysisResource(Resource):
             )
             logging.info(response)
             logging.info(err)
-
             # traceback.print_tb(exc_traceback)
+            return response, status
 
         except BaseException as err:
             exc_traceback = sys.exc_info()
@@ -88,5 +88,4 @@ class SentimentAnalysisResource(Resource):
             logging.info(err)
 
             # traceback.print_tb(exc_traceback)
-
             return response, status

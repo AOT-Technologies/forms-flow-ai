@@ -78,7 +78,7 @@ class FormResource(Resource):
             logging.exception(response)
             logging.exception(err)
             # traceback.print_tb(exc_traceback)
-
+            return response, status
 
         except BaseException as form_err:
             exc_traceback = sys.exc_info()
@@ -87,12 +87,9 @@ class FormResource(Resource):
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
 
-
             logging.exception(response)
             logging.exception(form_err)
             # traceback.print_tb(exc_traceback)
-
-
             return response, status
 
     @staticmethod
@@ -111,6 +108,7 @@ class FormResource(Resource):
             mapper = FormProcessMapperService.create_mapper(dict_data)
 
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
+            return response, status
         except BaseException as form_err:
             exc_traceback = sys.exc_info()
             response, status = {
@@ -178,8 +176,8 @@ class FormResourceById(Resource):
             )
 
             logging.exception(response)
+            logging.exception(err)
             # traceback.print_tb(exc_traceback)
-
             return response, status
 
     @staticmethod

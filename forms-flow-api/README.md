@@ -18,7 +18,8 @@ the system. It is built using Python :snake: .
 
 ## Prerequisites
 
-* For docker installation [Docker](https://docker.com) need to be installed.
+* For docker based installation [Docker](https://docker.com) need to be installed.
+* Admin access to [Keycloak](../forms-flow-idm/keycloak) server and ensure audience(camunda-rest-api) is setup in Keycloak-bpm server.
 
 ## Solution Setup
 
@@ -26,7 +27,8 @@ the system. It is built using Python :snake: .
 
 If you are interested in contributing to the project, you can install through docker or locally.
 
-It's recommended to download dev-packages to follow Python coding standards for project like PEP8 by installing dev-packages using pip:
+It's recommended to download dev-packages to follow Python coding standards for project like PEP8 if you are interested in contributing to project.
+You installing dev-packages using pip as follows:
 
 ```python3 -m pip install -r requirements-dev.txt```
 

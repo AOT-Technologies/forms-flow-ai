@@ -18,7 +18,7 @@ your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.
 
 ## Prerequisites
 
-* For docker installations [Docker](https://docker.com) need to be installed.
+* For docker based installation [Docker](https://docker.com) need to be installed.
 * Admin access to [Keycloak](../forms-flow-idm/keycloak) server.
 
 ## Solution Setup

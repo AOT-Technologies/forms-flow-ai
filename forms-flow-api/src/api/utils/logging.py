@@ -26,9 +26,8 @@ def log_bpm_error(msg):
     """Log error."""
     logging.error(msg)
     logging.error(
-    "The connection with Python and Camunda API is not proper. Ensure you have passed env variables properly and have set listener in Keycloak(camunda-rest-api)"
+        "The connection with Python and Camunda API is not proper. Ensure you have passed env variables properly and have set listener in Keycloak(camunda-rest-api)"
     )
-
 
 
 def log_info(msg):

@@ -15,7 +15,7 @@ import History from '../Application/ApplicationHistory';
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 import {getProcessActivities} from "../../apiManager/services/processServices";
 
-const ViewTask = (props) => {
+const ViewTask = React.memo((props) => {
     const {taskId} = useParams();
     const taskDetail = useSelector(state => state.tasks.taskDetail);
     const applicationProcess = useSelector(state => state.applications.applicationProcess);
@@ -46,16 +46,16 @@ const ViewTask = (props) => {
           </Link>
 {/*          <span className="ml-3">
                <img src="/clipboard.svg" alt="Task"/>
-             <i class="fa fa-list-alt" alt="Task"></i>
+             <i className="fa fa-list-alt" alt="Task"></i>
 
           </span>*/}
           <h3 className="ml-3">
-            <span className="task-head-details"> <i className="fa fa-list"/> Tasks /</span>{" "}
+            <span className="task-head-details"> <img src="/webfonts/fa-solid_list.svg" alt="back"/> Tasks /</span>{" "}
             {`${taskDetail.name}`}
           </h3>
         </div>
         <br/>
-        <Tabs id="task-details" defaultActiveKey="details">
+        <Tabs id="task-details" defaultActiveKey="details" mountOnEnter>
           <Tab eventKey="details" title="Details">
             <Details/>
           </Tab>
@@ -74,7 +74,7 @@ const ViewTask = (props) => {
         </Tabs>
       </div>
     );
-}
+})
 
 const mapDispatchToProps = (dispatch) => {
   return {

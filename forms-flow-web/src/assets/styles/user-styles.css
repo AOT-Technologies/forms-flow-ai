@@ -1,0 +1,78 @@
+
+.alert-danger {
+  color: #355992;
+  background-color: #b1cbf6;
+  border-color: #99befa;
+}
+
+.btn-primary{
+  background-color: #014283;
+  border-color: #00152a;
+}
+
+.btn-primary.hover, .btn-primary:hover, .btn-primary.disabled:hover, .btn-primary[disabled]:hover,
+fieldset[disabled] .btn-primary:hover, .btn-primary.disabled.hover, .btn-primary[disabled].hover,
+fieldset[disabled] .btn-primary.hover,
+.btn-primary.focus, .btn-primary:focus, .btn-primary.disabled:focus, .btn-primary[disabled]:focus,
+fieldset[disabled] .btn-primary:focus, .btn-primary.disabled.focus, .btn-primary[disabled].focus,
+fieldset[disabled] .btn-primary.focus {
+  background-color: #003366;
+  border-color: #00152a;
+}
+
+.btn-primary:active:not(:hover), .btn-primary.active:not(.hover), .btn-primary.disabled:active:not(:hover), .btn-primary[disabled]:active:not(:hover),
+fieldset[disabled] .btn-primary:active:not(:hover), .btn-primary.disabled.active:not(.hover), .btn-primary[disabled].active:not(.hover),
+fieldset[disabled] .btn-primary.active:not(.hover),
+.btn-primary:active:hover, .btn-primary.active.hover, .btn-primary.disabled:active:hover, .btn-primary[disabled]:active:hover,
+fieldset[disabled] .btn-primary:active:hover, .btn-primary.disabled.active.hover, .btn-primary[disabled].active.hover,
+fieldset[disabled] .btn-primary.active.hover,
+.btn-primary:active, .btn-primary.active, .btn-primary.disabled:active, .btn-primary[disabled]:active,
+fieldset[disabled] .btn-primary:active, .btn-primary.disabled.active, .btn-primary[disabled].active,
+fieldset[disabled] .btn-primary.active{
+  background-color: #002142;
+  border-color: #00152a;
+}
+
+/*.navbar-brand {
+  text-indent: -999em;
+  background-image: url('./formsflow.ai_icon.svg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 50px;
+  background-size: contain;
+  margin: 3px 10px 3px 10px;
+}*/
+
+[cam-widget-header] .navbar-brand .brand-logo svg {
+  display: none!important;
+}
+
+[cam-widget-header] {
+  border-top: #355992;
+  background-color: #FFFFFF;
+}
+
+[cam-widget-header] a, [cam-widget-header] a:hover, [cam-widget-header] a:focus{
+  color: #000000;
+}
+
+.three-cols-layout .column-left .list-unstyled>.item.active, .three-cols-layout .column-center .list-unstyled>li.active, .three-cols-layout .column-left .list-unstyled>.item.active:hover, .three-cols-layout .column-center .list-unstyled>li.active:hover {
+  border-color: #003366;
+}
+
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+  border-bottom: #003366;
+}
+
+aside li.active>a {
+  border-left-color: #003366;
+}
+
+.navbar-header:after {
+  content: "formsflow.ai";
+  display: inline-flex;
+  color: #000000;
+  font-size: 30px;
+  padding: 7px;
+  line-height: 36px;
+}

@@ -6,7 +6,6 @@ import startCase from "lodash/startCase";
 import {Tabs, Tab} from "react-bootstrap";
 import Details from "./Details";
 import {getApplicationById,getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
-import {getProcessActivities} from "../../apiManager/services/processServices";
 import Loading from "../../containers/Loading";
 import {setApplicationDetailLoader} from "../../actions/applicationActions";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
@@ -15,12 +14,11 @@ import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
 //import { useDispatch } from 'react-redux'
 
-const ViewApplication = () => {
+const ViewApplication = React.memo(() => {
   const {applicationId} = useParams();
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
   const applicationProcess = useSelector(state => state.applications.applicationProcess);
-  const processActivityList = useSelector(state => state.process.processActivityList);
   const dispatch= useDispatch();
 
   useEffect(()=>{
@@ -33,9 +31,6 @@ const ViewApplication = () => {
               getSubmission("submission", res.submissionId, res.formId)
             );
           }
-          dispatch(
-            getProcessActivities(res.processInstanceId)
-          );
         }
       }));
       dispatch(getApplicationFormDataByAppId(applicationId));
@@ -53,12 +48,12 @@ const ViewApplication = () => {
           <img src="/back.svg" alt="back"/>
         </Link>
         <h3 className="ml-3">
-          <span className="application-head-details"><i className="fa fa-list-alt" />&nbsp; Applications /</span>{" "}
+          <span className="application-head-details"><img src="/webfonts/fa-regular_list-alt.svg" alt="back"/>&nbsp; Applications /</span>{" "}
           {`${startCase(applicationDetail.applicationName)}`}
         </h3>
       </div>
       <br/>
-      <Tabs id="application-details" defaultActiveKey="details">
+      <Tabs id="application-details" defaultActiveKey="details" mountOnEnter>
         <Tab eventKey="details" title="Details">
           <Details application={applicationDetail}/>
         </Tab>
@@ -71,14 +66,13 @@ const ViewApplication = () => {
         <Tab eventKey="process-diagram" title="Process Diagram">
             <ProcessDiagram
               process_key={applicationProcess.processKey}
-              markers={processActivityList}
+              processInstanceId={applicationDetail.processInstanceId}
             />
         </Tab>
       </Tabs>
     </div>
 
   );
-}
+})
 
-export default ViewApplication ;
-// export default connect(mapStateToProps)(Details);
+export default ViewApplication;

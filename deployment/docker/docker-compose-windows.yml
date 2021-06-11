@@ -3,21 +3,23 @@ version: '3.7'
 
 services:
   forms-flow-bpm-db:
-    image: postgres
+    image: postgres:latest
+    container_name: forms-flow-bpm-db
     environment:
-      POSTGRES_USER: ${CAMUNDA_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${CAMUNDA_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${CAMUNDA_POSTGRES_DB}
+      POSTGRES_USER: ${CAMUNDA_JDBC_USER:-admin}
+      POSTGRES_PASSWORD: ${CAMUNDA_JDBC_PASSWORD:-changeme}
+      POSTGRES_DB: ${CAMUNDA_JDBC_DB_NAME:-formsflow-bpm}
       POSTGRES_HOST_AUTH_METHOD: 'trust'
     volumes:
       - ./postgres/camunda:/data/postgres/data/postgres
     ports:
       - '5432:5432'
-    restart: unless-stopped
+    restart: always
     networks:
-      - forms-flow-bpm-network
+      - forms-flow-network
 
   forms-flow-bpm:
+    container_name: forms-flow-bpm
     build:
       context: ./../../forms-flow-bpm/
       dockerfile: Dockerfile
@@ -28,40 +30,61 @@ services:
       - '8000:8080'
     environment:
       - KEYCLOAK_URL=${KEYCLOAK_URL}
-      - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM}
-      - KEYCLOAK_CLIENTID=${KEYCLOAK_BPM_CLIENTID}
-      - KEYCLOAK_CLIENTSECRET=${KEYCLOAK_BPM_CLIENTSECRET}
-      - JDBC_URL=${CAMUNDA_JDBC_URL}
-      - JDBC_USER=${CAMUNDA_POSTGRES_USER}
-      - JDBC_PASSWORD=${CAMUNDA_POSTGRES_PASSWORD}
-      - JDBC_DRIVER=${CAMUNDA_JDBC_DRIVER}
-      - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN}
-      - FORMSFLOW_API_URL=${WEB_API_BASE_URL}
+      - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      - KEYCLOAK_CLIENTID=${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
+      - KEYCLOAK_CLIENTSECRET=${KEYCLOAK_BPM_CLIENT_SECRET}
+      - CAMUNDA_JDBC_URL=${CAMUNDA_JDBC_URL:-jdbc:postgresql://forms-flow-bpm-db:5432/formsflow-bpm}
+      - CAMUNDA_JDBC_USER=${CAMUNDA_JDBC_USER:-admin}
+      - CAMUNDA_JDBC_PASSWORD=${CAMUNDA_JDBC_PASSWORD:-changeme}
+      - CAMUNDA_JDBC_DRIVER=${CAMUNDA_JDBC_DRIVER:-org.postgresql.Driver}
+#      - CAMUNDA_HIKARI_CONN_TIMEOUT=${CAMUNDA_HIKARI_CONN_TIMEOUT}
+#      - CAMUNDA_HIKARI_IDLE_TIMEOUT=${CAMUNDA_HIKARI_IDLE_TIMEOUT}
+#      - CAMUNDA_HIKARI_MAX_POOLSIZE=${CAMUNDA_HIKARI_MAX_POOLSIZE}
+#      - CAMUNDA_HIKARI_VALID_TIMEOUT=${CAMUNDA_HIKARI_VALID_TIMEOUT}
+#      - CAMUNDA_BPM_HISTORY_LEVEL=${CAMUNDA_BPM_HISTORY_LEVEL}
+#      - CAMUNDA_AUTHORIZATION_FLAG=${CAMUNDA_AUTHORIZATION_FLAG}
+#      - CAMUNDA_AUTHORIZATION_REVOKE_CHECK_FLAG=${CAMUNDA_AUTHORIZATION_REVOKE_CHECK_FLAG}
+#      - CAMUNDA_JOB_CORE_POOL_SIZE=${CAMUNDA_JOB_CORE_POOL_SIZE}
+#      - CAMUNDA_JOB_LOCK_TIME_MILLIS=${CAMUNDA_JOB_LOCK_TIME_MILLIS}
+#      - CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION=${CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION}
+#      - CAMUNDA_JOB_MAX_POOL_SIZE=${CAMUNDA_JOB_MAX_POOL_SIZE}
+#      - CAMUNDA_JOB_QUEUE_SIZE=${CAMUNDA_JOB_QUEUE_SIZE}
+#      - CAMUNDA_JOB_WAIT_TIME_MILLIS=${CAMUNDA_JOB_WAIT_TIME_MILLIS}
+#      - CAMUNDA_JOB_MAX_WAIT=${CAMUNDA_JOB_MAX_WAIT}
+#      - CAMUNDA_METRICS_FLAG=${CAMUNDA_METRICS_FLAG}
+      - CAMUNDA_APP_ROOT_LOG_FLAG=${CAMUNDA_APP_ROOT_LOG_FLAG:-error}
+      - FORMSFLOW_API_URL=${FORMSFLOW_API_URL}
       - FORMIO_URL=${FORMIO_DEFAULT_PROJECT_URL}
-      - FORMIO_ROOT_EMAIL=${FORMIO_ROOT_EMAIL}
-      - FORMIO_ROOT_PASSWORD=${FORMIO_ROOT_PASSWORD}
+      - FORMIO_ROOT_EMAIL=${FORMIO_ROOT_EMAIL:-admin@example.com}
+      - FORMIO_ROOT_PASSWORD=${FORMIO_ROOT_PASSWORD:-changeme}
+      - APP_SECURITY_ORIGIN=${APP_SECURITY_ORIGIN:-*}
+      - WEBSOCKET_SECURITY_ORIGIN=${WEBSOCKET_SECURITY_ORIGIN:-*}
+      - WEBSOCKET_MESSAGE_TYPE=${WEBSOCKET_MESSAGE_TYPE:-TASK_EVENT}
+      - WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
     networks:
-      - forms-flow-bpm-network
+      - forms-flow-network
  
   forms-flow-forms-db:
+    container_name: forms-flow-forms-db
     image: mongo
     restart: always
     hostname: forms-flow-forms-db
     ports:
       - '27018:27017'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${FORMIO_MONGO_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${FORMIO_MONGO_PASSWORD}
-      MONGO_INITDB_DATABASE: ${FORMIO_MONGO_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${FORMIO_DB_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${FORMIO_DB_PASSWORD:-changeme}
+      MONGO_INITDB_DATABASE: ${FORMIO_DB_NAME:-formio}
     volumes:
       - ./../../forms-flow-forms/mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
       - mdb-data:/data/db/
       - ./mongodb/data/log/:/var/log/mongodb/
       - ./mongodb/mongod.conf:/etc/mongod.conf
     networks:
-      - forms-flow-forms-network
+      - forms-flow-network
 
   forms-flow-forms:
+    container_name: forms-flow-forms
     build:
       context: ./../../forms-flow-forms/
       dockerfile: Dockerfile
@@ -72,101 +95,129 @@ services:
     ports:
       - '3001:3001'
     # The application wants to download things to the local directory
-    # TODO: really wish I could mount this as read-only
     volumes:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_MONGO_USERNAME}:${FORMIO_MONGO_PASSWORD}@forms-flow-forms-db:27017/${FORMIO_MONGO_DATABASE}?authSource=admin\"}"
-      ROOT_EMAIL: ${FORMIO_ROOT_EMAIL}
-      ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD}
+      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_DB_USERNAME:-admin}:${FORMIO_DB_PASSWORD:-changeme}@forms-flow-forms-db:27017/${FORMIO_DB_NAME:-formio}?authSource=admin&authMechanism=SCRAM-SHA-256\"}"
+      ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
+      ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_DOMAIN: ${FORMIO_DEFAULT_PROJECT_URL}
     stdin_open: true # -i
     tty: true # -t
     networks:
-      - forms-flow-forms-network
+      - forms-flow-network
 
-  forms-flow-ai:
+
+  forms-flow-web:
+    container_name: forms-flow-web
     build:
       context: ./../../forms-flow-web/
       dockerfile: Dockerfile
+      args:
+        - NODE_ENV=${NODE_ENV:-development}
+        - GENERATE_SOURCEMAP=false
+        - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE:-formsflow-client}
+        - REACT_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE:-formsflow-reviewer}
+        - REACT_APP_STAFF_DESIGNER_ROLE=${DESIGNER_ROLE:-formsflow-designer}
+        - REACT_APP_CLIENT_ID=${CLIENT_ROLE_ID}
+        - REACT_APP_STAFF_REVIEWER_ID=${REVIEWER_ROLE_ID}
+        - REACT_APP_STAFF_DESIGNER_ID=${DESIGNER_ROLE_ID}
+        - REACT_APP_USER_RESOURCE_FORM_ID=${USER_RESOURCE_ID}
+        - REACT_APP_API_SERVER_URL=${FORMIO_DEFAULT_PROJECT_URL}
+        - REACT_APP_API_PROJECT_URL=${FORMIO_DEFAULT_PROJECT_URL}
+        - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
+        - REACT_APP_ANONYMOUS_ID=${ANONYMOUS_ID}
+        - REACT_APP_INSIGHT_API_BASE=${INSIGHT_API_URL}
+        - REACT_APP_INSIGHTS_API_KEY=${INSIGHT_API_KEY}
+        - REACT_APP_WEB_BASE_URL=${FORMSFLOW_API_URL}
+        - REACT_APP_CAMUNDA_API_URI=${CAMUNDA_API_URL}
+        - REACT_APP_WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
+        - REACT_APP_KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
+        - REACT_APP_KEYCLOAK_URL=${KEYCLOAK_URL}
+        - REACT_APP_APPLICATION_NAME=${APPLICATION_NAME:-formsflow.ai}
     volumes:
       - '.:/app'
       - '/app/node_modules'
     ports:
-      - '3000:3000'
+      - '3000:8080'
     tty: true
-    environment:
-      - NODE_ENV=${NODE_ENV}
-      - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE}
-      - REACT_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE}
-      - REACT_APP_STAFF_DESIGNER_ROLE=${DESIGNER_ROLE}
-      - REACT_APP_CLIENT_ID=${CLIENT_ROLE_ID}
-      - REACT_APP_STAFF_REVIEWER_ID=${REVIEWER_ROLE_ID}
-      - REACT_APP_STAFF_DESIGNER_ID=${DESIGNER_ROLE_ID}
-      - REACT_APP_USER_RESOURCE_FORM_ID=${USER_RESOURCE_ID}
-      - REACT_APP_API_SERVER_URL=${FORMIO_DEFAULT_PROJECT_URL}
-      - REACT_APP_API_PROJECT_URL=${FORMIO_DEFAULT_PROJECT_URL}
-      - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENTID}
-      - REACT_APP_ANONYMOUS_ID=${ANONYMOUS_ID}
-      - REACT_APP_INSIGHT_API_BASE=${INSIGHT_API_BASE}
-      - REACT_APP_INSIGHTS_API_KEY=${INSIGHT_API_KEY}
-      - REACT_APP_WEB_BASE_URL=${WEB_API_BASE_URL}
 
     networks:
-      - forms-flow-web-network
+      - forms-flow-network
+
+  #Analytics DB - Comment below if mongo db setup is available
+  forms-flow-webapi-analytics-db:
+    container_name: forms-flow-analytics-db
+    image: mongo
+    restart: always
+    hostname: forms-flow-webapi-analytics-db
+    ports:
+       - '27019:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${FORMSFLOW_API_ANALYTICS_DB_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${FORMSFLOW_API_ANALYTICS_DB_PASSWORD:-changeme}
+      MONGO_INITDB_DATABASE: ${FORMSFLOW_API_ANALYTICS_DB_NAME:-analytics}
+    volumes:
+      - ./mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
+      - mdb-data:/data/analytics/db/
+      - ./mongodb/data/log/:/var/log/mongodb/
+      - ./mongodb/mongod.conf:/etc/mongod.conf
+    networks:
+      - forms-flow-network
 
   forms-flow-webapi-db:
+    container_name: forms-flow-webapi-db
     image: postgres:11
     environment:
-      POSTGRES_USER: ${WEB_API_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${WEB_API_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${WEB_API_POSTGRES_DB}
+      POSTGRES_USER: ${FORMSFLOW_API_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${FORMSFLOW_API_DB_PASSWORD:-changeme}
+      POSTGRES_DB: ${FORMSFLOW_API_DB_NAME:-webapi}
       POSTGRES_HOST_AUTH_METHOD: 'trust'
     ports:
       - '6432:5432'
-    restart: unless-stopped
+    restart: always
     volumes:
       - ./postgres/webapi:/data/postgres
     networks:
-      - forms-flow-webapi-network
+      - forms-flow-network
 
   forms-flow-webapi:
+    container_name: forms-flow-webapi
     build:
       context: ./../../forms-flow-api/
       dockerfile: Dockerfile
-    restart: unless-stopped
+    restart: always
     links:
       - forms-flow-webapi-db
+      - forms-flow-webapi-analytics-db
     ports:
       - '5000:5000'
     volumes:
       - ./:/app:rw
     environment:
-      DATABASE_URL: ${WEB_API_DATABASE_URL}
-      BPM_TOKEN_API: ${KEYCLOAK_TOKEN_URL}
-      BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENTID}
-      BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENTSECRET}
-      BPM_API_BASE: ${CAMUNDA_API_URI}
-      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_JWT_OIDC_CONFIG}
+      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+      BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
+      BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
+      BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET}
+      BPM_API_BASE: ${CAMUNDA_API_URL}
+      FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
       JWT_OIDC_ALGORITHMS: 'RS256'
-      JWT_OIDC_JWKS_URI: ${KEYCLOAK_JWT_OIDC_JWKS_URI}
-      JWT_OIDC_ISSUER: ${KEYCLOAK_JWT_OIDC_ISSUER}
-      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENTID}
+      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
+      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
-      WEB_API_BASE_URL: ${WEB_API_BASE_URL}
-      MONGODB_URI: ${MONGODB_URI}
+      WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
+      MONGODB_URI: ${FORMSFLOW_API_ANALYTICS_DB_URL:-mongodb://changeme:analytics@forms-flow-webapi-analytics-db:27017/analytics?authSource=admin&authMechanism=SCRAM-SHA-256}
     stdin_open: true # -i
     tty: true # -t
     networks:
-      - forms-flow-webapi-network
-
+      - forms-flow-network
+      
 networks:
-  forms-flow-webapi-network:
-  forms-flow-forms-network:
-  forms-flow-bpm-network:
-  forms-flow-web-network:
+  forms-flow-network:
     driver: 'bridge'
 
 volumes:

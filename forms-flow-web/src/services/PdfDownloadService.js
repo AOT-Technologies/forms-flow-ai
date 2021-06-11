@@ -47,6 +47,10 @@ const getPdf = (formResponse, submissionData, callback) => {
       exporter.toPdf(options.config).then(callback);
     }
 }
-export default {
+
+const PdfDownloadService ={
   getPdf
-}
+};
+
+export default PdfDownloadService;
+

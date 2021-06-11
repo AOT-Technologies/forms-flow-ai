@@ -1,5 +1,9 @@
 import TextAreaWithAnalytics from "./TextAreaWithAnalytics/TextAreaWithAnalytics";
 
-export default {
+
+const components = {
   textAreaWithAnalytics: TextAreaWithAnalytics,
-}
+};
+
+export default components;
+

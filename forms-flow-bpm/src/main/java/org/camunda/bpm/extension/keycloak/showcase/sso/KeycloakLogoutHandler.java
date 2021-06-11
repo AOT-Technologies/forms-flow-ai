@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Cookie;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,9 +55,31 @@ public class KeycloakLogoutHandler implements LogoutSuccessHandler {
 			String redirectUri = requestUrl.substring(0, requestUrl.indexOf("/app")) + "/login";
 			// Complete logout URL
 			String logoutUrl = oauth2UserLogoutUri + "?redirect_uri=" + redirectUri;
-	
+			Cookie[] cookies = request.getCookies();
+			for (Cookie cookie : cookies) {
+				LOG.error("-------cookie---------->"+cookie.getName());
+				cookie.setMaxAge(0);
+				cookie.setValue(null);
+				cookie.setPath("/camunda");
+				response.addCookie(cookie);
+			}
+			LOG.error("-------context path---------->"+request.getContextPath());
+			//To remove JSESSIONID
+			Cookie cookieWithSlash = new Cookie("JSESSIONID", null);
+			//Tomcat adds extra slash at the end of context path (e.g. "/foo/")
+			cookieWithSlash.setPath(request.getContextPath() + "/");
+			cookieWithSlash.setMaxAge(0);
+
+			Cookie cookieWithoutSlash = new Cookie("JSESSIONID", null);
+			//JBoss doesn't add extra slash at the end of context path (e.g. "/foo")
+			cookieWithoutSlash.setPath(request.getContextPath());
+			cookieWithoutSlash.setMaxAge(0);
+
+			//Remove cookies on logout so that invalidSessionURL (session timeout) is not displayed on proper logout event
+			response.addCookie(cookieWithSlash); //For Tomcat
+			response.addCookie(cookieWithoutSlash); //For JBoss
 			// Do logout by redirecting to Keycloak logout
-			LOG.debug("Redirecting to logout URL {}", logoutUrl);
+			LOG.error("Redirecting to logout URL {}", logoutUrl);
 			redirectStrategy.sendRedirect(request, response, logoutUrl);
 		}
 	}	

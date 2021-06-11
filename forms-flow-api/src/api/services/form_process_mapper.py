@@ -8,7 +8,7 @@ from ..models.enums import FormProcessMapperStatus
 from ..schemas import FormProcessMapperSchema
 
 
-class FormProcessMapperService():
+class FormProcessMapperService:
     """This class manages form process mapper service."""
 
     @staticmethod
@@ -18,34 +18,50 @@ class FormProcessMapperService():
             page_number = int(page_number)
         if limit:
             limit = int(limit)
-        mappers = FormProcessMapper.find_all(page_number, limit)
+        mappers = FormProcessMapper.find_all_active(
+            page_number=page_number, limit=limit
+        )
         mapper_schema = FormProcessMapperSchema()
         return mapper_schema.dump(mappers, many=True)
 
     @staticmethod
     def get_mapper_count():
         """Get form process mapper count."""
-        return FormProcessMapper.query.filter_by(status=FormProcessMapperStatus.Active).count()
+        return FormProcessMapper.find_all_count()
 
     @staticmethod
     def get_mapper(form_process_mapper_id):
         """Get form process mapper."""
-        mapper = FormProcessMapper.find_by_id(form_process_mapper_id)
+        mapper = FormProcessMapper.find_form_by_id_active_status(
+            form_process_mapper_id=form_process_mapper_id
+        )
         if mapper:
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)
 
-        raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
+        raise BusinessException(
+            {
+                "type": "Invalid response data",
+                "message": f"Invalid form process mapper id - {form_process_mapper_id}",
+            },
+            HTTPStatus.BAD_REQUEST,
+        )
 
     @staticmethod
     def get_mapper_by_formid(form_id):
         """Get form process mapper."""
-        mapper = FormProcessMapper.find_by_form_id(form_id)
+        mapper = FormProcessMapper.find_form_by_form_id(form_id=form_id)
         if mapper:
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)
 
-        raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
+        raise BusinessException(
+            {
+                "type": "No Response",
+                "message": f"FormProcessMapper with FormID - {form_id} not stored in DB",
+            },
+            HTTPStatus.NO_CONTENT,
+        )
 
     @staticmethod
     def create_mapper(data):
@@ -55,18 +71,41 @@ class FormProcessMapperService():
     @staticmethod
     def update_mapper(form_process_mapper_id, data):
         """Update form process mapper."""
-        mapper = FormProcessMapper.find_by_id(form_process_mapper_id)
+        mapper = FormProcessMapper.find_form_by_id(
+            form_process_mapper_id=form_process_mapper_id
+        )
+        if not ((data.get("process_key")) and (data.get("process_name"))):
+            data["process_key"] = None
+            data["process_name"] = None
+
+        if not (data.get("comments")):
+            data["comments"] = None
+
         if mapper:
             mapper.update(data)
             return mapper
 
-        raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
+        raise BusinessException(
+            {
+                "type": "Invalid response data",
+                "message": f"Unable to updated FormProcessMapperId - {form_process_mapper_id}",
+            },
+            HTTPStatus.BAD_REQUEST,
+        )
 
     @staticmethod
     def mark_inactive(form_process_mapper_id):
         """Mark form process mapper as inactive."""
-        application = FormProcessMapper.find_by_id(form_process_mapper_id)
+        application = FormProcessMapper.find_form_by_id_active_status(
+            form_process_mapper_id=form_process_mapper_id
+        )
         if application:
             application.mark_inactive()
         else:
-            raise BusinessException('Invalid application', HTTPStatus.BAD_REQUEST)
+            raise BusinessException(
+                {
+                    "type": "Invalid response data",
+                    "message": f"Unable to set FormProcessMapperId - {form_process_mapper_id} inactive",
+                },
+                HTTPStatus.BAD_REQUEST,
+            )

@@ -1,4 +1,4 @@
-<p align="center"><img src=".images/logo.png"/><br/><img src="https://img.shields.io/badge/release-v3.1.0-blue"/></p> 
+<p align="center"><img src=".images/logo.png"/><br/><img src="https://img.shields.io/badge/release-v4.0.0-blue"/></p> 
 <hr/>  
 
 **formsflow.ai**   is an open source solution framework developed and maintained by [AOT Technologies](https://www.aot-technologies.com/). The framework combines selected open source Forms, Workflow, Analytics, and Security products with custom-built integration code to provide a seamless solution that provides a viable alternative to expensive, enterprise software products. 
@@ -6,22 +6,30 @@
 
 
 ## Table of Contents
-* [About the Project](#about-the-project)
-  * [Features](#features)
-* [Download and Installation](#download-and-installation)
-* [Project Tree](#project-tree)
-* [System Architecture](#system-architecture)
-* [Security Instructions](#security-instructions)
-* [System Operation](#system-operation)
+1. [Introduction](#introduction)
+2. [About the Project](#about-the-project)
+    * [Features](#features)
+3. [Download and Installation](#download-and-installation)
+4. [Project Tree](#project-tree)
+5. [System Architecture](#system-architecture)
+6. [Security Instructions](#security-instructions)
+7. [System Operation](#system-operation)
     * [Managing Forms](#managing-forms)
     * [Managing Workflows](#managing-workflows)
     * [Managing Analytics Dashboard](#managing-analytics-dashboard)
-* [Quick Start](#quick-start)
-* [License](#license)
-* [Links](#links)
+8. [Quick Start](#quick-start)
+9. [License](#license)
+10. [Links](#links)
+
+## Introduction
+> A brief introduction about formsflow.ai is given below.
+
+[![Introduction](./.images/formsflow-introduction.PNG)](https://youtu.be/_H-P3Av3gqg)
 
 ## About the Project
-The project was initiated by AOT Technologies as a means of addressing the general situation whereby end-users fill in a form, the form is processed and there may be a requirement to report on the form metrics or data. Typical use cases are:
+The project was initiated by [AOT Technologies](https://www.aot-technologies.com/) as a means of addressing the general situation whereby end-users fill in a form, the form is processed and there may be a requirement to report on the form metrics or data. 
+
+Typical use cases are:
 
 * Applications for licenses
 * Public submissions
@@ -54,12 +62,12 @@ If you want to download and setup, follow the [installation guide](./deployment)
     * [docker](./deployment/docker) Deployment using docker 
     * [nginx](./deployment/nginx) Deployment on a remote host using nginx
     * [Openshift](./deployment/openshift) Deployment using openshift platform
- * [forms-flow-analytics](./forms-flow-analytics) Redash analytics components
- * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
- * [forms-flow-forms](./forms-flow-forms) form.io deployment and  integration
  * [forms-flow-idm](./forms-flow-idm) Identity Management (Keycloak)
+ * [forms-flow-forms](./forms-flow-forms) form.io deployment and  integration
+ * [forms-flow-bpm](./forms-flow-bpm) Camunda Workflow deployment and integration
  * [forms-flow-web](./forms-flow-web) formsflow.ai integration web UI
-* [forms-flow-api](./forms-flow-api) REST API to formsflow.ai integration components
+ * [forms-flow-api](./forms-flow-api) REST API to formsflow.ai integration components
+ * [forms-flow-analytics](./forms-flow-analytics) Redash analytics components
 
 Features 
 ------------------
@@ -83,21 +91,31 @@ The components of the system are:
 Browser-based React integration web UI
 Most of the day-to-day end-user and review tasks are performed from this application,  built specifically to act as a common UI combining forms, workflow, and analytics functionality. The web application is written as a [progressive](https://en.wikipedia.org/wiki/Progressive_web_application) app with the potential for offline data-entry. formsflow UI accesses the individual system component data through native API's using OIDC or SAML access tokens.
 
+#### formsflow UI Extension for Vue.js (optional)
+There is a Vue.js based web user interface for easy integration of formsflow.ai to your existing User Interface. This extension provides components
+for easily using Forms, Tasklist by installing as a npm package. To know more details checkout [formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue) and to install package [go here](https://www.npmjs.com/package/camunda-formio-tasklist-vue).
+
 #### Redash Admin UI
 The native admin interface to Redash (bundled and unchanged). Use this to build analytics dashboards.
+
 #### Redash API
 The REST interface to the Redash core. Bundled and unchanged
+
 #### Form.io API
 The REST interface to the form.io core
+
 #### Camunda Admin UI
 The native admin interface to Camunda (bundled and unchanged) . Use this to define workflows and to manage workflow tasks as an admin.
+
 #### REST API
 Python REST API providing business logic around the internal formsflow.ai Postgres database. This API is used extensively by the formsflow.ai UI to synchronize, maintain state, extend functionality, and integrate between components.
 #### Nginx Web server (optional)
 Webserver providing reverse-proxy redirection and SSL to components for remote deployments. ( bundled and configured ) 
 
 #### Keycloak Identity management server 
-The system uses an existing (your) Keycloak server which provides a common identity management capability. Provisioning of the Keycloak server is not part of this project, however, there are specific [Keycloak configuration tasks](./forms-flow-idm/keycloak-setup.md) which are required for this project. 
+The system uses an existing (your) Keycloak server which provides a common identity management capability. The system provides default installation and provisioning of the Keycloak server for local setup, steps are mentioned [here](./forms-flow-idm/keycloak/README.md#local-keycloak-setup). 
+However, you can setup your own Keycloak server and follow the provisioning steps [here](./forms-flow-idm/keycloak/README.md#server-keycloak-setup). 
+
 
 ## Security Instructions
 To secure formsflow.ai and understand authorization roles follow the documentation on [Security Setup](./forms-flow-idm ).
@@ -108,7 +126,7 @@ In general, the operation is as follows :
 
 **Note** The URL links assume a local installation on the default ports as per the [installation instructions](./deployment ):
 
-#### End-user
+#### Client
 * End-user logs into formsflow.ai UI at URL- http://localhost:3000/
 * User is redirected to Keycloak via OIDC where user's roles are returned as OIDC claims in a JWT
 * User selects a form from the list of forms available. The available forms can be filtered by the user group with advanced configuration, by default the user sees all forms published. Form details are provided through form.io 
@@ -127,21 +145,21 @@ In general, the operation is as follows :
 * Reviewer can access metrics data from the Postgres database filtered according to the configuration. formsflow.ai UI renders these metrics into usable pages. 
 * Reviewer can access Redash analytics dashboards (as iframes). 
 
-#### Designers / Administrators
+#### Designer
 
 These users are responsible for accessing the native capabilities of the embedded products to configure analytics dashboards, create and manage workflows, and create and manage forms. It is beyond the scope of this document to describe the detailed functionality of these products, however, the general process is :
 
 * Access product URL as follows:
-  * Camunda: http://localhost:8000/camunda/
-  * form.io: http://localhost:3001/ (the form designer is embedded into the formsflow.ai UI)
-  * Redash: http://localhost:7000/
-* The login process is the same for all of them, redirect to Keycloak as OIDC (SAML for Redash), and obtain the appropriate JWT + claims. 
-* For the forms designer, the FormFlow UI recognizes the additional role of formsflow-designer and enables a form design capability
-* For Redash and Camunda, there is a mapping in the configuration file which needs to be setup between formsflow-analyst and formsflow-bpm and the corresponding groups in Redash and Camunda respectively. This is all covered in the installation instructions.
+  * forms-flow-bpm: http://localhost:8000/camunda/
+  * forms-flow-forms: http://localhost:3001/ (the form designer is embedded into the formsflow.ai UI)
+  * forms-flow-analytics: http://localhost:7000/
+* The login process is the same for all of them except for forms-flow-forms where separate credentials can be configured, redirect to Keycloak as OIDC (SAML for Redash), and obtain the appropriate JWT + claims. 
+* For the forms designer, the FormFlow UI recognizes the additional role of forms-flow-designer and enables a form design capability
+* For Redash and Camunda, there is a mapping in the configuration file which needs to be setup between forms-flow-analytics and forms-flow-bpm and the corresponding groups in Redash and Camunda respectively. This is all covered in the installation instructions.
 
 ### Managing Forms
 
-  * Login to **http://localhost:3000/** using valid **designer** credentials
+  * Login to **http://localhost:3000/** using valid **[designer](./forms-flow-idm/keycloak/README.md#health-check)** credentials
   * Navigate to menu **Forms**
   * Click the button **+ Create Form** to launch the form designer studio.
   * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.

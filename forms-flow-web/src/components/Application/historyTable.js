@@ -1,5 +1,5 @@
 import React from "react";
-import {getLocalDateTime} from "../../apiManager/services/formatterService";
+import {getFormIdSubmissionIdFromURL, getFormUrl, getLocalDateTime} from "../../apiManager/services/formatterService";
 
 
 export const defaultSortedBy = [
@@ -10,10 +10,11 @@ export const defaultSortedBy = [
 ];
 
 const linkSubmision = (cell) => {
+  const {formId,submissionId} = getFormIdSubmissionIdFromURL(cell);
+  const url = getFormUrl(formId,submissionId)
   return (
-    <div title={cell} onClick={()=> window.open(cell, "_blank")}>
-        <span className="btn btn-primary btn-sm form-btn"><span><i
-          className="fa fa-eye"/>&nbsp;</span>View Submission</span>
+    <div title={url} onClick={()=> window.open(url, "_blank")}>
+        <span className="btn btn-primary btn-sm form-btn"><span><img src="/webfonts/fa_eye.svg" alt="back"/>&nbsp;</span>View Submission</span>
     </div>
   );
 }

@@ -7,7 +7,7 @@ import ViewTask from './ViewTask';
 import './Task.scss';
 import { setCurrentPage } from '../../actions/bpmActions';
 
-const Task = () => {
+const Task = React.memo(() => {
   return (
     <div className="container" id="main">
       <Switch>
@@ -16,7 +16,7 @@ const Task = () => {
       </Switch>
     </div>
   )
-}
+})
 
 const mapDispatchToProps=(dispatch)=>{
   return{

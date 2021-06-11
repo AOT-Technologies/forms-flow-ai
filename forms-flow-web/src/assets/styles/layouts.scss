@@ -2,15 +2,17 @@
 @import "./base.scss";
 
 .content {
-  padding-bottom: 2.5rem;
+ // padding-bottom: 2.5rem;
 }
 
 .main-container{
-  min-height: 95vh;
-  padding-top: 75px;
-  margin-left:250px !important;
+  height:80vh;
+  min-height: 90vh;
+  padding-top: 30px;
+  margin-top: 2.8rem;
+  //position: fixed;
+/*  margin-left:250px !important;*/
 }
-
 
 .react-bootstrap-table table {
   table-layout: auto !important;

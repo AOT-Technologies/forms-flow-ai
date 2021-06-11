@@ -9,13 +9,14 @@ import PdfDownloadService from "../../../../../services/PdfDownloadService"
 import {setFormSubmissionLoading} from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
 
-const View = (props) => {
+const View = React.memo((props) => {
   const {
     hideComponents,
     onSubmit, options,
     errors,
     form: {form, isActive: isFormActive},
-    submission: {submission, isActive: isSubActive, url}
+    submission: {submission, isActive: isSubActive, url},
+    showPrintButton
   } = props;
   const isFormSubmissionLoading = useSelector(state => state.formDelete.isFormSubmissionLoading);
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
@@ -23,17 +24,17 @@ const View = (props) => {
   }
 
   return (
-    <div className="container">
+    <div className="container row task-container">
       <div className="main-header">
         <h3 className="task-head"> {form.title}</h3>
-        <div className="btn-right">
+        {showPrintButton?<div className="btn-right">
           <Button className="btn btn-primary btn-sm form-btn pull-right btn-right" onClick={() => PdfDownloadService.getPdf(form, submission)}>
-          <i className="fa fa-print" aria-hidden="true"/> Print As PDF</Button></div>
+          <img src="/webfonts/fa_print.svg" alt="back"/> Print As PDF</Button></div>:null}
       </div>
 
       <Errors errors={errors}/>
       <LoadingOverlay active={isFormSubmissionLoading} spinner text='Loading...' className="col-12">
-        <div className="ml-4 mr-4">
+        <div className="sub-container">
           <Form
             form={form}
             submission={submission}
@@ -46,6 +47,10 @@ const View = (props) => {
       </LoadingOverlay>
     </div>
   );
+})
+
+View.defaultProps = {
+  showPrintButton: true
 }
 
 const mapStateToProps = (state) => {

@@ -16,7 +16,7 @@ import SubmissionError from "../../../containers/SubmissionError";
 import Loading from "../../Loading";
 import Error from "../../Error";
 
-const Review = (props) => {
+const Review = React.memo((props) => {
   const [selectedOption, changeSelectedOption]= useState({value: "", label: ""})
   const [options,setOptions] = useState([]);
 
@@ -134,7 +134,7 @@ const Review = (props) => {
         </section>
       </div>
     );
-}
+});
 
 const mapDispatchToProps = (dispatch) => {
   return {

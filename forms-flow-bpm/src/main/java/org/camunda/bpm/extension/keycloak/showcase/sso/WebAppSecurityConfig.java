@@ -33,7 +33,7 @@ public class WebAppSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-		.csrf().ignoringAntMatchers("/api/**", "/engine-rest/**", "/camunda/engine-rest/**","/camunda/form-builder/**")
+		.csrf().ignoringAntMatchers("/api/**","/forms-flow-bpm-socket/**","/engine-rest/**","/engine-rest-ext/**","/camunda/engine-rest/**", "/camunda/engine-rest-ext/**", "/camunda/form-builder/**")
 				.and()
 				.antMatcher("/**")
 				.authorizeRequests()

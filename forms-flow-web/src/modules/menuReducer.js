@@ -4,7 +4,7 @@ const initialState = {
   isMenuOpen: false
 }
 
-export default (state = initialState, action)=> {
+const menu= (state = initialState, action)=> {
   switch (action.type) {
     case ACTION_CONSTANTS.TOGGLE_MENU:
       return {...state, isMenuOpen: action.payload};
@@ -12,3 +12,5 @@ export default (state = initialState, action)=> {
       return state;
   }
 }
+
+export default menu;

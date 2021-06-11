@@ -11,7 +11,7 @@ import { getUserRolePermission } from "../helper/user";
 import "./styles.scss";
 import {toggleMenu} from "../actions/menuActions";
 
-const SideBar = () => {
+const SideBar = React.memo(() => {
   const location = useLocation();
   const { pathname } = location;
   const dispatch = useDispatch();
@@ -57,6 +57,19 @@ const SideBar = () => {
               </Link>
             ) : null}
           </li>
+          {/*<li className={`${pathname.match(/^\/task/) ? "active" : ""}`} onClick={menuToggle}>
+            {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
+              <Link
+                to="/task"
+                className={`main-nav nav-link ${
+                  pathname.match(/^\/task/) ? "active-tab" : ""
+                }`}
+              >
+                <i className="fa fa-list" />
+                Tasks
+              </Link>
+            ) : null}
+          </li>*/}
           <li className={`${pathname.match(/^\/task/) ? "active" : ""}`} onClick={menuToggle}>
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
@@ -98,7 +111,7 @@ const SideBar = () => {
                   pathname.match(/^\/insights/) ? "active-tab" : ""
                 }`}
               >
-                <i className="fa fa-lightbulb-o" />
+                <img src="/webfonts/fa_lightbulb-o.svg" alt="back"/>
                 Insights
               </Link>
             ) : null}
@@ -107,6 +120,6 @@ const SideBar = () => {
       </nav>
     </div>
   );
-};
+});
 
 export default SideBar;

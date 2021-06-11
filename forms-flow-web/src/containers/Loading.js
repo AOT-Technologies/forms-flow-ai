@@ -1,5 +1,7 @@
 import React from "react";
 
-export default () => (
+const Loading = React.memo(() => (
   <img className="loader" src="/spinner.gif" alt="Loading ..." />
-);
+));
+export default Loading;
+

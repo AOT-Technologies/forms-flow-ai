@@ -11,8 +11,8 @@ class AggregatedApplicationReqSchema(Schema):
 
         unknown = EXCLUDE
 
-    from_date = fields.Date(format='%Y-%m-%d', data_key='from', required=True)
-    to_date = fields.Date(format='%Y-%m-%d', data_key='to', required=True)
+    from_date = fields.Date(format="%Y-%m-%d", data_key="from", required=True)
+    to_date = fields.Date(format="%Y-%m-%d", data_key="to", required=True)
 
 
 class AggregatedApplicationSchema(Schema):
@@ -23,7 +23,7 @@ class AggregatedApplicationSchema(Schema):
 
         unknown = EXCLUDE
 
-    form_process_mapper_id = fields.Int(data_key='mapperId')
-    form_name = fields.Str(data_key='formName')
-    application_status = fields.Str(data_key='statusName')
+    form_process_mapper_id = fields.Int(data_key="mapperId")
+    form_name = fields.Str(data_key="formName")
+    application_status = fields.Str(data_key="statusName")
     count = fields.Int()

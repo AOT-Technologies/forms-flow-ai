@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
-export default class extends Component {
-  render() {
-    const { modalOpen=false, onConfirm, message } = this.props;
+
+const SubmissionError = React.memo((props) => {
+    const { modalOpen=false, onConfirm, message } = props;
     return (
       <>
           <Modal show={modalOpen}>
@@ -18,5 +18,6 @@ export default class extends Component {
           </Modal>
         </>
     )
-  }
-}
+})
+
+export default SubmissionError;

@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 
-export default class extends Component {
-  render() {
-    const { modalOpen=false, onYes, onNo, message, yesText = 'Yes', noText = 'No' } = this.props;
+
+const Confirm = React.memo((props)=>{
+    const { modalOpen=false, onYes, onNo, message, yesText = 'Yes', noText = 'No' } = props;
     return (
       <>
           <Modal show={modalOpen}>
@@ -19,5 +19,6 @@ export default class extends Component {
           </Modal>
         </>
     )
-  }
-}
+})
+
+export default Confirm;

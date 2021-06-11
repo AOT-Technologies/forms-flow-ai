@@ -1,5 +1,4 @@
-import React from "react";
-import { Component } from "react";
+import React, {PureComponent} from "react";
 import { connect } from "react-redux";
 import { selectRoot, Form, selectError, Errors } from "react-formio";
 import { push } from "connected-react-router";
@@ -8,7 +7,7 @@ import { Button } from "react-bootstrap";
 import StepperPage from "../Stepper.js";*/
 import Loading from "../../../containers/Loading";
 
-const Preview = class extends Component {
+const Preview = class extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
@@ -66,14 +65,14 @@ const Preview = class extends Component {
 {/*          <span>
            <img src="/form.svg" width="30" height="30" alt="form" />
           </span>*/}
-          <h3 className="task-head"> <i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; {form.title}</h3>
+          <h3 className="task-head"> <img src="/webfonts/fa-wpforms.svg" alt="back"/> &nbsp; {form.title}</h3>
           <Button
             className="btn btn-primary btn-sm form-btn pull-right btn-right"
             onClick={() => {
               dispatch(push(`/formflow/${form._id}/edit`));
             }}
           >
-            <i className="fa fa-pencil" aria-hidden="true"/>
+            <img src="/webfonts/fa_pencil.svg" alt="back"/>
             &nbsp;&nbsp;Edit Form
           </Button>
           {/* <Button className="btn btn-primary btn-sm form-btn pull-right btn-right"

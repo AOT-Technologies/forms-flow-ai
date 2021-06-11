@@ -5,15 +5,11 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
-import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
-import java.util.Properties;
-import java.util.logging.Logger;
 
 /**
  * This class updates the application state and also capture audit.
@@ -39,18 +35,32 @@ public class ApplicationStateListener extends ApplicationAuditListener implement
 
     }
 
+    /**
+     * This method invokes the HTTP service invoker for application.
+     *
+     * @param execution
+     */
     private void invokeApplicationService(DelegateExecution execution) {
-        Application application = prepareApplication(execution);
-        getHTTPServiceInvoker().execute(getUrl(execution), HttpMethod.PUT, application);
+        getHTTPServiceInvoker().execute(getApplicationUrl(execution), HttpMethod.PUT,  prepareApplication(execution));
     }
 
+    /**
+     * Prepares and returns the Application object.
+     * @param execution
+     * @return
+     */
     private Application prepareApplication(DelegateExecution execution) {
         application.setApplicationStatus(String.valueOf(execution.getVariable("applicationStatus")));
         application.setFormUrl(String.valueOf(execution.getVariable("formUrl")));
         return application;
     }
 
-    private String getUrl(DelegateExecution execution){
+    /**
+     * Returns the endpoint of application API.
+     * @param execution
+     * @return
+     */
+    private String getApplicationUrl(DelegateExecution execution){
         return getHTTPServiceInvoker().getProperties().getProperty("api.url")+"/application/"+execution.getVariable("applicationId");
     }
 
@@ -58,7 +68,7 @@ public class ApplicationStateListener extends ApplicationAuditListener implement
 
 }
 @Component
-@Scope("prototype")
+@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 @Data
 class Application{
     private String applicationStatus;

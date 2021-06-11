@@ -12,7 +12,7 @@ def read_requirements(filename):
     :return: Python requirements
     :rtype: list
     """
-    with open(filename, 'r', encoding='utf-16') as req:
+    with open(filename, 'r') as req:
         requirements = req.readlines()
     install_requires = [r.strip() for r in requirements if r.find('git+') != 0]
     return install_requires

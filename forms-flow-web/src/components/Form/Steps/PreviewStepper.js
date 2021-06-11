@@ -1,30 +1,27 @@
 import React from "react";
-import {
-  Checkbox,
-  FormControlLabel,
-  Grid,
-  Card,
-  CardContent,
-  TextField,
-} from "@material-ui/core";
+import Checkbox from "@material-ui/core/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import TextField from "@material-ui/core/TextField";
+
 import SaveNext from "./SaveNext";
 
-const Preview = (props) => {
-  const {
-    handleNext,
-    handleBack,
-    activeStep,
-    steps,
-    processData,
-    // handleAnonymous,
-    setProcessData,
-    workflow,
-    formData,
-    submitData,
-    handleEditPreview,
-    disablePreview
-  } = props;
-
+const Preview = React.memo(({
+                              handleNext,
+                              handleBack,
+                              activeStep,
+                              steps,
+                              processData,
+                              // handleAnonymous,
+                              setProcessData,
+                              workflow,
+                              formData,
+                              submitData,
+                              handleEditPreview,
+                              disablePreview
+                            }) => {
 
   return (
     <Grid
@@ -115,7 +112,7 @@ const Preview = (props) => {
                 rows={4}
                 variant="outlined"
                 className="text-field"
-                value={processData.comments}
+                value={processData.comments||""}
                 onChange={(e) =>
                   setProcessData({
                     comments: e.target.value,
@@ -128,5 +125,5 @@ const Preview = (props) => {
       </Grid>
     </Grid>
   );
-};
+});
 export default Preview;

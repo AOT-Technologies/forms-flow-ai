@@ -2,18 +2,14 @@ package org.camunda.bpm.extension.commons.connector.support;
 
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.camunda.bpm.engine.ProcessEngines;
+import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.logging.Level;
+
 import java.util.logging.Logger;
 
 /**
@@ -22,16 +18,12 @@ import java.util.logging.Logger;
  * @author sumathi.thirumani@aot-technologies.com
  */
 @Service("formAccessHandler")
-public class FormAccessHandler implements IAccessHandler {
+public class FormAccessHandler extends FormTokenAccessHandler implements IAccessHandler {
 
     private final Logger LOGGER = Logger.getLogger(FormAccessHandler.class.getName());
 
-    @Autowired
-    private Properties integrationCredentialProperties;
-
-
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
-        String accessToken = getAccessToken();
+        String accessToken = getToken();
         if(StringUtils.isBlank(accessToken)) {
             LOGGER.info("Access token is blank. Cannot invoke service:"+url);
             return null;
@@ -54,32 +46,21 @@ public class FormAccessHandler implements IAccessHandler {
         return wrsp;
     }
 
-    private RestTemplate getRestTemplate() {
-        return new RestTemplate();
-    }
-
-    private String getAccessToken(){
-        Map<String,String> paramMap = new HashMap<>();
-        paramMap.put("email",integrationCredentialProperties.getProperty("formio.security.username"));
-        paramMap.put("password",integrationCredentialProperties.getProperty("formio.security.password"));
-        HashMap<String, Map> dataMap = new HashMap<>();
-        dataMap.put("data", paramMap);
-        try {
-            //HTTP Headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-            HttpEntity<String> reqObj =
-                    new HttpEntity<String>(new ObjectMapper().writeValueAsString(dataMap), headers);
-            ResponseEntity<String> response = getRestTemplate().exchange(integrationCredentialProperties.getProperty("formio.security.accessTokenUri"), HttpMethod.POST, reqObj, String.class);
-            return response.getHeaders().get("x-jwt-token").get(0);
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE,"Exception occured in getting x-jwt-token", e);
-        }
-            return null;
-    }
-
     private String getDecoratedServerUrl(String url) {
-        return integrationCredentialProperties.getProperty("formio.url")+"/form/"+StringUtils.substringAfter(url,"/form/");
+        if(StringUtils.contains(url,"/form/")) {
+            return getIntegrationCredentialProperties().getProperty("formio.url") + "/form/" + StringUtils.substringAfter(url, "/form/");
+        }
+        return getIntegrationCredentialProperties().getProperty("formio.url") +"/"+ StringUtils.substringAfterLast(url, "/");
     }
+
+    private String getToken() {
+        VariableInstance accessToken = ProcessEngines.getDefaultProcessEngine().getRuntimeService().createVariableInstanceQuery().variableName("formio_access_token").singleResult();
+        if(accessToken != null) {
+            return String.valueOf(accessToken.getValue());
+        }
+        LOGGER.info("Unable to extract token from variable context. Generating new JWT token.");
+        return getAccessToken();
+    }
+
 
 }

@@ -18,7 +18,7 @@ const firsDay = moment().format("YYYY-MM-01");
 
 const lastDay = moment().endOf("month").format("YYYY-MM-DD");
 
-const Dashboard = () => {
+const Dashboard = React.memo(() => {
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrics.submissionsList);
   const submissionsStatusList = useSelector(
@@ -73,7 +73,7 @@ const Dashboard = () => {
     setDateRange(date);
   };
 
-  const noOfApplicationsAvailable = submissionsList.length;
+  const noOfApplicationsAvailable = submissionsList?.length || 0;
   if (metricsLoadError) {
     return (
       <LoadError text="The operation couldn't be completed. Please try after sometime" />
@@ -81,12 +81,14 @@ const Dashboard = () => {
   }
   return (
     <Fragment>
-      <div class="container mb-4" id="main">
+      <div className="container mb-4" id="main">
       <div className="dashboard mb-2">
         <div className="row ">
           <div className="col-12">
             <h1 className="dashboard-title">
-              <i className="fa fa-pie-chart" aria-hidden="true"/> Metrics
+            <img className="dashboard-icon-style" src="/webfonts/fa_pie-chart.svg" alt="back"/>
+              {/* <i className="fa fa-pie-chart" aria-hidden="true"/> */}
+               Metrics
             </h1>
             <hr className="line-hr"/>
             <div className="row ">
@@ -103,7 +105,7 @@ const Dashboard = () => {
                   rangeDivider=" - "
                   clearIcon={null}
                   calendarIcon={
-                    <i className="fa fa-calendar" aria-hidden="true"/>
+                    <img src="/webfonts/fa_calendar.svg" alt="back"/>
                   }
                 />
               </div>
@@ -132,6 +134,6 @@ const Dashboard = () => {
       </div>
     </Fragment>
   );
-};
+});
 
 export default Dashboard;

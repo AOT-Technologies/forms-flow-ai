@@ -13,7 +13,8 @@ const initialState = {
   isProcessDiagramLoading: true
 };
 
-export default (state = initialState, action) => {
+
+const process = (state = initialState, action) => {
   switch (action.type) {
     case ACTION_CONSTANTS.IS_PROCESS_STATUS_LOADING:
       return { ...state, isProcessLoading: action.payload };
@@ -39,3 +40,5 @@ export default (state = initialState, action) => {
       return state;
   }
 };
+
+export default process;

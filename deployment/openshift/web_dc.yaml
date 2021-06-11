@@ -1,5 +1,7 @@
 apiVersion: template.openshift.io/v1
 kind: Template
+labels:
+    app: ${APP_NAME}
 metadata:
   name: forms-flow-web
 objects:
@@ -11,8 +13,8 @@ objects:
     data:
       keycloak.json: |-
         {
-        "realm": "",
-        "auth-server-url": "https://test.oidc.gov.bc.ca/auth/"   ,
+        "realm": "${REALM}",
+        "auth-server-url": "${AUTH_SERVER_URL}" ,
         "ssl-required": "external",
         "resource": "forms-flow-web",
         "public-client": true,
@@ -29,7 +31,7 @@ objects:
       config.js: |-
         // runtime-config.js vars
           window["_env_"] =  {
-            "NODE_ENV": "development",
+            "NODE_ENV": "production",
             "REACT_APP_CLIENT_ROLE": "formsflow-client",
             "REACT_APP_STAFF_DESIGNER_ROLE": "formsflow-designer",
             "REACT_APP_STAFF_REVIEWER_ROLE": "formsflow-reviewer",
@@ -45,7 +47,10 @@ objects:
             "REACT_APP_ANONYMOUS_ID": "${REACT_APP_ANONYMOUS_ID}",
             "REACT_APP_INSIGHT_API_BASE": "${REACT_APP_INSIGHT_API_BASE}",
             "REACT_APP_INSIGHTS_API_KEY": "{REACT_APP_INSIGHTS_API_KEY}",
-            "REACT_APP_WEBSOCKET_ENCRYPT_KEY": "{REACT_APP_WEBSOCKET_ENCRYPT_KEY}"
+            "REACT_APP_WEBSOCKET_ENCRYPT_KEY": "{REACT_APP_WEBSOCKET_ENCRYPT_KEY}",
+            "REACT_APP_KEYCLOAK_URL_REALM": "${REALM}",
+            "REACT_APP_KEYCLOAK_URL": "${REACT_APP_KEYCLOAK_URL}",
+            "REACT_APP_APPLICATION_NAME": "${REACT_APP_APPLICATION_NAME}"
           }
 
   -
@@ -55,12 +60,12 @@ objects:
       annotations:
       creationTimestamp: null
       labels:
-        app: ${NAME}
+        app: ${APP_NAME}
       name: ${NAME}
     spec:
       replicas: 1
       selector:
-        app: ${NAME}
+        app: ${APP_NAME}
       strategy:
         type: Rolling
         rollingParams:
@@ -81,7 +86,7 @@ objects:
         metadata:
           creationTimestamp: null
           labels:
-            app: ${NAME}
+            app: ${APP_NAME}
         spec:
           containers:
             - env:
@@ -129,7 +134,7 @@ objects:
       annotations:
       creationTimestamp: null
       labels:
-        app: ${NAME}
+        app: ${APP_NAME}
       name: ${NAME}
     spec:
       ports:
@@ -137,7 +142,7 @@ objects:
           port: 8080
           targetPort: 8080
       selector:
-        app: ${NAME}
+        app: ${APP_NAME}
     status:
       loadBalancer: {}
 
@@ -145,7 +150,7 @@ objects:
     kind: Route
     metadata:
       labels:
-        app: ${NAME}
+        app: ${APP_NAME}
       name: ${NAME}
     spec:
       host: ${FFAWEB_URL}
@@ -158,6 +163,11 @@ objects:
       wildcardPolicy: None
 
 parameters:
+  - name: APP_NAME
+    displayName: APP_NAME
+    description: The name assigned to all of the OpenShift resources associated to the forms-flow-ai
+    required: true
+    value: forms-flow-ai
   - name: NAME
     displayName: Name
     description: The name assigned to all of the OpenShift resources associated to the
@@ -169,12 +179,12 @@ parameters:
     required: true
     description: The namespace of the OpenShift project containing the imagestream for
       the application.
-    value: nzpnbz-tools
+    value: ""
   - name: TAG_NAME
     displayName: Environment TAG name
     description: The TAG name for this environment, e.g., dev, test, prod
     required: true
-    value: latest
+    value: ""
   - name: CPU_REQUEST
     displayName: Resources CPU Request
     description: The resources CPU request (in cores) for this build.
@@ -266,4 +276,20 @@ parameters:
   - name: REACT_APP_WEBSOCKET_ENCRYPT_KEY
     displayName: REACT_APP_WEBSOCKET_ENCRYPT_KEY
     description:
+    required: true
+  - name: AUTH_SERVER_URL
+    displayName: AUTH_SERVER_URL
+    description: Authentication server Url
+    required: true
+  - name: REALM
+    displayName: REALM
+    description: oidc REALM
+    required: true
+  - name: REACT_APP_KEYCLOAK_URL
+    displayName: REACT_APP_KEYCLOAK_URL
+    description: keycloak url without auth part in the url
+    required: true
+  - name: REACT_APP_APPLICATION_NAME
+    displayName: REACT_APP_APPLICATION_NAME
+    description: the name displayed in the application home page
     required: true

@@ -54,7 +54,12 @@
   & .dashboard-title {
     color: $black;
   }
-
+  & .dashboard-icon-style {
+    height: 27px;
+    width: 27px;
+    margin-bottom: 6px;
+    margin-right: 5px;
+  }
   & .app-title-container {
     display: flex;
     justify-content: space-between;

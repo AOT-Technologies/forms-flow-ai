@@ -4,6 +4,8 @@ In the following document, we’ll describe about the step by step instructions 
 ## Table of Contents
 1. [Usage Instructions](#usage-instructions)
 2. [Usage Instructions with build-in examples](#usage-instructions-with-example)
+  * [Employee Feedback]()
+  * [Product Survey Form]()
 3. [Links](#links)
 
 
@@ -45,11 +47,39 @@ In the following document, we’ll describe about the step by step instructions 
      * You can navigate to **Insights** tab to see wonderful dashboard created in formsflow.ai analytics server.
    * Reviewer action is completed.
 
-## Usage Instructions with example
+## Usage Instructions with examples
 
-> The following instructions are using an example form from the form.io - FeedBack form
+## Employee Feedback
 
-* End to end flow of a form is explained below using eg: Feedback form.
+* On clicking the associated task which was recently created ie. *Manager Feedback Review(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
+
+
+![manager landing](https://user-images.githubusercontent.com/83952803/121698577-c23f8480-caeb-11eb-9f55-16540ae80ecb.PNG)
+![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
+![manager_diagram](https://user-images.githubusercontent.com/83952803/121698637-cec3dd00-caeb-11eb-8e1f-a6e4c5f717ba.PNG)
+
+* On claiming the task, the Manager can fill the form and submit his review.
+
+![image](https://user-images.githubusercontent.com/70306694/121698761-f31fb980-caeb-11eb-82eb-52754632c382.png)
+![image](https://user-images.githubusercontent.com/70306694/121699346-79d49680-caec-11eb-8854-86cf1b2fa755.png)
+![image](https://user-images.githubusercontent.com/70306694/121699445-8eb12a00-caec-11eb-9d5f-cb595a59a4d3.png)
+
+* On the **History** section, the form submission history can be found and the form can be viewed.
+
+![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
+![view_submission](https://user-images.githubusercontent.com/83952803/121700370-75f54400-caed-11eb-85b7-55ff6c9c79c2.PNG)
+
+
+* On the Diagram section, the diagram highlights which state is the task currently in.
+![image](https://user-images.githubusercontent.com/70306694/121700097-2e6eb800-caed-11eb-915a-c079ecb2117f.png)
+
+* Reviewer action is completed.
+
+## Product Survey Form
+
+> The following instructions are using an example form from the form.io - Product Survey Form
+
+* End to end flow of a form is explained below using eg: Product Survey Form.
 
 ### [STEP 1](#) Designer Task
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
@@ -145,29 +175,6 @@ In the following document, we’ll describe about the step by step instructions 
 ![manager landing](https://user-images.githubusercontent.com/83952803/121698577-c23f8480-caeb-11eb-9f55-16540ae80ecb.PNG)
 
 
-* On clicking the associated task which was recently created ie. *Manager Feedback Review(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
-
-
-![manager landing](https://user-images.githubusercontent.com/83952803/121698577-c23f8480-caeb-11eb-9f55-16540ae80ecb.PNG)
-![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
-![manager_diagram](https://user-images.githubusercontent.com/83952803/121698637-cec3dd00-caeb-11eb-8e1f-a6e4c5f717ba.PNG)
-
-* On claiming the task, the Manager can fill the form and submit his review.
-
-![image](https://user-images.githubusercontent.com/70306694/121698761-f31fb980-caeb-11eb-82eb-52754632c382.png)
-![image](https://user-images.githubusercontent.com/70306694/121699346-79d49680-caec-11eb-8854-86cf1b2fa755.png)
-![image](https://user-images.githubusercontent.com/70306694/121699445-8eb12a00-caec-11eb-9d5f-cb595a59a4d3.png)
-
-* On the **History** section, the form submission history can be found and the form can be viewed.
-
-![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
-![view_submission](https://user-images.githubusercontent.com/83952803/121700370-75f54400-caed-11eb-85b7-55ff6c9c79c2.PNG)
-
-
-* On the Diagram section, the diagram highlights which state is the task currently in.
-![image](https://user-images.githubusercontent.com/70306694/121700097-2e6eb800-caed-11eb-915a-c079ecb2117f.png)
-
-* Reviewer action is completed.
 
 ## Links
 

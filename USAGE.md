@@ -91,30 +91,45 @@ In the following document, we’ll describe about the step by step instructions 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for client](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can View and Submit a form.
 
-![Image 5](./.images/client-landing.PNG)
+<!-- ![Image 5](./.images/client-landing.PNG) -->
+![image](https://user-images.githubusercontent.com/70306694/121672407-6403a900-cacd-11eb-8676-2e986d24dd3e.png)
+
 
 * Click **Submit New Button** on the form which you wanted to submit.
 * The previous action will redirect you to the form, where you can fill the details and Submit.
 
-![Image 6](./.images/client-submission.PNG)
-![Image 7](./.images/client-submission-success.PNG)
+<!-- ![Image 6](./.images/client-submission.PNG) -->
+<!-- ![Image 7](./.images/client-submission-success.PNG) -->
+![image](https://user-images.githubusercontent.com/70306694/121672751-c6f54000-cacd-11eb-892f-4677ad0e0bb5.png)
 
 * Fill the details and Submit the form, You can repeat this action as per your requirement.
+
+  ![image](https://user-images.githubusercontent.com/70306694/121672846-e8562c00-cacd-11eb-8ff4-f649b27c44e2.png)
 * If you had associated a workflow with the form, the form will start the workflow.
 * This action is completed, you can now Log out and go to [STEP 3](#) if you have a user review mentioned in your workflow.
    
 ### [STEP 3](#) Reviewer Tasks
 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-* After the log in is successful you will be redirected to http://localhost:3000/task where you can navigate to Applications tab to View submissions.
+* After the log in is successful you will be redirected to http://localhost:3000/task.
 
-![Image 8](./.images/reviewer-landing.PNG)
+<!-- ![Image 8](./.images/reviewer-landing.PNG) -->
+![image](https://user-images.githubusercontent.com/70306694/121673151-3e2ad400-cace-11eb-9ea7-85f446b664a8.png)
 
-* You can View the submissions against a form by clicking on **View Submissions Button**
+* You can navigate to Applications tab to **View the Form** submissions.
+<!-- ![Image 9](./.images/reviewer-view-forms.PNG) -->
+<!-- ![Image 10](./.images/reviewer-form-view.PNG) -->
+<!-- ![Image 11](./.images/reviewer-print.PNG) -->
+![image](https://user-images.githubusercontent.com/70306694/121673324-63b7dd80-cace-11eb-9858-30b5a8042f5f.png)
 
-![Image 9](./.images/reviewer-view-forms.PNG)
-![Image 10](./.images/reviewer-form-view.PNG)
-![Image 11](./.images/reviewer-print.PNG)
+
+* You can View the submissions against a form by clicking on **View** button.
+
+![image](https://user-images.githubusercontent.com/70306694/121673463-8518c980-cace-11eb-9d4e-c8282237d14b.png)
+
+* You can even print the Form submission as a PDF which can be rendered in browser
+
+![image](https://user-images.githubusercontent.com/70306694/121673767-e17be900-cace-11eb-83e9-62706499439f.png)
 
 * You can also submit a new form like [STEP 2](#) from the Forms tab.
 * Reviewer action is completed.

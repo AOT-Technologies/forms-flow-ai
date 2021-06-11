@@ -28,7 +28,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * The Task menu has been moved to Header section. In Task Section, filters are available in the main menu and a new Dashboard section has been added which includes metrics and Insights. (component: forms-flow-web)
 * Dynamic property to set Application Name and logo in the header. (component: forms-flow-web)
 * Default route for user having reviewer role is pointed to tasks page and that of client/designer is to forms page.(component: forms-flow-web)
-* Removed `edit/delete` Submission buttons from submission list view of reviewers.
+* Removed *edit/delete* submission buttons from submission list view of reviewers.
 
 `Fixed`
 * Cosmetic changes to show success message after loading is completed.

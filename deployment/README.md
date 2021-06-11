@@ -13,9 +13,9 @@ In the following document, we’ll describe about the different project dependen
 
 ## Prerequisites
 
-* Admin access to a local or remote server (can be local PC or Mac provided it is **64**-bit with at least **16GB** RAM and **100GB** HDD) 
-* For docker installation [Docker](https://docker.com) need to be installed.
-  * For **docker for Mac** machines make sure the memory allocation is set to at least **16GB**.
+* Admin access to a local or remote server (can be local Windows PC or Mac provided it is **64**-bit with at least **16GB** RAM and **25GB** HDD) 
+* For docker based installation [Docker](https://docker.com) needs to be installed.
+  * For **Mac**, make sure the [docker for mac](https://docs.docker.com/docker-for-mac/#resources) memory allocation is set to at least **16GB**. 
 
 ## Project Dependencies
 

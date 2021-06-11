@@ -39,7 +39,7 @@ There are multiple options for installing formsflow.ai. They are given below
   - [Docker Full Deployment](#Docker-Full-Deployment)
   - [Docker Individual Service Deployment](#Docker-Individual-Service-Deployment)
 - Openshift Based Installation
-  - [Openshift Full Deployment](#Openshift-ull-Deployment)
+  - [Openshift Full Deployment](#Openshift-Full-Deployment)
 
 ### Docker Based Installation
 ------------------

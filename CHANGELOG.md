@@ -33,7 +33,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 `Fixed`
 * Cosmetic changes to show success message after loading is completed.
 * Custom component (Text Area with analytics) not retaining the value after submission. (component: forms-flow-forms)
-* Ui layout fixes (component: forms-flow-web)
+* UI layout fixes (component: forms-flow-web)
 
 `Known Issues`
 * Consoles related to http://localhost:3001/current Api Failing. Please refer to [Issue-#106](https://github.com/AOT-Technologies/forms-flow-ai/issues/106) for more details

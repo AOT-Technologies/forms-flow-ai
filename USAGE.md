@@ -141,7 +141,9 @@ In the following document, we’ll describe about the step by step instructions 
 ![image](https://user-images.githubusercontent.com/70306694/121697036-4a248f00-caea-11eb-96b9-7c64465e3179.png)
 
 * On submitting form, the associated task can be found for the reviewer role in the **Task Menu** section for the Manager
-![image](https://user-images.githubusercontent.com/70306694/121697829-1138ea00-caeb-11eb-94f2-28a3425d707f.png)
+![image](https://user-images.githubusercontent.com/70306694/121703778-c91cc600-caf0-11eb-9322-3b75fdced8a3.png)
+![manager landing](https://user-images.githubusercontent.com/83952803/121698577-c23f8480-caeb-11eb-9f55-16540ae80ecb.PNG)
+
 
 * On clicking the associated task which was recently created ie. *Manager Feedback Review(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
 

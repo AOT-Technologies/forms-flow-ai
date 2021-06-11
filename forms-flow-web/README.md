@@ -6,7 +6,9 @@
 
 A React library for rendering out forms based on the form.io platform.
 
-Also **formsflow.ai** provides a Vue.js based web user interface for easy integration of formsflow.ai with your existing User Interface. To know more details checkout [formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue).
+Also **formsflow.ai** provides a Vue.js based web user interface for easy integration of **formsflow.ai with your existing UI based on Vue**. To know more details checkout
+[formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue), which can be easily intergrated
+with your project by installing our [npm package](https://www.npmjs.com/package/camunda-formio-tasklist-vue).
 
 ## Table of Content
 1. [Prerequisites](#prerequisites)

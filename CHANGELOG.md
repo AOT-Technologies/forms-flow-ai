@@ -15,6 +15,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Claiming of tasks are restricted to users belonging to reviewer group(formsflow/formsflow-reviewer) of keycloak.(component: forms-flow-web)
 * Application/Submission view for client role users are restricted to own submission view.(component: forms-flow-bpm, forms-flow-web)
 * Added Semantic UI css for forms design (component: forms-flow-web)
+* Listeners are well-documented with information on purpose, how-it-works and how-to-use (component : forms-flow-bpm) [Link](./forms-flow-bpm/starter-examples/listeners/listeners-readme.md)
    
 `Modified`
 * Task dashboard has been revamped with new look and feel- which would allow more control on data and stream updates.
@@ -34,6 +35,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Cosmetic changes to show success message after loading is completed.
 * Custom component (Text Area with analytics) not retaining the value after submission. (component: forms-flow-forms)
 * UI layout fixes (component: forms-flow-web)
+* Support to associate an unique form at every manual task in workflow process (component: forms-flow-bpm)
 
 `Known Issues`
 * Consoles related to http://localhost:3001/current Api Failing. Please refer to [Issue-#106](https://github.com/AOT-Technologies/forms-flow-ai/issues/106) for more details

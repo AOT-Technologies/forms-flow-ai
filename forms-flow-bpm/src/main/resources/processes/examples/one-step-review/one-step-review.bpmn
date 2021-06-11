@@ -3,7 +3,7 @@
   <bpmn:collaboration id="Collaboration_0ec7rnl">
     <bpmn:participant id="Participant_09ad0me" name="One step Review" processRef="one-step-review" />
   </bpmn:collaboration>
-  <bpmn:process id="one-step-review" name="One Step Review (Example)" isExecutable="true">
+  <bpmn:process id="one-step-review" name="Feedback Review (Example)" isExecutable="true">
     <bpmn:laneSet id="LaneSet_00d4vxl">
       <bpmn:lane id="Lane_0cqbdhe" name="Client">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>

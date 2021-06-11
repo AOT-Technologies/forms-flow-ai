@@ -13,6 +13,7 @@ To know more about Camunda, visit https://camunda.com/.
    - [Step 4 : Health Check](#health-check)
 3. [How to Deploy Process](#how-to-deploy-process)
 4. [How to Enable SSL](#how-to-enable-ssl)
+5. [forms-flow-bpm Listeners](#forms-flow-bpm-listeners)
 
 ## Prerequisites
 
@@ -89,6 +90,8 @@ To know more about Camunda, visit https://camunda.com/.
  `WEBSOCKET_SECURITY_ORIGIN` :triangular_flag_on_post:|Camunda task event streaming, for multiple origins you can separate them using a comma |eg:`host1, host2`| `http://{your-ip-address}:3000`
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
+ 
+ #### Mail Configuration
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
  
 #### Camunda - General Settings 

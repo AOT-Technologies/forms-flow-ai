@@ -72,7 +72,6 @@ In the following document, we’ll describe the step by step instructions to set
 ![image](https://user-images.githubusercontent.com/83952803/121728375-cfb83700-cb0a-11eb-96b6-af8e16348ca9.png)
 
 
-
 * After the associate workflow is completed click on **Next Button** to Preview and Confirm.
 * You can click on **EDIT Button** and publish the form for clients to sent it for client usage.
 
@@ -105,24 +104,20 @@ In the following document, we’ll describe the step by step instructions to set
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/task.
 
-<!-- ![Image 8](./.images/reviewer-landing.PNG) -->
 ![image](https://user-images.githubusercontent.com/70306694/121673151-3e2ad400-cace-11eb-9ea7-85f446b664a8.png)
 
 * You can navigate to Applications tab to **View the Form** submissions.
-<!-- ![Image 9](./.images/reviewer-view-forms.PNG) -->
-<!-- ![Image 10](./.images/reviewer-form-view.PNG) -->
-<!-- ![Image 11](./.images/reviewer-print.PNG) -->
-![image](https://user-images.githubusercontent.com/70306694/121673324-63b7dd80-cace-11eb-9858-30b5a8042f5f.png)
 
+![image](https://user-images.githubusercontent.com/70306694/121731275-5a4e6580-cb0e-11eb-87ea-7516f0a7e5ab.png)
 
 * You can View the submissions against a form by clicking on **View** button.
 
-![image](https://user-images.githubusercontent.com/70306694/121692462-be106880-cae5-11eb-90a7-abf9a47d5c73.png)
-
+![image](https://user-images.githubusercontent.com/70306694/121731427-89fd6d80-cb0e-11eb-846f-31fdb917ba5d.png)
 
 * You can even print the Form submission as a PDF which can be rendered in browser
 
-![image](https://user-images.githubusercontent.com/70306694/121692761-092a7b80-cae6-11eb-8b25-1a8076ef249e.png)
+![image](https://user-images.githubusercontent.com/70306694/121731463-9b467a00-cb0e-11eb-8a19-c754a0498f18.png)
+
 
 * On clicking the associated task which was recently created ie. *Manager Feedback Review(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
 

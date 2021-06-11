@@ -1,3 +1,4 @@
+![manager landing](https://user-images.githubusercontent.com/83952803/121698487-af2cb480-caeb-11eb-86da-c9b3870246b2.PNG)
 # Usage Instructions
 In the following document, we’ll describe about the step by step instructions to set up a working sample in formsflow.ai solution.
 
@@ -144,7 +145,10 @@ In the following document, we’ll describe about the step by step instructions 
 ![image](https://user-images.githubusercontent.com/70306694/121697829-1138ea00-caeb-11eb-94f2-28a3425d707f.png)
 
 * On clicking the associated task, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
+![manager landing](https://user-images.githubusercontent.com/83952803/121698577-c23f8480-caeb-11eb-9f55-16540ae80ecb.PNG)
 
+![manager_diagram](https://user-images.githubusercontent.com/83952803/121698637-cec3dd00-caeb-11eb-8e1f-a6e4c5f717ba.PNG)
+![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
 
 * On claiming the task, the Manager can fill the form and submit his review
 * Reviewer action is completed.

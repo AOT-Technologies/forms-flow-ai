@@ -104,7 +104,8 @@ In the following document, we’ll describe the step by step instructions to set
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/task.
 
-![image](https://user-images.githubusercontent.com/70306694/121673151-3e2ad400-cace-11eb-9ea7-85f446b664a8.png)
+![image](https://user-images.githubusercontent.com/83952803/121731648-dba5f800-cb0e-11eb-9bbb-2bce24a49d97.png)
+
 
 * You can navigate to Applications tab to **View the Form** submissions.
 

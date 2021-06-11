@@ -19,6 +19,7 @@ the system. It is built using Python :snake: .
 ## Prerequisites
 
 * For docker based installation [Docker](https://docker.com) need to be installed.
+* Admin access to [Keycloak](../forms-flow-idm/keycloak) server and ensure audience are setup.
 
 ## Solution Setup
 

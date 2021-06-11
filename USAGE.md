@@ -23,7 +23,7 @@ In the following document, we’ll describe about the step by step instructions 
    * Form designing is successfully completed, you can now **Log out** and go to [STEP 2](#) 
    
 ### [STEP 2](#) Client Task
-   * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for client](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
+   * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for client](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
    * After the log in is successful you will be redirected to http://localhost:3000/form where you can `View and Submit a form`.
    * Click **Submit New Button** on the form which you wanted to submit.
    * The previous action will redirect you to the form, where you can fill the details and Submit.
@@ -32,9 +32,9 @@ In the following document, we’ll describe about the step by step instructions 
    * This action is completed, you can now Log out and go to [STEP 3](#) if you have a user review mentioned in your workflow.
    
 ### [STEP 3](#) Reviewer Task
-   * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
+   * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
    * After successful login you will be redirected to http://localhost:3000/task where you can navigate to `Tasks tab` to see the tasks pending to be reviewed.
-   * You can click on a particular task and review the task accrodingly. There are option to **Filter Tasks** and **sorting by Created Date** to easily search the task you want.
+   * You can click on a particular task and review the task accordingly. There are option to **Filter Tasks** and **sorting by Created Date** to easily search the task you want.
    * On selecting a particular task there are options to modify **Assignee/ Groups / Due Date / FollowUp Date**.
    * Also you can view the **Form/ History / Diagram**
    * You can navigate to **Applications tab** to view form submissions.
@@ -52,13 +52,13 @@ In the following document, we’ll describe about the step by step instructions 
 * End to end flow of a form is explained below using eg: Feedback form.
 
 ### [STEP 1](#) Designer Task
-* Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
+* Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can Create / View / Edit / Delete a form.
 
 <!-- ![Image 1](./.images/designer-landing.PNG) -->
 ![image](https://user-images.githubusercontent.com/70306694/121669233-be026f80-cac9-11eb-89df-2be9f3c5f939.png)
 
-* To create a form you can click on **Create Form Button** where you can use the integrated form.io library to create a form with ease.
+* To create a new form click on **Create Form Button**. You can use the Drag-and-drop forms-builder with rich UI components to create a form with ease.
 > Product Survey form is already created, so we are skipping the step of creating Form.
 * You can modify the form by clicking on **View/Edit Form** button and you can edit form design by clicking the **Edit Form** button or continue by moving next if Form design is completed.
 

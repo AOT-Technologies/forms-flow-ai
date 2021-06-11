@@ -20,7 +20,7 @@ To know more about form.io, go to  https://form.io.
 
 ## Prerequisites
 
-* For docker installation [Docker](https://docker.com) need to be installed.
+* For docker based installation [Docker](https://docker.com) need to be installed.
 
 ## Solution Setup
 

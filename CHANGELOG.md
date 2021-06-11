@@ -21,16 +21,12 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Improved exception handling of python to provide meaningful error messages (component : forms-flow-api)
 * Added new API's for health check (component : forms-flow-api)
 * Improved README for better readability and easy installation.
-* Fixed issue of Custom component (Text Area with analytics) not retaining the value after submission. (component: forms-flow-forms)
 * The Task menu has been moved to Header section. In Task Section, filters are available in the main menu and a new Dashboard section has been added which includes metrics and Insights. (component: forms-flow-forms)
 * Dynamic property to set Application Name and logo in the header in Frontend. (component: forms-flow-web)
 
-
-`Untested Features`
-
-
 `Fixed`
 * Cosmetic changes to show success message after loading is completed
+* Custom component (Text Area with analytics) not retaining the value after submission. (component: forms-flow-forms)
 
 `Known Issues`
 * Consoles related to http://localhost:3001/current Api Failing. Please refer to [Issue-#106](https://github.com/AOT-Technologies/forms-flow-ai/issues/106) for more details

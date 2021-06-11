@@ -30,6 +30,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 `Known Issues`
 * Custom component (Text Area with analytics) not retaining the value after submission
+* Consoles related to http://localhost:3001/current Api Failing. Please refer to [Issue-#106](https://github.com/AOT-Technologies/forms-flow-ai/issues/106) for more details
    
 ## 3.1.0 - 2020-12-17
 `Modified`

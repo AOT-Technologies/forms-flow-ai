@@ -21,6 +21,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Improved exception handling of python to provide meaningful error messages (component : forms-flow-api)
 * Added new API's for health check (component : forms-flow-api)
 * Improved README for better readability and easy installation.
+* Fixed issue of Custom component (Text Area with analytics) not retaining the value after submission. (component: forms-flow-forms)
 
 `Untested Features`
 

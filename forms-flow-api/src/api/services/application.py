@@ -18,7 +18,7 @@ class ApplicationService:
     @staticmethod
     def create_application(data, token):
         """Create new application."""
-        data["application_status"] = "new"
+        data["application_status"] = "New"
 
         mapper = FormProcessMapper.find_form_by_form_id(data["form_id"])
         # temperory until the frontend can provide form_process_mapper_id

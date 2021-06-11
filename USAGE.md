@@ -125,11 +125,13 @@ In the following document, we’ll describe about the step by step instructions 
 
 * You can View the submissions against a form by clicking on **View** button.
 
-![image](https://user-images.githubusercontent.com/70306694/121673463-8518c980-cace-11eb-9d4e-c8282237d14b.png)
+![image](https://user-images.githubusercontent.com/70306694/121692462-be106880-cae5-11eb-90a7-abf9a47d5c73.png)
+
 
 * You can even print the Form submission as a PDF which can be rendered in browser
 
-![image](https://user-images.githubusercontent.com/70306694/121673767-e17be900-cace-11eb-83e9-62706499439f.png)
+![image](https://user-images.githubusercontent.com/70306694/121692761-092a7b80-cae6-11eb-8b25-1a8076ef249e.png)
+
 
 * You can also submit a new form like [STEP 2](#) from the Forms tab.
 * Reviewer action is completed.

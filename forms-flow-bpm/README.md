@@ -16,7 +16,7 @@ To know more about Camunda, visit https://camunda.com/.
 
 ## Prerequisites
 
-* For docker installation [Docker](https://docker.com) need to be installed.
+* For docker based installation [Docker](https://docker.com) need to be installed.
 * Admin access to [Keycloak](../forms-flow-idm/keycloak) server.
 
 ## Solution Setup

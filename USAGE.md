@@ -55,30 +55,38 @@ In the following document, we’ll describe about the step by step instructions 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can Create / View / Edit / Delete a form.
 
-![Image 1](./.images/designer-landing.PNG)
+<!-- ![Image 1](./.images/designer-landing.PNG) -->
+![image](https://user-images.githubusercontent.com/70306694/121669233-be026f80-cac9-11eb-89df-2be9f3c5f939.png)
 
-> Product Survey form is already created, so the below step can be skipped
 * To create a form you can click on **Create Form Button** where you can use the integrated form.io library to create a form with ease.
-* Once the form creation is completed click on **Save & Preview Button**, you can modify the form by clicking on **Edit Button** or click on **Next Button** to proceed further at this point.
+> Product Survey form is already created, so we are skipping the step of creating Form.
+* You can modify the form by clicking on **View/Edit Form** button and you can edit form design by clicking the **Edit Form** button or continue by moving next if Form design is completed.
 
-![Image 2](./.images/designer-feedback-1.PNG)
+<!-- ![Image 2](./.images/designer-feedback-1.PNG) -->
+![image](https://user-images.githubusercontent.com/70306694/121670032-a7a8e380-caca-11eb-9729-ed7a5adf2436.png)
 
-* At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow if needed eg: One Step Review with Notifications (With Example).
 
-![Image 3](./.images/designer-workflow.PNG)
+* At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow - Product Survey Administrator with Notification(Example).
+
+<!-- ![Image 3](./.images/designer-workflow.PNG) -->
+![image](https://user-images.githubusercontent.com/70306694/121670495-1ede7780-cacb-11eb-8f3d-53e2a004e5aa.png)
+
 
 * After the associate workflow is completed click on **Next Button** to Preview and Confirm.
 * You can click on **EDIT Button** and publish the form for clients to sent it for client usage.
 
-![Image 4](./.images/designer-publish.PNG)
+<!-- ![Image 4](./.images/designer-publish.PNG) -->
+![image](https://user-images.githubusercontent.com/70306694/121671914-c7410b80-cacc-11eb-8c4c-f7fe8a8f2bbd.png)
+
 
 * Click on **SAVE Button** to completed designing a form.
 
-![Image 4](./.images/designer-final-submit.PNG)
+<!-- ![Image 4](./.images/designer-final-submit.PNG) -->
+![image](https://user-images.githubusercontent.com/70306694/121672045-f35c8c80-cacc-11eb-831e-8c17c2050fae.png)
 
 * Form designing is successfully completed, you can now Log out and go to [STEP 2](#)
 
-### [STEP 2](#) Designer Task
+### [STEP 2](#) Client Tasks
 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for client](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can View and Submit a form.
@@ -95,7 +103,7 @@ In the following document, we’ll describe about the step by step instructions 
 * If you had associated a workflow with the form, the form will start the workflow.
 * This action is completed, you can now Log out and go to [STEP 3](#) if you have a user review mentioned in your workflow.
    
-### [STEP 3](#) Designer Task
+### [STEP 3](#) Reviewer Tasks
 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/task where you can navigate to Applications tab to View submissions.

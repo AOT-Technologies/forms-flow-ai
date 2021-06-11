@@ -11,6 +11,11 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * New UI for formsflow.ai based on Vue.js for easy integration of formsflow.ai to existing projects. 
 * New API for health check point (component : forms-flow-api)
 * Added toast message in Form Save,Submission Save and Form-Workflow Association.
+* Users can click on External shared link like in email to get redirected to a particular task/submission/form if the user has right permissions.(component: forms-flow-web)
+* Claiming of tasks are restricted to users belonging to reviewer group(formsflow/formsflow-reviewer) of keycloak.(component: forms-flow-web)
+* Application/Submission view for client role users are restricted to own submission view.(component: forms-flow-bpm, forms-flow-web)
+* Added Semantic Ui css for forms design (component: forms-flow-web)
+* 
    
 `Modified`
 * Task dashboard has been revamped with new look and feel; which would allow more control on data and stream updates.
@@ -23,10 +28,13 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Improved README for better readability and easy installation.
 * The Task menu has been moved to Header section. In Task Section, filters are available in the main menu and a new Dashboard section has been added which includes metrics and Insights. (component: forms-flow-forms)
 * Dynamic property to set Application Name and logo in the header. (component: forms-flow-web)
+* Default Route for user having reviewer role is pointed to tasks page and that of client/designer is to forms page. (component: forms-flow-web)
+* Removed edit/delete Submission buttons from submission list view of reviewers.
 
 `Fixed`
-* Cosmetic changes to show success message after loading is completed
+* Cosmetic changes to show success message after loading is completed.
 * Custom component (Text Area with analytics) not retaining the value after submission. (component: forms-flow-forms)
+* Ui layout Fixes (component: forms-flow-web)
 
 `Known Issues`
 * Consoles related to http://localhost:3001/current Api Failing. Please refer to [Issue-#106](https://github.com/AOT-Technologies/forms-flow-ai/issues/106) for more details

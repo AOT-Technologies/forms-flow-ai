@@ -3,7 +3,7 @@ In the following document, we’ll describe about the step by step instructions 
 
 ## Table of Contents
 1. [Usage Instructions](#usage-instructions)
-2. [Usage Instructions with example](#usage-instructions-with-example)
+2. [Usage Instructions with build-in examples](#usage-instructions-with-example)
 3. [Links](#links)
 
 
@@ -133,7 +133,20 @@ In the following document, we’ll describe about the step by step instructions 
 ![image](https://user-images.githubusercontent.com/70306694/121692761-092a7b80-cae6-11eb-8b25-1a8076ef249e.png)
 
 
-* You can also submit a new form like [STEP 2](#) from the Forms tab.
+* You can also submit a new form like **Employee Feedback Form** as in [STEP 2](#) from the **Forms** tab.
+![image](https://user-images.githubusercontent.com/70306694/121696308-91f6e680-cae9-11eb-897d-ff4ddb93e74f.png)
+
+* Based on the **Employee Feedback** form workflow associated, the form is supposed to be send to a manager with the reviewer role.
+
+![image](https://user-images.githubusercontent.com/70306694/121697036-4a248f00-caea-11eb-96b9-7c64465e3179.png)
+
+* On submitting form, the associated task can be found for the reviewer role in the **Task Menu** section for the Manager
+![image](https://user-images.githubusercontent.com/70306694/121697829-1138ea00-caeb-11eb-94f2-28a3425d707f.png)
+
+* On clicking the associated task, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
+
+
+* On claiming the task, the Manager can fill the form and submit his review
 * Reviewer action is completed.
 
 ## Links

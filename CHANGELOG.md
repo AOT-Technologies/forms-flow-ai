@@ -9,6 +9,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Automated installation steps for keycloak setup.
 * Automated manual steps for resource id generation, included batch / shell scripts to simplify the process. 
 * New UI for formsflow.ai based on Vue.js for easy integration of formsflow.ai to existing projects. 
+* New API for health check point (component : forms-flow-api)
    
 `Modified`
 * Task dashboard has been revamped with new look and feel; which would allow more control on data and stream updates.
@@ -18,7 +19,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Enhanced Form Process Mapper API and Application API endpoints (component : forms-flow-api)
 * Fixed Python security vulnerabilities and updated flask to 1.1.4 version (component : forms-flow-api)
 * Improved exception handling of python to provide meaningful error messages (component : forms-flow-api)
-* Added new API's for health check (component : forms-flow-api)
 * Improved README for better readability and easy installation.
 * The Task menu has been moved to Header section. In Task Section, filters are available in the main menu and a new Dashboard section has been added which includes metrics and Insights. (component: forms-flow-forms)
 * Dynamic property to set Application Name and logo in the header in Frontend. (component: forms-flow-web)

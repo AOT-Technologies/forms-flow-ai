@@ -162,17 +162,23 @@ mail.config properties in forms-flow-bpm as mentioned [here](./forms-flow-bpm/RE
 
 ![image](https://user-images.githubusercontent.com/70306694/121692761-092a7b80-cae6-11eb-8b25-1a8076ef249e.png)
 
+* Based on the **Product Survey** form workflow associated, the form is supposed to be send to an email to configured email-id.
 
-* You can also submit a new form like **Employee Feedback Form** as in [STEP 2](#) from the **Forms** tab.
-![image](https://user-images.githubusercontent.com/70306694/121696308-91f6e680-cae9-11eb-897d-ff4ddb93e74f.png)
-
-* Based on the **Employee Feedback** form workflow associated, the form is supposed to be send to a manager with the reviewer role.
-
-![image](https://user-images.githubusercontent.com/70306694/121697036-4a248f00-caea-11eb-96b9-7c64465e3179.png)
+![image](https://user-images.githubusercontent.com/70306694/121726317-02146500-cb08-11eb-9685-9b6881db0696.png)
 
 * On submitting form, the associated task can be found for the reviewer role in the **Task Menu** section for the Manager
-![image](https://user-images.githubusercontent.com/70306694/121703778-c91cc600-caf0-11eb-9322-3b75fdced8a3.png)
-![manager landing](https://user-images.githubusercontent.com/83952803/121698577-c23f8480-caeb-11eb-9f55-16540ae80ecb.PNG)
+![image](https://user-images.githubusercontent.com/70306694/121726407-22dcba80-cb08-11eb-89fe-fc0558a35903.png)
+![image](https://user-images.githubusercontent.com/70306694/121726536-4e5fa500-cb08-11eb-8c03-200be34634b1.png)
+
+* On clicking the associated task which was recently created ie. *Product Survey Administrator with Notification(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
+![image](https://user-images.githubusercontent.com/70306694/121726693-86ff7e80-cb08-11eb-8cf7-26d48a68d00d.png)
+![image](https://user-images.githubusercontent.com/70306694/121726734-92eb4080-cb08-11eb-8dc1-1d79e8825e54.png)
+![image](https://user-images.githubusercontent.com/70306694/121726758-9b437b80-cb08-11eb-8f27-bebe1edf4ddd.png)
+
+* On claiming the task, the Manager can fill the form and submit his review with signature.
+![image](https://user-images.githubusercontent.com/70306694/121726879-c3cb7580-cb08-11eb-968d-320fc717063d.png)
+![image](https://user-images.githubusercontent.com/70306694/121727011-f6756e00-cb08-11eb-9880-4bff44bb95b7.png)
+
 
 
 

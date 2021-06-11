@@ -78,7 +78,7 @@ In the following document, we’ll describe about the step by step instructions 
 ## Product Survey Form
 
 > The following instructions are using an example form from the form.io - `Product Survey Form`. Before using this form ensure that you have configured the
-mail.config properties in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#camunda-formsflowai-integration-settings)
+`mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#camunda-formsflowai-integration-settings)
 
 * The usage instructions mention the end to end flow of a form is explained for Product Survey Form.
 
@@ -162,7 +162,8 @@ mail.config properties in forms-flow-bpm as mentioned [here](./forms-flow-bpm/RE
 
 ![image](https://user-images.githubusercontent.com/70306694/121692761-092a7b80-cae6-11eb-8b25-1a8076ef249e.png)
 
-* Based on the **Product Survey** form workflow associated, the form is supposed to be send to an email to configured email-id.
+* Based on the **Product Survey** form workflow associated, the form is supposed to be send to an email to configured valid Gmail account.
+For that ensure you have configured `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#camunda-formsflowai-integration-settings)
 
 ![image](https://user-images.githubusercontent.com/70306694/121726317-02146500-cb08-11eb-9685-9b6881db0696.png)
 
@@ -178,7 +179,6 @@ mail.config properties in forms-flow-bpm as mentioned [here](./forms-flow-bpm/RE
 * On claiming the task, the Manager can fill the form and submit his review with signature.
 ![image](https://user-images.githubusercontent.com/70306694/121726879-c3cb7580-cb08-11eb-968d-320fc717063d.png)
 ![image](https://user-images.githubusercontent.com/70306694/121727011-f6756e00-cb08-11eb-9880-4bff44bb95b7.png)
-
 
 
 

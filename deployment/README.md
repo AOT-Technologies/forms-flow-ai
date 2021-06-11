@@ -6,8 +6,8 @@ In the following document, we’ll describe about the different project dependen
 2. [Project Dependencies](#project-dependencies)
 3. [Download the formsflow.ai](#download-the-formsflowai)
 4. [Installation](#installation)
-   * [Docker](#docker)
-   * [Openshift](#openshift)
+   * [Docker](#docker-based-installation)
+   * [Openshift](#openshift-based-installation)
 5. [Verifying the Installation Status](#verifying-the-installation-status)
 
 

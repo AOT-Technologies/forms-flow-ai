@@ -10,12 +10,13 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Automated manual steps for resource id generation, included batch and shell scripts to simplify the process. 
 * New UI for formsflow.ai based on Vue.js for easy integration of formsflow.ai to existing projects. To know more details checkout [formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue) and to install our [NPM package go here](https://www.npmjs.com/package/camunda-formio-tasklist-vue).(component: forms-flow-web)
 * New API for health check has been include in formsflow.ai-API. (component : forms-flow-api)
-* Toast message in Form Save,Submission Save and Form-Workflow Association. (component: forms-flow-web)
-* Users can click on External shared link like in email to get redirected to a particular task/submission/form if the user has right permissions. (component: forms-flow-web)
+* Added Display of success/error toast messages to notify the users on save actions. (component: forms-flow-web)
+* Users can click on External shared link (eg. from email) to get redirected to a particular task/submission/form if the user has right permissions. (component: forms-flow-web)
 * Claiming of tasks are restricted to users belonging to reviewer group(formsflow/formsflow-reviewer) of keycloak.(component: forms-flow-web)
 * Application/Submission view for client role users are restricted to own submission view.(component: forms-flow-bpm, forms-flow-web)
 * Added Semantic UI css for forms design (component: forms-flow-web)
 * Listeners are well-documented with information on purpose, how-it-works and how-to-use (component : forms-flow-bpm) [Link](./forms-flow-bpm/starter-examples/listeners/listeners-readme.md)
+* Support to associate an unique form at every manual task in workflow process (Component: forms-flow-bpm)
    
 `Modified`
 * Task dashboard has been revamped with new look and feel- which would allow more control on data and stream updates.
@@ -31,13 +32,13 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Cosmetic changes to show success message after loading is completed.
 * Custom component (Text Area with analytics) not retaining the value after submission. (component: forms-flow-forms)
 * UI layout fixes (component: forms-flow-web)
-* Support to associate an unique form at every manual task in workflow process (component: forms-flow-bpm)
 
 `Solution Component Upgrades`
 * React library upgraded to latest version-17.0.2 and fixed security vulnerabilities (Component : forms-flow-web)
 * Spring boot upgraded to latest version-2.4.2 (Component : forms-flow-bpm)
 * Redash upgraded to latest version:v9 (component : forms-flow-analytics)
 * Fixed Python security vulnerabilities and updated flask to 1.1.4 version (component : forms-flow-api)
+* Fixed Form.io security vulnerabilities. (component : forms-flow-forms)
 
 `Known Issues`
 * Consoles related to http://localhost:3001/current Api Failing. The console messages can be ignored. Please refer to [Issue-#106](https://github.com/AOT-Technologies/forms-flow-ai/issues/106) for more details.

@@ -1,5 +1,5 @@
 # Usage Instructions
-In the following document, we’ll describe about the step by step instructions to set up a working sample in formsflow.ai solution.
+In the following document, we’ll describe the step by step instructions to set up a working sample in the formsflow.ai solution.
 
 ## Table of Contents
 1. [Usage Instructions](#usage-instructions)
@@ -69,7 +69,6 @@ In the following document, we’ll describe about the step by step instructions 
 
 * At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow - Feedback Review (Example). 
 
-
 ![image](https://user-images.githubusercontent.com/83952803/121728375-cfb83700-cb0a-11eb-96b6-af8e16348ca9.png)
 
 
@@ -77,7 +76,6 @@ In the following document, we’ll describe about the step by step instructions 
 * After the associate workflow is completed click on **Next Button** to Preview and Confirm.
 * You can click on **EDIT Button** and publish the form for clients to sent it for client usage.
 
-<!-- ![Image 4](./.images/designer-publish.PNG) -->
 ![image](https://user-images.githubusercontent.com/83952803/121728648-2f164700-cb0b-11eb-8574-03e1776004a4.png)
 
 * Click on **SAVE Button** to completed designing a form.
@@ -90,22 +88,15 @@ In the following document, we’ll describe about the step by step instructions 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for client](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can View and Submit a form.
 
-<!-- ![Image 5](./.images/client-landing.PNG) -->
 ![image](https://user-images.githubusercontent.com/83952803/121729074-aea41600-cb0b-11eb-9d80-ed2c46adb1f7.png)
 
 
 
 * Click **Submit New Button** on the form which you wanted to submit.
-* The previous action will redirect you to the form, where you can fill the details and Submit.
+* The previous action will redirect you to the form, where you can fill the details and Submit. Fill the details and Submit the form, You can repeat this action as per your requirement.
 
-<!-- ![Image 6](./.images/client-submission.PNG) -->
-<!-- ![Image 7](./.images/client-submission-success.PNG) -->
 ![image](https://user-images.githubusercontent.com/83952803/121729316-f5920b80-cb0b-11eb-856f-d3c236f7df88.png)
 
-
-* Fill the details and Submit the form, You can repeat this action as per your requirement.
-
-  ![image](https://user-images.githubusercontent.com/70306694/121672846-e8562c00-cacd-11eb-8ff4-f649b27c44e2.png)
 * If you had associated a workflow with the form, the form will start the workflow.
 * This action is completed, you can now Log out and go to [STEP 3](#) if you have a user review mentioned in your workflow.
    

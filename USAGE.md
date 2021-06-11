@@ -171,7 +171,7 @@ In the following document, we’ll describe the step by step instructions to set
 ## Product Survey Form
 
 > The following instructions are using an example form from the form.io - `Product Survey Form`. Before using this form ensure that you have configured the
-`mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#camunda-formsflowai-integration-settings)
+`mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
 
 * The usage instructions mention the end to end flow of a form is explained for Product Survey Form.
 
@@ -189,7 +189,7 @@ In the following document, we’ll describe the step by step instructions to set
 
 
 * At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow - Product Survey Administrator with Notification(Example). 
-> Note: Before using this workflow ensure that you have configured the `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#camunda-formsflowai-integration-settings)
+> Note: Before using this workflow ensure that you have configured the `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
 
 <!-- ![Image 3](./.images/designer-workflow.PNG) -->
 ![image](https://user-images.githubusercontent.com/70306694/121670495-1ede7780-cacb-11eb-8f3d-53e2a004e5aa.png)
@@ -256,7 +256,7 @@ In the following document, we’ll describe the step by step instructions to set
 ![image](https://user-images.githubusercontent.com/70306694/121692761-092a7b80-cae6-11eb-8b25-1a8076ef249e.png)
 
 * Based on the **Product Survey** form workflow associated, the form is supposed to be send to an email to configured valid Gmail account.
-For that ensure you have configured `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#camunda-formsflowai-integration-settings)
+For that ensure you have configured `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
 
 ![image](https://user-images.githubusercontent.com/70306694/121726317-02146500-cb08-11eb-9685-9b6881db0696.png)
 

@@ -144,7 +144,7 @@ In the following document, we’ll describe about the step by step instructions 
 * After the log in is successful you will be redirected to http://localhost:3000/task.
 
 <!-- ![Image 8](./.images/reviewer-landing.PNG) -->
-![image](https://user-images.githubusercontent.com/70306694/121673151-3e2ad400-cace-11eb-9ea7-85f446b664a8.png)
+![image](https://user-images.githubusercontent.com/70306694/121726536-4e5fa500-cb08-11eb-8c03-200be34634b1.png)
 
 * You can navigate to Applications tab to **View the Form** submissions.
 <!-- ![Image 9](./.images/reviewer-view-forms.PNG) -->

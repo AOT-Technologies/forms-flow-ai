@@ -19,6 +19,7 @@ In the following document, we’ll describe the step by step instructions to set
    * To create a new form click on **Create Form Button**. Now you can use the Drag-and-drop forms-builder with rich UI components to create a form with ease.
    * Once the form creation is completed click on **Save & Preview Button**, you can modify the form by clicking on **Edit Button** or click on **Next Button** to proceed further at this point.
    * At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow if needed.
+   > Forms and workflows marked as [Internal] should not be used for association from formsflow-web.
    * After the workflow association is completed click on **Next Button** to preview and confirm.
    * You can click on **EDIT Button** and publish the form for clients to sent it for client usage.
    * Click on **SAVE Button** to completed designing a form.

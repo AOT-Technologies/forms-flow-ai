@@ -3,9 +3,9 @@ In the following document, we’ll describe about the step by step instructions 
 
 ## Table of Contents
 1. [Usage Instructions](#usage-instructions)
-2. [Usage Instructions with build-in examples](#usage-instructions-with-example)
-  * [Employee Feedback]()
-  * [Product Survey Form]()
+2. [Usage Instructions with examples](#usage-instructions-with-example)
+  * [Employee Feedback](#employee-feedback)
+  * [Product Survey Form](#product-survey-form)
 3. [Links](#links)
 
 

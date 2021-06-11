@@ -159,6 +159,8 @@ In the following document, we’ll describe about the step by step instructions 
 * On the **History** section, the form submission history can be found and the form can be viewed.
 
 ![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
+![view_submission](https://user-images.githubusercontent.com/83952803/121700370-75f54400-caed-11eb-85b7-55ff6c9c79c2.PNG)
+
 
 * On the Diagram section, the diagram highlights which state is the task currently in.
 ![image](https://user-images.githubusercontent.com/70306694/121700097-2e6eb800-caed-11eb-915a-c079ecb2117f.png)

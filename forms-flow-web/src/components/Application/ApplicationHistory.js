@@ -17,11 +17,11 @@ import {
   defaultSortedBy,
 } from "./historyTable";
 import Loading from "../../containers/Loading";
-import Nodata from "./nodata";
+import Nodata from '../../components/Nodata';
 import {setUpdateHistoryLoader} from "../../actions/taskActions";
 
 
-const HistoryList = (props) => {
+const HistoryList = React.memo((props) => {
   const dispatch = useDispatch();
   const isHistoryListLoading = useSelector(state => state.tasks.isHistoryListLoading);
   const appHistory = useSelector(state => state.tasks.appHistory);
@@ -37,6 +37,9 @@ const HistoryList = (props) => {
     }
   }, [applicationId, isHistoryListLoading, dispatch]);
 
+  if(!applicationId){
+    return <Nodata text={"No Application History found"} className={"div-no-application-list text-center"}/>
+  }
   if (isHistoryListLoading) {
     return <Loading/>;
   }
@@ -65,7 +68,7 @@ const HistoryList = (props) => {
             <div className="main-header">
               <h3 className="task-head">
               {/* <i class="fa fa-list-alt" alt="Task" aria-hidden="true"></i> */}
-              <i className="fa fa-list-alt" />
+              <img src="/webfonts/fa-solid_list.svg" alt="back"/>
               &nbsp;Application History
               </h3>
             </div>
@@ -90,9 +93,9 @@ const HistoryList = (props) => {
         )}
       </ToolkitProvider>
     ) : (
-      <Nodata/>
+      <Nodata text={"No Application History found"} className={"div-no-application-list text-center"}/>
     )
   );
-};
+});
 
 export default HistoryList;

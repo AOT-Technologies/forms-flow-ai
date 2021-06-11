@@ -1,5 +1,5 @@
 import { Route, Switch, Redirect } from 'react-router-dom'
-import React, { Component } from 'react'
+import React, {PureComponent} from 'react'
 import { getForm, selectRoot } from 'react-formio'
 import { connect } from 'react-redux'
 
@@ -31,7 +31,7 @@ const FormActionRoute = ({ component: Component, ...rest }) => (
   )} />
 );
 
-const Item = class extends Component{
+const Item = class extends PureComponent{
   constructor() {
     super();
 

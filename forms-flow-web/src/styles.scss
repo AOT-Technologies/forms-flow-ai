@@ -33,23 +33,24 @@ $light: $gray-100;
 $dark: $gray-800;
 
 @import "~bootstrap/scss/bootstrap.scss";
-$bcgov-font-path: "/node_modules/@bcgov/bootstrap-theme/dist/fonts/";
 @import "~font-awesome/scss/font-awesome";
 @import "~formiojs/dist/formio.full.min.css";
-@import "~@bcgov/bootstrap-theme/dist/scss/bootstrap-theme";
-@import "~@bcgov/bootstrap-theme/dist/scss/common";
-@import "~@bcgov/bootstrap-theme/dist/css/bootstrap-theme.min.css";
 
 .container,
 .container-sm,
 .container-md,
 .container-lg,
 .container-xl {
-  max-width: 1350px;
+  max-width: 100vw;
 }
 .container {
-  padding-left: 0px;
-  padding-right: 0px;
+  padding-left: 0;
+  padding-right: 0;
+  //height: 100vh;
+  height: 100%;
+}
+.task-container{
+  height: 100% !important;
 }
 .logo {
   height: 1.9em;
@@ -58,9 +59,12 @@ h4 {
   font-size: 1.2rem;
 }
 #main {
-  margin-top: 30px;
+  /* margin-top: 2px;*/
   min-height: 85vh;
-  padding-bottom: 2.5rem;
+  //max-height: 85vh;
+  padding-bottom: 1.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 body {
   font-size: 16px;
@@ -123,7 +127,7 @@ h5,
   color: white !important;
 }
 .text-muted {
-  color: #fff !important;
+  color: #868e96 !important;
 }
 
 i.fa.fa-question-circle.text-muted {
@@ -135,7 +139,6 @@ i.fa.fa-question-circle.text-muted {
   border: #38598a;
   color: white !important;
   padding: 0.75rem 1.25rem;
-  margin-bottom: 0;
   margin-bottom: 8px;
 }
 .formio-error-wrapper,
@@ -186,17 +189,17 @@ i.fa.fa-question-circle.text-muted {
 .main-nav {
   text-decoration: none !important;
   color: $black !important;
-  font-size: 18px !important;
+  font-size: 20px !important;
 }
 .nav-user-role {
   color: #003366;
   font-size: 15px;
   font-weight: bold;
-  padding: 0rem 0rem;
+  padding: 0 0;
 }
 .nav-user-email {
   font-size: 14px;
-  padding: 0rem 0rem;
+  padding: 0 0;
   color: #373a3c;
   white-space: nowrap;
   overflow: hidden;
@@ -204,19 +207,19 @@ i.fa.fa-question-circle.text-muted {
 }
 .nav-user-name {
   font-size: 20px;
-  padding: 0rem 0rem;
+  padding: 0 0;
   font-weight: 600;
   color: #373a3c;
 }
 .nav-logout {
   cursor: pointer;
-  padding: 0rem 0rem;
+  padding: 0 0;
   font-size: 16px;
 }
 .nav-tabs .nav-link.active {
   color: #4d4d4d;
   background-color: #f5f5f5;
-  border-color: 1px solid #f5f5f5 !important;
+  border-color: #f5f5f5 !important;
 }
 .nav-link {
   a {
@@ -227,6 +230,30 @@ i.fa.fa-question-circle.text-muted {
   background-color: $white;
 }
 .active-tab {
+  //color: $lightblue !important;
+  //border-bottom: 1px solid red;
+  background-color: transparent;
+  filter: invert(36%) sepia(38%) saturate(7152%) hue-rotate(227deg) brightness(101%) contrast(98%);
+}
+
+.active-tab-dropdown > #dashboard-dropdown {
+  //color: $lightblue !important;
+  //border-bottom: 1px solid red;
+  background-color: transparent;
+  filter: invert(36%) sepia(38%) saturate(7152%) hue-rotate(227deg) brightness(101%) contrast(98%);
+}
+.active-tab-dropdown > #task-dropdown {
+  //color: $lightblue !important;
+  //border-bottom: 1px solid red;
+  background-color: transparent;
+  filter: invert(36%) sepia(38%) saturate(7152%) hue-rotate(227deg) brightness(101%) contrast(98%);
+}
+.dropdown-item:hover{
+  filter: none;
+  background-color: #e9ecef;
+}
+.selected-tag {
+  color: $lightblue !important;
   border-bottom: 1px solid $lightblue;
   background-color: transparent;
 }
@@ -236,6 +263,10 @@ i.fa.fa-question-circle.text-muted {
   margin-left: 10px;
   cursor: pointer;
 }
+// .dropdown-menu {
+//   height: 17em;
+//   overflow-y: scroll;
+// }
 .dropdown-menu:before {
   position: absolute;
   top: -7px;
@@ -257,6 +288,27 @@ i.fa.fa-question-circle.text-muted {
   border-bottom: 6px solid #ffffff;
   border-left: 6px solid transparent;
   content: "";
+}
+.taskDropdown {
+  .dropdown-menu::before {
+    left: 10%;
+    right: 100%;
+  }
+  .dasboard-icon-dropdown{
+    margin-bottom: 5px;
+  }
+  .task-dropdown-icon{
+    margin-bottom: 1px;
+  }
+  .applications-icon-header{
+    width: 23px;
+    height: 23px;
+    margin-bottom: 5px;
+  }
+  .dropdown-menu::after {
+    left: 10%;
+    right: 100%;
+  }
 }
 .custom-profile {
   position: absolute;
@@ -300,7 +352,7 @@ i.fa.fa-question-circle.text-muted {
 .lbl-app-nanme {
   font-size: 20px;
   color: #ffff;
-  margin-bottom: 0px;
+  margin-bottom: 0;
   font-weight: bold;
   margin-left: 20px;
 }
@@ -323,22 +375,48 @@ i.fa.fa-question-circle.text-muted {
   border-color: white;
 }
 .main-header {
-  margin-left: 0px !important;
+  margin-left: 15px !important;
   display: flex;
   margin-top: 10px;
   margin-bottom: 25px;
   height: 30px;
+  width: 100%;
+}
+.back-icon{
+  display: flex;
+}
+.sub-container {
+  margin-left: 15px;
 }
 .task-head {
   font-weight: bold;
   font-size: 30px;
   margin-left: 10px !important;
-  display: flex;
+  //display: flex;
+}
+.icon-wp-forms{
+  height: 30px;
+}
+.forms-text{
+  vertical-align: bottom;
+  margin-left: 10px;
+  margin-bottom: 0px;
+}
+.task-head-icons{
+  height: 30px;
+  width: 30px;
 }
 .task-head-details {
   font-weight: bold;
   font-size: 30px;
   margin-left: 10px !important;
+}
+.icon-wp-forms{
+  height: 30px;
+}
+.forms-text{
+  vertical-align: middle;
+  margin-left: 10px;
 }
 .btn-right {
   float: right;
@@ -375,36 +453,37 @@ select option:hover {
   margin: 8.75rem auto !important;
 }
 
-#main{
-background-color: #fff;
-    padding: 24px;
-    box-shadow: 0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12);
+#main {
+  background-color: #fff;
+  padding: 10px;
+  box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2),
+    0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
 }
 
 #sidebar {
-background: #fff;
-}
-
-
-.content {
-  background-color: #F8F8F8;
-}
-
-#sidebar ul li.active > a, #sidebar a[aria-expanded="true"] {
   background: #fff;
 }
 
-header nav{
-  border-bottom: #fff
+.content {
+  background-color: #f8f8f8;
 }
 
-.topheading-border-bottom{
+#sidebar ul li.active > a,
+#sidebar a[aria-expanded="true"] {
+  background: #fff;
+}
+
+header nav {
+  border-bottom: #fff;
+}
+
+.topheading-border-bottom {
   z-index: 2000;
   border-bottom: 2px solid #4d61fc !important;
-  padding: 0rem 0.5rem !important;
-  box-shadow: 0px 3px 3px -2px rgba(0,0,0,0.2), 0px 3px 4px 0px rgba(0,0,0,0.14), 0px 1px 8px 0px rgba(0,0,0,0.12);
+  padding: 0 0.5rem !important;
+  box-shadow: 0 3px 3px -2px rgba(0, 0, 0, 0.2),
+    0px 3px 4px 0px rgba(0, 0, 0, 0.14), 0px 1px 8px 0px rgba(0, 0, 0, 0.12);
 }
-
 
 .rounded-circle {
   border-radius: 50% !important;
@@ -420,10 +499,19 @@ header nav{
   color: black;
 }
 
-div[disabled]
-{
+div[disabled] {
   pointer-events: none;
   opacity: 0.7;
 }
 
+.hide-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+.css-79elbk {
+ // position: none;
+}

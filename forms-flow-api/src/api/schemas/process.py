@@ -49,7 +49,7 @@ class ProcessDefinitionXMLSchema(Schema):
         unknown = EXCLUDE
 
     id = fields.Str()
-    processXml = fields.Str(data_key='bpmn20Xml', attribute='bpmn20Xml')
+    processXml = fields.Str(data_key="bpmn20Xml", attribute="bpmn20Xml")
 
 
 class ProcessMessageSchema(Schema):
@@ -63,6 +63,7 @@ class ProcessMessageSchema(Schema):
     messageName = fields.Str()
     processInstanceId = fields.Str()
 
+
 class ProcessActivityInstanceSchema(Schema):
     """This class manages task response schema."""
 
@@ -71,7 +72,9 @@ class ProcessActivityInstanceSchema(Schema):
 
         unknown = EXCLUDE
 
-    process_instance_id = fields.Str(data_key='processInstanceId', attribute='processInstanceId')
-    childActivityInstances = fields.Str(data_key='childActivityInstances', attribute='childActivityInstances')
-
-
+    process_instance_id = fields.Str(
+        data_key="processInstanceId", attribute="processInstanceId"
+    )
+    childActivityInstances = fields.Str(
+        data_key="childActivityInstances", attribute="childActivityInstances"
+    )

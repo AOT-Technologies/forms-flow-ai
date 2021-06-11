@@ -5,10 +5,10 @@ import json
 import requests
 from flask import current_app
 
-from ...utils.logging import log_error, log_info
+from api.utils.logging import log_bpm_error
 
 
-class BaseBPMService():
+class BaseBPMService:
     """This class manages all of the base externel service calls."""
 
     @classmethod
@@ -21,7 +21,12 @@ class BaseBPMService():
         if response.ok:
             data = json.loads(response.text)
         else:
-            log_error('ERROR:Create - status_code: ' + str(response.status_code) + ', ' + response.text)
+            log_bpm_error(
+                "ERROR:Create - status_code: "
+                + str(response.status_code)
+                + ", "
+                + response.text
+            )
 
         return data
 
@@ -39,32 +44,34 @@ class BaseBPMService():
             else:
                 data = True
         else:
-            log_error('ERROR:Create - status_code: ' + str(response.status_code) + ', ' + response.text)
+            log_bpm_error(
+                "ERROR:Create - status_code: "
+                + str(response.status_code)
+                + ", "
+                + response.text
+            )
         return data
 
     @classmethod
     def _get_headers_(cls, token):
         """Generate headers."""
-        bpm_token_api = current_app.config.get('BPM_TOKEN_API')
-        bpm_client_id = current_app.config.get('BPM_CLIENT_ID')
-        bpm_client_secret = current_app.config.get('BPM_CLIENT_SECRET')
-        bpm_grant_type = current_app.config.get('BPM_GRANT_TYPE')
+        bpm_token_api = current_app.config.get("BPM_TOKEN_API")
+        bpm_client_id = current_app.config.get("BPM_CLIENT_ID")
+        bpm_client_secret = current_app.config.get("BPM_CLIENT_SECRET")
+        bpm_grant_type = current_app.config.get("BPM_GRANT_TYPE")
 
-        headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
         payload = {
-            'client_id': bpm_client_id,
-            'client_secret': bpm_client_secret,
-            'grant_type': bpm_grant_type
+            "client_id": bpm_client_id,
+            "client_secret": bpm_client_secret,
+            "grant_type": bpm_grant_type,
         }
         if token:
-            return {
-                'Authorization': token,
-                'content-type': 'application/json'
-            }
+            return {"Authorization": token, "content-type": "application/json"}
         else:
             response = requests.post(bpm_token_api, headers=headers, data=payload)
             data = json.loads(response.text)
             return {
-                'Authorization': 'Bearer ' + data['access_token'],
-                'Content-Type': 'application/json'
+                "Authorization": "Bearer " + data["access_token"],
+                "Content-Type": "application/json",
             }

@@ -1,6 +1,6 @@
 import baseEditForm from 'formiojs/components/_classes/component/Component.form';
 
-export default (...extend) => {
+const settingsForm = (...extend) => {
   return baseEditForm([
     {
       key: 'display',
@@ -43,3 +43,6 @@ export default (...extend) => {
     },
   ], ...extend);
 }
+
+export default settingsForm;
+

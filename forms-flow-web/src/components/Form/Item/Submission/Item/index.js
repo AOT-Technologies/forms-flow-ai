@@ -12,10 +12,10 @@ import {getUserRolePermission} from "../../../../../helper/user";
 import {CLIENT, STAFF_REVIEWER} from "../../../../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../../../../constants/applicationConstants";
 
-const Item = (props) => {
+const Item = React.memo((props) => {
   const {formId, submissionId} = useParams();
   const dispatch = useDispatch();
-  const path = props.location.pathname;
+  //const path = props.location.pathname;
   const applicationId = useSelector((state) => selectRoot('submission', state)?.submission?.data?.applicationId || null);
   const userRoles = useSelector((state) => {
     return selectRoot("user", state).roles;
@@ -36,10 +36,10 @@ const Item = (props) => {
   }, [applicationId, dispatch]);
 
   useEffect(() => {
-    if (applicationStatus) {
-      if (getUserRolePermission(userRoles, STAFF_REVIEWER)) {
-        setEditAllowed(!CLIENT_EDIT_STATUS.includes(applicationStatus));
-      } else if (getUserRolePermission(userRoles, CLIENT)) {
+    if (getUserRolePermission(userRoles, STAFF_REVIEWER)) {
+      setEditAllowed(true);
+    }else if (applicationStatus) {
+       if (getUserRolePermission(userRoles, CLIENT)) {
         setEditAllowed(CLIENT_EDIT_STATUS.includes(applicationStatus));
       }
     }
@@ -51,22 +51,22 @@ const Item = (props) => {
       <ul className="nav nav-tabs">
         {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<li className="nav-item">
           <Link className="nav-link" to={`/form/${formId}/submission`}>
-            <i className="fa fa-chevron-left"/>
+            <img src="/webfonts/fa_chevron-left.svg" alt="back"/>
           </Link>
         </li>:null}
-        {(path.indexOf("edit") > 0) ?
+        {/*{(path.indexOf("edit") > 0) ?
           <li className="nav-item">
             <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}`}>
-              <i className="fa fa-eye"/> View
+            <img src="/webfonts/fa_eye.svg" alt="back"/> View
             </Link>
           </li>
           :
           editAllowed ? (<li className="nav-item">
             <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}/edit`}>
-              <i className="fa fa-edit"/> Edit
+              <img src="/webfonts/fa_edit.svg" alt="back"/> Edit
             </Link>
           </li>) : null
-        }
+        }*/}
       </ul>
       <Switch>
         <Route exact path="/form/:formId/submission/:submissionId" component={View}/>
@@ -74,6 +74,6 @@ const Item = (props) => {
       </Switch>
     </div>
   );
-}
+})
 
 export default Item;

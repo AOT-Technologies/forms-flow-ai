@@ -5,15 +5,28 @@ keycloak.url.realm: ${KEYCLOAK_URL_REALM}
 keycloak.clientId: ${KEYCLOAK_CLIENTID}
 keycloak.clientSecret: ${KEYCLOAK_CLIENTSECRET}
 
-app.security.origin: ${APP_SECURITY_ORIGIN}
-
 spring.datasource:
-  jdbc-url: ${JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
-  username: ${JDBC_USER:sa}
-  password: ${JDBC_PASSWORD:sa}
-  driverClassName: ${JDBC_DRIVER:org.h2.Driver}
-#spring.h2.console.enabled: true
+  jdbc-url: ${CAMUNDA_JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+  username: ${CAMUNDA_JDBC_USER:sa}
+  password: ${CAMUNDA_JDBC_PASSWORD:sa}
+  driverClassName: ${CAMUNDA_JDBC_DRIVER:org.h2.Driver}
+  type: com.zaxxer.hikari.HikariDataSource
+  connectionTimeout: ${CAMUNDA_HIKARI_CONN_TIMEOUT:30000}
+  idleTimeout: ${CAMUNDA_HIKARI_IDLE_TIMEOUT:600000}
+  maximumPoolSize: ${CAMUNDA_HIKARI_MAX_POOLSIZE:10}
+  validationTimeout: ${CAMUNDA_HIKARI_VALID_TIMEOUT:5000}
 
+# Session Management in JDBC
+#session.datasource:
+#  jdbc-url: ${CAMUNDA_SESSION_JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+#  username: ${CAMUNDA_SESSION_JDBC_USER:sa}
+#  password: ${CAMUNDA_SESSION_JDBC_PASSWORD:sa}
+#  driverClassName: ${CAMUNDA_SESSION_JDBC_DRIVER:org.h2.Driver}
+#  type: com.zaxxer.hikari.HikariDataSource
+#  connectionTimeout: ${CAMUNDA_SESSION_HIKARI_CONN_TIMEOUT:30000}
+#  idleTimeout: ${CAMUNDA_SESSION_HIKARI_IDLE_TIMEOUT:600000}
+#  maximumPoolSize: ${CAMUNDA_SESSION_HIKARI_MAX_POOLSIZE:10}
+#  validationTimeout: ${CAMUNDA_SESSION_HIKARI_VALID_TIMEOUT:5000}
 
 formsflow.ai:
   api:
@@ -36,8 +49,15 @@ spring:
           issuer-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}
   main:
     allow-bean-definition-overriding: true
+#  session:
+#    jdbc.initialize-schema: always
+#    store-type: ${CAMUNDA_SESSION_STORE_TYPE:none}
+#    timeout.seconds: ${CAMUNDA_SESSION_STORE_TIMEOUT:28800}
 
 management:
+  health:
+    db:
+      enabled: true
   endpoints:
     web:
       exposure:
@@ -46,30 +66,46 @@ management:
 info:
   app:
     name: "Camunda"
-    description: "Forms Process Engine"
+    description: "formsflow.ai Engine"
     version: "7.13"
   java:
     version: "11"
 
-# Redis Session Cache not yet in use
-#  session:
-#    store-type: ${SESSION_STORE_TYPE:none}
-#    redis.flush-mode: immediate
-#  redis:
-#    host: ${REDIS_HOST:localhost}
-#    port: ${REDIS_PORT:6379}
-
 camunda.bpm:
-  history-level: audit
+  history-level: ${CAMUNDA_BPM_HISTORY_LEVEL:none}
   authorization:
-    enabled: true
+    enabled: ${CAMUNDA_AUTHORIZATION_FLAG:true}
+    authorization-check-revokes: ${CAMUNDA_AUTHORIZATION_REVOKE_CHECK_FLAG:auto}
   filter:
     create: All tasks
   webapp:
     application-path: /
+    csrf:
+      enable-secure-cookie: true
+    header-security:
+      content-security-policy-disabled: false
+      content-security-policy-value:  base-uri 'self';
+        img-src 'self' data:;
+        block-all-mixed-content;
+        form-action 'self';
+        frame-ancestors 'none';
+        object-src 'none'
+#  job-execution:
+#    core-pool-size: ${CAMUNDA_JOB_CORE_POOL_SIZE:3}
+#    lock-time-in-millis: ${CAMUNDA_JOB_LOCK_TIME_MILLIS:300000}
+#    max-jobs-per-acquisition: ${CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION:3}
+#    max-pool-size: ${CAMUNDA_JOB_MAX_POOL_SIZE:10}
+#    queue-capacity: ${CAMUNDA_JOB_QUEUE_SIZE:3}
+#    wait-time-in-millis: ${CAMUNDA_JOB_WAIT_TIME_MILLIS:5000}
+#    max-wait: ${CAMUNDA_JOB_MAX_WAIT:60000}
+#  metrics:
+#    enabled: ${CAMUNDA_METRICS_FLAG:true}
 server:
   port: 8080
   servlet.context-path: /camunda
+  session:
+    cookie:
+      secure: true
 
 security:
   oauth2:
@@ -82,8 +118,24 @@ security:
       grant-type: authorization_code implicit refresh_token password client_credentials
     resource:
       userInfoUri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/userinfo
+  headers:
+    hsts: domain
 
-logging.level.org.springframework.security: DEBUG
+
+logging:
+  level:
+    org.springframework.security: ${CAMUNDA_APP_ROOT_LOG_FLAG}
+    org.springframework.web: ${CAMUNDA_APP_ROOT_LOG_FLAG}
+    org.springframework.jdbc: ${CAMUNDA_APP_ROOT_LOG_FLAG}
+    org.camunda.bpm.extension: ${CAMUNDA_APP_ROOT_LOG_FLAG}
+
+
+# Camunda Rest API
+rest.security:
+  enabled: true
+  jwk-set-url: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/certs
+  required-audience: camunda-rest-api
+
 
 plugin.identity.keycloak.rest:
   userNameClaim: preferred_username
@@ -100,3 +152,12 @@ plugin.identity.keycloak:
   useGroupPathAsCamundaGroupId: true
   administratorGroupName: camunda-admin
   disableSSLCertificateValidation: true
+
+app.security.origin: ${APP_SECURITY_ORIGIN}
+
+websocket:
+  security:
+    origin: ${WEBSOCKET_SECURITY_ORIGIN}
+    secretKey: ${WEBSOCKET_ENCRYPT_KEY}
+  messageType: ${WEBSOCKET_MESSAGE_TYPE}
+

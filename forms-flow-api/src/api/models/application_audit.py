@@ -10,19 +10,20 @@ class ApplicationAudit(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     """This class manages application audit against each form."""
 
     id = db.Column(db.Integer, primary_key=True)
-    application_id = db.Column(db.Integer,nullable=False)
-    application_status = db.Column(db.String(50), nullable=False)
+    application_id = db.Column(db.Integer, nullable=False)
+    application_status = db.Column(db.String(100), nullable=False)
     form_url = db.Column(db.String(500), nullable=False)
-    
 
     @classmethod
     def create_from_dict(cls, application_audit_info: dict) -> ApplicationAudit:
         """Create new application."""
         if application_audit_info:
             application_audit = ApplicationAudit()
-            application_audit.application_id = application_audit_info['application_id']
-            application_audit.application_status = application_audit_info['application_status']
-            application_audit.form_url = application_audit_info['form_url']
+            application_audit.application_id = application_audit_info["application_id"]
+            application_audit.application_status = application_audit_info[
+                "application_status"
+            ]
+            application_audit.form_url = application_audit_info["form_url"]
             application_audit.save()
             return application_audit
         return None
@@ -30,10 +31,11 @@ class ApplicationAudit(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     @classmethod
     def get_application_history(cls, application_id: int):
         """Fetch application history."""
-        where_condition = ''
+        where_condition = ""
         where_condition += f""" audit.application_id = {str(application_id)} """
 
-        result_proxy = db.session.execute(f"""SELECT
+        result_proxy = db.session.execute(
+            f"""SELECT
                 audit.application_status,
                 audit.form_url,
                 audit.created,
@@ -43,7 +45,8 @@ class ApplicationAudit(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
                 {where_condition}
             GROUP BY (application_status,form_url,created)    
             ORDER BY created
-            """)
+            """
+        )
 
         result = []
         for row in result_proxy:

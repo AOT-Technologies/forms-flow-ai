@@ -4,15 +4,34 @@ services:
   forms-flow-webapi-db:
     image: postgres:11
     environment:
-      POSTGRES_USER: ${WEB_API_POSTGRES_USER}
-      POSTGRES_PASSWORD: ${WEB_API_POSTGRES_PASSWORD}
-      POSTGRES_DB: ${WEB_API_POSTGRES_DB}
+      POSTGRES_USER: ${FORMSFLOW_API_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${FORMSFLOW_API_DB_PASSWORD:-changeme}
+      POSTGRES_DB: ${FORMSFLOW_API_DB_NAME:-webapi}
       POSTGRES_HOST_AUTH_METHOD: 'trust'
     ports:
       - '6432:5432'
     restart: unless-stopped
     volumes:
       - ./postgres/webapi:/data/postgres
+    networks:
+      - forms-flow-webapi-network
+
+#Analytics DB - UnComment below if mongo db setup is available
+
+  forms-flow-webapi-analytics-db:
+    image: mongo
+    restart: always
+    hostname: forms-flow-webapi-analytics-db
+    ports:
+       - '27019:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${FORMSFLOW_API_ANALYTICS_DB_USERNAME:-mongo}
+      MONGO_INITDB_ROOT_PASSWORD: ${FORMSFLOW_API_ANALYTICS_DB_PASSWORD:-changeme}
+      MONGO_INITDB_DATABASE: ${FORMSFLOW_API_ANALYTICS_DB_NAME:-analytics}
+    volumes:
+      - mdb-data:/data/analytics/db/
+      - ./mongodb/data/log/:/var/log/mongodb/
+      - ./mongodb/mongod.conf:/etc/mongod.conf
     networks:
       - forms-flow-webapi-network
 
@@ -23,25 +42,27 @@ services:
     restart: unless-stopped
     links:
       - forms-flow-webapi-db
+      - forms-flow-webapi-analytics-db
     ports:
       - '5000:5000'
     volumes:
       - ./:/app:rw
     environment:
-      DATABASE_URL: ${WEB_API_DATABASE_URL}
-      BPM_TOKEN_API: ${KEYCLOAK_TOKEN_URL}
-      BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENTID}
-      BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENTSECRET}
-      BPM_API_BASE: ${CAMUNDA_API_URI}
-      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_JWT_OIDC_CONFIG}
+      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+      BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
+      BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
+      BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET}
+      BPM_API_BASE: ${CAMUNDA_API_URL}
+      FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
       JWT_OIDC_ALGORITHMS: 'RS256'
-      JWT_OIDC_JWKS_URI: ${KEYCLOAK_JWT_OIDC_JWKS_URI}
-      JWT_OIDC_ISSUER: ${KEYCLOAK_JWT_OIDC_ISSUER}
-      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENTID}
+      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
+      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
-      WEB_API_BASE_URL: ${WEB_API_BASE_URL}
-      MONGODB_URI: ${MONGODB_URI}
+      WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
+      MONGODB_URI: ${FORMSFLOW_API_ANALYTICS_DB_URL:-mongodb://changeme:analytics@forms-flow-webapi-analytics-db:27017/analytics?authSource=admin&authMechanism=SCRAM-SHA-256}
     stdin_open: true # -i
     tty: true # -t
     networks:
@@ -50,3 +71,6 @@ services:
 networks:
   forms-flow-webapi-network:
     driver: 'bridge'
+
+volumes:
+  mdb-data:

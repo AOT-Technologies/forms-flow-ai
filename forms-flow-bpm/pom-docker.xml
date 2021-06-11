@@ -6,7 +6,7 @@
 
 	<groupId>org.camunda.bpm.extension.examples</groupId>
 	<artifactId>camunda-bpm-identity-keycloak-examples-sso-kubernetes</artifactId>
-	<version>1.5.0</version>
+	<version>2.0.0</version>
 
 	<name>camunda BPM - engine plugins - identity - keycloak - examples - showcase</name>
 	<description>Showcase for using Camunda Keycloak Identity Provider </description>
@@ -23,8 +23,8 @@
 		<!-- versions -->
 		<version.camunda>7.13.0</version.camunda>
 		<version.camundaSpringBoot>7.13.0</version.camundaSpringBoot>
-		<version.springBoot>2.2.7.RELEASE</version.springBoot>
-		<version.springSecurityOauth2>2.2.7.RELEASE</version.springSecurityOauth2>
+		<version.springBoot>2.4.2</version.springBoot>
+		<version.springSecurityOauth2>2.4.2</version.springSecurityOauth2>
 	</properties>
 
 	<dependencyManagement>
@@ -55,11 +55,18 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>5.3.4</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.camunda.bpm.springboot</groupId>
 			<artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
 			<!-- 			<artifactId>camunda-bpm-spring-boot-starter-webapp-ee</artifactId> -->
 			<version>${version.camundaSpringBoot}</version>
 		</dependency>
+
 
 		<dependency>
 			<groupId>org.camunda.bpm.springboot</groupId>
@@ -133,6 +140,20 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
 		</dependency-->
+
+
+
+
+		<!-- MongoDB Session Cache
+            <dependency>
+                <groupId>org.springframework.session</groupId>
+                <artifactId>spring-session-data-mongodb</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-mongodb</artifactId>
+            </dependency>
+        -->
 
 		<!-- Keycloak Identity Prover Plugin  -->
 		<dependency>
@@ -257,7 +278,7 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Add your own dependencies here, if in compile scope, they are added 
+		<!-- Add your own dependencies here, if in compile scope, they are added
 			to the jar -->
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
@@ -275,18 +296,48 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.10.3</version>
+			<version>2.12.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.12.2</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
-			<version>2.10.3</version>
+			<version>2.12.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.12.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+			<version>4.4</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-websocket</artifactId>
+			<version>5.3.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-messaging</artifactId>
+			<version>5.3.4</version>
 		</dependency>
 
 	</dependencies>

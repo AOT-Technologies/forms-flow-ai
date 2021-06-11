@@ -26,6 +26,10 @@
     justify-content: space-between;
     align-items: center;
   }
+  & .dashboard-icon-style {
+    width: 20px;
+    margin-bottom: 7px;
+  }
   & .insight-title {
     margin-bottom: -5px;
     color: $black;

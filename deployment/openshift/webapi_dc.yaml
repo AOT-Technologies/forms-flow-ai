@@ -1,5 +1,7 @@
 apiVersion: template.openshift.io/v1
 kind: Template
+label:
+    app: forms-flow-ai
 metadata:
   name: forms-flow-webapi
 objects:
@@ -34,7 +36,10 @@ objects:
         containers:
         - env:
           - name: MONGODB_URI
-            value: ${MONGO_URI}
+            valueFrom:
+              secretKeyRef:
+                key: MONGODB_URI
+                name: ${FORMIO_SECRET}
           - name: BPM_API_BASE
             valueFrom:
               secretKeyRef:
@@ -163,7 +168,7 @@ parameters:
     required: true
     description: The namespace of the OpenShift project containing the imagestream for
       the application.
-    value: nzpnbz-tools
+    value: ""
   - name: FORMIO_SECRET
     description: Secrets are referred from this.
     required: true
@@ -172,7 +177,7 @@ parameters:
     displayName: Environment TAG name
     description: The TAG name for this environment, e.g., dev, test, prod
     required: true
-    value: latest
+    value: ""
   - name: CPU_REQUEST
     displayName: Resources CPU Request
     description: The resources CPU request (in cores) for this build.
@@ -215,8 +220,4 @@ parameters:
     displayName: PATRONI_PASSWORD
     description:
       PATRONI_PASSWORD
-    required: true
-  - name: MONGO_URI
-    displayName: MONGO_URI
-    description: Mongo URI for formiodb
     required: true

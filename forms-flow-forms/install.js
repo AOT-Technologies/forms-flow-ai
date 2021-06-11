@@ -307,11 +307,13 @@ module.exports = function(formio, items, done) {
      */
     whatTemplate: function(done) {
       if (application) {
-        templateFile = 'app';
+        templateFile = 'formsflow-template.json';
+        //templateFile = 'app';
         return done();
       }
       if (process.env.ROOT_EMAIL) {
-        templateFile = 'client';
+        templateFile = 'formsflow-template.json';
+        //templateFile="client";
         done();
       }
 
@@ -368,6 +370,7 @@ module.exports = function(formio, items, done) {
       }
 
       const projectJson = customProject ? templateFile : path.join(directoryPath, 'project.json');
+
       if (!fs.existsSync(projectJson)) {
         util.log(projectJson);
         return done('Missing project.json file'.red);

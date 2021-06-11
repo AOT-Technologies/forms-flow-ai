@@ -2,7 +2,7 @@ package org.camunda.bpm.extension.commons.connector;
 
 
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -42,7 +42,7 @@ public class HTTPServiceInvoker {
     }
 
     private String getServiceId(String url) {
-        if(StringUtils.contains(url,"/api/")) {
+        if(StringUtils.contains(url, getProperties().getProperty("api.url"))) {
             return "applicationAccessHandler";
         }
         return "formAccessHandler";

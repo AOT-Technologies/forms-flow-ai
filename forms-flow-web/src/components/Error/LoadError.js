@@ -1,7 +1,7 @@
 import React from "react";
 import "./loadError.scss";
 
-const LoadError = ({
+const LoadError = React.memo(({
   text = "Something went wrong.",
   className = "",
   noStyle = false,
@@ -13,11 +13,11 @@ const LoadError = ({
     <div className="row ">
       <div className={`col-12 error-message-block ${className} `}>
         <div className="alert alert-danger error-alert" role="alert">
-          <i className="fa fa-times-circle" aria-hidden="true"/>
+        <img src="/webfonts/fa_times-circle.svg" alt="back"/>
           <div className="alert-heading d-inline ml-3">{text}</div>
         </div>
       </div>
     </div>
   );
-};
+});
 export default LoadError;

@@ -4,7 +4,7 @@ import React from 'react'
 import List from './List'
 import Item from './Item/index'
 
-const Form = () => (
+const Form = React.memo(() => (
   /*TODO remove submission List Route for client*/
   <div>
     <Switch>
@@ -12,6 +12,6 @@ const Form = () => (
       <Route path="/form/:formId/submission/:submissionId" component={Item} />
     </Switch>
   </div>
-)
+))
 
-export default Form
+export default Form;

@@ -21,7 +21,7 @@ import {CLIENT} from "../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../constants/applicationConstants";
 
 
-const ApplicationList = () => {
+const ApplicationList = React.memo(() => {
   const applications = useSelector(state=> state.applications.applicationsList)
   const isApplicationListLoading = useSelector((state) => state.applications.isApplicationListLoading);
   const applicationCount = useSelector((state) => state.applications.applicationCount);
@@ -86,8 +86,8 @@ const ApplicationList = () => {
             <div className="container">
               <div className="main-header">
                 <h3 className="application-head">
-                <i className="fa fa-list-alt" aria-hidden="true"/>
-              &nbsp; Applications
+                <img className="solid-list-icon" src="/webfonts/fa-solid_list.svg" alt="back"/>
+              <span className="application-text">Applications</span>
                   <div className="col-md-1 application-count">({applicationCount})</div>
                 </h3>
               </div>
@@ -118,7 +118,7 @@ const ApplicationList = () => {
     )
 
   )
-}
+})
 
 
 export default ApplicationList;

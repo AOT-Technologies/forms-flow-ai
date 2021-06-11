@@ -7,7 +7,7 @@ import { push } from "connected-react-router";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 
-const Create = (props) => {
+const Create = React.memo((props) => {
   return (
     <div>
       <h2>Create Form</h2>
@@ -16,7 +16,7 @@ const Create = (props) => {
       <FormEdit {...props} />
     </div>
   );
-};
+});
 
 const mapStateToProps = (state) => {
   return {
@@ -39,7 +39,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         saveForm("form", newForm, (err, form) => {
           if (!err) {
             // ownProps.setPreviewMode(true);
-            dispatch(push(`/form/${form._id}/preview`));
+            dispatch(push(`/formflow/${form._id}/view-edit/`));
           }
         })
       );

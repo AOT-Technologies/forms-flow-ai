@@ -6,7 +6,7 @@ import {getLocalDateTime} from "../../../apiManager/services/formatterService";
 
 
 
-const ApplicationDetails = (props) => {
+const ApplicationDetails = React.memo((props) => {
   const application = props.application;
   return (
     <Table responsive>
@@ -48,6 +48,6 @@ const ApplicationDetails = (props) => {
       </tbody>
     </Table>
   );
-};
+});
 
 export default ApplicationDetails;

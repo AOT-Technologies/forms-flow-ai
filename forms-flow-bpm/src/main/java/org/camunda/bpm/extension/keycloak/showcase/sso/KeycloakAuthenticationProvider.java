@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import javax.servlet.http.HttpServletRequest;
 
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.rest.security.auth.AuthenticationResult;
 import org.camunda.bpm.engine.rest.security.auth.impl.ContainerBasedAuthenticationProvider;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.util.StringUtils;
 
@@ -38,13 +38,13 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
         // requested user info
         @SuppressWarnings("unchecked")
         // String userId = ((HashMap<String, String>)
-        // userAuthentication.getDetails()).get("sub");
-        // String userId = ((HashMap<String, String>)
-        // userAuthentication.getDetails()).get("email"); // useEmailAsCamundaUserId =
-        // true
-        // String userId = ((HashMap<String, String>)
-        // userAuthentication.getDetails()).get("email");
-        String userId = ((HashMap<String, String>) userAuthentication.getDetails()).get("preferred_username");
+                // userAuthentication.getDetails()).get("sub");
+                // String userId = ((HashMap<String, String>)
+                // userAuthentication.getDetails()).get("email"); // useEmailAsCamundaUserId =
+                // true
+                // String userId = ((HashMap<String, String>)
+                // userAuthentication.getDetails()).get("email");
+                String userId = ((HashMap<String, String>) userAuthentication.getDetails()).get("preferred_username");
         // useUsernameAsCamundaUserId = true
         if (StringUtils.isEmpty(userId)) {
             return AuthenticationResult.unsuccessful();
@@ -63,5 +63,7 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
         engine.getIdentityService().createGroupQuery().groupMember(userId).list().forEach(g -> groupIds.add(g.getId()));
         return groupIds;
     }
+
+
 
 }

@@ -1,4 +1,4 @@
-import { INSIGHTS_BASE_API, INSIGHTS_API_KEY, WEB_BASE_URL } from "./config";
+import { INSIGHTS_BASE_API, INSIGHTS_API_KEY, WEB_BASE_URL, BPM_BASE_URL, BPM_BASE_URL_EXT } from "./config";
 
 const API = {
   INSIGHTS_API_KEY: INSIGHTS_API_KEY,
@@ -18,6 +18,20 @@ const API = {
   FORM: `${WEB_BASE_URL}/form`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
   APPLICATION_EVENT_UPDATE:`${WEB_BASE_URL}/process/event`,
+  GET_BPM_TASKS:`${BPM_BASE_URL}/task`,
+  GET_BPM_TASK_DETAIL:`${BPM_BASE_URL}/task/<task_id>`,
+  GET_BPM_TASK_VARIABLES:`${BPM_BASE_URL}/task/<task_id>/variables`,
+  CLAIM_BPM_TASK:`${BPM_BASE_URL}/task/<task_id>/claim`,
+  UNCLAIM_BPM_TASK:`${BPM_BASE_URL}/task/<task_id>/unclaim`,
+  GET_BPM_PROCESS_LIST:`${BPM_BASE_URL}/process-definition`,
+  GET_BPM_USER_LIST:`${BPM_BASE_URL}/user`,
+  GET_BPM_FILTERS:`${BPM_BASE_URL}/filter`,
+  GET_BPM_TASK_LIST_WITH_FILTER:`${BPM_BASE_URL}/filter/<filter_id>/list`,
+  BPM_GROUP:`${BPM_BASE_URL}/task/<task_id>/identity-links`,
+  DELETE_BPM_GROUP:`${BPM_BASE_URL}/task/<task_id>/identity-links/delete`,
+  BPM_FORM_SUBMIT:`${BPM_BASE_URL}/task/<task_id>/submit-form`,
+  GET_BPM_FORM_LIST:`${BPM_BASE_URL_EXT}/form`,
+  UPDATE_ASSIGNEE_BPM_TASK:`${BPM_BASE_URL}/task/<task_id>/assignee`,
 };
 
 export default API;

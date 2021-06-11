@@ -17,14 +17,14 @@ version: '3.7'
 services:
   forms-flow-forms-db:
     image: mongo
-    restart: always
+    restart: unless-stopped
     hostname: forms-flow-forms-db
     ports:
       - '27018:27017'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: ${FORMIO_MONGO_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${FORMIO_MONGO_PASSWORD}
-      MONGO_INITDB_DATABASE: ${FORMIO_MONGO_DATABASE}
+      MONGO_INITDB_ROOT_USERNAME: ${FORMIO_DB_USERNAME:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${FORMIO_DB_PASSWORD:-changeme}
+      MONGO_INITDB_DATABASE: ${FORMIO_DB_NAME:-formio}
     volumes:
       - ./mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
       - ./mongodb/data/db/:/data/db/
@@ -38,20 +38,19 @@ services:
       context: ./
       dockerfile: Dockerfile
     # The app will restart until Mongo is listening
-    restart: always
+    restart: unless-stopped
     links:
       - forms-flow-forms-db
     ports:
       - '3001:3001'
     # The application wants to download things to the local directory
-    # TODO: really wish I could mount this as read-only
     volumes:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_MONGO_USERNAME}:${FORMIO_MONGO_PASSWORD}@forms-flow-forms-db:27017/${FORMIO_MONGO_DATABASE}?authSource=admin\"}"
-      ROOT_EMAIL: ${FORMIO_ROOT_EMAIL}
-      ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD}
+      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_DB_USERNAME:-admin}:${FORMIO_DB_PASSWORD:-changeme}@forms-flow-forms-db:27017/${FORMIO_DB_NAME:-formio}?authSource=admin\"}"
+      ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
+      ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_DOMAIN: ${FORMIO_DEFAULT_PROJECT_URL}
     stdin_open: true # -i
     tty: true # -t

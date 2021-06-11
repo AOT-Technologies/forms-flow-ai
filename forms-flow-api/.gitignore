@@ -91,3 +91,6 @@ venv.bak/
 .idea
 *.iml
 *.pyc
+
+# Mongodb
+mongodb/

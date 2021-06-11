@@ -1,12 +1,18 @@
 @import "./../../assets/styles/themes.scss";
 
 .footer {
+  border-top: 2px solid #e8e8ee;
   padding-bottom: 15px;
   padding-top: 15px;
-  position: absolute;
+  position: fixed;
+  background-color: white;
   bottom: 0;
-  height: 2.5rem; /* Footer height */
-  width:calc(100% - 250px);
+  height: 2.3rem; /* Footer height */
+  width:100%;
+  z-index: 4;
+}
+.text-align{
+  bottom: 10px;
 }
 @media (max-width: 768px) {
   .footer{

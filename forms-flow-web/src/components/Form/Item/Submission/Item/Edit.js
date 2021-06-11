@@ -8,7 +8,7 @@ import Loading from '../../../../../containers/Loading'
 import {setFormSubmissionError, setFormSubmissionLoading} from '../../../../../actions/formActions';
 import SubmissionError from '../../../../../containers/SubmissionError';
 import {getUserRolePermission} from "../../../../../helper/user";
-import {CLIENT, STAFF_REVIEWER} from "../../../../../constants/constants";
+import {CLIENT} from "../../../../../constants/constants";
 import {
   CLIENT_EDIT_STATUS,
   UPDATE_EVENT_STATUS,
@@ -17,8 +17,9 @@ import {
 import {useParams} from "react-router-dom";
 import {updateApplicationEvent} from "../../../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay";
+import {toast} from "react-toastify";
 
-const Edit = (props) => {
+const Edit = React.memo((props) => {
   const dispatch = useDispatch();
   const {formId, submissionId} = useParams();
   const {
@@ -26,6 +27,8 @@ const Edit = (props) => {
     onSubmit,
     options,
     errors,
+    onFormSubmit,
+    onCustomEvent,
     form: { form, isActive: isFormActive },
     submission: { submission, isActive: isSubActive, url }
   } = props;
@@ -37,14 +40,12 @@ const Edit = (props) => {
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
   useEffect(() => {
-    if (applicationStatus) {
-      if (getUserRolePermission(userRoles, STAFF_REVIEWER) && CLIENT_EDIT_STATUS.includes(applicationStatus)) {
-        dispatch(push(`/form/${formId}/submission/${submissionId}`));
-      } else if (getUserRolePermission(userRoles, CLIENT) && !CLIENT_EDIT_STATUS.includes(applicationStatus)) {
+    if (applicationStatus && !onFormSubmit) {
+      if (getUserRolePermission(userRoles, CLIENT) && !CLIENT_EDIT_STATUS.includes(applicationStatus)) {
         dispatch(push(`/form/${formId}/submission/${submissionId}`));
       }
     }
-  }, [applicationStatus, userRoles, dispatch, submissionId, formId ]);
+  }, [applicationStatus, userRoles, dispatch, submissionId, formId, onFormSubmit ]);
 
   if ((isFormActive ||  (isSubActive && !isFormSubmissionLoading))) {
       return <Loading />;
@@ -68,14 +69,19 @@ const Edit = (props) => {
           submission={submission}
           url={url}
           hideComponents={hideComponents}
-          onSubmit={(submission)=>onSubmit(submission,applicationDetail)}
+          onSubmit={(submission)=>onSubmit(submission,applicationDetail,onFormSubmit,form._id)}
           options={{ ...options }}
+          onCustomEvent={onCustomEvent}
         />
           </div>
         </LoadingOverlay>
       </div>
     );
-}
+})
+
+Edit.defaultProps = {
+  onCustomEvent: ()=>{}
+};
 
 const mapStateToProps = (state) => {
   return {
@@ -101,26 +107,37 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onSubmit: (submission,applicationDetail) => {
+    onSubmit: (submission,applicationDetail, onFormSubmit, formId) => {
       dispatch(setFormSubmissionLoading(true));
-      dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
+      dispatch(saveSubmission('submission', submission, onFormSubmit?formId: ownProps.match.params.formId, (err, submission) => {
         if (!err) {
           if(UPDATE_EVENT_STATUS.includes(applicationDetail.applicationStatus)){
             const data = getProcessDataReq(applicationDetail);
             dispatch(updateApplicationEvent(data,()=>{
               dispatch(resetSubmissions('submission'));
               dispatch(setFormSubmissionLoading(false));
-              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+              if(onFormSubmit){
+                onFormSubmit();
+              }else{
+                toast.success("Submission Saved.");
+                dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+              }
             }));
           }else{
             dispatch(resetSubmissions('submission'));
             dispatch(setFormSubmissionLoading(false));
-            dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+            if(onFormSubmit){
+             onFormSubmit();
+            }else{
+              toast.success("Submission Saved.");
+              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
+            }
           }
         }
         else {
           dispatch(setFormSubmissionLoading(false));
           const ErrorDetails = { modalOpen: true, message: "Submission cannot be done" }
+          toast.error("Error while Submission.");
           dispatch(setFormSubmissionError(ErrorDetails))
         }
       }));

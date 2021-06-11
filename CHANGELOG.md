@@ -1,7 +1,7 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
-## 4.0.0 - 2021-06-07
+## 4.0.0 - 2021-06-11
 `Upcoming Features`
 
 `Added`
@@ -22,6 +22,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added new API's for health check (component : forms-flow-api)
 * Improved README for better readability and easy installation.
 * Fixed issue of Custom component (Text Area with analytics) not retaining the value after submission. (component: forms-flow-forms)
+* The Task menu has been moved to Header section. In Task Section, filters are available in the main menu and a new Dashboard section has been added which includes metrics and Insights. (component: forms-flow-forms)
+* Dynamic property to set Application Name and logo in the header in Frontend. (component: forms-flow-web)
+
 
 `Untested Features`
 

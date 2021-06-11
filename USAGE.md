@@ -1,4 +1,3 @@
-![manager landing](https://user-images.githubusercontent.com/83952803/121698487-af2cb480-caeb-11eb-86da-c9b3870246b2.PNG)
 # Usage Instructions
 In the following document, we’ll describe about the step by step instructions to set up a working sample in formsflow.ai solution.
 
@@ -144,13 +143,26 @@ In the following document, we’ll describe about the step by step instructions 
 * On submitting form, the associated task can be found for the reviewer role in the **Task Menu** section for the Manager
 ![image](https://user-images.githubusercontent.com/70306694/121697829-1138ea00-caeb-11eb-94f2-28a3425d707f.png)
 
-* On clicking the associated task, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
-![manager landing](https://user-images.githubusercontent.com/83952803/121698577-c23f8480-caeb-11eb-9f55-16540ae80ecb.PNG)
+* On clicking the associated task which was recently created ie. *Manager Feedback Review(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
 
+
+![manager landing](https://user-images.githubusercontent.com/83952803/121698577-c23f8480-caeb-11eb-9f55-16540ae80ecb.PNG)
+![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
 ![manager_diagram](https://user-images.githubusercontent.com/83952803/121698637-cec3dd00-caeb-11eb-8e1f-a6e4c5f717ba.PNG)
+
+* On claiming the task, the Manager can fill the form and submit his review.
+
+![image](https://user-images.githubusercontent.com/70306694/121698761-f31fb980-caeb-11eb-82eb-52754632c382.png)
+![image](https://user-images.githubusercontent.com/70306694/121699346-79d49680-caec-11eb-8854-86cf1b2fa755.png)
+![image](https://user-images.githubusercontent.com/70306694/121699445-8eb12a00-caec-11eb-9d5f-cb595a59a4d3.png)
+
+* On the **History** section, the form submission history can be found and the form can be viewed.
+
 ![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
 
-* On claiming the task, the Manager can fill the form and submit his review
+* On the Diagram section, the diagram highlights which state is the task currently in.
+![image](https://user-images.githubusercontent.com/70306694/121700097-2e6eb800-caed-11eb-915a-c079ecb2117f.png)
+
 * Reviewer action is completed.
 
 ## Links

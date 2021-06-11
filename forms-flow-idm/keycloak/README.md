@@ -23,8 +23,7 @@
 
 ### Prerequisites
 
-* The system is deployed and run using [Docker](https://docker.com). This need to be installed. 
-
+* For docker based installation [Docker](https://docker.com) needs to be installed.
 
 ### Environment Configuration
 

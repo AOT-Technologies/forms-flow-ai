@@ -173,5 +173,5 @@ server:
 ## forms-flow-bpm Listeners
 > This section elaborates on listeners created for use.
 
-* The complete usage instructions with information on purpose, how-it-works and how-to-use is mentioned [here](./starter-examples/listeners/listeners-readme.md#listeners).
+* The complete usage instructions on Listeners used with information on purpose, how-it-works and how-to-use is mentioned [here](./starter-examples/listeners/listeners-readme.md#listeners).
 

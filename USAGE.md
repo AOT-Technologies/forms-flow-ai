@@ -4,8 +4,8 @@ In the following document, we’ll describe about the step by step instructions 
 ## Table of Contents
 1. [Usage Instructions](#usage-instructions)
 2. [Usage Instructions with examples](#usage-instructions-with-example)
-  * [Employee Feedback](#employee-feedback)
-  * [Product Survey Form](#product-survey-form)
+    * [Employee Feedback](#employee-feedback)
+    * [Product Survey Form](#product-survey-form)
 3. [Links](#links)
 
 
@@ -77,7 +77,8 @@ In the following document, we’ll describe about the step by step instructions 
 
 ## Product Survey Form
 
-> The following instructions are using an example form from the form.io - Product Survey Form
+> The following instructions are using an example form from the form.io - `Product Survey Form`. Before using this form ensure that you have configured the
+mail.config properties in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#camunda-formsflowai-integration-settings)
 
 * End to end flow of a form is explained below using eg: Product Survey Form.
 
@@ -85,14 +86,12 @@ In the following document, we’ll describe about the step by step instructions 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can Create / View / Edit / Delete a form.
 
-<!-- ![Image 1](./.images/designer-landing.PNG) -->
 ![image](https://user-images.githubusercontent.com/70306694/121669233-be026f80-cac9-11eb-89df-2be9f3c5f939.png)
 
 * To create a new form click on **Create Form Button**. You can use the Drag-and-drop forms-builder with rich UI components to create a form with ease.
 > Product Survey form is already created, so we are skipping the step of creating Form.
 * You can modify the form by clicking on **View/Edit Form** button and you can edit form design by clicking the **Edit Form** button or continue by moving next if Form design is completed.
 
-<!-- ![Image 2](./.images/designer-feedback-1.PNG) -->
 ![image](https://user-images.githubusercontent.com/70306694/121670032-a7a8e380-caca-11eb-9729-ed7a5adf2436.png)
 
 

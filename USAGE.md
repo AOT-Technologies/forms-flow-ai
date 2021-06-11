@@ -80,22 +80,23 @@ In the following document, we’ll describe about the step by step instructions 
 > The following instructions are using an example form from the form.io - `Product Survey Form`. Before using this form ensure that you have configured the
 mail.config properties in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#camunda-formsflowai-integration-settings)
 
-* End to end flow of a form is explained below using eg: Product Survey Form.
+* The usage instructions mention the end to end flow of a form is explained for Product Survey Form.
 
 ### [STEP 1](#) Designer Task
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-* After the log in is successful you will be redirected to http://localhost:3000/form where you can Create / View / Edit / Delete a form.
+* After the log in is successful you will be redirected to http://localhost:3000/form where you can `Create / View / Edit / Delete` a form.
 
 ![image](https://user-images.githubusercontent.com/70306694/121669233-be026f80-cac9-11eb-89df-2be9f3c5f939.png)
 
 * To create a new form click on **Create Form Button**. You can use the Drag-and-drop forms-builder with rich UI components to create a form with ease.
 > Product Survey form is already created, so we are skipping the step of creating Form.
-* You can modify the form by clicking on **View/Edit Form** button and you can edit form design by clicking the **Edit Form** button or continue by moving next if Form design is completed.
+* You can modify the form by clicking on **View/Edit Form** button and you can edit form design by clicking the **Edit Form** button or continue by moving **Next** button if form design is completed to move to the stage associating workflow to the form.
 
 ![image](https://user-images.githubusercontent.com/70306694/121670032-a7a8e380-caca-11eb-9729-ed7a5adf2436.png)
 
 
-* At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow - Product Survey Administrator with Notification(Example).
+* At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow - Product Survey Administrator with Notification(Example). 
+> Note: Before using this workflow ensure that you have configured the `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#camunda-formsflowai-integration-settings)
 
 <!-- ![Image 3](./.images/designer-workflow.PNG) -->
 ![image](https://user-images.githubusercontent.com/70306694/121670495-1ede7780-cacb-11eb-8f3d-53e2a004e5aa.png)

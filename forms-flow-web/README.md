@@ -22,7 +22,7 @@ with your project by installing our [npm package](https://www.npmjs.com/package/
 
 ## Prerequisites
 
-* For docker installation [Docker](https://docker.com) need to be installed.
+* For docker based installation [Docker](https://docker.com) need to be installed.
 * Admin access to a [Keycloak](https://www.keycloak.org/) server. For local development / testing follow [Keycloak installation](../forms-flow-idm/keycloak).
 * Please make sure the [Formio server](../forms-flow-forms/) is up and running.
 
@@ -101,7 +101,3 @@ Variable name | Meaning | Possible values | Default value |
   * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web.
      The default width and height of the logo is 50 and 55 also the image format is svg
   * The icon can also be replaced to the users icon by replacing the favicon in the public folder of forms-flow-web
-
-To know more about form.io, go to https://help.form.io/userguide/introduction/.
-
-

@@ -83,5 +83,5 @@ class ApplicationHistoryResource(Resource):
             logging.exception(response)
             logging.exception(application_err)
             # traceback.print_tb(exc_traceback)
-
+        finally:
             return response, status

@@ -67,7 +67,7 @@ Start the **analytics server** by following the instructions given [here](../../
 * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
 * **NOTE : `{your-ip-address}` given inside the `.env` file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
-> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the redash.env file
+> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the .env file
 
  Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -108,7 +108,7 @@ Start the **analytics server** by following the instructions given [here](../../
 * Make sure your current working directory is "/forms-flow-ai/deployment/docker".
 * Modify the environment variables inside **.env** file if needed. Environment variables are given in the tables below.
 
-> :information_source: Variables with trailing:triangular_flag_on_post: in below table should be updated in the redash.env file
+> :information_source: Variables with trailing:triangular_flag_on_post: in below table should be updated in the .env file
 
 ##### formsflow.ai keycloak variable settings
 -----------------------------------
@@ -205,7 +205,7 @@ Variable name | Meaning | Possible values | Default value |
 
    Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `WEBSOCKET_SECURITY_ORIGIN`|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`http://{your-ip-address}:3000`
+ `WEBSOCKET_SECURITY_ORIGIN` :triangular_flag_on_post:|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`http://{your-ip-address}:3000`
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  

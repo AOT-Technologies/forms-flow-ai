@@ -161,6 +161,7 @@ class ProcessEventResource(Resource):
             logging.exception(response)
             logging.exception(err)
             # traceback.print_tb(exc_traceback)
+            return response, status
         except BaseException as err:
             exc_traceback = sys.exc_info()
 
@@ -172,8 +173,6 @@ class ProcessEventResource(Resource):
             logging.exception(response)
             logging.exception(err)
             # traceback.print_tb(exc_traceback)
-
-
             return response, status
 
 

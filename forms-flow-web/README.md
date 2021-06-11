@@ -6,7 +6,9 @@
 
 A React library for rendering out forms based on the form.io platform.
 
-Also **formsflow.ai** provides a Vue.js based web user interface for easy integration of formsflow.ai with your existing User Interface. To know more details checkout [formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue).
+Also **formsflow.ai** provides a Vue.js based web user interface for easy integration of **formsflow.ai with your existing UI based on Vue**. To know more details checkout
+[formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue), which can be easily intergrated
+with your project by installing our [npm package](https://www.npmjs.com/package/camunda-formio-tasklist-vue).
 
 ## Table of Content
 1. [Prerequisites](#prerequisites)
@@ -20,7 +22,7 @@ Also **formsflow.ai** provides a Vue.js based web user interface for easy integr
 
 ## Prerequisites
 
-* For docker installation [Docker](https://docker.com) need to be installed.
+* For docker based installation [Docker](https://docker.com) need to be installed.
 * Admin access to a [Keycloak](https://www.keycloak.org/) server. For local development / testing follow [Keycloak installation](../forms-flow-idm/keycloak).
 * Please make sure the [Formio server](../forms-flow-forms/) is up and running.
 
@@ -58,7 +60,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token| | `giert989jkwrgb@DR55`
  `APPLICATION_NAME`|Application name is used to provide clients application name|
 
-* [STEP 1](): Getting **ROLE_ID** and **RESOURCE_ID** are mandatory for role based access. To generate ID go to ["Formsflow-forms API Requesting"](../forms-flow-forms/README.md#formsflow-forms-api-requesting) and follow the steps.
+* [STEP 1](): Getting **ROLE_ID** and **RESOURCE_ID** are mandatory for role based access. To generate ID go to ["Formsflow-forms user/role API"](../forms-flow-forms/README.md#formsflow-forms-api-requesting) and follow the steps.
 * [STEP 2](): Modify the environment variables using the values from step 1.
 
 Variable name | Meaning | Possible values | Default value |
@@ -99,7 +101,3 @@ Variable name | Meaning | Possible values | Default value |
   * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web.
      The default width and height of the logo is 50 and 55 also the image format is svg
   * The icon can also be replaced to the users icon by replacing the favicon in the public folder of forms-flow-web
-
-To know more about form.io, go to https://help.form.io/userguide/introduction/.
-
-

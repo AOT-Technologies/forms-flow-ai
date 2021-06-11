@@ -151,7 +151,6 @@ class ApplicationResourceById(Resource):
                 "message": "Invalid request data",
             }, HTTPStatus.BAD_REQUEST
 
-
             logging.exception(response)
             logging.exception(submission_err)
             # traceback.print_tb(exc_traceback)

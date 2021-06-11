@@ -1,7 +1,9 @@
 package org.camunda.bpm.extension.keycloak.showcase.sso;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.Filter;
@@ -51,73 +53,68 @@ public class CustomCorsFilter implements Filter {
 
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-        String requestURL = request.getRequestURL().toString();
-        if(StringUtils.contains(requestURL,"/engine-rest/") ||
-                StringUtils.contains(requestURL,"/engine-rest-ext/") ||
-                StringUtils.contains(requestURL,"/form-builder/")) {
-            //response.setHeader("Access-Control-Allow-Origin", getOrigin(request));
-            String origin = request.getHeader("Origin");
-            response.setHeader("Access-Control-Allow-Origin", getAllowedOrigins().contains(origin)? origin : getAllowedOrigins().contains("*") ? origin : "");
-            response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS");
-            //response.setHeader("Access-Control-Allow-Headers","access-control-allow-methods, access-control-allow-origin, authorization, Content-Type, Accept, X-Requested-With, Origin, Token, Auth-Token, Email, X-User-Token, X-User-Email");
-            response.setHeader("Access-Control-Allow-Headers", "*");
-            response.setHeader("Access-Control-Max-Age", "3600");
 
-            if ("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
-                response.setStatus(HttpServletResponse.SC_OK);
+        String requestMethod =request.getMethod();
+
+        //Response Headers to all
+        response.setHeader("Access-Control-Allow-Origin", getOrigin(request));
+        response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS");
+        //response.setHeader("Access-Control-Allow-Headers","access-control-allow-methods, access-control-allow-origin, authorization, Content-Type, Accept, X-Requested-With, Origin, Token, Auth-Token, Email, X-User-Token, X-User-Email");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Max-Age", "3600");
+
+
+        if ("OPTIONS".equalsIgnoreCase(requestMethod)) {
+            if(isWebSocketRequest(request)) {
+                response.setHeader("Access-Control-Allow-Credentials", "true");
+            }
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            if(isWebSocketRequest(request)) {
+                response.setHeader("Access-Control-Allow-Credentials", "true");
+                CustomHttpRequestWrapper customHttpRequestWrapper =new CustomHttpRequestWrapper(request);
+
+                if( StringUtils.isNotBlank(request.getQueryString())) {
+                    List<String> queryParams = Arrays.asList(request.getQueryString().split("&"));
+                    for(String param : queryParams) {
+                        if("accesstoken".equals(StringUtils.substringBefore(param,"="))) {
+                            String decryptedToken = aesUtils.decryptText(StringUtils.substringAfter(param,"="),socketSecretKey);
+                            customHttpRequestWrapper.addHeader("Authorization", "Bearer " +decryptedToken);
+                        }
+                    }
+
+                }
+                chain.doFilter(customHttpRequestWrapper, res);
             } else {
                 chain.doFilter(req, res);
             }
-
-        }  else if(StringUtils.contains(requestURL,"/forms-flow-bpm-socket/")) {
-            CustomHttpRequestWrapper customHttpRequestWrapper =new CustomHttpRequestWrapper(request);
-
-            if( StringUtils.isNotBlank(request.getQueryString())) {
-                List<String> queryParams = Arrays.asList(request.getQueryString().split("&"));
-                for(String param : queryParams) {
-                    if("accesstoken".equals(StringUtils.substringBefore(param,"="))) {
-                        String decryptedToken = aesUtils.decryptText(StringUtils.substringAfter(param,"="),socketSecretKey);
-                        customHttpRequestWrapper.addHeader("Authorization", "Bearer " +decryptedToken);
-                    }
-                }
-
-            }
-            chain.doFilter(customHttpRequestWrapper, res);
-        } else {
-            chain.doFilter(req, res);
         }
     }
 
-    private List<String> getAllowedOrigins(){
-        if(StringUtils.isNotBlank(customAllowOrigin)) {
-            return new ArrayList<>(Arrays.asList(customAllowOrigin.split(",")));
-        } else {
-            return Collections.singletonList("*");
-        }
+    private boolean isWebSocketRequest(HttpServletRequest request) {
+        String requestURL = request.getRequestURL().toString();
+        return  StringUtils.contains(requestURL,"/forms-flow-bpm-socket/") ? true : false;
     }
 
-    private String getOrigin(HttpServletRequest request){
 
+    private String getOrigin(HttpServletRequest request) {
         if(StringUtils.isNotBlank(customAllowOrigin)) {
-            String origin = null;
-            for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
-                String headerName = (String) e.nextElement();
-                if(StringUtils.isNotBlank(headerName) && "ORIGIN".equals(headerName.toUpperCase())) {
-                    origin =  request.getHeader(headerName);
-                    break;
-                }
+            String requestOrigin = getHttpRequestOrigin(request);
+            if("*".equals(customAllowOrigin) || StringUtils.containsIgnoreCase(customAllowOrigin, requestOrigin)) {
+                return requestOrigin;
             }
-            if(Objects.equals(customAllowOrigin, "*")) {
-                return origin == null?"*":origin;
-            }
-            else {
-                List<String> allowedOrigins = Arrays.asList(customAllowOrigin.split(","));
-                return origin != null && allowedOrigins.contains(origin) ? origin : "";
-            }
-        } else {
-            LOGGER.info("Leveraging the wildcard : *");
-            return "*";
         }
+        return StringUtils.EMPTY;
+    }
+
+    private String getHttpRequestOrigin(HttpServletRequest request){
+        for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
+            String headerName = (String) e.nextElement();
+            if(StringUtils.isNotBlank(headerName) && "ORIGIN".equals(headerName.toUpperCase())) {
+                return request.getHeader(headerName);
+            }
+        }
+        return StringUtils.EMPTY;
     }
 
     @Override

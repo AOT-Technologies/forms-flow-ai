@@ -1,35 +1,42 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
-## 4.0.0 - 2021-06-07
-`Upcoming Features`
+## 4.0.0 - 2021-06-11
 
 `Added`
 * Added support for http calls.
-* User can claim / view tasklist in realtime.
+* User can *claim/view* the Tasklist in realtime. (component: forms-flow-web)
 * Automated installation steps for keycloak setup.
-* Automated manual steps for resource id generation, included batch / shell scripts to simplify the process. 
-* New UI for formsflow.ai based on Vue.js for easy integration of formsflow.ai to existing projects. 
+* Automated manual steps for resource id generation, included batch and shell scripts to simplify the process. 
+* New UI for formsflow.ai based on Vue.js for easy integration of formsflow.ai to existing projects. (component: forms-flow-web)
+* New API for health check point (component : forms-flow-api)
+* Toast message in Form Save,Submission Save and Form-Workflow Association. (component: forms-flow-web)
+* Users can click on External shared link like in email to get redirected to a particular task/submission/form if the user has right permissions.(component: forms-flow-web)
+* Claiming of tasks are restricted to users belonging to reviewer group(formsflow/formsflow-reviewer) of keycloak.(component: forms-flow-web)
+* Application/Submission view for client role users are restricted to own submission view.(component: forms-flow-bpm, forms-flow-web)
+* Added Semantic UI css for forms design (component: forms-flow-web)
    
 `Modified`
-* Task dashboard has been revamped with new look and feel; which would allow more control on data and stream updates.
-* React library upgraded to latest version-17.0.2 (Component : forms-flow-web)
+* Task dashboard has been revamped with new look and feel- which would allow more control on data and stream updates.
+* React library upgraded to latest version-17.0.2 and fixed security vulnerabilities (Component : forms-flow-web)
 * Spring boot upgraded to latest version-2.4.2 (Component : forms-flow-bpm)
 * Redash upgraded to latest version:v9 (component : forms-flow-analytics)
-* Enhanced Form Process Mapper API and Application API endpoints (component : forms-flow-api)
 * Fixed Python security vulnerabilities and updated flask to 1.1.4 version (component : forms-flow-api)
+* Enhanced Form Process Mapper API and Application API endpoints (component : forms-flow-api)
 * Improved exception handling of python to provide meaningful error messages (component : forms-flow-api)
-* Added new API's for health check (component : forms-flow-api)
 * Improved README for better readability and easy installation.
-
-`Untested Features`
-
+* The Task menu has been moved to Header section. In Task Section, filters are available in the main menu and a new Dashboard section has been added which includes metrics and Insights. (component: forms-flow-web)
+* Dynamic property to set Application Name and logo in the header. (component: forms-flow-web)
+* Default route for user having reviewer role is pointed to tasks page and that of client/designer is to forms page.(component: forms-flow-web)
+* Removed *edit/delete* submission buttons from submission list view of reviewers.
 
 `Fixed`
-* Cosmetic changes to show success message after loading is completed
+* Cosmetic changes to show success message after loading is completed.
+* Custom component (Text Area with analytics) not retaining the value after submission. (component: forms-flow-forms)
+* UI layout fixes (component: forms-flow-web)
 
 `Known Issues`
-* Custom component (Text Area with analytics) not retaining the value after submission
+* Consoles related to http://localhost:3001/current Api Failing. Please refer to [Issue-#106](https://github.com/AOT-Technologies/forms-flow-ai/issues/106) for more details
    
 ## 3.1.0 - 2020-12-17
 `Modified`

@@ -5,15 +5,16 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 `Added`
 * Added support for http calls.
-* User can claim / view tasklist in realtime.
+* User can claim/view tasklist in realtime.
 * Automated installation steps for keycloak setup.
 * Automated manual steps for resource id generation, included batch / shell scripts to simplify the process. 
 * New UI for formsflow.ai based on Vue.js for easy integration of formsflow.ai to existing projects. 
 * New API for health check point (component : forms-flow-api)
+* Added toast message in Form Save,Submission Save and Form-Workflow Association.
    
 `Modified`
 * Task dashboard has been revamped with new look and feel; which would allow more control on data and stream updates.
-* React library upgraded to latest version-17.0.2 (Component : forms-flow-web)
+* React library upgraded to latest version-17.0.2 and fixed security vulnerabilities (Component : forms-flow-web)
 * Spring boot upgraded to latest version-2.4.2 (Component : forms-flow-bpm)
 * Redash upgraded to latest version:v9 (component : forms-flow-analytics)
 * Enhanced Form Process Mapper API and Application API endpoints (component : forms-flow-api)
@@ -21,7 +22,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Improved exception handling of python to provide meaningful error messages (component : forms-flow-api)
 * Improved README for better readability and easy installation.
 * The Task menu has been moved to Header section. In Task Section, filters are available in the main menu and a new Dashboard section has been added which includes metrics and Insights. (component: forms-flow-forms)
-* Dynamic property to set Application Name and logo in the header in Frontend. (component: forms-flow-web)
+* Dynamic property to set Application Name and logo in the header. (component: forms-flow-web)
 
 `Fixed`
 * Cosmetic changes to show success message after loading is completed

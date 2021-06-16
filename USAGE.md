@@ -43,7 +43,7 @@ In the following document, we’ll describe the step by step instructions to set
    * You can navigate to **Applications tab** to view form submissions.
    * You can View the submissions against a form by clicking on **View Submissions Button**
    * You can also submit a new form like [STEP 2](#) from the Forms Tab.
-   * You can navate to **Dashboards** tab to see the analytics of our solution
+   * You can navigate to **Dashboards** tab to see the analytics of our solution
      * You can navigate to **Metrics** tab to see an overview of the total form submissions and associated application status to indicate which stage of workflow it is now.
      * You can navigate to **Insights** tab to see wonderful dashboard created in formsflow.ai analytics server.
    * Reviewer action is completed.
@@ -80,7 +80,6 @@ In the following document, we’ll describe the step by step instructions to set
 
 * Click on **SAVE Button** to completed designing a form.
 
-
 * Form designing is successfully completed, you can now Log out and go to [STEP 2](#)
 
 ### [STEP 2](#) Client Tasks
@@ -89,8 +88,6 @@ In the following document, we’ll describe the step by step instructions to set
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can View and Submit a form.
 
 ![image](https://user-images.githubusercontent.com/83952803/121729074-aea41600-cb0b-11eb-9d80-ed2c46adb1f7.png)
-
-
 
 * Click **Submit New Button** on the form which you wanted to submit.
 * The previous action will redirect you to the form, where you can fill the details and Submit. Fill the details and Submit the form, You can repeat this action as per your requirement.
@@ -119,31 +116,6 @@ In the following document, we’ll describe the step by step instructions to set
 * You can even print the Form submission as a PDF which can be rendered in browser
 
 ![image](https://user-images.githubusercontent.com/70306694/121731463-9b467a00-cb0e-11eb-8a19-c754a0498f18.png)
-
-
-* On clicking the associated task which was recently created ie. *Manager Feedback Review(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
-
-
-![manager landing](https://user-images.githubusercontent.com/83952803/121698577-c23f8480-caeb-11eb-9f55-16540ae80ecb.PNG)
-![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
-![manager_diagram](https://user-images.githubusercontent.com/83952803/121698637-cec3dd00-caeb-11eb-8e1f-a6e4c5f717ba.PNG)
-
-* On claiming the task, the Manager can fill the form and submit his review.
-
-![image](https://user-images.githubusercontent.com/70306694/121698761-f31fb980-caeb-11eb-82eb-52754632c382.png)
-![image](https://user-images.githubusercontent.com/70306694/121699346-79d49680-caec-11eb-8854-86cf1b2fa755.png)
-![image](https://user-images.githubusercontent.com/70306694/121699445-8eb12a00-caec-11eb-9d5f-cb595a59a4d3.png)
-
-* On the **History** section, the form submission history can be found and the form can be viewed.
-
-![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
-![view_submission](https://user-images.githubusercontent.com/83952803/121700370-75f54400-caed-11eb-85b7-55ff6c9c79c2.PNG)
-
-
-* On the Diagram section, the diagram highlights which state is the task currently in.
-![image](https://user-images.githubusercontent.com/70306694/121700097-2e6eb800-caed-11eb-915a-c079ecb2117f.png)
-
-* Reviewer action is completed.
 
 * On clicking the associated task which was recently created ie. *Manager Feedback Review(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
 

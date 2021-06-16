@@ -236,11 +236,11 @@ class FormResourceByFormId(Resource):
             response, status = (
                 {
                     "type": "No Response",
-                    "message": f"FormProcessMapper with FormID - {form_id} not stored in DB",
+                    "message": f"No Response found as FormProcessMapper with FormID - {form_id} not stored in DB",
                 },
                 HTTPStatus.NO_CONTENT,
             )
-            logging.exception(response)
+            logging.info(response)
             # traceback.print_tb(exc_traceback)
 
             return response, status

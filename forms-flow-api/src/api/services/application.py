@@ -21,7 +21,6 @@ class ApplicationService:
         data["application_status"] = "New"
 
         mapper = FormProcessMapper.find_form_by_form_id(data["form_id"])
-        # temperory until the frontend can provide form_process_mapper_id
         data["form_process_mapper_id"] = mapper.id
         data["application_name"] = mapper.form_name
         application = Application.create_from_dict(data)
@@ -47,9 +46,9 @@ class ApplicationService:
                     "systemErrors": application_err,
                     "message": "Camunda Process Mapper Key not provided",
                 }, HTTPStatus.BAD_REQUEST
+                logging.exception(response)
                 return response
-
-            return application
+        return application
 
     @staticmethod
     def get_auth_applications_and_count(page_no, limit, token):

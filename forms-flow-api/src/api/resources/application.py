@@ -16,7 +16,7 @@ from ..schemas.application import (
     ApplicationSchema,
     ApplicationUpdateSchema,
 )
-from ..services import ApplicationService, ApplicationAuditService
+from ..services import ApplicationService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
 from api.utils.constants import CORS_ORIGINS

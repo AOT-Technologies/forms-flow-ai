@@ -19,7 +19,8 @@ import {
   updateBPMTask
 } from "../../../apiManager/services/bpmTaskServices";
 import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
-import UserSelection from "./UserSelection";
+//import UserSelection from "./UserSelection";
+import UserSelectionDebounce from "./UserSelectionDebounce";
 
 const TaskHeader = React.memo(() => {
   const task = useSelector(state => state.bpmTasks.taskDetail);
@@ -201,7 +202,7 @@ const TaskHeader = React.memo(() => {
         </Col>
         <Col className="right-side">
           {isEditAssignee?(task?.assignee? <span>
-              <UserSelection onClose={()=>setIsEditAssignee(false)}
+              <UserSelectionDebounce onClose={()=>setIsEditAssignee(false)}
                              currentUser={task.assignee}
                              onChangeClaim={onChangeClaim}/></span>:
             <span onClick={onClaim}> Claim</span>):

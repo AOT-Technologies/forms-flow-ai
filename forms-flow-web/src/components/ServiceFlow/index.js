@@ -7,7 +7,7 @@ import {
   fetchFilterList,
   fetchProcessDefinitionList,
   fetchServiceTaskList,
-  fetchUserList, getBPMGroups, getBPMTaskDetail
+  getBPMGroups, getBPMTaskDetail
 } from "../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
 import {ALL_TASKS} from "./constants/taskConstants";
@@ -52,7 +52,7 @@ const ServiceFlow = React.memo(() => {
     dispatch(setBPMFilterLoader(true));
     dispatch(fetchFilterList());
     dispatch(fetchProcessDefinitionList());
-    dispatch(fetchUserList());
+    // dispatch(fetchUserList());
   },[dispatch]);
 
   useEffect(()=>{

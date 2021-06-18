@@ -1,4 +1,4 @@
-import React, {useEffect}from "react";
+import React, {useEffect} from "react";
 import { Route, Redirect } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -14,10 +14,20 @@ import InsightsPage from "./Insights";
 import Application from "./Application";
 import 'semantic-ui-css/semantic.min.css';
 
+
 const PrivateRoute = React.memo((props) => {
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.user.isAuthenticated);
-  const userRoles=useSelector((state) => state.user.roles || []);
+  const userRoles= useSelector((state) => state.user.roles || []);
+  const showApplications= useSelector((state) => state.user.showApplications);
+
+  useEffect(()=>{
+    if(props.store){
+      UserService.initKeycloak(props.store, (err, res) => {
+        dispatch(setUserAuth(res.authenticated));
+      });
+    }
+  },[props.store, dispatch]);
 
   const ReviewerRoute = ({ component: Component, ...rest }) => (
     <Route
@@ -45,24 +55,15 @@ const PrivateRoute = React.memo((props) => {
     />
   );
 
-  useEffect(()=>{
-    if(props.store){
-      UserService.initKeycloak(props.store, (err, res) => {
-        dispatch(setUserAuth(res.authenticated));
-      });
-    }
-  },[props.store, dispatch]);
-
   return (
       <>
         {isAuth ? (
           <>
             <Route path="/form" component={Form} />
             <Route path="/formflow" component={Form} />
-            <ClientReviewerRoute path="/application" component={Application} />
+            {showApplications?<ClientReviewerRoute path="/application" component={Application} />:null}
             <ReviewerRoute path="/metrics" component={DashboardPage} />
             <ReviewerRoute path="/task" component={ServiceFlow} />
-           {/* <ReviewerRoute path="/service-flow-task" component={ServiceFlow} />*/}
             <Route exact path="/">
               <Redirect to={userRoles.includes(STAFF_REVIEWER)?'/task':'/form'} />
             </Route>

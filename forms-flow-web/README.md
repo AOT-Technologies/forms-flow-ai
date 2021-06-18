@@ -45,7 +45,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
    * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
 > :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the .env file
-   
+
  Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
  `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
@@ -59,6 +59,9 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  `KEYCLOAK_WEB_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-web | `forms-flow-web`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token| | `giert989jkwrgb@DR55`
  `APPLICATION_NAME`|Application name is used to provide clients application name|
+ `USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
+
+* NOTE - While configuring USER_ACCESS_PERMISSIONS the accessAllowApplications will hide / show application tab, the same way accessAllowSubmissions does for viewSubmission button. To enable this feature you need to add access-allow-applications, access-allow-submissions with the respective user group in keycloak.
 
 * [STEP 1](): Getting **ROLE_ID** and **RESOURCE_ID** are mandatory for role based access. To generate ID go to ["Formsflow-forms user/role API"](../forms-flow-forms/README.md#formsflow-forms-api-requesting) and follow the steps.
 * [STEP 2](): Modify the environment variables using the values from step 1.
@@ -92,11 +95,11 @@ Variable name | Meaning | Possible values | Default value |
    * Default user credentials are provided [here](../forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 
 ### How to Create Your First Form
-  * Login to **http://localhost:3000/** using valid [designer](../forms-flow-idm/keycloak/README.md#default-user-credentials) credentials 
+  * Login to **http://localhost:3000/** using valid [designer](../forms-flow-idm/keycloak/README.md#default-user-credentials) credentials
   * Navigate to menu **Forms**
   * Click the button **+ Create Form** to launch the form designer studio.
   * Design the form using **Drag and Drop** of components from LHS to RHS and publish by clicking the button **Create Form**.
-  
+
 ### Logo change
   * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web.
      The default width and height of the logo is 50 and 55 also the image format is svg

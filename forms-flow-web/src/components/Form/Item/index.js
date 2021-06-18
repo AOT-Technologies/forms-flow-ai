@@ -1,7 +1,7 @@
-import { Route, Switch, Redirect } from 'react-router-dom'
-import React, {PureComponent} from 'react'
-import { getForm, selectRoot } from 'react-formio'
-import { connect } from 'react-redux'
+import {Route, Switch, Redirect, useParams} from 'react-router-dom'
+import React, {useEffect} from 'react'
+import {getForm} from 'react-formio'
+import {useDispatch, useSelector} from 'react-redux'
 
 import {STAFF_REVIEWER, CLIENT, STAFF_DESIGNER} from '../../../constants/constants'
 import View from './View'
@@ -9,50 +9,38 @@ import Edit from './Edit'
 import Submission from './Submission/index'
 import Preview from './Preview'
 
-let user = '';
-/**
- * Protected route to form submissions
- */
-const SubmissionRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (
-    user.includes(STAFF_REVIEWER) || user.includes(CLIENT)
-      ? <Component {...props} />
-      : <Redirect exact to='/' />
-  )} />
-);
-/**
- * Protected route for form deletion
- */
-const FormActionRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (
-    user.includes(STAFF_DESIGNER)
-      ? <Component {...props} />
-      : <Redirect exact to='/' />
-  )} />
-);
+const Item = React.memo(()=>{
+  const {formId} = useParams();
+  const userRoles= useSelector((state) => state.user.roles || []);
+  const dispatch= useDispatch();
 
-const Item = class extends PureComponent{
-  constructor() {
-    super();
+  useEffect(()=>{
+    //TODO add loader
+    dispatch(getForm('form', formId));
+  },[formId, dispatch]);
 
-    this.state = {
-      formId: ''
-    }
-  }
+  /**
+   * Protected route to form submissions
+   */
+  const SubmissionRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={(props) => (
+      userRoles.includes(STAFF_REVIEWER) || userRoles.includes(CLIENT)
+        ? <Component {...props} />
+        : <Redirect exact to='/' />
+    )} />
+  );
+  /**
+   * Protected route for form deletion
+   */
+  const FormActionRoute = ({ component: Component, ...rest }) => (
+    <Route {...rest} render={(props) => (
+      userRoles.includes(STAFF_DESIGNER)
+        ? <Component {...props} />
+        : <Redirect exact to='/' />
+    )} />
+  );
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.match.params.formId !== prevState.formId) {
-      nextProps.getForm(nextProps.match.params.formId);
-    }
-
-    return {
-      formId: nextProps.match.params.formId
-    };
-  }
-
-  render() {
-    user = this.props.userRoles;
-    return (
+  return (
       <div>
         <Switch>
           <Route exact path="/form/:formId" component={View} />
@@ -62,22 +50,6 @@ const Item = class extends PureComponent{
         </Switch>
       </div>
     )
-  }
-}
+});
 
-const mapStateToProps = (state) => {
-  return {
-    userRoles:selectRoot('user',state).roles||[]
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    getForm: (id) => dispatch(getForm('form', id))
-  };
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Item);
+export default Item;

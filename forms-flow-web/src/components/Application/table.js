@@ -70,15 +70,13 @@ export const columns_history = [
     sort: true,
   },
 ];
+
 export const columns  = (rows) => [
   {
     dataField: "id",
     text: "Application ID",
     formatter: linkApplication,
     sort: true,
-    headerStyle: (colum, colIndex) => {
-      return { width: "20%" };
-    },
     filter: textFilter({
       placeholder: "\uf002 Application ID", // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
@@ -92,9 +90,6 @@ export const columns  = (rows) => [
     dataField: "applicationName",
     text: "Application Name",
     sort: true,
-    headerStyle: (colum, colIndex) => {
-      return { width: "23%" };
-    },
     formatter: nameFormatter,
     filter: textFilter({
       placeholder: "\uf002 Application Name", // custom the input placeholder
@@ -109,9 +104,6 @@ export const columns  = (rows) => [
     dataField: "applicationStatus",
     text: "Application Status",
     sort: true,
-    headerStyle: (colum, colIndex) => {
-      return { width: "18%" };
-    },
     filter: selectFilter({
       options: getApplicationStatusOptions(rows),
       placeholder: "All",
@@ -126,7 +118,6 @@ export const columns  = (rows) => [
     dataField: "formUrl",
     text: "Link to Form Submission",
     formatter: linkSubmission,
-    sort: true,
   },
 
   {
@@ -135,7 +126,7 @@ export const columns  = (rows) => [
     formatter: timeFormatter,
     sort: true,
     headerStyle: (colum, colIndex) => {
-      return { width: "20%" };
+      return { width: "15%" };
     },
     filter: textFilter({
       placeholder: "\uf002 Last Modified", // custom the input placeholder

@@ -13,7 +13,6 @@ import DashboardPage from "./Dashboard";
 import InsightsPage from "./Insights";
 import Application from "./Application";
 import 'semantic-ui-css/semantic.min.css';
-import PageNotFound from "./notFound";
 
 
 const PrivateRoute = React.memo((props) => {
@@ -69,8 +68,6 @@ const PrivateRoute = React.memo((props) => {
               <Redirect to={userRoles.includes(STAFF_REVIEWER)?'/task':'/form'} />
             </Route>
             <ReviewerRoute path="/insights" component={InsightsPage} />
-            <Route path='/404' component={PageNotFound} />
-            <Redirect from='*' to='/404' />
           </>
         ) : (
           <Loading />

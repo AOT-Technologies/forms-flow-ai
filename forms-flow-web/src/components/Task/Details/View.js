@@ -103,7 +103,7 @@ const View = React.memo((props) => {
 const mapStateToProps = (state) => {
   return {
     detail: state.tasks.taskDetail,
-    userName: state.user.userDetail.preferred_username,
+    userName: state.user.userDetail?.preferred_username||"",
   };
 };
 const mapDispatchToProps = (dispatch) => {

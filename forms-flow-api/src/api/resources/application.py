@@ -9,14 +9,14 @@ import sys, traceback
 from flask import g, jsonify, request
 from flask_restx import Namespace, Resource, cors
 
-from ..exceptions import BusinessException
-from ..schemas.aggregated_application import AggregatedApplicationReqSchema
-from ..schemas.application import (
+from api.exceptions import BusinessException
+from api.schemas.aggregated_application import AggregatedApplicationReqSchema
+from api.schemas.application import (
     ApplicationListReqSchema,
     ApplicationSchema,
     ApplicationUpdateSchema,
 )
-from ..services import ApplicationService
+from api.services import ApplicationService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
 from api.utils.constants import CORS_ORIGINS
@@ -120,12 +120,25 @@ class ApplicationResourceById(Resource):
     def get(application_id):
         """Get application by id."""
         try:
-            return (
-                ApplicationService.apply_custom_attributes(
-                    ApplicationService.get_application(application_id=application_id)
-                ),
-                HTTPStatus.OK,
-            )
+            groups = g.token_info.get("groups")
+            if "/formsflow/formsflow-reviewer" in groups:
+                application_schema_dump = ApplicationService.get_auth_by_application_id(
+                    application_id=application_id,
+                    token=request.headers["Authorization"],
+                )
+                if application_schema_dump:
+                    return (
+                        ApplicationService.apply_custom_attributes(
+                            application_schema_dump
+                        ),
+                        HTTPStatus.OK,
+                    )
+            else:
+                application, status = ApplicationService.get_application_by_user(
+                    application_id=application_id,
+                    user_id=g.token_info.get("preferred_username"),
+                )
+                return jsonify(application), status
         except BusinessException as err:
             return err.error, err.status_code
 

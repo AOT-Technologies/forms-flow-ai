@@ -19,7 +19,7 @@ from api.schemas.application import (
 from api.services import ApplicationService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
-from api.utils.constants import CORS_ORIGINS
+from api.utils.constants import CORS_ORIGINS, REVIEWER_GROUP
 
 
 API = Namespace("Application", description="Application")
@@ -42,7 +42,7 @@ class ApplicationsResource(Resource):
         else:
             page_no = 0
             limit = 0
-        if auth.has_role(["formsflow-reviewer"]):
+        if auth.has_role([REVIEWER_GROUP]):
             (
                 application_schema_dump,
                 application_count,
@@ -120,19 +120,19 @@ class ApplicationResourceById(Resource):
     def get(application_id):
         """Get application by id."""
         try:
-            groups = g.token_info.get("groups")
-            if "/formsflow/formsflow-reviewer" in groups:
-                application_schema_dump = ApplicationService.get_auth_by_application_id(
+            # groups = g.token_info.get("groups")
+            # if ALLOW_ALL_APPLICATIONS in groups:
+            if auth.has_role([REVIEWER_GROUP]):
+                application_schema_dump, status = ApplicationService.get_auth_by_application_id(
                     application_id=application_id,
                     token=request.headers["Authorization"],
                 )
-                if application_schema_dump:
-                    return (
-                        ApplicationService.apply_custom_attributes(
-                            application_schema_dump
-                        ),
-                        HTTPStatus.OK,
-                    )
+                return (
+                    ApplicationService.apply_custom_attributes(
+                        application_schema_dump
+                    ),
+                    status
+                )
             else:
                 application, status = ApplicationService.get_application_by_user(
                     application_id=application_id,

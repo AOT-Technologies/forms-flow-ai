@@ -50,8 +50,7 @@ class ApplicationService:
                 logging.exception(response)
                 return response
         return application
-      
-    
+
     @staticmethod
     @lru_cache(maxsize=32)
     def get_authorised_form_list(token):
@@ -60,9 +59,9 @@ class ApplicationService:
         the no of function calls."""
         response = BPMService.get_auth_form_details(token=token)
         return response
-      
-     
+
     @staticmethod
+
     def get_auth_applications_and_count(page_no: int, limit: int, token: str):
         """Get applications only from authorized groups."""
         if page_no:
@@ -99,7 +98,9 @@ class ApplicationService:
             application = Application.find_id_by_form_names(
                 form_names=form_names, application_id=application_id
             )
-            return application_schema.dump(application)
+            return application_schema.dump(application), HTTPStatus.OK
+        else:
+            return (application_schema.dump([])), HTTPStatus.FORBIDDEN
 
     @staticmethod
     def get_all_applications(page_no: int, limit: int):

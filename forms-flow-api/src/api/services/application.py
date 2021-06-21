@@ -61,6 +61,7 @@ class ApplicationService:
         return response
 
     @staticmethod
+
     def get_auth_applications_and_count(page_no: int, limit: int, token: str):
         """Get applications only from authorized groups."""
         if page_no:

@@ -97,7 +97,9 @@ class ApplicationService:
             application = Application.find_id_by_form_names(
                 form_names=form_names, application_id=application_id
             )
-            return application_schema.dump(application)
+            return application_schema.dump(application), HTTPStatus.OK
+        else:
+            return (application_schema.dump([])), HTTPStatus.FORBIDDEN
 
     @staticmethod
     def get_all_applications(page_no: int, limit: int):

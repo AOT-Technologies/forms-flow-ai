@@ -8,7 +8,6 @@ import {STAFF_REVIEWER} from "../../../../constants/constants";
 
 
 const Form = React.memo(() => {
-    /*TODO remove submission List Route for client*/
   const userRoles= useSelector((state) => state.user.roles || []);
   const showViewSubmissions= useSelector((state) => state.user.showViewSubmissions);
 

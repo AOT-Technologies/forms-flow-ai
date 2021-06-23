@@ -25,7 +25,7 @@ services:
       - keycloak-server-network
 
   keycloak:
-    image: jboss/keycloak
+    image: jboss/keycloak:14.0.0
     restart: unless-stopped
     container_name: keycloak
     volumes:

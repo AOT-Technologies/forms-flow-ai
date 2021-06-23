@@ -1,5 +1,5 @@
 import React, {useEffect} from "react";
-import { Route, Redirect } from "react-router-dom";
+import { Route, Switch, Redirect} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import UserService from "../services/UserService";
@@ -13,14 +13,12 @@ import DashboardPage from "./Dashboard";
 import InsightsPage from "./Insights";
 import Application from "./Application";
 import 'semantic-ui-css/semantic.min.css';
-
+import NotFound from "./NotFound";
 
 const PrivateRoute = React.memo((props) => {
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.user.isAuthenticated);
   const userRoles= useSelector((state) => state.user.roles || []);
-  const showApplications= useSelector((state) => state.user.showApplications);
-
   useEffect(()=>{
     if(props.store){
       UserService.initKeycloak(props.store, (err, res) => {
@@ -28,7 +26,6 @@ const PrivateRoute = React.memo((props) => {
       });
     }
   },[props.store, dispatch]);
-
   const ReviewerRoute = ({ component: Component, ...rest }) => (
     <Route
       {...rest}
@@ -41,7 +38,6 @@ const PrivateRoute = React.memo((props) => {
       }
     />
   );
-
   const ClientReviewerRoute = ({ component: Component, ...rest }) => (
     <Route
       {...rest}
@@ -54,21 +50,24 @@ const PrivateRoute = React.memo((props) => {
       }
     />
   );
-
   return (
       <>
         {isAuth ? (
           <>
+          <Switch>
             <Route path="/form" component={Form} />
             <Route path="/formflow" component={Form} />
-            {showApplications?<ClientReviewerRoute path="/application" component={Application} />:null}
+            <ClientReviewerRoute path="/application" component={Application} />
             <ReviewerRoute path="/metrics" component={DashboardPage} />
             <ReviewerRoute path="/task" component={ServiceFlow} />
+            <ReviewerRoute path="/insights" component={InsightsPage} />
             <Route exact path="/">
               <Redirect to={userRoles.includes(STAFF_REVIEWER)?'/task':'/form'} />
-            </Route>
-            <ReviewerRoute path="/insights" component={InsightsPage} />
-          </>
+            </Route>   
+            <Route path='/404' exact={true} component={NotFound} /> 
+            <Redirect from='*' to='/404' />
+           </Switch>           
+          </>         
         ) : (
           <Loading />
         )}

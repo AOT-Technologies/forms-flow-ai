@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from "react";
+import React, {useCallback, useEffect} from "react";
 import {Row, Tab, Tabs} from "react-bootstrap";
 import TaskHeader from "./TaskHeader";
 import {setBPMTaskDetailLoader, setSelectedTaskID} from "../../../actions/bpmTaskActions";
@@ -21,6 +21,7 @@ import {CUSTOM_EVENT_TYPE} from "../constants/customEventTypes";
 import {getTaskSubmitFormReq} from "../../../apiManager/services/bpmServices";
 import {useParams} from "react-router-dom";
 import {push} from "connected-react-router";
+import {setFormSubmissionLoading} from "../../../actions/formActions";
 
 
 const ServiceFlowTaskDetails = React.memo(() => {
@@ -34,7 +35,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const dispatch= useDispatch();
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
-  const [updateFormSubmission,setUpdateFormSubmission]=useState(false);
 
  useEffect(()=>{
     if(taskId){
@@ -58,14 +58,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
       const {formId,submissionId} =getFormIdSubmissionIdFromURL(formUrl);
       dispatch(getForm('form',formId));
       dispatch(getSubmission('submission', submissionId, formId));
+      dispatch(setFormSubmissionLoading(false));
   },[dispatch]);
-
-  useEffect(()=>{
-    if(updateFormSubmission && task?.formUrl){
-      getFormSubmissionData(task?.formUrl);
-      setUpdateFormSubmission(false);
-    }
-  },[updateFormSubmission, getFormSubmissionData, task?.formUrl])
 
   useEffect(()=>{
     if(task?.formUrl){
@@ -86,11 +80,10 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const reloadCurrentTask = () => {
     if(selectedFilter && task?.id) {
       dispatch(setBPMTaskDetailLoader(true))
-      dispatch(getBPMTaskDetail(task.id,(err)=>{
+      dispatch(getBPMTaskDetail(task.id,(err,taskDetail)=>{
         if(!err){
-          dispatch(resetForm('form'));
-          dispatch(resetSubmission('submission'));
-          setUpdateFormSubmission(true);
+          dispatch(setFormSubmissionLoading(true));
+          getFormSubmissionData(taskDetail?.formUrl);
         }
       })); // Refresh the Task Selected
       dispatch(getBPMGroups(task.id))

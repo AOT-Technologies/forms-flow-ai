@@ -16,7 +16,7 @@ import History from "../../Application/ApplicationHistory";
 import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
 import LoadingOverlay from "react-loading-overlay";
-import {getForm, getSubmission, resetForm, resetSubmission, saveSubmission} from "react-formio";
+import {getForm, getSubmission, resetForm, resetSubmission} from "react-formio";
 import {CUSTOM_EVENT_TYPE} from "../constants/customEventTypes";
 import {getTaskSubmitFormReq} from "../../../apiManager/services/bpmServices";
 import {useParams} from "react-router-dom";
@@ -91,20 +91,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
     }
   }
 
-  const saveAsDraft = (data) =>{
-    if(task?.formUrl){
-      const {formId,submissionId} =getFormIdSubmissionIdFromURL(task?.formUrl);
-      if(formId && submissionId){
-        const submission={_id:submissionId,data:data};
-        dispatch(saveSubmission('submission', submission,formId, (err, submission) => {
-          if(!err){
-            dispatch(getSubmission('submission', submissionId, formId));
-          }
-        }))
-      }
-    }
-  }
-
   const onCustomEventCallBack = (customEvent) => {
      switch(customEvent.type){
        case CUSTOM_EVENT_TYPE.RELOAD_TASKS:
@@ -112,9 +98,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
          break;
        case CUSTOM_EVENT_TYPE.RELOAD_CURRENT_TASK:
          reloadCurrentTask();
-         break;
-       case CUSTOM_EVENT_TYPE.SAVE_AS_DRAFT:
-         saveAsDraft(customEvent.data);
          break;
        default: return;
      }

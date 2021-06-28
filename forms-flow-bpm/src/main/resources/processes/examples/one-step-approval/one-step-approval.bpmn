@@ -41,7 +41,7 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
         <camunda:executionListener event="take">
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'New');</camunda:script>
         </camunda:executionListener>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.execution.FormAttributesListener" event="take">
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
           <camunda:field name="fields">
             <camunda:expression>["applicationId"]</camunda:expression>
           </camunda:field>

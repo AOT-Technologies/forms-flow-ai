@@ -21,7 +21,7 @@
     <bpmn:startEvent id="StartEvent_1" name="Submit  New Application">
       <bpmn:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "new");</camunda:script>
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "New");</camunda:script>
         </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_0byzagb</bpmn:outgoing>

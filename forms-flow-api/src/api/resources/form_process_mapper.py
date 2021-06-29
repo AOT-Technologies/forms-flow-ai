@@ -223,6 +223,7 @@ class FormResourceByFormId(Resource):
 
     @staticmethod
     @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
+    @auth.require
     def get(form_id):
         """Get details of only form corresponding to a particular formId."""
         try:

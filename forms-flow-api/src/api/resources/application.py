@@ -6,8 +6,8 @@ import logging
 import sys, traceback
 
 
-from flask import g, jsonify, request
-from flask_restx import Namespace, Resource, cors
+from flask import g, request
+from flask_restx import Namespace, Resource
 
 from api.exceptions import BusinessException
 from api.schemas.aggregated_application import AggregatedApplicationReqSchema

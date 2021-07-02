@@ -2,18 +2,14 @@
 
 from http import HTTPStatus
 import logging
-
 import sys, traceback
-
-
-from flask import jsonify, request
-from flask_restx import Namespace, Resource, cors
+from flask import request
+from flask_restx import Namespace, Resource
 
 from ..schemas.application_audit import ApplicationAuditSchema
 from ..services import ApplicationAuditService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
-from api.utils.constants import CORS_ORIGINS
 
 # keeping the base path same for application history and application/
 API = Namespace("Application", description="Application")

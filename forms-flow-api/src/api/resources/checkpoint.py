@@ -1,12 +1,8 @@
 """API endpoints for managing healthcheckpoint API resource."""
 
 from http import HTTPStatus
-
-from flask import jsonify
-from flask_restx import Namespace, Resource, cors
-
+from flask_restx import Namespace, Resource
 from api.utils.util import cors_preflight
-from api.utils.constants import CORS_ORIGINS
 
 
 API = Namespace("Checkpoint", description="Checkpoint")

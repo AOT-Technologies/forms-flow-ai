@@ -2,10 +2,9 @@
 
 from http import HTTPStatus
 import logging
-
 import sys, traceback
 
-from flask import g, jsonify, request
+from flask import g, request
 from flask_restx import Namespace, Resource
 
 from ..exceptions import BusinessException
@@ -13,7 +12,6 @@ from ..schemas import ApplicationListReqSchema, FormProcessMapperSchema
 from ..services import FormProcessMapperService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
-from api.utils.constants import CORS_ORIGINS
 
 
 API = Namespace("Form", description="Form")

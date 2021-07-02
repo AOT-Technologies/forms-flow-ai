@@ -5,13 +5,12 @@ import sys, traceback
 
 from http import HTTPStatus
 
-from flask import jsonify, request
-from flask_restx import Namespace, Resource, cors
+from flask import request
+from flask_restx import Namespace, Resource
 
 from api.services import TaskService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
-from api.utils.constants import CORS_ORIGINS
 
 
 API = Namespace("Task", description="Task")

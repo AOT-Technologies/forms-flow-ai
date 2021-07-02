@@ -17,7 +17,7 @@ import {
   defaultSortedBy,
 } from "./table";
 import {getUserRolePermission} from "../../helper/user";
-import {CLIENT} from "../../constants/constants";
+import {CLIENT, STAFF_REVIEWER} from "../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../constants/applicationConstants";
 
 
@@ -38,7 +38,7 @@ const ApplicationList = React.memo(() => {
   },[userRoles]);
 
   const isClientEdit = (applicationStatus) => {
-    if (getUserRolePermission(userRoles, CLIENT)) {
+    if (getUserRolePermission(userRoles, CLIENT)||getUserRolePermission(userRoles, STAFF_REVIEWER)) {
       return CLIENT_EDIT_STATUS.includes(applicationStatus)
     }else {
       return false;

@@ -63,11 +63,11 @@ const PrivateRoute = React.memo((props) => {
             <ReviewerRoute path="/insights" component={InsightsPage} />
             <Route exact path="/">
               <Redirect to={userRoles.includes(STAFF_REVIEWER)?'/task':'/form'} />
-            </Route>
-            <Route path='/404' exact={true} component={NotFound} />
+            </Route>   
+            <Route path='/404' exact={true} component={NotFound} /> 
             <Redirect from='*' to='/404' />
-           </Switch>
-          </>
+           </Switch>           
+          </>         
         ) : (
           <Loading />
         )}

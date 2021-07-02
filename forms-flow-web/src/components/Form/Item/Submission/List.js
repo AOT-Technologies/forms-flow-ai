@@ -86,9 +86,9 @@ const List = React.memo((props) => {
         <h3 className="ml-3">
           <span className="task-head-details"> <img className="icon-wp-forms" src="/webfonts/fa-wpforms.svg" alt="back"/><span className="forms-text">Forms /</span></span> {form.title}
         </h3>
-        {userRoles.includes(CLIENT) ? <Link className="btn btn-primary form-btn btn-right" to={`/form/${formId}`}>
+        {/* {userRoles.includes(CLIENT) ? <Link className="btn btn-primary form-btn btn-right" to={`/form/${formId}`}>
         <img src="/webfonts/fa_plus.svg" alt="back"/> New Submisssion
-        </Link> : null}
+        </Link> : null} */}
       </div>
 
       <section className="custom-grid">

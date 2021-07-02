@@ -99,14 +99,17 @@ const ServiceFlowTaskDetails = React.memo(() => {
        case CUSTOM_EVENT_TYPE.RELOAD_CURRENT_TASK:
          reloadCurrentTask();
          break;
+       case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
+         onFormSubmitCallback(customEvent.actionType);
+         break;
        default: return;
      }
   };
 
-  const onFormSubmitCallback = () => {
+  const onFormSubmitCallback = (actionType="") => {
     if(bpmTaskId){
       dispatch(setBPMTaskDetailLoader(true));
-      dispatch(onBPMTaskFormSubmit(bpmTaskId,getTaskSubmitFormReq(task?.formUrl,task?.applicationId),(err)=>{
+      dispatch(onBPMTaskFormSubmit(bpmTaskId,getTaskSubmitFormReq(task?.formUrl,task?.applicationId,actionType),(err)=>{
         if(!err){
           reloadTasks();
         }else{

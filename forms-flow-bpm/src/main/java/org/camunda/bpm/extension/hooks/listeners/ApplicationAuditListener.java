@@ -1,10 +1,7 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
 import lombok.Data;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
-import org.camunda.bpm.engine.delegate.DelegateTask;
-import org.camunda.bpm.engine.delegate.ExecutionListener;
-import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.engine.delegate.*;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -14,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 
 /**
- * This class creates an audit entry in formsflow.ai system.
+ * This class creates / updates an audit entry in formsflow.ai system.
  *
  * @author sumathi.thirumani@aot-technolgies.com
  */
@@ -26,6 +23,9 @@ public class ApplicationAuditListener implements ExecutionListener, TaskListener
 
     @Autowired
     private ApplicationAudit applicationAudit;
+
+    //To enable PUT operation on audit history
+    private Expression overwriteAudit;
 
     @Override
     public void notify(DelegateExecution execution) throws Exception {
@@ -43,7 +43,11 @@ public class ApplicationAuditListener implements ExecutionListener, TaskListener
      * @param execution
      */
     protected void invokeApplicationAuditService(DelegateExecution execution) {
-        getHTTPServiceInvoker().execute(getApplicationAuditUrl(execution), HttpMethod.POST, prepareApplicationAudit(execution));
+        if(overwriteAudit != null && "Y".equals(overwriteAudit.toString())){
+            getHTTPServiceInvoker().execute(getApplicationAuditUrl(execution), HttpMethod.PUT, prepareApplicationAudit(execution));
+        } else {
+            getHTTPServiceInvoker().execute(getApplicationAuditUrl(execution), HttpMethod.POST, prepareApplicationAudit(execution));
+        }
     }
 
     /**

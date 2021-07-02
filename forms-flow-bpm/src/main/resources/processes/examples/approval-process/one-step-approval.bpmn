@@ -55,16 +55,13 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
     <bpmn:sequenceFlow id="SequenceFlow_0jg4sg3" sourceRef="reviewer" targetRef="ExclusiveGateway_0l1c65j" />
     <bpmn:task id="Task_1hko8r7" name="Update Application Status">
       <bpmn:extensionElements>
-        <camunda:executionListener event="start">
-          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', execution.getVariable('action'));
-execution.setVariable('deleteReason', "completed");</camunda:script>
-        </camunda:executionListener>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="start" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="end" />
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="start">
           <camunda:field name="fields">
             <camunda:expression>["applicationId","applicationStatus"]</camunda:expression>
           </camunda:field>
         </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.FormSubmissionListener" event="start" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1x38yu4</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_0pc6hcp</bpmn:incoming>

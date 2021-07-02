@@ -25,7 +25,6 @@ class SentimentAnalysisResource(Resource):
     """Resource for generating Sentiment Analysis"""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     # @auth.require
     def post():
         try:

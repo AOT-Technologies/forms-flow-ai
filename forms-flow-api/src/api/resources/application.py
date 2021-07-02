@@ -31,7 +31,6 @@ class ApplicationsResource(Resource):
     """Resource for managing applications."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """Get applications."""
@@ -65,7 +64,7 @@ class ApplicationsResource(Resource):
             )
         if page_no > 0:
             return (
-                jsonify(
+                (
                     {
                         "applications": application_schema,
                         "totalCount": application_count,
@@ -77,7 +76,7 @@ class ApplicationsResource(Resource):
             )
         else:
             return (
-                jsonify(
+                (
                     {
                         "applications": application_schema,
                         "totalCount": application_count,
@@ -115,13 +114,10 @@ class ApplicationResourceById(Resource):
     """Resource for submissions."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(application_id):
         """Get application by id."""
         try:
-            # groups = g.token_info.get("groups")
-            # if ALLOW_ALL_APPLICATIONS in groups:
             if auth.has_role([REVIEWER_GROUP]):
                 application_schema_dump, status = ApplicationService.get_auth_by_application_id(
                     application_id=application_id,
@@ -138,12 +134,11 @@ class ApplicationResourceById(Resource):
                     application_id=application_id,
                     user_id=g.token_info.get("preferred_username"),
                 )
-                return jsonify(application), status
+                return (application), status
         except BusinessException as err:
             return err.error, err.status_code
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def put(application_id):
         """Update application details."""
@@ -177,7 +172,6 @@ class ApplicationResourceByFormId(Resource):
     """Resource for submissions."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(form_id):
         """Get applications."""
@@ -215,7 +209,7 @@ class ApplicationResourceByFormId(Resource):
 
         if page_no == 0:
             return (
-                jsonify(
+                (
                     {
                         "applications": application_schema,
                         "totalCount": application_count,
@@ -225,7 +219,7 @@ class ApplicationResourceByFormId(Resource):
             )
         else:
             return (
-                jsonify(
+                (
                     {
                         "applications": application_schema,
                         "totalCount": application_count,
@@ -243,7 +237,6 @@ class ApplicationResourcesByIds(Resource):
     """Resource for submissions."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post():
         """Post a new application using the request body."""
@@ -278,7 +271,6 @@ class AggregatedApplicationsResource(Resource):
     """Resource for managing aggregated applications."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """Get aggregated applications."""
@@ -289,7 +281,7 @@ class AggregatedApplicationsResource(Resource):
             to_date = dict_data["to_date"]
 
             return (
-                jsonify(
+                (
                     {
                         "applications": ApplicationService.get_aggregated_applications(
                             from_date=from_date, to_date=to_date
@@ -320,7 +312,6 @@ class AggregatedApplicationStatusResource(Resource):
     """Resource for managing aggregated applications."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(mapper_id):
         """Get aggregated application status."""
@@ -331,7 +322,7 @@ class AggregatedApplicationStatusResource(Resource):
             to_date = dict_data["to_date"]
 
             return (
-                jsonify(
+                (
                     {
                         "applicationStatus": ApplicationService.get_aggregated_application_status(
                             mapper_id=mapper_id, from_date=from_date, to_date=to_date

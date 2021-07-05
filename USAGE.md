@@ -60,24 +60,22 @@ In the following document, we’ll describe the step by step instructions to set
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can `Create / View / Edit / Delete` a form.
 
-![image](https://user-images.githubusercontent.com/70306694/121669233-be026f80-cac9-11eb-89df-2be9f3c5f939.png)
+![image](https://user-images.githubusercontent.com/83489861/124453516-1107d380-dda5-11eb-9dba-2742cabc8582.png)
 
 * To create a new form click on **Create Form Button**. You can use the Drag-and-drop forms-builder with rich UI components to create a form with ease.
 > Employee Feedback form is already created, so we are skipping the step of creating Form.
 * You can modify the form by clicking on **View/Edit Form** button and you can edit form design by clicking the **Edit Form** button or continue by moving **Next** button if form design is completed to move to the stage associating workflow to the form.
 
-![image](https://user-images.githubusercontent.com/83952803/121727809-05105500-cb0a-11eb-8402-5faa69272e5c.png)
+![image](https://user-images.githubusercontent.com/83489861/124475627-8d0f1500-ddbf-11eb-8ca1-5898bcc7d499.png)
 
+* At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow - One Step Approval. 
 
-* At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow - Feedback Review (Example). 
-
-![image](https://user-images.githubusercontent.com/83952803/121728375-cfb83700-cb0a-11eb-96b6-af8e16348ca9.png)
-
+![image](https://user-images.githubusercontent.com/83489861/124475762-b6c83c00-ddbf-11eb-9911-41e55e2a9b9d.png)
 
 * After the associate workflow is completed click on **Next Button** to Preview and Confirm.
 * You can click on **EDIT Button** and publish the form for clients to sent it for client usage.
 
-![image](https://user-images.githubusercontent.com/83952803/121728648-2f164700-cb0b-11eb-8574-03e1776004a4.png)
+![image](https://user-images.githubusercontent.com/83489861/124475827-cba4cf80-ddbf-11eb-8b07-f8c2b23c25eb.png)
 
 * Click on **SAVE Button** to completed designing a form.
 

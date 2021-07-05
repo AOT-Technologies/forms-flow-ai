@@ -4,8 +4,8 @@ In the following document, we’ll describe the step by step instructions to set
 ## Table of Contents
 1. [Usage Instructions](#usage-instructions)
 2. [Usage Instructions with examples](#usage-instructions-with-example)
-    * [Employee Feedback](#employee-feedback)
-    * [Product Survey Form](#product-survey-form)
+    * [Freedom of Information and Protection of Privacy](#freedom-of-information-and-protection-of-privacy)
+    * [Create New Business License Application](#create-new-business-license-application)
 3. [Links](#links)
 
 
@@ -50,8 +50,9 @@ In the following document, we’ll describe the step by step instructions to set
 
 ## Usage Instructions with examples
 
-## Employee Feedback
-> The following instructions are using an example form from the form.io - `Employee Feedback Form`. 
+## Freedom of Information and Protection of Privacy
+
+> The following instructions are using an example form from the form.io - `Freedom of Information and Protection of Privacy`. 
 
 * The usage instructions mention the end to end flow of a form is explained for Employee Feedback Form.
 
@@ -141,9 +142,9 @@ In the following document, we’ll describe the step by step instructions to set
 
 * Reviewer action is completed.
 
-## Product Survey Form
+## Create New Business License Application
 
-> The following instructions are using an example form from the form.io - `Product Survey Form`. Before using this form ensure that you have configured the
+> The following instructions are using an example form from the form.io - `Create New Business License Application`. Before using this form ensure that you have configured the
 `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
 
 * The usage instructions mention the end to end flow of a form is explained for Product Survey Form.

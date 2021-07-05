@@ -24,6 +24,9 @@ public class ApplicationAuditListener implements ExecutionListener, TaskListener
     @Autowired
     private ApplicationAudit applicationAudit;
 
+    //To enable PUT operation on audit history
+    private Expression overwriteAudit;
+
     @Override
     public void notify(DelegateExecution execution) throws Exception {
         invokeApplicationAuditService(execution);
@@ -40,7 +43,11 @@ public class ApplicationAuditListener implements ExecutionListener, TaskListener
      * @param execution
      */
     protected void invokeApplicationAuditService(DelegateExecution execution) {
-        getHTTPServiceInvoker().execute(getApplicationAuditUrl(execution), HttpMethod.POST, prepareApplicationAudit(execution));
+        if(overwriteAudit != null && "Y".equals(overwriteAudit.toString())){
+            getHTTPServiceInvoker().execute(getApplicationAuditUrl(execution), HttpMethod.PUT, prepareApplicationAudit(execution));
+        } else {
+            getHTTPServiceInvoker().execute(getApplicationAuditUrl(execution), HttpMethod.POST, prepareApplicationAudit(execution));
+        }
     }
 
     /**

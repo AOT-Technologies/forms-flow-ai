@@ -86,12 +86,12 @@ In the following document, we’ll describe the step by step instructions to set
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for client](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can View and Submit a form.
 
-![image](https://user-images.githubusercontent.com/83952803/121729074-aea41600-cb0b-11eb-9d80-ed2c46adb1f7.png)
+![image](https://user-images.githubusercontent.com/83489861/124476700-c72ce680-ddc0-11eb-9dba-31adf9d63a5e.png)
 
 * Click **Submit New Button** on the form which you wanted to submit.
 * The previous action will redirect you to the form, where you can fill the details and Submit. Fill the details and Submit the form, You can repeat this action as per your requirement.
 
-![image](https://user-images.githubusercontent.com/83952803/121729316-f5920b80-cb0b-11eb-856f-d3c236f7df88.png)
+![image](https://user-images.githubusercontent.com/83489861/124476729-d2801200-ddc0-11eb-847d-d61b109cbc4c.png)
 
 * If you had associated a workflow with the form, the form will start the workflow.
 * This action is completed, you can now Log out and go to [STEP 3](#) if you have a user review mentioned in your workflow.
@@ -101,8 +101,7 @@ In the following document, we’ll describe the step by step instructions to set
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/task.
 
-![image](https://user-images.githubusercontent.com/83952803/121731648-dba5f800-cb0e-11eb-9bbb-2bce24a49d97.png)
-
+![image](https://user-images.githubusercontent.com/83489861/124476868-fc393900-ddc0-11eb-81bf-ec75058db5df.png)
 
 * You can navigate to Applications tab to **View the Form** submissions.
 
@@ -114,7 +113,8 @@ In the following document, we’ll describe the step by step instructions to set
 
 * You can even print the Form submission as a PDF which can be rendered in browser
 
-![image](https://user-images.githubusercontent.com/70306694/121731463-9b467a00-cb0e-11eb-8a19-c754a0498f18.png)
+![reviewer-print](https://user-images.githubusercontent.com/83489861/124477501-b7fa6880-ddc1-11eb-99d6-505a8b9b4017.png)
+
 
 * On clicking the associated task which was recently created ie. *Manager Feedback Review(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
 

@@ -31,7 +31,7 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
         //HTTP Headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("x-jwt-token", getAccessToken());
+        headers.set("x-jwt-token", accessToken);
         HttpEntity<String> reqObj =
                 new HttpEntity<String>(payload, headers);
         if(HttpMethod.PATCH.name().equals(method.name())) {

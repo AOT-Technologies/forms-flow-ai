@@ -151,34 +151,25 @@ In the following document, we’ll describe the step by step instructions to set
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can `Create / View / Edit / Delete` a form.
 
-![image](https://user-images.githubusercontent.com/70306694/121669233-be026f80-cac9-11eb-89df-2be9f3c5f939.png)
+![image](https://user-images.githubusercontent.com/83489861/124479964-69020280-ddc4-11eb-9739-18c44a770f76.png)
 
 * To create a new form click on **Create Form Button**. You can use the Drag-and-drop forms-builder with rich UI components to create a form with ease.
 > Product Survey form is already created, so we are skipping the step of creating Form.
 * You can modify the form by clicking on **View/Edit Form** button and you can edit form design by clicking the **Edit Form** button or continue by moving **Next** button if form design is completed to move to the stage associating workflow to the form.
 
-![image](https://user-images.githubusercontent.com/70306694/121670032-a7a8e380-caca-11eb-9729-ed7a5adf2436.png)
+![image](https://user-images.githubusercontent.com/83489861/124480017-76b78800-ddc4-11eb-9b31-e0b2df759656.png)
 
-
-* At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow - Product Survey Administrator with Notification(Example). 
+* At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow - Two Step Approval. 
 > Note: Before using this workflow ensure that you have configured the `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
 
-<!-- ![Image 3](./.images/designer-workflow.PNG) -->
-![image](https://user-images.githubusercontent.com/70306694/121670495-1ede7780-cacb-11eb-8f3d-53e2a004e5aa.png)
-
+![image](https://user-images.githubusercontent.com/83489861/124480123-9058cf80-ddc4-11eb-802c-b69bfc796685.png)
 
 * After the associate workflow is completed click on **Next Button** to Preview and Confirm.
 * You can click on **EDIT Button** and publish the form for clients to sent it for client usage.
 
-<!-- ![Image 4](./.images/designer-publish.PNG) -->
-![image](https://user-images.githubusercontent.com/70306694/121671914-c7410b80-cacc-11eb-8c4c-f7fe8a8f2bbd.png)
-
+![image](https://user-images.githubusercontent.com/83489861/124480173-9ea6eb80-ddc4-11eb-9b51-cf7c1ebbdb90.png)
 
 * Click on **SAVE Button** to completed designing a form.
-
-<!-- ![Image 4](./.images/designer-final-submit.PNG) -->
-![image](https://user-images.githubusercontent.com/70306694/121672045-f35c8c80-cacc-11eb-831e-8c17c2050fae.png)
-
 * Form designing is successfully completed, you can now Log out and go to [STEP 2](#)
 
 ### [STEP 2](#) Client Tasks
@@ -186,16 +177,12 @@ In the following document, we’ll describe the step by step instructions to set
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for client](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can View and Submit a form.
 
-<!-- ![Image 5](./.images/client-landing.PNG) -->
-![image](https://user-images.githubusercontent.com/70306694/121672407-6403a900-cacd-11eb-8676-2e986d24dd3e.png)
-
+![image](https://user-images.githubusercontent.com/83489861/124480279-b9796000-ddc4-11eb-83c5-894f8b5ea223.png)
 
 * Click **Submit New Button** on the form which you wanted to submit.
 * The previous action will redirect you to the form, where you can fill the details and Submit.
 
-<!-- ![Image 6](./.images/client-submission.PNG) -->
-<!-- ![Image 7](./.images/client-submission-success.PNG) -->
-![image](https://user-images.githubusercontent.com/70306694/121672751-c6f54000-cacd-11eb-892f-4677ad0e0bb5.png)
+![image](https://user-images.githubusercontent.com/83489861/124480325-c433f500-ddc4-11eb-9c64-d8e316556fd6.png)
 
 * Fill the details and Submit the form, You can repeat this action as per your requirement.
 
@@ -205,22 +192,18 @@ In the following document, we’ll describe the step by step instructions to set
    
 ### [STEP 3](#) Reviewer Tasks
 
-* Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
+* Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for Clerk](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/task.
 
-<!-- ![Image 8](./.images/reviewer-landing.PNG) -->
-![image](https://user-images.githubusercontent.com/70306694/121726536-4e5fa500-cb08-11eb-8c03-200be34634b1.png)
+![image](https://user-images.githubusercontent.com/83489861/124480597-0d844480-ddc5-11eb-94e1-e330134e7a45.png)
 
 * You can navigate to Applications tab to **View the Form** submissions.
-<!-- ![Image 9](./.images/reviewer-view-forms.PNG) -->
-<!-- ![Image 10](./.images/reviewer-form-view.PNG) -->
-<!-- ![Image 11](./.images/reviewer-print.PNG) -->
-![image](https://user-images.githubusercontent.com/70306694/121673324-63b7dd80-cace-11eb-9858-30b5a8042f5f.png)
 
+![image](https://user-images.githubusercontent.com/83489861/124480666-22f96e80-ddc5-11eb-926d-bd73a9035ce7.png)
 
 * You can View the submissions against a form by clicking on **View** button.
 
-![image](https://user-images.githubusercontent.com/70306694/121692462-be106880-cae5-11eb-90a7-abf9a47d5c73.png)
+![9](https://user-images.githubusercontent.com/83489861/124481576-0c9fe280-ddc6-11eb-8231-619a96644a9c.png)
 
 
 * You can even print the Form submission as a PDF which can be rendered in browser

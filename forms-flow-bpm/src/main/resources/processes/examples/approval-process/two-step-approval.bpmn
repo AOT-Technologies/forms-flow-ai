@@ -50,11 +50,7 @@
         <camunda:executionListener event="take">
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Resubmitted");</camunda:script>
         </camunda:executionListener>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take">
-          <camunda:field name="overwriteAudit">
-            <camunda:expression>Y</camunda:expression>
-          </camunda:field>
-        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
       </bpmn:extensionElements>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${sendback_by == 'Clerk'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -63,11 +59,7 @@
         <camunda:executionListener event="take">
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Resubmitted");</camunda:script>
         </camunda:executionListener>
-        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take">
-          <camunda:field name="overwriteAudit">
-            <camunda:expression>Y</camunda:expression>
-          </camunda:field>
-        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
       </bpmn:extensionElements>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${sendback_by == 'Approver'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>

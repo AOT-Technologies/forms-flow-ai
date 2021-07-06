@@ -215,18 +215,33 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 
 ![image](https://user-images.githubusercontent.com/70306694/121726317-02146500-cb08-11eb-9685-9b6881db0696.png)
 
-* On submitting form, the associated task can be found for the reviewer role in the **Task Menu** section for the Manager
+* On submitting form, the associated task can be found for the Clerk role in the **Task Menu** section
 ![Image 11](https://user-images.githubusercontent.com/83584866/124555053-44556b80-de54-11eb-98fd-a1b88a235e8d.PNG)
 ![image](https://user-images.githubusercontent.com/70306694/121726536-4e5fa500-cb08-11eb-8c03-200be34634b1.png)
 
-* On clicking the associated task which was recently created ie. *New Business License Application with Two Step Approval(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
+* On clicking the associated task which was recently created ie. *New Business License Application with Two Step Approval*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
 ![Image 11](https://user-images.githubusercontent.com/83584866/124555279-8da5bb00-de54-11eb-86e0-e20eb1df99e3.PNG)
 ![Image 12](https://user-images.githubusercontent.com/83584866/124555350-9e563100-de54-11eb-96e3-02aa608362de.PNG)
 ![Image 13](https://user-images.githubusercontent.com/83584866/124555392-a910c600-de54-11eb-8873-b3e247d2bb8e.PNG)
 
-* On claiming the task, the Manager can fill the form and submit his review with signature.
+* On claiming the task, the Clerk can fill the form and submit his/her review with feedback.
 ![image](https://user-images.githubusercontent.com/70306694/121726879-c3cb7580-cb08-11eb-968d-320fc717063d.png)
 ![Image 14](https://user-images.githubusercontent.com/83584866/124555664-fb51e700-de54-11eb-9c72-c2c838604fcf.PNG)
+
+* On submitting form, the associated task can be found for the Approver role in the **Task Menu** section
+![Image 11](https://user-images.githubusercontent.com/83584866/124555053-44556b80-de54-11eb-98fd-a1b88a235e8d.PNG)
+![image](https://user-images.githubusercontent.com/70306694/121726536-4e5fa500-cb08-11eb-8c03-200be34634b1.png)
+
+* On clicking the associated task which was recently created ie. *New Business License Application with Two Step Approval*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
+![Image 11](https://user-images.githubusercontent.com/83584866/124555279-8da5bb00-de54-11eb-86e0-e20eb1df99e3.PNG)
+![Image 12](https://user-images.githubusercontent.com/83584866/124555350-9e563100-de54-11eb-96e3-02aa608362de.PNG)
+![Image 13](https://user-images.githubusercontent.com/83584866/124555392-a910c600-de54-11eb-8873-b3e247d2bb8e.PNG)
+
+* On claiming the task, the Approver can fill the form and submit his/her review with feedback.
+![image](https://user-images.githubusercontent.com/70306694/121726879-c3cb7580-cb08-11eb-968d-320fc717063d.png)
+![Image 14](https://user-images.githubusercontent.com/83584866/124555664-fb51e700-de54-11eb-9c72-c2c838604fcf.PNG)
+
+* With the above action New Business License Application is completed it's flow.
 
 
 ## Links

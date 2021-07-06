@@ -539,7 +539,6 @@
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ "UPDATE_PASSWORD" ],
-    "realmRoles" : [ "default-roles-forms-flow-ai" ],
     "notBefore" : 0,
     "groups" : [ "/formsflow/formsflow-reviewer/approver", "/camunda-admin", "/formsflow" ]
   }, {
@@ -559,7 +558,6 @@
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ "UPDATE_PASSWORD" ],
-    "realmRoles" : [ "default-roles-forms-flow-ai" ],
     "notBefore" : 0,
     "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer/clerk", "/formsflow" ]
   }, {
@@ -799,6 +797,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
+	    "http://localhost:7000/*",
         "*"
       ],
       "webOrigins": [],
@@ -880,6 +879,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
+	    "http://localhost:8000/camunda/*",
         "*"
       ],
       "webOrigins": [
@@ -914,18 +914,6 @@
       "fullScopeAllowed": true,
       "nodeReRegistrationTimeout": -1,
       "protocolMappers": [
-        {
-          "name": "flowsflow-api-mapper",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-audience-mapper",
-          "consentRequired": false,
-          "config": {
-            "id.token.claim": "false",
-            "access.token.claim": "true",
-            "included.custom.audience": "forms-flow-web",
-            "userinfo.token.claim": "false"
-          }
-        },
         {
           "name": "Client Host",
           "protocol": "openid-connect",
@@ -1043,6 +1031,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
+	    "http://localhost:3000/*",
         "*"
       ],
       "webOrigins": [

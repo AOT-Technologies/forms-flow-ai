@@ -145,7 +145,7 @@ In the following document, we’ll describe the step by step instructions to set
 > The following instructions are using an example form from the form.io - `Create New Business License Application`. Before using this form ensure that you have configured the
 `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
 
-* The usage instructions mention the end to end flow of a form is explained for Product Survey Form.
+* The usage instructions mention the end to end flow of a form is explained for New Business License Application.
 
 ### [STEP 1](#) Designer Task
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
@@ -154,13 +154,12 @@ In the following document, we’ll describe the step by step instructions to set
 ![image](https://user-images.githubusercontent.com/83489861/124479964-69020280-ddc4-11eb-9739-18c44a770f76.png)
 
 * To create a new form click on **Create Form Button**. You can use the Drag-and-drop forms-builder with rich UI components to create a form with ease.
-> Product Survey form is already created, so we are skipping the step of creating Form.
+> New Business License Application form is already created, so we are skipping the step of creating Form.
 * You can modify the form by clicking on **View/Edit Form** button and you can edit form design by clicking the **Edit Form** button or continue by moving **Next** button if form design is completed to move to the stage associating workflow to the form.
 
 ![image](https://user-images.githubusercontent.com/83489861/124480017-76b78800-ddc4-11eb-9b31-e0b2df759656.png)
 
 * At this stage form designing is completed, you can click on **EDIT Button** and associate a workflow - Two Step Approval. 
-> Note: Before using this workflow ensure that you have configured the `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
 
 ![image](https://user-images.githubusercontent.com/83489861/124480123-9058cf80-ddc4-11eb-802c-b69bfc796685.png)
 
@@ -216,11 +215,8 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![Image 42](https://user-images.githubusercontent.com/83584866/124578912-46c3bf80-de6c-11eb-9bc4-03f24150a31d.PNG)
 
 * The associated task can be found for the Clerk role in the **Task Menu** section
-![Image 11](https://user-images.githubusercontent.com/83584866/124565961-37d71000-de60-11eb-9485-b3c019b437c6.PNG)
-![Image 18](https://user-images.githubusercontent.com/83584866/124566028-4a514980-de60-11eb-9eda-890aa7bf32f5.PNG)
-
 * On clicking the associated task which was recently created ie. *New Business License Application with Two Step Approval*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
-![Image 18](https://user-images.githubusercontent.com/83584866/124566271-897f9a80-de60-11eb-8bf4-eec832702e8e.PNG)
+![Image 18](https://user-images.githubusercontent.com/83584866/124566028-4a514980-de60-11eb-9eda-890aa7bf32f5.PNG)
 ![Image 19](https://user-images.githubusercontent.com/83584866/124566338-94d2c600-de60-11eb-8d17-552bbd2c766f.PNG)
 ![Image 20](https://user-images.githubusercontent.com/83584866/124566434-aa47f000-de60-11eb-964d-195d06d8a9eb.PNG)
 
@@ -228,7 +224,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![Image 21](https://user-images.githubusercontent.com/83584866/124566523-c0ee4700-de60-11eb-8d27-7b46f0a856e7.PNG)
 ![Image 48](https://user-images.githubusercontent.com/83584866/124577274-bb95fa00-de6a-11eb-882f-2bcf8aeb3f0a.PNG)
 
-* This action is completed, you can now Log out and go to [STEP 4](#) if you have a approver user review mentioned in your workflow.
+* This action is completed, you can now Log out and go to [STEP 4](#) if you have an approver user review mentioned in your workflow.
 
 ### [STEP 4](#) Reviewer Tasks (Approver)
 
@@ -256,10 +252,8 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![Image 60](https://user-images.githubusercontent.com/83584866/124578694-10864000-de6c-11eb-8c90-b644511d9565.PNG)
 
 * The associated task can be found for the Approver role in the **Task Menu** section
-![Image 61](https://user-images.githubusercontent.com/83584866/124576298-cbf9a500-de69-11eb-8888-0bcb6af67e8a.PNG)
-![Image 62](https://user-images.githubusercontent.com/83584866/124576360-d87dfd80-de69-11eb-9c9b-91b2789e1bd4.PNG)
-
 * On clicking the associated task which was recently created ie. *New Business License Application with Two Step Approval*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
+
 ![Image 62](https://user-images.githubusercontent.com/83584866/124576463-f2b7db80-de69-11eb-88ca-1927e2418409.PNG)
 ![Image 63](https://user-images.githubusercontent.com/83584866/124576519-02cfbb00-de6a-11eb-8111-8e89236186e3.PNG)
 ![Image 64](https://user-images.githubusercontent.com/83584866/124576585-124f0400-de6a-11eb-98dc-b46b626c2a8c.PNG)

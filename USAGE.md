@@ -226,7 +226,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 
 * On claiming the task, the Clerk can fill the form and submit his/her review with feedback.
 ![Image 21](https://user-images.githubusercontent.com/83584866/124566523-c0ee4700-de60-11eb-8d27-7b46f0a856e7.PNG)
-![Image 22](https://user-images.githubusercontent.com/83584866/124566671-e67b5080-de60-11eb-8055-e1e8ff3deb28.PNG)
+![Image 48](https://user-images.githubusercontent.com/83584866/124577274-bb95fa00-de6a-11eb-882f-2bcf8aeb3f0a.PNG)
 
 * This action is completed, you can now Log out and go to [STEP 4](#) if you have a approver user review mentioned in your workflow.
 

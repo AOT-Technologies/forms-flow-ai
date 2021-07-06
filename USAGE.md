@@ -208,26 +208,25 @@ In the following document, we’ll describe the step by step instructions to set
 
 * You can even print the Form submission as a PDF which can be rendered in browser
 
-![image](https://user-images.githubusercontent.com/70306694/121692761-092a7b80-cae6-11eb-8b25-1a8076ef249e.png)
+![Image 7](https://user-images.githubusercontent.com/83584866/124554587-c09b7f00-de53-11eb-9014-9c47f49dfa07.PNG)
 
-* Based on the **Product Survey** form workflow associated, the form is supposed to be send to an email to configured valid Gmail account.
+* Based on the **New Business License Application** form workflow associated, the form is supposed to be send to an email to configured valid Gmail account.
 For that ensure you have configured `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
 
 ![image](https://user-images.githubusercontent.com/70306694/121726317-02146500-cb08-11eb-9685-9b6881db0696.png)
 
 * On submitting form, the associated task can be found for the reviewer role in the **Task Menu** section for the Manager
-![image](https://user-images.githubusercontent.com/70306694/121726407-22dcba80-cb08-11eb-89fe-fc0558a35903.png)
+![Image 11](https://user-images.githubusercontent.com/83584866/124555053-44556b80-de54-11eb-98fd-a1b88a235e8d.PNG)
 ![image](https://user-images.githubusercontent.com/70306694/121726536-4e5fa500-cb08-11eb-8c03-200be34634b1.png)
 
-* On clicking the associated task which was recently created ie. *Product Survey Administrator with Notification(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
-![image](https://user-images.githubusercontent.com/70306694/121726693-86ff7e80-cb08-11eb-8cf7-26d48a68d00d.png)
-![image](https://user-images.githubusercontent.com/70306694/121726734-92eb4080-cb08-11eb-8dc1-1d79e8825e54.png)
-![image](https://user-images.githubusercontent.com/70306694/121726758-9b437b80-cb08-11eb-8f27-bebe1edf4ddd.png)
+* On clicking the associated task which was recently created ie. *New Business License Application with Two Step Approval(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
+![Image 11](https://user-images.githubusercontent.com/83584866/124555279-8da5bb00-de54-11eb-86e0-e20eb1df99e3.PNG)
+![Image 12](https://user-images.githubusercontent.com/83584866/124555350-9e563100-de54-11eb-96e3-02aa608362de.PNG)
+![Image 13](https://user-images.githubusercontent.com/83584866/124555392-a910c600-de54-11eb-8873-b3e247d2bb8e.PNG)
 
 * On claiming the task, the Manager can fill the form and submit his review with signature.
 ![image](https://user-images.githubusercontent.com/70306694/121726879-c3cb7580-cb08-11eb-968d-320fc717063d.png)
-![image](https://user-images.githubusercontent.com/70306694/121727011-f6756e00-cb08-11eb-9880-4bff44bb95b7.png)
-
+![Image 14](https://user-images.githubusercontent.com/83584866/124555664-fb51e700-de54-11eb-9c72-c2c838604fcf.PNG)
 
 
 ## Links

@@ -51,6 +51,11 @@
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Resubmitted");</camunda:script>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId", "applicationStatus"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${sendback_by == 'Clerk'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
@@ -60,6 +65,11 @@
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Resubmitted");</camunda:script>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
+          <camunda:field name="fields">
+            <camunda:expression>["applicationId", "applicationStatus"]</camunda:expression>
+          </camunda:field>
+        </camunda:executionListener>
       </bpmn:extensionElements>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${sendback_by == 'Approver'}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>

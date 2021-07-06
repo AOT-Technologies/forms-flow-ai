@@ -47,7 +47,7 @@ In the following document, we’ll describe the step by step instructions to set
      * You can navigate to **Metrics** tab to see an overview of the total form submissions and associated application status to indicate which stage of workflow it is now.
      * You can navigate to **Insights** tab to see wonderful dashboard created in formsflow.ai analytics server.
    * Reviewer action is completed.
-
+> Clerk & Approver are part of the main group Reviewer, so the steps are similar to STEP 3.
 ## Usage Instructions with examples
 
 ## Freedom of Information and Protection of Privacy

@@ -123,7 +123,7 @@ In the following document, we’ll describe the step by step instructions to set
 ![Image 16](https://user-images.githubusercontent.com/83584866/124598662-7a114900-de82-11eb-8653-d370bc3aa7c9.PNG)
 ![Image 17](https://user-images.githubusercontent.com/83584866/124598701-84cbde00-de82-11eb-9773-c84afbbd812c.PNG)
 
-* On claiming the task, the Manager can fill the form and submit his review.
+* On claiming the task, the Reviewer can fill the form and submit his review.
 
 ![Image 18](https://user-images.githubusercontent.com/83584866/124598773-9b723500-de82-11eb-8070-5551ae2f1398.PNG)
 ![Image 19](https://user-images.githubusercontent.com/83584866/124598911-c3619880-de82-11eb-85a2-f3f5f065ba9c.PNG)

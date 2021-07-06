@@ -18,7 +18,8 @@ const connect = (reloadCallback)=>{
     if(isConnected()){
       stompClient.subscribe('/topic/task-event', function(output){
         const taskUpdate = JSON.parse(output.body);
-        reloadCallback(taskUpdate.id);
+        const forceReload=taskUpdate.eventName==="complete";
+        reloadCallback(taskUpdate.id,forceReload);
       });
     }
   },function (error){

@@ -199,16 +199,16 @@ In the following document, we’ll describe the step by step instructions to set
 
 * You can navigate to Applications tab to **View the Form** submissions.
 
-![image](https://user-images.githubusercontent.com/83489861/124480666-22f96e80-ddc5-11eb-926d-bd73a9035ce7.png)
+![Image 12](https://user-images.githubusercontent.com/83584866/124565163-5be62180-de5f-11eb-8115-680d3e4fe8cc.PNG)
 
 * You can View the submissions against a form by clicking on **View** button.
 
-![9](https://user-images.githubusercontent.com/83489861/124481576-0c9fe280-ddc6-11eb-8231-619a96644a9c.png)
+![Image 17](https://user-images.githubusercontent.com/83584866/124565303-8506b200-de5f-11eb-889b-3710d08d62fa.PNG)
 
 
 * You can even print the Form submission as a PDF which can be rendered in browser
 
-![Image 7](https://user-images.githubusercontent.com/83584866/124554587-c09b7f00-de53-11eb-9014-9c47f49dfa07.PNG)
+![Image 7](https://user-images.githubusercontent.com/83584866/124565427-a6679e00-de5f-11eb-9fe4-266ba57ad0c3.PNG)
 
 * Based on the **New Business License Application** form workflow associated, the form is supposed to be send to an email to configured valid Gmail account.
 For that ensure you have configured `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
@@ -216,17 +216,17 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![image](https://user-images.githubusercontent.com/70306694/121726317-02146500-cb08-11eb-9685-9b6881db0696.png)
 
 * The associated task can be found for the Clerk role in the **Task Menu** section
-![Image 11](https://user-images.githubusercontent.com/83584866/124555053-44556b80-de54-11eb-98fd-a1b88a235e8d.PNG)
-![image](https://user-images.githubusercontent.com/70306694/121726536-4e5fa500-cb08-11eb-8c03-200be34634b1.png)
+![Image 11](https://user-images.githubusercontent.com/83584866/124565961-37d71000-de60-11eb-9485-b3c019b437c6.PNG)
+![Image 18](https://user-images.githubusercontent.com/83584866/124566028-4a514980-de60-11eb-9eda-890aa7bf32f5.PNG)
 
 * On clicking the associated task which was recently created ie. *New Business License Application with Two Step Approval*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
-![Image 11](https://user-images.githubusercontent.com/83584866/124555279-8da5bb00-de54-11eb-86e0-e20eb1df99e3.PNG)
-![Image 12](https://user-images.githubusercontent.com/83584866/124555350-9e563100-de54-11eb-96e3-02aa608362de.PNG)
-![Image 13](https://user-images.githubusercontent.com/83584866/124555392-a910c600-de54-11eb-8873-b3e247d2bb8e.PNG)
+![Image 18](https://user-images.githubusercontent.com/83584866/124566271-897f9a80-de60-11eb-8bf4-eec832702e8e.PNG)
+![Image 19](https://user-images.githubusercontent.com/83584866/124566338-94d2c600-de60-11eb-8d17-552bbd2c766f.PNG)
+![Image 20](https://user-images.githubusercontent.com/83584866/124566434-aa47f000-de60-11eb-964d-195d06d8a9eb.PNG)
 
 * On claiming the task, the Clerk can fill the form and submit his/her review with feedback.
-![image](https://user-images.githubusercontent.com/70306694/121726879-c3cb7580-cb08-11eb-968d-320fc717063d.png)
-![Image 14](https://user-images.githubusercontent.com/83584866/124555664-fb51e700-de54-11eb-9c72-c2c838604fcf.PNG)
+![Image 21](https://user-images.githubusercontent.com/83584866/124566523-c0ee4700-de60-11eb-8d27-7b46f0a856e7.PNG)
+![Image 22](https://user-images.githubusercontent.com/83584866/124566671-e67b5080-de60-11eb-8055-e1e8ff3deb28.PNG)
 
 * This action is completed, you can now Log out and go to [STEP 4](#) if you have a approver user review mentioned in your workflow.
 

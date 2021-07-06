@@ -116,7 +116,7 @@ In the following document, we’ll describe the step by step instructions to set
 ![Image 6](https://user-images.githubusercontent.com/83584866/124598443-3cacbb80-de82-11eb-8a19-bfe379978864.PNG)
 
 
-* On clicking the associated task which was recently created ie. *Freedom of Information and Protection of Privacy*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
+* On clicking the associated task which was recently created ie. *Freedom of Information and Protection of Privacy*, the task detailed menu usually has three sections - **Form**, **History**, **Diagram**
 
 
 ![Image 15](https://user-images.githubusercontent.com/83584866/124598608-6f56b400-de82-11eb-9409-dcba892441c8.PNG)
@@ -213,7 +213,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![Image 42](https://user-images.githubusercontent.com/83584866/124578912-46c3bf80-de6c-11eb-9bc4-03f24150a31d.PNG)
 
 * The associated task can be found for the Clerk role in the **Task Menu** section
-* On clicking the associated task which was recently created ie. *New Business License Application with Two Step Approval*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
+* On clicking the associated task which was recently created ie. *New Business License Application with Two Step Approval*, the task detailed menu usually has three sections - **Form**, **History**, **Diagram**
 ![Image 18](https://user-images.githubusercontent.com/83584866/124566028-4a514980-de60-11eb-9eda-890aa7bf32f5.PNG)
 ![Image 19](https://user-images.githubusercontent.com/83584866/124566338-94d2c600-de60-11eb-8d17-552bbd2c766f.PNG)
 ![Image 20](https://user-images.githubusercontent.com/83584866/124566434-aa47f000-de60-11eb-964d-195d06d8a9eb.PNG)

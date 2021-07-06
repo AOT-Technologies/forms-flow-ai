@@ -188,9 +188,9 @@ In the following document, we’ll describe the step by step instructions to set
 
   ![Image 3](https://user-images.githubusercontent.com/83584866/124552756-9052e100-de51-11eb-9c92-64f61ee1fa3a.png)
 * If you had associated a workflow with the form, the form will start the workflow.
-* This action is completed, you can now Log out and go to [STEP 3](#) if you have a user review mentioned in your workflow.
+* This action is completed, you can now Log out and go to [STEP 3](#) if you have a clerk user review mentioned in your workflow.
    
-### [STEP 3](#) Reviewer Tasks
+### [STEP 3](#) Reviewer Tasks (Clerk)
 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for Clerk](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/task.
@@ -215,7 +215,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 
 ![image](https://user-images.githubusercontent.com/70306694/121726317-02146500-cb08-11eb-9685-9b6881db0696.png)
 
-* On submitting form, the associated task can be found for the Clerk role in the **Task Menu** section
+* The associated task can be found for the Clerk role in the **Task Menu** section
 ![Image 11](https://user-images.githubusercontent.com/83584866/124555053-44556b80-de54-11eb-98fd-a1b88a235e8d.PNG)
 ![image](https://user-images.githubusercontent.com/70306694/121726536-4e5fa500-cb08-11eb-8c03-200be34634b1.png)
 
@@ -228,7 +228,34 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![image](https://user-images.githubusercontent.com/70306694/121726879-c3cb7580-cb08-11eb-968d-320fc717063d.png)
 ![Image 14](https://user-images.githubusercontent.com/83584866/124555664-fb51e700-de54-11eb-9c72-c2c838604fcf.PNG)
 
-* On submitting form, the associated task can be found for the Approver role in the **Task Menu** section
+* This action is completed, you can now Log out and go to [STEP 4](#) if you have a approver user review mentioned in your workflow.
+
+### [STEP 4](#) Reviewer Tasks (Approver)
+
+* Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for Approver](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
+* After the log in is successful you will be redirected to http://localhost:3000/task.
+
+![Image 10](https://user-images.githubusercontent.com/83584866/124553139-ffc8d080-de51-11eb-9476-46b925821b12.PNG)
+
+* You can navigate to Applications tab to **View the Form** submissions.
+
+![image](https://user-images.githubusercontent.com/83489861/124480666-22f96e80-ddc5-11eb-926d-bd73a9035ce7.png)
+
+* You can View the submissions against a form by clicking on **View** button.
+
+![9](https://user-images.githubusercontent.com/83489861/124481576-0c9fe280-ddc6-11eb-8231-619a96644a9c.png)
+
+
+* You can even print the Form submission as a PDF which can be rendered in browser
+
+![Image 7](https://user-images.githubusercontent.com/83584866/124554587-c09b7f00-de53-11eb-9014-9c47f49dfa07.PNG)
+
+* Based on the **New Business License Application** form workflow associated, the form is supposed to be send to an email to configured valid Gmail account.
+For that ensure you have configured `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
+
+![image](https://user-images.githubusercontent.com/70306694/121726317-02146500-cb08-11eb-9685-9b6881db0696.png)
+
+* The associated task can be found for the Approver role in the **Task Menu** section
 ![Image 11](https://user-images.githubusercontent.com/83584866/124555053-44556b80-de54-11eb-98fd-a1b88a235e8d.PNG)
 ![image](https://user-images.githubusercontent.com/70306694/121726536-4e5fa500-cb08-11eb-8c03-200be34634b1.png)
 
@@ -241,8 +268,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![image](https://user-images.githubusercontent.com/70306694/121726879-c3cb7580-cb08-11eb-968d-320fc717063d.png)
 ![Image 14](https://user-images.githubusercontent.com/83584866/124555664-fb51e700-de54-11eb-9c72-c2c838604fcf.PNG)
 
-* With the above action New Business License Application is completed it's flow.
-
+* This action is completed,  New Business License Application is completed it's workflow.
 
 ## Links
 

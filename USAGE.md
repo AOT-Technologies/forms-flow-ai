@@ -182,11 +182,11 @@ In the following document, we’ll describe the step by step instructions to set
 * Click **Submit New Button** on the form which you wanted to submit.
 * The previous action will redirect you to the form, where you can fill the details and Submit.
 
-![image](https://user-images.githubusercontent.com/83489861/124480325-c433f500-ddc4-11eb-9c64-d8e316556fd6.png)
+![Image 2](https://user-images.githubusercontent.com/83584866/124552424-276b6900-de51-11eb-8e15-db699c944040.PNG)
 
 * Fill the details and Submit the form, You can repeat this action as per your requirement.
 
-  ![image](https://user-images.githubusercontent.com/70306694/121672846-e8562c00-cacd-11eb-8ff4-f649b27c44e2.png)
+  ![Image 3](https://user-images.githubusercontent.com/83584866/124552756-9052e100-de51-11eb-9c92-64f61ee1fa3a.png)
 * If you had associated a workflow with the form, the form will start the workflow.
 * This action is completed, you can now Log out and go to [STEP 3](#) if you have a user review mentioned in your workflow.
    
@@ -195,7 +195,7 @@ In the following document, we’ll describe the step by step instructions to set
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for Clerk](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/task.
 
-![image](https://user-images.githubusercontent.com/83489861/124480597-0d844480-ddc5-11eb-94e1-e330134e7a45.png)
+![Image 10](https://user-images.githubusercontent.com/83584866/124553139-ffc8d080-de51-11eb-9476-46b925821b12.PNG)
 
 * You can navigate to Applications tab to **View the Form** submissions.
 

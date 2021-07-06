@@ -235,20 +235,20 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for Approver](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/task.
 
-![Image 10](https://user-images.githubusercontent.com/83584866/124553139-ffc8d080-de51-11eb-9476-46b925821b12.PNG)
+![Image 54](https://user-images.githubusercontent.com/83584866/124575685-3a8a3300-de69-11eb-92dc-267d84c29cb0.PNG)
 
 * You can navigate to Applications tab to **View the Form** submissions.
 
-![image](https://user-images.githubusercontent.com/83489861/124480666-22f96e80-ddc5-11eb-926d-bd73a9035ce7.png)
+![Image 55](https://user-images.githubusercontent.com/83584866/124575815-57266b00-de69-11eb-8c64-1d9df0e10c87.PNG)
 
 * You can View the submissions against a form by clicking on **View** button.
 
-![9](https://user-images.githubusercontent.com/83489861/124481576-0c9fe280-ddc6-11eb-8231-619a96644a9c.png)
+![Image 56](https://user-images.githubusercontent.com/83584866/124575886-6ad1d180-de69-11eb-9665-b535939f5a9b.PNG)
 
 
 * You can even print the Form submission as a PDF which can be rendered in browser
 
-![Image 7](https://user-images.githubusercontent.com/83584866/124554587-c09b7f00-de53-11eb-9014-9c47f49dfa07.PNG)
+![Image 57](https://user-images.githubusercontent.com/83584866/124576102-9e146080-de69-11eb-9157-af43d6a2a245.PNG)
 
 * Based on the **New Business License Application** form workflow associated, the form is supposed to be send to an email to configured valid Gmail account.
 For that ensure you have configured `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
@@ -256,17 +256,17 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![image](https://user-images.githubusercontent.com/70306694/121726317-02146500-cb08-11eb-9685-9b6881db0696.png)
 
 * The associated task can be found for the Approver role in the **Task Menu** section
-![Image 11](https://user-images.githubusercontent.com/83584866/124555053-44556b80-de54-11eb-98fd-a1b88a235e8d.PNG)
-![image](https://user-images.githubusercontent.com/70306694/121726536-4e5fa500-cb08-11eb-8c03-200be34634b1.png)
+![Image 61](https://user-images.githubusercontent.com/83584866/124576298-cbf9a500-de69-11eb-8888-0bcb6af67e8a.PNG)
+![Image 62](https://user-images.githubusercontent.com/83584866/124576360-d87dfd80-de69-11eb-9c9b-91b2789e1bd4.PNG)
 
 * On clicking the associated task which was recently created ie. *New Business License Application with Two Step Approval*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
-![Image 11](https://user-images.githubusercontent.com/83584866/124555279-8da5bb00-de54-11eb-86e0-e20eb1df99e3.PNG)
-![Image 12](https://user-images.githubusercontent.com/83584866/124555350-9e563100-de54-11eb-96e3-02aa608362de.PNG)
-![Image 13](https://user-images.githubusercontent.com/83584866/124555392-a910c600-de54-11eb-8873-b3e247d2bb8e.PNG)
+![Image 62](https://user-images.githubusercontent.com/83584866/124576463-f2b7db80-de69-11eb-88ca-1927e2418409.PNG)
+![Image 63](https://user-images.githubusercontent.com/83584866/124576519-02cfbb00-de6a-11eb-8111-8e89236186e3.PNG)
+![Image 64](https://user-images.githubusercontent.com/83584866/124576585-124f0400-de6a-11eb-98dc-b46b626c2a8c.PNG)
 
 * On claiming the task, the Approver can fill the form and submit his/her review with feedback.
-![image](https://user-images.githubusercontent.com/70306694/121726879-c3cb7580-cb08-11eb-968d-320fc717063d.png)
-![Image 14](https://user-images.githubusercontent.com/83584866/124555664-fb51e700-de54-11eb-9c72-c2c838604fcf.PNG)
+![Image 65](https://user-images.githubusercontent.com/83584866/124576691-2c88e200-de6a-11eb-88ad-f73496b6e265.PNG)
+![Image 66](https://user-images.githubusercontent.com/83584866/124576734-3874a400-de6a-11eb-8396-13c31986b0f2.PNG)
 
 * This action is completed,  New Business License Application is completed it's workflow.
 

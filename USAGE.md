@@ -63,7 +63,7 @@ In the following document, we’ll describe the step by step instructions to set
 ![image](https://user-images.githubusercontent.com/83489861/124453516-1107d380-dda5-11eb-9dba-2742cabc8582.png)
 
 * To create a new form click on **Create Form Button**. You can use the Drag-and-drop forms-builder with rich UI components to create a form with ease.
-> Employee Feedback form is already created, so we are skipping the step of creating Form.
+> Freedom of Information and Protection of Privacy form is already created, so we are skipping the step of creating Form.
 * You can modify the form by clicking on **View/Edit Form** button and you can edit form design by clicking the **Edit Form** button or continue by moving **Next** button if form design is completed to move to the stage associating workflow to the form.
 
 ![image](https://user-images.githubusercontent.com/83489861/124475627-8d0f1500-ddbf-11eb-8ca1-5898bcc7d499.png)

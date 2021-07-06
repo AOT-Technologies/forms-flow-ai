@@ -110,7 +110,7 @@ class ProcessDefinitionResource(Resource):
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
-            },HTTPStatus.BAD_REQUEST
+            }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
             logging.exception(err)

@@ -127,15 +127,11 @@ In the following document, we’ll describe the step by step instructions to set
 
 ![image](https://user-images.githubusercontent.com/70306694/121698761-f31fb980-caeb-11eb-82eb-52754632c382.png)
 ![image](https://user-images.githubusercontent.com/70306694/121699346-79d49680-caec-11eb-8854-86cf1b2fa755.png)
-![image](https://user-images.githubusercontent.com/70306694/121699445-8eb12a00-caec-11eb-9d5f-cb595a59a4d3.png)
 
-* On the **History** section, the form submission history can be found and the form can be viewed.
+* On the **Application** section, the form submission history can be found and the form can be viewed.
 
 ![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
 ![view_submission](https://user-images.githubusercontent.com/83952803/121700370-75f54400-caed-11eb-85b7-55ff6c9c79c2.PNG)
-
-
-* On the Diagram section, the diagram highlights which state is the task currently in.
 ![image](https://user-images.githubusercontent.com/70306694/121700097-2e6eb800-caed-11eb-915a-c079ecb2117f.png)
 
 * Reviewer action is completed.

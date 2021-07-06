@@ -48,12 +48,21 @@
     <bpmn:sequenceFlow id="SequenceFlow_009hwyx" name="Resubmitted" sourceRef="ExclusiveGateway_0xgo1b6" targetRef="Clerk">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
+<<<<<<< HEAD
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Resubmitted");</camunda:script>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
           <camunda:field name="fields">
             <camunda:expression>["applicationId", "applicationStatus"]</camunda:expression>
+=======
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Resubmitted");
+execution.removeVariable("sendback_by");</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take">
+          <camunda:field name="overwriteAudit">
+            <camunda:expression>Y</camunda:expression>
+>>>>>>> d6193976573a24f5bb6f02b70b1dbe2e246f0a3d
           </camunda:field>
         </camunda:executionListener>
       </bpmn:extensionElements>
@@ -62,12 +71,21 @@
     <bpmn:sequenceFlow id="SequenceFlow_07hh4hx" name="Resubmitted" sourceRef="ExclusiveGateway_0xgo1b6" targetRef="Approver">
       <bpmn:extensionElements>
         <camunda:executionListener event="take">
+<<<<<<< HEAD
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Resubmitted");</camunda:script>
         </camunda:executionListener>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.BPMFormDataPipelineListener" event="take">
           <camunda:field name="fields">
             <camunda:expression>["applicationId", "applicationStatus"]</camunda:expression>
+=======
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', "Resubmitted");
+execution.removeVariable("sendback_by");</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take">
+          <camunda:field name="overwriteAudit">
+            <camunda:expression>Y</camunda:expression>
+>>>>>>> d6193976573a24f5bb6f02b70b1dbe2e246f0a3d
           </camunda:field>
         </camunda:executionListener>
       </bpmn:extensionElements>

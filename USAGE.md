@@ -91,7 +91,7 @@ In the following document, we’ll describe the step by step instructions to set
 * Click **Submit New Button** on the form which you wanted to submit.
 * The previous action will redirect you to the form, where you can fill the details and Submit. Fill the details and Submit the form, You can repeat this action as per your requirement.
 
-![image](https://user-images.githubusercontent.com/83489861/124476729-d2801200-ddc0-11eb-847d-d61b109cbc4c.png)
+![Image 1](https://user-images.githubusercontent.com/83584866/124597717-6d402580-de81-11eb-9b15-6e84bec7a8b3.PNG)
 
 * If you had associated a workflow with the form, the form will start the workflow.
 * This action is completed, you can now Log out and go to [STEP 3](#) if you have a user review mentioned in your workflow.
@@ -101,38 +101,40 @@ In the following document, we’ll describe the step by step instructions to set
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/task.
 
-![image](https://user-images.githubusercontent.com/83489861/124476868-fc393900-ddc0-11eb-81bf-ec75058db5df.png)
+![Image 9](https://user-images.githubusercontent.com/83584866/124597833-92349880-de81-11eb-8d47-6f724627a651.PNG)
 
 * You can navigate to Applications tab to **View the Form** submissions.
 
-![image](https://user-images.githubusercontent.com/70306694/121731275-5a4e6580-cb0e-11eb-87ea-7516f0a7e5ab.png)
+![Image 10](https://user-images.githubusercontent.com/83584866/124597926-b001fd80-de81-11eb-91ae-08002d5202cb.PNG)
 
 * You can View the submissions against a form by clicking on **View** button.
 
-![image](https://user-images.githubusercontent.com/70306694/121731427-89fd6d80-cb0e-11eb-846f-31fdb917ba5d.png)
+![Image 26](https://user-images.githubusercontent.com/83584866/124598386-2acb1880-de82-11eb-8cb4-fe3249d3de93.PNG)
 
 * You can even print the Form submission as a PDF which can be rendered in browser
 
-![reviewer-print](https://user-images.githubusercontent.com/83489861/124477501-b7fa6880-ddc1-11eb-99d6-505a8b9b4017.png)
+![Image 6](https://user-images.githubusercontent.com/83584866/124598443-3cacbb80-de82-11eb-8a19-bfe379978864.PNG)
 
 
-* On clicking the associated task which was recently created ie. *Manager Feedback Review(Example)*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
+* On clicking the associated task which was recently created ie. *Freedom of Information and Protection of Privacy*, the task detailed menu usually has three sections - **Forms**, **History**, **Diagram**
 
 
-![manager landing](https://user-images.githubusercontent.com/83952803/121698577-c23f8480-caeb-11eb-9f55-16540ae80ecb.PNG)
-![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
-![manager_diagram](https://user-images.githubusercontent.com/83952803/121698637-cec3dd00-caeb-11eb-8e1f-a6e4c5f717ba.PNG)
+![Image 15](https://user-images.githubusercontent.com/83584866/124598608-6f56b400-de82-11eb-9409-dcba892441c8.PNG)
+![Image 16](https://user-images.githubusercontent.com/83584866/124598662-7a114900-de82-11eb-8653-d370bc3aa7c9.PNG)
+![Image 17](https://user-images.githubusercontent.com/83584866/124598701-84cbde00-de82-11eb-9773-c84afbbd812c.PNG)
 
 * On claiming the task, the Manager can fill the form and submit his review.
 
-![image](https://user-images.githubusercontent.com/70306694/121698761-f31fb980-caeb-11eb-82eb-52754632c382.png)
-![image](https://user-images.githubusercontent.com/70306694/121699346-79d49680-caec-11eb-8854-86cf1b2fa755.png)
+![Image 18](https://user-images.githubusercontent.com/83584866/124598773-9b723500-de82-11eb-8070-5551ae2f1398.PNG)
+![Image 19](https://user-images.githubusercontent.com/83584866/124598911-c3619880-de82-11eb-85a2-f3f5f065ba9c.PNG)
+![Image 20](https://user-images.githubusercontent.com/83584866/124598962-cfe5f100-de82-11eb-8938-4309efd872fb.PNG)
 
 * On the **Application** section, the form submission history can be found and the form can be viewed.
 
-![manager_history](https://user-images.githubusercontent.com/83952803/121698653-d5525480-caeb-11eb-9124-fd5a23efdfaa.PNG)
-![view_submission](https://user-images.githubusercontent.com/83952803/121700370-75f54400-caed-11eb-85b7-55ff6c9c79c2.PNG)
-![image](https://user-images.githubusercontent.com/70306694/121700097-2e6eb800-caed-11eb-915a-c079ecb2117f.png)
+![Image 21](https://user-images.githubusercontent.com/83584866/124599112-f015b000-de82-11eb-87ff-89ac9fb95d24.PNG)
+![Image 24](https://user-images.githubusercontent.com/83584866/124599317-2a7f4d00-de83-11eb-8bc1-5215bb9add03.PNG)
+![Image 25](https://user-images.githubusercontent.com/83584866/124599412-45ea5800-de83-11eb-8b8b-ae87ad2172d3.PNG)
+![Image 26](https://user-images.githubusercontent.com/83584866/124599471-54387400-de83-11eb-8e53-ba9319748d2f.PNG)
 
 * Reviewer action is completed.
 

@@ -219,6 +219,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![Image 20](https://user-images.githubusercontent.com/83584866/124566434-aa47f000-de60-11eb-964d-195d06d8a9eb.PNG)
 
 * On claiming the task, the Clerk can fill the form and submit his/her review with feedback.
+* Return option will send the form back to the client for an edit and resubmission.
 ![Image 21](https://user-images.githubusercontent.com/83584866/124566523-c0ee4700-de60-11eb-8d27-7b46f0a856e7.PNG)
 ![Image 48](https://user-images.githubusercontent.com/83584866/124577274-bb95fa00-de6a-11eb-882f-2bcf8aeb3f0a.PNG)
 
@@ -257,6 +258,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![Image 64](https://user-images.githubusercontent.com/83584866/124576585-124f0400-de6a-11eb-98dc-b46b626c2a8c.PNG)
 
 * On claiming the task, the Approver can fill the form and submit his/her review with feedback.
+* Return option will send the form back to the client for an edit and resubmission.
 ![Image 65](https://user-images.githubusercontent.com/83584866/124576691-2c88e200-de6a-11eb-88ad-f73496b6e265.PNG)
 ![Image 66](https://user-images.githubusercontent.com/83584866/124576734-3874a400-de6a-11eb-8396-13c31986b0f2.PNG)
 

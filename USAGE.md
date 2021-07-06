@@ -213,7 +213,7 @@ In the following document, we’ll describe the step by step instructions to set
 * Based on the **New Business License Application** form workflow associated, the form is supposed to be send to an email to configured valid Gmail account.
 For that ensure you have configured `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
 
-![image](https://user-images.githubusercontent.com/70306694/121726317-02146500-cb08-11eb-9685-9b6881db0696.png)
+![Image 42](https://user-images.githubusercontent.com/83584866/124578912-46c3bf80-de6c-11eb-9bc4-03f24150a31d.PNG)
 
 * The associated task can be found for the Clerk role in the **Task Menu** section
 ![Image 11](https://user-images.githubusercontent.com/83584866/124565961-37d71000-de60-11eb-9485-b3c019b437c6.PNG)
@@ -253,7 +253,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 * Based on the **New Business License Application** form workflow associated, the form is supposed to be send to an email to configured valid Gmail account.
 For that ensure you have configured `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
 
-![image](https://user-images.githubusercontent.com/70306694/121726317-02146500-cb08-11eb-9685-9b6881db0696.png)
+![Image 60](https://user-images.githubusercontent.com/83584866/124578694-10864000-de6c-11eb-8c90-b644511d9565.PNG)
 
 * The associated task can be found for the Approver role in the **Task Menu** section
 ![Image 61](https://user-images.githubusercontent.com/83584866/124576298-cbf9a500-de69-11eb-8888-0bcb6af67e8a.PNG)

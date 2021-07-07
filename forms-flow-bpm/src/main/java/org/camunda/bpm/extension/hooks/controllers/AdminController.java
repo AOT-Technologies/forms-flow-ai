@@ -9,29 +9,25 @@ import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
-import org.camunda.spin.Spin;
-import org.camunda.spin.SpinList;
-import org.camunda.spin.json.SpinJsonNode;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.jwt.JwtHelper;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
+import org.camunda.bpm.engine.authorization.Resources;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -97,7 +93,7 @@ public class AdminController {
                     for (Authorization authObj : authorizationList) {
                         for (AuthorizedAction formObj : formList) {
                             if (authObj.getResourceId().equals(formObj.getProcessKey()) && isExists(filteredList, formObj.getFormId()) == false)  {
-                                    filteredList.add(formObj);
+                                filteredList.add(formObj);
                             }
                         }
                     }
@@ -160,11 +156,16 @@ public class AdminController {
      * @return
      */
     private List<Authorization> getAuthorization(List<String> groups) {
-        String query = "select group_id_ groupid, user_id_ userid, resource_id_  resourceid from act_ru_authorization where resource_type_=6 and  group_id_ IN (:groups) ";
+        String query = "select group_id_ groupid, user_id_ userid, resource_id_  resourceid from act_ru_authorization " +
+                "where resource_type_="+ Resources.PROCESS_DEFINITION.resourceType()+
+                " and perms_ >= " + ProcessDefinitionPermissions.CREATE_INSTANCE.getValue()  +
+                " and  group_id_ IN (:groups) ";
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("groups", groups);
         return bpmJdbcTemplate.query(query, parameters, new AuthorizationMapper());
     }
+
+
 
     /**
      * Mapper associated with querying authorization.

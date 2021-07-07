@@ -93,7 +93,7 @@ public class CustomCorsFilter implements Filter {
 
     private boolean isWebSocketRequest(HttpServletRequest request) {
         String requestURL = request.getRequestURL().toString();
-        return  StringUtils.contains(requestURL,"/forms-flow-bpm-socket/") ? true : false;
+        return StringUtils.contains(requestURL, "/forms-flow-bpm-socket/");
     }
 
 

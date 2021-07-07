@@ -4,7 +4,6 @@ package org.camunda.bpm.extension.commons.io.event;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.extension.commons.io.socket.message.TaskEventMessage;
 import org.camunda.bpm.extension.commons.io.socket.message.TaskMessage;
@@ -49,20 +48,6 @@ public class CamundaEventListener {
         }
     }
 
-    @EventListener
-    public void onExecutionEventListener(DelegateExecution delegateExecution) {
-        try {
-            /*if(isAllowed("EXECUTION_EVENT_DETAILS")) {
-                this.template.convertAndSend("/topic/execution-event-details",  getObjectMapper().writeValueAsString(getExecutionEventMessage(delegateExecution)));
-            }*/
-            if(isAllowed("EXECUTION_EVENT")) {
-                this.template.convertAndSend("/topic/execution-event",  getObjectMapper().writeValueAsString(getExecutionEventMessage(delegateExecution)));
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-    }
-
     private ObjectMapper getObjectMapper() {
         return new ObjectMapper();
     }
@@ -77,19 +62,6 @@ public class CamundaEventListener {
     private TaskEventMessage getTaskEventMessage(DelegateTask taskDelegate) {
         TaskEventMessage taskObj = new TaskEventMessage();
         BeanUtils.copyProperties(taskDelegate, taskObj);
-        return taskObj;
-    }
-
-/*    private TaskMessage getExecutionMessage(DelegateExecution delegateExecution) {
-        TaskMessage taskObj = new TaskMessage();
-        BeanUtils.copyProperties(delegateExecution, taskObj);
-        taskObj.setVariables(getVariables(delegateExecution));
-        return taskObj;
-    }*/
-
-    private TaskEventMessage getExecutionEventMessage(DelegateExecution delegateExecution) {
-        TaskEventMessage taskObj = new TaskEventMessage();
-        BeanUtils.copyProperties(delegateExecution, taskObj);
         return taskObj;
     }
 

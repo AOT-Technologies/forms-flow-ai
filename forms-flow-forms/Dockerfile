@@ -9,6 +9,9 @@ FROM  docker.io/node:12.2.0-alpine
 # set working directory
 WORKDIR /forms-flow-forms/app
 
+RUN set -x \
+	&& chmod -R 777 /forms-flow-forms/app/
+
 # "bcrypt" requires python/make/g++, all must be installed in alpine
 # (note: using pinned versions to ensure immutable build environment)
 RUN apk update && \
@@ -52,8 +55,6 @@ ENV DEBUG=""
 
 COPY . /forms-flow-forms/app/
 
-RUN set -x \
-	&& chmod -R 777 /forms-flow-forms/app/
 
 # This will initialize the application based on
 # some questions to the user (login email, password, etc.)

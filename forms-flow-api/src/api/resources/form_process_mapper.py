@@ -36,7 +36,7 @@ class FormResource(Resource):
                 page_no = 0
                 limit = 0
             if page_no > 0:
-                response, status =  (
+                response, status = (
                     (
                         {
                             "forms": FormProcessMapperService.get_all_mappers(
@@ -51,7 +51,7 @@ class FormResource(Resource):
                 )
                 return response, status
             else:
-                response, status =  (
+                response, status = (
                     (
                         {
                             "forms": FormProcessMapperService.get_all_mappers(

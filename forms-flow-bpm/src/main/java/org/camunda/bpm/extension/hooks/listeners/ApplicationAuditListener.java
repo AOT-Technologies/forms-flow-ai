@@ -57,9 +57,9 @@ public class ApplicationAuditListener implements ExecutionListener, TaskListener
      * @return
      */
     private ApplicationAudit prepareApplicationAudit(DelegateExecution execution) {
-            applicationAudit.setApplicationStatus(String.valueOf(execution.getVariable("applicationStatus")));
-            applicationAudit.setFormUrl(String.valueOf(execution.getVariable("formUrl")));
-            return applicationAudit;
+        applicationAudit.setApplicationStatus(String.valueOf(execution.getVariable("applicationStatus")));
+        applicationAudit.setFormUrl(String.valueOf(execution.getVariable("formUrl")));
+        return applicationAudit;
     }
 
     /**

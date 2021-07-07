@@ -119,22 +119,23 @@ class ApplicationResourceById(Resource):
         """Get application by id."""
         try:
             if auth.has_role([REVIEWER_GROUP]):
-                application_schema_dump, status = ApplicationService.get_auth_by_application_id(
+                (
+                    application_schema_dump,
+                    status,
+                ) = ApplicationService.get_auth_by_application_id(
                     application_id=application_id,
                     token=request.headers["Authorization"],
                 )
                 return (
-                    ApplicationService.apply_custom_attributes(
-                        application_schema_dump
-                    ),
-                    status
+                    ApplicationService.apply_custom_attributes(application_schema_dump),
+                    status,
                 )
             else:
                 application, status = ApplicationService.get_application_by_user(
                     application_id=application_id,
                     user_id=g.token_info.get("preferred_username"),
                 )
-                return (application), status
+                return (ApplicationService.apply_custom_attributes(application), status)
         except BusinessException as err:
             return err.error, err.status_code
 

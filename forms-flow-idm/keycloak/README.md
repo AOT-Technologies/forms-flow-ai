@@ -92,7 +92,13 @@ Variable name | Meaning | Possible values | Default value |
    `Clerk`|`formsflow-clerk`|`changeme`|`formsflow-reviewer`
    `Approver`|`formsflow-approver`|`changeme`|`formsflow-reviewer`
 
-* *NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.*
+---
+**NOTE**
+
+All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.
+Redirect uri's are configured as localhost in the default setup, you can configure the ip address (if required) as the redirect uri for the clients by logging into Keycloak.
+
+---
 
 > **Local keycloak set up is successfully completed now. You can skip the remaining sections in this page and continue with other installation steps.**
 

@@ -57,6 +57,7 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
      */
     protected void invokeApplicationAuditService(DelegateExecution execution) throws IOException {
         ResponseEntity<String> response = getHTTPServiceInvoker().execute(getApplicationAuditUrl(execution), HttpMethod.POST, prepareApplicationAudit(execution));
+
         if(response.getStatusCodeValue() != HttpStatus.CREATED.value()) {
             throw new ApplicationServiceException("Unable to capture audit for application "+ ". Message Body: " +
                     response.getBody());

@@ -8,7 +8,8 @@ const initialState = {
   isApplicationListLoading:false,
   isApplicationDetailLoading:false,
   isApplicationUpdating:false,
-  applicationCount:0
+  applicationCount:0,
+  applicationDetailStatusCode:''
 }
 
 
@@ -30,6 +31,8 @@ const applications = (state = initialState, action)=> {
       return {...state, applicationProcess: action.payload};
     case ACTION_CONSTANTS.SET_APPLICATION_LIST_COUNT :
       return {...state, applicationCount: action.payload};
+    case ACTION_CONSTANTS.APPLICATION_DETAIL_STATUS_CODE:
+      return {...state,applicationDetailStatusCode: action.payload}
     default:
       return state;
   }

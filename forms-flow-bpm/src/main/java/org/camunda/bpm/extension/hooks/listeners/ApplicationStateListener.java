@@ -33,7 +33,7 @@ public class ApplicationStateListener extends ApplicationAuditListener implement
             invokeApplicationService(execution);
             invokeApplicationAuditService(execution);
         } catch (IOException e) {
-           handleException(ExceptionSource.EXECUTION, e);
+           handleException(execution, ExceptionSource.EXECUTION, e);
         }
 
     }
@@ -44,7 +44,7 @@ public class ApplicationStateListener extends ApplicationAuditListener implement
             invokeApplicationService(delegateTask.getExecution());
             invokeApplicationAuditService(delegateTask.getExecution());
         } catch (IOException e) {
-            handleException(ExceptionSource.TASK, e);
+            handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
     }
 

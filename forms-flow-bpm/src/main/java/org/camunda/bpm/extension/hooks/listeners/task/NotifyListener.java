@@ -51,7 +51,7 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
         try {
             emailGroups = getEmailGroups(delegateTask.getExecution());
         } catch (IOException e) {
-           handleException(ExceptionSource.TASK, e);
+           handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
         if (CollectionUtils.isNotEmpty(emailGroups)) {
             for (String entry : emailGroups) {

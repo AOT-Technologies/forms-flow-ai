@@ -52,7 +52,7 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
         try {
             patchFormAttributes(execution);
         } catch (IOException e) {
-            handleException(ExceptionSource.EXECUTION, e);
+            handleException(execution,ExceptionSource.EXECUTION, e);
         }
     }
 
@@ -61,7 +61,7 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
         try {
             patchFormAttributes(delegateTask.getExecution());
         } catch (IOException e) {
-            handleException(ExceptionSource.TASK, e);
+            handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
     }
 

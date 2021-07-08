@@ -53,7 +53,7 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
                 delegateTask.getExecution().setVariable("formUrl", getModifiedFormUrl(delegateTask,submissionId));
             }
         } catch (IOException e) {
-           handleException(ExceptionSource.TASK, e);
+           handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
 
     }

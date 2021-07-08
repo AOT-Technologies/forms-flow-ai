@@ -93,7 +93,7 @@ public class AdminController {
                     for (Authorization authObj : authorizationList) {
                         for (AuthorizedAction formObj : formList) {
                             if (authObj.getResourceId().equals(formObj.getProcessKey()) && isExists(filteredList, formObj.getFormId()) == false)  {
-                                    filteredList.add(formObj);
+                                filteredList.add(formObj);
                             }
                         }
                     }

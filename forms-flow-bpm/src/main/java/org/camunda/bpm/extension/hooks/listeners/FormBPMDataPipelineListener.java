@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
 
+import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
@@ -29,23 +30,22 @@ public class FormBPMDataPipelineListener implements TaskListener, ExecutionListe
 
     @Override
     public void notify(DelegateExecution execution) throws Exception {
-            syncFormVariables(execution);
+        syncFormVariables(execution);
     }
 
     @Override
-    public void notify(DelegateTask delegateTask) {
-        syncFormVariables(delegateTask.getExecution());
+    public void notify(DelegateTask delegateTask) throws ProcessEngineException {
+        try {
+            syncFormVariables(delegateTask.getExecution());
+        } catch (IOException e) {
+            throw new ProcessEngineException(e);
+        }
     }
 
-    private void syncFormVariables(DelegateExecution execution) {
-        try {
-            Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
-            for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
-                execution.setVariable(entry.getKey(), entry.getValue());
-            }
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE,"Exception occured in transforming form content");
+    private void syncFormVariables(DelegateExecution execution) throws IOException {
+        Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
+        for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
+            execution.setVariable(entry.getKey(), entry.getValue());
         }
-
     }
 }

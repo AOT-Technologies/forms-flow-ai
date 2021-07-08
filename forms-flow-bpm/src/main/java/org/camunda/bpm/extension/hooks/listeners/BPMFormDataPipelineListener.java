@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.Expression;
@@ -46,28 +47,27 @@ public class BPMFormDataPipelineListener implements TaskListener, ExecutionListe
     private HTTPServiceInvoker httpServiceInvoker;
 
     @Override
-    public void notify(DelegateExecution execution) {
+    public void notify(DelegateExecution execution) throws JsonProcessingException {
         patchFormAttributes(execution);
     }
 
     @Override
-    public void notify(DelegateTask delegateTask) {
-        patchFormAttributes(delegateTask.getExecution());
+    public void notify(DelegateTask delegateTask) throws ProcessEngineException{
+        try {
+            patchFormAttributes(delegateTask.getExecution());
+        } catch (JsonProcessingException e) {
+            throw new ProcessEngineException(e);
+        }
     }
 
-    private void patchFormAttributes(DelegateExecution execution) {
+    private void patchFormAttributes(DelegateExecution execution) throws JsonProcessingException {
         String  formUrl= MapUtils.getString(execution.getVariables(),"formUrl", null);
         if(StringUtils.isBlank(formUrl)) {
             LOGGER.log(Level.SEVERE,"Unable to read submission for "+execution.getVariables().get("formUrl"));
             return;
         }
         ResponseEntity<String> response = null;
-        try {
-            httpServiceInvoker.execute(getUrl(execution), HttpMethod.PATCH, getModifiedFormElements(execution));
-        } catch (JsonProcessingException e) {
-            LOGGER.log(Level.SEVERE,"Exception occurred on updating application details", e);
-        }
-
+        httpServiceInvoker.execute(getUrl(execution), HttpMethod.PATCH, getModifiedFormElements(execution));
     }
 
 

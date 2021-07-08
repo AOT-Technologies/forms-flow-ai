@@ -38,4 +38,4 @@ services:
     restart: always
     env_file: .env
     volumes:
-      - ./postgres/analytics:/var/lib/postgresql/data
+      - ./postgres/analytics:/data/postgres

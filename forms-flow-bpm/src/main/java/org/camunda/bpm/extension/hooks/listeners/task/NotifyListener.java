@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.Expression;
@@ -40,15 +41,19 @@ public class NotifyListener implements TaskListener, IMessageEvent {
      *
      * @param delegateTask: The task which sends the message
      */
-    public void notify(DelegateTask delegateTask) {
+    public void notify(DelegateTask delegateTask) throws ProcessEngineException{
         List<String> toEmails =  new ArrayList<>();
         if(!"Y".equals(getGroupsOnly(delegateTask.getExecution()))) {
             toEmails.addAll(getEmailsOfUnassignedTask(delegateTask));
-
         }
-
-        if (CollectionUtils.isNotEmpty(getEmailGroups(delegateTask.getExecution()))) {
-            for (String entry : getEmailGroups(delegateTask.getExecution())) {
+        List<String> emailGroups = null;
+        try {
+            emailGroups = getEmailGroups(delegateTask.getExecution());
+        } catch (JsonProcessingException e) {
+            throw new ProcessEngineException(e);
+        }
+        if (CollectionUtils.isNotEmpty(emailGroups)) {
+            for (String entry : emailGroups) {
                 toEmails.addAll(getEmailsForGroup(delegateTask.getExecution(), entry));
             }
         }
@@ -90,16 +95,12 @@ public class NotifyListener implements TaskListener, IMessageEvent {
         return String.valueOf(this.messageId.getValue(delegateExecution));
     }
 
-    private List<String> getEmailGroups(DelegateExecution delegateExecution){
+    private List<String> getEmailGroups(DelegateExecution delegateExecution) throws JsonProcessingException {
         List<String> emailGroups = new ArrayList<>();
-        try {
-            if(this.emailGroups != null &&
-                    StringUtils.isNotBlank(String.valueOf(this.emailGroups.getValue(delegateExecution)))) {
-                emailGroups = this.emailGroups != null && this.emailGroups.getValue(delegateExecution) != null ?
-                        getObjectMapper().readValue(String.valueOf(this.emailGroups.getValue(delegateExecution)), List.class) : null;
-            }
-        } catch (JsonProcessingException e) {
-            LOGGER.log(Level.SEVERE, "Exception occured in reading additionalEmailGroups" , e);
+        if(this.emailGroups != null &&
+                StringUtils.isNotBlank(String.valueOf(this.emailGroups.getValue(delegateExecution)))) {
+            emailGroups = this.emailGroups != null && this.emailGroups.getValue(delegateExecution) != null ?
+                    getObjectMapper().readValue(String.valueOf(this.emailGroups.getValue(delegateExecution)), List.class) : null;
         }
         return  emailGroups;
     }

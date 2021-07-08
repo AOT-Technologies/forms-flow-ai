@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.TaskListener;
@@ -49,14 +50,14 @@ public class FormConnectorListener implements TaskListener {
     private HTTPServiceInvoker httpServiceInvoker;
 
     @Override
-    public void notify(DelegateTask delegateTask) {
+    public void notify(DelegateTask delegateTask) throws ProcessEngineException{
         try {
             String submissionId = createSubmission(getFormUrl(delegateTask),getNewFormSubmissionUrl(delegateTask), delegateTask);
             if(StringUtils.isNotBlank(submissionId)) {
                 delegateTask.getExecution().setVariable("formUrl", getModifiedFormUrl(delegateTask,submissionId));
             }
         } catch (JsonProcessingException e) {
-            LOGGER.log(Level.SEVERE, "Exception occured during form association",e);
+            throw new ProcessEngineException(e);
         }
 
     }

@@ -31,7 +31,7 @@ public class FormBPMDataPipelineListener  extends BaseListener implements TaskLi
         try {
             syncFormVariables(execution);
         } catch (IOException e) {
-            handleException(ExceptionSource.EXECUTION, e);
+            handleException(execution, ExceptionSource.EXECUTION, e);
         }
     }
 
@@ -40,7 +40,7 @@ public class FormBPMDataPipelineListener  extends BaseListener implements TaskLi
         try {
             syncFormVariables(delegateTask.getExecution());
         } catch (IOException e) {
-            handleException(ExceptionSource.TASK, e);
+            handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
     }
 

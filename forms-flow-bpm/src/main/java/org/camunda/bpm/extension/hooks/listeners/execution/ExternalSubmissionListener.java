@@ -51,7 +51,7 @@ public class ExternalSubmissionListener extends BaseListener implements Executio
                 createApplication(execution);
             }
         } catch(IOException ex) {
-            handleException(ExceptionSource.EXECUTION, ex);
+            handleException(execution, ExceptionSource.EXECUTION, ex);
         }
     }
 

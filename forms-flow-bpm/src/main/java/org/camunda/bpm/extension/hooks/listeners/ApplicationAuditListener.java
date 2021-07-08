@@ -37,7 +37,7 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
         try {
             invokeApplicationAuditService(execution);
         } catch (IOException e) {
-            handleException(ExceptionSource.EXECUTION, e);
+            handleException(execution, ExceptionSource.EXECUTION, e);
         }
     }
 
@@ -46,7 +46,7 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
         try {
             invokeApplicationAuditService(delegateTask.getExecution());
         } catch (IOException e) {
-            handleException(ExceptionSource.TASK, e);
+            handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
     }
 

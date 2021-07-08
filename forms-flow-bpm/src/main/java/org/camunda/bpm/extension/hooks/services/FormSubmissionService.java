@@ -1,14 +1,15 @@
 package org.camunda.bpm.extension.hooks.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import freemarker.template.utility.StringUtil;
+
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.bpm.engine.variable.value.FileValue;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.commons.connector.support.FormTokenAccessHandler;
+import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpMethod;
@@ -39,58 +40,55 @@ public class FormSubmissionService {
         ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
         if(response.getStatusCode().value() == HttpStatus.OK.value()) {
             return response.getBody();
+        } else {
+            throw new FormioServiceException("Unable to read submission for: "+ formUrl+ ". Message Body: " +
+                    response.getBody());
         }
-        return "";
     }
 
-    public String createRevision(String formUrl) {
+    public String createRevision(String formUrl) throws IOException {
         String submission =  readSubmission(formUrl);
         if(StringUtils.isBlank(submission)) {
             LOGGER.log(Level.SEVERE,"Unable to read submission for "+formUrl);
             return null;
         }
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
             ResponseEntity<String> response =  httpServiceInvoker.execute(getSubmissionUrl(formUrl), HttpMethod.POST, submission);
             if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
                 JsonNode jsonNode = objectMapper.readTree(response.getBody());
                 String submissionId = jsonNode.get("_id").asText();
                 return submissionId;
+            } else {
+                throw new FormioServiceException("Unable to create revision for: "+ formUrl+ ". Message Body: " +
+                        response.getBody());
             }
-        } catch (JsonProcessingException e) {
-            LOGGER.log(Level.SEVERE,"Exception occurred in creating submission", e);
-        }
-        return null;
     }
 
-    public String createSubmission(String formUrl, String submission) {
+    public String createSubmission(String formUrl, String submission) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
             ResponseEntity<String> response =  httpServiceInvoker.execute(getSubmissionUrl(formUrl), HttpMethod.POST, submission);
             if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
                 JsonNode jsonNode = objectMapper.readTree(response.getBody());
                 String submissionId = jsonNode.get("_id").asText();
                 return submissionId;
+            } else {
+                throw new FormioServiceException("Unable to create submission for: "+ formUrl+ ". Message Body: " +
+                        response.getBody());
             }
-        } catch (JsonProcessingException e) {
-            LOGGER.log(Level.SEVERE,"Exception occurred in creating submission", e);
-        }
-        return null;
     }
 
-    public String getFormIdByName(String formUrl) {
+    public String getFormIdByName(String formUrl) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
             ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
             if(response.getStatusCode().value() == HttpStatus.OK.value()) {
                 JsonNode jsonNode = objectMapper.readTree(response.getBody());
                 String formId = jsonNode.get("_id").asText();
                 return formId;
+            } else {
+                throw new FormioServiceException("Unable to get name for: "+ formUrl+ ". Message Body: " +
+                        response.getBody());
             }
-        } catch (JsonProcessingException e) {
-            LOGGER.log(Level.SEVERE,"Exception occurred in reading form", e);
-        }
-        return null;
+
     }
 
     private String getSubmissionUrl(String formUrl){
@@ -103,9 +101,7 @@ public class FormSubmissionService {
     public Map<String,Object> retrieveFormValues(String formUrl) throws IOException {
         Map<String,Object> fieldValues = new HashMap();
         String submission = readSubmission(formUrl);
-        if(submission.isEmpty()) {
-            throw new RuntimeException("Unable to retrieve submission");
-        }
+        if(StringUtils.isNotEmpty(submission)) {
         JsonNode dataNode = getObjectMapper().readTree(submission);
         Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
         while (dataElements.hasNext()) {
@@ -139,18 +135,14 @@ public class FormSubmissionService {
                 fieldValues.put(entry.getKey(), fieldValue);
             }
         }
+        }
         return fieldValues;
     }
 
-    public String createFormSubmissionData(Map<String,Object> bpmVariables) {
-        try {
+    public String createFormSubmissionData(Map<String,Object> bpmVariables) throws IOException {
             Map<String, Map<String,Object>> data = new HashMap<>();
             data.put("data",bpmVariables);
             return getObjectMapper().writeValueAsString(data);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return  null;
     }
 
 

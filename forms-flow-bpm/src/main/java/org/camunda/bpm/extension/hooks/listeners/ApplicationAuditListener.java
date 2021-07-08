@@ -1,13 +1,21 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
 import lombok.Data;
-import org.camunda.bpm.engine.delegate.*;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.engine.delegate.ExecutionListener;
+import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 
 /**
@@ -16,7 +24,7 @@ import org.springframework.stereotype.Component;
  * @author sumathi.thirumani@aot-technolgies.com
  */
 @Component
-public class ApplicationAuditListener implements ExecutionListener, TaskListener {
+public class ApplicationAuditListener extends BaseListener implements ExecutionListener, TaskListener {
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
@@ -25,13 +33,21 @@ public class ApplicationAuditListener implements ExecutionListener, TaskListener
     private ApplicationAudit applicationAudit;
 
     @Override
-    public void notify(DelegateExecution execution) throws Exception {
-        invokeApplicationAuditService(execution);
+    public void notify(DelegateExecution execution) {
+        try {
+            invokeApplicationAuditService(execution);
+        } catch (IOException e) {
+            handleException(ExceptionSource.EXECUTION, e);
+        }
     }
 
     @Override
     public void notify(DelegateTask delegateTask) {
-        invokeApplicationAuditService(delegateTask.getExecution());
+        try {
+            invokeApplicationAuditService(delegateTask.getExecution());
+        } catch (IOException e) {
+            handleException(ExceptionSource.TASK, e);
+        }
     }
 
     /**
@@ -39,8 +55,12 @@ public class ApplicationAuditListener implements ExecutionListener, TaskListener
      *
      * @param execution
      */
-    protected void invokeApplicationAuditService(DelegateExecution execution) {
-        getHTTPServiceInvoker().execute(getApplicationAuditUrl(execution), HttpMethod.POST, prepareApplicationAudit(execution));
+    protected void invokeApplicationAuditService(DelegateExecution execution) throws IOException {
+        ResponseEntity<String> response = getHTTPServiceInvoker().execute(getApplicationAuditUrl(execution), HttpMethod.POST, prepareApplicationAudit(execution));
+        if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
+            throw new ApplicationServiceException("Unable to capture audit for application "+ ". Message Body: " +
+                    response.getBody());
+        }
     }
 
     /**

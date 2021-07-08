@@ -1,7 +1,6 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
 
-import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
@@ -12,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.inject.Named;
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -21,7 +19,7 @@ import java.util.logging.Logger;
  * @author sumathi.thirumani@aot-technologies.com
  */
 @Named("FormBPMDataPipelineListener")
-public class FormBPMDataPipelineListener implements TaskListener, ExecutionListener {
+public class FormBPMDataPipelineListener  extends BaseListener implements TaskListener, ExecutionListener {
 
     private final Logger LOGGER = Logger.getLogger(FormBPMDataPipelineListener.class.getName());
 
@@ -29,16 +27,20 @@ public class FormBPMDataPipelineListener implements TaskListener, ExecutionListe
     private FormSubmissionService formSubmissionService;
 
     @Override
-    public void notify(DelegateExecution execution) throws Exception {
-        syncFormVariables(execution);
+    public void notify(DelegateExecution execution) {
+        try {
+            syncFormVariables(execution);
+        } catch (IOException e) {
+            handleException(ExceptionSource.EXECUTION, e);
+        }
     }
 
     @Override
-    public void notify(DelegateTask delegateTask) throws ProcessEngineException {
+    public void notify(DelegateTask delegateTask) {
         try {
             syncFormVariables(delegateTask.getExecution());
         } catch (IOException e) {
-            throw new ProcessEngineException(e);
+            handleException(ExceptionSource.TASK, e);
         }
     }
 

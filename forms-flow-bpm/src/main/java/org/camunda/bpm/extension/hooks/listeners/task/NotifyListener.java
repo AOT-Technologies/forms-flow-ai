@@ -9,14 +9,15 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.extension.hooks.listeners.BaseListener;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -26,7 +27,7 @@ import java.util.logging.Logger;
  * @author yichun.zhao@aot-technologies.com, sumathi.thirumani@aot-technologies.com
  */
 @Component
-public class NotifyListener implements TaskListener, IMessageEvent {
+public class NotifyListener extends BaseListener implements TaskListener, IMessageEvent {
 
     private static final Logger LOGGER = Logger.getLogger(NotifyListener.class.getName());
 
@@ -41,7 +42,7 @@ public class NotifyListener implements TaskListener, IMessageEvent {
      *
      * @param delegateTask: The task which sends the message
      */
-    public void notify(DelegateTask delegateTask) throws ProcessEngineException{
+    public void notify(DelegateTask delegateTask) {
         List<String> toEmails =  new ArrayList<>();
         if(!"Y".equals(getGroupsOnly(delegateTask.getExecution()))) {
             toEmails.addAll(getEmailsOfUnassignedTask(delegateTask));
@@ -49,8 +50,8 @@ public class NotifyListener implements TaskListener, IMessageEvent {
         List<String> emailGroups = null;
         try {
             emailGroups = getEmailGroups(delegateTask.getExecution());
-        } catch (JsonProcessingException e) {
-            throw new ProcessEngineException(e);
+        } catch (IOException e) {
+           handleException(ExceptionSource.TASK, e);
         }
         if (CollectionUtils.isNotEmpty(emailGroups)) {
             for (String entry : emailGroups) {

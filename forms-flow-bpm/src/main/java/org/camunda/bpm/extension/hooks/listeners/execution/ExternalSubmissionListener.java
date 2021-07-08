@@ -8,6 +8,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.hooks.listeners.BaseListener;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import javax.inject.Named;
 
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -26,7 +28,7 @@ import java.util.logging.Logger;
  * @author sumathi.thirumani@aot-technologies.com
  */
 @Named("ExternalSubmissionListener")
-public class ExternalSubmissionListener implements ExecutionListener {
+public class ExternalSubmissionListener extends BaseListener implements ExecutionListener {
 
     private final Logger LOGGER = Logger.getLogger(ExternalSubmissionListener.class.getName());
 
@@ -40,15 +42,16 @@ public class ExternalSubmissionListener implements ExecutionListener {
     private Expression formName;
 
     @Override
-    public void notify(DelegateExecution execution) throws Exception {
-        if(!isExists(execution)) {
+    public void notify(DelegateExecution execution) {
+        try {
             String formUrl = getFormUrl(execution);
             String submissionId = formSubmissionService.createSubmission(formUrl, formSubmissionService.createFormSubmissionData(execution.getVariables()));
             if(StringUtils.isNotBlank(submissionId)){
                 execution.setVariable("formUrl", formUrl+"/"+submissionId);
                 createApplication(execution);
             }
-
+        } catch(IOException ex) {
+            handleException(ExceptionSource.EXECUTION, ex);
         }
     }
 
@@ -56,12 +59,12 @@ public class ExternalSubmissionListener implements ExecutionListener {
         return execution.getVariables().containsKey("formUrl");
     }
 
-    private String getFormId(DelegateExecution execution) {
+    private String getFormId(DelegateExecution execution) throws IOException {
         String formName =  String.valueOf(this.formName.getValue(execution));
         return formSubmissionService.getFormIdByName(httpServiceInvoker.getProperties().getProperty("formio.url")+"/"+formName);
     }
 
-    private String getFormUrl(DelegateExecution execution) {
+    private String getFormUrl(DelegateExecution execution) throws IOException {
         return httpServiceInvoker.getProperties().getProperty("formio.url")+"/form/"+getFormId(execution)+"/submission";
 
     }

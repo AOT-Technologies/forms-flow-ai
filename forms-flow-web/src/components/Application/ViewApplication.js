@@ -7,7 +7,7 @@ import {Tabs, Tab} from "react-bootstrap";
 import Details from "./Details";
 import {getApplicationById,getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
 import Loading from "../../containers/Loading";
-import {setApplicationDetailLoader} from "../../actions/applicationActions";
+import {setApplicationDetailLoader, setApplicationDetailStatusCode} from "../../actions/applicationActions";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 import History from "./ApplicationHistory";
 import View from "../Form/Item/Submission/Item/View";
@@ -36,6 +36,10 @@ const ViewApplication = React.memo(() => {
         }
       }));
       dispatch(getApplicationFormDataByAppId(applicationId));
+      return ()=>{
+        dispatch(setApplicationDetailLoader(true));
+        dispatch(setApplicationDetailStatusCode(''));
+      }
   },[applicationId, dispatch]);
 
   if (isApplicationDetailLoading) {

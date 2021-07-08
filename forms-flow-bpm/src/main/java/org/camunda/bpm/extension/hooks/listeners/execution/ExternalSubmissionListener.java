@@ -41,7 +41,7 @@ public class ExternalSubmissionListener implements ExecutionListener {
 
     @Override
     public void notify(DelegateExecution execution) throws Exception {
-        if(isExists(execution) == false) {
+        if(!isExists(execution)) {
             String formUrl = getFormUrl(execution);
             String submissionId = formSubmissionService.createSubmission(formUrl, formSubmissionService.createFormSubmissionData(execution.getVariables()));
             if(StringUtils.isNotBlank(submissionId)){
@@ -66,22 +66,18 @@ public class ExternalSubmissionListener implements ExecutionListener {
 
     }
 
-    private void createApplication(DelegateExecution execution) {
+    private void createApplication(DelegateExecution execution) throws JsonProcessingException {
         Map<String,Object> data = new HashMap<>();
         String formUrl = String.valueOf(execution.getVariable("formUrl"));
         data.put("formUrl",formUrl);
         data.put("formId",StringUtils.substringBetween(formUrl, "/form/", "/submission/"));
         data.put("submissionId",StringUtils.substringAfter(formUrl, "/submission/"));
         data.put("processInstanceId",execution.getProcessInstanceId());
-        try {
-            ResponseEntity<String> response = httpServiceInvoker.execute(httpServiceInvoker.getProperties().getProperty("api.url")+"/application/create", HttpMethod.POST, getObjectMapper().writeValueAsString(data));
-            if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
-                JsonNode jsonNode = getObjectMapper().readTree(response.getBody());
-                String applicationId = jsonNode.get("id").asText();
-                execution.setVariable("applicationId", applicationId);
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
+        ResponseEntity<String> response = httpServiceInvoker.execute(httpServiceInvoker.getProperties().getProperty("api.url")+"/application/create", HttpMethod.POST, getObjectMapper().writeValueAsString(data));
+        if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
+            JsonNode jsonNode = getObjectMapper().readTree(response.getBody());
+            String applicationId = jsonNode.get("id").asText();
+            execution.setVariable("applicationId", applicationId);
         }
     }
 

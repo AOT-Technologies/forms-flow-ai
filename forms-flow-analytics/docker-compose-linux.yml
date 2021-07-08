@@ -6,35 +6,28 @@ x-redash-service: &redash-service
   depends_on:
       - postgres
       - redis
-  env_file: redash.env
+  env_file: .env
   restart: always
 
 services:
   server:
     <<: *redash-service
-    command: server
+    command: dev_server
     ports:
       - '7000:5000'
     environment:
       REDASH_WEB_WORKERS: 4
   scheduler:
     <<: *redash-service
-    command: scheduler
-    environment:
-      QUEUES: "celery"
-      WORKERS_COUNT: 1
-  scheduled_worker:
+    command: dev_server
+    depends_on:
+      - server
+  worker:
     <<: *redash-service
     command: worker
     environment:
-      QUEUES: "scheduled_queries,schemas"
+      QUEUES: "periodic emails default"
       WORKERS_COUNT: 1
-  adhoc_worker:
-    <<: *redash-service
-    command: worker
-    environment:
-      QUEUES: "queries"
-      WORKERS_COUNT: 2
   redis:
     image: redis:latest
     restart: always
@@ -43,6 +36,6 @@ services:
     ports:
       - '7432:5432'
     restart: always
-    env_file: redash.env
+    env_file: .env
     volumes:
       - ./postgres/analytics:/var/lib/postgresql/data

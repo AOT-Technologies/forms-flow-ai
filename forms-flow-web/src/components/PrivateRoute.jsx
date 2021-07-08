@@ -12,7 +12,7 @@ import Loading from "../containers/Loading";
 import DashboardPage from "./Dashboard";
 import InsightsPage from "./Insights";
 import Application from "./Application";
-import 'semantic-ui-css/semantic.min.css';
+//import 'semantic-ui-css/semantic.min.css';
 import NotFound from "./NotFound";
 
 const PrivateRoute = React.memo((props) => {

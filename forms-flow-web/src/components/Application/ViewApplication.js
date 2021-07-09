@@ -46,7 +46,7 @@ const ViewApplication = React.memo(() => {
     return <Loading/>;
   }
 
-  if(Object.keys(applicationDetail).length==0 && applicationDetailStatusCode===403) {
+  if(Object.keys(applicationDetail).length===0 && applicationDetailStatusCode===403) {
     return <NotFound errorMessage="Access Denied" errorCode={applicationDetailStatusCode} />
   }
 

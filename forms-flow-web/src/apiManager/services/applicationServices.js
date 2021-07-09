@@ -72,7 +72,7 @@ export const getApplicationById = (applicationId, ...rest) => {
     //TODO remove the pageNo and limit currently its mandatory from api
     httpGETRequest(apiUrlgetApplication)
       .then((res) => {
-        if (res.data) {
+        if (res.data && Object.keys(res.data).length) {
           const application = res.data;
           dispatch(setApplicationDetail(application));
           dispatch(setApplicationDetailStatusCode(res.status));

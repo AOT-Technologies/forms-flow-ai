@@ -7,8 +7,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Base class to apply default behavior to listeners.
- *
  * @author sumathi.thirumani@aot-technologies.com
  */
 public class BaseListener {
@@ -29,7 +27,7 @@ public class BaseListener {
     }
 
     private void handleTaskException(Exception e) {
-        LOGGER.log(Level.SEVERE, "Exception Occurred" , e);
+        throw new RuntimeException(ExceptionUtils.getRootCause(e));
     }
 
     public enum ExceptionSource {

@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.hooks.listeners.execution;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
+import org.camunda.bpm.extension.commons.utils.InMemoryCache;
 import org.camunda.bpm.extension.hooks.listeners.BaseListener;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,9 @@ public class FormAccessTokenCacheListener extends BaseListener implements Execut
     private final Logger LOGGER = Logger.getLogger(FormAccessTokenCacheListener.class.getName());
 
     @Autowired
+    private InMemoryCache inMemoryCache;
+
+    @Autowired
     private FormSubmissionService formSubmissionService;
 
     @Override
@@ -27,6 +31,7 @@ public class FormAccessTokenCacheListener extends BaseListener implements Execut
         String accessToken = formSubmissionService.getAccessToken();
         if(StringUtils.isNotEmpty(accessToken)) {
             delegateExecution.getProcessEngine().getRuntimeService().setVariable(delegateExecution.getId(),getTokenName(),accessToken);
+            inMemoryCache.put(getTokenName(), delegateExecution.getId());
         }
     }
 

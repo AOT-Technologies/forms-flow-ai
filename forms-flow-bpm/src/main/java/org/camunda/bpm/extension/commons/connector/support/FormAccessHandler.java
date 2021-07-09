@@ -29,8 +29,6 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
 
     private final Logger LOGGER = Logger.getLogger(FormAccessHandler.class.getName());
 
-    org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(FormAccessHandler.class);
-
     @Autowired
     private InMemoryCache inMemoryCache;
 

@@ -5,21 +5,27 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 `Added`
 
-* Support for allowing CORS with multiple comma-separated origins(component: forms-flow-api)
-* Added new forms- `Create New Business License Application` and `Create New Business License Application` (component: forms-flow-forms)
-* Added new workflows - `One Step Approval Process` and `Two Step Approval process`(component: forms-flow-bpm)
-* Show/hide Application Menu based on key-cloak group(component: forms-flow-web)
-* show/hide View Submissions button in form webpage based on keycloak-group(component: forms-flow-web)
-* Added authorization on application details page based on user-roles(component: forms-flow-api)
+* Support for allowing CORS with multiple comma-separated origins. (component: forms-flow-api)
+* Added new forms- `Create New Business License Application` and `Create New Business License Application`. (component: forms-flow-forms)
+* Added new workflows - `One Step Approval Process` and `Two Step Approval process`. (component: forms-flow-bpm)
+* Show/hide Application Menu based on key-cloak group. (component: forms-flow-web)
+* show/hide View Submissions button in form webpage based on keycloak-group. (component: forms-flow-web)
+* Added authorization on application details page based on user-roles. (component: forms-flow-api)
+* Add 404 page. (component: forms-flow-web)
 
 `Modified`
-* Improved the README to document supported version for Keycloak
-* Modify Websocket implementation to support reconnection in Task Menu(component: forms-flow-web)
+* Improved the README to document supported version for Keycloak.
+* Modify Websocket implementation to support reconnection in Task Menu. (component: forms-flow-web)
+* Footer modified to display formsflow.ai with version number. (component: forms-flow-web)
 
 `Fixed`
 
-* In application menu forms not displaying for the Client users(component: forms-flow-api)
-* Fixed the failing installation of analytics component (component: forms-flow-analytics)
+* In application menu forms not displaying for the Client users. (component: forms-flow-api)
+* Fixed the failing installation of analytics component .(component: forms-flow-analytics)
+* Fixed the issue of not creating applications when called from BPM side with process-instance-id. (component: forms-flow-api)
+* Last Modified column in client Application page is not working. (component: forms-flow-web)
+* Application search icons breaking. (componet: forms-flow-web)
+* Mime type Issue in console of webpage. (component: forms-flow-web)
 
 ## 4.0.0 - 2021-06-11
 

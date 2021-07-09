@@ -17,6 +17,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Updated [usage docs](./USAGE.md) with the latest form and workflow.
 * Modify WebSocket implementation to support reconnection in Task Menu. (component: forms-flow-web)
 * Footer modified to display formsflow.ai with the version number. (component: forms-flow-web)
+* v1.0.7 release for formsflow.ai based on Vue.js for easy integration of formsflow.ai to existing projects. To know more details checkout [formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue) 
 
 `Fixed`
 * Fixed the failing installation of analytics component .(component: forms-flow-analytics)

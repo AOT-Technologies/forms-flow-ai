@@ -6,7 +6,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 `Added`
 
 * Support for allowing CORS with multiple comma-separated origins. (component: forms-flow-api)
-* Added new forms- `Create New Business License Application` and `Create New Business License Application`. (component: forms-flow-forms)
+* Added new forms- `Create New Business License Application` and `Freedom of Information and Protection of Privacy`. (component: forms-flow-forms)
 * Added new workflows - `One Step Approval Process` and `Two Step Approval process`. (component: forms-flow-bpm)
 * Show/hide Application Menu based on key-cloak group. (component: forms-flow-web)
 * show/hide View Submissions button in form webpage based on keycloak-group. (component: forms-flow-web)

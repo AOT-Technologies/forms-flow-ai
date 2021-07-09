@@ -29,7 +29,7 @@ public class BaseListener {
     }
 
     private void handleTaskException(Exception e) {
-        LOGGER.log(Level.SEVERE, "Exception Occurred" , e);
+        throw new RuntimeException(ExceptionUtils.getRootCause(e));
     }
 
     public enum ExceptionSource {

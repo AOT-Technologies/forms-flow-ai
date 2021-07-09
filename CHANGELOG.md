@@ -1,7 +1,7 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
-## 4.0.1 - 2021-07-09
+## 4.0.1 - 2021-07-12
 
 `Added`
 * Support for allowing CORS with multiple comma-separated origins. (component: forms-flow-api)

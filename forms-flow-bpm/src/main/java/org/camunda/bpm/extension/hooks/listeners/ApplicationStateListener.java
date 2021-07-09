@@ -5,11 +5,16 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 /**
  * This class updates the application state and also capture audit.
@@ -24,15 +29,23 @@ public class ApplicationStateListener extends ApplicationAuditListener implement
 
     @Override
     public void notify(DelegateExecution execution) {
-        invokeApplicationService(execution);
-        invokeApplicationAuditService(execution);
+        try {
+            invokeApplicationService(execution);
+            invokeApplicationAuditService(execution);
+        } catch (IOException e) {
+           handleException(execution, ExceptionSource.EXECUTION, e);
+        }
+
     }
 
     @Override
     public void notify(DelegateTask delegateTask) {
-        invokeApplicationService(delegateTask.getExecution());
-        invokeApplicationAuditService(delegateTask.getExecution());
-
+        try {
+            invokeApplicationService(delegateTask.getExecution());
+            invokeApplicationAuditService(delegateTask.getExecution());
+        } catch (IOException e) {
+            handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
+        }
     }
 
     /**
@@ -40,8 +53,12 @@ public class ApplicationStateListener extends ApplicationAuditListener implement
      *
      * @param execution
      */
-    private void invokeApplicationService(DelegateExecution execution) {
-        getHTTPServiceInvoker().execute(getApplicationUrl(execution), HttpMethod.PUT,  prepareApplication(execution));
+    private void invokeApplicationService(DelegateExecution execution) throws IOException {
+        ResponseEntity<String> response = getHTTPServiceInvoker().execute(getApplicationUrl(execution), HttpMethod.PUT,  prepareApplication(execution));
+        if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
+            throw new ApplicationServiceException("Unable to update application "+ ". Message Body: " +
+                    response.getBody());
+        }
     }
 
     /**

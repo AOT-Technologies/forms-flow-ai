@@ -6,7 +6,7 @@ import {
   setApplicationList,
   setApplicationDetail,
   setApplicationDetailLoader,
-  setApplicationProcess, setApplicationListCount
+  setApplicationProcess, setApplicationListCount, setApplicationDetailStatusCode
 } from "../../actions/applicationActions";
 import {replaceUrl} from "../../helper/helper";
 
@@ -72,13 +72,18 @@ export const getApplicationById = (applicationId, ...rest) => {
     //TODO remove the pageNo and limit currently its mandatory from api
     httpGETRequest(apiUrlgetApplication)
       .then((res) => {
-        if (res.data) {
+        if (res.data && Object.keys(res.data).length) {
           const application = res.data;
           dispatch(setApplicationDetail(application));
+          dispatch(setApplicationDetailStatusCode(res.status));
           done(null, application);
         } else {
           console.log("Error", res);
           dispatch(serviceActionError(res));
+          dispatch(setApplicationDetail({}));
+          dispatch(setApplicationDetailStatusCode(403));
+          done('No data');
+          dispatch(setApplicationDetailLoader(false));
         }
         done(null, res.data);
         dispatch(setApplicationDetailLoader(false));
@@ -86,8 +91,10 @@ export const getApplicationById = (applicationId, ...rest) => {
       .catch((error) => {
         console.log("Error", error);
         dispatch(serviceActionError(error));
+        dispatch(setApplicationDetail({}));
+        dispatch(setApplicationDetailStatusCode(403));
         done(error);
-        dispatch(setApplicationDetailLoader(false))
+        dispatch(setApplicationDetailLoader(false));
       });
   };
 };

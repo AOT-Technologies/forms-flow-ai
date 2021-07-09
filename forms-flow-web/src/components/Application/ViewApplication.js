@@ -7,16 +7,18 @@ import {Tabs, Tab} from "react-bootstrap";
 import Details from "./Details";
 import {getApplicationById,getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
 import Loading from "../../containers/Loading";
-import {setApplicationDetailLoader} from "../../actions/applicationActions";
+import {setApplicationDetailLoader, setApplicationDetailStatusCode} from "../../actions/applicationActions";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 import History from "./ApplicationHistory";
 import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
+import NotFound from "../NotFound";
 //import { useDispatch } from 'react-redux'
 
 const ViewApplication = React.memo(() => {
   const {applicationId} = useParams();
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
+  const applicationDetailStatusCode = useSelector(state=>state.applications.applicationDetailStatusCode)
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
   const applicationProcess = useSelector(state => state.applications.applicationProcess);
   const dispatch= useDispatch();
@@ -34,12 +36,19 @@ const ViewApplication = React.memo(() => {
         }
       }));
       dispatch(getApplicationFormDataByAppId(applicationId));
+      return ()=>{
+        dispatch(setApplicationDetailLoader(true));
+        dispatch(setApplicationDetailStatusCode(''));
+      }
   },[applicationId, dispatch]);
 
   if (isApplicationDetailLoading) {
     return <Loading/>;
   }
 
+  if(Object.keys(applicationDetail).length===0 && applicationDetailStatusCode===403) {
+    return <NotFound errorMessage="Access Denied" errorCode={applicationDetailStatusCode} />
+  }
 
   return (
     <div className="container">

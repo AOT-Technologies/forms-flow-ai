@@ -6,7 +6,12 @@ import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.runtime.VariableInstance;
 import org.camunda.bpm.extension.commons.utils.InMemoryCache;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,6 +28,8 @@ import java.util.logging.Logger;
 public class FormAccessHandler extends FormTokenAccessHandler implements IAccessHandler {
 
     private final Logger LOGGER = Logger.getLogger(FormAccessHandler.class.getName());
+
+    org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(FormAccessHandler.class);
 
     @Autowired
     private InMemoryCache inMemoryCache;

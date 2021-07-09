@@ -1,6 +1,26 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
+## 4.0.1 - 2021-07-09
+
+`Added`
+
+* Support for allowing CORS with multiple comma-separated origins(component: forms-flow-api)
+* Added new forms- `Create New Business License Application` and `Create New Business License Application` (component: forms-flow-forms)
+* Added new workflows - `One Step Approval Process` and `Two Step Approval process`(component: forms-flow-bpm)
+* Show/hide Application Menu based on key-cloak group(component: forms-flow-web)
+* show/hide View Submissions button in form webpage based on keycloak-group(component: forms-flow-web)
+* Added authorization on application details page based on user-roles(component: forms-flow-api)
+
+`Modified`
+* Improved the README to document supported version for Keycloak
+* Modify Websocket implementation to support reconnection in Task Menu(component: forms-flow-web)
+
+`Fixed`
+
+* In application menu forms not displaying for the Client users(component: forms-flow-api)
+* Fixed the failing installation of analytics component (component: forms-flow-analytics)
+
 ## 4.0.0 - 2021-06-11
 
 `Added`

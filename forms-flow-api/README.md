@@ -60,7 +60,7 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_WEB_CLIENT_ID`|Client ID for formsflow to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
 `CAMUNDA_API_URL`:triangular_flag_on_post:|Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
-`FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for whitelisting multiple origins you can separate host address using a comma seperated string or use * to allow all origins  |eg:`host1, host2, host3`| `*`
+`FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
 `FORMSFLOW_API_ANALYTICS_DB_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
 `FORMSFLOW_API_ANALYTICS_DB_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
 `FORMSFLOW_API_ANALYTICS_DB_NAME`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`

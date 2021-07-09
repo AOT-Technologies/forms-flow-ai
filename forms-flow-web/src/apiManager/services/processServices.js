@@ -150,12 +150,14 @@ export const getProcessActivities = (process_instance_id, ...rest) => {
           dispatch(setProcessActivityData(res.data.childActivityInstances));
           dispatch(setProcessActivityLoadError(false));
         } else {
+          dispatch(setProcessActivityData(null));
           dispatch(setProcessActivityLoadError(true));
         }
         done(null,res.data);
       })
       .catch((error) => {
         done(error);
+        dispatch(setProcessActivityData(null));
         dispatch(setProcessActivityLoadError(true));
       });
   };

@@ -6,7 +6,7 @@ import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
 import Loading from "../../containers/Loading";
 
 import {fetchDiagram, getProcessActivities} from "../../apiManager/services/processServices";
-import {setProcessDiagramLoading, setProcessDiagramXML} from "../../actions/processActions";
+import {setProcessActivityData, setProcessDiagramLoading, setProcessDiagramXML} from "../../actions/processActions";
 import "./bpm.scss"
 //import BpmnJS from 'bpmn-js';
 import usePrevious from "./UsePrevious";
@@ -62,6 +62,9 @@ const ProcessDiagram = React.memo((props)=>{
   useEffect(()=>{
     if(processInstanceId){
       dispatch(getProcessActivities(processInstanceId));
+    }
+    return ()=>{
+      dispatch(setProcessActivityData(null));
     }
   },[processInstanceId,dispatch])
 

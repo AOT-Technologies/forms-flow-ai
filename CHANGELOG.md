@@ -15,6 +15,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 `Modified`
 * Improved the README to document supported version for Keycloak.
+* Updated [usage docs](./USAGE.md) with the latest form and workflow.
 * Modify Websocket implementation to support reconnection in Task Menu. (component: forms-flow-web)
 * Footer modified to display formsflow.ai with version number. (component: forms-flow-web)
 

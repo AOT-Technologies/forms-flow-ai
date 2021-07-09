@@ -172,18 +172,19 @@ export const fetchDiagram = (process_key, ...rest) => {
       true
     )
     .then((res) => {
-      if (res.data) {
+      if (res.data && res.data.bpmn20Xml) {
         dispatch(setProcessDiagramXML(res.data.bpmn20Xml));
         // console.log('res.data.bpmn20Xml>>',res.data.bpmn20Xml);
       } else {
-        //TODO
+        dispatch(setProcessDiagramXML(""));
       }
       dispatch(setProcessDiagramLoading(false));
       done(null,res.data);
     })
     .catch((error) => {
-        done(error);
+        dispatch(setProcessDiagramXML(""));
         dispatch(setProcessDiagramLoading(false));
+        done(error);
       });
   };
 };

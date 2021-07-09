@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {Row, Tab, Tabs} from "react-bootstrap";
 import TaskHeader from "./TaskHeader";
 import {setBPMTaskDetailLoader, setSelectedTaskID} from "../../../actions/bpmTaskActions";
@@ -35,6 +35,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const dispatch= useDispatch();
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
+  const [processKey, setProcessKey]= useState('');
+  const [processInstanceId, setProcessInstanceId]=useState('');
 
  useEffect(()=>{
     if(taskId){
@@ -53,6 +55,19 @@ const ServiceFlowTaskDetails = React.memo(() => {
       dispatch(resetSubmission('submission'));
     }
   },[bpmTaskId, dispatch]);
+
+  useEffect(()=>{
+    if(processList.length && task?.processDefinitionId){
+      const pKey=getProcessDataFromList(processList, task?.processDefinitionId,'key');
+      setProcessKey(pKey);
+    }
+  },[processList,task?.processDefinitionId]);
+
+  useEffect(()=>{
+    if(task?.processInstanceId){
+     setProcessInstanceId(task?.processInstanceId)
+    }
+  },[task?.processInstanceId]);
 
   const getFormSubmissionData = useCallback((formUrl)=>{
       const {formId,submissionId} =getFormIdSubmissionIdFromURL(formUrl);
@@ -158,8 +173,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
          <Tab eventKey="diagram" title="Diagram">
            <div>
              <ProcessDiagram
-               process_key={getProcessDataFromList(processList, task?.processDefinitionId,'key')}
-               processInstanceId={task?.processInstanceId||''}
+               process_key={processKey}
+               processInstanceId={processInstanceId}
                // markers={processActivityList}
              />
            </div>

@@ -31,11 +31,11 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
 
     @app.after_request
     def cors_origin(response):
-        white_origin = CORS_ORIGINS
-        if white_origin == "*":
+        allowed_origins = CORS_ORIGINS
+        if allowed_origins == "*":
             response.headers["Access-Control-Allow-Origin"] = "*"
         else:
-            for url in white_origin:
+            for url in allowed_origins:
                 if request.headers.get("Origin"):
                     response.headers["Access-Control-Allow-Origin"] = request.headers[
                         "Origin"

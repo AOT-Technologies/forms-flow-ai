@@ -24,7 +24,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
  **forms-flow-bpm**
  
  `Added`
-* Added new workflows - `One-Step Approval Process` and `Two-Step Approval process`.
+* Added new workflows - `One-Step Approval Process` and `Two-Step Approval Process`.
 
  **forms-flow-web**
  

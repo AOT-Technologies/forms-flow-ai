@@ -24,7 +24,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import {Route} from "react-router-dom";
 import {push} from "connected-react-router";
 
-const ServiceFlow = React.memo(() => {
+export default React.memo(() => {
   const dispatch= useDispatch();
   const filterList = useSelector(state=> state.bpmTasks.filterList);
   const isFilterLoading = useSelector(state=> state.bpmTasks.isFilterLoading);
@@ -126,6 +126,4 @@ const ServiceFlow = React.memo(() => {
       </Row>
     </Container>
   )
-})
-
-export default ServiceFlow;
+});

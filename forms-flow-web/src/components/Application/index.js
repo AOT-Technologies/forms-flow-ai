@@ -6,7 +6,7 @@ import ViewApplication from './ViewApplication';
 import './Application.scss';
 import { setCurrentPage } from '../../actions/bpmActions';
 
-const Application = React.memo(() => {
+export default React.memo(() => {
   const showApplications= useSelector((state) => state.user.showApplications);
   const dispatch= useDispatch();
 
@@ -24,6 +24,4 @@ const Application = React.memo(() => {
       </Switch>
     </div>
   )
-})
-
-export default Application;
+});

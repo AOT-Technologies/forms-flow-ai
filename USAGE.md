@@ -54,7 +54,7 @@ In the following document, we’ll describe the step by step instructions to set
 
 > The following instructions are using an example form from the form.io - `Freedom of Information and Protection of Privacy`. 
 
-* The usage instructions mention the end to end flow of a form is explained for Employee Feedback Form.
+* The usage instructions mention the end to end flow of a form is explained for Freedom of Information and Protection of Privacy.
 
 ### [STEP 1](#) Designer Task
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
@@ -133,7 +133,7 @@ In the following document, we’ll describe the step by step instructions to set
 
 ![Image 21](https://user-images.githubusercontent.com/83584866/124599112-f015b000-de82-11eb-87ff-89ac9fb95d24.PNG)
 ![Image 24](https://user-images.githubusercontent.com/83584866/124599317-2a7f4d00-de83-11eb-8bc1-5215bb9add03.PNG)
-![Image 25](https://user-images.githubusercontent.com/83584866/124599412-45ea5800-de83-11eb-8b8b-ae87ad2172d3.PNG)
+![Image 68](https://user-images.githubusercontent.com/83584866/125240030-2a5dd200-e307-11eb-8ed4-ab46fe647534.PNG)
 ![Image 26](https://user-images.githubusercontent.com/83584866/124599471-54387400-de83-11eb-8e53-ba9319748d2f.PNG)
 
 * Reviewer action is completed.
@@ -221,7 +221,14 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 * On claiming the task, the Clerk can fill the form and submit his/her review with feedback.
 * Return option will send the form back to the client for an edit and resubmission.
 ![Image 21](https://user-images.githubusercontent.com/83584866/124566523-c0ee4700-de60-11eb-8d27-7b46f0a856e7.PNG)
-![Image 48](https://user-images.githubusercontent.com/83584866/124577274-bb95fa00-de6a-11eb-882f-2bcf8aeb3f0a.PNG)
+![Image 22](https://user-images.githubusercontent.com/83584866/125240658-03ec6680-e308-11eb-9655-153817406389.PNG)
+
+* On returning, the form application status change from New to Resubmit with an edit option  
+![Image 23](https://user-images.githubusercontent.com/83584866/125245993-db1b9f80-e30e-11eb-9d98-b2ed0f868d27.PNG)
+* Login as client and resubmit the form, then status change to resubmitted.
+![Image 36](https://user-images.githubusercontent.com/83584866/125246415-61d07c80-e30f-11eb-961a-86f0bc76c81a.PNG)
+* Login as clerk and claim the task. Submit his/her review with feedback. Then the status change to reviewed.
+![Image 52](https://user-images.githubusercontent.com/83584866/125248187-6a29b700-e311-11eb-9d99-a9520c1f7c4b.PNG)
 
 * This action is completed, you can now Log out and go to [STEP 4](#) if you have an approver user review mentioned in your workflow.
 
@@ -257,8 +264,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![Image 63](https://user-images.githubusercontent.com/83584866/124576519-02cfbb00-de6a-11eb-8111-8e89236186e3.PNG)
 ![Image 64](https://user-images.githubusercontent.com/83584866/124576585-124f0400-de6a-11eb-98dc-b46b626c2a8c.PNG)
 
-* On claiming the task, the Approver can fill the form and submit his/her review with feedback.
-* Return option will send the form back to the client for an edit and resubmission.
+* On claiming the task, the Approver can fill the form and submit his/her review(approved/rejected/returned) with feedback.
 ![Image 65](https://user-images.githubusercontent.com/83584866/124576691-2c88e200-de6a-11eb-88ad-f73496b6e265.PNG)
 ![Image 66](https://user-images.githubusercontent.com/83584866/124576734-3874a400-de6a-11eb-8396-13c31986b0f2.PNG)
 

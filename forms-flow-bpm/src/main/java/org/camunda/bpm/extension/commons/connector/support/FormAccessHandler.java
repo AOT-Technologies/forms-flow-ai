@@ -4,7 +4,12 @@ package org.camunda.bpm.extension.commons.connector.support;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.runtime.VariableInstance;
-import org.springframework.http.*;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -21,6 +26,8 @@ import java.util.logging.Logger;
 public class FormAccessHandler extends FormTokenAccessHandler implements IAccessHandler {
 
     private final Logger LOGGER = Logger.getLogger(FormAccessHandler.class.getName());
+
+
 
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
         String accessToken = getToken();
@@ -54,7 +61,7 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
     }
 
     private String getToken() {
-        VariableInstance accessToken = ProcessEngines.getDefaultProcessEngine().getRuntimeService().createVariableInstanceQuery().variableName("formio_access_token").singleResult();
+        VariableInstance accessToken = ProcessEngines.getDefaultProcessEngine().getRuntimeService().createVariableInstanceQuery().variableName(getTokenName()).singleResult();
         if(accessToken != null) {
             return String.valueOf(accessToken.getValue());
         }
@@ -63,4 +70,7 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
     }
 
 
+    private String getTokenName() {
+        return "formio_access_token";
+    }
 }

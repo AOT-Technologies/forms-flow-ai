@@ -224,6 +224,12 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![Image 22](https://user-images.githubusercontent.com/83584866/125240658-03ec6680-e308-11eb-9655-153817406389.PNG)
 
 * On returning the form application status change from New to Resubmit with an edit option  
+![Image 23](https://user-images.githubusercontent.com/83584866/125245993-db1b9f80-e30e-11eb-9d98-b2ed0f868d27.PNG)
+* The client can resubmit the form and status change to resubmitted.
+![Image 36](https://user-images.githubusercontent.com/83584866/125246415-61d07c80-e30f-11eb-961a-86f0bc76c81a.PNG)
+* The clerk can claim the task and submit his/her review with feedback.
+![Image 52](https://user-images.githubusercontent.com/83584866/125248187-6a29b700-e311-11eb-9d99-a9520c1f7c4b.PNG)
+
 * This action is completed, you can now Log out and go to [STEP 4](#) if you have an approver user review mentioned in your workflow.
 
 ### [STEP 4](#) Reviewer Tasks (Approver)

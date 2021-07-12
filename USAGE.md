@@ -223,6 +223,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![Image 21](https://user-images.githubusercontent.com/83584866/124566523-c0ee4700-de60-11eb-8d27-7b46f0a856e7.PNG)
 ![Image 22](https://user-images.githubusercontent.com/83584866/125240658-03ec6680-e308-11eb-9655-153817406389.PNG)
 
+* On returning the form application status change from New to Resubmit with an edit option  
 * This action is completed, you can now Log out and go to [STEP 4](#) if you have an approver user review mentioned in your workflow.
 
 ### [STEP 4](#) Reviewer Tasks (Approver)

@@ -4,8 +4,6 @@ package org.camunda.bpm.extension.commons.connector.support;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.runtime.VariableInstance;
-import org.camunda.bpm.extension.commons.utils.InMemoryCache;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpEntity;
@@ -29,8 +27,7 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
 
     private final Logger LOGGER = Logger.getLogger(FormAccessHandler.class.getName());
 
-    @Autowired
-    private InMemoryCache inMemoryCache;
+
 
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
         String accessToken = getToken();
@@ -64,12 +61,9 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
     }
 
     private String getToken() {
-        Object executionId = inMemoryCache.get(getTokenName());
-        if(executionId != null) {
-            VariableInstance accessToken = ProcessEngines.getDefaultProcessEngine().getRuntimeService().createVariableInstanceQuery().variableName(getTokenName()).executionIdIn(executionId.toString()).singleResult();
-            if (accessToken != null) {
-                return String.valueOf(accessToken.getValue());
-            }
+        VariableInstance accessToken = ProcessEngines.getDefaultProcessEngine().getRuntimeService().createVariableInstanceQuery().variableName(getTokenName()).singleResult();
+        if(accessToken != null) {
+            return String.valueOf(accessToken.getValue());
         }
         LOGGER.info("Unable to extract token from variable context. Generating new JWT token.");
         return getAccessToken();

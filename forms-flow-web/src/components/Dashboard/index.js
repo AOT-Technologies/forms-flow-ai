@@ -2,8 +2,6 @@ import React from "react";
 import Dashboard from "./Dashboard";
 import "./dashboard.scss";
 
-const DashboardPage = React.memo(() => {
+export default React.memo(() => {
   return <Dashboard />;
 });
-
-export default DashboardPage;

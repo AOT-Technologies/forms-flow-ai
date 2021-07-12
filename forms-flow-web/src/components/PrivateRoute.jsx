@@ -1,19 +1,19 @@
-import React, {useEffect} from "react";
+import React, {useEffect, Suspense, lazy} from "react";
 import { Route, Switch, Redirect} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import UserService from "../services/UserService";
-import Form from "./Form";
-// import Task from "./Task";
-import ServiceFlow from "./ServiceFlow"
 import { setUserAuth } from "../actions/bpmActions";
 import {CLIENT, STAFF_REVIEWER} from "../constants/constants";
+
 import Loading from "../containers/Loading";
-import DashboardPage from "./Dashboard";
-import InsightsPage from "./Insights";
-import Application from "./Application";
-//import 'semantic-ui-css/semantic.min.css';
 import NotFound from "./NotFound";
+
+const Form = lazy(() => import('./Form'));
+const ServiceFlow = lazy(() =>import('./ServiceFlow'));
+const DashboardPage= lazy(() =>import("./Dashboard"));
+const InsightsPage = lazy(() =>import("./Insights"));
+const Application = lazy(() =>import("./Application"));
 
 const PrivateRoute = React.memo((props) => {
   const dispatch = useDispatch();
@@ -53,7 +53,7 @@ const PrivateRoute = React.memo((props) => {
   return (
       <>
         {isAuth ? (
-          <>
+          <Suspense fallback={<Loading/>}>
           <Switch>
             <Route path="/form" component={Form} />
             <Route path="/formflow" component={Form} />
@@ -63,11 +63,11 @@ const PrivateRoute = React.memo((props) => {
             <ReviewerRoute path="/insights" component={InsightsPage} />
             <Route exact path="/">
               <Redirect to={userRoles.includes(STAFF_REVIEWER)?'/task':'/form'} />
-            </Route>   
-            <Route path='/404' exact={true} component={NotFound} /> 
+            </Route>
+            <Route path='/404' exact={true} component={NotFound} />
             <Redirect from='*' to='/404' />
-           </Switch>           
-          </>         
+           </Switch>
+           </Suspense>
         ) : (
           <Loading />
         )}

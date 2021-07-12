@@ -54,7 +54,7 @@ In the following document, we’ll describe the step by step instructions to set
 
 > The following instructions are using an example form from the form.io - `Freedom of Information and Protection of Privacy`. 
 
-* The usage instructions mention the end to end flow of a form is explained for Employee Feedback Form.
+* The usage instructions mention the end to end flow of a form is explained for Freedom of Information and Protection of Privacy.
 
 ### [STEP 1](#) Designer Task
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
@@ -133,7 +133,7 @@ In the following document, we’ll describe the step by step instructions to set
 
 ![Image 21](https://user-images.githubusercontent.com/83584866/124599112-f015b000-de82-11eb-87ff-89ac9fb95d24.PNG)
 ![Image 24](https://user-images.githubusercontent.com/83584866/124599317-2a7f4d00-de83-11eb-8bc1-5215bb9add03.PNG)
-![Image 25](https://user-images.githubusercontent.com/83584866/124599412-45ea5800-de83-11eb-8b8b-ae87ad2172d3.PNG)
+![Image 68](https://user-images.githubusercontent.com/83584866/125240030-2a5dd200-e307-11eb-8ed4-ab46fe647534.PNG)
 ![Image 26](https://user-images.githubusercontent.com/83584866/124599471-54387400-de83-11eb-8e53-ba9319748d2f.PNG)
 
 * Reviewer action is completed.

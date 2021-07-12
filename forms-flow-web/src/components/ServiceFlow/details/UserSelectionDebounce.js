@@ -4,7 +4,12 @@ import {useDispatch} from "react-redux";
 import {Row, Col} from "react-bootstrap";
 import "./TaskDetail.scss";
 import {fetchUserListWithSearch} from "../../../apiManager/services/bpmTaskServices";
-import {UserSearchFilterTypes} from "../constants/userSearchFilterTypes";
+import {
+  SearchByEmail,
+  SearchByFirstName,
+  SearchByLastName,
+  UserSearchFilterTypes
+} from "../constants/userSearchFilterTypes";
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
@@ -19,7 +24,7 @@ const UserSelectionDebounce = React.memo((props) => {
     }
   });
   const [selectedValue, changeSelectedValue] = useState({value: currentUser, label: currentUser});
-  const [searchTypeOption] = useState(UserSearchFilterTypes[0]);
+  const [searchTypeOption,setSearchTypeOption] = useState(UserSearchFilterTypes[0]);
   const [isSearch, setIsSearch] = useState(false);
 
   const loadOptions = (inputValue = "", callback) => {
@@ -41,15 +46,28 @@ const UserSelectionDebounce = React.memo((props) => {
     }));
   };
 
+  const formatNameLabel=(firstName, lastName, email)=>{
+    switch (searchTypeOption.searchType){
+      case SearchByLastName:
+        return `(${lastName} ${firstName})`
+      case SearchByFirstName:
+        return `(${firstName} ${lastName})`
+      case SearchByEmail:
+        return `(${email})`;
+      default:
+        return '';
+    }
+  };
+
   const formatOptionLabel = ({id, firstName, lastName, email}, {context}) => {
     if (context === "value") {
       return <div className="p-2">{id}</div>;
     } else if (context === "menu") {
       return (
-        <div className="p-2" style={{display: "flex", flexDirection: "column"}}>
+        <div className="p-2 click-element" style={{display: "flex", flexDirection: "column"}}>
           <div>{id}</div>
           <div>
-            {`(${lastName} ${firstName})`}
+            {formatNameLabel(firstName, lastName, email)}
           </div>
         </div>
       );
@@ -86,29 +104,18 @@ const UserSelectionDebounce = React.memo((props) => {
                         title={<i className="fa fa-filter"/>}
                         size="sm"
                         variant="secondary">
-          <Dropdown.Item><Form.Check
-            type="radio"
-            id="sort"
-            label="Search By First Name"
-            checked="true"
-          />
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <Form.Check
+          {UserSearchFilterTypes.map((UserSearchFilterType)=>{
+            return <Dropdown.Item className="click-element" onClick={()=>setSearchTypeOption(UserSearchFilterType)}>
+              <Form.Check
               type="radio"
-              id="sort"
-              label="Search By Last Name"
-              checked="true"
+              id={UserSearchFilterType.searchType}
+              key={UserSearchFilterType.searchType}
+              label={UserSearchFilterType.title}
+              value={UserSearchFilterType.searchType}
+              checked={searchTypeOption.searchType===UserSearchFilterType.searchType}
             />
-          </Dropdown.Item>
-          <Dropdown.Item>
-            <Form.Check
-              type="radio"
-              id="sort"
-              label="Search By Email"
-              checked="true"
-            />
-          </Dropdown.Item>
+            </Dropdown.Item>
+          })}
         </DropdownButton>
       </Col>
     </Row>

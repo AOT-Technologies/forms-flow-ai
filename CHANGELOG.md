@@ -1,6 +1,60 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
+## 4.0.1 - 2021-07-12
+
+**forms-flow-api**
+
+`Added`
+
+* Support for allowing CORS with multiple comma-separated origins.
+* Added authorization on the application details page based on user roles.
+
+`Fixed`
+
+* Fix application details API not displaying values to client users.
+* Fixed the issue of not creating applications when called from the BPM side with process-instance-id.
+
+ **forms-flow-forms**
+ 
+ `Added`
+ 
+* Added new forms- `Create New Business License Application` and `Freedom of Information and Protection of Privacy`.
+
+ **forms-flow-bpm**
+ 
+ `Added`
+* Added new workflows - `One-Step Approval Process` and `Two-Step Approval Process`.
+
+ **forms-flow-web**
+ 
+ `Added`
+* Show/hide Application Menu based on keycloak group.
+* Show/hide View Submissions button in form webpage based on keycloak group.
+* Add 404 page.
+
+`Modified`
+* Modify WebSocket implementation to support reconnection in Task Menu.
+* Footer modified to display formsflow.ai with the version number.
+
+`Fixed`
+* Resolve Last Modified column in client Application page is not working. 
+* Fix Application search icons breaking. 
+* Resolve Mime type issue in the webpage. 
+
+**forms-flow-analytics**
+
+`Fixed`
+* Fixed the failing installation of analytics component .
+
+**Generic Changes**
+* Improved the README to document supported version for Keycloak.
+* Updated [usage docs](./USAGE.md) with the latest form and workflow.
+* v1.0.7 release for `camunda-formio-tasklist-vue`,a Vue.js based package for easy integration of formsflow.ai to existing projects. To know more details checkout [formsflow-ai-extension repository](https://github.com/AOT-Technologies/forms-flow-ai-extensions/tree/master/camunda-formio-tasklist-vue) 
+
+`Known Issues`
+* Consoles related to http://localhost:3001/current Api Failing. The console messages can be ignored. Please refer to [Issue-#106](https://github.com/AOT-Technologies/forms-flow-ai/issues/106) for more details.
+
 ## 4.0.0 - 2021-06-11
 
 `Added`

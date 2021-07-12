@@ -61,7 +61,7 @@ const ServiceFlowTaskList = React.memo(() => {
             >
               <Row>
                 <div className="col-12">
-                  <h5>{task.name}</h5>
+                  <h5 className="font-weight-bold">{task.name}</h5>
                 </div>
               </Row>
               <Row className="task-row-2">

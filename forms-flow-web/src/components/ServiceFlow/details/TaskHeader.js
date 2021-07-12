@@ -152,8 +152,8 @@ const TaskHeader = React.memo(() => {
       <Row className="ml-0" >
       <span data-title="Application Id" className="application-id"> Application ID# {task?.applicationId}</span>
       </Row>
-      <Row className="actionable">
-        <Col data-title={followUpDate?getFormattedDateAndTime(followUpDate):'Set FollowUp Date'} className='date-container'>
+      <Row className="actionable mb-4">
+        <Col sm={followUpDate?2:"auto"} data-title={followUpDate?getFormattedDateAndTime(followUpDate):'Set FollowUp Date'} className='date-container'>
           <DatePicker
             selected={followUpDate}
             onChange={onFollowUpDateUpdate}
@@ -174,7 +174,7 @@ const TaskHeader = React.memo(() => {
             customInput={<FollowUpDateInput/>}
           />
         </Col>
-        <Col data-title={dueDate?getFormattedDateAndTime(dueDate):'Set Due Date'} className='date-container'>
+        <Col sm={dueDate?2:"auto"} data-title={dueDate?getFormattedDateAndTime(dueDate):'Set Due Date'} className='date-container'>
           <DatePicker
             selected={dueDate}
             onChange={onDueDateUpdate}
@@ -196,9 +196,9 @@ const TaskHeader = React.memo(() => {
             customInput={<DueDateInput/>}
           />
         </Col>
-        <Col className="center-position" onClick={()=>setModal(true)} dat-title={"groups"}>
+        <Col className="center-position" sm={4} onClick={()=>setModal(true)} dat-title={"groups"}>
           <i className="fa fa-group mr-1"/>
-          { taskGroups.length === 0? <span>Add groups</span>:<span>{getGroups(taskGroups)}</span>}
+          { taskGroups.length === 0? <span>Add groups</span>:<span className="group-align">{getGroups(taskGroups)}</span>}
         </Col>
         <Col className="right-side">
           {isEditAssignee?(task?.assignee? <span>

@@ -113,7 +113,7 @@ const List = React.memo((props)=> {
               to="/formflow/create"
               className="btn btn-primary btn-right btn-sm"
             >
-              <img src="/webfonts/fa_plus.svg" alt="back"/>Create Form
+              <i className="fa fa-plus fa-lg" /> Create Form
             </Link>
           )}
         </div>

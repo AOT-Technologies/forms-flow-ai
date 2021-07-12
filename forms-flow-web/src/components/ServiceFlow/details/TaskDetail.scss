@@ -17,4 +17,14 @@
   border-radius: 0 !important;
   border: 1px solid rgb(184, 184, 184) !important;
 }
-
+.group-align{
+display:-webkit-box;
+-webkit-line-clamp: 3;
+-webkit-box-orient: vertical;
+overflow: hidden;
+text-overflow: ellipsis;
+word-break: break-all;
+}
+.word-break{
+  word-break: break-all;
+}

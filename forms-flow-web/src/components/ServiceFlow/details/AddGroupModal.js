@@ -70,7 +70,7 @@ const AddGroupModal= React.memo((props)=> {
                       {groups.map((group,index)=>
                         <div className="mt-1" key={index}>
                           <i className="fa fa-times mr-2 click-element text-blue" onClick={()=>onDeleteGroup(group)}/>
-                          <span>{group.groupId}</span>
+                          <span className="word-break">{group.groupId}</span>
                         </div>
                       )}
                   </Col>:null}

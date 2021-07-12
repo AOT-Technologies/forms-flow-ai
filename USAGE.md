@@ -221,7 +221,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 * On claiming the task, the Clerk can fill the form and submit his/her review with feedback.
 * Return option will send the form back to the client for an edit and resubmission.
 ![Image 21](https://user-images.githubusercontent.com/83584866/124566523-c0ee4700-de60-11eb-8d27-7b46f0a856e7.PNG)
-![Image 48](https://user-images.githubusercontent.com/83584866/124577274-bb95fa00-de6a-11eb-882f-2bcf8aeb3f0a.PNG)
+![Image 22](https://user-images.githubusercontent.com/83584866/125240658-03ec6680-e308-11eb-9655-153817406389.PNG)
 
 * This action is completed, you can now Log out and go to [STEP 4](#) if you have an approver user review mentioned in your workflow.
 

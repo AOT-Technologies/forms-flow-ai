@@ -264,8 +264,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![Image 63](https://user-images.githubusercontent.com/83584866/124576519-02cfbb00-de6a-11eb-8111-8e89236186e3.PNG)
 ![Image 64](https://user-images.githubusercontent.com/83584866/124576585-124f0400-de6a-11eb-98dc-b46b626c2a8c.PNG)
 
-* On claiming the task, the Approver can fill the form and submit his/her review with feedback.
-* Return option will send the form back to the client for an edit and resubmission.
+* On claiming the task, the Approver can fill the form and submit his/her review(approved/rejected/returned) with feedback.
 ![Image 65](https://user-images.githubusercontent.com/83584866/124576691-2c88e200-de6a-11eb-88ad-f73496b6e265.PNG)
 ![Image 66](https://user-images.githubusercontent.com/83584866/124576734-3874a400-de6a-11eb-8396-13c31986b0f2.PNG)
 

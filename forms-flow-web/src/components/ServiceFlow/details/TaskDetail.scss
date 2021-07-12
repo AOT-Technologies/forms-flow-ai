@@ -28,3 +28,8 @@ word-break: break-all;
 .word-break{
   word-break: break-all;
 }
+.modal-scroll{
+  max-height: 200px;
+  min-height: 200px;
+  overflow-y: auto;
+}

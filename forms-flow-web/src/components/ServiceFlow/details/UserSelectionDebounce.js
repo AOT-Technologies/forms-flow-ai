@@ -81,7 +81,7 @@ const UserSelectionDebounce = React.memo((props) => {
           formatOptionLabel={formatOptionLabel}
         />
       </Col>
-      <Col sm={2}>
+      <Col sm={2} className="p-0">
         <DropdownButton id="dropdown-basic-button"
                         title={<i className="fa fa-filter"/>}
                         size="sm"

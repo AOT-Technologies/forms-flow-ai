@@ -152,8 +152,8 @@ const TaskHeader = React.memo(() => {
       <Row className="ml-0" >
       <span data-title="Application Id" className="application-id"> Application ID# {task?.applicationId}</span>
       </Row>
-      <Row className="actionable">
-        <Col sm={"auto"} data-title={followUpDate?getFormattedDateAndTime(followUpDate):'Set FollowUp Date'} className='date-container'>
+      <Row className="actionable mb-4">
+        <Col sm={followUpDate?2:"auto"} data-title={followUpDate?getFormattedDateAndTime(followUpDate):'Set FollowUp Date'} className='date-container'>
           <DatePicker
             selected={followUpDate}
             onChange={onFollowUpDateUpdate}
@@ -174,7 +174,7 @@ const TaskHeader = React.memo(() => {
             customInput={<FollowUpDateInput/>}
           />
         </Col>
-        <Col sm={"auto"} data-title={dueDate?getFormattedDateAndTime(dueDate):'Set Due Date'} className='date-container'>
+        <Col sm={dueDate?2:"auto"} data-title={dueDate?getFormattedDateAndTime(dueDate):'Set Due Date'} className='date-container'>
           <DatePicker
             selected={dueDate}
             onChange={onDueDateUpdate}

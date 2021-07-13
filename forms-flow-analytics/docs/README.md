@@ -1,5 +1,8 @@
 # forms-flow-analytics Usage Documentation
 
+1. [How to use forms-flow-analytics](#how-to-use-forms-flow-analytics)
+2. [Sample Queries](#sample-queries)
+
 ## How to use forms-flow-analytics?
 
 

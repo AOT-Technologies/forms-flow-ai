@@ -19,7 +19,7 @@ from api.schemas.application import (
 from api.services import ApplicationService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
-from api.utils.constants import CORS_ORIGINS, REVIEWER_GROUP
+from api.utils.constants import REVIEWER_GROUP
 
 
 API = Namespace("Application", description="Application")

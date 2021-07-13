@@ -1,7 +1,7 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
-## 4.0.1 - 2021-07-12
+## 4.0.1 - 2021-07-13
 
 **forms-flow-api**
 
@@ -25,6 +25,15 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
  
  `Added`
 * Added new workflows - `One-Step Approval Process` and `Two-Step Approval Process`.
+
+`Fixed`
+* Fix done for authentication issue with Keycloak in the Keycloak configuration.
+* Fix done for single result query fetching multiple record's during formio REST call.
+
+`Modified`
+* formio token generation cycle reduced from 24 hours to 3.50 Hours.
+* Modified checked exception's on Listener services to Runtime exception.
+* Modified application logging package to Camunda base package level.
 
  **forms-flow-web**
  

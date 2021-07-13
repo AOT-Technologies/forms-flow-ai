@@ -15,7 +15,7 @@ from .form_process_mapper import API as FORM_API
 from .process import API as PROCESS_API
 from .sentiment_analysis import API as SENTIMENT_API
 from .task import API as TASK_API
-from api.utils.constants import CORS_ORIGINS
+from api.utils.constants import ALLOW_ALL_ORIGINS
 
 # from .formiotoken import API as FORMIOTOKEN_API
 # from .tenant import API as TENANT_API
@@ -53,7 +53,7 @@ def handle_business_exception(error: BusinessException):
     return (
         {"message": error.error},
         error.status_code,
-        {"Access-Control-Allow-Origin": CORS_ORIGINS},
+        {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},
     )
 
 
@@ -66,7 +66,7 @@ def handle_auth_error(error: AuthError):
             "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for Authorization or has expired.",
         },
         error.status_code,
-        {"Access-Control-Allow-Origin": CORS_ORIGINS},
+        {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},
     )
 
 

@@ -105,6 +105,8 @@ objects:
               secretKeyRef:
                 key: WEB_API_BASE_URL
                 name: ${FORMIO_SECRET}
+          - name: FORMSFLOW_API_CORS_ORIGINS
+            value: '*'    
           image: ${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           name: ${NAME}
         ports:

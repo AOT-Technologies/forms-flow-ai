@@ -83,7 +83,6 @@ Variable name | Meaning | Possible values | Default value |
    The application should be up and available for use at port defaulted to 7000 in  http://localhost:7000/
     and register with any valid credentials.
     
-    Check our guide on [how to configure Redash and come up with awesome visualization using redash]().
     
 ### Configuration of Keycloak SAML Setup
     
@@ -105,3 +104,6 @@ Variable name | Meaning | Possible values | Default value |
       * Go to Account Section
       * Copy API Key to Clipboard
  
+### Redash how to use guide 
+
+Check our guide on [how to configure Redash and come up with awesome visualization using redash](./docs/README.md). Also [sample queries for default forms](./docs/sample_queries.md).

@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.commons.connector.support;
 
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.runtime.VariableInstance;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -35,6 +37,15 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
             LOGGER.info("Access token is blank. Cannot invoke service:"+url);
             return null;
         }
+        ResponseEntity<String> response = exchange(url,method,payload,accessToken);
+        if(response.getStatusCodeValue() == getTokenExpireCode()) {
+            exchange(url,method,payload,getAccessToken());
+        }
+        LOGGER.info("Response code for service invocation: " + response.getStatusCode());
+        return response;
+    }
+
+    public ResponseEntity<String> exchange(String url, HttpMethod method, String payload, String accessToken) {
         //HTTP Headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -44,14 +55,16 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
         if(HttpMethod.PATCH.name().equals(method.name())) {
             HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
             RestTemplate restTemplate = new RestTemplate(requestFactory);
-            String  response= restTemplate.patchForObject(getDecoratedServerUrl(url), reqObj, String.class);
+            String response = restTemplate.patchForObject(getDecoratedServerUrl(url), reqObj, String.class);
+            if("Token Expired".equalsIgnoreCase(response)) {
+                return new ResponseEntity<>(response, HttpStatus.valueOf(getTokenExpireCode()));
+            }
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        ResponseEntity<String> wrsp = getRestTemplate().exchange(getDecoratedServerUrl(url), method, reqObj, String.class);
-        LOGGER.info("Response code for service invocation: " + wrsp.getStatusCode());
-
-        return wrsp;
+        return getRestTemplate().exchange(getDecoratedServerUrl(url), method, reqObj, String.class);
     }
+
+
 
     private String getDecoratedServerUrl(String url) {
         if(StringUtils.contains(url,"/form/")) {
@@ -61,16 +74,15 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
     }
 
     private String getToken() {
-        VariableInstance accessToken = ProcessEngines.getDefaultProcessEngine().getRuntimeService().createVariableInstanceQuery().variableName(getTokenName()).singleResult();
-        if(accessToken != null) {
-            return String.valueOf(accessToken.getValue());
+        List<VariableInstance> accessTokens = ProcessEngines.getDefaultProcessEngine().getRuntimeService().createVariableInstanceQuery().variableName("formio_access_token").orderByActivityInstanceId().desc().list();
+        if(CollectionUtils.isNotEmpty(accessTokens)) {
+            return String.valueOf(accessTokens.get(0).getValue());
         }
         LOGGER.info("Unable to extract token from variable context. Generating new JWT token.");
         return getAccessToken();
     }
 
+    private String getTokenName() { return "formio_access_token"; }
 
-    private String getTokenName() {
-        return "formio_access_token";
-    }
+    private int getTokenExpireCode() {return 440;}
 }

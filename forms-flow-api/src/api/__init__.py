@@ -8,8 +8,12 @@ from . import config, models
 from .models import db, ma, mongo
 from .resources import API
 from api.utils.auth import jwt
+from api.utils.constants import (
+    CORS_ORIGINS,
+    ALLOW_ALL_ORIGINS,
+    FORMSFLOW_API_CORS_ORIGINS,
+)
 from api.utils.logging import setup_logging
-from api.utils.constants import CORS_ORIGINS
 
 
 setup_logging(
@@ -31,11 +35,10 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
 
     @app.after_request
     def cors_origin(response):
-        allowed_origins = CORS_ORIGINS
-        if allowed_origins == "*":
-            response.headers["Access-Control-Allow-Origin"] = "*"
+        if FORMSFLOW_API_CORS_ORIGINS == ALLOW_ALL_ORIGINS:
+            response.headers["Access-Control-Allow-Origin"] = ALLOW_ALL_ORIGINS
         else:
-            for url in allowed_origins:
+            for url in (allowed_origins := CORS_ORIGINS):
                 if request.headers.get("Origin"):
                     response.headers["Access-Control-Allow-Origin"] = request.headers[
                         "Origin"

@@ -34,7 +34,7 @@ In the following document, we’ll describe the step by step instructions to set
    * After the workflow association is completed click on the **Next Button** to preview and confirm.
    * You can click on the **EDIT Button** and select `publish the form for clients` to send it for client usage.
    * Click on **SAVE Button** to complete the design part.
-   * Form designing is successfully completed, you can now **Log out** and go to [STEP 2](#client-steps) 
+   * Form designing is successfully completed, you can now **Log out** and go to [Client Steps](#client-steps) 
    
 ### Client Steps
 
@@ -43,7 +43,7 @@ In the following document, we’ll describe the step by step instructions to set
    * Click on **Submit New Button** to fill a form and submit it.
    * Fill in the details and submit the form, You can repeat this action as per your requirement.
    * If you had associated a workflow with the form then the workflow will be started.
-   * This action is completed, you can now Log out and go to [STEP 3](#reviewer-steps) if you have a user review mentioned in your workflow.
+   * This action is completed, you can now Log out and go to [Reviewer Steps](#reviewer-steps) if you have a user review mentioned in your workflow.
    
 ### Reviewer Steps
 
@@ -59,14 +59,12 @@ In the following document, we’ll describe the step by step instructions to set
      * You can navigate to the **Metrics** tab to see an overview of the total form submissions and associated application status to indicate which stage of workflow it is now.
      * You can navigate to the **Insights** tab to see a wonderful dashboard created in the formsflow.ai analytics server.
    * Reviewer action is completed.
-> Clerk & Approver are part of the main group Reviewer, so the steps are similar to STEP 3.
+> Clerk & Approver are part of the main group Reviewer, so the steps are similar to Reviewer Steps.
 ## Usage Instructions with examples
 
 ## Freedom of Information and Protection of Privacy
 
-> The following instructions are using an example form from the form.io - `Freedom of Information and Protection of Privacy`. 
-
-* The usage instructions mention the end-to-end flow of a form is explained for Freedom of Information and Protection of Privacy.
+> The following instructions are using an example from the form.io - `Freedom of Information and Protection of Privacy`. 
 
 ### Designer  Steps
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for the designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
@@ -74,9 +72,8 @@ In the following document, we’ll describe the step by step instructions to set
 
 ![image](https://user-images.githubusercontent.com/83489861/124453516-1107d380-dda5-11eb-9dba-2742cabc8582.png)
 
-* To create a new form click on **Create Form Button**. You can use the Drag-and-drop forms-builder with rich UI components to create a form with ease.
-> Freedom of Information and Protection of Privacy form is already created, so we are skipping the step of creating Form.
-* You can modify the form by clicking on the **View/Edit Form** button and you can edit the form design by clicking the **Edit Form** button or continue by moving the **Next** button if the form design is completed to move to the stage associating workflow to the form.
+* Select the `Freedom of Information and Protection of Privacy` form by clicking on it.
+* You can modify the form by clicking on the **View/Edit Form** button or continue by clicking the **Next** button.
 
 ![image](https://user-images.githubusercontent.com/83489861/124475627-8d0f1500-ddbf-11eb-8ca1-5898bcc7d499.png)
 
@@ -85,13 +82,13 @@ In the following document, we’ll describe the step by step instructions to set
 ![image](https://user-images.githubusercontent.com/83489861/124475762-b6c83c00-ddbf-11eb-9911-41e55e2a9b9d.png)
 
 * After the associate workflow is completed click on the **Next Button** to Preview and Confirm.
-* You can click on the **EDIT Button** and publish the form for clients to send it for client usage.
+* You can click on the **EDIT Button** and publish the form for clients.
 
 ![image](https://user-images.githubusercontent.com/83489861/124475827-cba4cf80-ddbf-11eb-8b07-f8c2b23c25eb.png)
 
 * Click on **SAVE Button** to completed designing a form.
 
-* Form designing is successfully completed, you can now Log out and go to [STEP 2](#client--steps)
+* Form designing is successfully completed, you can now Log out and go to [Client Steps](#client--steps)
 
 ### Client  Steps
 
@@ -100,13 +97,12 @@ In the following document, we’ll describe the step by step instructions to set
 
 ![image](https://user-images.githubusercontent.com/83489861/124476700-c72ce680-ddc0-11eb-9dba-31adf9d63a5e.png)
 
-* Click **Submit New Button** on the form which you wanted to submit.
-* The previous action will redirect you to the form, where you can fill in the details and Submit them. Fill in the details and submit the form, You can repeat this action as per your requirement.
+* Click **Submit New Button** on the form to fill and submit it.
 
 ![Image 1](https://user-images.githubusercontent.com/83584866/124597717-6d402580-de81-11eb-9b15-6e84bec7a8b3.PNG)
 
 * If you had associated a workflow with the form, the form will start the workflow.
-* This action is completed, you can now Log out and go to [STEP 3](#reviewer--steps) if you have a user review mentioned in your workflow.
+* This action is completed, you can now Log out and go to [Reviewer Steps](#reviewer--steps) if you have a user review mentioned in your workflow.
    
 ### Reviewer  Steps
 
@@ -123,7 +119,7 @@ In the following document, we’ll describe the step by step instructions to set
 
 ![Image 26](https://user-images.githubusercontent.com/83584866/124598386-2acb1880-de82-11eb-8cb4-fe3249d3de93.PNG)
 
-* You can even print the Form submission as a PDF which can be rendered in a browser
+* You can print the Form as a PDF.
 
 ![Image 6](https://user-images.githubusercontent.com/83584866/124598443-3cacbb80-de82-11eb-8a19-bfe379978864.PNG)
 
@@ -135,7 +131,7 @@ In the following document, we’ll describe the step by step instructions to set
 ![Image 16](https://user-images.githubusercontent.com/83584866/124598662-7a114900-de82-11eb-8653-d370bc3aa7c9.PNG)
 ![Image 17](https://user-images.githubusercontent.com/83584866/124598701-84cbde00-de82-11eb-9773-c84afbbd812c.PNG)
 
-* On claiming the task, the Reviewer can fill the form and submit his review.
+* On claiming the task, the Reviewer can fill the form and submit his/her review.
 
 ![Image 18](https://user-images.githubusercontent.com/83584866/124598773-9b723500-de82-11eb-8070-5551ae2f1398.PNG)
 ![Image 19](https://user-images.githubusercontent.com/83584866/124598911-c3619880-de82-11eb-85a2-f3f5f065ba9c.PNG)
@@ -152,10 +148,7 @@ In the following document, we’ll describe the step by step instructions to set
 
 ## Create New Business License Application
 
-> The following instructions are using an example form from the form.io - `Create New Business License Application`. Before using this form ensure that you have configured the
-`mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
-
-* The usage instructions mention the end-to-end the flow of a form is explained for New Business License Application.
+> The following instructions are using an example form from the form.io - `Create New Business License Application`.
 
 ### Designer   Steps
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for the designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
@@ -163,9 +156,8 @@ In the following document, we’ll describe the step by step instructions to set
 
 ![image](https://user-images.githubusercontent.com/83489861/124479964-69020280-ddc4-11eb-9739-18c44a770f76.png)
 
-* To create a new form click on **Create Form Button**. You can use the Drag-and-drop forms-builder with rich UI components to create a form with ease.
->  The New Business License Application form is already created, so we are skipping the step of creating the Form.
-* You can modify the form by clicking on the **View/Edit Form** button and you can edit the form design by clicking the **Edit Form** button or continue by moving the **Next** button if the form design is completed to move to the stage associating workflow to the form.
+* Select the `New Business License Application` form by clicking on it.
+* You can modify the form by clicking on the **View/Edit Form** button or continue by clicking the **Next** button.
 
 ![image](https://user-images.githubusercontent.com/83489861/124480017-76b78800-ddc4-11eb-9b31-e0b2df759656.png)
 
@@ -174,12 +166,12 @@ In the following document, we’ll describe the step by step instructions to set
 ![image](https://user-images.githubusercontent.com/83489861/124480123-9058cf80-ddc4-11eb-802c-b69bfc796685.png)
 
 * After the associate workflow is completed click on the **Next Button** to Preview and Confirm.
-* You can click on the **EDIT Button** and publish the form for clients to send it for client usage.
+* You can click on the **EDIT Button** and publish the form for clients.
 
 ![image](https://user-images.githubusercontent.com/83489861/124480173-9ea6eb80-ddc4-11eb-9b51-cf7c1ebbdb90.png)
 
 * Click on **SAVE Button** to completed designing a form.
-* Form designing is successfully completed, you can now Log out and go to [STEP 2](#client---steps)
+* Form designing is successfully completed, you can now Log out and go to [Client Steps](#client---steps)
 
 ### Client   Steps
 
@@ -197,7 +189,7 @@ In the following document, we’ll describe the step by step instructions to set
 
   ![Image 3](https://user-images.githubusercontent.com/83584866/124552756-9052e100-de51-11eb-9c92-64f61ee1fa3a.png)
 * If you had associated a workflow with the form, the form will start the workflow.
-* This action is completed, you can now Log out and go to [STEP 3](#clerk-steps) if you have a clerk user review mentioned in your workflow.
+* This action is completed, you can now Log out and go to [Clerk Steps](#clerk-steps).
    
 ### Clerk Steps
 
@@ -215,12 +207,9 @@ In the following document, we’ll describe the step by step instructions to set
 ![Image 17](https://user-images.githubusercontent.com/83584866/124565303-8506b200-de5f-11eb-889b-3710d08d62fa.PNG)
 
 
-* You can even print the Form submission as a PDF which can be rendered in a browser
+* You can print the Form submission as a PDF.
 
 ![Image 7](https://user-images.githubusercontent.com/83584866/124565427-a6679e00-de5f-11eb-9fe4-266ba57ad0c3.PNG)
-
-* Based on the **New Business License Application** form workflow associated, the form is supposed to be sent to an email to configured a valid Gmail account.
-For that ensure you have configured `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
 
 ![Image 42](https://user-images.githubusercontent.com/83584866/124578912-46c3bf80-de6c-11eb-9bc4-03f24150a31d.PNG)
 
@@ -242,7 +231,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 * Log in as a clerk and claim the task. Submit his/her review with feedback. Then the status change to reviewed.
 ![Image 52](https://user-images.githubusercontent.com/83584866/125248187-6a29b700-e311-11eb-9d99-a9520c1f7c4b.PNG)
 
-* This action is completed, you can now Log out and go to [STEP 4](#approver-steps) if you have an approver user review mentioned in your workflow.
+* This action is completed, you can now Log out and go to [Approver Steps](#approver-steps).
 
 ### Approver Steps
 
@@ -260,12 +249,9 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ![Image 56](https://user-images.githubusercontent.com/83584866/124575886-6ad1d180-de69-11eb-9665-b535939f5a9b.PNG)
 
 
-* You can even print the Form submission as a PDF which can be rendered in a browser
+* You can print the Form submission as a PDF.
 
 ![Image 57](https://user-images.githubusercontent.com/83584866/124576102-9e146080-de69-11eb-9157-af43d6a2a245.PNG)
-
-* Based on the **New Business License Application** form workflow associated, the form is supposed to be sent to an email to configured a valid Gmail account.
-For that ensure you have configured `mail.config properties` in forms-flow-bpm as mentioned [here](./forms-flow-bpm/README.md#mail-configuration)
 
 ![Image 60](https://user-images.githubusercontent.com/83584866/124578694-10864000-de6c-11eb-8c90-b644511d9565.PNG)
 

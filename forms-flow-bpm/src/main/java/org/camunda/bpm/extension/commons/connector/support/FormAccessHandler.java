@@ -82,7 +82,6 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
         return getAccessToken();
     }
 
-
     private String getTokenName() { return "formio_access_token"; }
 
     private int getTokenExpireCode() {return 440;}

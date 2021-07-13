@@ -3,6 +3,9 @@ In the following document, we’ll describe the step by step instructions to set
 
 ## Table of Contents
 1. [Usage Instructions](#usage-instructions)
+    * [STEP 1 : Designer Steps](#designer-teps)
+    * [STEP 2 : Client Steps](#client-teps)
+    * [STEP 3 : Reviewer Steps](#reviewer-teps)
 2. [Usage Instructions with examples](#usage-instructions-with-example)
     * [Freedom of Information and Protection of Privacy](#freedom-of-information-and-protection-of-privacy)
     * [Create New Business License Application](#create-new-business-license-application)
@@ -13,36 +16,38 @@ In the following document, we’ll describe the step by step instructions to set
 
 > The following instructions can be followed to use formsflow.ai solution after the successful healthcheck of all formsflow.ai services.
 
-### [STEP 1](#) Designer Task
-   * Log-in to http://localhost:3000 (forms-flow-web) with valid [user credentials for the designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
+### Designer Steps
+
+   * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for the designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
    * After the log in is successful, you will be redirected to http://localhost:3000/form where you can `Create/View/Edit/Delete a form`.
-   * To create a new form click on **Create Form Button**. Now you can use the Drag-and-drop forms-builder with rich UI components to create a form with ease.
-   * Once the form creation is completed click on **Save & Preview Button**, you can modify the form by clicking on **Edit Button** or click on the **Next Button** to proceed further at this point.
-   * At this stage form designing is completed, you can click on the **EDIT Button** and associate a workflow if needed.
-   > Forms and workflows marked as [Internal] should not be used for association from forms flow-web.
+   * To create a form click on **Create Form Button**, you can use the Drag-and-drop forms-builder to create a new form.
+   * Once the form creation is completed click on **Save & Preview Button**, you can also modify the form by clicking on **Edit Button** else click on the **Next Button** to proceed further at this point.
+   * At this stage form designing is completed, you can click on the **EDIT Button** and associate a suitable workflow as per the business requirement.
+   > Workflows that are marked as [Internal] should not be associated with a form.
    * After the workflow association is completed click on the **Next Button** to preview and confirm.
-   * You can click on the **EDIT Button** and publish the form for clients to send it for client usage.
-   * Click on **SAVE Button** to complete designing a form.
-   * Form designing is successfully completed, you can now **Log out** and go to [STEP 2](#) 
+   * You can click on the **EDIT Button** and select `publish the form for clients` to send it for client usage.
+   * Click on **SAVE Button** to complete the design part.
+   * Form designing is successfully completed, you can now **Log out** and go to [STEP 2](#client-steps) 
    
-### [STEP 2](#) Client Task
+### Client Steps
+
    * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for the client](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-   * After the log-in is successful you will be redirected to http://localhost:3000/form where you can `View and Submit a form`.
-   * Click **Submit New Button** on the form which you wanted to submit.
-   * The previous action will redirect you to the form, where you can fill in the details and Submit them.
+   * After the Log in is successful you will be redirected to http://localhost:3000/form where you can `View and Submit a form`.
+   * Click on **Submit New Button** to fill a form and submit it.
    * Fill in the details and submit the form, You can repeat this action as per your requirement.
-   * If you had associated a workflow with the form, the form will start the workflow.
-   * This action is completed, you can now Log out and go to [STEP 3](#) if you have a user review mentioned in your workflow.
+   * If you had associated a workflow with the form then the workflow will be started.
+   * This action is completed, you can now Log out and go to [STEP 3](#reviewer-steps) if you have a user review mentioned in your workflow.
    
-### [STEP 3](#) Reviewer Task
+### Reviewer Steps
+
    * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for the reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-   * After successful login, you will be redirected to http://localhost:3000/task where you can navigate to the `Tasks tab` to see the tasks pending to be reviewed.
-   * You can click on a particular task and review the task accordingly. There is an option to **Filter Tasks** and **sort by Created Date** to easily search for the task you want.
-   * On selecting a particular task there are options to modify **Assignee/ Groups / Due Date / FollowUp Date**.
+   * After successful Log in, you will be redirected to http://localhost:3000/task where you can navigate to the `Tasks tab` to see the tasks pending to be reviewed.
+   * You can click on a task item to review the task and take an action. There are options to **Filter Tasks** and **sort by Created Date** to easily search for the task you want.
+   * On selecting a task item there are options to modify the **Assignee/ Groups / Due Date / FollowUp Date**.
    * Also, you can view the **Form/ History / Diagram**
    * You can navigate to the **Applications tab** to view form submissions.
    * You can view the submissions against a form by clicking on **View Submissions Button**
-   * You can also submit a new form like [STEP 2](#) from the Forms Tab.
+   * You can also submit a new form using [STEP 2](#client-steps) from the Forms Tab.
    * You can navigate to the **Dashboards** tab to see the analytics of our solution
      * You can navigate to the **Metrics** tab to see an overview of the total form submissions and associated application status to indicate which stage of workflow it is now.
      * You can navigate to the **Insights** tab to see a wonderful dashboard created in the formsflow.ai analytics server.
@@ -84,7 +89,7 @@ In the following document, we’ll describe the step by step instructions to set
 ### [STEP 2](#) Client Tasks
 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for the client](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-* After the log-in is successful you will be redirected to http://localhost:3000/form where you can View and Submit a form.
+* After the Log in is successful you will be redirected to http://localhost:3000/form where you can View and Submit a form.
 
 ![image](https://user-images.githubusercontent.com/83489861/124476700-c72ce680-ddc0-11eb-9dba-31adf9d63a5e.png)
 
@@ -99,7 +104,7 @@ In the following document, we’ll describe the step by step instructions to set
 ### [STEP 3](#) Reviewer Tasks
 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for the reviewer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-* After the login is successful you will be redirected to http://localhost:3000/task.
+* After the Log in is successful you will be redirected to http://localhost:3000/task.
 
 ![Image 9](https://user-images.githubusercontent.com/83584866/124597833-92349880-de81-11eb-8d47-6f724627a651.PNG)
 
@@ -147,7 +152,7 @@ In the following document, we’ll describe the step by step instructions to set
 
 ### [STEP 1](#) Designer Task
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for the designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-* After the log-in is successful you will be redirected to http://localhost:3000/form where you can `Create / View / Edit / Delete` a form.
+* After the Log in is successful you will be redirected to http://localhost:3000/form where you can `Create / View / Edit / Delete` a form.
 
 ![image](https://user-images.githubusercontent.com/83489861/124479964-69020280-ddc4-11eb-9739-18c44a770f76.png)
 
@@ -172,7 +177,7 @@ In the following document, we’ll describe the step by step instructions to set
 ### [STEP 2](#) Client Tasks
 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for the client](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-* After the log-in is successful you will be redirected to http://localhost:3000/form where you can View and Submit a form.
+* After the Log in is successful you will be redirected to http://localhost:3000/form where you can View and Submit a form.
 
 ![image](https://user-images.githubusercontent.com/83489861/124480279-b9796000-ddc4-11eb-83c5-894f8b5ea223.png)
 
@@ -190,7 +195,7 @@ In the following document, we’ll describe the step by step instructions to set
 ### [STEP 3](#) Reviewer Tasks (Clerk)
 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for Clerk](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-* After the login is successful you will be redirected to http://localhost:3000/task.
+* After the Log in is successful you will be redirected to http://localhost:3000/task.
 
 ![Image 10](https://user-images.githubusercontent.com/83584866/124553139-ffc8d080-de51-11eb-9476-46b925821b12.PNG)
 
@@ -225,9 +230,9 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 
 * On returning, the form application status change from New to Resubmit with an edit option  
 ![Image 23](https://user-images.githubusercontent.com/83584866/125245993-db1b9f80-e30e-11eb-9d98-b2ed0f868d27.PNG)
-* Login as a client and resubmit the form, then status change to resubmitted.
+* Log in as a client and resubmit the form, then status change to resubmitted.
 ![Image 36](https://user-images.githubusercontent.com/83584866/125246415-61d07c80-e30f-11eb-961a-86f0bc76c81a.PNG)
-* Login as a clerk and claim the task. Submit his/her review with feedback. Then the status change to reviewed.
+* Log in as a clerk and claim the task. Submit his/her review with feedback. Then the status change to reviewed.
 ![Image 52](https://user-images.githubusercontent.com/83584866/125248187-6a29b700-e311-11eb-9d99-a9520c1f7c4b.PNG)
 
 * This action is completed, you can now Log out and go to [STEP 4](#) if you have an approver user review mentioned in your workflow.
@@ -235,7 +240,7 @@ For that ensure you have configured `mail.config properties` in forms-flow-bpm a
 ### [STEP 4](#) Reviewer Tasks (Approver)
 
 * Log in to http://localhost:3000 (forms-flow-web) with valid [default user credentials for Approver](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-* After the login is successful you will be redirected to http://localhost:3000/task.
+* After the Log in is successful you will be redirected to http://localhost:3000/task.
 
 ![Image 54](https://user-images.githubusercontent.com/83584866/124575685-3a8a3300-de69-11eb-92dc-267d84c29cb0.PNG)
 

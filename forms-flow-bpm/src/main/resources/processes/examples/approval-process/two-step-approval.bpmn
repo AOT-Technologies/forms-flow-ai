@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_17ytju0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_17ytju0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
   <bpmn:collaboration id="Collaboration_01drroj">
     <bpmn:participant id="Participant_1tv1lnj" name="Two Step Approval" processRef="two-step-approval" />
   </bpmn:collaboration>
-  <bpmn:process id="two-step-approval" name="Two Step Approval" isExecutable="true">
+  <bpmn:process id="two-step-approval" name="Two Step Approval" isExecutable="true" camunda:versionTag="1">
     <bpmn:laneSet id="LaneSet_1e6v5og">
       <bpmn:lane id="Lane_0t984kw" name="Client/Submitter">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
@@ -115,20 +115,6 @@
           <camunda:script scriptFormat="javascript">task.execution.setVariable('applicationStatus', task.execution.getVariable('action'));
 task.execution.setVariable('deleteReason', "completed");</camunda:script>
         </camunda:taskListener>
-        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.task.NotifyListener" event="create">
-          <camunda:field name="messageId">
-            <camunda:expression>Message_Email</camunda:expression>
-          </camunda:field>
-          <camunda:field name="category">
-            <camunda:expression>assignment_notification</camunda:expression>
-          </camunda:field>
-          <camunda:field name="groupsOnly">
-            <camunda:expression>N</camunda:expression>
-          </camunda:field>
-          <camunda:field name="emailGroups">
-            <camunda:expression>[]</camunda:expression>
-          </camunda:field>
-        </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0xvu6g6</bpmn:incoming>
       <bpmn:incoming>SequenceFlow_07hh4hx</bpmn:incoming>
@@ -139,20 +125,6 @@ task.execution.setVariable('deleteReason', "completed");</camunda:script>
         <camunda:taskListener event="complete">
           <camunda:script scriptFormat="javascript">task.execution.setVariable('applicationStatus', task.execution.getVariable('action'));
 task.execution.setVariable('deleteReason', "completed");</camunda:script>
-        </camunda:taskListener>
-        <camunda:taskListener class="org.camunda.bpm.extension.hooks.listeners.task.NotifyListener" event="create">
-          <camunda:field name="messageId">
-            <camunda:expression>Message_Email</camunda:expression>
-          </camunda:field>
-          <camunda:field name="category">
-            <camunda:expression>assignment_notification</camunda:expression>
-          </camunda:field>
-          <camunda:field name="groupsOnly">
-            <camunda:expression>N</camunda:expression>
-          </camunda:field>
-          <camunda:field name="emailGroups">
-            <camunda:expression>[]</camunda:expression>
-          </camunda:field>
         </camunda:taskListener>
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_0byzagb</bpmn:incoming>

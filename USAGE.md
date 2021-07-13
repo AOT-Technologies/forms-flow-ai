@@ -3,9 +3,9 @@ In the following document, we’ll describe the step by step instructions to set
 
 ## Table of Contents
 1. [Usage Instructions](#usage-instructions)
-    * [STEP 1 : Designer Steps](#designer-steps)
-    * [STEP 2 : Client Steps](#client-steps)
-    * [STEP 3 : Reviewer Steps](#reviewer-steps)
+    * [STEP 1 : Designer Steps](#-designer-steps)
+    * [STEP 2 : Client Steps](#-client-steps)
+    * [STEP 3 : Reviewer Steps](#-reviewer-steps)
 2. [Usage Instructions with examples](#usage-instructions-with-example)
     * [Freedom of Information and Protection of Privacy](#freedom-of-information-and-protection-of-privacy)
         * [STEP 1 : Designer Steps](#designer-steps)

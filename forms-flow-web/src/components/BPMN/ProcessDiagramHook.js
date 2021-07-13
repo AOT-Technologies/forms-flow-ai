@@ -6,10 +6,11 @@ import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
 import Loading from "../../containers/Loading";
 
 import {fetchDiagram, getProcessActivities} from "../../apiManager/services/processServices";
-import {setProcessDiagramLoading} from "../../actions/processActions";
+import {setProcessActivityData, setProcessDiagramLoading, setProcessDiagramXML} from "../../actions/processActions";
 import "./bpm.scss"
 //import BpmnJS from 'bpmn-js';
 import usePrevious from "./UsePrevious";
+import Nodata from "../Nodata";
 
 const ProcessDiagram = React.memo((props)=>{
   const process_key = props.process_key;
@@ -52,11 +53,18 @@ const ProcessDiagram = React.memo((props)=>{
     if(process_key){
       dispatch(fetchDiagram(process_key));
     }
+    return ()=>{
+      dispatch(setProcessDiagramLoading(true));
+      dispatch(setProcessDiagramXML(""));
+    }
   },[process_key,dispatch])
 
   useEffect(()=>{
     if(processInstanceId){
       dispatch(getProcessActivities(processInstanceId));
+    }
+    return ()=>{
+      dispatch(setProcessActivityData(null));
     }
   },[processInstanceId,dispatch])
 
@@ -104,6 +112,13 @@ const ProcessDiagram = React.memo((props)=>{
     return <div className="bpmn-viewer-container">
       <div className="bpm-container">
       <Loading/>
+      </div>
+    </div>
+  }
+  if(diagramXML===""){
+    return <div className="bpmn-viewer-container">
+      <div className="bpm-container">
+        <Nodata text={"No Process Diagram found"} className={"div-no-application-list text-center"}/>
       </div>
     </div>
   }

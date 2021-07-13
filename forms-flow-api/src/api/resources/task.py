@@ -5,13 +5,12 @@ import sys, traceback
 
 from http import HTTPStatus
 
-from flask import jsonify, request
-from flask_restx import Namespace, Resource, cors
+from flask import request
+from flask_restx import Namespace, Resource
 
 from api.services import TaskService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
-from api.utils.constants import CORS_ORIGINS
 
 
 API = Namespace("Task", description="Task")
@@ -23,12 +22,11 @@ class TaskList(Resource):
     """Resource for managing tasks."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """List all tasks."""
         return (
-            jsonify(
+            (
                 {
                     "tasks": TaskService.get_all_tasks(
                         token=request.headers["Authorization"]
@@ -45,12 +43,11 @@ class Task(Resource):
     """Resource for managing tasks."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS)
     @auth.require
     def get(task_id):
         """List specific tasks."""
         return (
-            jsonify(
+            (
                 {
                     "task": TaskService.get_task(
                         task_id=task_id, token=request.headers["Authorization"]
@@ -67,14 +64,13 @@ class TaskClaim(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(task_id):
         """Claim a task."""
         request_json = request.get_json()
         try:
             return (
-                jsonify(
+                (
                     {
                         "tasks": TaskService.claim_task(
                             task_id=task_id,
@@ -122,14 +118,13 @@ class TaskUnClaim(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(task_id):
         """Unclaim a task."""
         request_json = request.get_json()
         try:
             return (
-                jsonify(
+                (
                     {
                         "tasks": TaskService.unclaim_task(
                             task_id=task_id,
@@ -176,14 +171,13 @@ class TaskComplete(Resource):
     """Resource for claim task."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post(task_id):
         """Complete a task."""
         request_json = request.get_json()
         try:
             return (
-                jsonify(
+                (
                     {
                         "tasks": TaskService.complete_task(
                             task_id=task_id,

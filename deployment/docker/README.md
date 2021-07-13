@@ -116,7 +116,7 @@ Start the **analytics server** by following the instructions given [here](../../
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `KEYCLOAK_URL`:triangular_flag_on_post:| URL to your Keycloak server || `http://{your-ip-address}:8080`
-`KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
+`KEYCLOAK_URL_REALM`|The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
 `KEYCLOAK_BPM_CLIENT_ID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
 `KEYCLOAK_BPM_CLIENT_SECRET`:triangular_flag_on_post:|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the 'Get the keycloak client secret' steps from [Here](../../forms-flow-idm/keycloak/README.md#get-the-keycloak-client-secret)
 `KEYCLOAK_WEB_CLIENT_ID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
@@ -163,13 +163,16 @@ Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
 `APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
-`FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for multiple origins you can separate host address using a comma |eg:`host1, host2`| `*`
+`FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
 `CAMUNDA_API_URL` :triangular_flag_on_post: |Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
 `FORMSFLOW_API_ANALYTICS_DB_USERNAME`|Mongo DB Connection username|Used on installation to create the database. Choose your own|`mongo`
 `FORMSFLOW_API_ANALYTICS_DB_PASSWORD`|Mongo DB Connection password|Used on installation to create the database. Choose your own|`changeme`
 `FORMSFLOW_API_ANALYTICS_DB_NAME`|Mongo DB Connection database name|Used on installation to create the database. Choose your own|`analytics`
 `FORMSFLOW_API_ANALYTICS_DB_URL`|Mongo DB Connection URL of formio for sentiment analysis|Used on installation to create the database. Choose your own|`mongodb://mongo:changeme@forms-flow-webapi-analytics-db:27019/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
+`USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
+
+* NOTE - While configuring USER_ACCESS_PERMISSIONS the accessAllowApplications will hide / show application tab, the same way accessAllowSubmissions does for viewSubmission button. To enable this feature you need to add access-allow-applications, access-allow-submissions with the respective user group in keycloak.
 
 ##### CAMUNDA_JDBC : Dedicated camunda database.
 --------------------------------------
@@ -236,13 +239,12 @@ Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resou
   * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
   
 ### Health Check
-  * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
-  * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/
-  * FormIO should be up and available for use at port defaulted to 3001 i.e. http://localhost:3001/
-  * formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/checkpoint
-  * formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
-  
- * Access credentials are mentioned [here](../README.md#verifying-the-installation-status).
+* Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
+* Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/
+* FormIO should be up and available for use at port defaulted to 3001 i.e. http://localhost:3001/
+* formsflow.ai Rest API should be up and available for use at port defaulted to 5000 i.e. http://localhost:5000/checkpoint
+* formsflow.ai web application should be up and available for use at port defaulted to 3000 i.e. http://localhost:3000/
+* Access credentials are mentioned [here](../README.md#verifying-the-installation-status).
 
 ### Usage Instructions
 

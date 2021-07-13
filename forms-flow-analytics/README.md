@@ -34,7 +34,8 @@ your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.
 
    * Make sure you have a Docker machine up and running.
    * Make sure your current working directory is "forms-flow-ai/forms-flow-analytics".
-   * Modify the environment variables inside [redash.env](./redash.env) file if needed. Environment variables are given in the table below
+   * Rename the file [sample.env](./sample.env) to **.env**.
+   * Modify the environment variables inside [.env](./sample.env) file if needed. Environment variables are given in the table below
    * **NOTE : `{your-ip-address}` given inside the [redash.env](./redash.env) file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
 > :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the `redash.env` file
@@ -82,6 +83,7 @@ Variable name | Meaning | Possible values | Default value |
    The application should be up and available for use at port defaulted to 7000 in  http://localhost:7000/
     and register with any valid credentials.
     
+    
 ### Configuration of Keycloak SAML Setup
     
    * Post registration, login to the application with admin credentials.
@@ -102,3 +104,6 @@ Variable name | Meaning | Possible values | Default value |
       * Go to Account Section
       * Copy API Key to Clipboard
  
+### Redash how to use guide 
+
+Check our guide on [how to configure Redash and come up with awesome visualization using redash](./docs/README.md). Also [sample queries for default forms](./docs/sample_queries.md).

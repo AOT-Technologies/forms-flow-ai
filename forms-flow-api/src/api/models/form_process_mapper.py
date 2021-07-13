@@ -135,9 +135,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     def find_form_by_form_id(cls, form_id) -> FormProcessMapper:
         """Find active form process mapper that matches the provided form_id."""
         return cls.query.filter(
-            and_(
-                FormProcessMapper.form_id == form_id,
-            )
+            FormProcessMapper.form_id == form_id,
         ).first()  # pylint: disable=no-member
 
     @classmethod

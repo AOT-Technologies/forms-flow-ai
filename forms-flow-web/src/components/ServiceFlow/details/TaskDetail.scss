@@ -1,9 +1,10 @@
 .select-user{
   z-index: 801;
   text-align: left;
-  width: 80%;
+  width: 90%;
   right: 0;
-  margin-left: 20%;
+  margin-left: 10%;
+  color:#2780e3;
 }
 .select-user__value-container{
   height: 35px;
@@ -16,4 +17,19 @@
   border-radius: 0 !important;
   border: 1px solid rgb(184, 184, 184) !important;
 }
-
+.group-align{
+display:-webkit-box;
+-webkit-line-clamp: 3;
+-webkit-box-orient: vertical;
+overflow: hidden;
+text-overflow: ellipsis;
+word-break: break-all;
+}
+.word-break{
+  word-break: break-all;
+}
+.modal-scroll{
+  max-height: 200px;
+  min-height: 200px;
+  overflow-y: auto;
+}

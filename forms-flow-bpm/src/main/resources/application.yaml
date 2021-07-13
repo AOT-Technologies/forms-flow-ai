@@ -127,7 +127,7 @@ logging:
     org.springframework.security: ${CAMUNDA_APP_ROOT_LOG_FLAG}
     org.springframework.web: ${CAMUNDA_APP_ROOT_LOG_FLAG}
     org.springframework.jdbc: ${CAMUNDA_APP_ROOT_LOG_FLAG}
-    org.camunda.bpm.extension: ${CAMUNDA_APP_ROOT_LOG_FLAG}
+    org.camunda.bpm: ${CAMUNDA_APP_ROOT_LOG_FLAG}
 
 
 # Camunda Rest API

@@ -47,7 +47,7 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
     }
 
     private TextSentimentRequest prepareRequest(DelegateExecution execution) throws JsonProcessingException {
-        List<TextSentimentData> txtRecords = new ArrayList();
+        List<TextSentimentData> txtRecords = new ArrayList<>();
             String submission = formSubmissionService.readSubmission(String.valueOf(execution.getVariables().get("formUrl")));
             if(submission.isEmpty()) {
                 throw new RuntimeException("Unable to retrieve submission");
@@ -62,7 +62,7 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
                 }
         }
         if(CollectionUtils.isNotEmpty(txtRecords)) {
-            return CreateTextSentimentRequest(((Integer) execution.getVariable("applicationId")).intValue(),
+            return CreateTextSentimentRequest((Integer) execution.getVariable("applicationId"),
                     String.valueOf(execution.getVariable("formUrl")),txtRecords);
         }
         return null;

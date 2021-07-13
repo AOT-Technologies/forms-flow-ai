@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/1.0" id="Definitions_1h338s2" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="3.6.0">
-  <decision id="decide-email-template" name="email-template">
-    <extensionElements>
-      <biodi:bounds x="150" y="150" width="180" height="80" />
-    </extensionElements>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_1h338s2" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
+  <decision id="email-template-example" name="email-template-example" camunda:versionTag="1">
     <decisionTable id="decisionTable_1">
       <input id="input_1" label="category">
         <inputExpression id="inputExpression_1" typeRef="string">
@@ -99,4 +96,11 @@ To access the task through formsflow.ai please follow this link:  http://localho
       </rule>
     </decisionTable>
   </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_1o977l7">
+      <dmndi:DMNShape id="DMNShape_0v83ejq" dmnElementRef="email-template-example">
+        <dc:Bounds height="80" width="180" x="150" y="80" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
 </definitions>

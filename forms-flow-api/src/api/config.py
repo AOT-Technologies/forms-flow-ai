@@ -110,7 +110,7 @@ class ProdConfig(_Config):  # pylint: disable=too-few-public-methods
 
     if not SECRET_KEY:
         SECRET_KEY = os.urandom(24)
-        print("WARNING: SECRET_KEY being set as a one-shot", file=sys.stderr)
+        # print("WARNING: SECRET_KEY being set as a one-shot", file=sys.stderr)
 
     TESTING = False
     DEBUG = False

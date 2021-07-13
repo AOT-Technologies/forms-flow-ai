@@ -409,7 +409,24 @@
               "formsflow-reviewer"
             ]
           },
-          "subGroups": []
+		  "subGroups": [
+			{
+				"name": "clerk",
+				"path": "/formsflow/formsflow-reviewer/clerk",
+				"attributes": {},
+				"realmRoles": [],
+				"clientRoles": {},
+				"subGroups": []
+			},
+			{
+				"name": "approver",
+				"path": "/formsflow/formsflow-reviewer/approver",
+				"attributes": {},
+				"realmRoles": [],
+				"clientRoles": {},
+				"subGroups": []
+			}
+		  ]
         }
       ]
     }
@@ -505,6 +522,44 @@
     },
     "notBefore" : 0,
     "groups" : [ "/camunda-admin", "/formsflow/formsflow-designer" ]
+  }, {
+    "createdTimestamp" : 1625009614956,
+    "username" : "formsflow-approver",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "Approver",
+    "lastName" : "FFA",
+    "email" : "formsflow-approver@aot-technologies.com",
+    "credentials" : [ {
+      "type" : "password",
+      "createdDate" : 1625009625540,
+      "secretData" : "{\"value\":\"Ej6BGTe5D+jLChY9zmoty3Jzt8i+KoV+UTPK6+1Vi+GaUpVfdJ0RFJ/7M4+1Y1jNGBcvMgc8knQT2AJDtixxRQ==\",\"salt\":\"MDP6nouKEx0l7hdJA+lIJw==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "notBefore" : 0,
+    "groups" : [ "/formsflow/formsflow-reviewer/approver", "/camunda-admin", "/formsflow" ]
+  }, {
+    "createdTimestamp" : 1625009564217,
+    "username" : "formsflow-clerk",
+    "enabled" : true,
+    "totp" : false,
+    "emailVerified" : false,
+    "firstName" : "Clerk",
+    "lastName" : "FFA",
+    "email" : "formsflow-clerk@aot-technologies.com",
+    "credentials" : [ {
+      "type" : "password",
+      "createdDate" : 1625009575561,
+      "secretData" : "{\"value\":\"iWFPywh7ck8FesufjXu81lxpJ0XKSvPd9ladBcJrE4TTXLeQOhvqBOC5e+bwVg20Y61EwtkTta0L9MWtGpSraw==\",\"salt\":\"noE1kDJ7Lo20VYuTOHOBTw==\",\"additionalParameters\":{}}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+    } ],
+    "disableableCredentialTypes" : [ ],
+    "requiredActions" : [ "UPDATE_PASSWORD" ],
+    "notBefore" : 0,
+    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer/clerk", "/formsflow" ]
   }, {
     "createdTimestamp" : 1621862578318,
     "username" : "formsflow-reviewer",
@@ -742,6 +797,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
+	    "http://localhost:7000/*",
         "*"
       ],
       "webOrigins": [],
@@ -823,6 +879,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
+	    "http://localhost:8000/camunda/*",
         "*"
       ],
       "webOrigins": [
@@ -857,18 +914,6 @@
       "fullScopeAllowed": true,
       "nodeReRegistrationTimeout": -1,
       "protocolMappers": [
-        {
-          "name": "flowsflow-api-mapper",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-audience-mapper",
-          "consentRequired": false,
-          "config": {
-            "id.token.claim": "false",
-            "access.token.claim": "true",
-            "included.custom.audience": "forms-flow-web",
-            "userinfo.token.claim": "false"
-          }
-        },
         {
           "name": "Client Host",
           "protocol": "openid-connect",
@@ -986,6 +1031,7 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
+	    "http://localhost:3000/*",
         "*"
       ],
       "webOrigins": [

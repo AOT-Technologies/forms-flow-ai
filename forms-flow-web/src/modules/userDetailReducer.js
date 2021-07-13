@@ -1,11 +1,14 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
+import {setShowApplications, setShowViewSubmissions} from "../helper/user";
 
 const initialState = {
   bearerToken: '',
   roles: '',
-  userDetail:[],
+  userDetail:null,
   isAuthenticated:false,
   currentPage:'',
+  showApplications:false,
+  showViewSubmissions:false
 }
 
 
@@ -19,7 +22,10 @@ const user = (state = initialState, action)=> {
     case ACTION_CONSTANTS.SET_USER_ROLES:
       return {...state, roles: action.payload};
     case ACTION_CONSTANTS.SET_USER_DETAILS:
-      return {...state, userDetail:action.payload}
+      return {...state, userDetail:action.payload,
+        showApplications:setShowApplications(action.payload?.groups||[]),
+        showViewSubmissions:setShowViewSubmissions(action.payload?.groups||[])
+      }
     case ACTION_CONSTANTS.SET_USER_AUTHENTICATION:
       return {...state, isAuthenticated:action.payload}
     default:

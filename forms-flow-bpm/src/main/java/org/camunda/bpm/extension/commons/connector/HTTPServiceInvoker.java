@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.commons.connector;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,10 @@ public class HTTPServiceInvoker {
     @Autowired
     private Properties integrationCredentialProperties;
 
-    public ResponseEntity<String> execute(String url, HttpMethod method, Object payload) {
-        try {
-            String dataJson = payload != null ? new ObjectMapper().writeValueAsString(payload) : null;
-            return execute(url, method, dataJson);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public ResponseEntity<String> execute(String url, HttpMethod method, Object payload) throws IOException {
+        String dataJson = payload != null ? new ObjectMapper().writeValueAsString(payload) : null;
+        return execute(url, method, dataJson);
+
     }
 
     public ResponseEntity<String> execute(String url, HttpMethod method, String payload) {

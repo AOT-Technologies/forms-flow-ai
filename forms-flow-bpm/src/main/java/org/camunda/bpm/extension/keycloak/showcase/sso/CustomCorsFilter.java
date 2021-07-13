@@ -63,23 +63,22 @@ public class CustomCorsFilter implements Filter {
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Access-Control-Max-Age", "3600");
 
-
-        if ("OPTIONS".equalsIgnoreCase(requestMethod)) {
+        if ("OPTIONS".equalsIgnoreCase(requestMethod) && isEngineRestRequest(request) == true) {
             if(isWebSocketRequest(request)) {
                 response.setHeader("Access-Control-Allow-Credentials", "true");
             }
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            if(isWebSocketRequest(request)) {
+            if (isWebSocketRequest(request) == true) {
                 response.setHeader("Access-Control-Allow-Credentials", "true");
-                CustomHttpRequestWrapper customHttpRequestWrapper =new CustomHttpRequestWrapper(request);
+                CustomHttpRequestWrapper customHttpRequestWrapper = new CustomHttpRequestWrapper(request);
 
-                if( StringUtils.isNotBlank(request.getQueryString())) {
+                if (StringUtils.isNotBlank(request.getQueryString())) {
                     List<String> queryParams = Arrays.asList(request.getQueryString().split("&"));
-                    for(String param : queryParams) {
-                        if("accesstoken".equals(StringUtils.substringBefore(param,"="))) {
-                            String decryptedToken = aesUtils.decryptText(StringUtils.substringAfter(param,"="),socketSecretKey);
-                            customHttpRequestWrapper.addHeader("Authorization", "Bearer " +decryptedToken);
+                    for (String param : queryParams) {
+                        if ("accesstoken".equals(StringUtils.substringBefore(param, "="))) {
+                            String decryptedToken = aesUtils.decryptText(StringUtils.substringAfter(param, "="), socketSecretKey);
+                            customHttpRequestWrapper.addHeader("Authorization", "Bearer " + decryptedToken);
                         }
                     }
 
@@ -89,11 +88,17 @@ public class CustomCorsFilter implements Filter {
                 chain.doFilter(req, res);
             }
         }
+
     }
 
     private boolean isWebSocketRequest(HttpServletRequest request) {
         String requestURL = request.getRequestURL().toString();
-        return  StringUtils.contains(requestURL,"/forms-flow-bpm-socket/") ? true : false;
+        return StringUtils.contains(requestURL, "forms-flow-bpm-socket");
+    }
+
+    private boolean isEngineRestRequest(HttpServletRequest request) {
+        String requestURL = request.getRequestURL().toString();
+        return StringUtils.contains(requestURL, "engine-rest");
     }
 
 

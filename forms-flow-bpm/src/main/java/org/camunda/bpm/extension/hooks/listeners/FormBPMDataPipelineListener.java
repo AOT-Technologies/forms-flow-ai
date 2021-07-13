@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.inject.Named;
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -20,7 +19,7 @@ import java.util.logging.Logger;
  * @author sumathi.thirumani@aot-technologies.com
  */
 @Named("FormBPMDataPipelineListener")
-public class FormBPMDataPipelineListener implements TaskListener, ExecutionListener {
+public class FormBPMDataPipelineListener  extends BaseListener implements TaskListener, ExecutionListener {
 
     private final Logger LOGGER = Logger.getLogger(FormBPMDataPipelineListener.class.getName());
 
@@ -28,24 +27,27 @@ public class FormBPMDataPipelineListener implements TaskListener, ExecutionListe
     private FormSubmissionService formSubmissionService;
 
     @Override
-    public void notify(DelegateExecution execution) throws Exception {
+    public void notify(DelegateExecution execution) {
+        try {
             syncFormVariables(execution);
+        } catch (IOException e) {
+            handleException(execution, ExceptionSource.EXECUTION, e);
+        }
     }
 
     @Override
     public void notify(DelegateTask delegateTask) {
-        syncFormVariables(delegateTask.getExecution());
+        try {
+            syncFormVariables(delegateTask.getExecution());
+        } catch (IOException e) {
+            handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
+        }
     }
 
-    private void syncFormVariables(DelegateExecution execution) {
-        try {
-            Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
-            for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
-                execution.setVariable(entry.getKey(), entry.getValue());
-            }
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE,"Exception occured in transforming form content");
+    private void syncFormVariables(DelegateExecution execution) throws IOException {
+        Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
+        for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
+            execution.setVariable(entry.getKey(), entry.getValue());
         }
-
     }
 }

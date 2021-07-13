@@ -4,6 +4,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.extension.hooks.listeners.BaseListener;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.camunda.bpm.extension.hooks.services.IUser;
 import org.joda.time.DateTime;
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
  *
  * @author  sumathi.thirumani@aot-technologies.com
  */
-public class TaskDurationAttributesListener implements TaskListener, IUser, IMessageEvent {
+public class TaskDurationAttributesListener extends BaseListener implements TaskListener, IUser, IMessageEvent {
 
     private Expression SLAInDays;
 

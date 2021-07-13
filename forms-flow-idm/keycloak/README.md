@@ -84,20 +84,28 @@ Variable name | Meaning | Possible values | Default value |
 -----------------------------------
   * Default User credentials are generated when keycloak started for the first time, you can modify the values on your keycloak service. 
    
-   User Role | User Name | Password |
-   --- | --- | ---
-   `Designer`|`formsflow-designer`|`changeme`
-   `Client`|`formsflow-client`|`changeme`
-   `Reviewer`|`formsflow-reviewer`|`changeme`
+   User Role | User Name | Password | User Group |
+   --- | --- | --- | ---
+   `Designer`|`formsflow-designer`|`changeme`|`formsflow-designer`
+   `Client`|`formsflow-client`|`changeme`|`formsflow-client`
+   `Reviewer`|`formsflow-reviewer`|`changeme`|`formsflow-reviewer`
+   `Clerk`|`formsflow-clerk`|`changeme`|`formsflow-reviewer`
+   `Approver`|`formsflow-approver`|`changeme`|`formsflow-reviewer`
 
-* *NOTE: All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.*
+---
+**NOTE**
+
+All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.
+Redirect uri's are configured as localhost in the default setup, you can configure the ip address (if required) as the redirect uri for the clients by logging into Keycloak.
+
+---
 
 > **Local keycloak set up is successfully completed now. You can skip the remaining sections in this page and continue with other installation steps.**
 
 ## Server keycloak setup
 
 * Make sure you downloaded and installed [Keycloak](https://www.keycloak.org/downloads). 
-* To setup a remote keycloak server either download and import the ***[formsflow-ai-realm.json](./imports/formsflow-ai-realm.json)*** to keycloak or follow the manual steps below.
+* To setup a remote keycloak server either download and import the ***[formsflow-ai-realm.json](./imports/formsflow-ai-realm.json)*** to keycloak ( Applicable only for keycloak version 11.0.0 and above ) or follow the manual steps below.
 
 ### Create Realm
 

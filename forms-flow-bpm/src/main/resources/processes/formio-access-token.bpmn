@@ -1,58 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0jvb36f" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.6.0">
-  <bpmn:process id="formio-access-token" name="Formio Access Token Cache (Internal)" isExecutable="true">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0jvb36f" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
+  <bpmn:process id="formio-access-token" name="Formio Access Token Cache (Internal)" isExecutable="true" camunda:versionTag="1">
     <bpmn:task id="Task_1tmwrci" name="Get &#38; Cache formio token">
       <bpmn:extensionElements>
         <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.execution.FormAccessTokenCacheListener" event="start" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_1o2htg0</bpmn:incoming>
-      <bpmn:incoming>SequenceFlow_10e1lhm</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1pfx1rr</bpmn:outgoing>
     </bpmn:task>
     <bpmn:sequenceFlow id="SequenceFlow_1o2htg0" sourceRef="StartEvent_0haqt8v" targetRef="Task_1tmwrci" />
-    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_0foh1un" name="Chreck expiry period &#38; refresh">
+    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_0foh1un" name="Check expiry period &#38; refresh">
       <bpmn:incoming>SequenceFlow_1pfx1rr</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_10e1lhm</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0jhoxkd">
-        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 58 21 1/1 * ? *</bpmn:timeCycle>
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 45 0/3 ? * * *</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1pfx1rr" sourceRef="Task_1tmwrci" targetRef="IntermediateThrowEvent_0foh1un" />
-    <bpmn:sequenceFlow id="SequenceFlow_10e1lhm" sourceRef="IntermediateThrowEvent_0foh1un" targetRef="Task_1tmwrci" />
+    <bpmn:sequenceFlow id="SequenceFlow_10e1lhm" sourceRef="IntermediateThrowEvent_0foh1un" targetRef="EndEvent_1mp4b14" />
     <bpmn:startEvent id="StartEvent_0haqt8v">
       <bpmn:outgoing>SequenceFlow_1o2htg0</bpmn:outgoing>
       <bpmn:timerEventDefinition id="TimerEventDefinition_0eod03m">
-        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 0 22 * * ? *</bpmn:timeCycle>
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 50 0/3 ? * * *</bpmn:timeCycle>
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_1mp4b14">
+      <bpmn:incoming>SequenceFlow_10e1lhm</bpmn:incoming>
+    </bpmn:endEvent>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="formio-access-token">
-      <bpmndi:BPMNShape id="Task_01ue5rf_di" bpmnElement="Task_1tmwrci">
-        <dc:Bounds x="300" y="77" width="100" height="80" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_10e1lhm_di" bpmnElement="SequenceFlow_10e1lhm">
+        <di:waypoint x="548" y="117" />
+        <di:waypoint x="640" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1pfx1rr_di" bpmnElement="SequenceFlow_1pfx1rr">
+        <di:waypoint x="400" y="117" />
+        <di:waypoint x="512" y="117" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_1o2htg0_di" bpmnElement="SequenceFlow_1o2htg0">
         <di:waypoint x="198" y="117" />
         <di:waypoint x="300" y="117" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Task_01ue5rf_di" bpmnElement="Task_1tmwrci">
+        <dc:Bounds x="300" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="IntermediateCatchEvent_17yhfli_di" bpmnElement="IntermediateThrowEvent_0foh1un">
         <dc:Bounds x="512" y="99" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="500" y="66" width="79" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_1pfx1rr_di" bpmnElement="SequenceFlow_1pfx1rr">
-        <di:waypoint x="400" y="117" />
-        <di:waypoint x="512" y="117" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_10e1lhm_di" bpmnElement="SequenceFlow_10e1lhm">
-        <di:waypoint x="530" y="135" />
-        <di:waypoint x="530" y="220" />
-        <di:waypoint x="350" y="220" />
-        <di:waypoint x="350" y="157" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="StartEvent_08pysdc_di" bpmnElement="StartEvent_0haqt8v">
         <dc:Bounds x="162" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1mp4b14_di" bpmnElement="EndEvent_1mp4b14">
+        <dc:Bounds x="642" y="99" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

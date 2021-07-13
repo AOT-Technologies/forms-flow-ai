@@ -8,7 +8,7 @@ const TaskFilterSearchType = React.memo(({filter, index, handleFilterUpdate}) =>
   const [showFilterItems, setShowFilterItems]= useState(false);
 
   const handleClick = e => {
-    if (createSearchNode.current.contains(e.target)) {
+    if (createSearchNode?.current?.contains(e.target)) {
       return;
     }
     // outside click

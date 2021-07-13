@@ -8,8 +8,8 @@ export const getProcessReq = (form, submissionId, action, user) => {
 };
 
 
-export const getTaskSubmitFormReq = (formUrl,applicationId) => {
-  const formRequestFormat={
+export const getTaskSubmitFormReq = (formUrl,applicationId, actionType) => {
+  let formRequestFormat={
     variables: {
       formUrl: {
         value: formUrl
@@ -19,6 +19,11 @@ export const getTaskSubmitFormReq = (formUrl,applicationId) => {
       }
     }
   };
+  if(actionType){
+    formRequestFormat.variables.action= {
+      value: actionType,
+    };
+  }
   return formRequestFormat;
 }
 

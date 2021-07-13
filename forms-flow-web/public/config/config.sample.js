@@ -42,6 +42,8 @@ window["_env_"] = {
   REACT_APP_CAMUNDA_API_URI:"Camunda base API",
   REACT_APP_WEBSOCKET_ENCRYPT_KEY:"Web Socket encrypt key for Socket IO",
   //application name
-  REACT_APP_APPLICATION_NAME:"formsflow.ai"
-  
+  REACT_APP_APPLICATION_NAME:"formsflow.ai",
+
+  REACT_APP_USER_ACCESS_PERMISSIONS:{accessAllowApplications:false, accessAllowSubmissions:false}
+
 };

@@ -1,7 +1,7 @@
 {
   "name": "formsflow-ai-react",
   "description": "React web app for formsflow.ai project",
-  "version": "1.0.0",
+  "version": "4.0.1",
   "main": "index.js",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
@@ -29,13 +29,11 @@
     "@wojtekmaj/react-daterange-picker": "^3.1.0",
     "aot-formio-export": "file:forms-flow-util",
     "axios": "^0.21.1",
-    "bootstrap": "^4.6.0",
     "bpmn-js": "^7.5.0",
     "browserslist": "^4.16.6",
     "connected-react-router": "^6.9.1",
     "create-react-class": "^15.7.0",
     "crypto-js": "^4.0.0",
-    "font-awesome": "^4.7.0",
     "formiojs": "^4.13.1",
     "jsonwebtoken": "^8.5.1",
     "keycloak-js": "^10.0.2",
@@ -66,11 +64,9 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "sass": "^1.32.13",
-    "semantic-ui-css": "^2.4.1",
     "sockjs-client": "^1.5.1",
     "source-map-explorer": "^2.5.2",
     "stompjs": "^2.3.3",
-    "typeface-nunito-sans": "0.0.72",
     "ws": "^7.4.6"
   },
   "resolutions": {

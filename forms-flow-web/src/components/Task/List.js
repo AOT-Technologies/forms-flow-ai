@@ -49,7 +49,7 @@ const List = class extends PureComponent {
             submissionDate: getLocalDateTime(task.submissionDate),
             // dueDate: (task.due || "Set due date"),
             form: task.formName || "---",
-            userName: userDetail.preferred_username,
+            userName: userDetail?.preferred_username||"",
             assignToMeFn: onClaim,
             unAssignFn: onUnclaim,
           };
@@ -98,7 +98,7 @@ const List = class extends PureComponent {
                 <div className="col-md-2 btn-group">
                   <TaskSearch
                     {...props.searchProps}
-                    user={this.props.userDetail.preferred_username}
+                    user={this.props.userDetail?.preferred_username||""}
                   />
                 </div>
               </div>

@@ -3,16 +3,13 @@
 import logging
 
 import sys, traceback
-
 from http import HTTPStatus
-
-from flask import jsonify, request
-from flask_restx import Namespace, Resource, cors
+from flask import request
+from flask_restx import Namespace, Resource
 
 from ..services import ProcessService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
-from api.utils.constants import CORS_ORIGINS
 from api.schemas.process import ProcessMessageSchema
 
 API = Namespace("Process", description="Process")
@@ -26,13 +23,12 @@ class ProcessStateResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(process_key, task_key):
         """Get states by process and task key."""
         try:
             return (
-                jsonify(
+                (
                     ProcessService.get_states(
                         process_key, task_key, request.headers["Authorization"]
                     )
@@ -61,13 +57,12 @@ class ProcessResource(Resource):
     """Resource for managing process."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get():
         """Get all process."""
         try:
             return (
-                jsonify(
+                (
                     {
                         "process": ProcessService.get_all_processes(
                             token=request.headers["Authorization"]
@@ -99,7 +94,6 @@ class ProcessDefinitionResource(Resource):
     """Resource for managing process details."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     def get(process_key):
         """Get process detailsXML."""
         try:
@@ -116,7 +110,7 @@ class ProcessDefinitionResource(Resource):
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
-            }
+            }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
             logging.exception(err)
@@ -131,7 +125,6 @@ class ProcessEventResource(Resource):
     """Resource for managing state."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def post():
         message_json = request.get_json()
@@ -140,7 +133,7 @@ class ProcessEventResource(Resource):
         """Get states by process and task key."""
         try:
             return (
-                jsonify(
+                (
                     ProcessService.post_message(
                         dict_data, request.headers["Authorization"]
                     )
@@ -185,7 +178,6 @@ class ProcessInstanceResource(Resource):
     """Get Process Activity Instances."""
 
     @staticmethod
-    @cors.crossdomain(origin=CORS_ORIGINS, max_age=21600)
     @auth.require
     def get(process_InstanceId):
         """Get states by process and task key."""

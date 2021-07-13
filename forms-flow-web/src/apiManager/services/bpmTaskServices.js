@@ -96,6 +96,38 @@ export const fetchUserList = (...rest) => {
   };
 };
 
+export const fetchUserListWithSearch = ({searchType,query},...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const paramData={memberOfGroup:REVIEWER_GROUP};
+  /*TODO search with query /user?lastNameLike=%${lastName}%&memberOfGroup=${group}*/
+  //let getReviewerUserListApi = `${API.GET_BPM_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
+  if(searchType && query){
+    //getReviewerUserListApi = `${getReviewerUserListApi}&${searchType}=%${query||""}%`
+    paramData[searchType]=`%${query}%`;
+  }
+
+  return (dispatch) => {
+    httpGETRequest(API.GET_BPM_USER_LIST, paramData, UserService.getToken())
+      .then((res) => {
+        if (res.data) {
+          dispatch(setBPMUserList(res.data));
+          //dispatch(setBPMLoader(false));
+          done(null, res.data);
+        } else {
+          done(null, []);
+          dispatch(serviceActionError(res));
+          //dispatch(setBPMTaskLoader(false));
+        }
+      })
+      .catch((error) => {
+        console.log("Error", error);
+        dispatch(serviceActionError(error));
+        //dispatch(setBPMTaskLoader(false));
+        done(error);
+      });
+  };
+};
+
 export const fetchFilterList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const getTaskFiltersAPI = `${API.GET_BPM_FILTERS}?resourceType=Task`

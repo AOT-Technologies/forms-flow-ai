@@ -7,18 +7,24 @@ import {
   fetchFilterList,
   fetchProcessDefinitionList,
   fetchServiceTaskList,
-  fetchUserList, getBPMGroups, getBPMTaskDetail
+  getBPMGroups, getBPMTaskDetail
 } from "../../apiManager/services/bpmTaskServices";
 import {useDispatch, useSelector} from "react-redux";
 import {ALL_TASKS} from "./constants/taskConstants";
-import {setBPMFilterLoader, setFilterListParams, setSelectedBPMFilter} from "../../actions/bpmTaskActions";
+import {
+  setBPMFilterLoader,
+  setBPMTaskDetailLoader,
+  setFilterListParams,
+  setSelectedBPMFilter, setSelectedTaskID
+} from "../../actions/bpmTaskActions";
 import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
 import {Route} from "react-router-dom";
+import {push} from "connected-react-router";
 
-const ServiceFlow = React.memo(() => {
+export default React.memo(() => {
   const dispatch= useDispatch();
   const filterList = useSelector(state=> state.bpmTasks.filterList);
   const isFilterLoading = useSelector(state=> state.bpmTasks.isFilterLoading);
@@ -39,8 +45,6 @@ const ServiceFlow = React.memo(() => {
     reqDataRef.current=reqData;
   });
 
-
-
   useEffect(()=>{
     const reqParamData={...{sorting:[...sortParams.sorting]},...searchParams};
     if(!isEqual(reqParamData,listReqParams)){
@@ -52,7 +56,7 @@ const ServiceFlow = React.memo(() => {
     dispatch(setBPMFilterLoader(true));
     dispatch(fetchFilterList());
     dispatch(fetchProcessDefinitionList());
-    dispatch(fetchUserList());
+    // dispatch(fetchUserList());
   },[dispatch]);
 
   useEffect(()=>{
@@ -70,23 +74,32 @@ const ServiceFlow = React.memo(() => {
     }
   },[filterList,isFilterLoading,selectedFilter,dispatch]);
 
-  const SocketIOCallback = useCallback((refreshedTaskId) => {
-      if(selectedFilterIdRef.current){
-        dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current)); //Refreshes the Task
-      }
-      if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current) { //Refreshes task if its selected
-        dispatch(getBPMTaskDetail(bpmTaskIdRef.current));
-        dispatch(getBPMGroups(bpmTaskIdRef.current))
+  const SocketIOCallback = useCallback((refreshedTaskId, forceReload) => {
+      if(forceReload){
+        dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current)); //Refreshes the Tasks
+        if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current){
+          dispatch(setBPMTaskDetailLoader(true));
+          dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
+          dispatch(push(`/task/`));
+        }
+      } else{
+        if(selectedFilterIdRef.current){
+          dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current)); //Refreshes the Task
+        }
+        if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current) { //Refreshes task if its selected
+          dispatch(getBPMTaskDetail(bpmTaskIdRef.current));
+          dispatch(getBPMGroups(bpmTaskIdRef.current))
+        }
       }
     }
   ,[dispatch]);
 
   useEffect(()=>{
     if(!SocketIOService.isConnected()){
-        SocketIOService.connect((refreshedTaskId) => SocketIOCallback(refreshedTaskId));
+        SocketIOService.connect((refreshedTaskId, forceReload) => SocketIOCallback(refreshedTaskId, forceReload));
     }else{
         SocketIOService.disconnect();
-        SocketIOService.connect((refreshedTaskId) => SocketIOCallback(refreshedTaskId));
+        SocketIOService.connect((refreshedTaskId, forceReload) => SocketIOCallback(refreshedTaskId, forceReload));
     }
     return ()=>{
       if(SocketIOService.isConnected())
@@ -113,6 +126,4 @@ const ServiceFlow = React.memo(() => {
       </Row>
     </Container>
   )
-})
-
-export default ServiceFlow;
+});

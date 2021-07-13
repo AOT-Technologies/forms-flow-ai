@@ -3,7 +3,6 @@ const cacheName = "FORMS-FLOW-AI-WEB-CACHE-V2";
 const urlsToCache = [
   "/manifest.json",
   "/favicon.ico",
-  "/spinner.gif",
   "/logo.svg"
 ];
 

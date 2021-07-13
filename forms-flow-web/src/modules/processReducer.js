@@ -7,7 +7,7 @@ const initialState = {
   processList: [],
   formProcessError: false,
   formProcessList: [],
-  processActivityList: [],
+  processActivityList: null,
   processDiagramXML: "",
   processActivityLoadError: false,
   isProcessDiagramLoading: true

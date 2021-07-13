@@ -19,7 +19,7 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
 
 
   const handleClick = e => {
-    if (createSearchNode.current.contains(e.target)) {
+    if (createSearchNode?.current?.contains(e.target)) {
       return;
     }
     // outside click

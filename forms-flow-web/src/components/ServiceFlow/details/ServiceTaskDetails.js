@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {Row, Tab, Tabs} from "react-bootstrap";
 import TaskHeader from "./TaskHeader";
 import {setBPMTaskDetailLoader, setSelectedTaskID} from "../../../actions/bpmTaskActions";
@@ -16,11 +16,12 @@ import History from "../../Application/ApplicationHistory";
 import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
 import LoadingOverlay from "react-loading-overlay";
-import {getForm, getSubmission, resetSubmissions} from "react-formio";
+import {getForm, getSubmission, resetForm, resetSubmission} from "react-formio";
 import {CUSTOM_EVENT_TYPE} from "../constants/customEventTypes";
 import {getTaskSubmitFormReq} from "../../../apiManager/services/bpmServices";
 import {useParams} from "react-router-dom";
 import {push} from "connected-react-router";
+import {setFormSubmissionLoading} from "../../../actions/formActions";
 
 
 const ServiceFlowTaskDetails = React.memo(() => {
@@ -34,6 +35,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const dispatch= useDispatch();
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
+  const [processKey, setProcessKey]= useState('');
+  const [processInstanceId, setProcessInstanceId]=useState('');
 
  useEffect(()=>{
     if(taskId){
@@ -47,18 +50,40 @@ const ServiceFlowTaskDetails = React.memo(() => {
       dispatch(getBPMTaskDetail(bpmTaskId));
       dispatch(getBPMGroups(bpmTaskId))
     }
+    return ()=>{
+      dispatch(resetForm('form'));
+      dispatch(resetSubmission('submission'));
+    }
   },[bpmTaskId, dispatch]);
 
+  useEffect(()=>{
+    if(processList.length && task?.processDefinitionId){
+      const pKey=getProcessDataFromList(processList, task?.processDefinitionId,'key');
+      setProcessKey(pKey);
+    }
+  },[processList,task?.processDefinitionId]);
 
   useEffect(()=>{
-    if( task && task?.formUrl){
-      const {formId,submissionId} =getFormIdSubmissionIdFromURL(task?.formUrl);
-      dispatch(getForm('form',formId));
-      dispatch(getSubmission('submission', submissionId, formId))
-    }else{
-      dispatch(resetSubmissions('submission'));
+    if(task?.processInstanceId){
+     setProcessInstanceId(task?.processInstanceId)
     }
-  },[task, dispatch]);
+  },[task?.processInstanceId]);
+
+  const getFormSubmissionData = useCallback((formUrl)=>{
+      const {formId,submissionId} =getFormIdSubmissionIdFromURL(formUrl);
+      dispatch(getForm('form',formId));
+      dispatch(getSubmission('submission', submissionId, formId));
+      dispatch(setFormSubmissionLoading(false));
+  },[dispatch]);
+
+  useEffect(()=>{
+    if(task?.formUrl){
+      getFormSubmissionData(task?.formUrl)
+    }else {
+      dispatch(resetForm('form'));
+      dispatch(resetSubmission('submission'));
+    }
+  },[task?.formUrl, dispatch, getFormSubmissionData]);
 
   const reloadTasks = () => {
     dispatch(setBPMTaskDetailLoader(true));
@@ -68,9 +93,14 @@ const ServiceFlowTaskDetails = React.memo(() => {
   }
 
   const reloadCurrentTask = () => {
-    if(selectedFilter) {
+    if(selectedFilter && task?.id) {
       dispatch(setBPMTaskDetailLoader(true))
-      dispatch(getBPMTaskDetail(task.id)); // Refresh the Task Selected
+      dispatch(getBPMTaskDetail(task.id,(err,taskDetail)=>{
+        if(!err){
+          dispatch(setFormSubmissionLoading(true));
+          getFormSubmissionData(taskDetail?.formUrl);
+        }
+      })); // Refresh the Task Selected
       dispatch(getBPMGroups(task.id))
       dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Tasks
     }
@@ -84,14 +114,17 @@ const ServiceFlowTaskDetails = React.memo(() => {
        case CUSTOM_EVENT_TYPE.RELOAD_CURRENT_TASK:
          reloadCurrentTask();
          break;
+       case CUSTOM_EVENT_TYPE.ACTION_COMPLETE:
+         onFormSubmitCallback(customEvent.actionType);
+         break;
        default: return;
      }
   };
 
-  const onFormSubmitCallback = () => {
+  const onFormSubmitCallback = (actionType="") => {
     if(bpmTaskId){
       dispatch(setBPMTaskDetailLoader(true));
-      dispatch(onBPMTaskFormSubmit(bpmTaskId,getTaskSubmitFormReq(task?.formUrl,task?.applicationId),(err)=>{
+      dispatch(onBPMTaskFormSubmit(bpmTaskId,getTaskSubmitFormReq(task?.formUrl,task?.applicationId,actionType),(err)=>{
         if(!err){
           reloadTasks();
         }else{
@@ -101,7 +134,6 @@ const ServiceFlowTaskDetails = React.memo(() => {
     }else{
       reloadCurrentTask();
     }
-
   }
 
    if(!bpmTaskId){
@@ -141,8 +173,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
          <Tab eventKey="diagram" title="Diagram">
            <div>
              <ProcessDiagram
-               process_key={getProcessDataFromList(processList, task?.processDefinitionId,'key')}
-               processInstanceId={task?.processInstanceId||''}
+               process_key={processKey}
+               processInstanceId={processInstanceId}
                // markers={processActivityList}
              />
            </div>

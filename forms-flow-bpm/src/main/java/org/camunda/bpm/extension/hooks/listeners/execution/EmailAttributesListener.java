@@ -21,7 +21,7 @@ public class EmailAttributesListener implements ExecutionListener, IUser {
     private final Logger LOGGER = Logger.getLogger(EmailAttributesListener.class.getName());
 
     @Override
-    public void notify(DelegateExecution execution) throws Exception {
+    public void notify(DelegateExecution execution) {
        LOGGER.info("EmailAttributesListener input : "+execution.getVariables());
        Map<String,Object> dmnMap = getDMNTemplate(execution);
        String emailto = getAddressValue(execution,dmnMap,"to");
@@ -35,7 +35,6 @@ public class EmailAttributesListener implements ExecutionListener, IUser {
         if(StringUtils.isNotBlank(emailto)) {
             execution.setVariable("email_to", emailto);
         }
-
     }
 
     /**

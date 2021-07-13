@@ -3,12 +3,12 @@ In the following document, we’ll describe the step by step instructions to set
 
 ## Table of Contents
 1. [Usage Instructions](#usage-instructions)
-    * [STEP 1 : Designer Steps](#-designer-steps)
-    * [STEP 2 : Client Steps](#-client-steps)
-    * [STEP 3 : Reviewer Steps](#-reviewer-steps)
+    * [STEP 1 : Designer Steps](#designer-steps)
+    * [STEP 2 : Client Steps](#client-steps)
+    * [STEP 3 : Reviewer Steps](#reviewer-steps)
 2. [Usage Instructions with examples](#usage-instructions-with-example)
     * [Freedom of Information and Protection of Privacy](#freedom-of-information-and-protection-of-privacy)
-        * [STEP 1 : Designer Steps](#designer-steps)
+        * [STEP 1 : Designer Steps](#designer--steps)
         * [STEP 2 : Client Steps](#client-steps)
         * [STEP 3 : Reviewer Steps](#reviewer-steps)
     * [Create New Business License Application](#create-new-business-license-application)
@@ -64,7 +64,7 @@ In the following document, we’ll describe the step by step instructions to set
 
 * The usage instructions mention the end-to-end flow of a form is explained for Freedom of Information and Protection of Privacy.
 
-### Designer Steps
+### Designer  Steps
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for the designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the log in is successful you will be redirected to http://localhost:3000/form where you can `Create / View / Edit / Delete` a form.
 

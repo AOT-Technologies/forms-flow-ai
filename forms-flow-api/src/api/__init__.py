@@ -35,6 +35,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
 
     @app.after_request
     def cors_origin(response):
+        assert response.headers['Host']
         if FORMSFLOW_API_CORS_ORIGINS == ALLOW_ALL_ORIGINS:
             response.headers["Access-Control-Allow-Origin"] = ALLOW_ALL_ORIGINS
         else:
@@ -46,6 +47,10 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
                 elif url.find(request.headers["Host"]) != -1:
                     response.headers["Access-Control-Allow-Origin"] = url
         return response
+    
+    @app.after_request
+    def add_additional_headers(response):  # pylint: disable=unused-variable
+        response.headers['X-Frame-Options'] = 'DENY'
 
     register_shellcontext(app)
 

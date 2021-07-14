@@ -6,7 +6,7 @@ from .base_model import BaseModel
 from .db import db
 
 
-class ApplicationAudit(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
+class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     """This class manages application audit against each form."""
 
     id = db.Column(db.Integer, primary_key=True)
@@ -18,7 +18,7 @@ class ApplicationAudit(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     def create_from_dict(cls, application_audit_info: dict) -> ApplicationAudit:
         """Create new application."""
         if application_audit_info:
-            application_audit = ApplicationAudit()
+            application_audit = ApplicationHistory()
             application_audit.application_id = application_audit_info["application_id"]
             application_audit.application_status = application_audit_info[
                 "application_status"

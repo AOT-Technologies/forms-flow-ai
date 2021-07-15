@@ -534,8 +534,8 @@
     "credentials" : [ {
       "type" : "password",
       "createdDate" : 1625009625540,
-      "secretData" : "{\"value\":\"Ej6BGTe5D+jLChY9zmoty3Jzt8i+KoV+UTPK6+1Vi+GaUpVfdJ0RFJ/7M4+1Y1jNGBcvMgc8knQT2AJDtixxRQ==\",\"salt\":\"MDP6nouKEx0l7hdJA+lIJw==\",\"additionalParameters\":{}}",
-      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+      "secretData" : "{\"value\":\"Ej6BGTe5D+jLChY9zmoty3Jzt8i+KoV+UTPK6+1Vi+GaUpVfdJ0RFJ/7M4+1Y1jNGBcvMgc8knQT2AJDtixxRQ==\",\"salt\":\"MDP6nouKEx0l7hdJA+lIJw==\"}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ "UPDATE_PASSWORD" ],
@@ -553,8 +553,8 @@
     "credentials" : [ {
       "type" : "password",
       "createdDate" : 1625009575561,
-      "secretData" : "{\"value\":\"iWFPywh7ck8FesufjXu81lxpJ0XKSvPd9ladBcJrE4TTXLeQOhvqBOC5e+bwVg20Y61EwtkTta0L9MWtGpSraw==\",\"salt\":\"noE1kDJ7Lo20VYuTOHOBTw==\",\"additionalParameters\":{}}",
-      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\",\"additionalParameters\":{}}"
+      "secretData" : "{\"value\":\"iWFPywh7ck8FesufjXu81lxpJ0XKSvPd9ladBcJrE4TTXLeQOhvqBOC5e+bwVg20Y61EwtkTta0L9MWtGpSraw==\",\"salt\":\"noE1kDJ7Lo20VYuTOHOBTw==\"}",
+      "credentialData" : "{\"hashIterations\":27500,\"algorithm\":\"pbkdf2-sha256\"}"
     } ],
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ "UPDATE_PASSWORD" ],

@@ -13,7 +13,6 @@ from .application_history import API as APPLICATION_HISTORY_API
 from .checkpoint import API as CHECKPOINT_API
 from .form_process_mapper import API as FORM_API
 from .process import API as PROCESS_API
-from .sentiment_analysis import API as SENTIMENT_API
 from .task import API as TASK_API
 from api.utils.constants import ALLOW_ALL_ORIGINS
 
@@ -76,6 +75,5 @@ API.add_namespace(CHECKPOINT_API, path="/checkpoint")
 API.add_namespace(FORM_API, path="/form")
 # API.add_namespace(FORMIOTOKEN_API, path="/getformiotoken")
 API.add_namespace(PROCESS_API, path="/process")
-API.add_namespace(SENTIMENT_API, path="/sentiment")
 API.add_namespace(TASK_API, path="/task")
 # API.add_namespace(TENANT_API, path="/tenant")

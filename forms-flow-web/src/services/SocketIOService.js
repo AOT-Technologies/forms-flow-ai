@@ -6,6 +6,7 @@ import {WEBSOCKET_ENCRYPT_KEY} from "../constants/socketIOConstants";
 import AES from 'crypto-js/aes';
 
 let stompClient = null;
+let reconnectTimeOut=null;
 
 const connect = (reloadCallback)=>{
   const accessToken= AES.encrypt(UserService.getToken(),WEBSOCKET_ENCRYPT_KEY).toString();
@@ -17,8 +18,18 @@ const connect = (reloadCallback)=>{
     if(isConnected()){
       stompClient.subscribe('/topic/task-event', function(output){
         const taskUpdate = JSON.parse(output.body);
-        reloadCallback(taskUpdate.id);
+        const forceReload=taskUpdate.eventName==="complete";
+        reloadCallback(taskUpdate.id,forceReload);
       });
+    }
+  },function (error){
+    console.log(error);
+    /* Try reconnect the websocket connection again after 5 seconds only if still in task page
+     and failure happens due to network/rebuilding time. */
+    if(window.location.pathname.includes('task')){
+      reconnectTimeOut = setTimeout(()=>{
+        connect(reloadCallback);
+      }, 5000);
     }
   });
 }
@@ -29,6 +40,7 @@ const isConnected = ()=>{
 
 const disconnect = ()=>{
   stompClient.disconnect();
+  clearTimeout(reconnectTimeOut);
 }
 
 const SocketIOService = {

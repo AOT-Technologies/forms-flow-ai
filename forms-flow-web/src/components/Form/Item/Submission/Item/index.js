@@ -15,6 +15,7 @@ import {CLIENT_EDIT_STATUS} from "../../../../../constants/applicationConstants"
 const Item = React.memo((props) => {
   const {formId, submissionId} = useParams();
   const dispatch = useDispatch();
+  const showViewSubmissions= useSelector((state) => state.user.showViewSubmissions);
   //const path = props.location.pathname;
   const applicationId = useSelector((state) => selectRoot('submission', state)?.submission?.data?.applicationId || null);
   const userRoles = useSelector((state) => {
@@ -49,7 +50,7 @@ const Item = React.memo((props) => {
   return (
     <div>
       <ul className="nav nav-tabs">
-        {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<li className="nav-item">
+        {showViewSubmissions && getUserRolePermission(userRoles, STAFF_REVIEWER) ?<li className="nav-item">
           <Link className="nav-link" to={`/form/${formId}/submission`}>
             <img src="/webfonts/fa_chevron-left.svg" alt="back"/>
           </Link>

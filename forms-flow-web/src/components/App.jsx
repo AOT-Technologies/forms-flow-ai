@@ -8,8 +8,6 @@ import BaseRouting from "./BaseRouting";
 import {Helmet} from "react-helmet";
 import {KEYCLOAK_URL} from "../constants/constants";
 
-require("typeface-nunito-sans");
-
 const App = React.memo((props) => {
     const { store, history } = props;
     return (

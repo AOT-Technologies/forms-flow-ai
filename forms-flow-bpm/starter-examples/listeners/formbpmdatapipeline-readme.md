@@ -2,7 +2,7 @@
 
 **org.camunda.bpm.extension.hooks.listeners.task.FormBPMDataPipelineListener**
 
-This component can be used on any event of task/execution listener.  Upon configuration it copies data from form (formio) to camunda variables.
+This component can be used on any event of task/execution listener.  Upon configuration, it copies data from form (formio) to camunda variables.
 
 ## Table of Content
 * [Type](#type)

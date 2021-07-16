@@ -29,6 +29,13 @@ export const setApplicationDetail = (data) => dispatch =>{
     })
 }
 
+export const setApplicationDetailStatusCode = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.APPLICATION_DETAIL_STATUS_CODE,
+    payload:data
+  })
+}
+
 export const setUpdateLoader = (data) => dispatch =>{
   dispatch({
       type:ACTION_CONSTANTS.IS_APPLICATION_UPDATING,

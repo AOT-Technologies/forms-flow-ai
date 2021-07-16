@@ -1,11 +1,17 @@
+#Author: Kurian Benoy
 FROM python:3.8
 
-ADD . /forms-flow-api/app
 WORKDIR /forms-flow-api/app
+COPY requirements.txt .
+ENV PATH=/venv/bin:$PATH
 
-RUN pip install --upgrade pip
-RUN pip install psycopg2
+RUN : \
+    && python3 -m venv /venv \
+    && pip install --upgrade pip \
+    && pip install psycopg2 \
+    && pip install -r requirements.txt
 
+ADD . /forms-flow-api/app
 RUN pip install .
 RUN python -m nltk.downloader punkt vader_lexicon subjectivity
 

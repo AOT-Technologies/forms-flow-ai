@@ -84,7 +84,6 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     # API Base URL (Self)
     FORMSFLOW_API_URL = os.getenv("WEB_API_BASE_URL")
-    FORMSFLOW_API_CORS_ORIGIN = os.getenv("FORMSFLOW_API_CORS_ORIGIN")
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
@@ -111,7 +110,7 @@ class ProdConfig(_Config):  # pylint: disable=too-few-public-methods
 
     if not SECRET_KEY:
         SECRET_KEY = os.urandom(24)
-        print("WARNING: SECRET_KEY being set as a one-shot", file=sys.stderr)
+        # print("WARNING: SECRET_KEY being set as a one-shot", file=sys.stderr)
 
     TESTING = False
     DEBUG = False

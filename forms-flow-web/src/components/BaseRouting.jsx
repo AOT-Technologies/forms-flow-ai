@@ -8,15 +8,19 @@ import PrivateRoute from "./PrivateRoute";
 /*import SideBar from "../containers/SideBar";*/
 import NavBar from "../containers/NavBar";
 import Footer from "../components/Footer";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 const BaseRouting = React.memo(({store}) => {
   const isAuth = useSelector((state) => state.user.isAuthenticated);
+
   return (
     <>
       {isAuth?<NavBar/>:null}
       <div className="wrapper">
         {/*{isAuth?<SideBar store={store} />:null}*/}
           <div className="container-fluid content main-container">
+            <ToastContainer />
             <Switch>
               {/* <Route path="/public"><PublicRoute store={store}/></Route> */}
               <Route path="/">

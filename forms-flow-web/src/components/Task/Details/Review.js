@@ -23,7 +23,7 @@ const Review = React.memo((props) => {
   const detail = useSelector(state => state.tasks.taskDetail);
   const status = useSelector(state => state.tasks.taskDetail.status)
   const detailAction = useSelector(state=>state.tasks.taskDetail.action)
-  const userName = useSelector(state=>state.user.userDetail.preferred_username);
+  const userName = useSelector(state=>state.user.userDetail?.preferred_username||"");
   const submissionError = useSelector(state=>state.formDelete.formSubmissionError);
   const isProcessLoading= useSelector(state=>state.process.isProcessLoading);
   const processStatusList = useSelector(state=> state.process.processStatusList);

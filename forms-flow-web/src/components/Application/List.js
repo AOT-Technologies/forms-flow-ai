@@ -6,6 +6,7 @@ import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import LoadingOverlay from "react-loading-overlay";
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
 import {getAllApplications} from "../../apiManager/services/applicationServices";
 import {setApplicationListLoader} from "../../actions/applicationActions";
@@ -17,7 +18,7 @@ import {
   defaultSortedBy,
 } from "./table";
 import {getUserRolePermission} from "../../helper/user";
-import {CLIENT} from "../../constants/constants";
+import {CLIENT, STAFF_REVIEWER} from "../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../constants/applicationConstants";
 
 
@@ -38,7 +39,7 @@ const ApplicationList = React.memo(() => {
   },[userRoles]);
 
   const isClientEdit = (applicationStatus) => {
-    if (getUserRolePermission(userRoles, CLIENT)) {
+    if (getUserRolePermission(userRoles, CLIENT)||getUserRolePermission(userRoles, STAFF_REVIEWER)) {
       return CLIENT_EDIT_STATUS.includes(applicationStatus)
     }else {
       return false;
@@ -77,6 +78,7 @@ const ApplicationList = React.memo(() => {
   return (
     applicationCount > 0 ? (
       <ToolkitProvider
+        bootstrap4
         keyField="id"
         data={listApplications(applications)}
         columns={columns(applications)}

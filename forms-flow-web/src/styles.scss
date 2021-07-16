@@ -1,3 +1,12 @@
+@charset "UTF-8";
+
+@import url(https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&display=swap);
+@import url(https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css);
+@import url(https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css);
+@import url(https://cdn.jsdelivr.net/npm/formiojs@4.13.1/dist/formio.full.min.css);
+@import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css);
+
+
 $white: #fff;
 $grey: #6c757d;
 $gray-100: #f8f9fa;
@@ -31,10 +40,6 @@ $warning: $yellow;
 $danger: $red;
 $light: $gray-100;
 $dark: $gray-800;
-
-@import "~bootstrap/scss/bootstrap.scss";
-@import "~font-awesome/scss/font-awesome";
-@import "~formiojs/dist/formio.full.min.css";
 
 .container,
 .container-sm,
@@ -70,7 +75,12 @@ body {
   font-size: 16px;
   font-family: Nunito Sans, SemiBold;
 }
-
+.loader-container{
+  display: flex;
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+}
 .loader {
   position: absolute;
   margin: auto;

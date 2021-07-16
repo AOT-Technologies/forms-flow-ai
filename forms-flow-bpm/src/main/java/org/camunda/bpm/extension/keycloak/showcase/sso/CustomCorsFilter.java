@@ -53,53 +53,73 @@ public class CustomCorsFilter implements Filter {
 
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
-        String requestURL = request.getRequestURL().toString();
-        if(StringUtils.contains(requestURL,"/engine-rest/") ||
-                StringUtils.contains(requestURL,"/engine-rest-ext/") ||
-                StringUtils.contains(requestURL,"/form-builder/")) {
-            response.setHeader("Access-Control-Allow-Origin", getOrigin(request));
-            response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS");
-            //response.setHeader("Access-Control-Allow-Headers","access-control-allow-methods, access-control-allow-origin, authorization, Content-Type, Accept, X-Requested-With, Origin, Token, Auth-Token, Email, X-User-Token, X-User-Email");
-            response.setHeader("Access-Control-Allow-Headers", "*");
-            response.setHeader("Access-Control-Max-Age", "3600");
 
-            if ("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
-                response.setStatus(HttpServletResponse.SC_OK);
+        String requestMethod =request.getMethod();
+
+        //Response Headers to all
+        response.setHeader("Access-Control-Allow-Origin", getOrigin(request));
+        response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS");
+        //response.setHeader("Access-Control-Allow-Headers","access-control-allow-methods, access-control-allow-origin, authorization, Content-Type, Accept, X-Requested-With, Origin, Token, Auth-Token, Email, X-User-Token, X-User-Email");
+        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Max-Age", "3600");
+
+        if ("OPTIONS".equalsIgnoreCase(requestMethod) && isEngineRestRequest(request) == true) {
+            if(isWebSocketRequest(request)) {
+                response.setHeader("Access-Control-Allow-Credentials", "true");
+            }
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            if (isWebSocketRequest(request) == true) {
+                response.setHeader("Access-Control-Allow-Credentials", "true");
+                CustomHttpRequestWrapper customHttpRequestWrapper = new CustomHttpRequestWrapper(request);
+
+                if (StringUtils.isNotBlank(request.getQueryString())) {
+                    List<String> queryParams = Arrays.asList(request.getQueryString().split("&"));
+                    for (String param : queryParams) {
+                        if ("accesstoken".equals(StringUtils.substringBefore(param, "="))) {
+                            String decryptedToken = aesUtils.decryptText(StringUtils.substringAfter(param, "="), socketSecretKey);
+                            customHttpRequestWrapper.addHeader("Authorization", "Bearer " + decryptedToken);
+                        }
+                    }
+
+                }
+                chain.doFilter(customHttpRequestWrapper, res);
             } else {
                 chain.doFilter(req, res);
             }
-
-        }  else if(StringUtils.contains(requestURL,"/forms-flow-bpm-socket/")) {
-         CustomHttpRequestWrapper customHttpRequestWrapper =new CustomHttpRequestWrapper(request);
-
-            if( StringUtils.isNotBlank(request.getQueryString())) {
-                List<String> queryParams = Arrays.asList(request.getQueryString().split("&"));
-                for(String param : queryParams) {
-                    if("accesstoken".equals(StringUtils.substringBefore(param,"="))) {
-                       String decryptedToken = aesUtils.decryptText(StringUtils.substringAfter(param,"="),socketSecretKey);
-                        customHttpRequestWrapper.addHeader("Authorization", "Bearer " +decryptedToken);
-                    }
-                }
-
-            }
-            chain.doFilter(customHttpRequestWrapper, res);
-        } else {
-            chain.doFilter(req, res);
         }
+
     }
 
-    private String getOrigin(HttpServletRequest request){
+    private boolean isWebSocketRequest(HttpServletRequest request) {
+        String requestURL = request.getRequestURL().toString();
+        return StringUtils.contains(requestURL, "forms-flow-bpm-socket");
+    }
+
+    private boolean isEngineRestRequest(HttpServletRequest request) {
+        String requestURL = request.getRequestURL().toString();
+        return StringUtils.contains(requestURL, "engine-rest");
+    }
+
+
+    private String getOrigin(HttpServletRequest request) {
         if(StringUtils.isNotBlank(customAllowOrigin)) {
-            return customAllowOrigin;
+            String requestOrigin = getHttpRequestOrigin(request);
+            if("*".equals(customAllowOrigin) || StringUtils.containsIgnoreCase(customAllowOrigin, requestOrigin)) {
+                return requestOrigin;
+            }
         }
+        return StringUtils.EMPTY;
+    }
+
+    private String getHttpRequestOrigin(HttpServletRequest request){
         for (Enumeration<?> e = request.getHeaderNames(); e.hasMoreElements();) {
             String headerName = (String) e.nextElement();
             if(StringUtils.isNotBlank(headerName) && "ORIGIN".equals(headerName.toUpperCase())) {
                 return request.getHeader(headerName);
             }
         }
-        LOGGER.info("Leveraging the wildcard : *");
-        return "*";
+        return StringUtils.EMPTY;
     }
 
     @Override

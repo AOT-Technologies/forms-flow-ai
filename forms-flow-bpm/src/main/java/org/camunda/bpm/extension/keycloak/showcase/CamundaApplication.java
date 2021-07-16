@@ -47,7 +47,7 @@ public class CamundaApplication {
 
 	/** This class' logger. */
 	private static final Logger LOG = LoggerFactory.getLogger(CamundaApplication.class);
-	
+
 	/**
 	 * Post deployment work.
 	 * @param event
@@ -59,7 +59,7 @@ public class CamundaApplication {
 		LOG.info("========================================\n");
 		//authorizeServiceAccount();
 	}
-	
+
 	/**
 	 * Starts this application.
 	 * @param args arguments

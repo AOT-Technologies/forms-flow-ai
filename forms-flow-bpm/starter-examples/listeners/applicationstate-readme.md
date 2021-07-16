@@ -28,7 +28,7 @@ The component is dependent on listed variables from camunda context,
 
 ### How to Use
 
-Below snapshot shows how to configure the **ApplicationStateListener** to an task. 
+Below snapshot shows how to configure the **ApplicationStateListener** to a task. 
 
 ![Application State listener - Snapshot](./images/applicationstate-listener-snp1.jpg)
 

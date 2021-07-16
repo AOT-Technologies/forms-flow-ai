@@ -10,6 +10,7 @@ import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.*;
 import org.camunda.bpm.engine.identity.User;
+import org.camunda.bpm.extension.hooks.listeners.BaseListener;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
  * @author yichun.zhao@aot-technologies.com, sumathi.thirumani@aot-technologies.com
  */
 @Component
-public class TimeoutNotifyListener implements TaskListener, IMessageEvent {
+public class TimeoutNotifyListener  extends BaseListener implements TaskListener, IMessageEvent {
 
     private Expression escalationGroup;
     private Expression messageName;

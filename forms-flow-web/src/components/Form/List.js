@@ -29,12 +29,12 @@ import {
 import Confirm from "../../containers/Confirm";
 import {fetchBPMFormList} from "../../apiManager/services/bpmFormServices";
 
-const getOperations = (userRoles) => {
+const getOperations = (userRoles, showViewSubmissions) => {
   let operations = [];
   if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {
     operations.push(OPERATIONS.insert);
   }
-  if (userRoles.includes(STAFF_REVIEWER)) {
+  if (userRoles.includes(STAFF_REVIEWER) && showViewSubmissions) {
     operations.push(OPERATIONS.submission);
   }
   if (userRoles.includes(STAFF_DESIGNER)) {
@@ -58,11 +58,12 @@ const List = React.memo((props)=> {
   } = props;
   const isBPMFormListLoading = useSelector(state=> state.bpmForms.isActive);
   const bpmForms = useSelector(state=> state.bpmForms);
+  const showViewSubmissions= useSelector((state) => state.user.showViewSubmissions);
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
  /* const formPagination = useSelector(state=> state.forms.pagination);
   const maintainPagination = useSelector(state=>state.bpmForms.maintainPagination)
 */
-  const operations = getOperations(userRoles);
+  const operations = getOperations(userRoles, showViewSubmissions);
 
   const getFormsList = (page,query)=>{
     if(page){
@@ -112,7 +113,7 @@ const List = React.memo((props)=> {
               to="/formflow/create"
               className="btn btn-primary btn-right btn-sm"
             >
-              <img src="/webfonts/fa_plus.svg" alt="back"/>Create Form
+              <i className="fa fa-plus fa-lg" /> Create Form
             </Link>
           )}
         </div>

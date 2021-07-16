@@ -1,19 +1,18 @@
 """" API endpoints for sentiment analysis """
+import logging
+
+import sys, traceback
+
 from http import HTTPStatus
 
 from flask import g, jsonify, request
-from flask_pymongo import PyMongo
-from flask_restx import Namespace, Resource, cors
+from flask_restx import Namespace, Resource
 
 from pymongo.errors import ConnectionFailure
-from ..exceptions import BusinessException
-from ..models import mongo
 from ..schemas import SentimentAnalysisSchema
-from ..services import SentimentAnalyserService, entity_category
+from ..services import SentimentAnalyserService
 
-# from ..utils.auth import auth
-from ..utils.util import cors_preflight
-import json
+from api.utils.util import cors_preflight
 
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
@@ -25,7 +24,6 @@ class SentimentAnalysisResource(Resource):
     """Resource for generating Sentiment Analysis"""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
     # @auth.require
     def post():
         try:
@@ -60,10 +58,12 @@ class SentimentAnalysisResource(Resource):
                     response, status = {
                         "message": "Server selection time out",
                     }, HTTPStatus.BAD_REQUEST
-                return response, status
+                    logging.info(response)
+                    return response, status
 
             return jsonify(response_json), HTTPStatus.OK
         except KeyError as err:
+            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -71,9 +71,19 @@ class SentimentAnalysisResource(Resource):
                 },
                 HTTPStatus.BAD_REQUEST,
             )
+            logging.info(response)
+            logging.info(err)
+            # traceback.print_tb(exc_traceback)
+            return response, status
+
         except BaseException as err:
+            exc_traceback = sys.exc_info()
             response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid request object passed passed",
             }, HTTPStatus.BAD_REQUEST
-        return response, status
+            logging.info(response)
+            logging.info(err)
+
+            # traceback.print_tb(exc_traceback)
+            return response, status

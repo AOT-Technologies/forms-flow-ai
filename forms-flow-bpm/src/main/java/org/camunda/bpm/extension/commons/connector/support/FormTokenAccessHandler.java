@@ -1,6 +1,7 @@
 package org.camunda.bpm.extension.commons.connector.support;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -44,9 +44,9 @@ public class FormTokenAccessHandler {
             ResponseEntity<String> response = getRestTemplate().exchange(getIntegrationCredentialProperties().getProperty("formio.security.accessTokenUri"), HttpMethod.POST, reqObj, String.class);
             return response.getHeaders().get("x-jwt-token").get(0);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE,"Exception occurred in getting x-jwt-token", e);
+            throw new FormioServiceException("Exception occurred in getting x-jwt-token"+  ". Message Body: " +
+                    e.getMessage());
         }
-        return null;
     }
 
     protected Properties getIntegrationCredentialProperties() {

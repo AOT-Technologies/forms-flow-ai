@@ -25,7 +25,7 @@ const TaskSortSelectedList = React.memo(() => {
   const dispatch= useDispatch();
 
   const handleClick = e => {
-    if (createNode.current.contains(e.target)) {
+    if (createNode?.current?.contains(e.target)) {
       return;
     }
     // outside click

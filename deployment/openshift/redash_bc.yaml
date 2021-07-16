@@ -10,7 +10,7 @@ parameters:
   - name: SOURCE_REPOSITORY_URL
     displayName: Git Repository URL
     description: The URL of the repository with your application source code.
-    value: https://github.com/saravanpa-aot/redash
+    value: https://github.com/AOT-Technologies/redash
   - name: SOURCE_REPOSITORY_REF
     displayName: Git Reference
     description: Set this to a branch name, tag or other ref of your repository if you are not using the default branch.

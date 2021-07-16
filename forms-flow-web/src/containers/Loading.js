@@ -1,7 +1,10 @@
 import React from "react";
+import {SpinnerSVG} from "./SpinnerSVG";
 
 const Loading = React.memo(() => (
-  <img className="loader" src="/spinner.gif" alt="Loading ..." />
+  <div className="loader-container">
+    <SpinnerSVG fill='#868e96'/>
+  </div>
 ));
 export default Loading;
 

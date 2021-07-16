@@ -26,7 +26,7 @@ The component is dependent on listed variables from camunda context,
 
 ### How to Use
 
-Below snapshot shows how to configure the **ApplicationAuditListener** to an task. 
+Below snapshot shows how to configure the **ApplicationAuditListener** to a task. 
 
 ![Application Audit listener - Snapshot](./images/applicationaudit-listener-snp1.jpg)
 

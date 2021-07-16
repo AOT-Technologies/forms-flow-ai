@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_1h338s2" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.8.1">
+  <decision id="email-template-example" name="email-template-example" camunda:versionTag="1">
+    <decisionTable id="decisionTable_1">
+      <input id="input_1" label="category">
+        <inputExpression id="inputExpression_1" typeRef="string">
+          <text>category</text>
+        </inputExpression>
+      </input>
+      <output id="OutputClause_1aekr4b" label="to" name="to" typeRef="string" />
+      <output id="OutputClause_03zviem" label="cc" name="cc" typeRef="string" />
+      <output id="OutputClause_0f8t1qe" label="subject" name="subject" typeRef="string" />
+      <output id="OutputClause_1o2aisg" label="body" name="body" typeRef="string" />
+      <rule id="DecisionRule_0ycnss6">
+        <inputEntry id="UnaryTests_1g3piq1">
+          <text>"assignment_notification"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1w28m1k">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_08f869r">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1czkz3j">
+          <text>"Task Assignment"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1qfdlgl" expressionLanguage="juel">
+          <text>"Hello @name,
+      
+You have a new task for the process. Please click the following link to access your new task.
+
+@formUrl
+
+  
+Best Regards"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ntdgwj">
+        <inputEntry id="UnaryTests_05ov6ol">
+          <text>"activity_reminder"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0lljnoh">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_18fvdhg">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1fjwonv">
+          <text>"Task Reminder"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1s9943x">
+          <text>"Dear @name,
+
+This is a reminder that your outstanding task is due in one day.
+
+Application Number : @applicationId
+
+            
+Please click the following link to access your new task.
+
+To access the task through formsflow.ai please follow this link:  http://localhost:3000/task/@pid
+
+   
+ Regards,   
+ "</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0tnom8n">
+        <inputEntry id="UnaryTests_03h5bd8">
+          <text>"activity_escalation"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0tzhose">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_023tlbr">
+          <text></text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_0grdcc8">
+          <text>"Task Escalation"</text>
+        </outputEntry>
+        <outputEntry id="LiteralExpression_1bf9ywb">
+          <text>"Dear @name,
+     
+You have exceeded the deadline for the task.  
+
+Application Number : @applicationId
+
+            
+Please click the following link to access your new task.
+
+To access the task through formsflow.ai please follow this link:  http://localhost:3000/task/@pid
+   
+ Regards, 
+ "</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_1o977l7">
+      <dmndi:DMNShape id="DMNShape_0v83ejq" dmnElementRef="email-template-example">
+        <dc:Bounds height="80" width="180" x="150" y="80" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

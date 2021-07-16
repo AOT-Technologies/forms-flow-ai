@@ -2,7 +2,7 @@ import thunk from "redux-thunk";
 import {createBrowserHistory} from "history";
 import {routerMiddleware} from "connected-react-router";
 import {applyMiddleware, compose, createStore} from "redux";
-/*import logger from "redux-logger";*/
+//import logger from "redux-logger";
 
 import createRootReducer from "../modules";
 

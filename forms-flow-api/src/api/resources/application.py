@@ -1,23 +1,25 @@
 """API endpoints for managing application resource."""
 
 from http import HTTPStatus
+import logging
 
-from flask import g, jsonify, request
-from flask_restx import Namespace, Resource, cors
-from marshmallow import ValidationError
+import sys, traceback
 
-from ..exceptions import BusinessException
-from ..schemas.aggregated_application import AggregatedApplicationReqSchema
-from ..schemas.application import (
+
+from flask import g, request
+from flask_restx import Namespace, Resource
+
+from api.exceptions import BusinessException
+from api.schemas.aggregated_application import AggregatedApplicationReqSchema
+from api.schemas.application import (
     ApplicationListReqSchema,
     ApplicationSchema,
     ApplicationUpdateSchema,
 )
-from ..services import ApplicationService, ApplicationAuditService
-from ..utils.auth import auth
-from ..utils.util import cors_preflight
-
-import json
+from api.services import ApplicationService
+from api.utils.auth import auth
+from api.utils.util import cors_preflight
+from api.utils.constants import REVIEWER_GROUP
 
 
 API = Namespace("Application", description="Application")
@@ -29,7 +31,6 @@ class ApplicationsResource(Resource):
     """Resource for managing applications."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
     @auth.require
     def get():
         """Get applications."""
@@ -40,28 +41,30 @@ class ApplicationsResource(Resource):
         else:
             page_no = 0
             limit = 0
-        if auth.has_role(["formsflow-reviewer"]):
+        if auth.has_role([REVIEWER_GROUP]):
             (
                 application_schema_dump,
                 application_count,
             ) = ApplicationService.get_auth_applications_and_count(
-                page_no, limit, request.headers["Authorization"]
+                page_no=page_no, limit=limit, token=request.headers["Authorization"]
             )
             application_schema = ApplicationService.apply_custom_attributes(
-                application_schema_dump
+                application_schema=application_schema_dump
             )
         else:
             application_schema = ApplicationService.apply_custom_attributes(
                 ApplicationService.get_all_applications_by_user(
-                    g.token_info.get("preferred_username"), page_no, limit
+                    user_id=g.token_info.get("preferred_username"),
+                    page_no=page_no,
+                    limit=limit,
                 )
             )
             application_count = ApplicationService.get_all_application_by_user_count(
-                g.token_info.get("preferred_username")
+                user_id=g.token_info.get("preferred_username")
             )
         if page_no > 0:
             return (
-                jsonify(
+                (
                     {
                         "applications": application_schema,
                         "totalCount": application_count,
@@ -73,7 +76,7 @@ class ApplicationsResource(Resource):
             )
         else:
             return (
-                jsonify(
+                (
                     {
                         "applications": application_schema,
                         "totalCount": application_count,
@@ -83,7 +86,6 @@ class ApplicationsResource(Resource):
             )
 
     # @staticmethod
-    # @cors.crossdomain(origin="*")
     # @auth.require
     # def post():
     #     """Post a new application using the request body."""
@@ -112,22 +114,32 @@ class ApplicationResourceById(Resource):
     """Resource for submissions."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
     @auth.require
     def get(application_id):
         """Get application by id."""
         try:
-            return (
-                ApplicationService.apply_custom_attributes(
-                    ApplicationService.get_application(application_id)
-                ),
-                HTTPStatus.OK,
-            )
+            if auth.has_role([REVIEWER_GROUP]):
+                (
+                    application_schema_dump,
+                    status,
+                ) = ApplicationService.get_auth_by_application_id(
+                    application_id=application_id,
+                    token=request.headers["Authorization"],
+                )
+                return (
+                    ApplicationService.apply_custom_attributes(application_schema_dump),
+                    status,
+                )
+            else:
+                application, status = ApplicationService.get_application_by_user(
+                    application_id=application_id,
+                    user_id=g.token_info.get("preferred_username"),
+                )
+                return (ApplicationService.apply_custom_attributes(application), status)
         except BusinessException as err:
             return err.error, err.status_code
 
     @staticmethod
-    @cors.crossdomain(origin="*")
     @auth.require
     def put(application_id):
         """Update application details."""
@@ -137,10 +149,22 @@ class ApplicationResourceById(Resource):
             dict_data = application_schema.load(application_json)
             sub = g.token_info.get("preferred_username")
             dict_data["modified_by"] = sub
-            ApplicationService.update_application(application_id, dict_data)
+            ApplicationService.update_application(
+                application_id=application_id, data=dict_data
+            )
             return "Updated successfully", HTTPStatus.OK
         except BaseException as submission_err:
-            return {"message": "Invalid request passed"}, HTTPStatus.BAD_REQUEST
+            exc_traceback = sys.exc_info()
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data",
+            }, HTTPStatus.BAD_REQUEST
+
+            logging.exception(response)
+            logging.exception(submission_err)
+            # traceback.print_tb(exc_traceback)
+
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -149,7 +173,6 @@ class ApplicationResourceByFormId(Resource):
     """Resource for submissions."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
     @auth.require
     def get(form_id):
         """Get applications."""
@@ -163,26 +186,31 @@ class ApplicationResourceByFormId(Resource):
 
         if auth.has_role(["formsflow-reviewer"]):
             application_schema = ApplicationService.apply_custom_attributes(
-                ApplicationService.get_all_applications_form_id(form_id, page_no, limit)
+                ApplicationService.get_all_applications_form_id(
+                    form_id=form_id, page_no=page_no, limit=limit
+                )
             )
             application_count = ApplicationService.get_all_applications_form_id_count(
-                form_id
+                form_id=form_id
             )
         else:
             application_schema = ApplicationService.apply_custom_attributes(
                 ApplicationService.get_all_applications_form_id_user(
-                    form_id, g.token_info.get("preferred_username"), page_no, limit
+                    form_id=form_id,
+                    user_id=g.token_info.get("preferred_username"),
+                    page_no=page_no,
+                    limit=limit,
                 )
             )
             application_count = (
                 ApplicationService.get_all_applications_form_id_user_count(
-                    form_id, g.token_info.get("preferred_username")
+                    form_id=form_id, user_id=g.token_info.get("preferred_username")
                 )
             )
 
         if page_no == 0:
             return (
-                jsonify(
+                (
                     {
                         "applications": application_schema,
                         "totalCount": application_count,
@@ -192,7 +220,7 @@ class ApplicationResourceByFormId(Resource):
             )
         else:
             return (
-                jsonify(
+                (
                     {
                         "applications": application_schema,
                         "totalCount": application_count,
@@ -210,7 +238,6 @@ class ApplicationResourcesByIds(Resource):
     """Resource for submissions."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
     @auth.require
     def post():
         """Post a new application using the request body."""
@@ -222,16 +249,21 @@ class ApplicationResourcesByIds(Resource):
             sub = g.token_info.get("preferred_username")
             dict_data["created_by"] = sub
             application = ApplicationService.create_application(
-                dict_data, request.headers["Authorization"]
+                data=dict_data, token=request.headers["Authorization"]
             )
 
             response, status = application_schema.dump(application), HTTPStatus.CREATED
+            return response, status
         except BaseException as application_err:
-            response, status = {
-                "type": "Bad Request Error",
+            exc_traceback = sys.exc_info()
+            response = {
+                "type": "Bad request error",
                 "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
-        return response, status
+            }
+            logging.exception(response)
+            logging.exception(application_err)
+            # traceback.print_tb(exc_traceback)
+            return response
 
 
 @cors_preflight("GET,OPTIONS")
@@ -240,7 +272,6 @@ class AggregatedApplicationsResource(Resource):
     """Resource for managing aggregated applications."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
     @auth.require
     def get():
         """Get aggregated applications."""
@@ -251,17 +282,29 @@ class AggregatedApplicationsResource(Resource):
             to_date = dict_data["to_date"]
 
             return (
-                jsonify(
+                (
                     {
                         "applications": ApplicationService.get_aggregated_applications(
-                            from_date, to_date
+                            from_date=from_date, to_date=to_date
                         )
                     }
                 ),
                 HTTPStatus.OK,
             )
         except BaseException as agg_err:
-            return {"message": "Data not available"}, HTTPStatus.BAD_REQUEST
+
+            exc_traceback = sys.exc_info()
+
+            response, status = {
+                "message": "Invalid request object for application metrics endpoint",
+                "errors": agg_err,
+            }, HTTPStatus.BAD_REQUEST
+
+            logging.exception(response)
+            logging.exception(agg_err)
+            # traceback.print_tb(exc_traceback)
+
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -270,7 +313,6 @@ class AggregatedApplicationStatusResource(Resource):
     """Resource for managing aggregated applications."""
 
     @staticmethod
-    @cors.crossdomain(origin="*")
     @auth.require
     def get(mapper_id):
         """Get aggregated application status."""
@@ -281,32 +323,42 @@ class AggregatedApplicationStatusResource(Resource):
             to_date = dict_data["to_date"]
 
             return (
-                jsonify(
+                (
                     {
                         "applicationStatus": ApplicationService.get_aggregated_application_status(
-                            mapper_id, from_date, to_date
+                            mapper_id=mapper_id, from_date=from_date, to_date=to_date
                         )
                     }
                 ),
                 HTTPStatus.OK,
             )
         except BaseException as agg_err:
-            return {"message": "Data not available"}, HTTPStatus.BAD_REQUEST
+
+            exc_traceback = sys.exc_info()
+
+            response, status = {
+                "message": "Invalid request object for application metrics endpoint",
+                "errors": agg_err,
+            }, HTTPStatus.BAD_REQUEST
+
+            logging.exception(response)
+            logging.exception(agg_err)
+            # traceback.print_tb(exc_traceback)
+            return response, status
 
 
-# @cors_preflight("GET,OPTIONS")
-# @API.route("/<string:application_id>/process", methods=["GET", "OPTIONS"])
-# class ProcessMapperResourceByApplicationId(Resource):
-#     """Resource for managing process details."""
+@cors_preflight("GET,OPTIONS")
+@API.route("/<string:application_id>/process", methods=["GET", "OPTIONS"])
+class ProcessMapperResourceByApplicationId(Resource):
+    """Resource for managing process details."""
 
-#     @staticmethod
-#     @cors.crossdomain(origin="*")
-#     def get(application_id):
+    @staticmethod
+    def get(application_id):
 
-#         try:
-#             return (
-#                 ApplicationService.get_application_form_mapper_by_id(application_id),
-#                 HTTPStatus.OK,
-#             )
-#         except BusinessException as err:
-#             return err.error, err.status_code
+        try:
+            return (
+                ApplicationService.get_application_form_mapper_by_id(application_id),
+                HTTPStatus.OK,
+            )
+        except BusinessException as err:
+            return err.error, err.status_code

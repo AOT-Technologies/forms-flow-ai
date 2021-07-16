@@ -370,7 +370,7 @@ module.exports = function(formio, items, done) {
       }
 
       const projectJson = customProject ? templateFile : path.join(directoryPath, 'project.json');
-      console.log("YOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO", projectJson, !fs.existsSync(projectJson));
+
       if (!fs.existsSync(projectJson)) {
         util.log(projectJson);
         return done('Missing project.json file'.red);

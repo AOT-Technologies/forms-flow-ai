@@ -1,0 +1,2 @@
+#!/bin/bash
+python manage.py db upgrade && gunicorn -b :5000 'api:create_app()' --timeout 120 --worker-class=gthread --workers=5 --threads=10

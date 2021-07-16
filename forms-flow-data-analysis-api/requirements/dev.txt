@@ -1,0 +1,25 @@
+# Everything the developer needs in addition to the production requirements
+-r prod.txt
+
+# Testing
+pytest
+pytest-mock
+requests
+pyhamcrest
+pytest-cov
+FreezeGun
+
+# Lint and code style
+flake8
+flake8-blind-except
+flake8-debugger
+flake8-docstrings
+flake8-isort
+flake8-quotes
+pep8-naming
+autopep8
+coverage
+pylint
+pylint-flask
+pydocstyle
+isort

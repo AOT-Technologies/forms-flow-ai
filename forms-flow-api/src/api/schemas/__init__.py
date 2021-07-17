@@ -9,7 +9,7 @@ from .application import (
     ApplicationListReqSchema,
     ApplicationUpdateSchema,
 )
-from .application_audit import ApplicationAuditSchema, ApplicationAuditReqSchema
+from .application_history import ApplicationHistorySchema
 from .form_process_mapper import FormProcessMapperSchema
 from .process import (
     ProcessListSchema,

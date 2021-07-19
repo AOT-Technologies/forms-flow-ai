@@ -1868,7 +1868,7 @@
                           "components": [
                             {
                               "label": "Day Phone No.",
-                              "placeholder": "(555) 555-5555",
+                              "placeholder": "",
                               "suffix": "<i class=\"fa fa-phone\" aria-hidden=\"true\"></i>",
                               "tableView": false,
                               "validate": {
@@ -1952,7 +1952,7 @@
                           "components": [
                             {
                               "label": "Alternate Phone No",
-                              "placeholder": "(555) 555-5555",
+                              "placeholder": "",
                               "suffix": "<i class=\"fa fa-phone\" aria-hidden=\"true\"></i>",
                               "tableView": false,
                               "key": "alternatePhoneNo",

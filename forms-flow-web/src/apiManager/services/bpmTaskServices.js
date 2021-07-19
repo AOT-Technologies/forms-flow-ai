@@ -17,7 +17,7 @@ import axios from "axios";
 import {taskDetailVariableDataFormatter} from "./formatterService";
 import {REVIEWER_GROUP} from "../../constants/userContants";
 
-export const fetchServiceTaskList = (filterId,reqData,...rest) => {
+export const fetchServiceTaskList = (filterId,reqData,taskIdToRemove,...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const apiUrlgetTaskList = replaceUrl(
     API.GET_BPM_TASK_LIST_WITH_FILTER,
@@ -28,9 +28,15 @@ export const fetchServiceTaskList = (filterId,reqData,...rest) => {
     httpPOSTRequest(apiUrlgetTaskList, reqData, UserService.getToken())
       .then((res) => {
         if (res.data) {
-          dispatch(setBPMTaskList(res.data));
+          let taskData;
+          if(taskIdToRemove){
+            taskData=res.data.filter( (task)=>task.id!==taskIdToRemove);
+          }else{
+            taskData=res.data;
+          }
+          dispatch(setBPMTaskList(taskData));
           dispatch(setBPMTaskLoader(false));
-          done(null, res.data);
+          done(null, taskData);
         } else {
           console.log("Error", res);
           dispatch(serviceActionError(res));

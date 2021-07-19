@@ -30,7 +30,7 @@ If you are interested in contributing to the project, you can install through do
 It's recommended to download dev-packages to follow Python coding standards for project like PEP8 if you are interested in contributing to project.
 You installing dev-packages using pip as follows:
 
-```python3 -m pip install -r requirements-dev.txt```
+```python3 -m pip install -r requirements/dev.txt```
 
 ### Keycloak Setup
 

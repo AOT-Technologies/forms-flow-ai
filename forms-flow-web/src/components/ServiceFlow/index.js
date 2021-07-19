@@ -76,7 +76,7 @@ export default React.memo(() => {
 
   const SocketIOCallback = useCallback((refreshedTaskId, forceReload) => {
       if(forceReload){
-        dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current)); //Refreshes the Tasks
+        dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current,refreshedTaskId)); //Refreshes the Tasks
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current){
           dispatch(setBPMTaskDetailLoader(true));
           dispatch(setSelectedTaskID(null)); // unSelect the Task Selected

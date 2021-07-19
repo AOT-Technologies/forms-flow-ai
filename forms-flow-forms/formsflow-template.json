@@ -1868,7 +1868,7 @@
                           "components": [
                             {
                               "label": "Day Phone No.",
-                              "placeholder": "(555) 555-5555",
+                              "placeholder": "",
                               "suffix": "<i class=\"fa fa-phone\" aria-hidden=\"true\"></i>",
                               "tableView": false,
                               "validate": {
@@ -1952,7 +1952,7 @@
                           "components": [
                             {
                               "label": "Alternate Phone No",
-                              "placeholder": "(555) 555-5555",
+                              "placeholder": "",
                               "suffix": "<i class=\"fa fa-phone\" aria-hidden=\"true\"></i>",
                               "tableView": false,
                               "key": "alternatePhoneNo",
@@ -9447,7 +9447,7 @@
           "key": "managerPanel",
           "tags": [],
           "properties": {},
-          "customConditional": "const UserDetails = JSON.parse(localStorage.getItem(\"UserDetails\"))\nconst groups = UserDetails[\"groups\"]\nif(groups.includes(\"/formsflow/formsflow-reviewer/approver\") && (data.applicationStatus===\"Reviewed\")) {\n  show = true;\n}\nelse if(data.sendback_by===\"Approver\" && data.applicationStatus===\"Resubmitted\") {\n  show = true;\n}\nelse {\nshow = false;\n}",
+          "customConditional": "const UserDetails = JSON.parse(localStorage.getItem(\"UserDetails\"))\nconst groups = UserDetails[\"groups\"]\nif(groups.includes(\"/formsflow/formsflow-reviewer/approver\") && (data.applicationStatus===\"Reviewed\")) {\n  show = true;\n}\nelse if((data.sendback_by===\"Approver\" && data.applicationStatus===\"Resubmitted\") && groups.includes(\"/formsflow/formsflow-reviewer/approver\")) {\n  show = true;\n}\nelse {\nshow = false;\n}",
           "conditional": {
             "json": "",
             "show": null,

@@ -151,6 +151,13 @@ export const setIsVariableValueIgnoreCase = (data) => dispatch =>{
   })
 }
 
+export const reloadTaskFormSubmission = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.RELOAD_TASK_FORM_SUBMISSION,
+    payload:data
+  })
+}
+
 export const serviceActionError = (data) => dispatch => {
   //TODO update to a common file
   dispatch({

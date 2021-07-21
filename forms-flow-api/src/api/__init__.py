@@ -39,12 +39,18 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
             response.headers["Access-Control-Allow-Origin"] = ALLOW_ALL_ORIGINS
         else:
             for url in (allowed_origins := CORS_ORIGINS):
+                assert request.headers['Host']
                 if request.headers.get("Origin"):
                     response.headers["Access-Control-Allow-Origin"] = request.headers[
                         "Origin"
                     ]
                 elif url.find(request.headers["Host"]) != -1:
                     response.headers["Access-Control-Allow-Origin"] = url
+        return response
+
+    @app.after_request
+    def add_additional_headers(response):  # pylint: disable=unused-variable
+        response.headers['X-Frame-Options'] = 'DENY'
         return response
 
     register_shellcontext(app)

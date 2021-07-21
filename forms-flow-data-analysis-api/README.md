@@ -24,3 +24,6 @@ sentiment analysis component.
 output of sentiment API in Redash dashboards. This information can be found in the **Insights section**
 for staff user formsflow.ai.
 
+A potential architectural conflict, which can happen is the choosing of
+postgres database and mongodb database. What database should we use, for
+which arhchitecure. 

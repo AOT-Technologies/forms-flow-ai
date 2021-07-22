@@ -6,7 +6,7 @@ from flask import Flask
 
 from . import config, models
 from .models import db, ma
-from .resources import API
+from .resources import data_analysis_api
 from .utils.auth import jwt
 from .utils.logging import setup_logging
 
@@ -22,7 +22,7 @@ def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
     db.init_app(app)
     ma.init_app(app)
 
-    API.init_app(app)
+    data_analysis_api.init_app(app)
     setup_jwt_manager(app, jwt)
 
     @app.after_request

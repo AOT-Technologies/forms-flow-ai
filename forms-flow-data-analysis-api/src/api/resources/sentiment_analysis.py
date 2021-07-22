@@ -4,7 +4,6 @@ from http import HTTPStatus
 from flask import jsonify, request
 from flask_restx import Namespace, Resource, cors
 
-from ..schemas import SentimentAnalysisSchema
 from ..services import SentimentAnalyserService
 from ..utils.auth import auth
 from ..utils.util import cors_preflight
@@ -45,7 +44,7 @@ class SentimentAnalysisResource(Resource):
             response["applicationId"] = input_json["applicationId"]
             response["formUrl"] = input_json["formUrl"]
             post_data = {"input_text": data_input, "output_response": response}
-            db_instance = SentimentAnalysisSchema()
-            db_instance.insert_sentiment(post_data)
+            # db_instance = SentimentAnalysisSchema()
+            # db_instance.insert_sentiment(post_data)
 
         return jsonify(response_json), HTTPStatus.OK

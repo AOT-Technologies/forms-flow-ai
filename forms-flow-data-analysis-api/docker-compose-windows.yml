@@ -1,8 +1,8 @@
 version: '3.7'
 
 services:
-  forms-flow-webapi-db:
-    image: postgres:11
+  forms-flow-data-analysis-db:
+    image: postgres:13.3
     environment:
       POSTGRES_USER: ${WEB_API_POSTGRES_USER}
       POSTGRES_PASSWORD: ${WEB_API_POSTGRES_PASSWORD}
@@ -16,13 +16,13 @@ services:
     networks:
       - forms-flow-webapi-network
 
-  forms-flow-webapi:
+  forms-flow-data-analysis-api:
     build:
       context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
     links:
-      - forms-flow-webapi-db
+      - forms-flow-data-analysis-db
     ports:
       - '5000:5000'
     volumes:

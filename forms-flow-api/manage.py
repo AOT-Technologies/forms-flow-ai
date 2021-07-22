@@ -3,10 +3,8 @@
 import logging
 
 from flask_migrate import Migrate, MigrateCommand
-from flask_script import Manager
 
 # models included so that migrate can build the database migrations
-from api import models  # noqa: F401 # pylint: disable=unused-import
 from api import create_app
 from api.models import db
 

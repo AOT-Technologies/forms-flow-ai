@@ -127,7 +127,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onAction: (submission, action) => {
       switch (action) {
         case 'viewSubmission':
-        case 'row':
           dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`));
           break;
         case 'edit':

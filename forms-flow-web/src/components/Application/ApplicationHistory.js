@@ -68,7 +68,7 @@ const HistoryList = React.memo((props) => {
             <div className="main-header">
               <h3 className="task-head">
               {/* <i class="fa fa-list-alt" alt="Task" aria-hidden="true"></i> */}
-              <i class="fa fa-list" aria-hidden="true"/>
+              <i className="fa fa-list" aria-hidden="true"/>
               &nbsp;Application History
               </h3>
             </div>

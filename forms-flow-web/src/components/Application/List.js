@@ -88,7 +88,7 @@ const ApplicationList = React.memo(() => {
             <div className="container">
               <div className="main-header">
                 <h3 className="application-head">
-                <i class="fa fa-list" aria-hidden="true"/>
+                <i className="fa fa-list" aria-hidden="true"/>
               <span className="application-text">Applications</span>
                   <div className="col-md-1 application-count">({applicationCount})</div>
                 </h3>

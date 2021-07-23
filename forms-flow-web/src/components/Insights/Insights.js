@@ -37,7 +37,7 @@ const Insights = React.memo((props) => {
         <div className="row ">
           <div className="col-12">
             <h1 className="insights-title">
-            <i class="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> Insights
+            <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> Insights
             </h1>
             <hr className="line-hr"/>
             <div className="col-12">

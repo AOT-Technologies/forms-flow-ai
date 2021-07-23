@@ -57,7 +57,7 @@ const ViewApplication = React.memo(() => {
           <img src="/back.svg" alt="back"/>
         </Link>
         <h3 className="ml-3">
-          <span className="application-head-details"><i class="fa fa-list-alt" aria-hidden="true"/>&nbsp; Applications /</span>{" "}
+          <span className="application-head-details"><i className="fa fa-list-alt" aria-hidden="true"/>&nbsp; Applications /</span>{" "}
           {`${startCase(applicationDetail.applicationName)}`}
         </h3>
       </div>

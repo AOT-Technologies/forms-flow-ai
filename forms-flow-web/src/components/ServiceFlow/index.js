@@ -36,6 +36,7 @@ export default React.memo(() => {
   const sortParams = useSelector((state) => state.bpmTasks.filterListSortParams);
   const searchParams = useSelector((state) => state.bpmTasks.filterListSearchParams);
   const listReqParams = useSelector((state) => state.bpmTasks.listReqParams);
+  const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const selectedFilterIdRef=useRef(selectedFilterId);
   const bpmTaskIdRef=useRef(bpmTaskId);
   const reqDataRef=useRef(reqData);
@@ -88,15 +89,17 @@ export default React.memo(() => {
           dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current)); //Refreshes the Task
         }
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current) { //Refreshes task if its selected
-          dispatch(getBPMTaskDetail(bpmTaskIdRef.current,()=>{
-            //Should dispatch on actual form Save Event
-            dispatch(reloadTaskFormSubmission(true));
+          dispatch(getBPMTaskDetail(bpmTaskIdRef.current,(err,resTask)=>{
+            // Should dispatch When task claimed user  is not the logged in User
+            if(resTask?.assignee!==currentUser){
+              dispatch(reloadTaskFormSubmission(true));
+            }
           }));
           dispatch(getBPMGroups(bpmTaskIdRef.current));
         }
       }
     }
-  ,[dispatch]);
+  ,[dispatch,currentUser]);
 
   useEffect(()=>{
     if(!SocketIOService.isConnected()){

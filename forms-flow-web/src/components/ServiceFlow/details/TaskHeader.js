@@ -21,6 +21,7 @@ import {
 import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
 //import UserSelection from "./UserSelection";
 import UserSelectionDebounce from "./UserSelectionDebounce";
+import SocketIOService from "../../../services/SocketIOService";
 
 const TaskHeader = React.memo(() => {
   const task = useSelector(state => state.bpmTasks.taskDetail);
@@ -50,11 +51,13 @@ const TaskHeader = React.memo(() => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(claimBPMTask(taskId,username,(err,response)=>{
       if(!err){
-        if(selectedFilter){
-          dispatch(getBPMTaskDetail(taskId));
-          dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
-        }else{
-          dispatch(setBPMTaskDetailUpdating(false));
+        if(!SocketIOService.isConnected()){
+          if(selectedFilter){
+            dispatch(getBPMTaskDetail(taskId));
+            dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+          }else{
+            dispatch(setBPMTaskDetailUpdating(false));
+          }
         }
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
@@ -67,9 +70,11 @@ const TaskHeader = React.memo(() => {
      dispatch(setBPMTaskDetailUpdating(true));
      dispatch(updateAssigneeBPMTask(taskId,userId,(err,response)=>{
        if(!err){
+         if(!SocketIOService.isConnected()){
          if(selectedFilter){
            dispatch(getBPMTaskDetail(taskId));
            dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+         }
          }
        }else{
          dispatch(setBPMTaskDetailUpdating(false));
@@ -82,9 +87,11 @@ const TaskHeader = React.memo(() => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(unClaimBPMTask(taskId,(err,response)=>{
       if(!err){
+        if(!SocketIOService.isConnected()){
         if(selectedFilter){
           dispatch(getBPMTaskDetail(taskId));
           dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+        }
         }
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
@@ -98,8 +105,10 @@ const TaskHeader = React.memo(() => {
     const updatedTask = {...task, ...{followUp:followUpDate?getISODateTime(followUpDate):null}};
     dispatch(updateBPMTask(taskId,updatedTask,(err,response)=>{
       if(!err){
-        dispatch(getBPMTaskDetail(taskId));
-        dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+        if(!SocketIOService.isConnected()) {
+          dispatch(getBPMTaskDetail(taskId));
+          dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+        }
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
       }
@@ -112,8 +121,10 @@ const TaskHeader = React.memo(() => {
     const updatedTask = {...task, ...{due:dueDate?getISODateTime(dueDate):null}};
     dispatch(updateBPMTask(taskId,updatedTask,(err,response)=>{
       if(!err){
-        dispatch(getBPMTaskDetail(taskId));
-        dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+        if(!SocketIOService.isConnected()) {
+          dispatch(getBPMTaskDetail(taskId));
+          dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+        }
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
       }
@@ -122,7 +133,7 @@ const TaskHeader = React.memo(() => {
 
   const FollowUpDateInput= React.forwardRef(({ value, onClick }, ref) =>{
    return    <div onClick={onClick} ref={ref}>
-      <img src="/webfonts/fa_calendar.svg" alt="back"/>{" "}
+      <i className="fa fa-calendar mr-1"/>{" "}
       {followUpDate
         ? <span className="mr-4">{moment(followUpDate).fromNow()}</span>
         : "Set follow-up Date"}
@@ -133,7 +144,7 @@ const TaskHeader = React.memo(() => {
 
   const DueDateInput=React.forwardRef(({ value, onClick }, ref) =>{
     return    <div onClick={onClick} ref={ref}>
-     <img src="/webfonts/fa_bell.svg" alt="back"/>{" "}
+     <i className="fa fa-bell mr-1"/>{" "}
       {dueDate ? <span className="mr-4">{moment(dueDate).fromNow()}</span> : "Set Due date"}
     </div>
   });

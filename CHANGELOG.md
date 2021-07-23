@@ -1,6 +1,38 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
+## 4.0.2 - 2021-07-21
+
+`Fixed`
+
+**forms-flow-web**
+
+* In the `Tasks` section on completing a particular task, the task list is not being removed from LHS.
+* Solution vulnerability fixes.
+* Upon claiming the form, the form data is loaded from the cache instead of an API call
+* Application status should be created as a hidden element by default during form design
+
+**forms-flow-bpm**
+
+* Auto removal of old forms-flow-forms token data from DB. It was causing the token to be expired.
+
+* Approver action dropdown appearing on the clerk's task section once the approver returns the form is fixed for the `New Business License Application form`.
+
+**forms-flow-idm**
+
+* Removed additional parameters from the default configuration, which was causing keycloak import to fail in v11.0.
+
+`Modified`
+
+**forms-flow-api**
+
+- Rename Application Audit to Application History(without affecting database table).
+
+**forms-flow-bpm**
+
+* Formio Access Token Cache (Internal) workflow is modified to run recursively and stop on a signal.
+
+
 ## 4.0.1 - 2021-07-13
 
 `Added`

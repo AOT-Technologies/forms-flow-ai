@@ -12,6 +12,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {ALL_TASKS} from "./constants/taskConstants";
 import {
+  reloadTaskFormSubmission,
   setBPMFilterLoader,
   setBPMTaskDetailLoader,
   setFilterListParams,
@@ -87,8 +88,11 @@ export default React.memo(() => {
           dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current)); //Refreshes the Task
         }
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current) { //Refreshes task if its selected
-          dispatch(getBPMTaskDetail(bpmTaskIdRef.current));
-          dispatch(getBPMGroups(bpmTaskIdRef.current))
+          dispatch(getBPMTaskDetail(bpmTaskIdRef.current,()=>{
+            //Should dispatch on actual form Save Event
+            dispatch(reloadTaskFormSubmission(true));
+          }));
+          dispatch(getBPMGroups(bpmTaskIdRef.current));
         }
       }
     }

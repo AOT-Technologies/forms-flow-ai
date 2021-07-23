@@ -6,8 +6,8 @@ import sys, traceback
 from flask import request
 from flask_restx import Namespace, Resource
 
-from ..schemas.application_audit import ApplicationAuditSchema
-from ..services import ApplicationAuditService
+from api.schemas import ApplicationHistorySchema
+from api.services import ApplicationHistoryService
 from api.utils.auth import auth
 from api.utils.util import cors_preflight
 
@@ -27,7 +27,7 @@ class ApplicationHistoryResource(Resource):
         return (
             (
                 {
-                    "applications": ApplicationAuditService.get_application_history(
+                    "applications": ApplicationHistoryService.get_application_history(
                         application_id=application_id
                     )
                 }
@@ -42,10 +42,10 @@ class ApplicationHistoryResource(Resource):
         application_history_json = request.get_json()
 
         try:
-            application_history_schema = ApplicationAuditSchema()
+            application_history_schema = ApplicationHistorySchema()
             dict_data = application_history_schema.load(application_history_json)
             dict_data["application_id"] = application_id
-            application_history = ApplicationAuditService.create_application_history(
+            application_history = ApplicationHistoryService.create_application_history(
                 data=dict_data
             )
 

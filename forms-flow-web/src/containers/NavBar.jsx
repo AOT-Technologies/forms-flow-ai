@@ -67,12 +67,12 @@ const NavBar = React.memo(() => {
             <Nav id="main-menu-nav" className="mr-auto active">
               <Nav.Link as={Link} to='/form'  className={`main-nav nav-item ${
                 pathname.match(/^\/form/) ? "active-tab" : ""
-              }`}>  <img className="header-forms-icon" src="/webfonts/fa-wpforms.svg" alt="back"/> Forms</Nav.Link>
+              }`}>  <i className="fa fa-wpforms fa-fw fa-lg"/> Forms</Nav.Link>
 
               {showApplications?(getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)) ?
                 (<Nav.Link as={Link} to='/application'  className={`main-nav nav-item ${
                   pathname.match(/^\/application/) ? "active-tab" : ""
-                }`}> <img className="applications-icon-header" src="/webfonts/fa-regular_list-alt.svg" alt="back"/> Applications</Nav.Link>)
+                }`}> <i className="fa fa-list-alt fa-fw fa-lg " /> Applications</Nav.Link>)
                 :null:
                 null}
 
@@ -84,33 +84,29 @@ const NavBar = React.memo(() => {
                 null}*/}
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <NavDropdown title={<><img className="task-dropdown-icon" src="/webfonts/fa-solid_list.svg" alt="back"/> Tasks</>} id="task-dropdown"
+                <NavDropdown title={<><i className="fa fa-list fa-lg fa-fw" /> Tasks</>} id="task-dropdown"
                              className={`main-nav nav-item taskDropdown ${pathname.match(/^\/task/) ? "active-tab-dropdown" : ""}`} onClick={goToTask}>
                   <ServiceFlowFilterListDropDown/>
               </NavDropdown>:null}
 
-              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><img className="dasboard-icon-dropdown" src="/webfonts/fa_dashboard.svg" alt="back"/> Dashboards</>}
+              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><i className="fa fa-tachometer fa-lg fa-fw"/>Dashboards</>}
                                                                               id="dashboard-dropdown"
                                                                               className={`main-nav nav-item ${
                                                                                 pathname.match(/^\/metrics/) || pathname.match(/^\/insights/) ? "active-tab-dropdown" : ""
                                                                               }`}>
                 <NavDropdown.Item as={Link} to='/metrics' className={`main-nav nav-item ${
                   pathname.match(/^\/metrics/) ? "active-tab" : ""
-                }`}><img src="/webfonts/fa_pie-chart.svg" alt="back"/> Metrics</NavDropdown.Item>
+                }`}><i className="fa fa-pie-chart fa-fw fa-lg"  /> Metrics</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to='/insights' className={`main-nav nav-item ${
                   pathname.match(/^\/insights/) ? "active-tab" : ""
-                }`}><img src="/webfonts/fa_lightbulb-o.svg" alt="back"/> Insights</NavDropdown.Item>
+                }`}><i className="fa fa-lightbulb-o fa-fw fa-lg"/> Insights</NavDropdown.Item>
               </NavDropdown>:null}
             </Nav>
             <Nav className="ml-auto">
                   <Dropdown alignRight>
                     <Dropdown.Toggle id="dropdown-basic" as="div">
                    <span className="mr-1">
-                      <img
-                        className="img-xs rounded-circle"
-                        src="/assets/Images/user.svg"
-                        alt="profile"
-                      />
+                   <i className="fa fa-user fa-lg"/>
                     </span>
                       <span className="d-none d-lg-inline-block">
                       {user?.name || user?.preferred_username || ""}
@@ -118,7 +114,7 @@ const NavBar = React.memo(() => {
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <Dropdown.Item> {user?.name || user?.preferred_username}<br/>
-                        <i className="fa fa-users fa-fw"/>
+                        <i className="fa fa-users fa-lg fa-fw"/>
                         <b>{getUserRoleName(userRoles)}</b></Dropdown.Item>
                       <Dropdown.Divider/>
                       <Dropdown.Item onClick ={logout}><i className="fa fa-sign-out fa-fw"/> Logout</Dropdown.Item>

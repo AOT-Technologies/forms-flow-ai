@@ -12,6 +12,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import {ALL_TASKS} from "./constants/taskConstants";
 import {
+  reloadTaskFormSubmission,
   setBPMFilterLoader,
   setBPMTaskDetailLoader,
   setFilterListParams,
@@ -35,6 +36,7 @@ export default React.memo(() => {
   const sortParams = useSelector((state) => state.bpmTasks.filterListSortParams);
   const searchParams = useSelector((state) => state.bpmTasks.filterListSearchParams);
   const listReqParams = useSelector((state) => state.bpmTasks.listReqParams);
+  const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const selectedFilterIdRef=useRef(selectedFilterId);
   const bpmTaskIdRef=useRef(bpmTaskId);
   const reqDataRef=useRef(reqData);
@@ -76,7 +78,7 @@ export default React.memo(() => {
 
   const SocketIOCallback = useCallback((refreshedTaskId, forceReload) => {
       if(forceReload){
-        dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current)); //Refreshes the Tasks
+        dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current,refreshedTaskId)); //Refreshes the Tasks
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current){
           dispatch(setBPMTaskDetailLoader(true));
           dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
@@ -87,12 +89,17 @@ export default React.memo(() => {
           dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current)); //Refreshes the Task
         }
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current) { //Refreshes task if its selected
-          dispatch(getBPMTaskDetail(bpmTaskIdRef.current));
-          dispatch(getBPMGroups(bpmTaskIdRef.current))
+          dispatch(getBPMTaskDetail(bpmTaskIdRef.current,(err,resTask)=>{
+            // Should dispatch When task claimed user  is not the logged in User
+            if(resTask?.assignee!==currentUser){
+              dispatch(reloadTaskFormSubmission(true));
+            }
+          }));
+          dispatch(getBPMGroups(bpmTaskIdRef.current));
         }
       }
     }
-  ,[dispatch]);
+  ,[dispatch,currentUser]);
 
   useEffect(()=>{
     if(!SocketIOService.isConnected()){

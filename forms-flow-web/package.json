@@ -1,7 +1,7 @@
 {
   "name": "formsflow-ai-react",
   "description": "React web app for formsflow.ai project",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "main": "index.js",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
@@ -76,7 +76,10 @@
     "react-dom": "^17.0.2",
     "react": "^17.0.2",
     "dns-packet": "^5.2.4",
-    "ws": "^7.4.6"
+    "ws": "^7.4.6",
+    "css-what": "^5.0.1",
+    "browserslist": "^4.16.5",
+    "glob-parent": "^5.1.2"
   },
   "browserslist": [
     ">0.2%",

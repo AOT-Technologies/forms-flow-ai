@@ -5,7 +5,7 @@ import os
 from flask import Flask
 from flask import request
 from . import config, models
-from .models import db, ma, mongo
+from .models import db, ma
 from .resources import API
 from api.utils.auth import jwt
 from api.utils.constants import (
@@ -28,7 +28,6 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
 
     db.init_app(app)
     ma.init_app(app)
-    mongo.init_app(app)
 
     API.init_app(app)
     setup_jwt_manager(app, jwt)
@@ -39,12 +38,18 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
             response.headers["Access-Control-Allow-Origin"] = ALLOW_ALL_ORIGINS
         else:
             for url in (allowed_origins := CORS_ORIGINS):
+                assert request.headers['Host']
                 if request.headers.get("Origin"):
                     response.headers["Access-Control-Allow-Origin"] = request.headers[
                         "Origin"
                     ]
                 elif url.find(request.headers["Host"]) != -1:
                     response.headers["Access-Control-Allow-Origin"] = url
+        return response
+
+    @app.after_request
+    def add_additional_headers(response):  # pylint: disable=unused-variable
+        response.headers['X-Frame-Options'] = 'DENY'
         return response
 
     register_shellcontext(app)

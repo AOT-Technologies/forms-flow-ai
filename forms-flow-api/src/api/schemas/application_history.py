@@ -3,18 +3,18 @@
 from marshmallow import EXCLUDE, Schema, fields
 
 
-class ApplicationAuditReqSchema(Schema):
-    """This class manages application list request schema."""
+# class ApplicationHistoryReqSchema(Schema):
+#     """This class manages application list request schema."""
 
-    class Meta:  # pylint: disable=too-few-public-methods
-        """Exclude unknown fields in the deserialized output."""
+#     class Meta:  # pylint: disable=too-few-public-methods
+#         """Exclude unknown fields in the deserialized output."""
 
-        unknown = EXCLUDE
+#         unknown = EXCLUDE
 
-    application_id = fields.Str()
+#     application_id = fields.Str()
 
 
-class ApplicationAuditSchema(Schema):
+class ApplicationHistorySchema(Schema):
     """This class manages aggregated application response schema."""
 
     class Meta:  # pylint: disable=too-few-public-methods

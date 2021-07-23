@@ -9,7 +9,7 @@ from .application import (
     ApplicationListReqSchema,
     ApplicationUpdateSchema,
 )
-from .application_audit import ApplicationAuditSchema, ApplicationAuditReqSchema
+from .application_history import ApplicationHistorySchema
 from .form_process_mapper import FormProcessMapperSchema
 from .process import (
     ProcessListSchema,
@@ -19,6 +19,5 @@ from .process import (
     ProcessMessageSchema,
     ProcessActivityInstanceSchema,
 )
-from .sentiment_analysis import SentimentAnalysisSchema
 from .task import TaskSchema, TaskVariableSchema
 from .tenant import TenantSchema

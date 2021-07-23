@@ -65,14 +65,14 @@ const Preview = class extends PureComponent {
 {/*          <span>
            <img src="/form.svg" width="30" height="30" alt="form" />
           </span>*/}
-          <h3 className="task-head"> <img src="/webfonts/fa-wpforms.svg" alt="back"/> &nbsp; {form.title}</h3>
+          <h3 className="task-head"> <i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; {form.title}</h3>
           <Button
             className="btn btn-primary btn-sm form-btn pull-right btn-right"
             onClick={() => {
               dispatch(push(`/formflow/${form._id}/edit`));
             }}
           >
-            <img src="/webfonts/fa_pencil.svg" alt="back"/>
+            <i className="fa fa-pencil" aria-hidden="true"/>
             &nbsp;&nbsp;Edit Form
           </Button>
           {/* <Button className="btn btn-primary btn-sm form-btn pull-right btn-right"

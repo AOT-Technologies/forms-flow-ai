@@ -30,7 +30,7 @@ If you are interested in contributing to the project, you can install through do
 It's recommended to download dev-packages to follow Python coding standards for project like PEP8 if you are interested in contributing to project.
 You installing dev-packages using pip as follows:
 
-```python3 -m pip install -r requirements-dev.txt```
+```python3 -m pip install -r requirements/dev.txt```
 
 ### Keycloak Setup
 
@@ -61,10 +61,6 @@ Variable name | Meaning | Possible values | Default value |
 `CAMUNDA_API_URL`:triangular_flag_on_post:|Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
-`FORMSFLOW_API_ANALYTICS_DB_USERNAME`|Mongo DB Connection username|Used on installation to create the database.Choose your own|`mongo`
-`FORMSFLOW_API_ANALYTICS_DB_PASSWORD`|Mongo DB Connection password|Used on installation to create the database.Choose your own|`changeme`
-`FORMSFLOW_API_ANALYTICS_DB_NAME`|Mongo DB Connection database name|Used on installation to create the database.Choose your own|`analytics`
-`FORMSFLOW_API_ANALYTICS_DB_URL`|Mongo DB Connection URL for analytics database using for sentiment analysis component|Used on installation to create the Analytics database.Choose your own|`mongodb://mongo:changeme@forms-flow-webapi-analytics-db:27019/analytics?authSource=admin&authMechanism=SCRAM-SHA-256`
 
 **NOTE : Default realm is `forms-flow-ai`**
 

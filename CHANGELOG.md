@@ -23,7 +23,6 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Removed additional parameters from the default configuration, which was causing keycloak import to fail in v11.0.
 
-<<<<<<< HEAD
 **forms-flow-web**
 
 * Fixed in the `Tasks` section on completing a particular task, the task list is not being removed from LHS.

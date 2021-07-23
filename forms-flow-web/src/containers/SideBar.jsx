@@ -111,7 +111,7 @@ const SideBar = React.memo(() => {
                   pathname.match(/^\/insights/) ? "active-tab" : ""
                 }`}
               >
-                <img src="/webfonts/fa_lightbulb-o.svg" alt="back"/>
+                <i className="fa fa-lightbulb-o"/>
                 Insights
               </Link>
             ) : null}

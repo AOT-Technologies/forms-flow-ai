@@ -84,7 +84,7 @@ const List = React.memo((props) => {
                         <img src="/form.svg" width="30" height="30" alt="form" />
                     </span>*/}
         <h3 className="ml-3">
-          <span className="task-head-details"> <img className="icon-wp-forms" src="/webfonts/fa-wpforms.svg" alt="back"/><span className="forms-text">Forms /</span></span> {form.title}
+          <span className="task-head-details"> <i className="fa fa-wpforms" aria-hidden="true"/><span className="forms-text">Forms /</span></span> {form.title}
         </h3>
         {/* {userRoles.includes(CLIENT) ? <Link className="btn btn-primary form-btn btn-right" to={`/form/${formId}`}>
         <img src="/webfonts/fa_plus.svg" alt="back"/> New Submisssion
@@ -127,7 +127,6 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onAction: (submission, action) => {
       switch (action) {
         case 'viewSubmission':
-        case 'row':
           dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`));
           break;
         case 'edit':

@@ -5,8 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.io.socket.message.TaskEventMessage;
 import org.camunda.bpm.extension.commons.io.socket.message.TaskMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +18,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.logging.Logger;
+
 
 /**
  * This class intercepts all camunda task and push socket messages for web tier updates.
@@ -25,7 +28,7 @@ import java.util.logging.Logger;
 @Component
 public class CamundaEventListener {
 
-    private final Logger LOGGER = Logger.getLogger(CamundaEventListener.class.getName());
+    private final Logger logger = LoggerFactory.getLogger(CamundaEventListener.class.getName());
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -33,19 +36,26 @@ public class CamundaEventListener {
     @Value("${websocket.messageType}")
     private String messageCategory;
 
+    @Value("${websocket.messageEvents}")
+    private String messageEvents;
+
+
 
     @EventListener
     public void onTaskEventListener(DelegateTask taskDelegate) {
         try {
-            if(isAllowed("TASK_EVENT_DETAILS")) {
-                this.template.convertAndSend("/topic/task-event-details",  getObjectMapper().writeValueAsString(getTaskMessage(taskDelegate)));
+            if (isRegisteredEvent(taskDelegate.getEventName())) {
+                if (isAllowed("TASK_EVENT_DETAILS")) {
+                    this.template.convertAndSend("/topic/task-event-details", getObjectMapper().writeValueAsString(getTaskMessage(taskDelegate)));
+                }
+                if (isAllowed("TASK_EVENT")) {
+                    this.template.convertAndSend("/topic/task-event", getObjectMapper().writeValueAsString(getTaskEventMessage(taskDelegate)));
+                }
             }
-            if(isAllowed("TASK_EVENT")) {
-                this.template.convertAndSend("/topic/task-event",  getObjectMapper().writeValueAsString(getTaskEventMessage(taskDelegate)));
+            } catch(JsonProcessingException e){
+                logger.error("Unable to send message", e);
             }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+
     }
 
     private ObjectMapper getObjectMapper() {
@@ -70,6 +80,17 @@ public class CamundaEventListener {
         return Arrays.asList(StringUtils.split(messageCategory,",")).contains(category);
     }
 
+    private boolean isRegisteredEvent(String eventName) {
+        if("ALL".equalsIgnoreCase(messageEvents)) { return true;}
+        return getRegisteredEvents().contains(eventName);
+    }
+
+    private List<String> getRegisteredEvents() {
+        if ("DEFAULT".equalsIgnoreCase(messageEvents)) {
+            return getDefaultRegisteredEvents();
+        }
+        return Arrays.asList(StringUtils.split(messageEvents,","));
+    }
 
     private Map<String,Object> getVariables(DelegateTask taskDelegate) {
         List<String> configMap =getElements();
@@ -84,6 +105,10 @@ public class CamundaEventListener {
 
     private List<String> getElements() {
         return new ArrayList<>(Arrays. asList("applicationId", "formUrl", "applicationStatus"));
+    }
+
+    private List<String> getDefaultRegisteredEvents() {
+        return Arrays.asList(TaskListener.EVENTNAME_CREATE,TaskListener.EVENTNAME_UPDATE,TaskListener.EVENTNAME_COMPLETE);
     }
 
 

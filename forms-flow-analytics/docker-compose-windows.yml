@@ -19,17 +19,25 @@ services:
       REDASH_WEB_WORKERS: 4
   scheduler:
     <<: *redash-service
-    command: dev_server
+    command: dev_scheduler
     depends_on:
       - server
   worker:
     <<: *redash-service
-    command: worker
+    command: dev_worker
     environment:
       QUEUES: "periodic emails default"
       WORKERS_COUNT: 1
+    depends_on:
+      - server
+  adhoc_worker:
+    <<: *redash-service
+    command: worker
+    environment:
+      QUEUES: "queries"
+      WORKERS_COUNT: 2
   redis:
-    image: redis:latest
+    image: redis:3-alpine
     restart: always
   postgres:
     image: postgres:9.6-alpine

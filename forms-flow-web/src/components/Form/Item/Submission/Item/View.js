@@ -29,7 +29,7 @@ const View = React.memo((props) => {
         <h3 className="task-head"> {form.title}</h3>
         {showPrintButton?<div className="btn-right">
           <Button className="btn btn-primary btn-sm form-btn pull-right btn-right" onClick={() => PdfDownloadService.getPdf(form, submission)}>
-          <img src="/webfonts/fa_print.svg" alt="back"/> Print As PDF</Button></div>:null}
+          <i className="fa fa-print" aria-hidden="true"/> Print As PDF</Button></div>:null}
       </div>
 
       <Errors errors={errors}/>

@@ -49,11 +49,11 @@ const UserSelectionDebounce = React.memo((props) => {
   const formatNameLabel=(firstName, lastName, email)=>{
     switch (searchTypeOption.searchType){
       case SearchByLastName:
-        return `(${lastName} ${firstName})`
+        return `(${lastName||''} ${firstName||''})`
       case SearchByFirstName:
-        return `(${firstName} ${lastName})`
+        return `(${firstName||''} ${lastName||''})`
       case SearchByEmail:
-        return `(${email})`;
+        return `(${email||''})`;
       default:
         return '';
     }
@@ -78,10 +78,10 @@ const UserSelectionDebounce = React.memo((props) => {
     <Row md={{span: 3, offset: 3}}>
       <Col xs={12} md={10}>
         <button className="btn btn-pos" title="Update User" onClick={() => onChangeClaim(selectedValue?.value || null)}>
-          <img src="/webfonts/fa_check.svg" alt="back"/>
+        <i className="fa fa-check fa-lg mr-1" />
         </button>
         <button className="btn btn-pos" onClick={onClose} title="Close">
-          <img src="/webfonts/fa_times-circle.svg" alt="back"/>
+        <i className="fa fa-times-circle fa-lg mr-1" />
         </button>
       </Col>
     </Row>

@@ -22,7 +22,7 @@ const Edit = React.memo((props) => (
      {/* <span className="ml-3">
         <img src="/form.svg" alt="Forms" />
       </span>*/}
-      <h3  className="ml-3 task-head"><img src="/webfonts/fa-wpforms.svg" alt="back"/> &nbsp; {props.form.title}</h3>
+      <h3  className="ml-3 task-head"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; {props.form.title}</h3>
     </div>
 
     <hr />

@@ -1,7 +1,11 @@
 package org.camunda.bpm.extension.keycloak.showcase.rest;
 
+
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.spin.Spin;
+import org.camunda.spin.SpinList;
+import org.camunda.spin.json.SpinJsonNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -50,27 +54,37 @@ public class KeycloakAuthenticationFilter implements Filter {
         // String userId = Spin.JSON(claims).prop("sub").stringValue();
         //String userId = Spin.JSON(claims).prop("email").stringValue(); // useEmailAsCamundaUserId = true
          String userId = Spin.JSON(claims).prop("preferred_username").stringValue(); // useUsernameAsCamundaUserId = true
-        LOG.debug("Extracted userId from bearer token: {}", userId);
+		LOG.debug("Extracted userId from bearer token: {}", userId);
 
         try {
-        	identityService.setAuthentication(userId, getUserGroups(userId));
+        	identityService.setAuthentication(userId, getUserGroups(userId , claims));
         	chain.doFilter(request, response);
         } finally {
         	identityService.clearAuthentication();
         }
 	}
 
-    /**
-     * Queries the groups of a given user.
-     * @param userId the user's ID
-     * @return list of groups the user belongs to
-     */
-    private List<String> getUserGroups(String userId){
-        List<String> groupIds = new ArrayList<>();
-        // query groups using KeycloakIdentityProvider plugin
-        identityService.createGroupQuery().groupMember(userId).list()
-        	.forEach( g -> groupIds.add(g.getId()));
-        return groupIds;
+
+	/**
+	 * Retrieves groups for given userId
+	 * @param userId
+	 * @param claims
+	 * @return
+	 */
+	private List<String> getUserGroups(String userId, String claims){
+		List<String> groupIds = new ArrayList<>();
+		if(Spin.JSON(claims).hasProp("groups")) {
+			SpinList<SpinJsonNode> groups = Spin.JSON(claims).prop("groups").elements();
+			for(SpinJsonNode entry : groups) {
+				String groupName = StringUtils.contains(entry.stringValue(),"/") ? StringUtils.substringAfter(entry.stringValue(), "/") : entry.stringValue();
+				groupIds.add(groupName);
+			}
+		} else {
+			identityService.createGroupQuery().groupMember(userId).list()
+					.forEach( g -> groupIds.add(g.getId()));
+		}
+       return groupIds;
     }
+
 
 }

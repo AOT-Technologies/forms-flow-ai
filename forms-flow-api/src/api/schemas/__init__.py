@@ -19,6 +19,5 @@ from .process import (
     ProcessMessageSchema,
     ProcessActivityInstanceSchema,
 )
-from .sentiment_analysis import SentimentAnalysisSchema
 from .task import TaskSchema, TaskVariableSchema
 from .tenant import TenantSchema

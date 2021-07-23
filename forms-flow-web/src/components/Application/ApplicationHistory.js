@@ -68,7 +68,7 @@ const HistoryList = React.memo((props) => {
             <div className="main-header">
               <h3 className="task-head">
               {/* <i class="fa fa-list-alt" alt="Task" aria-hidden="true"></i> */}
-              <img src="/webfonts/fa-solid_list.svg" alt="back"/>
+              <i className="fa fa-list" aria-hidden="true"/>
               &nbsp;Application History
               </h3>
             </div>

@@ -122,7 +122,7 @@ const TaskHeader = React.memo(() => {
 
   const FollowUpDateInput= React.forwardRef(({ value, onClick }, ref) =>{
    return    <div onClick={onClick} ref={ref}>
-      <img src="/webfonts/fa_calendar.svg" alt="back"/>{" "}
+      <i className="fa fa-calendar mr-1"/>{" "}
       {followUpDate
         ? <span className="mr-4">{moment(followUpDate).fromNow()}</span>
         : "Set follow-up Date"}
@@ -133,7 +133,7 @@ const TaskHeader = React.memo(() => {
 
   const DueDateInput=React.forwardRef(({ value, onClick }, ref) =>{
     return    <div onClick={onClick} ref={ref}>
-     <img src="/webfonts/fa_bell.svg" alt="back"/>{" "}
+     <i className="fa fa-bell mr-1"/>{" "}
       {dueDate ? <span className="mr-4">{moment(dueDate).fromNow()}</span> : "Set Due date"}
     </div>
   });

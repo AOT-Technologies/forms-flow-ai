@@ -89,6 +89,7 @@ export default React.memo(() => {
         }
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current) { //Refreshes task if its selected
           dispatch(getBPMTaskDetail(bpmTaskIdRef.current,()=>{
+            //Should dispatch on actual form Save Event
             dispatch(reloadTaskFormSubmission(true));
           }));
           dispatch(getBPMGroups(bpmTaskIdRef.current));

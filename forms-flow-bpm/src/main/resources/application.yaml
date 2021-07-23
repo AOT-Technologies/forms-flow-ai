@@ -155,9 +155,12 @@ plugin.identity.keycloak:
 
 app.security.origin: ${APP_SECURITY_ORIGIN}
 
+# Allowed possible values for WEBSOCKET_MESSAGE_EVENTS:  DEFAULT, ALL or filtered values from (create,update,assignment,timeout,complete) as comma separated
+# DEFAULT maps to events: create,assignment,complete
 websocket:
   security:
     origin: ${WEBSOCKET_SECURITY_ORIGIN}
     secretKey: ${WEBSOCKET_ENCRYPT_KEY}
   messageType: ${WEBSOCKET_MESSAGE_TYPE}
+  messageEvents: ${WEBSOCKET_MESSAGE_EVENTS:DEFAULT}
 

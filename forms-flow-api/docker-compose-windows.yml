@@ -16,25 +16,6 @@ services:
     networks:
       - forms-flow-webapi-network
 
-#Analytics DB - UnComment below if mongo db setup is available
-
-  forms-flow-webapi-analytics-db:
-    image: mongo
-    restart: always
-    hostname: forms-flow-webapi-analytics-db
-    ports:
-       - '27019:27017'
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${FORMSFLOW_API_ANALYTICS_DB_USERNAME:-mongo}
-      MONGO_INITDB_ROOT_PASSWORD: ${FORMSFLOW_API_ANALYTICS_DB_PASSWORD:-changeme}
-      MONGO_INITDB_DATABASE: ${FORMSFLOW_API_ANALYTICS_DB_NAME:-analytics}
-    volumes:
-      - mdb-data:/data/analytics/db/
-      - ./mongodb/data/log/:/var/log/mongodb/
-      - ./mongodb/mongod.conf:/etc/mongod.conf
-    networks:
-      - forms-flow-webapi-network
-
   forms-flow-webapi:
     build:
       context: ./
@@ -42,7 +23,6 @@ services:
     restart: unless-stopped
     links:
       - forms-flow-webapi-db
-      - forms-flow-webapi-analytics-db
     ports:
       - '5000:5000'
     volumes:
@@ -62,7 +42,6 @@ services:
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
-      MONGODB_URI: ${FORMSFLOW_API_ANALYTICS_DB_URL:-mongodb://changeme:analytics@forms-flow-webapi-analytics-db:27017/analytics?authSource=admin&authMechanism=SCRAM-SHA-256}
     stdin_open: true # -i
     tty: true # -t
     networks:

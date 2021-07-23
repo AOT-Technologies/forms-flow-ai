@@ -5,7 +5,7 @@ import os
 from flask import Flask
 from flask import request
 from . import config, models
-from .models import db, ma, mongo
+from .models import db, ma
 from .resources import API
 from api.utils.auth import jwt
 from api.utils.constants import (
@@ -28,7 +28,6 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
 
     db.init_app(app)
     ma.init_app(app)
-    mongo.init_app(app)
 
     API.init_app(app)
     setup_jwt_manager(app, jwt)

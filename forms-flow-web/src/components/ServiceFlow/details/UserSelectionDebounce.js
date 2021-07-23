@@ -49,11 +49,11 @@ const UserSelectionDebounce = React.memo((props) => {
   const formatNameLabel=(firstName, lastName, email)=>{
     switch (searchTypeOption.searchType){
       case SearchByLastName:
-        return `(${lastName} ${firstName})`
+        return `(${lastName||''} ${firstName||''})`
       case SearchByFirstName:
-        return `(${firstName} ${lastName})`
+        return `(${firstName||''} ${lastName||''})`
       case SearchByEmail:
-        return `(${email})`;
+        return `(${email||''})`;
       default:
         return '';
     }

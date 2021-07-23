@@ -7,5 +7,8 @@ from .form_process_mapper import FormProcessMapperService
 from .process import ProcessService
 from .task import TaskService
 # from .tenant import TenantService
+<<<<<<< HEAD
 
 __all__ = ['ApplicationService', 'ApplicationHistoryService', 'FormProcessMapperService', 'ProcessService', 'TaskService']
+=======
+>>>>>>> v4.0.2-alpha

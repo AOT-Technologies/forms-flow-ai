@@ -7,5 +7,8 @@ from .application import Application
 from .application_history import ApplicationHistory
 # from .formio_token import FormIOToken
 # from .tenant import Tenant
+<<<<<<< HEAD
 
 __all__ = ['db', 'FormProcessMapper', 'Application', 'ApplicationHistory']
+=======
+>>>>>>> v4.0.2-alpha

@@ -1,6 +1,8 @@
--r ./requirements.txt
-autopep8==1.4.4
-black==20.8b1 
+# Everything the developer needs in addition to the production requirements
+-r prod.txt
+
+autopep8
+black
 flake8==3.9.2
 flake8-blind-except==0.2.0
 flake8-debugger==4.0.0
@@ -11,3 +13,13 @@ flake8-quotes==2.1.1
 pycodestyle==2.7.0
 pytest==5.3.2
 pyflakes==2.3.1
+coverage
+pylint
+pylint-flask
+pytest-cov
+pytest-env
+pytest-dotenv
+pytest-mock
+pep8-naming
+autopep8
+pydocstyle

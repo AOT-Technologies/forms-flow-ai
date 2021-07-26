@@ -1,20 +1,21 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
-## 4.0.2 - 2021-07-21
+## 4.0.2 - 2021-07-23
 
-`Fixed`
-
-**forms-flow-web**
-
-* In the `Tasks` section on completing a particular task, the task list is not being removed from LHS.
-* Solution vulnerability fixes.
-* Upon claiming the form, the form data is loaded from the cache instead of an API call
-* Application status should be created as a hidden element by default during form design
+`Added`
 
 **forms-flow-bpm**
 
-* Auto removal of old forms-flow-forms token data from DB. It was causing the token to be expired.
+* Added task listener events as configurable one's in application property. New property added is websocket.messageEvents . 
+
+`Fixed`
+
+**forms-flow-analytics**
+
+* Fixed the issue of new datasource failing on creating.
+
+**forms-flow-bpm**
 
 * Approver action dropdown appearing on the clerk's task section once the approver returns the form is fixed for the `New Business License Application form`.
 
@@ -22,16 +23,32 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Removed additional parameters from the default configuration, which was causing keycloak import to fail in v11.0.
 
+**forms-flow-web**
+
+* Fixed in the `Tasks` section on completing a particular task, the task list is not being removed from LHS.
+* Solution vulnerability fixes.
+* Resolved the issue of form data is not being updated from cache on claiming the form.
+* Identified & removed redundant calls on updating the task details.
+
+
 `Modified`
 
 **forms-flow-api**
 
-- Rename Application Audit to Application History(without affecting database table).
+* Rename Application Audit to Application History(without affecting database table).
+* Removed Sentiment Analysis component and database, which will be separate micro-service in upcoming release.
 
 **forms-flow-bpm**
 
-* Formio Access Token Cache (Internal) workflow is modified to run recursively and stop on a signal.
+* Refined the keycloak group query to improve API performance.
+* Formio Access Token Cache (Internal) workflow is modified to start after deployment and added scripts for cleanup.
 
+**forms-flow-web**
+
+* Application status component created as a hidden element by default during form design.
+
+`Generic Changes`
+* Added gitter community 
 
 ## 4.0.1 - 2021-07-13
 

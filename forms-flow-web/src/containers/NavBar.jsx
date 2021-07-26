@@ -67,12 +67,12 @@ const NavBar = React.memo(() => {
             <Nav id="main-menu-nav" className="mr-auto active">
               <Nav.Link as={Link} to='/form'  className={`main-nav nav-item ${
                 pathname.match(/^\/form/) ? "active-tab" : ""
-              }`}>  <i class="fa fa-wpforms fa-fw fa-lg"/> Forms</Nav.Link>
+              }`}>  <i className="fa fa-wpforms fa-fw fa-lg"/> Forms</Nav.Link>
 
               {showApplications?(getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)) ?
                 (<Nav.Link as={Link} to='/application'  className={`main-nav nav-item ${
                   pathname.match(/^\/application/) ? "active-tab" : ""
-                }`}> <i class="fa fa-list-alt fa-fw fa-lg " /> Applications</Nav.Link>)
+                }`}> <i className="fa fa-list-alt fa-fw fa-lg " /> Applications</Nav.Link>)
                 :null:
                 null}
 
@@ -84,29 +84,29 @@ const NavBar = React.memo(() => {
                 null}*/}
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <NavDropdown title={<><i class="fa fa-list fa-lg fa-fw" /> Tasks</>} id="task-dropdown"
+                <NavDropdown title={<><i className="fa fa-list fa-lg fa-fw" /> Tasks</>} id="task-dropdown"
                              className={`main-nav nav-item taskDropdown ${pathname.match(/^\/task/) ? "active-tab-dropdown" : ""}`} onClick={goToTask}>
                   <ServiceFlowFilterListDropDown/>
               </NavDropdown>:null}
 
-              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><i class="fa fa-tachometer fa-lg fa-fw"/>Dashboards</>}
+              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><i className="fa fa-tachometer fa-lg fa-fw"/>Dashboards</>}
                                                                               id="dashboard-dropdown"
                                                                               className={`main-nav nav-item ${
                                                                                 pathname.match(/^\/metrics/) || pathname.match(/^\/insights/) ? "active-tab-dropdown" : ""
                                                                               }`}>
                 <NavDropdown.Item as={Link} to='/metrics' className={`main-nav nav-item ${
                   pathname.match(/^\/metrics/) ? "active-tab" : ""
-                }`}><i class="fa fa-pie-chart fa-fw fa-lg"  /> Metrics</NavDropdown.Item>
+                }`}><i className="fa fa-pie-chart fa-fw fa-lg"  /> Metrics</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to='/insights' className={`main-nav nav-item ${
                   pathname.match(/^\/insights/) ? "active-tab" : ""
-                }`}><i class="fa fa-lightbulb-o fa-fw fa-lg"/> Insights</NavDropdown.Item>
+                }`}><i className="fa fa-lightbulb-o fa-fw fa-lg"/> Insights</NavDropdown.Item>
               </NavDropdown>:null}
             </Nav>
             <Nav className="ml-auto">
                   <Dropdown alignRight>
                     <Dropdown.Toggle id="dropdown-basic" as="div">
                    <span className="mr-1">
-                   <i class="fa fa-user fa-lg"/>
+                   <i className="fa fa-user fa-lg"/>
                     </span>
                       <span className="d-none d-lg-inline-block">
                       {user?.name || user?.preferred_username || ""}

@@ -91,7 +91,7 @@ const List = class extends PureComponent {
             <div className="container">
               <div className="main-header">
               <h3 className="task-head">
-              <img src="/webfonts/fa-solid_list.svg" alt="back"/>
+              <i className="fa fa-list" />
                 &nbsp; Tasks
                   <div className="col-md-1 task-count">({tasks.length})</div>
                 </h3>

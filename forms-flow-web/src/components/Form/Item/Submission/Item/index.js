@@ -52,7 +52,7 @@ const Item = React.memo((props) => {
       <ul className="nav nav-tabs">
         {showViewSubmissions && getUserRolePermission(userRoles, STAFF_REVIEWER) ?<li className="nav-item">
           <Link className="nav-link" to={`/form/${formId}/submission`}>
-            <img src="/webfonts/fa_chevron-left.svg" alt="back"/>
+            <i className="fa fa-chevron-left fa-lg" />
           </Link>
         </li>:null}
         {/*{(path.indexOf("edit") > 0) ?

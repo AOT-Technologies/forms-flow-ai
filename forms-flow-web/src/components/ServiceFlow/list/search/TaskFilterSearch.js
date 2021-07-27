@@ -68,7 +68,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
 
   const UpDateInputComponent = React.forwardRef(({value, onClick}, ref) => {
     return <div onClick={onClick} ref={ref}>
-      <img src="/webfonts/fa_calendar.svg" alt="back"/>{" "}
+      <i className="fa fa-calendar"/>{" "}
       {inputDate
         ? <span className="mr-4">{getFormattedDateAndTime(inputDate)}</span>
         : "??"}

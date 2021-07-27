@@ -86,7 +86,7 @@ const Dashboard = React.memo(() => {
         <div className="row ">
           <div className="col-12">
             <h1 className="dashboard-title">
-            <img className="dashboard-icon-style" src="/webfonts/fa_pie-chart.svg" alt="back"/>
+            <i className="fa fa-pie-chart p-1" />
               {/* <i className="fa fa-pie-chart" aria-hidden="true"/> */}
                Metrics
             </h1>
@@ -105,7 +105,7 @@ const Dashboard = React.memo(() => {
                   rangeDivider=" - "
                   clearIcon={null}
                   calendarIcon={
-                    <img src="/webfonts/fa_calendar.svg" alt="back"/>
+                    <i className="fa fa-calendar" />
                   }
                 />
               </div>

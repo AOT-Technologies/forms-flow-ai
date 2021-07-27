@@ -42,7 +42,7 @@ const ViewTask = React.memo((props) => {
       <div className="container">
         <div className="main-header">
           <Link to="/task">
-            <img src="/back.svg" alt="back"/>
+          <i className="fa fa-chevron-left fa-lg" />
           </Link>
 {/*          <span className="ml-3">
                <img src="/clipboard.svg" alt="Task"/>
@@ -50,7 +50,7 @@ const ViewTask = React.memo((props) => {
 
           </span>*/}
           <h3 className="ml-3">
-            <span className="task-head-details"> <img src="/webfonts/fa-solid_list.svg" alt="back"/> Tasks /</span>{" "}
+            <span className="task-head-details"><i className="fa fa-list" /> Tasks /</span>{" "}
             {`${taskDetail.name}`}
           </h3>
         </div>

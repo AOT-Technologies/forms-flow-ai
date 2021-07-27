@@ -355,7 +355,7 @@ class StepperPage extends PureComponent {
         <div>
           {this.props.isAuthenticated ?
             <Link to="/form" title="Back to Form List">
-              <img src="/back.svg" alt="back" />
+              <i className="fa fa-chevron-left fa-lg" />
             </Link>
             :
             null

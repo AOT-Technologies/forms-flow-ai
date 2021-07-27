@@ -52,8 +52,7 @@ class _Config():  # pylint: disable=too-few-public-methods
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # POSTGRESQL
-    SQLALCHEMY_DATABASE_URI = os.getenv('POSTGRES_DATABASE_URL', '')
-    MONGO_URI = os.getenv('MONGODB_URI', '')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', '')
     # SQLALCHEMY_ECHO = True
 
     TESTING = False
@@ -78,19 +77,19 @@ class _Config():  # pylint: disable=too-few-public-methods
     # BPM_API_BASE = os.getenv('BPM_API_BASE')
 
     # API Base URL (Self)
-    # WEB_API_BASE_URL = os.getenv('WEB_API_BASE_URL')
+    WEB_API_BASE_URL = os.getenv('DATA_ANALYSIS_API_BASE_URL')
 
     DB_PG_CONFIG = {
-        'host': 'localhost',
-        'port': '54330',
-        'dbname': 'postgres',
-        'user': 'postgres',
-        'password': 'admin'
+        'host': 'forms-flow-data-analysis-db',
+        'port': '5432',
+        'dbname': os.getenv("POSTGRES_DB"),
+        'user': os.getenv("POSTGRES_USER"),
+        'password': os.getenv("POSTGRES_PASSWORD")
     }
-    SQLALCHEMY_DATABASE_URI = 'postgresql://{user}:{password}@{host}:{port}/{name}'.format(
-        user=DB_PG_CONFIG['user'], password=DB_PG_CONFIG['password'], host=DB_PG_CONFIG['host'],
-        port=int(DB_PG_CONFIG['port']), name=DB_PG_CONFIG['dbname']
-    )
+    # SQLALCHEMY_DATABASE_URI = 'postgresql://{user}:{password}@{host}:{port}/{name}'.format(
+    #     user=DB_PG_CONFIG['user'], password=DB_PG_CONFIG['password'], host=DB_PG_CONFIG['host'],
+    #     port=int(DB_PG_CONFIG['port']), name=DB_PG_CONFIG['dbname']
+    # )
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
@@ -107,7 +106,7 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     TESTING = True
 
     # POSTGRESQL
-    SQLALCHEMY_DATABASE_URI = os.getenv('POSTGRES_DATABASE_URL_TEST', '')
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', '')
 
 
 class ProdConfig(_Config):  # pylint: disable=too-few-public-methods

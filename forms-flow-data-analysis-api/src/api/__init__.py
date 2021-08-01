@@ -31,7 +31,7 @@ def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
         return response
 
     register_shellcontext(app)
-    init_trained_model(app)
+    # init_trained_model(app)
 
     return app
 
@@ -60,8 +60,8 @@ def register_shellcontext(app):
     app.shell_context_processor(shell_context)
 
 
-def init_trained_model(app):
-    from api.models.pg import preset
+# def init_trained_model(app):
+#     from api.models.pg import preset
 
-    preset.create()
-    preset.load_model()
+#     preset.create()
+#     preset.load_model()

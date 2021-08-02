@@ -3,6 +3,7 @@
 import os
 
 from flask import Flask
+from flask_migrate import Migrate
 
 from . import config, models
 from .models import db, ma
@@ -21,6 +22,7 @@ def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
 
     db.init_app(app)
     ma.init_app(app)
+    migrate = Migrate(app, db)
 
     data_analysis_api.init_app(app)
     setup_jwt_manager(app, jwt)

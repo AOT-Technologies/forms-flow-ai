@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import ApplicationCounter from "./ApplicationCounter";
 import { useDispatch, useSelector } from "react-redux";
-
+import { Route, Redirect } from "react-router";
 import StatusChart from "./StatusChart";
 import {
   fetchMetricsSubmissionCount,
@@ -132,6 +132,7 @@ const Dashboard = React.memo(() => {
         </div>
       </div>
       </div>
+      <Route path={"/metrics/:notAvailable"}> <Redirect exact to='/404'/></Route>
     </Fragment>
   );
 });

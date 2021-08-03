@@ -1,8 +1,7 @@
-import {Link, Route, Switch, useParams, Redirect} from 'react-router-dom'
+import {Link, Route, Switch, useParams,Redirect} from 'react-router-dom'
 import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {getSubmission, selectRoot} from "react-formio";
-import NotFound from '../../../../NotFound';
 import View from './View'
 import Edit from './Edit'
 import {getApplicationById} from "../../../../../apiManager/services/applicationServices";
@@ -72,8 +71,7 @@ const Item = React.memo((props) => {
       <Switch>
         <Route exact path="/form/:formId/submission/:submissionId" component={View}/>
         {editAllowed ?<Route path="/form/:formId/submission/:submissionId/edit" component={Edit}/>:null}
-        <Route path='/404' exact={true} component={NotFound}/>
-        <Redirect from='*' to='/404'/>
+        <Redirect exact to='/404'/>
       </Switch>
     </div>
   );

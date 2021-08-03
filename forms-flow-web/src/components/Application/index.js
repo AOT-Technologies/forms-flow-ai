@@ -2,7 +2,6 @@ import React, {useEffect} from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import ApplicationList from './List';
-import NotFound from '../NotFound';
 import ViewApplication from './ViewApplication';
 import './Application.scss';
 import { setCurrentPage } from '../../actions/bpmActions';
@@ -21,9 +20,8 @@ export default React.memo(() => {
         {showApplications?<>
         <Route exact path="/application" component={ApplicationList} />
         <Route path="/application/:applicationId"><ViewApplication/></Route>
+        <Route path="/application/:applicationId/:notavailable"><Redirect exact to='/404'/></Route>
         </>:null }
-        <Route path='/404' exact={true} component={NotFound}/>
-        <Redirect from='*' to='/404'/>
       </Switch>
     </div>
   )

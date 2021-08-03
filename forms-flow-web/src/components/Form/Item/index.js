@@ -2,7 +2,6 @@ import {Route, Switch, Redirect, useParams} from 'react-router-dom'
 import React, {useEffect} from 'react'
 import {getForm} from 'react-formio'
 import {useDispatch, useSelector} from 'react-redux'
-import NotFound from '../../NotFound'
 import {STAFF_REVIEWER, CLIENT, STAFF_DESIGNER} from '../../../constants/constants'
 import View from './View'
 import Edit from './Edit'
@@ -47,8 +46,7 @@ const Item = React.memo(()=>{
           <FormActionRoute path="/form/:formId/preview" component={Preview}/>
           <FormActionRoute path="/form/:formId/edit" component={Edit}/>
           <SubmissionRoute path="/form/:formId/submission" component={Submission}/>
-          <Route path='/404' exact={true} component={NotFound}/>
-          <Redirect from='*' to='/404'/>
+          <Redirect exact to='/404'/>
         </Switch>
       </div>
     )

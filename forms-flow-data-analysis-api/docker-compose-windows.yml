@@ -11,10 +11,11 @@ services:
       POSTGRES_DB: ${DATA_ANALYSIS_DB_NAME}
       POSTGRES_HOST_AUTH_METHOD: 'trust'
     ports:
-      - '5430:5430'
+      - '5430:5432'
     restart: unless-stopped
     volumes:
-      - ./postgres/webapi:/data/postgres
+    # TODO: remove hardcoded path to the data analysis db
+      - ./postgres/dataanalysis:/data/postgres
     networks:
       - forms-flow-data-analysis-api-network
 

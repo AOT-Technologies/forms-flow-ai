@@ -3,21 +3,18 @@ version: '3.7'
 
 services:
   forms-flow-data-analysis-db:
-    image: postgres:13.3
-    restart: always
+    image: "postgres:13"
     environment:
       POSTGRES_USER: ${DATA_ANALYSIS_DB_USER}
       POSTGRES_PASSWORD: ${DATA_ANALYSIS_DB_PASSWORD}
       POSTGRES_DB: ${DATA_ANALYSIS_DB_NAME}
-      POSTGRES_HOST_AUTH_METHOD: 'trust'
-    ports:
-      - '5430:5432'
+      POSTGRES_HOST_AUTH_METHOD: "trust"
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
       - forms-flow-data-analysis-api-network
-    # expose:
-    #   - 6432
+    ports:
+      - '5430:5432'
 
   forms-flow-data-analysis-api:
     build:
@@ -27,7 +24,7 @@ services:
     links:
       - forms-flow-data-analysis-db
     ports:
-      - '5001:5001'
+      - '5000:5000'
     volumes:
       - ./:/app:rw
     environment:
@@ -45,9 +42,9 @@ services:
     networks:
       - forms-flow-data-analysis-api-network
 
-volumes:
-  db-data:
-
 networks:
   forms-flow-data-analysis-api-network:
     driver: 'bridge'
+
+volumes:
+  db-data:

@@ -33,6 +33,7 @@ import PreviewStepper from "./Steps/PreviewStepper";
 
 import "./stepper.scss";
 import {Link} from "react-router-dom";
+import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
 
 /*const statusList = [
   { label: "Active", value: "active" },
@@ -87,11 +88,17 @@ class StepperPage extends PureComponent {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let stateData = null;
+
+    if(nextProps.match.params.step !== undefined && !STEPPER_ROUTES.includes(nextProps.match.params.step)){
+      nextProps.goToPageNotFound();
+    }
+
+
     if (
       nextProps.match.params.formId &&
       nextProps.match.params.formId !== prevState.formId
     ) {
-      if (nextProps.match.params.formId !== "create") {
+      if (nextProps.match.params.formId !== FORM_CREATE_ROUTE) {
         nextProps.getForm(nextProps.match.params.formId);
         nextProps.getFormProcessesDetails(nextProps.match.params.formId);
       }
@@ -106,7 +113,7 @@ class StepperPage extends PureComponent {
       nextProps.getAllProcesses();
     }
     if (
-      nextProps.match.params.formId === "create" &&
+      nextProps.match.params.formId === FORM_CREATE_ROUTE &&
       nextProps.match.params.step === undefined
     ) {
       stateData = {
@@ -355,7 +362,7 @@ class StepperPage extends PureComponent {
         <div>
           {this.props.isAuthenticated ?
             <Link to="/form" title="Back to Form List">
-              <img src="/back.svg" alt="back" />
+              <i className="fa fa-chevron-left fa-lg" />
             </Link>
             :
             null
@@ -467,6 +474,7 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
     clearFormProcessData: () => dispatch(setFormProcessesData([])),
+    goToPageNotFound:()=>dispatch(push(`/404`))
   };
 };
 

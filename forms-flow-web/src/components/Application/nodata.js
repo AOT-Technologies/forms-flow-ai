@@ -2,7 +2,7 @@ import React from 'react';
 
 const Nodata = React.memo(() => (
 <div className="div-no-application-list text-center">
-<img src="/no-task-clipboard.svg" width="30" height="30" alt="task"/>
+<i className="fa fa-clipboard fa-lg"/>
 <br/>
 <br/>
 <label className="lbl-no-application"> No applications found </label>

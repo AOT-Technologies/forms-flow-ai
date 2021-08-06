@@ -1,8 +1,7 @@
-import {Link, Route, Switch, useParams} from 'react-router-dom'
+import {Link, Route, Switch, useParams,Redirect} from 'react-router-dom'
 import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {getSubmission, selectRoot} from "react-formio";
-
 import View from './View'
 import Edit from './Edit'
 import {getApplicationById} from "../../../../../apiManager/services/applicationServices";
@@ -52,7 +51,7 @@ const Item = React.memo((props) => {
       <ul className="nav nav-tabs">
         {showViewSubmissions && getUserRolePermission(userRoles, STAFF_REVIEWER) ?<li className="nav-item">
           <Link className="nav-link" to={`/form/${formId}/submission`}>
-            <img src="/webfonts/fa_chevron-left.svg" alt="back"/>
+            <i className="fa fa-chevron-left fa-lg" />
           </Link>
         </li>:null}
         {/*{(path.indexOf("edit") > 0) ?
@@ -72,6 +71,7 @@ const Item = React.memo((props) => {
       <Switch>
         <Route exact path="/form/:formId/submission/:submissionId" component={View}/>
         {editAllowed ?<Route path="/form/:formId/submission/:submissionId/edit" component={Edit}/>:null}
+        <Redirect exact to='/404'/>
       </Switch>
     </div>
   );

@@ -22,7 +22,7 @@ import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
-import {Route} from "react-router-dom";
+import {Route, Redirect} from "react-router-dom";
 import {push} from "connected-react-router";
 
 export default React.memo(() => {
@@ -128,7 +128,7 @@ export default React.memo(() => {
         </Col>
         <Col className="pl-0" lg={9} xs={12} sm={12} md={8} xl={9}>
           <Route path={"/task/:taskId?"}><ServiceFlowTaskDetails/></Route>
-          {/*<ServiceFlowTaskDetails/>*/}
+          <Route path={"/task/:taskId/:notAvailable"}> <Redirect exact to='/404'/></Route>
         </Col>
       </Row>
     </Container>

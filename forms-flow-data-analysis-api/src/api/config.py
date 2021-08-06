@@ -77,7 +77,7 @@ class _Config():  # pylint: disable=too-few-public-methods
     # BPM_API_BASE = os.getenv('BPM_API_BASE')
 
     # API Base URL (Self)
-    WEB_API_BASE_URL = os.getenv('DATA_ANALYSIS_API_BASE_URL')
+    WEB_API_BASE_URL = os.getenv('DATA_ANALYSIS_API_BASE_URL', default='')
 
     DB_PG_CONFIG = {
         'host': 'forms-flow-data-analysis-db',

@@ -3,10 +3,9 @@
 import os
 
 from flask import Flask
-from flask_migrate import Migrate
 
 from . import config, models
-from .models import db, ma
+from .models import db, ma, migrate
 from .resources import data_analysis_api
 from .utils.auth import jwt
 from .utils.logging import setup_logging
@@ -22,7 +21,7 @@ def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
 
     db.init_app(app)
     ma.init_app(app)
-    migrate = Migrate(app, db)
+    migrate.init_app(app, db)
 
     data_analysis_api.init_app(app)
     setup_jwt_manager(app, jwt)

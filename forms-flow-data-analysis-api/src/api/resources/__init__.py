@@ -9,15 +9,20 @@ from .checkpoint import API as CHECKPOINT_API
 from .sentiment_analysis import API as SENTIMENT_API
 
 data_analysis_api = Api(
-    version='1.0',
-    title='Sentiment-API',
-    description='API endpoint for sentiment analysis component for formsflow.ai.'
+    version="1.0",
+    title="Sentiment-API",
+    description="API endpoint for sentiment analysis component for formsflow.ai.",
 )
+
 
 @data_analysis_api.errorhandler(AuthError)
 def handle_auth_error(error: AuthError):
     """Handle Business exception."""
-    return {'message': 'Access Denied'}, error.status_code, {'Access-Control-Allow-Origin': '*'}
+    return (
+        {"message": "Access Denied"},
+        error.status_code,
+        {"Access-Control-Allow-Origin": "*"},
+    )
 
 
 data_analysis_api.add_namespace(CHECKPOINT_API, path="/checkpoint")

@@ -7,10 +7,12 @@ from ..services.sentiment_analysis import SentimentAnalyserService
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 
+
 @cors_preflight("POST,OPTIONS")
 @API.route("", methods=["POST", "OPTIONS"])
 class SentimentAnalysisResource(Resource):
     """Resource for generating Sentiment Analysis"""
+
     @staticmethod
     # @auth.require
     def post():

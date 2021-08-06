@@ -11,12 +11,12 @@ class TrainedModel(db.Model):
     Corp types are different types of corporation the payment system supports
     """
 
-    __tablename__ = 'trained_model'
+    __tablename__ = "trained_model"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     model = db.Column(db.LargeBinary)
-    active = db.Column('active', Boolean(), default=True)
+    active = db.Column("active", Boolean(), default=True)
 
     # def save(self):
     #     """Save corp type."""

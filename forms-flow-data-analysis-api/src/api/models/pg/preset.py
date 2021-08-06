@@ -5,7 +5,7 @@ import psycopg2
 
 from api.config import get_named_config
 
-CONFIG = get_named_config(os.getenv('FLASK_ENV', 'production'))
+CONFIG = get_named_config(os.getenv("FLASK_ENV", "production"))
 
 
 # def create():

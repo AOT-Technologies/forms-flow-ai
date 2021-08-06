@@ -16,30 +16,30 @@ from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv())
 
 CONFIGURATION = {
-    'development': 'api.config.DevConfig',
-    'testing': 'api.config.TestConfig',
-    'production': 'api.config.ProdConfig',
-    'default': 'api.config.ProdConfig'
+    "development": "api.config.DevConfig",
+    "testing": "api.config.TestConfig",
+    "production": "api.config.ProdConfig",
+    "default": "api.config.ProdConfig",
 }
 
 
-def get_named_config(config_name: str = 'production'):
+def get_named_config(config_name: str = "production"):
     """Return the configuration object based on the name.
 
     :raise: KeyError: if an unknown configuration is requested
     """
-    if config_name in ['production', 'staging', 'default']:
+    if config_name in ["production", "staging", "default"]:
         config = ProdConfig()
-    elif config_name == 'testing':
+    elif config_name == "testing":
         config = TestConfig()
-    elif config_name == 'development':
+    elif config_name == "development":
         config = DevConfig()
     else:
         raise KeyError(f"Unknown configuration '{config_name}'")
     return config
 
 
-class _Config():  # pylint: disable=too-few-public-methods
+class _Config:  # pylint: disable=too-few-public-methods
     """Base class configuration.
 
     that should set reasonable defaults for all the other configurations.
@@ -47,24 +47,24 @@ class _Config():  # pylint: disable=too-few-public-methods
 
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
-    SECRET_KEY = 'secret value'
+    SECRET_KEY = "secret value"
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # POSTGRESQL
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', '')
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "")
     # SQLALCHEMY_ECHO = True
 
     TESTING = False
     DEBUG = False
 
     # JWT_OIDC Settings
-    JWT_OIDC_WELL_KNOWN_CONFIG = os.getenv('JWT_OIDC_WELL_KNOWN_CONFIG')
-    JWT_OIDC_ALGORITHMS = os.getenv('JWT_OIDC_ALGORITHMS')
-    JWT_OIDC_JWKS_URI = os.getenv('JWT_OIDC_JWKS_URI')
-    JWT_OIDC_ISSUER = os.getenv('JWT_OIDC_ISSUER')
-    JWT_OIDC_AUDIENCE = os.getenv('JWT_OIDC_AUDIENCE')
-    JWT_OIDC_CACHING_ENABLED = os.getenv('JWT_OIDC_CACHING_ENABLED')
+    JWT_OIDC_WELL_KNOWN_CONFIG = os.getenv("JWT_OIDC_WELL_KNOWN_CONFIG")
+    JWT_OIDC_ALGORITHMS = os.getenv("JWT_OIDC_ALGORITHMS")
+    JWT_OIDC_JWKS_URI = os.getenv("JWT_OIDC_JWKS_URI")
+    JWT_OIDC_ISSUER = os.getenv("JWT_OIDC_ISSUER")
+    JWT_OIDC_AUDIENCE = os.getenv("JWT_OIDC_AUDIENCE")
+    JWT_OIDC_CACHING_ENABLED = os.getenv("JWT_OIDC_CACHING_ENABLED")
     JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
 
     # # Keycloak Service for BPM Camunda
@@ -77,14 +77,14 @@ class _Config():  # pylint: disable=too-few-public-methods
     # BPM_API_BASE = os.getenv('BPM_API_BASE')
 
     # API Base URL (Self)
-    WEB_API_BASE_URL = os.getenv('DATA_ANALYSIS_API_BASE_URL', default='')
+    WEB_API_BASE_URL = os.getenv("DATA_ANALYSIS_API_BASE_URL", default="")
 
     DB_PG_CONFIG = {
-        'host': 'forms-flow-data-analysis-db',
-        'port': '5432',
-        'dbname': os.getenv("POSTGRES_DB"),
-        'user': os.getenv("POSTGRES_USER"),
-        'password': os.getenv("POSTGRES_PASSWORD")
+        "host": "forms-flow-data-analysis-db",
+        "port": "5432",
+        "dbname": os.getenv("POSTGRES_DB"),
+        "user": os.getenv("POSTGRES_USER"),
+        "password": os.getenv("POSTGRES_PASSWORD"),
     }
     # SQLALCHEMY_DATABASE_URI = 'postgresql://{user}:{password}@{host}:{port}/{name}'.format(
     #     user=DB_PG_CONFIG['user'], password=DB_PG_CONFIG['password'], host=DB_PG_CONFIG['host'],
@@ -106,17 +106,17 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     TESTING = True
 
     # POSTGRESQL
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', '')
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "")
 
 
 class ProdConfig(_Config):  # pylint: disable=too-few-public-methods
     """Production environment configuration."""
 
-    SECRET_KEY = os.getenv('SECRET_KEY', None)
+    SECRET_KEY = os.getenv("SECRET_KEY", None)
 
     if not SECRET_KEY:
         SECRET_KEY = os.urandom(24)
-        print('WARNING: SECRET_KEY being set as a one-shot', file=sys.stderr)
+        print("WARNING: SECRET_KEY being set as a one-shot", file=sys.stderr)
 
     TESTING = True
     DEBUG = False

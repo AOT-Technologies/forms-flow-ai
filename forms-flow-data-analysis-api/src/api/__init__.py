@@ -58,8 +58,8 @@ def register_shellcontext(app):
     app.shell_context_processor(shell_context)
 
 
-# def init_trained_model(app):
-#     from api.models.pg import preset
+def init_trained_model(app):
+    from api.models.pg import preset
 
-#     preset.create()
-#     preset.load_model()
+    preset.create()
+    preset.load_model()

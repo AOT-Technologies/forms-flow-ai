@@ -10,20 +10,24 @@ import {
   setBPMProcessList,
   setBPMUserList,
   setBPMTaskDetailUpdating,
-  setBPMFilterList, setBPMFilterLoader, updateBPMTaskGroups, setBPMTaskGroupsLoading
+  setBPMFilterList, setBPMFilterLoader, updateBPMTaskGroups, setBPMTaskGroupsLoading, setBPMTaskCount
 } from "../../actions/bpmTaskActions";
 import {replaceUrl} from "../../helper/helper";
 import axios from "axios";
 import {taskDetailVariableDataFormatter} from "./formatterService";
 import {REVIEWER_GROUP} from "../../constants/userContants";
+import {MAX_RESULTS} from "../../components/ServiceFlow/constants/taskConstants";
 
-export const fetchServiceTaskList = (filterId,reqData,taskIdToRemove,...rest) => {
+export const fetchServiceTaskList = (filterId,firstResult,reqData,taskIdToRemove,...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const apiUrlgetTaskList = replaceUrl(
+  let apiUrlgetTaskList = replaceUrl(
     API.GET_BPM_TASK_LIST_WITH_FILTER,
     "<filter_id>",
     filterId
   );
+
+  apiUrlgetTaskList=`${apiUrlgetTaskList}?firstResult=${firstResult}&maxResults=${MAX_RESULTS}`
+
   return (dispatch) => {
     httpPOSTRequest(apiUrlgetTaskList, reqData, UserService.getToken())
       .then((res) => {
@@ -47,6 +51,35 @@ export const fetchServiceTaskList = (filterId,reqData,taskIdToRemove,...rest) =>
         console.log("Error", error);
         dispatch(serviceActionError(error));
         dispatch(setBPMTaskLoader(false));
+        done(error);
+      });
+  };
+};
+
+export const fetchServiceTaskListCount = (filterId,reqData,...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  let apiUrlgetTaskListCount = replaceUrl(
+    API.GET_BPM_TASK_LIST_COUNT_WITH_FILTER,
+    "<filter_id>",
+    filterId
+  );
+
+  return (dispatch) => {
+    httpPOSTRequest(apiUrlgetTaskListCount, reqData, UserService.getToken())
+      .then((res) => {
+        if (res.data && res.data.count) {
+          const taskCount = res.data;
+          dispatch(setBPMTaskCount(taskCount));
+          done(null, taskCount);
+        } else {
+          const taskCount={count:0}
+          dispatch(setBPMTaskCount(taskCount));
+          done(null, taskCount);
+        }
+      })
+      .catch((error) => {
+        console.log("Error", error);
+        dispatch(serviceActionError(error));
         done(error);
       });
   };

@@ -31,6 +31,7 @@ const TaskHeader = React.memo(() => {
   const taskGroups = useSelector(state=>state.bpmTasks.taskGroups);
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
   const reqData = useSelector(state => state.bpmTasks.listReqParams);
+  const firstResult = useSelector(state=> state.bpmTasks.firstResult);
   const [followUpDate, setFollowUpDate] = useState(null);
   const [dueDate, setDueDate] = useState(null);
   const [showModal, setModal] = useState(false);
@@ -54,7 +55,7 @@ const TaskHeader = React.memo(() => {
         if(!SocketIOService.isConnected()){
           if(selectedFilter){
             dispatch(getBPMTaskDetail(taskId));
-            dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+            dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
           }else{
             dispatch(setBPMTaskDetailUpdating(false));
           }
@@ -73,7 +74,7 @@ const TaskHeader = React.memo(() => {
          if(!SocketIOService.isConnected()){
          if(selectedFilter){
            dispatch(getBPMTaskDetail(taskId));
-           dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+           dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
          }
          }
        }else{
@@ -90,7 +91,7 @@ const TaskHeader = React.memo(() => {
         if(!SocketIOService.isConnected()){
         if(selectedFilter){
           dispatch(getBPMTaskDetail(taskId));
-          dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+          dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
         }
         }
       }else{
@@ -107,7 +108,7 @@ const TaskHeader = React.memo(() => {
       if(!err){
         if(!SocketIOService.isConnected()) {
           dispatch(getBPMTaskDetail(taskId));
-          dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+          dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
         }
       }else{
         dispatch(setBPMTaskDetailUpdating(false));
@@ -123,7 +124,7 @@ const TaskHeader = React.memo(() => {
       if(!err){
         if(!SocketIOService.isConnected()) {
           dispatch(getBPMTaskDetail(taskId));
-          dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+          dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData));
         }
       }else{
         dispatch(setBPMTaskDetailUpdating(false));

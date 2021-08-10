@@ -75,12 +75,21 @@ export const setBPMTaskCount = (data) => dispatch =>{
     payload:data
   })
 }
+
+export const setBPMTaskListActivePage = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.BPM_TASK_LIST_ACTIVE_PAGE,
+    payload:data
+  })
+}
+
 export const setBPMTaskDetail = (data) => dispatch =>{
   dispatch({
     type:ACTION_CONSTANTS.BPM_TASK_DETAIL,
     payload:data
   })
 }
+
 export const setBPMFilterLoader = (data) => dispatch =>{
   dispatch({
     type:ACTION_CONSTANTS.IS_BPM_FILTERS_LOADING,

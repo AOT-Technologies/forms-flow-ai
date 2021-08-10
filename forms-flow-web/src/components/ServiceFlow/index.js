@@ -37,14 +37,17 @@ export default React.memo(() => {
   const searchParams = useSelector((state) => state.bpmTasks.filterListSearchParams);
   const listReqParams = useSelector((state) => state.bpmTasks.listReqParams);
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
+  const firstResult = useSelector(state=> state.bpmTasks.firstResult);
   const selectedFilterIdRef=useRef(selectedFilterId);
   const bpmTaskIdRef=useRef(bpmTaskId);
   const reqDataRef=useRef(reqData);
+  const firstResultsRef=useRef(firstResult);
 
   useEffect(()=>{
     selectedFilterIdRef.current=selectedFilterId;
     bpmTaskIdRef.current=bpmTaskId;
     reqDataRef.current=reqData;
+    firstResultsRef.current=firstResult;
   });
 
   useEffect(()=>{
@@ -78,7 +81,7 @@ export default React.memo(() => {
 
   const SocketIOCallback = useCallback((refreshedTaskId, forceReload) => {
       if(forceReload){
-        dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current,refreshedTaskId)); //Refreshes the Tasks
+        dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current,refreshedTaskId)); //Refreshes the Tasks
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current){
           dispatch(setBPMTaskDetailLoader(true));
           dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
@@ -86,7 +89,7 @@ export default React.memo(() => {
         }
       } else{
         if(selectedFilterIdRef.current){
-          dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current)); //Refreshes the Task
+          dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current)); //Refreshes the Task
         }
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current) { //Refreshes task if its selected
           dispatch(getBPMTaskDetail(bpmTaskIdRef.current,(err,resTask)=>{

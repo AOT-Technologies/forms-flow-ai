@@ -13,9 +13,6 @@ attrs
 Werkzeug
 sqlalchemy_utils
 sqlalchemy
-spacy
-flask-cors
-Flask-PyMongo
+spacy<3
 nltk
 Flask-Migrate==2.5.2
-Flask-Script

@@ -49,7 +49,6 @@ const TaskSortSelectedList = React.memo(() => {
     };
   }, []);
 
-
   useEffect(() => {
     setSortOptions(getOptions(sortList));
     dispatch(setFilterListSortParams(sortList));
@@ -60,7 +59,6 @@ const TaskSortSelectedList = React.memo(() => {
    updatedSortList[index].sortOrder=sortOrder;
    updateSortList(updatedSortList);
   };
-
 
   const showSortList = (index)=>{
     if(index!==showSortListDropdownIndex){
@@ -103,7 +101,7 @@ const TaskSortSelectedList = React.memo(() => {
   return  (<div className="d-flex flex-wrap" ref={createNode}>
     {selectedSortList()}
     {sortOptions.length?<div className="ml-1">
-    <i class="fa fa-plus font-weight-bold"  dat-title="Add sorting" onClick={()=>setShowSortListDropdown(!showSortListDropdown)} />
+    <i className="fa fa-plus font-weight-bold"  dat-title="Add sorting" onClick={()=>setShowSortListDropdown(!showSortListDropdown)} />
 
      {showSortListDropdown?<TaskSort handleClick={addSort} options={sortOptions}/>:null}
     </div>:null}

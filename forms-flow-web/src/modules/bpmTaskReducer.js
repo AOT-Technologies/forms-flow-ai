@@ -1,6 +1,6 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 import {TASK_FILTER_LIST_DEFAULT_PARAM} from "../constants/taskConstants";
-import {getFormattedParams} from "../apiManager/services/taskSearchParamsFormatterService";
+import {getFirstResultIndex, getFormattedParams} from "../apiManager/services/taskSearchParamsFormatterService";
 import {QUERY_TYPES} from "../components/ServiceFlow/constants/taskConstants";
 import {sortByPriorityList} from "../apiManager/services/filterListFormatterService";
 
@@ -29,7 +29,9 @@ const initialState = {
   variableNameIgnoreCase:false,
   variableValueIgnoreCase:false,
   taskGroups:[],
-  taskFormSubmissionReload:false
+  taskFormSubmissionReload:false,
+  activePage:1,
+  firstResult:0
 }
 
 const bpmTasks =(state = initialState, action)=> {
@@ -82,6 +84,8 @@ const bpmTasks =(state = initialState, action)=> {
       return {...state, listReqParams:action.payload}
     case ACTION_CONSTANTS.RELOAD_TASK_FORM_SUBMISSION:
       return {...state, taskFormSubmissionReload:action.payload}
+    case ACTION_CONSTANTS.BPM_TASK_LIST_ACTIVE_PAGE:
+      return {...state, activePage:action.payload, firstResult: getFirstResultIndex(action.payload)}
     default:
       return state;
   }

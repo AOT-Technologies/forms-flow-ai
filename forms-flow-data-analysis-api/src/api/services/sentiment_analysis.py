@@ -1,5 +1,6 @@
 from collections import defaultdict
 from pathlib import Path
+from typing import List
 
 import spacy
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -7,7 +8,7 @@ from transformers import pipeline
 
 
 
-def sentiment_pipeline(text, topics):
+def sentiment_pipeline(text: str, topics: List[str]):
     """A input pipeline which returns for a given text blob, output of
     aspect based sentiment analaysis as list of entities with associated
     sentiment.

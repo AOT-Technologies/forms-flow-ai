@@ -1,4 +1,3 @@
-from collections import defaultdict
 from pathlib import Path
 from typing import List
 
@@ -6,9 +5,7 @@ import spacy
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from transformers import pipeline
 
-
-
-def sentiment_pipeline(text: str, topics: List[str]):
+def sentiment_analysis_pipeline(text: str, topics:List[str]=None, entity_sentiment: bool = True):
     """A input pipeline which returns for a given text blob, output of
     aspect based sentiment analaysis as list of entities with associated
     sentiment.
@@ -21,6 +18,11 @@ def sentiment_pipeline(text: str, topics: List[str]):
             {'sentiment': {'location': 'positive', 'facility': 'positive'},
             'overall_sentiment': 'positive'}
     """
+    if entity_sentiment: return sentiment_entity_analysis(text, topics)
+    else:
+        return {"overall_sentiment": overall_sentiment_transformers(text)}
+
+def sentiment_entity_analysis(text: str, topics):
     sentence, labels = load_model_output(text)
     ent = []
 
@@ -69,22 +71,20 @@ def sentiment_pipeline(text: str, topics: List[str]):
 
         return response
 
-def sentiment_overall_analysis(text):
+def overall_sentiment_transformers(text: str):
     """Function to return the sentiment analysis of the input text blob"""
     classifier = pipeline('sentiment-analysis')
     result = classifier(text)
     return result[0]["label"]
 
 
-def load_model_output(text):
+def load_model_output(text: str):
     """Function to load the trained machine learning model for inference and
     return the output as the necessary entities and topics for each element
 
     param text: The input text blob being entered by user
     """
-    # uncomment when working in linux and remove subsequent two lines
-    # nlp = spacy.load("../models/quick-spacy/")
-    model_path = Path(__file__).parent.absolute() / "models/quick-spacy/"
+    model_path = Path("../../models/quick-spacy/")
     nlp = spacy.load(model_path)
     doc = nlp(text)
     sentence = [ent.text for ent in doc.ents]
@@ -92,7 +92,7 @@ def load_model_output(text):
     return sentence, labels
 
 
-def overall_sentiment(text):
+def overall_sentiment(text: str):
     """Function to calculate the overall sentiment using NLTK's vader library.
 
     param text: The input text blob being entered by user
@@ -106,35 +106,3 @@ def overall_sentiment(text):
             return "negative"
         else:
             return "neutral"
-
-
-def entity_category(text, topics):
-    """Function to return the associated entities under each topic
-
-    params text: The input text blob being entered by user
-    params topic: Associated topics for which sentiment is being calculated
-
-    Output response:
-        [
-            {"topic": "staff", "entity": "frontdesk"},
-            {"topic": "facility", "entity": "restroom"},
-            {"topic": "service", "entity": "driving license application"}
-        ]
-    """
-    sentence, labels = load_model_output(text)
-    # check docs to know more about defaultdict: https://docs.python.org/3/library/collections.html#collections.defaultdict
-    d = defaultdict(list)
-    l = len(sentence)
-    for i in range(l):
-        d[labels[i]].append(sentence[i])
-
-    entity_response = sorted(d.items())
-
-    new = []
-    for _, t in enumerate(entity_response):
-        k, value = t
-        if k in topics:
-            for _, t in enumerate(value):
-                entity_object = {"topic": k, "entity": t}
-                new.append(entity_object)
-    return new

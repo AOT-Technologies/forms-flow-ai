@@ -3,70 +3,76 @@ from pathlib import Path
 
 import spacy
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from transformers import pipeline
 
 
-class SentimentAnalyserService:
-    @staticmethod
-    def sentiment_pipeline(text, topics):
-        """A input pipeline which returns for a given text blob, output of
-        aspect based sentiment analaysis as list of entities with associated
-        sentiment.
 
-        :params text: The input text blob being entered by user
-        :params topic: Associated topics for which sentiment is being calculated
+def sentiment_pipeline(text, topics):
+    """A input pipeline which returns for a given text blob, output of
+    aspect based sentiment analaysis as list of entities with associated
+    sentiment.
 
-            Usage:
-                >> sentiment_pipeline(text="awesome location and great staff. Staff provided excellent service.")
-                {'sentiment': {'location': 'positive', 'facility': 'positive'},
-                'overall_sentiment': 'positive'}
-        """
-        sentence, labels = load_model_output(text)
-        ent = []
+    :params text: The input text blob being entered by user
+    :params topic: Associated topics for which sentiment is being calculated
 
-        for i, v in enumerate(labels):
-            if v in topics:
-                ent.append(sentence[i])
+        Usage:
+            >> sentiment_pipeline(text="awesome location and great staff. Staff provided excellent service.")
+            {'sentiment': {'location': 'positive', 'facility': 'positive'},
+            'overall_sentiment': 'positive'}
+    """
+    sentence, labels = load_model_output(text)
+    ent = []
 
-        if not ent:
-            response = {"sentiment": None, "overall_sentiment": overall_sentiment(text)}
-            return response
+    for i, v in enumerate(labels):
+        if v in topics:
+            ent.append(sentence[i])
 
-        else:
-            full_sentence = []
-            full_text = text.split(".")
+    if not ent:
+        response = {"sentiment": None, "overall_sentiment": overall_sentiment(text)}
+        return response
 
-            # code to match entities based on splliting point `.`. Scope for further improvement
-            for i in range(len(ent)):
-                temp = ""
-                for t in full_text:
-                    if len(full_text) >= 1:
-                        if ent[i] in t.lstrip():
-                            temp += t
-                            full_sentence.append(temp)
+    else:
+        full_sentence = []
+        full_text = text.split(".")
 
-            sid = SentimentIntensityAnalyzer()
-            full_text = full_sentence
-            sentiment_output = {}
+        # code to match entities based on splliting point `.`. Scope for further improvement
+        for i in range(len(ent)):
+            temp = ""
+            for t in full_text:
+                if len(full_text) >= 1:
+                    if ent[i] in t.lstrip():
+                        temp += t
+                        full_sentence.append(temp)
 
-            for i, t in enumerate(full_text):
-                ss = sid.polarity_scores(t)
-                item = labels[i]  # returns topic value instead of entity value
-                # sentiment_output.setdefault(item, [])
-                if ss["compound"] >= 0.15:
-                    sentiment_output[item] = "positive"
-                    # sentiment_output[item].append("positive")
-                elif ss["compound"] <= -0.01:
-                    sentiment_output[item] = "negative"
-                    # sentiment_output[item].append("negative")
-                else:
-                    sentiment_output[item] = "neutral"
-                    # sentiment_output[item].append("neutral")
+        sid = SentimentIntensityAnalyzer()
+        full_text = full_sentence
+        sentiment_output = {}
 
-            response = {}
-            response["sentiment"] = sentiment_output
-            response["overall_sentiment"] = overall_sentiment(text)
+        for i, t in enumerate(full_text):
+            ss = sid.polarity_scores(t)
+            item = labels[i]  # returns topic value instead of entity value
+            # sentiment_output.setdefault(item, [])
+            if ss["compound"] >= 0.15:
+                sentiment_output[item] = "positive"
+                # sentiment_output[item].append("positive")
+            elif ss["compound"] <= -0.01:
+                sentiment_output[item] = "negative"
+                # sentiment_output[item].append("negative")
+            else:
+                sentiment_output[item] = "neutral"
+                # sentiment_output[item].append("neutral")
 
-            return response
+        response = {}
+        response["sentiment"] = sentiment_output
+        response["overall_sentiment"] = overall_sentiment(text)
+
+        return response
+
+def sentiment_overall_analysis(text):
+    """Function to return the sentiment analysis of the input text blob"""
+    classifier = pipeline('sentiment-analysis')
+    result = classifier(text)
+    return result[0]["label"]
 
 
 def load_model_output(text):

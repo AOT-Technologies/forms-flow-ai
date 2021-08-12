@@ -81,7 +81,8 @@ def load_model_output(text: str):
 
     param text: The input text blob being entered by user
     """
-    model_path = Path("../../models/quick-spacy/")
+    print(Path.cwd())
+    model_path = Path("models/quick-spacy/")
     nlp = spacy.load(model_path)
     doc = nlp(text)
     sentence = [ent.text for ent in doc.ents]

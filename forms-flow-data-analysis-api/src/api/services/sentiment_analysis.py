@@ -3,7 +3,6 @@ from typing import List
 
 import spacy
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
-from transformers import pipeline
 
 def sentiment_analysis_pipeline(text: str, topics:List[str]=None, entity_sentiment: bool = True):
     """A input pipeline which returns for a given text blob, output of
@@ -13,16 +12,18 @@ def sentiment_analysis_pipeline(text: str, topics:List[str]=None, entity_sentime
     :params text: The input text blob being entered by user
     :params topic: Associated topics for which sentiment is being calculated
 
-        Usage:
-            >> sentiment_pipeline(text="awesome location and great staff. Staff provided excellent service.")
-            {'sentiment': {'location': 'positive', 'facility': 'positive'},
-            'overall_sentiment': 'positive'}
+    Usage:
+        >> sentiment_pipeline(text="awesome location and great staff. Staff provided excellent service.",
+                              topics=["staff", "service"],
+                              entity_sentiment=True)
+        {'sentiment': {'location': 'positive', 'facility': 'positive'},
+        'overall_sentiment': 'positive'}
     """
     if entity_sentiment: return sentiment_entity_analysis(text, topics)
     else:
-        return {"overall_sentiment": overall_sentiment_transformers(text)}
+        return {"overall_sentiment": overall_sentiment(text)}
 
-def sentiment_entity_analysis(text: str, topics):
+def sentiment_entity_analysis(text: str, topics: List[str]=None):
     sentence, labels = load_model_output(text)
     ent = []
 
@@ -71,12 +72,6 @@ def sentiment_entity_analysis(text: str, topics):
 
         return response
 
-def overall_sentiment_transformers(text: str):
-    """Function to return the sentiment analysis of the input text blob"""
-    classifier = pipeline('sentiment-analysis')
-    result = classifier(text)
-    return result[0]["label"]
-
 
 def load_model_output(text: str):
     """Function to load the trained machine learning model for inference and
@@ -101,8 +96,9 @@ def overall_sentiment(text: str):
     ss = sid.polarity_scores(text)
     for _ in sorted(ss):
         if ss["compound"] >= 0.15:
-            return "positive"
+            return "POSITIVE"
         elif ss["compound"] <= -0.01:
-            return "negative"
+            return "NEGATIVE"
         else:
-            return "neutral"
+            return "NEUTRAL"
+

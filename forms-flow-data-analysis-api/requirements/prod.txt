@@ -16,4 +16,3 @@ sqlalchemy
 spacy<3
 nltk
 Flask-Migrate==2.5.2
-transformers[torch]

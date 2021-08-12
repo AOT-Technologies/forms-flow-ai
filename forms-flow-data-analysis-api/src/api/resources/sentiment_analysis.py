@@ -1,9 +1,9 @@
 import logging
 from http import HTTPStatus
 from flask import jsonify, request
-from flask_restx import Resource, Namespace
+from flask_restx import Resource, Namespace, cors
 from ..utils.util import cors_preflight
-from ..services.sentiment_analysis import SentimentAnalyserService
+from ..services.sentiment_analysis import sentiment_analysis_pipeline
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 
@@ -14,6 +14,7 @@ class SentimentAnalysisResource(Resource):
     """Resource for generating Sentiment Analysis"""
 
     @staticmethod
+    @cors.crossdomain(origin="*", headers=["Content-Type", "Authorization"])
     # @auth.require
     def post():
         try:
@@ -32,7 +33,7 @@ class SentimentAnalysisResource(Resource):
                 # processing topics in ML model format
                 new_topics = [t.lower() for t in topics]
 
-                response = SentimentAnalyserService.sentiment_pipeline(
+                response = sentiment_analysis_pipeline(
                     text=text, topics=new_topics
                 )
                 response["elementId"] = data["elementId"]
@@ -42,18 +43,7 @@ class SentimentAnalysisResource(Resource):
                 response["formUrl"] = input_json["formUrl"]
                 post_data = {"input_text": data_input, "output_response": response}
 
-            return jsonify(response_json), HTTPStatus.OK
-        except KeyError as err:
-            response, status = (
-                {
-                    "type": "Invalid Request Object",
-                    "message": "The required fields of Input request like - applicationId, form_url, data[]  are not passed",
-                },
-                HTTPStatus.BAD_REQUEST,
-            )
-            logging.info(response)
-            logging.info(err)
-            return response, status
+            return jsonify(post_data), HTTPStatus.OK
 
         except BaseException as err:
             response, status = {

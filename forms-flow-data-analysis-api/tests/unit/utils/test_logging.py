@@ -5,7 +5,7 @@ Test-Suite to ensure that the logging setup is working as expected.
 
 import os
 
-from forms_flow_api.utils.logging import log_error, log_info, setup_logging
+from api.utils.logging import log_error, log_info, setup_logging
 
 
 def test_logging_with_file(capsys):

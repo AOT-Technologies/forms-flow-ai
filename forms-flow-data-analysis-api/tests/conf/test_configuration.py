@@ -7,7 +7,7 @@ from importlib import reload
 
 import pytest
 
-from forms_flow_api import config
+from api import config
 
 
 # testdata pattern is ({str: environment}, {expected return value})

@@ -5,7 +5,7 @@ import os
 from flask import Flask
 
 from . import config, models
-from .models import db, ma, migrate
+from .models import db, migrate
 from .resources import data_analysis_api
 from .utils.auth import jwt
 from .utils.logging import setup_logging
@@ -21,7 +21,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     app.config.from_object(config.CONFIGURATION[run_mode])
 
     db.init_app(app)
-    ma.init_app(app)
+    # ma.init_app(app)
     migrate.init_app(app, db)
 
     data_analysis_api.init_app(app)
@@ -58,8 +58,8 @@ def register_shellcontext(app):
     app.shell_context_processor(shell_context)
 
 
-def init_trained_model(app):
-    from api.models.pg import preset
+# def init_trained_model(app):
+#     from api.models.pg import preset
 
-    preset.create()
-    preset.load_model()
+#     preset.create()
+#     preset.load_model()

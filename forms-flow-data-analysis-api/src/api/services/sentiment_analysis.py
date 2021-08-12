@@ -13,9 +13,11 @@ def sentiment_analysis_pipeline(text: str, topics:List[str]=None, entity_sentime
     :params topic: Associated topics for which sentiment is being calculated
 
     Usage:
-        >> sentiment_pipeline(text="awesome location and great staff. Staff provided excellent service.",
+        >> sentiment_pipeline(
+                              text="awesome location and great staff. Staff provided excellent service.",
                               topics=["staff", "service"],
-                              entity_sentiment=True)
+                              entity_sentiment=True
+                              )
         {'sentiment': {'location': 'positive', 'facility': 'positive'},
         'overall_sentiment': 'positive'}
     """
@@ -102,3 +104,41 @@ def overall_sentiment(text: str):
         else:
             return "NEUTRAL"
 
+
+def get_entities_mapper(labels: List[str], sentences: List[str]):
+    entity_text_mapper = {}
+    for _, label in enumerate(labels):
+        entity_text_mapper[label] = []
+        for j, entity_text in enumerate(sentences):
+            if (label==labels[j]):
+                entity_text_mapper[label].append(entity_text)
+    return entity_text_mapper
+
+
+def get_sentiment_mapper(entity_text_mapper: dict, text_input: str):
+    sentiment_mapper = {}
+    for key, value in entity_text_mapper.items():
+        sentiment_mapper[key] = []
+        for v in value:
+            for sentence in text_input.split("."):
+                if v in sentence:
+                    sentiment_mapper[key].append(sentence)
+        sentiment_mapper[key] = "".join(sentiment_mapper[key])
+    return sentiment_mapper
+
+def sentiment_entity_analysis_v2(text: str, topics: List[str]=None):
+    sentence, labels = load_model_output(text)
+    entity_text_mapper = get_entities_mapper(labels=labels, sentence=sentence)
+    sentiment_text_mapper = get_sentiment_mapper(entity_text_mapper=entity_text_mapper, text_input=text)
+
+    entity_sentiment = {}
+    for entity, text in sentiment_text_mapper.items():
+        sentiment_score = SentimentIntensityAnalyzer.polarity_scores(text)
+        for _ in sorted(sentiment_score):
+            if sentiment_score["compound"] >= 0.15:
+                entity_sentiment[entity] = "POSITIVE"
+            elif sentiment_score["compound"] <= -0.01:
+                entity_sentiment[entity] = "NEGATIVE"
+            else:
+                entity_sentiment[entity] =  "NEUTRAL"   
+    return entity_sentiment

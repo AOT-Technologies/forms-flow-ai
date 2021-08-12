@@ -33,9 +33,7 @@ class SentimentAnalysisResource(Resource):
                 # processing topics in ML model format
                 new_topics = [t.lower() for t in topics]
 
-                response = sentiment_analysis_pipeline(
-                    text=text, topics=new_topics
-                )
+                response = sentiment_analysis_pipeline(text=text, topics=new_topics)
                 response["elementId"] = data["elementId"]
 
                 response_json["data"].append(dict(response))

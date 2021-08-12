@@ -9,7 +9,7 @@ CONFIG = get_named_config(os.getenv("FLASK_ENV", "production"))
 
 
 def create():
-    """ create tables in the PostgreSQL database"""
+    """create tables in the PostgreSQL database"""
     commands = (
         """
         CREATE TABLE IF NOT EXISTS trained_model (
@@ -45,16 +45,26 @@ def load_model():
         # connect to the PostgreSQL server
         conn = psycopg2.connect(**CONFIG.DB_PG_CONFIG)
         cur = conn.cursor()
-        cur.execute('select model from trained_model where active=true')
+        cur.execute("select model from trained_model where active=true")
         data = cur.fetchall()[0]
 
-        zip_path = os.getcwd() + os.path.sep + 'src' + os.path.sep + 'api' + os.path.sep + 'services'+ os.path.sep + 'models'
-        file_name = 'models.zip'
+        zip_path = (
+            os.getcwd()
+            + os.path.sep
+            + "src"
+            + os.path.sep
+            + "api"
+            + os.path.sep
+            + "services"
+            + os.path.sep
+            + "models"
+        )
+        file_name = "models.zip"
         zip_full_path = zip_path + os.path.sep + file_name
         if not os.path.exists(zip_full_path):
-            open(zip_full_path, 'w+').close()
+            open(zip_full_path, "w+").close()
 
-        f = open(zip_full_path, 'wb')
+        f = open(zip_full_path, "wb")
         f.write(data[0])
         f.close()
 
@@ -73,5 +83,5 @@ def load_model():
             conn.close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     create()

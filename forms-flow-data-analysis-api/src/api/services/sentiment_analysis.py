@@ -25,7 +25,10 @@ def sentiment_analysis_pipeline(
         'overall_sentiment': 'positive'}
     """
     if entity_sentiment:
-        return sentiment_entity_analysis(text, topics)
+        return {
+                "sentiment": sentiment_entity_analysis_v2(text=text, topics=topics),
+                "overall_sentiment": overall_sentiment(text)
+                }
     else:
         return {"overall_sentiment": overall_sentiment(text)}
 
@@ -135,14 +138,15 @@ def get_sentiment_mapper(entity_text_mapper: dict, text_input: str):
 
 def sentiment_entity_analysis_v2(text: str, topics: List[str] = None):
     sentence, labels = load_model_output(text)
-    entity_text_mapper = get_entities_mapper(labels=labels, sentence=sentence)
+    entity_text_mapper = get_entities_mapper(labels=labels, sentences=sentence)
     sentiment_text_mapper = get_sentiment_mapper(
         entity_text_mapper=entity_text_mapper, text_input=text
     )
 
     entity_sentiment = {}
     for entity, text in sentiment_text_mapper.items():
-        sentiment_score = SentimentIntensityAnalyzer.polarity_scores(text)
+        sentiment_analyser = SentimentIntensityAnalyzer()
+        sentiment_score = sentiment_analyser.polarity_scores(text)
         for _ in sorted(sentiment_score):
             if sentiment_score["compound"] >= 0.15:
                 entity_sentiment[entity] = "POSITIVE"

@@ -41,7 +41,7 @@ class SentimentAnalysisResource(Resource):
                 response["formUrl"] = input_json["formUrl"]
                 post_data = {"input_text": data_input, "output_response": response}
 
-            return jsonify(post_data), HTTPStatus.OK
+            return jsonify(response_json), HTTPStatus.OK
 
         except BaseException as err:
             response, status = {

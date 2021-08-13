@@ -2,14 +2,13 @@
 
 Test-suite
 """
-
-from flask.wrappers import Response
+import pytest
 from api.services.sentiment_analysis import sentiment_analysis_pipeline, get_entities_mapper, get_sentiment_mapper, sentiment_entity_analysis_v2
 
 def test_overall_sentiment():
-    response = sentiment_analysis_pipeline(text="Staff is good", entity_sentiment=False)
+    response = sentiment_analysis_pipeline(text="Staff was very helpful.", entity_sentiment=False)
     assert response is not None
-    assert response["overall_sentiment"]
+    assert response["overall_sentiment"] == "POSITIVE"
     print(response["overall_sentiment"])
     assert isinstance(response["overall_sentiment"], str)
 
@@ -30,3 +29,18 @@ def test_entity_sentiment_phase2():
     response = get_sentiment_mapper(entity_text_mapper=phase1, text_input=sample_text)
     assert response is not None
     assert isinstance(response, dict)
+
+def test_entity_sentiment_model():
+    response = sentiment_entity_analysis_v2(text="Staff is great", topics=["staff"])
+    assert response is not None
+    print(response)
+    assert isinstance(response, dict)
+    assert response == {"staff": "POSITIVE"}
+
+def test_failing_entity_sentiment_model():
+    response = sentiment_entity_analysis_v2(text="bad", topics=["staff"])
+    assert response is not None
+    assert isinstance(response, dict)
+    assert response == {}
+
+

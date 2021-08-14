@@ -1,5 +1,5 @@
 #Author: Kurian Benoy
-FROM python:3.8
+FROM python:3.8.5-buster
 
 WORKDIR /forms-flow-data-analysis-api/app
 COPY requirements/prod.txt .

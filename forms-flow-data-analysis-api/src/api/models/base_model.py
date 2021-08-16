@@ -1,6 +1,6 @@
 """This manages Base Model functions."""
 
-from models.pg.db import db
+from api.models.db import db
 
 
 class BaseModel:

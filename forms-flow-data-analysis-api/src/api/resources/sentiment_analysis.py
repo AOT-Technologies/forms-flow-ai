@@ -1,3 +1,4 @@
+"""API definiton for sentiment analysis module"""
 import logging
 from http import HTTPStatus
 from flask import jsonify, request
@@ -17,6 +18,7 @@ class SentimentAnalysisResource(Resource):
     @cors.crossdomain(origin="*", headers=["Content-Type", "Authorization"])
     # @auth.require
     def post():
+        """POST API definintion for sentiment analysis API"""
         try:
             input_json = request.get_json()
             response_json = dict(
@@ -39,7 +41,7 @@ class SentimentAnalysisResource(Resource):
                 response_json["data"].append(dict(response))
                 response["applicationId"] = input_json["applicationId"]
                 response["formUrl"] = input_json["formUrl"]
-                post_data = {"input_text": data_input, "output_response": response}
+                # post_data = {"input_text": data_input, "output_response": response}
 
             return jsonify(response_json), HTTPStatus.OK
 

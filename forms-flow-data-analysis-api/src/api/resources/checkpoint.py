@@ -1,3 +1,4 @@
+"""API definiton for Checkpoint"""
 from http import HTTPStatus
 from flask_restx import Namespace, Resource
 from api.utils.util import cors_preflight

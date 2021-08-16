@@ -1,3 +1,4 @@
+""""Module for calculating overall sentiment analysis using hugging face transformers"""
 from transformers import pipeline
 
 

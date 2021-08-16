@@ -6,8 +6,7 @@
 MKFILE_PATH:=$(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_ABS_DIR:=$(patsubst %/,%,$(dir $(MKFILE_PATH)))
 
-PROJECT_NAME:=data_analysis_api
-DOCKER_NAME:=data-analysis-api
+PROJECT_NAME:=api
 
 #################################################################################
 # COMMANDS -- Setup                                                             #
@@ -42,8 +41,6 @@ install: clean ## Install python virtrual environment
 	pip install --upgrade pip ;\
 	pip install -Ur requirements/prod.txt ;\
 	pip freeze | sort > requirements.txt ;\
-	cat requirements/repo-libraries.txt >> requirements.txt ;\
-	pip install -Ur requirements/repo-libraries.txt ;\
 	pip install -Ur requirements/dev.txt  ;\
 	touch venv/bin/activate  # update so it's as new as requirements/prod.txt
 
@@ -53,10 +50,10 @@ install-dev: ## Install local application
 #################################################################################
 # COMMANDS - CI                                                                 #
 #################################################################################
-ci: lint flake8 test ## CI flow
+ci: lint test ## CI flow
 
 pylint: ## Linting with pylint
-	. venv/bin/activate && pylint --rcfile=setup.cfg  src/$(PROJECT_NAME)
+	. venv/bin/activate && black -t py38 src/$(PROJECT_NAME) && pylint --rcfile=setup.cfg  src/$(PROJECT_NAME)
 
 flake8: ## Linting with flake8
 	. venv/bin/activate && flake8 src/$(PROJECT_NAME) tests
@@ -65,9 +62,6 @@ lint: pylint flake8 ## run all lint type scripts
 
 test: ## Unit testing
 	. venv/bin/activate && pytest
-
-mac-cov: test ## Run the coverage report and display in a browser window (mac)
-	@open -a "Google Chrome" htmlcov/index.html
 
 
 #################################################################################

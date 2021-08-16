@@ -12,7 +12,8 @@ import { toast } from 'react-toastify';
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
-
+import { Trans } from "react-i18next";
+import "../../translations/i18n"
 //TODO convert this code to functional component
 
 // for edit
@@ -291,7 +292,6 @@ class StepperPage extends PureComponent {
     } = this.state;
     // const { editMode } = this.state;
     const { form, formProcessList } = this.props;
-
     switch (step) {
       case 0:
         // return(
@@ -352,7 +352,6 @@ class StepperPage extends PureComponent {
   render() {
     // const { process } = this.props;
     const steps = this.getSteps();
-
     const handleReset = () => {
       this.setActiveStep(0);
     };
@@ -436,10 +435,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveFormProcessMapper(data, update, (err, res) => {
           if (!err) {
-            toast.success('Form Workflow Association Saved.');
+            toast.success(<Trans>{("workflow_association")}</Trans>);
             dispatch(push(`/form`));
           }else{
-            toast.error('Form Workflow Association Failed.');
+            toast.error(<Trans>{("workflow_association_failed")}</Trans>);
           }
         })
       );
@@ -454,10 +453,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveForm("form", newForm, (err, form) => {
           if (!err) {
-            toast.success('Form Saved');
+            toast.success(<Trans>{("form_saved")}</Trans>);
             dispatch(push(`/formflow/${form._id}/preview`));
           }else{
-            toast.error("Error while saving Form");
+            toast.error(<Trans>{("submission_error")}</Trans>);
           }
         })
       );
@@ -467,7 +466,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         getFormProcesses(formId, (err, res) => {
           if (err) {
-            toast.error('Error in getting Workflow Process.');
+            toast.error(<Trans>{('workflow_error')}</Trans>);
             console.log(err);
           }
         })

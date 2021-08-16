@@ -3,7 +3,7 @@ import {connect, useDispatch, useSelector} from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors, getForm } from 'react-formio';
 import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import "../../../translations/i18n";
 import Loading from '../../../containers/Loading';
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
@@ -129,7 +129,7 @@ const mapStateToProps = (state) => {
       noAlerts: false,
       i18n: {
         en: {
-          error: "Please fix the errors before submitting again.",
+          error: <Trans>{("message")}</Trans>,
         },
       }
     },
@@ -146,7 +146,7 @@ const mapDispatchToProps = (dispatch, ownProps,t) => {
         if (!err) {
           dispatch(doProcessActions(submission, ownProps,t))
         } else {
-          const ErrorDetails = { modalOpen: true, message: t("message_submission") }
+          const ErrorDetails = { modalOpen: true, message: <Trans>{("message_submission")}</Trans> }
           toast.error(t("submission_error"));
           dispatch(setFormSubmissionLoading(false));
           dispatch(setFormSubmissionError(ErrorDetails))

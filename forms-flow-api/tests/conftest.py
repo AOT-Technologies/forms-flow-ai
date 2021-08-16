@@ -7,9 +7,9 @@ from flask_migrate import Migrate, upgrade
 from sqlalchemy import event, text
 from sqlalchemy.schema import DropConstraint, MetaData
 
-from forms_flow_api import create_app
-# from forms_flow_api import jwt as _jwt
-from forms_flow_api.models import db as _db
+from api import create_app
+from api import jwt as _jwt
+from api.models import db as _db
 
 
 @contextmanager
@@ -61,10 +61,10 @@ def client(app):  # pylint: disable=redefined-outer-name
     return app.test_client()
 
 
-# @pytest.fixture(scope='session')
-# def jwt():
-#     """Return a session-wide jwt manager."""
-#     return _jwt
+@pytest.fixture(scope='session')
+def jwt():
+    """Return a session-wide jwt manager."""
+    return _jwt
 
 
 @pytest.fixture(scope='session')

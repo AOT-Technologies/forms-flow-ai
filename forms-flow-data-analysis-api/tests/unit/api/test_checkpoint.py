@@ -7,3 +7,8 @@ def test_checkpoint_api():
         response = client.get('/checkpoint')
         assert response.status_code == 200
         assert response.json == {"message": "Welcome to formsflow.ai Data Analysis API"}
+
+def test_checkpoint_test_api(client):
+    response = client.get('/checkpoint')
+    assert response.status_code == 200
+    assert response.json is not None

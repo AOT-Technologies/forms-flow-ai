@@ -1,7 +1,7 @@
 from api import create_app
 
 def test_checkpoint_api():
-    flask_app = create_app('flask_test.cfg')
+    flask_app = create_app(run_mode='testing')
 
     with flask_app.test_client() as client:
         response = client.get('/checkpoint')

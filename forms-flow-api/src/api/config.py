@@ -100,7 +100,9 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     TESTING = True
 
     # POSTGRESQL
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL_TEST", "")
+    SQLALCHEMY_DATABASE_URI = (
+        "postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi"
+    )
 
 
 class ProdConfig(_Config):  # pylint: disable=too-few-public-methods

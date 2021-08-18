@@ -12,16 +12,16 @@ from api import jwt as _jwt
 from api.models import db as _db
 
 
-@contextmanager
-def not_raises(exception):
-    """Corallary to the pytest raises builtin.
+# @contextmanager
+# def not_raises(exception):
+#     """Corallary to the pytest raises builtin.
 
-    Assures that an exception is NOT thrown.
-    """
-    try:
-        yield
-    except exception:
-        raise pytest.fail(f'DID RAISE {exception}')
+#     Assures that an exception is NOT thrown.
+#     """
+#     try:
+#         yield
+#     except exception:
+#         raise pytest.fail(f'DID RAISE {exception}')
 
 
 @pytest.fixture(scope='session')

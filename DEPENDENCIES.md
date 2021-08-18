@@ -39,7 +39,7 @@ In the following document, we’ll describe the details of dependencies of vario
    |   Formio | 2.0.0--rc.34 |
    <br>
     
-  ## 5. forms-flow-idm<br><br>
+  ## 5. forms-flow-idm
    Identity Management<br>
    
    | Component | Version|  
@@ -47,7 +47,7 @@ In the following document, we’ll describe the details of dependencies of vario
    | Keycloak   | 11.0 and above |
    <br>
       
-  ## 6. forms-flow-web<br><br>
+  ## 6. forms-flow-web
    Delivers progressive web application<br>
           
    | Component | Version |

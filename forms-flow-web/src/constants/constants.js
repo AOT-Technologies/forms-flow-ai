@@ -5,7 +5,11 @@ export const APPLICATION_NAME =
   (window._env_ && window._env_.REACT_APP_APPLICATION_NAME) ||
   process.env.REACT_APP_APPLICATION_NAME ||
   "formsflow.ai";
-
+//language details
+export const LANGUAGE =
+  (window._env_ && window._env_.REACT_APP_LANGUAGE) ||
+  process.env.REACT_APP_LANGUAGE ||
+  "en";
 //keycloak
 export const Keycloak_Client =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_CLIENT) ||

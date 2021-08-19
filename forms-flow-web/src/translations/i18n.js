@@ -9,8 +9,6 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    lng:"zh",
-    fallbackLng: ['en'],
     resources: {
       en: {
         translation: TRANSLATIONS_EN
@@ -21,7 +19,6 @@ i18n
     }
   });
 
-//i18n.changeLanguage("zh");
-
+i18n.changeLanguage("zh");
 console.log("babab");
 console.log(i18n)

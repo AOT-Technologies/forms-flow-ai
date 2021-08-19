@@ -137,6 +137,7 @@ services:
         - REACT_APP_KEYCLOAK_URL=${KEYCLOAK_URL}
         - REACT_APP_APPLICATION_NAME=${APPLICATION_NAME:-formsflow.ai}
         - REACT_APP_USER_ACCESS_PERMISSIONS=${USER_ACCESS_PERMISSIONS}
+        - REACT_APP_LANGUAGE=${LANGUAGE:-en}
     volumes:
       - '.:/app'
       - '/app/node_modules'

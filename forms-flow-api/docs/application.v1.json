@@ -1070,6 +1070,9 @@
             "type": "number",
             "description": "id of the application submission"
           },
+          "lang": {
+            "type": "string"
+          },
           "application_name": {
             "type": "string"
           },
@@ -1133,6 +1136,9 @@
           "submission_id": {
             "type": "number",
             "description": "id of the application submission"
+          },
+          "lang": {
+            "type": "string"
           },
           "application_name": {
             "type": "string"

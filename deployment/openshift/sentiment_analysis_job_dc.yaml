@@ -29,9 +29,7 @@ objects:
     labels:
       app: "${NAME}"
   data:
-      crontab: |-
-      "*/5 * * * * default cd /sentiment-analysis && ./run.sh
-      # An empty line is required at the end of this file for a valid cron file."
+      crontab: ""
 
 - kind: DeploymentConfig
   apiVersion: v1
@@ -88,7 +86,7 @@ objects:
           volumeMounts:
           - name: cron-config
             readOnly: true
-            mountPath: "/payment-jobs/cron/"
+            mountPath: "/sentiment-analysis/cron/"
           env:
           - name: DATABASE_USERNAME
             valueFrom:

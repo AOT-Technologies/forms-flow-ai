@@ -30,6 +30,13 @@ objects:
     strategy:
       type: Docker
       dockerStrategy:
+        pullSecret:
+          name: ${DOCKER_CRED_NAME}
+        env:
+          - name: FORMIO_SOURCE_REPO_URL
+            value: ${FORMIO_SOURCE_REPO_URL}
+          - name: FORMIO_SOURCE_REPO_BRANCH
+            value: ${FORMIO_SOURCE_REPO_BRANCH}
         dockerfilePath: "${DOCKER_FILE_PATH}"
     output:
       to:
@@ -75,3 +82,18 @@ parameters:
   description: The path to the docker file defining the build.
   required: false
   value: Dockerfile
+- name: DOCKER_CRED_NAME
+  displayName: Docker cred secret name
+  description: Docker cred secret name
+  required: true
+  value: docker-creds
+- name: FORMIO_SOURCE_REPO_URL
+  displayName: formsflow source
+  description: formsflow source repo
+  required: false
+  value: https://github.com/AOT-Technologies/forms-flow-ai.git
+- name: FORMIO_SOURCE_REPO_BRANCH
+  displayName: Repo Branch name
+  description: Repo Branch name
+  required: false
+  value: feature/sentiment-integration

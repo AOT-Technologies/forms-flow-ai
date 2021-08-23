@@ -4,15 +4,41 @@ apiVersion: v1
 metadata:
   annotations:
     description: Deployment template for a payment job.
-    tags: "${NAME}-${TAG_NAME}"
-  name: "${NAME}-${TAG_NAME}-deploy"
+    tags: "${NAME}"
+  name: "${NAME}-deploy"
 objects:
+- kind: Secret
+  apiVersion: v1
+  metadata:
+    name: "${NAME}"
+    labels:
+      app: "${NAME}"
+  stringData:
+      DATABASE_HOST: "${DATABASE_HOST}"
+      DATABASE_PORT: "${DATABASE_PORT}"
+      DATABASE_NAME: "${DATABASE_NAME}"
+      DATABASE_USERNAME: "${DATABASE_USERNAME}"
+      DATABASE_PASSWORD: "${DATABASE_PASSWORD}"
+      DATABASE_TABLE_NAME: "${DATABASE_TABLE_NAME}"
+      DATABASE_INPUT_COLUMN: "${DATABASE_INPUT_COLUMN}"
+      DATABASE_OUTPUT_COLUMN: "${DATABASE_OUTPUT_COLUMN}"
+- kind: ConfigMap
+  apiVersion: v1
+  metadata:
+    name: "${NAME}-cron-configuration"
+    labels:
+      app: "${NAME}"
+  data:
+      crontab: |-
+      "*/5 * * * * default cd /sentiment-analysis && ./run.sh
+      # An empty line is required at the end of this file for a valid cron file."
+
 - kind: DeploymentConfig
   apiVersion: v1
   metadata:
-    name: "${NAME}-${TAG_NAME}"
+    name: "${NAME}"
     labels:
-      app: "${NAME}-${TAG_NAME}"
+      app: "${NAME}"
       app-group: "${APP_GROUP}"
       template: "${NAME}-deploy"
   spec:
@@ -29,7 +55,7 @@ objects:
       imageChangeParams:
         automatic: true
         containerNames:
-        - "${NAME}-${TAG_NAME}"
+        - "${NAME}"
         from:
           kind: ImageStreamTag
           namespace: "${IMAGE_NAMESPACE}"
@@ -38,23 +64,23 @@ objects:
     replicas: 1
     test: false
     selector:
-      app: "${NAME}-${TAG_NAME}"
-      deploymentconfig: "${NAME}-${TAG_NAME}"
+      app: "${NAME}"
+      deploymentconfig: "${NAME}"
     template:
       metadata:
         labels:
-          app: "${NAME}-${TAG_NAME}"
+          app: "${NAME}"
           app-group: "${APP_GROUP}"
-          deploymentconfig: "${NAME}-${TAG_NAME}"
+          deploymentconfig: "${NAME}"
           template: "${NAME}-deploy"
       spec:
         volumes:
         - name: cron-config
           configMap:
-            name: "${NAME}-${TAG_NAME}-cron-configuration"
+            name: "${NAME}-cron-configuration"
             defaultMode: 420
         containers:
-        - name: "${NAME}-${TAG_NAME}"
+        - name: "${NAME}"
           image: docker-registry.default.svc:5000/${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           ports:
           - containerPort: 8080
@@ -66,43 +92,43 @@ objects:
           env:
           - name: DATABASE_USERNAME
             valueFrom:
-              configMapKeyRef:
-                name: "formsflow-${TAG_NAME}-config"
-                key: DATABASE_USER
+              secretKeyRef:
+                name: "${NAME}"
+                key: DATABASE_USERNAME
           - name: DATABASE_PASSWORD
             valueFrom:
               secretKeyRef:
-                name: "formsflow-${TAG_NAME}-secret"
+                name: "${NAME}"
                 key: DATABASE_PASSWORD
           - name: DATABASE_NAME
             valueFrom:
-              configMapKeyRef:
-                name: "formsflow-${TAG_NAME}-config"
+              secretKeyRef:
+                name: "${NAME}"
                 key: DATABASE_NAME
           - name: DATABASE_HOST
             valueFrom:
-              configMapKeyRef:
-                name: "formsflow-${TAG_NAME}-config"
+              secretKeyRef:
+                name: "${NAME}"
                 key: DATABASE_HOST
           - name: DATABASE_PORT
             valueFrom:
-              configMapKeyRef:
-                name: "formsflow-${TAG_NAME}-config"
+              secretKeyRef:
+                name: "${NAME}"
                 key: DATABASE_PORT
           - name: DATABASE_TABLE_NAME
             valueFrom:
-              configMapKeyRef:
-                name: "formsflow-${TAG_NAME}-config"
+              secretKeyRef:
+                name: "${NAME}"
                 key: DATABASE_TABLE_NAME
           - name: DATABASE_INPUT_COLUMN
             valueFrom:
-              configMapKeyRef:
-                name: "formsflow-${TAG_NAME}-config"
+              secretKeyRef:
+                name: "${NAME}"
                 key: DATABASE_INPUT_COLUMN
           - name: DATABASE_OUTPUT_COLUMN
             valueFrom:
-              configMapKeyRef:
-                name: "formsflow-${TAG_NAME}-config"
+              secretKeyRef:
+                name: "${NAME}"
                 key: DATABASE_OUTPUT_COLUMN
 
           resources:
@@ -123,10 +149,10 @@ objects:
 - kind: Service
   apiVersion: v1
   metadata:
-    name: "${NAME}-${TAG_NAME}"
+    name: "${NAME}"
     creationTimestamp:
     labels:
-      app: "${NAME}-${TAG_NAME}"
+      app: "${NAME}"
       app-group: "${APP_GROUP}"
       template: "${NAME}-deploy"
   spec:
@@ -136,7 +162,7 @@ objects:
       port: 8080
       targetPort: 8080
     selector:
-      deploymentconfig: "${NAME}-${TAG_NAME}"
+      deploymentconfig: "${NAME}"
     type: ClusterIP
     sessionAffinity: None
   status:
@@ -147,7 +173,7 @@ parameters:
   description: The name assigned to all of the OpenShift resources associated to the
     server instance.
   required: true
-  value: sentiment-analysis-job
+  value: formsflow-sentiment-analysis
 - name: APP_GROUP
   displayName: App Group
   description: The name assigned to all of the deployments in this project.
@@ -158,16 +184,12 @@ parameters:
   required: true
   description: The namespace of the OpenShift project containing the imagestream for
     the application.
+  value: ''
 - name: TAG_NAME
   displayName: Environment TAG name
   description: The TAG name for this environment, e.g., dev, test, prod
   required: true
   value: dev
-- name: DATABASE_NAME
-  displayName: Database App Name
-  description: A valid database app name used by the service.
-  required: true
-  value: postgresql
 - name: CPU_REQUEST
   displayName: Resources CPU Request
   description: The resources CPU request (in cores) for this build.
@@ -193,3 +215,44 @@ parameters:
   description: The number of replicas to run in this environment.
   required: true
   value: '1'
+- name: DATABASE_HOST
+  displayName: Database host
+  description: Database host name
+  required: true
+  value: ''
+- name: DATABASE_PORT
+  displayName: Database port
+  description: Database port number
+  required: true
+  value: ''
+- name: DATABASE_NAME
+  displayName: Database name
+  description: Database name
+  required: true
+  value: ''
+- name: DATABASE_USERNAME
+  displayName: Database user name
+  description: Database user name
+  required: true
+  value: ''
+- name: DATABASE_PASSWORD
+  displayName: Database password
+  description: Database password
+  required: true
+  value: ''
+- name: DATABASE_TABLE_NAME
+  displayName: Database table name
+  description: Database table against which sentiment analysis to be executed.
+  required: true
+  value: ''
+- name: DATABASE_INPUT_COLUMN
+  displayName: Database table input column name
+  description: Database table column which holds input for sentiment analysis
+  required: true
+  value: ''
+- name: DATABASE_OUTPUT_COLUMN
+  displayName: Database table output column name
+  description: Database table output column which stores the sentiment analysis response
+  required: true
+  value: ''
+

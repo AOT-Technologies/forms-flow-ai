@@ -26,7 +26,7 @@ In the following document, we’ll describe the details of dependencies of vario
       
    | Component | Version|  
    | ---       | -----  |
-   |  Camunda  | 17.13.0|
+   |  Camunda  | 17.16|
    |  SpringBoot  | 2.2.7 |
    | Postgres    | Latest | 
   <br>

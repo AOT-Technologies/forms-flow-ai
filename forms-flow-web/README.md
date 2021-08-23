@@ -59,9 +59,11 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  `KEYCLOAK_WEB_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-web | `forms-flow-web`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token| | `giert989jkwrgb@DR55`
  `APPLICATION_NAME`|Application name is used to provide clients application name|
- `LANGUAGE`|Language is used to provide internationalization choose en or zh|
+ `LANGUAGE`|Language is used to  choose which language in which User interface is displayed |
  `USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
 
+* NOTE - While configuring LANGUAGE currently two options are provided Chineese and English.If we need to add more languages then 
+add translation messages in translation folder and also configure the env variable  LANGUAGE in sample.env to corresponding name(eg:en/zh)
 * NOTE - While configuring USER_ACCESS_PERMISSIONS the accessAllowApplications will hide / show application tab, the same way accessAllowSubmissions does for viewSubmission button. To enable this feature you need to add access-allow-applications, access-allow-submissions with the respective user group in keycloak.
 
 * [STEP 1](): Getting **ROLE_ID** and **RESOURCE_ID** are mandatory for role based access. To generate ID go to ["Formsflow-forms user/role API"](../forms-flow-forms/README.md#formsflow-forms-api-requesting) and follow the steps.

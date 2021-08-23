@@ -3,7 +3,7 @@ import logging
 from http import HTTPStatus
 from flask import jsonify, request
 from flask_restx import Resource, Namespace, cors
-from ..utils.util import cors_preflight
+from ..utils import auth, cors_preflight
 from ..services.sentiment_analysis import sentiment_analysis_pipeline
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
@@ -16,7 +16,7 @@ class SentimentAnalysisResource(Resource):
 
     @staticmethod
     @cors.crossdomain(origin="*", headers=["Content-Type", "Authorization"])
-    # @auth.require
+    @auth.require
     def post():
         """POST API definintion for sentiment analysis API"""
         try:
@@ -30,9 +30,8 @@ class SentimentAnalysisResource(Resource):
             for data in input_json["data"]:
                 text = data["text"].lower()
                 topics = data["topics"]
-                data_input = dict(elementId=data["elementId"], topics=topics, text=text)
+                # data_input = dict(elementId=data["elementId"], topics=topics, text=text)
 
-                # processing topics in ML model format
                 new_topics = [t.lower() for t in topics]
 
                 response = sentiment_analysis_pipeline(text=text, topics=new_topics)

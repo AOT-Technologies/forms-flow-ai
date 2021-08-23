@@ -83,6 +83,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
 
     @classmethod
     def find_all_by_user(cls, user_id: str, page_no: int, limit: int) -> Application:
+        """Find applications corresponding to a user for fetching applications in client roles."""
         if page_no == 0:
             return cls.query.filter(Application.created_by == user_id).order_by(
                 Application.id.desc()
@@ -108,7 +109,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return cls.query.filter(Application.created_by == user_id).count()
 
     @classmethod
-    def find_by_form_id(cls, form_id, page_no: int, limit: int):
+    def find_by_form_id(cls, form_id, page_no: int, limit: int) -> Application:
         if page_no == 0:
             return cls.query.filter(
                 Application.form_url.like("%" + form_id + "%")
@@ -122,7 +123,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
 
     @classmethod
-    def find_by_form_names(cls, form_names, page_no: int, limit: int):
+    def find_by_form_names(cls, form_names, page_no: int, limit: int) -> Application:
         """Fetch application based on multiple form ids."""
         if page_no == 0:
             return cls.query.filter(
@@ -137,7 +138,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
 
     @classmethod
-    def find_id_by_form_names(cls, application_id: int, form_names):
+    def find_id_by_form_names(cls, application_id: int, form_names) -> Application:
         return cls.query.filter(
             and_(
                 Application.application_name.in_(form_names),
@@ -146,7 +147,9 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         ).one_or_none()
 
     @classmethod
-    def find_by_form_id_user(cls, form_id, user_id: str, page_no: int, limit: int):
+    def find_by_form_id_user(
+        cls, form_id, user_id: str, page_no: int, limit: int
+    ) -> Application:
         if page_no == 0:
             return (
                 cls.query.filter(Application.form_url.like("%" + form_id + "%"))
@@ -163,7 +166,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
 
     @classmethod
-    def find_by_form_ids(cls, form_ids, page_no: int, limit: int):
+    def find_by_form_ids(cls, form_ids, page_no: int, limit: int) -> Application:
         """Fetch application based on multiple form ids."""
         if page_no == 0:
             return cls.query.filter(
@@ -186,7 +189,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
 
     @classmethod
-    def find_all_by_form_id_count(cls, form_id):
+    def find_all_by_form_id_count(cls, form_id) -> Application:
         """Fetch all application."""
         return cls.query.filter(Application.form_url.like("%" + form_id + "%")).count()
 

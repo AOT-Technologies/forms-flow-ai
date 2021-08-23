@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM docker.io/python:3.8.5-buster
 
 ARG SOURCE_REPO=BCDevOps
 ARG GOCROND_VERSION=0.6.2

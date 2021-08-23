@@ -65,26 +65,6 @@ parameters:
   description: The source context directory.
   required: true
   value: jobs/sentiment-analysis
-- name: SOURCE_IMAGE_KIND
-  displayName: Source Image Kind
-  required: true
-  description: The 'kind' (type) of the  source image; typically ImageStreamTag, or
-    DockerImage.
-  value: ImageStreamTag
-- name: SOURCE_IMAGE_NAME_SPACE
-  displayName: Source Image Name Space
-  required: true
-  description: The name space of the  source image.
-- name: SOURCE_IMAGE_NAME
-  displayName: Source Image Name
-  required: true
-  description: The name of the source image.
-  value: python
-- name: SOURCE_IMAGE_TAG
-  displayName: Source Image Tag
-  required: true
-  description: The tag of the source image.
-  value: '3.8'
 - name: OUTPUT_IMAGE_TAG
   displayName: Output Image Tag
   description: The tag given to the built image.

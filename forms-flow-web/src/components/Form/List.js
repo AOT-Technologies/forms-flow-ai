@@ -28,6 +28,7 @@ import {
 } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
 import {fetchBPMFormList} from "../../apiManager/services/bpmFormServices";
+import { Trans } from "react-i18next";
 
 const getOperations = (userRoles, showViewSubmissions) => {
   let operations = [];
@@ -107,13 +108,13 @@ const List = React.memo((props)=> {
           {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
           <h3 className="task-head">
           <i className="fa fa-wpforms" aria-hidden="true"/>
-             <span className="forms-text">Forms</span></h3>
+             <span className="forms-text"><Trans>{("Forms")}</Trans></span></h3>
           {userRoles.includes(STAFF_DESIGNER) && (
             <Link
               to="/formflow/create"
               className="btn btn-primary btn-right btn-sm"
             >
-              <i className="fa fa-plus fa-lg" /> Create Form
+              <i className="fa fa-plus fa-lg" /><Trans>{("create_form")}</Trans>
             </Link>
           )}
         </div>

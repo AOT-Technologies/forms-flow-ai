@@ -10,6 +10,7 @@ import Card from "@material-ui/core/Card";
 import Select from "react-dropdown-select";
 import SaveNext from "./SaveNext";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
+import { Trans } from "react-i18next";
 
 const WorkFlow = React.memo(({
     associateWorkFlow,
@@ -30,7 +31,7 @@ const WorkFlow = React.memo(({
       {/* <FormControl component="fieldset"> */}
 
       <Grid item xs={12} sm={1} spacing={3}>
-       <button className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" onClick={handleEditAssociation}>Edit</button>
+       <button className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" onClick={handleEditAssociation}><Trans>{("Edit")}</Trans></button>
       </Grid>
       <Grid item xs={12} sm={8} spacing={3}/>
       <Grid item xs={12} sm={3} className="next-btn">
@@ -47,7 +48,7 @@ const WorkFlow = React.memo(({
           <CardContent>
             <Grid item xs={12} sm={12} spacing={3}>
               <FormLabel component="legend">
-                Do you want to associate form with a workflow ?
+                <Trans>{("workflow_message")}</Trans>
               </FormLabel>
               <RadioGroup
                 aria-label="associateWorkFlow"
@@ -61,12 +62,12 @@ const WorkFlow = React.memo(({
                 <FormControlLabel
                   value="yes"
                   control={<Radio color="primary" />}
-                  label="Yes"
+                  label= {<Trans>{("yes")}</Trans>}
                 />
                 <FormControlLabel
                   value="no"
                   control={<Radio color="primary" />}
-                  label="No"
+                  label= {<Trans>{("no")}</Trans>}
                 />
               </RadioGroup>
             </Grid>
@@ -74,7 +75,7 @@ const WorkFlow = React.memo(({
             {associateWorkFlow === "yes" && (
               <>
                 <Grid item xs={12} sm={6} spacing={3}>
-                  <h5> Please select from one of the following workflows. </h5>
+                  <h5><Trans>{("select_workflow_message")}</Trans></h5>
                   <Select
                     options={populateDropdown()}
                     onChange={(item) => associateToWorkFlow(item)}

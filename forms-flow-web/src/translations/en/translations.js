@@ -7,5 +7,26 @@ export const TRANSLATIONS_EN = {
   workflow_association_failed:"Form Workflow Association Failed.",
   workflow_error:"Error in getting Workflow Process.",
   form_saved:"Form Saved.",
-  form_save_error:"Error while saving Form."
-};
+  form_save_error:"Error while saving Form.",
+  create_form:"Create Form",
+  design_form:"Design Form",
+  associate_workflow:"Associate this form with a workflow?",
+  preview_confirm:"Preview and Confirm",
+  all_steps:"All steps completed - you're finished",
+  delete_form_message:"Are you sure you wish to delete the form",
+  Forms:"Forms",
+  Edit:"Edit",
+  workflow_message:"Do you want to associate form with a workflow ?",
+  yes:"Yes",
+  no:"No",
+  select_workflow_message:"Please select from one of the following workflows.",
+  form_name:"Form Name :",
+  workflow_name:"Workflow Name :",
+  publish_workflow:"Publish this form for Client Users.",
+  Comments:"Comments",
+  Back:"Back",
+  edit_form:"Edit Form",
+  next:"Next",
+  delete_message:"Are you sure you wish to delete this submission?",
+  Application_Name:"Application Name"
+}

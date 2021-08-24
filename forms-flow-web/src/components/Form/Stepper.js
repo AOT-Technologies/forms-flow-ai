@@ -205,9 +205,9 @@ class StepperPage extends PureComponent {
 
   getSteps() {
     return [
-      "Design Form",
-      "Associate this form with a workflow?",
-      "Preview and Confirm",
+       <Trans>{("design_form")}</Trans>,
+      <Trans>{("associate_workflow")}</Trans>,
+      <Trans>{("preview_confirm")}</Trans>,
     ];
   }
 
@@ -392,7 +392,7 @@ class StepperPage extends PureComponent {
                   {this.state.activeStep === steps.length ? (
                     <div>
                       <Typography>
-                        All steps completed - you're finished
+                        <Trans>{("all_steps")}</Trans>
                       </Typography>
                       <Button onClick={handleReset}>Reset</Button>
                     </div>

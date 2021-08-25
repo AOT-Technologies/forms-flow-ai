@@ -1,0 +1,553 @@
+{
+  "swagger": "2.0",
+  "basePath": "/",
+  "paths": {
+    "/application": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get applications",
+        "operationId": "get_applications_resource",
+        "tags": [
+          "Application"
+        ]
+      }
+    },
+    "/application/create": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Post a new application using the request body",
+        "operationId": "post_application_resources_by_ids",
+        "tags": [
+          "Application"
+        ]
+      }
+    },
+    "/application/formid/{form_id}": {
+      "parameters": [
+        {
+          "name": "form_id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get applications",
+        "operationId": "get_application_resource_by_form_id",
+        "tags": [
+          "Application"
+        ]
+      }
+    },
+    "/application/metrics": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get aggregated applications",
+        "operationId": "get_aggregated_applications_resource",
+        "tags": [
+          "Application"
+        ]
+      }
+    },
+    "/application/metrics/{mapper_id}": {
+      "parameters": [
+        {
+          "name": "mapper_id",
+          "in": "path",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get aggregated application status",
+        "operationId": "get_aggregated_application_status_resource",
+        "tags": [
+          "Application"
+        ]
+      }
+    },
+    "/application/{application_id}": {
+      "parameters": [
+        {
+          "name": "application_id",
+          "in": "path",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Update application details",
+        "operationId": "put_application_resource_by_id",
+        "tags": [
+          "Application"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get application by id",
+        "operationId": "get_application_resource_by_id",
+        "tags": [
+          "Application"
+        ]
+      }
+    },
+    "/application/{application_id}/history": {
+      "parameters": [
+        {
+          "name": "application_id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get application histry",
+        "operationId": "get_application_history_resource",
+        "tags": [
+          "Application"
+        ]
+      },
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Post a new application using the request body",
+        "operationId": "post_application_history_resource",
+        "tags": [
+          "Application"
+        ]
+      }
+    },
+    "/application/{application_id}/process": {
+      "parameters": [
+        {
+          "name": "application_id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "operationId": "get_process_mapper_resource_by_application_id",
+        "tags": [
+          "Application"
+        ]
+      }
+    },
+    "/checkpoint": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get the status of API",
+        "operationId": "get_health_checkpoint_resource",
+        "tags": [
+          "Checkpoint"
+        ]
+      }
+    },
+    "/form": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get form process mapper",
+        "operationId": "get_form_resource",
+        "tags": [
+          "Form"
+        ]
+      },
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Post a form process mapper using the request body",
+        "operationId": "post_form_resource",
+        "tags": [
+          "Form"
+        ]
+      }
+    },
+    "/form/formid/{form_id}": {
+      "parameters": [
+        {
+          "name": "form_id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get details of only form corresponding to a particular formId",
+        "operationId": "get_form_resource_by_form_id",
+        "tags": [
+          "Form"
+        ]
+      }
+    },
+    "/form/{mapper_id}": {
+      "parameters": [
+        {
+          "name": "mapper_id",
+          "in": "path",
+          "required": true,
+          "type": "integer"
+        }
+      ],
+      "put": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Update form process mapper details",
+        "operationId": "put_form_resource_by_id",
+        "tags": [
+          "Form"
+        ]
+      },
+      "delete": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Delete form process mapper by id",
+        "operationId": "delete_form_resource_by_id",
+        "tags": [
+          "Form"
+        ]
+      },
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get form process mapper by id",
+        "operationId": "get_form_resource_by_id",
+        "tags": [
+          "Form"
+        ]
+      }
+    },
+    "/process": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get all process",
+        "operationId": "get_process_resource",
+        "tags": [
+          "Process"
+        ]
+      }
+    },
+    "/process/event": {
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "operationId": "post_process_event_resource",
+        "tags": [
+          "Process"
+        ]
+      }
+    },
+    "/process/process-instance/{process_InstanceId}/activity-instances": {
+      "parameters": [
+        {
+          "name": "process_InstanceId",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get states by process and task key",
+        "operationId": "get_process_instance_resource",
+        "tags": [
+          "Process"
+        ]
+      }
+    },
+    "/process/{process_key}/task/{task_key}/state": {
+      "parameters": [
+        {
+          "name": "process_key",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "task_key",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get states by process and task key",
+        "operationId": "get_process_state_resource",
+        "tags": [
+          "Process"
+        ]
+      }
+    },
+    "/process/{process_key}/xml": {
+      "parameters": [
+        {
+          "name": "process_key",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Get process detailsXML",
+        "operationId": "get_process_definition_resource",
+        "tags": [
+          "Process"
+        ]
+      }
+    },
+    "/task": {
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "List all tasks",
+        "operationId": "get_task_list",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
+    "/task/{task_id}": {
+      "parameters": [
+        {
+          "name": "task_id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "get": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "List specific tasks",
+        "operationId": "get_task",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
+    "/task/{task_id}/claim": {
+      "parameters": [
+        {
+          "name": "task_id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Claim a task",
+        "operationId": "post_task_claim",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
+    "/task/{task_id}/complete": {
+      "parameters": [
+        {
+          "name": "task_id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Complete a task",
+        "operationId": "post_task_complete",
+        "tags": [
+          "Task"
+        ]
+      }
+    },
+    "/task/{task_id}/unclaim": {
+      "parameters": [
+        {
+          "name": "task_id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "summary": "Unclaim a task",
+        "operationId": "post_task_un_claim",
+        "tags": [
+          "Task"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "formsflow.ai API",
+    "version": "1.0",
+    "description": "The API for formsflow.ai. Checkout: formsflow.ai to know more"
+  },
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "apikey": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization"
+    }
+  },
+  "security": [
+    {
+      "apikey": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Application",
+      "description": "Application"
+    },
+    {
+      "name": "Application",
+      "description": "Application"
+    },
+    {
+      "name": "Checkpoint",
+      "description": "Checkpoint"
+    },
+    {
+      "name": "Form",
+      "description": "Form"
+    },
+    {
+      "name": "Process",
+      "description": "Process"
+    },
+    {
+      "name": "Task",
+      "description": "Task"
+    }
+  ],
+  "responses": {
+    "ParseError": {
+      "description": "When a mask can't be parsed"
+    },
+    "MaskError": {
+      "description": "When any error occurs on mask"
+    },
+    "BusinessException": {
+      "description": "Handle Business exception"
+    },
+    "AuthError": {
+      "description": "Handle Auth exception"
+    }
+  }
+}

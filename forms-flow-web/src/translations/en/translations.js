@@ -37,5 +37,7 @@ export const TRANSLATIONS_EN = {
   del_form:"Delete Form",
   view:"View",
   Delete:"Delete",
-  print_pdf:"Print As PDF"
+  print_pdf:"Print As PDF",
+  application_id:"Application Id",
+  application_name:"Application Name"
 }

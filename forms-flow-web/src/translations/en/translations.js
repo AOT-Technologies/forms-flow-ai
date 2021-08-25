@@ -28,5 +28,14 @@ export const TRANSLATIONS_EN = {
   edit_form:"Edit Form",
   next:"Next",
   delete_message:"Are you sure you wish to delete this submission?",
-  Application_Name:"Application Name"
+  delete_form:"Are you sure you wish to delete the form",
+  save:"Save",
+  back_form_list:"Back to Form List",
+  submit_new:"Submit New",
+  view_submission:"View Submissions",
+  view_edit:"View/Edit Form",
+  del_form:"Delete Form",
+  view:"View",
+  Delete:"Delete",
+  print_pdf:"Print As PDF"
 }

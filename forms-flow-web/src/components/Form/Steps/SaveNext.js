@@ -12,7 +12,7 @@ const SaveNext = React.memo(({ handleNext, handleBack, activeStep, isLastStep, s
         color="primary"
         onClick={!isLastStep ? handleNext : submitData}
       >
-        {isLastStep ? "Save" : "Next"}
+        {isLastStep ? <Trans>{("save")}</Trans> : <Trans>{("next")}</Trans> }
       </Button>
     </>
   );

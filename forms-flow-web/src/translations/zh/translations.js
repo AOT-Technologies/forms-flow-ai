@@ -28,5 +28,14 @@ export const TRANSLATIONS_ZH = {
   edit_form:"编辑表格  ",
   next:"下一个",
   delete_message:"您确定要删除此提交吗？",
-  Application_Name:"应用名称  "
+  delete_form:"您确定要删除表格吗",
+  save:"保存  ",
+  back_form_list:"返回表格列表  ",
+  submit_new:"提交新的  ",
+  view_submission:"查看提交  ",
+  view_edit:"查看/编辑表单  ",
+  del_form:"删除表格  ",
+  view:"看法",
+  Delete:"删除",
+  print_pdf:"打印为 PDF  ",
 };

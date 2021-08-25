@@ -91,7 +91,6 @@ const List = React.memo((props)=> {
   if (forms.isActive || isBPMFormListLoading) {
       return <Loading />;
   }
-
     return (
       <div className="container">
         <Confirm

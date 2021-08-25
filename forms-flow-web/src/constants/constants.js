@@ -1,5 +1,5 @@
 //import Keycloak from "keycloak-js";
-
+import { Trans } from "react-i18next";
 //application details
 export const APPLICATION_NAME =
   (window._env_ && window._env_.REACT_APP_APPLICATION_NAME) ||
@@ -73,7 +73,7 @@ export const OPERATIONS = {
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    title: "Submit New",
+    title: <Trans>{("submit_new")}</Trans>,
   },
   submission: {
     action: "submission",
@@ -83,7 +83,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: "View Submissions",
+    title: <Trans>{("view_submission")}</Trans>,
   },
   edit: {
     action: "edit",
@@ -103,7 +103,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: "View/Edit Form",
+    title: <Trans>{("view_edit")}</Trans>,
   },
   delete: {
     action: "delete",
@@ -112,7 +112,7 @@ export const OPERATIONS = {
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    title: "Delete Form",
+    title: <Trans>{("del_form")}</Trans>,
   },
   view: {
     action: "viewSubmission",
@@ -122,7 +122,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: "View",
+    title: <Trans>{("view")}</Trans>,
   },
   editSubmission: {
     action: "edit",
@@ -132,7 +132,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: "Edit",
+    title: <Trans>{("Edit")}</Trans>,
   },
   deleteSubmission: {
     action: "delete",
@@ -141,7 +141,7 @@ export const OPERATIONS = {
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    title: "Delete",
+    title: <Trans>{("Delete")}</Trans>,
   },
 };
 

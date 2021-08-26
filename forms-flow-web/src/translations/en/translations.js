@@ -38,6 +38,13 @@ export const TRANSLATIONS_EN = {
   view:"View",
   Delete:"Delete",
   print_pdf:"Print As PDF",
+  applications:"Applications",
+  task:"Tasks",
+  metrics:"Metrics",
+  insights:"Insights",
+  dashboard:"Dashboard",
+  logout:"Logout",
   application_id:"Application Id",
-  application_name:"Application Name"
+  application_name:"Application Name",
+  
 }

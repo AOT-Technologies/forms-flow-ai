@@ -38,6 +38,12 @@ export const TRANSLATIONS_ZH = {
   view:"看法",
   Delete:"删除",
   print_pdf:"打印为 PDF  ",
+  applications:"应用",
+  task:"任务",
+  metrics:"指标",
+  insights:"洞察力",
+  dashboard:"仪表盘  ",
+  logout:"登出",
   application_id: "应用程序编号 ",
   application_name:"应用名称"
 };

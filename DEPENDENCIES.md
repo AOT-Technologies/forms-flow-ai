@@ -44,13 +44,12 @@ In the following document, we’ll describe the details of dependencies of vario
    
    | Component | Version|  
    | ---       | -----   |
-   | Keycloak   | 11.0 and above |
-   |            | 7.0  &nbsp;&nbsp;to&nbsp;&nbsp; 11.0   |
+   | Keycloak   | 11.0 and above , 7.0  and above   |
    <br>
    
    #### NOTE:
-   * For versions 11.0 and above [click here](https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-idm/keycloak/imports/formsflow-ai-realm.json)  (remote          keycloak server setup).
-   * For versions 7.0 to 11.0 [click here](https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-idm/keycloak/README.md#create-realm) (for manual keycloak          setup).
+   * If you are using keycloak version 11.0 and above, you can use the keycloak import script  [mentioned here](https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-idm/keycloak/imports/formsflow-ai-realm.json) .
+   * If you are in keycloak version 7.0 and above, refer our [guide](https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-idm/keycloak/README.md#create-realm) on how to setup manually setup keycloak roles/users  .
    <br>
       
   ## 6. forms-flow-web

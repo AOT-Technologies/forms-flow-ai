@@ -44,7 +44,7 @@ In the following document, we’ll describe the details of dependencies of vario
    
    | Component | Version|  
    | ---       | -----   |
-   | Keycloak   | 11.0 and above , 7.0  and above   |
+   | Keycloak   | 11.0 and above <br>&nbsp; 7.0  and above   |
    <br>
    
    #### NOTE:

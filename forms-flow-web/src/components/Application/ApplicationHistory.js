@@ -7,6 +7,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import LoadingOverlay from "react-loading-overlay";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
+import { Trans } from "react-i18next";
 
 import {
   fetchApplicationAuditHistoryList
@@ -38,7 +39,7 @@ const HistoryList = React.memo((props) => {
   }, [applicationId, isHistoryListLoading, dispatch]);
 
   if(!applicationId){
-    return <Nodata text={"No Application History found"} className={"div-no-application-list text-center"}/>
+    return <Nodata text=<Trans>{("no_application_history_found")}</Trans> className={"div-no-application-list text-center"}/>
   }
   if (isHistoryListLoading) {
     return <Loading/>;
@@ -47,7 +48,7 @@ const HistoryList = React.memo((props) => {
   const getNoDataIndicationContent = () => {
     return (
       <div className="div-no-task">
-        <label className="lbl-no-task"> No History found </label>
+        <label className="lbl-no-task"> <Trans>{("no_history_found")}</Trans> </label>
         <br/>
       </div>
     );
@@ -69,7 +70,7 @@ const HistoryList = React.memo((props) => {
               <h3 className="task-head">
               {/* <i class="fa fa-list-alt" alt="Task" aria-hidden="true"></i> */}
               <i className="fa fa-list" aria-hidden="true"/>
-              &nbsp;Application History
+              &nbsp;<Trans>{("application_history")}</Trans>
               </h3>
             </div>
             <br/>

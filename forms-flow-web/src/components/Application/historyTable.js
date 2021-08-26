@@ -1,5 +1,6 @@
 import React from "react";
 import {getFormIdSubmissionIdFromURL, getFormUrl, getLocalDateTime} from "../../apiManager/services/formatterService";
+import { Trans } from "react-i18next";
 
 
 export const defaultSortedBy = [
@@ -14,7 +15,7 @@ const linkSubmision = (cell) => {
   const url = getFormUrl(formId,submissionId)
   return (
     <div title={url} onClick={()=> window.open(url, "_blank")}>
-        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"/>&nbsp;</span>View Submission</span>
+        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"/>&nbsp;</span><Trans>{("view_submission")}</Trans></span>
     </div>
   );
 }
@@ -29,18 +30,18 @@ function timeFormatter(cell) {
 export const columns_history = [
   {
     dataField: "applicationStatus",
-    text: "Status",
+    text: <Trans>{("status")}</Trans>,
     sort: true,
   },
   {
     dataField: "created",
-    text: "Created",
+    text: <Trans>{("created")}</Trans>,
     sort: true,
     formatter: timeFormatter,
   },
   {
     dataField: "formUrl",
-    text: "Submissions",
+    text: <Trans>{("submissions")}</Trans>,
     formatter: linkSubmision,
   },
 ];

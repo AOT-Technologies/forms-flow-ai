@@ -4,6 +4,7 @@ import startCase from "lodash/startCase";
 import { textFilter , selectFilter } from "react-bootstrap-table2-filter";
 import {getLocalDateTime} from "../../apiManager/services/formatterService";
 import {AWAITING_ACKNOWLEDGEMENT} from "../../constants/applicationConstants";
+import { Trans } from "react-i18next";
 
 let statusFilter,
     idFilter,
@@ -60,13 +61,13 @@ const nameFormatter = (cell) => {
 
 export const columns_history = [
   {
-    dataField: "application_name",
-    text: "Application Name",
+    dataField: "applicationname",
+    text: <Trans>{("application_name")}</Trans>,
     sort: true,
   },
   {
-    dataField: "application_status",
-    text: "Application Status",
+    dataField: "applicationstatus",
+    text: <Trans>{("application_status")}</Trans>,
     sort: true,
   },
 ];
@@ -74,7 +75,7 @@ export const columns_history = [
 export const columns  = (rows) => [
   {
     dataField: "id",
-    text: "Application ID",
+    text: <Trans>{("application_id")}</Trans>,
     formatter: linkApplication,
     sort: true,
     filter: textFilter({
@@ -88,7 +89,7 @@ export const columns  = (rows) => [
   },
   {
     dataField: "applicationName",
-    text: "Application Name",
+    text: <Trans>{("application_name")}</Trans>,
     sort: true,
     formatter: nameFormatter,
     filter: textFilter({
@@ -102,7 +103,7 @@ export const columns  = (rows) => [
   },
   {
     dataField: "applicationStatus",
-    text: "Application Status",
+    text: <Trans>{("application_status")}</Trans>,
     sort: true,
     filter: selectFilter({
       options: getApplicationStatusOptions(rows),
@@ -116,13 +117,13 @@ export const columns  = (rows) => [
   },
   {
     dataField: "formUrl",
-    text: "Link to Form Submission",
+    text: <Trans>{("link_to_form_submission")}</Trans>,
     formatter: linkSubmission,
   },
 
   {
     dataField: "modified",
-    text: "Last Modified",
+    text:<Trans>{("last_modified")}</Trans>,
     formatter: timeFormatter,
     sort: true,
     headerStyle: (colum, colIndex) => {

@@ -16,7 +16,9 @@ i18n
       zh: {
         translation: TRANSLATIONS_ZH
       }
+  
     }
   });
 
-i18n.changeLanguage(lang);
+i18n.changeLanguage("zh"); //zh temporary
+console.log("i18 loaded")

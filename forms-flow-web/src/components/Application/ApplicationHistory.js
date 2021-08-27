@@ -94,7 +94,7 @@ const HistoryList = React.memo((props) => {
         )}
       </ToolkitProvider>
     ) : (
-      <Nodata text={"No Application History found"} className={"div-no-application-list text-center"}/>
+      <Nodata text=<Trans>{("no_application_history_found")}</Trans> className={"div-no-application-list text-center"}/>
     )
   );
 });

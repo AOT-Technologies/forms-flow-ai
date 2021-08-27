@@ -4,7 +4,7 @@ import startCase from "lodash/startCase";
 import { textFilter , selectFilter } from "react-bootstrap-table2-filter";
 import {getLocalDateTime} from "../../apiManager/services/formatterService";
 import {AWAITING_ACKNOWLEDGEMENT} from "../../constants/applicationConstants";
-import { Trans } from "react-i18next";
+import { Trans,useTranslation } from "react-i18next";
 
 let statusFilter,
     idFilter,
@@ -38,7 +38,7 @@ const linkApplication = (cell, row) => {
 
 const linkSubmission = (cell,row) => {
   const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
-  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':'Edit') : 'View'
+  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':'Edit') : <Trans>{("view")}</Trans>
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
   <div onClick={()=> window.open(url, "_blank")}>
@@ -47,7 +47,7 @@ const linkSubmission = (cell,row) => {
   </div>
   );
 }
-
+  
 
 function timeFormatter(cell) {
   const localdate = getLocalDateTime(cell) ;
@@ -143,7 +143,7 @@ export const columns  = (rows) => [
 
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">
-    Showing {from} to {to} of {size} Results
+    <Trans>{("showing")}</Trans> {from} <Trans>{("to")}</Trans> {to} <Trans>{("of")}</Trans> {size} <Trans>{("results")}</Trans>
   </span>
 );
 

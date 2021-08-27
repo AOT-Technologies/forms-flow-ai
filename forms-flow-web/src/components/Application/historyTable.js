@@ -47,7 +47,7 @@ export const columns_history = [
 ];
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">
-    Showing {from} to {to} of {size} Results
+    <Trans>{("showing")}</Trans> {from} <Trans>{("to")}</Trans> {to} <Trans>{("of")}</Trans> {size} Results
   </span>
 );
 

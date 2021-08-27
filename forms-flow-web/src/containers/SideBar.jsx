@@ -10,6 +10,7 @@ import { getUserRolePermission } from "../helper/user";
 
 import "./styles.scss";
 import {toggleMenu} from "../actions/menuActions";
+import { Trans } from "react-i18next";
 
 const SideBar = React.memo(() => {
   const location = useLocation();
@@ -113,7 +114,6 @@ const SideBar = React.memo(() => {
               >
                 <i className="fa fa-lightbulb-o"/>
                 Insights
-              </Link>
             ) : null}
           </li>
         </ul>

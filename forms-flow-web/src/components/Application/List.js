@@ -20,6 +20,7 @@ import {
 import {getUserRolePermission} from "../../helper/user";
 import {CLIENT, STAFF_REVIEWER} from "../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../constants/applicationConstants";
+import { Trans } from "react-i18next";
 
 
 const ApplicationList = React.memo(() => {
@@ -89,7 +90,7 @@ const ApplicationList = React.memo(() => {
               <div className="main-header">
                 <h3 className="application-head">
                 <i className="fa fa-list" aria-hidden="true"/>
-              <span className="application-text">Applications</span>
+              <span className="application-text"><Trans>{("applications")}</Trans></span>
                   <div className="col-md-1 application-count">({applicationCount})</div>
                 </h3>
               </div>

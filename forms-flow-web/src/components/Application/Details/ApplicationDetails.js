@@ -52,6 +52,6 @@ const ApplicationDetails = React.memo((props) => {
     </Table>
   );
 });
-console.log("application details loaded"+Trans)
+
 
 export default ApplicationDetails;

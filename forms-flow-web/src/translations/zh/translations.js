@@ -28,5 +28,15 @@ export const TRANSLATIONS_ZH = {
   applications:"应用",
   link_to_form_submission:"表单提交链接",
   last_modified:"最后修改",
-  all:"全部"
+  all:"全部",
+  print_as_pdf:"打印为 PDF",
+  view:"看法",
+  insights:"洞察力",
+  metrics:"指标",
+  dashboard:"仪表盘",
+  no_dashboard_found:"未找到仪表板",
+  showing:"显示",
+  to:"到",
+  of:"的",
+  results:"结果"
 };

@@ -9,6 +9,7 @@ import "./styles.scss";
 import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME} from "../constants/constants";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import {push} from "connected-react-router";
+import { Trans } from "react-i18next";
 
 const NavBar = React.memo(() => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
@@ -96,10 +97,10 @@ const NavBar = React.memo(() => {
                                                                               }`}>
                 <NavDropdown.Item as={Link} to='/metrics' className={`main-nav nav-item ${
                   pathname.match(/^\/metrics/) ? "active-tab" : ""
-                }`}><i className="fa fa-pie-chart fa-fw fa-lg"  /> Metrics</NavDropdown.Item>
+                }`}><i className="fa fa-pie-chart fa-fw fa-lg"  /> <Trans>{("metrics")}</Trans></NavDropdown.Item>
                 <NavDropdown.Item as={Link} to='/insights' className={`main-nav nav-item ${
                   pathname.match(/^\/insights/) ? "active-tab" : ""
-                }`}><i className="fa fa-lightbulb-o fa-fw fa-lg"/> Insights</NavDropdown.Item>
+                }`}><i className="fa fa-lightbulb-o fa-fw fa-lg"/> <Trans>{("insights")}</Trans></NavDropdown.Item>
               </NavDropdown>:null}
             </Nav>
             <Nav className="ml-auto">

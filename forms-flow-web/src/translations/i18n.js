@@ -21,4 +21,3 @@ i18n
   });
 
 i18n.changeLanguage("zh"); //zh temporary
-console.log("i18 loaded")

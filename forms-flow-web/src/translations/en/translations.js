@@ -28,5 +28,15 @@ export const TRANSLATIONS_EN = {
   applications:"Applications",
   link_to_form_submission:"Link To Form Submission",
   last_modified:"Last Modified",
-  all:"All"
+  all:"All",
+  print_as_pdf:"Print As PDF",
+  view:"View",
+  insights:"Insights",
+  metrics:"Metrics",
+  dashboard:"Dashboard",
+  no_dashboard_found:"No dashboard found",
+  showing:"Showing",
+  to:"to",
+  of:"of",
+  results:"Results"
 };

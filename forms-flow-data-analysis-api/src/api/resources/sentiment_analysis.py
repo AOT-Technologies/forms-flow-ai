@@ -3,8 +3,9 @@ import logging
 from http import HTTPStatus
 from flask import jsonify, request
 from flask_restx import Resource, Namespace, cors
-from ..utils import auth, cors_preflight
-from ..services.sentiment_analysis import sentiment_analysis_pipeline
+from api.utils import auth, cors_preflight
+from api.services.sentiment_analysis import sentiment_analysis_pipeline
+from api.services.store_sentiment_result import save_sentiment_result
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 
@@ -30,7 +31,6 @@ class SentimentAnalysisResource(Resource):
             for data in input_json["data"]:
                 text = data["text"].lower()
                 topics = data["topics"]
-                # data_input = dict(elementId=data["elementId"], topics=topics, text=text)
 
                 new_topics = [t.lower() for t in topics]
 
@@ -40,6 +40,8 @@ class SentimentAnalysisResource(Resource):
                 response_json["data"].append(dict(response))
                 response["applicationId"] = input_json["applicationId"]
                 response["formUrl"] = input_json["formUrl"]
+            
+            save_sentiment_result(input_request=input_json, output_request=response)
                 # post_data = {"input_text": data_input, "output_response": response}
 
             return jsonify(response_json), HTTPStatus.OK

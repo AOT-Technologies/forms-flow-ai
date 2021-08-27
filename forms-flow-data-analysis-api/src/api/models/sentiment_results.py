@@ -3,6 +3,7 @@ from .db import db
 
 
 class SentimentResults(db.Model):
+    """This class manages all of base data about Sentiment Results."""
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     input_request = db.Column(db.JSON)
     output_response = db.Column(db.JSON)
@@ -14,3 +15,4 @@ class SentimentResults(db.Model):
         sentiment_result.output_response = output_response
         sentiment_result.save()
         return sentiment_result
+    

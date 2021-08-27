@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {addBPMGroup, getBPMGroups, removeBPMGroup} from "../../../apiManager/services/bpmTaskServices";
 import {setBPMTaskGroupsLoading} from "../../../actions/bpmTaskActions";
 import LoadingOverlay from "react-loading-overlay";
-
+import { Trans } from 'react-i18next';
 const AddGroupModal= React.memo((props)=> {
     const { modalOpen=false, onClose , groups} = props;
     const taskId = useSelector((state) => state.bpmTasks.taskId);
@@ -53,7 +53,7 @@ const AddGroupModal= React.memo((props)=> {
 
                 <div className="modal-text">
                 <i className="fa fa-info-circle mr-2"/>
-                  You can add a group by typing a group ID into the input field and afterwards clicking the button with the plus sign.
+                  <Trans>{"modal_description"}</Trans>
                 </div>
                 <Row className="mt-2 mb-1">
                   <Col lg={4} xs={12} sm={4} md={4} xl={4} className="text-right">

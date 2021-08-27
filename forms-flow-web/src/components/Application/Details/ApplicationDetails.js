@@ -2,9 +2,6 @@ import React from "react";
 import {Table} from "react-bootstrap";
 import startCase from "lodash/startCase";
 import {getLocalDateTime} from "../../../apiManager/services/formatterService";
-import { Trans } from "react-i18next";
-
-
 //import {setUpdateLoader} from "../../../actions/taskActions";
 
 
@@ -15,12 +12,12 @@ const ApplicationDetails = React.memo((props) => {
     <Table responsive>
       <tbody>
       <tr>
-        <td className="border-0"><Trans>{("application_id")}</Trans></td>
+        <td className="border-0">Application Id</td>
         <td className="border-0">:</td>
         <td className="border-0">{application.id}</td>
       </tr>
       <tr>
-        <td className="border-0"><Trans>{("application_name")}</Trans></td>
+        <td className="border-0">Application Name</td>
         <td className="border-0">:</td>
         <td className="border-0">{startCase(application.applicationName)}</td>
       </tr>
@@ -52,6 +49,5 @@ const ApplicationDetails = React.memo((props) => {
     </Table>
   );
 });
-console.log("application details loaded"+Trans)
 
 export default ApplicationDetails;

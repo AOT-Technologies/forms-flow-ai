@@ -7,6 +7,7 @@ import {
   setBPMTaskLoader
 } from "../../../actions/bpmTaskActions";
 import Loading from "../../../containers/Loading";
+import { Trans } from "react-i18next";
 import moment from "moment";
 import { getProcessDataFromList,getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
 import TaskFilterComponent from "./search/TaskFilterComponent";
@@ -94,7 +95,7 @@ const ServiceFlowTaskList = React.memo(() => {
                  <span className="tooltiptext" data-title={task.followUp?getFormattedDateAndTime(task.followUp):''}> {task.followUp
                     ? `Follow-up ${moment(task.followUp).fromNow()}, `
                     : ""} </span>
-                 <span className="tooltiptext" data-title={task.created?getFormattedDateAndTime(task.created):''}>  Created {moment(task.created).fromNow()}</span>
+                 <span className="tooltiptext" data-title={task.created?getFormattedDateAndTime(task.created):''}><Trans>{"created"}</Trans>{moment(task.created).fromNow()}</span>
                 </Col>
                 <Col
                   lg={4}
@@ -127,7 +128,7 @@ const ServiceFlowTaskList = React.memo(() => {
       return (
         <Row className="not-selected mt-2 ml-1">
           <i className="fa fa-info-circle mr-2 mt-1" />
-          No task matching filters found.
+         <Trans>{"no_filter"}</Trans>
         </Row>
       );
     }

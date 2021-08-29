@@ -52,7 +52,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # POSTGRESQL
-    SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "")
+    SQLALCHEMY_DATABASE_URI = os.getenv("DATA_ANALYSIS_DB_URL", "")
     # SQLALCHEMY_ECHO = True
 
     TESTING = False
@@ -67,7 +67,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     JWT_OIDC_CACHING_ENABLED = os.getenv("JWT_OIDC_CACHING_ENABLED")
     JWT_OIDC_JWKS_CACHE_TIMEOUT = 300
 
-    WEB_API_BASE_URL = os.getenv("DATA_ANALYSIS_API_BASE_URL", default="")
+    DATA_ANALYSIS_API_BASE_URL = os.getenv("DATA_ANALYSIS_API_BASE_URL", default="")
 
     DB_PG_CONFIG = {
         "host": "forms-flow-data-analysis-db",

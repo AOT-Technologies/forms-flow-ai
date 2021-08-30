@@ -38,5 +38,7 @@ export const TRANSLATIONS_ZH = {
   showing:"显示",
   to:"到",
   of:"的",
-  results:"结果"
+  results:"结果",
+  placeholder_appid:"应用程序编号",
+  edit:"编辑"
 };

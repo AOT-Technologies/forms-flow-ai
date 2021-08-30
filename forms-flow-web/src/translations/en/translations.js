@@ -38,5 +38,7 @@ export const TRANSLATIONS_EN = {
   showing:"Showing",
   to:"to",
   of:"of",
-  results:"Results"
+  results:"Results",
+  placeholder_appid:"Application ID",
+  edit:"Edit"
 };

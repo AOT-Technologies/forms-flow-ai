@@ -5,7 +5,7 @@ import { textFilter , selectFilter } from "react-bootstrap-table2-filter";
 import {getLocalDateTime} from "../../apiManager/services/formatterService";
 import {AWAITING_ACKNOWLEDGEMENT} from "../../constants/applicationConstants";
 import { Trans,useTranslation } from "react-i18next";
-
+import {i18n} from "../../translations/i18n";
 let statusFilter,
     idFilter,
     nameFilter,
@@ -38,7 +38,7 @@ const linkApplication = (cell, row) => {
 
 const linkSubmission = (cell,row) => {
   const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
-  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':'Edit') : <Trans>{("view")}</Trans>
+  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':<Trans>{("edit")}</Trans>) : <Trans>{("view")}</Trans>
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
   <div onClick={()=> window.open(url, "_blank")}>

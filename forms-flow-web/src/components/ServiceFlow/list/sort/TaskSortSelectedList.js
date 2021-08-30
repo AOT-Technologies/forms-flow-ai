@@ -3,7 +3,7 @@ import {sortingList} from "../../constants/taskConstants";
 import TaskSort from "./TaskSort";
 import {useDispatch, useSelector} from "react-redux";
 import {setFilterListSortParams} from "../../../../actions/bpmTaskActions";
-
+import {  useTranslation } from "react-i18next";
 const getOptions = (options) => {
   const optionsArray = [];
   sortingList.forEach(sortOption=>{
@@ -23,7 +23,7 @@ const TaskSortSelectedList = React.memo(() => {
   const [showSortListDropdownIndex, setShowSortListDropdownIndex] = useState(null);
   const [sortOptions,setSortOptions]=useState([]);
   const dispatch= useDispatch();
-
+  const {t}=useTranslation();
   const handleClick = e => {
     if (createNode?.current?.contains(e.target)) {
       return;
@@ -86,13 +86,13 @@ const TaskSortSelectedList = React.memo(() => {
   const selectedSortList = () => {
    return sortList.map((sort, index)=>(
      <div className="mr-3" key={index}>
-       {sortList.length>1 ?<span className="mr-1 font-weight-bold click-element" title="Remove sorting" onClick={()=>deleteSort(sort,index)}>x</span>:null}
+       {sortList.length>1 ?<span className="mr-1 font-weight-bold click-element" title={t("rmv_sort")} onClick={()=>deleteSort(sort,index)}>x</span>:null}
        <span className="mr-1 click-element" onClick={()=>showSortList(index)}>
          {sort.label}{showSortListDropdownIndex===index?<TaskSort handleClick={(sortToUpdate)=>updateSort(sortToUpdate,index)} options={sortOptions}/>:null}
        </span>
        <span className="click-element">
-         {sort.sortOrder==="asc"?<i className="fa fa-angle-up fa-lg font-weight-bold" title="Ascending" onClick={()=>updateSortOrder(index,"desc")}/>:
-           <i className="fa fa-angle-down fa-lg font-weight-bold" dat-title="Descending" onClick={()=>updateSortOrder(index,"asc")} />}
+         {sort.sortOrder==="asc"?<i className="fa fa-angle-up fa-lg font-weight-bold" title={t("asending")} onClick={()=>updateSortOrder(index,"desc")}/>:
+           <i className="fa fa-angle-down fa-lg font-weight-bold" dat-title={t("desending")} onClick={()=>updateSortOrder(index,"asc")} />}
        </span>
      </div>
    ))
@@ -101,7 +101,7 @@ const TaskSortSelectedList = React.memo(() => {
   return  (<div className="d-flex flex-wrap" ref={createNode}>
     {selectedSortList()}
     {sortOptions.length?<div className="ml-1">
-    <i className="fa fa-plus font-weight-bold"  dat-title="Add sorting" onClick={()=>setShowSortListDropdown(!showSortListDropdown)} />
+    <i className="fa fa-plus font-weight-bold"  dat-title={t("add_sort")} onClick={()=>setShowSortListDropdown(!showSortListDropdown)} />
 
      {showSortListDropdown?<TaskSort handleClick={addSort} options={sortOptions}/>:null}
     </div>:null}

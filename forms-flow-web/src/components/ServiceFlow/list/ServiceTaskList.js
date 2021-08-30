@@ -7,7 +7,7 @@ import {
   setBPMTaskLoader
 } from "../../../actions/bpmTaskActions";
 import Loading from "../../../containers/Loading";
-import { Trans } from "react-i18next";
+import { Trans , useTranslation} from "react-i18next";
 import moment from "moment";
 import { getProcessDataFromList,getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
 import TaskFilterComponent from "./search/TaskFilterComponent";
@@ -29,7 +29,7 @@ const ServiceFlowTaskList = React.memo(() => {
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const activePage = useSelector(state=>state.bpmTasks.activePage);
   const tasksPerPage = MAX_RESULTS;
-
+  const {t} = useTranslation();
   useEffect(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
@@ -78,7 +78,7 @@ const ServiceFlowTaskList = React.memo(() => {
                     "name"
                   )}
                 </div>
-                <div data-title="Task assignee" className="col-6 pr-0 text-right">
+                <div data-title={t("task_assigne")} className="col-6 pr-0 text-right">
                   {task.assignee}
                 </div>
               </Row>
@@ -104,7 +104,7 @@ const ServiceFlowTaskList = React.memo(() => {
                   md={4}
                   xl={4}
                   className="pr-0 text-right tooltips"
-                  dat-title="priority"
+                  dat-title={t("priority")}
                 >
                   {task.priority}
                 </Col>

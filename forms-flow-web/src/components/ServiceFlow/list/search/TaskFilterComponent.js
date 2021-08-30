@@ -8,7 +8,7 @@ import {
 } from "../../../../actions/bpmTaskActions";
 import {useDispatch, useSelector} from "react-redux";
 import TaskIgnoreCaseComponent from "./TaskIgnoreCaseComponent";
-import { Trans } from "react-i18next";
+import { Trans,useTranslation } from "react-i18next";
 const TaskFilterComponent = React.memo(({totalTasks}) => {
   const createSearchNode = useRef();
   const filterSearchSelections = useSelector(state => state.bpmTasks.filterSearchSelections);
@@ -16,7 +16,7 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
   const [filterSelections, setFilterSelections] = useState(filterSearchSelections);
   const [showFilterItems, setShowFilterItems] = useState(false);
   const dispatch= useDispatch();
-
+  const {t}= useTranslation();
 
   const handleClick = e => {
     if (createSearchNode?.current?.contains(e.target)) {
@@ -94,7 +94,7 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
             <input
               type="text"
               className="filter"
-              placeholder="Filter Tasks"
+              placeholder={t("fltr_task")}
               onClick={() => {
               }}
               onFocus={() => setShowFilterItems(true)}
@@ -102,7 +102,7 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
             {showFilterItems ? (
               <TaskFilterDropdown onFilterSelect={setFilter}/>
             ) : null}
-            <span dat-title="Total number of results">{totalTasks}</span>
+            <span dat-title={t("ttl_result")}>{totalTasks}</span>
           </div>
         </div>
         <TaskIgnoreCaseComponent/>

@@ -28,7 +28,7 @@ import {
 } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
 import {fetchBPMFormList} from "../../apiManager/services/bpmFormServices";
-import { Trans } from "react-i18next";
+import { Trans,useTranslation } from "react-i18next";
 
 const getOperations = (userRoles, showViewSubmissions) => {
   let operations = [];
@@ -46,6 +46,7 @@ const getOperations = (userRoles, showViewSubmissions) => {
 
 const List = React.memo((props)=> {
   const dispatch = useDispatch();
+  const {t}=useTranslation();
   const {
     forms,
     onAction,
@@ -96,7 +97,7 @@ const List = React.memo((props)=> {
         <Confirm
           modalOpen={props.modalOpen}
           message={
-            "Are you sure you wish to delete the form " +
+            t("delete_form_message")  +
             props.formName +
             "?"
           }

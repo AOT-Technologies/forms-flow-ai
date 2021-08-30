@@ -45,7 +45,7 @@ class StepperPage extends PureComponent {
   // UNSAFE_componentWillMount() {
   //   this.props.getAllProcesses();
   // }
-
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -291,6 +291,7 @@ class StepperPage extends PureComponent {
       workflow,
     } = this.state;
     // const { editMode } = this.state;
+    
     const { form, formProcessList } = this.props;
     switch (step) {
       case 0:

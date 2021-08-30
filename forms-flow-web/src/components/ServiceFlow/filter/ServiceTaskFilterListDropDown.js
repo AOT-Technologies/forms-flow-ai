@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setSelectedBPMFilter, setSelectedTaskID} from "../../../actions/bpmTaskActions";
 import {Link} from "react-router-dom";
 /*import {Link} from "react-router-dom";*/
-
+import { Trans } from "react-i18next";
 
 const ServiceFlowFilterListDropDown = React.memo(() => {
   const dispatch= useDispatch();
@@ -35,13 +35,13 @@ const ServiceFlowFilterListDropDown = React.memo(() => {
       return (
           <NavDropdown.Item className="not-selected mt-2 ml-1">
             <i className="fa fa-info-circle mr-2 mt-1"/>
-            No Filters Found
+           <Trans>{("no_filter_found")}</Trans> 
           </NavDropdown.Item>
       )
     }
   }
   return  <>
-    {isFilterLoading? <NavDropdown.Item>Loading...</NavDropdown.Item>: renderFilterList()}
+    {isFilterLoading? <NavDropdown.Item><Trans>{("loading")}</Trans>...</NavDropdown.Item>: renderFilterList()}
     </>
 });
 

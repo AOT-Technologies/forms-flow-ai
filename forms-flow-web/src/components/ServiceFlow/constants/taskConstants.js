@@ -62,6 +62,6 @@ export const taskFilters = [
 ];
 
 export const ALL_TASKS="All tasks"
-export const QUERY_TYPES= {ANY:"ANY",ALL:"ALL"};
+export const QUERY_TYPES= {ANY:<Trans>{("any")}</Trans>,ALL:<Trans>{("all")}</Trans>};
 export const MAX_RESULTS= 15; //maxResults
 

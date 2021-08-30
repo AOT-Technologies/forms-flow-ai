@@ -22,7 +22,7 @@ import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
 //import UserSelection from "./UserSelection";
 import UserSelectionDebounce from "./UserSelectionDebounce";
 import SocketIOService from "../../../services/SocketIOService";
-import { Trans } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 
 const TaskHeader = React.memo(() => {
   const task = useSelector(state => state.bpmTasks.taskDetail);
@@ -38,7 +38,7 @@ const TaskHeader = React.memo(() => {
   const [showModal, setModal] = useState(false);
   const [isEditAssignee, setIsEditAssignee]=useState(false);
   const dispatch= useDispatch();
-
+  const {t}=useTranslation();
   useEffect(()=>{
     const followUp= task?.followUp ? new Date(task?.followUp):null;
     setFollowUpDate(followUp);
@@ -160,13 +160,13 @@ const TaskHeader = React.memo(() => {
     <AddGroupModal modalOpen={showModal} onClose={()=>setModal(false)} groups={taskGroups}/>
       <Row className="ml-0 task-header">{task?.name}</Row>
       <Row className="ml-0 task-name" >
-      <span className="application-id" dat-title={"Process Name"}> {getProcessDataFromList(processList, task?.processDefinitionId, "name")}</span>
+      <span className="application-id" dat-title={t("process_name")}> {getProcessDataFromList(processList, task?.processDefinitionId, "name")}</span>
       </Row>
       <Row className="ml-0" >
-      <span data-title="Application Id" className="application-id"><Trans>{"application_id"}</Trans># {task?.applicationId}</span>
+      <span data-title={t("application_id")} className="application-id"><Trans>{"application_id"}</Trans># {task?.applicationId}</span>
       </Row>
       <Row className="actionable mb-4">
-        <Col sm={followUpDate?2:"auto"} data-title={followUpDate?getFormattedDateAndTime(followUpDate):'Set FollowUp Date'} className='date-container'>
+        <Col sm={followUpDate?2:"auto"} data-title={followUpDate?getFormattedDateAndTime(followUpDate):t("set_followupdate")} className='date-container'>
           <DatePicker
             selected={followUpDate}
             onChange={onFollowUpDateUpdate}
@@ -187,7 +187,7 @@ const TaskHeader = React.memo(() => {
             customInput={<FollowUpDateInput/>}
           />
         </Col>
-        <Col sm={dueDate?2:"auto"} data-title={dueDate?getFormattedDateAndTime(dueDate):'Set Due Date'} className='date-container'>
+        <Col sm={dueDate?2:"auto"} data-title={dueDate?getFormattedDateAndTime(dueDate):t("set_duedate")} className='date-container'>
           <DatePicker
             selected={dueDate}
             onChange={onDueDateUpdate}
@@ -209,7 +209,7 @@ const TaskHeader = React.memo(() => {
             customInput={<DueDateInput/>}
           />
         </Col>
-        <Col className="center-position" sm={4} onClick={()=>setModal(true)} dat-title={"groups"}>
+        <Col className="center-position" sm={4} onClick={()=>setModal(true)} dat-title={t("groups")}>
           <i className="fa fa-group mr-1"/>
           { taskGroups.length === 0? <span><Trans>{"add_group"}</Trans></span>:<span className="group-align">{getGroups(taskGroups)}</span>}
         </Col>
@@ -222,8 +222,8 @@ const TaskHeader = React.memo(() => {
             (<>
           <i className="fa fa-user mr-1" />
           {task?.assignee ? (<span>
-              <span className="change-tooltip" onClick={()=>setIsEditAssignee(true)} dat-title="Click to Change Assignee">{task.assignee}</span>
-              <i className="fa fa-times ml-1" onClick={onUnClaimTask} dat-title="Reset Assignee"/></span>) :
+              <span className="change-tooltip" onClick={()=>setIsEditAssignee(true)} dat-title={t("change_assigne")}>{task.assignee}</span>
+              <i className="fa fa-times ml-1" onClick={onUnClaimTask} dat-title={t("reset_assigne")}/></span>) :
               <span onClick={onClaim}><Trans>{"Claim"}</Trans></span>
             }
             </>)

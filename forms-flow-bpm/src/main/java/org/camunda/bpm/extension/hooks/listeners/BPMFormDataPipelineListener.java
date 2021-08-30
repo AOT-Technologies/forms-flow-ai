@@ -13,6 +13,7 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.FormElement;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 
@@ -22,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import javax.inject.Named;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import java.util.logging.Level;
@@ -35,7 +37,7 @@ import java.util.logging.Logger;
 @Named("BPMFormDataPipelineListener")
 public class BPMFormDataPipelineListener extends BaseListener implements TaskListener, ExecutionListener {
 
-    private final Logger LOGGER = Logger.getLogger(BPMFormDataPipelineListener.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BPMFormDataPipelineListener.class.getName());
 
     private Expression fields;
 

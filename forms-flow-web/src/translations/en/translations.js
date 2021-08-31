@@ -40,5 +40,6 @@ export const TRANSLATIONS_EN = {
   of:"of",
   results:"Results",
   placeholder_appid:"Application ID",
-  edit:"Edit"
+  edit:"Edit",
+  select_dashboard:"Select Dashboard"
 };

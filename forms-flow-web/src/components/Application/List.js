@@ -12,6 +12,7 @@ import {getAllApplications} from "../../apiManager/services/applicationServices"
 import {setApplicationListLoader} from "../../actions/applicationActions";
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
+import { Trans,useTranslation } from "react-i18next";
 import {
   columns,
   getoptions,
@@ -20,10 +21,11 @@ import {
 import {getUserRolePermission} from "../../helper/user";
 import {CLIENT, STAFF_REVIEWER} from "../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../constants/applicationConstants";
-import { Trans } from "react-i18next";
+
 
 
 const ApplicationList = React.memo(() => {
+  const {t}=useTranslation();
   const applications = useSelector(state=> state.applications.applicationsList)
   const isApplicationListLoading = useSelector((state) => state.applications.isApplicationListLoading);
   const applicationCount = useSelector((state) => state.applications.applicationCount);
@@ -82,7 +84,7 @@ const ApplicationList = React.memo(() => {
         bootstrap4
         keyField="id"
         data={listApplications(applications)}
-        columns={columns(applications)}
+        columns={columns(applications,t)}
         search
       >
         {(props) => (
@@ -125,3 +127,4 @@ const ApplicationList = React.memo(() => {
 
 
 export default ApplicationList;
+

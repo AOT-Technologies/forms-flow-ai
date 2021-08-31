@@ -75,14 +75,14 @@ export const columns_history = [
   },
 ];
 
-export const columns  = (rows) => [
+export const columns  = (rows,t) => [
   {
     dataField: "id",
     text: <Trans>{("application_id")}</Trans>,
     formatter: linkApplication,
     sort: true,
     filter: textFilter({
-      placeholder:("\uf002 Application ID") , // custom the input placeholder
+      placeholder:`\uf002 ${t("placeholder_appid")}` , // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       className: "icon-search",
       getFilter: (filter) => {
@@ -96,7 +96,7 @@ export const columns  = (rows) => [
     sort: true,
     formatter: nameFormatter,
     filter: textFilter({
-      placeholder: "\uf002 Application Name", // custom the input placeholder
+      placeholder: `\uf002 ${t("application_name")}`, // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       className: "icon-search",
       getFilter: (filter) => {
@@ -110,7 +110,7 @@ export const columns  = (rows) => [
     sort: true,
     filter: selectFilter({
       options: getApplicationStatusOptions(rows),
-      placeholder: "All",
+      placeholder: `\uf002 ${t("all")}`,
 	    defaultValue: 'All',
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       getFilter: (filter) => {
@@ -133,7 +133,7 @@ export const columns  = (rows) => [
       return { width: "15%" };
     },
     filter: textFilter({
-      placeholder: "\uf002 Last Modified", // custom the input placeholder
+      placeholder: `\uf002 ${t("last_modified")}`, // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       className: "icon-search",
       getFilter: (filter) => {

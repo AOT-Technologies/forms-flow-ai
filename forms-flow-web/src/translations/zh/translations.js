@@ -40,5 +40,6 @@ export const TRANSLATIONS_ZH = {
   of:"的",
   results:"结果",
   placeholder_appid:"应用程序编号",
-  edit:"编辑"
+  edit:"编辑",
+  select_dashboard:"选择仪表板"
 };

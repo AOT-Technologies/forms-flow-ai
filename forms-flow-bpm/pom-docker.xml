@@ -25,6 +25,7 @@
 		<version.camundaSpringBoot>7.13.0</version.camundaSpringBoot>
 		<version.springBoot>2.4.2</version.springBoot>
 		<version.springSecurityOauth2>2.4.2</version.springSecurityOauth2>
+		<version.camundaKeycloak>2.2.1</version.camundaKeycloak>
 	</properties>
 
 	<dependencyManagement>
@@ -47,7 +48,7 @@
 			<dependency>
 				<groupId>org.camunda.bpm.extension</groupId>
 				<artifactId>camunda-bpm-identity-keycloak</artifactId>
-				<version>${project.version}</version>
+				<version>${version.camundaKeycloak}</version>
 				<scope>provided</scope>
 			</dependency>
 		</dependencies>

@@ -6,6 +6,9 @@ import {getLocalDateTime} from "../../apiManager/services/formatterService";
 import {AWAITING_ACKNOWLEDGEMENT} from "../../constants/applicationConstants";
 import { Trans,useTranslation } from "react-i18next";
 import {i18n} from "../../translations/i18n";
+
+
+
 let statusFilter,
     idFilter,
     nameFilter,
@@ -79,7 +82,7 @@ export const columns  = (rows) => [
     formatter: linkApplication,
     sort: true,
     filter: textFilter({
-      placeholder: "\uf002 Application ID", // custom the input placeholder
+      placeholder:("\uf002 Application ID") , // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       className: "icon-search",
       getFilter: (filter) => {

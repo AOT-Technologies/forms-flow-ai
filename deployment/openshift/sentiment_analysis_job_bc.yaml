@@ -30,6 +30,13 @@ objects:
     strategy:
       type: Docker
       dockerStrategy:
+        pullSecret:
+          name: ${DOCKER_CRED_NAME}
+        env:
+          - name: FORMIO_SOURCE_REPO_URL
+            value: ${FORMIO_SOURCE_REPO_URL}
+          - name: FORMIO_SOURCE_REPO_BRANCH
+            value: ${FORMIO_SOURCE_REPO_BRANCH}
         dockerfilePath: "${DOCKER_FILE_PATH}"
     output:
       to:
@@ -65,26 +72,6 @@ parameters:
   description: The source context directory.
   required: true
   value: jobs/sentiment-analysis
-- name: SOURCE_IMAGE_KIND
-  displayName: Source Image Kind
-  required: true
-  description: The 'kind' (type) of the  source image; typically ImageStreamTag, or
-    DockerImage.
-  value: ImageStreamTag
-- name: SOURCE_IMAGE_NAME_SPACE
-  displayName: Source Image Name Space
-  required: true
-  description: The name space of the  source image.
-- name: SOURCE_IMAGE_NAME
-  displayName: Source Image Name
-  required: true
-  description: The name of the source image.
-  value: python
-- name: SOURCE_IMAGE_TAG
-  displayName: Source Image Tag
-  required: true
-  description: The tag of the source image.
-  value: '3.8'
 - name: OUTPUT_IMAGE_TAG
   displayName: Output Image Tag
   description: The tag given to the built image.
@@ -95,3 +82,18 @@ parameters:
   description: The path to the docker file defining the build.
   required: false
   value: Dockerfile
+- name: DOCKER_CRED_NAME
+  displayName: Docker cred secret name
+  description: Docker cred secret name
+  required: true
+  value: docker-creds
+- name: FORMIO_SOURCE_REPO_URL
+  displayName: formsflow source
+  description: formsflow source repo
+  required: false
+  value: https://github.com/AOT-Technologies/forms-flow-ai.git
+- name: FORMIO_SOURCE_REPO_BRANCH
+  displayName: Repo Branch name
+  description: Repo Branch name
+  required: false
+  value: feature/sentiment-integration

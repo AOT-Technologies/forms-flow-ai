@@ -1,2 +1,2 @@
 #!/bin/bash
-flask db upgrade && gunicorn -b :5000 'api:create_app()' --timeout 120 --worker-class=gthread --workers=5 --threads=10
+flask db migrate &&flask db upgrade && gunicorn -b :5000 'api:create_app()' --timeout 120 --worker-class=gthread --workers=5 --threads=10

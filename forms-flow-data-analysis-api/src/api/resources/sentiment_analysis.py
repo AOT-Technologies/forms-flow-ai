@@ -27,23 +27,21 @@ class SentimentAnalysisResource(Resource):
                 form_url=input_json["formUrl"],
                 data=[],
             )
-
             for data in input_json["data"]:
                 text = data["text"].lower()
                 topics = data["topics"]
-
                 new_topics = [t.lower() for t in topics]
-
                 response = sentiment_analysis_pipeline(text=text, topics=new_topics)
                 response["elementId"] = data["elementId"]
-
-                response_json["data"].append(dict(response))
                 response["applicationId"] = input_json["applicationId"]
                 response["formUrl"] = input_json["formUrl"]
-            
-                save_sentiment_result(input_request=input_json, output_response=response)
-                # post_data = {"input_text": data_input, "output_response": response}
-
+                response_json["data"].append(dict(response))
+                # function used to store entries to database
+                save_sentiment_result(
+                    input_text=text,
+                    overall_sentiment=response["overall_sentiment"],
+                    output_response=response,
+                )
             return jsonify(response_json), HTTPStatus.OK
 
         except BaseException as err:

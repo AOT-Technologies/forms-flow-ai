@@ -1,6 +1,6 @@
 """"Module for generic Sentiment analysis component."""
 from pathlib import Path
-from typing import List
+from typing import Dict, List
 
 import spacy
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
@@ -8,7 +8,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 def sentiment_analysis_pipeline(
     text: str, topics: List[str] = None, entity_sentiment: bool = True
-):
+) -> Dict:
     """A input pipeline which returns for a given text blob, output of
     aspect based sentiment analaysis as list of entities with associated
     sentiment.
@@ -27,13 +27,13 @@ def sentiment_analysis_pipeline(
     """
     if entity_sentiment:
         return {
-            "sentiment": sentiment_entity_analysis_v2(text=text, topics=topics),
+            "sentiment": sentiment_entity_analysis(text=text, topics=topics),
             "overall_sentiment": overall_sentiment(text),
         }
     return {"overall_sentiment": overall_sentiment(text)}
 
 
-def sentiment_entity_analysis_old(text: str, topics: List[str] = None):
+def sentiment_entity_analysis_old(text: str, topics: List[str] = None) -> Dict:
     """ "Function to calculate entity_sentiment of a given text with topics."""
     sentence, labels = load_model_output(text)
     ent = []
@@ -90,7 +90,6 @@ def load_model_output(text: str):
 
     param text: The input text blob being entered by user
     """
-    print(Path.cwd())
     model_path = Path("models/quick-spacy/")
     nlp = spacy.load(model_path)
     doc = nlp(text)
@@ -99,7 +98,7 @@ def load_model_output(text: str):
     return sentence, labels
 
 
-def overall_sentiment(text: str):
+def overall_sentiment(text: str) -> str:
     """Function to calculate the overall sentiment using NLTK's vader library.
 
     param text: The input text blob being entered by user
@@ -137,7 +136,7 @@ def get_sentiment_mapper(entity_text_mapper: dict, text_input: str):
     return sentiment_mapper
 
 
-def sentiment_entity_analysis_v2(text: str, topics: List[str] = None):
+def sentiment_entity_analysis(text: str, topics: List[str] = None):
     """Function to calculate entity_sentiment of a given text with topics.
     It's calculating the sentiment of each entity in topics.
     """

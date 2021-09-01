@@ -3,7 +3,7 @@ Flask
 Flask-Caching
 Flask-SQLAlchemy
 flask-restx
-flask-marshmallow==0.11.0
+flask-marshmallow
 flask-jwt-oidc
 python-dotenv
 psycopg2-binary

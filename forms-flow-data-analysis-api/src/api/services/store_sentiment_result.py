@@ -1,5 +1,12 @@
+from typing import Any
 from ..models.sentiment_results import SentimentResults
 
-def save_sentiment_result(input_request, output_response):
-    SentimentResults(input_request=input_request, output_response=output_response).save()
-    # SentimentResults.create_result_dict(input_request, output_request)
+
+def save_sentiment_result(
+    input_text: str, overall_sentiment: str, output_response: Any
+):
+    SentimentResults(
+        input_text=input_text,
+        overall_sentiment=overall_sentiment,
+        output_response=output_response,
+    ).save()

@@ -91,11 +91,11 @@ const ServiceFlowTaskList = React.memo(() => {
                   xl={8}
                   className="pr-0"
                 >
-                 <span className="tooltiptext" data-title={task.due?getFormattedDateAndTime(task.due):''}> {task.due ? `Due ${moment(task.due).fromNow()}, ` : ""}{" "}</span>
+                 <span className="tooltiptext" data-title={task.due?getFormattedDateAndTime(task.due):''}> {task.due ? `${t("Due")} ${moment(task.due).fromNow()}, ` : ""}{" "}</span>
                  <span className="tooltiptext" data-title={task.followUp?getFormattedDateAndTime(task.followUp):''}> {task.followUp
-                    ? `Follow-up ${moment(task.followUp).fromNow()}, `
+                    ? `${t("follow_up")} ${moment(task.followUp).fromNow()}, `
                     : ""} </span>
-                 <span className="tooltiptext" data-title={task.created?getFormattedDateAndTime(task.created):''}><Trans>{"created"}</Trans>{moment(task.created).fromNow()}</span>
+                 <span className="tooltiptext" data-title={task.created?getFormattedDateAndTime(task.created):''}> <Trans>{"created"}</Trans> {moment(task.created).fromNow()}</span>
                 </Col>
                 <Col
                   lg={4}

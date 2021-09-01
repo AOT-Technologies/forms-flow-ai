@@ -112,5 +112,9 @@ export const TRANSLATIONS_ZH = {
   del_confirmation:"删除确认",
   Yes:"是的",
   No:"不",
-  all_task:"所有任务"
+  all_task:"所有任务",
+  manage_groups:"管理群组",
+  group_id:"组ID",
+  due:"到期的",
+  follow_up:"跟进"
 };

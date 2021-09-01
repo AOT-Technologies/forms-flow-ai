@@ -112,5 +112,10 @@ export const TRANSLATIONS_EN = {
   del_confirmation:"Delete Confirmation",
   Yes:"Yes",
   No:"No",
-  all_task:"All tasks"
+  all_task:"All tasks",
+  manage_groups:"Manage Groups",
+  group_id:"Group ID",
+  due:"Due",
+  follow_up:"Follow-up",
+  date_format_one: "{{date, LLLL}}",
 }

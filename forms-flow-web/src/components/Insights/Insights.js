@@ -52,7 +52,7 @@ const Insights = React.memo((props) => {
                   <Select
                     options={dashboards}
                     onChange={setDashboardSelected}
-                    placeholder=<Trans>{("select_dashboard")}</Trans>
+                    placeholder={<Trans>{("select_dashboard")}</Trans>}
                     value={dashboardSelected}
                   />
                 </div>

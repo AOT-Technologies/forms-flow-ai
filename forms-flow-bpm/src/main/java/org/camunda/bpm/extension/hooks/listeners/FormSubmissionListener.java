@@ -21,7 +21,6 @@ import java.util.logging.Logger;
 @Component
 public class FormSubmissionListener extends BaseListener implements ExecutionListener, TaskListener {
 
-    private final Logger LOGGER = Logger.getLogger(FormSubmissionListener.class.getName());
 
     @Autowired
     private FormSubmissionService formSubmissionService;

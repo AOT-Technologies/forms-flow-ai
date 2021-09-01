@@ -21,7 +21,6 @@ import javax.inject.Named;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * This class supports creation of submission for instances created from external system
@@ -30,14 +29,11 @@ import java.util.logging.Logger;
 @Named("ExternalSubmissionListener")
 public class ExternalSubmissionListener extends BaseListener implements ExecutionListener {
 
-    private final Logger LOGGER = Logger.getLogger(ExternalSubmissionListener.class.getName());
-
     @Autowired
     private FormSubmissionService formSubmissionService;
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
-
 
     private Expression formName;
 

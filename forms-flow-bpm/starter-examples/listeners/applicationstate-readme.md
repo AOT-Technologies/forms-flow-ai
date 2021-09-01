@@ -18,7 +18,7 @@ Task/Execution Listener
 ### How it Works
 
 This invokes listed REST endpoints in sequence,
-1. Invokes REST endpoint of application **application/{id}** with data from cam variable "applicationStatus".
+1. Invokes REST endpoint of application **application/{id}** with data from cam variables: "applicationStatus" and "formUrl".
 2. Invokes REST endpoint of application history **application/{id}/history**  with data from cam variables: "applicationStatus" and "formUrl".
 
 The component is dependent on listed variables from camunda context,

@@ -20,29 +20,29 @@ from api.utils.constants import ALLOW_ALL_ORIGINS
 # from .tenant import API as TENANT_API
 
 
-class CustomApi(Api):
-    @property
-    def specs_url(self):
-        """Monkey patch for HTTPS"""
-        self_api_base = current_app.config.get("FORMSFLOW_API_URL")
-        return url_for(
-            self.endpoint("specs"),
-            _external=True,
-            _scheme=self_api_base.partition(":")[0],
-        )
+# class CustomApi(Api):
+#     @property
+#     def specs_url(self):
+#         """Monkey patch for HTTPS"""
+#         self_api_base = current_app.config.get("FORMSFLOW_API_URL")
+#         return url_for(
+#             self.endpoint("specs"),
+#             _external=True,
+#             _scheme=self_api_base.partition(":")[0],
+#         )
 
 
 # This will add the Authorize button to the swagger docs
 # oauth2 & openid may not yet be supported by restplus
 AUTHORIZATIONS = {"apikey": {"type": "apiKey", "in": "header", "name": "Authorization"}}
 
-API = CustomApi(
+API = Api(
     title="formsflow.ai API",
     version="1.0",
     description="The API for formsflow.ai. Checkout: formsflow.ai to know more",
     security=["apikey"],
     authorizations=AUTHORIZATIONS,
-    doc="/swagger/",
+    doc="/docs",
 )
 
 

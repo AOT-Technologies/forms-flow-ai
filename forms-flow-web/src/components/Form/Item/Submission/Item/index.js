@@ -71,7 +71,7 @@ const Item = React.memo((props) => {
       <Switch>
         <Route exact path="/form/:formId/submission/:submissionId" component={View}/>
         {editAllowed ?<Route path="/form/:formId/submission/:submissionId/edit" component={Edit}/>:null}
-        <Redirect exact to='/404'/>
+        {/* <Redirect exact to='/404'/> */}
       </Switch>
     </div>
   );

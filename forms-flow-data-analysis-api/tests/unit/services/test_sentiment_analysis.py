@@ -6,7 +6,7 @@ from api.services.sentiment_analysis import (
     sentiment_analysis_pipeline,
     get_entities_mapper,
     get_sentiment_mapper,
-    sentiment_entity_analysis_v2,
+    sentiment_entity_analysis,
 )
 
 
@@ -48,7 +48,7 @@ def test_entity_sentiment_phase2():
 
 
 def test_entity_sentiment_model():
-    response = sentiment_entity_analysis_v2(text="Staff is great", topics=["staff"])
+    response = sentiment_entity_analysis(text="Staff is great", topics=["staff"])
     assert response is not None
     print(response)
     assert isinstance(response, dict)
@@ -56,7 +56,7 @@ def test_entity_sentiment_model():
 
 
 def test_failing_entity_sentiment_model():
-    response = sentiment_entity_analysis_v2(text="bad", topics=["staff"])
+    response = sentiment_entity_analysis(text="bad", topics=["staff"])
     assert response is not None
     assert isinstance(response, dict)
     assert response == {}

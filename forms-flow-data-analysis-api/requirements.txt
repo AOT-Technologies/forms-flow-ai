@@ -8,7 +8,7 @@ MarkupSafe==2.0.1
 SQLAlchemy-Utils==0.37.8
 SQLAlchemy==1.4.23
 Werkzeug==2.0.1
-alembic==1.6.5
+alembic==1.7.1
 aniso8601==9.0.1
 attrs==21.2.0
 blis==0.7.4
@@ -20,11 +20,12 @@ click==8.0.1
 cymem==2.0.5
 ecdsa==0.17.0
 flask-jwt-oidc==0.3.0
-flask-marshmallow==0.11.0
+flask-marshmallow==0.14.0
 flask-restx==0.5.0
 greenlet==1.1.1
 gunicorn==20.1.0
 idna==3.2
+importlib-resources==5.2.2
 itsdangerous==2.0.1
 joblib==1.0.1
 jsonschema==3.2.0
@@ -38,9 +39,7 @@ preshed==3.0.5
 psycopg2-binary==2.9.1
 pyasn1==0.4.8
 pyrsistent==0.18.0
-python-dateutil==2.8.2
 python-dotenv==0.19.0
-python-editor==1.0.4
 python-jose==3.3.0
 pytz==2021.1
 regex==2021.8.28
@@ -53,3 +52,4 @@ thinc==7.4.5
 tqdm==4.62.2
 urllib3==1.26.6
 wasabi==0.8.2
+zipp==3.5.0

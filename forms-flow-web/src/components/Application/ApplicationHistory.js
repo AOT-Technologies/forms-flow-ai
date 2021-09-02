@@ -39,7 +39,7 @@ const HistoryList = React.memo((props) => {
   }, [applicationId, isHistoryListLoading, dispatch]);
 
   if(!applicationId){
-    return <Nodata text=<Trans>{("no_application_history_found")}</Trans> className={"div-no-application-list text-center"}/>
+    return <Nodata text={<Trans>{("no_application_history_found")}</Trans>} className={"div-no-application-list text-center"}/>
   }
   if (isHistoryListLoading) {
     return <Loading/>;
@@ -94,7 +94,7 @@ const HistoryList = React.memo((props) => {
         )}
       </ToolkitProvider>
     ) : (
-      <Nodata text=<Trans>{("no_application_history_found")}</Trans> className={"div-no-application-list text-center"}/>
+      <Nodata text={<Trans>{("no_application_history_found")}</Trans>} className={"div-no-application-list text-center"}/>
     )
   );
 });

@@ -64,16 +64,16 @@ const ViewApplication = React.memo(() => {
       </div>
       <br/>
       <Tabs id="application-details" defaultActiveKey="details" mountOnEnter>
-        <Tab eventKey="details" title=<Trans>{("details")}</Trans>>
+        <Tab eventKey="details" title={<Trans>{("details")}</Trans>}>
           <Details application={applicationDetail}/>
         </Tab>
-        <Tab eventKey="form" title=<Trans>{("form")}</Trans>>
+        <Tab eventKey="form" title={<Trans>{("form")}</Trans>}>
           <View page="application-detail"/>
         </Tab>
-        <Tab eventKey="history" title=<Trans>{("history")}</Trans>>
+        <Tab eventKey="history" title={<Trans>{("history")}</Trans>}>
             <History page="application-detail" applicationId={applicationId}/>
         </Tab>
-        <Tab eventKey="process-diagram" title=<Trans>{("process_diagram")}</Trans>>
+        <Tab eventKey="process-diagram" title={<Trans>{("process_diagram")}</Trans>}>
             <ProcessDiagram
               process_key={applicationProcess.processKey}
               processInstanceId={applicationDetail.processInstanceId}

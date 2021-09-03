@@ -44,5 +44,5 @@ export const TRANSLATIONS_EN = {
   select_dashboard:"Select Dashboard",
   date_format:"{{date, DD-MM-YYYY}}",
   form_name:"Form Name",
-  total_submissions:"Total Submissions"
+  total_submissions:"Total Submissions",
 };

@@ -1,5 +1,7 @@
 import React, { Fragment } from "react";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { Trans } from "react-i18next";
+
 
 const CardFormCounter = React.memo((props) => {
   const { submitionData, getStatusDetails, selectedMetricsId } = props;
@@ -29,11 +31,11 @@ const CardFormCounter = React.memo((props) => {
             >
               <span>{formName}</span>
             </OverlayTrigger>
-            <div className="small-title">Form Name</div>
+            <div className="small-title"><Trans>{("form_name")}</Trans></div>
           </div>
           <div className="count">
             <div className="counter ">{count}</div>
-            <div className="small-title">Total Submissions</div>
+            <div className="small-title"><Trans>{("total_submissions")}</Trans></div>
           </div>
         </div>
       </div>

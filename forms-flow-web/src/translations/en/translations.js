@@ -41,5 +41,8 @@ export const TRANSLATIONS_EN = {
   results:"Results",
   placeholder_appid:"Application ID",
   edit:"Edit",
-  select_dashboard:"Select Dashboard"
+  select_dashboard:"Select Dashboard",
+  date_format:"{{date, DD-MM-YYYY}}",
+  form_name:"Form Name",
+  total_submissions:"Total Submissions"
 };

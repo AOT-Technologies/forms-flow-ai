@@ -41,5 +41,8 @@ export const TRANSLATIONS_ZH = {
   results:"结果",
   placeholder_appid:"应用程序编号",
   edit:"编辑",
-  select_dashboard:"选择仪表板"
+  select_dashboard:"选择仪表板",
+  form_name:"表格名称",
+  total_submissions:"提交总数"
+
 };

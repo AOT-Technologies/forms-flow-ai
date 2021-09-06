@@ -2,7 +2,6 @@
 
 from http import HTTPStatus
 import logging
-import sys, traceback
 from flask import request
 from flask_restx import Namespace, Resource
 
@@ -55,7 +54,6 @@ class ApplicationHistoryResource(Resource):
             )
             return response, status
         except KeyError as err:
-            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -65,11 +63,9 @@ class ApplicationHistoryResource(Resource):
             )
             logging.exception(response)
             logging.exception(err)
-            # traceback.print_tb(exc_traceback)
             return response, status
 
         except BaseException as application_err:
-            exc_traceback = sys.exc_info()
             response, status = {
                 "type": "Invalid Request Object",
                 "message": "Invalid Request Object Passed ",
@@ -78,6 +74,5 @@ class ApplicationHistoryResource(Resource):
 
             logging.exception(response)
             logging.exception(application_err)
-            # traceback.print_tb(exc_traceback)
         finally:
             return response, status

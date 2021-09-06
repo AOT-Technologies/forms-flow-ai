@@ -43,6 +43,8 @@ window["_env_"] = {
   REACT_APP_WEBSOCKET_ENCRYPT_KEY:"Web Socket encrypt key for Socket IO",
   //application name
   REACT_APP_APPLICATION_NAME:"formsflow.ai",
+  //custom url
+  REACT_APP_WEB_BASE_CUSTOM_URL:"Custom URL",
 
   REACT_APP_USER_ACCESS_PERMISSIONS:{accessAllowApplications:false, accessAllowSubmissions:false}
 

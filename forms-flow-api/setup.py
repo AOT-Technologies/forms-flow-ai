@@ -30,7 +30,7 @@ def read(filepath):
     return content
 
 
-REQUIREMENTS = read_requirements('requirements.txt')
+REQUIREMENTS = read_requirements('requirements/prod.txt')
 
 setup(
     name='api',

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import { connect } from "react-redux";
 import Select from 'react-select'
 import NoData from './nodashboard';
-
+import { Route, Redirect } from "react-router";
 import {fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/services/insightServices";
 import {setInsightDetailLoader, setInsightDashboardListLoader} from "../../actions/insightActions";
 import LoadingOverlay from "react-loading-overlay";
@@ -76,6 +76,7 @@ const Insights = React.memo((props) => {
         </div>
       </div>
       </div>
+      <Route path={"/insights/:notAvailable"}> <Redirect exact to='/404'/></Route>
     </>
   );
 });

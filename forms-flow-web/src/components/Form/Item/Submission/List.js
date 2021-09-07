@@ -78,7 +78,7 @@ const List = React.memo((props) => {
       </Confirm>
       <div className="main-header">
         <Link className="back-icon" to="/form">
-          <img  src="/back.svg" alt="back"/>
+        <i className="fa fa-chevron-left fa-lg" />
         </Link>
 {/*        <span className="ml-3">
                         <img src="/form.svg" width="30" height="30" alt="form" />

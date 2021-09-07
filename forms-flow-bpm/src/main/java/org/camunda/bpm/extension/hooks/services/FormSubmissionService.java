@@ -123,20 +123,40 @@ public class FormSubmissionService {
                     }
                 }
             } else{
-                Object fieldValue = entry.getValue().isBoolean() ? entry.getValue().booleanValue() :
-                        entry.getValue().isInt() ? entry.getValue().intValue() :
-                                entry.getValue().isBinary() ? entry.getValue().binaryValue() :
-                                        entry.getValue().isLong() ? entry.getValue().asLong() :
-                                                entry.getValue().isDouble() ? entry.getValue().asDouble() :
-                                                        entry.getValue().isBigDecimal() ? entry.getValue().decimalValue() :
-                                                                entry.getValue().isTextual() ? entry.getValue().asText():
-                                                                    entry.getValue().toString();
-                if(fieldValue.equals("")) fieldValue = null;
-                fieldValues.put(entry.getKey(), fieldValue);
+                fieldValues.put(entry.getKey(), convertToOriginType(entry.getValue()));
             }
         }
         }
         return fieldValues;
+    }
+
+    private Object convertToOriginType(JsonNode value) throws IOException {
+        Object fieldValue;
+        if(value.isNull()){
+            fieldValue = null;
+        } else if(value.isBoolean()){
+            fieldValue = value.booleanValue();
+        } else if(value.isInt()){
+            fieldValue = value.intValue();
+        } else if(value.isBinary()){
+            fieldValue = value.binaryValue();
+        } else if(value.isLong()){
+            fieldValue = value.asLong();
+        } else if(value.isDouble()){
+            fieldValue = value.asDouble();
+        } else if(value.isBigDecimal()){
+            fieldValue = value.decimalValue();
+        } else if(value.isTextual()){
+            fieldValue = value.asText();
+        } else{
+            fieldValue = value.toString();
+        }
+
+        if(Objects.equals(fieldValue, "")) {
+            fieldValue = null;
+        }
+
+        return fieldValue;
     }
 
     public String createFormSubmissionData(Map<String,Object> bpmVariables) throws IOException {

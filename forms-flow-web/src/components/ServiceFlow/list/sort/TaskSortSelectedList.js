@@ -49,7 +49,6 @@ const TaskSortSelectedList = React.memo(() => {
     };
   }, []);
 
-
   useEffect(() => {
     setSortOptions(getOptions(sortList));
     dispatch(setFilterListSortParams(sortList));
@@ -60,7 +59,6 @@ const TaskSortSelectedList = React.memo(() => {
    updatedSortList[index].sortOrder=sortOrder;
    updateSortList(updatedSortList);
   };
-
 
   const showSortList = (index)=>{
     if(index!==showSortListDropdownIndex){
@@ -94,7 +92,7 @@ const TaskSortSelectedList = React.memo(() => {
        </span>
        <span className="click-element">
          {sort.sortOrder==="asc"?<i className="fa fa-angle-up fa-lg font-weight-bold" title="Ascending" onClick={()=>updateSortOrder(index,"desc")}/>:
-           <img className="down-size" dat-title="Descending" onClick={()=>updateSortOrder(index,"asc")} src="/webfonts/fa_angle-down.svg" alt="back"/>}
+           <i className="fa fa-angle-down fa-lg font-weight-bold" dat-title="Descending" onClick={()=>updateSortOrder(index,"asc")} />}
        </span>
      </div>
    ))
@@ -103,7 +101,7 @@ const TaskSortSelectedList = React.memo(() => {
   return  (<div className="d-flex flex-wrap" ref={createNode}>
     {selectedSortList()}
     {sortOptions.length?<div className="ml-1">
-    <img className="click-element" src="/webfonts/fa_plus.svg" dat-title="Add sorting" onClick={()=>setShowSortListDropdown(!showSortListDropdown)} alt="back"/>
+    <i className="fa fa-plus font-weight-bold"  dat-title="Add sorting" onClick={()=>setShowSortListDropdown(!showSortListDropdown)} />
 
      {showSortListDropdown?<TaskSort handleClick={addSort} options={sortOptions}/>:null}
     </div>:null}

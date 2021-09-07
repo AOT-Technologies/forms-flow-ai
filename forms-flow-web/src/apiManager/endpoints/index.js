@@ -27,6 +27,7 @@ const API = {
   GET_BPM_USER_LIST:`${BPM_BASE_URL}/user`,
   GET_BPM_FILTERS:`${BPM_BASE_URL}/filter`,
   GET_BPM_TASK_LIST_WITH_FILTER:`${BPM_BASE_URL}/filter/<filter_id>/list`,
+  GET_BPM_TASK_LIST_COUNT_WITH_FILTER:`${BPM_BASE_URL}/filter/<filter_id>/count`,
   BPM_GROUP:`${BPM_BASE_URL}/task/<task_id>/identity-links`,
   DELETE_BPM_GROUP:`${BPM_BASE_URL}/task/<task_id>/identity-links/delete`,
   BPM_FORM_SUBMIT:`${BPM_BASE_URL}/task/<task_id>/submit-form`,

@@ -5,19 +5,16 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.hooks.listeners.BaseListener;
+import org.camunda.bpm.extension.hooks.listeners.data.FormSubmission;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 
@@ -26,7 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 /**
@@ -36,8 +32,6 @@ import java.util.stream.Collectors;
  */
 @Component
 public class FormConnectorListener extends BaseListener implements TaskListener {
-
-    private static final Logger LOGGER = Logger.getLogger(FormConnectorListener.class.getName());
 
     private Expression fields;
     private Expression copyDataIndicator;
@@ -198,12 +192,4 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
         return formUrl+ "/form/" + getFormId(delegateTask) + "/submission/" + submissionId;
     }
 
-}
-
-@Scope("prototype")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class FormSubmission{
-    private JsonNode data;
 }

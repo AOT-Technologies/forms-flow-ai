@@ -16,7 +16,7 @@ const CardFormCounter = React.memo((props) => {
           }`}
         >
           <div className="name">
-            <img src="/form.svg" width="30" height="30" alt="form" />
+          <i className="fa fa-wpforms p-1" />
 
             <OverlayTrigger
               placement="top"

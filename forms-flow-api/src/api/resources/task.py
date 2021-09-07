@@ -1,8 +1,6 @@
 """API endpoints for managing task resource."""
 import logging
 
-import sys, traceback
-
 from http import HTTPStatus
 
 from flask import request
@@ -82,7 +80,6 @@ class TaskClaim(Resource):
                 HTTPStatus.OK,
             )
         except KeyError as err:
-            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -94,12 +91,9 @@ class TaskClaim(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            # traceback.print_tb(exc_traceback)
             return response, status
 
         except BaseException as err:
-            exc_traceback = sys.exc_info()
-
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
@@ -107,8 +101,6 @@ class TaskClaim(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            # traceback.print_tb(exc_traceback)
-
             return response, status
 
 
@@ -136,7 +128,6 @@ class TaskUnClaim(Resource):
                 HTTPStatus.OK,
             )
         except KeyError as err:
-            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -148,11 +139,8 @@ class TaskUnClaim(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            # traceback.print_tb(exc_traceback)
 
         except BaseException as err:
-            exc_traceback = sys.exc_info()
-
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
@@ -160,8 +148,6 @@ class TaskUnClaim(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            # traceback.print_tb(exc_traceback)
-
             return response, status
 
 
@@ -189,7 +175,6 @@ class TaskComplete(Resource):
                 HTTPStatus.OK,
             )
         except KeyError as err:
-            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -201,11 +186,8 @@ class TaskComplete(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            # traceback.print_tb(exc_traceback)
             return response, status
         except BaseException as err:
-            exc_traceback = sys.exc_info()
-
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
@@ -213,5 +195,4 @@ class TaskComplete(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            # traceback.print_tb(exc_traceback)
             return response, status

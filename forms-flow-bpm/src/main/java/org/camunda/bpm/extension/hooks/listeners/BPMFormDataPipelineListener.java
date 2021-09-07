@@ -2,8 +2,6 @@ package org.camunda.bpm.extension.hooks.listeners;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -14,14 +12,13 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
+import org.camunda.bpm.extension.hooks.listeners.data.FormElement;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpMethod;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 
 import javax.inject.Named;
 
@@ -40,7 +37,7 @@ import java.util.logging.Logger;
 @Named("BPMFormDataPipelineListener")
 public class BPMFormDataPipelineListener extends BaseListener implements TaskListener, ExecutionListener {
 
-    private final Logger LOGGER = Logger.getLogger(BPMFormDataPipelineListener.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(BPMFormDataPipelineListener.class.getName());
 
     private Expression fields;
 
@@ -98,18 +95,3 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
 
 }
 
-@Component
-@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-@Data
-@NoArgsConstructor
-class FormElement {
-    private String op;
-    private String path;
-    private String value;
-
-    FormElement(String elementId, String value) {
-        this.op = "replace";
-        this.path = "/data/" + elementId;
-        this.value = value;
-    }
-}

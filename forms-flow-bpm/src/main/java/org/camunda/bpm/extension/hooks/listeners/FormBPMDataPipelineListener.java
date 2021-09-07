@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.inject.Named;
 import java.io.IOException;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * This class transforms all the form document data into CAM variables
@@ -20,8 +19,6 @@ import java.util.logging.Logger;
  */
 @Named("FormBPMDataPipelineListener")
 public class FormBPMDataPipelineListener  extends BaseListener implements TaskListener, ExecutionListener {
-
-    private final Logger LOGGER = Logger.getLogger(FormBPMDataPipelineListener.class.getName());
 
     @Autowired
     private FormSubmissionService formSubmissionService;

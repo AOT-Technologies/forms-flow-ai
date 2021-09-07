@@ -29,6 +29,7 @@ services:
         - REACT_APP_KEYCLOAK_URL=${KEYCLOAK_URL}
         - REACT_APP_APPLICATION_NAME=${APPLICATION_NAME:-formsflow.ai}
         - REACT_APP_USER_ACCESS_PERMISSIONS=${USER_ACCESS_PERMISSIONS}
+        - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL}
     volumes:
       - ".:/app"
       - "/app/node_modules"

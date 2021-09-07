@@ -4,6 +4,7 @@ import os
 
 from flask import Flask
 from flask import request
+from werkzeug.middleware.proxy_fix import ProxyFix
 from . import config, models
 from .models import db, ma
 from .resources import API
@@ -24,6 +25,7 @@ setup_logging(
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     """Return a configured Flask App using the Factory method."""
     app = Flask(__name__)
+    app.wsgi_app = ProxyFix(app.wsgi_app)
     app.config.from_object(config.CONFIGURATION[run_mode])
 
     db.init_app(app)

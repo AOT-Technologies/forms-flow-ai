@@ -1,8 +1,9 @@
-import React, { useEffect, useState} from "react";
+import React, { useEffect } from "react";
 import { ListGroup, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import {fetchServiceTaskList} from "../../../apiManager/services/bpmTaskServices";
+import {fetchServiceTaskList, fetchServiceTaskListCount} from "../../../apiManager/services/bpmTaskServices";
 import {
+  setBPMTaskListActivePage,
   setBPMTaskLoader
 } from "../../../actions/bpmTaskActions";
 import Loading from "../../../containers/Loading";
@@ -11,9 +12,12 @@ import { getProcessDataFromList,getFormattedDateAndTime } from "../../../apiMana
 import TaskFilterComponent from "./search/TaskFilterComponent";
 import Pagination from "react-js-pagination";
 import {push} from "connected-react-router";
+import {MAX_RESULTS} from "../constants/taskConstants";
+import {getFirstResultIndex} from "../../../apiManager/services/taskSearchParamsFormatterService";
 
 const ServiceFlowTaskList = React.memo(() => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
+  const tasksCount = useSelector(state=> state.bpmTasks.tasksCount);
   const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const isTaskListLoading = useSelector(
     (state) => state.bpmTasks.isTaskListLoading
@@ -22,36 +26,37 @@ const ServiceFlowTaskList = React.memo(() => {
   const dispatch = useDispatch();
   const processList = useSelector((state) => state.bpmTasks.processList);
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
-  const [activePage, setCurrentPage] = useState(1);
-  const tasksPerPage = 15;
-  // Logic for displaying current todos
-  const indexOfLastTodo = activePage * tasksPerPage;
-  const indexOfFirstTodo = indexOfLastTodo - tasksPerPage;
-  const currentTaskList = taskList.slice(indexOfFirstTodo, indexOfLastTodo);
+  const activePage = useSelector(state=>state.bpmTasks.activePage);
+  const tasksPerPage = MAX_RESULTS;
 
   useEffect(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
-      setCurrentPage(1);
-      dispatch(fetchServiceTaskList(selectedFilter.id, reqData));
+      dispatch(setBPMTaskListActivePage(1));
+      dispatch(fetchServiceTaskListCount(selectedFilter.id, reqData))
+      dispatch(fetchServiceTaskList(selectedFilter.id, 0, reqData));
     }
   }, [dispatch, selectedFilter, reqData]);
-
 
   const getTaskDetails = (taskId) => {
     if(taskId!==bpmTaskId){
       dispatch(push(`/task/${taskId}`));
     }
   };
+
   const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+    dispatch(setBPMTaskListActivePage(pageNumber));
+    dispatch(setBPMTaskLoader(true));
+    let firstResultIndex = getFirstResultIndex(pageNumber) ;
+    dispatch(fetchServiceTaskListCount(selectedFilter.id, reqData))
+    dispatch(fetchServiceTaskList(selectedFilter.id, firstResultIndex, reqData));
   };
 
   const renderTaskList = () => {
-    if (taskList.length && selectedFilter) {
+    if ((tasksCount||taskList.length) && selectedFilter) {
       return (
         <>
-          {currentTaskList.map((task, index) => (
+          {taskList.map((task, index) => (
             <div
               className={`clickable ${
                 task?.id === bpmTaskId && "selected"
@@ -109,7 +114,7 @@ const ServiceFlowTaskList = React.memo(() => {
             <Pagination
               activePage={activePage}
               itemsCountPerPage={tasksPerPage}
-              totalItemsCount={taskList.length}
+              totalItemsCount={tasksCount}
               pageRangeDisplayed={3}
               onChange={handlePageChange}
               prevPageText="<"
@@ -131,7 +136,7 @@ const ServiceFlowTaskList = React.memo(() => {
   return (
     <>
       <ListGroup as="ul" className="service-task-list">
-        <TaskFilterComponent totalTasks={isTaskListLoading?0:taskList.length} />
+        <TaskFilterComponent totalTasks={isTaskListLoading?0:tasksCount} />
         {isTaskListLoading ? <Loading /> : renderTaskList()}
       </ListGroup>
     </>

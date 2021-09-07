@@ -5,6 +5,10 @@ export const APPLICATION_NAME =
   (window._env_ && window._env_.REACT_APP_APPLICATION_NAME) ||
   process.env.REACT_APP_APPLICATION_NAME ||
   "formsflow.ai";
+//custom url
+export const WEB_BASE_CUSTOM_URL =
+  (window._env_ && window._env_.REACT_APP_WEB_BASE_CUSTOM_URL) ||
+  process.env.REACT_APP_WEB_BASE_CUSTOM_URL||"";
 
 //keycloak
 export const Keycloak_Client =

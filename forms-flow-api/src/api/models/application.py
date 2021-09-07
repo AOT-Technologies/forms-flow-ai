@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import logging
-
 from sqlalchemy import or_, and_
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin

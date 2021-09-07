@@ -54,7 +54,7 @@ const ViewApplication = React.memo(() => {
     <div className="container">
       <div className="main-header">
         <Link to="/application">
-          <img src="/back.svg" alt="back"/>
+        <i className="fa fa-chevron-left fa-lg" />
         </Link>
         <h3 className="ml-3">
           <span className="application-head-details"><i className="fa fa-list-alt" aria-hidden="true"/>&nbsp; Applications /</span>{" "}

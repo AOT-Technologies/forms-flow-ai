@@ -4,6 +4,7 @@ import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import {Col, Container, Row} from "react-bootstrap";
 import "./ServiceFlow.scss";
 import {
+  fetchServiceTaskListCount,
   fetchFilterList,
   fetchProcessDefinitionList,
   fetchServiceTaskList,
@@ -22,7 +23,7 @@ import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
-import {Route} from "react-router-dom";
+import {Route, Redirect} from "react-router-dom";
 import {push} from "connected-react-router";
 
 export default React.memo(() => {
@@ -37,14 +38,17 @@ export default React.memo(() => {
   const searchParams = useSelector((state) => state.bpmTasks.filterListSearchParams);
   const listReqParams = useSelector((state) => state.bpmTasks.listReqParams);
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
+  const firstResult = useSelector(state=> state.bpmTasks.firstResult);
   const selectedFilterIdRef=useRef(selectedFilterId);
   const bpmTaskIdRef=useRef(bpmTaskId);
   const reqDataRef=useRef(reqData);
+  const firstResultsRef=useRef(firstResult);
 
   useEffect(()=>{
     selectedFilterIdRef.current=selectedFilterId;
     bpmTaskIdRef.current=bpmTaskId;
     reqDataRef.current=reqData;
+    firstResultsRef.current=firstResult;
   });
 
   useEffect(()=>{
@@ -78,7 +82,8 @@ export default React.memo(() => {
 
   const SocketIOCallback = useCallback((refreshedTaskId, forceReload) => {
       if(forceReload){
-        dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current,refreshedTaskId)); //Refreshes the Tasks
+        dispatch(fetchServiceTaskListCount(selectedFilterIdRef.current, reqDataRef.current));
+        dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current,refreshedTaskId)); //Refreshes the Tasks
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current){
           dispatch(setBPMTaskDetailLoader(true));
           dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
@@ -86,7 +91,8 @@ export default React.memo(() => {
         }
       } else{
         if(selectedFilterIdRef.current){
-          dispatch(fetchServiceTaskList(selectedFilterIdRef.current, reqDataRef.current)); //Refreshes the Task
+          dispatch(fetchServiceTaskListCount(selectedFilterIdRef.current, reqDataRef.current));
+          dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current)); //Refreshes the Task
         }
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current) { //Refreshes task if its selected
           dispatch(getBPMTaskDetail(bpmTaskIdRef.current,(err,resTask)=>{
@@ -128,7 +134,7 @@ export default React.memo(() => {
         </Col>
         <Col className="pl-0" lg={9} xs={12} sm={12} md={8} xl={9}>
           <Route path={"/task/:taskId?"}><ServiceFlowTaskDetails/></Route>
-          {/*<ServiceFlowTaskDetails/>*/}
+          <Route path={"/task/:taskId/:notAvailable"}> <Redirect exact to='/404'/></Route>
         </Col>
       </Row>
     </Container>

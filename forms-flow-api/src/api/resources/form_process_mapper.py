@@ -2,7 +2,6 @@
 
 from http import HTTPStatus
 import logging
-import sys, traceback
 
 from flask import g, request
 from flask_restx import Namespace, Resource
@@ -64,7 +63,6 @@ class FormResource(Resource):
                 )
                 return response, status
         except KeyError as err:
-            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -75,11 +73,9 @@ class FormResource(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            # traceback.print_tb(exc_traceback)
             return response, status
 
         except BaseException as form_err:
-            exc_traceback = sys.exc_info()
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
@@ -87,7 +83,6 @@ class FormResource(Resource):
 
             logging.exception(response)
             logging.exception(form_err)
-            # traceback.print_tb(exc_traceback)
             return response, status
 
     @staticmethod
@@ -106,7 +101,6 @@ class FormResource(Resource):
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
             return response, status
         except BaseException as form_err:
-            exc_traceback = sys.exc_info()
             response, status = {
                 "message": "Invalid request object passed for FormProcessmapper POST API",
                 "errors": form_err.messages,
@@ -114,8 +108,6 @@ class FormResource(Resource):
 
             logging.exception(response)
             logging.exception(form_err)
-            # traceback.print_tb(exc_traceback)
-
             return response, status
 
 
@@ -134,9 +126,6 @@ class FormResourceById(Resource):
                 HTTPStatus.OK,
             )
         except BusinessException as err:
-
-            exc_traceback = sys.exc_info()
-
             response, status = (
                 {
                     "type": "Invalid response data",
@@ -146,8 +135,6 @@ class FormResourceById(Resource):
             )
 
             logging.exception(response)
-            # traceback.print_tb(exc_traceback)
-
             return response, status
 
     @staticmethod
@@ -158,9 +145,6 @@ class FormResourceById(Resource):
             FormProcessMapperService.mark_inactive(form_process_mapper_id=mapper_id)
             return "Deleted", HTTPStatus.OK
         except BusinessException as err:
-
-            exc_traceback = sys.exc_info()
-
             response, status = (
                 {
                     "type": "Invalid response data",
@@ -171,7 +155,6 @@ class FormResourceById(Resource):
 
             logging.exception(response)
             logging.exception(err)
-            # traceback.print_tb(exc_traceback)
             return response, status
 
     @staticmethod
@@ -194,9 +177,6 @@ class FormResourceById(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as mapper_err:
-
-            exc_traceback = sys.exc_info()
-
             response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid request passed",
@@ -204,8 +184,6 @@ class FormResourceById(Resource):
 
             logging.exception(response)
             logging.exception(mapper_err)
-            # traceback.print_tb(exc_traceback)
-
             return response, status
 
 
@@ -224,8 +202,6 @@ class FormResourceByFormId(Resource):
                 HTTPStatus.OK,
             )
         except BusinessException as err:
-
-            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "No Response",
@@ -234,6 +210,4 @@ class FormResourceByFormId(Resource):
                 HTTPStatus.NO_CONTENT,
             )
             logging.info(response)
-            # traceback.print_tb(exc_traceback)
-
             return response, status

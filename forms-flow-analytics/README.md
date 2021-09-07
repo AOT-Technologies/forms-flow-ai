@@ -1,6 +1,6 @@
 # Analytics Engine
 
-![Redash](https://img.shields.io/badge/Redash-v9(master)-blue)
+![Redash](https://img.shields.io/badge/Redash-v9(beta)-blue)
 
 **formsflow.ai** leverages [Redash](https://github.com/getredash/redash) to build interactive
 dashboards and gain insights. To create meaningful visualization for
@@ -15,6 +15,7 @@ your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.
    * [Step 4 : Health Check](#health-check)
    * [Step 5 : Configuration of Keycloak SAML Setup](#configuration-of-keycloak-saml-setup)
 3. [Get the Redash API key](#get-the-redash-api-key)
+4. [Redash how to use guide](#redash-how-to-use-guide)
 
 ## Prerequisites
 
@@ -104,6 +105,8 @@ Variable name | Meaning | Possible values | Default value |
       * Go to Account Section
       * Copy API Key to Clipboard
  
-### Redash how to use guide 
+## Redash how to use guide 
 
-Check our guide on [how to configure Redash and come up with awesome visualization using redash](./docs/README.md). Also [sample queries for default forms](./docs/sample_queries.md).
+- Check our guide on [how to configure Redash and come up with awesome visualization using redash](./docs/README.md).
+
+- If you want to visualize based on data in formsflow.ai, [a few sample queries for default forms are available](./docs/sample_queries.md).

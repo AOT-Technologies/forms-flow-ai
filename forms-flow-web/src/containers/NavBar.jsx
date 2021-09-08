@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {Navbar, Dropdown, Container, Nav, NavDropdown} from "react-bootstrap";
 import {Link, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
@@ -6,21 +6,32 @@ import UserService from "../services/UserService";
 import {getUserRoleName, getUserRolePermission} from "../helper/user";
 import { Trans } from "react-i18next";
 import "./styles.scss";
-import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME} from "../constants/constants";
+import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME, LANGUAGE} from "../constants/constants";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import {push} from "connected-react-router";
-
+import i18n from "../translations/i18n";
+import { setLanguage } from "../actions/languageSetAction";
 const NavBar = React.memo(() => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const location = useLocation();
   const { pathname } = location;
   const user = useSelector((state) => state.user.userDetail);
+  const lang = useSelector((state) => state.user.lang);
   const userRoles = useSelector((state) => state.user.roles);
   const showApplications= useSelector((state) => state.user.showApplications);
   const dispatch = useDispatch();
   const logoPath = "/logo.svg";
   const appName = APPLICATION_NAME;
 
+  useEffect(()=>{
+    console.log(lang);
+    i18n.changeLanguage(lang);
+  },[lang]);
+
+  const handleOnclick=(e)=>{
+   e.preventDefault();
+   dispatch(setLanguage(e.target.value)) 
+ }
   const logout = () => {
       dispatch(push(`/`));
       UserService.userLogout();
@@ -101,6 +112,19 @@ const NavBar = React.memo(() => {
                   pathname.match(/^\/insights/) ? "active-tab" : ""
                 }`}><i className="fa fa-lightbulb-o fa-fw fa-lg"/> <Trans>{"insights"}</Trans></NavDropdown.Item>
               </NavDropdown>:null}
+            </Nav>
+            <Nav className="ml-auto">
+            <Dropdown alignRight>
+                    <Dropdown.Toggle id="dropdown-basic" as="div">
+                    <i className="fa fa-globe fa-lg" aria-hidden="true"/> {lang?lang:'LANGUAGE'}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu>
+                      <Dropdown.Item><button class="button_component" value='en' onClick={handleOnclick}>English</button>  </Dropdown.Item>
+                      <Dropdown.Item><button class="button_component" value='zh' onClick={handleOnclick}>Chineese</button> </Dropdown.Item>
+                      <Dropdown.Item><button class="button_component" value='pt' onClick={handleOnclick}>Portugheese</button>  </Dropdown.Item>
+                      <Dropdown.Item><button class="button_component" value='fr' onClick={handleOnclick}>French</button> </Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
             </Nav>
             <Nav className="ml-auto">
                   <Dropdown alignRight>

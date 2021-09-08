@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { toast } from 'react-toastify';
-
+import Back from "./constants/Back.js";
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
@@ -33,7 +33,6 @@ import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
 
 import "./stepper.scss";
-import {Link} from "react-router-dom";
 import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
 
 /*const statusList = [
@@ -361,9 +360,7 @@ class StepperPage extends PureComponent {
       <>
         <div>
           {this.props.isAuthenticated ?
-            <Link to="/form" title="Back to Form List">
-              <i className="fa fa-chevron-left fa-lg" />
-            </Link>
+            <Back/>
             :
             null
           }

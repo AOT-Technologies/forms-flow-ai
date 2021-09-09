@@ -17,6 +17,7 @@ import {applicationCreate} from "../../../apiManager/services/applicationService
 import LoadingOverlay from "react-loading-overlay";
 import {CUSTOM_EVENT_TYPE} from "../../ServiceFlow/constants/customEventTypes";
 import {toast} from "react-toastify";
+import { Translation } from "react-i18next";
 const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
   const {
@@ -129,7 +130,7 @@ const mapStateToProps = (state) => {
       noAlerts: false,
       i18n: {
         en: {
-          error: <Trans>{("message")}</Trans>,
+          error: <Translation>{(t)=>t("message")}</Translation>,
         },
       }
     },
@@ -146,7 +147,7 @@ const mapDispatchToProps = (dispatch, ownProps,t) => {
         if (!err) {
           dispatch(doProcessActions(submission, ownProps,t))
         } else {
-          const ErrorDetails = { modalOpen: true, message: <Trans>{("message_submission")}</Trans> }
+          const ErrorDetails = { modalOpen: true, message: <Translation>{(t)=>t("message_submission")}</Translation> }
           toast.error(t("submission_error"));
           dispatch(setFormSubmissionLoading(false));
           dispatch(setFormSubmissionError(ErrorDetails))

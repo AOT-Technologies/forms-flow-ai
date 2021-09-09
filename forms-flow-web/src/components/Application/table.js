@@ -6,6 +6,8 @@ import {getLocalDateTime} from "../../apiManager/services/formatterService";
 import {AWAITING_ACKNOWLEDGEMENT} from "../../constants/applicationConstants";
 import { Trans,useTranslation } from "react-i18next";
 import {i18n} from "../../translations/i18n";
+import { Translation } from "react-i18next";
+
 
 
 
@@ -41,7 +43,7 @@ const linkApplication = (cell, row) => {
 
 const linkSubmission = (cell,row) => {
   const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
-  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':<Trans>{("edit")}</Trans>) : <Trans>{("view")}</Trans>
+  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':<Translation>{(t)=>t("edit")}</Translation>) : <Translation>{(t)=>t("view")}</Translation>
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
   <div onClick={()=> window.open(url, "_blank")}>
@@ -65,12 +67,12 @@ const nameFormatter = (cell) => {
 export const columns_history = [
   {
     dataField: "applicationname",
-    text: <Trans>{("application_name")}</Trans>,
+    text: <Translation>{(t)=>t("application_name")}</Translation>,
     sort: true,
   },
   {
     dataField: "applicationstatus",
-    text: <Trans>{("application_status")}</Trans>,
+    text: <Translation>{(t)=>t("application_status")}</Translation>,
     sort: true,
   },
 ];
@@ -78,7 +80,7 @@ export const columns_history = [
 export const columns  = (rows,t) => [
   {
     dataField: "id",
-    text: <Trans>{("application_id")}</Trans>,
+    text: <Translation>{(t)=>t("application_id")}</Translation>,
     formatter: linkApplication,
     sort: true,
     filter: textFilter({
@@ -92,7 +94,7 @@ export const columns  = (rows,t) => [
   },
   {
     dataField: "applicationName",
-    text: <Trans>{("application_name")}</Trans>,
+    text: <Translation>{(t)=>t("application_name")}</Translation>,
     sort: true,
     formatter: nameFormatter,
     filter: textFilter({
@@ -106,12 +108,13 @@ export const columns  = (rows,t) => [
   },
   {
     dataField: "applicationStatus",
-    text: <Trans>{("application_status")}</Trans>,
+    text: <Translation>{(t)=>t("application_status")}</Translation>,
     sort: true,
     filter: selectFilter({
       options: getApplicationStatusOptions(rows),
       placeholder: `\uf002 ${t("all")}`,
 	    defaultValue: 'All',
+      className: "icon-search",
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       getFilter: (filter) => {
         statusFilter = filter;
@@ -120,13 +123,13 @@ export const columns  = (rows,t) => [
   },
   {
     dataField: "formUrl",
-    text: <Trans>{("link_to_form_submission")}</Trans>,
+    text: <Translation>{(t)=>t("link_to_form_submission")}</Translation>,
     formatter: linkSubmission,
   },
 
   {
     dataField: "modified",
-    text:<Trans>{("last_modified")}</Trans>,
+    text:<Translation>{(t)=>t("last_modified")}</Translation>,
     formatter: timeFormatter,
     sort: true,
     headerStyle: (colum, colIndex) => {
@@ -146,7 +149,7 @@ export const columns  = (rows,t) => [
 
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">
-    <Trans>{("showing")}</Trans> {from} <Trans>{("to")}</Trans> {to} <Trans>{("of")}</Trans> {size} <Trans>{("results")}</Trans>
+    <Translation>{(t)=>t("showing")}</Translation> {from} <Translation>{(t)=>t("to")}</Translation> {to} <Translation>{(t)=>t("of")}</Translation> {size} <Translation>{(t)=>t("results")}</Translation>
   </span>
 );
 

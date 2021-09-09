@@ -7,12 +7,14 @@ import { TRANSLATIONS_EN } from "./en/translations";
 import {TRANSLATIONS_FR  } from "./fr/translations";
 import {TRANSLATIONS_PT  } from "./pt/translations";
 
+
 const lang = LANGUAGE;
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources: {
+      fallbackLng: 'en',
       en: {
         translation: TRANSLATIONS_EN
       },
@@ -27,6 +29,7 @@ i18n
       }
     }
   });
+  
 
 i18n.changeLanguage('zh'); // default language 'en'
 

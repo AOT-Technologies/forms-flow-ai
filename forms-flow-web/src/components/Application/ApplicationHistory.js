@@ -20,6 +20,7 @@ import {
 import Loading from "../../containers/Loading";
 import Nodata from '../../components/Nodata';
 import {setUpdateHistoryLoader} from "../../actions/taskActions";
+import { Translation } from "react-i18next";
 
 
 const HistoryList = React.memo((props) => {
@@ -39,7 +40,7 @@ const HistoryList = React.memo((props) => {
   }, [applicationId, isHistoryListLoading, dispatch]);
 
   if(!applicationId){
-    return <Nodata text={<Trans>{("no_application_history_found")}</Trans>} className={"div-no-application-list text-center"}/>
+    return <Nodata text={<Translation>{(t)=>t("no_application_history_found")}</Translation>} className={"div-no-application-list text-center"}/>
   }
   if (isHistoryListLoading) {
     return <Loading/>;
@@ -48,7 +49,7 @@ const HistoryList = React.memo((props) => {
   const getNoDataIndicationContent = () => {
     return (
       <div className="div-no-task">
-        <label className="lbl-no-task"> <Trans>{("no_history_found")}</Trans> </label>
+        <label className="lbl-no-task"> <Translation>{(t)=>t("no_history_found")}</Translation> </label>
         <br/>
       </div>
     );
@@ -70,7 +71,7 @@ const HistoryList = React.memo((props) => {
               <h3 className="task-head">
               {/* <i class="fa fa-list-alt" alt="Task" aria-hidden="true"></i> */}
               <i className="fa fa-list" aria-hidden="true"/>
-              &nbsp;<Trans>{("application_history")}</Trans>
+              &nbsp;<Translation>{(t)=>t("application_history")}</Translation>
               </h3>
             </div>
             <br/>
@@ -94,7 +95,7 @@ const HistoryList = React.memo((props) => {
         )}
       </ToolkitProvider>
     ) : (
-      <Nodata text={<Trans>{("no_application_history_found")}</Trans>} className={"div-no-application-list text-center"}/>
+      <Nodata text={<Translation>{(t)=>t("no_application_history_found")}</Translation>} className={"div-no-application-list text-center"}/>
     )
   );
 });

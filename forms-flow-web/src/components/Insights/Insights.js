@@ -8,6 +8,7 @@ import {setInsightDetailLoader, setInsightDashboardListLoader} from "../../actio
 import LoadingOverlay from "react-loading-overlay";
 import Loading from "../../containers/Loading";
 import { Trans } from "react-i18next";
+import { Translation } from "react-i18next";
 
 
 const Insights = React.memo((props) => {
@@ -39,13 +40,13 @@ const Insights = React.memo((props) => {
         <div className="row ">
           <div className="col-12">
             <h1 className="insights-title">
-            <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> <Trans>{("insights")}</Trans>
+            <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> <Translation>{(t)=>t("insights")}</Translation>
             </h1>
             <hr className="line-hr"/>
             <div className="col-12">
               <div className="app-title-container mt-3">
                 <h3 className="insight-title">
-                  <i className="fa fa-bars mr-1"/> <Trans>{("dashboard")}</Trans>
+                  <i className="fa fa-bars mr-1"/> <Translation>{(t)=>t("dashboard")}</Translation>
                 </h3>
 
                 <div className="col-3 mb-2">

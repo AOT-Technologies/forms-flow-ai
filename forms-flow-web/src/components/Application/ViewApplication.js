@@ -14,6 +14,7 @@ import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
 import NotFound from "../NotFound";
 import { Trans } from "react-i18next";
+import { Translation } from "react-i18next";
 //import { useDispatch } from 'react-redux'
 
 const ViewApplication = React.memo(() => {
@@ -58,22 +59,22 @@ const ViewApplication = React.memo(() => {
         <i className="fa fa-chevron-left fa-lg" />
         </Link>
         <h3 className="ml-3">
-          <span className="application-head-details"><i className="fa fa-list-alt" aria-hidden="true"/>&nbsp; <Trans>{("applications")}</Trans> /</span>{" "}
+          <span className="application-head-details"><i className="fa fa-list-alt" aria-hidden="true"/>&nbsp; <Translation>{(t)=>t("applications")}</Translation> /</span>{" "}
           {`${startCase(applicationDetail.applicationName)}`}
         </h3>
       </div>
       <br/>
       <Tabs id="application-details" defaultActiveKey="details" mountOnEnter>
-        <Tab eventKey="details" title={<Trans>{("details")}</Trans>}>
+        <Tab eventKey="details" title={<Translation>{(t)=>t("details")}</Translation>}>
           <Details application={applicationDetail}/>
         </Tab>
-        <Tab eventKey="form" title={<Trans>{("form")}</Trans>}>
+        <Tab eventKey="form" title={<Translation>{(t)=>t("form")}</Translation>}>
           <View page="application-detail"/>
         </Tab>
-        <Tab eventKey="history" title={<Trans>{("history")}</Trans>}>
+        <Tab eventKey="history" title={<Translation>{(t)=>t("history")}</Translation>}>
             <History page="application-detail" applicationId={applicationId}/>
         </Tab>
-        <Tab eventKey="process-diagram" title={<Trans>{("process_diagram")}</Trans>}>
+        <Tab eventKey="process-diagram" title={<Translation>{(t)=>t("process_diagram")}</Translation>}>
             <ProcessDiagram
               process_key={applicationProcess.processKey}
               processInstanceId={applicationDetail.processInstanceId}

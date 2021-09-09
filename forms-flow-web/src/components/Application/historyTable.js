@@ -1,6 +1,7 @@
 import React from "react";
 import {getFormIdSubmissionIdFromURL, getFormUrl, getLocalDateTime} from "../../apiManager/services/formatterService";
 import { Trans } from "react-i18next";
+import { Translation } from "react-i18next";
 
 
 export const defaultSortedBy = [
@@ -15,7 +16,7 @@ const linkSubmision = (cell) => {
   const url = getFormUrl(formId,submissionId)
   return (
     <div title={url} onClick={()=> window.open(url, "_blank")}>
-        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"/>&nbsp;</span><Trans>{("view_submission")}</Trans></span>
+        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"/>&nbsp;</span><Translation>{(t)=>t("view_submission")}</Translation></span>
     </div>
   );
 }
@@ -30,24 +31,24 @@ function timeFormatter(cell) {
 export const columns_history = [
   {
     dataField: "applicationStatus",
-    text: <Trans>{("status")}</Trans>,
+    text: <Translation>{(t)=>t("status")}</Translation>,
     sort: true,
   },
   {
     dataField: "created",
-    text: <Trans>{("created")}</Trans>,
+    text: <Translation>{(t)=>t("created")}</Translation>,
     sort: true,
     formatter: timeFormatter,
   },
   {
     dataField: "formUrl",
-    text: <Trans>{("submissions")}</Trans>,
+    text: <Translation>{(t)=>t("submissions")}</Translation>,
     formatter: linkSubmision,
   },
 ];
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">
-    <Trans>{("showing")}</Trans> {from} <Trans>{("to")}</Trans> {to} <Trans>{("of")}</Trans> {size} Results
+    <Translation>{(t)=>t("showing")}</Translation> {from} <Translation>{(t)=>t("to")}</Translation> {to} <Translation>{(t)=>t("of")}</Translation> {size} Results
   </span>
 );
 

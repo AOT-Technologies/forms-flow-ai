@@ -4,7 +4,7 @@ import OperatorFilterDropDown from "../../filter/OperatorFilterDropdown";
 import TaskFilterSearchType from "./TaskFilterSearchType";
 import {getFormattedDateAndTime, getISODateTime} from "../../../../apiManager/services/formatterService";
 import DatePicker from "react-datepicker";
-
+import { useTranslation } from "react-i18next";
 const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter, updateSearchFilterData, updateFilter}) => {
 
   const [valueBoxIndex, setShowValueBoxIndex] = useState(null);
@@ -12,7 +12,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
   const [selectedFilterInputValue, setSelectedFilterInputValue] = useState('');
   const [selectedFilterInputName, setSelectedFilterInputName] = useState('');
   const [inputDate, setUpInputDate] = useState(null);
-
+  const {t} = useTranslation();
 
   const handleFilterValueChange = (e, index) => {
     if (e.key === 'Enter') {
@@ -82,7 +82,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
           <div className="filter-details" key={index}>
 
             <div className="close-container  click-element" onClick={() => deleteSearchFilter(filter, index)}>
-              <span className="close-btn" title={"Remove search"}>
+              <span className="close-btn" title={t("rmv_search")}>
               <i className="fa fa-times" aria-hidden="true"/>
              </span>
             </div>
@@ -111,7 +111,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
                       onChange={(e) => setSelectedFilterInputName(e.target.value)}
                       onKeyDown={(e) => handleFilterNameChange(e, index)}
                     />
-                    : <span title="Property" className="click-element"
+                    : <span title={t("property")} className="click-element"
                             onClick={() => handleNameInput(index, filter.name)}>{filter.name ? filter.name : '??'}</span> : null}
 
                 <span className="condition-container">
@@ -129,7 +129,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
             </button></span>
               </span> : null}
                   <div className="operator-box-container">
-            <span title="Operator" className="operator-container">
+            <span title={t("operator")} className="operator-container">
               <OperatorFilterDropDown compareOptions={FILTER_COMPARE_OPTIONS[filter.type]} operator={filter.operator}
                                       changeOperator={(value) => updateOperator(index, value)}/>
             </span>
@@ -164,7 +164,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
                       onChange={(e) => setSelectedFilterInputValue(e.target.value)}
                       onKeyDown={e => handleFilterValueChange(e, index)}
                     />)
-                : <span title="Value" className="click-element"
+                : <span title={t("value")} className="click-element"
                         onClick={() => handleValueInput(index, filter.value, filter.type)}>
                   {filter.value ? (filter.type !== Filter_Search_Types.DATE ? filter.value : getFormattedDateAndTime(filter.value)) : '??'}</span>}
              </span>

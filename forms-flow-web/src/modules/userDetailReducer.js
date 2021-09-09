@@ -1,6 +1,6 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 import {setShowApplications, setShowViewSubmissions} from "../helper/user";
-
+import { LANGUAGE } from "../constants/constants";
 const initialState = {
   bearerToken: '',
   roles: '',
@@ -8,7 +8,9 @@ const initialState = {
   isAuthenticated:false,
   currentPage:'',
   showApplications:false,
-  showViewSubmissions:false
+  showViewSubmissions:false,
+  lang:localStorage.getItem('lang')?localStorage.getItem('lang'):LANGUAGE,
+
 }
 
 
@@ -28,6 +30,9 @@ const user = (state = initialState, action)=> {
       }
     case ACTION_CONSTANTS.SET_USER_AUTHENTICATION:
       return {...state, isAuthenticated:action.payload}
+    case ACTION_CONSTANTS.SET_LANGUAGE:
+      localStorage.setItem('lang',action.payload);
+      return {...state, lang:action.payload}
     default:
       return state;
   }

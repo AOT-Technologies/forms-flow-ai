@@ -3,7 +3,8 @@ import {connect, useDispatch, useSelector} from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors, getForm } from 'react-formio';
 import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
-
+import { useTranslation,Translation } from "react-i18next";
+import "../../../translations/i18n";
 import Loading from '../../../containers/Loading';
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
 import {
@@ -16,7 +17,6 @@ import {applicationCreate} from "../../../apiManager/services/applicationService
 import LoadingOverlay from "react-loading-overlay";
 import {CUSTOM_EVENT_TYPE} from "../../ServiceFlow/constants/customEventTypes";
 import {toast} from "react-toastify";
-
 const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
   const {
@@ -31,7 +31,7 @@ const View = React.memo((props) => {
       getForm
     } = props;
    const dispatch = useDispatch();
-
+   const {t}=useTranslation();
    useEffect(()=>{
     if (!isAuthenticated) {
       getForm();
@@ -62,7 +62,7 @@ const View = React.memo((props) => {
             <img src="/form.svg" width="30" height="30" alt="form" />
           </span>*/}
           <h3 className="ml-3">
-            <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms /</span> {form.title}
+            <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; {t("Forms")}/</span> {form.title}
           </h3>
         </div>
         <Errors errors={errors} />
@@ -74,8 +74,8 @@ const View = React.memo((props) => {
               url={url}
               options={{ ...options }}
               hideComponents={hideComponents}
-              onSubmit={onSubmit}
-              onCustomEvent={onCustomEvent}
+              onSubmit={(s)=>onSubmit(s,t)}
+              onCustomEvent={(ce)=>onCustomEvent(ce,t)}
             />
           </div>
         </LoadingOverlay>
@@ -83,7 +83,7 @@ const View = React.memo((props) => {
     );
 })
 
-const doProcessActions = (submission, ownProps) => {
+const doProcessActions = (submission, ownProps,  t) => {
   return (dispatch, getState) => {
     let user = getState().user.userDetail
     let form = getState().form.form
@@ -96,7 +96,7 @@ const doProcessActions = (submission, ownProps) => {
               dispatch(setFormSubmissionLoading(false));
               dispatch(setMaintainBPMFormPagination(true));
               /*dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))*/
-              toast.success("Submission Saved.")
+              toast.success(t("submission_success"))
               dispatch(push(`/form`));
             }else{
               dispatch(setFormSubmissionLoading(false));
@@ -106,7 +106,7 @@ const doProcessActions = (submission, ownProps) => {
               dispatch(setFormSubmissionLoading(false));
               dispatch(setMaintainBPMFormPagination(true));
               //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
-              toast.success("Submission Saved.")
+              toast.success(t("submission_success"))
               dispatch(push(`/form`));
             }else{
               dispatch(setFormSubmissionLoading(false));
@@ -129,7 +129,7 @@ const mapStateToProps = (state) => {
       noAlerts: false,
       i18n: {
         en: {
-          error: "Please fix the errors before submitting again.",
+          error:<Translation>{(t)=>t("message")}</Translation> 
         },
       }
     },
@@ -137,26 +137,26 @@ const mapStateToProps = (state) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch, ownProps,t) => {
   return {
     getForm: () => dispatch(getForm('form', ownProps.match.params.formId)),
-    onSubmit: (submission) => {
+    onSubmit: (submission,t) => {
       dispatch(setFormSubmissionLoading(true));
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {
         if (!err) {
-          dispatch(doProcessActions(submission, ownProps))
+          dispatch(doProcessActions(submission, ownProps,t))
         } else {
-          const ErrorDetails = { modalOpen: true, message: "Submission cannot be done" }
-          toast.error("Error while Submission.");
+          const ErrorDetails = { modalOpen: true, message: t("message_submission") }
+          toast.error(t("submission_error"));
           dispatch(setFormSubmissionLoading(false));
           dispatch(setFormSubmissionError(ErrorDetails))
         }
       }));
     },
-    onCustomEvent: (customEvent) => {
+    onCustomEvent: (customEvent,t) => {
         switch(customEvent.type){
           case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
-            toast.success("Submission Saved.")
+            toast.success(t("submission_success"))
             dispatch(push(`/form`));
             break;
           default: return;

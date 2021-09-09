@@ -1,6 +1,6 @@
 import React from "react";
 import {getFormIdSubmissionIdFromURL, getFormUrl, getLocalDateTime} from "../../apiManager/services/formatterService";
-
+import { Translation } from "react-i18next";
 
 export const defaultSortedBy = [
   {
@@ -14,7 +14,7 @@ const linkSubmision = (cell) => {
   const url = getFormUrl(formId,submissionId)
   return (
     <div title={url} onClick={()=> window.open(url, "_blank")}>
-        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"/>&nbsp;</span>View Submission</span>
+        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"/>&nbsp;</span><Translation>{(t)=>t("vue_submission")}</Translation></span>
     </div>
   );
 }
@@ -46,7 +46,7 @@ export const columns_history = [
 ];
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">
-    Showing {from} to {to} of {size} Results
+   <Translation>{(t)=>t("Showing")}</Translation> {from} <Translation>{(t)=>t("to")}</Translation>{to}<Translation>{(t)=>t("of")}</Translation> {size} <Translation>{(t)=>t("Results")}</Translation>
   </span>
 );
 

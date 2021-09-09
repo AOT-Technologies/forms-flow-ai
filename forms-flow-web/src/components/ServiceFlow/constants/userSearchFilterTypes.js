@@ -1,14 +1,15 @@
+import { Translation } from "react-i18next";
 export const SearchByLastName = "lastNameLike";
 export const SearchByFirstName = "firstNameLike";
 export const SearchByEmail = "emailLike";
 
 export const UserSearchFilterTypes = [{
   searchType: SearchByLastName,
-  title:'Search By Last Name'
+  title:<Translation>{(t)=>t("search_lastname")}</Translation>
 },{
   searchType: SearchByFirstName,
-  title:'Search By First Name'
+  title:<Translation>{(t)=>t("search_firstname")}</Translation>
 },{
   searchType: SearchByEmail,
-  title:'Search By Email'
+  title:<Translation>{(t)=>t("search_email")}</Translation>
 }];

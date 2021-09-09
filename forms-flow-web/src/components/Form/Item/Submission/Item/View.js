@@ -8,8 +8,9 @@ import Loading from '../../../../../containers/Loading'
 import PdfDownloadService from "../../../../../services/PdfDownloadService"
 import {setFormSubmissionLoading} from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
-
+import { useTranslation } from 'react-i18next';
 const View = React.memo((props) => {
+  const {t} = useTranslation();
   const {
     hideComponents,
     onSubmit, options,
@@ -29,7 +30,7 @@ const View = React.memo((props) => {
         <h3 className="task-head"> {form.title}</h3>
         {showPrintButton?<div className="btn-right">
           <Button className="btn btn-primary btn-sm form-btn pull-right btn-right" onClick={() => PdfDownloadService.getPdf(form, submission)}>
-          <i className="fa fa-print" aria-hidden="true"/> Print As PDF</Button></div>:null}
+          <i className="fa fa-print" aria-hidden="true"/>{t("print_pdf")}</Button></div>:null}
       </div>
 
       <Errors errors={errors}/>

@@ -28,6 +28,7 @@ import {
 } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
 import {fetchBPMFormList} from "../../apiManager/services/bpmFormServices";
+import { useTranslation } from "react-i18next";
 
 const getOperations = (userRoles, showViewSubmissions) => {
   let operations = [];
@@ -45,6 +46,7 @@ const getOperations = (userRoles, showViewSubmissions) => {
 
 const List = React.memo((props)=> {
   const dispatch = useDispatch();
+  const {t}=useTranslation();
   const {
     forms,
     onAction,
@@ -90,13 +92,12 @@ const List = React.memo((props)=> {
   if (forms.isActive || isBPMFormListLoading) {
       return <Loading />;
   }
-
     return (
       <div className="container">
         <Confirm
           modalOpen={props.modalOpen}
           message={
-            "Are you sure you wish to delete the form " +
+            t("delete_form_message")  +
             props.formName +
             "?"
           }
@@ -107,13 +108,13 @@ const List = React.memo((props)=> {
           {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
           <h3 className="task-head">
           <i className="fa fa-wpforms" aria-hidden="true"/>
-             <span className="forms-text">Forms</span></h3>
+             <span className="forms-text">{t("Forms")}</span></h3>
           {userRoles.includes(STAFF_DESIGNER) && (
             <Link
               to="/formflow/create"
               className="btn btn-primary btn-right btn-sm"
             >
-              <i className="fa fa-plus fa-lg" /> Create Form
+              <i className="fa fa-plus fa-lg" />{t("create_form")}
             </Link>
           )}
         </div>

@@ -6,6 +6,7 @@ import { Button } from "react-bootstrap";
 /*import { Link } from "react-router-dom";
 import StepperPage from "../Stepper.js";*/
 import Loading from "../../../containers/Loading";
+import { Translation } from "react-i18next";
 
 const Preview = class extends PureComponent {
   constructor(props) {
@@ -73,7 +74,7 @@ const Preview = class extends PureComponent {
             }}
           >
             <i className="fa fa-pencil" aria-hidden="true"/>
-            &nbsp;&nbsp;Edit Form
+            &nbsp;&nbsp;<Translation>{(t)=>t("edit_form")}</Translation>
           </Button>
           {/* <Button className="btn btn-primary btn-sm form-btn pull-right btn-right"
          onClick={()=>{dispatch(push(`/form/create`))}}>
@@ -85,7 +86,7 @@ const Preview = class extends PureComponent {
             onClick={handleNext}
             className="ml-3 btn btn-primary btn-sm form-btn"
           >
-            {(this.state.activeStep === 1, "Next")}
+            {(this.state.activeStep === 1, <Translation>{(t)=>t("next")}</Translation>)}
           </Button>
         </div>
 

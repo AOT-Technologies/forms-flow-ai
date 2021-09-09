@@ -22,9 +22,10 @@ import {getTaskSubmitFormReq} from "../../../apiManager/services/bpmServices";
 import {useParams} from "react-router-dom";
 import {push} from "connected-react-router";
 import {setFormSubmissionLoading} from "../../../actions/formActions";
-
+import { useTranslation } from "react-i18next";
 
 const ServiceFlowTaskDetails = React.memo(() => {
+  const {t} = useTranslation();
   const {taskId} = useParams();
   const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const task = useSelector(state => state.bpmTasks.taskDetail);
@@ -149,7 +150,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
    if(!bpmTaskId){
      return <Row className="not-selected mt-2 ml-1">
        <i className="fa fa-info-circle mr-2 mt-1"/>
-       Select a task in the list.
+      {t("select_task")}
        </Row>
    }else if(isTaskLoading) {
    return <div className="service-task-details">
@@ -165,7 +166,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
        >
        <TaskHeader />
        <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
-         <Tab eventKey="form" title="Form">
+         <Tab eventKey="form" title={t("form_task")}>
            <LoadingOverlay active={task?.assignee!==currentUser}
                            styles={{
                              overlay: (base) => ({
@@ -177,10 +178,10 @@ const ServiceFlowTaskDetails = React.memo(() => {
              {task?.assignee===currentUser?<FormEdit onFormSubmit={onFormSubmitCallback} onCustomEvent={onCustomEventCallBack}/>:<FormView showPrintButton={false}/>}
            </LoadingOverlay>
          </Tab>
-         <Tab eventKey="history" title="History">
+         <Tab eventKey="history" title={t("History")}>
            <History applicationId={task?.applicationId}/>
          </Tab>
-         <Tab eventKey="diagram" title="Diagram">
+         <Tab eventKey="diagram" title={t("Diagram")}>
            <div>
              <ProcessDiagram
                process_key={processKey}

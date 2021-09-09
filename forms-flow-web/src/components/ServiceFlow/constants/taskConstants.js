@@ -1,25 +1,26 @@
+import { Translation } from "react-i18next";
 export const sortingList = [
-  {sortBy:"created",label:"Created", sortOrder:"asc"},
-  {sortBy:"priority",label:"Priority", sortOrder:"asc"},
-  {sortBy:"dueDate",label:"Due date", sortOrder:"asc"},
-  {sortBy:"assignee",label:"Assignee", sortOrder:"asc"},
-  {sortBy:"name",label:"Task name", sortOrder:"asc"},
-  {sortBy:"followUpDate",label:"Follow-up date", sortOrder:"asc"},
+  {sortBy:"created",label:<Translation>{(t)=>t("created")}</Translation>, sortOrder:"asc"},
+  {sortBy:"priority",label:<Translation>{(t)=>t("priority")}</Translation>, sortOrder:"asc"},
+  {sortBy:"dueDate",label:<Translation>{(t)=>t("due_date")}</Translation>, sortOrder:"asc"},
+  {sortBy:"assignee",label:<Translation>{(t)=>t("assigne")}</Translation>, sortOrder:"asc"},
+  {sortBy:"name",label:<Translation>{(t)=>t("task_name")}</Translation>, sortOrder:"asc"},
+  {sortBy:"followUpDate",label:<Translation>{(t)=>t("follow_up_date")}</Translation>, sortOrder:"asc"},
 ];
 
 export const searchData = [
-  {"label": "Task Variables", "compares": [">", ">=", "=","!=", "<", "<="]},
-  {"label": "Process Variables", "compares": [">", ">=", "=","!=", "<", "<="]},
-  {"label": "Process Definition Name", "compares": ["like", "="], "values": ["processDefinitionNameLike", "processDefinitionName"]},
-  {"label": "Assignee", "compares": ["like", "="], "values": ["assigneeLike", "assignee"]},
-  {"label":"Candidate Group", "compares": ["="], "values": ["candidateGroup"]},
-  {"label":"Candidate User", "compares": ["="], "values": ["candidateUser"]},
-  {"label":"Name", "compares": ["like", "="], "values": ["nameLike", "name"]},
-  {"label": "Description","compares": ["like", "="], "values": ["descriptionLike", "description"] },
-  {"label":"Priority", "compares": ["="], "values": ["priority"]},
-  {"label":"Due Date", "compares": ["before", "after"], "values": ["due"]},
-  {"label":"Follow up Date", "compares": ["before", "after"], "values": ["followUp"]},
-  {"label":"Created", "compares": ["before", "after"], "values": ["created"]},
+  {"label": <Translation>{(t)=>t("task_variable")}</Translation>, "compares": [">", ">=", "=","!=", "<", "<="]},
+  {"label": <Translation>{(t)=>t("process_variable")}</Translation>, "compares": [">", ">=", "=","!=", "<", "<="]},
+  {"label": <Translation>{(t)=>t("process_def_name")}</Translation>, "compares": ["like", "="], "values": ["processDefinitionNameLike", "processDefinitionName"]},
+  {"label": <Translation>{(t)=>t("assigne")}</Translation>, "compares": ["like", "="], "values": ["assigneeLike", "assignee"]},
+  {"label": <Translation>{(t)=>t("candidate_group")}</Translation>, "compares": ["="], "values": ["candidateGroup"]},
+  {"label": <Translation>{(t)=>t("candidate_user")}</Translation>, "compares": ["="], "values": ["candidateUser"]},
+  {"label": <Translation>{(t)=>t("name")}</Translation>, "compares": ["like", "="], "values": ["nameLike", "name"]},
+  {"label": <Translation>{(t)=>t("description")}</Translation>,"compares": ["like", "="], "values": ["descriptionLike", "description"] },
+  {"label": <Translation>{(t)=>t("priority")}</Translation>, "compares": ["="], "values": ["priority"]},
+  {"label": <Translation>{(t)=>t("due_date")}</Translation>, "compares": ["before", "after"], "values": ["due"]},
+  {"label": <Translation>{(t)=>t("follow_up_date")}</Translation>, "compares": ["before", "after"], "values": ["followUp"]},
+  {"label": <Translation>{(t)=>t("created")}</Translation>, "compares": ["before", "after"], "values": ["created"]},
 ]
 
 export const Filter_Search_Types = {
@@ -46,21 +47,21 @@ export const FILTER_COMPARE_OPTIONS = {
 };
 
 export const taskFilters = [
-  {label:"Process Variables",key:"processVariables", operator:FILTER_OPERATOR_TYPES.EQUAL, type:Filter_Search_Types.VARIABLES, value:"", name:""},
-  {label:"Task Variables", key:"taskVariables",operator:FILTER_OPERATOR_TYPES.EQUAL, type:Filter_Search_Types.VARIABLES, value:"", name:""},
-  {label:"Process Definition Name",key:"processDefinitionName", operator:FILTER_OPERATOR_TYPES.LIKE, type:Filter_Search_Types.STRING, value:"" },
-  {label:"Assignee",key:"assignee",operator:FILTER_OPERATOR_TYPES.LIKE, type:Filter_Search_Types.STRING,value:"", },
-  {label:"Candidate Group",key:"candidateGroup",operator:FILTER_OPERATOR_TYPES.EQUAL,type:Filter_Search_Types.NORMAL, value:""},
-  {label:"Candidate User",key:"candidateUser",operator:FILTER_OPERATOR_TYPES.EQUAL,type:Filter_Search_Types.NORMAL, value:""},
-  {label:"Name",key:"name",operator:FILTER_OPERATOR_TYPES.LIKE,type:Filter_Search_Types.STRING,value:""},
-  {label:"Description",key:"description",operator:FILTER_OPERATOR_TYPES.LIKE,type:Filter_Search_Types.STRING, value:""},
-  {label:"Priority",key:"priority",operator:FILTER_OPERATOR_TYPES.EQUAL,type:Filter_Search_Types.NORMAL, value:""},
-  {label:"Due Date",key:"due",operator:FILTER_OPERATOR_TYPES.BEFORE, type:Filter_Search_Types.DATE, value:""},
-  {label:"Follow up Date",key:"followUp",operator:FILTER_OPERATOR_TYPES.BEFORE, type:Filter_Search_Types.DATE, value:""},
-  {label:"Created",key:"created",operator:FILTER_OPERATOR_TYPES.BEFORE,type:Filter_Search_Types.DATE, value:"" },
+  {label:<Translation>{(t)=>t("process_variable")}</Translation>,key:"processVariables", operator:FILTER_OPERATOR_TYPES.EQUAL, type:Filter_Search_Types.VARIABLES, value:"", name:""},
+  {label:<Translation>{(t)=>t("task_variable")}</Translation>, key:"taskVariables",operator:FILTER_OPERATOR_TYPES.EQUAL, type:Filter_Search_Types.VARIABLES, value:"", name:""},
+  {label:<Translation>{(t)=>t("process_def_name")}</Translation>,key:"processDefinitionName", operator:FILTER_OPERATOR_TYPES.LIKE, type:Filter_Search_Types.STRING, value:"" },
+  {label:<Translation>{(t)=>t("assigne")}</Translation>,key:"assignee",operator:FILTER_OPERATOR_TYPES.LIKE, type:Filter_Search_Types.STRING,value:"", },
+  {label:<Translation>{(t)=>t("candidate_group")}</Translation>,key:"candidateGroup",operator:FILTER_OPERATOR_TYPES.EQUAL,type:Filter_Search_Types.NORMAL, value:""},
+  {label:<Translation>{(t)=>t("candidate_user")}</Translation>,key:"candidateUser",operator:FILTER_OPERATOR_TYPES.EQUAL,type:Filter_Search_Types.NORMAL, value:""},
+  {label:<Translation>{(t)=>t("name")}</Translation>,key:"name",operator:FILTER_OPERATOR_TYPES.LIKE,type:Filter_Search_Types.STRING,value:""},
+  {label:<Translation>{(t)=>t("description")}</Translation>,key:"description",operator:FILTER_OPERATOR_TYPES.LIKE,type:Filter_Search_Types.STRING, value:""},
+  {label:<Translation>{(t)=>t("priority")}</Translation>,key:"priority",operator:FILTER_OPERATOR_TYPES.EQUAL,type:Filter_Search_Types.NORMAL, value:""},
+  {label:<Translation>{(t)=>t("due_date")}</Translation>,key:"due",operator:FILTER_OPERATOR_TYPES.BEFORE, type:Filter_Search_Types.DATE, value:""},
+  {label:<Translation>{(t)=>t("follow_up_date")}</Translation>,key:"followUp",operator:FILTER_OPERATOR_TYPES.BEFORE, type:Filter_Search_Types.DATE, value:""},
+  {label:<Translation>{(t)=>t("created")}</Translation>,key:"created",operator:FILTER_OPERATOR_TYPES.BEFORE,type:Filter_Search_Types.DATE, value:"" },
 ];
 
 export const ALL_TASKS="All tasks"
-export const QUERY_TYPES= {ANY:"ANY",ALL:"ALL"};
+export const QUERY_TYPES= {ANY:<Translation>{(t)=>t("any")}</Translation>,ALL:<Translation>{(t)=>t("all")}</Translation>};
 export const MAX_RESULTS= 15; //maxResults
 

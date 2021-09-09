@@ -1,11 +1,15 @@
 //import Keycloak from "keycloak-js";
-
+import { Translation } from "react-i18next";
 //application details
 export const APPLICATION_NAME =
   (window._env_ && window._env_.REACT_APP_APPLICATION_NAME) ||
   process.env.REACT_APP_APPLICATION_NAME ||
   "formsflow.ai";
-
+//language details
+export const LANGUAGE =
+  (window._env_ && window._env_.REACT_APP_LANGUAGE) ||
+  process.env.REACT_APP_LANGUAGE ||
+  "en";
 //keycloak
 export const Keycloak_Client =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_CLIENT) ||
@@ -69,7 +73,7 @@ export const OPERATIONS = {
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    title: "Submit New",
+    title: <Translation>{(t)=>t("submit_new")}</Translation>,
   },
   submission: {
     action: "submission",
@@ -79,7 +83,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: "View Submissions",
+    title: <Translation>{(t)=>t("view_submission")}</Translation>,
   },
   edit: {
     action: "edit",
@@ -99,7 +103,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: "View/Edit Form",
+    title: <Translation>{(t)=>t("view_edit")}</Translation>,
   },
   delete: {
     action: "delete",
@@ -108,7 +112,7 @@ export const OPERATIONS = {
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    title: "Delete Form",
+    title: <Translation>{(t)=>t("del_form")}</Translation>,
   },
   view: {
     action: "viewSubmission",
@@ -118,7 +122,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: "View",
+    title: <Translation>{(t)=>t("view")}</Translation>,
   },
   editSubmission: {
     action: "edit",
@@ -128,7 +132,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: "Edit",
+    title: <Translation>{(t)=>t("Edit")}</Translation>,
   },
   deleteSubmission: {
     action: "delete",
@@ -137,7 +141,7 @@ export const OPERATIONS = {
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    title: "Delete",
+    title: <Translation>{(t)=>t("Delete")}</Translation>,
   },
 };
 

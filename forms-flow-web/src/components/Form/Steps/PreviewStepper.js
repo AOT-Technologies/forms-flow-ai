@@ -7,7 +7,7 @@ import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 
 import SaveNext from "./SaveNext";
-
+import { useTranslation } from "react-i18next";
 const Preview = React.memo(({
                               handleNext,
                               handleBack,
@@ -22,7 +22,7 @@ const Preview = React.memo(({
                               handleEditPreview,
                               disablePreview
                             }) => {
-
+  const {t} = useTranslation();
   return (
     <Grid
       container
@@ -32,7 +32,7 @@ const Preview = React.memo(({
       spacing={3}
     >
       <Grid item xs={12} sm={1} spacing={3}>
-       <button className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" onClick={handleEditPreview}>Edit</button>
+       <button className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" onClick={handleEditPreview}>{t("Edit")}</button>
       </Grid>
       <Grid item  xs={12} sm={8} spacing={3}/>
       <Grid item xs={12} sm={3} className="next-btn">
@@ -50,13 +50,13 @@ const Preview = React.memo(({
           <CardContent>
             <form noValidate autoComplete="off">
               <div>
-                <span className="font-weight-bolder">Form Name : </span>
+                <span className="font-weight-bolder">{t("form_name")} </span>
                 <span>{formData &&
                 formData.form &&
                 formData.form.title ? formData.form.title : "-"}</span>
               </div>
               <div>
-                <span className="font-weight-bolder">Workflow Name : </span>
+                <span className="font-weight-bolder">{t("form_name")}</span>
                 <span>{workflow &&
                 workflow.label ? workflow.label : "-"}</span>
               </div>
@@ -95,11 +95,11 @@ const Preview = React.memo(({
                         color="primary"
                       />
                     }
-                    label="Publish this form for Client Users."
+                    label={t("publish_workflow")}
                   />
                 </label>
               </div>
-              <label className="text-label">Comments</label>
+              <label className="text-label">{t("Comments")}</label>
               {/* <TextareaAutosize
                 aria-label="minimum height"
                 rowsMin={3}

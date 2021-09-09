@@ -7,7 +7,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import LoadingOverlay from "react-loading-overlay";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-
+import { Translation } from "react-i18next";
 import {
   fetchApplicationAuditHistoryList
 } from "../../apiManager/services/applicationAuditServices";
@@ -69,7 +69,7 @@ const HistoryList = React.memo((props) => {
               <h3 className="task-head">
               {/* <i class="fa fa-list-alt" alt="Task" aria-hidden="true"></i> */}
               <i className="fa fa-list" aria-hidden="true"/>
-              &nbsp;Application History
+              &nbsp;<Translation>{(t)=>t("app_history")}</Translation>
               </h3>
             </div>
             <br/>

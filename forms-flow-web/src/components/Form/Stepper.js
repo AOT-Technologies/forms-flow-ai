@@ -8,11 +8,12 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { toast } from 'react-toastify';
-
+import Back from "./constants/Back.js";
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
-
+import { Translation } from "react-i18next";
+import "../../translations/i18n"
 //TODO convert this code to functional component
 
 // for edit
@@ -32,7 +33,6 @@ import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
 
 import "./stepper.scss";
-import {Link} from "react-router-dom";
 import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
 
 /*const statusList = [
@@ -44,7 +44,7 @@ class StepperPage extends PureComponent {
   // UNSAFE_componentWillMount() {
   //   this.props.getAllProcesses();
   // }
-
+  
   constructor(props) {
     super(props);
     this.state = {
@@ -204,9 +204,9 @@ class StepperPage extends PureComponent {
 
   getSteps() {
     return [
-      "Design Form",
-      "Associate this form with a workflow?",
-      "Preview and Confirm",
+      <Translation>{(t)=>t("design_form")}</Translation>,
+      <Translation>{(t)=>t("associate_workflow")}</Translation>,
+      <Translation>{(t)=>t("preview_confirm")}</Translation>,
     ];
   }
 
@@ -290,8 +290,8 @@ class StepperPage extends PureComponent {
       workflow,
     } = this.state;
     // const { editMode } = this.state;
+    
     const { form, formProcessList } = this.props;
-
     switch (step) {
       case 0:
         // return(
@@ -352,7 +352,6 @@ class StepperPage extends PureComponent {
   render() {
     // const { process } = this.props;
     const steps = this.getSteps();
-
     const handleReset = () => {
       this.setActiveStep(0);
     };
@@ -361,9 +360,7 @@ class StepperPage extends PureComponent {
       <>
         <div>
           {this.props.isAuthenticated ?
-            <Link to="/form" title="Back to Form List">
-              <i className="fa fa-chevron-left fa-lg" />
-            </Link>
+            <Back/>
             :
             null
           }
@@ -393,7 +390,7 @@ class StepperPage extends PureComponent {
                   {this.state.activeStep === steps.length ? (
                     <div>
                       <Typography>
-                        All steps completed - you're finished
+                      <Translation>{(t)=>t("all_steps")}</Translation>
                       </Typography>
                       <Button onClick={handleReset}>Reset</Button>
                     </div>
@@ -436,10 +433,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveFormProcessMapper(data, update, (err, res) => {
           if (!err) {
-            toast.success('Form Workflow Association Saved.');
+            toast.success(<Translation>{(t)=>t("workflow_association")}</Translation>);
             dispatch(push(`/form`));
           }else{
-            toast.error('Form Workflow Association Failed.');
+            toast.error(<Translation>{(t)=>t("workflow_association_failed")}</Translation>);
           }
         })
       );
@@ -454,10 +451,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveForm("form", newForm, (err, form) => {
           if (!err) {
-            toast.success('Form Saved');
+            toast.success(<Translation>{(t)=>t("form_saved")}</Translation>);
             dispatch(push(`/formflow/${form._id}/preview`));
           }else{
-            toast.error("Error while saving Form");
+            toast.error(<Translation>{(t)=>t("submission_error")}</Translation>);
           }
         })
       );
@@ -467,7 +464,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         getFormProcesses(formId, (err, res) => {
           if (err) {
-            toast.error('Error in getting Workflow Process.');
+            toast.error(<Translation>{(t)=>t("'workflow_error")}</Translation>);
             console.log(err);
           }
         })

@@ -37,7 +37,7 @@ const linkApplication = (cell, row) => {
 
 const linkSubmission = (cell,row) => {
   const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
-  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?<Translation>{(t)=>t("aknowledge")}</Translation>:<Translation>{(t)=>t("Edit")}</Translation>) : <Translation>{(t)=>t("View")}</Translation>
+  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':<Translation>{(t)=>t("edit")}</Translation>) : <Translation>{(t)=>t("view")}</Translation>
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
   <div onClick={()=> window.open(url, "_blank")}>
@@ -46,7 +46,7 @@ const linkSubmission = (cell,row) => {
   </div>
   );
 }
-
+  
 
 function timeFormatter(cell) {
   const localdate = getLocalDateTime(cell) ;
@@ -60,25 +60,25 @@ const nameFormatter = (cell) => {
 
 export const columns_history = [
   {
-    dataField: "application_name",
-    text: "Application Name",
+    dataField: "applicationname",
+    text: <Translation>{(t)=>t("application_name")}</Translation>,
     sort: true,
   },
   {
-    dataField: "application_status",
-    text: "Application Status",
+    dataField: "applicationstatus",
+    text: <Translation>{(t)=>t("application_status")}</Translation>,
     sort: true,
   },
 ];
 
-export const columns  = (rows) => [
+export const columns  = (rows,t) => [
   {
     dataField: "id",
-    text: "Application ID",
+    text: <Translation>{(t)=>t("application_id")}</Translation>,
     formatter: linkApplication,
     sort: true,
     filter: textFilter({
-      placeholder: "\uf002 Application ID", // custom the input placeholder
+      placeholder:`\uf002 ${t("placeholder_appid")}` , // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       className: "icon-search",
       getFilter: (filter) => {
@@ -88,11 +88,11 @@ export const columns  = (rows) => [
   },
   {
     dataField: "applicationName",
-    text: "Application Name",
+    text: <Translation>{(t)=>t("application_name")}</Translation>,
     sort: true,
     formatter: nameFormatter,
     filter: textFilter({
-      placeholder: "\uf002 Application Name", // custom the input placeholder
+      placeholder: `\uf002 ${t("application_name")}`, // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       className: "icon-search",
       getFilter: (filter) => {
@@ -102,12 +102,13 @@ export const columns  = (rows) => [
   },
   {
     dataField: "applicationStatus",
-    text: "Application Status",
+    text: <Translation>{(t)=>t("application_status")}</Translation>,
     sort: true,
     filter: selectFilter({
       options: getApplicationStatusOptions(rows),
-      placeholder: "All",
+      placeholder: `\uf002 ${t("all")}`,
 	    defaultValue: 'All',
+      className: "icon-search",
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       getFilter: (filter) => {
         statusFilter = filter;
@@ -116,20 +117,20 @@ export const columns  = (rows) => [
   },
   {
     dataField: "formUrl",
-    text: "Link to Form Submission",
+    text: <Translation>{(t)=>t("link_to_form_submission")}</Translation>,
     formatter: linkSubmission,
   },
 
   {
     dataField: "modified",
-    text: "Last Modified",
+    text:<Translation>{(t)=>t("last_modified")}</Translation>,
     formatter: timeFormatter,
     sort: true,
     headerStyle: (colum, colIndex) => {
       return { width: "15%" };
     },
     filter: textFilter({
-      placeholder: "\uf002 Last Modified", // custom the input placeholder
+      placeholder: `\uf002 ${t("last_modified")}`, // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       className: "icon-search",
       getFilter: (filter) => {
@@ -142,7 +143,7 @@ export const columns  = (rows) => [
 
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">
-    Showing {from} to {to} of {size} Results
+    <Translation>{(t)=>t("showing")}</Translation> {from} <Translation>{(t)=>t("to")}</Translation> {to} <Translation>{(t)=>t("of")}</Translation> {size} <Translation>{(t)=>t("results")}</Translation>
   </span>
 );
 

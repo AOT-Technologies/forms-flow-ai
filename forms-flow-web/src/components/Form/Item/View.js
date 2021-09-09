@@ -17,6 +17,7 @@ import {applicationCreate} from "../../../apiManager/services/applicationService
 import LoadingOverlay from "react-loading-overlay";
 import {CUSTOM_EVENT_TYPE} from "../../ServiceFlow/constants/customEventTypes";
 import {toast} from "react-toastify";
+
 const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
   const {

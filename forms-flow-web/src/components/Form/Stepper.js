@@ -75,7 +75,7 @@ class StepperPage extends PureComponent {
   }
 
   componentDidMount() {
-    if(this.state && this.state.displayMode === "view"){
+    if(this.state && this.state.displayMode === "View") {
       this.setState({ disableWorkflowAssociation: true });
       this.setState({ disablePreview: true });
     }

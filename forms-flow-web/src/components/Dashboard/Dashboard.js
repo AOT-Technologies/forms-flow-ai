@@ -13,6 +13,8 @@ import LoadError from "../Error";
 
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import * as moment from "moment";
+import { Trans } from "react-i18next";
+import { Translation } from "react-i18next";
 
 const firsDay = moment().format("YYYY-MM-01");
 
@@ -88,13 +90,13 @@ const Dashboard = React.memo(() => {
             <h1 className="dashboard-title">
             <i className="fa fa-pie-chart p-1" />
               {/* <i className="fa fa-pie-chart" aria-hidden="true"/> */}
-               Metrics
+              <Translation>{(t)=>t("metrics")}</Translation>
             </h1>
             <hr className="line-hr"/>
             <div className="row ">
               <div className="col-12 col-lg-6 ">
                 <h3 className="application-title">
-                  <i className="fa fa-bars mr-1"/> Submissions
+                  <i className="fa fa-bars mr-1"/> <Translation>{(t)=>t("submissions")}</Translation>
                 </h3>
               </div>
               <div className="col-12 col-lg-6 d-flex align-items-end flex-lg-column mt-3 mt-lg-0">

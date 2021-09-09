@@ -7,11 +7,14 @@ import {fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/servi
 import {setInsightDetailLoader, setInsightDashboardListLoader} from "../../actions/insightActions";
 import LoadingOverlay from "react-loading-overlay";
 import Loading from "../../containers/Loading";
+import { useTranslation , Translation} from "react-i18next";
+
+
 
 const Insights = React.memo((props) => {
   const {getDashboardsList, getDashboardDetail, dashboards, activeDashboard, isInsightLoading, isDashboardLoading} = props;
   const [dashboardSelected, setDashboardSelected] = useState(null);
-
+  const {t} = useTranslation();
   useEffect(() => {
     getDashboardsList();
   }, [getDashboardsList]);
@@ -37,20 +40,20 @@ const Insights = React.memo((props) => {
         <div className="row ">
           <div className="col-12">
             <h1 className="insights-title">
-            <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> Insights
+            <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> <Translation>{(t)=>t("insights")}</Translation>
             </h1>
             <hr className="line-hr"/>
             <div className="col-12">
               <div className="app-title-container mt-3">
                 <h3 className="insight-title">
-                  <i className="fa fa-bars mr-1"/> Dashboard
+                  <i className="fa fa-bars mr-1"/> <Translation>{(t)=>t("dashboard")}</Translation>
                 </h3>
 
                 <div className="col-3 mb-2">
                   <Select
                     options={dashboards}
                     onChange={setDashboardSelected}
-                    placeholder='Select Dashboard'
+                    placeholder={t("select_dashboard")}
                     value={dashboardSelected}
                   />
                 </div>

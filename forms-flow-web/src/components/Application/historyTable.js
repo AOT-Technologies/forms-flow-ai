@@ -14,7 +14,7 @@ const linkSubmision = (cell) => {
   const url = getFormUrl(formId,submissionId)
   return (
     <div title={url} onClick={()=> window.open(url, "_blank")}>
-        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"/>&nbsp;</span><Translation>{(t)=>t("vue_submission")}</Translation></span>
+        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"/>&nbsp;</span><Translation>{(t)=>t("view_submission")}</Translation></span>
     </div>
   );
 }
@@ -29,24 +29,24 @@ function timeFormatter(cell) {
 export const columns_history = [
   {
     dataField: "applicationStatus",
-    text: "Status",
+    text: <Translation>{(t)=>t("status")}</Translation>,
     sort: true,
   },
   {
     dataField: "created",
-    text: "Created",
+    text: <Translation>{(t)=>t("created")}</Translation>,
     sort: true,
     formatter: timeFormatter,
   },
   {
     dataField: "formUrl",
-    text: "Submissions",
+    text: <Translation>{(t)=>t("submissions")}</Translation>,
     formatter: linkSubmision,
   },
 ];
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">
-   <Translation>{(t)=>t("Showing")}</Translation> {from} <Translation>{(t)=>t("to")}</Translation>{to}<Translation>{(t)=>t("of")}</Translation> {size} <Translation>{(t)=>t("Results")}</Translation>
+    <Translation>{(t)=>t("showing")}</Translation> {from} <Translation>{(t)=>t("to")}</Translation> {to} <Translation>{(t)=>t("of")}</Translation> {size} Results
   </span>
 );
 

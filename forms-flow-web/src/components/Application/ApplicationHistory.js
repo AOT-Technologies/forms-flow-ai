@@ -38,7 +38,7 @@ const HistoryList = React.memo((props) => {
   }, [applicationId, isHistoryListLoading, dispatch]);
 
   if(!applicationId){
-    return <Nodata text={"No Application History found"} className={"div-no-application-list text-center"}/>
+    return <Nodata text={<Translation>{(t)=>t("no_application_history_found")}</Translation>} className={"div-no-application-list text-center"}/>
   }
   if (isHistoryListLoading) {
     return <Loading/>;
@@ -47,7 +47,7 @@ const HistoryList = React.memo((props) => {
   const getNoDataIndicationContent = () => {
     return (
       <div className="div-no-task">
-        <label className="lbl-no-task"> No History found </label>
+        <label className="lbl-no-task"> <Translation>{(t)=>t("no_history_found")}</Translation> </label>
         <br/>
       </div>
     );
@@ -69,7 +69,7 @@ const HistoryList = React.memo((props) => {
               <h3 className="task-head">
               {/* <i class="fa fa-list-alt" alt="Task" aria-hidden="true"></i> */}
               <i className="fa fa-list" aria-hidden="true"/>
-              &nbsp;<Translation>{(t)=>t("app_history")}</Translation>
+              &nbsp;<Translation>{(t)=>t("application_history")}</Translation>
               </h3>
             </div>
             <br/>
@@ -93,7 +93,7 @@ const HistoryList = React.memo((props) => {
         )}
       </ToolkitProvider>
     ) : (
-      <Nodata text={"No Application History found"} className={"div-no-application-list text-center"}/>
+      <Nodata text={<Translation>{(t)=>t("no_application_history_found")}</Translation>} className={"div-no-application-list text-center"}/>
     )
   );
 });

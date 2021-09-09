@@ -11,6 +11,7 @@ i18n
   .init({
     fallbackLng: 'en',
     resources: {
+      fallbackLng: 'en',
       en: {
         translation: TRANSLATIONS_EN
       },
@@ -25,6 +26,9 @@ i18n
       }
     }
   });
+  
+
+i18n.changeLanguage('zh'); // default language 'en'
 
   export default i18n;
   

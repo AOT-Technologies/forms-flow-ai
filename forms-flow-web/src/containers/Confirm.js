@@ -1,15 +1,16 @@
 import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 const Confirm = React.memo((props)=>{
-    const { modalOpen=false, onYes, onNo, message, yesText = <Trans>{("Yes")}</Trans>, noText = <Trans>{("No")}</Trans> } = props;
+    const {t} = useTranslation();
+    const { modalOpen=false, onYes, onNo, message, yesText = t("Yes"), noText = t("No")} = props;
     return (
       <>
           <Modal show={modalOpen}>
               <Modal.Header>
-                 <Modal.Title><Trans>{("del_confirmation")}</Trans></Modal.Title>
+                 <Modal.Title>{t("del_confirmation")}</Modal.Title>
               </Modal.Header>
               <Modal.Body>{message}</Modal.Body>
               <Modal.Footer>

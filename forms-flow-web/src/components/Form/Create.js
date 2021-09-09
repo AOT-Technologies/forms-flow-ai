@@ -3,14 +3,14 @@ import React from "react";
 import { connect } from "react-redux";
 import { saveForm, selectError, FormEdit, Errors } from "react-formio";
 import { push } from "connected-react-router";
-import { Trans } from "react-i18next";
+import { Translation } from "react-i18next";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 
 const Create = React.memo((props) => {
   return (
     <div>
-      <h2><Trans>{("create_form")}</Trans></h2>
+      <h2><Translation>{(t)=>t("create_form")}</Translation></h2>
       <hr />
       <Errors errors={props.errors} />
       <FormEdit {...props} />

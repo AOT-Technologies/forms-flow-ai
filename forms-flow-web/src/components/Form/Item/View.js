@@ -3,7 +3,7 @@ import {connect, useDispatch, useSelector} from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors, getForm } from 'react-formio';
 import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
-import { useTranslation, Trans } from "react-i18next";
+import { useTranslation,Translation } from "react-i18next";
 import "../../../translations/i18n";
 import Loading from '../../../containers/Loading';
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
@@ -62,7 +62,7 @@ const View = React.memo((props) => {
             <img src="/form.svg" width="30" height="30" alt="form" />
           </span>*/}
           <h3 className="ml-3">
-            <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; <Trans>{("Forms")}</Trans>/</span> {form.title}
+            <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; {t("Forms")}/</span> {form.title}
           </h3>
         </div>
         <Errors errors={errors} />
@@ -129,7 +129,7 @@ const mapStateToProps = (state) => {
       noAlerts: false,
       i18n: {
         en: {
-          error: <Trans>{("message")}</Trans>,
+          error:<Translation>{(t)=>t("message")}</Translation> 
         },
       }
     },
@@ -146,7 +146,7 @@ const mapDispatchToProps = (dispatch, ownProps,t) => {
         if (!err) {
           dispatch(doProcessActions(submission, ownProps,t))
         } else {
-          const ErrorDetails = { modalOpen: true, message: <Trans>{("message_submission")}</Trans> }
+          const ErrorDetails = { modalOpen: true, message: t("message_submission") }
           toast.error(t("submission_error"));
           dispatch(setFormSubmissionLoading(false));
           dispatch(setFormSubmissionError(ErrorDetails))

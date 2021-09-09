@@ -22,7 +22,7 @@ import {setBPMTaskDetailUpdating} from "../../../actions/bpmTaskActions";
 //import UserSelection from "./UserSelection";
 import UserSelectionDebounce from "./UserSelectionDebounce";
 import SocketIOService from "../../../services/SocketIOService";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const TaskHeader = React.memo(() => {
   const task = useSelector(state => state.bpmTasks.taskDetail);
@@ -138,7 +138,7 @@ const TaskHeader = React.memo(() => {
       <i className="fa fa-calendar mr-1"/>{" "}
       {followUpDate
         ? <span className="mr-4">{moment(followUpDate).fromNow()}</span>
-        : <Trans>{"set_flwupdate"}</Trans>}
+        : t("set_flwupdate")}
     </div>
   });
 
@@ -147,7 +147,7 @@ const TaskHeader = React.memo(() => {
   const DueDateInput=React.forwardRef(({ value, onClick }, ref) =>{
     return    <div onClick={onClick} ref={ref}>
      <i className="fa fa-bell mr-1"/>{" "}
-      {dueDate ? <span className="mr-4">{moment(dueDate).fromNow()}</span> : <Trans>{"set_duedate"}</Trans>}
+      {dueDate ? <span className="mr-4">{moment(dueDate).fromNow()}</span> : t("set_duedate")}
     </div>
   });
 
@@ -163,7 +163,7 @@ const TaskHeader = React.memo(() => {
       <span className="application-id" dat-title={t("process_name")}> {getProcessDataFromList(processList, task?.processDefinitionId, "name")}</span>
       </Row>
       <Row className="ml-0" >
-      <span data-title={t("application_id")} className="application-id"><Trans>{"application_id"}</Trans># {task?.applicationId}</span>
+      <span data-title={t("application_id")} className="application-id">{t("application_id")}# {task?.applicationId}</span>
       </Row>
       <Row className="actionable mb-4">
         <Col sm={followUpDate?2:"auto"} data-title={followUpDate?getFormattedDateAndTime(followUpDate):t("set_followupdate")} className='date-container'>
@@ -211,20 +211,20 @@ const TaskHeader = React.memo(() => {
         </Col>
         <Col className="center-position" sm={4} onClick={()=>setModal(true)} dat-title={t("groups")}>
           <i className="fa fa-group mr-1"/>
-          { taskGroups.length === 0? <span><Trans>{"add_group"}</Trans></span>:<span className="group-align">{getGroups(taskGroups)}</span>}
+          { taskGroups.length === 0? <span>{t("add_group")}</span>:<span className="group-align">{getGroups(taskGroups)}</span>}
         </Col>
         <Col className="right-side">
           {isEditAssignee?(task?.assignee? <span>
               <UserSelectionDebounce onClose={()=>setIsEditAssignee(false)}
                              currentUser={task.assignee}
                              onChangeClaim={onChangeClaim}/></span>:
-            <span onClick={onClaim}><Trans>{"Claim"}</Trans></span>):
+            <span onClick={onClaim}>{t("Claim")}</span>):
             (<>
           <i className="fa fa-user mr-1" />
           {task?.assignee ? (<span>
               <span className="change-tooltip" onClick={()=>setIsEditAssignee(true)} dat-title={t("change_assigne")}>{task.assignee}</span>
               <i className="fa fa-times ml-1" onClick={onUnClaimTask} dat-title={t("reset_assigne")}/></span>) :
-              <span onClick={onClaim}><Trans>{"Claim"}</Trans></span>
+              <span onClick={onClaim}>{t("Claim")}</span>
             }
             </>)
           }

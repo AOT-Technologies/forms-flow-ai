@@ -12,7 +12,7 @@ import { push } from "connected-react-router";
 import { SUBMISSION_ACCESS } from "../../../constants/constants";
 import {addHiddenApplicationComponent} from "../../../constants/applicationComponent";
 import {toast} from "react-toastify";
-import { Trans } from "react-i18next";
+import { Translation } from "react-i18next";
 const Edit = React.memo((props) => (
   <div className="container">
     <div className="main-header">
@@ -47,11 +47,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       return dispatch(
         saveForm("form", form, (err, form) => {
           if (!err) {
-            toast.success(<Trans>{("form_saved")}</Trans>);
+            toast.success(<Translation>{(t)=>t("form_saved")}</Translation>);
             dispatch(push(`/formflow/${form._id}/preview`));
             // ownProps.setPreviewMode(true);
           }else{
-            toast.error(<Trans>{("form_save_error")}</Trans>);
+            toast.error(<Translation>{(t)=>t("form_save_error")}</Translation>);
           }
         })
       );

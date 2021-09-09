@@ -12,7 +12,7 @@ import Back from "./constants/Back.js";
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
-import { Trans } from "react-i18next";
+import { Translation } from "react-i18next";
 import "../../translations/i18n"
 //TODO convert this code to functional component
 
@@ -204,9 +204,9 @@ class StepperPage extends PureComponent {
 
   getSteps() {
     return [
-       <Trans>{("design_form")}</Trans>,
-      <Trans>{("associate_workflow")}</Trans>,
-      <Trans>{("preview_confirm")}</Trans>,
+      <Translation>{(t)=>t("design_form")}</Translation>,
+      <Translation>{(t)=>t("associate_workflow")}</Translation>,
+      <Translation>{(t)=>t("preview_confirm")}</Translation>,
     ];
   }
 
@@ -390,7 +390,7 @@ class StepperPage extends PureComponent {
                   {this.state.activeStep === steps.length ? (
                     <div>
                       <Typography>
-                        <Trans>{("all_steps")}</Trans>
+                      <Translation>{(t)=>t("all_steps")}</Translation>
                       </Typography>
                       <Button onClick={handleReset}>Reset</Button>
                     </div>
@@ -433,10 +433,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveFormProcessMapper(data, update, (err, res) => {
           if (!err) {
-            toast.success(<Trans>{("workflow_association")}</Trans>);
+            toast.success(<Translation>{(t)=>t("workflow_association")}</Translation>);
             dispatch(push(`/form`));
           }else{
-            toast.error(<Trans>{("workflow_association_failed")}</Trans>);
+            toast.error(<Translation>{(t)=>t("workflow_association_failed")}</Translation>);
           }
         })
       );
@@ -451,10 +451,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveForm("form", newForm, (err, form) => {
           if (!err) {
-            toast.success(<Trans>{("form_saved")}</Trans>);
+            toast.success(<Translation>{(t)=>t("form_saved")}</Translation>);
             dispatch(push(`/formflow/${form._id}/preview`));
           }else{
-            toast.error(<Trans>{("submission_error")}</Trans>);
+            toast.error(<Translation>{(t)=>t("submission_error")}</Translation>);
           }
         })
       );
@@ -464,7 +464,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         getFormProcesses(formId, (err, res) => {
           if (err) {
-            toast.error(<Trans>{('workflow_error')}</Trans>);
+            toast.error(<Translation>{(t)=>t("'workflow_error")}</Translation>);
             console.log(err);
           }
         })

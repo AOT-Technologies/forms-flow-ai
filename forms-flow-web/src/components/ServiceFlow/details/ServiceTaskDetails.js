@@ -22,7 +22,7 @@ import {getTaskSubmitFormReq} from "../../../apiManager/services/bpmServices";
 import {useParams} from "react-router-dom";
 import {push} from "connected-react-router";
 import {setFormSubmissionLoading} from "../../../actions/formActions";
-import { Trans, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const ServiceFlowTaskDetails = React.memo(() => {
   const {t} = useTranslation();
@@ -150,7 +150,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
    if(!bpmTaskId){
      return <Row className="not-selected mt-2 ml-1">
        <i className="fa fa-info-circle mr-2 mt-1"/>
-      <Trans>{("select_task")}</Trans> 
+      {t("select_task")}
        </Row>
    }else if(isTaskLoading) {
    return <div className="service-task-details">

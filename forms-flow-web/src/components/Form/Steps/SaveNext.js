@@ -1,18 +1,19 @@
 import React from "react";
 import Button  from "@material-ui/core/Button";
-import { Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 const SaveNext = React.memo(({ handleNext, handleBack, activeStep, isLastStep, submitData }) => {
+  const {t} = useTranslation();
   return (
     <>
       <Button disabled={activeStep === 0} onClick={handleBack}>
-        <Trans>{("Back")}</Trans>
+        {t("Back")}
       </Button>
       <Button
         variant="contained"
         color="primary"
         onClick={!isLastStep ? handleNext : submitData}
       >
-        {isLastStep ? <Trans>{("save")}</Trans> : <Trans>{("next")}</Trans> }
+        {isLastStep ? t("save") : t("next") }
       </Button>
     </>
   );

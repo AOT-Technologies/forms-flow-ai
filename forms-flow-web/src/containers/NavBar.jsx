@@ -4,9 +4,9 @@ import {Link, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import UserService from "../services/UserService";
 import {getUserRoleName, getUserRolePermission} from "../helper/user";
-import { Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import "./styles.scss";
-import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME, LANGUAGE} from "../constants/constants";
+import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME } from "../constants/constants";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import {push} from "connected-react-router";
 import i18n from "../translations/i18n";
@@ -22,7 +22,7 @@ const NavBar = React.memo(() => {
   const dispatch = useDispatch();
   const logoPath = "/logo.svg";
   const appName = APPLICATION_NAME;
-
+  const {t} = useTranslation();
   useEffect(()=>{
     console.log(lang);
     i18n.changeLanguage(lang);
@@ -78,12 +78,12 @@ const NavBar = React.memo(() => {
             <Nav id="main-menu-nav" className="mr-auto active">
               <Nav.Link as={Link} to='/form'  className={`main-nav nav-item ${
                 pathname.match(/^\/form/) ? "active-tab" : ""
-              }`}>  <i className="fa fa-wpforms fa-fw fa-lg"/> <Trans>{("Forms")}</Trans></Nav.Link>
+              }`}>  <i className="fa fa-wpforms fa-fw fa-lg"/> {t("Forms")}</Nav.Link>
 
               {showApplications?(getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)) ?
                 (<Nav.Link as={Link} to='/application'  className={`main-nav nav-item ${
                   pathname.match(/^\/application/) ? "active-tab" : ""
-                }`}> <i className="fa fa-list-alt fa-fw fa-lg " /> <Trans >{"applications"}</Trans></Nav.Link>)
+                }`}> <i className="fa fa-list-alt fa-fw fa-lg " /> {t("applications")}</Nav.Link>)
                 :null:
                 null}
 
@@ -95,22 +95,22 @@ const NavBar = React.memo(() => {
                 null}*/}
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <NavDropdown title={<><i className="fa fa-list fa-lg fa-fw" /><Trans>{"task"}</Trans> </>} id="task-dropdown"
+                <NavDropdown title={<><i className="fa fa-list fa-lg fa-fw" />{t("task")} </>} id="task-dropdown"
                              className={`main-nav nav-item taskDropdown ${pathname.match(/^\/task/) ? "active-tab-dropdown" : ""}`} onClick={goToTask}>
                   <ServiceFlowFilterListDropDown/>
               </NavDropdown>:null}
 
-              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><i className="fa fa-tachometer fa-lg fa-fw"/><Trans>{("dashboard")}</Trans></>}
+              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><i className="fa fa-tachometer fa-lg fa-fw"/>{t("dashboard")}</>}
                                                                               id="dashboard-dropdown"
                                                                               className={`main-nav nav-item ${
                                                                                 pathname.match(/^\/metrics/) || pathname.match(/^\/insights/) ? "active-tab-dropdown" : ""
                                                                               }`}>
                 <NavDropdown.Item as={Link} to='/metrics' className={`main-nav nav-item ${
                   pathname.match(/^\/metrics/) ? "active-tab" : ""
-                }`}><i className="fa fa-pie-chart fa-fw fa-lg"  /> <Trans>{"metrics"}</Trans></NavDropdown.Item>
+                }`}><i className="fa fa-pie-chart fa-fw fa-lg"  /> {t("metrics")}</NavDropdown.Item>
                 <NavDropdown.Item as={Link} to='/insights' className={`main-nav nav-item ${
                   pathname.match(/^\/insights/) ? "active-tab" : ""
-                }`}><i className="fa fa-lightbulb-o fa-fw fa-lg"/> <Trans>{"insights"}</Trans></NavDropdown.Item>
+                }`}><i className="fa fa-lightbulb-o fa-fw fa-lg"/> {t("insights")}</NavDropdown.Item>
               </NavDropdown>:null}
             </Nav>
             <Nav className="ml-auto">
@@ -141,7 +141,7 @@ const NavBar = React.memo(() => {
                         <i className="fa fa-users fa-lg fa-fw"/>
                         <b>{getUserRoleName(userRoles)}</b></Dropdown.Item>
                       <Dropdown.Divider/>
-                      <Dropdown.Item onClick ={logout}><i className="fa fa-sign-out fa-fw"/> <Trans>{"logout"}</Trans></Dropdown.Item>
+                      <Dropdown.Item onClick ={logout}><i className="fa fa-sign-out fa-fw"/> {t("logout")} </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
                 </Nav>

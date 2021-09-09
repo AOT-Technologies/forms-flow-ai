@@ -6,7 +6,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import LoadingOverlay from "react-loading-overlay";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import { Trans } from "react-i18next";
+import { Translation } from "react-i18next";
 import {
   fetchTaskList,
   claimTask,
@@ -66,15 +66,15 @@ const List = class extends PureComponent {
     const getNoDataIndicationContent = () => {
       return (
         <div className="div-no-task">
-          <label className="lbl-no-task"> <Trans>{"no_task"}</Trans></label>
+          <label className="lbl-no-task"> <Translation>{(t)=>t("no_task")}</Translation></label>
           <br />
           <label className="lbl-no-task-desc">
             {" "}
-            <Trans>{"change_filter"}</Trans>{" "}
+            <Translation>{(t)=>t("change_filter")}</Translation>{" "}
           </label>
           <br />
           <label className="lbl-clear" onClick={clearFilter}>
-            <Trans>{"clear_filter"}</Trans>
+          <Translation>{(t)=>t("clear_filter")}</Translation>
           </label>
         </div>
       );
@@ -93,7 +93,7 @@ const List = class extends PureComponent {
               <div className="main-header">
               <h3 className="task-head">
               <i className="fa fa-list" />
-                &nbsp; <Trans>{"task"}</Trans>
+                &nbsp; <Translation>{(t)=>t("task")}</Translation>
                   <div className="col-md-1 task-count">({tasks.length})</div>
                 </h3>
                 <div className="col-md-2 btn-group">

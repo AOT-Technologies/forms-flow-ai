@@ -1,5 +1,5 @@
-import { Trans } from "react-i18next";
+import { Translation } from "react-i18next";
 export const TASK_FILTER_LIST_DEFAULT_PARAM = {sortBy: "created",
     sortOrder: "desc",
-   label:<Trans>{"created"}</Trans>
+   label:<Translation>{(t)=>t("created")}</Translation>
   };

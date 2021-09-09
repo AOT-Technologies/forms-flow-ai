@@ -16,7 +16,7 @@ import {
 } from "../../../../apiManager/services/formatterService";
 import {defaultSubmissionData} from "../../../../constants/submissionConstants";
 import {setApplicationListLoader} from "../../../../actions/applicationActions";
-import { Trans } from 'react-i18next';
+import { Translation } from 'react-i18next';
 
 
 const getOperations = (userRoles) => {
@@ -71,7 +71,7 @@ const List = React.memo((props) => {
   return (
     <div className="container">
       <Confirm modalOpen={props.modalOpen}
-               message={<Trans>{("delete_message")}</Trans>}
+               message={<Translation>{(t)=>t("delete_message")}</Translation>}
                onNo={() => onNo()}
                onYes={() => onYes(submissionFormId, submissionId, submissions)}
       >
@@ -84,7 +84,7 @@ const List = React.memo((props) => {
                         <img src="/form.svg" width="30" height="30" alt="form" />
                     </span>*/}
         <h3 className="ml-3">
-          <span className="task-head-details"> <i className="fa fa-wpforms" aria-hidden="true"/><span className="forms-text"><Trans>{("Forms")}</Trans> /</span></span> {form.title}
+          <span className="task-head-details"> <i className="fa fa-wpforms" aria-hidden="true"/><span className="forms-text"><Translation>{(t)=>t("Forms")}</Translation> /</span></span> {form.title}
         </h3>
         {/* {userRoles.includes(CLIENT) ? <Link className="btn btn-primary form-btn btn-right" to={`/form/${formId}`}>
         <img src="/webfonts/fa_plus.svg" alt="back"/> New Submisssion

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Trans } from "react-i18next";
 import { Translation } from "react-i18next";
 
 

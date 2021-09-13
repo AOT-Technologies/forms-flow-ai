@@ -96,7 +96,6 @@ export const TRANSLATIONS_EN = {
   vue_submission:"View Submission",
   Showing:"Showing",
   to:"to",
-  of:"of",
   Results:"Results",
   aknowledge:"Acknowledge",
   View:"View",
@@ -134,7 +133,6 @@ export const TRANSLATIONS_EN = {
   print_as_pdf:"Print As PDF",
   view:"View",
   insights:"Insights",
-  dashboard:"Dashboard",
   no_dashboard_found:"No dashboard found",
   showing:"Showing",
   of:"of",
@@ -143,6 +141,5 @@ export const TRANSLATIONS_EN = {
   edit:"Edit",
   select_dashboard:"Select Dashboard",
   date_format:"{{date, DD-MM-YYYY}}",
-  form_name:"Form Name",
   total_submissions:"Total Submissions",
 };

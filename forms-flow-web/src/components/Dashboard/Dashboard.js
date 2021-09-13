@@ -13,7 +13,6 @@ import LoadError from "../Error";
 
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import * as moment from "moment";
-import { Trans } from "react-i18next";
 import { Translation } from "react-i18next";
 
 const firsDay = moment().format("YYYY-MM-01");

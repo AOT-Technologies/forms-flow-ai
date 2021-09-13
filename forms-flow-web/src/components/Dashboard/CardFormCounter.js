@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Trans } from "react-i18next";
 import { Translation } from "react-i18next";
 
 

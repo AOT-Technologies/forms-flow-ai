@@ -13,7 +13,6 @@ import History from "./ApplicationHistory";
 import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
 import NotFound from "../NotFound";
-import { Trans } from "react-i18next";
 import { Translation } from "react-i18next";
 //import { useDispatch } from 'react-redux'
 

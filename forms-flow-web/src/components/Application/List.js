@@ -12,7 +12,7 @@ import {getAllApplications} from "../../apiManager/services/applicationServices"
 import {setApplicationListLoader} from "../../actions/applicationActions";
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
-import { Trans,useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import {
   columns,
   getoptions,

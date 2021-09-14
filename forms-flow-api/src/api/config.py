@@ -8,7 +8,6 @@ or by accessing this configuration directly.
 """
 
 import os
-import sys
 
 from dotenv import find_dotenv, load_dotenv
 

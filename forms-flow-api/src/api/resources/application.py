@@ -14,9 +14,7 @@ from api.schemas.application import (
     ApplicationUpdateSchema,
 )
 from api.services import ApplicationService
-from api.utils.auth import auth
-from api.utils.util import cors_preflight
-from api.utils.constants import REVIEWER_GROUP
+from api.utils import auth, cors_preflight, REVIEWER_GROUP, profiletime
 
 
 API = Namespace("Application", description="Application")
@@ -29,6 +27,7 @@ class ApplicationsResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get():
         """Get applications."""
         if request.args:
@@ -112,6 +111,7 @@ class ApplicationResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(application_id):
         """Get application by id."""
         try:
@@ -138,6 +138,7 @@ class ApplicationResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def put(application_id):
         """Update application details."""
         application_json = request.get_json()
@@ -169,6 +170,7 @@ class ApplicationResourceByFormId(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(form_id):
         """Get applications."""
         if request.args:
@@ -234,6 +236,7 @@ class ApplicationResourcesByIds(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def post():
         """Post a new application using the request body."""
         application_json = request.get_json()
@@ -250,13 +253,13 @@ class ApplicationResourcesByIds(Resource):
             response, status = application_schema.dump(application), HTTPStatus.CREATED
             return response, status
         except BaseException as application_err:
-            response = {
+            response, status = {
                 "type": "Bad request error",
                 "message": "Invalid application request passed",
-            }
+            }, HTTPStatus.BAD_REQUEST
             logging.exception(response)
             logging.exception(application_err)
-            return response
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -266,6 +269,7 @@ class AggregatedApplicationsResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get():
         """Get aggregated applications."""
         try:
@@ -302,6 +306,7 @@ class AggregatedApplicationStatusResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(mapper_id):
         """Get aggregated application status."""
         try:
@@ -337,6 +342,8 @@ class ProcessMapperResourceByApplicationId(Resource):
     """Resource for managing process details."""
 
     @staticmethod
+    @auth.require
+    @profiletime
     def get(application_id):
 
         try:

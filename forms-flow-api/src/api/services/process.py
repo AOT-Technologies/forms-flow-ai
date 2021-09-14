@@ -2,7 +2,6 @@
 
 import json
 import logging
-import sys, traceback
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
@@ -104,7 +103,6 @@ class ProcessService:
             if activity_instances:
                 return ProcessActivityInstanceSchema().dump(activity_instances)
         except TypeError as err:
-            exc_traceback = sys.exc_info()
             response, status = {
                 "type": "Invalid request",
                 "message": "Invalid request object passed",
@@ -112,7 +110,6 @@ class ProcessService:
             }, HTTPStatus.BAD_REQUEST
             logging.exception(response)
             logging.exception(err)
-            traceback.print_tb(exc_traceback)
             return response, status
 
         # raise BusinessException(

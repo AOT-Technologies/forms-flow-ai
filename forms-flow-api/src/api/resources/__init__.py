@@ -3,7 +3,6 @@
 Uses restx namespaces to mount individual api endpoints into the service.
 """
 
-from flask import Flask, url_for, current_app
 from flask_jwt_oidc import AuthError
 from flask_restx import Api
 
@@ -18,18 +17,6 @@ from api.utils.constants import ALLOW_ALL_ORIGINS
 
 # from .formiotoken import API as FORMIOTOKEN_API
 # from .tenant import API as TENANT_API
-
-
-# class CustomApi(Api):
-#     @property
-#     def specs_url(self):
-#         """Monkey patch for HTTPS"""
-#         self_api_base = current_app.config.get("FORMSFLOW_API_URL")
-#         return url_for(
-#             self.endpoint("specs"),
-#             _external=True,
-#             _scheme=self_api_base.partition(":")[0],
-#         )
 
 
 # This will add the Authorize button to the swagger docs
@@ -62,7 +49,8 @@ def handle_auth_error(error: AuthError):
     return (
         {
             "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for Authorization or has expired.",
+            "message": """Access to formsflow.ai API Denied. Check if the bearer
+             token is passed for Authorization or has expired.""",
         },
         error.status_code,
         {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},

@@ -7,8 +7,7 @@ from flask import request
 from flask_restx import Namespace, Resource
 
 from ..services import ProcessService
-from api.utils.auth import auth
-from api.utils.util import cors_preflight
+from api.utils import auth, cors_preflight, profiletime
 from api.schemas.process import ProcessMessageSchema
 
 API = Namespace("Process", description="Process")
@@ -23,6 +22,7 @@ class ProcessStateResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(process_key, task_key):
         """Get states by process and task key."""
         try:
@@ -52,6 +52,7 @@ class ProcessResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get():
         """Get all process."""
         try:
@@ -83,6 +84,8 @@ class ProcessDefinitionResource(Resource):
     """Resource for managing process details."""
 
     @staticmethod
+    @auth.require
+    @profiletime
     def get(process_key):
         """Get process detailsXML."""
         try:
@@ -110,6 +113,7 @@ class ProcessEventResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def post():
         message_json = request.get_json()
         message_schema = ProcessMessageSchema()
@@ -158,6 +162,7 @@ class ProcessInstanceResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(process_InstanceId):
         """Get states by process and task key."""
         try:

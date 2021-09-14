@@ -6,7 +6,7 @@ import View from './View'
 import Edit from './Edit'
 import {getApplicationById} from "../../../../../apiManager/services/applicationServices";
 import {setApplicationDetailLoader} from "../../../../../actions/applicationActions";
-
+import NotFound from '../../../../NotFound';
 import {getUserRolePermission} from "../../../../../helper/user";
 import {CLIENT, STAFF_REVIEWER} from "../../../../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../../../../constants/applicationConstants";
@@ -71,7 +71,7 @@ const Item = React.memo((props) => {
       <Switch>
         <Route exact path="/form/:formId/submission/:submissionId" component={View}/>
         {editAllowed ?<Route path="/form/:formId/submission/:submissionId/edit" component={Edit}/>:null}
-        {/* <Redirect exact to='/404'/> */}
+        <Route path="/form/:formId/submission/:submissionId/:notavailable" component={NotFound}/>
       </Switch>
     </div>
   );

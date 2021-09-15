@@ -9,8 +9,7 @@ from flask_restx import Namespace, Resource
 from ..exceptions import BusinessException
 from ..schemas import ApplicationListReqSchema, FormProcessMapperSchema
 from ..services import FormProcessMapperService
-from api.utils.auth import auth
-from api.utils.util import cors_preflight
+from api.utils import auth, cors_preflight, profiletime
 
 
 API = Namespace("Form", description="Form")
@@ -23,6 +22,7 @@ class FormResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get():
         """Get form process mapper."""
         try:
@@ -87,6 +87,7 @@ class FormResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def post():
         """Post a form process mapper using the request body."""
         mapper_json = request.get_json()
@@ -118,6 +119,7 @@ class FormResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(mapper_id):
         """Get form process mapper by id."""
         try:
@@ -139,6 +141,7 @@ class FormResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def delete(mapper_id):
         """Delete form process mapper by id."""
         try:
@@ -194,6 +197,7 @@ class FormResourceByFormId(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(form_id):
         """Get details of only form corresponding to a particular formId."""
         try:

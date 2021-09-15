@@ -3,7 +3,7 @@
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
-from ..schemas import TaskSchema, TaskVariableSchema
+from ..schemas import TaskSchema
 from .external import BPMService
 
 

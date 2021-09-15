@@ -14,9 +14,7 @@ from api.schemas.application import (
     ApplicationUpdateSchema,
 )
 from api.services import ApplicationService
-from api.utils.auth import auth
-from api.utils.util import cors_preflight
-from api.utils.constants import REVIEWER_GROUP
+from api.utils import auth, cors_preflight, REVIEWER_GROUP, profiletime
 
 
 API = Namespace("Application", description="Application")
@@ -29,6 +27,7 @@ class ApplicationsResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get():
         """Get applications."""
         if request.args:
@@ -82,27 +81,27 @@ class ApplicationsResource(Resource):
                 HTTPStatus.OK,
             )
 
-    # @staticmethod
-    # @auth.require
-    # def post():
-    #     """Post a new application using the request body."""
-    #     application_json = request.get_json()
-    #     """Get applications."""
-    #     try:
-    #         return (
-    #             jsonify(
-    #                 {
-    #                     "applications": ApplicationService.apply_custom_attributes(
-    #                         ApplicationService.get_all_applications_ids(
-    #                             application_json["applicationIds"]
-    #                         )
-    #                     )
-    #                 }
-    #             ),
-    #             HTTPStatus.OK,
-    #         )
-    #     except BusinessException as err:
-    #         return err.error, err.status_code
+            # @staticmethod
+            # @auth.require
+            # def post():
+            #     """Post a new application using the request body."""
+            #     application_json = request.get_json()
+            #     """Get applications."""
+            #     try:
+            #         return (
+            #             jsonify(
+            #                 {
+            #                     "applications": ApplicationService.apply_custom_attributes(
+            #                         ApplicationService.get_all_applications_ids(
+            #                             application_json["applicationIds"]
+            #                         )
+            #                     )
+            #                 }
+            #             ),
+            #             HTTPStatus.OK,
+            #         )
+            #     except BusinessException as err:
+            #         return err.error, err.status_code
 
 
 @cors_preflight("GET,PUT,OPTIONS")
@@ -112,6 +111,7 @@ class ApplicationResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(application_id):
         """Get application by id."""
         try:
@@ -138,6 +138,7 @@ class ApplicationResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def put(application_id):
         """Update application details."""
         application_json = request.get_json()
@@ -152,9 +153,9 @@ class ApplicationResourceById(Resource):
             return "Updated successfully", HTTPStatus.OK
         except BaseException as submission_err:
             response, status = {
-                "type": "Bad request error",
-                "message": "Invalid request data",
-            }, HTTPStatus.BAD_REQUEST
+                                   "type": "Bad request error",
+                                   "message": "Invalid request data",
+                               }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
             logging.exception(submission_err)
@@ -169,6 +170,7 @@ class ApplicationResourceByFormId(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(form_id):
         """Get applications."""
         if request.args:
@@ -234,6 +236,7 @@ class ApplicationResourcesByIds(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def post():
         """Post a new application using the request body."""
         application_json = request.get_json()
@@ -250,13 +253,13 @@ class ApplicationResourcesByIds(Resource):
             response, status = application_schema.dump(application), HTTPStatus.CREATED
             return response, status
         except BaseException as application_err:
-            response = {
-                "type": "Bad request error",
-                "message": "Invalid application request passed",
-            }
+            response, status = {
+                                   "type": "Bad request error",
+                                   "message": "Invalid application request passed",
+                               }, HTTPStatus.BAD_REQUEST
             logging.exception(response)
             logging.exception(application_err)
-            return response
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -266,6 +269,7 @@ class AggregatedApplicationsResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get():
         """Get aggregated applications."""
         try:
@@ -286,9 +290,9 @@ class AggregatedApplicationsResource(Resource):
             )
         except BaseException as agg_err:
             response, status = {
-                "message": "Invalid request object for application metrics endpoint",
-                "errors": agg_err,
-            }, HTTPStatus.BAD_REQUEST
+                                   "message": "Invalid request object for application metrics endpoint",
+                                   "errors": agg_err,
+                               }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
             logging.exception(agg_err)
@@ -302,6 +306,7 @@ class AggregatedApplicationStatusResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(mapper_id):
         """Get aggregated application status."""
         try:
@@ -322,9 +327,9 @@ class AggregatedApplicationStatusResource(Resource):
             )
         except BaseException as agg_err:
             response, status = {
-                "message": "Invalid request object for application metrics endpoint",
-                "errors": agg_err,
-            }, HTTPStatus.BAD_REQUEST
+                                   "message": "Invalid request object for application metrics endpoint",
+                                   "errors": agg_err,
+                               }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
             logging.exception(agg_err)
@@ -337,6 +342,8 @@ class ProcessMapperResourceByApplicationId(Resource):
     """Resource for managing process details."""
 
     @staticmethod
+    @auth.require
+    @profiletime
     def get(application_id):
 
         try:

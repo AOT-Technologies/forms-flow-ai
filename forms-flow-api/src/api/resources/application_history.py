@@ -2,13 +2,13 @@
 
 from http import HTTPStatus
 import logging
-from flask import request
+from flask import request, current_app
 from flask_restx import Namespace, Resource
 
 from api.schemas import ApplicationHistorySchema
 from api.services import ApplicationHistoryService
-from api.utils.auth import auth
-from api.utils.util import cors_preflight
+from api.utils import auth, cors_preflight, profiletime
+
 
 # keeping the base path same for application history and application/
 API = Namespace("Application", description="Application")
@@ -21,6 +21,7 @@ class ApplicationHistoryResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(application_id):
         """Get application histry."""
         return (
@@ -36,6 +37,7 @@ class ApplicationHistoryResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def post(application_id):
         """Post a new application using the request body."""
         application_history_json = request.get_json()
@@ -67,10 +69,10 @@ class ApplicationHistoryResource(Resource):
 
         except BaseException as application_err:
             response, status = {
-                "type": "Invalid Request Object",
-                "message": "Invalid Request Object Passed ",
-                "errors": application_err,
-            }, HTTPStatus.BAD_REQUEST
+                                   "type": "Invalid Request Object",
+                                   "message": "Invalid Request Object Passed ",
+                                   "errors": application_err,
+                               }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
             logging.exception(application_err)

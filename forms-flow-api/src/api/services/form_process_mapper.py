@@ -4,7 +4,6 @@ from http import HTTPStatus
 
 from ..exceptions import BusinessException
 from ..models import FormProcessMapper
-from ..models.enums import FormProcessMapperStatus
 from ..schemas import FormProcessMapperSchema
 
 

@@ -11,3 +11,4 @@ flake8-quotes
 pycodestyle
 pytest
 pyflakes
+pylint

@@ -159,7 +159,7 @@ class ApplicationService:
 
     @staticmethod
     def get_all_applications_form_id_user(
-        form_id, user_id: str, page_no: int, limit: int
+        form_id, user_id: str, page_no: int, limit: int  # pylint: disable=C0330
     ):
         """Get all applications."""
         if page_no:
@@ -242,6 +242,7 @@ class ApplicationService:
 
     @staticmethod
     def apply_custom_attributes(application_schema):
+        """Wrapper function to call Application Schema Wrapper"""
         if isinstance(application_schema, list):
             for entry in application_schema:
                 ApplicationSchemaWrapper.apply_attributes(entry)
@@ -251,8 +252,13 @@ class ApplicationService:
 
 
 class ApplicationSchemaWrapper:
+    """ApplicationSchemaWrapper Class"""
+
     @staticmethod
     def apply_attributes(application):
+        """Wrapper function to call Application Schema Wrapper class
+        to find formid, submissionid from passed formUrl
+        """
         try:
             formurl = application["formUrl"]
             application["formId"] = formurl[

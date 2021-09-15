@@ -2,7 +2,7 @@
 
 from http import HTTPStatus
 from flask_restx import Namespace, Resource
-from api.utils.util import cors_preflight
+from api.utils import cors_preflight, profiletime
 
 
 API = Namespace("Checkpoint", description="Checkpoint")
@@ -14,6 +14,7 @@ class HealthCheckpointResource(Resource):
     """Resource for managing healthcheckpoint."""
 
     @staticmethod
+    @profiletime
     def get():
         """Get the status of API."""
         return (

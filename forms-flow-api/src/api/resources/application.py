@@ -254,9 +254,9 @@ class ApplicationResourcesByIds(Resource):
             return response, status
         except BaseException as application_err:
             response, status = {
-                                   "type": "Bad request error",
-                                   "message": "Invalid application request passed",
-                               }, HTTPStatus.BAD_REQUEST
+                "type": "Bad request error",
+                "message": "Invalid application request passed",
+            }, HTTPStatus.BAD_REQUEST
             logging.exception(response)
             logging.exception(application_err)
             return response, status

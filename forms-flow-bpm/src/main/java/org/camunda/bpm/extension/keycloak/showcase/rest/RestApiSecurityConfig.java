@@ -45,7 +45,7 @@ public class RestApiSecurityConfig extends ResourceServerConfigurerAdapter {
 
 	@Override
 	public void configure(final HttpSecurity http) throws Exception {
-		http.requestMatchers().antMatchers("/engine-rest/**","/engine-rest-ext/**","/forms-flow-bpm-socket/**").
+		http.requestMatchers().antMatchers("/engine-rest/**","/engine-rest-ext/**","/forms-flow-bpm-socket/**", "/actuator/**").
 				and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/engine-rest/**").permitAll()
 				.and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/engine-rest-ext/**").permitAll()
 				.and().authorizeRequests().antMatchers(HttpMethod.OPTIONS,"/forms-flow-bpm-socket/**").permitAll()

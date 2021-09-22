@@ -35,26 +35,26 @@ API = Api(
 
 @API.errorhandler(BusinessException)
 def handle_business_exception(error: BusinessException):
-"""Handle Business exception."""
-return (
-    {"message": error.error},
-    error.status_code,
-    {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},
-)
+    """Handle Business exception."""
+    return (
+        {"message": error.error},
+        error.status_code,
+        {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},
+    )
 
 
 @API.errorhandler(AuthError)
 def handle_auth_error(error: AuthError):
-"""Handle Auth exception."""
-return (
-    {
-        "type": "Invalid Token Error",
-        "message": """Access to formsflow.ai API Denied. Check if the bearer
+    """Handle Auth exception."""
+    return (
+        {
+            "type": "Invalid Token Error",
+            "message": """Access to formsflow.ai API Denied. Check if the bearer
              token is passed for Authorization or has expired.""",
-    },
-    error.status_code,
-    {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},
-)
+        },
+        error.status_code,
+        {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},
+    )
 
 
 API.add_namespace(APPLICATION_API, path="/application")

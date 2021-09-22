@@ -1,87 +1,11 @@
 {
 	"info": {
-		"_postman_id": "1a90126c-a6ff-43c4-83fb-79b98fe6c7da",
+		"_postman_id": "41848688-a50d-438a-b893-1445a54986d2",
 		"name": "forms-flow-bpm API",
 		"description": "The API for forms-flow-bpm.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
-		{
-			"name": "Bearer Token",
-			"item": [
-				{
-					"name": "Fetch Bearer Token",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						},
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									"let keys  = \"forms-flow-bpm:fe1d9f1c-9e4b-4b0a-9d32-623733fd5f44\"; // \"client_id:client_secret\";\r",
-									"let token = CryptoJS.enc.Base64.stringify(CryptoJS.enc.Utf8.parse(keys));\r",
-									"pm.environment.set(\"token\", token);\r",
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/x-www-form-urlencoded",
-								"type": "text"
-							},
-							{
-								"key": "Authorization",
-								"value": "Basic {{token}}",
-								"type": "text"
-							}
-						],
-						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "grant_type",
-									"value": "client_credentials",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{keycloakUrl}}/auth/realms/forms-flow-ai/protocol/openid-connect/token",
-							"host": [
-								"{{keycloakUrl}}"
-							],
-							"path": [
-								"auth",
-								"realms",
-								"forms-flow-ai",
-								"protocol",
-								"openid-connect",
-								"token"
-							]
-						},
-						"description": "Generate token using elevated user or service-client credentials"
-					},
-					"response": []
-				}
-			],
-			"description": "Bearer Token"
-		},
 		{
 			"name": "Filter",
 			"item": [
@@ -100,12 +24,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/camunda/engine-rest/filter/create",
+							"raw": "{{baseUrl}}/engine-rest/filter/create",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"camunda",
 								"engine-rest",
 								"filter",
 								"create"
@@ -115,7 +38,7 @@
 					},
 					"response": [
 						{
-							"name": "Create Filter",
+							"name": "Example",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
@@ -217,12 +140,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/camunda/engine-rest/filter",
+							"raw": "{{baseUrl}}/engine-rest/filter",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"camunda",
 								"engine-rest",
 								"filter"
 							]
@@ -231,7 +153,7 @@
 					},
 					"response": [
 						{
-							"name": "Get Filters",
+							"name": "Example",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
@@ -315,12 +237,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/camunda/engine-rest/filter/count",
+							"raw": "{{baseUrl}}/engine-rest/filter/count",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"camunda",
 								"engine-rest",
 								"filter",
 								"count"
@@ -330,7 +251,7 @@
 					},
 					"response": [
 						{
-							"name": "Get Filters Count",
+							"name": "Example",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
@@ -415,12 +336,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/camunda/engine-rest/filter/{{filterId}}",
+							"raw": "{{baseUrl}}/engine-rest/filter/{{filterId}}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"camunda",
 								"engine-rest",
 								"filter",
 								"{{filterId}}"
@@ -436,6 +356,167 @@
 		{
 			"name": "Process",
 			"item": [
+				{
+					"name": "Deploy process",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer $token"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Filename",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/deployment/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"deployment",
+								"create"
+							]
+						},
+						"description": "Create a deployment.\n#### Method\nPOST /deployment/create"
+					},
+					"response": [
+						{
+							"name": "Example",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer $token"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "deployment-name",
+											"value": "Payment check",
+											"type": "text"
+										},
+										{
+											"key": "diagram_1.bpmn",
+											"type": "file",
+											"src": "/C:/diagram_1.bpmn"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/camunda/engine-rest/deployment/create",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"camunda",
+										"engine-rest",
+										"deployment",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": ""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, PUT, GET, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "860"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Sep 2021 03:51:51 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"links\": [\n        {\n            \"method\": \"GET\",\n            \"href\": \"http://localhost:8000/camunda/engine-rest/deployment/16cee73b-19c6-11ec-9f26-0242ac170003\",\n            \"rel\": \"self\"\n        }\n    ],\n    \"id\": \"16cee73b-19c6-11ec-9f26-0242ac170003\",\n    \"name\": \"Payment check\",\n    \"source\": null,\n    \"deploymentTime\": \"2021-09-20T03:51:51.852+0000\",\n    \"tenantId\": null,\n    \"deployedProcessDefinitions\": {\n        \"PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003\": {\n            \"id\": \"PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003\",\n            \"key\": \"PaymentProcess\",\n            \"category\": \"http://bpmn.io/schema/bpmn\",\n            \"description\": null,\n            \"name\": \"Payment\",\n            \"version\": 4,\n            \"resource\": \"diagram_1.bpmn\",\n            \"deploymentId\": \"16cee73b-19c6-11ec-9f26-0242ac170003\",\n            \"diagram\": null,\n            \"suspended\": false,\n            \"tenantId\": null,\n            \"versionTag\": null,\n            \"historyTimeToLive\": null,\n            \"startableInTasklist\": true\n        }\n    },\n    \"deployedCaseDefinitions\": null,\n    \"deployedDecisionDefinitions\": null,\n    \"deployedDecisionRequirementsDefinitions\": null\n}"
+						}
+					]
+				},
 				{
 					"name": "Start Process Instance",
 					"request": {
@@ -460,13 +541,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/camunda/engine-rest/process-definition/{{processDefinitionId}}/start",
+							"raw": "{{baseUrl}}engine-rest/process-definition/{{processDefinitionId}}/start",
 							"host": [
-								"{{baseUrl}}"
+								"{{baseUrl}}engine-rest"
 							],
 							"path": [
-								"camunda",
-								"engine-rest",
 								"process-definition",
 								"{{processDefinitionId}}",
 								"start"
@@ -476,7 +555,7 @@
 					},
 					"response": [
 						{
-							"name": "Start Process Instance",
+							"name": "Example",
 							"originalRequest": {
 								"method": "POST",
 								"header": [
@@ -583,193 +662,6 @@
 					]
 				},
 				{
-					"name": "Deploy process",
-					"event": [
-						{
-							"listen": "prerequest",
-							"script": {
-								"exec": [
-									""
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Authorization",
-								"value": "Bearer $token"
-							},
-							{
-								"key": "Accept",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "deployment-name",
-									"value": "One Step Approval",
-									"type": "text"
-								},
-								{
-									"key": "enable-duplicate-filtering",
-									"value": "false",
-									"type": "text"
-								},
-								{
-									"key": "deploy-changed-only",
-									"value": "falses",
-									"type": "text"
-								},
-								{
-									"key": "One_step_approval.bpmnn",
-									"value": "@one_step_approval.bpmn",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{baseUrl}}/camunda/engine-rest/deployment/create",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"camunda",
-								"engine-rest",
-								"deployment",
-								"create"
-							]
-						},
-						"description": "Create a deployment.\n#### Method\nPOST /deployment/create"
-					},
-					"response": [
-						{
-							"name": "Create deployment",
-							"originalRequest": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Authorization",
-										"value": "Bearer $token"
-									},
-									{
-										"key": "Accept",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "formdata",
-									"formdata": [
-										{
-											"key": "deployment-name",
-											"value": "Payment check",
-											"type": "text"
-										},
-										{
-											"key": "enable-duplicate-filtering",
-											"value": "false",
-											"type": "text"
-										},
-										{
-											"key": "deploy-changed-only",
-											"value": "falses",
-											"type": "text"
-										},
-										{
-											"key": "diagram_1.bpmn",
-											"type": "file",
-											"src": "/C:/diagram_1.bpmn"
-										}
-									]
-								},
-								"url": {
-									"raw": "{{baseUrl}}/camunda/engine-rest/deployment/create",
-									"host": [
-										"{{baseUrl}}"
-									],
-									"path": [
-										"camunda",
-										"engine-rest",
-										"deployment",
-										"create"
-									]
-								}
-							},
-							"status": "OK",
-							"code": 200,
-							"_postman_previewlanguage": "json",
-							"header": [
-								{
-									"key": "Access-Control-Allow-Origin",
-									"value": ""
-								},
-								{
-									"key": "Access-Control-Allow-Methods",
-									"value": "POST, PUT, GET, OPTIONS"
-								},
-								{
-									"key": "Access-Control-Allow-Headers",
-									"value": "*"
-								},
-								{
-									"key": "Access-Control-Max-Age",
-									"value": "3600"
-								},
-								{
-									"key": "X-Content-Type-Options",
-									"value": "nosniff"
-								},
-								{
-									"key": "X-XSS-Protection",
-									"value": "1; mode=block"
-								},
-								{
-									"key": "Cache-Control",
-									"value": "no-cache, no-store, max-age=0, must-revalidate"
-								},
-								{
-									"key": "Pragma",
-									"value": "no-cache"
-								},
-								{
-									"key": "Expires",
-									"value": "0"
-								},
-								{
-									"key": "X-Frame-Options",
-									"value": "DENY"
-								},
-								{
-									"key": "Content-Type",
-									"value": "application/json"
-								},
-								{
-									"key": "Content-Length",
-									"value": "860"
-								},
-								{
-									"key": "Date",
-									"value": "Mon, 20 Sep 2021 03:51:51 GMT"
-								},
-								{
-									"key": "Keep-Alive",
-									"value": "timeout=60"
-								},
-								{
-									"key": "Connection",
-									"value": "keep-alive"
-								}
-							],
-							"cookie": [],
-							"body": "{\n    \"links\": [\n        {\n            \"method\": \"GET\",\n            \"href\": \"http://localhost:8000/camunda/engine-rest/deployment/16cee73b-19c6-11ec-9f26-0242ac170003\",\n            \"rel\": \"self\"\n        }\n    ],\n    \"id\": \"16cee73b-19c6-11ec-9f26-0242ac170003\",\n    \"name\": \"Payment check\",\n    \"source\": null,\n    \"deploymentTime\": \"2021-09-20T03:51:51.852+0000\",\n    \"tenantId\": null,\n    \"deployedProcessDefinitions\": {\n        \"PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003\": {\n            \"id\": \"PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003\",\n            \"key\": \"PaymentProcess\",\n            \"category\": \"http://bpmn.io/schema/bpmn\",\n            \"description\": null,\n            \"name\": \"Payment\",\n            \"version\": 4,\n            \"resource\": \"diagram_1.bpmn\",\n            \"deploymentId\": \"16cee73b-19c6-11ec-9f26-0242ac170003\",\n            \"diagram\": null,\n            \"suspended\": false,\n            \"tenantId\": null,\n            \"versionTag\": null,\n            \"historyTimeToLive\": null,\n            \"startableInTasklist\": true\n        }\n    },\n    \"deployedCaseDefinitions\": null,\n    \"deployedDecisionDefinitions\": null,\n    \"deployedDecisionRequirementsDefinitions\": null\n}"
-						}
-					]
-				},
-				{
 					"name": "Get Instances",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
@@ -806,12 +698,11 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/camunda/engine-rest/process-instance",
+							"raw": "{{baseUrl}}/engine-rest/process-instance",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"camunda",
 								"engine-rest",
 								"process-instance"
 							]
@@ -820,7 +711,7 @@
 					},
 					"response": [
 						{
-							"name": "Get Instances",
+							"name": "Example",
 							"originalRequest": {
 								"method": "GET",
 								"header": [
@@ -833,15 +724,6 @@
 										"value": "application/json"
 									}
 								],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
 									"raw": "{{baseUrl}}/camunda/engine-rest/process-instance",
 									"host": [
@@ -937,14 +819,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/camunda/engine-rest/authorization/create",
-							"protocol": "http",
+							"raw": "{{baseUrl}}/engine-rest/authorization/create",
 							"host": [
-								"localhost"
+								"{{baseUrl}}"
 							],
-							"port": "8000",
 							"path": [
-								"camunda",
 								"engine-rest",
 								"authorization",
 								"create"
@@ -954,7 +833,7 @@
 					},
 					"response": [
 						{
-							"name": "Create permission for authorization",
+							"name": "Example",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
@@ -1067,14 +946,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/camunda/engine-rest/authorization/create",
-							"protocol": "http",
+							"raw": "{{baseUrl}}/engine-rest/authorization/create",
 							"host": [
-								"localhost"
+								"{{baseUrl}}"
 							],
-							"port": "8000",
 							"path": [
-								"camunda",
 								"engine-rest",
 								"authorization",
 								"create"
@@ -1084,7 +960,7 @@
 					},
 					"response": [
 						{
-							"name": "Create permission for filter",
+							"name": "Example",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
@@ -1197,14 +1073,11 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8000/camunda/engine-rest/authorization/create",
-							"protocol": "http",
+							"raw": "{{baseUrl}}/engine-rest/authorization/create",
 							"host": [
-								"localhost"
+								"{{baseUrl}}"
 							],
-							"port": "8000",
 							"path": [
-								"camunda",
 								"engine-rest",
 								"authorization",
 								"create"
@@ -1214,7 +1087,7 @@
 					},
 					"response": [
 						{
-							"name": "Create permission for deployment",
+							"name": "Example",
 							"originalRequest": {
 								"method": "POST",
 								"header": [],
@@ -1318,12 +1191,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/camunda/engine-rest/authorization?userIdIn=service-account-forms-flow-bpm",
+							"raw": "{{baseUrl}}/engine-rest/authorization?userIdIn=service-account-forms-flow-bpm",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"camunda",
 								"engine-rest",
 								"authorization"
 							],
@@ -1338,7 +1210,7 @@
 					},
 					"response": [
 						{
-							"name": "Get Authorization By UserId",
+							"name": "Example",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
@@ -1485,19 +1357,10 @@
 					},
 					"response": [
 						{
-							"name": "Get all Task",
+							"name": "Example",
 							"originalRequest": {
 								"method": "GET",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {
-											"language": "text"
-										}
-									}
-								},
 								"url": {
 									"raw": "{{baseUrl}}/camunda/engine-rest/task",
 									"host": [
@@ -1685,11 +1548,7 @@
 		},
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:8000"
-		},
-		{
-			"key": "keycloakUrl",
-			"value": "http://localhost:8080"
+			"value": "http://localhost:8000/camunda"
 		},
 		{
 			"key": "access_token",

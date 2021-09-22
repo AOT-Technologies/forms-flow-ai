@@ -8,7 +8,6 @@ from setuptools import find_packages, setup
 
 def read_requirements(filename):
     """Get application requirements from the requirements.txt file.
-
     :return: Python requirements
     :rtype: list
     """
@@ -20,7 +19,6 @@ def read_requirements(filename):
 
 def read(filepath):
     """Read the contents from a file.
-
     :param str filepath: path to the file to be read
     :return: file contents
     :rtype: str

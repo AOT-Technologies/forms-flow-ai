@@ -81,27 +81,27 @@ class ApplicationsResource(Resource):
                 HTTPStatus.OK,
             )
 
-    # @staticmethod
-    # @auth.require
-    # def post():
-    #     """Post a new application using the request body."""
-    #     application_json = request.get_json()
-    #     """Get applications."""
-    #     try:
-    #         return (
-    #             jsonify(
-    #                 {
-    #                     "applications": ApplicationService.apply_custom_attributes(
-    #                         ApplicationService.get_all_applications_ids(
-    #                             application_json["applicationIds"]
-    #                         )
-    #                     )
-    #                 }
-    #             ),
-    #             HTTPStatus.OK,
-    #         )
-    #     except BusinessException as err:
-    #         return err.error, err.status_code
+            # @staticmethod
+            # @auth.require
+            # def post():
+            #     """Post a new application using the request body."""
+            #     application_json = request.get_json()
+            #     """Get applications."""
+            #     try:
+            #         return (
+            #             jsonify(
+            #                 {
+            #                     "applications": ApplicationService.apply_custom_attributes(
+            #                         ApplicationService.get_all_applications_ids(
+            #                             application_json["applicationIds"]
+            #                         )
+            #                     )
+            #                 }
+            #             ),
+            #             HTTPStatus.OK,
+            #         )
+            #     except BusinessException as err:
+            #         return err.error, err.status_code
 
 
 @cors_preflight("GET,PUT,OPTIONS")
@@ -153,9 +153,9 @@ class ApplicationResourceById(Resource):
             return "Updated successfully", HTTPStatus.OK
         except BaseException as submission_err:
             response, status = {
-                "type": "Bad request error",
-                "message": "Invalid request data",
-            }, HTTPStatus.BAD_REQUEST
+                                   "type": "Bad request error",
+                                   "message": "Invalid request data",
+                               }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
             logging.exception(submission_err)
@@ -290,9 +290,9 @@ class AggregatedApplicationsResource(Resource):
             )
         except BaseException as agg_err:
             response, status = {
-                "message": "Invalid request object for application metrics endpoint",
-                "errors": agg_err,
-            }, HTTPStatus.BAD_REQUEST
+                                   "message": "Invalid request object for application metrics endpoint",
+                                   "errors": agg_err,
+                               }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
             logging.exception(agg_err)
@@ -327,9 +327,9 @@ class AggregatedApplicationStatusResource(Resource):
             )
         except BaseException as agg_err:
             response, status = {
-                "message": "Invalid request object for application metrics endpoint",
-                "errors": agg_err,
-            }, HTTPStatus.BAD_REQUEST
+                                   "message": "Invalid request object for application metrics endpoint",
+                                   "errors": agg_err,
+                               }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
             logging.exception(agg_err)

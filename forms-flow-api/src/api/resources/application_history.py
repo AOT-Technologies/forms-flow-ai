@@ -69,10 +69,10 @@ class ApplicationHistoryResource(Resource):
 
         except BaseException as application_err:
             response, status = {
-                "type": "Invalid Request Object",
-                "message": "Invalid Request Object Passed ",
-                "errors": application_err,
-            }, HTTPStatus.BAD_REQUEST
+                                   "type": "Invalid Request Object",
+                                   "message": "Invalid Request Object Passed ",
+                                   "errors": application_err,
+                               }, HTTPStatus.BAD_REQUEST
 
             logging.exception(response)
             logging.exception(application_err)

@@ -14,7 +14,7 @@ To get started with the collections you will need to download the Postman tool f
 
 ### Pre-request Script
 
-The collection uses Postman's pre-request script feature. It makes a POST request to [Keycloak Token Endpoint](http://localhost:8080/auth/realms/forms-flow-ai/protocol/openid-connect/token) to get a valid token and automatically set the token for all requests in Postman collection.
+The collection uses Postman's pre-request script feature. It makes a POST request to Keycloak Token Endpoint to get a valid token and automatically set the token for all requests in Postman collection.
 * Open forms-flow-bpm API collection and move to the "Pre-request Script" tab in Postman. Remember you already copied the ClientSecret. Update the same in the "Pre-request Script" tab and SAVE.
 
   Variable name | Meaning | Possible values | Default value |

@@ -45,7 +45,7 @@ Forms-flow-bpm Process API helps you to deploy and start a process Instance.
 
  It helps you to post data for a new deployment. The deployment name and file path should be given in the request body.
 
-#### Process Instance
+#### Start Process
 
 It helps you to start the process. Process variables and business key may be supplied in the request body. Process definition ID can be obtained from deploy process response. Check Example for sample request and response.
 

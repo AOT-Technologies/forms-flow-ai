@@ -56,7 +56,6 @@ class _Config:  # pylint: disable=too-few-public-methods
     # POSTGRESQL
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "")
     # SQLALCHEMY_ECHO = True
-    SQLALCHEMY_POOL_RECYCLE=False
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
         "pool_recycle": 300,

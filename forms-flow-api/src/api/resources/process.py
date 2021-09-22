@@ -1,14 +1,15 @@
 """API endpoints for managing process resource."""
 
-import logging
-
 from http import HTTPStatus
-from flask import request
+
+from flask import current_app, request
 from flask_restx import Namespace, Resource
 
 from ..services import ProcessService
-from api.utils import auth, cors_preflight, profiletime
+
 from api.schemas.process import ProcessMessageSchema
+from api.utils import auth, cors_preflight, profiletime
+
 
 API = Namespace("Process", description="Process")
 
@@ -40,8 +41,8 @@ class ProcessStateResource(Resource):
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
 
@@ -72,8 +73,8 @@ class ProcessResource(Resource):
                 "message": "Invalid request data object",
             }
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
 
@@ -101,8 +102,8 @@ class ProcessDefinitionResource(Resource):
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
 
@@ -138,8 +139,8 @@ class ProcessEventResource(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
             return response, status
         except BaseException as err:
             response, status = {
@@ -147,8 +148,8 @@ class ProcessEventResource(Resource):
                 "message": "Invalid request data object",
             }
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
 
@@ -178,7 +179,7 @@ class ProcessInstanceResource(Resource):
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
+            current_app.logger.warning(response)
             return response, status
 
 

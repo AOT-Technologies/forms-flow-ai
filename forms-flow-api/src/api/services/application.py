@@ -1,5 +1,5 @@
 """This exposes application service."""
-import logging
+
 from http import HTTPStatus
 from functools import lru_cache
 
@@ -11,6 +11,7 @@ from ..schemas import (
     FormProcessMapperSchema,
 )
 from .external import BPMService
+from flask import current_app
 
 
 class ApplicationService:
@@ -42,12 +43,19 @@ class ApplicationService:
                     process_key=mapper.process_key, payload=payload, token=token
                 )
                 application.update({"process_instance_id": camunda_start_task["id"]})
+            except TypeError as camunda_error:
+                response = {
+                    "message": "Camunda workflow not able to create a task",
+                    "error": camunda_error,
+                }
+                current_app.logger.critical(response)
+                return response, HTTPStatus.BAD_GATEWAY
             except BaseException as application_err:
                 response = {
                     "systemErrors": application_err,
                     "message": "Camunda Process Mapper Key not provided",
                 }, HTTPStatus.BAD_REQUEST
-                logging.exception(response)
+                current_app.logger.warning(response)
                 return response
         return application
 

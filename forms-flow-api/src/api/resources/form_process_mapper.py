@@ -1,14 +1,14 @@
 """API endpoints for managing form resource."""
 
 from http import HTTPStatus
-import logging
 
-from flask import g, request
+from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 
 from ..exceptions import BusinessException
 from ..schemas import ApplicationListReqSchema, FormProcessMapperSchema
 from ..services import FormProcessMapperService
+
 from api.utils import auth, cors_preflight, profiletime
 
 
@@ -71,8 +71,8 @@ class FormResource(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
             return response, status
 
         except BaseException as form_err:
@@ -81,8 +81,8 @@ class FormResource(Resource):
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(form_err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(form_err)
             return response, status
 
     @staticmethod
@@ -107,8 +107,8 @@ class FormResource(Resource):
                 "errors": form_err.messages,
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(form_err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(form_err)
             return response, status
 
 
@@ -136,7 +136,7 @@ class FormResourceById(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.exception(response)
+            current_app.logger.warning(response)
             return response, status
 
     @staticmethod
@@ -156,8 +156,8 @@ class FormResourceById(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
     @staticmethod
@@ -185,8 +185,8 @@ class FormResourceById(Resource):
                 "message": "Invalid request passed",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(mapper_err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(mapper_err)
             return response, status
 
 
@@ -213,5 +213,5 @@ class FormResourceByFormId(Resource):
                 },
                 HTTPStatus.NO_CONTENT,
             )
-            logging.info(response)
+            current_app.logger.info(response)
             return response, status

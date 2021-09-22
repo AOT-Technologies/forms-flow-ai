@@ -1,8 +1,8 @@
 """API endpoints for managing application resource."""
 
 from http import HTTPStatus
-import logging
-from flask import request, current_app
+
+from flask import current_app, request
 from flask_restx import Namespace, Resource
 
 from api.schemas import ApplicationHistorySchema
@@ -63,8 +63,8 @@ class ApplicationHistoryResource(Resource):
                 },
                 HTTPStatus.BAD_REQUEST,
             )
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.error(response)
+            current_app.logger.error(err)
             return response, status
 
         except BaseException as application_err:
@@ -74,7 +74,7 @@ class ApplicationHistoryResource(Resource):
                 "errors": application_err,
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(application_err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(application_err)
         finally:
             return response, status

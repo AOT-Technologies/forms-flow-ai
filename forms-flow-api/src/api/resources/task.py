@@ -1,9 +1,8 @@
 """API endpoints for managing task resource."""
-import logging
 
 from http import HTTPStatus
 
-from flask import request
+from flask import current_app, request
 from flask_restx import Namespace, Resource
 
 from api.services import TaskService
@@ -89,8 +88,8 @@ class TaskClaim(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
             return response, status
 
         except BaseException as err:
@@ -99,8 +98,8 @@ class TaskClaim(Resource):
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
 
@@ -137,8 +136,8 @@ class TaskUnClaim(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
 
         except BaseException as err:
             response, status = {
@@ -146,8 +145,8 @@ class TaskUnClaim(Resource):
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
 
@@ -184,8 +183,8 @@ class TaskComplete(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
             return response, status
         except BaseException as err:
             response, status = {
@@ -193,6 +192,6 @@ class TaskComplete(Resource):
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status

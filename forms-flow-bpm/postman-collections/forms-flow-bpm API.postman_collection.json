@@ -1,0 +1,1655 @@
+{
+	"info": {
+		"_postman_id": "5a10f862-85fd-4e73-a33f-bda084aa6e24",
+		"name": "forms-flow-bpm API",
+		"description": "The API for forms-flow-bpm.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Filter",
+			"item": [
+				{
+					"name": "Create Filter",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"resourceType\": \"Task\",\r\n    \"name\": \"Sample Tasks\",\r\n    \"owner\": \"john\",\r\n    \"query\": {\r\n        \"candidateGroup\": \"Sample\"\r\n    },\r\n    \"properties\": {\r\n        \"color\": \"#3e4d2f\",\r\n        \"description\": \"Tasks assigned to group Sample\",\r\n        \"priority\": 5\r\n    }\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/filter/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"filter",
+								"create"
+							]
+						},
+						"description": "Create a new filter.\n#### Method\nPOST /filter/create"
+					},
+					"response": [
+						{
+							"name": "Example",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"resourceType\": \"Task\",\r\n  \"name\": \"Sample Tasks\",\r\n  \"owner\": \"john\",\r\n  \"query\": {\r\n    \"candidateGroup\": \"Sample\"\r\n  },\r\n  \"properties\": {\r\n    \"color\": \"#3e4d2f\",\r\n    \"description\": \"Tasks assigned to group Sample\",\r\n    \"priority\": 5\r\n  }\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/camunda/engine-rest/filter/create",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"camunda",
+										"engine-rest",
+										"filter",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": ""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, PUT, GET, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "316"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Sep 2021 08:35:05 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"a7b2d065-19ed-11ec-9f26-0242ac170003\",\n    \"resourceType\": \"Task\",\n    \"name\": \"Sample Tasks\",\n    \"owner\": \"john\",\n    \"query\": {\n        \"candidateGroup\": \"Sample\",\n        \"taskVariables\": [],\n        \"processVariables\": [],\n        \"caseInstanceVariables\": [],\n        \"orQueries\": []\n    },\n    \"properties\": {\n        \"color\": \"#3e4d2f\",\n        \"description\": \"Tasks assigned to group Sample\",\n        \"priority\": 5\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "List all Filters",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/filter",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"filter"
+							]
+						},
+						"description": "Query for a list of filters using a list of parameters.\n#### Method\nGET /filter"
+					},
+					"response": [
+						{
+							"name": "Example",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/camunda/engine-rest/filter",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"camunda",
+										"engine-rest",
+										"filter"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": ""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, PUT, GET, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "649"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Sep 2021 08:38:30 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"a7b2d065-19ed-11ec-9f26-0242ac170003\",\n        \"resourceType\": \"Task\",\n        \"name\": \"Sample Tasks\",\n        \"owner\": \"john\",\n        \"query\": {\n            \"candidateGroup\": \"Sample\",\n            \"taskVariables\": [],\n            \"processVariables\": [],\n            \"caseInstanceVariables\": [],\n            \"orQueries\": []\n        },\n        \"properties\": {\n            \"color\": \"#3e4d2f\",\n            \"description\": \"Tasks assigned to group Sample\",\n            \"priority\": 5\n        }\n    },\n    {\n        \"id\": \"fb44aa85-16d1-11ec-84c1-0242ac170003\",\n        \"resourceType\": \"Task\",\n        \"name\": \"Accounting Tasks\",\n        \"owner\": \"jonny1\",\n        \"query\": {\n            \"candidateGroup\": \"accounting\",\n            \"taskVariables\": [],\n            \"processVariables\": [],\n            \"caseInstanceVariables\": [],\n            \"orQueries\": []\n        },\n        \"properties\": {\n            \"color\": \"#3e4d2f\",\n            \"description\": \"Tasks assigned to group accounting\",\n            \"priority\": 5\n        }\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get Filters Count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/filter/count",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"filter",
+								"count"
+							]
+						},
+						"description": "Get the number of filters that fulfill a provided query. Corresponds to the size of the result set when using the get filters method.\n#### Method\nGET /filter/count"
+					},
+					"response": [
+						{
+							"name": "Example",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/camunda/engine-rest/filter/count",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"camunda",
+										"engine-rest",
+										"filter",
+										"count"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": ""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, PUT, GET, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "11"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Sep 2021 08:39:06 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"count\": 2\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Filter",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/filter/:filter_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"filter",
+								":filter_id"
+							],
+							"variable": [
+								{
+									"key": "filter_id",
+									"value": ""
+								}
+							]
+						},
+						"description": "Deletes a filter by id.\n#### Method\nDELETE /filter/{id}"
+					},
+					"response": []
+				}
+			],
+			"description": "Filter"
+		},
+		{
+			"name": "Process",
+			"item": [
+				{
+					"name": "Deploy process",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer $token"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "Filename",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/deployment/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"deployment",
+								"create"
+							]
+						},
+						"description": "Create a deployment.\n#### Method\nPOST /deployment/create"
+					},
+					"response": [
+						{
+							"name": "Example",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer $token"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "deployment-name",
+											"value": "Payment check",
+											"type": "text"
+										},
+										{
+											"key": "diagram_1.bpmn",
+											"type": "file",
+											"src": "/C:/diagram_1.bpmn"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{baseUrl}}/camunda/engine-rest/deployment/create",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"camunda",
+										"engine-rest",
+										"deployment",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": ""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, PUT, GET, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "860"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Sep 2021 03:51:51 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"links\": [\n        {\n            \"method\": \"GET\",\n            \"href\": \"http://localhost:8000/camunda/engine-rest/deployment/16cee73b-19c6-11ec-9f26-0242ac170003\",\n            \"rel\": \"self\"\n        }\n    ],\n    \"id\": \"16cee73b-19c6-11ec-9f26-0242ac170003\",\n    \"name\": \"Payment check\",\n    \"source\": null,\n    \"deploymentTime\": \"2021-09-20T03:51:51.852+0000\",\n    \"tenantId\": null,\n    \"deployedProcessDefinitions\": {\n        \"PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003\": {\n            \"id\": \"PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003\",\n            \"key\": \"PaymentProcess\",\n            \"category\": \"http://bpmn.io/schema/bpmn\",\n            \"description\": null,\n            \"name\": \"Payment\",\n            \"version\": 4,\n            \"resource\": \"diagram_1.bpmn\",\n            \"deploymentId\": \"16cee73b-19c6-11ec-9f26-0242ac170003\",\n            \"diagram\": null,\n            \"suspended\": false,\n            \"tenantId\": null,\n            \"versionTag\": null,\n            \"historyTimeToLive\": null,\n            \"startableInTasklist\": true\n        }\n    },\n    \"deployedCaseDefinitions\": null,\n    \"deployedDecisionDefinitions\": null,\n    \"deployedDecisionRequirementsDefinitions\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Start Process Instance",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer $token"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"businessKey\": \"myBusinessKey\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}engine-rest/process-definition/{processDefinitionId}/start",
+							"host": [
+								"{{baseUrl}}engine-rest"
+							],
+							"path": [
+								"process-definition",
+								"{processDefinitionId}",
+								"start"
+							]
+						},
+						"description": "Instantiates a given process definition. Process variables and business key may be supplied in the request body.\n#### Method\nPOST /process-definition/{id}/start"
+					},
+					"response": [
+						{
+							"name": "Example",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer $token"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"variables\":\r\n    {\"aVariable\" : {\"value\" : \"aStringValue\", \"type\": \"String\"},\r\n     \"anotherVariable\" : {\"value\" : true, \"type\": \"Boolean\"}},\r\n \"businessKey\" : \"myBusinessKey\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/camunda/engine-rest/process-definition/{{processDefinitionId}}/start",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"camunda",
+										"engine-rest",
+										"process-definition",
+										"{{processDefinitionId}}",
+										"start"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": ""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, PUT, GET, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "362"
+								},
+								{
+									"key": "Date",
+									"value": "Sun, 19 Sep 2021 13:19:46 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"links\": [\n        {\n            \"method\": \"GET\",\n            \"href\": \"http://localhost:8000/camunda/engine-rest/process-instance/42317928-194c-11ec-9f26-0242ac170003\",\n            \"rel\": \"self\"\n        }\n    ],\n    \"id\": \"42317928-194c-11ec-9f26-0242ac170003\",\n    \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n    \"businessKey\": \"myBusinessKey\",\n    \"caseInstanceId\": null,\n    \"ended\": false,\n    \"suspended\": false,\n    \"tenantId\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Get all  Instances",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer $token"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/process-instance",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"process-instance"
+							]
+						},
+						"description": "Query for process instances that fulfill given parameters. Parameters may be static as well as dynamic runtime properties of process instances. \n#### Method\nGET /process-instance"
+					},
+					"response": [
+						{
+							"name": "Example",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer $token"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/camunda/engine-rest/process-instance",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"camunda",
+										"engine-rest",
+										"process-instance"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": ""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, PUT, GET, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "7050"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Sep 2021 08:29:32 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"links\": [],\n        \"id\": \"01fb1b34-177c-11ec-9f26-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"052b16cb-16be-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"0de6952c-16cb-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"18e71d05-19e4-11ec-9f26-0242ac170003\",\n        \"definitionId\": \"PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"2ac6e631-16c1-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"42317928-194c-11ec-9f26-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"43d5c6ef-16c3-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"PaymentProcess:2:7a60dc09-16c1-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBuissnessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"561f3127-16bc-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"6b1e9b85-16cc-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"702b4e52-16c4-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"PaymentProcess:2:7a60dc09-16c1-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"77d81d9b-16bb-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"7f733ada-16c1-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"808a1bfd-16bc-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"8b771629-1535-11ec-912b-0242ac170003\",\n        \"definitionId\": \"two-step-approval:1:ccd7daee-152e-11ec-84df-0242ac170003\",\n        \"businessKey\": null,\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"8d58295f-1543-11ec-912b-0242ac170003\",\n        \"definitionId\": \"Task_A:1:2186cd42-1542-11ec-912b-0242ac170003\",\n        \"businessKey\": \"12\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"90fece1d-16cc-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"97b508cd-1702-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"a09ad6b1-16bb-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"a58ad11e-16c1-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"PaymentProcess:2:7a60dc09-16c1-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"a6432300-19dc-11ec-9f26-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"b6cb7794-19dc-11ec-9f26-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"b7877498-19dc-11ec-9f26-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"b9301b8c-19dc-11ec-9f26-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"cf230dd0-177b-11ec-9f26-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"cffac5d5-152e-11ec-84df-0242ac170003\",\n        \"definitionId\": \"formio-access-token:1:ccd8290f-152e-11ec-84df-0242ac170003\",\n        \"businessKey\": null,\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"d5d8f8ac-177d-11ec-9f26-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"e0ae27e0-19d9-11ec-9f26-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"ed54b77f-16fa-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"eff6c64f-16bd-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"f9b4d2e5-16bd-11ec-84c1-0242ac170003\",\n        \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"businessKey\": \"myBusinessKey\",\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    },\n    {\n        \"links\": [],\n        \"id\": \"ffeab5c9-1533-11ec-912b-0242ac170003\",\n        \"definitionId\": \"onestepapproval:1:ccd590fb-152e-11ec-84df-0242ac170003\",\n        \"businessKey\": null,\n        \"caseInstanceId\": null,\n        \"ended\": false,\n        \"suspended\": false,\n        \"tenantId\": null\n    }\n]"
+						}
+					]
+				}
+			],
+			"description": "Process"
+		},
+		{
+			"name": "Permissions",
+			"item": [
+				{
+					"name": "Create permission for authorization",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": 1,\r\n    \"permissions\": [\"ALL\"],\r\n    \"userId\": \"service-account-forms-flow-bpm\",\r\n    \"groupId\": null,\r\n    \"resourceType\": 4,\r\n    \"resourceId\": \"*\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/authorization/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"authorization",
+								"create"
+							]
+						},
+						"description": "Add Permission for authorization resource.\n#### Method\nPOST /authorization/create"
+					},
+					"response": [
+						{
+							"name": "Example",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": 1,\r\n    \"permissions\": [\"ALL\"],\r\n    \"userId\": \"service-account-forms-flow-bpm\",\r\n    \"groupId\": null,\r\n    \"resourceType\": 4,\r\n    \"resourceId\": \"*\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/camunda/engine-rest/authorization/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"camunda",
+										"engine-rest",
+										"authorization",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": ""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, PUT, GET, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "215"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Sep 2021 06:41:13 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"bfa08e5c-19dd-11ec-9f26-0242ac170003\",\n    \"type\": 1,\n    \"permissions\": [\n        \"ALL\"\n    ],\n    \"userId\": \"service-account-forms-flow-bpm\",\n    \"groupId\": null,\n    \"resourceType\": 4,\n    \"resourceId\": \"*\",\n    \"removalTime\": null,\n    \"rootProcessInstanceId\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Create permission for filter",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": 1,\r\n    \"permissions\": [\"ALL\"],\r\n    \"userId\": \"service-account-forms-flow-bpm\",\r\n    \"groupId\": null,\r\n    \"resourceType\": 5,\r\n    \"resourceId\": \"*\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/authorization/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"authorization",
+								"create"
+							]
+						},
+						"description": "Add Permission for filter resource.\n#### Method\nPOST /authorization/create"
+					},
+					"response": [
+						{
+							"name": "Example",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": 1,\r\n    \"permissions\": [\"ALL\"],\r\n    \"userId\": \"service-account-forms-flow-bpm\",\r\n    \"groupId\": null,\r\n    \"resourceType\": 5,\r\n    \"resourceId\": \"*\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/camunda/engine-rest/authorization/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"camunda",
+										"engine-rest",
+										"authorization",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": ""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, PUT, GET, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "215"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Sep 2021 06:48:06 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"b58725ef-19de-11ec-9f26-0242ac170003\",\n    \"type\": 1,\n    \"permissions\": [\n        \"ALL\"\n    ],\n    \"userId\": \"service-account-forms-flow-bpm\",\n    \"groupId\": null,\n    \"resourceType\": 5,\n    \"resourceId\": \"*\",\n    \"removalTime\": null,\n    \"rootProcessInstanceId\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Create permission for deployment",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"type\": 1,\r\n    \"permissions\": [\"ALL\"],\r\n    \"userId\": \"service-account-forms-flow-bpm\",\r\n    \"groupId\": null,\r\n    \"resourceType\": 9,\r\n    \"resourceId\": \"*\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/authorization/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"authorization",
+								"create"
+							]
+						},
+						"description": "Add Permission for deployment resource.\n#### Method\nPOST /authorization/create"
+					},
+					"response": [
+						{
+							"name": "Example",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\": 1,\r\n    \"permissions\": [\"ALL\"],\r\n    \"userId\": \"service-account-forms-flow-bpm\",\r\n    \"groupId\": null,\r\n    \"resourceType\": 9,\r\n    \"resourceId\": \"*\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8000/camunda/engine-rest/authorization/create",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8000",
+									"path": [
+										"camunda",
+										"engine-rest",
+										"authorization",
+										"create"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": ""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, PUT, GET, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache, no-store, max-age=0, must-revalidate"
+								},
+								{
+									"key": "Pragma",
+									"value": "no-cache"
+								},
+								{
+									"key": "Expires",
+									"value": "0"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "215"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Sep 2021 06:49:46 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": \"f13725ac-19de-11ec-9f26-0242ac170003\",\n    \"type\": 1,\n    \"permissions\": [\n        \"ALL\"\n    ],\n    \"userId\": \"service-account-forms-flow-bpm\",\n    \"groupId\": null,\n    \"resourceType\": 9,\n    \"resourceId\": \"*\",\n    \"removalTime\": null,\n    \"rootProcessInstanceId\": null\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Authorization By UserId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/authorization?userIdIn=service-account-forms-flow-bpm",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"authorization"
+							],
+							"query": [
+								{
+									"key": "userIdIn",
+									"value": "service-account-forms-flow-bpm"
+								}
+							]
+						},
+						"description": "Retrieves an authorization by id.\n#### Method\nGET /authorization/{id}"
+					},
+					"response": [
+						{
+							"name": "Example",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/camunda/engine-rest/authorization?userIdIn=service-account-forms-flow-bpm",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"camunda",
+										"engine-rest",
+										"authorization"
+									],
+									"query": [
+										{
+											"key": "userIdIn",
+											"value": "service-account-forms-flow-bpm"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": ""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, PUT, GET, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600"
+								},
+								{
+									"key": "Set-Cookie",
+									"value": "JSESSIONID=CB3C66E6D51F07317C58B06738B8A1CA; Path=/camunda; HttpOnly"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Content-Length",
+									"value": "865"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Sep 2021 07:22:37 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"46d5f581-19d8-11ec-9f26-0242ac170003\",\n        \"type\": 1,\n        \"permissions\": [\n            \"ALL\"\n        ],\n        \"userId\": \"service-account-forms-flow-bpm\",\n        \"groupId\": null,\n        \"resourceType\": 1,\n        \"resourceId\": \"*\",\n        \"removalTime\": null,\n        \"rootProcessInstanceId\": null\n    },\n    {\n        \"id\": \"b58725ef-19de-11ec-9f26-0242ac170003\",\n        \"type\": 1,\n        \"permissions\": [\n            \"ALL\"\n        ],\n        \"userId\": \"service-account-forms-flow-bpm\",\n        \"groupId\": null,\n        \"resourceType\": 5,\n        \"resourceId\": \"*\",\n        \"removalTime\": null,\n        \"rootProcessInstanceId\": null\n    },\n    {\n        \"id\": \"bfa08e5c-19dd-11ec-9f26-0242ac170003\",\n        \"type\": 1,\n        \"permissions\": [\n            \"ALL\"\n        ],\n        \"userId\": \"service-account-forms-flow-bpm\",\n        \"groupId\": null,\n        \"resourceType\": 4,\n        \"resourceId\": \"*\",\n        \"removalTime\": null,\n        \"rootProcessInstanceId\": null\n    },\n    {\n        \"id\": \"f13725ac-19de-11ec-9f26-0242ac170003\",\n        \"type\": 1,\n        \"permissions\": [\n            \"ALL\"\n        ],\n        \"userId\": \"service-account-forms-flow-bpm\",\n        \"groupId\": null,\n        \"resourceType\": 9,\n        \"resourceId\": \"*\",\n        \"removalTime\": null,\n        \"rootProcessInstanceId\": null\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Delete Authorization",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/authorization/{authorizationId}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"authorization",
+								"{authorizationId}"
+							]
+						},
+						"description": "Deletes an authorization by id.\n#### Method\nDELETE /authorization/{id}"
+					},
+					"response": []
+				}
+			],
+			"description": "Permissions"
+		},
+		{
+			"name": "Task",
+			"item": [
+				{
+					"name": "Create Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"aTaskId\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/task/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"task",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List all Tasks",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/task",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"task"
+							]
+						},
+						"description": "Query for tasks that fulfill a given filter.\n#### Method\nGET /task"
+					},
+					"response": [
+						{
+							"name": "Example",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/camunda/engine-rest/task",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"camunda",
+										"engine-rest",
+										"task"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Access-Control-Allow-Origin",
+									"value": ""
+								},
+								{
+									"key": "Access-Control-Allow-Methods",
+									"value": "POST, PUT, GET, OPTIONS"
+								},
+								{
+									"key": "Access-Control-Allow-Headers",
+									"value": "*"
+								},
+								{
+									"key": "Access-Control-Max-Age",
+									"value": "3600"
+								},
+								{
+									"key": "Cache-Control",
+									"value": "no-cache"
+								},
+								{
+									"key": "Vary",
+									"value": "Accept"
+								},
+								{
+									"key": "X-Content-Type-Options",
+									"value": "nosniff"
+								},
+								{
+									"key": "X-XSS-Protection",
+									"value": "1; mode=block"
+								},
+								{
+									"key": "X-Frame-Options",
+									"value": "DENY"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								},
+								{
+									"key": "Date",
+									"value": "Mon, 20 Sep 2021 03:37:36 GMT"
+								},
+								{
+									"key": "Keep-Alive",
+									"value": "timeout=60"
+								},
+								{
+									"key": "Connection",
+									"value": "keep-alive"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": \"00335792-1534-11ec-912b-0242ac170003\",\n        \"name\": \"Review Submission\",\n        \"assignee\": \"formsflow-designer\",\n        \"created\": \"2021-09-14T08:16:02.749+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"ffeab5c9-1533-11ec-912b-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"onestepapproval:1:ccd590fb-152e-11ec-84df-0242ac170003\",\n        \"processInstanceId\": \"ffeab5c9-1533-11ec-912b-0242ac170003\",\n        \"taskDefinitionKey\": \"reviewer\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"01fb4247-177c-11ec-9f26-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-17T05:56:31.827+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"01fb1b34-177c-11ec-9f26-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"01fb1b34-177c-11ec-9f26-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"052b3de0-16be-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T07:16:32.795+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"052b16cb-16be-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"052b16cb-16be-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"0de6952f-16cb-11ec-84c1-0242ac170003\",\n        \"name\": \"Approve\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T08:49:50.903+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"0de6952c-16cb-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"0de6952c-16cb-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_088gi65\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"2ac70d44-16c1-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": \"formsflow-client\",\n        \"created\": \"2021-09-16T07:39:04.383+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"2ac6e631-16c1-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"2ac6e631-16c1-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"4231c74b-194c-11ec-9f26-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-19T13:19:46.041+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"42317928-194c-11ec-9f26-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"42317928-194c-11ec-9f26-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"43d5ee02-16c3-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": \"formsflow-client\",\n        \"created\": \"2021-09-16T07:54:05.417+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"43d5c6ef-16c3-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"PaymentProcess:2:7a60dc09-16c1-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"43d5c6ef-16c3-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"561f7f4c-16bc-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T07:04:29.621+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"561f3127-16bc-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"561f3127-16bc-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"6b1ec298-16cc-11ec-84c1-0242ac170003\",\n        \"name\": \"Approve\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T08:59:36.796+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"6b1e9b85-16cc-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"6b1e9b85-16cc-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_088gi65\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"702b7565-16c4-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T08:02:29.294+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"702b4e52-16c4-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"PaymentProcess:2:7a60dc09-16c1-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"702b4e52-16c4-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"77e2a4f0-16bb-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T06:58:16.768+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"77d81d9b-16bb-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"77d81d9b-16bb-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"7f7361ed-16c1-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T07:41:26.441+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"7f733ada-16c1-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"7f733ada-16c1-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"808a4212-16bc-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T07:05:40.784+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"808a1bfd-16bc-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"808a1bfd-16bc-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"8d585074-1543-11ec-912b-0242ac170003\",\n        \"name\": \"Task A\",\n        \"assignee\": \"formsflow-designer\",\n        \"created\": \"2021-09-14T10:07:22.001+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"8d582961-1543-11ec-912b-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Task_A:1:2186cd42-1542-11ec-912b-0242ac170003\",\n        \"processInstanceId\": \"8d58295f-1543-11ec-912b-0242ac170003\",\n        \"taskDefinitionKey\": \"Task_user\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"90fece20-16cc-11ec-84c1-0242ac170003\",\n        \"name\": \"Approve\",\n        \"assignee\": \"formsflow-client\",\n        \"created\": \"2021-09-16T09:00:40.340+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"90fece1d-16cc-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"90fece1d-16cc-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_088gi65\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"97b508d0-1702-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T15:27:24.424+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"97b508cd-1702-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"97b508cd-1702-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"a09afdc6-16bb-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T06:59:25.085+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"a09ad6b1-16bb-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"a09ad6b1-16bb-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"a58b1f41-16c1-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": \"formsflow-client\",\n        \"created\": \"2021-09-16T07:42:30.350+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"a58ad11e-16c1-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"PaymentProcess:2:7a60dc09-16c1-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"a58ad11e-16c1-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"cf56a0f3-177b-11ec-9f26-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-17T05:55:06.861+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"cf230dd0-177b-11ec-9f26-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"cf230dd0-177b-11ec-9f26-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"d5d946cf-177d-11ec-9f26-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-17T06:09:36.778+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"d5d8f8ac-177d-11ec-9f26-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"d5d8f8ac-177d-11ec-9f26-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"dfe417ea-1535-11ec-912b-0242ac170003\",\n        \"name\": \"Approve/Reject Applications\",\n        \"assignee\": \"formsflow-reviewer\",\n        \"created\": \"2021-09-14T08:29:27.536+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"8b771629-1535-11ec-912b-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"two-step-approval:1:ccd7daee-152e-11ec-84df-0242ac170003\",\n        \"processInstanceId\": \"8b771629-1535-11ec-912b-0242ac170003\",\n        \"taskDefinitionKey\": \"Approver\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"ed54b782-16fa-11ec-84c1-0242ac170003\",\n        \"name\": \"Approve\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T14:32:32.103+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"ed54b77f-16fa-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"ed54b77f-16fa-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_088gi65\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"eff71474-16bd-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T07:15:57.221+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"eff6c64f-16bd-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"eff6c64f-16bd-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    },\n    {\n        \"id\": \"f9b4f9fa-16bd-11ec-84c1-0242ac170003\",\n        \"name\": \"Request payment\",\n        \"assignee\": null,\n        \"created\": \"2021-09-16T07:16:13.566+0000\",\n        \"due\": null,\n        \"followUp\": null,\n        \"delegationState\": null,\n        \"description\": null,\n        \"executionId\": \"f9b4d2e5-16bd-11ec-84c1-0242ac170003\",\n        \"owner\": null,\n        \"parentTaskId\": null,\n        \"priority\": 50,\n        \"processDefinitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n        \"processInstanceId\": \"f9b4d2e5-16bd-11ec-84c1-0242ac170003\",\n        \"taskDefinitionKey\": \"Activity_1fk5x9v\",\n        \"caseExecutionId\": null,\n        \"caseInstanceId\": null,\n        \"caseDefinitionId\": null,\n        \"suspended\": false,\n        \"formKey\": null,\n        \"tenantId\": null\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Get task by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/task/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"task",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": null
+								}
+							]
+						},
+						"description": "Retrieves a task by id.\n#### Method\nGET /task/{id}"
+					},
+					"response": []
+				},
+				{
+					"name": "Claim Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\": \"aUserId\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/task/{taskId}/claim",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"task",
+								"{taskId}",
+								"claim"
+							]
+						},
+						"description": "Claims a task for a specific user.\n#### Method\nPOST /task/{id}/claim"
+					},
+					"response": []
+				},
+				{
+					"name": "Unclaim Task",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/engine-rest/task/{taskId}/unclaim",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"engine-rest",
+								"task",
+								"{taskId}",
+								"unclaim"
+							]
+						},
+						"description": "Resets a task’s assignee. If successful, the task is not assigned to a user.\n#### Method\nPOST /task/{id}/unclaim"
+					},
+					"response": []
+				}
+			],
+			"description": "Task"
+		},
+		{
+			"name": "Update Log Level",
+			"item": [
+				{
+					"name": "Update log level",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"configuredLevel\": \"TRACE\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/camunda/manage/loggers/org.camunda.bpm",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"camunda",
+								"manage",
+								"loggers",
+								"org.camunda.bpm"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Update Log Level"
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"var client_id     = \"forms-flow-bpm\"; // the name of the client you created in Keycloak",
+					"var client_secret = \"fe1d9f1c-9e4b-4b0a-9d32-623733fd5f44\"; // the secret you copied earlier",
+					"",
+					"// creating the body of the request",
+					"var formBody = [];",
+					"formBody.push(encodeURIComponent(\"grant_type\") + \"=\" + encodeURIComponent(\"client_credentials\"));",
+					"formBody = formBody.join(\"&\");",
+					"",
+					"// request to Keycloak",
+					"pm.sendRequest({",
+					"    url: \"http://localhost:8080/auth/realms/forms-flow-ai/protocol/openid-connect/token\",",
+					"    method: 'POST',",
+					"    header: {",
+					"        'Content-Type': 'application/x-www-form-urlencoded',",
+					"        'Authorization': 'Basic ' + btoa(client_id + \":\" + client_secret)",
+					"    },",
+					"    body: formBody",
+					"}, function (err, response) {",
+					"    // Set the environment variable for token",
+					"    const jsonResponse = response.json();",
+					"    //console.log(jsonResponse);",
+					"    pm.collectionVariables.set(\"access_token\", jsonResponse.access_token);",
+					"    //console.log(pm.collectionVariables.get(\"access_token\"));",
+					"}); "
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000/camunda"
+		},
+		{
+			"key": "access_token",
+			"value": ""
+		}
+	]
+}

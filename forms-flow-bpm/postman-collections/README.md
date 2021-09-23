@@ -27,8 +27,7 @@ The collection uses Postman's pre-request script feature. It makes a POST reques
   Variable name | Meaning | Possible values | Default value |
   --- | --- | --- | ---
   `client_secret` |The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret` 
-
-* In the  `Authorization tab` set  `Type` to `Bearer Token` and `Token` to `{{access_token}}`. 
+ 
 * **NOTE: For all API requests: In the `Authorization tab` select Type - `Inherit auth from parent`.**
 
 ## Folders

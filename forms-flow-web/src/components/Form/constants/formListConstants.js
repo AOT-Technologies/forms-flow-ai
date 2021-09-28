@@ -42,6 +42,7 @@ const columnsToPick = [
   "type",
   "name",
   "path",
+  "tags",
   "components"];
 
 export const getFormattedForm = (form)=>{

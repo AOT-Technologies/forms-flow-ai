@@ -29,7 +29,7 @@ import {fetchBPMFormList, fetchFormByAlias} from "../../apiManager/services/bpmF
 import {designerColumns, getOperations, userColumns} from "./constants/formListConstants";
 import FileService from "../../services/FileService";
 import {setFormCheckList, setFormUploadList, updateFormUploadCounter} from "../../actions/checkListActions";
-import Filemodal from './FileUpload/fileUploadModal'
+import FileModal from './FileUpload/fileUploadModal'
 const List = React.memo((props)=> {
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
   //const [selectedForm,setSelectedForms] = useState([]);
@@ -99,32 +99,44 @@ const List = React.memo((props)=> {
     return false;
   };
 
-  const fileUploaded = (evt) =>{
-    FileService.uploadFile(evt,(fileContent)=>{
+  const uploadFileContents = async (fileContent)=>{
+    await Promise.all(
+      fileContent.forms.map(async (formData)=>{
+        return new Promise((resolve, reject) => {
+          dispatch(saveForm("form", formData, async (err, form) => {
+            if (err) {
+              // get the form Id of the form if exists already in the server
+              dispatch(fetchFormByAlias(formData.path, async (err, formObj) => {
+                if (!err) {
+                  formData._id = formObj._id;
+                  dispatch(saveForm("form", formData, (err, form) => {
+                    if (!err) {
+                      dispatch(updateFormUploadCounter())
+                      resolve();
+                    }else{
+                      reject();
+                    }
+                  }));
+                }else{
+                  reject();
+                }
+              }));
+            } else {
+              dispatch(updateFormUploadCounter())
+              resolve()
+            }
+          }))
+        });
+    }));
+  }
+
+  const fileUploaded = async (evt) =>{
+    FileService.uploadFile(evt,async (fileContent)=> {
       dispatch(setFormUploadList(fileContent?.forms||[]));
       setShowFormUploadModal(true);
-      fileContent.forms.forEach((formData)=>{
-        // get the form Id of the form if exists already in the server
-        dispatch(saveForm("form",formData,(err,form)=>{
-          // console.log("on form Save",form,err);
-          if(err){
-            dispatch(fetchFormByAlias( formData.path, (err, formObj)=>{
-             if(!err){
-               formData._id=formObj._id;
-               dispatch(saveForm("form",formData,(err,form)=>{
-                if(!err){
-                  dispatch(updateFormUploadCounter())
-                }
-               }));
-             }
-            }));
-          }else{
-            dispatch(updateFormUploadCounter())
-          }
-        }));
-      });
-      // To make it sync with the above upload
-      //toast.success("File Uploaded Successfully")
+      await uploadFileContents(fileContent);
+      console.log("Done");
+      dispatch(indexForms("forms", 1, forms.query))
     })
   }
 
@@ -145,7 +157,7 @@ const List = React.memo((props)=> {
           onNo={() => onNo()}
           onYes={() => onYes(formId, forms)}
         />
-        <Filemodal modalOpen={showFormUploadModal} onClose={()=>setShowFormUploadModal(false)} />
+        <FileModal modalOpen={showFormUploadModal} onClose={()=>setShowFormUploadModal(false)} />
         <div className="main-header">
           {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
           <h3 className="task-head">

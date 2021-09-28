@@ -5,7 +5,7 @@ import ProgressBar from 'react-bootstrap/ProgressBar'
 import {useSelector} from "react-redux";
 import Spinner from 'react-bootstrap/Spinner'
 
-const Filemodel= React.memo(({modalOpen=false, onClose,forms})=> {
+const FileModal= React.memo(({modalOpen=false, onClose,forms})=> {
     const formUploadList = useSelector(state => state.formCheckList.formUploadFormList);
     const formUploadCounter = useSelector(state => state.formCheckList.formUploadCounter);
     const [formsUploaded, setFormsUploaded] = useState(0);
@@ -15,8 +15,7 @@ const Filemodel= React.memo(({modalOpen=false, onClose,forms})=> {
         setFormsUploaded((formUploadCounter/formUploadList.length)*100);
       }
     },[formUploadCounter,formUploadList]);
-   
-  
+
     return (
       <>
           <Modal show={modalOpen} onHide={onClose}>
@@ -24,7 +23,7 @@ const Filemodel= React.memo(({modalOpen=false, onClose,forms})=> {
                  <Modal.Title><b>Forms Upload Confirmation</b></Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <p>{`${formUploadCounter}/${formUploadList.length} Forms  completed`} {(formUploadList.length!==formUploadCounter)?<Spinner animation="border" variant="primary" />:""}</p>
+                <div>{`${formUploadCounter}/${formUploadList.length} Forms  completed`} {(formUploadList.length!==formUploadCounter)?<Spinner animation="border" variant="primary" />:""}</div>
                 {formUploadList.length?<ProgressBar now={formsUploaded} label={`${formsUploaded}%`} />
                   : <div>No forms found</div>}
               </Modal.Body>
@@ -36,4 +35,4 @@ const Filemodel= React.memo(({modalOpen=false, onClose,forms})=> {
     )
 });
 
-export default Filemodel;
+export default FileModal;

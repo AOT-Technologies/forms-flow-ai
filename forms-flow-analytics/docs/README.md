@@ -32,6 +32,12 @@ We can create interactive dashboards that can be embedded anywhere and shared wi
 
 ![image](https://user-images.githubusercontent.com/70306694/125466079-02a24f12-58ed-40e4-a669-b88dbb456645.png)
 
+*5. Share Dashboad for public access*
+
+After you have created the dashboard to view it inside formsflow.ai solution. Share the Dashboard and enable `Allow public access`.
+
+![image](https://user-images.githubusercontent.com/70306694/135583411-a7e7ce1d-6792-4884-a133-b9dcd5446cb1.png)
+
 
 ## Sample Queries
 

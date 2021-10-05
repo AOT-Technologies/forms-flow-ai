@@ -100,6 +100,8 @@ const List = React.memo((props)=> {
   };
 
   const uploadFileContents = async (fileContent)=>{
+    if(fileContent.forms && Array.isArray(fileContent.forms))
+      {
     await Promise.all(
       fileContent.forms.map(async (formData)=>{
         return new Promise((resolve, reject) => {
@@ -128,6 +130,11 @@ const List = React.memo((props)=> {
           }))
         });
     }));
+  }
+  else{
+    setShowFormUploadModal(false);
+    return (toast.error('Error in Json file structure'))
+  }
   }
 
   const fileUploaded = async (evt) =>{

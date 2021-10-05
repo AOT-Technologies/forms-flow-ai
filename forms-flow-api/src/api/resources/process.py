@@ -6,7 +6,6 @@ from flask import current_app, request
 from flask_restx import Namespace, Resource
 
 from ..services import ProcessService
-
 from api.schemas.process import ProcessMessageSchema
 from api.utils import auth, cors_preflight, profiletime
 

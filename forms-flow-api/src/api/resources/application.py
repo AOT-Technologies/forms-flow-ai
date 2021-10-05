@@ -1,9 +1,8 @@
 """API endpoints for managing application resource."""
 
 from http import HTTPStatus
-import logging
 
-from flask import g, request
+from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 
 from api.exceptions import BusinessException
@@ -14,7 +13,7 @@ from api.schemas.application import (
     ApplicationUpdateSchema,
 )
 from api.services import ApplicationService
-from api.utils import auth, cors_preflight, REVIEWER_GROUP, profiletime
+from api.utils import REVIEWER_GROUP, auth, cors_preflight, profiletime
 
 
 API = Namespace("Application", description="Application")
@@ -157,8 +156,8 @@ class ApplicationResourceById(Resource):
                                    "message": "Invalid request data",
                                }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(submission_err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(submission_err)
 
             return response, status
 
@@ -257,8 +256,8 @@ class ApplicationResourcesByIds(Resource):
                 "type": "Bad request error",
                 "message": "Invalid application request passed",
             }, HTTPStatus.BAD_REQUEST
-            logging.exception(response)
-            logging.exception(application_err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(application_err)
             return response, status
 
 
@@ -294,8 +293,8 @@ class AggregatedApplicationsResource(Resource):
                                    "errors": agg_err,
                                }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(agg_err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(agg_err)
             return response, status
 
 
@@ -331,8 +330,8 @@ class AggregatedApplicationStatusResource(Resource):
                                    "errors": agg_err,
                                }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(agg_err)
+            current_app.logger.warning(response)
+            current_app.logger.warning(agg_err)
             return response, status
 
 

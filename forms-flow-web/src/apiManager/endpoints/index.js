@@ -1,4 +1,5 @@
 import { INSIGHTS_BASE_API, INSIGHTS_API_KEY, WEB_BASE_URL, BPM_BASE_URL, BPM_BASE_URL_EXT } from "./config";
+import {AppConfig} from "../../config";
 
 const API = {
   INSIGHTS_API_KEY: INSIGHTS_API_KEY,
@@ -33,6 +34,7 @@ const API = {
   BPM_FORM_SUBMIT:`${BPM_BASE_URL}/task/<task_id>/submit-form`,
   GET_BPM_FORM_LIST:`${BPM_BASE_URL_EXT}/form`,
   UPDATE_ASSIGNEE_BPM_TASK:`${BPM_BASE_URL}/task/<task_id>/assignee`,
+  GET_FORM_BY_ALIAS:`${AppConfig.projectUrl}/<form_path>`
 };
 
 export default API;

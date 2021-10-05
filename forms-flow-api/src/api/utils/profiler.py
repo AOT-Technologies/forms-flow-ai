@@ -1,7 +1,8 @@
 """Utility function for profiling functions"""
 import time
-import logging
+
 from functools import wraps
+from flask import current_app
 
 
 def profiletime(profile_fn):
@@ -14,7 +15,10 @@ def profiletime(profile_fn):
         result = profile_fn(*args, **kwargs)
         end_time = time.time()
         diff = end_time - start_time
-        logging.info(f"API endpoint: {profile_fn.__qualname__} took {diff} seconds")
+
+        current_app.logger.info(
+            f"API endpoint: {profile_fn.__qualname__} took {diff} seconds"
+        )
         return result
 
     return measure_time

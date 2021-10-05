@@ -34,10 +34,6 @@ const ApplicationList = React.memo(() => {
     dispatch(getAllApplications());
   },[dispatch]);
 
-  useEffect(()=>{
-
-  },[userRoles]);
-
   const isClientEdit = (applicationStatus) => {
     if (getUserRolePermission(userRoles, CLIENT)||getUserRolePermission(userRoles, STAFF_REVIEWER)) {
       return CLIENT_EDIT_STATUS.includes(applicationStatus)

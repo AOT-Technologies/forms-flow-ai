@@ -60,7 +60,7 @@ const SelectFormForDownload = React.memo(({form,type}) => {
 
 
   if(type==="all"){
-    return <Checkbox onChange={()=>addAllFormCheckList(!isAllFormChecked)} checked={isAllFormChecked}/>
+    return <Checkbox onChange={()=>addAllFormCheckList(!isAllFormChecked)} checked={isAllFormChecked} title="Select All"/>
   }
 
   return <Checkbox

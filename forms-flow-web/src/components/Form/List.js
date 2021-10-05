@@ -135,7 +135,6 @@ const List = React.memo((props)=> {
       dispatch(setFormUploadList(fileContent?.forms||[]));
       setShowFormUploadModal(true);
       await uploadFileContents(fileContent);
-      console.log("Done");
       dispatch(indexForms("forms", 1, forms.query))
     })
   }
@@ -158,11 +157,14 @@ const List = React.memo((props)=> {
           onYes={() => onYes(formId, forms)}
         />
         <FileModal modalOpen={showFormUploadModal} onClose={()=>setShowFormUploadModal(false)} />
-        <div className="main-header">
+        <div className="flex-container">
           {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
+          <div className="flex-item-left">
           <h3 className="task-head">
           <i className="fa fa-wpforms" aria-hidden="true"/>
              <span className="forms-text">Forms</span></h3>
+          </div>
+          <div className="flex-item-right">
           {userRoles.includes(STAFF_DESIGNER) && (
             <Link
               to="/formflow/create"
@@ -173,7 +175,7 @@ const List = React.memo((props)=> {
           )}
           {userRoles.includes(STAFF_DESIGNER) && (
             <>
-            <Button className="btn btn-primary btn-sm form-btn pull-right btn-right" onClick={uploadClick} title="Upload form">
+            <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={uploadClick} title="Upload json form only">
             <i className="fa fa-upload fa-lg" aria-hidden="true"/> Upload Form</Button>
               <input type="file" className="d-none"
                      multiple={false}
@@ -185,10 +187,11 @@ const List = React.memo((props)=> {
           )}
           {userRoles.includes(STAFF_DESIGNER) && (
              <>
-             <Button className="btn btn-primary btn-sm form-btn pull-right btn-right mr-3" onClick={downloadForms} disabled={formCheckList.length===0}  title="Select atleast one form">
+             <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={downloadForms} disabled={formCheckList.length===0}  title="Select atleast one form">
              <i className="fa fa-download fa-lg" aria-hidden="true"/> Download Form</Button>
              </>
           )}
+          </div>
         </div>
         <section className="custom-grid grid-forms">
           <Errors errors={errors} />

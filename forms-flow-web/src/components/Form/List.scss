@@ -65,13 +65,30 @@
 .formio-component-submit .btn i,.formio-component-button .btn i{
     display: none;
 }
-.btn-center
-{
-    margin-left: 1%;
-    float: right;
-}
-.btn-left
-{
-    float: right;
-    margin-left: 66%;
- }
+ .flex-container {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 30px;
+    margin: 10px;
+  }
+  
+  .flex-item-left {
+    flex: 10%;
+  }
+  
+  .flex-item-right {
+    justify-content: flex-end;
+    display: flex;
+    flex-direction: row;
+    flex: 50%;
+  }
+  .btn-left{
+      margin: 10px;
+      height: 30px;
+  }
+  /* Responsive layout - makes a one column-layout instead of a two-column layout */
+  @media (max-width: 800px) {
+    .flex-item-right, .flex-item-left {
+      flex: 100%;
+    }
+   }

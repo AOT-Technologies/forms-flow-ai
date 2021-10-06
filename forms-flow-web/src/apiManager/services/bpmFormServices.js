@@ -1,4 +1,4 @@
-import {httpGETRequest} from "../httpRequestHandler";
+import {httpGETRequest, httpPOSTRequestWithoutToken} from "../httpRequestHandler";
 import API from "../endpoints";
 import UserService from "../../services/UserService";
 import {

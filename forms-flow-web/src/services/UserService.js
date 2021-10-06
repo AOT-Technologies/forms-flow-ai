@@ -10,6 +10,7 @@ import {
   setUserToken,
   setUserDetails,
 } from "../actions/bpmActions";
+import {getUserToken} from "../apiManager/services/bpmFormServices";
 import {BPM_BASE_URL} from "../apiManager/endpoints/config";
 import {AppConfig} from '../config';
 import {WEB_BASE_URL} from "../apiManager/endpoints/config";
@@ -113,6 +114,7 @@ const authenticateAnonymousUser = (store) => {
   const roles = [ANONYMOUS_ID];
   store.dispatch(setUserRole([user]));
   authenticateFormio(user, roles);
+  store.dispatch(getUserToken());
 };
 
 const authenticateFormio = (user, roles) => {

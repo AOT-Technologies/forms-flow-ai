@@ -1,11 +1,13 @@
-import {httpGETRequest} from "../httpRequestHandler";
+import {httpGETRequest, httpPOSTRequestWithoutToken} from "../httpRequestHandler";
 import API from "../endpoints";
 import UserService from "../../services/UserService";
 import {
   serviceActionError,
 } from "../../actions/bpmTaskActions";
-
+import { setUserToken } from "../../actions/bpmActions";
 import {setBPMFormList, setBPMFormListLoading} from "../../actions/formActions";
+import {GET_BPM_TOKEN_URL} from "../endpoints/config";
+import {BPM_USER_DETAILS} from "../../constants/constants";
 
 export const fetchBPMFormList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -32,4 +34,25 @@ export const fetchBPMFormList = (...rest) => {
         done(error);
       });
   };
+};
+
+export const getUserToken = (...rest) => {
+    const done = rest.length ? rest[0] :  ()=>{};
+    return dispatch => {
+      httpPOSTRequestWithoutToken(GET_BPM_TOKEN_URL, BPM_USER_DETAILS ).then(res => {
+        if (res.data) {
+          //TODO update refresh token logic
+          const token=res.data.access_token;
+          dispatch(setUserToken(token)); //Set any other data for usages
+          done(null,res);
+        } else {
+          dispatch(serviceActionError(res))
+          done('Error Posting data');
+        }
+      }).catch((error) => {
+        console.log(error)
+        dispatch(serviceActionError(error))
+        done(error);
+      })
+    }
 };

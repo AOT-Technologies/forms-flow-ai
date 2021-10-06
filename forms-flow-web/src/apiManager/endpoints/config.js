@@ -11,3 +11,7 @@ export const BPM_BASE_URL_EXT = `${(window._env_ && window._env_.REACT_APP_CAMUN
 // export const BPM_PROCESS_BASE_API = `${BPM_BASE_URL}/process-definition/key/`;
 
 export const BPM_BASE_URL_SOCKET_IO = `${(window._env_ && window._env_.REACT_APP_CAMUNDA_API_URI) || process.env.REACT_APP_CAMUNDA_API_URI}/forms-flow-bpm-socket`;
+
+//Anonymous User flow - get token
+export const GET_BPM_TOKEN_URL = (window._env_ && window._env_.REACT_APP_KEYCLOAK_BPM_TOKEN_API) || process.env.REACT_APP_KEYCLOAK_BPM_TOKEN_API;
+

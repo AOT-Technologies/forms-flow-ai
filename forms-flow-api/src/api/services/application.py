@@ -230,9 +230,29 @@ class ApplicationService:
         return schema.dump(applications, many=True)
 
     @staticmethod
+    def get_current_aggregated_applications(from_date: str, to_date: str):
+        """Get aggregated applications."""
+        applications = Application.find_aggregated_applications_modified(
+            from_date=from_date, to_date=to_date
+        )
+        schema = AggregatedApplicationSchema(exclude=("application_status",))
+        return schema.dump(applications, many=True)
+
+    @staticmethod
     def get_aggregated_application_status(mapper_id: int, from_date: str, to_date: str):
         """Get aggregated application status."""
         application_status = Application.find_aggregated_application_status(
+            mapper_id=mapper_id, from_date=from_date, to_date=to_date
+        )
+        schema = AggregatedApplicationSchema(exclude=("form_process_mapper_id",))
+        return schema.dump(application_status, many=True)
+
+    @staticmethod
+    def get_current_aggregated_application_status(
+        mapper_id: int, from_date: str, to_date: str
+    ):
+        """Get aggregated application status."""
+        application_status = Application.find_aggregated_application_status_modified(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date
         )
         schema = AggregatedApplicationSchema(exclude=("form_process_mapper_id",))

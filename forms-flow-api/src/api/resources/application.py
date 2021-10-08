@@ -6,7 +6,6 @@ from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 
 from api.exceptions import BusinessException
-from api.schemas.aggregated_application import AggregatedApplicationReqSchema
 from api.schemas.application import (
     ApplicationListReqSchema,
     ApplicationSchema,
@@ -258,80 +257,6 @@ class ApplicationResourcesByIds(Resource):
             }, HTTPStatus.BAD_REQUEST
             current_app.logger.warning(response)
             current_app.logger.warning(application_err)
-            return response, status
-
-
-@cors_preflight("GET,OPTIONS")
-@API.route("/metrics", methods=["GET", "OPTIONS"])
-class AggregatedApplicationsResource(Resource):
-    """Resource for managing aggregated applications."""
-
-    @staticmethod
-    @auth.require
-    @profiletime
-    def get():
-        """Get aggregated applications."""
-        try:
-            request_schema = AggregatedApplicationReqSchema()
-            dict_data = request_schema.load(request.args)
-            from_date = dict_data["from_date"]
-            to_date = dict_data["to_date"]
-
-            return (
-                (
-                    {
-                        "applications": ApplicationService.get_aggregated_applications(
-                            from_date=from_date, to_date=to_date
-                        )
-                    }
-                ),
-                HTTPStatus.OK,
-            )
-        except BaseException as agg_err:
-            response, status = {
-                "message": "Invalid request object for application metrics endpoint",
-                "errors": agg_err,
-            }, HTTPStatus.BAD_REQUEST
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(agg_err)
-            return response, status
-
-
-@cors_preflight("GET,OPTIONS")
-@API.route("/metrics/<int:mapper_id>", methods=["GET", "OPTIONS"])
-class AggregatedApplicationStatusResource(Resource):
-    """Resource for managing aggregated applications."""
-
-    @staticmethod
-    @auth.require
-    @profiletime
-    def get(mapper_id):
-        """Get aggregated application status."""
-        try:
-            request_schema = AggregatedApplicationReqSchema()
-            dict_data = request_schema.load(request.args)
-            from_date = dict_data["from_date"]
-            to_date = dict_data["to_date"]
-
-            return (
-                (
-                    {
-                        "applicationStatus": ApplicationService.get_aggregated_application_status(
-                            mapper_id=mapper_id, from_date=from_date, to_date=to_date
-                        )
-                    }
-                ),
-                HTTPStatus.OK,
-            )
-        except BaseException as agg_err:
-            response, status = {
-                "message": "Invalid request object for application metrics endpoint",
-                "errors": agg_err,
-            }, HTTPStatus.BAD_REQUEST
-
-            current_app.logger.warning(response)
-            current_app.logger.warning(agg_err)
             return response, status
 
 

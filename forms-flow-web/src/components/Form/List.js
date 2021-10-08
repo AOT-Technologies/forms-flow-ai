@@ -146,12 +146,11 @@ const List = React.memo((props)=> {
     })
   }
 
-  if (forms.isActive || isBPMFormListLoading) {
-      return <Loading />;
-  }
-
   return (
-
+     <>
+      <FileModal modalOpen={showFormUploadModal} onClose={()=>setShowFormUploadModal(false)} />
+       { 
+    (forms.isActive || isBPMFormListLoading) ? <Loading/> :
       <div className="container">
         <Confirm
           modalOpen={props.modalOpen}
@@ -163,7 +162,6 @@ const List = React.memo((props)=> {
           onNo={() => onNo()}
           onYes={() => onYes(formId, forms)}
         />
-        <FileModal modalOpen={showFormUploadModal} onClose={()=>setShowFormUploadModal(false)} />
         <div className="flex-container">
           {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
           <div className="flex-item-left">
@@ -190,7 +188,7 @@ const List = React.memo((props)=> {
                      onChange={fileUploaded}
                      ref={uploadFormNode}
               />
-            </>
+          </>
           )}
           {userRoles.includes(STAFF_DESIGNER) && (
              <>
@@ -212,6 +210,8 @@ const List = React.memo((props)=> {
           />
         </section>
       </div>
+     } 
+     </>
     );
 });
 

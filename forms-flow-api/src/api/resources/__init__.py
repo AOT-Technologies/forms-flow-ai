@@ -9,6 +9,7 @@ from flask_restx import Api
 from ..exceptions import BusinessException
 from .application import API as APPLICATION_API
 from .application_history import API as APPLICATION_HISTORY_API
+from .metrics import API as APPLICATION_METRICS_API
 from .checkpoint import API as CHECKPOINT_API
 from .form_process_mapper import API as FORM_API
 from .process import API as PROCESS_API
@@ -59,6 +60,7 @@ def handle_auth_error(error: AuthError):
 
 API.add_namespace(APPLICATION_API, path="/application")
 API.add_namespace(APPLICATION_HISTORY_API, path="/application")
+API.add_namespace(APPLICATION_METRICS_API, path="/application")
 API.add_namespace(CHECKPOINT_API, path="/checkpoint")
 API.add_namespace(FORM_API, path="/form")
 # API.add_namespace(FORMIOTOKEN_API, path="/getformiotoken")

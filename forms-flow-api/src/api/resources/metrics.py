@@ -14,7 +14,7 @@ API = Namespace("Metrics", description="Application Metrics endpoint")
 
 
 @cors_preflight("GET,OPTIONS")
-@API.route("/", methods=["GET", "OPTIONS"])
+@API.route("", methods=["GET", "OPTIONS"])
 class AggregatedApplicationsResource(Resource):
     """Resource for managing aggregated applications."""
 

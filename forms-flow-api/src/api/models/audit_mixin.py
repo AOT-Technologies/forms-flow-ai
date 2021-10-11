@@ -11,7 +11,6 @@ class AuditDateTimeMixin:  # pylint: disable=too-few-public-methods
     created = db.Column(db.DateTime, nullable=False, default=datetime.datetime.utcnow)
     modified = db.Column(
         db.DateTime,
-        nullable=False,
         default=datetime.datetime.utcnow,
         onupdate=datetime.datetime.utcnow,
     )

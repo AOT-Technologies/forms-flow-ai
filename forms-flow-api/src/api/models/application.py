@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-from sqlalchemy import or_, and_
+from sqlalchemy import or_, and_, func
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
 from .db import db
+from .form_process_mapper import FormProcessMapper
 
 
 class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
@@ -200,25 +201,42 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     @classmethod
     def find_aggregated_applications(cls, from_date: str, to_date: str):
         """Fetch aggregated applications."""
-        where_condition = ""
-        if from_date == to_date:
-            where_condition = f"""DATE(app.created) = '{from_date}'"""
-        else:
-            where_condition = (
-                f"""DATE(app.created) BETWEEN '{from_date}' AND '{to_date}'"""
+        result_proxy = (
+            db.session.query(
+                Application.form_process_mapper_id,
+                FormProcessMapper.form_name,
+                func.count(Application.form_process_mapper_id).label("count"),
             )
-        result_proxy = db.session.execute(
-            f"""SELECT
-                app.form_process_mapper_id,
-                mapper.form_name,
-                count(app.form_process_mapper_id) as count
-            FROM "application" AS app
-            INNER JOIN "form_process_mapper" mapper ON mapper.id = app.form_process_mapper_id
-            WHERE
-                {where_condition}
-            GROUP BY
-                app.form_process_mapper_id, mapper.form_name
-            ORDER BY form_name"""
+            .join(
+                FormProcessMapper,
+                FormProcessMapper.id == Application.form_process_mapper_id,
+            )
+            .filter(Application.created.between(from_date, to_date))
+            .group_by(Application.form_process_mapper_id, FormProcessMapper.form_name)
+        )
+
+        result = []
+        for row in result_proxy:
+            info = dict(row)
+            result.append(info)
+
+        return result
+
+    @classmethod
+    def find_aggregated_applications_modified(cls, from_date: str, to_date: str):
+        """Fetch aggregated applications."""
+        result_proxy = (
+            db.session.query(
+                Application.form_process_mapper_id,
+                FormProcessMapper.form_name,
+                func.count(Application.form_process_mapper_id).label("count"),
+            )
+            .join(
+                FormProcessMapper,
+                FormProcessMapper.id == Application.form_process_mapper_id,
+            )
+            .filter(Application.modified.between(from_date, to_date))
+            .group_by(Application.form_process_mapper_id, FormProcessMapper.form_name)
         )
 
         result = []
@@ -233,33 +251,45 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         cls, mapper_id: int, from_date: str, to_date: str
     ):
         """Fetch aggregated application status."""
-        where_condition = ""
-        if from_date == to_date:
-            where_condition = f"""DATE(app.created) = '{from_date}'"""
-        else:
-            where_condition = (
-                f"""(DATE(app.created) BETWEEN '{from_date}' AND '{to_date}')"""
+        result_proxy = (
+            db.session.query(
+                Application.application_status,
+                Application.application_name,
+                func.count(Application.application_name).label("count"),
             )
-
-        where_condition += f""" AND app.form_process_mapper_id = {str(mapper_id)} """
-
-        result_proxy = db.session.execute(
-            f"""SELECT
-                mapper.form_name,
-                app.application_status,
-                count(app.form_process_mapper_id) as count
-            FROM "application" AS app
-            INNER JOIN "form_process_mapper" mapper ON mapper.id = app.form_process_mapper_id
-            WHERE
-                {where_condition}
-            GROUP BY
-                app.application_status, mapper.form_name
-            ORDER BY application_status"""
+            .join(
+                FormProcessMapper,
+                FormProcessMapper.id == Application.form_process_mapper_id,
+            )
+            .filter(
+                and_(
+                    Application.created.between(from_date, to_date),
+                    Application.form_process_mapper_id == mapper_id,
+                )
+            )
+            .group_by(Application.application_status, Application.application_name)
         )
 
-        result = []
-        for row in result_proxy:
-            info = dict(row)
-            result.append(info)
+        return result_proxy
 
-        return result
+    @classmethod
+    def find_aggregated_application_status_modified(
+        cls, mapper_id: int, from_date: str, to_date: str
+    ):
+        """Fetch aggregated application status."""
+        result_proxy = (
+            db.session.query(
+                Application.application_name,
+                Application.application_status,
+                func.count(Application.application_name).label("count"),
+            )
+            .filter(
+                and_(
+                    Application.created.between(from_date, to_date),
+                    Application.form_process_mapper_id == mapper_id,
+                )
+            )
+            .group_by(Application.application_name, Application.application_status)
+        )
+
+        return result_proxy

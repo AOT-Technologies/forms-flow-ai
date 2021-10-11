@@ -1,5 +1,6 @@
 import { httpGETRequest } from "../httpRequestHandler";
 import API from "../endpoints";
+import * as moment from "moment";
 import {
   setMetricsSubmissionCount,
   setMetricsLoader,
@@ -10,10 +11,12 @@ import {
   setMetricsStatusLoadError,
 } from "../../actions/metricsActions";
 
-export const fetchMetricsSubmissionCount = (fromDate, toDate, ...rest) => {
+export const fetchMetricsSubmissionCount = (fromDate, toDate, setSearchBy,...rest) => {
+  let fdate = moment.utc(fromDate).format("YYYY-MM-DD");
+  let ldate = moment.utc(toDate).format("YYYY-MM-DD");
   return (dispatch) => {
     dispatch(setMetricsLoadError(false));
-    httpGETRequest(`${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}`)
+    httpGETRequest(`${API.METRICS_SUBMISSIONS}?from=${fdate}&to=${ldate}&orderBy=${setSearchBy}`)
       .then((res) => {
         if (res.data) {
           dispatch(setMetricsSubmissionCount(res.data.applications));
@@ -22,8 +25,8 @@ export const fetchMetricsSubmissionCount = (fromDate, toDate, ...rest) => {
             dispatch(
               fetchMetricsSubmissionStatusCount(
                 res.data.applications[0].mapperId,
-                fromDate,
-                toDate
+                fdate,
+                ldate
               )
             );
           } else {
@@ -48,16 +51,19 @@ export const fetchMetricsSubmissionCount = (fromDate, toDate, ...rest) => {
   };
 };
 
-export const fetchMetricsSubmissionStatusCount = (id, fromDate, toDate) => {
+export const fetchMetricsSubmissionStatusCount = (id, fromDate, toDate ,setSearchBy) => {
   // const done = rest.length ? rest[0] : () => {};
+  let fdate = moment.utc(fromDate).format("YYYY-MM-DD");
+  let ldate = moment.utc(toDate).format("YYYY-MM-DD");
+
   return (dispatch) => {
     dispatch(setSelectedMetricsId(id));
     // httpPOSTRequest(API.GET_TASK_API, { taskVariables: [] })
     httpGETRequest(
-      `${API.METRICS_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}`)
+      `${API.METRICS_SUBMISSIONS}/${id}?from=${fdate}&to=${ldate}&orderBy=${setSearchBy}`)
       .then((res) => {
         if (res.data) {
-          dispatch(setMetricsSubmissionStatusCount(res.data.applicationStatus));
+          dispatch(setMetricsSubmissionStatusCount(res.data.applications));
           dispatch(setMetricsStatusLoader(false));
           // done(null, res.data);
         } else {

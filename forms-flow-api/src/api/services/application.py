@@ -11,6 +11,7 @@ from ..schemas import (
     FormProcessMapperSchema,
 )
 from .external import BPMService
+from api.utils import NEW_APPLICATION_STATUS
 from flask import current_app
 
 
@@ -20,7 +21,7 @@ class ApplicationService:
     @staticmethod
     def create_application(data, token):
         """Create new application."""
-        data["application_status"] = "New"
+        data["application_status"] = NEW_APPLICATION_STATUS
 
         mapper = FormProcessMapper.find_form_by_form_id(data["form_id"])
         data["form_process_mapper_id"] = mapper.id

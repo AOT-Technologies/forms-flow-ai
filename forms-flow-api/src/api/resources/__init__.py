@@ -60,7 +60,7 @@ def handle_auth_error(error: AuthError):
 
 API.add_namespace(APPLICATION_API, path="/application")
 API.add_namespace(APPLICATION_HISTORY_API, path="/application")
-API.add_namespace(APPLICATION_METRICS_API, path="/application")
+API.add_namespace(APPLICATION_METRICS_API, path="/metrics")
 API.add_namespace(CHECKPOINT_API, path="/checkpoint")
 API.add_namespace(FORM_API, path="/form")
 # API.add_namespace(FORMIOTOKEN_API, path="/getformiotoken")

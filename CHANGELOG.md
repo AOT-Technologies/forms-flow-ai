@@ -1,6 +1,57 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
+## 4.0.3 - 2021-10-22
+
+`Added`
+
+**forms-flow-bpm**
+
+* Added new postman collections for camunda API.
+* Runtime logger level updation
+
+**forms-flow-web**
+
+* Added upload/download forms feature.
+
+**forms-flow-api**
+
+* Better logging for Python API including coloured logs and API time details.
+* Add pessimistic Database disconnection handling mechanism.
+
+`Fixed`
+
+**forms-flow-bpm**
+
+* Fixed the issue of Oauth2 RestTemplate was recreating each time, so the session was getting created so many times.
+* Exception handling & Retry for External form submission listener in ExternalFormSubmissionListener
+* Usage issue fixed with ApplicationAuditListener.
+
+**forms-flow-analytics**
+
+* Resolve analytics component breaking due to [SIGSEV Memory issue](https://github.com/AOT-Technologies/forms-flow-ai/issues/149).
+
+**forms-flow-web**
+
+* Fixed server side pagination for `Task` page.
+* Fixed Items per page dropdown in the form page for designer.
+
+`Modified`
+
+**forms-flow-bpm**
+
+* Upgraded Camunda BPM Identity Keycloak to 2.2.1
+
+**forms-flow-api**
+
+* Add orderBy field to `metrics` API to display API based on created date and modified date.
+* Changed default timezone to UTC time instead of being set as users local time.
+
+**forms-flow-web**
+
+* Footer was modified to display formsflow.ai with the version number.
+* Optimized task list page by limiting the number of backend calls.
+
 ## 4.0.2 - 2021-07-23
 
 `Added`

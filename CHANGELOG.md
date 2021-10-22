@@ -13,6 +13,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-web**
 
 * Added upload/download forms feature.
+* Added a feature to search submissions in metrics based on created or modified date range.
 
 **forms-flow-api**
 

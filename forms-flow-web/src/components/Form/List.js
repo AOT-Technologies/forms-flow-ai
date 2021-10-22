@@ -89,6 +89,7 @@ const List = React.memo((props)=> {
   const downloadForms = () => {
     FileService.downloadFile({forms:formCheckList},()=>{
       toast.success(`${formCheckList.length} ${formCheckList.length===1?"Form":"Forms"} Downloaded Successfully`)
+      dispatch(setFormCheckList([]));
     })
   }
 

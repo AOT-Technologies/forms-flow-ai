@@ -211,7 +211,10 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 FormProcessMapper,
                 FormProcessMapper.id == Application.form_process_mapper_id,
             )
-            .filter(Application.created.between(from_date, to_date))
+            .filter(
+                func.date(Application.created) >= from_date,
+                func.date(Application.created) <= to_date,
+            )
             .group_by(Application.form_process_mapper_id, FormProcessMapper.form_name)
         )
 
@@ -235,7 +238,10 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 FormProcessMapper,
                 FormProcessMapper.id == Application.form_process_mapper_id,
             )
-            .filter(Application.modified.between(from_date, to_date))
+            .filter(
+                func.date(Application.modified) >= from_date,
+                func.date(Application.modified) <= to_date,
+            )
             .group_by(Application.form_process_mapper_id, FormProcessMapper.form_name)
         )
 
@@ -263,7 +269,8 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
             .filter(
                 and_(
-                    Application.created.between(from_date, to_date),
+                    func.date(Application.created) >= from_date,
+                    func.date(Application.created) <= to_date,
                     Application.form_process_mapper_id == mapper_id,
                 )
             )
@@ -285,7 +292,8 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
             .filter(
                 and_(
-                    Application.created.between(from_date, to_date),
+                    func.date(Application.modified) >= from_date,
+                    func.date(Application.modified) <= to_date,
                     Application.form_process_mapper_id == mapper_id,
                 )
             )

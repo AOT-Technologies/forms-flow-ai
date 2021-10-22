@@ -54,14 +54,15 @@ const Dashboard = React.memo(() => {
     return moment(date).format("YYYY-MM-DD");
   };
   useEffect(() => {
-    const fromDate = getFormattedDate(moment(firsDay));
-    const toDate = getFormattedDate(moment(lastDay));
+    const fromDate = getFormattedDate(moment(dateRange[0]));
+    const toDate = getFormattedDate(moment(dateRange[1]));
     dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy.value));
-  }, [dispatch,searchBy.value]);
+  }, [dispatch,searchBy.value,dateRange]);
 
   
   const  onChangeInput =(option) => {
     setSearchBy(option);
+    
   }
 
   if (isMetricsLoading) {
@@ -71,16 +72,11 @@ const Dashboard = React.memo(() => {
   const getStatusDetails = (id) => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
-    dispatch(fetchMetricsSubmissionStatusCount(id, fromDate, toDate));
+    dispatch(fetchMetricsSubmissionStatusCount(id, fromDate, toDate, searchBy.value));
   };
 
   const onSetDateRange = (date) => {
-    const fdate = date && date[0] ? date[0] : moment();
-    const tdate = date && date[1] ? date[1] : moment();
-    const fromDate = getFormattedDate(fdate);
-    const toDate = getFormattedDate(tdate);
-
-    dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy.value));
+    
     setDateRange(date);
   };
   

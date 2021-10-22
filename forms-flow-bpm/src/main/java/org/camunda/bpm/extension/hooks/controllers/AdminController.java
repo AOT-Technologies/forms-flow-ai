@@ -4,18 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 
+import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
+import org.camunda.bpm.extension.hooks.controllers.data.AuthorizedAction;
+import org.camunda.bpm.extension.hooks.controllers.mapper.AuthorizationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.Authentication;
@@ -29,8 +29,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
 import org.camunda.bpm.engine.authorization.Resources;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -164,39 +162,4 @@ public class AdminController {
         parameters.addValue("groups", groups);
         return bpmJdbcTemplate.query(query, parameters, new AuthorizationMapper());
     }
-
-
-
-    /**
-     * Mapper associated with querying authorization.
-     */
-    private final class AuthorizationMapper implements RowMapper<Authorization> {
-        public AdminController.Authorization mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Authorization auth = new Authorization();
-            auth.setUserId(rs.getString("userid"));
-            auth.setResourceId(rs.getString("resourceid"));
-            auth.setGroupId(rs.getString("groupid"));
-            return auth;
-        }
-    }
-
-
-    @NoArgsConstructor
-    @Data
-    class Authorization {
-        private String groupId;
-        private String userId;
-        private String resourceId;
-
-
-    }
-
-    @NoArgsConstructor
-    @Data
-    class AuthorizedAction {
-        private String formId;
-        private String formName;
-        private String processKey;
-    }
-
 }

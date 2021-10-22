@@ -59,6 +59,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  `KEYCLOAK_WEB_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-web | `forms-flow-web`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token| | `giert989jkwrgb@DR55`
  `APPLICATION_NAME`|Application name is used to provide clients application name|
+ `WEB_BASE_CUSTOM_URL`|Clients can use WEB_BASE_CUSTOM_URL env variable to provide their custom URL |
  `USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
 
 * NOTE - While configuring USER_ACCESS_PERMISSIONS the accessAllowApplications will hide / show application tab, the same way accessAllowSubmissions does for viewSubmission button. To enable this feature you need to add access-allow-applications, access-allow-submissions with the respective user group in keycloak.
@@ -104,3 +105,16 @@ Variable name | Meaning | Possible values | Default value |
   * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web.
      The default width and height of the logo is 50 and 55 also the image format is svg
   * The icon can also be replaced to the users icon by replacing the favicon in the public folder of forms-flow-web
+## forms-flow-web Events
+ > This section elaborates events used in forms-flow-web.
+ >  The Form.io renderer uses the [EventEmitter3](https://github.com/primus/eventemitter3) library to manage all of the event handling that occurs within the renderer. 
+ >  Custom events are triggered for button components and are fired when they are clicked. More details are [here](https://docs.form.io/developers/form-renderer#form-events)
+## Events
+| Name | Description  &nbsp;&nbsp;&nbsp;| Arguments &nbsp;&nbsp;&nbsp; | Example |
+| --- | --- | --- |--- |
+| `reloadTasks` | <li>Used in the task page</li><li>Triggered for button components</li><li>Refresh the Task List  and remove the selected  task from RHS.</li>  | <li> type:The configured event type </li> |form.emit('customEvent', {  type: "reloadTasks"}); |
+| `reloadCurrentTask` | <li>Used in the task page</li><li>Triggered for button components</li> <li>Refreshes the current task selected</li> |<li>type:The configured event type</li>|form.emit('customEvent', { type: "reloadCurrentTask"}); |
+| `customSubmitDone` | <li>Used in the create form page</li><li>Triggered for button components</li><li>Similar to submit button to implement custom logic</li> |<li>type:The configured event type</li>|form.emit('customEvent', {type: "customSubmitDone"}); |
+| `actionComplete` | <li>Triggered for button components</li> |<li>type:The configured event type</li><li>component:The component json</li><li>actionType: Form submit action values</li> | form.emit('customEvent', { type: "actionComplete",    component: component, actionType: actionType }); |
+
+ 

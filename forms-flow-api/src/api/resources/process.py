@@ -1,16 +1,15 @@
 """API endpoints for managing process resource."""
 
-import logging
-
-import sys, traceback
 from http import HTTPStatus
-from flask import request
+
+from flask import current_app, request
 from flask_restx import Namespace, Resource
 
 from ..services import ProcessService
-from api.utils.auth import auth
-from api.utils.util import cors_preflight
+
 from api.schemas.process import ProcessMessageSchema
+from api.utils import auth, cors_preflight, profiletime
+
 
 API = Namespace("Process", description="Process")
 
@@ -24,6 +23,7 @@ class ProcessStateResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(process_key, task_key):
         """Get states by process and task key."""
         try:
@@ -36,18 +36,13 @@ class ProcessStateResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as err:
-
-            exc_traceback = sys.exc_info()
-
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(err)
-            # traceback.print_tb(exc_traceback)
-
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
 
@@ -58,6 +53,7 @@ class ProcessResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get():
         """Get all process."""
         try:
@@ -72,18 +68,13 @@ class ProcessResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as err:
-
-            exc_traceback = sys.exc_info()
-
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }
 
-            logging.exception(response)
-            logging.exception(err)
-            # traceback.print_tb(exc_traceback)
-
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
 
@@ -94,6 +85,8 @@ class ProcessDefinitionResource(Resource):
     """Resource for managing process details."""
 
     @staticmethod
+    @auth.require
+    @profiletime
     def get(process_key):
         """Get process detailsXML."""
         try:
@@ -104,18 +97,13 @@ class ProcessDefinitionResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as err:
-
-            exc_traceback = sys.exc_info()
-
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(err)
-            # traceback.print_tb(exc_traceback)
-
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
 
@@ -126,6 +114,7 @@ class ProcessEventResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def post():
         message_json = request.get_json()
         message_schema = ProcessMessageSchema()
@@ -141,7 +130,6 @@ class ProcessEventResource(Resource):
                 HTTPStatus.OK,
             )
         except KeyError as err:
-            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -151,21 +139,17 @@ class ProcessEventResource(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.exception(response)
-            logging.exception(err)
-            # traceback.print_tb(exc_traceback)
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
             return response, status
         except BaseException as err:
-            exc_traceback = sys.exc_info()
-
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }
 
-            logging.exception(response)
-            logging.exception(err)
-            # traceback.print_tb(exc_traceback)
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
 
@@ -179,6 +163,7 @@ class ProcessInstanceResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(process_InstanceId):
         """Get states by process and task key."""
         try:
@@ -189,17 +174,12 @@ class ProcessInstanceResource(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as err:
-
-            exc_traceback = sys.exc_info()
-
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            # traceback.print_tb(exc_traceback)
-
+            current_app.logger.warning(response)
             return response, status
 
 

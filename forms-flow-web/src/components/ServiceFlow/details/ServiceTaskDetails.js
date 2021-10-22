@@ -36,6 +36,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const dispatch= useDispatch();
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
+  const firstResult = useSelector(state=> state.bpmTasks.firstResult);
   const [processKey, setProcessKey]= useState('');
   const [processInstanceId, setProcessInstanceId]=useState('');
 
@@ -97,7 +98,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const reloadTasks = () => {
     dispatch(setBPMTaskDetailLoader(true));
     dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
-    dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Tasks
+    dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
     dispatch(push(`/task/`));
   }
 
@@ -111,7 +112,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
         }
       })); // Refresh the Task Selected
       dispatch(getBPMGroups(task.id))
-      dispatch(fetchServiceTaskList(selectedFilter.id, reqData)); //Refreshes the Tasks
+      dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
     }
   }
 

@@ -1,6 +1,6 @@
 # formsflow.ai API 
 
-![Python](https://img.shields.io/badge/python-3.8-blue) ![Flask](https://img.shields.io/badge/Flask-1.1.4-blue) ![postgres](https://img.shields.io/badge/postgres-11.0-blue)
+![Python](https://img.shields.io/badge/python-3.9-blue) ![Flask](https://img.shields.io/badge/Flask-1.1.4-blue) ![postgres](https://img.shields.io/badge/postgres-11.0-blue)
 
 **formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
 
@@ -14,7 +14,7 @@ the system. It is built using Python :snake: .
    * [Step 2 : Environment Configuration](#environment-configuration)
    * [Step 3 : Running the Application](#running-the-application)
    * [Step 4 : Verify the Application Status](#verify-the-application-status) 
-3. [Steps for enabling sentiment analysis component](#steps-for-enabling-sentiment-analysis-component)
+3. [API Documentation](#api-documentation)
 
 ## Prerequisites
 
@@ -118,24 +118,10 @@ Content-Type : application/json
 Authorization: Bearer {access token}
 ``` 
    
-## Steps for enabling Sentiment Analysis component
+## API Documentation
 
-One of the unique features of the formsflow.ai framework is Sentiment Analysis. It can
-analyze the sentiment from forms based on specific topics mentioned by the designer
-during form creation.
+The API docs can be accessed by checking the **/docs** endpoint.
 
-- A form designer can drag and drop **Text Area with Analytics component** and in section
-**Data** add key topics for Sentiment Analysis like facility, service, etc. This activates
-sentiment analysis component.
-- Based on the input responses of the user formsflow.ai process sentiment associated
- with each user's responses and stores it MongoDB database using **Python API**.
-- You can take data stored in mongodb and create **meaningful visualization** based on the 
-output of sentiment API in Redash dashboards. This information can be found in the **Insights section**
-for staff user formsflow.ai.
+![image](https://user-images.githubusercontent.com/70306694/130730233-cf443a84-7716-4be6-b196-cb340509c495.png)
 
-### About Sentiment Analysis model
-
-Currently, the ML model is build leveraging libraries like Spacy and NLTK. It uses a two
-stage pipeline process to find the entities belonging to a topic and their associated
-sentiment. We use a named entity recognition model(NER) to train to identify the topics,
-and further sentiment analysis is being done for individual entities.
+Further documentation and associated postman collection for API endpoint can found in the [docs folder](./docs)

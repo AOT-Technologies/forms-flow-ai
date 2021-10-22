@@ -9,7 +9,6 @@ services:
       POSTGRES_USER: ${CAMUNDA_JDBC_USER:-admin}
       POSTGRES_PASSWORD: ${CAMUNDA_JDBC_PASSWORD:-changeme}
       POSTGRES_DB: ${CAMUNDA_JDBC_DB_NAME:-formsflow-bpm}
-      POSTGRES_HOST_AUTH_METHOD: 'trust'
     volumes:
       - ./postgres/camunda:/data/postgres/data/postgres
     ports:
@@ -111,6 +110,7 @@ services:
 
   forms-flow-web:
     container_name: forms-flow-web
+    restart: always
     build:
       context: ./../../forms-flow-web/
       dockerfile: Dockerfile
@@ -137,6 +137,7 @@ services:
         - REACT_APP_KEYCLOAK_URL=${KEYCLOAK_URL}
         - REACT_APP_APPLICATION_NAME=${APPLICATION_NAME:-formsflow.ai}
         - REACT_APP_USER_ACCESS_PERMISSIONS=${USER_ACCESS_PERMISSIONS}
+        - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL:-}
     volumes:
       - '.:/app'
       - '/app/node_modules'
@@ -147,26 +148,6 @@ services:
     networks:
       - forms-flow-network
 
-  #Analytics DB - Comment below if mongo db setup is available
-  # forms-flow-webapi-analytics-db:
-  #   container_name: forms-flow-analytics-db
-  #   image: mongo
-  #   restart: always
-  #   hostname: forms-flow-webapi-analytics-db
-  #   ports:
-  #      - '27019:27017'
-  #   environment:
-  #     MONGO_INITDB_ROOT_USERNAME: ${FORMSFLOW_API_ANALYTICS_DB_USERNAME:-admin}
-  #     MONGO_INITDB_ROOT_PASSWORD: ${FORMSFLOW_API_ANALYTICS_DB_PASSWORD:-changeme}
-  #     MONGO_INITDB_DATABASE: ${FORMSFLOW_API_ANALYTICS_DB_NAME:-analytics}
-  #   volumes:
-  #     - ./mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
-  #     - mdb-data:/data/analytics/db/
-  #     - ./mongodb/data/log/:/var/log/mongodb/
-  #     - ./mongodb/mongod.conf:/etc/mongod.conf
-  #   networks:
-  #     - forms-flow-network
-
   forms-flow-webapi-db:
     container_name: forms-flow-webapi-db
     image: postgres:11
@@ -174,7 +155,6 @@ services:
       POSTGRES_USER: ${FORMSFLOW_API_DB_USER:-postgres}
       POSTGRES_PASSWORD: ${FORMSFLOW_API_DB_PASSWORD:-changeme}
       POSTGRES_DB: ${FORMSFLOW_API_DB_NAME:-webapi}
-      POSTGRES_HOST_AUTH_METHOD: 'trust'
     ports:
       - '6432:5432'
     restart: always
@@ -191,7 +171,6 @@ services:
     restart: always
     links:
       - forms-flow-webapi-db
-      # - forms-flow-webapi-analytics-db
     ports:
       - '5000:5000'
     volumes:

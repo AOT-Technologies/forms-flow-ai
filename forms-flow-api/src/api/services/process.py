@@ -1,8 +1,6 @@
 """This exposes process service."""
 
 import json
-import logging
-import sys, traceback
 from http import HTTPStatus
 
 from ..exceptions import BusinessException
@@ -14,6 +12,7 @@ from ..schemas import (
     ProcessListSchema,
 )
 from .external import BPMService
+from flask import current_app
 
 
 class ProcessService:
@@ -95,24 +94,22 @@ class ProcessService:
     @staticmethod
     def get_process_activity_instances(process_instace_id, token):
         """Get process actions."""
-        logging.debug("get_process_activity_instances " + process_instace_id)
+        current_app.logger.debug("get_process_activity_instances " + process_instace_id)
         activity_instances = BPMService.get_process_activity_instances(
             process_instace_id=process_instace_id, token=token
         )
-        logging.debug(activity_instances)
+        current_app.logger.debug(activity_instances)
         try:
             if activity_instances:
                 return ProcessActivityInstanceSchema().dump(activity_instances)
         except TypeError as err:
-            exc_traceback = sys.exc_info()
             response, status = {
                 "type": "Invalid request",
                 "message": "Invalid request object passed",
                 "errors": err.messages,
             }, HTTPStatus.BAD_REQUEST
-            logging.exception(response)
-            logging.exception(err)
-            traceback.print_tb(exc_traceback)
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
             return response, status
 
         # raise BusinessException(

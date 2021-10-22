@@ -1,6 +1,6 @@
 import {
   FILTER_OPERATOR_TYPES,
-  Filter_Search_Types,
+  Filter_Search_Types, MAX_RESULTS,
   QUERY_TYPES
 } from "../../components/ServiceFlow/constants/taskConstants";
 
@@ -90,3 +90,6 @@ export const isVariableTypeAvailable = (filterSelections)=>{
   return filterSelections.some(filter=>filter.type===Filter_Search_Types.VARIABLES);
 }
 
+export const getFirstResultIndex = (activePage) => {
+ return activePage * MAX_RESULTS - MAX_RESULTS;
+}

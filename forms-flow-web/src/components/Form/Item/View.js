@@ -53,7 +53,7 @@ const View = React.memo((props) => {
           </SubmissionError>
           {isAuthenticated ?
             <Link to="/form">
-              <img src="/back.svg" alt="back" />
+              <i className="fa fa-chevron-left fa-lg" />
             </Link>
             :
             null

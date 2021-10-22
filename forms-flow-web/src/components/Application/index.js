@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import ApplicationList from './List';
 import ViewApplication from './ViewApplication';
@@ -20,6 +20,7 @@ export default React.memo(() => {
         {showApplications?<>
         <Route exact path="/application" component={ApplicationList} />
         <Route path="/application/:applicationId"><ViewApplication/></Route>
+        <Route path="/application/:applicationId/:notavailable"><Redirect exact to='/404'/></Route>
         </>:null }
       </Switch>
     </div>

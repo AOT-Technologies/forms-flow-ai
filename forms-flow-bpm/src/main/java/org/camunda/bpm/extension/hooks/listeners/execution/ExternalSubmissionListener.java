@@ -8,8 +8,11 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.listeners.BaseListener;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -21,7 +24,6 @@ import javax.inject.Named;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * This class supports creation of submission for instances created from external system
@@ -30,14 +32,13 @@ import java.util.logging.Logger;
 @Named("ExternalSubmissionListener")
 public class ExternalSubmissionListener extends BaseListener implements ExecutionListener {
 
-    private final Logger LOGGER = Logger.getLogger(ExternalSubmissionListener.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ExternalSubmissionListener.class);
 
     @Autowired
     private FormSubmissionService formSubmissionService;
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
-
 
     private Expression formName;
 
@@ -48,15 +49,11 @@ public class ExternalSubmissionListener extends BaseListener implements Executio
             String submissionId = formSubmissionService.createSubmission(formUrl, formSubmissionService.createFormSubmissionData(execution.getVariables()));
             if(StringUtils.isNotBlank(submissionId)){
                 execution.setVariable("formUrl", formUrl+"/"+submissionId);
-                createApplication(execution);
+                createApplication(execution, true);
             }
-        } catch(IOException ex) {
+        } catch(IOException | RuntimeException ex) {
             handleException(execution, ExceptionSource.EXECUTION, ex);
         }
-    }
-
-    private boolean isExists(DelegateExecution execution) {
-        return execution.getVariables().containsKey("formUrl");
     }
 
     private String getFormId(DelegateExecution execution) throws IOException {
@@ -69,7 +66,13 @@ public class ExternalSubmissionListener extends BaseListener implements Executio
 
     }
 
-    private void createApplication(DelegateExecution execution) throws JsonProcessingException {
+    /**
+     *
+     * @param execution - DelegateExecution data
+     * @param retryOnce - If formsflow api failed to respond 201 then the application will try once again and then it fail.
+     * @throws JsonProcessingException
+     */
+    private void createApplication(DelegateExecution execution, boolean retryOnce) throws JsonProcessingException {
         Map<String,Object> data = new HashMap<>();
         String formUrl = String.valueOf(execution.getVariable("formUrl"));
         data.put("formUrl",formUrl);
@@ -81,6 +84,14 @@ public class ExternalSubmissionListener extends BaseListener implements Executio
             JsonNode jsonNode = getObjectMapper().readTree(response.getBody());
             String applicationId = jsonNode.get("id").asText();
             execution.setVariable("applicationId", applicationId);
+        } else {
+            if(retryOnce) {
+                LOGGER.error("Retrying the application create once more due to previous failure");
+                createApplication(execution, false);
+            } else {
+                throw new ApplicationServiceException("Unable to create application " + ". Message Body: " +
+                        response.getBody());
+            }
         }
     }
 

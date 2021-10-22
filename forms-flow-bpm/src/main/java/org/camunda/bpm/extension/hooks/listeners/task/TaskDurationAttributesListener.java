@@ -9,8 +9,6 @@ import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.camunda.bpm.extension.hooks.services.IUser;
 import org.joda.time.DateTime;
 
-import java.util.logging.Logger;
-
 /**
  * This class is intended to set the due date in business days.
  * Currently, the system allows overriding of task due date from application UI.
@@ -21,8 +19,6 @@ import java.util.logging.Logger;
 public class TaskDurationAttributesListener extends BaseListener implements TaskListener, IUser, IMessageEvent {
 
     private Expression SLAInDays;
-
-    private final Logger LOGGER = Logger.getLogger(TaskDurationAttributesListener.class.getName());
 
     /**
      * Callback method for task create.

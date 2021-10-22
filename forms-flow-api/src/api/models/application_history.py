@@ -8,6 +8,7 @@ from .db import db
 
 class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     """This class manages application audit against each form."""
+
     __tablename__ = "application_audit"
     id = db.Column(db.Integer, primary_key=True)
     application_id = db.Column(db.Integer, nullable=False)
@@ -15,7 +16,7 @@ class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     form_url = db.Column(db.String(500), nullable=False)
 
     @classmethod
-    def create_from_dict(cls, application_audit_info: dict) -> ApplicationAudit:
+    def create_from_dict(cls, application_audit_info: dict) -> ApplicationHistory:
         """Create new application."""
         if application_audit_info:
             application_audit = ApplicationHistory()
@@ -43,7 +44,7 @@ class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
             FROM "application_audit" audit
             WHERE
                 {where_condition}
-            GROUP BY (application_status,form_url,created)    
+            GROUP BY (application_status,form_url,created)
             ORDER BY created
             """
         )

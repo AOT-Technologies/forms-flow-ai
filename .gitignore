@@ -25,3 +25,7 @@ yarn-error.log*
 # IntelliJ IDEA
 .idea
 *.iml
+
+#Database
+postgres/
+mongodb/

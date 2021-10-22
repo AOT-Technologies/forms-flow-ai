@@ -1,11 +1,12 @@
 import { INSIGHTS_BASE_API, INSIGHTS_API_KEY, WEB_BASE_URL, BPM_BASE_URL, BPM_BASE_URL_EXT } from "./config";
+import {AppConfig} from "../../config";
 
 const API = {
   INSIGHTS_API_KEY: INSIGHTS_API_KEY,
   GET_TASK_API: `${WEB_BASE_URL}/task`,
   GET_TASK_DETAIL_API: `${WEB_BASE_URL}/task/`,
   GET_DASHBOARDS: `${INSIGHTS_BASE_API}/dashboards`,
-  METRICS_SUBMISSIONS: `${WEB_BASE_URL}/application/metrics`,
+  METRICS_SUBMISSIONS: `${WEB_BASE_URL}/metrics`,
   APPLICATION_START: `${WEB_BASE_URL}/application/create`,
   PROCESS_STATE: `${WEB_BASE_URL}/process/<process_key>/task/<task_key>/state`,
   GET_APPLICATION: `${WEB_BASE_URL}/application/<application_id>`,
@@ -27,11 +28,13 @@ const API = {
   GET_BPM_USER_LIST:`${BPM_BASE_URL}/user`,
   GET_BPM_FILTERS:`${BPM_BASE_URL}/filter`,
   GET_BPM_TASK_LIST_WITH_FILTER:`${BPM_BASE_URL}/filter/<filter_id>/list`,
+  GET_BPM_TASK_LIST_COUNT_WITH_FILTER:`${BPM_BASE_URL}/filter/<filter_id>/count`,
   BPM_GROUP:`${BPM_BASE_URL}/task/<task_id>/identity-links`,
   DELETE_BPM_GROUP:`${BPM_BASE_URL}/task/<task_id>/identity-links/delete`,
   BPM_FORM_SUBMIT:`${BPM_BASE_URL}/task/<task_id>/submit-form`,
   GET_BPM_FORM_LIST:`${BPM_BASE_URL_EXT}/form`,
   UPDATE_ASSIGNEE_BPM_TASK:`${BPM_BASE_URL}/task/<task_id>/assignee`,
+  GET_FORM_BY_ALIAS:`${AppConfig.projectUrl}/<form_path>`
 };
 
 export default API;

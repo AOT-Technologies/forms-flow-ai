@@ -12,8 +12,8 @@ import {
 } from "../../actions/metricsActions";
 
 export const fetchMetricsSubmissionCount = (fromDate, toDate, setSearchBy,...rest) => {
-  let fdate = moment.utc(fromDate).format("YYYY-MM-DD");
-  let ldate = moment.utc(toDate).format("YYYY-MM-DD");
+  const fdate = moment.utc(fromDate).format("YYYY-MM-DD");
+  const ldate = moment.utc(toDate).format("YYYY-MM-DD");
   return (dispatch) => {
     dispatch(setMetricsLoadError(false));
     httpGETRequest(`${API.METRICS_SUBMISSIONS}?from=${fdate}&to=${ldate}&orderBy=${setSearchBy}`)
@@ -26,7 +26,8 @@ export const fetchMetricsSubmissionCount = (fromDate, toDate, setSearchBy,...res
               fetchMetricsSubmissionStatusCount(
                 res.data.applications[0].mapperId,
                 fdate,
-                ldate
+                ldate,
+                setSearchBy
               )
             );
           } else {
@@ -53,8 +54,8 @@ export const fetchMetricsSubmissionCount = (fromDate, toDate, setSearchBy,...res
 
 export const fetchMetricsSubmissionStatusCount = (id, fromDate, toDate ,setSearchBy) => {
   // const done = rest.length ? rest[0] : () => {};
-  let fdate = moment.utc(fromDate).format("YYYY-MM-DD");
-  let ldate = moment.utc(toDate).format("YYYY-MM-DD");
+  const fdate = moment.utc(fromDate).format("YYYY-MM-DD");
+  const ldate = moment.utc(toDate).format("YYYY-MM-DD");
 
   return (dispatch) => {
     dispatch(setSelectedMetricsId(id));

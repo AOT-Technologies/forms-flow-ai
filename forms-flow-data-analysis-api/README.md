@@ -9,6 +9,38 @@ stage pipeline process to find the entities belonging to a topic and their assoc
 sentiment. We use a named entity recognition model(NER) to train to identify the topics,
 and further sentiment analysis is being done for individual entities.
 
+## Steps for creating Sentiment Analysis
+
+1. Our dynamic ontology aware topics modelling and sentiment analysis module required data for analysis. 
+So we have collected the initial data from a generic dataset in Kaggle while some better datasets obtained
+from public sources (eg: customer reviews of BC Government services centers from google maps) was also used.
+ 
+2. The collected Data was annotated using a NER analyser tool like spacy to understand the specific entities
+of the dataset. It was then annotated with a tool like Docanno to tag entities. The dataset in the tagged
+form is as shown below:
+
+```
+     (
+        "I like rhodes view from hotel and waiter was very pleasant.",
+        {
+            "entities": [
+                (7, 13, "LOC", "pos"),
+                (14, 18, "FAC", "pos"),
+                (34, 40, "PERSON", "pos"),
+            ]
+        },
+    )
+```
+
+3. Then the dataset which was trained with a custom Named entity Recognition model using Spacy. Which is used to 
+train our topic aware models, and on top of it we are creating an overall sentiment analyser build with a 
+parsimonious rule-based model.
+
+[Missed steps on preprocessing, trials etc]. 
+  
+    
+ Now using this information
+
 ## Steps for enabling Sentiment Analysis component
 
 One of the unique features of the formsflow.ai framework is Sentiment Analysis. It can

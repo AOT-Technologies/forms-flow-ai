@@ -4,42 +4,42 @@
 
 ### About Sentiment Analysis model
 
-Currently, the ML model is build leveraging libraries like Spacy and NLTK. It uses a two
-stage pipeline process to find the entities belonging to a topic and their associated
-sentiment. We use a named entity recognition model(NER) to train to identify the topics,
-and further sentiment analysis is being done for individual entities.
-
-## Steps for creating Sentiment Analysis
-
 1. Our dynamic ontology aware topics modelling and sentiment analysis module required data for analysis. 
-So we have collected the initial data from a generic dataset in Kaggle while some better datasets obtained
-from public sources (eg: customer reviews of BC Government services centers from google maps) was also used.
+So we have collected the initial data from a generic dataset in Kaggle along by collecting dataset obtained
+from public sources like customer reviews of BC Government services centers from google maps.
+
+2. The input dataset was cleaned using various preprocessing techniques and transformed into a tidy text data.
  
-2. The collected Data was annotated using a NER analyser tool like spacy to understand the specific entities
-of the dataset. It was then annotated with a tool like Docanno to tag entities. The dataset in the tagged
-form is as shown below:
+3. The collected Data was annotated using a NER analyser tool like Docanno to understand the specific entities
+of the dataset. A sample text 
 
 ```
      (
-        "I like rhodes view from hotel and waiter was very pleasant.",
+        "The service at Victoria center was completed very quickly. Also the staff was very helpful"
         {
             "entities": [
-                (7, 13, "LOC", "pos"),
-                (14, 18, "FAC", "pos"),
-                (34, 40, "PERSON", "pos"),
+                (4, 11, "SER", "pos"),
+                (15, 23, "LOC", "pos"),
+                (68, 73, "STAFF", "pos"),
             ]
         },
     )
 ```
 
-3. Then the dataset which was trained with a custom Named entity Recognition model using Spacy. Which is used to 
-train our topic aware models, and on top of it we are creating an overall sentiment analyser build with a 
-parsimonious rule-based model.
+4. Once the data was prepared, variety of techniques for identifying topics and sentiment analysis was tried
+out like Latent Semantic Analysis, LSTMs, BERTs. Finally the ML model was build using a two stage pipeline process
+to identify entities and their associated sentiment. We use a named entity recognition model(NER) to
+identify the topics,and further sentiment analysis is being done for individual entities.
 
-[Missed steps on preprocessing, trials etc]. 
-  
-    
- Now using this information
+
+5. The output of our model for model using our ML model for a sample input is as show below:
+
+> text="awesome location and great staff. Staff provided excellent service."
+
+```
+ {'sentiment': {'location': 'positive', 'facility': 'positive'},
+ 'overall_sentiment': 'positive'}
+```
 
 ## Steps for enabling Sentiment Analysis component
 

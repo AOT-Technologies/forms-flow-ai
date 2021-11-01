@@ -4,18 +4,19 @@
 
 ### About Sentiment Analysis model
 
+
 1. Our dynamic ontology aware topics modelling and sentiment analysis module required data for analysis. 
 So we have collected the initial data from a generic dataset in Kaggle along by collecting dataset obtained
-from public sources like customer reviews of BC Government services centers from google maps.
+from public sources like customer reviews of BC Government services centres from google maps.
 
-2. The input dataset was cleaned using various preprocessing techniques and transformed into a tidy text data.
+2. The input dataset was cleaned using various preprocessing techniques and transformed into tidy text data.
  
 3. The collected Data was annotated using a NER analyser tool like Docanno to understand the specific entities
 of the dataset. A sample text 
 
 ```
      (
-        "The service at Victoria center was completed very quickly. Also the staff was very helpful"
+        "The service at Victoria centre was completed very quickly. Also the staff was very helpful"
         {
             "entities": [
                 (4, 11, "SER", "pos"),
@@ -26,19 +27,21 @@ of the dataset. A sample text
     )
 ```
 
-4. Once the data was prepared, variety of techniques for identifying topics and sentiment analysis was tried
-out like Latent Semantic Analysis, LSTMs, BERTs. Finally the ML model was build using a two stage pipeline process
+4. Once the data was prepared, a variety of techniques for identifying topics and sentiment analysis was tried
+out like Latent Semantic Analysis, LSTMs, BERTs. Finally, the ML model was built using a two-stage pipeline process
 to identify entities and their associated sentiment. We use a named entity recognition model(NER) to
-identify the topics,and further sentiment analysis is being done for individual entities.
+identify the topics, and further sentiment analysis is being done for individual entities.
 
 
-5. The output of our model for model using our ML model for a sample input is as show below:
+5. The output of our model for the model using our ML model for a sample input is as shown below:
 
 > text="awesome location and great staff. Staff provided excellent service."
 
 ```
- {'sentiment': {'location': 'positive', 'facility': 'positive'},
- 'overall_sentiment': 'positive'}
+{
+  'sentiment': {'location': 'positive', 'facility': 'positive'},
+  'overall_sentiment': 'positive'
+}
 ```
 
 ## Steps for enabling Sentiment Analysis component

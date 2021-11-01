@@ -38,8 +38,10 @@ identify the topics, and further sentiment analysis is being done for individual
 > text="awesome location and great staff. Staff provided excellent service."
 
 ```
- {'sentiment': {'location': 'positive', 'facility': 'positive'},
- 'overall_sentiment': 'positive'}
+{
+  'sentiment': {'location': 'positive', 'facility': 'positive'},
+  'overall_sentiment': 'positive'
+}
 ```
 
 ## Steps for enabling Sentiment Analysis component

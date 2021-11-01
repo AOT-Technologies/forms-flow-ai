@@ -39,16 +39,19 @@ export default React.memo(() => {
   const listReqParams = useSelector((state) => state.bpmTasks.listReqParams);
   const currentUser = useSelector((state) => state.user?.userDetail?.preferred_username || '');
   const firstResult = useSelector(state=> state.bpmTasks.firstResult);
+  const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const selectedFilterIdRef=useRef(selectedFilterId);
   const bpmTaskIdRef=useRef(bpmTaskId);
   const reqDataRef=useRef(reqData);
   const firstResultsRef=useRef(firstResult);
+  const taskListRef=useRef(taskList);
 
   useEffect(()=>{
     selectedFilterIdRef.current=selectedFilterId;
     bpmTaskIdRef.current=bpmTaskId;
     reqDataRef.current=reqData;
     firstResultsRef.current=firstResult;
+    taskListRef.current=taskList;
   });
 
   useEffect(()=>{
@@ -80,7 +83,10 @@ export default React.memo(() => {
     }
   },[filterList,isFilterLoading,selectedFilter,dispatch]);
 
-  const SocketIOCallback = useCallback((refreshedTaskId, forceReload) => {
+  const checkIfTaskIDExistsInList = (list,id)=>{
+    return list.some(task=>task.id===id);
+  }
+  const SocketIOCallback = useCallback((refreshedTaskId, forceReload, isUpdateEvent) => {
       if(forceReload){
         dispatch(fetchServiceTaskListCount(selectedFilterIdRef.current, reqDataRef.current));
         dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current,refreshedTaskId)); //Refreshes the Tasks
@@ -91,8 +97,16 @@ export default React.memo(() => {
         }
       } else{
         if(selectedFilterIdRef.current){
-          dispatch(fetchServiceTaskListCount(selectedFilterIdRef.current, reqDataRef.current));
-          dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current)); //Refreshes the Task
+          if(isUpdateEvent){
+            /* Check if the taskId exists in the loaded Task List */
+            if(checkIfTaskIDExistsInList(taskListRef.current,refreshedTaskId)===true){
+              dispatch(fetchServiceTaskListCount(selectedFilterIdRef.current, reqDataRef.current));
+              dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current)); //Refreshes the Task
+            }
+          }else{
+            dispatch(fetchServiceTaskListCount(selectedFilterIdRef.current, reqDataRef.current));
+            dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current)); //Refreshes the Task
+          }
         }
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current) { //Refreshes task if its selected
           dispatch(getBPMTaskDetail(bpmTaskIdRef.current,(err,resTask)=>{
@@ -109,10 +123,10 @@ export default React.memo(() => {
 
   useEffect(()=>{
     if(!SocketIOService.isConnected()){
-        SocketIOService.connect((refreshedTaskId, forceReload) => SocketIOCallback(refreshedTaskId, forceReload));
+        SocketIOService.connect((refreshedTaskId, forceReload, isUpdateEvent) => SocketIOCallback(refreshedTaskId, forceReload, isUpdateEvent));
     }else{
         SocketIOService.disconnect();
-        SocketIOService.connect((refreshedTaskId, forceReload) => SocketIOCallback(refreshedTaskId, forceReload));
+        SocketIOService.connect((refreshedTaskId, forceReload, isUpdateEvent) => SocketIOCallback(refreshedTaskId, forceReload, isUpdateEvent));
     }
     return ()=>{
       if(SocketIOService.isConnected())

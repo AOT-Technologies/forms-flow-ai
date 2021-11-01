@@ -1,7 +1,7 @@
 """This exports all of the schemas used by the application."""
 
 from .aggregated_application import (
-    AggregatedApplicationReqSchema,
+    ApplicationMetricsRequestSchema,
     AggregatedApplicationSchema,
 )
 from .application import (

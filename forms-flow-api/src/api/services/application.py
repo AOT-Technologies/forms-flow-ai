@@ -1,5 +1,5 @@
 """This exposes application service."""
-import logging
+
 from http import HTTPStatus
 from functools import lru_cache
 
@@ -11,6 +11,8 @@ from ..schemas import (
     FormProcessMapperSchema,
 )
 from .external import BPMService
+from api.utils import NEW_APPLICATION_STATUS
+from flask import current_app
 
 
 class ApplicationService:
@@ -19,7 +21,7 @@ class ApplicationService:
     @staticmethod
     def create_application(data, token):
         """Create new application."""
-        data["application_status"] = "New"
+        data["application_status"] = NEW_APPLICATION_STATUS
 
         mapper = FormProcessMapper.find_form_by_form_id(data["form_id"])
         data["form_process_mapper_id"] = mapper.id
@@ -42,12 +44,19 @@ class ApplicationService:
                     process_key=mapper.process_key, payload=payload, token=token
                 )
                 application.update({"process_instance_id": camunda_start_task["id"]})
+            except TypeError as camunda_error:
+                response = {
+                    "message": "Camunda workflow not able to create a task",
+                    "error": camunda_error,
+                }
+                current_app.logger.critical(response)
+                return response, HTTPStatus.BAD_GATEWAY
             except BaseException as application_err:
                 response = {
                     "systemErrors": application_err,
                     "message": "Camunda Process Mapper Key not provided",
                 }, HTTPStatus.BAD_REQUEST
-                logging.exception(response)
+                current_app.logger.warning(response)
                 return response
         return application
 
@@ -159,7 +168,7 @@ class ApplicationService:
 
     @staticmethod
     def get_all_applications_form_id_user(
-        form_id, user_id: str, page_no: int, limit: int
+        form_id, user_id: str, page_no: int, limit: int  # pylint: disable=C0330
     ):
         """Get all applications."""
         if page_no:
@@ -222,9 +231,29 @@ class ApplicationService:
         return schema.dump(applications, many=True)
 
     @staticmethod
+    def get_current_aggregated_applications(from_date: str, to_date: str):
+        """Get aggregated applications."""
+        applications = Application.find_aggregated_applications_modified(
+            from_date=from_date, to_date=to_date
+        )
+        schema = AggregatedApplicationSchema(exclude=("application_status",))
+        return schema.dump(applications, many=True)
+
+    @staticmethod
     def get_aggregated_application_status(mapper_id: int, from_date: str, to_date: str):
         """Get aggregated application status."""
         application_status = Application.find_aggregated_application_status(
+            mapper_id=mapper_id, from_date=from_date, to_date=to_date
+        )
+        schema = AggregatedApplicationSchema(exclude=("form_process_mapper_id",))
+        return schema.dump(application_status, many=True)
+
+    @staticmethod
+    def get_current_aggregated_application_status(
+        mapper_id: int, from_date: str, to_date: str
+    ):
+        """Get aggregated application status."""
+        application_status = Application.find_aggregated_application_status_modified(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date
         )
         schema = AggregatedApplicationSchema(exclude=("form_process_mapper_id",))
@@ -242,6 +271,7 @@ class ApplicationService:
 
     @staticmethod
     def apply_custom_attributes(application_schema):
+        """Wrapper function to call Application Schema Wrapper"""
         if isinstance(application_schema, list):
             for entry in application_schema:
                 ApplicationSchemaWrapper.apply_attributes(entry)
@@ -251,8 +281,13 @@ class ApplicationService:
 
 
 class ApplicationSchemaWrapper:
+    """ApplicationSchemaWrapper Class"""
+
     @staticmethod
     def apply_attributes(application):
+        """Wrapper function to call Application Schema Wrapper class
+        to find formid, submissionid from passed formUrl
+        """
         try:
             formurl = application["formUrl"]
             application["formId"] = formurl[

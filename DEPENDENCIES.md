@@ -15,7 +15,7 @@ In the following document, we’ll describe the details of dependencies of vario
         
    | Component | Version |  
    | ---       | -----   |
-   |  Python   |  3.8    |
+   |  Python   |  3.9    |
    | Flask     |  1.1.4  |
    |  Postgres |  11.0   |
      
@@ -49,7 +49,11 @@ In the following document, we’ll describe the details of dependencies of vario
    
    #### NOTE:
    * If you are using keycloak version **11.0 and above**, you can use the keycloak import script  [mentioned here](https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-idm/keycloak/imports/formsflow-ai-realm.json) .
+<<<<<<< HEAD
    * If you are in keycloak version **7.0 and above**, refer our [guide](https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-idm/keycloak/README.md#create-realm) on how to setup manually setup keycloak roles/users  .
+=======
+   * If you are in keycloak version **7.0 and above**, refer our [guide](https://github.com/AOT-Technologies/forms-flow-ai/blob/master/forms-flow-idm/keycloak/README.md#create-realm) on how to manually setup keycloak roles/users .
+>>>>>>> 5555c1b2a9a5496f1ab98e5339d66537e25974c2
    <br>
       
   ## 6. forms-flow-web

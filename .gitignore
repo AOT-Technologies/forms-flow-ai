@@ -25,7 +25,14 @@ yarn-error.log*
 # IntelliJ IDEA
 .idea
 *.iml
+<<<<<<< HEAD
 jobs/sentiment-analysis/venv
 jobs/sentiment-analysis/__pycache__
 jobs/sentiment-analysis/sentiment_analysis.egg-info
 jobs/sentiment-analysis/tests/__pycache__
+=======
+
+#Database
+postgres/
+mongodb/
+>>>>>>> 5555c1b2a9a5496f1ab98e5339d66537e25974c2

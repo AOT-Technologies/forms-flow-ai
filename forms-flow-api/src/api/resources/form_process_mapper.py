@@ -1,17 +1,15 @@
 """API endpoints for managing form resource."""
 
 from http import HTTPStatus
-import logging
-import sys, traceback
 
-from flask import g, request
+from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 
 from ..exceptions import BusinessException
 from ..schemas import ApplicationListReqSchema, FormProcessMapperSchema
 from ..services import FormProcessMapperService
-from api.utils.auth import auth
-from api.utils.util import cors_preflight
+
+from api.utils import auth, cors_preflight, profiletime
 
 
 API = Namespace("Form", description="Form")
@@ -24,6 +22,7 @@ class FormResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get():
         """Get form process mapper."""
         try:
@@ -64,7 +63,6 @@ class FormResource(Resource):
                 )
                 return response, status
         except KeyError as err:
-            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -73,25 +71,23 @@ class FormResource(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.exception(response)
-            logging.exception(err)
-            # traceback.print_tb(exc_traceback)
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
             return response, status
 
         except BaseException as form_err:
-            exc_traceback = sys.exc_info()
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(form_err)
-            # traceback.print_tb(exc_traceback)
+            current_app.logger.warning(response)
+            current_app.logger.warning(form_err)
             return response, status
 
     @staticmethod
     @auth.require
+    @profiletime
     def post():
         """Post a form process mapper using the request body."""
         mapper_json = request.get_json()
@@ -106,16 +102,13 @@ class FormResource(Resource):
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
             return response, status
         except BaseException as form_err:
-            exc_traceback = sys.exc_info()
             response, status = {
                 "message": "Invalid request object passed for FormProcessmapper POST API",
                 "errors": form_err.messages,
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(form_err)
-            # traceback.print_tb(exc_traceback)
-
+            current_app.logger.warning(response)
+            current_app.logger.warning(form_err)
             return response, status
 
 
@@ -126,6 +119,7 @@ class FormResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(mapper_id):
         """Get form process mapper by id."""
         try:
@@ -134,9 +128,6 @@ class FormResourceById(Resource):
                 HTTPStatus.OK,
             )
         except BusinessException as err:
-
-            exc_traceback = sys.exc_info()
-
             response, status = (
                 {
                     "type": "Invalid response data",
@@ -145,22 +136,18 @@ class FormResourceById(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.exception(response)
-            # traceback.print_tb(exc_traceback)
-
+            current_app.logger.warning(response)
             return response, status
 
     @staticmethod
     @auth.require
+    @profiletime
     def delete(mapper_id):
         """Delete form process mapper by id."""
         try:
             FormProcessMapperService.mark_inactive(form_process_mapper_id=mapper_id)
             return "Deleted", HTTPStatus.OK
         except BusinessException as err:
-
-            exc_traceback = sys.exc_info()
-
             response, status = (
                 {
                     "type": "Invalid response data",
@@ -169,9 +156,8 @@ class FormResourceById(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
-            logging.exception(response)
-            logging.exception(err)
-            # traceback.print_tb(exc_traceback)
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
     @staticmethod
@@ -194,18 +180,13 @@ class FormResourceById(Resource):
                 HTTPStatus.OK,
             )
         except BaseException as mapper_err:
-
-            exc_traceback = sys.exc_info()
-
             response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid request passed",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(mapper_err)
-            # traceback.print_tb(exc_traceback)
-
+            current_app.logger.warning(response)
+            current_app.logger.warning(mapper_err)
             return response, status
 
 
@@ -216,6 +197,7 @@ class FormResourceByFormId(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(form_id):
         """Get details of only form corresponding to a particular formId."""
         try:
@@ -224,8 +206,6 @@ class FormResourceByFormId(Resource):
                 HTTPStatus.OK,
             )
         except BusinessException as err:
-
-            exc_traceback = sys.exc_info()
             response, status = (
                 {
                     "type": "No Response",
@@ -233,7 +213,5 @@ class FormResourceByFormId(Resource):
                 },
                 HTTPStatus.NO_CONTENT,
             )
-            logging.info(response)
-            # traceback.print_tb(exc_traceback)
-
+            current_app.logger.info(response)
             return response, status

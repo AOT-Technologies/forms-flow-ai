@@ -5456,7 +5456,7 @@
         ]
       },
       "createNewBusinessLicenseApplication": {
-        "title": "Create New Business License Application",
+        "title": "New Business License Application",
         "type": "form",
         "name": "createNewBusinessLicenseApplication",
         "path": "createnewbusinesslicenseapplication",

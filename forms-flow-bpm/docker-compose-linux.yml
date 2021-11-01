@@ -7,7 +7,6 @@ services:
       POSTGRES_USER: ${CAMUNDA_JDBC_USER:-admin}
       POSTGRES_PASSWORD: ${CAMUNDA_JDBC_PASSWORD:-changeme}
       POSTGRES_DB: ${CAMUNDA_JDBC_DB_NAME:-formsflow-bpm}
-      POSTGRES_HOST_AUTH_METHOD: 'trust'
     volumes:
       - ./postgres/camunda:/var/lib/postgresql/data
     ports:

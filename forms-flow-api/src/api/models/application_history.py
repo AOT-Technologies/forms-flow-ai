@@ -16,7 +16,7 @@ class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     form_url = db.Column(db.String(500), nullable=False)
 
     @classmethod
-    def create_from_dict(cls, application_audit_info: dict) -> ApplicationAudit:
+    def create_from_dict(cls, application_audit_info: dict) -> ApplicationHistory:
         """Create new application."""
         if application_audit_info:
             application_audit = ApplicationHistory()
@@ -44,7 +44,7 @@ class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
             FROM "application_audit" audit
             WHERE
                 {where_condition}
-            GROUP BY (application_status,form_url,created)    
+            GROUP BY (application_status,form_url,created)
             ORDER BY created
             """
         )

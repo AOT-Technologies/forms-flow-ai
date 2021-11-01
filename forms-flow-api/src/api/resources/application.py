@@ -1,25 +1,18 @@
 """API endpoints for managing application resource."""
 
 from http import HTTPStatus
-import logging
 
-import sys, traceback
-
-
-from flask import g, request
+from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 
 from api.exceptions import BusinessException
-from api.schemas.aggregated_application import AggregatedApplicationReqSchema
 from api.schemas.application import (
     ApplicationListReqSchema,
     ApplicationSchema,
     ApplicationUpdateSchema,
 )
 from api.services import ApplicationService
-from api.utils.auth import auth
-from api.utils.util import cors_preflight
-from api.utils.constants import REVIEWER_GROUP
+from api.utils import REVIEWER_GROUP, auth, cors_preflight, profiletime
 
 
 API = Namespace("Application", description="Application")
@@ -32,6 +25,7 @@ class ApplicationsResource(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get():
         """Get applications."""
         if request.args:
@@ -115,6 +109,7 @@ class ApplicationResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(application_id):
         """Get application by id."""
         try:
@@ -141,6 +136,7 @@ class ApplicationResourceById(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def put(application_id):
         """Update application details."""
         application_json = request.get_json()
@@ -154,15 +150,13 @@ class ApplicationResourceById(Resource):
             )
             return "Updated successfully", HTTPStatus.OK
         except BaseException as submission_err:
-            exc_traceback = sys.exc_info()
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data",
             }, HTTPStatus.BAD_REQUEST
 
-            logging.exception(response)
-            logging.exception(submission_err)
-            # traceback.print_tb(exc_traceback)
+            current_app.logger.warning(response)
+            current_app.logger.warning(submission_err)
 
             return response, status
 
@@ -174,6 +168,7 @@ class ApplicationResourceByFormId(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def get(form_id):
         """Get applications."""
         if request.args:
@@ -239,6 +234,7 @@ class ApplicationResourcesByIds(Resource):
 
     @staticmethod
     @auth.require
+    @profiletime
     def post():
         """Post a new application using the request body."""
         application_json = request.get_json()
@@ -255,95 +251,12 @@ class ApplicationResourcesByIds(Resource):
             response, status = application_schema.dump(application), HTTPStatus.CREATED
             return response, status
         except BaseException as application_err:
-            exc_traceback = sys.exc_info()
-            response = {
+            response, status = {
                 "type": "Bad request error",
                 "message": "Invalid application request passed",
-            }
-            logging.exception(response)
-            logging.exception(application_err)
-            # traceback.print_tb(exc_traceback)
-            return response
-
-
-@cors_preflight("GET,OPTIONS")
-@API.route("/metrics", methods=["GET", "OPTIONS"])
-class AggregatedApplicationsResource(Resource):
-    """Resource for managing aggregated applications."""
-
-    @staticmethod
-    @auth.require
-    def get():
-        """Get aggregated applications."""
-        try:
-            request_schema = AggregatedApplicationReqSchema()
-            dict_data = request_schema.load(request.args)
-            from_date = dict_data["from_date"]
-            to_date = dict_data["to_date"]
-
-            return (
-                (
-                    {
-                        "applications": ApplicationService.get_aggregated_applications(
-                            from_date=from_date, to_date=to_date
-                        )
-                    }
-                ),
-                HTTPStatus.OK,
-            )
-        except BaseException as agg_err:
-
-            exc_traceback = sys.exc_info()
-
-            response, status = {
-                "message": "Invalid request object for application metrics endpoint",
-                "errors": agg_err,
             }, HTTPStatus.BAD_REQUEST
-
-            logging.exception(response)
-            logging.exception(agg_err)
-            # traceback.print_tb(exc_traceback)
-
-            return response, status
-
-
-@cors_preflight("GET,OPTIONS")
-@API.route("/metrics/<int:mapper_id>", methods=["GET", "OPTIONS"])
-class AggregatedApplicationStatusResource(Resource):
-    """Resource for managing aggregated applications."""
-
-    @staticmethod
-    @auth.require
-    def get(mapper_id):
-        """Get aggregated application status."""
-        try:
-            request_schema = AggregatedApplicationReqSchema()
-            dict_data = request_schema.load(request.args)
-            from_date = dict_data["from_date"]
-            to_date = dict_data["to_date"]
-
-            return (
-                (
-                    {
-                        "applicationStatus": ApplicationService.get_aggregated_application_status(
-                            mapper_id=mapper_id, from_date=from_date, to_date=to_date
-                        )
-                    }
-                ),
-                HTTPStatus.OK,
-            )
-        except BaseException as agg_err:
-
-            exc_traceback = sys.exc_info()
-
-            response, status = {
-                "message": "Invalid request object for application metrics endpoint",
-                "errors": agg_err,
-            }, HTTPStatus.BAD_REQUEST
-
-            logging.exception(response)
-            logging.exception(agg_err)
-            # traceback.print_tb(exc_traceback)
+            current_app.logger.warning(response)
+            current_app.logger.warning(application_err)
             return response, status
 
 
@@ -353,6 +266,8 @@ class ProcessMapperResourceByApplicationId(Resource):
     """Resource for managing process details."""
 
     @staticmethod
+    @auth.require
+    @profiletime
     def get(application_id):
 
         try:

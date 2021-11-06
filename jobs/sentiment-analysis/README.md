@@ -14,7 +14,7 @@ Below are the key configuration values to point the analysis to correct data;
 
 ## Development Setup
 
-1. Open the jobs/sentiment-analysis directory in VS Code to treat it as a project (or WSL projec). To prevent version clashes, set up a
+1. Open the jobs/sentiment-analysis directory in VS Code to treat it as a project (or WSL project). To prevent version clashes, set up a
 virtual environment to install the Python packages used by this project.
 2. Run `make setup` to set up the virtual environment and install libraries.
 

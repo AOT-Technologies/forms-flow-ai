@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.keycloak.showcase.test.util;
+package org.camunda.bpm.extension.keycloak.test.util;
 
 import org.camunda.bpm.engine.history.HistoricProcessInstance;
 import org.camunda.bpm.engine.runtime.ProcessInstance;

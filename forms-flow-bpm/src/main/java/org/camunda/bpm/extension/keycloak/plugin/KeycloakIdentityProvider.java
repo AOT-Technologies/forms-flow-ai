@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.keycloak.showcase.plugin;
+package org.camunda.bpm.extension.keycloak.plugin;
 
 import org.camunda.bpm.extension.keycloak.plugin.KeycloakIdentityProviderPlugin;
 import org.springframework.boot.context.properties.ConfigurationProperties;

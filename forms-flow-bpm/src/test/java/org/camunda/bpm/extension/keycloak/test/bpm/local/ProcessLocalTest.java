@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.keycloak.showcase.test.bpm.local;
+package org.camunda.bpm.extension.keycloak.test.bpm.local;
 
 import static org.camunda.bpm.engine.test.assertions.bpmn.AbstractAssertions.init;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertThat;
@@ -20,8 +20,8 @@ import org.camunda.bpm.engine.task.Task;
 import org.camunda.bpm.engine.test.Deployment;
 import org.camunda.bpm.engine.test.ProcessEngineRule;
 import org.camunda.bpm.engine.test.mock.Mocks;
-import org.camunda.bpm.extension.keycloak.showcase.ProcessConstants.Variable;
-import org.camunda.bpm.extension.keycloak.showcase.task.LoggerDelegate;
+import org.camunda.bpm.extension.keycloak.ProcessConstants;
+import org.camunda.bpm.extension.keycloak.task.LoggerDelegate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -99,7 +99,7 @@ public class ProcessLocalTest {
 	public void testApprovedPath() throws Exception {
 		// start process
 		ProcessInstance pi = runtimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY,
-				withVariables(Variable.NAME, "Demo"));
+				withVariables(ProcessConstants.Variable.NAME, "Demo"));
 		assertThat(pi).isStarted();
 
 		// check user task and approve user
@@ -128,7 +128,7 @@ public class ProcessLocalTest {
 	public void testNotApprovedPath() throws Exception {
 		// start process
 		ProcessInstance pi = runtimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY,
-				withVariables(Variable.NAME, "Demo"));
+				withVariables(ProcessConstants.Variable.NAME, "Demo"));
 		assertThat(pi).isStarted();
 
 		// check user task and do not approve user

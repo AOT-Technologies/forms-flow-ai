@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.keycloak.showcase.task;
+package org.camunda.bpm.extension.keycloak.task;
 
 import java.util.logging.Logger;
 

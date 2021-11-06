@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.keycloak.showcase;
+package org.camunda.bpm.extension.keycloak;
 
 public interface ProcessConstants {
 

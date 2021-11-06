@@ -1,7 +1,8 @@
-package org.camunda.bpm.extension.keycloak.showcase.rest;
+package org.camunda.bpm.extension.keycloak.rest;
 
 import javax.validation.constraints.NotEmpty;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -12,6 +13,7 @@ import org.springframework.validation.annotation.Validated;
 @Component
 @ConfigurationProperties(prefix = "rest.security")
 @Validated
+@Data
 public class RestApiSecurityConfigurationProperties {
 
 	/** 
@@ -28,7 +30,7 @@ public class RestApiSecurityConfigurationProperties {
 	 * JWK Set URL (e.g. https://<keycloak-host:port>/auth/realms/camunda/protocol/openid-connect/certs).
 	 */
 	@NotEmpty
-	private String jwkSetUrl;
+	private String provider;
 	
 	/** 
 	 * rest.security.required-audience:
@@ -37,35 +39,4 @@ public class RestApiSecurityConfigurationProperties {
 	 */
 	@NotEmpty
 	private String requiredAudience;
-
-	// ------------------------------------------------------------------------
-
-	/**
-	 * @return the jwkSetUrl
-	 */
-	public String getJwkSetUrl() {
-		return jwkSetUrl;
-	}
-
-	/**
-	 * @param jwkSetUrl the jwkSetUrl to set
-	 */
-	public void setJwkSetUrl(String jwkSetUrl) {
-		this.jwkSetUrl = jwkSetUrl;
-	}
-
-	/**
-	 * @return the requiredAudience
-	 */
-	public String getRequiredAudience() {
-		return requiredAudience;
-	}
-
-	/**
-	 * @param requiredAudience the requiredAudience to set
-	 */
-	public void setRequiredAudience(String requiredAudience) {
-		this.requiredAudience = requiredAudience;
-	} 
-
 }

@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.keycloak.showcase.sso;
+package org.camunda.bpm.extension.keycloak.sso;
 
 import java.io.IOException;
 
@@ -15,7 +15,7 @@ import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 /**
  * Keycloak Logout Handler.
@@ -31,13 +31,13 @@ public class KeycloakLogoutHandler implements LogoutSuccessHandler {
 	
 	/** Keycloak's logout URI. */
 	private String oauth2UserLogoutUri;
-	
+
 	/**
 	 * Default constructor.
 	 * @param oauth2UserAuthorizationUri configured keycloak authorization URI
 	 */
-	public KeycloakLogoutHandler(@Value("${security.oauth2.client.user-authorization-uri:}") String oauth2UserAuthorizationUri) {
-		if (!StringUtils.isEmpty(oauth2UserAuthorizationUri)) {
+	public KeycloakLogoutHandler(@Value("${spring.security.oauth2.client.provider.keycloak.authorization-uri:}") String oauth2UserAuthorizationUri) {
+		if (!ObjectUtils.isEmpty(oauth2UserAuthorizationUri)) {
 			// in order to get the valid logout uri: simply replace "/auth" at the end of the user authorization uri with "/logout"
 			this.oauth2UserLogoutUri = oauth2UserAuthorizationUri.replace("openid-connect/auth", "openid-connect/logout");
 		}
@@ -49,21 +49,22 @@ public class KeycloakLogoutHandler implements LogoutSuccessHandler {
 	@Override
 	public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
 			throws IOException, ServletException {
-		if (!StringUtils.isEmpty(oauth2UserLogoutUri)) {
+
+		if (!ObjectUtils.isEmpty(oauth2UserLogoutUri)) {
 			// Calculate redirect URI for Keycloak, something like http://<host:port>/camunda/login
 			String requestUrl = request.getRequestURL().toString();
-			String redirectUri = requestUrl.substring(0, requestUrl.indexOf("/app")) + "/login";
+			String redirectUri = requestUrl.substring(0, requestUrl.indexOf("/app"));
 			// Complete logout URL
 			String logoutUrl = oauth2UserLogoutUri + "?redirect_uri=" + redirectUri;
 			Cookie[] cookies = request.getCookies();
 			for (Cookie cookie : cookies) {
-				LOG.error("-------cookie---------->"+cookie.getName());
+				LOG.debug("-------cookie---------->"+cookie.getName());
 				cookie.setMaxAge(0);
 				cookie.setValue(null);
 				cookie.setPath("/camunda");
 				response.addCookie(cookie);
 			}
-			LOG.error("-------context path---------->"+request.getContextPath());
+			LOG.debug("-------context path---------->"+request.getContextPath());
 			//To remove JSESSIONID
 			Cookie cookieWithSlash = new Cookie("JSESSIONID", null);
 			//Tomcat adds extra slash at the end of context path (e.g. "/foo/")
@@ -79,7 +80,7 @@ public class KeycloakLogoutHandler implements LogoutSuccessHandler {
 			response.addCookie(cookieWithSlash); //For Tomcat
 			response.addCookie(cookieWithoutSlash); //For JBoss
 			// Do logout by redirecting to Keycloak logout
-			LOG.error("Redirecting to logout URL {}", logoutUrl);
+			LOG.debug("Redirecting to logout URL {}", logoutUrl);
 			redirectStrategy.sendRedirect(request, response, logoutUrl);
 		}
 	}	

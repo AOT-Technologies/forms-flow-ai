@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.keycloak.showcase.rest;
+package org.camunda.bpm.extension.keycloak.rest;
 
 import java.util.Arrays;
 import java.util.Collection;

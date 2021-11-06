@@ -86,7 +86,7 @@ public class ExternalSubmissionListener extends BaseListener implements Executio
             execution.setVariable("applicationId", applicationId);
         } else {
             if(retryOnce) {
-                LOGGER.error("Retrying the application create once more due to previous failure");
+                LOGGER.warn("Retrying the application create once more due to previous failure");
                 createApplication(execution, false);
             } else {
                 throw new ApplicationServiceException("Unable to create application " + ". Message Body: " +

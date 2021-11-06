@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.keycloak.showcase.sso;
+package org.camunda.bpm.extension.keycloak.sso;
 
 import java.io.IOException;
 import java.util.Arrays;

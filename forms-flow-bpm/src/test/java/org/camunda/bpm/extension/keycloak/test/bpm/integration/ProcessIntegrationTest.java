@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.keycloak.showcase.test.bpm.integration;
+package org.camunda.bpm.extension.keycloak.test.bpm.integration;
 
 import static org.camunda.bpm.engine.test.assertions.bpmn.AbstractAssertions.init;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertThat;
@@ -6,15 +6,16 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.complet
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.runtimeService;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.task;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.withVariables;
-import static org.camunda.bpm.extension.keycloak.showcase.test.util.ProcessTestAssertions.waitUntil;
+import static org.camunda.bpm.extension.keycloak.test.util.ProcessTestAssertions.waitUntil;
 import static org.junit.Assert.assertNotNull;
 
 import org.apache.ibatis.logging.LogFactory;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.camunda.bpm.engine.task.Task;
-import org.camunda.bpm.extension.keycloak.showcase.ProcessConstants.Variable;
-import org.camunda.bpm.extension.keycloak.showcase.plugin.KeycloakIdentityProvider;
+import org.camunda.bpm.extension.keycloak.ProcessConstants;
+import org.camunda.bpm.extension.keycloak.plugin.KeycloakIdentityProvider;
+import org.camunda.bpm.extension.keycloak.test.util.ProcessTestAssertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -71,7 +72,7 @@ public class ProcessIntegrationTest {
 	public void testApprovedPath() {
 		// start process
 		ProcessInstance pi = runtimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY,
-				withVariables(Variable.NAME, "Demo"));
+				withVariables(ProcessConstants.Variable.NAME, "Demo"));
 		assertThat(pi).isStarted();
 
 		// check user task and approve user
@@ -81,7 +82,7 @@ public class ProcessIntegrationTest {
 		complete(task, withVariables("approved", Boolean.TRUE));
 
 		// check service task (asynchronous continuation)
-		waitUntil(pi).hasPassed("ServiceTask_Logger");
+		ProcessTestAssertions.waitUntil(pi).hasPassed("ServiceTask_Logger");
 
 		// check corresponding process end
 		assertThat(pi).hasPassed("END_APPROVED");
@@ -97,7 +98,7 @@ public class ProcessIntegrationTest {
 	public void testNotApprovedPath() {
 		// start process
 		ProcessInstance pi = runtimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY,
-				withVariables(Variable.NAME, "Demo"));
+				withVariables(ProcessConstants.Variable.NAME, "Demo"));
 		assertThat(pi).isStarted();
 
 		// check user task and do not approve user

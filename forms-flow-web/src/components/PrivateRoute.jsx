@@ -8,13 +8,14 @@ import {CLIENT, STAFF_REVIEWER} from "../constants/constants";
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
+//import Admin from "./Admin";
 
 const Form = lazy(() => import('./Form'));
 const ServiceFlow = lazy(() => import('./ServiceFlow'));
 const DashboardPage = lazy(() => import("./Dashboard"));
 const InsightsPage = lazy(() => import("./Insights"));
 const Application = lazy(() => import("./Application"));
-
+const Admin = lazy(() => import("./Admin"))
 const PrivateRoute = React.memo((props) => {
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.user.isAuthenticated);
@@ -60,6 +61,7 @@ const PrivateRoute = React.memo((props) => {
         <Suspense fallback={<Loading/>}>
           <Switch>
             <Route path="/form" component={Form}/>
+            <Route path="/admin" component={Admin}/>
             <Route path="/formflow" component={Form}/>
             <ClientReviewerRoute path="/application" component={Application}/>
             <ReviewerRoute path="/metrics" component={DashboardPage}/>

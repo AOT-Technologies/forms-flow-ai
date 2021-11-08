@@ -6,7 +6,7 @@ import UserService from "../services/UserService";
 import {getUserRoleName, getUserRolePermission} from "../helper/user";
 
 import "./styles.scss";
-import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME} from "../constants/constants";
+import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME, STAFF_DESIGNER} from "../constants/constants";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import {push} from "connected-react-router";
 
@@ -68,6 +68,11 @@ const NavBar = React.memo(() => {
               <Nav.Link as={Link} to='/form'  className={`main-nav nav-item ${
                 pathname.match(/^\/form/) ? "active-tab" : ""
               }`}>  <i className="fa fa-wpforms fa-fw fa-lg"/> Forms</Nav.Link>
+              {(getUserRolePermission(userRoles, STAFF_DESIGNER)) ?
+                (<Nav.Link as={Link} to='/admin'  className={`main-nav nav-item ${
+                  pathname.match(/^\/admin/) ? "active-tab" : ""
+                }`}> <i className="fa fa-list-alt fa-fw fa-lg " /> Admin</Nav.Link>)
+                :null}
 
               {showApplications?(getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)) ?
                 (<Nav.Link as={Link} to='/application'  className={`main-nav nav-item ${

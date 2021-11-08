@@ -37,7 +37,7 @@ import java.util.logging.Logger;
 @Named("BPMFormDataPipelineListener")
 public class BPMFormDataPipelineListener extends BaseListener implements TaskListener, ExecutionListener {
 
-    private static final Logger LOGGER = Logger.getLogger(BPMFormDataPipelineListener.class.getName());
+    private Logger LOGGER = Logger.getLogger(BPMFormDataPipelineListener.class.getName());
 
     private Expression fields;
 

@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.keycloak.rest;
 import javax.validation.constraints.NotEmpty;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -10,10 +11,11 @@ import org.springframework.validation.annotation.Validated;
 /**
  * Complete Security Configuration Properties for Camunda REST Api.
  */
-@Component
-@ConfigurationProperties(prefix = "rest.security")
-@Validated
 @Data
+@Component
+@Validated
+@NoArgsConstructor
+@ConfigurationProperties(prefix = "rest.security")
 public class RestApiSecurityConfigurationProperties {
 
 	/** 

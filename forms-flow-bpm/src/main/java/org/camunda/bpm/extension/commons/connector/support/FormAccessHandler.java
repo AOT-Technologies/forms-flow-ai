@@ -29,6 +29,10 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
 
     private final Logger logger = LoggerFactory.getLogger(FormAccessHandler.class.getName());
 
+    static final String TOKEN_NAME = "formio_access_token";
+    static final String TOKEN_PROCESS_NAME = "formio-access-token";
+    static final int TOKEN_EXPIRY_CODE = 404;
+
     @Autowired
     private NamedParameterJdbcTemplate bpmJdbcTemplate;
 
@@ -114,9 +118,4 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
         parameters.addValue("processDefinitionId", processDefinitionId);
         return bpmJdbcTemplate.queryForObject(query,parameters, String.class);
     }
-
-    static final String TOKEN_NAME = "formio_access_token";
-    static final String TOKEN_PROCESS_NAME = "formio-access-token";
-    static final int TOKEN_EXPIRY_CODE = 440;
-
 }

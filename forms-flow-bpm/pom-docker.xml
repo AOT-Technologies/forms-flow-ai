@@ -212,19 +212,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- TODO Upgrade to newer BPM assert version
-		     See: https://docs.camunda.org/manual/7.11/user-guide/testing/#migration-from-community-versions
-		  -->
 		<dependency>
 			<groupId>org.camunda.bpm.assert</groupId>
 			<artifactId>camunda-bpm-assert</artifactId>
-			<version>5.0.0</version>
+			<version>12.0.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>1.7.1</version>
+			<version>3.21.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -311,18 +308,47 @@
 			<url>https://app.camunda.com/nexus/repository/camunda-bpm-community-extensions-snapshots</url>
 		</repository>
 
-		<!-- Camunda EE Repository, login data see settings-docker.xml
-		<repository>
-			<id>camunda-bpm-ee</id>
-			<name>Camunda Enterprise Maven Repository</name>
-			<url>https://app.camunda.com/nexus/content/repositories/camunda-bpm-ee</url>
-		</repository>
-		-->
 	</repositories>
 
 	<build>
 		<finalName>forms-flow-bpm</finalName>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.7</version>
+				<configuration>
+					<outputDirectory>target/jacoco-ut</outputDirectory>
+					<excludes>
+						<exclude>org/camunda/bpm/extension/keycloak/sso/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/keycloak/rest/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/keycloak/rest/oauth2client/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/keycloak/plugin/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/controllers/data/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/listeners/data/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/services/IUser.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/delegates/data/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/io/socket/message/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/io/socket/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/connector/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/CamundaApplication.class</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -362,8 +388,23 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
+						<version>3.0.0-M5</version>
+					</plugin>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>0.8.7</version>
 						<configuration>
+							<outputDirectory>target/jacoco-ut</outputDirectory>
 						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>prepare-agent</goal>
+									<goal>report</goal>
+								</goals>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>

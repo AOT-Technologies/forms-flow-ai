@@ -39,7 +39,7 @@ import static org.camunda.bpm.engine.authorization.Authorization.AUTH_TYPE_GLOBA
  * The Camunda Showcase Spring Boot application.
  */
 @EnableConfigurationProperties
-@PropertySource("application.yaml")
+@PropertySource("classpath:application.yaml")
 @SpringBootApplication(scanBasePackages = {"org.camunda.bpm.extension"}, exclude = ReactiveOAuth2ClientAutoConfiguration.class)
 @EnableProcessApplication("camunda.showcase")
 public class CamundaApplication {

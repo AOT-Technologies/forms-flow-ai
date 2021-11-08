@@ -32,7 +32,7 @@ public class WebClientOauth2Config {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebClientOauth2Config.class);
 
-    @Bean
+/*    @Bean
     public WebClient authenticatedWebClient(OAuth2AuthorizedClientManager authorizedClientManager) {
         ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2 = new ServletOAuth2AuthorizedClientExchangeFilterFunction(
                 authorizedClientManager);
@@ -40,7 +40,7 @@ public class WebClientOauth2Config {
         return WebClient.builder()
                 .apply(oauth2.oauth2Configuration())
                 .build();
-    }
+    }*/
 
 
     @Bean
@@ -67,7 +67,7 @@ public class WebClientOauth2Config {
     }*/
 
 
-    @Bean
+/*    @Bean
     public OAuth2AuthorizedClientManager authorizedClientManager(ClientRegistrationRepository clientRegistrationRepository,
                                                           OAuth2AuthorizedClientRepository authorizedClientRepository) {
         OAuth2AuthorizedClientProvider authorizedClientProvider =
@@ -82,5 +82,5 @@ public class WebClientOauth2Config {
         authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
 
         return authorizedClientManager;
-    }
+    }*/
 }

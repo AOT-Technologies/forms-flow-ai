@@ -27,6 +27,8 @@ services:
     volumes:
       - ./:/app:rw
     environment:
+      ANALYTICS_API_KEY: ${ANALYTICS_API_KEY}
+      ANALYTICS_API_URL: ${ANALYTICS_API_URL}
       DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
       BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
       BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
@@ -34,12 +36,10 @@ services:
       BPM_API_BASE: ${CAMUNDA_API_URL}
       FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
       JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
-      JWT_OIDC_ALGORITHMS: 'RS256'
       JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
       JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
       JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
-      JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
     stdin_open: true # -i
     tty: true # -t

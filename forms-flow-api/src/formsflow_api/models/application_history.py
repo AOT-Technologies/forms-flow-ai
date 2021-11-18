@@ -8,7 +8,6 @@ from formsflow_api.models.db import db
 
 class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     """This class manages application audit against each form."""
-
     __tablename__ = "application_audit"
     id = db.Column(db.Integer, primary_key=True)
     application_id = db.Column(db.Integer, nullable=False)

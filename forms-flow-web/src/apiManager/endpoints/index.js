@@ -5,7 +5,7 @@ const API = {
   INSIGHTS_API_KEY: INSIGHTS_API_KEY,
   GET_TASK_API: `${WEB_BASE_URL}/task`,
   GET_TASK_DETAIL_API: `${WEB_BASE_URL}/task/`,
-  GET_DASHBOARDS: `${INSIGHTS_BASE_API}/dashboards`,
+  GET_DASHBOARDS: `${WEB_BASE_URL}/dashboards`,
   METRICS_SUBMISSIONS: `${WEB_BASE_URL}/metrics`,
   APPLICATION_START: `${WEB_BASE_URL}/application/create`,
   PROCESS_STATE: `${WEB_BASE_URL}/process/<process_key>/task/<task_key>/state`,

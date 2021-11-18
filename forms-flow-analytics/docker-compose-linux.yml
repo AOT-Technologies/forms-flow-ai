@@ -1,8 +1,8 @@
-# Author: Gurumoorthy Mohan
+# Author: Gurumoorthy Mohan, Kurian Benoy
 version: "3.7"
 
 x-redash-service: &redash-service
-  build: https://github.com/AOT-Technologies/redash.git
+  image: redash/redash:10.0.0.b50363
   depends_on:
       - postgres
       - redis
@@ -12,32 +12,32 @@ x-redash-service: &redash-service
 services:
   server:
     <<: *redash-service
-    command: dev_server
+    command: server
     ports:
       - '7000:5000'
     environment:
       REDASH_WEB_WORKERS: 4
   scheduler:
     <<: *redash-service
-    command: dev_scheduler
+    command: scheduler
     depends_on:
       - server
+  scheduled_worker:
+    <<: *redash-service
+    command: worker
+  adhoc_worker:
+    <<: *redash-service
+    command: worker
   worker:
     <<: *redash-service
-    command: dev_worker
+    command: worker
     environment:
       QUEUES: "periodic emails default"
       WORKERS_COUNT: 1
     depends_on:
       - server
-  adhoc_worker:
-    <<: *redash-service
-    command: worker
-    environment:
-      QUEUES: "queries"
-      WORKERS_COUNT: 2
   redis:
-    image: redis:3-alpine
+    image: redis:6-alpine
     restart: always
   postgres:
     image: postgres:9.6-alpine
@@ -47,3 +47,8 @@ services:
     env_file: .env
     volumes:
       - ./postgres/analytics:/var/lib/postgresql/data
+  email:
+    image: djfarrelly/maildev
+    ports:
+      - "1080:80"
+    restart: unless-stopped

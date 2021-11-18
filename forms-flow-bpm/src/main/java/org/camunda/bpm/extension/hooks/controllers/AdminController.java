@@ -4,6 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
@@ -21,7 +24,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.jwt.JwtHelper;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,6 +34,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
 import org.camunda.bpm.engine.authorization.Resources;
 
+import javax.servlet.ServletException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +64,7 @@ public class AdminController {
     private String adminGroupName;
 
     @RequestMapping(value = "/engine-rest-ext/form", method = RequestMethod.GET, produces = "application/json")
-    private @ResponseBody List<AuthorizedAction> getForms() {
+    private @ResponseBody List<AuthorizedAction> getForms() throws ServletException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
         List<Authorization> authorizationList =  getAuthorization(groups);
@@ -82,7 +90,7 @@ public class AdminController {
                 }
                 if(CollectionUtils.isNotEmpty(groups) && groups.contains(adminGroupName)) {
                     for(AuthorizedAction formObj : formList) {
-                        if(isExists(filteredList, formObj.getFormId()) == false) {
+                        if(!isExists(filteredList, formObj.getFormId())) {
                             filteredList.add(formObj);
                         }
 
@@ -90,7 +98,7 @@ public class AdminController {
                 } else {
                     for (Authorization authObj : authorizationList) {
                         for (AuthorizedAction formObj : formList) {
-                            if (authObj.getResourceId().equals(formObj.getProcessKey()) && isExists(filteredList, formObj.getFormId()) == false)  {
+                            if (authObj.getResourceId().equals(formObj.getProcessKey()) && !isExists(filteredList, formObj.getFormId()))  {
                                 filteredList.add(formObj);
                             }
                         }
@@ -125,27 +133,30 @@ public class AdminController {
      * @param authentication
      * @return
      */
-    private List<String> getGroups(Authentication authentication) {
-        OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
-        String accessToken = details.getTokenValue();
-        String claims = JwtHelper.decode(accessToken).getClaims();
-        List<String> groups = new ArrayList<>();
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            JsonNode dataNode = mapper.readTree(claims);
-            for (final JsonNode objNode : dataNode.get("groups")) {
-                System.out.println(objNode);
-                String groupName = StringEscapeUtils.unescapeJava(objNode.asText());
+    private List<String> getGroups(Authentication authentication) throws ServletException {
+
+        Map<String, Object> claims;
+        if (authentication instanceof JwtAuthenticationToken) {
+            claims = ((JwtAuthenticationToken)authentication).getToken().getClaims();
+        } else if (authentication.getPrincipal() instanceof OidcUser) {
+            claims = ((OidcUser)authentication.getPrincipal()).getClaims();
+        } else {
+            throw new ServletException("Invalid authentication request token");
+        }
+
+        List<String> groupIds = new ArrayList<>();
+        if(claims != null && claims.containsKey("groups")) {
+            JSONArray groups = (JSONArray)claims.get("groups");
+            for (Object group1 : groups) {
+                String groupName = group1.toString();
                 if(StringUtils.startsWith(groupName,"/")) {
-                    groups.add(StringUtils.substring(groupName,1));
+                    groupIds.add(StringUtils.substring(groupName,1));
                 } else {
-                    groups.add(groupName);
+                    groupIds.add(groupName);
                 }
             }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
         }
-        return groups;
+        return groupIds;
     }
 
     /**

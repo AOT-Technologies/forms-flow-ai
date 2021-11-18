@@ -6,7 +6,7 @@
 MKFILE_PATH:=$(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_ABS_DIR:=$(patsubst %/,%,$(dir $(MKFILE_PATH)))
 
-PROJECT_NAME:=api
+PROJECT_NAME:=formsflow_api
 
 #################################################################################
 # COMMANDS -- Setup                                                             #
@@ -52,8 +52,8 @@ install-dev: ## Install local application
 #################################################################################
 ci: lint test ## CI flow
 
-pylint: ## Linting with pylint
-	. venv/bin/activate && black -t py38 src/$(PROJECT_NAME) && pylint --rcfile=setup.cfg  src/$(PROJECT_NAME)
+pylint: ## Lint python code with black and pylint
+	. venv/bin/activate && black -t py39 src/$(PROJECT_NAME) && pylint --rcfile=setup.cfg  src/$(PROJECT_NAME)
 
 flake8: ## Linting with flake8
 	. venv/bin/activate && flake8 src/$(PROJECT_NAME) tests
@@ -63,6 +63,8 @@ lint: pylint flake8 ## run all lint type scripts
 test: ## Unit testing
 	. venv/bin/activate && pytest
 
+test-verbose: ## Unit testing with detailed error messages
+	. venv/bin/activate && pytest -vv
 
 #################################################################################
 # COMMANDS - Local                                                              #

@@ -28,7 +28,11 @@ public class EmailAttributesListener implements ExecutionListener, IUser {
        String groupName = String.valueOf(execution.getVariable("groupName"));
        List<String> emailgroup = getEmailsForGroup(execution,groupName);
        if(CollectionUtils.isNotEmpty(emailgroup)) {
-           emailto = emailto.concat(",").concat(String.join(",",emailgroup));
+           if(emailto.length() > 0) {
+               emailto = emailto.concat(",").concat(String.join(",", emailgroup));
+           } else {
+               emailto = String.join(",", emailgroup);
+           }
        }
         tranformEmailContent(execution,dmnMap);
         execution.setVariable("email_cc", getAddressValue(execution,dmnMap,"cc"));

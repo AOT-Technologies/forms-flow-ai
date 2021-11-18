@@ -8,7 +8,9 @@
     "start": "react-scripts start",
     "build": "react-scripts --max_old_space_size=6144 build",
     "eject": "react-scripts eject",
-    "preinstall": "npx npm-force-resolutions"
+    "preinstall": "npx npm-force-resolutions",
+    "test": "react-scripts test",
+    "coverage": "react-scripts test --coverage --watchAll=false"
   },
   "author": {
     "name": "Abhilash"
@@ -19,8 +21,11 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.1.1",
     "dns-packet": "^5.2.4",
     "jspdf": "^2.3.1",
+    "redux-mock-store": "^1.5.4",
     "underscore": "^1.12.1",
     "xmldom": "^0.6.0"
   },

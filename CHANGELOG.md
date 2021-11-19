@@ -1,6 +1,21 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
+## 4.0.4
+
+`Solution Component Upgrades`
+
+- Upgraded redash library to version 10.0
+
+Upgrade notes: 
+
+After v4.0.4 version upgrade, run the command:
+`docker-compose up --force-recreate --build`
+
+Then run the necessary migrations with:
+
+`docker-compose run --rm server manage db upgrade`
+
 ## 4.0.3 - 2021-10-22
 
 `Added`

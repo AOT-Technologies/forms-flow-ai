@@ -5,7 +5,6 @@ import { replaceUrl } from "../../helper/helper";
 
 
 export const updateGroup = (data)=>{
-  // const groupsEndpoint = `${process.env.REACT_APP_WEB_BASE_URL}/groups/${data.group}`;
   const apiUpdateGroup = replaceUrl(
     API.UPDATE_GROUPS,
     "<groupId>",
@@ -17,7 +16,6 @@ export const updateGroup = (data)=>{
       if(res.data){
        dispatch(fetchGroups())
       }else{
-        console.log("update error");
         dispatch(updateErrorHandler("Groups not found"));
         dispatch(fetchGroups())
       }
@@ -31,20 +29,16 @@ export const updateGroup = (data)=>{
 }
 
 export const fetchdashboards = ()=>{
-    // should move the endpoint to an env variable
-    // const getDashboardsEndpoint = `${process.env.REACT_APP_WEB_BASE_URL}/dashboards`;
     return (dispatch) => {
         httpGETRequest(API.GET_DASHBOARDS)
           .then((res) => {
             if (res.data) {
               dispatch(setDashboards(res.data));
             } else {
-              console.log("Error", res);
               dispatch(dashboardErrorHandler("Dashboards not found"));
             }
           })
           .catch((error) => {
-            console.log("Error", error);
             dispatch(dashboardErrorHandler(error));
           });
       };
@@ -56,7 +50,6 @@ export const fetchdashboards = ()=>{
 
 export const fetchGroups = ()=>{
   // in development
-  const groupsEndpoint = `${process.env.REACT_APP_WEB_BASE_URL}/groups`;
     return (dispatch) => {
         httpGETRequest(API.GET_GROUPS)
           .then((res) => {
@@ -65,12 +58,10 @@ export const fetchGroups = ()=>{
                 dispatch(setGroups(cleanedGroups))
               
             } else {
-              console.log("Error", res);
               dispatch(dashboardErrorHandler(res));
             }
           })
           .catch((error) => {
-            console.log("Error", error);
             dispatch(dashboardErrorHandler(error));
           });
       };
@@ -94,9 +85,11 @@ export const cleanGroups = (groups)=>{
 
 }
 
-// string manipulation to return array of objects format. 
-export const getCleanedDashboards = (dashboards)=>{
+// since the data we need is not a valid json / or stringified json, the approach taken 
+// to extract the data is string manipulation and create the objects from the extracted information.
 
+export const getCleanedDashboards = (dashboards)=>{
+  // possible edge case 
   if( dashboards === null ){
     return []
   }
@@ -111,12 +104,19 @@ export const getCleanedDashboards = (dashboards)=>{
   for(let str of dashboards){
     // avoiding unwanted entries
     if(str === "{}" || str === ""){
+      // skip the remaining process for above conditions
       continue;
     }
       let substr = str.substring(1,str.length-1);
+          // to identify possible object patterns and to extract the key and value splits the string based on ":" seperator
       let substrArray = substr.split(":");
       let newObj = {};
       let id = null;
+
+    // The data given by the api seems to have consistent patterns which are essential for 
+    // a non fragile implmentation. All the entries after the first entry in the string representation of the array have
+    // space before the entry, so need to handle the two cases
+
       if(dashboards.indexOf(str) === 0){
         id = Number(substrArray[0]?.substring(1,substrArray[0].length-1));
 

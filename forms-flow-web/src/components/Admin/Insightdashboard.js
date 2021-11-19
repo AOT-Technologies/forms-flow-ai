@@ -101,13 +101,13 @@ export const InsightDashboard = React.memo((props)=> {
     text: 'Access Groups',
     formatter: (cell,rowData) => {
       return  <> 
-                {cell?.map(label => 
-                <div key={label.id} style={{display:'flex',paddingRight:0,marginRight:10,marginBottom:5,marginTop:5}} className="pull-left">
-                    <Button  style={{marginRight:'10px',cursor:'default',marginRight:0}} className="btn btn-secondary btn-sm form-btn pull-left btn-left" disabled>{label.name} </Button>
-                  <Button data-testid={rowData.name+label.name} variant="outline-secondary" style={{marginLeft:5}} className="btn-sm" onClick={(e)=>removeDashboardFromGroup(rowData,label)}>x</Button>
-                </div>
-                 )}
-              </>
+        {cell?.map(label => 
+        <div key={label.id} className="pull-left group-item-container">
+            <Button className="btn btn-secondary btn-sm form-btn pull-left btn-left group-item" disabled>{label.name} </Button>
+            <Button data-testid={rowData.name+label.name} variant="outline-secondary" className="btn-sm close-button" onClick={(e)=>removeDashboardFromGroup(rowData,label)}>x</Button>
+        </div>
+          )}
+            </>
     }
    },
    {
@@ -152,10 +152,10 @@ export const InsightDashboard = React.memo((props)=> {
           <span><i className="fa fa-wpforms" aria-hidden="true"/></span>
              <span className="forms-text">Dashboard</span></h3>
           </div>
-          {/* need to replace the image icons with some icon package */}
+          {/* TODO :=> replace the image icons with some icon package */}
           { isUpdating && <div className="saving-container"><img id="box" className="active" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Refresh_icon.svg/1200px-Refresh_icon.svg.png" /><h4 className="status-message">Saving changes</h4></div>}
         </div>
-        {updateError && <div style={{width:'30%'}} className="error-container"><Errors errors={error} /></div>}
+        {updateError && <div className="error-container error-custom"><Errors errors={error} /></div>}
         <section ref={ref} className="custom-grid grid-forms">
           {isloading ?isError ? <Errors errors={error} />:<Loading /> :<BootstrapTable keyField='id' data={ dashboards } columns={ columns } pagination={pagination} />}
         </section>

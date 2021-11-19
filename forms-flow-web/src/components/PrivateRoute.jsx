@@ -8,7 +8,6 @@ import {CLIENT, STAFF_REVIEWER} from "../constants/constants";
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
-//import Admin from "./Admin";
 
 const Form = lazy(() => import('./Form'));
 const ServiceFlow = lazy(() => import('./ServiceFlow'));

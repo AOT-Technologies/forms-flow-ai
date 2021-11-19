@@ -4,13 +4,11 @@ import { serviceActionError } from '../../actions/taskActions'; //TODO move to a
 import {
   getDashboards,
   getDashboardDetail,
-  setInsightDashboardListLoader,
-  setInsightDetailLoader
+  setInsightDetailLoader,
+  setInsightDashboardListLoader
 } from '../../actions/insightActions';
-import { insightDashboardFormatter }  from "./formatterService"
-import { result } from 'lodash';
 
-// for global scope to avoid data duplication
+// To keep track of the Indexes that were added to prevent duplication
 let addedIdxs = [];
 
 export const fetchDashboardsList = (...rest) =>{
@@ -18,6 +16,11 @@ export const fetchDashboardsList = (...rest) =>{
     let result = [];
         addedIdxs=[];
     let dashboards = localStorage.getItem("UserDetails");
+    if(!dashboards){
+        dispatch(setInsightDashboardListLoader(false))
+        dispatch(setInsightDetailLoader(false));
+      return dispatch(serviceActionError("No Dashboards found"))
+    }
     dashboards = JSON.parse(dashboards);
     dashboards = dashboards.dashboards;
    
@@ -53,17 +56,25 @@ export const fetchDashboardDetails = (id, ...rest) =>{
 
 // retrieves the associated dashboards from the string data
 export const fetchCleanedDashboardsFromLocalStorage = (dashboards)=>{
+  
+  // since the data we need is not a valid json / or stringified json, the approach taken 
+  // to extract the data is string manipulation and create the objects from the extracted information.
+  
   let result =[];
-
   let dashboardsString = dashboards.substring(1,dashboards.length-1);
   let dashboardsArray = dashboardsString.split(",")
+  
   for(let dashboard of dashboardsArray){
     if(dashboard === "{}" || dashboard === ""){
-      // break out of the loop for invalid entries
+      // skip the remaining steps for the above entries
       continue;
     }
+    // to identify possible object patterns and to extract the key and value splits the string based on ":" seperator
       let item = dashboard.split(":");
       let id =null;
+    // The data given by the api seems to have consistent patterns which are essential for 
+    // a non fragile implmentation. All the entries after the first entry in the string representation of the array have
+    // space before the entry, so need to handle the two cases
       if(dashboardsArray.indexOf(dashboard) === 0){
           id = Number(item[0]?.substring(2,item[0].length-1))
       }else{
@@ -72,7 +83,7 @@ export const fetchCleanedDashboardsFromLocalStorage = (dashboards)=>{
       let val = item[1]?.substring(2,item[1].length-2);
       let obj ={};
      
-      // avoid possible duplicate entries
+      // avoid possible duplicate entries by keeping track of all the ids that were added
       if(!addedIdxs.includes(id)){
         obj['value'] = id;
         obj['label'] =val;

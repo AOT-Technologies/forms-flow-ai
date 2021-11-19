@@ -7,14 +7,19 @@ import {fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/servi
 import {setInsightDetailLoader, setInsightDashboardListLoader} from "../../actions/insightActions";
 import LoadingOverlay from "react-loading-overlay";
 import Loading from "../../containers/Loading";
+import { fetchdashboards } from "../../apiManager/services/dashboardsService";
 
 const Insights = React.memo((props) => {
-  const {getDashboardsList, getDashboardDetail, dashboards, activeDashboard, isInsightLoading, isDashboardLoading} = props;
+  const {getDashboardsList, getDashboardDetail, dashboards, activeDashboard, isInsightLoading, isDashboardLoading,getDashboards,dashboardsFromRedash} = props;
   const [dashboardSelected, setDashboardSelected] = useState(null);
 
   useEffect(() => {
-    getDashboardsList();
-  }, [getDashboardsList]);
+      getDashboardsList(dashboardsFromRedash);
+  }, [getDashboardsList,dashboardsFromRedash]);
+
+  useEffect(()=>{
+    getDashboards();
+  },[])
 
   useEffect(()=>{
     if(dashboards.length>0){
@@ -86,21 +91,26 @@ const mapStateToProps = (state) => {
     isDashboardLoading: state.insights.isDashboardLoading,
     isInsightLoading: state.insights.isInsightLoading,
     dashboards: state.insights.dashboardsList,
-    activeDashboard: state.insights.dashboardDetail
+    activeDashboard: state.insights.dashboardDetail,
+    dashboardsFromRedash:state.dashboardReducer.dashboards,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getDashboardsList: () => {
+    getDashboardsList: (dashboardsFromRedash) => {
       dispatch(setInsightDashboardListLoader(true));
       dispatch(
-      fetchDashboardsList()
+      fetchDashboardsList(dashboardsFromRedash)
       )
     },
     getDashboardDetail: (dashboardId) => {
       dispatch(setInsightDetailLoader(true));
       dispatch(fetchDashboardDetails(dashboardId))
+    },
+    getDashboards:()=>{
+      dispatch(setInsightDetailLoader(true)); 
+      dispatch(fetchdashboards())
     }
   }
 };

@@ -11,7 +11,7 @@ import {
 // To keep track of the Indexes that were added to prevent duplication
 let addedIdxs = [];
 
-export const fetchDashboardsList = (...rest) =>{
+export const fetchDashboardsList = (dashboardsFromRedash) =>{
   return dispatch=>{
     let result = [];
         addedIdxs=[];
@@ -25,7 +25,7 @@ export const fetchDashboardsList = (...rest) =>{
     dashboards = dashboards.dashboards;
    
     for(let dashboard of dashboards){
-      let entry = fetchCleanedDashboardsFromLocalStorage(dashboard)
+      let entry = fetchCleanedDashboardsFromLocalStorage(dashboard,dashboardsFromRedash)
       result = [...result,...entry]
     }
     dispatch(getDashboards(result))
@@ -55,7 +55,7 @@ export const fetchDashboardDetails = (id, ...rest) =>{
 }
 
 // retrieves the associated dashboards from the string data
-export const fetchCleanedDashboardsFromLocalStorage = (dashboards)=>{
+export const fetchCleanedDashboardsFromLocalStorage = (dashboards,dashboardsFromRedash)=>{
   
   // since the data we need is not a valid json / or stringified json, the approach taken 
   // to extract the data is string manipulation and create the objects from the extracted information.
@@ -82,15 +82,18 @@ export const fetchCleanedDashboardsFromLocalStorage = (dashboards)=>{
       }
       let val = item[1]?.substring(2,item[1].length-2);
       let obj ={};
-     
-      // avoid possible duplicate entries by keeping track of all the ids that were added
-      if(!addedIdxs.includes(id)){
-        obj['value'] = id;
-        obj['label'] =val;
-       result.push(obj)
-       addedIdxs.push(id)
-      }
-      
+      // check wheather the dashboard is out dated or not by comparing with the redash dashboards api
+      for(let redash of dashboardsFromRedash){
+        if(id === redash.id && val === redash.name){
+          // avoid possible duplicate entries by keeping track of all the ids that were added
+              if(!addedIdxs.includes(id)){
+                obj['value'] = id;
+                obj['label'] =val;
+              result.push(obj)
+              addedIdxs.push(id)
+              }
+        }
+      }    
   }
   return result;
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { render as rtlRender,fireEvent,screen,cleanup,waitFor,waitForElementToBeRemoved } from '@testing-library/react'
+import { render as rtlRender,fireEvent,screen,cleanup,waitFor } from '@testing-library/react'
 import {InsightDashboard} from '../../../components/Admin/Insightdashboard'
 import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux'
@@ -9,21 +9,12 @@ import { updatedState } from './constants';
 import { act } from 'react-dom/test-utils';
 
 const store = StoreService.configureStore();
-// jest.mock('react-redux', () => ({
-//   ...jest.requireActual('react-redux'),
-//   useDispatch: jest.fn(),
-//   useSelector: jest.fn()
-// }));
-
-
 
   const render = Component=>rtlRender(
       <Provider store={store}>
           {Component}
       </Provider>
   )
-
- 
 
   afterEach(()=>cleanup)
 
@@ -61,7 +52,4 @@ const store = StoreService.configureStore();
     act(()=>{
       fireEvent.click(element);
     });
-    // await waitForElementToBeRemoved(element)
-    // expect(screen.getByTestId('samplegroup2')).not.toBeInTheDocument()
   });
-  

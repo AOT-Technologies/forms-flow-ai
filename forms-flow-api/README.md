@@ -39,30 +39,32 @@ No specific client creation is required. Audience has been added for clients
 
 ### Environment Configuration
 
-   * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is "forms-flow-ai/forms-flow-api".
-   * Rename the file [sample.env](./sample.env) to **.env**.
-   * Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
-   * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
+* Make sure you have a Docker machine up and running.
+* Make sure your current working directory is "forms-flow-ai/forms-flow-api".
+* Rename the file [sample.env](./sample.env) to **.env**.
+* Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
+* **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
 > :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the .env file
    
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
+`ANALYTICS_API_URL`:triangular_flag_on_post: | The forms-flow-analytics Api base end-point | | http://{your-ip-address}:7000 |
+`ANALYTICS_API_KEY` :triangular_flag_on_post: | The forms-flow-analytics admin API key | | `Get the api key from forms-flow-analytics (REDASH) by following the 'Get the Redash API Key' steps from [here](../forms-flow-analytics/README.md#get-the-redash-api-key)`
 `FORMSFLOW_API_DB_USER`|formsflow database postgres user|Used on installation to create the database.Choose your own|`postgres`
 `FORMSFLOW_API_DB_PASSWORD`|formsflow database postgres password|Used on installation to create the database.Choose your own|`changeme`
 `FORMSFLOW_API_DB_NAME`|formsflow database name|Used on installation to create the database.Choose your own|`FORMSFLOW_API_DB`
 `FORMSFLOW_API_DB_URL`|JDBC DB Connection URL for formsflow||`postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi`
 `KEYCLOAK_URL`:triangular_flag_on_post:| URL to your Keycloak server || `http://{your-ip-address}:8080`
 `KEYCLOAK_URL_REALM`|The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
+`KEYCLOAK_ADMIN_USERNAME` :triangular_flag_on_post: | The admin username for Keycloak. This is used for using Keycloak internal APIs  | |
+`KEYCLOAK_ADMIN_PASSWORD` :triangular_flag_on_post: | The admin password for Keycloak. | |
 `KEYCLOAK_BPM_CLIENT_ID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
 `KEYCLOAK_BPM_CLIENT_SECRET`:triangular_flag_on_post:|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the steps from [Here](../forms-flow-idm/keycloak/README.md#getting-the-client-secret)
 `KEYCLOAK_WEB_CLIENT_ID`|Client ID for formsflow to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
 `CAMUNDA_API_URL`:triangular_flag_on_post:|Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
-`ANALYTICS_API_URL`:triangular_flag_on_post: | The forms-flow-analytics Api base end-point | | http://{your-ip-address}:7000 |
-`ANALYTICS_API_KEY` :triangular_flag_on_post: | The forms-flow-analytics admin API key | | `Get the api key from forms-flow-analytics (REDASH) by following the 'Get the Redash API Key' steps from [here](../forms-flow-analytics/README.md#get-the-redash-api-key)`
 
 **NOTE : Default realm is `forms-flow-ai`**
 
@@ -122,7 +124,7 @@ Authorization: Bearer {access token}
    
 ## API Documentation
 
-The API docs can be accessed by checking the **/docs** endpoint.
+The API docs can be accessed by checking the **/** root endpoint.
 
 ![image](https://user-images.githubusercontent.com/70306694/130730233-cf443a84-7716-4be6-b196-cb340509c495.png)
 

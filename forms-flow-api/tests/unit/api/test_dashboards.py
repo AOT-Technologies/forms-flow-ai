@@ -1,3 +1,4 @@
+"""Unit test for APIs of Dashboards"""
 from tests.utilities.base_test import factory_auth_header
 
 
@@ -25,6 +26,7 @@ def test_get_dashboard_details(client):
 def test_no_auth_get_dashboards(client):
     rv = client.get("/dashboards")
     assert rv.status_code == 401
+
 
 def test_get_dashboard_error_details(client):
     token = factory_auth_header()

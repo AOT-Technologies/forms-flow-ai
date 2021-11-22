@@ -13,12 +13,10 @@ from formsflow_api.resources.metrics import API as APPLICATION_METRICS_API
 from formsflow_api.resources.checkpoint import API as CHECKPOINT_API
 from formsflow_api.resources.dashboards import API as DASHBOARDS_API
 from formsflow_api.resources.form_process_mapper import API as FORM_API
+from formsflow_api.resources.groups import API as KEYCLOAK_GROUPS_API
 from formsflow_api.resources.process import API as PROCESS_API
 from formsflow_api.resources.task import API as TASK_API
 from formsflow_api.utils.constants import ALLOW_ALL_ORIGINS
-
-# from .formiotoken import API as FORMIOTOKEN_API
-# from .tenant import API as TENANT_API
 
 
 # This will add the Authorize button to the swagger docs
@@ -31,7 +29,7 @@ API = Api(
     description="The API for formsflow.ai. Checkout: formsflow.ai to know more",
     security=["apikey"],
     authorizations=AUTHORIZATIONS,
-    doc="/docs",
+    doc="/",
 )
 
 
@@ -64,7 +62,6 @@ API.add_namespace(APPLICATION_METRICS_API, path="/metrics")
 API.add_namespace(CHECKPOINT_API, path="/checkpoint")
 API.add_namespace(DASHBOARDS_API, path="/dashboards")
 API.add_namespace(FORM_API, path="/form")
-# API.add_namespace(FORMIOTOKEN_API, path="/getformiotoken")
+API.add_namespace(KEYCLOAK_GROUPS_API, path="/groups")
 API.add_namespace(PROCESS_API, path="/process")
 API.add_namespace(TASK_API, path="/task")
-# API.add_namespace(TENANT_API, path="/tenant")

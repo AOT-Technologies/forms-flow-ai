@@ -191,8 +191,11 @@ services:
       JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      KEYCLOAK_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
-      # MONGODB_URI: ${FORMSFLOW_API_ANALYTICS_DB_URL:-mongodb://changeme:analytics@forms-flow-webapi-analytics-db:27017/analytics?authSource=admin&authMechanism=SCRAM-SHA-256}
     stdin_open: true # -i
     tty: true # -t
     networks:

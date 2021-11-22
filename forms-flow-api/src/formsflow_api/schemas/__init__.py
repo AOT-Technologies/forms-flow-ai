@@ -19,5 +19,7 @@ from .process import (
     ProcessMessageSchema,
     ProcessActivityInstanceSchema,
 )
+from formsflow_api.schemas.keycloak_groups import KeycloakDashboardGroupSchema
 from formsflow_api.schemas.task import TaskSchema, TaskVariableSchema
-from formsflow_api.schemas.tenant import TenantSchema
+
+# from formsflow_api.schemas.tenant import TenantSchema

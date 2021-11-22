@@ -7,7 +7,8 @@ from marshmallow.exceptions import ValidationError
 
 from formsflow_api.schemas.aggregated_application import ApplicationMetricsRequestSchema
 from formsflow_api.services import ApplicationService
-from formsflow_api.utils import auth, cors_preflight, profiletime, METRICS_MODIFIED
+from formsflow_api.utils import auth, cors_preflight, profiletime
+from formsflow_api.utils.enums import MetricsState
 
 
 API = Namespace("Metrics", description="Application Metrics endpoint")
@@ -30,7 +31,7 @@ class AggregatedApplicationsResource(Resource):
             to_date = dict_data["to_date"]
             order_by = dict_data.get("order_by")
 
-            if order_by == METRICS_MODIFIED:
+            if order_by == MetricsState.MODIFIED.value:
                 return (
                     (
                         {
@@ -92,7 +93,7 @@ class AggregatedApplicationStatusResource(Resource):
             to_date = dict_data["to_date"]
             order_by = dict_data.get("order_by")
 
-            if order_by == METRICS_MODIFIED:
+            if order_by == MetricsState.MODIFIED.value:
                 return (
                     (
                         {

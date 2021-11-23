@@ -1,4 +1,4 @@
-import {httpGETRequest, httpPOSTRequest, httpPUTRequest} from "../httpRequestHandler";
+import {httpGETRequest, httpPOSTRequest, httpPUTRequest, httpPOSTRequestWithHAL } from "../httpRequestHandler";
 import API from "../endpoints";
 import UserService from "../../services/UserService";
 import {
@@ -29,18 +29,33 @@ export const fetchServiceTaskList = (filterId,firstResult,reqData,taskIdToRemove
   apiUrlgetTaskList=`${apiUrlgetTaskList}?firstResult=${firstResult}&maxResults=${MAX_RESULTS}`
 
   return (dispatch) => {
-    httpPOSTRequest(apiUrlgetTaskList, reqData, UserService.getToken())
+    httpPOSTRequestWithHAL(apiUrlgetTaskList, reqData, UserService.getToken())
       .then((res) => {
         if (res.data) {
-          let taskData;
-          if(taskIdToRemove){
-            taskData=res.data.filter( (task)=>task.id!==taskIdToRemove);
-          }else{
-            taskData=res.data;
+          let responseData = res.data;
+          const _embedded = responseData['_embedded']; // data._embedded.task is where the task list is.
+          if (!_embedded || !_embedded['task'] || !responseData['count']) {
+            // Display error if the necessary values are unavailable.
+            console.log("Error", res);
+            dispatch(serviceActionError(res));
+            dispatch(setBPMTaskLoader(false));
+          } else {
+            const taskListFromResponse = _embedded['task']; // Gets the task array
+            const taskCount = {
+              count: responseData['count']
+            };
+            let taskData;
+            if(taskIdToRemove){
+              taskData=taskListFromResponse.filter( (task)=>task.id!==taskIdToRemove);
+              taskCount['count']--; // Count has to be decreased since one task id is removed.
+            }else{
+              taskData=taskListFromResponse;
+            }
+            dispatch(setBPMTaskCount(taskCount));
+            dispatch(setBPMTaskList(taskData));
+            dispatch(setBPMTaskLoader(false));
+            done(null, taskData);
           }
-          dispatch(setBPMTaskList(taskData));
-          dispatch(setBPMTaskLoader(false));
-          done(null, taskData);
         } else {
           console.log("Error", res);
           dispatch(serviceActionError(res));
@@ -51,35 +66,6 @@ export const fetchServiceTaskList = (filterId,firstResult,reqData,taskIdToRemove
         console.log("Error", error);
         dispatch(serviceActionError(error));
         dispatch(setBPMTaskLoader(false));
-        done(error);
-      });
-  };
-};
-
-export const fetchServiceTaskListCount = (filterId,reqData,...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  let apiUrlgetTaskListCount = replaceUrl(
-    API.GET_BPM_TASK_LIST_COUNT_WITH_FILTER,
-    "<filter_id>",
-    filterId
-  );
-
-  return (dispatch) => {
-    httpPOSTRequest(apiUrlgetTaskListCount, reqData, UserService.getToken())
-      .then((res) => {
-        if (res.data && res.data.count) {
-          const taskCount = res.data;
-          dispatch(setBPMTaskCount(taskCount));
-          done(null, taskCount);
-        } else {
-          const taskCount={count:0}
-          dispatch(setBPMTaskCount(taskCount));
-          done(null, taskCount);
-        }
-      })
-      .catch((error) => {
-        console.log("Error", error);
-        dispatch(serviceActionError(error));
         done(error);
       });
   };

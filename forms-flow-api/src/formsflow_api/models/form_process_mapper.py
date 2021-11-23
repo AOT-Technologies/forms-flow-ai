@@ -9,11 +9,11 @@ from formsflow_api.exceptions import BusinessException
 from formsflow_api.models.audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from formsflow_api.models.base_model import BaseModel
 from formsflow_api.models.db import db
-from formsflow_api.models.enums import FormProcessMapperStatus
+from formsflow_api.utils.enums import FormProcessMapperStatus
 
 
 class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
-    """This class manages form process mapper imformation."""
+    """This class manages form process mapper information."""
 
     id = db.Column(db.Integer, primary_key=True)
     form_id = db.Column(db.String(50), nullable=False)
@@ -45,7 +45,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.tenant_id = mapper_info.get("tenant_id")
                 mapper.save()
                 return mapper
-        except BaseException as form_err:
+        except BaseException:
             response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid application request passed",

@@ -117,6 +117,8 @@ Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `KEYCLOAK_URL`:triangular_flag_on_post:| URL to your Keycloak server || `http://{your-ip-address}:8080`
 `KEYCLOAK_URL_REALM`|The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
+`KEYCLOAK_ADMIN_USERNAME` :triangular_flag_on_post: | The admin username for Keycloak. This is used for using Keycloak internal APIs  | | |
+`KEYCLOAK_ADMIN_PASSWORD` :triangular_flag_on_post: | The admin password for Keycloak. | | |
 `KEYCLOAK_BPM_CLIENT_ID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
 `KEYCLOAK_BPM_CLIENT_SECRET`:triangular_flag_on_post:|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the 'Get the keycloak client secret' steps from [Here](../../forms-flow-idm/keycloak/README.md#get-the-keycloak-client-secret)
 `KEYCLOAK_WEB_CLIENT_ID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
@@ -190,28 +192,28 @@ Variable name | Meaning | Possible values | Default value |
 
 ##### Camunda System Tuning  
 ----------------------------
- 
-   Variable name | Meaning | Possible values | Default value |
- --- | --- | --- | ---
-  `CAMUNDA_JOB_CORE_POOL_SIZE`|Job-Executor Configuration Properties||`10`
-  `CAMUNDA_JOB_MAX_POOL_SIZE`|Job-Executor Configuration Properties||`20`
-  `CAMUNDA_JOB_QUEUE_SIZE`|Job-Executor Configuration Properties||`10`
-  `CAMUNDA_JOB_LOCK_TIME_MILLIS`|Job-Executor Configuration Properties||`300000`
-  `CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION`|Job-Executor Configuration Properties||`10`
-  `CAMUNDA_JOB_WAIT_TIME_MILLIS`|Job-Executor Configuration Properties||`5000`
-  `CAMUNDA_JOB_MAX_WAIT`|Job-Executor Configuration Properties||`60000`
-  `CAMUNDA_METRICS_FLAG`|Job-Executor Configuration Properties||`false`
+
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`CAMUNDA_JOB_CORE_POOL_SIZE`|Job-Executor Configuration Properties||`10`
+`CAMUNDA_JOB_MAX_POOL_SIZE`|Job-Executor Configuration Properties||`20`
+`CAMUNDA_JOB_QUEUE_SIZE`|Job-Executor Configuration Properties||`10`
+`CAMUNDA_JOB_LOCK_TIME_MILLIS`|Job-Executor Configuration Properties||`300000`
+`CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION`|Job-Executor Configuration Properties||`10`
+`CAMUNDA_JOB_WAIT_TIME_MILLIS`|Job-Executor Configuration Properties||`5000`
+`CAMUNDA_JOB_MAX_WAIT`|Job-Executor Configuration Properties||`60000`
+`CAMUNDA_METRICS_FLAG`|Job-Executor Configuration Properties||`false`
   
 ##### Camunda formsflow.ai Integration variable settings  
 ------------------------------------------------
 
-   Variable name | Meaning | Possible values | Default value |
- --- | --- | --- | ---
- `WEBSOCKET_SECURITY_ORIGIN` :triangular_flag_on_post:|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`http://{your-ip-address}:3000`
- `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
- `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`WEBSOCKET_SECURITY_ORIGIN` :triangular_flag_on_post:|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`http://{your-ip-address}:3000`
+`WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
+`WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  
- ```
+```
 Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resources/`). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
 ```
 

@@ -91,6 +91,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     KEYCLOAK_ADMIN_USERNAME = os.getenv("KEYCLOAK_ADMIN_USERNAME")
     KEYCLOAK_ADMIN_PASSWORD = os.getenv("KEYCLOAK_ADMIN_PASSWORD")
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
+    KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM")
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

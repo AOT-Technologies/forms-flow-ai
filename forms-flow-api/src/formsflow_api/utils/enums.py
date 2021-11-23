@@ -8,7 +8,19 @@ class FormProcessMapperStatus(Enum):
     Active = "active"
     Inactive = "inactive"
 
+
 class MetricsState(Enum):
     """This enum provides the list of states of Metrics"""
+
     CREATED = "created"
     MODIFIED = "modified"
+
+
+class ApplicationSortingParameters:
+    """This enum provides the list of Sorting Parameters."""
+
+    Id = "id"
+    Created = "created"
+    Name = "application_name"
+    Status = "application_status"
+    Modified = "modified"

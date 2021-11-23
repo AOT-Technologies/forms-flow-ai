@@ -7,6 +7,7 @@ from formsflow_api.schemas.aggregated_application import (
 from formsflow_api.schemas.application import (
     ApplicationSchema,
     ApplicationListReqSchema,
+    ApplicationListRequestSchema,
     ApplicationUpdateSchema,
 )
 from formsflow_api.schemas.application_history import ApplicationHistorySchema

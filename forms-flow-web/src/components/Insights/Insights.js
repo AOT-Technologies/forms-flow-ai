@@ -109,7 +109,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(fetchDashboardDetails(dashboardId))
     },
     getDashboards:()=>{
-      dispatch(setInsightDetailLoader(true)); 
+      dispatch(setInsightDashboardListLoader(true)); 
       dispatch(fetchdashboards())
     }
   }

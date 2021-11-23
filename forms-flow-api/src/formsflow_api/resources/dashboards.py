@@ -55,22 +55,13 @@ class DashboardDetail(Resource):
     @profiletime
     def get(self, dashboard_id):
         """Get a dashboard with given dashboard_id"""
-        try:
-            available_dashboards = re.findall(r"\d+", g.token_info.get("dashboards")[0])
-            available_dashboards.index(str(dashboard_id))
-        except ValueError:
-            return {
-                "message": f"Dashboard - {dashboard_id} not accessible"
-            }, HTTPStatus.FORBIDDEN
+        response = analytics_service.get_request(
+            url_path=f"dashboards/{dashboard_id}"
+        )
+        if response == "unauthorized":
+            return {"message": "Dashboard not found"}, HTTPStatus.NOT_FOUND
+        elif response is None:
+            return {"message": "Error"}, HTTPStatus.INTERNAL_SERVER_ERROR
         else:
-            # code run in case of no exception
-            response = analytics_service.get_request(
-                url_path=f"dashboards/{dashboard_id}"
-            )
-            if response == "unauthorized":
-                return {"message": "Dashboard not found"}, HTTPStatus.NOT_FOUND
-            elif response is None:
-                return {"message": "Error"}, HTTPStatus.INTERNAL_SERVER_ERROR
-            else:
-                assert response != None
-                return response, HTTPStatus.OK
+            assert response != None
+            return response, HTTPStatus.OK

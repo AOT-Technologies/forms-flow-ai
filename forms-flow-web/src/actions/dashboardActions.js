@@ -23,13 +23,6 @@ export const setGroups = (data)=>dispatch=>{
   })
 }
 
-// maps the dashboards with the groups and update the state
-export const updateDashboardFromGroups = (data)=>dispatch=>{
-  dispatch({
-    type:ACTION_CONSTANTS.UPDATE_DASHBOARDS_FROM_GROUPS,
-    payload:data
-  })
-}
 
 export const updateErrorHandler = (data)=>dispatch=>{
   dispatch({
@@ -37,3 +30,24 @@ export const updateErrorHandler = (data)=>dispatch=>{
     payload:data
   })
 }
+
+
+export const initiateUpdate = ()=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.INITIATE_UPDATE,
+    payload:null
+  })
+}
+
+// maps the dashboards with the groups and update the state
+
+export const updateDashboardFromGroups = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.UPDATE_DASHBOARDS_FROM_GROUPS,
+    payload:{
+      dashboards:data.dashboards,
+      groups:data.groups
+    }
+  })
+}
+

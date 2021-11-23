@@ -7,7 +7,7 @@ import ACTION_CONSTANTS from "../../actions/actionConstants";
 import './insightDashboard.scss'
 
 
-const AdminDashboard =  React.memo(() => {
+const AdminDashboard =  () => {
 
   const dispatch = useDispatch();
 
@@ -29,7 +29,7 @@ const AdminDashboard =  React.memo(() => {
       </Switch>
     </div>
   );
-});
+};
 
 
 export default withRouter(AdminDashboard);

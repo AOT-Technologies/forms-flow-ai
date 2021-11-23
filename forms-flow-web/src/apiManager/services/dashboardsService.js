@@ -14,6 +14,7 @@ export const updateGroup = (data)=>{
     httpPUTRequest(apiUpdateGroup,{dashboards:data.dashboards})
     .then((res)=>{
       if(res.data){
+        dispatch(fetchdashboards());
        dispatch(fetchGroups())
       }else{
         dispatch(updateErrorHandler("Groups not found"));

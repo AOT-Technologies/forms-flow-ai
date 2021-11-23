@@ -1,10 +1,8 @@
-import React,{useEffect,useState,useRef} from "react";
+import React,{useEffect,useState} from "react";
 import { Button } from "react-bootstrap";
 import BootstrapTable from 'react-bootstrap-table-next';
 import {useDispatch} from "react-redux";
 import ACTION_CONSTANTS from "../../actions/actionConstants";
-import Overlay from 'react-bootstrap/Overlay'
-import Popover from 'react-bootstrap/Popover'
 import ListGroup from 'react-bootstrap/ListGroup'
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -12,8 +10,10 @@ import { Errors } from "react-formio/lib/components";
 import Loading from "../../containers/Loading";
 import { connect } from "react-redux";
 import { updateGroup } from "../../apiManager/services/dashboardsService";
+import Popover from '@material-ui/core/Popover';
+import { initiateUpdate, updateDashboardFromGroups } from "../../actions/dashboardActions";
 
-export const InsightDashboard = React.memo((props)=> {
+export const InsightDashboard = (props)=> {
 
   const {dashboardReducer} = props;
   const dispatch= useDispatch();
@@ -27,19 +27,15 @@ export const InsightDashboard = React.memo((props)=> {
   const updateError = dashboardReducer.updateError;
   const isUpdating = dashboardReducer.isUpdating;
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
   const [remainingGroups,setRemainingGroups] = useState([]); 
   const [activeRow,setActiveRow] = useState(null);
   const [show, setShow] = useState(false);
-  const [target, setTarget] = useState(null);
-  const ref = useRef(null);
-
 
   useEffect(()=>{
     if(isDashUpdated && isGroupUpdated){
-      dispatch({
-        type:ACTION_CONSTANTS.UPDATE_DASHBOARDS_FROM_GROUPS,
-        payload:{dashboards,groups}
-      })
+     dispatch(updateDashboardFromGroups({dashboards,groups}));
     }
   },[isGroupUpdated,isDashUpdated])
 
@@ -49,45 +45,45 @@ export const InsightDashboard = React.memo((props)=> {
     let listGroup = groups.filter(item=>approvedGroupIds.includes(item.id)===false)
     setActiveRow(rowData);
     setRemainingGroups(listGroup)
-    setTarget(event.target);
     setShow(!show);
+    setAnchorEl(event.currentTarget);
   };
 
+  const handleClose = () => {
+    setShow(false)
+    setAnchorEl(null);
+  };
 
+  const id = show ? 'simple-popover' : undefined;
   const removeDashboardFromGroup = (rowData,groupInfo)=>{
-      dispatch({
-        type:ACTION_CONSTANTS.UPDATE_DASH_GROUPS,
-        payload:{groupInfo:groupInfo,rowData:rowData}
-      });
-      dispatch({
-        type:ACTION_CONSTANTS.INITIATE_UPDATE,
-        payload:null
-      })
-      setShow(false)
-      const data = groups.find(group=>group.id === groupInfo.id);
-      const update = {
-        dashboards:data.dashboards,
-        group:data.id
+      let groupToUpdate = groups.find(group=>group.id === groupInfo.id);
+      let updatedDashboardsForSelectedGroup = groupToUpdate.dashboards.filter(item => Number(Object.keys(item)[0]) !== rowData.id);
+      let update = {
+        dashboards:updatedDashboardsForSelectedGroup,
+        group:groupInfo.id
       }
-       dispatch(updateGroup(update));
+      dispatch(initiateUpdate());
+      setShow(false)  
+      dispatch(updateGroup(update));
     
   }
 
   const AddDashboardToGroup = (groupInfo)=>{
-    dispatch({
-      type:ACTION_CONSTANTS.UPDATE_DASH_GROUPS_ADD,
-      payload:{groupInfo:groupInfo,rowData:activeRow}
-    });
-    dispatch({
-      type:ACTION_CONSTANTS.INITIATE_UPDATE,
-      payload:null
-    })
-    setShow(!show)
-     const data = groups.find(group=>group.id === groupInfo.id);
-     const update = {
-       dashboards:data.dashboards,
-       group:data.id
-     }
+    let newGroups = [...groups];
+    let newDashObj = {};
+    let update = {};
+    newDashObj[activeRow.id] = activeRow.name;
+    for( let group of newGroups){
+        if(group.id === groupInfo.id){
+            group.dashboards.push(newDashObj);
+            update = {
+              dashboards:group.dashboards,
+              group:group.id
+            }
+        }
+    }
+      dispatch(initiateUpdate())
+      setShow(!show)
       dispatch(updateGroup(update));
   }
 
@@ -113,33 +109,46 @@ export const InsightDashboard = React.memo((props)=> {
    {
     dataField: 'id',
     text: 'Action',
-    formatExtraData :{show,target,ref,remainingGroups},
+    formatExtraData :{show,remainingGroups},
     formatter: (cell,rowData,rowIdx,formatExtraData) => {
 
-      let {show,target,ref,remainingGroups} = formatExtraData;
+      let {show,remainingGroups} = formatExtraData;
       return <div>
-                <Button data-testid={rowIdx}  onClick={(e)=>handleClick(e,rowData)} className="btn btn-primary btn-md form-btn pull-left btn-left"> Add <b>+</b> </Button> 
-              { show && <Overlay
-                  show={show}
-                  target={target}
-                  placement="bottom"
-                  container={ref}
-                  containerPadding={20}
-                >
-                <Popover data-testid="popup-component" id="popover-contained">
+                <Button data-testid={rowIdx}  
+                  onClick={(e)=>handleClick(e,rowData)} 
+                  className="btn btn-primary btn-md form-btn pull-left btn-left"> Add <b>+</b>
+                </Button> 
+                <Popover
+                    data-testid="popup-component"
+                    id={id}
+                    open={show}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                      vertical: 'top',
+                      horizontal: 'center',
+                    }}
+                  >
                   <ListGroup>
-                      {remainingGroups.length > 0 ? remainingGroups.map((item,key)=><ListGroup.Item key={key} as="button" onClick={()=>AddDashboardToGroup(item)}>{item.name}</ListGroup.Item>):<ListGroup.Item>{`All groups have access to the dashboard`}</ListGroup.Item>}
-                 </ListGroup>
-                </Popover>
-              </Overlay>}
-              
+                    {remainingGroups.length > 0 
+                    ? 
+                      remainingGroups.map((item,key)=><ListGroup.Item key={key} as="button" 
+                      onClick={()=>AddDashboardToGroup(item)}>{item.name}</ListGroup.Item>)
+                    :
+                      <ListGroup.Item>{`All groups have access to the dashboard`}</ListGroup.Item>
+                    }
+                  </ListGroup>
+              </Popover>
             </div>
     }
   }
 ];
 
   const pagination = paginationFactory({
-    sizePerPage :5,
     showTotal :true
   })
 
@@ -156,12 +165,12 @@ export const InsightDashboard = React.memo((props)=> {
           { isUpdating && <div className="saving-container"><img id="box" className="active" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Refresh_icon.svg/1200px-Refresh_icon.svg.png" /><h4 className="status-message">Saving changes</h4></div>}
         </div>
         {updateError && <div className="error-container error-custom"><Errors errors={error} /></div>}
-        <section ref={ref} className="custom-grid grid-forms">
+        <section  className="custom-grid grid-forms">
           {isloading ?isError ? <Errors errors={error} />:<Loading /> :<BootstrapTable keyField='id' data={ dashboards } columns={ columns } pagination={pagination} />}
         </section>
      </>
     );
-});
+};
 
 const mapStateToProps = (state)=>{
   return {

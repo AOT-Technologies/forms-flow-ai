@@ -57,5 +57,16 @@ const setShowViewSubmissions = (userGroups)=>{
   }
 }
 
+const getUserInsightsPermission = ()=>{
+  let user = localStorage.getItem("UserDetails");
+  if(!user){
+    return false
+  }
+  user = JSON.parse(user);
+  if(!user?.dashboards){
+    return false
+  }
+  return true
+}
 
-export { getUserRoleName, getUserRolePermission, getNameFromEmail, setShowApplications, setShowViewSubmissions };
+export { getUserRoleName, getUserRolePermission, getNameFromEmail, setShowApplications, setShowViewSubmissions, getUserInsightsPermission };

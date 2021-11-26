@@ -16,7 +16,8 @@ class ApplicationListReqSchema(Schema):
 
 
 class ApplicationListRequestSchema(ApplicationListReqSchema):
-    """This class manges application list request schema."""
+
+    """This class manages application list request schema."""
 
     order_by = fields.Str(data_key="sortBy", required=False)
     application_id = fields.Int(data_key="Id", required=False)
@@ -26,6 +27,14 @@ class ApplicationListRequestSchema(ApplicationListReqSchema):
     created = fields.Str(data_key="created", required=False)
     modified = fields.Str(data_key="modified", required=False)
     sort_order = fields.Str(data_key="sortOrder", required=False)
+
+
+class ApplicationStatusSchema(Schema):
+    """This class manages application status schema"""
+    class Meta:
+        unknown = EXCLUDE
+
+    application_status = fields.Str()
 
 
 class ApplicationSchema(Schema):

@@ -1,18 +1,15 @@
 """This exposes application service."""
 
-from http import HTTPStatus
 from functools import lru_cache
+from http import HTTPStatus
+
+from flask import current_app
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import Application, FormProcessMapper
-from formsflow_api.schemas import (
-    AggregatedApplicationSchema,
-    ApplicationSchema,
-    FormProcessMapperSchema,
-)
+from formsflow_api.schemas import AggregatedApplicationSchema, ApplicationSchema, FormProcessMapperSchema
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import NEW_APPLICATION_STATUS
-from flask import current_app
 
 
 class ApplicationService:
@@ -70,12 +67,40 @@ class ApplicationService:
         return response
 
     @staticmethod
-    def get_auth_applications_and_count(page_no: int, limit: int, token: str):
+    def get_auth_applications_and_count(
+        token: str,
+        page_no: int,
+        limit: int,
+        order_by: str,
+        created: str,
+        modified: str,
+        application_id: int,
+        application_name: str,
+        application_status: str,
+        created_by: str,
+        sort_order: str,
+    ):
         """Get applications only from authorized groups."""
         if page_no:
             page_no = int(page_no)
         if limit:
             limit = int(limit)
+        if order_by:
+            order_by = str(order_by)
+        if application_id:
+            application_id = int(application_id)
+        if application_name:
+            application_name = str(application_name)
+        if application_status:
+            application_status = str(application_status)
+        if created_by:
+            created_by = str(created_by)
+        if created:
+            created = str(created)
+        if modified:
+            modified = str(modified)
+        if sort_order:
+            sort_order = str(sort_order)
 
         auth_form_details = ApplicationService.get_authorised_form_list(token=token)
         form_names = []
@@ -84,11 +109,32 @@ class ApplicationService:
             for auth_form_detail in auth_form_details:
                 form_names.append(auth_form_detail["formName"])
             applications = Application.find_by_form_names(
-                form_names=form_names, page_no=page_no, limit=limit
+                form_names=form_names,
+                application_id=application_id,
+                application_name=application_name,
+                application_status=application_status,
+                created_by=created_by,
+                page_no=page_no,
+                limit=limit,
+                order_by=order_by,
+                created=created,
+                modified=modified,
+                sort_order=sort_order,
+            )
+            get_all_applications = Application.find_all_application_count(
+                form_names=form_names,
+                application_id=application_id,
+                application_name=application_name,
+                application_status=application_status,
+                created=created,
+                modified=modified,
+                created_by=created_by,
+                order_by=order_by,
+                sort_order=sort_order,
             )
             return (
                 application_schema.dump(applications, many=True),
-                applications.count(),
+                get_all_applications.count(),
             )
         else:
             return (application_schema.dump([], many=True), 0)
@@ -123,14 +169,64 @@ class ApplicationService:
         return application_schema.dump(applications, many=True)
 
     @staticmethod
-    def get_all_applications_by_user(user_id: str, page_no: int, limit: int):
+    def get_all_applications_by_user(
+        user_id: str,
+        page_no: int,
+        limit: int,
+        order_by: str,
+        sort_order: str,
+        modified: str,
+        created: str,
+        created_by: str,
+        application_status: str,
+        application_name: str,
+        application_id: int,
+    ):
         """Get all applications based on user."""
         if page_no:
             page_no = int(page_no)
         if limit:
             limit = int(limit)
+        if order_by:
+            order_by = str(order_by)
+        if sort_order:
+            sort_order = str(sort_order)
+        if application_id:
+            application_id = int(application_id)
+        if application_name:
+            application_name = str(application_name)
+        if application_status:
+            application_status = str(application_status)
+        if created_by:
+            created_by = str(created_by)
+        if created:
+            created = str(created)
+        if modified:
+            modified = str(modified)
 
         applications = Application.find_all_by_user(
+            user_id=user_id,
+            page_no=page_no,
+            limit=limit,
+            order_by=order_by,
+            sort_order=sort_order,
+            application_id=application_id,
+            application_name=application_name,
+            application_status=application_status,
+            created_by=created_by,
+            created=created,
+            modified=modified,
+        )
+        application_schema = ApplicationSchema()
+        return application_schema.dump(applications, many=True)
+
+    @staticmethod
+    def get_all_application_by_user_group(page_no: int, limit: int, user_id: str):
+        if page_no:
+            page_no = int(page_no)
+        if limit:
+            limit = int(limit)
+        applications = Application.find_all_by_user_group(
             user_id=user_id, page_no=page_no, limit=limit
         )
         application_schema = ApplicationSchema()
@@ -143,14 +239,36 @@ class ApplicationService:
         return application_schema.dump(applications, many=True)
 
     @staticmethod
-    def get_all_application_count():
+    def get_all_application_count(
+        token: str,
+        page_no: int,
+        limit: int,
+    ):
         """Get application count."""
-        return Application.query.count()
+        if page_no:
+            page_no = int(page_no)
+        if limit:
+            limit = int(limit)
+        auth_form_details = ApplicationService.get_authorised_form_list(token=token)
+        form_names = []
+        application_schema = ApplicationSchema()
+        if auth_form_details:
+            for auth_form_detail in auth_form_details:
+                form_names.append(auth_form_detail["formName"])
+            applications = Application.find_all_applications(
+                form_names=form_names, page_no=page_no, limit=limit
+            )
+            return (
+                application_schema.dump(applications, many=True),
+                applications.count(),
+            )
+        else:
+            return (application_schema.dump([], many=True), 0)
 
     @staticmethod
     def get_all_application_by_user_count(user_id: str):
         """Get application count."""
-        return Application.find_all_by_user_count(user_id)
+        return Application.find_all_by_user_count(user_id=user_id)
 
     @staticmethod
     def get_all_applications_form_id(form_id, page_no: int, limit: int):

@@ -6,8 +6,8 @@ from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 
 from formsflow_api.exceptions import BusinessException
-from formsflow_api.schemas.aggregated_application import ApplicationMetricsRequestSchema
-from formsflow_api.schemas.application import (
+from formsflow_api.schemas import (
+    ApplicationListRequestSchema,
     ApplicationListReqSchema,
     ApplicationSchema,
     ApplicationUpdateSchema,
@@ -28,79 +28,136 @@ class ApplicationsResource(Resource):
     @auth.require
     @profiletime
     def get():
-        """Get applications."""
-        if request.args:
-            dict_data = ApplicationListReqSchema().load(request.args)
-            page_no = dict_data["page_no"]
-            limit = dict_data["limit"]
-        else:
-            page_no = 0
-            limit = 0
-        if auth.has_role([REVIEWER_GROUP]):
-            (
-                application_schema_dump,
-                application_count,
-            ) = ApplicationService.get_auth_applications_and_count(
-                page_no=page_no, limit=limit, token=request.headers["Authorization"]
-            )
-            application_schema = ApplicationService.apply_custom_attributes(
-                application_schema=application_schema_dump
-            )
-        else:
-            application_schema = ApplicationService.apply_custom_attributes(
-                ApplicationService.get_all_applications_by_user(
-                    user_id=g.token_info.get("preferred_username"),
-                    page_no=page_no,
-                    limit=limit,
+        """Get applications
+        Fetch applications list based on parameters
+        :params Id: list the application for particular id
+        :params applicationName: retrieve application list based on application name
+        :params applicationStatus: list all applications based on status
+        :params createdBy: to retrieve applications based on createdby
+        :params created: retrieve the applications based on date and time
+        :params modified: retrieve the applications based on modified date and time
+        :params pageNo: to retrieve page number
+        :params limit: to retrieve limit for each page
+        :params orderBy: Name of column to order by (default: created)
+        """
+        try:
+            if request.args:
+                dict_data = ApplicationListRequestSchema().load(request.args)
+                page_no = dict_data["page_no"]
+                limit = dict_data["limit"]
+                order_by = dict_data.get("order_by")
+                application_id = dict_data.get("application_id")
+                application_name = dict_data.get("application_name")
+                application_status = dict_data.get("application_status")
+                created_by = dict_data.get("created_by")
+                created = dict_data.get("created")
+                modified = dict_data.get("modified")
+                sort_order = dict_data.get("sort_order")
+            else:
+                page_no = 0
+                limit = 0
+            if auth.has_role([REVIEWER_GROUP]):
+                if page_no == 0 and limit == 0:
+                    (
+                        application_schema_dump,
+                        application_count,
+                    ) = ApplicationService.get_all_application_count(
+                        page_no=page_no,
+                        limit=limit,
+                        token=request.headers["Authorization"],
+                    )
+                else:
+                    (
+                        application_schema_dump,
+                        application_count,
+                    ) = ApplicationService.get_auth_applications_and_count(
+                        created=created,
+                        modified=modified,
+                        order_by=order_by,
+                        sort_order=sort_order,
+                        created_by=created_by,
+                        application_id=application_id,
+                        application_name=application_name,
+                        application_status=application_status,
+                        token=request.headers["Authorization"],
+                        page_no=page_no,
+                        limit=limit,
+                    )
+                application_schema = ApplicationService.apply_custom_attributes(
+                    application_schema=application_schema_dump
                 )
-            )
-            application_count = ApplicationService.get_all_application_by_user_count(
-                user_id=g.token_info.get("preferred_username")
-            )
-        if page_no > 0:
-            return (
-                (
-                    {
-                        "applications": application_schema,
-                        "totalCount": application_count,
-                        "limit": limit,
-                        "pageNo": page_no,
-                    }
-                ),
-                HTTPStatus.OK,
-            )
-        else:
-            return (
-                (
-                    {
-                        "applications": application_schema,
-                        "totalCount": application_count,
-                    }
-                ),
-                HTTPStatus.OK,
+            else:
+                if page_no == 0 and limit == 0:
+                    application_schema_dump = (
+                        ApplicationService.get_all_application_by_user_group(
+                            page_no=page_no,
+                            limit=limit,
+                            user_id=g.token_info.get("preferred_username"),
+                        )
+                    )
+                    application_schema = ApplicationService.apply_custom_attributes(
+                        application_schema=application_schema_dump
+                    )
+                    application_count = (
+                        ApplicationService.get_all_application_by_user_count(
+                            user_id=g.token_info.get("preferred_username")
+                        )
+                    )
+                else:
+                    application_schema = ApplicationService.apply_custom_attributes(
+                        ApplicationService.get_all_applications_by_user(
+                            user_id=g.token_info.get("preferred_username"),
+                            page_no=page_no,
+                            limit=limit,
+                            order_by=order_by,
+                            sort_order=sort_order,
+                            created=created,
+                            modified=modified,
+                            created_by=created_by,
+                            application_id=application_id,
+                            application_name=application_name,
+                            application_status=application_status,
+                        )
+                    )
+                    application_count = (
+                        ApplicationService.get_all_application_by_user_count(
+                            user_id=g.token_info.get("preferred_username")
+                        )
+                    )
+            if page_no > 0:
+                return (
+                    (
+                        {
+                            "applications": application_schema,
+                            "totalCount": application_count,
+                            "limit": limit,
+                            "pageNo": page_no,
+                        }
+                    ),
+                    HTTPStatus.OK,
+                )
+            else:
+                return (
+                    (
+                        {
+                            "applications": application_schema,
+                            "totalCount": application_count,
+                        }
+                    ),
+                    HTTPStatus.OK,
+                )
+        except KeyError as err:
+            response, status = (
+                {
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                },
+                HTTPStatus.BAD_REQUEST,
             )
 
-    # @staticmethod
-    # @auth.require
-    # def post():
-    #     """Post a new application using the request body."""
-    #     application_json = request.get_json()
-    #     """Get applications."""
-    #     try:
-    #         return (
-    #             jsonify(
-    #                 {
-    #                     "applications": ApplicationService.apply_custom_attributes(
-    #                         ApplicationService.get_all_applications_ids(
-    #                             application_json["applicationIds"]
-    #                         )
-    #                     )
-    #                 }
-    #             ),
-    #             HTTPStatus.OK,
-    #         )
-    #     except BusinessException as err:
-    #         return err.error, err.status_code
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
+            return response, status
 
 
 @cors_preflight("GET,PUT,OPTIONS")
@@ -248,7 +305,6 @@ class ApplicationResourcesByIds(Resource):
             application = ApplicationService.create_application(
                 data=dict_data, token=request.headers["Authorization"]
             )
-
             response, status = application_schema.dump(application), HTTPStatus.CREATED
             return response, status
         except BaseException as application_err:

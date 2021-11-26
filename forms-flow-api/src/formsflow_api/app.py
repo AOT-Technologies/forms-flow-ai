@@ -43,7 +43,6 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
         contents = f.read()
         print(contents)
     app.logger.info("Welcome to formsflow-API server...!")
-
     db.init_app(app)
     ma.init_app(app)
 

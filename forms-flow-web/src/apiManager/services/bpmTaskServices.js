@@ -44,12 +44,14 @@ export const fetchServiceTaskList = (filterId,firstResult,reqData,taskIdToRemove
             const taskCount = {
               count: responseData['count']
             };
-            let taskData;
+            let taskData = taskListFromResponse;
             if(taskIdToRemove){
-              taskData=taskListFromResponse.filter( (task)=>task.id!==taskIdToRemove);
-              taskCount['count']--; // Count has to be decreased since one task id is removed.
-            }else{
-              taskData=taskListFromResponse;
+              console.log("task----",taskIdToRemove);
+              //if the list has the task with taskIdToRemove remove that task and decrement
+              if(taskListFromResponse.find((task)=>task.id===taskIdToRemove)){
+                taskData=taskListFromResponse.filter( (task)=>task.id!==taskIdToRemove);
+                taskCount['count']--; // Count has to be decreased since one task id is removed.
+              }
             }
             dispatch(setBPMTaskCount(taskCount));
             dispatch(setBPMTaskList(taskData));

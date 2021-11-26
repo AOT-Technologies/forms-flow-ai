@@ -4,7 +4,7 @@ from marshmallow import EXCLUDE, Schema, fields
 
 
 class ApplicationListReqSchema(Schema):
-    """This class manages application list request schema."""
+    """This is a general class for paginated request schema."""
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Exclude unknown fields in the deserialized output."""
@@ -15,6 +15,19 @@ class ApplicationListReqSchema(Schema):
     limit = fields.Int(required=False, allow_none=True)
 
 
+class ApplicationListRequestSchema(ApplicationListReqSchema):
+    """This class manges application list request schema."""
+
+    order_by = fields.Str(data_key="sortBy", required=False)
+    application_id = fields.Int(data_key="Id", required=False)
+    application_name = fields.Str(data_key="applicationName", required=False)
+    application_status = fields.Str(data_key="applicationStatus", required=False)
+    created_by = fields.Str(data_key="createdBy", required=False)
+    created = fields.Str(data_key="created", required=False)
+    modified = fields.Str(data_key="modified", required=False)
+    sort_order = fields.Str(data_key="sortOrder", required=False)
+
+
 class ApplicationSchema(Schema):
     """This class manages application request and response schema."""
 
@@ -23,7 +36,7 @@ class ApplicationSchema(Schema):
 
         unknown = EXCLUDE
 
-    id = fields.Int()
+    id = fields.Int(data_key="id")
     application_name = fields.Str(data_key="applicationName")
     application_status = fields.Str(data_key="applicationStatus")
     form_process_mapper_id = fields.Str(data_key="formProcessMapperId")

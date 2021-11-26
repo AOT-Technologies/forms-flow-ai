@@ -6,30 +6,6 @@ export const dashboard = {
     ]
 }
 
-
-export const dashboards = [
-   { id:2,
-    name:'sample',
-    approvedGroups:[
-        {name:"group2",id:'6185f953-49c1-4dce-a7fd-56d4823d544d'}
-    ]},
-    { id:1,
-        name:'sample',
-        approvedGroups:[
-          
-        ]}
-]
-export const dashboards1 = [
-    { id:2,
-     name:'sample',
-     approvedGroups:[
-     ]},
-     { id:1,
-         name:'sample',
-         approvedGroups:[
-           
-         ]}
- ]
 export const groups = [
     {
         "id": "6185f953-49c1-4dce-a7fd-56d4823d544d",
@@ -72,63 +48,12 @@ export const groups1 = [
             ]
       },
 ]
-export const groups2 = [
-    {
-        "id": "6185f953-49c1-4dce-a7fd-56d4823d544d",
-        "name": "group2",
-        "path": "/formsflow/formsflow-reviewer/redash/group2",
-        "subGroups": [],
-        "dashboards": [
-            {'2': 'sample'}
-            ]
-      },
-      {
-        "id": "95a00152-dd81-4e9b-9ee4-f6559fa88ebb",
-        "name": "group3",
-        "path": "/formsflow/formsflow-reviewer/redash/group3",
-        "subGroups": [],
-        "dashboards": [
-              
-            ]
-      },
-]
-export const groups3 = [
-    {
-        "id": "6185f953-49c1-4dce-a7fd-56d4823d544d",
-        "name": "group2",
-        "path": "/formsflow/formsflow-reviewer/redash/group2",
-        "subGroups": [],
-        "dashboards": [
-                {'1': 'Freedom of Information Form'}
-            ]
-      },
-      {
-        "id": "95a00152-dd81-4e9b-9ee4-f6559fa88ebb",
-        "name": "group3",
-        "path": "/formsflow/formsflow-reviewer/redash/group3",
-        "subGroups": [],
-        "dashboards": [
-                {'2': 'sample'}
-            ]
-      },
-]
+
 export const approvedGroups  = [
     {name:"group2",id:'6185f953-49c1-4dce-a7fd-56d4823d544d'},
     {name:"group3",id:'95a00152-dd81-4e9b-9ee4-f6559fa88ebb'}
 ]
 
-export const addGroupToDashOutput = [
-    { id:2,
-     name:'sample',
-     approvedGroups:[
-         {name:"group2",id:'6185f953-49c1-4dce-a7fd-56d4823d544d'}
-     ]},
-     { id:1,
-         name:'sample',
-         approvedGroups:[
-           
-         ]}
- ];
 
 
 export const updatedState = {
@@ -168,3 +93,12 @@ export const updatedState = {
     isGroupUpdated:true,
 		
 }
+
+export const dashboardToclean = 
+     [
+        "[{'5': 'Hello'}, {'4': 'testathira'}, {'6': 'New Business License Application'}, {'8': 'Sentiment Analysis'}, {'7': 'Freedom Of Information Form'}, {'3': 'test'}, {'12': 'dashboard4'}]"
+    ]
+export const cleanedDashboards =
+    [
+     {'5': 'Hello'}, {'4': 'testathira'}, {'6': 'New Business License Application'}, {'8': 'Sentiment Analysis'}, {'7': 'Freedom Of Information Form'}, {'3': 'test'}, {'12': 'dashboard4'}
+    ]

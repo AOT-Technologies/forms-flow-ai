@@ -1,8 +1,7 @@
 import { httpGETRequest,httpPUTRequest } from "../httpRequestHandler";
-import { setDashboards,dashboardErrorHandler,setGroups,updateErrorHandler } from "../../actions/dashboardActions";
+import { setDashboards,dashboardErrorHandler,setGroups,updateErrorHandler, hideUpdateError } from "../../actions/dashboardActions";
 import API from '../endpoints/index'
 import { replaceUrl } from "../../helper/helper";
-
 
 export const updateGroup = (data)=>{
   const apiUpdateGroup = replaceUrl(
@@ -15,16 +14,19 @@ export const updateGroup = (data)=>{
     .then((res)=>{
       if(res.data){
         dispatch(fetchdashboards());
-       dispatch(fetchGroups())
-      }else{
-        dispatch(updateErrorHandler("Groups not found"));
         dispatch(fetchGroups())
+      }else{
+        dispatch(updateErrorHandler("Update Failed"));
+        setTimeout(() => {
+          dispatch(hideUpdateError());
+        }, 2000);
       }
     })
     .catch((error)=>{
-      console.log("update error",error);
       dispatch(updateErrorHandler(error));
-      dispatch(fetchGroups())
+      setTimeout(() => {
+        dispatch(hideUpdateError());
+      }, 2000);
     })
   }
 }
@@ -89,19 +91,24 @@ export const cleanGroups = (groups)=>{
 // since the data we need is not a valid json / or stringified json, the approach taken 
 // to extract the data is string manipulation and create the objects from the extracted information.
 
+// input format --> dashboards: [
+//    "[{'5': 'Hello'}, {'4': 'testathira'}, {'6': 'New Business License Application'}, {'8': 'Sentiment Analysis'}, {'7': 'Freedom Of Information Form'}, {'3': 'test'}, {'12': 'dashboard4'}]"
+//]
+//output format --> dashboards:[
+//  {'5': 'Hello'}, {'4': 'testathira'}, {'6': 'New Business License Application'}, {'8': 'Sentiment Analysis'}, {'7': 'Freedom Of Information Form'}, {'3': 'test'}, {'12': 'dashboard4'}
+//]
 export const getCleanedDashboards = (dashboards)=>{
   // possible edge case 
-  if( dashboards === null ){
+  if( dashboards === null || dashboards.length === 0 ){
     return []
   }
 
-  if(dashboards.length === 0){
-    return dashboards
-  }
     dashboards = dashboards[0];
     dashboards = dashboards.substring(1,dashboards.length-1);
     dashboards = dashboards.split(",");
+
   let newdash = [];
+
   for(let str of dashboards){
     // avoiding unwanted entries
     if(str === "{}" || str === ""){

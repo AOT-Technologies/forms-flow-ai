@@ -69,4 +69,4 @@ const getUserInsightsPermission = ()=>{
   return true
 }
 
-export { getUserRoleName, getUserRolePermission, getNameFromEmail, setShowApplications, setShowViewSubmissions,getUserInsightsPermission };
+export { getUserRoleName, getUserRolePermission, getNameFromEmail, setShowApplications, setShowViewSubmissions, getUserInsightsPermission };

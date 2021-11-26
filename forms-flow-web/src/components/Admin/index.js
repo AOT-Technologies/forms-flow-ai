@@ -16,7 +16,7 @@ const AdminDashboard =  () => {
          dispatch(fetchGroups());
 
          return ()=>dispatch({
-          type:ACTION_CONSTANTS.CLEAN_UP,
+          type:ACTION_CONSTANTS.DASHBOARDS_CLEAN_UP,
           payload:null
         })
     },[dispatch])

@@ -3,14 +3,14 @@ import ACTION_CONSTANTS from "./actionConstants"
 //updates the dashboards state 
 export const setDashboards = (data)=>dispatch=>{
     dispatch({
-      type:ACTION_CONSTANTS.GET_DASHBOARDS,
+      type:ACTION_CONSTANTS.DASHBOARDS_LIST,
       payload:data
     })
   }
 // handles the error cases
   export const dashboardErrorHandler = (data) => dispatch=>{
       dispatch({
-          type:ACTION_CONSTANTS.DASHBOARDS_FETCH_ERROR,
+          type:ACTION_CONSTANTS.DASHBOARDS_LIST_ERROR,
           payload:data
       })
   }
@@ -18,7 +18,7 @@ export const setDashboards = (data)=>dispatch=>{
 // updates the groups state 
 export const setGroups = (data)=>dispatch=>{
   dispatch({
-    type:ACTION_CONSTANTS.FETCH_KEYCLOAK_GROUPES,
+    type:ACTION_CONSTANTS.DASHBOARDS_LIST_GROUPS,
     payload:data
   })
 }
@@ -26,7 +26,7 @@ export const setGroups = (data)=>dispatch=>{
 
 export const updateErrorHandler = (data)=>dispatch=>{
   dispatch({
-    type:ACTION_CONSTANTS.UPDATE_ERROR_HANDLE,
+    type:ACTION_CONSTANTS.DASHBOARDS_UPDATE_ERROR,
     payload:data
   })
 }
@@ -34,7 +34,7 @@ export const updateErrorHandler = (data)=>dispatch=>{
 
 export const initiateUpdate = ()=>dispatch=>{
   dispatch({
-    type:ACTION_CONSTANTS.INITIATE_UPDATE,
+    type:ACTION_CONSTANTS.DASHBOARDS_INITIATE_UPDATE,
     payload:null
   })
 }
@@ -43,11 +43,18 @@ export const initiateUpdate = ()=>dispatch=>{
 
 export const updateDashboardFromGroups = (data)=>dispatch=>{
   dispatch({
-    type:ACTION_CONSTANTS.UPDATE_DASHBOARDS_FROM_GROUPS,
+    type:ACTION_CONSTANTS.DASHBOARDS_MAP_FROM_GROUPS,
     payload:{
       dashboards:data.dashboards,
       groups:data.groups
     }
+  })
+}
+
+export const hideUpdateError = ()=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.DASHBOARDS_HIDE_UPDATE_ERROR,
+    payload:null
   })
 }
 

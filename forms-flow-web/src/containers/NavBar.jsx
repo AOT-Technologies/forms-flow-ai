@@ -3,7 +3,7 @@ import {Navbar, Dropdown, Container, Nav, NavDropdown} from "react-bootstrap";
 import {Link, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import UserService from "../services/UserService";
-import {getUserRoleName, getUserRolePermission,getUserInsightsPermission} from "../helper/user";
+import {getUserRoleName, getUserRolePermission, getUserInsightsPermission} from "../helper/user";
 
 import "./styles.scss";
 import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME, STAFF_DESIGNER} from "../constants/constants";

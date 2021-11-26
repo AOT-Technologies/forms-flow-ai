@@ -2,7 +2,6 @@ import React,{useEffect,useState} from "react";
 import { Button } from "react-bootstrap";
 import BootstrapTable from 'react-bootstrap-table-next';
 import {useDispatch} from "react-redux";
-import ACTION_CONSTANTS from "../../actions/actionConstants";
 import ListGroup from 'react-bootstrap/ListGroup'
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import paginationFactory from 'react-bootstrap-table2-paginator';
@@ -25,13 +24,13 @@ export const InsightDashboard = (props)=> {
   const isError =  dashboardReducer.iserror;
   const error = dashboardReducer.error;
   const updateError = dashboardReducer.updateError;
-  const isUpdating = dashboardReducer.isUpdating;
 
   const [anchorEl, setAnchorEl] = useState(null);
 
   const [remainingGroups,setRemainingGroups] = useState([]); 
   const [activeRow,setActiveRow] = useState(null);
   const [show, setShow] = useState(false);
+  const [activePage,setActivePage] = useState(1);
 
   useEffect(()=>{
     if(isDashUpdated && isGroupUpdated){
@@ -148,10 +147,32 @@ export const InsightDashboard = (props)=> {
   }
 ];
 
-  const pagination = paginationFactory({
-    showTotal :true
-  })
+const getpageList = ()=>{
+  const list = [ 
+        {
+        text: '5', value: 5
+      },
+        {
+        text: '25', value: 25
+      },
+        {
+        text: '50', value: 50
+      },
+        {
+        text: '100', value: 100
+      },
+        {
+        text: 'All', value: dashboards.length
+      } ]
+  return list
+}
 
+  const pagination = paginationFactory({
+    showTotal :true,
+    sizePerPageList:getpageList(),
+    page:activePage,
+    onPageChange :(page)=>setActivePage(page)
+  })
 
   return (
      <>
@@ -161,10 +182,8 @@ export const InsightDashboard = (props)=> {
           <span><i className="fa fa-wpforms" aria-hidden="true"/></span>
              <span className="forms-text">Dashboard</span></h3>
           </div>
-          {/* TODO :=> replace the image icons with some icon package */}
-          { isUpdating && <div className="saving-container"><img id="box" className="active" src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7d/Refresh_icon.svg/1200px-Refresh_icon.svg.png" /><h4 className="status-message">Saving changes</h4></div>}
+          {updateError && <div className="error-container error-custom"><Errors errors={error} /></div>}
         </div>
-        {updateError && <div className="error-container error-custom"><Errors errors={error} /></div>}
         <section  className="custom-grid grid-forms">
           {isloading ?isError ? <Errors errors={error} />:<Loading /> :<BootstrapTable keyField='id' data={ dashboards } columns={ columns } pagination={pagination} />}
         </section>

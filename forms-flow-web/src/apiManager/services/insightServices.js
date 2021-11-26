@@ -21,9 +21,7 @@ export const fetchDashboardsList = (dashboardsFromRedash) =>{
         dispatch(setInsightDetailLoader(false));
       return dispatch(serviceActionError("No Dashboards found"))
     }
-    dashboards = JSON.parse(dashboards);
-    dashboards = dashboards.dashboards;
-   
+    dashboards = JSON.parse(dashboards).dashboards;   
     for(let dashboard of dashboards){
       let entry = fetchCleanedDashboardsFromLocalStorage(dashboard,dashboardsFromRedash)
       result = [...result,...entry]

@@ -34,8 +34,8 @@ window["_env_"] = {
   ////Environment Variables for forms-flow-bpm////
 
   //Insight Api End point
-  REACT_APP_INSIGHT_API_BASE: "Insight Api base end-point",
-  REACT_APP_INSIGHTS_API_KEY: "<API_KEY from REDASH>",
+  //REACT_APP_INSIGHT_API_BASE: "Insight Api base end-point",
+  //REACT_APP_INSIGHTS_API_KEY: "<API_KEY from REDASH>",
   //web Api End point
   REACT_APP_WEB_BASE_URL: "Web Api base end-point",
   //bpm base api

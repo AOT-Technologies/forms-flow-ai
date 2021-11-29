@@ -2,7 +2,7 @@
 from http import HTTPStatus
 from pprint import pprint
 from flask_restx import Namespace, Resource
-from flask import request
+from flask import request, current_app
 from marshmallow import ValidationError
 
 from formsflow_api.services import KeycloakAdminAPIService
@@ -46,19 +46,26 @@ class KeycloakDashboardGroupList(Resource):
                 url_path="groups", first=page_no, max=limit
             )
 
-        if group_list_response != None:
-            for group in group_list_response:
-                if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
-                    dashboard_group_list = [x for x in group["subGroups"]]
-                    for group in dashboard_group_list:
-                        group["dashboards"] = (
-                            client.get_request(url_path=f"groups/{group['id']}")
-                            .get("attributes")
-                            .get("dashboards")
-                        )
-                    return dashboard_group_list, HTTPStatus.OK
-        else:
-            return {"message": "No Dashboard authorised groups found"}, HTTPStatus.OK
+        current_app.logger.debug(group_list_response)
+
+        for group in group_list_response:
+            if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
+                dashboard_group_list = [x for x in group["subGroups"]]
+                if dashboard_group_list == []:
+                    return {
+                        "message": "No Dashboard authorized Group found"
+                    }, HTTPStatus.NOT_FOUND
+                for group in dashboard_group_list:
+                    group["dashboards"] = (
+                        client.get_request(url_path=f"groups/{group['id']}")
+                        .get("attributes")
+                        .get("dashboards")
+                    )
+                return dashboard_group_list, HTTPStatus.OK
+            else:
+                return {
+                    "message": "No Dashboard authorized groups found"
+                }, HTTPStatus.NOT_FOUND
 
 
 @cors_preflight("GET,PUT,OPTIONS")
@@ -72,7 +79,7 @@ class KeycloakDashboardGroupDetail(Resource):
         client = KeycloakAdminAPIService()
         response = client.get_request(url_path=f"groups/{id}")
         if response is None:
-            return {"message": "Group not found"}, HTTPStatus.NOT_FOUND
+            return f"Group - {id} not found"}, HTTPStatus.NOT_FOUND
         return response
 
     @staticmethod
@@ -86,13 +93,16 @@ class KeycloakDashboardGroupDetail(Resource):
             dict_data = KeycloakDashboardGroupSchema().load(group_json)
 
             dashboard_id_details = client.get_request(url_path=f"groups/{id}")
-            dashboard_id_details["attributes"]["dashboards"] = [
-                str(dict_data["dashboards"])
-            ]
-            response = client.update_request(
-                url_path=f"groups/{id}", data=dashboard_id_details
-            )
-            return response
+            if dashboard_id_details == None:
+                return {"message": f"Group - {id} not found"}, HTTPStatus.NOT_FOUND
+            else:
+                dashboard_id_details["attributes"]["dashboards"] = [
+                    str(dict_data["dashboards"])
+                ]
+                response = client.update_request(
+                    url_path=f"groups/{id}", data=dashboard_id_details
+                )
+                return response
         except ValidationError as err:
             pprint(err.messages)
             return {"message": "Invalid Request Object format"}, HTTPStatus.BAD_REQUEST

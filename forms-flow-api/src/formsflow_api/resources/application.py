@@ -334,3 +334,21 @@ class ProcessMapperResourceByApplicationId(Resource):
             )
         except BusinessException as err:
             return err.error, err.status_code
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/status/list", methods=["GET", "OPTIONS"])
+class ApplicationResourceByApplicationStatus(Resource):
+    """Get application status."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def get():
+
+        try:
+            return (
+                ApplicationService.get_all_application_status(),
+                HTTPStatus.OK,
+            )
+        except BusinessException as err:
+            return err.error, err.status_code

@@ -64,6 +64,11 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return cls.query.filter_by(id=application_id).first()
 
     @classmethod
+    def find_all_application_status(cls):
+        """Find all application status"""
+        return cls.query.distinct(Application.application_status)
+
+    @classmethod
     def find_by_ids(cls, application_ids) -> Application:
         """Find application that matches the provided id."""
         return cls.query.filter(cls.id.in_(application_ids)).order_by(
@@ -173,9 +178,18 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 .paginate(page_no, limit)
                 .items
             )
-        elif order_by == ApplicationSortingParameters.Name:
+
+        elif order_by == ApplicationSortingParameters.Name and sort_order == "asc":
             return (
-                cls.query.order_by(Application.application_name)
+                cls.query.order_by(Application.application_name.asc())
+                .filter(Application.created_by == user_id)
+                .paginate(page_no, limit)
+                .items
+            )
+        elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
+            return (
+                cls.query.order_by(Application.application_name.desc())
+
                 .filter(Application.created_by == user_id)
                 .paginate(page_no, limit)
                 .items
@@ -338,9 +352,18 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 .paginate(page_no, limit)
                 .items
             )
-        elif order_by == ApplicationSortingParameters.Name:
+
+        elif order_by == ApplicationSortingParameters.Name and sort_order == "asc":
             return (
-                cls.query.order_by(Application.application_name)
+                cls.query.order_by(Application.application_name.asc())
+                .filter(Application.application_name.in_(form_names))
+                .paginate(page_no, limit)
+                .items
+            )
+        elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
+            return (
+                cls.query.order_by(Application.application_name.desc())
+
                 .filter(Application.application_name.in_(form_names))
                 .paginate(page_no, limit)
                 .items
@@ -424,7 +447,13 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             return cls.query.order_by(Application.created.asc()).filter(
                 Application.application_name.in_(form_names)
             )
-        elif order_by == ApplicationSortingParameters.Name:
+
+        elif order_by == ApplicationSortingParameters.Name and sort_order == "asc":
+            return cls.query.order_by(Application.application_name).filter(
+                Application.application_name.in_(form_names)
+            )
+        elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
+
             return cls.query.order_by(Application.application_name).filter(
                 Application.application_name.in_(form_names)
             )

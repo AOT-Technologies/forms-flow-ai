@@ -7,7 +7,9 @@ from flask import current_app
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import Application, FormProcessMapper
-from formsflow_api.schemas import AggregatedApplicationSchema, ApplicationSchema, FormProcessMapperSchema
+
+from formsflow_api.schemas import AggregatedApplicationSchema, ApplicationSchema, FormProcessMapperSchema, ApplicationStatusSchema
+
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import NEW_APPLICATION_STATUS
 
@@ -269,6 +271,14 @@ class ApplicationService:
     def get_all_application_by_user_count(user_id: str):
         """Get application count."""
         return Application.find_all_by_user_count(user_id=user_id)
+
+
+    @staticmethod
+    def get_all_application_status():
+        """Get all application status"""
+        application_status_schema = ApplicationStatusSchema()
+        status =  Application.find_all_application_status()
+        return application_status_schema.dump(status, many=True)
 
     @staticmethod
     def get_all_applications_form_id(form_id, page_no: int, limit: int):

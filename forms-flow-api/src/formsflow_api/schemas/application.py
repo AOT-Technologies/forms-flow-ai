@@ -24,17 +24,19 @@ class ApplicationListRequestSchema(ApplicationListReqSchema):
     application_name = fields.Str(data_key="applicationName", required=False)
     application_status = fields.Str(data_key="applicationStatus", required=False)
     created_by = fields.Str(data_key="createdBy", required=False)
-    created = fields.Str(data_key="created", required=False)
-    modified = fields.Str(data_key="modified", required=False)
+    created_from_date = fields.Date(
+        data_key="createdFrom", format="%Y-%m-%dT%H:%M:%S+00:00"
+    )
+    created_to_date = fields.DateTime(
+        data_key="createdTo", format="%Y-%m-%dT%H:%M:%S+00:00"
+    )
+    modified_from_date = fields.Date(
+        data_key="modifiedFrom", format="%Y-%m-%dT%H:%M:%S+00:00"
+    )
+    modified_to_date = fields.Date(
+        data_key="modifiedTo", format="%Y-%m-%dT%H:%M:%S+00:00"
+    )
     sort_order = fields.Str(data_key="sortOrder", required=False)
-
-
-class ApplicationStatusSchema(Schema):
-    """This class manages application status schema"""
-    class Meta:
-        unknown = EXCLUDE
-
-    application_status = fields.Str()
 
 
 class ApplicationSchema(Schema):

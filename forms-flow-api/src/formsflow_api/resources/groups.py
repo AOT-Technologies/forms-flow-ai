@@ -55,17 +55,14 @@ class KeycloakDashboardGroupList(Resource):
                     return {
                         "message": "No Dashboard authorized Group found"
                     }, HTTPStatus.NOT_FOUND
-                for group in dashboard_group_list:
-                    group["dashboards"] = (
-                        client.get_request(url_path=f"groups/{group['id']}")
-                        .get("attributes")
-                        .get("dashboards")
-                    )
-                return dashboard_group_list, HTTPStatus.OK
-            else:
-                return {
-                    "message": "No Dashboard authorized groups found"
-                }, HTTPStatus.NOT_FOUND
+                else:
+                    for group in dashboard_group_list:
+                        group["dashboards"] = (
+                            client.get_request(url_path=f"groups/{group['id']}")
+                            .get("attributes")
+                            .get("dashboards")
+                        )
+                    return dashboard_group_list, HTTPStatus.OK
 
 
 @cors_preflight("GET,PUT,OPTIONS")
@@ -79,7 +76,7 @@ class KeycloakDashboardGroupDetail(Resource):
         client = KeycloakAdminAPIService()
         response = client.get_request(url_path=f"groups/{id}")
         if response is None:
-            return f"Group - {id} not found"}, HTTPStatus.NOT_FOUND
+            return {"message": f"Group - {id} not found"}, HTTPStatus.NOT_FOUND
         return response
 
     @staticmethod

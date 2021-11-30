@@ -2,8 +2,7 @@
 
 from __future__ import annotations
 
-from sqlalchemy import and_, func, or_
-from sqlalchemy.sql.expression import desc
+from sqlalchemy import and_, func, or_, distinct
 
 from formsflow_api.models.audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from formsflow_api.models.base_model import BaseModel
@@ -66,7 +65,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     @classmethod
     def find_all_application_status(cls):
         """Find all application status"""
-        return cls.query.distinct(Application.application_status)
+        return cls.query.distinct(Application.application_status).all()
 
     @classmethod
     def find_by_ids(cls, application_ids) -> Application:
@@ -98,14 +97,76 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         application_name: str,
         application_status: str,
         created_by: str,
-        created: str,
-        modified: str,
+        created_from: str,
+        created_to: str,
+        modified_from: str,
+        modified_to: str,
         sort_order: str,
     ) -> Application:
         """Fetch applications list based on searching parameters for Non-reviewer"""
         if application_id:
             return (
                 cls.query.filter(Application.id == application_id)
+                .filter(Application.created_by == user_id)
+                .paginate(page_no, limit)
+                .items
+            )
+        elif application_name and application_status and modified_from and modified_to:
+            return (
+                cls.query.filter(
+                    Application.application_name.like(f"{application_name}%")
+                )
+                .filter(
+                    Application.application_status.like(f"{application_status}%")
+                )
+                .filter(
+                    and_(
+                        func.date(Application.modified) >= modified_from,
+                        func.date(Application.modified) <= modified_to,
+                    )
+                )
+                .filter(Application.created_by == user_id)
+                .paginate(page_no, limit)
+                .items
+            )
+        elif application_name and application_status:
+            return (
+                cls.query.filter(
+                    Application.application_name.like(f"{application_name}%")
+                )
+                .filter(
+                    Application.application_status.like(f"{application_status}%")
+                )
+                .filter(Application.created_by == user_id)
+                .paginate(page_no, limit)
+                .items
+            )
+        elif application_name and modified_from and modified_to:
+            return (
+                cls.query.filter(
+                    Application.application_name.like(f"{application_name}%")
+                )
+                .filter(
+                    and_(
+                        func.date(Application.modified) >= modified_from,
+                        func.date(Application.modified) <= modified_to,
+                    )
+                )
+                .filter(Application.created_by == user_id)
+                .paginate(page_no, limit)
+                .items
+            )
+        elif application_status and modified_from and modified_to:
+            return (
+                cls.query.filter(
+                    Application.application_status.like(f"{application_status}%")
+                )
+                .filter(
+                    and_(
+                        func.date(Application.modified) >= modified_from,
+                        func.date(Application.modified) <= modified_to,
+                    )
+                )
                 .filter(Application.created_by == user_id)
                 .paginate(page_no, limit)
                 .items
@@ -128,6 +189,18 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 .paginate(page_no, limit)
                 .items
             )
+        elif modified_from and modified_to:
+            return (
+                cls.query.filter(
+                    and_(
+                        func.date(Application.modified) >= modified_from,
+                        func.date(Application.modified) <= modified_to,
+                    )
+                )
+                .filter(Application.created_by == user_id)
+                .paginate(page_no, limit)
+                .items
+            )
         elif created_by:
             return (
                 cls.query.filter(Application.created_by == created_by)
@@ -135,28 +208,19 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 .paginate(page_no, limit)
                 .items
             )
-        elif created:
+        elif created_from and created_to:
             return (
-                cls.query.filter(func.date(Application.created) == created)
+                cls.query.filter(
+                    and_(
+                        func.date(Application.created) >= created_from,
+                        func.date(Application.created) <= created_to,
+                    )
+                )
                 .filter(Application.created_by == user_id)
                 .paginate(page_no, limit)
                 .items
             )
-        elif modified:
-            return (
-                cls.query.filter(func.date(Application.modified) == modified)
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
-            )
-        """Fetch applications based on sorting parameters
-        :qparam orderBy: Name of column to order by
-        :qparam orderBy id: sorted applications based on id
-        :qparam orderBy created: sorted applications based on date and time
-        :qparam orderBy application_name: sorted applications based on application name
-        :qparam orderBy application_status: sorted applications based on status
-        :qparam orderBy modified: sorted applications based on modified date and time                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-        """
+
         if order_by == ApplicationSortingParameters.Id and sort_order == "asc":
             return (
                 cls.query.order_by(Application.id.asc())
@@ -189,7 +253,6 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
             return (
                 cls.query.order_by(Application.application_name.desc())
-
                 .filter(Application.created_by == user_id)
                 .paginate(page_no, limit)
                 .items
@@ -266,8 +329,10 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         cls,
         form_names: str,
         application_id: int,
-        created: str,
-        modified: str,
+        created_from: str,
+        created_to: str,
+        modified_from: str,
+        modified_to: str,
         application_name: str,
         application_status: str,
         created_by: str,
@@ -280,6 +345,66 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         if application_id:
             return (
                 cls.query.filter(Application.id == application_id)
+                .filter(Application.application_name.in_(form_names))
+                .paginate(page_no, limit)
+                .items
+            )
+        elif application_name and application_status and modified_from and modified_to:
+            return (
+                cls.query.filter(
+                    Application.application_name.like(f"{application_name}%")
+                )
+                .filter(
+                    Application.application_status.like(f"{application_status}%")
+                )
+                .filter(
+                    and_(
+                        func.date(Application.modified) >= modified_from,
+                        func.date(Application.modified) <= modified_to,
+                    )
+                )
+                .filter(Application.application_name.in_(form_names))
+                .paginate(page_no, limit)
+                .items
+            )
+        elif application_name and application_status:
+            return (
+                cls.query.filter(
+                    Application.application_name.like(f"{application_name}%")
+                )
+                .filter(
+                    Application.application_status.like(f"{application_status}%")
+                )
+                .filter(Application.application_name.in_(form_names))
+                .paginate(page_no, limit)
+                .items
+            )
+        elif application_name and modified_from and modified_to:
+            return (
+                cls.query.filter(
+                    Application.application_name.like(f"{application_name}%")
+                )
+                .filter(
+                    and_(
+                        func.date(Application.modified) >= modified_from,
+                        func.date(Application.modified) <= modified_to,
+                    )
+                )
+                .filter(Application.application_name.in_(form_names))
+                .paginate(page_no, limit)
+                .items
+            )
+        elif application_status and modified_from and modified_to:
+            return (
+                cls.query.filter(
+                    Application.application_status.like(f"{application_status}%")
+                )
+                .filter(
+                    and_(
+                        func.date(Application.modified) >= modified_from,
+                        func.date(Application.modified) <= modified_to,
+                    )
+                )
                 .filter(Application.application_name.in_(form_names))
                 .paginate(page_no, limit)
                 .items
@@ -302,6 +427,18 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 .paginate(page_no, limit)
                 .items
             )
+        elif modified_from and modified_to:
+            return (
+                cls.query.filter(
+                    and_(
+                        func.date(Application.modified) >= modified_from,
+                        func.date(Application.modified) <= modified_to,
+                    )
+                )
+                .filter(Application.application_name.in_(form_names))
+                .paginate(page_no, limit)
+                .items
+            )
         elif created_by:
             return (
                 cls.query.filter(Application.created_by == created_by)
@@ -309,28 +446,19 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 .paginate(page_no, limit)
                 .items
             )
-        elif created:
+        elif created_from and created_to:
             return (
-                cls.query.filter(func.date(Application.created) == created)
+                cls.query.filter(
+                    and_(
+                        func.date(Application.created) >= created_from,
+                        func.date(Application.created) <= created_to,
+                    )
+                )
                 .filter(Application.application_name.in_(form_names))
                 .paginate(page_no, limit)
                 .items
             )
-        elif modified:
-            return (
-                cls.query.filter(func.date(Application.modified) == modified)
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-        """Fetch applications based on sorting parameters
-        :qparam orderBy: Name of column to order by
-        :qparam orderBy id: sorted applications based on id
-        :qparam orderBy created: sorted applications based on date and time
-        :qparam orderBy application_name: sorted applications based on application name
-        :qparam orderBy application_status: sorted applications based on status
-        :qparam orderBy modified: sorted applications based on modified date and time                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-        """
+
         if order_by == ApplicationSortingParameters.Id and sort_order == "asc":
             return (
                 cls.query.order_by(Application.id.asc())
@@ -363,7 +491,6 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
             return (
                 cls.query.order_by(Application.application_name.desc())
-
                 .filter(Application.application_name.in_(form_names))
                 .paginate(page_no, limit)
                 .items
@@ -395,8 +522,10 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         cls,
         form_names: str,
         application_id: int,
-        created: str,
-        modified: str,
+        created_from: str,
+        created_to: str,
+        modified_from: str,
+        modified_to: str,
         application_name: str,
         application_status: str,
         created_by: str,
@@ -419,14 +548,20 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             return cls.query.filter(Application.created_by == created_by).filter(
                 Application.application_name.in_(form_names)
             )
-        elif created:
-            return cls.query.filter(func.date(Application.created) == created).filter(
-                Application.application_name.in_(form_names)
-            )
-        elif modified:
-            return cls.query.filter(func.date(Application.modified) == modified).filter(
-                Application.application_name.in_(form_names)
-            )
+        elif created_from and created_to:
+            return cls.query.filter(
+                and_(
+                    func.date(Application.created) >= created_from,
+                    func.date(Application.created) <= created_to,
+                )
+            ).filter(Application.application_name.in_(form_names))
+        elif modified_from and modified_to:
+            return cls.query.filter(
+                and_(
+                    func.date(Application.modified) >= modified_from,
+                    func.date(Application.modified) <= modified_to,
+                )
+            ).filter(Application.application_name.in_(form_names))
         """Fetch applications based on sorting parameters
         :qparam orderBy: Name of column to order by
         :qparam orderBy id: sorted applications based on id
@@ -470,6 +605,92 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 Application.application_name.in_(form_names)
             ).order_by(Application.id.desc())
 
+    @classmethod
+    def find_all_applications_count(cls,
+        user_id: str,
+        application_id: int,
+        created_from: str,
+        created_to: str,
+        modified_from: str,
+        modified_to: str,
+        application_name: str,
+        application_status: str,
+        created_by: str,
+        order_by: str,
+        sort_order: str,
+    ):
+        if application_id:
+            return cls.query.filter(Application.id == application_id).filter(
+                (Application.created_by == user_id)
+            )
+        elif application_name:
+            return cls.query.filter(
+                Application.application_name.like(f"{application_name}%")
+            ).filter(Application.created_by == user_id)
+        elif application_status:
+            return cls.query.filter(
+                Application.application_status.like(f"{application_status}%")
+            ).filter(Application.created_by == user_id)
+        elif created_by:
+            return cls.query.filter(Application.created_by == created_by).filter(
+                (Application.created_by == user_id)
+            )
+        elif created_from and created_to:
+            return cls.query.filter(
+                and_(
+                    func.date(Application.created) >= created_from,
+                    func.date(Application.created) <= created_to,
+                )
+            )(Application.created_by == user_id)
+        elif modified_from and modified_to:
+            return cls.query.filter(
+                and_(
+                    func.date(Application.modified) >= modified_from,
+                    func.date(Application.modified) <= modified_to,
+                )
+            )(Application.created_by == user_id)
+        """Fetch applications based on sorting parameters
+        :qparam orderBy: Name of column to order by
+        :qparam orderBy id: sorted applications based on id
+        :qparam orderBy created: sorted applications based on date and time
+        :qparam orderBy application_name: sorted applications based on application name
+        :qparam orderBy application_status: sorted applications based on status
+        :qparam orderBy modified: sorted applications based on modified date and time                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+        """
+        if order_by == ApplicationSortingParameters.Id and sort_order == "asc":
+            return cls.query.order_by(Application.id.asc()).filter(
+                (Application.created_by == user_id)
+            )
+        elif order_by == ApplicationSortingParameters.Id and sort_order == "desc":
+            return cls.query.order_by(Application.id.desc()).filter(
+                (Application.created_by == user_id)
+            )
+        elif order_by == ApplicationSortingParameters.Created:
+            return cls.query.order_by(Application.created.asc()).filter(
+                (Application.created_by == user_id)
+            )
+
+        elif order_by == ApplicationSortingParameters.Name and sort_order == "asc":
+            return cls.query.order_by(Application.application_name).filter(
+                (Application.created_by == user_id)
+            )
+        elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
+
+            return cls.query.order_by(Application.application_name).filter(
+                (Application.created_by == user_id)
+            )
+        elif order_by == ApplicationSortingParameters.Status:
+            return cls.query.order_by(Application.application_status.asc()).filter(
+                (Application.created_by == user_id)
+            )
+        elif order_by == ApplicationSortingParameters.Modified:
+            return cls.query.order_by(Application.modified.asc()).filter(
+                (Application.created_by == user_id)
+            )
+        else:
+            return cls.query.filter(
+                (Application.created_by == user_id)
+            ).order_by(Application.id.desc())
     @classmethod
     def find_all_applications(cls, page_no: int, limit: int, form_names: str):
         if page_no == 0:

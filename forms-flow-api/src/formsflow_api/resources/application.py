@@ -50,8 +50,10 @@ class ApplicationsResource(Resource):
                 application_name = dict_data.get("application_name")
                 application_status = dict_data.get("application_status")
                 created_by = dict_data.get("created_by")
-                created = dict_data.get("created")
-                modified = dict_data.get("modified")
+                created_from_date = dict_data.get("created_from_date")
+                created_to_date = dict_data.get("created_to_date")
+                modified_from_date = dict_data.get("modified_from_date")
+                modified_to_date = dict_data.get("modified_to_date")
                 sort_order = dict_data.get("sort_order")
             else:
                 page_no = 0
@@ -71,8 +73,10 @@ class ApplicationsResource(Resource):
                         application_schema_dump,
                         application_count,
                     ) = ApplicationService.get_auth_applications_and_count(
-                        created=created,
-                        modified=modified,
+                        created_from=created_from_date,
+                        created_to=created_to_date,
+                        modified_from=modified_from_date,
+                        modified_to=modified_to_date,
                         order_by=order_by,
                         sort_order=sort_order,
                         created_by=created_by,
@@ -104,26 +108,28 @@ class ApplicationsResource(Resource):
                         )
                     )
                 else:
-                    application_schema = ApplicationService.apply_custom_attributes(
-                        ApplicationService.get_all_applications_by_user(
+                    (
+                        application_schema_dump, 
+                        application_count,
+                    ) = ApplicationService.get_all_applications_by_user(
                             user_id=g.token_info.get("preferred_username"),
                             page_no=page_no,
                             limit=limit,
                             order_by=order_by,
                             sort_order=sort_order,
-                            created=created,
-                            modified=modified,
+                            created_from=created_from_date,
+                            created_to=created_to_date,
+                            modified_from=modified_from_date,
+                            modified_to=modified_to_date,
                             created_by=created_by,
                             application_id=application_id,
                             application_name=application_name,
                             application_status=application_status,
                         )
+                    application_schema = ApplicationService.apply_custom_attributes(
+                        application_schema=application_schema_dump
                     )
-                    application_count = (
-                        ApplicationService.get_all_application_by_user_count(
-                            user_id=g.token_info.get("preferred_username")
-                        )
-                    )
+                    
             if page_no > 0:
                 return (
                     (

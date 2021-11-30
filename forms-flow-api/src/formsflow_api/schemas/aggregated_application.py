@@ -11,8 +11,12 @@ class ApplicationMetricsRequestSchema(Schema):
 
         unknown = EXCLUDE
 
-    from_date = fields.Date(format="%Y-%m-%d", data_key="from", required=True)
-    to_date = fields.Date(format="%Y-%m-%d", data_key="to", required=True)
+    from_date = fields.DateTime(
+        format="%Y-%m-%dT%H:%M:%S+00:00", data_key="from", required=True
+    )
+    to_date = fields.DateTime(
+        format="%Y-%m-%dT%H:%M:%S+00:00", data_key="to", required=True
+    )
     order_by = fields.Str(data_key="orderBy", required=False)
 
 

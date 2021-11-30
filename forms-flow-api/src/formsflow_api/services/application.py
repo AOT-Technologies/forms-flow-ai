@@ -8,7 +8,11 @@ from flask import current_app
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import Application, FormProcessMapper
 
-from formsflow_api.schemas import AggregatedApplicationSchema, ApplicationSchema, FormProcessMapperSchema, ApplicationStatusSchema
+from formsflow_api.schemas import (
+    AggregatedApplicationSchema,
+    ApplicationSchema,
+    FormProcessMapperSchema,
+)
 
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import NEW_APPLICATION_STATUS
@@ -74,8 +78,10 @@ class ApplicationService:
         page_no: int,
         limit: int,
         order_by: str,
-        created: str,
-        modified: str,
+        created_from: str,
+        created_to: str,
+        modified_from: str,
+        modified_to: str,
         application_id: int,
         application_name: str,
         application_status: str,
@@ -97,10 +103,12 @@ class ApplicationService:
             application_status = str(application_status)
         if created_by:
             created_by = str(created_by)
-        if created:
-            created = str(created)
-        if modified:
-            modified = str(modified)
+        if created_from and created_to:
+            created_from = str(created_from)
+            created_to = str(created_to)
+        if modified_from and modified_to:
+            modified_from = str(modified_from)
+            modified_to = str(modified_to)
         if sort_order:
             sort_order = str(sort_order)
 
@@ -119,8 +127,10 @@ class ApplicationService:
                 page_no=page_no,
                 limit=limit,
                 order_by=order_by,
-                created=created,
-                modified=modified,
+                created_from=created_from,
+                created_to=created_to,
+                modified_from=modified_from,
+                modified_to=modified_to,
                 sort_order=sort_order,
             )
             get_all_applications = Application.find_all_application_count(
@@ -128,8 +138,10 @@ class ApplicationService:
                 application_id=application_id,
                 application_name=application_name,
                 application_status=application_status,
-                created=created,
-                modified=modified,
+                created_from=created_from,
+                created_to=created_to,
+                modified_from=modified_from,
+                modified_to=modified_to,
                 created_by=created_by,
                 order_by=order_by,
                 sort_order=sort_order,
@@ -177,8 +189,10 @@ class ApplicationService:
         limit: int,
         order_by: str,
         sort_order: str,
-        modified: str,
-        created: str,
+        created_from: str,
+        created_to: str,
+        modified_from: str,
+        modified_to: str,
         created_by: str,
         application_status: str,
         application_name: str,
@@ -201,10 +215,12 @@ class ApplicationService:
             application_status = str(application_status)
         if created_by:
             created_by = str(created_by)
-        if created:
-            created = str(created)
-        if modified:
-            modified = str(modified)
+        if created_from and created_to:
+            created_from = str(created_from)
+            created_to = str(created_to)
+        if modified_from and modified_to:
+            modified_from = str(modified_from)
+            modified_to = str(modified_to)
 
         applications = Application.find_all_by_user(
             user_id=user_id,
@@ -216,11 +232,27 @@ class ApplicationService:
             application_name=application_name,
             application_status=application_status,
             created_by=created_by,
-            created=created,
-            modified=modified,
+            created_from=created_from,
+            created_to=created_to,
+            modified_from=modified_from,
+            modified_to=modified_to
         )
         application_schema = ApplicationSchema()
-        return application_schema.dump(applications, many=True)
+        
+        get_all_applications = Application.find_all_applications_count(
+                user_id=user_id,
+                application_id=application_id,
+                application_name=application_name,
+                application_status=application_status,
+                created_from=created_from,
+                created_to=created_to,
+                modified_from=modified_from,
+                modified_to=modified_to,
+                created_by=created_by,
+                order_by=order_by,
+                sort_order=sort_order,
+            )
+        return application_schema.dump(applications, many=True), get_all_applications.count()
 
     @staticmethod
     def get_all_application_by_user_group(page_no: int, limit: int, user_id: str):
@@ -276,9 +308,10 @@ class ApplicationService:
     @staticmethod
     def get_all_application_status():
         """Get all application status"""
-        application_status_schema = ApplicationStatusSchema()
-        status =  Application.find_all_application_status()
-        return application_status_schema.dump(status, many=True)
+        status_list = Application.find_all_application_status()
+        status_list = [x.application_status for x in status_list]
+        current_app.logger.debug(status_list)
+        return {"applicationStatus": status_list}
 
     @staticmethod
     def get_all_applications_form_id(form_id, page_no: int, limit: int):

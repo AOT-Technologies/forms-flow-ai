@@ -9,7 +9,6 @@ from formsflow_api.schemas.application import (
     ApplicationListReqSchema,
     ApplicationListRequestSchema,
     ApplicationUpdateSchema,
-    ApplicationStatusSchema,
 )
 from formsflow_api.schemas.application_history import ApplicationHistorySchema
 from formsflow_api.schemas.form_process_mapper import FormProcessMapperSchema

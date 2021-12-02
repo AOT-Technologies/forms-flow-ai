@@ -2,7 +2,7 @@
 version: "3.7"
 
 x-redash-service: &redash-service
-  image: redash/redash:10.0.0.b50363
+  image: redash/redash:10.1.0.b50633
   depends_on:
       - postgres
       - redis

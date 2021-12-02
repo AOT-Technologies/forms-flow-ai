@@ -27,8 +27,8 @@ services:
     volumes:
       - ./:/app:rw
     environment:
-      ANALYTICS_API_KEY: ${ANALYTICS_API_KEY}
-      ANALYTICS_API_URL: ${ANALYTICS_API_URL}
+      INSIGHT_API_KEY: ${INSIGHT_API_KEY}
+      INSIGHT_API_URL: ${INSIGHT_API_URL}
       DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
       BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
       BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}

@@ -84,8 +84,8 @@ class _Config:  # pylint: disable=too-few-public-methods
     # API Base URL (Self)
     FORMSFLOW_API_URL = os.getenv("WEB_API_BASE_URL")
     ## Analytics API End points
-    ANALYTICS_API_URL = os.getenv("ANALYTICS_API_URL")
-    ANALYTICS_API_KEY = os.getenv("ANALYTICS_API_KEY")
+    ANALYTICS_API_URL = os.getenv("INSIGHT_API_URL")
+    ANALYTICS_API_KEY = os.getenv("INSIGHT_API_KEY")
 
     # Keycloak Admin Service username
     KEYCLOAK_ADMIN_USERNAME = os.getenv("KEYCLOAK_ADMIN_USERNAME")

@@ -641,14 +641,14 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                     func.date(Application.created) >= created_from,
                     func.date(Application.created) <= created_to,
                 )
-            )(Application.created_by == user_id)
+            ).filter(Application.created_by == user_id)
         elif modified_from and modified_to:
             return cls.query.filter(
                 and_(
                     func.date(Application.modified) >= modified_from,
                     func.date(Application.modified) <= modified_to,
                 )
-            )(Application.created_by == user_id)
+            ).filter(Application.created_by == user_id)
         """Fetch applications based on sorting parameters
         :qparam orderBy: Name of column to order by
         :qparam orderBy id: sorted applications based on id

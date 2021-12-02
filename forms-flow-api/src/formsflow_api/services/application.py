@@ -103,12 +103,12 @@ class ApplicationService:
             application_status = str(application_status)
         if created_by:
             created_by = str(created_by)
-        if created_from and created_to:
-            created_from = str(created_from)
-            created_to = str(created_to)
-        if modified_from and modified_to:
-            modified_from = str(modified_from)
-            modified_to = str(modified_to)
+        # if created_from and created_to:
+        #     created_from = str(created_from)
+        #     created_to = str(created_to)
+        # if modified_from and modified_to:
+        #     modified_from = str(modified_from)
+        #     modified_to = str(modified_to)
         if sort_order:
             sort_order = str(sort_order)
 

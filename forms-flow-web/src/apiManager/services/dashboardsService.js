@@ -38,34 +38,36 @@ export const fetchdashboards = ()=>{
             if (res.data) {
               dispatch(setDashboards(res.data));
             } else {
-              dispatch(dashboardErrorHandler("Dashboards not found"));
+              dispatch(dashboardErrorHandler("No dashboards found"));
             }
           })
           .catch((error) => {
-            dispatch(dashboardErrorHandler(error));
+            if(error?.response?.data){
+              dispatch(dashboardErrorHandler(error.response.data));
+            }else{
+              dispatch(dashboardErrorHandler("Failed to fetch dashboards"));
+            }
           });
       };
 }
 
-
-
-// possible data format
-
 export const fetchGroups = ()=>{
-  // in development
     return (dispatch) => {
         httpGETRequest(API.GET_GROUPS)
           .then((res) => {
             if (res.data) {
               const cleanedGroups = cleanGroups(res.data);
-                dispatch(setGroups(cleanedGroups))
-              
+                dispatch(setGroups(cleanedGroups))    
             } else {
-              dispatch(dashboardErrorHandler(res));
+              dispatch(dashboardErrorHandler("No groups found"));
             }
           })
           .catch((error) => {
-            dispatch(dashboardErrorHandler(error));
+            if(error?.response?.data){
+              dispatch(dashboardErrorHandler(error.response.data));
+            }else{
+              dispatch(dashboardErrorHandler("Failed to fetch groups"));
+            }
           });
       };
   

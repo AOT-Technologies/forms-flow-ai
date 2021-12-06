@@ -18,6 +18,12 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-api**
 
 * Added `pagination` `sorting` and `filtering` for Application Page.
+* Added new API for calling redash APIs.
+* Added new API for modifying group details in Keycloak with the help of Keycloak admin APIs.
+
+*Upgrade notes:*
+
+New environment variables KEYCLOAK_ADMIN_USERNAME, KEYCLOAK_ADMIN_PASSWORD
 
 **forms-flow-analytics**
 

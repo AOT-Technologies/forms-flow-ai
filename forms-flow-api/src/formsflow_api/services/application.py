@@ -1,5 +1,6 @@
 """This exposes application service."""
 
+from datetime import datetime
 from functools import lru_cache
 from http import HTTPStatus
 
@@ -78,10 +79,10 @@ class ApplicationService:
         page_no: int,
         limit: int,
         order_by: str,
-        created_from: str,
-        created_to: str,
-        modified_from: str,
-        modified_to: str,
+        created_from: datetime,
+        created_to: datetime,
+        modified_from: datetime,
+        modified_to: datetime,
         application_id: int,
         application_name: str,
         application_status: str,
@@ -103,12 +104,7 @@ class ApplicationService:
             application_status = str(application_status)
         if created_by:
             created_by = str(created_by)
-        # if created_from and created_to:
-        #     created_from = str(created_from)
-        #     created_to = str(created_to)
-        # if modified_from and modified_to:
-        #     modified_from = str(modified_from)
-        #     modified_to = str(modified_to)
+
         if sort_order:
             sort_order = str(sort_order)
 
@@ -118,7 +114,7 @@ class ApplicationService:
         if auth_form_details:
             for auth_form_detail in auth_form_details:
                 form_names.append(auth_form_detail["formName"])
-            applications = Application.find_by_form_names(
+            applications, get_all_applications_count = Application.find_by_form_names(
                 form_names=form_names,
                 application_id=application_id,
                 application_name=application_name,
@@ -127,28 +123,16 @@ class ApplicationService:
                 page_no=page_no,
                 limit=limit,
                 order_by=order_by,
-                created_from=created_from,
-                created_to=created_to,
                 modified_from=modified_from,
                 modified_to=modified_to,
                 sort_order=sort_order,
-            )
-            get_all_applications = Application.find_all_application_count(
-                form_names=form_names,
-                application_id=application_id,
-                application_name=application_name,
-                application_status=application_status,
                 created_from=created_from,
                 created_to=created_to,
-                modified_from=modified_from,
-                modified_to=modified_to,
-                created_by=created_by,
-                order_by=order_by,
-                sort_order=sort_order,
             )
+
             return (
                 application_schema.dump(applications, many=True),
-                get_all_applications.count(),
+                get_all_applications_count,
             )
         else:
             return (application_schema.dump([], many=True), 0)
@@ -189,10 +173,10 @@ class ApplicationService:
         limit: int,
         order_by: str,
         sort_order: str,
-        created_from: str,
-        created_to: str,
-        modified_from: str,
-        modified_to: str,
+        created_from: datetime,
+        created_to: datetime,
+        modified_from: datetime,
+        modified_to: datetime,
         created_by: str,
         application_status: str,
         application_name: str,
@@ -215,14 +199,8 @@ class ApplicationService:
             application_status = str(application_status)
         if created_by:
             created_by = str(created_by)
-        if created_from and created_to:
-            created_from = str(created_from)
-            created_to = str(created_to)
-        if modified_from and modified_to:
-            modified_from = str(modified_from)
-            modified_to = str(modified_to)
 
-        applications = Application.find_all_by_user(
+        applications, get_all_applications_count = Application.find_all_by_user(
             user_id=user_id,
             page_no=page_no,
             limit=limit,
@@ -232,27 +210,17 @@ class ApplicationService:
             application_name=application_name,
             application_status=application_status,
             created_by=created_by,
+            modified_from=modified_from,
+            modified_to=modified_to,
             created_from=created_from,
             created_to=created_to,
-            modified_from=modified_from,
-            modified_to=modified_to
         )
         application_schema = ApplicationSchema()
-        
-        get_all_applications = Application.find_all_applications_count(
-                user_id=user_id,
-                application_id=application_id,
-                application_name=application_name,
-                application_status=application_status,
-                created_from=created_from,
-                created_to=created_to,
-                modified_from=modified_from,
-                modified_to=modified_to,
-                created_by=created_by,
-                order_by=order_by,
-                sort_order=sort_order,
-            )
-        return application_schema.dump(applications, many=True), get_all_applications.count()
+
+        return (
+            application_schema.dump(applications, many=True),
+            get_all_applications_count,
+        )
 
     @staticmethod
     def get_all_application_by_user_group(page_no: int, limit: int, user_id: str):
@@ -303,7 +271,6 @@ class ApplicationService:
     def get_all_application_by_user_count(user_id: str):
         """Get application count."""
         return Application.find_all_by_user_count(user_id=user_id)
-
 
     @staticmethod
     def get_all_application_status():
@@ -392,7 +359,7 @@ class ApplicationService:
         return schema.dump(applications, many=True)
 
     @staticmethod
-    def get_current_aggregated_applications(from_date: str, to_date: str):
+    def get_current_aggregated_applications(from_date: datetime, to_date: datetime):
         """Get aggregated applications."""
         applications = Application.find_aggregated_applications_modified(
             from_date=from_date, to_date=to_date
@@ -401,7 +368,9 @@ class ApplicationService:
         return schema.dump(applications, many=True)
 
     @staticmethod
-    def get_aggregated_application_status(mapper_id: int, from_date: str, to_date: str):
+    def get_aggregated_application_status(
+        mapper_id: int, from_date: datetime, to_date: datetime
+    ):
         """Get aggregated application status."""
         application_status = Application.find_aggregated_application_status(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date

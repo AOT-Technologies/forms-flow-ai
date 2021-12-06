@@ -6,9 +6,10 @@ import {
   setApplicationList,
   setApplicationDetail,
   setApplicationDetailLoader,
-  setApplicationProcess, setApplicationListCount, setApplicationDetailStatusCode
+  setApplicationProcess, setApplicationListCount, setApplicationDetailStatusCode, setApplicationStatusList,setApplicationError
 } from "../../actions/applicationActions";
 import {replaceUrl} from "../../helper/helper";
+import moment from 'moment';
 
 export const getAllApplicationsByFormId = (formId,...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -34,12 +35,12 @@ export const getAllApplicationsByFormId = (formId,...rest) => {
   };
 };
 
-export const getAllApplications = (pageNo=1, limit=10,...rest) => {
+export const getAllApplications = (pageNo=1, limit=5,...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     //TODO remove the pageNo and limit currently its mandatory from api
     //`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
-    httpGETRequest(API.GET_ALL_APPLICATIONS)
+    httpGETRequest(`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`)
       .then((res) => {
         if (res.data) {
           const applications = res.data.applications || [];
@@ -47,14 +48,12 @@ export const getAllApplications = (pageNo=1, limit=10,...rest) => {
           dispatch(setApplicationList(applications));
           done(null, applications);
         } else {
-          console.log("Error", res);
-          dispatch(serviceActionError(res));
+          dispatch(setApplicationError("Applications not found"));
         }
         done(null, res.data);
       })
       .catch((error) => {
-        console.log("Error", error);
-        dispatch(serviceActionError(error));
+        dispatch(setApplicationError("Failed to fetch applications"));
         done(error);
       });
   };
@@ -174,7 +173,74 @@ export const updateApplicationEvent = (data,...rest) => {
   };
 };
 
+// filter endpoint
 
+export const FilterApplications = (params,...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  return (dispatch)=>{
+    const {applicationName,id,modified,applicationStatus} = params.filters;
+    let url =`${API.GET_ALL_APPLICATIONS}?pageNo=${params.page}&limit=${params.sizePerPage}`;
+    if(applicationName && applicationName !==""){
+      url+=`&applicationName=${applicationName?.filterVal}`
+    }
+    if(id && id !==""){
+      url+=`&Id=${id.filterVal}`
+    }
+  
+    if(applicationStatus && applicationStatus !==""){
+      url+=`&applicationStatus=${applicationStatus?.filterVal}`
+    }
 
+    if(modified && modified?.filterVal?.length === 2){
+      let modifiedFrom = moment.utc(modified.filterVal[0]).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B");
+      let modifiedTo = moment.utc(modified.filterVal[1]).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B");
+      url+=`&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`
+  }
+ 
+    if(params.sortField !== null){
+      url+=`&sortBy=${params.sortField}&sortOrder=${params.sortOrder}` 
+    }
+
+    httpGETRequest(url)
+      .then((res) => {
+        if (res.data) {
+          const applications = res.data.applications || [];
+          dispatch(setApplicationListCount(res.data.totalCount || 0))
+          dispatch(setApplicationList(applications));
+          done(null, applications);
+        } else {
+          dispatch(serviceActionError(res));
+        }
+        done(null, res.data);
+      })
+      .catch((error) => {
+        dispatch(serviceActionError(error));
+        done(error);
+      });
+  }
+};
+
+export const getAllApplicationStatus = (params,...rest) => {
+  //console.log("hai",params)
+  const done = rest.length ? rest[0] : () => {};
+  return (dispatch) => {
+    //TODO remove the pageNo and limit currently its mandatory from api
+    //`${API.GET_ALL_APPLICATIONS}?pageNo=${pageNo}&limit=${limit}`
+    httpGETRequest(`${API.GET_ALL_APPLICATIONS_STATUS}`)
+      .then((res) => {
+        if (res.data) {
+          dispatch(setApplicationStatusList(res.data.applicationStatus))
+          //done(null, applications);
+        } else {
+          dispatch(setApplicationError("Application status not found"));
+        }
+        done(null, res.data);
+      })
+      .catch((error) => {
+        dispatch(setApplicationError("Failed to fetch application status"));
+        done(error);
+      });
+  };
+};
 
 

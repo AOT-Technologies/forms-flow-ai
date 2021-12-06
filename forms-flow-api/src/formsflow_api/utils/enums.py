@@ -21,6 +21,6 @@ class ApplicationSortingParameters:
 
     Id = "id"
     Created = "created"
-    Name = "application_name"
-    Status = "application_status"
+    Name = "applicationName"
+    Status = "applicationStatus"
     Modified = "modified"

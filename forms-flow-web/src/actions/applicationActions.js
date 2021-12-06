@@ -78,3 +78,31 @@ export const setApplicationListCount = (data) => dispatch =>{
     payload:data
   })
 }
+
+export const setApplicationListActivePage = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.APPLICATION_LIST_ACTIVE_PAGE,
+    payload:data
+  })
+}
+
+export const setCountPerpage = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.CHANGE_SIZE_PER_PAGE,
+    payload:data
+  })
+}
+
+export const setApplicationStatusList = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.APPLICATION_STATUS_LIST,
+    payload:data
+  })
+}
+
+export const setApplicationError = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.APPLICATIONS_ERROR,
+    payload:data
+  })
+}

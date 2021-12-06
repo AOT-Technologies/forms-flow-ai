@@ -55,6 +55,13 @@ class ApplicationsResource(Resource):
                 modified_from_date = dict_data.get("modified_from_date")
                 modified_to_date = dict_data.get("modified_to_date")
                 sort_order = dict_data.get("sort_order")
+                current_app.logger.info(modified_from_date)
+                current_app.logger.info(modified_to_date)
+
+                if sort_order == None:
+                    sort_order = "desc"
+                if order_by == None:
+                    order_by = "id"
             else:
                 page_no = 0
                 limit = 0
@@ -109,27 +116,27 @@ class ApplicationsResource(Resource):
                     )
                 else:
                     (
-                        application_schema_dump, 
+                        application_schema_dump,
                         application_count,
                     ) = ApplicationService.get_all_applications_by_user(
-                            user_id=g.token_info.get("preferred_username"),
-                            page_no=page_no,
-                            limit=limit,
-                            order_by=order_by,
-                            sort_order=sort_order,
-                            created_from=created_from_date,
-                            created_to=created_to_date,
-                            modified_from=modified_from_date,
-                            modified_to=modified_to_date,
-                            created_by=created_by,
-                            application_id=application_id,
-                            application_name=application_name,
-                            application_status=application_status,
-                        )
+                        user_id=g.token_info.get("preferred_username"),
+                        page_no=page_no,
+                        limit=limit,
+                        order_by=order_by,
+                        sort_order=sort_order,
+                        created_from=created_from_date,
+                        created_to=created_to_date,
+                        modified_from=modified_from_date,
+                        modified_to=modified_to_date,
+                        created_by=created_by,
+                        application_id=application_id,
+                        application_name=application_name,
+                        application_status=application_status,
+                    )
                     application_schema = ApplicationService.apply_custom_attributes(
                         application_schema=application_schema_dump
                     )
-                    
+
             if page_no > 0:
                 return (
                     (
@@ -340,6 +347,7 @@ class ProcessMapperResourceByApplicationId(Resource):
             )
         except BusinessException as err:
             return err.error, err.status_code
+
 
 @cors_preflight("GET,OPTIONS")
 @API.route("/status/list", methods=["GET", "OPTIONS"])

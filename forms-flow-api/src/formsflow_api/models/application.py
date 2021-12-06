@@ -1,8 +1,10 @@
 """This manages Application submission Data."""
 
 from __future__ import annotations
-
-from sqlalchemy import and_, func, or_, distinct
+from datetime import datetime
+from flask import current_app
+from sqlalchemy import and_, func, or_
+from sqlalchemy.sql.expression import text
 
 from formsflow_api.models.audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from formsflow_api.models.base_model import BaseModel
@@ -97,192 +99,91 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         application_name: str,
         application_status: str,
         created_by: str,
-        created_from: str,
-        created_to: str,
-        modified_from: str,
-        modified_to: str,
+        modified_from: datetime,
+        modified_to: datetime,
         sort_order: str,
+        created_from: datetime,
+        created_to: datetime,
     ) -> Application:
         """Fetch applications list based on searching parameters for Non-reviewer"""
+
         if application_id:
-            return (
-                cls.query.filter(Application.id == application_id)
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
+            query = cls.query.filter(
+                Application.id == application_id,
             )
         elif application_name and application_status and modified_from and modified_to:
-            return (
-                cls.query.filter(
-                    Application.application_name.like(f"{application_name}%")
-                )
-                .filter(
-                    Application.application_status.like(f"{application_status}%")
-                )
-                .filter(
-                    and_(
-                        func.date(Application.modified) >= modified_from,
-                        func.date(Application.modified) <= modified_to,
-                    )
-                )
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
+            query = cls.query.filter(
+                Application.application_name.like(f"{application_name}%"),
+                Application.application_status.like(f"{application_status}%"),
+                func.date(Application.modified) >= modified_from,
+                func.date(Application.modified) <= modified_to,
             )
         elif application_name and application_status:
-            return (
-                cls.query.filter(
-                    Application.application_name.like(f"{application_name}%")
-                )
-                .filter(
-                    Application.application_status.like(f"{application_status}%")
-                )
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
+            query = cls.query.filter(
+                Application.application_name.like(f"{application_name}%"),
+                Application.application_status.like(f"{application_status}%"),
             )
         elif application_name and modified_from and modified_to:
-            return (
-                cls.query.filter(
-                    Application.application_name.like(f"{application_name}%")
-                )
-                .filter(
-                    and_(
-                        func.date(Application.modified) >= modified_from,
-                        func.date(Application.modified) <= modified_to,
-                    )
-                )
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
+            query = cls.query.filter(
+                Application.application_name.like(f"{application_name}%"),
+                func.date(Application.modified) >= modified_from,
+                func.date(Application.modified) <= modified_to,
             )
         elif application_status and modified_from and modified_to:
-            return (
-                cls.query.filter(
-                    Application.application_status.like(f"{application_status}%")
-                )
-                .filter(
-                    and_(
-                        func.date(Application.modified) >= modified_from,
-                        func.date(Application.modified) <= modified_to,
-                    )
-                )
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
+            query = cls.query.filter(
+                Application.application_status.like(f"{application_status}%"),
+                func.date(Application.modified) >= modified_from,
+                func.date(Application.modified) <= modified_to,
             )
         elif application_name:
-            return (
-                cls.query.filter(
-                    Application.application_name.like(f"{application_name}%")
-                )
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
+            query = cls.query.filter(
+                Application.application_name.like(f"{application_name}%"),
             )
         elif application_status:
-            return (
-                cls.query.filter(
-                    Application.application_status.like(f"{application_status}%")
-                )
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
-            )
-        elif modified_from and modified_to:
-            return (
-                cls.query.filter(
-                    and_(
-                        func.date(Application.modified) >= modified_from,
-                        func.date(Application.modified) <= modified_to,
-                    )
-                )
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
+            query = cls.query.filter(
+                Application.application_status.like(f"{application_status}%"),
             )
         elif created_by:
-            return (
-                cls.query.filter(Application.created_by == created_by)
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
+            query = cls.query.filter(Application.created_by.like(f"{created_by}%"))
+        elif modified_from and modified_to:
+            current_app.logger.debug((modified_from, modified_to))
+            query = cls.query.filter(
+                and_(
+                    func.date(Application.modified) >= modified_from,
+                    func.date(Application.modified) <= modified_to,
+                )
             )
         elif created_from and created_to:
-            return (
-                cls.query.filter(
-                    and_(
-                        func.date(Application.created) >= created_from,
-                        func.date(Application.created) <= created_to,
-                    )
+            query = cls.query.filter(
+                and_(
+                    func.date(Application.created) >= created_from,
+                    func.date(Application.created) <= created_to,
                 )
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
-            )
-
-        if order_by == ApplicationSortingParameters.Id and sort_order == "asc":
-            return (
-                cls.query.order_by(Application.id.asc())
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
-            )
-        elif order_by == ApplicationSortingParameters.Id and sort_order == "desc":
-            return (
-                cls.query.order_by(Application.id.desc())
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
-            )
-        elif order_by == ApplicationSortingParameters.Created:
-            return (
-                cls.query.order_by(Application.created)
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
-            )
-
-        elif order_by == ApplicationSortingParameters.Name and sort_order == "asc":
-            return (
-                cls.query.order_by(Application.application_name.asc())
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
-            )
-        elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
-            return (
-                cls.query.order_by(Application.application_name.desc())
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
-            )
-        elif order_by == ApplicationSortingParameters.Status:
-            return (
-                cls.query.order_by(Application.application_status.asc())
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
-            )
-        elif order_by == ApplicationSortingParameters.Modified:
-            return (
-                cls.query.order_by(Application.modified.asc())
-                .filter(Application.created_by == user_id)
-                .paginate(page_no, limit)
-                .items
-            )
-
-        if page_no == 0:
-            return cls.query.filter(Application.created_by == user_id).order_by(
-                Application.id.desc()
             )
         else:
-            return (
-                cls.query.filter(Application.created_by == user_id)
-                .order_by(Application.id.desc())
-                .paginate(page_no, limit)
-                .items
-            )
+            query = cls.query
+        query = query.filter(Application.created_by == user_id)
+
+        if order_by == ApplicationSortingParameters.Id and sort_order == "asc":
+            query = query.order_by(Application.id.asc())
+        elif order_by == ApplicationSortingParameters.Id and sort_order == "desc":
+            query = query.order_by(Application.id.desc())
+        elif order_by == ApplicationSortingParameters.Name and sort_order == "asc":
+            query = query.order_by(Application.application_name.asc())
+        elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
+            query = query.order_by(Application.application_name.desc())
+        elif order_by == ApplicationSortingParameters.Status and sort_order =="asc":
+            query = query.order_by(Application.application_status.asc())     
+        elif order_by == ApplicationSortingParameters.Status and sort_order =="desc":
+            query = query.order_by(Application.application_status.desc())
+        elif order_by == ApplicationSortingParameters.Modified and sort_order =="asc":
+            query = query.order_by(Application.modified.asc())
+        elif order_by == ApplicationSortingParameters.Modified and sort_order =="desc":
+            query = query.order_by(Application.modified.desc())
+        
+        total_count = query.count()
+        pagination = query.paginate(page_no, limit)
+        return pagination.items, total_count
 
     @classmethod
     def find_all_by_user_group(cls, user_id: str, page_no: int, limit: int):
@@ -329,10 +230,8 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         cls,
         form_names: str,
         application_id: int,
-        created_from: str,
-        created_to: str,
-        modified_from: str,
-        modified_to: str,
+        modified_from: datetime,
+        modified_to: datetime,
         application_name: str,
         application_status: str,
         created_by: str,
@@ -340,357 +239,87 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         limit: int,
         order_by: str,
         sort_order: str,
+        created_from: datetime,
+        created_to: datetime,
     ):
         """Fetch applications list based on searching parameters for Reviewer"""
         if application_id:
-            return (
-                cls.query.filter(Application.id == application_id)
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
+            query = cls.query.filter(Application.id == application_id)
         elif application_name and application_status and modified_from and modified_to:
-            return (
-                cls.query.filter(
-                    Application.application_name.like(f"{application_name}%")
-                )
-                .filter(
-                    Application.application_status.like(f"{application_status}%")
-                )
-                .filter(
-                    and_(
-                        func.date(Application.modified) >= modified_from,
-                        func.date(Application.modified) <= modified_to,
-                    )
-                )
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
+            query = cls.query.filter(
+                Application.application_name.like(f"{application_name}%"),
+                Application.application_status.like(f"{application_status}%"),
+                func.date(Application.modified) >= modified_from,
+                func.date(Application.modified) <= modified_to,
             )
         elif application_name and application_status:
-            return (
-                cls.query.filter(
-                    Application.application_name.like(f"{application_name}%")
-                )
-                .filter(
-                    Application.application_status.like(f"{application_status}%")
-                )
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
+            query = cls.query.filter(
+                Application.application_name.like(f"{application_name}%"),
+                Application.application_status.like(f"{application_status}%"),
             )
         elif application_name and modified_from and modified_to:
-            return (
-                cls.query.filter(
-                    Application.application_name.like(f"{application_name}%")
-                )
-                .filter(
-                    and_(
-                        func.date(Application.modified) >= modified_from,
-                        func.date(Application.modified) <= modified_to,
-                    )
-                )
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
+            query = cls.query.filter(
+                Application.application_name.like(f"{application_name}%"),
+                func.date(Application.modified) >= modified_from,
+                func.date(Application.modified) <= modified_to,
             )
         elif application_status and modified_from and modified_to:
-            return (
-                cls.query.filter(
-                    Application.application_status.like(f"{application_status}%")
-                )
-                .filter(
-                    and_(
-                        func.date(Application.modified) >= modified_from,
-                        func.date(Application.modified) <= modified_to,
-                    )
-                )
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
+            query = cls.query.filter(
+                Application.application_status.like(f"{application_status}%"),
+                func.date(Application.modified) >= modified_from,
+                func.date(Application.modified) <= modified_to,
             )
         elif application_name:
-            return (
-                cls.query.filter(
-                    Application.application_name.like(f"{application_name}%")
-                )
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-        elif application_status:
-            return (
-                cls.query.filter(
-                    Application.application_status.like(f"{application_status}%")
-                )
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-        elif modified_from and modified_to:
-            return (
-                cls.query.filter(
-                    and_(
-                        func.date(Application.modified) >= modified_from,
-                        func.date(Application.modified) <= modified_to,
-                    )
-                )
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-        elif created_by:
-            return (
-                cls.query.filter(Application.created_by == created_by)
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-        elif created_from and created_to:
-            return (
-                cls.query.filter(
-                    and_(
-                        func.date(Application.created) >= created_from,
-                        func.date(Application.created) <= created_to,
-                    )
-                )
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-
-        if order_by == ApplicationSortingParameters.Id and sort_order == "asc":
-            return (
-                cls.query.order_by(Application.id.asc())
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-        elif order_by == ApplicationSortingParameters.Id and sort_order == "desc":
-            return (
-                cls.query.order_by(Application.id.desc())
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-        elif order_by == ApplicationSortingParameters.Created:
-            return (
-                cls.query.order_by(Application.created.asc())
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-
-        elif order_by == ApplicationSortingParameters.Name and sort_order == "asc":
-            return (
-                cls.query.order_by(Application.application_name.asc())
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-        elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
-            return (
-                cls.query.order_by(Application.application_name.desc())
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-        elif order_by == ApplicationSortingParameters.Status:
-            return (
-                cls.query.order_by(Application.application_status.asc())
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-        elif order_by == ApplicationSortingParameters.Modified:
-            return (
-                cls.query.order_by(Application.modified.asc())
-                .filter(Application.application_name.in_(form_names))
-                .paginate(page_no, limit)
-                .items
-            )
-        else:
-            return (
-                cls.query.filter(Application.application_name.in_(form_names))
-                .order_by(Application.id.desc())
-                .paginate(page_no, limit)
-                .items
-            )
-
-    @classmethod
-    def find_all_application_count(
-        cls,
-        form_names: str,
-        application_id: int,
-        created_from: str,
-        created_to: str,
-        modified_from: str,
-        modified_to: str,
-        application_name: str,
-        application_status: str,
-        created_by: str,
-        order_by: str,
-        sort_order: str,
-    ):
-        if application_id:
-            return cls.query.filter(Application.id == application_id).filter(
-                Application.application_name.in_(form_names)
-            )
-        elif application_name:
-            return cls.query.filter(
+            query = cls.query.filter(
                 Application.application_name.like(f"{application_name}%")
-            ).filter(Application.application_name.in_(form_names))
-        elif application_status:
-            return cls.query.filter(
-                Application.application_status.like(f"{application_status}%")
-            ).filter(Application.application_name.in_(form_names))
-        elif created_by:
-            return cls.query.filter(Application.created_by == created_by).filter(
-                Application.application_name.in_(form_names)
             )
-        elif created_from and created_to:
-            return cls.query.filter(
-                and_(
-                    func.date(Application.created) >= created_from,
-                    func.date(Application.created) <= created_to,
-                )
-            ).filter(Application.application_name.in_(form_names))
+        elif application_status:
+            query = cls.query.filter(
+                Application.application_status.like(f"{application_status}%")
+            )
+        elif created_by:
+            query = cls.query.filter(Application.created_by.like(f"{created_by}%"))
         elif modified_from and modified_to:
-            return cls.query.filter(
+            current_app.logger.debug((modified_from, modified_to))
+            query = cls.query.filter(
                 and_(
                     func.date(Application.modified) >= modified_from,
                     func.date(Application.modified) <= modified_to,
                 )
-            ).filter(Application.application_name.in_(form_names))
-        """Fetch applications based on sorting parameters
-        :qparam orderBy: Name of column to order by
-        :qparam orderBy id: sorted applications based on id
-        :qparam orderBy created: sorted applications based on date and time
-        :qparam orderBy application_name: sorted applications based on application name
-        :qparam orderBy application_status: sorted applications based on status
-        :qparam orderBy modified: sorted applications based on modified date and time                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-        """
-        if order_by == ApplicationSortingParameters.Id and sort_order == "asc":
-            return cls.query.order_by(Application.id.asc()).filter(
-                Application.application_name.in_(form_names)
-            )
-        elif order_by == ApplicationSortingParameters.Id and sort_order == "desc":
-            return cls.query.order_by(Application.id.desc()).filter(
-                Application.application_name.in_(form_names)
-            )
-        elif order_by == ApplicationSortingParameters.Created:
-            return cls.query.order_by(Application.created.asc()).filter(
-                Application.application_name.in_(form_names)
-            )
-
-        elif order_by == ApplicationSortingParameters.Name and sort_order == "asc":
-            return cls.query.order_by(Application.application_name).filter(
-                Application.application_name.in_(form_names)
-            )
-        elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
-
-            return cls.query.order_by(Application.application_name).filter(
-                Application.application_name.in_(form_names)
-            )
-        elif order_by == ApplicationSortingParameters.Status:
-            return cls.query.order_by(Application.application_status.asc()).filter(
-                Application.application_name.in_(form_names)
-            )
-        elif order_by == ApplicationSortingParameters.Modified:
-            return cls.query.order_by(Application.modified.asc()).filter(
-                Application.application_name.in_(form_names)
-            )
-        else:
-            return cls.query.filter(
-                Application.application_name.in_(form_names)
-            ).order_by(Application.id.desc())
-
-    @classmethod
-    def find_all_applications_count(cls,
-        user_id: str,
-        application_id: int,
-        created_from: str,
-        created_to: str,
-        modified_from: str,
-        modified_to: str,
-        application_name: str,
-        application_status: str,
-        created_by: str,
-        order_by: str,
-        sort_order: str,
-    ):
-        if application_id:
-            return cls.query.filter(Application.id == application_id).filter(
-                (Application.created_by == user_id)
-            )
-        elif application_name:
-            return cls.query.filter(
-                Application.application_name.like(f"{application_name}%")
-            ).filter(Application.created_by == user_id)
-        elif application_status:
-            return cls.query.filter(
-                Application.application_status.like(f"{application_status}%")
-            ).filter(Application.created_by == user_id)
-        elif created_by:
-            return cls.query.filter(Application.created_by == created_by).filter(
-                (Application.created_by == user_id)
             )
         elif created_from and created_to:
-            return cls.query.filter(
+            current_app.logger.debug((created_from, created_to))
+            query = cls.query.filter(
                 and_(
                     func.date(Application.created) >= created_from,
                     func.date(Application.created) <= created_to,
                 )
-            ).filter(Application.created_by == user_id)
-        elif modified_from and modified_to:
-            return cls.query.filter(
-                and_(
-                    func.date(Application.modified) >= modified_from,
-                    func.date(Application.modified) <= modified_to,
-                )
-            ).filter(Application.created_by == user_id)
-        """Fetch applications based on sorting parameters
-        :qparam orderBy: Name of column to order by
-        :qparam orderBy id: sorted applications based on id
-        :qparam orderBy created: sorted applications based on date and time
-        :qparam orderBy application_name: sorted applications based on application name
-        :qparam orderBy application_status: sorted applications based on status
-        :qparam orderBy modified: sorted applications based on modified date and time                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-        """
-        if order_by == ApplicationSortingParameters.Id and sort_order == "asc":
-            return cls.query.order_by(Application.id.asc()).filter(
-                (Application.created_by == user_id)
-            )
-        elif order_by == ApplicationSortingParameters.Id and sort_order == "desc":
-            return cls.query.order_by(Application.id.desc()).filter(
-                (Application.created_by == user_id)
-            )
-        elif order_by == ApplicationSortingParameters.Created:
-            return cls.query.order_by(Application.created.asc()).filter(
-                (Application.created_by == user_id)
-            )
-
-        elif order_by == ApplicationSortingParameters.Name and sort_order == "asc":
-            return cls.query.order_by(Application.application_name).filter(
-                (Application.created_by == user_id)
-            )
-        elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
-
-            return cls.query.order_by(Application.application_name).filter(
-                (Application.created_by == user_id)
-            )
-        elif order_by == ApplicationSortingParameters.Status:
-            return cls.query.order_by(Application.application_status.asc()).filter(
-                (Application.created_by == user_id)
-            )
-        elif order_by == ApplicationSortingParameters.Modified:
-            return cls.query.order_by(Application.modified.asc()).filter(
-                (Application.created_by == user_id)
             )
         else:
-            return cls.query.filter(
-                (Application.created_by == user_id)
-            ).order_by(Application.id.desc())
+            query = cls.query
+        query = query.filter(Application.application_name.in_(form_names))
+
+        if order_by == ApplicationSortingParameters.Id and sort_order == "asc":
+            query = query.order_by(Application.id.asc())
+        elif order_by == ApplicationSortingParameters.Id and sort_order == "desc":
+            query = query.order_by(Application.id.desc())
+        elif order_by == ApplicationSortingParameters.Name and sort_order == "asc":
+            query = query.order_by(Application.application_name.asc())
+        elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
+            query = query.order_by(Application.application_name.desc())
+        elif order_by == ApplicationSortingParameters.Status and sort_order =="asc":
+            query = query.order_by(Application.application_status.asc())     
+        elif order_by == ApplicationSortingParameters.Status and sort_order =="desc":
+            query = query.order_by(Application.application_status.desc())
+        elif order_by == ApplicationSortingParameters.Modified and sort_order =="asc":
+            query = query.order_by(Application.modified.asc())
+        elif order_by == ApplicationSortingParameters.Modified and sort_order =="desc":
+            query = query.order_by(Application.modified.desc())
+
+        total_count = query.count()
+        pagination = query.paginate(page_no, limit)
+        return pagination.items, total_count
+
     @classmethod
     def find_all_applications(cls, page_no: int, limit: int, form_names: str):
         if page_no == 0:
@@ -782,8 +411,10 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 FormProcessMapper.id == Application.form_process_mapper_id,
             )
             .filter(
-                func.date(Application.created) >= from_date,
-                func.date(Application.created) <= to_date,
+                and_(
+                    func.date(Application.modified) >= from_date,
+                    func.date(Application.modified) <= to_date,
+                )
             )
             .group_by(Application.form_process_mapper_id, FormProcessMapper.form_name)
         )
@@ -796,7 +427,9 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return result
 
     @classmethod
-    def find_aggregated_applications_modified(cls, from_date: str, to_date: str):
+    def find_aggregated_applications_modified(
+        cls, from_date: datetime, to_date: datetime
+    ):
         """Fetch aggregated applications."""
         result_proxy = (
             db.session.query(
@@ -809,8 +442,10 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 FormProcessMapper.id == Application.form_process_mapper_id,
             )
             .filter(
-                func.date(Application.modified) >= from_date,
-                func.date(Application.modified) <= to_date,
+                and_(
+                    func.date(Application.modified) >= from_date,
+                    func.date(Application.modified) <= to_date,
+                )
             )
             .group_by(Application.form_process_mapper_id, FormProcessMapper.form_name)
         )

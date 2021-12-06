@@ -24,16 +24,16 @@ class ApplicationListRequestSchema(ApplicationListReqSchema):
     application_name = fields.Str(data_key="applicationName", required=False)
     application_status = fields.Str(data_key="applicationStatus", required=False)
     created_by = fields.Str(data_key="createdBy", required=False)
-    created_from_date = fields.Date(
+    created_from_date = fields.DateTime(
         data_key="createdFrom", format="%Y-%m-%dT%H:%M:%S+00:00"
     )
     created_to_date = fields.DateTime(
         data_key="createdTo", format="%Y-%m-%dT%H:%M:%S+00:00"
     )
-    modified_from_date = fields.Date(
+    modified_from_date = fields.DateTime(
         data_key="modifiedFrom", format="%Y-%m-%dT%H:%M:%S+00:00"
     )
-    modified_to_date = fields.Date(
+    modified_to_date = fields.DateTime(
         data_key="modifiedTo", format="%Y-%m-%dT%H:%M:%S+00:00"
     )
     sort_order = fields.Str(data_key="sortOrder", required=False)

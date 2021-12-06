@@ -9,7 +9,7 @@
     "build": "react-scripts --max_old_space_size=6144 build",
     "eject": "react-scripts eject",
     "preinstall": "npx npm-force-resolutions",
-    "test": "react-scripts test",
+    "test": "react-scripts test --detectOpenHandles",
     "coverage": "react-scripts test --coverage --watchAll=false"
   },
   "author": {
@@ -25,6 +25,7 @@
     "@testing-library/react": "^12.1.1",
     "dns-packet": "^5.2.4",
     "jspdf": "^2.3.1",
+    "msw": "^0.36.0",
     "redux-mock-store": "^1.5.4",
     "underscore": "^1.12.1",
     "xmldom": "^0.6.0"

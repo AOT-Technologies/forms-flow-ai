@@ -12,6 +12,7 @@ const API = {
   GET_APPLICATION_HISTORY_API: `${WEB_BASE_URL}/application/<application_id>/history`,
   GET_ALL_APPLICATIONS_FROM_FORM_ID: `${WEB_BASE_URL}/application/formid`,
   GET_ALL_APPLICATIONS: `${WEB_BASE_URL}/application`,
+  GET_ALL_APPLICATIONS_STATUS: `${WEB_BASE_URL}/application/status/list`,
   GET_PROCESS_MAPPER_FOR_APPLICATION: `${WEB_BASE_URL}/application/<application_id>/process`,
   PROCESSES: `${WEB_BASE_URL}/process`,
   PROCESS_ACTIVITIES: `${WEB_BASE_URL}/process/process-instance/<process_instance_id>/activity-instances`,

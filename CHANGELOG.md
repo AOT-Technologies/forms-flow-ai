@@ -23,11 +23,11 @@ Then run the necessary migrations with:
 
 **forms-flow-web**
 
-* Added Pagination for Application Page.
 * TaskList using HAL vs json profiling.
 
 **forms-flow-api**
 
+* Added `pagination` `sorting` and `filtering` for Application Page.
 
 **forms-flow-analytics**
 
@@ -37,11 +37,7 @@ Then run the necessary migrations with:
 
 **forms-flow-bpm**
 
-
-
 **forms-flow-analytics**
-
-* Upgraded redash library to version `10.1`
 
 **forms-flow-web**
 
@@ -53,8 +49,9 @@ Then run the necessary migrations with:
 
 * Camunda upgrade from 7.13.0 to 7.15.0
 
-**forms-flow-api**
+**forms-flow-analytics**
 
+* Upgraded redash library to version `10.1`
 
 **forms-flow-web**
 

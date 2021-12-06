@@ -3,22 +3,12 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 ## 4.0.4 - 2021-12-06
 
-**Upgrade notes:**
-
-After v4.0.4 version upgrade, run the command:
-
-`docker-compose up --force-recreate --build`
-
-Then run the necessary migrations with:
-
-`docker-compose run --rm server manage db upgrade`
-
 `Added`
 
 **forms-flow-bpm**
 
 * Added test cases and code coverage.
-* New property added to increase buffer size for web client.
+* New property added in `application.yaml` to increase buffer size for web client `maxInMemorySize: 10 MB`.
 
 **forms-flow-web**
 
@@ -49,13 +39,27 @@ Then run the necessary migrations with:
 
 **forms-flow-bpm**
 
-* Camunda upgrade from 7.13.0 to 7.15.0. For upgrade please run the [upgrade file](https://github.com/AOT-Technologies/forms-flow-ai-dev/blob/develop/forms-flow-bpm/upgrade/process-engine_7.13_to_7.15.sql).
-* Upgraded springboot to 2.4.8
-* Upgraded spring-security-oauth2 to 2.4.8
+* Camunda upgrade from `7.13.0` to `7.15.0`. For upgrade please run the 
+* Upgraded springboot to `2.4.8`
+* Upgraded spring-security-oauth2 to `2.4.8`
+
+*Upgrade notes:*
+
+After v4.0.4 version upgrade, Run the migrations with [upgrade file](https://github.com/AOT-Technologies/forms-flow-ai-dev/blob/develop/forms-flow-bpm/upgrade/process-engine_7.13_to_7.15.sql).
 
 **forms-flow-analytics**
 
 * Upgraded redash library to version `10.1`
+
+*Upgrade notes:*
+
+After v4.0.4 version upgrade, run the command:
+
+`docker-compose up --force-recreate --build`
+
+Then run the necessary migrations with:
+
+`docker-compose run --rm server manage db upgrade`
 
 **forms-flow-web**
 

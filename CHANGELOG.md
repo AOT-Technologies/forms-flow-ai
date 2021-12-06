@@ -1,7 +1,17 @@
 # Changelog for formsflow.ai
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
-## 4.0.4
+## 4.0.4 - 2021-12-06
+
+**Upgrade notes:**
+
+After v4.0.4 version upgrade, run the command:
+
+`docker-compose up --force-recreate --build`
+
+Then run the necessary migrations with:
+
+`docker-compose run --rm server manage db upgrade`
 
 `Added`
 
@@ -12,7 +22,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-web**
 
-* TaskList using HAL vs json profiling.
+* Admin page to map Dashboards to keycloak groups.
+* Added test cases and coverage.
 
 **forms-flow-api**
 
@@ -20,7 +31,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-analytics**
 
-* Added Dashboard authorisation at Redash dashboard level and web component level.
+* Added Dashboard authorisation at Redash dashboard level.
 
 `Fixed`
 
@@ -32,6 +43,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-web**
 
 * Fixed total task count shown on the task LHS side and updated only after refreshing the page.
+* Tasklist API updated.
 
 `Modified`
 
@@ -45,18 +57,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Upgraded redash library to version `10.1`
 
-Upgrade notes: 
-
-After v4.0.4 version upgrade, run the command:
-`docker-compose up --force-recreate --build`
-
-Then run the necessary migrations with:
-
-`docker-compose run --rm server manage db upgrade`
-
 **forms-flow-web**
 
 * Footer was modified to display formsflow.ai with the version number.
+
 
 ## 4.0.3 - 2021-10-22
 

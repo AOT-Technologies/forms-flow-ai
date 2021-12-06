@@ -16,6 +16,50 @@ Then run the necessary migrations with:
 
 `docker-compose run --rm server manage db upgrade`
 
+`Added`
+
+**forms-flow-bpm**
+
+
+**forms-flow-web**
+
+* Added Pagination for Application Page.
+* TaskList using HAL vs json profiling.
+
+**forms-flow-api**
+
+
+**forms-flow-analytics**
+
+* Added Dashboard authorisation at Redash dashboard level and web component level.
+
+`Fixed`
+
+**forms-flow-bpm**
+
+
+
+**forms-flow-analytics**
+
+* Upgraded redash library to version `10.1`
+
+**forms-flow-web**
+
+* Fixed total task count shown on the task LHS side and updated only after refreshing the page.
+
+`Modified`
+
+**forms-flow-bpm**
+
+* Camunda upgrade from 7.13.0 to 7.15.0
+
+**forms-flow-api**
+
+
+**forms-flow-web**
+
+* Footer was modified to display formsflow.ai with the version number.
+
 ## 4.0.3 - 2021-10-22
 
 `Added`

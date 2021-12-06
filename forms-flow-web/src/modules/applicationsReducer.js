@@ -1,6 +1,6 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 
-const initialState = {
+export const initialState = {
   applicationsList:[],
   applicationDetail: {},
   applicationProcess: {},
@@ -9,7 +9,13 @@ const initialState = {
   isApplicationDetailLoading:false,
   isApplicationUpdating:false,
   applicationCount:0,
-  applicationDetailStatusCode:''
+  applicationDetailStatusCode:'',
+  activePage:1,
+  countPerPage:5,
+  applicationStatus:[],
+  isApplicationStatusRecieved : false,
+  iserror:false,
+  error:''
 }
 
 
@@ -32,7 +38,15 @@ const applications = (state = initialState, action)=> {
     case ACTION_CONSTANTS.SET_APPLICATION_LIST_COUNT :
       return {...state, applicationCount: action.payload};
     case ACTION_CONSTANTS.APPLICATION_DETAIL_STATUS_CODE:
-      return {...state,applicationDetailStatusCode: action.payload}
+      return {...state,applicationDetailStatusCode: action.payload};
+    case ACTION_CONSTANTS.APPLICATION_LIST_ACTIVE_PAGE:
+      return {...state,activePage: action.payload};
+    case ACTION_CONSTANTS.CHANGE_SIZE_PER_PAGE:
+      return {...state,countPerPage:action.payload}
+    case ACTION_CONSTANTS.APPLICATION_STATUS_LIST:
+      return {...state,applicationStatus:action.payload,isApplicationStatusRecieved:true}
+    case ACTION_CONSTANTS.APPLICATIONS_ERROR:
+      return {...state,iserror:true,error:action.payload,isApplicationListLoading:false}
     default:
       return state;
   }

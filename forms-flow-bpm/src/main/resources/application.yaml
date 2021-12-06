@@ -37,18 +37,13 @@ formsflow.ai:
       accessTokenUri: ${FORMIO_URL}/user/login
       username: ${FORMIO_ROOT_EMAIL}
       password: ${FORMIO_ROOT_PASSWORD}
+  camunda:
+    spring:
+      webclient:
+        maxInMemorySize: 10485760
 
 
-spring:
-  jersey:
-    application-path: /engine-rest
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}
-  main:
-    allow-bean-definition-overriding: true
+
 #  session:
 #    jdbc.initialize-schema: always
 #    store-type: ${CAMUNDA_SESSION_STORE_TYPE:none}
@@ -110,19 +105,42 @@ server:
     cookie:
       secure: true
 
-security:
-  oauth2:
-    client:
-      client-id: ${keycloak.clientId}
-      client-secret: ${keycloak.clientSecret}
-      accessTokenUri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/token
-      userAuthorizationUri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/auth
-      scope: openid profile email
-      grant-type: authorization_code implicit refresh_token password client_credentials
-    resource:
-      userInfoUri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/userinfo
-  headers:
-    hsts: domain
+# Camunda Rest API
+rest.security:
+  enabled: true
+  provider: keycloak
+  required-audience: camunda-rest-api
+
+spring:
+  jersey:
+    application-path: /engine-rest
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            provider: keycloak
+            client-id: ${keycloak.clientId}
+            client-secret: ${keycloak.clientSecret}
+            redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
+            scope:
+              - openid
+              - profile
+              - email
+            authorizationGrantType: authorization_code
+        provider:
+          keycloak:
+            authorization-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/auth
+            token-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/token
+            user-info-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/userinfo
+            user-name-attribute: preferred_username
+            jwk-set-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/certs
+            issuer-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}
+      resourceserver:
+        jwt:
+          issuer-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}
+  main:
+    allow-bean-definition-overriding: true
 
 
 logging:
@@ -131,13 +149,6 @@ logging:
     org.springframework.web: ${CAMUNDA_APP_ROOT_LOG_FLAG}
     org.springframework.jdbc: ${CAMUNDA_APP_ROOT_LOG_FLAG}
     org.camunda.bpm: ${CAMUNDA_APP_ROOT_LOG_FLAG}
-
-
-# Camunda Rest API
-rest.security:
-  enabled: true
-  jwk-set-url: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/certs
-  required-audience: camunda-rest-api
 
 
 plugin.identity.keycloak.rest:

@@ -24,3 +24,9 @@ window.camTasklistConf = {
   }
 };
 
+export default {
+    customScripts: [
+        'custom/logout'
+    ]
+};
+

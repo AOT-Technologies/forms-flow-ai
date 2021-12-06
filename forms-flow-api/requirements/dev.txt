@@ -10,5 +10,10 @@ flake8-polyfill
 flake8-quotes
 pycodestyle
 pytest
+pytest-cov
+pytest-it
 pyflakes
 pylint
+
+# docker
+#lovely-pytest-docker

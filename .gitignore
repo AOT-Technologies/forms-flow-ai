@@ -26,6 +26,9 @@ yarn-error.log*
 .idea
 *.iml
 
+#Visual Studio Code
+.vscode
+
 #Database
 postgres/
 mongodb/

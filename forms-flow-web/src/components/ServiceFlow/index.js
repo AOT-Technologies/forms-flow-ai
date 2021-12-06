@@ -4,7 +4,6 @@ import ServiceFlowTaskDetails from "./details/ServiceTaskDetails";
 import {Col, Container, Row} from "react-bootstrap";
 import "./ServiceFlow.scss";
 import {
-  fetchServiceTaskListCount,
   fetchFilterList,
   fetchProcessDefinitionList,
   fetchServiceTaskList,
@@ -88,7 +87,6 @@ export default React.memo(() => {
   }
   const SocketIOCallback = useCallback((refreshedTaskId, forceReload, isUpdateEvent) => {
       if(forceReload){
-        dispatch(fetchServiceTaskListCount(selectedFilterIdRef.current, reqDataRef.current));
         dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current,refreshedTaskId)); //Refreshes the Tasks
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current){
           dispatch(setBPMTaskDetailLoader(true));
@@ -100,11 +98,9 @@ export default React.memo(() => {
           if(isUpdateEvent){
             /* Check if the taskId exists in the loaded Task List */
             if(checkIfTaskIDExistsInList(taskListRef.current,refreshedTaskId)===true){
-              dispatch(fetchServiceTaskListCount(selectedFilterIdRef.current, reqDataRef.current));
               dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current)); //Refreshes the Task
             }
           }else{
-            dispatch(fetchServiceTaskListCount(selectedFilterIdRef.current, reqDataRef.current));
             dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current)); //Refreshes the Task
           }
         }

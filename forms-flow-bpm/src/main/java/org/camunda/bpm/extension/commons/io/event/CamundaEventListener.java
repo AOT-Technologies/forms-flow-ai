@@ -40,7 +40,6 @@ public class CamundaEventListener {
     private String messageEvents;
 
 
-
     @EventListener
     public void onTaskEventListener(DelegateTask taskDelegate) {
         try {
@@ -89,7 +88,8 @@ public class CamundaEventListener {
         if ("DEFAULT".equalsIgnoreCase(messageEvents)) {
             return getDefaultRegisteredEvents();
         }
-        return Arrays.asList(StringUtils.split(messageEvents,","));
+        String events = messageEvents != null?messageEvents: "";
+        return Arrays.asList(StringUtils.split(events,","));
     }
 
     private Map<String,Object> getVariables(DelegateTask taskDelegate) {

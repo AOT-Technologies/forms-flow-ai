@@ -37,6 +37,11 @@ formsflow.ai:
       accessTokenUri: ${FORMIO_URL}/user/login
       username: ${FORMIO_ROOT_EMAIL}
       password: ${FORMIO_ROOT_PASSWORD}
+  camunda:
+    spring:
+      webclient:
+        maxInMemorySize: 10485760
+
 
 
 #  session:

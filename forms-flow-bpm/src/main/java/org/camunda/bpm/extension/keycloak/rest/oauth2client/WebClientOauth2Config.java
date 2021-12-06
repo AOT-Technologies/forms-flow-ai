@@ -2,13 +2,14 @@ package org.camunda.bpm.extension.keycloak.rest.oauth2client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+/*import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
+import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;*/
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+/*import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.*;
@@ -17,12 +18,12 @@ import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedCli
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;*/
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
+
 
 /**
  * Created by shibin.thomas on 21-09-2021.
@@ -31,6 +32,9 @@ import java.util.Properties;
 public class WebClientOauth2Config {
 
     private static final Logger LOG = LoggerFactory.getLogger(WebClientOauth2Config.class);
+
+    @Autowired
+    private Properties integrationCredentialProperties;
 
 /*    @Bean
     public WebClient authenticatedWebClient(OAuth2AuthorizedClientManager authorizedClientManager) {
@@ -45,7 +49,11 @@ public class WebClientOauth2Config {
 
     @Bean
     public WebClient unAuthenticatedWebClient(){
-        return WebClient.builder()
+        return WebClient.builder().exchangeStrategies(ExchangeStrategies.builder()
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(Integer.parseInt(integrationCredentialProperties.getProperty("camunda.spring.webclient.maxInMemorySize"))))
+                .build())
                 .build();
     }
 

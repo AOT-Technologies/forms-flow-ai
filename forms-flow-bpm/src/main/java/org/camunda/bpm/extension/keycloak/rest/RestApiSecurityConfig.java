@@ -14,8 +14,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.OAuth2RestTemplate;
-import org.springframework.security.oauth2.client.token.grant.client.ClientCredentialsResourceDetails;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
@@ -48,9 +46,6 @@ public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
 	/** Access to Spring Security OAuth2 client service. */
 	@Inject
 	private OAuth2AuthorizedClientService clientService;
-
-	@Autowired
-	private Properties clientCredentialProperties;
 
 	/**
 	 * {@inheritDoc}
@@ -110,15 +105,4 @@ public class RestApiSecurityConfig extends WebSecurityConfigurerAdapter {
 		filterRegistration.addUrlPatterns("/engine-rest/*");
 		return filterRegistration;
 	}
-
-	@Bean
-	public OAuth2RestTemplate getOAuth2RestTemplate() {
-		ClientCredentialsResourceDetails resourceDetails = new ClientCredentialsResourceDetails ();
-		resourceDetails.setClientId(clientCredentialProperties.getProperty("registration.keycloak.client-id"));
-		resourceDetails.setClientSecret(clientCredentialProperties.getProperty("registration.keycloak.client-secret"));
-		resourceDetails.setAccessTokenUri(clientCredentialProperties.getProperty("provider.keycloak.token-uri"));
-		resourceDetails.setGrantType("client_credentials");
-		return new OAuth2RestTemplate(resourceDetails);
-	}
-
 }

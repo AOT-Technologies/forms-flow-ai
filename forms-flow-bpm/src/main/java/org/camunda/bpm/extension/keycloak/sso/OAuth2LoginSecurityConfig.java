@@ -58,12 +58,7 @@ public class OAuth2LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 										.anyRequest()
 										.permitAll()
 				)
-				.oauth2Login(oauth2Token ->
-						oauth2Token.authorizationEndpoint(
-								authorizationEndpoint ->
-										authorizationEndpoint.baseUri("/login/oauth2/authorization/keycloak")
-						)
-				)
+				.oauth2Login(withDefaults())
 				.oauth2Client(withDefaults())
 				.logout()
 				.logoutRequestMatcher(new AntPathRequestMatcher("/app/**/logout"))

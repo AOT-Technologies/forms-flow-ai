@@ -28,7 +28,7 @@ public class FormTokenAccessHandler {
     private Properties integrationCredentialProperties;
 
     @Autowired
-    private WebClient unAuthenticatedWebClient;
+    private WebClient webClient;
 
     public String getAccessToken(){
         Map<String,String> paramMap = new HashMap<>();
@@ -37,7 +37,7 @@ public class FormTokenAccessHandler {
         HashMap<String, Map> dataMap = new HashMap<>();
         dataMap.put("data", paramMap);
 
-        String token = unAuthenticatedWebClient.post().uri(getIntegrationCredentialProperties().getProperty("formio.security.accessTokenUri"))
+        String token = webClient.post().uri(getIntegrationCredentialProperties().getProperty("formio.security.accessTokenUri"))
                 .bodyValue(dataMap)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

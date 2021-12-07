@@ -44,7 +44,7 @@ class FormAccessHandlerTest {
 	private NamedParameterJdbcTemplate bpmJdbcTemplate;
 
 	@Mock
-	private WebClient unAuthenticatedWebClient;
+	private WebClient webClient;
 
 	@Mock
 	private Properties integrationCredentialProperties;
@@ -73,7 +73,7 @@ class FormAccessHandlerTest {
 		when(bpmJdbcTemplate.queryForObject(anyString(), any(MapSqlParameterSource.class), any(Class.class)))
 				.thenReturn("adhjsadhajyuyuxyuxyvxucvyxcuvtyatd");
 		WebClient.RequestBodyUriSpec requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
-		when(unAuthenticatedWebClient.patch()).thenReturn(requestBodyUriSpec);
+		when(webClient.patch()).thenReturn(requestBodyUriSpec);
 		when(integrationCredentialProperties.getProperty(anyString())).thenReturn("http://localhost:3001");
 		when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodyUriSpec);
 		WebClient.RequestHeadersSpec requestHeadersSpec = mock(WebClient.RequestHeadersSpec.class);
@@ -102,7 +102,7 @@ class FormAccessHandlerTest {
 		when(integrationCredentialProperties.getProperty("formio.security.password")).thenReturn("changeme");
 		when(integrationCredentialProperties.getProperty("formio.security.accessTokenUri"))
 				.thenReturn("http://localhost:3001/login");
-		when(unAuthenticatedWebClient.post()).thenReturn(requestBodyUriSpec);
+		when(webClient.post()).thenReturn(requestBodyUriSpec);
 		when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodyUriSpec);
 		when(requestBodyUriSpec.bodyValue(any(Map.class))).thenReturn(requestHeadersSpec);
 		when(requestHeadersSpec.accept(any(MediaType.class))).thenReturn(requestBodyUriSpec);
@@ -110,7 +110,7 @@ class FormAccessHandlerTest {
 		when(requestBodyUriSpec.exchangeToMono(any(Function.class)))
 				.thenReturn(Mono.just("adhjsadhajyuyuxyuxyvxucvyxcuvtyatd"));
 
-		when(unAuthenticatedWebClient.patch()).thenReturn(requestBodyUriSpec);
+		when(webClient.patch()).thenReturn(requestBodyUriSpec);
 		when(integrationCredentialProperties.getProperty(anyString())).thenReturn("http://localhost:3001");
 		when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodyUriSpec);
 		when(requestBodyUriSpec.bodyValue(anyString())).thenReturn(requestHeadersSpec);
@@ -152,7 +152,7 @@ class FormAccessHandlerTest {
 				.thenReturn("adhjsadhajyuyuxyuxyvxucvyxcuvtyatd");
 
 		WebClient.RequestBodyUriSpec requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
-		when(unAuthenticatedWebClient.method(any(HttpMethod.class))).thenReturn(requestBodyUriSpec);
+		when(webClient.method(any(HttpMethod.class))).thenReturn(requestBodyUriSpec);
 		when(integrationCredentialProperties.getProperty(anyString())).thenReturn("http://localhost:3001");
 		when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodyUriSpec);
 		WebClient.RequestHeadersSpec requestHeadersSpec = mock(WebClient.RequestHeadersSpec.class);
@@ -181,7 +181,7 @@ class FormAccessHandlerTest {
 		when(integrationCredentialProperties.getProperty("formio.security.password")).thenReturn("changeme");
 		when(integrationCredentialProperties.getProperty("formio.security.accessTokenUri"))
 				.thenReturn("http://localhost:3001/login");
-		when(unAuthenticatedWebClient.post()).thenReturn(requestBodyUriSpec);
+		when(webClient.post()).thenReturn(requestBodyUriSpec);
 		when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodyUriSpec);
 		when(requestBodyUriSpec.bodyValue(any(Map.class))).thenReturn(requestHeadersSpec);
 		when(requestHeadersSpec.accept(any(MediaType.class))).thenReturn(requestBodyUriSpec);
@@ -189,7 +189,7 @@ class FormAccessHandlerTest {
 		when(requestBodyUriSpec.exchangeToMono(any(Function.class)))
 				.thenReturn(Mono.just("adhjsadhajyuyuxyuxyvxucvyxcuvtyatd"));
 
-		when(unAuthenticatedWebClient.patch()).thenReturn(requestBodyUriSpec);
+		when(webClient.patch()).thenReturn(requestBodyUriSpec);
 		when(integrationCredentialProperties.getProperty(anyString())).thenReturn("http://localhost:3001");
 		when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodyUriSpec);
 		when(requestBodyUriSpec.bodyValue(anyString())).thenReturn(requestHeadersSpec);
@@ -229,7 +229,7 @@ class FormAccessHandlerTest {
 		when(bpmJdbcTemplate.queryForObject(anyString(), any(MapSqlParameterSource.class), any(Class.class)))
 				.thenReturn("");
 		WebClient.RequestBodyUriSpec requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
-		when(unAuthenticatedWebClient.patch()).thenReturn(requestBodyUriSpec);
+		when(webClient.patch()).thenReturn(requestBodyUriSpec);
 		when(integrationCredentialProperties.getProperty(anyString())).thenReturn("http://localhost:3001");
 		when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodyUriSpec);
 		WebClient.RequestHeadersSpec requestHeadersSpec = mock(WebClient.RequestHeadersSpec.class);
@@ -270,7 +270,7 @@ class FormAccessHandlerTest {
 		when(bpmJdbcTemplate.queryForObject(anyString(), any(MapSqlParameterSource.class), any(Class.class)))
 				.thenReturn("adhjsadhajyuyuxyuxyvxucvyxcuvtyatd");
 		WebClient.RequestBodyUriSpec requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
-		when(unAuthenticatedWebClient.patch()).thenReturn(requestBodyUriSpec);
+		when(webClient.patch()).thenReturn(requestBodyUriSpec);
 		when(integrationCredentialProperties.getProperty(anyString())).thenReturn("http://localhost:3001");
 		when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodyUriSpec);
 		WebClient.RequestHeadersSpec requestHeadersSpec = mock(WebClient.RequestHeadersSpec.class);

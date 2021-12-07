@@ -37,7 +37,7 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
     private NamedParameterJdbcTemplate bpmJdbcTemplate;
 
     @Autowired
-    private WebClient unAuthenticatedWebClient;
+    private WebClient webClient;
 
 
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
@@ -59,7 +59,7 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
         payload = (payload == null) ? new JsonObject().toString() : payload;
 
         if(HttpMethod.PATCH.name().equals(method.name())) {
-            Mono<ResponseEntity<String>> entityMono = unAuthenticatedWebClient.patch()
+            Mono<ResponseEntity<String>> entityMono = webClient.patch()
                     .uri(getDecoratedServerUrl(url))
                     .bodyValue(payload)
                     .header("x-jwt-token", accessToken)
@@ -74,7 +74,7 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
             }
             return response;
         } else {
-            return unAuthenticatedWebClient.method(method)
+            return webClient.method(method)
                     .uri(getDecoratedServerUrl(url))
                     .accept(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

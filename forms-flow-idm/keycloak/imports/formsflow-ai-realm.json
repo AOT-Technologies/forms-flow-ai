@@ -429,6 +429,31 @@
 		  ]
         }
       ]
+    },
+    {
+      "name": "redash",
+      "path": "/redash",
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {},
+      "subGroups": [
+        {
+          "name": "group2",
+          "path": "/redash/group2",
+          "attributes": {},
+          "realmRoles": [],
+          "clientRoles": {},
+          "subGroups": []
+        },
+        {
+          "name": "group1",
+          "path": "/redash/group1",
+          "attributes": {},
+          "realmRoles": [],
+          "clientRoles": {},
+          "subGroups": []
+        }
+      ]
     }
   ],
   "defaultRoles": [
@@ -540,7 +565,7 @@
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ "UPDATE_PASSWORD" ],
     "notBefore" : 0,
-    "groups" : [ "/formsflow/formsflow-reviewer/approver", "/camunda-admin", "/formsflow" ]
+    "groups" : [ "/formsflow/formsflow-reviewer/approver", "/camunda-admin", "/formsflow" , "/redash/group1"]
   }, {
     "createdTimestamp" : 1625009564217,
     "username" : "formsflow-clerk",
@@ -559,7 +584,7 @@
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ "UPDATE_PASSWORD" ],
     "notBefore" : 0,
-    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer/clerk", "/formsflow" ]
+    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer/clerk", "/formsflow", "/redash/group2" ]
   }, {
     "createdTimestamp" : 1621862578318,
     "username" : "formsflow-reviewer",
@@ -582,7 +607,7 @@
       "account" : [ "view-profile", "manage-account" ]
     },
     "notBefore" : 0,
-    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer" ]
+    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer", "/redash/group1" ]
   }, {
     "createdTimestamp" : 1621585233480,
     "username" : "service-account-forms-flow-bpm",
@@ -1100,6 +1125,21 @@
             "access.token.claim": "true",
             "claim.name": "groups",
             "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "dashboard-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "aggregate.attrs": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true",
+            "user.attribute": "dashboards",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "dashboards"
           }
         }
       ],

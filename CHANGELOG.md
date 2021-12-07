@@ -17,6 +17,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-api**
 
+
 * Added `pagination` `sorting` and `filtering` for Application Page.
 * Added new API for calling redash APIs.
 * Added new API for modifying group details in Keycloak with the help of Keycloak admin APIs.
@@ -28,6 +29,32 @@ New environment variables KEYCLOAK_ADMIN_USERNAME, KEYCLOAK_ADMIN_PASSWORD
 **forms-flow-analytics**
 
 * Added Dashboard authorisation at Redash dashboard level.
+
+**forms-flow-idm**
+
+* Added new groups and mapper for Dashboard authorisation at Redash dashboard level.
+
+*Upgrade notes:*
+
+- To enable dashboards, and provide authorization the following changes are required in existing installations:
+
+1. Create a new main group called redash, and create as many subgroups as you want to associate various dashboards from Admin UI(in Designer)
+2. Create a new mapper under forms-flow-web client in Keycloak, by following below steps:
+
+```
+     	* Name = dashboard-mapper
+     	* Mapper Type = User Attribute
+     	* User Attribute = dashboards
+     	* Token Claim Name = dashboards
+     	* Add to ID Token = ON
+     	* Add to access token = ON
+     	* Add to userinfo = ON
+     	* Multivalued = ON
+     	* Aggregate attribute values = ON
+     	* Click Save
+```
+3. Associate to each user, new dashboard-groups you want to enable for dashboard authorization. Corresponding to the users group, the users will
+be given permission to that many dashboards.
 
 `Fixed`
 

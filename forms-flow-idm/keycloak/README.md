@@ -155,7 +155,17 @@ Create a realm **forms-flow-ai**
         * Mapper Type = Audience
        	* Included Client Audience = forms-flow-web
        	* Click Save
-
+     * Click Create
+     	* Name = dashboard-mapper
+     	* Mapper Type = User Attribute
+     	* User Attribute = dashboards
+     	* Token Claim Name = dashboards
+     	* Add to ID Token = ON
+     	* Add to access token = ON
+     	* Add to userinfo = ON
+     	* Multivalued = ON
+     	* Aggregate attribute values = ON
+     	* Click Save
 ### Create Keycloak setup for formsflow analytics
 
 #### Create a forms-flow-analytics Client.     
@@ -267,6 +277,17 @@ Create groups to support operations
 	* Click Save  
 * Default Groups Tab (Assign Default Group to self-registering users)  
 	* From available groups; map the group "formsflow-client" to "Default Groups".  
+* Create Main group by Clicking New
+	* Name = redash  
+	* Click Save	  
+* Create Sub group by Clicking on Main group created on step-1 i.e. redash, and then click New  
+	* Name = group1  
+	* Click Save  
+* Create Sub group by Clicking on Main group created on step-1 i.e. redash, and then click New  
+	* Name = group2  
+	* Click Save
+
+You can create as many sub-groups as you want for dashboard authorization feature
 
 #### Map roles to group  
 

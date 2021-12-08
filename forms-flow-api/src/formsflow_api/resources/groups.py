@@ -1,6 +1,7 @@
 """Resource to call Keycloak Service API calls and filter responses"""
 from http import HTTPStatus
 from pprint import pprint
+from flask import request
 from flask_restx import Namespace, Resource
 from marshmallow import ValidationError
 

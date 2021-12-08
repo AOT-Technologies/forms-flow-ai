@@ -2,7 +2,6 @@
 from http import HTTPStatus
 from pprint import pprint
 from flask_restx import Namespace, Resource
-from flask import request, current_app
 from marshmallow import ValidationError
 
 from formsflow_api.services import KeycloakAdminAPIService
@@ -46,8 +45,6 @@ class KeycloakDashboardGroupList(Resource):
                 url_path="groups", first=page_no, max=limit
             )
 
-        current_app.logger.debug(group_list_response)
-
         for group in group_list_response:
             if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
                 dashboard_group_list = [x for x in group["subGroups"]]
@@ -72,7 +69,9 @@ class KeycloakDashboardGroupDetail(Resource):
     @auth.require
     @profiletime
     def get(id):
-        """GET request to fetch groups details API"""
+        """GET request to fetch groups details API
+        :params str id: group-id of Keycloak Dashboard Authorized groups
+        """
         client = KeycloakAdminAPIService()
         response = client.get_request(url_path=f"groups/{id}")
         if response is None:
@@ -83,7 +82,9 @@ class KeycloakDashboardGroupDetail(Resource):
     @auth.require
     @profiletime
     def put(id):
-        """GET request to update dashboard details"""
+        """Update request to update dashboard details
+        :params str id: group-id of Keycloak Dashboard Authorized groups
+        """
         client = KeycloakAdminAPIService()
         group_json = request.get_json()
         try:

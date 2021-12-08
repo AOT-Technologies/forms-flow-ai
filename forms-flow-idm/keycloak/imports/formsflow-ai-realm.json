@@ -431,15 +431,15 @@
       ]
     },
     {
-      "name": "redash",
-      "path": "/redash",
+      "name": "formsflow-analytics",
+      "path": "/formsflow-analytics",
       "attributes": {},
       "realmRoles": [],
       "clientRoles": {},
       "subGroups": [
         {
           "name": "group2",
-          "path": "/redash/group2",
+          "path": "/formsflow-analytics/group2",
           "attributes": {},
           "realmRoles": [],
           "clientRoles": {},
@@ -447,7 +447,7 @@
         },
         {
           "name": "group1",
-          "path": "/redash/group1",
+          "path": "/formsflow-analytics/group1",
           "attributes": {},
           "realmRoles": [],
           "clientRoles": {},
@@ -462,7 +462,8 @@
   ],
   "defaultGroups": [
     "/camunda-admin",
-    "/formsflow"
+    "/formsflow",
+    "/formsflow-analytics"
   ],
   "requiredCredentials": [
     "password"
@@ -565,7 +566,7 @@
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ "UPDATE_PASSWORD" ],
     "notBefore" : 0,
-    "groups" : [ "/formsflow/formsflow-reviewer/approver", "/camunda-admin", "/formsflow" , "/redash/group1"]
+    "groups" : [ "/formsflow/formsflow-reviewer/approver", "/camunda-admin", "/formsflow" , "/formsflow-analytics/group1"]
   }, {
     "createdTimestamp" : 1625009564217,
     "username" : "formsflow-clerk",
@@ -584,7 +585,7 @@
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ "UPDATE_PASSWORD" ],
     "notBefore" : 0,
-    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer/clerk", "/formsflow", "/redash/group2" ]
+    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer/clerk", "/formsflow", "/formsflow-analytics/group2" ]
   }, {
     "createdTimestamp" : 1621862578318,
     "username" : "formsflow-reviewer",
@@ -607,7 +608,7 @@
       "account" : [ "view-profile", "manage-account" ]
     },
     "notBefore" : 0,
-    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer", "/redash/group1" ]
+    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer", "/formsflow-analytics/group1" ]
   }, {
     "createdTimestamp" : 1621585233480,
     "username" : "service-account-forms-flow-bpm",

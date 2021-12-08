@@ -10,4 +10,4 @@ REVIEWER_GROUP = "formsflow-reviewer"
 ALLOW_ALL_APPLICATIONS = "/formsflow/formsflow-reviewer/access-allow-applications"
 
 NEW_APPLICATION_STATUS = "New"
-KEYCLOAK_DASHBOARD_BASE_GROUP = "redash"
+KEYCLOAK_DASHBOARD_BASE_GROUP = "formsflow-analytics"

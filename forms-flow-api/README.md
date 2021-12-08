@@ -1,19 +1,20 @@
-# formsflow.ai API 
+# formsflow.ai API
 
 ![Python](https://img.shields.io/badge/python-3.9-blue) ![Flask](https://img.shields.io/badge/Flask-1.1.4-blue) ![postgres](https://img.shields.io/badge/postgres-11.0-blue)
 
 **formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
 
-The goal of the REST API is to provide access to all relevant interfaces of 
+The goal of the REST API is to provide access to all relevant interfaces of
 the system. It is built using Python :snake: .
 
 ## Table of Content
+
 1. [Prerequisites](#prerequisites)
 2. [Solution Setup](#solution-setup)
    * [Step 1 : Installation](#installation)
    * [Step 2 : Environment Configuration](#environment-configuration)
    * [Step 3 : Running the Application](#running-the-application)
-   * [Step 4 : Verify the Application Status](#verify-the-application-status) 
+   * [Step 4 : Verify the Application Status](#verify-the-application-status)
 3. [API Documentation](#api-documentation)
 
 ## Prerequisites
@@ -34,7 +35,7 @@ You installing dev-packages using pip as follows:
 
 ### Keycloak Setup
 
-No specific client creation is required. Audience has been added for clients 
+No specific client creation is required. Audience has been added for clients
 **forms-flow-web** and **forms-flow-bpm**.  
 
 ### Environment Configuration
@@ -46,10 +47,10 @@ No specific client creation is required. Audience has been added for clients
 * **NOTE : {your-ip-address} given inside the .env file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
 > :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the .env file
-   
+
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
-`INSIGHT_API_URL`:triangular_flag_on_post: | The forms-flow-analytics Api base end-point | | http://{your-ip-address}:7000 |
+`INSIGHT_API_URL`:triangular_flag_on_post: | The forms-flow-analytics Api base end-point | | <http://{your-ip-address}:7000> |
 `INSIGHT_API_KEY` :triangular_flag_on_post: | The forms-flow-analytics admin API key | | `Get the api key from forms-flow-analytics (REDASH) by following the 'Get the Redash API Key' steps from [here](../forms-flow-analytics/README.md#get-the-redash-api-key)`
 `FORMSFLOW_API_DB_USER`|formsflow database postgres user|Used on installation to create the database.Choose your own|`postgres`
 `FORMSFLOW_API_DB_PASSWORD`|formsflow database postgres password|Used on installation to create the database.Choose your own|`changeme`
@@ -74,24 +75,26 @@ Variable name | Meaning | Possible values | Default value |
 * `cd {Your Directory}/forms-flow-ai/forms-flow-api`
 
 * For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+  * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
 * For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
-   
+  * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+
 *NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
 
 #### To Stop the Application
+
 * For Linux,
   * Run `docker-compose -f docker-compose-linux.yml stop` to stop.
 * For Windows,
   * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
-   
+
 ### Verify the Application Status
 
-   The application should be up and available for use at port defaulted to 5000 in http://localhost:5000/
+   The application should be up and available for use at port defaulted to 5000 in <http://localhost:5000/>
   
-  * Access the **/checkpoint** endpoint for a Health Check on API to see it's up and running.
-``` 
+* Access the **/checkpoint** endpoint for a Health Check on API to see it's up and running.
+
+```
 GET http://localhost:5000/checkpoint
 
 RESPONSE
@@ -100,7 +103,9 @@ RESPONSE
     "message": "Welcome to formsflow.ai API"
 }
 ```
-   * Get the access token
+
+* Get the access token
+
 ```
 POST {Keycloak URL}/auth/realms/<realm>/protocol/openid-connect/token
 
@@ -112,16 +117,18 @@ client_id: forms-flow-bpm
 Headers:
 Content-Type : application/x-www-form-urlencoded
 
-```   
-   * Access the **/task** endpoint and verify response. Ensure Bearer token is passed along
-``` 
+```
+
+* Access the **/task** endpoint and verify response. Ensure Bearer token is passed along
+
+```
 GET http://localhost:5000/task
 
 Headers:
 Content-Type : application/json
 Authorization: Bearer {access token}
-``` 
-   
+```
+
 ## API Documentation
 
 The API docs can be accessed by checking the **/** root endpoint.

@@ -9,7 +9,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-bpm**
 
 * Added test cases and code coverage.
-* New property added in `application.yaml` to increase buffer size for web client `maxInMemorySize: 10 MB`.
+* New property `DATA_BUFFER_SIZE` to maximize result size for keycloak user queries.
+* New property `IDENTITY_PROVIDER_MAX_RESULT_SIZE` to configure a limit on the number of bytes that can be buffered for webclient.
 
 **forms-flow-web**
 

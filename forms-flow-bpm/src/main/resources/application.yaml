@@ -40,7 +40,7 @@ formsflow.ai:
   camunda:
     spring:
       webclient:
-        maxInMemorySize: 10485760
+        maxInMemorySize: ${DATA_BUFFER_SIZE:2097152}
 
 
 
@@ -171,6 +171,7 @@ plugin.identity.keycloak:
   useGroupPathAsCamundaGroupId: true
   administratorGroupName: camunda-admin
   disableSSLCertificateValidation: true
+  maxResultSize: ${IDENTITY_PROVIDER_MAX_RESULT_SIZE:250}
 
 app.security.origin: ${APP_SECURITY_ORIGIN}
 

@@ -73,6 +73,12 @@ the group have been authorized into.
 
 `Modified`
 
+**forms-flow-web**
+
+* Footer was modified to display formsflow.ai with the version number.
+
+`Solution Component Upgrades`
+
 **forms-flow-bpm**
 
 * Camunda upgrade from `7.13.0` to `7.15.0`. For upgrade please run the
@@ -89,17 +95,14 @@ After v4.0.4 version upgrade, Run the migrations with [upgrade file](https://git
 
 *Upgrade notes:*
 
-After v4.0.4 version upgrade, run the command:
+After v4.0.4 version upgrade, run the following command first to run the necessary migrations with the command:
 
-`docker-compose up --force-recreate --build`
-
-Then run the necessary migrations with:
-
-`docker-compose run --rm server manage db upgrade`
-
-**forms-flow-web**
-
-* Footer was modified to display formsflow.ai with the version number.
+```
+docker-compose -f docker-compose-linux.yml run --rm server manage db upgrade
+docker-compose -f docker-compose-linux.yml up --force-recreate --build
+```
+In case you want to downgrade to the previous version v4.0.3 forms-flow-analytics component after formsflow.ai version upgrade.
+To update the migrations and rebuild formsflow.ai. Use [the below commands which was used in setup](./forms-flow-analytics/README.md/#running-the-application):
 
 ## 4.0.3 - 2021-10-22
 

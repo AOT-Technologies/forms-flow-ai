@@ -21,7 +21,7 @@ def test_create_application_history(session):
 
 
 def test_get_application_history(session):
-    # Need to have atleast one application before running this test
+    # Need to have at least one application before running this test
     application_history = application_history_service.get_application_history(
         application_id=1
     )

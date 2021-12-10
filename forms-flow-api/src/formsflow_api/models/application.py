@@ -172,15 +172,15 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             query = query.order_by(Application.application_name.asc())
         elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
             query = query.order_by(Application.application_name.desc())
-        elif order_by == ApplicationSortingParameters.Status and sort_order =="asc":
-            query = query.order_by(Application.application_status.asc())     
-        elif order_by == ApplicationSortingParameters.Status and sort_order =="desc":
+        elif order_by == ApplicationSortingParameters.Status and sort_order == "asc":
+            query = query.order_by(Application.application_status.asc())
+        elif order_by == ApplicationSortingParameters.Status and sort_order == "desc":
             query = query.order_by(Application.application_status.desc())
-        elif order_by == ApplicationSortingParameters.Modified and sort_order =="asc":
+        elif order_by == ApplicationSortingParameters.Modified and sort_order == "asc":
             query = query.order_by(Application.modified.asc())
-        elif order_by == ApplicationSortingParameters.Modified and sort_order =="desc":
+        elif order_by == ApplicationSortingParameters.Modified and sort_order == "desc":
             query = query.order_by(Application.modified.desc())
-        
+
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count
@@ -307,13 +307,13 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             query = query.order_by(Application.application_name.asc())
         elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
             query = query.order_by(Application.application_name.desc())
-        elif order_by == ApplicationSortingParameters.Status and sort_order =="asc":
-            query = query.order_by(Application.application_status.asc())     
-        elif order_by == ApplicationSortingParameters.Status and sort_order =="desc":
+        elif order_by == ApplicationSortingParameters.Status and sort_order == "asc":
+            query = query.order_by(Application.application_status.asc())
+        elif order_by == ApplicationSortingParameters.Status and sort_order == "desc":
             query = query.order_by(Application.application_status.desc())
-        elif order_by == ApplicationSortingParameters.Modified and sort_order =="asc":
+        elif order_by == ApplicationSortingParameters.Modified and sort_order == "asc":
             query = query.order_by(Application.modified.asc())
-        elif order_by == ApplicationSortingParameters.Modified and sort_order =="desc":
+        elif order_by == ApplicationSortingParameters.Modified and sort_order == "desc":
             query = query.order_by(Application.modified.desc())
 
         total_count = query.count()

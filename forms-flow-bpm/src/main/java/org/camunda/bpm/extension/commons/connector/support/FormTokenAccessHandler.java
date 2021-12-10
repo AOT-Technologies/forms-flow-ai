@@ -28,7 +28,7 @@ public class FormTokenAccessHandler {
     private Properties integrationCredentialProperties;
 
     @Autowired
-    private WebClient webClient;
+    private WebClient unauthenticatedWebClient;
 
     public String getAccessToken(){
         Map<String,String> paramMap = new HashMap<>();
@@ -37,7 +37,7 @@ public class FormTokenAccessHandler {
         HashMap<String, Map> dataMap = new HashMap<>();
         dataMap.put("data", paramMap);
 
-        String token = webClient.post().uri(getIntegrationCredentialProperties().getProperty("formio.security.accessTokenUri"))
+        String token = unauthenticatedWebClient.post().uri(getIntegrationCredentialProperties().getProperty("formio.security.accessTokenUri"))
                 .bodyValue(dataMap)
                 .accept(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -45,8 +45,8 @@ public class FormTokenAccessHandler {
                     if(data.statusCode().is2xxSuccessful()){
                         return Mono.just(data.headers().header("x-jwt-token").get(0));
                     } else{
-                        throw new FormioServiceException("Exception occurred in getting x-jwt-token"+  ". Message Body: " +
-                                data.bodyToMono(String.class).block());
+                        return Mono.error(new FormioServiceException("Exception occurred in getting x-jwt-token"+  ". Message Body: " +
+                                data));
                     }
                 })
                 .log()

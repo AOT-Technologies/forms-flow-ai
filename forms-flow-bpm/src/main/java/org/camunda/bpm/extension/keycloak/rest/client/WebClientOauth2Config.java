@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.keycloak.rest.oauth2client;
+package org.camunda.bpm.extension.keycloak.rest.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +24,17 @@ public class WebClientOauth2Config {
 
     @Autowired
     private Properties integrationCredentialProperties;
+
+    @Bean
+    public WebClient unauthenticatedWebClient(){
+        return WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(Integer.parseInt(integrationCredentialProperties.getProperty("camunda.spring.webclient.maxInMemorySize"))))
+                        .build())
+                .build();
+    }
 
 
     @Bean

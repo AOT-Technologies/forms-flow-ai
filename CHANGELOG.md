@@ -25,7 +25,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 *Upgrade notes:*
 
-New environment variables KEYCLOAK_ADMIN_USERNAME, KEYCLOAK_ADMIN_PASSWORD
+New environment variables KEYCLOAK_ADMIN_USERNAME, KEYCLOAK_ADMIN_PASSWORD, INSIGHT_API_URL, INSIGHT_API_KEY
 
 **forms-flow-analytics**
 
@@ -61,6 +61,10 @@ the group have been authorized into.
 
 `Fixed`
 
+**forms-flow-api**
+
+* Fixed application metrics showing incorrect results by changing date to filtered based on timezone.
+
 **forms-flow-bpm**
 
 * Improved token creation logic using Oauth2RestTemplate.
@@ -76,6 +80,10 @@ the group have been authorized into.
 **forms-flow-web**
 
 * Footer was modified to display formsflow.ai with the version number.
+
+*Upgrade notes:*
+
+Removed environment variables INSIGHT_API_URL, INSIGHT_API_KEY
 
 `Solution Component Upgrades`
 

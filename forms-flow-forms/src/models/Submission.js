@@ -98,6 +98,8 @@ module.exports = function(formio) {
 
   // Add a "recommmended" combined index.
   model.schema.index({
+    "data.process_pid ": 1,
+    "data.applicationStatus": 1,
     form: 1,
     deleted: 1,
     created: -1

@@ -77,6 +77,8 @@ Start the **analytics server** by following the instructions given [here](../../
 `FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
 `FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 `FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
+`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
+|`FORMIO_JWT_EXPIRE`|forms-flow-forms jwt expire time| |`240`
 
 
 *  Follow the below steps for mapping the role IDs.   

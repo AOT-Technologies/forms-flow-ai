@@ -2,34 +2,47 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
 
-## 4.0.4 - 2021-12-06
+## 4.0.4 - 2021-12-14
 
 `Added`
 
 **forms-flow-bpm**
 
 * Added test cases and code coverage.
-* New property `DATA_BUFFER_SIZE` to maximize result size for keycloak user queries.
-* New property `IDENTITY_PROVIDER_MAX_RESULT_SIZE` to configure a limit on the number of bytes that can be buffered for webclient.
+
+*Upgrade notes:*
+
+New environment variables `DATA_BUFFER_SIZE`, `IDENTITY_PROVIDER_MAX_RESULT_SIZE`.
 
 **forms-flow-web**
 
-* Admin page to map Dashboards to keycloak groups.
+* Admin page to map insights dashboards to keycloak groups.
 * Added test cases and coverage.
+
+*Upgrade notes:*
+
+New environment variables `FORMIO_JWT_SECRET`. It's highly recommended to change this environment variable for existing installations.
 
 **forms-flow-api**
 
-* Added `pagination` `sorting` and `filtering` for Application Page.
+* Added `pagination`, `sorting` and `filtering` for Application Page.
 * Added new APIs which acts as a gateway for calling forms-flow-analytics APIs.
 * Added new API for modifying group details in Keycloak with the help of Keycloak admin APIs.
 
 *Upgrade notes:*
 
-New environment variables KEYCLOAK_ADMIN_USERNAME, KEYCLOAK_ADMIN_PASSWORD, INSIGHT_API_URL, INSIGHT_API_KEY
+New environment variables `KEYCLOAK_ADMIN_USERNAME`, `KEYCLOAK_ADMIN_PASSWORD`, `INSIGHT_API_URL`, `INSIGHT_API_KEY`.
+
 
 **forms-flow-analytics**
 
 * Added Dashboard authorisation at Redash dashboard level.
+
+**forms-flow-forms**
+
+*Upgrade notes:*
+
+New environment variables `FORMIO_JWT_SECRET`, `FORMIO_JWT_EXPIRE`. It's highly recommended to change this environment variable for existing installations.
 
 **forms-flow-idm**
 
@@ -55,9 +68,8 @@ New environment variables KEYCLOAK_ADMIN_USERNAME, KEYCLOAK_ADMIN_PASSWORD, INSI
 * Click Save
 ```
 
-3.Associate to each user, new dashboard-groups you want to enable for dashboard authorization.
-Corresponding to that users group, the users will be given permission to as many dashboards
-the group have been authorized into.
+3. Corresponding to each user, add the dashboard-groups you want to enable for dashboard authorization.
+This will give users permission to as many dashboards which the group have been enabled with from Admin.
 
 `Fixed`
 
@@ -79,19 +91,17 @@ the group have been authorized into.
 
 **forms-flow-web**
 
-* Footer was modified to display formsflow.ai with the version number.
-
 *Upgrade notes:*
 
-Removed environment variables INSIGHT_API_URL, INSIGHT_API_KEY
+Removed environment variables `INSIGHT_API_URL`, `INSIGHT_API_KEY`
 
 `Solution Component Upgrades`
 
 **forms-flow-bpm**
 
-* Camunda upgrade from `7.13.0` to `7.15.0`. For upgrade please run the
-* Upgraded springboot to `2.4.8`
-* Upgraded spring-security-oauth2 to `2.4.8`
+* Camunda upgrade from `7.13.0` to `7.15.0`. 
+* Upgraded springboot from `2.4.2` to `2.4.8`
+* Upgraded spring-security-oauth2 from `2.4.2` to `2.4.8`
 
 *Upgrade notes:*
 
@@ -99,7 +109,7 @@ After v4.0.4 version upgrade, Run the migrations with [upgrade file](https://git
 
 **forms-flow-analytics**
 
-* Upgraded redash library to version `10.1`
+* Upgraded redash library to version from `9.0.0-beta` to `10.1.0`
 
 *Upgrade notes:*
 
@@ -109,8 +119,12 @@ After v4.0.4 version upgrade, run the following command first to run the necessa
 docker-compose -f docker-compose-linux.yml run --rm server manage db upgrade
 docker-compose -f docker-compose-linux.yml up --force-recreate --build
 ```
-In case you want to downgrade to the previous version v4.0.3 forms-flow-analytics component after formsflow.ai version upgrade.
+In case you want to downgrade to the v9.0-beta of forms-flow-analytics component after formsflow.ai version upgrade.
 To update the migrations and rebuild formsflow.ai. Use [the below commands which was used in setup](./forms-flow-analytics/README.md/#running-the-application):
+
+**forms-flow-forms**
+
+* Formio upgrade from `2.0.0-rc.34` to `2.3.0`.
 
 ## 4.0.3 - 2021-10-22
 

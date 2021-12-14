@@ -1,6 +1,6 @@
 # Analytics Engine
 
-![Redash](https://img.shields.io/badge/Redash-v10-blue)
+![Redash](https://img.shields.io/badge/Redash-10.1.0-blue)
 
 **formsflow.ai** leverages [Redash](https://github.com/getredash/redash) to build interactive
 dashboards and gain insights. To create meaningful visualization for

@@ -1,6 +1,6 @@
 # Form Management Platform
 
-![Formio](https://img.shields.io/badge/formio-2.0.0--rc.34-blue)
+![Formio](https://img.shields.io/badge/formio-2.3.0-blue)
 
 **formsflow.ai** leverages form.io to build "serverless" data management applications using a simple drag-and-drop form builder interface.
 
@@ -47,6 +47,8 @@ Not applicable.
 |`FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 |`FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
 |`FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|forms-flow-forms default url||`http://{your-ip-address}:3001`
+|`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
+|`FORMIO_JWT_EXPIRE`|forms-flow-forms jwt expire time| |`240`
 
 **Additionally, you may want to change these**
 * The value of Mongo database details (especially if this instance is not just for testing purposes)

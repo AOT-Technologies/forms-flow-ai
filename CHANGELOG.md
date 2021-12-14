@@ -28,6 +28,8 @@ New environment variables `FORMIO_JWT_SECRET`. It's highly recommended to change
 * Added `pagination`, `sorting` and `filtering` for Application Page.
 * Added new APIs which acts as a gateway for calling forms-flow-analytics APIs.
 * Added new API for modifying group details in Keycloak with the help of Keycloak admin APIs.
+* Add application status list API.
+* Added unit test cases and new script for CI operations.
 
 *Upgrade notes:*
 
@@ -120,7 +122,8 @@ docker-compose -f docker-compose-linux.yml run --rm server manage db upgrade
 docker-compose -f docker-compose-linux.yml up --force-recreate --build
 ```
 In case you want to downgrade to the v9.0-beta of forms-flow-analytics component after formsflow.ai version upgrade.
-To update the migrations and rebuild formsflow.ai. Use [the below commands which was used in setup](./forms-flow-analytics/README.md/#running-the-application):
+To update the migrations and rebuild formsflow.ai. Use [the below commands which was used in setup](./forms-flow-analytics/README.md/#running-the-application). 
+Also note that we are not supporting downgrade to any version below Redash v9.0(which has be used from formsflow.ai v4.0 onwards).
 
 **forms-flow-forms**
 

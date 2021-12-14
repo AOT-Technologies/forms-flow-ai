@@ -114,14 +114,14 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         elif application_name and application_status and modified_from and modified_to:
             query = cls.query.filter(
                 Application.application_name.like(f"{application_name}%"),
-                Application.application_status.like(f"{application_status}%"),
+                Application.application_status==application_status,
                 func.date(Application.modified) >= modified_from,
                 func.date(Application.modified) <= modified_to,
             )
         elif application_name and application_status:
             query = cls.query.filter(
                 Application.application_name.like(f"{application_name}%"),
-                Application.application_status.like(f"{application_status}%"),
+                Application.application_status==application_status,
             )
         elif application_name and modified_from and modified_to:
             query = cls.query.filter(
@@ -131,7 +131,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
         elif application_status and modified_from and modified_to:
             query = cls.query.filter(
-                Application.application_status.like(f"{application_status}%"),
+                Application.application_status==application_status,
                 func.date(Application.modified) >= modified_from,
                 func.date(Application.modified) <= modified_to,
             )
@@ -141,7 +141,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
         elif application_status:
             query = cls.query.filter(
-                Application.application_status.like(f"{application_status}%"),
+                Application.application_status==application_status,
             )
         elif created_by:
             query = cls.query.filter(Application.created_by.like(f"{created_by}%"))
@@ -248,14 +248,14 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         elif application_name and application_status and modified_from and modified_to:
             query = cls.query.filter(
                 Application.application_name.like(f"{application_name}%"),
-                Application.application_status.like(f"{application_status}%"),
+                Application.application_status==application_status,
                 func.date(Application.modified) >= modified_from,
                 func.date(Application.modified) <= modified_to,
             )
         elif application_name and application_status:
             query = cls.query.filter(
                 Application.application_name.like(f"{application_name}%"),
-                Application.application_status.like(f"{application_status}%"),
+                Application.application_status==application_status,
             )
         elif application_name and modified_from and modified_to:
             query = cls.query.filter(
@@ -265,7 +265,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
         elif application_status and modified_from and modified_to:
             query = cls.query.filter(
-                Application.application_status.like(f"{application_status}%"),
+                Application.application_status==application_status,
                 func.date(Application.modified) >= modified_from,
                 func.date(Application.modified) <= modified_to,
             )
@@ -275,7 +275,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
         elif application_status:
             query = cls.query.filter(
-                Application.application_status.like(f"{application_status}%")
+                Application.application_status==application_status
             )
         elif created_by:
             query = cls.query.filter(Application.created_by.like(f"{created_by}%"))

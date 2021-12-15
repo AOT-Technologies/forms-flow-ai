@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -83,6 +84,7 @@ class FormAccessHandlerTest {
 		when(requestBodyUriSpec.header(anyString(), anyString())).thenReturn(requestBodyUriSpec);
 		WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
 		when(requestBodyUriSpec.retrieve()).thenReturn(responseSpec);	
+		when(responseSpec.onStatus(any(Predicate.class), any(Function.class))).thenReturn(responseSpec);
 		when(responseSpec.toEntity(any(Class.class))).thenReturn(Mono.just(new ResponseEntity("", HttpStatus.OK)));
 		
 		ResponseEntity<String> expected = new ResponseEntity("", HttpStatus.OK);
@@ -119,6 +121,7 @@ class FormAccessHandlerTest {
 		when(requestBodyUriSpec.header(anyString(), anyString())).thenReturn(requestBodyUriSpec);
 		WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
 		when(requestBodyUriSpec.retrieve()).thenReturn(responseSpec);
+		when(responseSpec.onStatus(any(Predicate.class), any(Function.class))).thenReturn(responseSpec);
 		when(responseSpec.toEntity(any(Class.class)))
 				.thenReturn(Mono.just(new ResponseEntity("Token Expired", HttpStatus.OK)));
 
@@ -162,6 +165,7 @@ class FormAccessHandlerTest {
 		when(requestBodyUriSpec.header(anyString(), anyString())).thenReturn(requestBodyUriSpec);
 		WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
 		when(requestHeadersSpec.retrieve()).thenReturn(responseSpec);
+		when(responseSpec.onStatus(any(Predicate.class), any(Function.class))).thenReturn(responseSpec);
 		when(responseSpec.toEntity(any(Class.class))).thenReturn(Mono.just(new ResponseEntity("", HttpStatus.OK)));
 		
 		ResponseEntity<String> expected = new ResponseEntity("", HttpStatus.OK);
@@ -198,6 +202,7 @@ class FormAccessHandlerTest {
 		when(requestBodyUriSpec.header(anyString(), anyString())).thenReturn(requestBodyUriSpec);
 		WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
 		when(requestBodyUriSpec.retrieve()).thenReturn(responseSpec);
+		when(responseSpec.onStatus(any(Predicate.class), any(Function.class))).thenReturn(responseSpec);
 		when(responseSpec.toEntity(any(Class.class))).thenReturn(Mono.just(new ResponseEntity("", HttpStatus.OK)));
 		
 		ResponseEntity<String> expected = new ResponseEntity("", HttpStatus.OK);
@@ -239,6 +244,7 @@ class FormAccessHandlerTest {
 		when(requestBodyUriSpec.header(anyString(), anyString())).thenReturn(requestBodyUriSpec);
 		WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
 		when(requestBodyUriSpec.retrieve()).thenReturn(responseSpec);
+		when(responseSpec.onStatus(any(Predicate.class), any(Function.class))).thenReturn(responseSpec);
 		when(responseSpec.toEntity(any(Class.class))).thenReturn(Mono.just(new ResponseEntity("", HttpStatus.OK)));
 		
 		ResponseEntity<String> expected = null;
@@ -280,6 +286,7 @@ class FormAccessHandlerTest {
 		when(requestBodyUriSpec.header(anyString(), anyString())).thenReturn(requestBodyUriSpec);
 		WebClient.ResponseSpec responseSpec = mock(WebClient.ResponseSpec.class);
 		when(requestBodyUriSpec.retrieve()).thenReturn(responseSpec);
+		when(responseSpec.onStatus(any(Predicate.class), any(Function.class))).thenReturn(responseSpec);
 		when(responseSpec.toEntity(any(Class.class))).thenReturn(Mono.just(new ResponseEntity("", HttpStatus.OK)));
 		
 		ResponseEntity<String> expected = new ResponseEntity("", HttpStatus.OK);

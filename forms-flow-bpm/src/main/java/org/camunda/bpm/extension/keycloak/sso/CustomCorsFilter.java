@@ -63,18 +63,18 @@ public class CustomCorsFilter implements Filter {
         response.setHeader("Access-Control-Allow-Headers", "*");
         response.setHeader("Access-Control-Max-Age", "3600");
 
-        if ("OPTIONS".equalsIgnoreCase(requestMethod) && isEngineRestRequest(request) == true) {
+        if ("OPTIONS".equalsIgnoreCase(requestMethod) && isEngineRestRequest(request)) {
             if(isWebSocketRequest(request)) {
                 response.setHeader("Access-Control-Allow-Credentials", "true");
             }
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            if (isWebSocketRequest(request) == true) {
+            if (isWebSocketRequest(request)) {
                 response.setHeader("Access-Control-Allow-Credentials", "true");
                 CustomHttpRequestWrapper customHttpRequestWrapper = new CustomHttpRequestWrapper(request);
 
                 if (StringUtils.isNotBlank(request.getQueryString())) {
-                    List<String> queryParams = Arrays.asList(request.getQueryString().split("&"));
+                    String[] queryParams = request.getQueryString().split("&");
                     for (String param : queryParams) {
                         if ("accesstoken".equals(StringUtils.substringBefore(param, "="))) {
                             String decryptedToken = aesUtils.decryptText(StringUtils.substringAfter(param, "="), socketSecretKey);

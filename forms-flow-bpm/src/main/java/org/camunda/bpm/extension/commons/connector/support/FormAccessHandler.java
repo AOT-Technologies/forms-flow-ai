@@ -4,6 +4,7 @@ import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.repository.ProcessDefinition;
+import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,7 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
         payload = (payload == null) ? new JsonObject().toString() : payload;
 
         if(HttpMethod.PATCH.name().equals(method.name())) {
+            logger.info("payload="+payload);
             Mono<ResponseEntity<String>> entityMono = unauthenticatedWebClient.patch()
                     .uri(getDecoratedServerUrl(url))
                     .bodyValue(payload)
@@ -66,10 +68,12 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
                     .accept(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .retrieve()
+                    .onStatus(HttpStatus::is4xxClientError,
+                            response -> Mono.error(new FormioServiceException(response.toString())))
                     .toEntity(String.class);
 
             ResponseEntity<String> response = entityMono.block();
-            if("Token Expired".equalsIgnoreCase(response.getBody())) {
+            if(response !=null && "Token Expired".equalsIgnoreCase(response.getBody())) {
                 return new ResponseEntity<>(response.getBody(), HttpStatus.valueOf(TOKEN_EXPIRY_CODE));
             }
             return response;
@@ -81,6 +85,8 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
                     .header("x-jwt-token", accessToken)
                     .body(Mono.just(payload), String.class)
                     .retrieve()
+                    .onStatus(HttpStatus::is4xxClientError,
+                            response -> Mono.error(new FormioServiceException(response.toString())))
                     .toEntity(String.class)
                     .block();
         }

@@ -17,7 +17,7 @@ New environment variables `DATA_BUFFER_SIZE`, `IDENTITY_PROVIDER_MAX_RESULT_SIZE
 **forms-flow-web**
 
 * Admin page to map insights dashboards to keycloak groups.
-* Added test cases and code coverage, check out the [details here](../readme_forms-flow-web/forms-flow-web#code-coverage).
+* Added test cases and code coverage, check out the [details here](./forms-flow-web/README.md#code-coverage).
 
 *Upgrade notes:*
 

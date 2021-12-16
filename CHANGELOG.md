@@ -1,8 +1,8 @@
 # Changelog for formsflow.ai
 
-Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`
+Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 4.0.4 - 2021-12-14
+## 4.0.4 - 2021-12-17
 
 `Added`
 
@@ -128,6 +128,11 @@ Also note that we are not supporting downgrade to any version below Redash v9.0(
 **forms-flow-forms**
 
 * Formio upgrade from `2.0.0-rc.34` to `2.3.0`.
+
+`Known Issues`
+
+* In case you are facing mongodb connection refused error for forms-flow-forms, downgrade to the next lowest mongo stable [version](https://docs.mongodb.com/manual/release-notes/)
+* Consoles related to <http://localhost:3001/current> Api Failing. The console messages can be ignored. Please refer to [Issue-#106](https://github.com/AOT-Technologies/forms-flow-ai/issues/106) for more details.
 
 ## 4.0.3 - 2021-10-22
 

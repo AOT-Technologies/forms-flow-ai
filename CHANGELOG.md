@@ -44,7 +44,7 @@ New environment variables `KEYCLOAK_ADMIN_USERNAME`, `KEYCLOAK_ADMIN_PASSWORD`, 
 
 *Upgrade notes:*
 
-New environment variables `FORMIO_JWT_SECRET`, `FORMIO_JWT_EXPIRE`. It's highly recommended to change this environment variable for existing installations.
+New environment variables `FORMIO_JWT_SECRET`. It's highly recommended to change this environment variable for existing installations.
 
 **forms-flow-idm**
 

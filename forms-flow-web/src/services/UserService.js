@@ -4,6 +4,7 @@ import {
   Keycloak_Client,
   ANONYMOUS_USER,
   ANONYMOUS_ID,
+  FORMIO_JWT_SECRET
 } from "../constants/constants";
 import {
   setUserRole,
@@ -24,6 +25,7 @@ const jwt = require("jsonwebtoken");
  * @param onAuthenticatedCallback
  */
 // const KeycloakData = new Keycloak(tenantDetail);
+
 
 const initKeycloak = (store, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -118,6 +120,7 @@ const authenticateAnonymousUser = (store) => {
 };
 
 const authenticateFormio = (user, roles) => {
+  
   const FORMIO_TOKEN = jwt.sign(
     {
       external: true,
@@ -129,7 +132,7 @@ const authenticateFormio = (user, roles) => {
         roles: roles,
       },
     },
-    "--- change me now ---"
+    FORMIO_JWT_SECRET
   ); // TODO Move JWT secret key to COME From ENV
   //TODO remove this token from local Storage on logout and try to move to redux store as well
   localStorage.setItem("formioToken", FORMIO_TOKEN);

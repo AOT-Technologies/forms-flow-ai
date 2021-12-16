@@ -1,7 +1,7 @@
 'use strict';
 
 const querystring = require('querystring');
-const fetch = require('../util/fetch');
+const fetch = require('@formio/node-fetch-http-proxy');
 
 module.exports = function(router) {
   const hook = require('../util/hook')(router.formio);
@@ -27,7 +27,21 @@ module.exports = function(router) {
           if (!body) {
             throw new Error('No response from Google');
           }
-          res.send(body);
+
+          const expirationTime = 600000; // 10 minutes
+
+          // Create temp token with recaptcha response token as value
+          // to verify it on validation step
+          router.formio.mongoose.models.token.create({
+            value: req.query.recaptchaToken,
+            expireAt: Date.now() + expirationTime,
+          }, (err) => {
+            if (err) {
+              return res.status(400).send(err.message);
+            }
+
+            res.send(body);
+          });
         });
     });
   });

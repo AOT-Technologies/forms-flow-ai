@@ -23,6 +23,7 @@ def test_no_auth_get_dashboards(client):
     rv = client.get("/dashboards")
     assert rv.status_code == 401
 
+
 def test_get_dashboard_error_details(client):
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}

@@ -28,7 +28,7 @@ class TestApplicationResource:
 
         response = client.get("/application", headers=headers)
         assert response.status_code == 200
-    
+
     def test_application_paginated_list(self, session, client, jwt, pageNo, limit):
         token = jwt.create_jwt(get_token_body(), get_token_header())
         headers = {
@@ -36,16 +36,20 @@ class TestApplicationResource:
             "content-type": "application/json",
         }
         response = client.get(f"/application?pageNo={pageNo}&limit={limit}")
-        assert response.status_code ==200
-    
-    def test_application_paginated_sorted_list(self, session, client, jwt, pageNo, limit, sortBy, sortOrder):
+        assert response.status_code == 200
+
+    def test_application_paginated_sorted_list(
+        self, session, client, jwt, pageNo, limit, sortBy, sortOrder
+    ):
         token = jwt.create_jwt(get_token_body(), get_token_header())
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        response = client.get(f"/application?pageNo={pageNo}&limit={limit}&sortBy={sortBy}&sortOrder={sortOrder}")
-        assert response.status_code ==200
+        response = client.get(
+            f"/application?pageNo={pageNo}&limit={limit}&sortBy={sortBy}&sortOrder={sortOrder}"
+        )
+        assert response.status_code == 200
 
 
 class TestApplicationDetailView:
@@ -65,6 +69,8 @@ class TestApplicationDetailView:
         }
         response = client.get("/application/1", headers=headers)
         assert response.status_code == 403
+
+
 class TestApplicationResourceByFormId:
     def test_application_submission(self, session, client, jwt):
         token = jwt.create_jwt(get_token_body(), get_token_header())
@@ -83,11 +89,13 @@ class TestApplicationResourceByFormId:
             json=get_application_create_payload(form_id),
         )
         assert rv.status_code == 201
-        response = client.get("/application/formid/61b81b6f85589c44f62865c7", headers=headers)
+        response = client.get(
+            "/application/formid/61b81b6f85589c44f62865c7", headers=headers
+        )
         assert response.status_code == 200
 
 
-class TestProcessMapperResourceByApplicationId:    
+class TestProcessMapperResourceByApplicationId:
     def test_application_process_details(session, client, jwt):
         token = jwt.create_jwt(get_token_body(), get_token_header())
         headers = {
@@ -107,6 +115,7 @@ class TestProcessMapperResourceByApplicationId:
         assert rv.status_code == 201
         response = client.get("/application/1/process", headers=headers)
         assert response.status_code == 200
+
 
 class TestApplicationResourceByApplicationStatus:
     def test_application_status_list(session, client, jwt):

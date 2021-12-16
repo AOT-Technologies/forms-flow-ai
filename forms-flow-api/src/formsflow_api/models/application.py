@@ -107,40 +107,46 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     ) -> Application:
         """Fetch applications list based on searching parameters for Non-reviewer"""
 
-        if application_id and application_name and application_status and modified_from and modified_to:
+        if (
+            application_id
+            and application_name
+            and application_status
+            and modified_from
+            and modified_to
+        ):
             query = cls.query.filter(
                 Application.id == application_id,
                 Application.application_name.like(f"{application_name}%"),
-                Application.application_status==application_status,
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.application_status == application_status,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_id and application_name and application_status:
             query = cls.query.filter(
                 Application.id == application_id,
                 Application.application_name.like(f"{application_name}%"),
-                Application.application_status==application_status,
+                Application.application_status == application_status,
             )
         elif application_id and application_name and modified_from and modified_to:
             query = cls.query.filter(
                 Application.id == application_id,
                 Application.application_name.like(f"{application_name}%"),
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_id and application_status and modified_from and modified_to:
             query = cls.query.filter(
                 Application.id == application_id,
-                Application.application_status==application_status,
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.application_status == application_status,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_name and application_status and modified_from and modified_to:
             query = cls.query.filter(
                 Application.application_name.like(f"{application_name}%"),
-                Application.application_status==application_status,
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.application_status == application_status,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_id and application_name:
             query = cls.query.filter(
@@ -150,30 +156,30 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         elif application_id and application_status:
             query = cls.query.filter(
                 Application.id == application_id,
-                Application.application_status==application_status,
+                Application.application_status == application_status,
             )
         elif application_id and modified_from and modified_to:
             query = query = cls.query.filter(
                 Application.id == application_id,
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_name and application_status:
             query = cls.query.filter(
                 Application.application_name.like(f"{application_name}%"),
-                Application.application_status==application_status,
+                Application.application_status == application_status,
             )
         elif application_name and modified_from and modified_to:
             query = cls.query.filter(
                 Application.application_name.like(f"{application_name}%"),
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_status and modified_from and modified_to:
             query = cls.query.filter(
-                Application.application_status==application_status,
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.application_status == application_status,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_id:
             query = cls.query.filter(
@@ -185,22 +191,22 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
         elif application_status:
             query = cls.query.filter(
-                Application.application_status==application_status,
+                Application.application_status == application_status,
             )
         elif created_by:
             query = cls.query.filter(Application.created_by.like(f"{created_by}%"))
         elif modified_from and modified_to:
             query = cls.query.filter(
                 and_(
-                    func.date(Application.modified) >= modified_from,
-                    func.date(Application.modified) <= modified_to,
+                    Application.modified >= modified_from,
+                    Application.modified <= modified_to,
                 )
             )
         elif created_from and created_to:
             query = cls.query.filter(
                 and_(
-                    func.date(Application.created) >= created_from,
-                    func.date(Application.created) <= created_to,
+                    Application.created >= created_from,
+                    Application.created <= created_to,
                 )
             )
         else:
@@ -286,40 +292,46 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         created_to: datetime,
     ):
         """Fetch applications list based on searching parameters for Reviewer"""
-        if application_id and application_name and application_status and modified_from and modified_to:
+        if (
+            application_id
+            and application_name
+            and application_status
+            and modified_from
+            and modified_to
+        ):
             query = cls.query.filter(
                 Application.id == application_id,
                 Application.application_name.like(f"{application_name}%"),
-                Application.application_status==application_status,
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.application_status == application_status,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_id and application_name and application_status:
             query = cls.query.filter(
                 Application.id == application_id,
                 Application.application_name.like(f"{application_name}%"),
-                Application.application_status==application_status,
+                Application.application_status == application_status,
             )
         elif application_id and application_name and modified_from and modified_to:
             query = cls.query.filter(
                 Application.id == application_id,
                 Application.application_name.like(f"{application_name}%"),
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_id and application_status and modified_from and modified_to:
             query = cls.query.filter(
                 Application.id == application_id,
-                Application.application_status==application_status,
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.application_status == application_status,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_name and application_status and modified_from and modified_to:
             query = cls.query.filter(
                 Application.application_name.like(f"{application_name}%"),
-                Application.application_status==application_status,
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.application_status == application_status,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_id and application_name:
             query = cls.query.filter(
@@ -329,30 +341,30 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         elif application_id and application_status:
             query = cls.query.filter(
                 Application.id == application_id,
-                Application.application_status==application_status,
+                Application.application_status == application_status,
             )
         elif application_id and modified_from and modified_to:
             query = query = cls.query.filter(
                 Application.id == application_id,
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_name and application_status:
             query = cls.query.filter(
                 Application.application_name.like(f"{application_name}%"),
-                Application.application_status==application_status,
+                Application.application_status == application_status,
             )
         elif application_name and modified_from and modified_to:
             query = cls.query.filter(
                 Application.application_name.like(f"{application_name}%"),
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_status and modified_from and modified_to:
             query = cls.query.filter(
-                Application.application_status==application_status,
-                func.date(Application.modified) >= modified_from,
-                func.date(Application.modified) <= modified_to,
+                Application.application_status == application_status,
+                Application.modified >= modified_from,
+                Application.modified <= modified_to,
             )
         elif application_id:
             query = cls.query.filter(
@@ -364,7 +376,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
         elif application_status:
             query = cls.query.filter(
-                Application.application_status==application_status,
+                Application.application_status == application_status,
             )
         elif created_by:
             query = cls.query.filter(Application.created_by.like(f"{created_by}%"))
@@ -372,15 +384,15 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             current_app.logger.debug((modified_from, modified_to))
             query = cls.query.filter(
                 and_(
-                    func.date(Application.modified) >= modified_from,
-                    func.date(Application.modified) <= modified_to,
+                    Application.modified <= modified_to,
+                    Application.modified >= modified_from,
                 )
             )
         elif created_from and created_to:
             query = cls.query.filter(
                 and_(
-                    func.date(Application.created) >= created_from,
-                    func.date(Application.created) <= created_to,
+                    Application.created >= created_from,
+                    Application.created <= created_to,
                 )
             )
         else:
@@ -562,8 +574,8 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
             .filter(
                 and_(
-                    func.date(Application.created) >= from_date,
-                    func.date(Application.created) <= to_date,
+                    Application.created >= from_date,
+                    Application.created <= to_date,
                     Application.form_process_mapper_id == mapper_id,
                 )
             )

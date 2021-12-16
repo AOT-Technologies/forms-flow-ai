@@ -1,3 +1,4 @@
+ /* istanbul ignore file */
 import {  httpGETRequest } from '../httpRequestHandler';
 import API from '../endpoints';
 import { serviceActionError } from '../../actions/taskActions'; //TODO move to a common action

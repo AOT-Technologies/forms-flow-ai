@@ -13,7 +13,7 @@ import Loading from "../../containers/Loading";
 import LoadError from "../Error";
 
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
-import * as moment from "moment";
+import moment from "moment";
 
 const firsDay = moment().format("YYYY-MM-01");
 

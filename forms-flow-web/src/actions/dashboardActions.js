@@ -1,3 +1,4 @@
+ /* istanbul ignore file */
 import ACTION_CONSTANTS from "./actionConstants"
 
 //updates the dashboards state 

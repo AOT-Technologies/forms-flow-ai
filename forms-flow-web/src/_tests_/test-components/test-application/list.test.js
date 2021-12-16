@@ -1,11 +1,11 @@
 import React from "react";
-import { render as rtlRender,fireEvent,screen,waitFor } from '@testing-library/react'
+import { render as rtlRender,screen } from '@testing-library/react'
 import {ApplicationList} from "../../../components/Application/List";
 import { initialState } from "../../../modules/applicationsReducer";
 import { Provider } from 'react-redux'
 import StoreService from '../../../services/StoreService'
 import '@testing-library/jest-dom/extend-expect';
-import { Loadingstate,AfterLoadingWithresult,AfterLoadingWithoutresult } from "./Constatnts";
+import { Loadingstate,AfterLoadingWithresult,AfterLoadingWithoutresult } from "./Constants";
 import { BrowserRouter as Router } from 'react-router-dom';
 
 
@@ -36,7 +36,7 @@ test("Should render the table with the data after data fetch is over with result
     expect(screen.getAllByText(/Application ID/i).length).toBe(2);
     expect(screen.getAllByText(/Application Name/i).length).toBe(2);
     expect(screen.getByText("5434")).toBeInTheDocument();
-    expect(screen.getAllByText(/New Business License Application/i).length).toBe(3);
+    expect(screen.getAllByText(/Sample Form/i).length).toBe(3);
     expect(screen.getByText(/Showing 1 to 3 of 3 Results/i)).toBeInTheDocument();
     
 })
@@ -46,5 +46,3 @@ test("Should render No results found when providing a filter value which is not 
     expect(screen.getAllByText(/Applications/i).length).toBe(3);
     expect(screen.queryByText('Please change the selected filters to view applications')).toBeInTheDocument();
 })
-
-

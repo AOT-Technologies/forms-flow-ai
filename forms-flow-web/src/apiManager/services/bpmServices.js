@@ -1,3 +1,4 @@
+ /* istanbul ignore file */
 export const getProcessReq = (form, submissionId, action, user) => {
   const requestFormat = {
     formId: form._id,

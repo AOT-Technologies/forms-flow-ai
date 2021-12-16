@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export const RESUBMITTED_STATUS_EVENT = "application_resubmitted";
 export const ACKNOWLEDGED_EVENT="application_acknowledged"
 

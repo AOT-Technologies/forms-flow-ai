@@ -1,3 +1,4 @@
+ /* istanbul ignore file */
 import { httpGETRequest,httpPUTRequest } from "../httpRequestHandler";
 import { setDashboards,dashboardErrorHandler,setGroups,updateErrorHandler, hideUpdateError } from "../../actions/dashboardActions";
 import API from '../endpoints/index'

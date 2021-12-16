@@ -1,3 +1,4 @@
+ /* istanbul ignore file */
 const downloadFile = async (data={},callback) => {
   const myData = data;
   const fileName = `forms-${new Date().toJSON()}`;

@@ -1,3 +1,4 @@
+ /* istanbul ignore file */
 import {
   ROLES,
   USER_RESOURCE_FORM_ID,

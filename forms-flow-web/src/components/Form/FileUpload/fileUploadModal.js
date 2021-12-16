@@ -15,7 +15,6 @@ const FileModal= React.memo(({modalOpen=false, onClose,forms})=> {
         setFormsUploaded((formUploadCounter/formUploadList.length)*100);
       }
     },[formUploadCounter,formUploadList]);
-
     return (
       <>
           <Modal show={modalOpen} onHide={onClose}>

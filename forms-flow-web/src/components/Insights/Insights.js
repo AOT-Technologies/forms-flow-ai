@@ -40,14 +40,14 @@ const Insights = React.memo((props) => {
     <div className="container mb-4" id="main">
       <div className="insights mb-2">
         <div className="row ">
-          <div className="col-12">
+          <div className="col-12"  data-testid="Insight">
             <h1 className="insights-title">
             <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> Insights
             </h1>
             <hr className="line-hr"/>
             <div className="col-12">
-              <div className="app-title-container mt-3">
-                <h3 className="insight-title">
+              <div className="app-title-container mt-3"  data-testid="Insight">
+                <h3 className="insight-title" data-testid="Dashboard">
                   <i className="fa fa-bars mr-1"/> Dashboard
                 </h3>
 

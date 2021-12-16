@@ -17,6 +17,9 @@ To know more about form.io, go to  https://form.io.
 3. [Formsflow-forms API Requesting](#formsflow-forms-api-requesting)  
    * [Using POSTMAN API client](#using-postman-api-client)
    * [Using curl command](#using-curl-command)
+4. [Custom Components](#custom-components)
+5. [Adding new indexes](#adding-new-indexes)
+6. [LICENSE](#license)
 
 ## Prerequisites
 
@@ -149,6 +152,21 @@ recommend you to take a look at [Custom Component Docs](https://formio.github.io
 to understand how  Form.io renderer allows for the creation of Custom components.
 You can also take a look at [formio.contrib](https://github.com/formio/contrib)
 to look for examples and even contribute the custom components you create.
+
+## Adding new indexes
+
+You can add new indexes in Mongodb shell, according to your requirement. You can create indexes like below example:
+
+```
+db.submissions.createIndex({
+    "data.applicationStatus ": 1,
+    "modified": 1,
+})
+```
+
+In this example:
+- `submissions` is the collection name.
+- `modified` and `data.applicationStatus` is the fields which are to be added in index.
 
 ## LICENSE
 

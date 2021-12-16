@@ -17,7 +17,7 @@ New environment variables `DATA_BUFFER_SIZE`, `IDENTITY_PROVIDER_MAX_RESULT_SIZE
 **forms-flow-web**
 
 * Admin page to map insights dashboards to keycloak groups.
-* Added test cases and coverage.
+* Added test cases and code coverage, check out the [details here](../readme_forms-flow-web/forms-flow-web#code-coverage).
 
 *Upgrade notes:*
 
@@ -41,6 +41,8 @@ New environment variables `KEYCLOAK_ADMIN_USERNAME`, `KEYCLOAK_ADMIN_PASSWORD`, 
 * Added Dashboard authorisation at Redash dashboard level.
 
 **forms-flow-forms**
+
+* Added indexes in Submission collection for applicationId, process_pid.
 
 *Upgrade notes:*
 

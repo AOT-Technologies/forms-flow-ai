@@ -46,6 +46,7 @@ class KeycloakDashboardGroupList(Resource):
                 url_path="groups", first=page_no, max=limit
             )
 
+
         for group in group_list_response:
             if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
                 dashboard_group_list = [x for x in group["subGroups"]]

@@ -31,7 +31,11 @@ class FormTokenAccessHandlerTest {
 	private Properties integrationCredentialProperties;
 
 	@Mock
+<<<<<<< HEAD
 	private WebClient webClient;
+=======
+	private WebClient unAuthenticatedWebClient;
+>>>>>>> ab18dc4fbc21439d35e6548f39d1287ce6e0c4cb
 
 	/**
 	 * This test will validate the Access Token
@@ -45,7 +49,11 @@ class FormTokenAccessHandlerTest {
 		when(integrationCredentialProperties.getProperty("formio.security.accessTokenUri"))
 				.thenReturn("http://localhost:3001/login");
 		WebClient.RequestBodyUriSpec requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
+<<<<<<< HEAD
 		when(webClient.post())
+=======
+		when(unAuthenticatedWebClient.post())
+>>>>>>> ab18dc4fbc21439d35e6548f39d1287ce6e0c4cb
 				.thenReturn(requestBodyUriSpec);
 		when(requestBodyUriSpec.uri(anyString()))
 				.thenReturn(requestBodyUriSpec);

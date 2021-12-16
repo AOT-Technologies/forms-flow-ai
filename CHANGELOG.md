@@ -136,6 +136,77 @@ Also note that we are not supporting downgrade to any version below Redash v9.0(
 * In case you are facing mongodb connection refused error for forms-flow-forms, downgrade to the next lowest mongo stable [version](https://docs.mongodb.com/manual/release-notes/)
 * Consoles related to <http://localhost:3001/current> Api Failing. The console messages can be ignored. Please refer to [Issue-#106](https://github.com/AOT-Technologies/forms-flow-ai/issues/106) for more details.
 
+## 4.0.4 - 2021-12-06
+
+`Added`
+
+**forms-flow-bpm**
+
+* Added test cases and code coverage.
+* New property added in `application.yaml` to increase buffer size for web client `maxInMemorySize: 10 MB`.
+
+**forms-flow-web**
+
+* Admin page to map Dashboards to keycloak groups.
+* Added test cases and coverage.
+
+**forms-flow-api**
+
+* Added `pagination` `sorting` and `filtering` for Application Page.
+* Added new API for calling redash APIs.
+* Added new API for modifying group details in Keycloak with the help of Keycloak admin APIs.
+
+*Upgrade notes:*
+
+New environment variables KEYCLOAK_ADMIN_USERNAME, KEYCLOAK_ADMIN_PASSWORD
+
+**forms-flow-analytics**
+
+* Added Dashboard authorisation at Redash dashboard level.
+
+`Fixed`
+
+**forms-flow-bpm**
+
+* Improved token creation logic using Oauth2RestTemplate.
+* Code cleanup and optimization.
+
+**forms-flow-web**
+
+* Fixed total task count shown on the task LHS side and updated only after refreshing the page.
+* Tasklist API updated.
+
+`Modified`
+
+**forms-flow-bpm**
+
+* Camunda upgrade from `7.13.0` to `7.15.0`. For upgrade please run the 
+* Upgraded springboot to `2.4.8`
+* Upgraded spring-security-oauth2 to `2.4.8`
+
+*Upgrade notes:*
+
+After v4.0.4 version upgrade, Run the migrations with [upgrade file](https://github.com/AOT-Technologies/forms-flow-ai-dev/blob/develop/forms-flow-bpm/upgrade/process-engine_7.13_to_7.15.sql).
+
+**forms-flow-analytics**
+
+* Upgraded redash library to version `10.1`
+
+*Upgrade notes:*
+
+After v4.0.4 version upgrade, run the command:
+
+`docker-compose up --force-recreate --build`
+
+Then run the necessary migrations with:
+
+`docker-compose run --rm server manage db upgrade`
+
+**forms-flow-web**
+
+* Footer was modified to display formsflow.ai with the version number.
+
+
 ## 4.0.3 - 2021-10-22
 
 `Added`

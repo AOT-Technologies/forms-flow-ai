@@ -606,3 +606,4 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         )
 
         return result_proxy
+

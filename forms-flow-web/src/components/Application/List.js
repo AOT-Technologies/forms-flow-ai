@@ -39,10 +39,16 @@ export const ApplicationList = React.memo((props) => {
   const [lastModified,setLastModified] = useState(null);
 
   useEffect(()=>{
+
     dispatch(setApplicationListLoader(true))
-    if(!isApplicationStatusRecieved) dispatch(getAllApplicationStatus());
-    if(isApplicationStatusRecieved)dispatch(getAllApplications());
-  },[dispatch,isApplicationStatusRecieved]);
+
+    if(isApplicationStatusRecieved){
+      dispatch(getAllApplications(page,countPerPage));
+    }else{
+      dispatch(getAllApplicationStatus());
+    }
+    
+  },[dispatch,isApplicationStatusRecieved,countPerPage,page]);
 
   const isClientEdit = (applicationStatus) => {
     if (getUserRolePermission(userRoles, CLIENT)||getUserRolePermission(userRoles, STAFF_REVIEWER)) {

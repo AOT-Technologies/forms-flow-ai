@@ -35,77 +35,94 @@ objects:
       spec:
         containers:
         - env:
-          - name: MONGODB_URI
-            valueFrom:
-              secretKeyRef:
-                key: MONGODB_URI
-                name: ${FORMIO_SECRET}
           - name: BPM_API_BASE
             valueFrom:
+              configMapKeyRef:
+                key: CAMUNDA_API_URI
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: INSIGHTS_API_BASE
+            valueFrom:
               secretKeyRef:
-                key: BPM_API_BASE
-                name: ${FORMIO_SECRET}
+                key: INSIGHTS_API_BASE
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: INSIGHTS_API_KEY
+            valueFrom:
+              secretKeyRef:
+                key: INSIGHTS_API_KEY
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: KEYCLOAK_ADMIN_USERNAME
+            valueFrom:
+              secretKeyRef:
+                key: KEYCLOAK_ADMIN_USERNAME
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: KEYCLOAK_ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                key: KEYCLOAK_ADMIN_PASSWORD
+                name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: BPM_CLIENT_ID
             valueFrom:
               secretKeyRef:
                 key: BPM_CLIENT_ID
-                name: ${FORMIO_SECRET}
+                name: ${FORMSFLOW_SECRET}
           - name: BPM_CLIENT_SECRET
             valueFrom:
               secretKeyRef:
                 key: BPM_CLIENT_SECRET
-                name: ${FORMIO_SECRET}
+                name: ${FORMSFLOW_SECRET}
           - name: BPM_TOKEN_API
             valueFrom:
-              secretKeyRef:
-                key: BPM_TOKEN_API
-                name: ${FORMIO_SECRET}
+              configMapKeyRef:
+                key: KEYCLOAK_TOKEN_URL
+                name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: DATABASE_URL
             valueFrom:
               secretKeyRef:
-                key: DATABASE_URL
-                name: ${FORMIO_SECRET}
+                key: DATABASE_URL  
+                name: "${WEBAPI_DB_RESOURCE_NAME}-${IMAGE_TAG}-secret"
           - name: JWT_OIDC_ALGORITHMS
             valueFrom:
-              secretKeyRef:
-                key: JWT_OIDC_ALGORITHMS
-                name: ${FORMIO_SECRET}
+              configMapKeyRef:
+                key: KEYCLOAK_JWT_OIDC_ALGORITHMS
+                name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: JWT_OIDC_AUDIENCE
             valueFrom:
               secretKeyRef:
-                key: JWT_OIDC_AUDIENCE
-                name: ${FORMIO_SECRET}
+                key: WEB_CLIENTID
+                name: ${FORMSFLOW_SECRET}
           - name: JWT_OIDC_CACHING_ENABLED
             valueFrom:
-              secretKeyRef:
-                key: JWT_OIDC_CACHING_ENABLED
-                name: ${FORMIO_SECRET}
+              configMapKeyRef:
+                key: KEYCLOAK_JWT_OIDC_CACHING_ENABLED
+                name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: JWT_OIDC_ISSUER
             valueFrom:
-              secretKeyRef:
-                key: JWT_OIDC_ISSUER
-                name: ${FORMIO_SECRET}
+              configMapKeyRef:
+                key: KEYCLOAK_JWT_OIDC_ISSUER
+                name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: JWT_OIDC_JWKS_CACHE_TIMEOUT
             valueFrom:
-              secretKeyRef:
-                key: JWT_OIDC_JWKS_CACHE_TIMEOUT
-                name: ${FORMIO_SECRET}
+              configMapKeyRef:
+                key: KEYCLOAK_JWT_OIDC_JWKS_CACHE_TIMEOUT
+                name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: JWT_OIDC_JWKS_URI
             valueFrom:
-              secretKeyRef:
-                key: JWT_OIDC_JWKS_URI
-                name: ${FORMIO_SECRET}
+              configMapKeyRef:
+                key: KEYCLOAK_JWT_OIDC_JWKS_URI
+                name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: JWT_OIDC_WELL_KNOWN_CONFIG
             valueFrom:
-              secretKeyRef:
-                key: JWT_OIDC_WELL_KNOWN_CONFIG
-                name: ${FORMIO_SECRET}
+              configMapKeyRef:
+                key: KEYCLOAK_JWT_OIDC_CONFIG
+                name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: WEB_API_BASE_URL
             valueFrom:
-              secretKeyRef:
+              configMapKeyRef:
                 key: WEB_API_BASE_URL
-                name: ${FORMIO_SECRET}
-          image: ${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
+                name: ${FORMSFLOW_CONFIG_NAME}-config
+          - name: FORMSFLOW_API_CORS_ORIGINS
+            value: '*'      
+          image: image-registry.openshift-image-registry.svc:5000/${IMAGE_NAMESPACE}/${NAME}
           name: ${NAME}
         ports:
         - containerPort: 5000
@@ -147,7 +164,7 @@ objects:
       app: ${NAME}
     name: ${NAME}
   spec:
-    host: ${WEBAPI_URL}
+    host: ${WEB_API_URL}
     tls:
       insecureEdgeTerminationPolicy: Redirect
       termination: edge
@@ -162,14 +179,25 @@ parameters:
     description: The name assigned to all of the OpenShift resources associated to the
       server instance.
     required: true
-    value: forms-flow-api
+    value: forms-flow-webapi
+  - name: IMAGE_TAG
+    description: The image tag to pull for the deployment.
+    required: true  
   - name: IMAGE_NAMESPACE
     displayName: Image Namespace
     required: true
     description: The namespace of the OpenShift project containing the imagestream for
       the application.
-    value: ""
-  - name: FORMIO_SECRET
+    value: formsflow-ai
+  - name: INSTANCE
+    description: The name of this instance of the application
+    displayName: Application Instance Name
+    required: true  
+  - name: FORMSFLOW_CONFIG_NAME
+    description: Secrets are referred from this.
+    required: true
+    value: forms-flow-ai  
+  - name: FORMSFLOW_SECRET
     description: Secrets are referred from this.
     required: true
     value: forms-flow-ai
@@ -177,7 +205,7 @@ parameters:
     displayName: Environment TAG name
     description: The TAG name for this environment, e.g., dev, test, prod
     required: true
-    value: ""
+    value: latest
   - name: CPU_REQUEST
     displayName: Resources CPU Request
     description: The resources CPU request (in cores) for this build.
@@ -206,18 +234,12 @@ parameters:
   - name: KEYCLOAK_URL
     description: The URL used to connnect to the OIDC provider.
     required: true
-  - name: WEBAPI_URL
-    displayName: WEBAPI_URL
+  - name: WEB_API_URL
+    displayName: WEB_API_URL
     description:
-      Route to access FFA WEB API
+      Web API URL without https prefix.
     required: true
-  - name: PATRONI_USERNAME
-    displayName: PATRONI_USERNAME
-    description:
-      PATRONI_USERNAME
+  - name: WEBAPI_DB_RESOURCE_NAME
+    description: Name of database resources created for webapi.
     required: true
-  - name: PATRONI_PASSWORD
-    displayName: PATRONI_PASSWORD
-    description:
-      PATRONI_PASSWORD
-    required: true
+    value: webapi-postgresql

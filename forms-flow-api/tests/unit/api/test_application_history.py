@@ -2,8 +2,6 @@
 from tests.utilities.base_test import (
     token_header,
     get_application_create_payload,
-    get_token_header,
-    get_token_body,
     get_claims,
     get_form_request_payload,
 )
@@ -35,7 +33,7 @@ def test_get_application_history(client, jwt):
 
 
 def test_get_application_history_unauthorized(client):
-    """Testing the response of unauthorizedp application /application/{application_id}/history"""
+    """Testing the response of unauthorized application /application/{application_id}/history"""
     rv = client.get("/application/1/history")
     assert rv.status_code == 401
 

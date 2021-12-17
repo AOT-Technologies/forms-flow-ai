@@ -1,5 +1,5 @@
 'use strict';
-const fetch = require('../util/fetch');
+const fetch = require('@formio/node-fetch-http-proxy');
 
 const LOG_EVENT = 'Email Action';
 
@@ -18,6 +18,9 @@ module.exports = (router) => {
    */
   class EmailAction extends Action {
     static info(req, res, next) {
+     if (!hook.alter('hasEmailAccess', req)) {
+       return next(null);
+     }
       next(null, {
         name: 'email',
         title: 'Email',
@@ -53,7 +56,8 @@ module.exports = (router) => {
             key: 'transport',
             placeholder: 'Select the email transport.',
             template: '<span>{{ item.title }}</span>',
-            defaultValue: 'default',
+            defaultValue: availableTransports.find(provider=>provider.transport==='default')?
+              'default':availableTransports[0].transport,
             dataSrc: 'json',
             data: {
               json: JSON.stringify(availableTransports),
@@ -68,11 +72,20 @@ module.exports = (router) => {
             label: 'From:',
             key: 'from',
             inputType: 'text',
-            defaultValue: 'no-reply@form.io',
+            defaultValue: router.formio.config.defaultEmailSource,
             input: true,
             placeholder: 'Send the email from the following address',
             type: 'textfield',
             multiple: false,
+          },
+          {
+            label: 'Reply-To: Email Address',
+            key: 'replyTo',
+            inputType: 'text',
+            input: true,
+            placeholder: 'Reply to an alternative email address',
+            type: 'textfield',
+            multiple: false
           },
           {
             label: 'To: Email Address',
@@ -140,6 +153,27 @@ module.exports = (router) => {
             multiple: false,
             rows: 3,
             placeholder: 'Enter the message you would like to send.',
+            input: true,
+          },
+          {
+            label: 'Rendering Method',
+            key: 'renderingMethod',
+            type: 'radio',
+            defaultValue: 'dynamic',
+            values: [
+              {
+                label: 'Dynamic',
+                value: 'dynamic',
+              },
+              {
+                label: 'Static',
+                value: 'static',
+              }
+            ],
+            inline: true,
+            optionsLabelPosition: 'right',
+            // eslint-disable-next-line max-len
+            tooltip: 'Dynamic rendering uses formio.js to render email. While static relies on outdated set of mappers.\r\n\r\nStatic rendering considered deprecated and should not be used for most cases.',
             input: true,
           },
         ];

@@ -1,3 +1,4 @@
+ /* istanbul ignore file */
 import {httpGETRequest} from "../httpRequestHandler";
 import API from "../endpoints";
 import UserService from "../../services/UserService";

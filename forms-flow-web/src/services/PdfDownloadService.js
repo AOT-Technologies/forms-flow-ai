@@ -1,3 +1,4 @@
+ /* istanbul ignore file */
 import FormioExport from 'aot-formio-export';
 import moment from "moment";
 

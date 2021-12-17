@@ -827,6 +827,104 @@ module.exports = function(app, template, hook) {
           .expect(401)
           .end(done);
       });
+
+        it('Delete Anonymous role from Read Form Definition', function(done) {
+        request(app)
+          .put(hook.alter('url', '/form/' + template.forms.tempForm._id, template))
+          .set('x-jwt-token', template.users.admin.token)
+          .send({
+            ...tempForm,
+            access: [{type: 'read_all', roles: [template.roles.authenticated._id.toString(), template.roles.administrator._id.toString()]}]
+          })
+          .expect(200)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+            done();
+          });
+      });
+
+      it('An Anonymous user should not be able to Read a Form for a User-Created Project after deleting Anonymous role from Read Form Definition', function(done) {
+        request(app)
+          .get(hook.alter('url', '/form/' + template.forms.tempForm._id, template))
+          .expect(401)
+          .end(done);
+      });
+
+      it('Add Field Match Based Access for not Anonymous users', function(done) {
+        request(app)
+          .put(hook.alter('url', '/form/' + template.forms.tempForm._id, template))
+          .set('x-jwt-token', template.users.admin.token)
+          .send({
+            ...tempForm,
+            fieldMatchAccess: {
+              read: [{
+                  formFieldPath:"data.textField",
+                  valueType:"string",
+                  value:"test1",
+                  operator:"$eq",
+                  roles: [template.roles.authenticated._id.toString()]
+              }]
+            }
+          })
+          .expect(200)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+            done();
+          });
+      });
+
+      it('An Anonymous user should not be able to Read a Form for a User-Created Project after deleting Anonymous role from Read Form Definition', function(done) {
+        request(app)
+          .get(hook.alter('url', '/form/' + template.forms.tempForm._id, template))
+          .expect(401)
+          .end(done);
+      });
+
+      it('Add Field Match Based Access for Anonymous users', function(done) {
+        request(app)
+          .put(hook.alter('url', '/form/' + template.forms.tempForm._id, template))
+          .set('x-jwt-token', template.users.admin.token)
+          .send({
+            ...tempForm,
+            fieldMatchAccess: {
+              read: [{
+                  formFieldPath:"data.textField",
+                  valueType:"string",
+                  value:"test1",
+                  operator:"$eq",
+                  roles: [template.roles.anonymous._id.toString()]
+                }]
+              }
+            })
+          .expect(200)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+             var response = res.body;
+            template.forms.tempForm = response;
+            done();
+          });
+      });
+
+      it('An Anonymous user should not be able to Read a Form with Match Based Access for Anonymous users', function(done) {
+        request(app)
+          .get(hook.alter('url', '/form/' + template.forms.tempForm._id, template))
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+            var response = res.body;
+            assert.deepEqual(_.omit(response, ignoreFields), _.omit(template.forms.tempForm, ignoreFields));
+            done();
+          });
+      });
     });
 
     describe('Form Normalization', function() {
@@ -4629,6 +4727,116 @@ module.exports = function(app, template, hook) {
             });
             done();
           });
+      });
+    });
+
+    describe('Form with checkboxes grouped as radio', () => {
+      let formId;
+      it('Create form with checkboxes grouped as radio', (done) => {
+        request(app)
+          .post(hook.alter('url', '/form', template))
+          .set('x-jwt-token', template.users.admin.token)
+          .send({
+            "title":"test1",
+            "display":"form",
+            "type":"form",
+            "components":[
+              {
+                "label": "One",
+                "inputType": "radio",
+                "tableView": false,
+                "defaultValue": false,
+                "key": "checkbox",
+                "type": "checkbox",
+                "name": "check",
+                "value": "one",
+                "input": true
+            },
+            {
+                "label": "Two",
+                "inputType": "radio",
+                "tableView": false,
+                "defaultValue": false,
+                "key": "checkbox1",
+                "type": "checkbox",
+                "name": "check",
+                "value": "two",
+                "input": true
+            },
+            {
+                "label": "Three",
+                "inputType": "radio",
+                "tableView": false,
+                "defaultValue": false,
+                "key": "checkbox2",
+                "type": "checkbox",
+                "name": "check",
+                "value": "three",
+                "input": true
+            },
+            {
+              "type":"button",
+              "label":"Submit",
+              "key":"submit",
+              "disableOnInvalid":true,
+              "input":true,
+              "tableView":false
+              }
+            ],
+            "access":[],
+            "submissionAccess":[],
+            "controller":"",
+            "properties":{},
+            "settings":{},
+            "builder":false,
+            "name":"test1",
+            "path":"test1"
+          })
+          .expect('Content-Type', /json/)
+          .expect(201)
+          .end(function(err, res) {
+            if (err) {
+              return done(err);
+            }
+            formId = res.body._id;
+            done()
+          })
+      });
+
+      it('Submit form', (done) => {
+        request(app)
+        .post(hook.alter('url', '/form/' + formId + '/submission', template))
+        .set('x-jwt-token', template.users.admin.token)
+        .send({
+          "data": {
+              "submit": true,
+              "check": "two"
+          },
+          "state": "submitted"
+      })
+        .expect('Content-Type', /json/)
+        .expect(201)
+        .end(function(err, res) {
+          if (err) {
+            return done(err);
+          }
+          done()
+        })
+      });
+
+      it('Checkboxes data grouped as radio', (done) => {
+        request(app)
+          .get(hook.alter('url', '/form/' + formId + '/export', template))
+          .set('x-jwt-token', template.users.admin.token)
+          .expect('Content-Type', /json/)
+          .expect(200)
+          .end((err, res) => {
+            if (err) {
+              return done(err);
+            }
+            assert.equal(_.isEqual(res.body[0].data, { check: 'two' }), true)
+            done()
+          })
       });
     });
   });

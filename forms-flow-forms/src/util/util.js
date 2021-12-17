@@ -1,14 +1,15 @@
 'use strict';
+require('@azure/ms-rest-nodeauth');
 
 const mongoose = require('mongoose');
-const ObjectID = require('mongodb').ObjectID;
+const ObjectID = require('mongodb').ObjectId;
 const _ = require('lodash');
 const nodeUrl = require('url');
 const deleteProp = require('delete-property').default;
-const workerUtils = require('formio-workers/util');
+const workerUtils = require('formio-workers/workers/util');
 const errorCodes = require('./error-codes.js');
-const fetch = require('./fetch');
-const vm = require('vm');
+const fetch = require('@formio/node-fetch-http-proxy');
+const {VM} = require('vm2');
 const debug = {
   idToBson: require('debug')('formio:util:idToBson'),
   getUrlParams: require('debug')('formio:util:getUrlParams'),
@@ -29,7 +30,7 @@ global.document          = {
     firstElementChild: {appendChild: () => {}}
   }
 };
-global.window            = {addEventListener: () => {}, Event: {}, navigator: global.navigator};
+global.window            = {addEventListener: () => {}, Event: function() {}, navigator: global.navigator};
 global.btoa = (str) => {
   return (str instanceof Buffer) ?
     str.toString('base64') :
@@ -44,24 +45,27 @@ _.each(Formio.Displays.displays, (display) => {
   display.prototype.onChange = _.noop;
 });
 
+const vm = new VM({
+  timeout: 250,
+  sandbox: {
+    result: null,
+  },
+  fixAsync: true
+});
+
 Formio.Utils.Evaluator.noeval = true;
 Formio.Utils.Evaluator.evaluator = function(func, args) {
   return function() {
-    const params = _.keys(args);
-    const sandbox = vm.createContext({
-      result: null,
-      args
-    });
+    let result = null;
     /* eslint-disable no-empty */
     try {
-      const script = new vm.Script(`result = (function({${params.join(',')}}) {${func}})(args);`);
-      script.runInContext(sandbox, {
-        timeout: 250
-      });
+      vm.freeze(args, 'args');
+
+      result = vm.run(`result = (function({${_.keys(args).join(',')}}) {${func}})(args);`);
     }
     catch (err) {}
     /* eslint-enable no-empty */
-    return sandbox.result;
+    return result;
   };
 };
 
@@ -584,7 +588,7 @@ const Utils = {
     return changed;
   },
 
-  removeProtectedFields(form, action, submissions) {
+  removeProtectedFields(form, action, submissions, doNotMinify) {
     if (!Array.isArray(submissions)) {
       submissions = [submissions];
     }
@@ -599,17 +603,22 @@ const Utils = {
         debug.removeProtectedFields('Removing protected field:', component.key);
         modifyFields.push(deleteProp(path));
       }
-      else if ((component.type === 'signature') && (action === 'index')) {
+      else if ((component.type === 'signature') && (action === 'index') && !doNotMinify) {
         modifyFields.push(((submission) => {
           const data = _.get(submission, path);
           _.set(submission, path, (!data || (data.length < 25)) ? '' : 'YES');
         }));
       }
-      else if (component.type === 'file' && action === 'index') {
+      else if (component.type === 'file' && action === 'index' && !doNotMinify) {
         modifyFields.push(((submission) => {
           const data = _.map(
             _.get(submission, path),
-            file => (file.url || '').startsWith('data:') ? _.omit(file, 'url') : file
+            (file) => {
+              if (file && file.url && file.url.startsWith('data:')) {
+                return _.omit(file, 'url');
+              }
+              return file;
+            }
           );
           _.set(submission, path, data);
         }));
@@ -739,15 +748,18 @@ const Utils = {
       if (Array.isArray(component.components)) {
         // If tree type is an array of objects like datagrid and editgrid.
         if (['datagrid', 'editgrid', 'dynamicWizard'].includes(component.type) || component.arrayTree) {
-          (_.get(data, component.key) || []).forEach((row, index) => {
-            this.eachValue(
-              component.components,
-              row,
-              fn,
-              context,
-              this.valuePath(path, `${component.key}[${index}]`),
-            );
-          });
+          const value = _.get(data, component.key) || [];
+          if (Array.isArray(value)) {
+            value.forEach((row, index) => {
+              this.eachValue(
+                component.components,
+                row,
+                fn,
+                context,
+                this.valuePath(path, `${component.key}[${index}]`),
+              );
+            });
+          }
         }
         else if (['form'].includes(component.type)) {
           this.eachValue(
@@ -819,6 +831,13 @@ const Utils = {
         component,
         path,
       });
+    });
+  },
+  markModifiedParameters: (item, modifiedParameters)=>{
+    modifiedParameters.map((parameter)=>{
+      if (item[parameter]) {
+        item.markModified(parameter);
+      }
     });
   },
 };

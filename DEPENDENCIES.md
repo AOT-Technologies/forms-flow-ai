@@ -8,7 +8,7 @@ In the following document, we’ll describe the details of dependencies of vario
 
   | Component | Version|  
   | ---       | -----   |
-  |  Redash   | V10 |
+  |  Redash   | 10.1.0 |
 
 <br>
 
@@ -41,7 +41,8 @@ In the following document, we’ll describe the details of dependencies of vario
 
    | Component | Version|  
    | ---       | -----   |
-   |   Formio | 2.0.0--rc.34 |
+   |   Formio | 2.3.0 |
+   |   Mongo | 5.0 |
    <br>
 
 ## 5. forms-flow-idm
@@ -66,5 +67,5 @@ In the following document, we’ll describe the details of dependencies of vario
    | Component | Version |
    |  --- | --- |
    | React  | 17.0.2 |
-   |  Formio | 2.0.0-rc.34 |
+   |  Formio | 2.3.0 |
    <br>

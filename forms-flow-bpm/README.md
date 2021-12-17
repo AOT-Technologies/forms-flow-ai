@@ -1,5 +1,5 @@
 # Workflow Engine
-![Camunda](https://img.shields.io/badge/Camunda-7.13.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.2.7.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
+![Camunda](https://img.shields.io/badge/Camunda-7.15.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.4.8.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
 **formsflow.ai** leverages Camunda for workflow and decision automation.
 
 To know more about Camunda, visit https://camunda.com/.
@@ -101,6 +101,8 @@ To know more about Camunda, visit https://camunda.com/.
  --- | --- | --- | ---
  `APP_SECURITY_ORIGIN`|CORS setup, for multiple origins you can separate them using a comma |eg:`host1, host2`| `*`
  `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
+ `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`2 MB`
+ `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
    
  **Additionally, you may want to change these**  
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)

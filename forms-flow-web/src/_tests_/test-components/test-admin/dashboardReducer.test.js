@@ -13,5 +13,3 @@ test('Should select the groups where the given dashboard is present',()=>{
 test('should clean the data structure to expected format',()=>{
     expect(getCleanedDashboards(dashboardToclean)).toEqual(cleanedDashboards);
 })
-
-

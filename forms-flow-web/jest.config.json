@@ -1,0 +1,23 @@
+{
+    "collectCoverage": true,
+    "coveragePathIgnorePatterns": [
+      "node_modules",
+      "../forms-flow-web"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!**/node_modules/**",
+      "!**/forms-flow-web/**",
+      "!**/build/**",
+      "!**/dist/**"
+    ],
+    "coverageReporters": [
+      "text-summary",
+      "lcov",
+      "cobertura"
+    ],
+    "testMatch": [
+      "**/*.test.js",
+      "**/*.spec.js"
+    ]
+  }

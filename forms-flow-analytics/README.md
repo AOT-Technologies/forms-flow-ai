@@ -1,6 +1,6 @@
 # Analytics Engine
 
-![Redash](https://img.shields.io/badge/Redash-v10-blue)
+![Redash](https://img.shields.io/badge/Redash-10.1.0-blue)
 
 **formsflow.ai** leverages [Redash](https://github.com/getredash/redash) to build interactive
 dashboards and gain insights. To create meaningful visualization for
@@ -38,7 +38,7 @@ your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.
 * Make sure your current working directory is "forms-flow-ai/forms-flow-analytics".
 * Rename the file [sample.env](./sample.env) to **.env**.
 * Modify the environment variables inside [.env](./sample.env) file if needed. Environment variables are given in the table below
-* **NOTE : `{your-ip-address}` given inside the [redash.env](./redash.env) file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
+* **NOTE : `{your-ip-address}` given inside the [.env](./sample.env) file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
 > :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the `redash.env` file
 
@@ -50,7 +50,6 @@ Variable name | Meaning | Possible values | Default value |
 `REDASH_REDIS_URL`|Redis URL|Used on installation to create the database.Choose your own.|`redis://redis:6379/0`
 `REDASH_DATABASE_URL`|Postgres database URL|Used on installation to create the database.Choose your own.|`postgresql://postgres@postgres/postgres`
 `POSTGRES_PASSWORD`|Postgres database Password|Used on installation to create the database.Choose your own.|`postgres`
-`POSTGRES_HOST_AUTH_METHOD`|Postgres authentication method|Used on installation to create the database.Choose your own.|`trust`
 `REDASH_COOKIE_SECRET`|Encryption for all configuration|Used on installation to create the database.Choose your own.|`redash-selfhosted`
 `REDASH_SECRET_KEY`|Encryption for datasource configuration|Used on installation to create the database.Choose your own.|`redash-selfhosted`
 `REDASH_CORS_ACCESS_CONTROL_ALLOW_ORIGIN`| To set allow origins to access Redash | `your-domain.com` | `*`
@@ -82,8 +81,15 @@ Variable name | Meaning | Possible values | Default value |
 
 ### Health Check
 
-   The application should be up and available for use at port defaulted to 7000 in  <http://localhost:7000/>
-    and register with any valid credentials.
+- Check the public endpoint : `{your-ip-address}:7000/ping`
+
+```
+RESPONSE
+PONG.
+```
+
+- The application should be up and available for use at port defaulted to 7000 in  <http://localhost:7000/> and register with any valid credentials.
+    
 
 ### Configuration of Keycloak SAML Setup
 

@@ -40,7 +40,8 @@ formsflow.ai:
   camunda:
     spring:
       webclient:
-        maxInMemorySize: 10485760
+        maxInMemorySize: ${DATA_BUFFER_SIZE:2097152}
+        connectionTimeout: 5000
 
 
 
@@ -128,6 +129,11 @@ spring:
               - profile
               - email
             authorizationGrantType: authorization_code
+          keycloak-client:
+            provider: keycloak
+            client-id: ${keycloak.clientId}
+            client-secret: ${keycloak.clientSecret}
+            authorizationGrantType: client_credentials
         provider:
           keycloak:
             authorization-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}/protocol/openid-connect/auth
@@ -166,6 +172,7 @@ plugin.identity.keycloak:
   useGroupPathAsCamundaGroupId: true
   administratorGroupName: camunda-admin
   disableSSLCertificateValidation: true
+  maxResultSize: ${IDENTITY_PROVIDER_MAX_RESULT_SIZE:250}
 
 app.security.origin: ${APP_SECURITY_ORIGIN}
 

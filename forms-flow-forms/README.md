@@ -1,6 +1,6 @@
 # Form Management Platform
 
-![Formio](https://img.shields.io/badge/formio-2.0.0--rc.34-blue)
+![Formio](https://img.shields.io/badge/formio-2.3.0-blue)
 
 **formsflow.ai** leverages form.io to build "serverless" data management applications using a simple drag-and-drop form builder interface.
 
@@ -17,6 +17,9 @@ To know more about form.io, go to  https://form.io.
 3. [Formsflow-forms API Requesting](#formsflow-forms-api-requesting)  
    * [Using POSTMAN API client](#using-postman-api-client)
    * [Using curl command](#using-curl-command)
+4. [Custom Components](#custom-components)
+5. [Adding new indexes](#adding-new-indexes)
+6. [LICENSE](#license)
 
 ## Prerequisites
 
@@ -47,6 +50,8 @@ Not applicable.
 |`FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 |`FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
 |`FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|forms-flow-forms default url||`http://{your-ip-address}:3001`
+|`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
+
 
 **Additionally, you may want to change these**
 * The value of Mongo database details (especially if this instance is not just for testing purposes)
@@ -147,6 +152,21 @@ recommend you to take a look at [Custom Component Docs](https://formio.github.io
 to understand how  Form.io renderer allows for the creation of Custom components.
 You can also take a look at [formio.contrib](https://github.com/formio/contrib)
 to look for examples and even contribute the custom components you create.
+
+## Adding new indexes
+
+You can add new indexes in Mongodb shell, according to your requirement. You can create indexes like below example:
+
+```
+db.submissions.createIndex({
+    "data.applicationStatus ": 1,
+    "modified": 1,
+})
+```
+
+In this example:
+- `submissions` is the collection name.
+- `modified` and `data.applicationStatus` is the fields which are to be added in index.
 
 ## LICENSE
 

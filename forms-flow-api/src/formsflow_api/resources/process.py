@@ -181,31 +181,3 @@ class ProcessInstanceResource(Resource):
 
             current_app.logger.warning(response)
             return response, status
-
-
-# @cors_preflight('GET,OPTIONS')
-# @API.route('/<int:process_key>', methods=['GET', 'OPTIONS'])
-# class ProcessDetailsResource(Resource):
-#     """Resource for managing process details."""
-
-#     @staticmethod
-#     def get(process_key):
-#         """Get process details."""
-#         try:
-#             return ProcessService.get_process(process_key), HTTPStatus.OK
-#         except BusinessException as err:
-#             return err.error, err.status_code
-
-
-# @cors_preflight('GET,OPTIONS')
-# @API.route('/<int:process_key>/action', methods=['GET', 'OPTIONS'])
-# class ProcessActionsResource(Resource):
-#     """Resource for managing process ations."""
-
-#     @staticmethod
-#     def get(process_key):
-#         """Get process action details."""
-#         try:
-#             return ProcessService.get_process_action(process_key), HTTPStatus.OK
-#         except BusinessException as err:
-#             return err.error, err.status_code

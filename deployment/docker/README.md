@@ -1,4 +1,4 @@
-# formsflow.ai
+# formsflow.ai - Docker Setup
 
 This page elaborates how to setup the overall solution using docker.
 
@@ -77,6 +77,8 @@ Start the **analytics server** by following the instructions given [here](../../
 `FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
 `FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 `FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
+`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
+ 
 
 
 *  Follow the below steps for mapping the role IDs.   
@@ -222,6 +224,8 @@ Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resou
  --- | --- | --- | ---
  `APP_SECURITY_ORIGIN`|CORS setup, for multiple origins you can separate host address using a comma |eg:`host1, host2`| `*` 
  `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
+ `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`2 MB`
+ `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
 
 ### Running the application
 * For Linux,

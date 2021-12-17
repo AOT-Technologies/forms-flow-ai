@@ -2,7 +2,7 @@
 
 ![React](https://img.shields.io/badge/React-17.0.2-blue)
 
-**formsflow.ai** delivers progressive web application with React version `17.0.2` and `create-react-app`. Also currently uses  [form.io](https://github.com/formio/formio) version `2.0.0--rc.34`.
+**formsflow.ai** delivers progressive web application with React version `17.0.2` and `create-react-app`. Also currently uses  [form.io](https://github.com/formio/formio) version `2.3.0`.
 
 A React library for rendering out forms based on the form.io platform.
 
@@ -19,6 +19,7 @@ with your project by installing our [npm package](https://www.npmjs.com/package/
    - [Step 4 : Health Check](#health-check)
 3. [How to Create Your First Form](#how-to-create-your-first-form)
 4. [Logo change](#logo-change)
+5. [Code coverage](#code-coverage)
 
 ## Prerequisites
 
@@ -59,6 +60,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  `APPLICATION_NAME`|Application name is used to provide clients application name|
  `WEB_BASE_CUSTOM_URL`|Clients can use WEB_BASE_CUSTOM_URL env variable to provide their custom URL |
  `USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
+ |`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
 
 * NOTE - While configuring USER_ACCESS_PERMISSIONS the accessAllowApplications will hide / show application tab, the same way accessAllowSubmissions does for viewSubmission button. To enable this feature you need to add access-allow-applications, access-allow-submissions with the respective user group in keycloak.
 
@@ -103,6 +105,14 @@ Variable name | Meaning | Possible values | Default value |
   * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web.
      The default width and height of the logo is 50 and 55 also the image format is svg
   * The icon can also be replaced to the users icon by replacing the favicon in the public folder of forms-flow-web
+
+### Code coverage
+  * Test cases for the files are provided at forms-flow-web using [testing-library/jest-dom](https://testing-library.com/docs/ecosystem-jest-dom/) , [testing-library/react](https://testing-library.com/docs/react-testing-library/intro/) , [msw](https://mswjs.io/) and [redux-mock-store](https://www.npmjs.com/package/redux-mock-store).
+  * `cd {Your Directory}/forms-flow-ai/forms-flow-web`.
+  * Test files are available at `forms-flow-ai\forms-flow-web\src\_tests_`
+  * Run the command `npm run coverage` to get the total coverage and for individual files run `npm test --<test file name>`.
+  * Total code coverage can obtain by opening `forms-flow-ai\forms-flow-web\coverage\lcov-report\index.html` with browser.
+  
 ## forms-flow-web Events
  > This section elaborates events used in forms-flow-web.
  >  The Form.io renderer uses the [EventEmitter3](https://github.com/primus/eventemitter3) library to manage all of the event handling that occurs within the renderer. 

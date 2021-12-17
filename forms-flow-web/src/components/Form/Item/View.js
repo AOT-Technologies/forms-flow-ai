@@ -40,7 +40,7 @@ const View = React.memo((props) => {
    },[getForm, isAuthenticated, dispatch])
 
     if (isActive) {
-      return <Loading />;
+      return <div data-testid="loading-view-component"><Loading /></div>;
     }
 
     return (

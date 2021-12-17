@@ -27,14 +27,15 @@
 
 ### Environment Configuration
 
-   * Make sure you have a Docker machine up and running.
-   * Make sure your current working directory is [forms-flow-ai/forms-flow-idm/keycloak]().
-   >* *Optional*: Rename the file [sample.env](./sample.env) to **.env**. Skip this step if you want to use the default values as mentioned in the table below.
-   >* *Optional*: Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
+* Make sure you have a Docker machine up and running.
+* Make sure your current working directory is [forms-flow-ai/forms-flow-idm/keycloak]().
+>- *Optional*: Rename the file [sample.env](./sample.env) to **.env**. Skip this step if you want to use the default values as mentioned in the table below.
+>* *Optional*: Modify the environment variables in the newly created **.env** file if needed. Environment variables are given in the table below,
 
 ### Environment Variables
-   
+
 #### Keycloak Database Connection Details
+
 -----------------------------------------
 
 ***Skip this for default setup***
@@ -46,6 +47,7 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_JDBC_PASSWORD`|keycloak database postgres password|Used on installation to create the database.Choose your own|`changeit`
 
 #### Keycloak Admin Details
+
 -----------------------------------------
 
 ***Skip this for default setup***
@@ -61,38 +63,41 @@ Variable name | Meaning | Possible values | Default value |
 * `cd {Your Directory}/forms-flow-ai/forms-flow-idm/keycloak`
 
 #### To start the keycloak server
-   
+
 * Run `docker-compose up -d` to start.
 
 *NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
 
 #### To stop the keycloak server
 
-  * Run `docker-compose stop` to stop.
+* Run `docker-compose stop` to stop.
   
 ### Health Check
 
-   The application should be up and available for use in http://localhost:8080
-   ```
-    Login Credentials
-    -----------------
-    User Name : admin
-    Password  : changeme
-   ```
-   
+The application should be up and available for use in http://localhost:8080
+
+```
+Login Credentials
+-----------------
+User Name : admin
+Password  : changeme
+```
+
 #### formsflow-ai user credentials
+
 -----------------------------------
-  * Default User credentials are generated when keycloak started for the first time, you can modify the values on your keycloak service. 
-   
-   User Role | User Name | Password | User Group |
-   --- | --- | --- | ---
-   `Designer`|`formsflow-designer`|`changeme`|`formsflow-designer`
-   `Client`|`formsflow-client`|`changeme`|`formsflow-client`
-   `Reviewer`|`formsflow-reviewer`|`changeme`|`formsflow-reviewer`
-   `Clerk`|`formsflow-clerk`|`changeme`|`formsflow-reviewer`
-   `Approver`|`formsflow-approver`|`changeme`|`formsflow-reviewer`
+* Default User credentials are generated when keycloak started for the first time, you can modify the values on your keycloak service. 
+
+User Role | User Name | Password | User Group |
+--- | --- | --- | ---
+`Designer`|`formsflow-designer`|`changeme`|`formsflow-designer`
+`Client`|`formsflow-client`|`changeme`|`formsflow-client`
+`Reviewer`|`formsflow-reviewer`|`changeme`|`formsflow-reviewer`
+`Clerk`|`formsflow-clerk`|`changeme`|`formsflow-reviewer`
+`Approver`|`formsflow-approver`|`changeme`|`formsflow-reviewer`
 
 ---
+
 **NOTE**
 
 All the default configurations are imported to keycloak during the startup, so no manual changes are required at this stage.
@@ -113,7 +118,7 @@ Create a realm **forms-flow-ai**
 
 * Login to keycloak with admin privileges
 * Click the button "Create Realm" to add new realm **forms-flow-ai**
-* Click Create   
+* Click Create.
   
 ### Create Keycloak setup for formsflow web
 
@@ -155,10 +160,20 @@ Create a realm **forms-flow-ai**
         * Mapper Type = Audience
        	* Included Client Audience = forms-flow-web
        	* Click Save
-
+     * Click Create
+     	* Name = dashboard-mapper
+     	* Mapper Type = User Attribute
+     	* User Attribute = dashboards
+     	* Token Claim Name = dashboards
+     	* Add to ID Token = ON
+     	* Add to access token = ON
+     	* Add to userinfo = ON
+     	* Multivalued = ON
+     	* Aggregate attribute values = ON
+     	* Click Save
 ### Create Keycloak setup for formsflow analytics
 
-#### Create a forms-flow-analytics Client.     
+#### Create a forms-flow-analytics Client
 
 * Login to KeyCloak Realm with admin privileges  
 * Configure > Clients > Create  
@@ -267,6 +282,17 @@ Create groups to support operations
 	* Click Save  
 * Default Groups Tab (Assign Default Group to self-registering users)  
 	* From available groups; map the group "formsflow-client" to "Default Groups".  
+* Create Main group by Clicking New
+	* Name = formsflow-analytics  
+	* Click Save	  
+* Create Sub group by Clicking on Main group created on step-1 i.e. formsflow-analytics, and then click New  
+	* Name = group1  
+	* Click Save  
+* Create Sub group by Clicking on Main group created on step-1 i.e. formsflow-analytics, and then click New  
+	* Name = group2  
+	* Click Save
+
+You can create as many sub-groups as you want for dashboard authorization feature
 
 #### Map roles to group  
 

@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
 /**
  * Test class for ApplicationAccessHandler
@@ -32,10 +33,7 @@ class ApplicationAccessHandlerTest {
 	private ApplicationAccessHandler applicationAccessHandler;
 
 	@Mock
-	private WebClient unAuthenticatedWebClient;
-
-	@Mock
-	private OAuth2RestTemplate oAuth2RestTemplate;
+	private WebClient webClient;
 
 	/**
 	 * This test perform a positive test over ApplicationAccessHandler
@@ -45,7 +43,7 @@ class ApplicationAccessHandlerTest {
 	public void testExchangeSuccess() {
 		final String apiUrl = "http://localhost:5000/api/application/123";
 		WebClient.RequestBodyUriSpec  requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
-		when(unAuthenticatedWebClient.method(any(HttpMethod.class)))
+		when(webClient.method(any(HttpMethod.class)))
 				.thenReturn(requestBodyUriSpec);
 		when(requestBodyUriSpec.uri(anyString()))
 				.thenReturn(requestBodyUriSpec);
@@ -53,9 +51,8 @@ class ApplicationAccessHandlerTest {
 				.thenReturn(requestBodyUriSpec);
 		when(requestBodyUriSpec.header(anyString(), anyString()))
 				.thenReturn(requestBodyUriSpec);
-		OAuth2AccessToken oAuth2AccessToken = mock(OAuth2AccessToken.class);
-		when(oAuth2RestTemplate.getAccessToken())
-				.thenReturn(oAuth2AccessToken);
+		when(requestBodyUriSpec.attributes(any(Consumer.class)))
+				.thenReturn(requestBodyUriSpec);
 		when(requestBodyUriSpec.headers(any(Consumer.class)))
 				.thenReturn(requestBodyUriSpec);
 		WebClient.RequestHeadersSpec requestHeadersSpec = mock(WebClient.RequestHeadersSpec.class);

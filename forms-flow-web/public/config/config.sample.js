@@ -45,7 +45,7 @@ window["_env_"] = {
   REACT_APP_APPLICATION_NAME:"formsflow.ai",
   //custom url
   REACT_APP_WEB_BASE_CUSTOM_URL:"Custom URL",
-
+  REACT_APP_FORMIO_JWT_SECRET:"Jwt secret key",
   REACT_APP_USER_ACCESS_PERMISSIONS:{accessAllowApplications:false, accessAllowSubmissions:false}
 
 };

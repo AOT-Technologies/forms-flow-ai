@@ -83,6 +83,10 @@ module.exports = function(formio) {
     }))
   });
 
+  model.schema.index(hook.alter('schemaIndex', {deleted: 1}));
+  model.schema.index(hook.alter('schemaIndex', {form: 1, deleted: 1}));
+  model.schema.index(hook.alter('schemaIndex', {form: 1, deleted: 1, created: -1}));
+
   // Ensure that all _id's within the data are ObjectId's
   model.schema.pre('save', function(next) {
     utils.ensureIds(this.data);
@@ -98,6 +102,8 @@ module.exports = function(formio) {
 
   // Add a "recommmended" combined index.
   model.schema.index({
+    "data.process_pid ": 1,
+    "data.applicationId": 1,
     form: 1,
     deleted: 1,
     created: -1

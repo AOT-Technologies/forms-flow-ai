@@ -36,6 +36,7 @@ export const InsightDashboard = (props)=> {
     if(isDashUpdated && isGroupUpdated){
      dispatch(updateDashboardFromGroups({dashboards,groups}));
     }
+    // eslint-disable-next-line
   },[isGroupUpdated,isDashUpdated])
 
    // handles the add button click event

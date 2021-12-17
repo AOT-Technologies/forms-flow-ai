@@ -228,6 +228,10 @@ objects:
                   value: ${WEBSOCKET_MESSAGE_TYPE}
                 - name: WEBSOCKET_SECURITY_ORIGIN
                   value: ${WEBSOCKET_SECURITY_ORIGIN}
+                - name: DATA_BUFFER_SIZE
+                  value: ${DATA_BUFFER_SIZE}
+                - name: IDENTITY_PROVIDER_MAX_RESULT_SIZE
+                  value: ${IDENTITY_PROVIDER_MAX_RESULT_SIZE}
               imagePullPolicy: Always
               livenessProbe:
                 failureThreshold: 3
@@ -448,3 +452,11 @@ parameters:
     description: WEBSOCKET_SECURITY_ORIGIN
     required: true
     value: ""
+  - name: DATA_BUFFER_SIZE
+    description: Configure a limit on the number of bytes that can be buffered for webclient
+    required: true
+    value: "2097152"
+  - name: IDENTITY_PROVIDER_MAX_RESULT_SIZE
+    description: Maximum result size for Keycloak user queries
+    required: true
+    value: "250"

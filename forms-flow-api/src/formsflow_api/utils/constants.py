@@ -14,8 +14,4 @@ REVIEWER_GROUP = "formsflow-reviewer"
 ALLOW_ALL_APPLICATIONS = "/formsflow/formsflow-reviewer/access-allow-applications"
 
 NEW_APPLICATION_STATUS = "New"
-<<<<<<< HEAD:forms-flow-api/src/formsflow_api/utils/constants.py
 KEYCLOAK_DASHBOARD_BASE_GROUP = "formsflow-analytics"
-=======
-KEYCLOAK_DASHBOARD_BASE_GROUP = "redash"
->>>>>>> ab18dc4fbc21439d35e6548f39d1287ce6e0c4cb:forms-flow-api/src/api/utils/constants.py

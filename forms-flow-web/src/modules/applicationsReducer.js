@@ -5,7 +5,7 @@ export const initialState = {
   applicationDetail: {},
   applicationProcess: {},
   formApplicationsList:[],
-  isApplicationListLoading:false,
+  isApplicationListLoading:true,
   isApplicationDetailLoading:false,
   isApplicationUpdating:false,
   applicationCount:0,

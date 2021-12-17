@@ -41,7 +41,7 @@ export const ApplicationList = React.memo((props) => {
   useEffect(()=>{
     dispatch(setApplicationListLoader(true))
     if(!isApplicationStatusRecieved) dispatch(getAllApplicationStatus());
-    if(isApplicationStatusRecieved)dispatch(getAllApplications());
+    if(isApplicationStatusRecieved)dispatch(getAllApplications(page,countPerPage));
   },[dispatch,isApplicationStatusRecieved]);
 
   const isClientEdit = (applicationStatus) => {

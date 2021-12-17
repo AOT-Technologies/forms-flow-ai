@@ -439,4 +439,3 @@ Also note that we are not supporting downgrade to any version below Redash v9.0(
 `Added`
 
 * Initial release
-

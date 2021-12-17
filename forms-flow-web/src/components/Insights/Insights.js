@@ -19,7 +19,7 @@ const Insights = React.memo((props) => {
 
   useEffect(()=>{
     getDashboards();
-  },[])
+  },[getDashboards])
 
   useEffect(()=>{
     if(dashboards.length>0){

@@ -52,6 +52,11 @@ objects:
               secretKeyRef:
                 key: formio_root_password
                 name: ${FORMIO_SECRET}
+          - name: FORMIO_JWT_SECRET
+            valueFrom:
+              secretKeyRef:
+                key: formio_jwt_secret
+                name: ${FORMIO_SECRET}    
           image: ${IMAGE_NAMESPACE}/${NAME}:${TAG_NAME}
           name: ${NAME}
           ports:

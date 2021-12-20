@@ -110,7 +110,7 @@ export const columns  = (applicationStatus,lastModified,callback) => {
       dataField: "applicationStatus",
       text: "Application Status",
       sort: true,
-      filter: selectFilter({
+      filter: applicationStatus?.length > 0 && selectFilter({
         options: getApplicationStatusOptions(applicationStatus),
         style:cutomStyle,
         placeholder: "All",

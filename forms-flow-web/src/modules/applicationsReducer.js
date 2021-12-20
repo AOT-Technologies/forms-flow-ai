@@ -13,7 +13,6 @@ export const initialState = {
   activePage:1,
   countPerPage:5,
   applicationStatus:[],
-  isApplicationStatusRecieved : false,
   iserror:false,
   error:''
 }
@@ -44,7 +43,7 @@ const applications = (state = initialState, action)=> {
     case ACTION_CONSTANTS.CHANGE_SIZE_PER_PAGE:
       return {...state,countPerPage:action.payload}
     case ACTION_CONSTANTS.APPLICATION_STATUS_LIST:
-      return {...state,applicationStatus:action.payload,isApplicationStatusRecieved:true}
+      return {...state,applicationStatus:action.payload}
     case ACTION_CONSTANTS.APPLICATIONS_ERROR:
       return {...state,iserror:true,error:action.payload,isApplicationListLoading:false}
     default:

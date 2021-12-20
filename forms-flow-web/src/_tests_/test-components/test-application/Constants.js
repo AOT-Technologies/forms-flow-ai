@@ -133,3 +133,20 @@ export const AfterLoadingApplicationDetailt = {
   countPerPage:5,
   applicationStatus:[]
 }
+
+export const initialState = {
+  applicationsList:[],
+  applicationDetail: {},
+  applicationProcess: {},
+  formApplicationsList:[],
+  isApplicationListLoading:false,
+  isApplicationDetailLoading:false,
+  isApplicationUpdating:false,
+  applicationCount:0,
+  applicationDetailStatusCode:'',
+  activePage:1,
+  countPerPage:5,
+  applicationStatus:[],
+  iserror:false,
+  error:''
+}

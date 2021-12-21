@@ -101,7 +101,12 @@ class KeycloakDashboardGroupDetail(Resource):
                 response = client.update_request(
                     url_path=f"groups/{id}", data=dashboard_id_details
                 )
-                return response
+                if response is None:
+                    return {
+                        "message": f"Group - {id} not updated successfully"
+                    }, HTTPStatus.SERVICE_UNAVAILABLE
+                else:
+                    return response
         except ValidationError as err:
             pprint(err.messages)
             return {"message": "Invalid Request Object format"}, HTTPStatus.BAD_REQUEST

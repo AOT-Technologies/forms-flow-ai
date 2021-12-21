@@ -143,3 +143,4 @@ export const ApplicationList = React.memo(() => {
 
 
 export default ApplicationList;
+

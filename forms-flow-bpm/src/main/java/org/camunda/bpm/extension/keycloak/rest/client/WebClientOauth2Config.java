@@ -28,10 +28,10 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebClientOauth2Config {
 
-    private static final Logger LOG = LoggerFactory.getLogger(WebClientOauth2Config.class);
-
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebClientOauth2Config.class);
+    
     @Autowired
-    private Properties integrationCredentialProperties;
+    private Properties integrationCredentialProperties; 
 
     public ClientHttpConnector clientHttpConnector(){
 
@@ -48,11 +48,14 @@ public class WebClientOauth2Config {
 
     @Bean
     public WebClient unauthenticatedWebClient(){
+    	
+    	int maxInMemorySize = Integer.parseInt(integrationCredentialProperties.getProperty("camunda.spring.webclient.maxInMemorySize")) * 1024 * 1024;
+    	
         return WebClient.builder()
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
                                 .defaultCodecs()
-                                .maxInMemorySize(Integer.parseInt(integrationCredentialProperties.getProperty("camunda.spring.webclient.maxInMemorySize"))))
+                                .maxInMemorySize(maxInMemorySize))
                         .build())
                 .clientConnector(clientHttpConnector())
                 .build();
@@ -66,11 +69,14 @@ public class WebClientOauth2Config {
                 new ServletOAuth2AuthorizedClientExchangeFilterFunction(
                         webClientClientRegistrationRepository, authorizedClients);
         oauth2.setDefaultClientRegistrationId ("keycloak-client");
+        
+        int maxInMemorySize = Integer.parseInt(integrationCredentialProperties.getProperty("camunda.spring.webclient.maxInMemorySize")) * 1024 * 1024;
+        
         return WebClient.builder()
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
                                 .defaultCodecs()
-                                .maxInMemorySize(Integer.parseInt(integrationCredentialProperties.getProperty("camunda.spring.webclient.maxInMemorySize"))))
+                                .maxInMemorySize(maxInMemorySize))
                         .build())
                 .apply(oauth2.oauth2Configuration())
                 .clientConnector(clientHttpConnector())

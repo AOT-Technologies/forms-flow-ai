@@ -1,4 +1,4 @@
-"""This exports all of the models used by the application."""
+"""This exports all of the models used by the formsflow_api."""
 
 from formsflow_api.models.db import db, ma
 from formsflow_api.models.form_process_mapper import FormProcessMapper

@@ -1,13 +1,12 @@
 import React from "react";
 import { render as rtlRender,screen } from '@testing-library/react'
 import {ApplicationList} from "../../../components/Application/List";
-import { initialState } from "../../../modules/applicationsReducer";
 import { Provider } from 'react-redux'
 import StoreService from '../../../services/StoreService'
 import '@testing-library/jest-dom/extend-expect';
-import { Loadingstate,AfterLoadingWithresult,AfterLoadingWithoutresult } from "./Constants";
+import { Loadingstate,AfterLoadingWithresult,AfterLoadingWithoutresult,initialState } from "./Constants";
 import { BrowserRouter as Router } from 'react-router-dom';
-
+import * as redux from 'react-redux'
 
 
 const store = StoreService.configureStore();
@@ -22,16 +21,37 @@ const render = Component=>rtlRender(
 
 
 test("Should render No Applications Found when initial state is passed",()=>{
-    render(<ApplicationList applicationState={initialState} />);
+    const spy = jest.spyOn(redux,"useSelector");
+    spy.mockImplementation((callback) => callback({
+        applications:initialState,
+        user:{
+            roles:["formsflow-designer"]
+        }
+    }))
+    render(<ApplicationList  />);
     expect(screen.getByText(/No Applications Found/i)).toBeInTheDocument();
 })
 
 test("Should render Loading state when loading state variable is truthy",()=>{
-    render(<ApplicationList applicationState={Loadingstate} />);
+    const spy = jest.spyOn(redux,"useSelector");
+    spy.mockImplementation((callback) => callback({
+        applications:Loadingstate,
+        user:{
+            roles:["formsflow-designer"]
+        }
+    }))
+    render(<ApplicationList />);
     expect(screen.getByTestId(/loading-component/i)).toBeInTheDocument();
 })
 test("Should render the table with the data after data fetch is over with results",()=>{
-    render(<ApplicationList applicationState={AfterLoadingWithresult} />);
+    const spy = jest.spyOn(redux,"useSelector");
+    spy.mockImplementation((callback) => callback({
+        applications:AfterLoadingWithresult,
+        user:{
+            roles:["formsflow-designer"]
+        }
+    }))
+    render(<ApplicationList  />);
     expect(screen.getByText(/Applications/i)).toBeInTheDocument();
     expect(screen.getAllByText(/Application ID/i).length).toBe(2);
     expect(screen.getAllByText(/Application Name/i).length).toBe(2);
@@ -42,7 +62,16 @@ test("Should render the table with the data after data fetch is over with result
 })
 
 test("Should render No results found when providing a filter value which is not in db",async()=>{
-    render(<ApplicationList applicationState={AfterLoadingWithoutresult} filtermode={true} />);
+    const spy = jest.spyOn(redux,"useSelector");
+    spy.mockImplementation((callback) => callback({
+        applications:AfterLoadingWithoutresult,
+        user:{
+            roles:["formsflow-designer"]
+        }
+    }))
+    const statespy = jest.spyOn(React,"useState");
+    statespy.mockImplementationOnce(() => React.useState({filtermode:true}))  
+    render(<ApplicationList  />);
     expect(screen.getAllByText(/Applications/i).length).toBe(3);
     expect(screen.queryByText('Please change the selected filters to view applications')).toBeInTheDocument();
 })

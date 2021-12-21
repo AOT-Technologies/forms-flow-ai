@@ -46,7 +46,6 @@ class KeycloakDashboardGroupList(Resource):
                 url_path="groups", first=page_no, max=limit
             )
 
-
         for group in group_list_response:
             if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
                 dashboard_group_list = [x for x in group["subGroups"]]
@@ -102,7 +101,12 @@ class KeycloakDashboardGroupDetail(Resource):
                 response = client.update_request(
                     url_path=f"groups/{id}", data=dashboard_id_details
                 )
-                return response
+                if response is None:
+                    return {
+                        "message": f"Group - {id} not updated successfully"
+                    }, HTTPStatus.SERVICE_UNAVAILABLE
+                else:
+                    return response
         except ValidationError as err:
             pprint(err.messages)
             return {"message": "Invalid Request Object format"}, HTTPStatus.BAD_REQUEST

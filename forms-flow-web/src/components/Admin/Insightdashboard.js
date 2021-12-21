@@ -1,4 +1,4 @@
-import React,{useEffect,useState} from "react";
+import React,{useEffect,useState,useRef} from "react";
 import { Button } from "react-bootstrap";
 import BootstrapTable from 'react-bootstrap-table-next';
 import {useDispatch} from "react-redux";
@@ -32,12 +32,20 @@ export const InsightDashboard = (props)=> {
   const [show, setShow] = useState(false);
   const [activePage,setActivePage] = useState(1);
 
+  const useNoRenderRef = (currentValue)=>{
+    const ref = useRef(currentValue);
+    ref.current = currentValue;
+    return ref;
+  }
+
+  const getDashboardsRef = useNoRenderRef(dashboards);
+
   useEffect(()=>{
     if(isDashUpdated && isGroupUpdated){
-     dispatch(updateDashboardFromGroups({dashboards,groups}));
+     dispatch(updateDashboardFromGroups({dashboards:getDashboardsRef.current,groups}));
     }
-    // eslint-disable-next-line
-  },[isGroupUpdated,isDashUpdated])
+  },[isGroupUpdated,isDashUpdated,getDashboardsRef,dispatch,groups])
+
 
    // handles the add button click event
    const handleClick = (event,rowData) => {
@@ -200,3 +208,4 @@ const mapStateToProps = (state)=>{
 
 
 export default connect(mapStateToProps)(InsightDashboard);
+

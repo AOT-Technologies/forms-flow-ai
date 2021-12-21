@@ -1,4 +1,4 @@
-import React, {useEffect,useState} from 'react'
+import React, {useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
@@ -8,7 +8,6 @@ import LoadingOverlay from "react-loading-overlay";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import { setApplicationListActivePage,setCountPerpage } from '../../actions/applicationActions';
 import {getAllApplications,FilterApplications, getAllApplicationStatus} from "../../apiManager/services/applicationServices";
-import {setApplicationListLoader} from "../../actions/applicationActions";
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
 import {
@@ -19,36 +18,30 @@ import {
 import {getUserRolePermission} from "../../helper/user";
 import {CLIENT, STAFF_REVIEWER} from "../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../constants/applicationConstants";
-import { connect } from "react-redux";
 import Alert from 'react-bootstrap/Alert'
 
-export const ApplicationList = React.memo((props) => {
-  const applications = props.applicationState.applicationsList;
-  const countPerPage =  props.applicationState.countPerPage;
-  const applicationStatus =  props.applicationState.applicationStatus;
-  const isApplicationStatusRecieved =props.applicationState.isApplicationStatusRecieved;
-  const isApplicationListLoading = props.applicationState.isApplicationListLoading;
-  const applicationCount = props.applicationState.applicationCount;
+export const ApplicationList = React.memo(() => {
+  const applications = useSelector(state=>state.applications.applicationsList);
+  const countPerPage = useSelector(state=>state.applications.countPerPage); 
+  const applicationStatus = useSelector(state=>state.applications.applicationStatus);
+  const isApplicationListLoading = useSelector(state=>state.applications.isApplicationListLoading);
+  const applicationCount = useSelector(state=>state.applications.applicationCount);
   const dispatch= useDispatch();
   const userRoles = useSelector((state) => state.user.roles);
-  const page = props.applicationState.activePage;
-  const iserror = props.applicationState.iserror;
-  const error = props.applicationState.error;
-  const [filtermode,setfiltermode] = useState(props.filtermode);
+  const page = useSelector(state=>state.applications.activePage);
+  const iserror = useSelector(state=>state.applications.iserror);
+  const error = useSelector(state=>state.applications.error);
+  const [filtermode,setfiltermode] = React.useState(false);
   
-  const [lastModified,setLastModified] = useState(null);
+  const [lastModified,setLastModified] = React.useState(null);
 
   useEffect(()=>{
-
-    dispatch(setApplicationListLoader(true))
-
-    if(isApplicationStatusRecieved){
-      dispatch(getAllApplications(page,countPerPage));
-    }else{
       dispatch(getAllApplicationStatus());
-    }
-    
-  },[dispatch,isApplicationStatusRecieved,countPerPage,page]);
+  },[dispatch])
+
+  useEffect(()=>{
+    dispatch(getAllApplications(page,countPerPage));
+  },[dispatch,page,countPerPage])
 
   const isClientEdit = (applicationStatus) => {
     if (getUserRolePermission(userRoles, CLIENT)||getUserRolePermission(userRoles, STAFF_REVIEWER)) {
@@ -149,17 +142,5 @@ export const ApplicationList = React.memo((props) => {
 })
 
 
-// export default ApplicationList;
-
-const mapStateToProps = (state)=>{
-  return {
-    applicationState:state.applications,
-    filtermode:false 
-  }
-}
-
-
-export default connect(mapStateToProps)(ApplicationList);
-
-
+export default ApplicationList;
 

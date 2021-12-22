@@ -27,9 +27,9 @@ public class RestApiSecurityConfigurationProperties {
 	private Boolean enabled = true;
 
 	/** 
-	 * rest.security.jwk-set-url:
+	 * rest.security.provider:
 	 * 
-	 * JWK Set URL (e.g. https://<keycloak-host:port>/auth/realms/camunda/protocol/openid-connect/certs).
+	 * Client provider eg : Keycloak.
 	 */
 	@NotEmpty
 	private String provider;

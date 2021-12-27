@@ -17,7 +17,6 @@ class ProcessListSchema(Schema):
 
 class ProcessDefinitionXMLSchema(Schema):
     """This class manages process definition response schema."""
-<<<<<<< HEAD
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Exclude unknown fields in the deserialized output."""
@@ -30,15 +29,12 @@ class ProcessDefinitionXMLSchema(Schema):
 
 class ProcessActivityInstanceSchema(Schema):
     """This class manages task response schema."""
-=======
->>>>>>> 7415e9e894ac5ba753b4509d1854993381f6ce2a
 
     class Meta:  # pylint: disable=too-few-public-methods
         """Exclude unknown fields in the deserialized output."""
 
         unknown = EXCLUDE
 
-<<<<<<< HEAD
     process_instance_id = fields.Str(
         data_key="processInstanceId", attribute="processInstanceId"
     )
@@ -57,8 +53,3 @@ class ProcessMessageSchema(Schema):
 
     messageName = fields.Str()
     processInstanceId = fields.Str()
-
-=======
-    id = fields.Str()
-    processXml = fields.Str(data_key="bpmn20Xml", attribute="bpmn20Xml")
->>>>>>> 7415e9e894ac5ba753b4509d1854993381f6ce2a

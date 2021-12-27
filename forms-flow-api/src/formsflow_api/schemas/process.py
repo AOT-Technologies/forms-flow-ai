@@ -41,3 +41,15 @@ class ProcessActivityInstanceSchema(Schema):
     childActivityInstances = fields.Str(
         data_key="childActivityInstances", attribute="childActivityInstances"
     )
+
+
+class ProcessMessageSchema(Schema):
+    """This class manages process definition response schema."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    messageName = fields.Str()
+    processInstanceId = fields.Str()

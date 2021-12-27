@@ -58,3 +58,8 @@ class ProcessService:
             raise BusinessException(
                 "No activity instances available for process", HTTPStatus.BAD_REQUEST
             )
+
+    @staticmethod
+    def post_message(data, token):
+        """Get process details."""
+        return BPMService.send_message(data=data, token=token)

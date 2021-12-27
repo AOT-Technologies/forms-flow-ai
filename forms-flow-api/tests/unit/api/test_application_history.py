@@ -4,12 +4,13 @@ from tests.utilities.base_test import (
     get_application_create_payload,
     get_claims,
     get_form_request_payload,
+    factory_auth_header,
 )
 
 
 def test_get_application_history(client, jwt):
     """Get the json request for application /application/{application_id}/history"""
-    token = jwt.create_jwt(get_claims(), token_header)
+    token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     rv = client.post("/form", headers=headers, json=get_form_request_payload())
@@ -39,7 +40,7 @@ def test_get_application_history_unauthorized(client):
 
 
 def test_post_application_history_create_method(client, jwt):
-    token = jwt.create_jwt(get_claims(), token_header)
+    token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     rv = client.post("/form", headers=headers, json=get_form_request_payload())

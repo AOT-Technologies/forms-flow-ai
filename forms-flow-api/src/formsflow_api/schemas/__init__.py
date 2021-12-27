@@ -13,7 +13,9 @@ from formsflow_api.schemas.application import (
 from formsflow_api.schemas.application_history import ApplicationHistorySchema
 from formsflow_api.schemas.form_process_mapper import FormProcessMapperSchema
 from .process import (
+    ProcessActivityInstanceSchema,
     ProcessListSchema,
     ProcessDefinitionXMLSchema,
+    ProcessMessageSchema,
 )
 from formsflow_api.schemas.keycloak_groups import KeycloakDashboardGroupSchema

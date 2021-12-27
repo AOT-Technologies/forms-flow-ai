@@ -53,3 +53,4 @@ class ProcessMessageSchema(Schema):
 
     messageName = fields.Str()
     processInstanceId = fields.Str()
+

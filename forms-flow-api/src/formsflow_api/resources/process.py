@@ -71,3 +71,33 @@ class ProcessDefinitionResource(Resource):
             current_app.logger.warning(response)
             current_app.logger.warning(err)
             return response, status
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route(
+    "/process-instance/<string:process_InstanceId>/activity-instances",
+    methods=["GET", "OPTIONS"],
+)
+class ProcessInstanceResource(Resource):
+    """Get Process Activity Instances."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def get(process_InstanceId):
+        """Get states by process and task key."""
+        try:
+            return (
+                ProcessService.get_process_activity_instances(
+                    process_InstanceId, request.headers["Authorization"]
+                ),
+                HTTPStatus.OK,
+            )
+        except BaseException as err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }, HTTPStatus.BAD_REQUEST
+
+            current_app.logger.warning(response)
+            return response, status

@@ -16,5 +16,6 @@ from .process import (
     ProcessActivityInstanceSchema,
     ProcessListSchema,
     ProcessDefinitionXMLSchema,
+    ProcessMessageSchema,
 )
 from formsflow_api.schemas.keycloak_groups import KeycloakDashboardGroupSchema

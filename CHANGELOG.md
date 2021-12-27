@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 4.0.4 - 2021-12-17
+## 4.0.4 - 2021-12-27
 
 `Added`
 
@@ -43,6 +43,7 @@ New environment variables `KEYCLOAK_ADMIN_USERNAME`, `KEYCLOAK_ADMIN_PASSWORD`, 
 **forms-flow-forms**
 
 * Added indexes in Submission collection for applicationId, process_pid.
+* Added authentication for publicly exposed urls.
 
 *Upgrade notes:*
 

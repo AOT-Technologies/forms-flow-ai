@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React, {useEffect,useRef} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
@@ -39,9 +39,17 @@ export const ApplicationList = React.memo(() => {
       dispatch(getAllApplicationStatus());
   },[dispatch])
 
+  const useNoRenderRef = (currentValue)=>{
+    const ref = useRef(currentValue);
+    ref.current = currentValue;
+    return ref;
+  }
+
+  const countPerPageRef = useNoRenderRef(countPerPage);
+
   useEffect(()=>{
-    dispatch(getAllApplications(page,countPerPage));
-  },[dispatch,page,countPerPage])
+    dispatch(getAllApplications(page,countPerPageRef.current));
+  },[dispatch,page,countPerPageRef])
 
   const isClientEdit = (applicationStatus) => {
     if (getUserRolePermission(userRoles, CLIENT)||getUserRolePermission(userRoles, STAFF_REVIEWER)) {

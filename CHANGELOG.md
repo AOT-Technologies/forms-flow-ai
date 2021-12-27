@@ -2,9 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-
 ## 4.0.4 - 2021-12-27
-
 
 `Added`
 

@@ -5,9 +5,6 @@ from http import HTTPStatus
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.schemas import (
-    ProcessActionListSchema,
-    ProcessActivityInstanceSchema,
-    ProcessDefinitionSchema,
     ProcessDefinitionXMLSchema,
     ProcessListSchema,
 )
@@ -33,17 +30,6 @@ class ProcessService:
 
         return process
 
-    # @staticmethod
-    # def get_process(process_key, token):
-    #     """Get process details."""
-    #     process_details = BPMService.get_process_details(
-    #         process_key=process_key, token=token
-    #     )
-    #     if process_details:
-    #         return ProcessDefinitionSchema().dump(process_details)
-
-    #     raise BusinessException("Invalid process", HTTPStatus.BAD_REQUEST)
-
     @staticmethod
     def get_process_definition_xml(process_key, token):
         """Get process details."""
@@ -54,63 +40,3 @@ class ProcessService:
             return ProcessDefinitionXMLSchema().dump(process_definition_xml)
 
         raise BusinessException("Invalid process", HTTPStatus.BAD_REQUEST)
-
-    # @staticmethod
-    # def get_process_action(process_key, token):
-    #     """Get process actions."""
-    #     process_details = BPMService.get_process_actions(
-    #         process_key=process_key, token=token
-    #     )
-    #     if process_details:
-    #         return ProcessActionListSchema().dump(process_details)
-
-    #     raise BusinessException("Invalid process", HTTPStatus.BAD_REQUEST)
-
-    # @staticmethod
-    # def get_states(process_key, task_key, token):
-    #     """Get states."""
-    #     payload = {
-    #         "variables": {
-    #             "process": {"value": process_key},
-    #             "task": {"value": task_key},
-    #         }
-    #     }
-    #     data = BPMService.post_process_evaluate(payload=payload, token=token)
-    #     if data:
-    #         value = data[0].get("state", {}).get("value")
-    #         # Since we are receiving a string instead of json and the string contain single quote
-    #         # instead of double quote.
-    #         value = value.replace("'", '"')
-    #         return json.loads(value)
-
-    #     raise BusinessException("error", HTTPStatus.BAD_REQUEST)
-
-    # @staticmethod
-    # def post_message(data, token):
-    #     """Get process details."""
-    #     return BPMService.send_message(data=data, token=token)
-
-    # @staticmethod
-    # def get_process_activity_instances(process_instace_id, token):
-    #     """Get process actions."""
-    #     current_app.logger.debug("get_process_activity_instances " + process_instace_id)
-    #     activity_instances = BPMService.get_process_activity_instances(
-    #         process_instace_id=process_instace_id, token=token
-    #     )
-    #     current_app.logger.debug(activity_instances)
-    #     try:
-    #         if activity_instances:
-    #             return ProcessActivityInstanceSchema().dump(activity_instances)
-    #     except TypeError as err:
-    #         response, status = {
-    #             "type": "Invalid request",
-    #             "message": "Invalid request object passed",
-    #             "errors": err.messages,
-    #         }, HTTPStatus.BAD_REQUEST
-    #         current_app.logger.critical(response)
-    #         current_app.logger.critical(err)
-    #         return response, status
-
-    #     # raise BusinessException(
-    #     #    "No activity instances available for process", HTTPStatus.BAD_REQUEST
-    #     # )

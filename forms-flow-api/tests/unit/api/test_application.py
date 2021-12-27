@@ -5,6 +5,7 @@ from tests.utilities.base_test import (
     get_token_body,
     get_application_create_payload,
     get_form_request_payload,
+    factory_auth_header,
 )
 
 
@@ -20,7 +21,7 @@ class TestApplicationResource:
         }
 
     def test_application_list(self, session, client, jwt):
-        token = jwt.create_jwt(get_token_body(), get_token_header())
+        token = factory_auth_header()
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -30,12 +31,14 @@ class TestApplicationResource:
         assert response.status_code == 200
 
     def test_application_paginated_list(self, session, client, jwt, pageNo, limit):
-        token = jwt.create_jwt(get_token_body(), get_token_header())
+        token = factory_auth_header()
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        response = client.get(f"/application?pageNo={pageNo}&limit={limit}")
+        response = client.get(
+            f"/application?pageNo={pageNo}&limit={limit}", headers=headers
+        )
         assert response.status_code == 200
 
     def test_application_paginated_sorted_list(
@@ -47,7 +50,8 @@ class TestApplicationResource:
             "content-type": "application/json",
         }
         response = client.get(
-            f"/application?pageNo={pageNo}&limit={limit}&sortBy={sortBy}&sortOrder={sortOrder}"
+            f"/application?pageNo={pageNo}&limit={limit}&sortBy={sortBy}&sortOrder={sortOrder}",
+            headers=headers,
         )
         assert response.status_code == 200
 
@@ -62,7 +66,7 @@ class TestApplicationDetailView:
         }
 
     def test_application_detailed_view(self, session, client, jwt):
-        token = jwt.create_jwt(get_token_body(), get_token_header())
+        token = factory_auth_header()
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -73,7 +77,7 @@ class TestApplicationDetailView:
 
 class TestApplicationResourceByFormId:
     def test_application_submission(self, session, client, jwt):
-        token = jwt.create_jwt(get_token_body(), get_token_header())
+        token = factory_auth_header()
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -97,7 +101,7 @@ class TestApplicationResourceByFormId:
 
 class TestProcessMapperResourceByApplicationId:
     def test_application_process_details(session, client, jwt):
-        token = jwt.create_jwt(get_token_body(), get_token_header())
+        token = factory_auth_header()
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -119,7 +123,7 @@ class TestProcessMapperResourceByApplicationId:
 
 class TestApplicationResourceByApplicationStatus:
     def test_application_status_list(session, client, jwt):
-        token = jwt.create_jwt(get_token_body(), get_token_header())
+        token = factory_auth_header()
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -141,7 +145,7 @@ class TestApplicationResourceByApplicationStatus:
 
 
 def test_application_status_list(session, client, jwt):
-    token = jwt.create_jwt(get_token_body(), get_token_header())
+    token = factory_auth_header()
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
@@ -163,7 +167,7 @@ def test_application_status_list(session, client, jwt):
 
 
 def test_application_create_method(session, client, jwt):
-    token = jwt.create_jwt(get_token_body(), get_token_header())
+    token = factory_auth_header()
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
@@ -182,7 +186,7 @@ def test_application_create_method(session, client, jwt):
 
 
 def test_application_update_details_api(session, client, jwt):
-    token = jwt.create_jwt(get_token_body(), get_token_header())
+    token = factory_auth_header()
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",

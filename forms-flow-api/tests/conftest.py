@@ -128,25 +128,3 @@ def session(app, db):  # pylint: disable=redefined-outer-name, invalid-name
         # This instruction rollsback any commit that were executed in the tests.
         txn.rollback()
         conn.close()
-
-
-# ## Docker configuration
-# @pytest.fixture(scope="session", autouse=True)
-# def auto(docker_services, app):
-#     """Start a docker based test session"""
-#     if app.config["USE_TEST_KEYCLOAK_DOCKER"]:
-#         docker_services.start("keycloak")
-#         docker_services.wait_for_service("keycloak", 8080)
-#         docker_services.start("postgres")
-#     setup_jwt_manager(app, _jwt)
-
-
-# @pytest.fixture(scope="session")
-# def docker_compose_files(pytestconfig):
-#     """Get the docker-compose.yml absolute path.
-#     Override this fixture in your tests if you need a custom location.
-#     """
-#     import os
-#     return [
-#         os.path.join(str(pytestconfig.rootdir), 'tests/docker', 'docker-compose.yml')
-#     ]

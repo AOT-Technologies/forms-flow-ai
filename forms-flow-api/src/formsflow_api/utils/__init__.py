@@ -12,8 +12,8 @@ from .constants import (
     NEW_APPLICATION_STATUS,
     REVIEWER_GROUP,
 )
+from .enums import ApplicationSortingParameters
 from .format import CustomFormatter
 from .logging import setup_logging
-from .util import cors_preflight
+from .util import cors_preflight, validate_sort_order_and_order_by
 from .profiler import profiletime
-from .enums import ApplicationSortingParameters

@@ -40,125 +40,72 @@ class ApplicationsResource(Resource):
         :params limit: to retrieve limit for each page
         :params orderBy: Name of column to order by (default: created)
         """
-        try:
-            if request.args:
-                dict_data = ApplicationListRequestSchema().load(request.args)
-                page_no = dict_data["page_no"]
-                limit = dict_data["limit"]
-                order_by = dict_data.get("order_by")
-                application_id = dict_data.get("application_id")
-                application_name = dict_data.get("application_name")
-                application_status = dict_data.get("application_status")
-                created_by = dict_data.get("created_by")
-                created_from_date = dict_data.get("created_from_date")
-                created_to_date = dict_data.get("created_to_date")
-                modified_from_date = dict_data.get("modified_from_date")
-                modified_to_date = dict_data.get("modified_to_date")
-                sort_order = dict_data.get("sort_order")
-                current_app.logger.info(modified_from_date)
-                current_app.logger.info(modified_to_date)
-
-                if sort_order == None:
-                    sort_order = "desc"
-                if order_by == None:
-                    order_by = "id"
-            else:
-                page_no = 0
-                limit = 0
+        try: 
+            dict_data = ApplicationListRequestSchema().load(request.args) or {}
+            page_no = dict_data.get("page_no")
+            limit = dict_data.get("limit")
+            order_by = dict_data.get("order_by") or "id"
+            application_id = dict_data.get("application_id")
+            application_name = dict_data.get("application_name")
+            application_status = dict_data.get("application_status")
+            created_by = dict_data.get("created_by")
+            created_from_date = dict_data.get("created_from_date")
+            created_to_date = dict_data.get("created_to_date")
+            modified_from_date = dict_data.get("modified_from_date")
+            modified_to_date = dict_data.get("modified_to_date")
+            sort_order = dict_data.get("sort_order") or "desc"
             if auth.has_role([REVIEWER_GROUP]):
-                if page_no == 0 and limit == 0:
-                    (
-                        application_schema_dump,
-                        application_count,
-                    ) = ApplicationService.get_all_application_count(
-                        page_no=page_no,
-                        limit=limit,
-                        token=request.headers["Authorization"],
-                    )
-                else:
-                    (
-                        application_schema_dump,
-                        application_count,
-                    ) = ApplicationService.get_auth_applications_and_count(
-                        created_from=created_from_date,
-                        created_to=created_to_date,
-                        modified_from=modified_from_date,
-                        modified_to=modified_to_date,
-                        order_by=order_by,
-                        sort_order=sort_order,
-                        created_by=created_by,
-                        application_id=application_id,
-                        application_name=application_name,
-                        application_status=application_status,
-                        token=request.headers["Authorization"],
-                        page_no=page_no,
-                        limit=limit,
-                    )
-                application_schema = ApplicationService.apply_custom_attributes(
+                (
+                    application_schema_dump,
+                    application_count,
+                ) = ApplicationService.get_auth_applications_and_count(
+                    created_from=created_from_date,
+                    created_to=created_to_date,
+                    modified_from=modified_from_date,
+                    modified_to=modified_to_date,
+                    order_by=order_by,
+                    sort_order=sort_order,
+                    created_by=created_by,
+                    application_id=application_id,
+                    application_name=application_name,
+                    application_status=application_status,
+                    token=request.headers["Authorization"],
+                    page_no=page_no,
+                    limit=limit,
+                )
+            else:
+                (
+                    application_schema_dump,
+                    application_count,
+                ) = ApplicationService.get_all_applications_by_user(
+                    user_id=g.token_info.get("preferred_username"),
+                    page_no=page_no,
+                    limit=limit,
+                    order_by=order_by,
+                    sort_order=sort_order,
+                    created_from=created_from_date,
+                    created_to=created_to_date,
+                    modified_from=modified_from_date,
+                    modified_to=modified_to_date,
+                    created_by=created_by,
+                    application_id=application_id,
+                    application_name=application_name,
+                    application_status=application_status,
+                )
+            application_schema = ApplicationService.apply_custom_attributes(
                     application_schema=application_schema_dump
                 )
-            else:
-                if page_no == 0 and limit == 0:
-                    application_schema_dump = (
-                        ApplicationService.get_all_application_by_user_group(
-                            page_no=page_no,
-                            limit=limit,
-                            user_id=g.token_info.get("preferred_username"),
-                        )
-                    )
-                    application_schema = ApplicationService.apply_custom_attributes(
-                        application_schema=application_schema_dump
-                    )
-                    application_count = (
-                        ApplicationService.get_all_application_by_user_count(
-                            user_id=g.token_info.get("preferred_username")
-                        )
-                    )
-                else:
-                    (
-                        application_schema_dump,
-                        application_count,
-                    ) = ApplicationService.get_all_applications_by_user(
-                        user_id=g.token_info.get("preferred_username"),
-                        page_no=page_no,
-                        limit=limit,
-                        order_by=order_by,
-                        sort_order=sort_order,
-                        created_from=created_from_date,
-                        created_to=created_to_date,
-                        modified_from=modified_from_date,
-                        modified_to=modified_to_date,
-                        created_by=created_by,
-                        application_id=application_id,
-                        application_name=application_name,
-                        application_status=application_status,
-                    )
-                    application_schema = ApplicationService.apply_custom_attributes(
-                        application_schema=application_schema_dump
-                    )
-
-            if page_no > 0:
-                return (
-                    (
-                        {
-                            "applications": application_schema,
-                            "totalCount": application_count,
-                            "limit": limit,
-                            "pageNo": page_no,
-                        }
-                    ),
-                    HTTPStatus.OK,
-                )
-            else:
-                return (
-                    (
-                        {
-                            "applications": application_schema,
-                            "totalCount": application_count,
-                        }
-                    ),
-                    HTTPStatus.OK,
-                )
+            return (
+                (
+                    {
+                        "applications": application_schema,
+                        "totalCount": application_count,
+                        "limit": limit,
+                        "pageNo": page_no,
+                    }
+                ),
+                HTTPStatus.OK,
+            )
         except KeyError as err:
             response, status = (
                 {

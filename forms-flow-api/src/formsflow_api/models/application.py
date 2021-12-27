@@ -7,10 +7,8 @@ from sqlalchemy import and_, func, or_
 from sqlalchemy.sql.expression import text
 
 from formsflow_api.models.audit_mixin import AuditDateTimeMixin, AuditUserMixin
-from formsflow_api.models.base_model import BaseModel
-from formsflow_api.models.db import db
-from formsflow_api.models.form_process_mapper import FormProcessMapper
-from formsflow_api.utils import ApplicationSortingParameters
+from formsflow_api.models import BaseModel, db, FormProcessMapper
+from formsflow_api.utils import validate_sort_order_and_order_by
 
 
 class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
@@ -213,22 +211,9 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             query = cls.query
         query = query.filter(Application.created_by == user_id)
 
-        if order_by == ApplicationSortingParameters.Id and sort_order == "asc":
-            query = query.order_by(Application.id.asc())
-        elif order_by == ApplicationSortingParameters.Id and sort_order == "desc":
-            query = query.order_by(Application.id.desc())
-        elif order_by == ApplicationSortingParameters.Name and sort_order == "asc":
-            query = query.order_by(Application.application_name.asc())
-        elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
-            query = query.order_by(Application.application_name.desc())
-        elif order_by == ApplicationSortingParameters.Status and sort_order == "asc":
-            query = query.order_by(Application.application_status.asc())
-        elif order_by == ApplicationSortingParameters.Status and sort_order == "desc":
-            query = query.order_by(Application.application_status.desc())
-        elif order_by == ApplicationSortingParameters.Modified and sort_order == "asc":
-            query = query.order_by(Application.modified.asc())
-        elif order_by == ApplicationSortingParameters.Modified and sort_order == "desc":
-            query = query.order_by(Application.modified.desc())
+        order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
+        if order_by and sort_order:
+            query = query.order_by(text(f"Application.{order_by} {sort_order}"))
 
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
@@ -398,24 +383,9 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         else:
             query = cls.query
         query = query.filter(Application.application_name.in_(form_names))
-
-        if order_by == ApplicationSortingParameters.Id and sort_order == "asc":
-            query = query.order_by(Application.id.asc())
-        elif order_by == ApplicationSortingParameters.Id and sort_order == "desc":
-            query = query.order_by(Application.id.desc())
-        elif order_by == ApplicationSortingParameters.Name and sort_order == "asc":
-            query = query.order_by(Application.application_name.asc())
-        elif order_by == ApplicationSortingParameters.Name and sort_order == "desc":
-            query = query.order_by(Application.application_name.desc())
-        elif order_by == ApplicationSortingParameters.Status and sort_order == "asc":
-            query = query.order_by(Application.application_status.asc())
-        elif order_by == ApplicationSortingParameters.Status and sort_order == "desc":
-            query = query.order_by(Application.application_status.desc())
-        elif order_by == ApplicationSortingParameters.Modified and sort_order == "asc":
-            query = query.order_by(Application.modified.asc())
-        elif order_by == ApplicationSortingParameters.Modified and sort_order == "desc":
-            query = query.order_by(Application.modified.desc())
-
+        order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
+        if order_by and sort_order:
+            query = query.order_by(text(f"Application.{order_by} {sort_order}"))
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count

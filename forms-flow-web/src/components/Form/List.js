@@ -30,7 +30,7 @@ import {designerColumns, getOperations, userColumns} from "./constants/formListC
 import FileService from "../../services/FileService";
 import {setFormCheckList, setFormUploadList, updateFormUploadCounter} from "../../actions/checkListActions";
 import FileModal from './FileUpload/fileUploadModal'
-const List = React.memo((props)=> {
+ const List = React.memo((props)=> {
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
   //const [selectedForm,setSelectedForms] = useState([]);
   const dispatch = useDispatch();
@@ -151,7 +151,7 @@ const List = React.memo((props)=> {
      <>
       <FileModal modalOpen={showFormUploadModal} onClose={()=>setShowFormUploadModal(false)} />
        {
-    (forms.isActive || isBPMFormListLoading) ? <Loading/> :
+    (forms.isActive || isBPMFormListLoading) ? <div data-testid="Form-list-component-loader"><Loading/></div> :
       <div className="container">
         <Confirm
           modalOpen={props.modalOpen}

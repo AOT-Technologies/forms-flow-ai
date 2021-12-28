@@ -5,7 +5,7 @@ import {QUERY_TYPES} from "../components/ServiceFlow/constants/taskConstants";
 import {sortByPriorityList} from "../apiManager/services/filterListFormatterService";
 
 const initialState = {
-  isTaskListLoading:false,
+  isTaskListLoading:true,
   tasksList:[],
   tasksCount:0,
   taskDetail: null,

@@ -4,6 +4,453 @@ All notable changes to this project will be documented in this file
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/)
 
+## 2.3.0
+### Changed
+ - Official Release
+ - Updated formio-workers@1.16.0
+
+## 2.3.0-rc.17
+### Changed
+ - Updated formiojs@4.14.0-rc.36
+
+## 2.3.0-rc.16
+### Fixed
+ - Adding /current back to permission whitelist.
+
+## 2.3.0-rc.15
+### Fixed
+ - Issue where Reset Password was not calling next method.
+
+## 2.3.0-rc.14
+### Changed
+ - Upgrade formio-workers@1.16.0-rc.2
+
+### Fixed
+ - FIO-805: empty stage creating issue fix
+
+## 2.3.0-rc.13
+### Fixed
+ - FIO-3783: Build fix
+ - FIO-3780: direct the sending of emails without user parameter to non-priority tasks queue
+
+### Changed
+ - FIO-3054: Add check of primary admin
+ - Upgrade formio.js@4.14.0-rc.33
+
+## 2.3.0-rc.12
+ - Revert "FIO-3763 Close ability to hit a form with get request as an anonymous…"
+
+## 2.3.0-rc.11
+### Changed
+ - Upgrade formio@4.14.0-rc.29
+ - Upgrade mongoose@6.0.11, mocha@9.1.3
+ - Revert "FIO-3783 Added renderingMethod option to Email action."
+
+## 2.3.0-rc.10
+### Changed
+ - Upgrade formio-workers@1.16.0-rc.1
+ - Upgrade mongodb@4.1.3, mongoose@6.0.10, vm2@3.9.4, mocha@9.1.2, nodemon@2.0.13, @azure/ms-
+rest-nodeauth@3.1.0, mailgun.js@3.6.0, nodemailer@6.7.0, adm-zip@0.5.9
+
+## 2.3.0-rc.9
+### Fixed
+ - FIO-3436: Refactored so that any email address can be set as Reply-To
+ - FIO-3783: Added renderingMethod option to Email action.
+ - FIO-3950: Export JSON/CSV doesn't work
+ - FIO-3763 Close ability to hit a form with get request as an anonymous user while form access turned off
+ - FIO-3561: Required field is showing as invalid and form can't be submitted
+
+## 2.3.0-rc.8
+### Changed
+ - Upgrade mailgun.js@3.5.9, mongodb@4.1.2, mongoose@6.0.6, adm-zip@0.5.6
+
+## 2.3.0-rc.7
+### Changed
+ - Upgrade formiojs@4.14.0-rc.25
+
+### Fixed
+ - Bootup race conditions.
+ - FIO-3403: feat(import): search for existing roles in DB when importing an incomplete template
+ - FIO-1453: fixed search for missing resources
+
+## 2.3.0-rc.6
+### Fixed
+ - Problem where the MongoDB sslCA was reading it as a string and messing up the mongo driver.
+
+## 2.3.0-rc.5
+### Changed
+ - Fixed the field based access.
+
+## 2.3.0-rc.4
+### Changed
+ - Adding an index to the key of the tokens collection to resolve performance issues.
+ - Upgrade chance@1.1.8, csv@5.5.3, mailgun.js@3.5.8, mongoose@6.0.4, mocha@9.1.1
+
+### Fixed
+ - Fixing issue with mailgun not working with latest version.
+ - Fixed an SSL Cert issue related to mongoose.
+
+## 2.3.0-rc.3
+### Changed
+ - Upgrade dependencies and fixed tests.
+
+## 2.3.0-rc.2
+### Fixed
+ - Issue with loading SSL CA file with latest mongodb driver.
+
+### Changed
+ - Upgrade mongodb@4.1.1, prompt@1.2.0, mongoose@6.0.2
+
+## 2.3.0-rc.1
+### Fixed
+ - FIO-790: checkbox set as radio showing blank on CSV downloads issue
+ - FIO-1442: Adds an ability to set transformers for the specific fields in the csv exporter.
+ - FIO-3555, FIO-1538: Implements 2FA
+ - FIO-1038: limiting default email usage provider
+ - FIO-899: removing roles issue fix
+ - FIO-885: Import/Export database error handling
+ - FIO-2764: Fixes an issue when the signature component was set a default value with noDefaults option
+ - FIO-3624: fixed problem on sending get request to /token endpoint using x-token header
+ - FIO-3583: Fixed issue with recursion in the form load routines.
+ - Issues related to the MongoDB 4.1.0 upgrade.
+
+### Added
+ - FIO-3435: form definition downloading according query parameter
+ - FIO-3436: ability to set reply to header
+
+### Changed
+ - Upgrade formiojs@4.14.0-rc.19
+ - Upgrade mongodb@4.1.0
+ - Upgrade async@3.2.1, mailgun.js@3.5.7, mongoose@5.13.8, mssql@7.2.1, supertest@6.1.6, mocha@9.1.0, fast-json-patch@3.1.0
+
+## 2.2.4-rc.1
+### Changed
+ - Upgrade formiojs@4.14.0-rc.18
+
+## 2.2.3
+### Changed
+ - No changes. Official release.
+
+## 2.2.3-rc.11
+### Fixed
+ - Upgrade formiojs@4.14.0-rc.17
+
+## 2.2.3-rc.10
+### Changed
+ - Upgrade formiojs@4.14.0-rc.16
+ - Upgrade mongoose@5.13.5, mocha@9.0.3, supertest@6.1.4, mssql@7.2.0, eslint@7.32.0
+
+## 2.2.3-rc.9
+### Fixed
+ - FIO-3441: resolve vulnerabilities
+ - FIO-898: Implements keeping POST request headers in submission.metadata.headers.
+
+## 2.2.3-rc.8
+### Fixed
+ - Fixed issues with action conditions not working when "submission" or "previous" were used in the conditional.
+
+### Changed
+ - Upgrade formiojs@4.14.0-rc.15
+
+## 2.2.3-rc.7
+### Fixed
+ - Tests to make them more robust.
+
+## 2.2.3-rc.6
+### Fixed
+ - Resolved broken test.
+
+## 2.2.3-rc.5
+### Changed
+ - Upgrade mongoose@5.13.3, nodemailer@6.6.3, mailgun.js@3.5.2, eslint@7.31.0
+
+### Fixed
+ - Improve validation performance by moving VM instance outside Evaluator
+ - FIO-1453: Add import fallbacks
+ - FIO-3441: resolve vulnerabilities
+ - Ensure we truncate the jwtIssuedAfter.
+ - FIO-3471: Ensure that the queries include all indexes to speed up performance.
+
+## 2.2.3-rc.4
+### Fixed
+ - FIO-2834: Fixes an issue where File's values are shown in CSV as empty
+ - Unhid block component label in webhook action settings form
+ - FIO-3099: Implements the oAuthM2M Token hook to the Login Action
+ - FIO-3116: Fixes an issue files inside containers and editgrids weren't attaching to an email. Added tests
+ - FIO-3251 fix: values which should be cleared on hide are used in calculations before it happened
+
+### Changed
+ - Upgrade formiojs@4.14.0-rc.14
+ - Upgrade mongodb@3.6.10, nodemon@2.0.12
+ - FIO-2764: Adds an ability to have the submission contain only data that you submitted.
+ - Added indexes to queries to improve performance of resource load times.
+
+## 2.2.3-rc.2
+### Fixed
+ - FIO-3369: Removed the submissionCollection hook which was messing up submission collection.
+
+## 2.2.3-rc.1
+### Changed
+ - FIO-3099: Adds a hook for the Access-Control-Expose-Headers
+## 2.2.2
+### Changed
+ - No changes. Released 2.2.2-rc.8 as official release.
+
+## 2.2.2-rc.8
+### Fixed
+ - Issue where upgrading mailgun-transport causes server to crash.
+
+## 2.2.2-rc.7
+### Fixed
+ - Fixing tests further.
+
+## 2.2.2-rc.6
+### Fixed
+ - Custom submission collection tests.
+
+## 2.2.2-rc.5
+### Fixed
+ - Custom submission collection tests.
+
+## 2.2.2-rc.4
+### Fixed
+ - FIO-3369: Removed the submissionCollection hook which was messing up the submission collection.
+
+## 2.2.2-rc.3
+### Changed
+ - Upgrade formio-workers@1.14.16
+
+## 2.2.2-rc.2
+### Fixed
+ - FIO-3223: Fixes an error with out of memory
+ - Fixing potential references to null variables.
+
+### Changed
+ - Upgrade formio-workers@1.14.15
+
+## 2.2.2-rc.1
+### Fixed
+ - FIO-3091: added automatic useUnifiedTopology parameter setting
+ - FIO-3095: Allow for checking email accounts before sending emails.
+ - FIO-3040: Adds tests for FIO-3040 when wasn't handle the Webhook error and respond instead of spinning forever.
+
+## 2.2.1
+### Changed
+ - No changes. Released 2.2.1-rc.2 as official release.
+
+## 2.2.1-rc.2
+### Changed
+ - Upgrade formiojs@4.14.0-rc.5
+ - Upgrade mongodb@3.6.7, mongoose@5.12.10
+
+## 2.2.1-rc.1
+### Fixed
+ - FIO-2823: Fixes an issue when custom mongodb collection on a resource breaks the resource and the submission data cannot be accessed
+ - Changed action items "require" to "required"
+ - Added extra check to prevent server crashes
+
+### Changed
+ - Upgrade formiojs@4.13.2-rc.2
+ - Upgrade dependencies.
+
+## 2.2.0
+### Changed
+ - Official release of 2.2.0-rc.2
+
+## 2.2.0-rc.2
+### Fixed
+ - FIO-2766: preventing unathorized users from viewing form definition
+
+## 2.2.0-rc.1
+### Changed
+ - Upgrade formiojs@4.13.1-rc.1
+
+### Fixed
+ - FIO-2484: Implements Split Roles PR with Group permission
+
+## 2.1.1
+### Changed
+ - No changes. Official Release.
+
+## 2.1.1-rc.2
+### Fixed
+ - Modified the expiring indexes to have try/caches around all instances.
+
+## 2.1.1-rc.1
+### Changed
+ - Adding try/catch around expiring indexes for DB's that don't support it.
+
+## 2.1.0
+### Changed
+ - Upgrade formiojs@4.13.0
+
+## 2.1.0-rc.18
+### Changed
+ - Upgrade formiojs@4.13.0-rc.27
+
+## 2.1.0-rc.17
+### Changed
+ - Upgrade formiojs@4.13.0-rc.26
+ - Upgrade resourcejs@2.3.4
+ - Upgrade other dependencies.
+
+## 2.1.0-rc.16
+ - Upgrade formiojs@4.13.0-rc.25
+
+## 2.1.0-rc.15
+### Fixed
+ - FIO-2634: Fixes an issue where Signatures/Files values are excluded from the response when load subForms submissions by a reference
+
+### Changed
+ - Upgrade formiojs@4.13.0-rc.23
+ - Upgrade other dependencies.
+
+## 2.1.0-rc.14
+### Fixed
+ - Upgrade formiojs@4.13.0-rc.20
+
+## 2.1.0-rc.13
+### Fixed
+ - Updated html-entities@2.1.1, mongodb@3.6.5, mocha@8.3.2, csv@5.4.0, mongoose@5.12.0, eslint@7.22.0
+
+## 2.1.0-rc.12
+### Fixed
+ - FIO-1555: fixed an issue where server validation errors do not come from the server if component with error is not on the first wizard page
+
+### Changed
+ - Upgrade formiojs@4.13.0-rc.19
+
+## 2.1.0-rc.10
+### Changed
+ - Using cloneDeep on vm sandboxes.
+ - Updated dependencies.
+
+## 2.1.0-rc.7
+### Changed
+ - Using @formio/node-fetch-http-proxy instead of local file.
+ - FIO-1528: FIO-1528: change default 'from' email address domain to use example in the deployment environment variable
+ - Ensure we cloneDeep vm context for added protection.
+
+## 2.1.0-rc.6
+### Fixed
+ - Automated tests.
+
+## 2.1.0-rc.5
+### Changed
+ - Fixed serer to work with latest formio-workers.
+
+## 2.1.0-rc.4
+### Changed
+ - Upgrade mongoose@5.11.17, eslint@7.20.0, adm-zip@0.5.3
+ - Using vm2 for added security.
+
+### Fixed
+ - FIO-476: Fixes an issue when Sketch Pad didn't show data on CSV export - showed a list of empty strings.
+ - fix: allow Docker to load git npm paths
+
+## 2.1.0-rc.3
+### Added
+ - Added action logs to form context only.
+
+### Fixed
+ - FIO-1309: Fixed recalculation of field if calculateServer is disabled.
+ - FIO-888: Adds CSV Formula Injection Protection
+ - FIO-1140: Fixes an issue where deprecated formRevision property is added when deploying a version to a stage
+
+## 2.1.0-rc.2
+### Fixed
+ - FIO-832: fixed error code returned when trying to delete the Everyone role
+
+## 2.1.0-rc.1
+### Changed
+ - FOR-2866: Single submission bug using different collection master
+ - Upgrade mongoose@5.11.14, supertest@6.1.3, html-entities@2.1.0, eslint@7.19.0, adm-zip@0.5.2
+
+### Fixed
+ - FIO-838: Fixes an issue when a "Save Submission to resource" action had an incorrect priority.
+ - FIO-854: Amazon DocumentDB to update default engine version to 4.0.0
+ - FIO-1163: fixed an issue where submission data is deleted for components with the same key as parent layout component
+ - FIO-911: Entire project JSON is dumped into the server logs
+ - FIO-128: Added markModifiedParameters method to utils.
+
+## 2.0.1-rc.2
+### Fixed
+ - FIO-832: fixed error code returned when trying to delete the Everyone role
+
+### Changed
+ - Upgrade nodemailer@6.4.18, mocha@8.3.0
+
+## 2.0.1-rc.1
+### Changed
+ - Upgrade formiojs@4.13.0-rc.9
+ - Upgrade mongodb@3.6.4, mongoose@5.11.15, supertest@6.1.3, html-entities@2.1.0, eslint@7.19.0, adm-zip@0.5.2, moment-timezone@0.5.33
+
+## 2.0.0
+### Changed
+ - No changes. Released 2.0.0-rc.42 as official release.
+
+## 2.0.0-rc.42
+### Fixed
+ - FIO-1175: User is being automatically logged out on remote server
+ - Fix: add a token for resources select components
+
+### Changed
+ - Upgrade mongoose@5.11.12, fs-extra@9.1.0, eslint@7.18.0, supertest@6.1.1
+
+## 2.0.0-rc.41
+### Changed
+ - Temporarily reverted the expiring action logs. Will wait for 2.1.0 to release this feature.
+ - Changed field match access schema to have splitted permissions instead
+
+## 2.0.0-rc.40
+### Fixed
+ - FIO-1125: Unable to download a CSV report with Select component
+
+### Changed
+ - Upgrade formiojs@4.13.0-rc.6
+
+## 2.0.0-rc.39
+### Changed
+ - FOR-2762: Changes default permissions for a new project
+ - Upgrade formio-workers@1.14.10, mongoose@5.11.11, resourcejs@2.3.3
+
+## 2.0.0-rc.38
+### Breaking Change
+ - FIO-1027: Adds an ability to switch on/off permissions to access the EXISTS endpoint. Makes access with permissions by default.
+
+### Fixed
+ - FIO-847: Fixes an issue when in post submission data where any datagrid or editgrid are some not empty string, the server was crashing.
+ - FIO-761: Fixes an issue when the server throws 'Error: cyclic dependency detected' when calling Webhook action
+
+### Changed
+ - Upgrade formiojs@4.13.0-rc.5
+ - Upgrade mongoose@5.11.10
+
+## 2.0.0-rc.37
+### Changed
+ - Removed the LegacyValidator.
+ - Decreased limit for resource select to avoid error
+ - Fixed typo in fieldMatchAccess
+ - FIO-853: Added check if fieldMatchAccess object is not empty
+ - FIO-1035: Fixes an issue when a nested form inside the nested Form was receiving "Too many recursive requests." on submit.
+
+## 2.0.0-rc.36
+### Fixed
+ - FOR-2868: Adds an ability to pass the rejectUnauthorized flag to the fetch method.
+ - FIO-994: Makes onlyAvailableItems validation optional
+
+### Changed
+ - Updated formiojs@4.12.3, html-entities@1.3.3, mongoose@5.11.8, nodemailer@6.4.17, mssql@6.3.0
+
+## 2.0.0-rc.35
+### Fixed
+ - FOR-2874: Added server side validation of recaptcha token.
+ - Adding expiring action items.
+
+### Changed
+ - Upgrade formiojs@4.12.2
+ - Upgrade config@3.3.3, nodemailer-mailgun-transport@2.0.2, semver@7.3.4, mongoose@5.11.4, eslint@7.15.0, adm-zip@0.5.1
+
 ## 2.0.0-rc.34
 ### Fixed
  - Issues with ResetPassword action not setting form object correctly within email parameters.
@@ -14,7 +461,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/)
 
 ## 2.0.0-rc.32
 ### Added
- - FJS-1380: Adds field actions for Select and Radio which allow onlyAvailableItems validation 
+ - FJS-1380: Adds field actions for Select and Radio which allow onlyAvailableItems validation
 
 ### Fixed
  - FJS-1297: fix submission of nested wizards

@@ -1,36 +1,23 @@
 """Common setup and fixtures for the pytest suite used by this service."""
+from pathlib import Path
 
 import pytest
 from flask_migrate import Migrate, upgrade
 from sqlalchemy import event, text
 from sqlalchemy.schema import DropConstraint, MetaData
 
-from api import create_app
-from api import jwt as _jwt
-from api.models import db as _db
+from formsflow_api import create_app, setup_jwt_manager
+
+from formsflow_api.models import db as _db
+from formsflow_api.utils import jwt as _jwt
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="session", autouse=True)
 def app():
     """Return a session-wide application configured in TEST mode."""
     _app = create_app("testing")
 
     return _app
-
-
-@pytest.fixture(scope="function")
-def app_ctx(event_loop):  # pylint: disable=unused-argument
-    # def app_ctx():
-    """Return a session-wide application configured in TEST mode."""
-    _app = create_app("testing")
-    with _app.app_context():
-        yield _app
-
-
-@pytest.fixture
-def config(app):  # pylint: disable=redefined-outer-name
-    """Return the application config."""
-    return app.config
 
 
 @pytest.fixture(scope="function")
@@ -41,15 +28,15 @@ def app_request():
     return _app
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture
 def client(app):  # pylint: disable=redefined-outer-name
     """Return a session-wide Flask test client."""
     return app.test_client()
 
 
 @pytest.fixture(scope="session")
-def jwt():
-    """Return a session-wide jwt manager."""
+def jwt(app):
+    """Return session-wide jwt manager."""
     return _jwt
 
 

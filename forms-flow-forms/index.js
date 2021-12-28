@@ -13,6 +13,7 @@ const Q = require('q');
 const nunjucks = require('nunjucks');
 const util = require('./src/util/util');
 const log = require('debug')('formio:log');
+const gc = require('expose-gc/function');
 
 const originalGetToken = util.Formio.getToken;
 const originalEvalContext = util.Formio.Components.components.component.prototype.evalContext;
@@ -110,6 +111,19 @@ module.exports = function(config) {
         util.Formio.getToken = originalGetToken;
         util.Formio.Components.components.component.prototype.evalContext = originalEvalContext;
 
+        try {
+          if (config.maxOldSpace) {
+            const heap = process.memoryUsage().heapTotal / 1024 / 1024;
+
+            if ((config.maxOldSpace * 0.8) < heap) {
+              gc();
+            }
+          }
+        }
+        catch (error) {
+          console.log(error);
+        }
+
         next();
       });
 
@@ -180,7 +194,7 @@ module.exports = function(config) {
 
       // The access handler.
       if (!router.formio.hook.invoke('init', 'access', router.formio)) {
-        router.get('/access', router.formio.middleware.accessHandler);
+        router.get('/access', router.formio.middleware.tokenVerify,router.formio.middleware.accessHandler);
       }
 
       // Authorize all urls based on roles and permissions.
@@ -200,7 +214,7 @@ module.exports = function(config) {
         mongoConfig.useNewUrlParser = true;
       }
       if (!mongoConfig.hasOwnProperty('keepAlive')) {
-        mongoConfig.keepAlive = 120;
+        mongoConfig.keepAlive = true;
       }
       if (process.env.MONGO_HIGH_AVAILABILITY) {
         mongoConfig.mongos = true;
@@ -215,7 +229,6 @@ module.exports = function(config) {
       }
 
       mongoConfig.useUnifiedTopology = true;
-      mongoConfig.useCreateIndex = true;
 
       if (config.mongoSSL) {
         mongoConfig = {
@@ -225,9 +238,7 @@ module.exports = function(config) {
       }
 
       // Connect to MongoDB.
-      mongoose.connect(mongoUrl, mongoConfig);
-      mongoose.set('useFindAndModify', false);
-      mongoose.set('useCreateIndex', true);
+      mongoose.connect(mongoUrl,  mongoConfig );
 
       // Trigger when the connection is made.
       mongoose.connection.on('error', function(err) {

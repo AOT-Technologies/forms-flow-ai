@@ -2,7 +2,7 @@
 
 const _ = require('lodash');
 const async = require('async');
-const vm = require('vm');
+const {VM} = require('vm2');
 const util = require('../util/util');
 
 const LOG_EVENT = 'Save Submission Action';
@@ -14,16 +14,6 @@ module.exports = function(router) {
   const ecode = router.formio.util.errorCodes;
   const logOutput = router.formio.log || debug;
   const log = (...args) => logOutput(LOG_EVENT, ...args);
-
-  // Execute a pre-save method for the SaveSubmission action.
-  Action.schema.pre('save', function(next) {
-    if (this.name === 'save') {
-      // Ensure that save actions with resource associations are always executed
-      // before the ones without resource association.
-      this.priority = (this.settings && this.settings.resource) ? 11 : 10;
-    }
-    next();
-  });
 
   class SaveSubmission extends Action {
     static info(req, res, next) {
@@ -213,15 +203,24 @@ module.exports = function(router) {
         });
 
         if (this.settings.transform) {
-          const script = new vm.Script(this.settings.transform);
-          const sandbox = {
-            submission: (res.resource && res.resource.item) ? res.resource.item : req.body,
-            data: submission.data,
-          };
-          script.runInContext(vm.createContext(sandbox), {
-            timeout: 500
-          });
-          submission.data = sandbox.data;
+          try {
+            let vm = new VM({
+              timeout: 500,
+              sandbox: {
+                submission: (res.resource && res.resource.item) ? res.resource.item : req.body,
+                data: submission.data,
+              },
+              eval: false,
+              fixAsync: true
+            });
+
+            const newData = vm.run(this.settings.transform);
+            submission.data = newData;
+            vm = null;
+          }
+          catch (err) {
+            debug(`Error in submission transform: ${err.message}`);
+          }
         }
 
         return submission;

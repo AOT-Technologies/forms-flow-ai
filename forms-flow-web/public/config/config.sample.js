@@ -34,8 +34,8 @@ window["_env_"] = {
   ////Environment Variables for forms-flow-bpm////
 
   //Insight Api End point
-  REACT_APP_INSIGHT_API_BASE: "Insight Api base end-point",
-  REACT_APP_INSIGHTS_API_KEY: "<API_KEY from REDASH>",
+  //REACT_APP_INSIGHT_API_BASE: "Insight Api base end-point",
+  //REACT_APP_INSIGHTS_API_KEY: "<API_KEY from REDASH>",
   //web Api End point
   REACT_APP_WEB_BASE_URL: "Web Api base end-point",
   //bpm base api
@@ -45,7 +45,7 @@ window["_env_"] = {
   REACT_APP_APPLICATION_NAME:"formsflow.ai",
   //custom url
   REACT_APP_WEB_BASE_CUSTOM_URL:"Custom URL",
-
+  REACT_APP_FORMIO_JWT_SECRET:"Jwt secret key",
   REACT_APP_USER_ACCESS_PERMISSIONS:{accessAllowApplications:false, accessAllowSubmissions:false}
 
 };

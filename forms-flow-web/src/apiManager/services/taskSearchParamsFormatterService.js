@@ -1,3 +1,4 @@
+ /* istanbul ignore file */
 import {
   FILTER_OPERATOR_TYPES,
   Filter_Search_Types, MAX_RESULTS,

@@ -55,9 +55,10 @@ module.exports = (router) => {
           placeholder: 'Select the resources we should login against.',
           dataSrc: 'url',
           data: {url: `${basePath}?type=resource&limit={{ limit }}`},
+          authenticate: true,
           valueProperty: '_id',
           template: '<span>{{ item.title }}</span>',
-          limit: 4294967295,
+          limit: 10000,
           multiple: true,
           validate: {
             required: true,
@@ -292,13 +293,23 @@ module.exports = (router) => {
             req.token = response.token.decoded;
             res.token = response.token.token;
             req['x-jwt-token'] = response.token.token;
-            router.formio.auth.currentUser(req, res, (err) => {
-              if (err) {
-                log(req, ecode.auth.EAUTH, err);
-                return res.status(401).send(err.message);
+
+            hook.alter('getPrimaryProjectAdminRole', req, res, (err, role) => {
+              if (req.user.roles.includes(role)) {
+                req.isAdmin = true;
               }
 
-              next();
+              hook.alter('oAuthResponse', req, res, () => {
+                router.formio.auth.currentUser(req, res, (err) => {
+                  if (err) {
+                    log(req, ecode.auth.EAUTH, err);
+                    return res.status(401).send(err.message);
+                  }
+                  hook.alter('currentUserLoginAction', req, res);
+
+                  next();
+                });
+              });
             });
           });
         },

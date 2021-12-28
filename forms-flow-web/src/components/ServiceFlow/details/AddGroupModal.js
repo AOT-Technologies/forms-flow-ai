@@ -63,7 +63,7 @@ const AddGroupModal= React.memo((props)=> {
                     </button>
                   </Col>
                   <Col lg={8} xs={12} sm={8} md={8} xl={8}>
-                    <input type="text" placeholder="Group ID" className="add text-color" value={groupToAdd} onChange={(e)=>updateGroupToAdd(e.target.value)}/>
+                    <input type="text" placeholder="Group ID" data-testid="Group ID" className="add text-color" value={groupToAdd} onChange={(e)=>updateGroupToAdd(e.target.value)}/>
                   </Col>
                 </Row>
                 <Row className="mb-2 modal-scroll">
@@ -71,7 +71,7 @@ const AddGroupModal= React.memo((props)=> {
                     <Col lg={{ span: 8, offset: 4 }} xs={12} sm={{ span: 8, offset: 4 }} md={{ span: 8, offset: 4 }} xl={{ span: 8, offset: 4 }} >
                       {groups.map((group,index)=>
                         <div className="mt-1" key={index}>
-                          <i className="fa fa-times mr-2 click-element text-blue" onClick={()=>onDeleteGroup(group)}/>
+                          <i className="fa fa-times mr-2 click-element text-blue" data-testid="remove-btn" onClick={()=>onDeleteGroup(group)}/>
                           <span className="word-break">{group.groupId}</span>
                         </div>
                       )}

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 export const SearchByLastName = "lastNameLike";
 export const SearchByFirstName = "firstNameLike";
 export const SearchByEmail = "emailLike";

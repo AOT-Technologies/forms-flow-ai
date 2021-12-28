@@ -60,12 +60,14 @@ services:
       - WEBSOCKET_SECURITY_ORIGIN=${WEBSOCKET_SECURITY_ORIGIN}
       - WEBSOCKET_MESSAGE_TYPE=${WEBSOCKET_MESSAGE_TYPE:-TASK_EVENT}
       - WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
+      - DATA_BUFFER_SIZE=${DATA_BUFFER_SIZE:-2}
+      - IDENTITY_PROVIDER_MAX_RESULT_SIZE=${IDENTITY_PROVIDER_MAX_RESULT_SIZE:-250}
     networks:
       - forms-flow-network
  
   forms-flow-forms-db:
     container_name: forms-flow-forms-db
-    image: mongo
+    image: mongo:5.0
     restart: always
     hostname: forms-flow-forms-db
     ports:
@@ -102,6 +104,8 @@ services:
       ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_DOMAIN: ${FORMIO_DEFAULT_PROJECT_URL}
+      FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET:---- change me now ---}
+      
     stdin_open: true # -i
     tty: true # -t
     networks:
@@ -127,8 +131,6 @@ services:
         - REACT_APP_API_PROJECT_URL=${FORMIO_DEFAULT_PROJECT_URL}
         - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
         - REACT_APP_ANONYMOUS_ID=${ANONYMOUS_ID}
-        - REACT_APP_INSIGHT_API_BASE=${INSIGHT_API_URL}
-        - REACT_APP_INSIGHTS_API_KEY=${INSIGHT_API_KEY}
         - REACT_APP_WEB_BASE_URL=${FORMSFLOW_API_URL}
         - REACT_APP_CAMUNDA_API_URI=${CAMUNDA_API_URL}
         - REACT_APP_WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
@@ -137,6 +139,7 @@ services:
         - REACT_APP_APPLICATION_NAME=${APPLICATION_NAME:-formsflow.ai}
         - REACT_APP_USER_ACCESS_PERMISSIONS=${USER_ACCESS_PERMISSIONS}
         - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL:-}
+        - REACT_APP_FORMIO_JWT_SECRET=${FORMIO_JWT_SECRET:---- change me now ---}
     volumes:
       - '.:/app'
       - '/app/node_modules'
@@ -176,6 +179,8 @@ services:
     volumes:
       - ./:/app:rw
     environment:
+      INSIGHT_API_KEY: ${INSIGHT_API_KEY}
+      INSIGHT_API_URL: ${INSIGHT_API_URL}
       DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
       BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
       BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
@@ -189,8 +194,11 @@ services:
       JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
+      KEYCLOAK_URL: ${KEYCLOAK_URL}
+      KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      KEYCLOAK_ADMIN_USERNAME: ${KEYCLOAK_ADMIN_USERNAME}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
-      # MONGODB_URI: ${FORMSFLOW_API_ANALYTICS_DB_URL:-mongodb://changeme:analytics@forms-flow-webapi-analytics-db:27017/analytics?authSource=admin&authMechanism=SCRAM-SHA-256}
     stdin_open: true # -i
     tty: true # -t
     networks:

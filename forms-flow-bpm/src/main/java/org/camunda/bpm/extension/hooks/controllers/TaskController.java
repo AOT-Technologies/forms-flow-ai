@@ -1,21 +1,27 @@
 package org.camunda.bpm.extension.hooks.controllers;
 
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
-import lombok.Data;
+import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-import org.camunda.bpm.engine.rest.dto.task.TaskDto;
+import org.camunda.bpm.extension.hooks.controllers.data.Task;
+import org.camunda.bpm.extension.hooks.controllers.data.Variable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,8 +43,9 @@ public class TaskController {
     private NamedParameterJdbcTemplate bpmJdbcTemplate;
 
     @RequestMapping(value = "/engine-rest-ext/task", method = RequestMethod.GET, produces = "application/json")
-    private @ResponseBody List<Task> getTasks(@AuthenticationPrincipal Jwt principal) {
-        List<String> groups = getGroups(principal);
+    private @ResponseBody List<Task> getTasks() throws ServletException {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> groups = getGroups(authentication);
         Map<String,Task> taskMap = new HashMap<>();
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("groups", groups);
@@ -69,8 +76,10 @@ public class TaskController {
 
 
     @RequestMapping(value = "/engine-rest-ext/task/{taskid}", method = RequestMethod.GET, produces = "application/json")
-    private @ResponseBody Task getTask(@PathVariable("taskid") String taskid,@AuthenticationPrincipal Jwt principal) {
-        List<String> groups = getGroups(principal);
+    private @ResponseBody Task getTask(@PathVariable("taskid") String taskid) throws ServletException {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> groups = getGroups(authentication);
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("groups", groups);
         parameters.addValue("taskid", taskid);
@@ -94,42 +103,29 @@ public class TaskController {
         return task;
     }
 
-    private List<String> getGroups(Jwt principal) {
-        List<String> rawgroups = principal.getClaim("groups");
-        List<String> groups = new ArrayList<>();
-        if(CollectionUtils.isNotEmpty(rawgroups)) {
-            for(String entry: rawgroups) {
-                String groupName = StringEscapeUtils.unescapeJava(entry);
-                if(StringUtils.startsWith(groupName,"/")) {
-                    groups.add(StringUtils.substring(groupName,1));
-                } else {
-                    groups.add(groupName);
-                }
+    private List<String> getGroups(Authentication authentication) throws ServletException {
 
+        Map<String, Object> claims;
+        if (authentication instanceof JwtAuthenticationToken) {
+            claims = ((JwtAuthenticationToken)authentication).getToken().getClaims();
+        } else if (authentication.getPrincipal() instanceof OidcUser) {
+            claims = ((OidcUser)authentication.getPrincipal()).getClaims();
+        } else {
+            throw new ServletException("Invalid authentication request token");
+        }
+        List<String> groupIds = new ArrayList<>();
+        if(claims != null && claims.containsKey("groups")) {
+            JSONArray groups = (JSONArray)claims.get("groups");
+            for (Object group1 : groups) {
+                String groupName = group1.toString();
+                if(StringUtils.startsWith(groupName,"/")) {
+                    groupIds.add(StringUtils.substring(groupName,1));
+                } else {
+                    groupIds.add(groupName);
+                }
             }
         }
-        return groups;
-    }
-
-    @Data
-    class Task  extends  TaskDto {
-        private String processInstanceId;
-        private String processDefinitionKey;
-        private String taskDefinitionKey;
-        private String groupName;
-        private String status;
-        private List<Variable> variables;
-    }
-
-    @Data
-    class Variable {
-        private String name;
-        private String value;
-
-        Variable(String name, String value) {
-            this.name = name;
-            this.value = value;
-        }
+        return groupIds;
     }
 
     enum TaskQuery {

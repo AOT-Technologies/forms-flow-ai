@@ -35,7 +35,7 @@ module.exports = function(router) {
 
     // Map permissions to array of Mongo conditions
     const fieldsToCheck = Object.entries(req.submissionFieldMatchAccess).flatMap(([, conditions]) => {
-      return conditions.map((condition) => {
+      return Array.isArray(conditions) ? conditions.map((condition) => {
         if (hasRolesIntersection(condition)) {
           const {formFieldPath, operator, value, valueType} = condition;
 
@@ -43,7 +43,7 @@ module.exports = function(router) {
             return {[formFieldPath]:  {[operator]: util.castValue(valueType, value)}};
           }
         }
-      });
+      }) : [];
     }).filter((condition) => !!condition);
 
     if (userId) {
@@ -59,6 +59,11 @@ module.exports = function(router) {
     // If there no conditions which may give an access to the current user, return the Unauthorized response
     if (!query) {
       return res.sendStatus(401);
+    }
+
+    if (req.modelQuery) {
+      const orCondition = _.get(req.modelQuery, '_conditions["$or"]', []);
+      query['$or'].push(...orCondition);
     }
 
     req.modelQuery = req.modelQuery || req.model || this.model;

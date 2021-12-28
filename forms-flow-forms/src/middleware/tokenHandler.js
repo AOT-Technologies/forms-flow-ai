@@ -43,7 +43,8 @@ module.exports = (router) => {
 
     // Set the headers if they haven't been sent yet.
     if (!res.headersSent) {
-      res.setHeader('Access-Control-Expose-Headers', 'x-jwt-token');
+      const headers = router.formio.hook.alter('accessControlExposeHeaders', 'x-jwt-token');
+      res.setHeader('Access-Control-Expose-Headers', headers);
       res.setHeader('x-jwt-token', res.token);
     }
   };
@@ -121,7 +122,8 @@ module.exports = (router) => {
     }
 
     // Decode/refresh the token and store for later middleware.
-    jwt.verify(token, jwtConfig.secret, (err, decoded) => {
+    
+     jwt.verify(token, process.env.FORMIO_JWT_SECRET||jwtConfig.secret, (err, decoded) => {
       if (err || !decoded) {
         debug.handler(err || `Token could not decoded: ${token}`);
         router.formio.audit('EAUTH_TOKENBAD', req, err);

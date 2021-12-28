@@ -1,3 +1,4 @@
+ /* istanbul ignore file */
 import SockJS from 'sockjs-client'
 import Stomp from 'stompjs'
 import {BPM_BASE_URL_SOCKET_IO} from "../apiManager/endpoints/config";

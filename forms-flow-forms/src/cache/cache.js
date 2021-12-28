@@ -424,7 +424,7 @@ module.exports = function(router) {
           const formId = component.form.toString();
           formIds.push(formId);
           debug.loadSubForms(`Found subform ${formId}`);
-          // TO-DO: Figure out why there are two revisions here?...
+          // 'formRevision' was used in the older builder versions
           if (component.revision || component.formRevision) {
             formRevs.push(component);
           }
@@ -465,6 +465,10 @@ module.exports = function(router) {
     },
 
     setFormComponents(components, forms) {
+      if (components.noRecurse) {
+        return;
+      }
+      components.noRecurse = true;
       util.eachComponent(components, (component) => {
         if ((component.type === 'form') && component.form) {
           const formId = component.form.toString();

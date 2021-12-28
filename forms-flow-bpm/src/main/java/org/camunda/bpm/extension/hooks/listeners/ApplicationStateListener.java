@@ -39,7 +39,6 @@ public class ApplicationStateListener extends BaseListener implements ExecutionL
         } catch (IOException e) {
             handleException(execution, ExceptionSource.EXECUTION, e);
         }
-
     }
 
     @Override

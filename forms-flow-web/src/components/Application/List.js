@@ -47,9 +47,11 @@ export const ApplicationList = React.memo(() => {
 
   const countPerPageRef = useNoRenderRef(countPerPage);
 
+  const currentPage = useNoRenderRef(page);
+  
   useEffect(()=>{
-    dispatch(getAllApplications(page,countPerPageRef.current));
-  },[dispatch,page,countPerPageRef])
+    dispatch(getAllApplications(currentPage.current,countPerPageRef.current));
+  },[dispatch,currentPage,countPerPageRef])
 
   const isClientEdit = (applicationStatus) => {
     if (getUserRolePermission(userRoles, CLIENT)||getUserRolePermission(userRoles, STAFF_REVIEWER)) {

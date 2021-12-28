@@ -2,7 +2,7 @@
 
 const Resource = require('resourcejs');
 const async = require('async');
-const vm = require('vm');
+const {VM} = require('vm2');
 const _ = require('lodash');
 const debug = {
   error: require('debug')('formio:error'),
@@ -20,6 +20,7 @@ const moment = require('moment');
  */
 module.exports = (router) => {
   const hook = require('../util/hook')(router.formio);
+  const middlewares = require('../middleware/middleware')(router);
 
   /**
    * Create the ActionIndex object.
@@ -155,6 +156,67 @@ module.exports = (router) => {
     },
 
     /**
+     * Create an action item if the form is enabled with action logs.
+     * @param req
+     * @param res
+     * @param action
+     * @param handler
+     * @param method
+     * @param done
+     */
+    createActionItem(req, res, action, handler, method, done) {
+      // Only trigger if they have logs enabled for this form.
+      if (!_.get(req.currentForm, 'settings.logs', false)) {
+        return done(null, {});
+      }
+      // Instantiate ActionItem here.
+      router.formio.mongoose.models.actionItem.create(hook.alter('actionItem', {
+        title: action.title,
+        form: req.formId,
+        submission: res.resource ? res.resource.item._id : req.body._id,
+        action: action.name,
+        handler,
+        method,
+        state: 'inprogress',
+        messages: [
+          {
+            datetime: new Date(),
+            info: 'Starting Action',
+            data: {}
+          }
+        ]
+      }, req), (err, actionItem) => {
+        if (err) {
+          return done(err);
+        }
+        return done(null, actionItem);
+      });
+    },
+
+    updateActionItem(req, actionItem, message, data = {}, state = null) {
+      // Only trigger if they have logs enabled for this form.
+      if (!_.get(req.currentForm, 'settings.logs', false)) {
+        return;
+      }
+      if (!req.actionItemPromise) {
+        req.actionItemPromise = Promise.resolve();
+      }
+      req.actionItemPromise = req.actionItemPromise.then(() => {
+        actionItem.messages.push({
+          datetime: new Date(),
+          info: message,
+          data
+        });
+
+        if (state) {
+          actionItem.state = state;
+        }
+
+        return actionItem.save();
+      });
+    },
+
+    /**
      * Execute an action provided a handler, form, and request params.
      *
      * @param handler
@@ -186,59 +248,23 @@ module.exports = (router) => {
             // Resolve the action.
             router.formio.log('Action', req, handler, method, action.name, action.title);
 
-            // Instantiate ActionItem here.
-            router.formio.mongoose.models.actionItem.create(hook.alter('actionItem', {
-              title: action.title,
-              form: req.formId,
-              submission: res.resource ? res.resource.item._id : req.body._id,
-              action: action.name,
-              handler,
-              method,
-              state: 'inprogress',
-              messages: [
-                {
-                  datetime: new Date(),
-                  info: 'Starting Action',
-                  data: {}
-                }
-              ]
-            }, req), (err, actionItem) => {
-              // Mongoose has issues if you call "save" too frequently on the same item. We need to wait till the previous
-              // save is complete before calling again.
-              if (!req.actionItemPromise) {
-                req.actionItemPromise = Promise.resolve();
-              }
-              const setActionItemMessage = (message, data = {}, state = null) => {
-                req.actionItemPromise = req.actionItemPromise.then(() => {
-                  actionItem.messages.push({
-                    datetime: new Date(),
-                    info: message,
-                    data
-                  });
-
-                  if (state) {
-                    actionItem.state = state;
-                  }
-
-                  return actionItem.save();
-                });
-              };
-
+            // Create a new action item.
+            this.createActionItem(req, res, action, handler, method, (err, actionItem) => {
               action.resolve(handler, method, req, res, (err) => {
                 if (err) {
                   // Error has occurred.
-                  setActionItemMessage('Error Occurred', err, 'error');
+                  this.updateActionItem(req, actionItem,'Error Occurred', err, 'error');
                   return cb(err);
                 }
 
                 // Action has completed successfully
-                setActionItemMessage(
+                this.updateActionItem(req, actionItem,
                   'Action Resolved (no longer blocking)',
                   {},
                   actionItem.state === 'inprogress' ? 'complete' : actionItem.state,
                 );
                 return cb();
-              }, setActionItemMessage);
+              }, (...args) => this.updateActionItem(req, actionItem, ...args));
             });
           });
         }, (err) => {
@@ -268,11 +294,7 @@ module.exports = (router) => {
         }
 
         try {
-          const script = new vm.Script(json
-            ? `execute = jsonLogic.apply(${condition.custom}, { data, form, _, util })`
-            : condition.custom);
-
-          const sandbox = await hook.alter('actionContext', {
+          const params = await hook.alter('actionContext', {
             jsonLogic: util.FormioUtils.jsonLogic,
             data: req.body.data,
             form: req.form,
@@ -285,11 +307,33 @@ module.exports = (router) => {
             _
           }, req);
 
-          script.runInContext(vm.createContext(sandbox), {
-            timeout: 500
+          let vm = new VM({
+            timeout: 500,
+            sandbox: {
+              execute: params.execute,
+              query: params.query,
+              data: params.data,
+              form: params.form,
+              submission: params.submission,
+              previous: params.previous,
+            },
+            eval: false,
+            fixAsync: true
           });
 
-          return sandbox.execute;
+          vm.freeze(params.jsonLogic, 'jsonLogic');
+          vm.freeze(params.FormioUtils, 'util');
+          vm.freeze(params.moment, 'moment');
+          vm.freeze(params._, '_');
+
+          const result = vm.run(json ?
+            `execute = jsonLogic.apply(${condition.custom}, { data, form, _, util })` :
+            condition.custom
+          );
+
+          vm = null;
+
+          return result;
         }
         catch (err) {
           router.formio.log(
@@ -594,7 +638,7 @@ JSON: { "in": [ "authenticated", { "var": "data.roles" } ] }`;
   }
 
   // Return a list of available actions.
-  router.get('/form/:formId/actions', (req, res, next) => {
+  router.get('/form/:formId/actions', middlewares.tokenVerify,(req, res, next) => {
     const result = [];
 
     // Add an action to the results array.

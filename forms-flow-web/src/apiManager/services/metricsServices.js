@@ -1,6 +1,6 @@
+ /* istanbul ignore file */
 import { httpGETRequest } from "../httpRequestHandler";
 import API from "../endpoints";
-import * as moment from "moment";
 import {
   setMetricsSubmissionCount,
   setMetricsLoader,
@@ -12,11 +12,9 @@ import {
 } from "../../actions/metricsActions";
 
 export const fetchMetricsSubmissionCount = (fromDate, toDate, setSearchBy,...rest) => {
-  const fdate = moment.utc(fromDate).format("YYYY-MM-DD");
-  const ldate = moment.utc(toDate).format("YYYY-MM-DD");
   return (dispatch) => {
     dispatch(setMetricsLoadError(false));
-    httpGETRequest(`${API.METRICS_SUBMISSIONS}?from=${fdate}&to=${ldate}&orderBy=${setSearchBy}`)
+    httpGETRequest(`${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}&orderBy=${setSearchBy}`)
       .then((res) => {
         if (res.data) {
           dispatch(setMetricsSubmissionCount(res.data.applications));
@@ -25,8 +23,8 @@ export const fetchMetricsSubmissionCount = (fromDate, toDate, setSearchBy,...res
             dispatch(
               fetchMetricsSubmissionStatusCount(
                 res.data.applications[0].mapperId,
-                fdate,
-                ldate,
+                fromDate,
+                toDate,
                 setSearchBy
               )
             );
@@ -54,14 +52,14 @@ export const fetchMetricsSubmissionCount = (fromDate, toDate, setSearchBy,...res
 
 export const fetchMetricsSubmissionStatusCount = (id, fromDate, toDate ,setSearchBy) => {
   // const done = rest.length ? rest[0] : () => {};
-  const fdate = moment.utc(fromDate).format("YYYY-MM-DD");
-  const ldate = moment.utc(toDate).format("YYYY-MM-DD");
+  // const fdate = moment.utc(fromDate).format("yyyy-MM-DDTHH:mm:ssZ").replace("+","%2B");
+  // const ldate = moment.utc(toDate).format("yyyy-MM-DDTHH:mm:ssZ").replace("+","%2B");
 
   return (dispatch) => {
     dispatch(setSelectedMetricsId(id));
     // httpPOSTRequest(API.GET_TASK_API, { taskVariables: [] })
     httpGETRequest(
-      `${API.METRICS_SUBMISSIONS}/${id}?from=${fdate}&to=${ldate}&orderBy=${setSearchBy}`)
+      `${API.METRICS_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}&orderBy=${setSearchBy}`)
       .then((res) => {
         if (res.data) {
           dispatch(setMetricsSubmissionStatusCount(res.data.applications));

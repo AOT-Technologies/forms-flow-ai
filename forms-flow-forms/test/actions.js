@@ -7,6 +7,7 @@ const _ = require('lodash');
 const chance = new (require('chance'))();
 const http = require('http');
 const url = require('url');
+const { UV_FS_O_FILEMAP } = require('constants');
 const docker = process.env.DOCKER;
 
 module.exports = (app, template, hook) => {
@@ -478,17 +479,27 @@ module.exports = (app, template, hook) => {
       let port = 4002;
       let webhookSubmission = null;
       let webhookHandler = () => {};
+      let webhookServer = null;
 
       // Create a new server.
       const newServer = (ready) => {
-        const server = http.createServer((request) => {
+        const server = http.createServer((request, response) => {
           let body = [];
-          request.on('data', (chunk) => {
-            body.push(chunk);
-          }).on('end', () => {
-            body = Buffer.concat(body).toString();
-            webhookHandler(body ? JSON.parse(body) : body, url.parse(request.url, true));
-          });
+
+          if (request.url === '/plain-text') {
+            response.setHeader('Content-Type', 'text/plain; charset=utf-8;');
+            response.write('200 OK');
+            response.statusCode = 200;
+            response.end();
+          }
+          else {
+            request.on('data', (chunk) => {
+              body.push(chunk);
+            }).on('end', () => {
+              body = Buffer.concat(body).toString();
+              webhookHandler(body ? JSON.parse(body) : body, url.parse(request.url, true));
+            });
+          }
         });
         server.port = port++;
         server.url = `http://localhost:${server.port}`;
@@ -504,6 +515,8 @@ module.exports = (app, template, hook) => {
           if (err) {
             return done(err);
           }
+
+          webhookServer = server;
 
           request(app)
             .post(hook.alter('url', '/form', template))
@@ -660,12 +673,180 @@ module.exports = (app, template, hook) => {
             }
           });
       });
+
+     if (app.hasProject) {
+      describe('Webhook with non JSON response', () => {
+        if (docker) {
+          return;
+        }
+
+        // The temp form with the add RoleAction for existing submissions.
+        let webhookForm2 = {
+          title: 'Webhook Form 2',
+          name: 'webhookform2',
+          path: 'webhookform2',
+          type: 'form',
+          access: [],
+          submissionAccess: [],
+          components: [
+            {
+              type: 'textfield',
+              validate: {
+                custom: '',
+                pattern: '',
+                maxLength: '',
+                minLength: '',
+                required: false,
+              },
+              defaultValue: '',
+              multiple: false,
+              suffix: '',
+              prefix: '',
+              placeholder: 'foo',
+              key: 'firstName',
+              label: 'First Name',
+              inputMask: '',
+              inputType: 'text',
+              input: true,
+            },
+            {
+              type: 'textfield',
+              validate: {
+                custom: '',
+                pattern: '',
+                maxLength: '',
+                minLength: '',
+                required: false,
+              },
+              defaultValue: '',
+              multiple: false,
+              suffix: '',
+              prefix: '',
+              placeholder: 'foo',
+              key: 'lastName',
+              label: 'Last Name',
+              inputMask: '',
+              inputType: 'text',
+              input: true,
+            },
+            {
+              type: 'email',
+              persistent: true,
+              unique: false,
+              protected: false,
+              defaultValue: '',
+              suffix: '',
+              prefix: '',
+              placeholder: 'Enter your email address',
+              key: 'email',
+              label: 'Email',
+              inputType: 'email',
+              tableView: true,
+              input: true,
+            },
+            {
+              type: 'password',
+              persistent: true,
+              unique: false,
+              protected: false,
+              defaultValue: '',
+              suffix: '',
+              prefix: '',
+              placeholder: 'Enter your password',
+              key: 'password',
+              label: 'Password',
+              inputType: 'password',
+              tableView: true,
+              input: true,
+            },
+          ],
+        };
+
+        it('Should create the form and action for the webhook tests 2', (done) => {
+          request(app)
+          .post(hook.alter('url', '/form', template))
+          .set('x-jwt-token', template.users.admin.token)
+          .send(webhookForm2)
+          .expect('Content-Type', /json/)
+          .expect(201)
+          .end((err, res) => {
+            if (err) {
+              return done(err);
+            }
+
+            webhookForm2 = res.body;
+            template.users.admin.token = res.headers['x-jwt-token'];
+            request(app)
+              .post(hook.alter('url', `/form/${webhookForm2._id}/action`, template))
+              .set('x-jwt-token', template.users.admin.token)
+              .send({
+                title: 'Webhook',
+                name: 'webhook',
+                form: webhookForm2._id.toString(),
+                handler: ['after'],
+                method: ['create', 'update', 'delete'],
+                priority: 1,
+                settings: {
+                  url: `${webhookServer.url}/plain-text`,
+                  username: '',
+                  password: '',
+                  block: true
+                },
+              })
+              .expect('Content-Type', /json/)
+              .expect(201)
+              .end((err, res) => {
+                if (err) {
+                  return done(err);
+                }
+
+                template.users.admin.token = res.headers['x-jwt-token'];
+
+                done();
+              });
+          });
+        });
+
+        it('Should send a webhook with create data and receive a 400 error.', (done) => {
+          request(app)
+            .post(hook.alter('url', `/form/${webhookForm2._id}/submission`, template))
+            .set('x-jwt-token', template.users.admin.token)
+            .send({
+              data: {
+                firstName: 'Test',
+                lastName: 'Person',
+                email: 'test@example.com',
+                password: '123testing',
+              },
+            })
+            .expect(400)
+            .end((err, res) => {
+              if (err) {
+                return done(err);
+              }
+              assert.equal(res.text.indexOf('invalid json response body'), 0);
+              done();
+            });
+        });
+      });
+     }
     });
 
     describe('EmailAction Functionality tests', () => {
       if (docker) {
         return;
       }
+
+      const adminUser = (token) => {
+        const user = template.users.formioAdmin ? 'formioAdmin' : 'admin';
+
+        if (token) {
+          template.users[user].token = token;
+        }
+        else {
+          return template.users[user];
+        }
+      };
 
       // The temp form with the add RoleAction for existing submissions.
       const emailForm = {
@@ -723,7 +904,7 @@ module.exports = (app, template, hook) => {
         // Create the form.
         request(app)
           .post(hook.alter('url', '/form', template))
-          .set('x-jwt-token', template.users.admin.token)
+          .set('x-jwt-token', adminUser().token)
           .send(testForm)
           .expect('Content-Type', /json/)
           .expect(201)
@@ -734,12 +915,12 @@ module.exports = (app, template, hook) => {
 
             testForm = res.body;
             testAction.form = testForm._id;
-            template.users.admin.token = res.headers['x-jwt-token'];
+            adminUser(res.headers['x-jwt-token']);
 
             // Add the action to the form.
             request(app)
               .post(hook.alter('url', `/form/${testForm._id}/action`, template))
-              .set('x-jwt-token', template.users.admin.token)
+              .set('x-jwt-token', adminUser().token)
               .send(testAction)
               .expect('Content-Type', /json/)
               .expect(201)
@@ -749,16 +930,17 @@ module.exports = (app, template, hook) => {
                 }
 
                 testAction = res.body;
-                template.users.admin.token = res.headers['x-jwt-token'];
+                adminUser(res.headers['x-jwt-token']);
 
                 done(null, testForm, testAction);
               });
           });
       };
 
-      it('Should send an email with messages.', (done) => {
+      it('Should send an email with messages (without Reply-To header).', (done) => {
         newEmailTest({
           from: 'travis@form.io',
+          replyTo: '',
           emails: '{{ data.email }}',
           sendEach: false,
           subject: 'Hello there {{ data.firstName }} {{ data.lastName }}',
@@ -781,7 +963,7 @@ module.exports = (app, template, hook) => {
 
           request(app)
             .post(hook.alter('url', `/form/${testForm._id}/submission`, template))
-            .set('x-jwt-token', template.users.admin.token)
+            .set('x-jwt-token', adminUser().token)
             .send({
               data: {
                 firstName: 'Test',
@@ -799,9 +981,55 @@ module.exports = (app, template, hook) => {
         });
       });
 
-      it('Should send an email with multiple recipients.', (done) => {
+      it('Should send an email with messages (with Reply-To header).', (done) => {
+        newEmailTest({
+          from: 'travis@form.io',
+          replyTo: 'reply@example.com',
+          emails: '{{ data.email }}',
+          sendEach: false,
+          subject: 'Hello there {{ data.firstName }} {{ data.lastName }}',
+          message: 'Howdy, {{ id }}',
+        }, (err, testForm) => {
+          if (err) {
+            return done(err);
+          }
+
+          // Check for an email.
+          const event = template.hooks.getEmitter();
+          event.once('newMail', (email) => {
+            assert.equal(email.from, 'travis@form.io');
+            assert.equal(email.to, 'test@example.com');
+            assert(email.html.startsWith('Howdy, '));
+            assert.equal(email.subject, 'Hello there Test Person');
+            assert.equal(email.replyTo, 'reply@example.com');
+
+            done();
+          });
+
+          request(app)
+            .post(hook.alter('url', `/form/${testForm._id}/submission`, template))
+            .set('x-jwt-token', adminUser().token)
+            .send({
+              data: {
+                firstName: 'Test',
+                lastName: 'Person',
+                email: 'test@example.com',
+              },
+            })
+            .expect(201)
+            .expect('Content-Type', /json/)
+            .end((err) => {
+              if (err) {
+                return done(err);
+              }
+            });
+        });
+      });
+
+      it('Should send an email with multiple recipients (without Reply-To header).', (done) => {
         newEmailTest({
           from: '{{ data.email }}',
+          replyTo: '',
           emails: '{{ data.email }}, gary@form.io',
           subject: 'Hello there {{ data.firstName }} {{ data.lastName }}',
           message: 'Howdy, {{ id }}',
@@ -823,7 +1051,7 @@ module.exports = (app, template, hook) => {
 
           request(app)
             .post(hook.alter('url', `/form/${testForm._id}/submission`, template))
-            .set('x-jwt-token', template.users.admin.token)
+            .set('x-jwt-token', adminUser().token)
             .send({
               data: {
                 firstName: 'Joe',
@@ -841,9 +1069,54 @@ module.exports = (app, template, hook) => {
         });
       });
 
-      it('Should send an email with multiple separate messages.', (done) => {
+      it('Should send an email with multiple recipients (with Reply-To header).', (done) => {
+        newEmailTest({
+          from: '{{ data.email }}',
+          replyTo: 'reply@example.com',
+          emails: '{{ data.email }}, gary@form.io',
+          subject: 'Hello there {{ data.firstName }} {{ data.lastName }}',
+          message: 'Howdy, {{ id }}',
+        }, (err, testForm) => {
+          if (err) {
+            return done(err);
+          }
+
+          // Check for an email.
+          const event = template.hooks.getEmitter();
+          event.once('newMail', (email) => {
+            assert.equal(email.from, 'joe@example.com');
+            assert.equal(email.to, 'joe@example.com, gary@form.io');
+            assert(email.html.startsWith('Howdy, '));
+            assert.equal(email.subject, 'Hello there Joe Smith');
+            assert.equal(email.replyTo, 'reply@example.com');
+
+            done();
+          });
+
+          request(app)
+            .post(hook.alter('url', `/form/${testForm._id}/submission`, template))
+            .set('x-jwt-token', adminUser().token)
+            .send({
+              data: {
+                firstName: 'Joe',
+                lastName: 'Smith',
+                email: 'joe@example.com',
+              },
+            })
+            .expect(201)
+            .expect('Content-Type', /json/)
+            .end((err) => {
+              if (err) {
+                return done(err);
+              }
+            });
+        });
+      });
+
+      it('Should send an email with multiple separate messages (without Reply-To header).', (done) => {
         newEmailTest({
           from: 'travis@form.io',
+          replyTo: '',
           emails: '{{ data.email }}, gary@form.io',
           sendEach: true,
           subject: 'Hello there {{ data.firstName }} {{ data.lastName }}',
@@ -870,7 +1143,7 @@ module.exports = (app, template, hook) => {
 
           request(app)
             .post(hook.alter('url', `/form/${testForm._id}/submission`, template))
-            .set('x-jwt-token', template.users.admin.token)
+            .set('x-jwt-token', adminUser().token)
             .send({
               data: {
                 firstName: 'Test',
@@ -888,14 +1161,64 @@ module.exports = (app, template, hook) => {
         });
       });
 
-      it('Should send a giant email to large amount of people.', (done) => {
+      it('Should send an email with multiple separate messages (with Reply-To header).', (done) => {
+        newEmailTest({
+          from: 'travis@form.io',
+          replyTo: 'reply@example.com',
+          emails: '{{ data.email }}, gary@form.io',
+          sendEach: true,
+          subject: 'Hello there {{ data.firstName }} {{ data.lastName }}',
+          message: 'Howdy, {{ id }}',
+        }, (err, testForm) => {
+          if (err) {
+            return done(err);
+          }
+
+          // Check for an email.
+          const event = template.hooks.getEmitter();
+          const emailTos = {'gary@form.io': true, 'test@example.com': true};
+          event.on('newMail', (email) => {
+            assert.equal(email.from, 'travis@form.io');
+            assert(emailTos[email.to]);
+            delete emailTos[email.to];
+            assert.equal(email.html.indexOf('Howdy, '), 0);
+            assert.equal(email.subject, 'Hello there Test Person');
+            assert.equal(email.replyTo, 'reply@example.com');
+            if (Object.keys(emailTos).length === 0) {
+              event.removeAllListeners('newMail');
+              done();
+            }
+          });
+
+          request(app)
+            .post(hook.alter('url', `/form/${testForm._id}/submission`, template))
+            .set('x-jwt-token', adminUser().token)
+            .send({
+              data: {
+                firstName: 'Test',
+                lastName: 'Person',
+                email: 'test@example.com',
+              },
+            })
+            .expect(201)
+            .expect('Content-Type', /json/)
+            .end((err) => {
+              if (err) {
+                done(err);
+              }
+            });
+        });
+      });
+
+      it('Should send a giant email to large amount of people (without Reply-To header).', (done) => {
         const amountOfEmails = 10000;
         const addresses = _.range(amountOfEmails).map((index) => `test${index}@example.com`).join(',');
-        const message = chance.paragraph({ sentences: 1000 });
+        const message = chance.paragraph({sentences: 1000});
         let receivedEmails = 0;
 
         newEmailTest({
           from: 'travis@form.io',
+          replyTo: false,
           emails: addresses,
           sendEach: true,
           subject: 'Hello there {{ data.firstName }} {{ data.lastName }}',
@@ -908,7 +1231,6 @@ module.exports = (app, template, hook) => {
           // Check for an email.
           const event = template.hooks.getEmitter();
           event.on('newMail', (email) => {
-
             assert.equal(email.from, 'travis@form.io');
             // assert.equal(email.to, `test${receivedEmails}@example.com`);
             assert.equal(email.html, message);
@@ -924,7 +1246,7 @@ module.exports = (app, template, hook) => {
 
           request(app)
             .post(hook.alter('url', `/form/${testForm._id}/submission`, template))
-            .set('x-jwt-token', template.users.admin.token)
+            .set('x-jwt-token', adminUser().token)
             .send({
               data: {
                 firstName: 'Test',
@@ -940,6 +1262,201 @@ module.exports = (app, template, hook) => {
             });
         });
       });
+
+      it('Should send a giant email to large amount of people (with Reply-To header).', (done) => {
+        const amountOfEmails = 10000;
+        const addresses = _.range(amountOfEmails).map((index) => `test${index}@example.com`).join(',');
+        const message = chance.paragraph({sentences: 1000});
+        let receivedEmails = 0;
+
+        newEmailTest({
+          from: 'travis@form.io',
+          replyTo: 'reply@example.com',
+          emails: addresses,
+          sendEach: true,
+          subject: 'Hello there {{ data.firstName }} {{ data.lastName }}',
+          message,
+        }, (err, testForm) => {
+          if (err) {
+            return done(err);
+          }
+
+          // Check for an email.
+          const event = template.hooks.getEmitter();
+          event.on('newMail', (email) => {
+            assert.equal(email.from, 'travis@form.io');
+            // assert.equal(email.to, `test${receivedEmails}@example.com`);
+            assert.equal(email.html, message);
+            assert.equal(email.subject, 'Hello there Test Person');
+            assert.equal(email.replyTo, 'reply@example.com');
+
+            receivedEmails += 1;
+
+            if (receivedEmails === amountOfEmails) {
+              event.removeAllListeners('newMail');
+              done();
+            }
+          });
+
+          request(app)
+            .post(hook.alter('url', `/form/${testForm._id}/submission`, template))
+            .set('x-jwt-token', adminUser().token)
+            .send({
+              data: {
+                firstName: 'Test',
+                lastName: 'Person',
+              },
+            })
+            .expect(201)
+            .expect('Content-Type', /json/)
+            .end((err) => {
+              if (err) {
+                done(err);
+              }
+            });
+        });
+      });
+
+      if (template.users.formioAdmin) {
+        describe('EmailAction form.io domain permissions', () => {
+          if (docker) {
+            return;
+          }
+
+          // The temp form with the add RoleAction for existing submissions.
+          const emailForm = {
+            title: 'Email Form',
+            name: 'emailform2',
+            path: 'emailform2',
+            type: 'form',
+            access: [],
+            submissionAccess: [],
+            components: [
+              {
+                type: 'textfield',
+                key: 'firstName',
+                label: 'First Name',
+                input: true,
+              },
+              {
+                type: 'textfield',
+                key: 'lastName',
+                label: 'Last Name',
+                input: true,
+              },
+              {
+                type: 'email',
+                key: 'email',
+                label: 'Email',
+                input: true,
+              },
+            ],
+          };
+
+          // The temp role add action for existing submissions.
+          const emailAction = {
+            title: 'Email',
+            name: 'email',
+            handler: ['after'],
+            method: ['create'],
+            priority: 1,
+            settings: {},
+          };
+
+          let numTests = 0;
+          const newEmailTest = (settings, done) => {
+            numTests++;
+            settings.transport = 'test';
+            let testForm = _.assign(_.cloneDeep(emailForm), {
+              title: (emailForm.title + numTests),
+              name: (emailForm.name + numTests),
+              path: (emailForm.path + numTests),
+            });
+            let testAction = _.assign(_.cloneDeep(emailAction), {
+              settings,
+            });
+
+            // Create the form.
+            request(app)
+              .post(hook.alter('url', '/form', template))
+              .set('x-jwt-token', template.users.admin.token)
+              .send(testForm)
+              .expect('Content-Type', /json/)
+              .expect(201)
+              .end((err, res) => {
+                if (err) {
+                  return done(err);
+                }
+
+                testForm = res.body;
+                testAction.form = testForm._id;
+                template.users.admin.token = res.headers['x-jwt-token'];
+
+                // Add the action to the form.
+                request(app)
+                  .post(hook.alter('url', `/form/${testForm._id}/action`, template))
+                  .set('x-jwt-token', template.users.admin.token)
+                  .send(testAction)
+                  .expect('Content-Type', /json/)
+                  .expect(201)
+                  .end((err, res) => {
+                    if (err) {
+                      return done(err);
+                    }
+
+                    testAction = res.body;
+                    template.users.admin.token = res.headers['x-jwt-token'];
+
+                    done(null, testForm, testAction);
+                  });
+              });
+          };
+
+          it('Shouldn\'t send an email from form.io domain if owner is not related to form.io domain.', (done) => {
+            newEmailTest({
+              from: 'travis@form.io',
+              emails: '{{ data.email }}',
+              sendEach: false,
+              subject: 'Hello there {{ data.firstName }} {{ data.lastName }}',
+              message: 'Howdy, {{ id }}',
+            }, (err, testForm) => {
+              if (err) {
+                return done(err);
+              }
+
+              // Check for an email.
+              const event = template.hooks.getEmitter();
+              event.once('newMail', (email) => {
+                done('Shouldn\'t send an email from form.io domain if owner is not related to form.io domain.');
+              });
+
+              request(app)
+                .post(hook.alter('url', `/form/${testForm._id}/submission`, template))
+                .set('x-jwt-token', template.users.admin.token)
+                .send({
+                  data: {
+                    firstName: 'Test',
+                    lastName: 'Person',
+                    email: 'test@example.com',
+                  },
+                })
+                .expect(201)
+                .expect('Content-Type', /json/)
+                .end((err) => {
+                  if (err) {
+                    event.removeAllListeners('newMail');
+                    return done(err);
+                  }
+                  console.log('Script execution timed out after 15000ms');
+                  setTimeout(() => {
+                    event.removeAllListeners('newMail');
+                    done();
+                  }, 15000);
+                });
+            });
+          });
+        });
+      }
     });
 
     describe('RoleAction Functionality tests', () => {
@@ -2093,7 +2610,7 @@ module.exports = (app, template, hook) => {
           });
       });
 
-      if (!docker)
+      if (!docker) 
       it('A deleted Action should remain in the database', (done) => {
         const formio = hook.alter('formio', app.formio);
         formio.actions.model.findOne({_id: tempAction._id})
@@ -2171,7 +2688,7 @@ module.exports = (app, template, hook) => {
         request(app)
           .post(hook.alter('url', `/form/${template.forms.userLogin._id}/action`, template))
           .set('x-jwt-token', template.users.admin.token)
-          .send({ data: actionLogin })
+          .send({data: actionLogin})
           .expect('Content-Type', /json/)
           .expect(201)
           .end((err, res) => {
@@ -2226,7 +2743,7 @@ module.exports = (app, template, hook) => {
         request(app)
           .post(hook.alter('url', `/form/${template.forms.userRegister._id}/action`, template))
           .set('x-jwt-token', template.users.admin.token)
-          .send({ data: actionRegister })
+          .send({data: actionRegister})
           .expect('Content-Type', /json/)
           .expect(201)
           .end((err, res) => {
@@ -2278,7 +2795,7 @@ module.exports = (app, template, hook) => {
         request(app)
           .post(hook.alter('url', `/form/${template.forms.userRegister._id}/action`, template))
           .set('x-jwt-token', template.users.admin.token)
-          .send({ data: actionRole })
+          .send({data: actionRole})
           .expect('Content-Type', /json/)
           .expect(201)
           .end((err, res) => {
@@ -2519,34 +3036,18 @@ module.exports = (app, template, hook) => {
 
       it('Should NOT execute any role actions.', (done) => {
         helper
-          .submission(helper.contextName, {
+          .submission({
             email: 'test@example.com',
             roles: ['test'],
-          }, helper.owner, [
-            /json/,
-            400
-          ])
+          })
           .execute((err) => {
             if (err) {
               return done(err);
             }
 
-            const invalidRolesValueError = {
-              message: 'Roles is an invalid value.',
-              level: 'error',
-              path: ['roles'],
-              context: {
-                validator: 'onlyAvailableItems',
-                setting: true,
-                key: 'roles',
-                label: 'Roles',
-                value: 'test'
-              }
-            };
-
-            const responseBody = helper.lastResponse.body;
-            assert.strictEqual(responseBody.name, 'ValidationError', 'Should return validation error');
-            assert.deepStrictEqual(responseBody.details[0], invalidRolesValueError);
+            const submission = helper.getLastSubmission();
+            assert(!submission.roles.includes(helper.template.roles.administrator._id));
+            assert(!submission.roles.includes(helper.template.roles.authenticated._id));
 
             done();
           });

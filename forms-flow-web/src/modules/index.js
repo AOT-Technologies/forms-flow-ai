@@ -13,6 +13,7 @@ import menu from './menuReducer';
 import bpmTasks from './bpmTaskReducer';
 import bpmForms from './bpmFormReducer';
 import formCheckList from './formCheckListReducer';
+import dashboardReducer from "./dashboardReducer";
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -24,14 +25,15 @@ const createRootReducer = (history) =>
     bpmTasks,
     bpmForms,
     form: form({ name: "form" }),
-    forms: forms({ name: "forms", query: { type: "form", tags: "common" }, sort: "-created" }),
+    forms: forms({ name: "forms", query: { type: "form", tags: "common" }, sort: "title" }),
     submission: submission({ name: "submission" }),
     submissions: submissions({ name: "submissions" }),
     router: connectRouter(history),
     metrics,
     process,
     menu,
-    formCheckList
+    formCheckList,
+    dashboardReducer
   });
 
 export default createRootReducer;

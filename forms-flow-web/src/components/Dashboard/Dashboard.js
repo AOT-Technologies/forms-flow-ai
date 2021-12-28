@@ -13,7 +13,7 @@ import Loading from "../../containers/Loading";
 import LoadError from "../Error";
 
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
-import * as moment from "moment";
+import moment from "moment";
 
 const firsDay = moment().format("YYYY-MM-01");
 
@@ -51,11 +51,11 @@ const Dashboard = React.memo(() => {
     moment(lastDay),
   ]);
   const getFormattedDate = (date) => {
-    return moment(date).format("YYYY-MM-DD");
+    return moment.utc(date).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B")
   };
   useEffect(() => {
-    const fromDate = getFormattedDate(moment(dateRange[0]));
-    const toDate = getFormattedDate(moment(dateRange[1]));
+    const fromDate = getFormattedDate(dateRange[0]);
+    const toDate = getFormattedDate(dateRange[1]);
     dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy.value));
   }, [dispatch,searchBy.value,dateRange]);
 

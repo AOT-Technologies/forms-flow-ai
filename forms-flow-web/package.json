@@ -1,14 +1,16 @@
 {
   "name": "formsflow-ai-react",
   "description": "React web app for formsflow.ai project",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "main": "index.js",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
     "build": "react-scripts --max_old_space_size=6144 build",
     "eject": "react-scripts eject",
-    "preinstall": "npx npm-force-resolutions"
+    "preinstall": "npx npm-force-resolutions",
+    "test": "react-scripts test --detectOpenHandles",
+    "coverage": "react-scripts test --coverage --watchAll=false"
   },
   "author": {
     "name": "Abhilash"
@@ -19,8 +21,12 @@
   },
   "license": "MIT",
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^12.1.1",
     "dns-packet": "^5.2.4",
     "jspdf": "^2.3.1",
+    "msw": "^0.36.0",
+    "redux-mock-store": "^1.5.4",
     "underscore": "^1.12.1",
     "xmldom": "^0.6.0"
   },
@@ -28,7 +34,7 @@
     "@material-ui/core": "^4.11.4",
     "@wojtekmaj/react-daterange-picker": "^3.1.0",
     "aot-formio-export": "file:forms-flow-util",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "bpmn-js": "^7.5.0",
     "browserslist": "^4.16.6",
     "connected-react-router": "^6.9.1",
@@ -78,9 +84,13 @@
     "dns-packet": "^5.2.4",
     "ws": "^7.4.6",
     "css-what": "^5.0.1",
-    "browserslist": "^4.16.7",
-    "glob-parent": "^6.0.1",
-    "tar": "^6.1.2"
+    "browserslist": "^4.17.6",
+    "glob-parent": "^6.0.2",
+    "tar": "^6.1.11",
+    "immer": "^9.0.6",
+    "set-value": "^4.1.0",
+    "nth-check": "^2.0.1",
+    "ansi-regex": "^5.0.1"
   },
   "browserslist": [
     ">0.2%",

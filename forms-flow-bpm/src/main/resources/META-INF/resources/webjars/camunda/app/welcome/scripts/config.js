@@ -23,3 +23,9 @@ window.camWelcomeConf = {
     vendor: ' '
   }
 };
+
+export default {
+    customScripts: [
+        'custom/logout'
+    ]
+};

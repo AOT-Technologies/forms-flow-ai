@@ -1,48 +1,51 @@
 export const ApplicationLists = [
     {
-        applicationName: "Sample Form",
+        applicationName: "New Business License Application",
         applicationStatus: "New",
         created: "2021-11-24 10:10:14.728215",
-        createdBy: "name",
-        formId: "sample form id",
+        createdBy: "john.honai",
+        formId: "6180c59a9006028298bc7e50",
         formProcessMapperId: "22",
-        formUrl: "http://localhost/form/6180c59a9004128298bc7e50/submission/619e0f8555ab3d622cae7044",
+        formUrl: "https://app2.aot-technologies.com/form/6180c59a9006028298bc7e50/submission/619e0f8555ab3d622cae7044",
         id: 5435,
         isClientEdit: false,
         modified: "2021-11-24 10:10:15.283969",
         modifiedBy: "service-account-forms-flow-bpm",
         processInstanceId: null,
         revisionNo: "1",
+        submissionId: "619e0f8555ab3d622cae7044"
     },
     {
-        applicationName: "Sample Form",
+        applicationName: "New Business License Application",
         applicationStatus: "New",
         created: "2021-11-24 10:09:21.869878",
-        createdBy: "name",
-        formId: "sample form id",
+        createdBy: "john.honai",
+        formId: "6180c59a9006028298bc7e50",
         formProcessMapperId: "22",
-        formUrl: "http://localhost/form/6180c59a9006028298bc7e50/submission/619e0f8555ab3d622cae7044",
+        formUrl: "https://app2.aot-technologies.com/form/6180c59a9006028298bc7e50/submission/619e0f8555ab3d622cae7044",
         id: 5434,
         isClientEdit: false,
         modified: "2021-11-24 10:10:15.283969",
         modifiedBy: "service-account-forms-flow-bpm",
         processInstanceId: "982b2dae-4d0e-11ec-9925-0242ac150007",
         revisionNo: "1",
+        submissionId: "619e0f5055ab3d5a35ae7041"
     },
     {
-        applicationName: "Sample Form",
+        applicationName: "New Business License Application",
         applicationStatus: "New",
         created: "2021-11-24 10:10:14.728215",
-        createdBy: "name",
-        formId: "sample form id",
+        createdBy: "john.honai",
+        formId: "6180c598900602d814bc7e4f",
         formProcessMapperId: "22",
-        formUrl: "http://localhost/form/6180c59a9006028298bc7e50/submission/619e0f8555ab3d622cae7044",
+        formUrl: "https://app2.aot-technologies.com/form/6180c59a9006028298bc7e50/submission/619e0f8555ab3d622cae7044",
         id: 5433,
         isClientEdit: false,
         modified: "2021-11-24 10:10:15.283969",
         modifiedBy: "service-account-forms-flow-bpm",
         processInstanceId: "714cec02-4d0e-11ec-9925-0242ac150007",
         revisionNo: "1",
+        submissionId: "619e2ef055ab3db43aae7049"
     }
 ]
 
@@ -99,13 +102,13 @@ export const Loadingstate = {
   }
 
 const applicationDetails = {
-  applicationName: "Sample",
+  applicationName: "NCQ",
   applicationStatus: "New",
   created: "2021-12-03 04:49:18.813383",
   createdBy: "sumathi",
-  formId: "sample form id",
+  formId: "61a6fc8b5e9ef2746ba7c515",
   formProcessMapperId: "34",
-  formUrl: "http://localhost/form/61a6fc8b5e9ef2746ba7c515/submission/61a9a1cd69193afa9fd819a6",
+  formUrl: "https://app2.aot-technologies.com/form/61a6fc8b5e9ef2746ba7c515/submission/61a9a1cd69193afa9fd819a6",
   id: 5487,
   modified: "2021-12-03 04:49:19.864880",
   modifiedBy: "service-account-forms-flow-bpm",
@@ -132,21 +135,4 @@ export const AfterLoadingApplicationDetailt = {
   activePage:1,
   countPerPage:5,
   applicationStatus:[]
-}
-
-export const initialState = {
-  applicationsList:[],
-  applicationDetail: {},
-  applicationProcess: {},
-  formApplicationsList:[],
-  isApplicationListLoading:false,
-  isApplicationDetailLoading:false,
-  isApplicationUpdating:false,
-  applicationCount:0,
-  applicationDetailStatusCode:'',
-  activePage:1,
-  countPerPage:5,
-  applicationStatus:[],
-  iserror:false,
-  error:''
 }

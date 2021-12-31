@@ -123,7 +123,6 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     JWT_OIDC_TEST_JWKS_CACHE_TIMEOUT = 6000
 
 
-
 class ProdConfig(_Config):  # pylint: disable=too-few-public-methods
     """Production environment configuration."""
 

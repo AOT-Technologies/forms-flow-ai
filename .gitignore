@@ -35,6 +35,9 @@ jobs/sentiment-analysis/tests/__pycache__
 #Visual Studio Code
 .vscode
 
+#Visual Studio Code
+.vscode
+
 #Database
 postgres/
 mongodb/

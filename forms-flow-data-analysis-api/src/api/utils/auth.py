@@ -9,9 +9,7 @@ from flask_jwt_oidc import JwtManager
 from ..exceptions import BusinessException
 
 
-jwt = (
-    JwtManager()
-)  # pylint: disable=invalid-name; lower case name as used by convention in most Flask apps
+jwt = JwtManager()  # pylint: disable=invalid-name
 
 
 class Auth:

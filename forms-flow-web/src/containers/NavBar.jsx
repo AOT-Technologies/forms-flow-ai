@@ -123,6 +123,7 @@ const NavBar = React.memo(() => {
                       <Dropdown.Item><button class="button_component" value='zh' onClick={handleOnclick}>Chineese</button> </Dropdown.Item>
                       <Dropdown.Item><button class="button_component" value='pt' onClick={handleOnclick}>Portugheese</button>  </Dropdown.Item>
                       <Dropdown.Item><button class="button_component" value='fr' onClick={handleOnclick}>French</button> </Dropdown.Item>
+                      <Dropdown.Item><button class="button_component" value='bg' onClick={handleOnclick}>Bulgarian</button> </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
             </Nav>

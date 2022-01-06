@@ -138,6 +138,7 @@ export const TRANSLATIONS_PT = {
   results:"Resultados",
   placeholder_appid:"ID do aplicativo",
   edit:"Editar",
-  total_submissions:"Total de inscrições"      
+  total_submissions:"Total de inscrições",
+  save_preview:"Salvar e visualizar",      
   };
   

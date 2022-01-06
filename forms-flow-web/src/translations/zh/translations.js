@@ -140,5 +140,7 @@ export const TRANSLATIONS_ZH = {
   placeholder_appid:"应用程序编号",
   edit:"编辑",
   select_dashboard:"选择仪表板",
-  total_submissions:"提交总数"
-};
+  total_submissions:"提交总数",
+  save_preview:"保存和预览",
+}
+

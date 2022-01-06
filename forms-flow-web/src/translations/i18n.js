@@ -5,6 +5,7 @@ import { TRANSLATIONS_ZH } from "./zh/translations";
 import { TRANSLATIONS_EN } from "./en/translations";
 import { TRANSLATIONS_FR } from "./fr/translations";
 import { TRANSLATIONS_PT } from "./pt/translations";
+import { TRANSLATIONS_BG } from "./bg/translations";
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -23,6 +24,10 @@ i18n
       },
       fr: {
         translation: TRANSLATIONS_FR
+      },
+      bg:
+      {
+        translation: TRANSLATIONS_BG
       }
     }
   });

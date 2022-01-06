@@ -142,4 +142,5 @@ export const TRANSLATIONS_EN = {
   select_dashboard:"Select Dashboard",
   date_format:"{{date, DD-MM-YYYY}}",
   total_submissions:"Total Submissions",
+  save_preview:"Save & Preview",
 };

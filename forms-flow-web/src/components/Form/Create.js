@@ -21,7 +21,7 @@ const Create = React.memo((props) => {
 const mapStateToProps = (state) => {
   return {
     form: { display: "form" },
-    saveText: "Save & Preview",
+    saveText: <Translation>{(t)=>t("save_preview")}</Translation>,
     errors: selectError("form", state),
   };
 };

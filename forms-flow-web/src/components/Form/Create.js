@@ -14,7 +14,7 @@ const Create = React.memo((props) => {
       <hr />
       <Errors errors={props.errors} />
       <FormEdit options={{
-							language: 'ch',
+							language: 'en',
 							i18n: {
 							  en: {
                 'Text Field':'Text Field',
@@ -121,6 +121,7 @@ const Create = React.memo((props) => {
                   'Description':'描述',
                   'The description is text that will appear below the input field.':'描述是将出现在输入字段下方的文本。',
 							  }
+
 							}}}{...props} />
     </div>
   );

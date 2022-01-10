@@ -38,21 +38,21 @@ def test_group_details(client):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.get("/groups", headers=headers)
-    assert len(response.json) > 0
+    assert len(response.json()) > 0
 
-    id = response.json[0]["id"]
+    id = response.json()[0]["id"]
     response = client.get(f"/groups/{id}", headers=headers)
     assert response.status_code == 200
     assert len(response.json()) > 0
 
 
-# def test_non_existential_group_id(client):
-#     """non-existential group id"""
-#     token = factory_auth_header()
-#     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+def test_non_existential_group_id(client):
+    """non-existential group id"""
+    token = factory_auth_header()
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
-#     response = client.get("/groups/123", headers=headers)
-#     assert response.status_code == 404
+    response = client.get("/groups/123", headers=headers)
+    assert response.status_code == 404
 
 
 def test_groups_put_details(client):
@@ -61,8 +61,8 @@ def test_groups_put_details(client):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.get("/groups", headers=headers)
-    assert len(response.json) > 0
-    id = response.json[0]["id"]
+    assert len(response.json()) > 0
+    id = response.json()[0]["id"]
 
     response = client.put(
         f"/groups/{id}", headers=headers, data={"dashboards": [{100: "Test Dashboard"}]}
@@ -76,11 +76,11 @@ def test_groups_put_wrong_details(client):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.get("/groups", headers=headers)
-    assert len(response.json) > 0
-    id = response.json[0]["id"]
-    # missing dashboards attribute
+    assert len(response.json()) > 0
+    id = response.json()[0]["id"]
+
     response = client.put(
-        f"/groups/{id}", headers=headers, data={"test": [{100: "Test Dashboard"}]}
+        f"/groups/{id}", headers=headers, data={"dashboard": [{100: "Test Dashboard"}]}
     )
     assert response.status_code == 400
     assert response.json() == {"message": "Invalid Request Object format"}

@@ -1,10 +1,6 @@
 """This manages Base Model functions."""
 
-<<<<<<< HEAD:forms-flow-data-analysis-api/src/api/models/base_model.py
 from api.models.db import db
-=======
-from formsflow_api.models.db import db
->>>>>>> develop:forms-flow-api/src/formsflow_api/models/base_model.py
 
 
 class BaseModel:

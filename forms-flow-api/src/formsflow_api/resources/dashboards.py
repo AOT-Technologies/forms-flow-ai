@@ -19,8 +19,8 @@ analytics_service = RedashAPIService()
 @API.route("", methods=["GET", "OPTIONS"])
 class DashboardList(Resource):
     """Resource to fetch Dashboard List
-    :params int pageNo: page number which starts from number 1 (optional)
-    :params int limit: number of items per page (optional)
+    : pageNo:- page number which starts from number 1 (optional)
+    : limit:- number of items per page (optional)
     """
 
     @API.doc("list_dashboards")
@@ -56,7 +56,9 @@ class DashboardDetail(Resource):
     @auth.require
     @profiletime
     def get(self, dashboard_id):
-        """Get a dashboard with given dashboard_id"""
+        """Get  dashboard 
+        : dashboard_id:- Get dashboard with given dashboard_id
+        """
         try:
             available_dashboards = re.findall(
                 r"\d+", str(g.token_info.get("dashboards"))

@@ -89,7 +89,6 @@ TEST_USER_PAYLOAD = {
 def factory_auth_header():
     url = f"{os.getenv('KEYCLOAK_URL')}/auth/realms/{os.getenv('KEYCLOAK_URL_REALM')}/protocol/openid-connect/token"
     x = requests.post(url, TEST_USER_PAYLOAD, verify=True).content.decode("utf-8")
-    print(x)
     return str(ast.literal_eval(x)["access_token"])
 
 

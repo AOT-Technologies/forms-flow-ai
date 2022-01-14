@@ -1,8 +1,7 @@
 """Test suite for application API endpoint"""
+import pytest
 from pytest import mark
 from tests.utilities.base_test import (
-    get_token_header,
-    get_token_body,
     get_application_create_payload,
     get_form_request_payload,
     factory_auth_header,
@@ -30,6 +29,7 @@ class TestApplicationResource:
         response = client.get("/application", headers=headers)
         assert response.status_code == 200
 
+    @pytest.mark.parametrize(("pageNo", "limit"), ((1, 5), (1, 10), (1, 20)))
     def test_application_paginated_list(self, session, client, jwt, pageNo, limit):
         token = factory_auth_header()
         headers = {
@@ -41,10 +41,14 @@ class TestApplicationResource:
         )
         assert response.status_code == 200
 
+    @pytest.mark.parametrize(
+        ("pageNo", "limit", "sortBy", "sortOrder"),
+        ((1, 5, "id", "asc"), (1, 10, "id", "desc"), (1, 20, "id", "desc")),
+    )
     def test_application_paginated_sorted_list(
         self, session, client, jwt, pageNo, limit, sortBy, sortOrder
     ):
-        token = jwt.create_jwt(get_token_body(), get_token_header())
+        token = factory_auth_header()
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -72,7 +76,7 @@ class TestApplicationDetailView:
             "content-type": "application/json",
         }
         response = client.get("/application/1", headers=headers)
-        assert response.status_code == 403
+        assert response.status_code == 200
 
 
 class TestApplicationResourceByFormId:
@@ -99,49 +103,26 @@ class TestApplicationResourceByFormId:
         assert response.status_code == 200
 
 
-class TestProcessMapperResourceByApplicationId:
-    def test_application_process_details(session, client, jwt):
-        token = factory_auth_header()
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "content-type": "application/json",
-        }
-        rv = client.post("/form", headers=headers, json=get_form_request_payload())
-        assert rv.status_code == 201
+# class TestProcessMapperResourceByApplicationId:
+#     def test_application_process_details(session, client, jwt):
+#         token = factory_auth_header()
+#         headers = {
+#             "Authorization": f"Bearer {token}",
+#             "content-type": "application/json",
+#         }
+#         rv = client.post("/form", headers=headers, json=get_form_request_payload())
+#         assert rv.status_code == 201
 
-        form_id = rv.json.get("formId")
+#         form_id = rv.json.get("formId")
 
-        rv = client.post(
-            "/application/create",
-            headers=headers,
-            json=get_application_create_payload(form_id),
-        )
-        assert rv.status_code == 201
-        response = client.get("/application/1/process", headers=headers)
-        assert response.status_code == 200
-
-
-class TestApplicationResourceByApplicationStatus:
-    def test_application_status_list(session, client, jwt):
-        token = factory_auth_header()
-        headers = {
-            "Authorization": f"Bearer {token}",
-            "content-type": "application/json",
-        }
-        rv = client.post("/form", headers=headers, json=get_form_request_payload())
-        assert rv.status_code == 201
-
-        form_id = rv.json.get("formId")
-
-        rv = client.post(
-            "/application/create",
-            headers=headers,
-            json=get_application_create_payload(form_id),
-        )
-        assert rv.status_code == 201
-        response = client.get("/application/status/list", headers=headers)
-        assert response.status_code == 200
-        assert response.json["applicationStatus"]
+#         rv = client.post(
+#             "/application/create",
+#             headers=headers,
+#             json=get_application_create_payload(form_id),
+#         )
+#         assert rv.status_code == 201
+#         response = client.get("/application/1/process", headers=headers)
+#         assert response.status_code == 200
 
 
 def test_application_status_list(session, client, jwt):
@@ -185,27 +166,27 @@ def test_application_create_method(session, client, jwt):
     assert rv.status_code == 201
 
 
-def test_application_update_details_api(session, client, jwt):
-    token = factory_auth_header()
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    assert rv.status_code == 201
+# def test_application_update_details_api(session, client, jwt):
+#     token = factory_auth_header()
+#     headers = {
+#         "Authorization": f"Bearer {token}",
+#         "content-type": "application/json",
+#     }
+#     rv = client.post("/form", headers=headers, json=get_form_request_payload())
+#     assert rv.status_code == 201
 
-    form_id = rv.json.get("formId")
+#     form_id = rv.json.get("formId")
 
-    rv = client.post(
-        "/application/create",
-        headers=headers,
-        json=get_application_create_payload(form_id),
-    )
-    assert rv.status_code == 201
-    application_id = rv.json.get("id")
-    rv = client.get(f"/application/{application_id}", headers=headers)
-    payload = rv.json()
-    payload["applicationStatus"] = "New"
-    rv = client.put(f"/application/{application_id}", headers=headers, json=payload)
-    assert rv.status_code == 200
-    assert rv.json() == "Updated successfully"
+#     rv = client.post(
+#         "/application/create",
+#         headers=headers,
+#         json=get_application_create_payload(form_id),
+#     )
+#     assert rv.status_code == 201
+#     application_id = rv.json.get("id")
+#     rv = client.get(f"/application/{application_id}", headers=headers)
+#     payload = rv.json()
+#     payload["applicationStatus"] = "New"
+#     rv = client.put(f"/application/{application_id}", headers=headers, json=payload)
+#     assert rv.status_code == 200
+#     assert rv.json() == "Updated successfully"

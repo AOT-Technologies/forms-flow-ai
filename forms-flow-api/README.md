@@ -16,6 +16,7 @@ the system. It is built using Python :snake: .
    * [Step 3 : Running the Application](#running-the-application)
    * [Step 4 : Verify the Application Status](#verify-the-application-status)
 3. [API Documentation](#api-documentation)
+4. [Unit Testing](#unit-testing)
 
 ## Prerequisites
 
@@ -135,4 +136,15 @@ The API docs can be accessed by checking the **/** root endpoint.
 
 ![image](https://user-images.githubusercontent.com/70306694/130730233-cf443a84-7716-4be6-b196-cb340509c495.png)
 
-Further documentation and associated postman collection for API endpoint can found in the [docs folder](./docs)
+Further documentation and associated postman collection for API endpoint
+can found in the [docs folder](./docs)
+
+## Unit Testing
+
+We have implemented unit tests with pytest.
+
+* Test cases are provided in the [tests folder](./tests).
+* Run the tests by ensuring appropriate test environment variables are
+setup in the [.env file](.sample.env).
+* Using the make command, run the tests by running `make test`.
+

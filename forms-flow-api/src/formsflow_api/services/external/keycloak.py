@@ -24,6 +24,7 @@ class KeycloakAdminAPIService(object):
         token_api = f"{current_app.config.get('KEYCLOAK_URL')}/auth/realms/master/protocol/openid-connect/token"
         response = requests.post(token_api, headers=headers, data=payload)
         data = json.loads(response.text)
+        assert data["access_token"] is not None
         self.session.headers.update(
             {
                 "Authorization": "Bearer " + data["access_token"],

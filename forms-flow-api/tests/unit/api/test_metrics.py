@@ -8,9 +8,11 @@ from tests.utilities.base_test import (
 )
 
 METRICS_ORDER_BY_VALUES = ["created", "modified"]
-today = datetime.date.today().strftime("%Y-%m-%dT%H:%M:%S+00:00")
-tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime(
-    "%Y-%m-%dT%H:%M:%S+00:00"
+today = datetime.date.today().strftime("%Y-%m-%dT%H:%M:%S+00:00").replace("+", "%2B")
+tomorrow = (
+    (datetime.date.today() + datetime.timedelta(days=1))
+    .strftime("%Y-%m-%dT%H:%M:%S+00:00")
+    .replace("+", "%2B")
 )
 
 
@@ -22,6 +24,7 @@ def test_metrics_get_200(orderBy, session, client, jwt, app):
         f"/metrics?from={today}&to={tomorrow}&orderBy={orderBy}", headers=headers
     )
     assert rv.status_code == 200
+
 
 @pytest.mark.parametrize("orderBy", METRICS_ORDER_BY_VALUES)
 def test_metrics_get_401(orderBy, session, client, jwt, app):

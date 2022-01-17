@@ -1,5 +1,5 @@
 """Unit test for APIs of Keycloak Group"""
-from tests.utilities.base_test import factory_auth_header
+from tests.utilities.base_test import factory_auth_header, update_dashboard_payload
 
 
 def test_group_list(client):
@@ -46,15 +46,6 @@ def test_group_details(client):
     assert len(response.json) > 0
 
 
-# def test_non_existential_group_id(client):
-#     """non-existential group id"""
-#     token = factory_auth_header()
-#     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-
-#     response = client.get("/groups/123", headers=headers)
-#     assert response.status_code == 404
-
-
 def test_groups_put_details(client):
     """good cases"""
     token = factory_auth_header()
@@ -65,9 +56,9 @@ def test_groups_put_details(client):
     id = response.json[0]["id"]
 
     response = client.put(
-        f"/groups/{id}", headers=headers, data={"dashboards": [{100: "Test Dashboard"}]}
+        f"/groups/{id}", headers=headers, json=update_dashboard_payload()
     )
-    assert response.status_code == 204
+    assert response.status_code == 200
 
 
 def test_groups_put_wrong_details(client):

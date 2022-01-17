@@ -127,3 +127,16 @@ def get_form_service_payload():
         "tenant_id": 12,
         "created_by": "test-user",
     }
+
+
+def update_dashboard_payload():
+    """Return a payload for updating dashboard details"""
+    return {
+        "dashboards": [
+            {"8": "Sentiment Analysis"},
+            {"1": "SAMPLE"},
+            {"14": "Sample3"},
+            {"13": "sample2"},
+            {"15": "Sample 4"},
+        ]
+    }

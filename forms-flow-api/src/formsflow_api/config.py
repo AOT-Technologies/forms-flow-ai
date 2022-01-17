@@ -87,9 +87,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     ANALYTICS_API_URL = os.getenv("INSIGHT_API_URL")
     ANALYTICS_API_KEY = os.getenv("INSIGHT_API_KEY")
 
-    # Keycloak Admin Service username
-    KEYCLOAK_ADMIN_USERNAME = os.getenv("KEYCLOAK_ADMIN_USERNAME")
-    KEYCLOAK_ADMIN_PASSWORD = os.getenv("KEYCLOAK_ADMIN_PASSWORD")
+    # Keycloak Admin Service
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
     KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM")
 

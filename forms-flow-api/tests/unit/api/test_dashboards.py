@@ -13,10 +13,12 @@ def test_get_dashboards(client):
 def test_get_dashboard_details(client):
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-
-    rv = client.get("/dashboards/1", headers=headers)
-    assert rv.json() is not None
+    rv = client.get("/dashboards", headers=headers)
     assert rv.status_code == 200
+    data = rv.json
+    dashboard_id = data["results"][0]["id"]
+    rv = client.get(f"/dashboards/{dashboard_id}", headers=headers)
+    assert rv.json is not None
 
 
 def test_no_auth_get_dashboards(client):
@@ -29,4 +31,4 @@ def test_get_dashboard_error_details(client):
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     rv = client.get("/dashboards/10000", headers=headers)
-    assert rv.json == {"message": "Dashboard not found"}
+    assert rv.json == {"message": "Dashboard - 10000 not accessible"}

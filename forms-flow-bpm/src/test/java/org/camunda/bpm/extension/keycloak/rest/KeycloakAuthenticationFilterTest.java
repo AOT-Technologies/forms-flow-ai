@@ -75,6 +75,8 @@ public class KeycloakAuthenticationFilterTest {
 				.thenReturn(oidcUser);
 		when(oidcUser.getName())
 				.thenReturn(userId);
+		when(oidcUser.getPreferredUsername())
+			.thenReturn(userId);
 		when(oidcUser.getClaims())
 				.thenReturn(claims);
 

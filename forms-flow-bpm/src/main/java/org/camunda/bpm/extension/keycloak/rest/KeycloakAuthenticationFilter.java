@@ -51,10 +51,10 @@ public class KeycloakAuthenticationFilter implements Filter {
 		String userId = null;
 		Map<String, Object> claims;
 		if (authentication instanceof JwtAuthenticationToken) {
-			userId = ((JwtAuthenticationToken)authentication).getName();
+			userId = ((JwtAuthenticationToken) authentication).getToken().getClaimAsString("preferred_username");
 			claims = ((JwtAuthenticationToken)authentication).getToken().getClaims();
 		} else if (authentication.getPrincipal() instanceof OidcUser) {
-			userId = ((OidcUser)authentication.getPrincipal()).getName();
+			userId = ((OidcUser)authentication.getPrincipal()).getPreferredUsername();
 			claims = ((OidcUser)authentication.getPrincipal()).getClaims();
 		} else {
 			throw new ServletException("Invalid authentication request token");

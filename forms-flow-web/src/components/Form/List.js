@@ -183,8 +183,8 @@ import { useTranslation } from "react-i18next";
           )}
           {userRoles.includes(STAFF_DESIGNER) && (
             <>
-            <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={uploadClick} title="Upload json form only">
-            <i className="fa fa-upload fa-lg" aria-hidden="true"/> Upload Form</Button>
+            <Button className="btn btn-primary btn-sm form-btn pull{-right btn-left" onClick={uploadClick} title={t("upload_json")}>
+            <i className="fa fa-upload fa-lg" aria-hidden="true"/> {t("upload_form")}</Button>
               <input type="file" className="d-none"
                      multiple={false}
                      accept=".json,application/json"
@@ -195,8 +195,8 @@ import { useTranslation } from "react-i18next";
           )}
           {userRoles.includes(STAFF_DESIGNER) && (
              <>
-             <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={downloadForms} disabled={formCheckList.length===0}  title="Select atleast one form">
-             <i className="fa fa-download fa-lg" aria-hidden="true"/> Download Form</Button>
+             <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={downloadForms} disabled={formCheckList.length===0}  title={t("select_form")}>
+             <i className="fa fa-download fa-lg" aria-hidden="true"/> {t("download_form")}</Button>
              </>
           )}
           </div>

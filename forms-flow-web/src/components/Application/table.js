@@ -114,7 +114,7 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
       filter: applicationStatus?.length > 0 && selectFilter({
         options: getApplicationStatusOptions(applicationStatus),
         style:cutomStyle,
-        placeholder: `\uf002 ${t("all")}`,
+        placeholder: `${t("all")}`,
         defaultValue: 'All',
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         getFilter: (filter) => {

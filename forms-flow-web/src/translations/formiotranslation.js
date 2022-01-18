@@ -1,4 +1,4 @@
-export const trad_form = {
+export const formio_translation = {
    
    "zh":{
        "Text Field":"文本域",
@@ -165,10 +165,6 @@ export const trad_form = {
        "JavaScript":"JavaScript",
        "Enter custom javascript code.":"输入自定义 JavaScript 代码。",
        "Example:":"例子：",
-<<<<<<< HEAD
-      //  "value":"价值",
-=======
->>>>>>> 6c9c174283221dbac6985fb8b087026e5477e121
        "JSONLogic":"JSON逻辑",
        "Execute custom logic using ":"使用执行自定义逻辑",
        "support is provided using an \"_\" before each operation, such as {\"_sum\": {var: \"data.a\"}}":"在每个操作之前使用“_”提供支持，例如 {\"_sum\": {var: \"data.a\"}}",

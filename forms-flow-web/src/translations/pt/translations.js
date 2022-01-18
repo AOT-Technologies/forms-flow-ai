@@ -139,6 +139,16 @@ export const TRANSLATIONS_PT = {
   placeholder_appid:"ID do aplicativo",
   edit:"Editar",
   total_submissions:"Total de inscrições",
-  save_preview:"Salvar e visualizar",      
+  save_preview:"Salvar e visualizar", 
+  operation:"Operações", 
+  access_groups:"Grupos de acesso",
+  action:"Açao", 
+  add:"Adicionar", 
+  admin:"Administrador",  
+  upload_form:"Carregar formulário",
+  download_form:"Baixar formulário",
+  upload_json:"Carregar apenas o formulário json",
+  select_form:"Selecione pelo menos um formulário",
+  select_all:"Selecionar tudo"
   };
   

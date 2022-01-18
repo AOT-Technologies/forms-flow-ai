@@ -82,13 +82,13 @@ const NavBar = React.memo(() => {
               {(getUserRolePermission(userRoles, STAFF_DESIGNER)) ?
                 (<Nav.Link as={Link} to='/admin'  className={`main-nav nav-item ${
                   pathname.match(/^\/admin/) ? "active-tab" : ""
-                }`}> <i className="fa fa-list-alt fa-fw fa-lg " /> Admin</Nav.Link>)
+                }`}> <i className="fa fa-list-alt fa-fw fa-lg " />{t("admin")} </Nav.Link>)
                 :null}
 
               {showApplications?(getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)) ?
                 (<Nav.Link as={Link} to='/application'  className={`main-nav nav-item ${
                   pathname.match(/^\/application/) ? "active-tab" : ""
-                }`}> <img className="applications-icon-header" src="/webfonts/fa-regular_list-alt.svg" alt="back"/> {t("applications")}</Nav.Link>)
+                }`}> <i className="fa fa-list-alt fa-fw fa-lg " /> {t("applications")}</Nav.Link>)
                 :null:
                 null}
 

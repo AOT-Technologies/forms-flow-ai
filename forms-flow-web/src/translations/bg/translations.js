@@ -142,4 +142,14 @@ export const TRANSLATIONS_BG = {
     date_format:"{{дата, ДД-ММ-ГГГГ}}",
     total_submissions:"Общо представяне",
     save_preview:"Запазване и визуализация",
+    operation:"Операции",
+    access_groups:"Групи за достъп",
+    action:"Действие",
+    add:"Добавете",
+    admin:"Админ",
+    upload_form:"Формуляр за качване",
+    download_form:"Изтеглете формуляр",
+    upload_json:"Качете само json формуляр",
+    select_form:"Изберете поне един формуляр",
+    select_all:"Избери всички"
 }

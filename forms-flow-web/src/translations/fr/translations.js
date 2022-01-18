@@ -140,5 +140,15 @@ export const TRANSLATIONS_FR = {
   edit:"Éditer",
   total_submissions:"Nombre total de soumissions",
   save_preview:"Enregistrer et prévisualiser",
+  operation:"Opérations",
+  access_groups:"Groupes d'accès",
+  action:"action",
+  add:"Ajouter",
+  admin:"Administratrice",
+  upload_form:"Télécharger le formulaire",
+  download_form:"Télécharger le formulaire",
+  upload_json:"Télécharger le formulaire json uniquement",
+  select_form:"Sélectionnez au moins un formulaire",
+  select_all:"Tout sélectionner"
   };
   

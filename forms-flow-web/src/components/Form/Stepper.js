@@ -74,7 +74,7 @@ class StepperPage extends PureComponent {
   }
 
   componentDidMount() {
-    if(this.state && this.state.displayMode === "View") {
+    if(this.state && this.state.displayMode === "view") {
       this.setState({ disableWorkflowAssociation: true });
       this.setState({ disablePreview: true });
     }
@@ -87,6 +87,9 @@ class StepperPage extends PureComponent {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let stateData = null;
+    if(nextProps.match.params.step !== undefined && !STEPPER_ROUTES.includes(nextProps.match.params.step)){
+      nextProps.goToPageNotFound();
+    }
     if (
       nextProps.match.params.formId &&
       nextProps.match.params.formId !== prevState.formId

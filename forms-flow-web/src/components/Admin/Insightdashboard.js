@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { updateGroup } from "../../apiManager/services/dashboardsService";
 import Popover from '@material-ui/core/Popover';
 import { initiateUpdate, updateDashboardFromGroups } from "../../actions/dashboardActions";
-
+import { Translation } from "react-i18next";
 export const InsightDashboard = (props)=> {
 
   const {dashboardReducer} = props;
@@ -98,11 +98,11 @@ export const InsightDashboard = (props)=> {
   const columns = [
     {
     dataField: 'name',
-    text: 'Dashboard',
+    text: <Translation>{(t)=>t("dashboard")}</Translation>,
     },
    {
     dataField: 'approvedGroups',
-    text: 'Access Groups',
+    text: <Translation>{(t)=>t("access_groups")}</Translation>,
     formatter: (cell,rowData) => {
       return  <> 
         {cell?.map(label => 
@@ -116,7 +116,7 @@ export const InsightDashboard = (props)=> {
    },
    {
     dataField: 'id',
-    text: 'Action',
+    text: <Translation>{(t)=>t("action")}</Translation>,
     formatExtraData :{show,remainingGroups},
     formatter: (cell,rowData,rowIdx,formatExtraData) => {
 
@@ -124,7 +124,7 @@ export const InsightDashboard = (props)=> {
       return <div>
                 <Button data-testid={rowIdx}  
                   onClick={(e)=>handleClick(e,rowData)} 
-                  className="btn btn-primary btn-md form-btn pull-left btn-left"> Add <b>+</b>
+                  className="btn btn-primary btn-md form-btn pull-left btn-left"><Translation>{(t)=>t("add")}</Translation> <b>+</b>
                 </Button> 
                 <Popover
                     data-testid="popup-component"
@@ -189,7 +189,7 @@ const getpageList = ()=>{
           <div className="flex-item-left">
           <h3 className="task-head">
           <span><i className="fa fa-wpforms" aria-hidden="true"/></span>
-             <span className="forms-text">Dashboard</span></h3>
+             <span className="forms-text"><Translation>{(t)=>t("dashboard")}</Translation></span></h3>
           </div>
           {updateError && <div className="error-container error-custom"><Errors errors={error} /></div>}
         </div>

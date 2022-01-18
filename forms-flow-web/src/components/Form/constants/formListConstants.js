@@ -1,17 +1,18 @@
 import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import pick from "lodash/pick";
 import {CLIENT, OPERATIONS, STAFF_DESIGNER, STAFF_REVIEWER} from "../../../constants/constants";
-
+//import { useTranslation } from "react-i18next";
+import { Translation } from "react-i18next";
 export const designerColumns = [
   {
     key: 'title',
     sort: true,
-    title: 'Form',
+    title: <Translation>{(t)=>t("form")}</Translation>,
     width: 6,
   },
   {
     key: 'operations',
-    title: 'Operations',
+    title: <Translation>{(t)=>t("operation")}</Translation>,
     width: 5,
   },
   {
@@ -26,12 +27,12 @@ export const userColumns = [
   {
     key: 'title',
     sort: true,
-    title: 'Form',
+    title: <Translation>{(t)=>t("form")}</Translation>,
     width: 8,
   },
   {
     key: 'operations',
-    title: 'Operations',
+    title: <Translation>{(t)=>t("operation")}</Translation>,
     width: 4,
   }
 ];

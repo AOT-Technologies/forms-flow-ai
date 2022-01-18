@@ -28,11 +28,13 @@ module.exports = (router) => {
    *
    * @param payload {Object}
    *   The decoded JWT.
+   * @param customSecret {String}
+   *   Optional secret.
    *
    * @return {String|Boolean}
    *   The JWT from the given payload, or false if the jwt payload is still valid.
    */
-  const getToken = (tokenInfo) => {
+  const getToken = (tokenInfo, customSecret) => {
     // Clone to make sure we don't change original.
     const payload = Object.assign({}, tokenInfo);
     delete payload.iat;
@@ -43,17 +45,21 @@ module.exports = (router) => {
       secret,
     } = jwtConfig;
 
-    return jwt.sign(payload, secret, {
-      expiresIn: expireTime * 60,
+    // changed the secret and expire to the env
+   
+
+    return jwt.sign(payload, customSecret ||process.env.FORMIO_JWT_SECRET||secret , {
+      expiresIn: (expireTime ||240) * 60,
     });
   };
-
+  // Number(process.env.FORMIO_JWT_EXPIRE)|| todo 
   /**
    * Checks to see if a decoded token is allowed to access this path.
    * @param req
    * @param decoded
    * @return {boolean}
    */
+
   const isTokenAllowed = (req, decoded) => {
     if (!decoded.allow) {
       return true;
@@ -145,9 +151,9 @@ module.exports = (router) => {
 
     // Delete the previous expiration so we can generate a new one.
     delete tempToken.exp;
-
+     
     // Sign the token.
-    jwt.sign(tempToken, jwtConfig.secret, {
+    jwt.sign(tempToken,process.env.FORMIO_JWT_SECRET||jwtConfig.secret, {
       expiresIn: expire,
     }, (err, token) => {
       if (err) {
@@ -174,7 +180,7 @@ module.exports = (router) => {
     }
 
     let adminKey = false;
-    if (process.env.ADMIN_KEY && process.env.ADMIN_KEY === req.headers['x-admin-key']) {
+    if (process.env.ADMIN_KEY && process.env.ADMIN_KEY === req.headers['x-admin-key'] || req.isAdmin) {
       adminKey = true;
     }
     else if (!req.token) {
@@ -348,7 +354,8 @@ module.exports = (router) => {
 
     // Set the headers if they haven't been sent yet.
     if (!res.headersSent) {
-      res.setHeader('Access-Control-Expose-Headers', 'x-jwt-token');
+      const headers = router.formio.hook.alter('accessControlExposeHeaders', 'x-jwt-token');
+      res.setHeader('Access-Control-Expose-Headers', headers);
       res.setHeader('x-jwt-token', res.token);
     }
 

@@ -9,6 +9,7 @@ import { addHiddenApplicationComponent } from "../../constants/applicationCompon
 import { trad_form } from "../../translations/formiotranslation";
 //import {useSelector } from 'react-redux';
 const Create = React.memo((props) => {
+  //const {t} = useTranslation();
   //const lang = useSelector((state) => state.user.lang);
   return (
     <div>

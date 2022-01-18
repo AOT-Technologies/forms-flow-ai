@@ -46,7 +46,7 @@ objects:
     strategy:
       type: Docker
       dockerStrategy:
-        dockerfilePath: Openshift_Dockerfile
+        dockerfilePath: openshift_custom_Dockerfile
     triggers:
       - type: ImageChange
         imageChange: {}

@@ -1,67 +1,53 @@
 """Common setup and fixtures for the pytest suite used by this service."""
+from pathlib import Path
 
 import pytest
 from flask_migrate import Migrate, upgrade
 from sqlalchemy import event, text
 from sqlalchemy.schema import DropConstraint, MetaData
 
-from api import create_app
-from api import jwt as _jwt
-from api.models import db as _db
+from formsflow_api import create_app, setup_jwt_manager
+
+from formsflow_api.models import db as _db
+from formsflow_api.utils import jwt as _jwt
 
 
-
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session", autouse=True)
 def app():
     """Return a session-wide application configured in TEST mode."""
-    _app = create_app('testing')
+    _app = create_app("testing")
 
     return _app
 
 
-@pytest.fixture(scope='function')
-def app_ctx(event_loop):  # pylint: disable=unused-argument
-    # def app_ctx():
+@pytest.fixture(scope="function")
+def app_request():
     """Return a session-wide application configured in TEST mode."""
-    _app = create_app('testing')
-    with _app.app_context():
-        yield _app
+    _app = create_app("testing")
+
+    return _app
 
 
 @pytest.fixture
-def config(app):  # pylint: disable=redefined-outer-name
-    """Return the application config."""
-    return app.config
-
-
-@pytest.fixture(scope='function')
-def app_request():
-    """Return a session-wide application configured in TEST mode."""
-    _app = create_app('testing')
-
-    return _app
-
-
-@pytest.fixture(scope='session')
 def client(app):  # pylint: disable=redefined-outer-name
     """Return a session-wide Flask test client."""
     return app.test_client()
 
 
-@pytest.fixture(scope='session')
-def jwt():
-    """Return a session-wide jwt manager."""
+@pytest.fixture(scope="session")
+def jwt(app):
+    """Return session-wide jwt manager."""
     return _jwt
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def client_ctx(app):  # pylint: disable=redefined-outer-name
     """Return session-wide Flask test client."""
     with app.test_client() as _client:
         yield _client
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def db(app):  # pylint: disable=redefined-outer-name, invalid-name
     """Return a session-wide initialised database.
 
@@ -84,10 +70,10 @@ def db(app):  # pylint: disable=redefined-outer-name, invalid-name
         sess = _db.session()
         for seq in [name for (name,) in sess.execute(text(sequence_sql))]:
             try:
-                sess.execute(text('DROP SEQUENCE public.%s ;' % seq))
-                print('DROP SEQUENCE public.%s ' % seq)
+                sess.execute(text("DROP SEQUENCE public.%s ;" % seq))
+                print("DROP SEQUENCE public.%s " % seq)
             except Exception as err:  # pylint: disable=broad-except
-                print(f'Error: {err}')
+                print(f"Error: {err}")
         sess.commit()
 
         # ############################################
@@ -106,7 +92,7 @@ def db(app):  # pylint: disable=redefined-outer-name, invalid-name
         return _db
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope="function")
 def session(app, db):  # pylint: disable=redefined-outer-name, invalid-name
     """Return a function-scoped session."""
     with app.app_context():
@@ -120,17 +106,19 @@ def session(app, db):  # pylint: disable=redefined-outer-name, invalid-name
         # (http://docs.sqlalchemy.org/en/latest/orm/session_transaction.html#using-savepoint)
         sess.begin_nested()
 
-        @event.listens_for(sess(), 'after_transaction_end')
+        @event.listens_for(sess(), "after_transaction_end")
         def restart_savepoint(sess2, trans):  # pylint: disable=unused-variable
             # Detecting whether this is indeed the nested transaction of the test
-            if trans.nested and not trans._parent.nested:  # pylint: disable=protected-access
+            if (
+                trans.nested and not trans._parent.nested
+            ):  # pylint: disable=protected-access
                 # Handle where test DOESN'T session.commit(),
                 sess2.expire_all()
                 sess.begin_nested()
 
         db.session = sess
 
-        sql = text('select 1')
+        sql = text("select 1")
         sess.execute(sql)
 
         yield sess

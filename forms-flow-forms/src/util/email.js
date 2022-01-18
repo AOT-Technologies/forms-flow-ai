@@ -10,11 +10,13 @@ const debug = {
   error: require('debug')('formio:error'),
   nunjucksInjector: require('debug')('formio:email:nunjucksInjector')
 };
-const rest = require('restler');
+const fetch = require('@formio/node-fetch-http-proxy');
 const util = require('./util');
 const _ = require('lodash');
+
 const EMAIL_OVERRIDE = process.env.EMAIL_OVERRIDE;
 const EMAIL_CHUNK_SIZE = process.env.EMAIL_CHUNK_SIZE || 100;
+const NON_PRIORITY_QUEUE_TIMEOUT = process.env.NON_PRIORITY_QUEUE_TIMEOUT || 1000;
 
 /**
  * The email sender for emails.
@@ -39,12 +41,7 @@ module.exports = (formio) => {
       }
 
       // Build the list of available transports, based on the present project settings.
-      let availableTransports = [
-        {
-          transport: 'default',
-          title: 'Default (charges may apply)',
-        },
-      ];
+      let availableTransports = [];
       if (_.get(settings, 'email.custom.url')) {
         availableTransports.push({
           transport: 'custom',
@@ -140,12 +137,15 @@ module.exports = (formio) => {
 
     // The form components.
     params.components = {};
+    params.componentsWithPath = {};
 
     const replacements = [];
 
     // Flatten the resource data.
-    util.eachComponent(form.components, (component) => {
+    util.eachComponent(form.components, (component, path) => {
       params.components[component.key] = component;
+      params.componentsWithPath[path] = component;
+      params.componentsWithPath[path].compPath = path;
       if (component.type === 'resource' && params.data[component.key]) {
         params.data[`${component.key}Obj`] = params.data[component.key];
         replacements.push(
@@ -385,21 +385,30 @@ module.exports = (formio) => {
           break;
         case 'custom':
           if (_.has(settings, 'email.custom')) {
-            transporter.sendMail = (mail, cb) => {
-              const options = {};
+            transporter.sendMail = async (mail, cb) => {
+              const authHeader = {};
               if (settings.email.custom.username) {
-                options.username = settings.email.custom.username;
-                options.password = settings.email.custom.password;
+                const payload = `${settings.email.custom.username}:${settings.email.custom.password}`;
+                authHeader.Authorization = `Basic ${Buffer.from(payload).toString('base64')}`;
               }
 
-              rest.postJson(settings.email.custom.url, mail, options)
-                .on('complete', (result, response) => {
-                  if (result instanceof Error) {
-                    return cb(result);
-                  }
+              const response = await fetch(settings.email.custom.url, {
+                  method: 'POST',
+                  headers: {
+                    'content-type': 'application/json',
+                    'accept': 'application/json',
+                    ...authHeader
+                  },
+                  body: JSON.stringify(mail),
+              });
 
-                  return cb(null, result);
-                });
+              if (response.ok) {
+                const result = await response.json();
+                return cb(null, result);
+              }
+              else {
+                return cb(new Error(`${response.status  }: ${  response.statusText}`));
+              }
             };
           }
           break;
@@ -434,16 +443,22 @@ module.exports = (formio) => {
         subject,
         message: html,
         transport,
+        replyTo,
+        renderingMethod,
       } = message;
 
       const mail = {
-        from: from || 'no-reply@form.io',
+        from: from || formio.config.defaultEmailSource,
         to: formatNodemailerEmailAddress(emails),
         subject,
         html,
         msgTransport: transport,
         transport: emailType,
+        renderingMethod,
       };
+      if (replyTo) {
+        mail.replyTo = replyTo || from;
+      }
 
       const cc = (rawCc || []).map(_.trim).filter(Boolean);
       const bcc = (rawBcc || []).map(_.trim).filter(Boolean);
@@ -460,7 +475,8 @@ module.exports = (formio) => {
         params,
       };
 
-      nunjucksInjector(mail, options)
+      const sendEmails = () => nunjucksInjector(mail, options)
+        .then((email) => hook.alter('checkEmailPermission', email, params.form))
         .then((email) => {
           let emails = [];
 
@@ -520,12 +536,26 @@ module.exports = (formio) => {
               );
             }));
           }, Promise.resolve());
-        })
-        .then((response) => next(null, response))
+        });
+
+        const throttledSendEmails = _.throttle(sendEmails , NON_PRIORITY_QUEUE_TIMEOUT);
+
+        if (req.user) {
+          return sendEmails()
+            .then((response) => next(null, response))
+            .catch((err) => {
+              debug.error(err);
+              return next(err);
+            });
+        }
+     else {
+      throttledSendEmails()
         .catch((err) => {
           debug.error(err);
           return next(err);
         });
+        return next();
+     }
     });
   };
 

@@ -4,7 +4,7 @@ Flask-Caching
 Flask-Migrate==2.5.2
 Flask-Script<3
 Flask-SQLAlchemy
-flask-restx==0.4.0
+flask-restx
 flask-marshmallow
 flask-jwt-oidc
 python-dotenv

@@ -13,7 +13,7 @@ const LoadError = React.memo(({
     <div className="row ">
       <div className={`col-12 error-message-block ${className} `}>
         <div className="alert alert-danger error-alert" role="alert">
-        <i className="fa fa-times-circle fa-lg" aria-hidden="true" />
+        <i className="fa fa-arrow-left fa-lg" />
           <div className="alert-heading d-inline ml-3">{text}</div>
         </div>
       </div>

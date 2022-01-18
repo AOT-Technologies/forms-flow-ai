@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.hooks.delegates.data.TextSentimentData;
+import org.camunda.bpm.extension.hooks.delegates.data.TextSentimentRequest;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -48,18 +50,18 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
 
     private TextSentimentRequest prepareRequest(DelegateExecution execution) throws JsonProcessingException {
         List<TextSentimentData> txtRecords = new ArrayList<>();
-            String submission = formSubmissionService.readSubmission(String.valueOf(execution.getVariables().get("formUrl")));
-            if(submission.isEmpty()) {
-                throw new RuntimeException("Unable to retrieve submission");
+        String submission = formSubmissionService.readSubmission(String.valueOf(execution.getVariables().get("formUrl")));
+        if(submission.isEmpty()) {
+            throw new RuntimeException("Unable to retrieve submission");
+        }
+        JsonNode dataNode = getObjectMapper().readTree(submission);
+        Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
+        while (dataElements.hasNext()) {
+            Map.Entry<String, JsonNode> entry = dataElements.next();
+            if(entry.getValue().has("type") && getSentimentCategory().equals(entry.getValue().get("type").asText())) {
+                txtRecords.add(CreateTextSentimentData(entry.getKey(),
+                        getObjectMapper().readValue(entry.getValue().get("topics").toString(), List.class), entry.getValue().get("text").asText()));
             }
-            JsonNode dataNode = getObjectMapper().readTree(submission);
-            Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
-            while (dataElements.hasNext()) {
-                Map.Entry<String, JsonNode> entry = dataElements.next();
-                if(entry.getValue().has("type") && getSentimentCategory().equals(entry.getValue().get("type").asText())) {
-                    txtRecords.add(CreateTextSentimentData(entry.getKey(),
-                            getObjectMapper().readValue(entry.getValue().get("topics").toString(), List.class), entry.getValue().get("text").asText()));
-                }
         }
         if(CollectionUtils.isNotEmpty(txtRecords)) {
             return CreateTextSentimentRequest((Integer) execution.getVariable("applicationId"),
@@ -90,25 +92,6 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
 
 }
 
-@Scope("prototype")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class TextSentimentRequest{
-    private Integer applicationId;
-    private String formUrl;
-    private List<TextSentimentData> data;
-}
-
-@Scope("prototype")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-class TextSentimentData{
-    private String elementId;
-    private List<String> topics;
-    private String text;
-}
 
 
 

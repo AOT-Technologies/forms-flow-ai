@@ -1,0 +1,27 @@
+.flex-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.group-item-container{
+    display: flex;
+    padding-right:0px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.group-item{
+    margin-right: 10px;
+    cursor: default;
+    margin-right: 0px;
+}
+
+.close-button{
+    margin-left: 5px;
+}
+.error-custom{
+    width: 30%;
+}
+

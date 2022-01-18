@@ -43,7 +43,7 @@ const AddGroupModal= React.memo((props)=> {
       <>
           <Modal show={modalOpen} onHide={onClose}>
               <Modal.Header>
-                 <Modal.Title>{t("manage_groups")}</Modal.Title>
+                 <Modal.Title>Manage Groups</Modal.Title>
               </Modal.Header>
             <LoadingOverlay
               active={isGroupLoading}
@@ -72,7 +72,7 @@ const AddGroupModal= React.memo((props)=> {
                     <Col lg={{ span: 8, offset: 4 }} xs={12} sm={{ span: 8, offset: 4 }} md={{ span: 8, offset: 4 }} xl={{ span: 8, offset: 4 }} >
                       {groups.map((group,index)=>
                         <div className="mt-1" key={index}>
-                          <i className="fa fa-times mr-2 click-element text-blue" onClick={()=>onDeleteGroup(group)}/>
+                          <i className="fa fa-times mr-2 click-element text-blue" data-testid="remove-btn" onClick={()=>onDeleteGroup(group)}/>
                           <span className="word-break">{group.groupId}</span>
                         </div>
                       )}

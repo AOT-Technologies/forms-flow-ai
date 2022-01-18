@@ -23,14 +23,14 @@ const ChartForm = React.memo((props) => {
     return <div>No submission status</div>;
   }
 
-  const { formName } = pieData[0];
+  const { applicationName  } = pieData[0];
   return (
     <div className="row">
       <div className="col-12">
         <div className="card-counter">
           <div className="white-box status-container d-flex">
             <div className="col-lg-6  col-xs-12">
-              <h2>Submission Status - {formName}</h2>
+              <h2>Submission Status - {applicationName }</h2>
               <div className="chart text-center">
                 <PieChart width={600} height={400}>
                   <Pie

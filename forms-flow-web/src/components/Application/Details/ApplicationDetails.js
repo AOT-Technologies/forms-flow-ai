@@ -17,34 +17,34 @@ const ApplicationDetails = React.memo((props) => {
       <tr>
         <td className="border-0"><Translation>{(t)=>t("application_id")}</Translation></td>
         <td className="border-0">:</td>
-        <td className="border-0">{application.id}</td>
+        <td className="border-0" id="application-id">{application.id}</td>
       </tr>
       <tr>
         <td className="border-0"><Translation>{(t)=>t("application_name")}</Translation></td>
         <td className="border-0">:</td>
-        <td className="border-0">{startCase(application.applicationName)}</td>
+        <td className="border-0" id="application-name">{startCase(application.applicationName)}</td>
       </tr>
       <tr>
         <td className="border-0"><Translation>{(t)=>t("created_by")}</Translation></td>
         <td className="border-0">:</td>
-        <td className="border-0">{application.createdBy}</td>
+        <td className="border-0" id="created-by">{application.createdBy}</td>
       </tr>
       <tr>
         <td className="border-0"><Translation>{(t)=>t("application_status")}</Translation></td>
         <td className="border-0">:</td>
-        <td className="border-0">{application.applicationStatus}</td>
+        <td className="border-0" id="application-status">{application.applicationStatus}</td>
       </tr>
       <tr>
         <td className="border-0"><Translation>{(t)=>t("submitted_on")}</Translation></td>
         <td className="border-0">:</td>
-        <td className="border-0">
+        <td className="border-0" id="application-created">
           {getLocalDateTime(application.created)}
         </td>
       </tr>
       <tr>
         <td className="border-0"><Translation>{(t)=>t("modified_on")}</Translation></td>
         <td className="border-0">:</td>
-        <td className="border-0">
+        <td className="border-0" id="application-modified">
           {getLocalDateTime(application.modified)}
         </td>
       </tr>

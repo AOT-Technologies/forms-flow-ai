@@ -1,8 +1,9 @@
-import React, {useEffect} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {connect, useDispatch, useSelector} from "react-redux";
 import { push } from "connected-react-router";
 import { Link } from "react-router-dom";
-
+import {Button} from "react-bootstrap";
+import { toast } from 'react-toastify';
 import {
   indexForms,
   selectRoot,
@@ -10,14 +11,11 @@ import {
   Errors,
   FormGrid,
   deleteForm,
+  saveForm
 } from "react-formio";
-
 import Loading from "../../containers/Loading";
 import {
-  OPERATIONS,
-  CLIENT,
   STAFF_DESIGNER,
-  STAFF_REVIEWER,
 } from "../../constants/constants";
 import "../Form/List.scss";
 import {
@@ -27,26 +25,18 @@ import {
   setFormDeleteStatus, setMaintainBPMFormPagination
 } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
-import {fetchBPMFormList} from "../../apiManager/services/bpmFormServices";
+import {fetchBPMFormList, fetchFormByAlias} from "../../apiManager/services/bpmFormServices";
+import {designerColumns, getOperations, userColumns} from "./constants/formListConstants";
+import FileService from "../../services/FileService";
+import {setFormCheckList, setFormUploadList, updateFormUploadCounter} from "../../actions/checkListActions";
+import FileModal from './FileUpload/fileUploadModal'
 import { useTranslation } from "react-i18next";
-
-const getOperations = (userRoles, showViewSubmissions) => {
-  let operations = [];
-  if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {
-    operations.push(OPERATIONS.insert);
-  }
-  if (userRoles.includes(STAFF_REVIEWER) && showViewSubmissions) {
-    operations.push(OPERATIONS.submission);
-  }
-  if (userRoles.includes(STAFF_DESIGNER)) {
-    operations.push(OPERATIONS.viewForm, OPERATIONS.delete); //  OPERATIONS.edit,
-  }
-  return operations;
-}
-
-const List = React.memo((props)=> {
-  const dispatch = useDispatch();
+ const List = React.memo((props)=> {
   const {t}=useTranslation();
+  const [showFormUploadModal, setShowFormUploadModal] = useState(false);
+  //const [selectedForm,setSelectedForms] = useState([]);
+  const dispatch = useDispatch();
+  const uploadFormNode = useRef();
   const {
     forms,
     onAction,
@@ -58,14 +48,15 @@ const List = React.memo((props)=> {
     onNo,
     onYes,
   } = props;
+
   const isBPMFormListLoading = useSelector(state=> state.bpmForms.isActive);
   const bpmForms = useSelector(state=> state.bpmForms);
   const showViewSubmissions= useSelector((state) => state.user.showViewSubmissions);
+  const formCheckList = useSelector(state => state.formCheckList.formList);
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
- /* const formPagination = useSelector(state=> state.forms.pagination);
-  const maintainPagination = useSelector(state=>state.bpmForms.maintainPagination)
-*/
   const operations = getOperations(userRoles, showViewSubmissions);
+  const columns= isDesigner? designerColumns: userColumns;
+
 
   const getFormsList = (page,query)=>{
     if(page){
@@ -77,8 +68,16 @@ const List = React.memo((props)=> {
   }
 
   const onPageSizeChanged=(pageSize)=>{
-    dispatch(setBPMFormLimit(pageSize));
+    if(isDesigner){
+      dispatch(indexForms("forms", 1, {limit:pageSize}));
+    }else{
+      dispatch(setBPMFormLimit(pageSize));
+    }
   }
+
+  useEffect(()=>{
+    dispatch(setFormCheckList([]))
+  },[dispatch])
 
   useEffect(()=>{
     if(isDesigner){
@@ -89,10 +88,72 @@ const List = React.memo((props)=> {
     }
   },[getFormsInit, dispatch, isDesigner])
 
-  if (forms.isActive || isBPMFormListLoading) {
-      return <Loading />;
+  const downloadForms = () => {
+    FileService.downloadFile({forms:formCheckList},()=>{
+      toast.success(`${formCheckList.length} ${formCheckList.length===1?"Form":"Forms"} Downloaded Successfully`)
+      dispatch(setFormCheckList([]));
+    })
   }
-    return (
+
+  const uploadClick = e => {
+    dispatch(setFormUploadList([]));
+    e.preventDefault();
+    uploadFormNode.current?.click();
+    return false;
+  };
+
+  const uploadFileContents = async (fileContent)=>{
+    if(fileContent.forms && Array.isArray(fileContent.forms))
+      {
+    await Promise.all(
+      fileContent.forms.map(async (formData)=>{
+        return new Promise((resolve, reject) => {
+          dispatch(saveForm("form", formData, async (err, form) => {
+            if (err) {
+              // get the form Id of the form if exists already in the server
+              dispatch(fetchFormByAlias(formData.path, async (err, formObj) => {
+                if (!err) {
+                  formData._id = formObj._id;
+                  dispatch(saveForm("form", formData, (err, form) => {
+                    if (!err) {
+                      dispatch(updateFormUploadCounter())
+                      resolve();
+                    }else{
+                      reject();
+                    }
+                  }));
+                }else{
+                  reject();
+                }
+              }));
+            } else {
+              dispatch(updateFormUploadCounter())
+              resolve()
+            }
+          }))
+        });
+    }));
+  }
+  else{
+    setShowFormUploadModal(false);
+    return (toast.error('Error in Json file structure'))
+  }
+  }
+
+  const fileUploaded = async (evt) =>{
+    FileService.uploadFile(evt,async (fileContent)=> {
+      dispatch(setFormUploadList(fileContent?.forms||[]));
+      setShowFormUploadModal(true);
+      await uploadFileContents(fileContent);
+      dispatch(indexForms("forms", 1, forms.query))
+    })
+  }
+
+  return (
+     <>
+      <FileModal modalOpen={showFormUploadModal} onClose={()=>setShowFormUploadModal(false)} />
+       {
+    (forms.isActive || isBPMFormListLoading) ? <div data-testid="Form-list-component-loader"><Loading/></div> :
       <div className="container">
         <Confirm
           modalOpen={props.modalOpen}
@@ -104,31 +165,56 @@ const List = React.memo((props)=> {
           onNo={() => onNo()}
           onYes={() => onYes(formId, forms)}
         />
-        <div className="main-header">
+        <div className="flex-container">
           {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
+          <div className="flex-item-left">
           <h3 className="task-head">
           <i className="fa fa-wpforms" aria-hidden="true"/>
              <span className="forms-text">{t("Forms")}</span></h3>
+          </div>
+          <div className="flex-item-right">
           {userRoles.includes(STAFF_DESIGNER) && (
             <Link
               to="/formflow/create"
-              className="btn btn-primary btn-right btn-sm"
+              className="btn btn-primary btn-left btn-sm"
             >
               <i className="fa fa-plus fa-lg" />{t("create_form")}
             </Link>
           )}
+          {userRoles.includes(STAFF_DESIGNER) && (
+            <>
+            <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={uploadClick} title="Upload json form only">
+            <i className="fa fa-upload fa-lg" aria-hidden="true"/> Upload Form</Button>
+              <input type="file" className="d-none"
+                     multiple={false}
+                     accept=".json,application/json"
+                     onChange={fileUploaded}
+                     ref={uploadFormNode}
+              />
+          </>
+          )}
+          {userRoles.includes(STAFF_DESIGNER) && (
+             <>
+             <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={downloadForms} disabled={formCheckList.length===0}  title="Select atleast one form">
+             <i className="fa fa-download fa-lg" aria-hidden="true"/> Download Form</Button>
+             </>
+          )}
+          </div>
         </div>
         <section className="custom-grid grid-forms">
           <Errors errors={errors} />
           <FormGrid
+            columns={columns}
             forms={isDesigner?forms:bpmForms}
             onAction={onAction}
             getForms={isDesigner?getForms:getFormsList}
             operations={operations}
-            onPageSizeChanged={isDesigner?()=>{}:onPageSizeChanged}
+            onPageSizeChanged={onPageSizeChanged}
           />
         </section>
       </div>
+     }
+     </>
     );
 });
 

@@ -45,12 +45,12 @@ objects:
             "REACT_APP_KEYCLOAK_CLIENT": "forms-flow-web",
             "REACT_APP_WEB_BASE_URL": "${REACT_APP_WEB_BASE_URL}",
             "REACT_APP_ANONYMOUS_ID": "${REACT_APP_ANONYMOUS_ID}",
-            "REACT_APP_INSIGHT_API_BASE": "${REACT_APP_INSIGHT_API_BASE}",
-            "REACT_APP_INSIGHTS_API_KEY": "{REACT_APP_INSIGHTS_API_KEY}",
             "REACT_APP_WEBSOCKET_ENCRYPT_KEY": "{REACT_APP_WEBSOCKET_ENCRYPT_KEY}",
             "REACT_APP_KEYCLOAK_URL_REALM": "${REALM}",
             "REACT_APP_KEYCLOAK_URL": "${REACT_APP_KEYCLOAK_URL}",
-            "REACT_APP_APPLICATION_NAME": "${REACT_APP_APPLICATION_NAME}"
+            "REACT_APP_APPLICATION_NAME": "${REACT_APP_APPLICATION_NAME}",
+            "REACT_APP_WEB_BASE_CUSTOM_URL": "${REACT_APP_WEB_BASE_CUSTOM_URL}",
+            "REACT_APP_USER_ACCESS_PERMISSIONS": "${REACT_APP_USER_ACCESS_PERMISSIONS}"
           }
 
   -
@@ -265,14 +265,6 @@ parameters:
     description:
       Route to access Forms Flow AI Web site
     required: true
-  - name: REACT_APP_INSIGHT_API_BASE
-    displayName: REACT_APP_INSIGHT_API_BASE
-    description:
-    required: true
-  - name: REACT_APP_INSIGHTS_API_KEY
-    displayName: REACT_APP_INSIGHTS_API_KEY
-    description:
-    required: true
   - name: REACT_APP_WEBSOCKET_ENCRYPT_KEY
     displayName: REACT_APP_WEBSOCKET_ENCRYPT_KEY
     description:
@@ -293,3 +285,11 @@ parameters:
     displayName: REACT_APP_APPLICATION_NAME
     description: the name displayed in the application home page
     required: true
+  - name: REACT_APP_USER_ACCESS_PERMISSIONS
+    displayName: REACT_APP_USER_ACCESS_PERMISSIONS
+    description: JSON formatted permissions to enable / disable few access on user login
+    required: true
+  - name: REACT_APP_WEB_BASE_CUSTOM_URL
+    displayName: REACT_APP_WEB_BASE_CUSTOM_URL
+    description: Clients can use this env variable to provide their custom URL
+    required: false

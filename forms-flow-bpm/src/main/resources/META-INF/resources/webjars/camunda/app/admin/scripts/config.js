@@ -23,3 +23,9 @@ window.camAdminConf = {
     vendor: ' '
   }
 };
+
+export default {
+    customScripts: [
+        'custom/logout'
+    ]
+};

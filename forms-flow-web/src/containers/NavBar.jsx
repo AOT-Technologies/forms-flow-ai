@@ -3,10 +3,10 @@ import {Navbar, Dropdown, Container, Nav, NavDropdown} from "react-bootstrap";
 import {Link, useLocation} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import UserService from "../services/UserService";
-import {getUserRoleName, getUserRolePermission} from "../helper/user";
+import {getUserRoleName, getUserRolePermission, getUserInsightsPermission} from "../helper/user";
 import { useTranslation } from "react-i18next";
 import "./styles.scss";
-import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME } from "../constants/constants";
+import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME, STAFF_DESIGNER} from "../constants/constants";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import {push} from "connected-react-router";
 import i18n from "../translations/i18n";
@@ -30,7 +30,7 @@ const NavBar = React.memo(() => {
 
   const handleOnclick=(e)=>{
    e.preventDefault();
-   dispatch(setLanguage(e.target.value)) 
+   dispatch(setLanguage(e.target.value))
  }
   const logout = () => {
       dispatch(push(`/`));
@@ -78,12 +78,17 @@ const NavBar = React.memo(() => {
             <Nav id="main-menu-nav" className="mr-auto active">
               <Nav.Link as={Link} to='/form'  className={`main-nav nav-item ${
                 pathname.match(/^\/form/) ? "active-tab" : ""
-              }`}>  <i className="fa fa-wpforms fa-fw fa-lg"/> {t("Forms")}</Nav.Link>
+              }`}>  <i className="fa fa-wpforms fa-fw fa-lg"/>{t("Forms")}</Nav.Link>
+              {(getUserRolePermission(userRoles, STAFF_DESIGNER)) ?
+                (<Nav.Link as={Link} to='/admin'  className={`main-nav nav-item ${
+                  pathname.match(/^\/admin/) ? "active-tab" : ""
+                }`}> <i className="fa fa-list-alt fa-fw fa-lg " /> Admin</Nav.Link>)
+                :null}
 
               {showApplications?(getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)) ?
                 (<Nav.Link as={Link} to='/application'  className={`main-nav nav-item ${
                   pathname.match(/^\/application/) ? "active-tab" : ""
-                }`}> <i className="fa fa-list-alt fa-fw fa-lg " /> {t("applications")}</Nav.Link>)
+                }`}> <img className="applications-icon-header" src="/webfonts/fa-regular_list-alt.svg" alt="back"/> {t("applications")}</Nav.Link>)
                 :null:
                 null}
 
@@ -107,10 +112,10 @@ const NavBar = React.memo(() => {
                                                                               }`}>
                 <NavDropdown.Item as={Link} to='/metrics' className={`main-nav nav-item ${
                   pathname.match(/^\/metrics/) ? "active-tab" : ""
-                }`}><i className="fa fa-pie-chart fa-fw fa-lg"  /> {t("metrics")}</NavDropdown.Item>
-                <NavDropdown.Item as={Link} to='/insights' className={`main-nav nav-item ${
+                }`}><i className="fa fa-pie-chart fa-fw fa-lg"  />{t("metrics")}</NavDropdown.Item>
+               {getUserInsightsPermission() && <NavDropdown.Item as={Link} to='/insights' className={`main-nav nav-item ${
                   pathname.match(/^\/insights/) ? "active-tab" : ""
-                }`}><i className="fa fa-lightbulb-o fa-fw fa-lg"/> {t("insights")}</NavDropdown.Item>
+                }`}><i className="fa fa-lightbulb-o fa-fw fa-lg"/> {t("insights")}</NavDropdown.Item>}
               </NavDropdown>:null}
             </Nav>
             <Nav className="ml-auto">
@@ -139,7 +144,7 @@ const NavBar = React.memo(() => {
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <Dropdown.Item> {user?.name || user?.preferred_username}<br/>
-                        <i className="fa fa-users fa-lg fa-fw"/>
+                        <i className="fa fa-users fa-fw"/>
                         <b>{getUserRoleName(userRoles)}</b></Dropdown.Item>
                       <Dropdown.Divider/>
                       <Dropdown.Item onClick ={logout}><i className="fa fa-sign-out fa-fw"/> {t("logout")} </Dropdown.Item>

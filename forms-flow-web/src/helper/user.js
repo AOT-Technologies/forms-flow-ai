@@ -9,7 +9,7 @@ import {GROUPS} from "../constants/groupConstants";
  * Currently added groups for the purpose are applicationsAccess:["/formsflow/formsflow-reviewer/access-allow-applications","/formsflow/formsflow-client/access-allow-applications"],
  viewSubmissionsAccess:["/formsflow/formsflow-reviewer/access-allow-submissions"]
  *  ****/
-const defaultUserAccessGroupCheck={accessAllowApplications:false,accessAllowSubmissions:false};
+export const defaultUserAccessGroupCheck={accessAllowApplications:false,accessAllowSubmissions:false};
 let userAccessGroupCheck = (window._env_ && window._env_.REACT_APP_USER_ACCESS_PERMISSIONS) ||
 process.env.REACT_APP_USER_ACCESS_PERMISSIONS || defaultUserAccessGroupCheck;
 
@@ -57,5 +57,16 @@ const setShowViewSubmissions = (userGroups)=>{
   }
 }
 
+const getUserInsightsPermission = ()=>{
+  let user = localStorage.getItem("UserDetails");
+  if(!user){
+    return false
+  }
+  user = JSON.parse(user);
+  if(!user?.dashboards){
+    return false
+  }
+  return true
+}
 
-export { getUserRoleName, getUserRolePermission, getNameFromEmail, setShowApplications, setShowViewSubmissions };
+export { getUserRoleName, getUserRolePermission, getNameFromEmail, setShowApplications, setShowViewSubmissions, getUserInsightsPermission };

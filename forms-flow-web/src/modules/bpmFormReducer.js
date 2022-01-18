@@ -14,7 +14,7 @@ const initialState = {
   },
   query:{},
   select:'',
-  sort:'',
+  sort:'title',
   totalForms:"",
   maintainPagination:false
 };

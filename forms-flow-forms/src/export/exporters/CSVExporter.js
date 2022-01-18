@@ -5,7 +5,7 @@ const util = require('../../util/util');
 const through = require('through');
 const csv = require('csv');
 const _ = require('lodash');
-const Entities = require('html-entities').AllHtmlEntities;
+const Entities = require('html-entities');
 const moment = require('moment-timezone');
 const {conformToMask} = require('vanilla-text-mask');
 const Formio = require('formiojs/formio.form');
@@ -41,6 +41,8 @@ class CSVExporter extends Exporter {
       quoted: true
     });
     this.fields = [];
+
+    this.customTransformers = {};
 
     const formattedView = req.query.view === 'formatted';
     this.formattedView = formattedView;
@@ -145,7 +147,12 @@ class CSVExporter extends Exporter {
           });
         }
         else if (component.type === 'checkbox') {
-          items.push({type: 'boolean'});
+          if (component.name && component.inputType === 'radio') {
+            items.push({name: component.name, rename: component.name});
+          }
+          else {
+            items.push({type: 'boolean'});
+          }
         }
         else if (component.type === 'survey') {
           _.each(component.questions, (question) => {
@@ -207,7 +214,8 @@ class CSVExporter extends Exporter {
                   return tempVal;
                 }
                 else if (component.type === 'select') {
-                  return value;
+                  // eslint-disable-next-line max-depth
+                  return this.customTransform(path, value);
                 }
               }
               else {
@@ -241,7 +249,7 @@ class CSVExporter extends Exporter {
               }
               return _.isObject(value)
                 ? valuesExtractor(value)
-                : primitiveValueHandler(value);
+                : primitiveValueHandler(value.toString());
             }
           });
         }
@@ -316,6 +324,39 @@ class CSVExporter extends Exporter {
             }
           });
         }
+        else if (component.type === 'sketchpad') {
+          items.push({
+            preprocessor: (value) => {
+              if (_.isObject(value)) {
+                return _.isEmpty(value) ? '' : '[Visual Data]';
+              }
+
+              return value;
+            }
+          });
+        }
+        else if (component.type === 'file') {
+          items.push({
+            preprocessor: (value) => {
+              if (!value || !value.length) {
+                return '';
+              }
+              const formatted = value
+                .map((file) => {
+                  const fileName = file && (file.name || file.originalName);
+
+                  if (req.googleSheetAction && typeof req.googleSheetAction === 'function') {
+                    return req.googleSheetAction(file, fileName);
+                  }
+
+                  return fileName;
+                })
+                .filter((val) => !!val)
+                .join(', ');
+              return formatted;
+            }
+          });
+        }
         else {
           // Default to the current component item.
           items.push({});
@@ -343,6 +384,13 @@ class CSVExporter extends Exporter {
 
           if (item.hasOwnProperty('preprocessor')) {
             finalItem.preprocessor = item.preprocessor;
+          }
+
+          if (item.hasOwnProperty('name')) {
+            if (_.find(this.fields, {path: item.name})) {
+              return;
+            }
+            finalItem.path = item.name;
           }
 
           this.fields.push(finalItem);
@@ -473,7 +521,7 @@ class CSVExporter extends Exporter {
    */
   coerceToString(data, column, submission) {
     data = (column.preprocessor || _.identity)(data, submission);
-
+    let result = '';
     if (Array.isArray(data) && data.length > 0) {
       const fullPath = column.subpath
         ? `${column.key}.${column.subpath}`
@@ -481,21 +529,56 @@ class CSVExporter extends Exporter {
 
       return data.map((item) => `"${this.coerceToString(_.get(item, fullPath, item), column)}"`).join(',');
     }
-    if (_.isString(data)) {
+    else if (_.isString(data)) {
       if (column.type === 'boolean') {
-        return Boolean(data).toString();
+        result = Boolean(data).toString();
       }
-
-      return data.toString();
+      else {
+        result = data.toString();
+      }
     }
-    if (_.isNumber(data)) {
-      return data.toString();
+    else if (_.isNumber(data)) {
+      result = data.toString();
     }
-    if (_.isObject(data)) {
+    else if (_.isObject(data)) {
       return this.coerceToString(_.get(data, column.subpath, ''), column);
     }
+    else {
+      result = JSON.stringify(data);
+    }
 
-    return JSON.stringify(data);
+    return this.injectionProtector(result);
+  }
+
+  injectionProtector(data) {
+    if (!data) {
+      return data;
+    }
+
+    if (!_.isString(data)) {
+      data = data.toString();
+    }
+
+    const riskyChars = ['=', '+', '-', '@'];
+    const regexStr = `(?<=(?:^|"|“)\\s*)([${riskyChars.join('\\')}])`;
+    const regExp = new RegExp(regexStr, 'gm');
+
+    return _.replace(data, regExp, (char) => {
+      return `\`${char}`;
+    });
+  }
+
+  addCustomTransformer(path, fn) {
+    this.customTransformers[path] = fn;
+  }
+
+  customTransform(path, value, ...rest) {
+    const transformer = this.customTransformers[path];
+    if (transformer && typeof transformer === 'function') {
+      return transformer(value, ...rest);
+    }
+
+    return value;
   }
 }
 

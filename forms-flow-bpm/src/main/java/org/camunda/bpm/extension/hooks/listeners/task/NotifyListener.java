@@ -14,10 +14,7 @@ import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -43,7 +40,7 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
      * @param delegateTask: The task which sends the message
      */
     public void notify(DelegateTask delegateTask) {
-        List<String> toEmails =  new ArrayList<>();
+        Set<String> toEmails =  new HashSet<>();
         if(!"Y".equals(getGroupsOnly(delegateTask.getExecution()))) {
             toEmails.addAll(getEmailsOfUnassignedTask(delegateTask));
         }
@@ -59,9 +56,6 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
             }
         }
         sendEmailNotification(delegateTask, toEmails ,delegateTask.getId());
-
-
-
     }
 
     /**
@@ -70,7 +64,7 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
      * @param toEmails
      * @param taskId
      */
-    private void sendEmailNotification(DelegateTask delegateTask,List<String> toEmails,String taskId) {
+    private void sendEmailNotification(DelegateTask delegateTask,Set<String> toEmails,String taskId) {
         String toAddress = CollectionUtils.isNotEmpty(toEmails) ? StringUtils.join(toEmails,",") : null;
         if(StringUtils.isNotEmpty(toAddress)) {
             Map<String, Object> emailAttributes = new HashMap<>();

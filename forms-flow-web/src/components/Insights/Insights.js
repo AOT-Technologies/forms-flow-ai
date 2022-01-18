@@ -10,14 +10,19 @@ import Loading from "../../containers/Loading";
 import { useTranslation , Translation} from "react-i18next";
 
 
+import { fetchdashboards } from "../../apiManager/services/dashboardsService";
 
 const Insights = React.memo((props) => {
-  const {getDashboardsList, getDashboardDetail, dashboards, activeDashboard, isInsightLoading, isDashboardLoading} = props;
+  const {getDashboardsList, getDashboardDetail, dashboards, activeDashboard, isInsightLoading, isDashboardLoading,getDashboards,dashboardsFromRedash} = props;
   const [dashboardSelected, setDashboardSelected] = useState(null);
   const {t} = useTranslation();
   useEffect(() => {
-    getDashboardsList();
-  }, [getDashboardsList]);
+      getDashboardsList(dashboardsFromRedash);
+  }, [getDashboardsList,dashboardsFromRedash]);
+
+  useEffect(()=>{
+    getDashboards();
+  },[getDashboards])
 
   useEffect(()=>{
     if(dashboards.length>0){
@@ -38,14 +43,14 @@ const Insights = React.memo((props) => {
     <div className="container mb-4" id="main">
       <div className="insights mb-2">
         <div className="row ">
-          <div className="col-12">
+          <div className="col-12"  data-testid="Insight">
             <h1 className="insights-title">
             <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> <Translation>{(t)=>t("insights")}</Translation>
             </h1>
             <hr className="line-hr"/>
             <div className="col-12">
-              <div className="app-title-container mt-3">
-                <h3 className="insight-title">
+              <div className="app-title-container mt-3" data-testid="Insight">
+                <h3 className="insight-title" data-testid="Dashboard">
                   <i className="fa fa-bars mr-1"/> <Translation>{(t)=>t("dashboard")}</Translation>
                 </h3>
 
@@ -89,21 +94,26 @@ const mapStateToProps = (state) => {
     isDashboardLoading: state.insights.isDashboardLoading,
     isInsightLoading: state.insights.isInsightLoading,
     dashboards: state.insights.dashboardsList,
-    activeDashboard: state.insights.dashboardDetail
+    activeDashboard: state.insights.dashboardDetail,
+    dashboardsFromRedash:state.dashboardReducer.dashboards,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getDashboardsList: () => {
+    getDashboardsList: (dashboardsFromRedash) => {
       dispatch(setInsightDashboardListLoader(true));
       dispatch(
-      fetchDashboardsList()
+      fetchDashboardsList(dashboardsFromRedash)
       )
     },
     getDashboardDetail: (dashboardId) => {
       dispatch(setInsightDetailLoader(true));
       dispatch(fetchDashboardDetails(dashboardId))
+    },
+    getDashboards:()=>{
+      dispatch(setInsightDashboardListLoader(true));
+      dispatch(fetchdashboards())
     }
   }
 };

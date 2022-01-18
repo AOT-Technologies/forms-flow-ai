@@ -1,3 +1,4 @@
+ /* istanbul ignore file */
 import moment from "moment";
 
 export const taskSubmissionFormatter = (taskSubmissionData) =>{

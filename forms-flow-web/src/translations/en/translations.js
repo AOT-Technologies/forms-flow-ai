@@ -143,4 +143,5 @@ export const TRANSLATIONS_EN = {
   date_format:"{{date, DD-MM-YYYY}}",
   total_submissions:"Total Submissions",
   save_preview:"Save & Preview",
+  add:"Add +"
 };

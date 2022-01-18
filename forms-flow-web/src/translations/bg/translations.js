@@ -142,4 +142,5 @@ export const TRANSLATIONS_BG = {
     date_format:"{{дата, ДД-ММ-ГГГГ}}",
     total_submissions:"Общо представяне",
     save_preview:"Запазване и визуализация",
+    add:"Добавете +"
 }

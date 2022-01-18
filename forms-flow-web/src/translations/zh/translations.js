@@ -142,5 +142,6 @@ export const TRANSLATIONS_ZH = {
   select_dashboard:"选择仪表板",
   total_submissions:"提交总数",
   save_preview:"保存和预览",
+  add:"添加 +",
 }
 

@@ -139,6 +139,7 @@ export const TRANSLATIONS_PT = {
   placeholder_appid:"ID do aplicativo",
   edit:"Editar",
   total_submissions:"Total de inscrições",
-  save_preview:"Salvar e visualizar",      
+  save_preview:"Salvar e visualizar",  
+  add:"Adicionar +"    
   };
   

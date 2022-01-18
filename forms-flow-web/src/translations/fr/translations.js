@@ -140,5 +140,6 @@ export const TRANSLATIONS_FR = {
   edit:"Éditer",
   total_submissions:"Nombre total de soumissions",
   save_preview:"Enregistrer et prévisualiser",
+  add:"Ajouter +",
   };
   

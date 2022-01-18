@@ -19,6 +19,7 @@ with your project by installing our [npm package](https://www.npmjs.com/package/
    - [Step 4 : Health Check](#health-check)
 3. [How to Create Your First Form](#how-to-create-your-first-form)
 4. [Logo change](#logo-change)
+5. [Internationalization](#internationalization)
 
 ## Prerequisites
 
@@ -107,3 +108,19 @@ Variable name | Meaning | Possible values | Default value |
   * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web.
      The default width and height of the logo is 50 and 55 also the image format is svg
   * The icon can also be replaced to the users icon by replacing the favicon in the public folder of forms-flow-web
+
+### Internationalization
+  * Default language 'English' can be changed to other languages according to the   user.
+  * The languages currently provided are `Chinese,Portuguese,French and Bulgarian`.
+  * User can add more languages by following the steps :
+   1. Create a folder at *forms-flow-web/src/translations* with folder name as the abbrevation of the required language.
+
+   2. Create a file named translations.js inside the folder.
+   3. Copy the keys from any of the other translations.js files.
+   4. Translate the value of the keys to the required language using google translator.
+   5. Import the same file to *forms-flow-web/src/translations/i18n.js* like rest of the languages.
+   6. You can add the button component at *forms-flow-web/src/containers/NavBar.jsx* by simply copying the dropdown menu and providing language abbrevation,name.
+   7. To change language of the contents in form, open *forms-flow-web/src/translations/formiotranslation.js* .
+   8. Copy the key-value pairs of any of the language provided and translate the values to the required language using google translator and add it back to the same file.
+   9. Login to **http://localhost:3000/** to check your updations. 
+             

@@ -3,7 +3,6 @@
 const _ = require('lodash');
 const async = require('async');
 const util = require('../util/util');
-const LegacyValidator = require('../resources/LegacyValidator');
 const Validator = require('../resources/Validator');
 const setDefaultProperties = require('../actions/properties/setDefaultProperties');
 
@@ -76,13 +75,11 @@ module.exports = (router, resourceName, resourceId) => {
 
       // If this is a get method, then filter the model query.
       if (isGet) {
+        const submissionQuery = hook.alter('submissionQuery', {form: req.currentForm._id}, req);
         req.countQuery = req.countQuery || req.model || this.model;
         req.modelQuery = req.modelQuery || req.model || this.model;
-        if (req.handlerName !== 'beforeGet') {
-          // Set the model query to filter based on the ID.
-          req.countQuery = req.countQuery.find({form: req.currentForm._id});
-          req.modelQuery = req.modelQuery.find({form: req.currentForm._id});
-        }
+        req.countQuery = req.countQuery.find(submissionQuery);
+        req.modelQuery = req.modelQuery.find(submissionQuery);
       }
 
       // If the request has a body.
@@ -98,6 +95,21 @@ module.exports = (router, resourceName, resourceId) => {
         // Ensure there is always data provided on POST.
         if (req.method === 'POST' && !req.body.data) {
           req.body.data = {};
+        }
+
+        if (req.method === 'POST') {
+          const blackList = [
+            'x-admin',
+            'x-jwt-token',
+            'x-token',
+            'x-remote-token'
+          ];
+
+          const reqHeaders = _.omitBy(req.headers, (value, key) => {
+            return blackList.includes(key) || key.match(/auth/gi);
+          });
+
+          _.set(req.body, 'metadata.headers', reqHeaders);
         }
 
         // Ensure that the _fvid is a number.
@@ -116,18 +128,17 @@ module.exports = (router, resourceName, resourceId) => {
         // Allow them to alter the body.
         req.body = hook.alter('submissionRequest', req.body);
 
-        // See if they provided an update to the roles.
-        if (req.method === 'PUT' && req.params.submissionId && req.rolesUpdate && req.rolesUpdate.length) {
+        if (req.method === 'PUT' && req.params.submissionId) {
           router.formio.cache.loadCurrentSubmission(req, (err, current) => {
-            if (current.roles && current.roles.length) {
+            if ( req.rolesUpdate && req.rolesUpdate.length && current.roles && current.roles.length) {
               const newRoles = _.intersection(
                 current.roles.map((role) => role.toString()),
                 req.rolesUpdate
               );
-              if (newRoles.length !== req.rolesUpdate.length) {
                 req.body.roles = newRoles.map((roleId) => util.idToBson(roleId));
-              }
             }
+
+            req.currentSubmissionData = current && current.data;
             done();
           });
         }
@@ -187,25 +198,28 @@ module.exports = (router, resourceName, resourceId) => {
 
       // Next we need to validate the input.
       hook.alter('validateSubmissionForm', req.currentForm, req.body, async form => { // eslint-disable-line max-statements
-        // Allow use of the legacy validator
-        const useLegacyValidator = (
-          process.env.LEGACY_VALIDATOR ||
-          req.headers['legacy-validator'] ||
-          req.query.legacy_validator
-        );
-
         // Get the submission model.
         const submissionModel = req.submissionModel || router.formio.resources.submission.model;
 
         // Next we need to validate the input.
         const token = util.getRequestValue(req, 'x-jwt-token');
-        const _Validator = useLegacyValidator ? LegacyValidator : Validator;
+        const validator = new Validator(req.currentForm, submissionModel, token, req.token, hook);
+        validator.validateReCaptcha = (responseToken) => {
+          return new Promise((resolve, reject) => {
+            router.formio.mongoose.models.token.findOne({value: responseToken}, (err, token) => {
+              if (err) {
+                return reject(err);
+              }
 
-        if (useLegacyValidator) {
-          _Validator.setHook(hook);
-        }
+              if (!token) {
+                return reject(new Error('ReCaptcha: Response token not found'));
+              }
 
-        const validator = new _Validator(req.currentForm, submissionModel, token, req.token, hook);
+              // Remove temp token after submission with reCaptcha
+              return token.remove(() => resolve(true));
+            });
+          });
+        };
 
         // Validate the request.
         validator.validate(req.body, (err, data, visibleComponents) => {
@@ -217,6 +231,9 @@ module.exports = (router, resourceName, resourceId) => {
 
           if (!_.isEqual(visibleComponents, req.currentForm.components)) {
             req.currentFormComponents = visibleComponents;
+          }
+          else if (req.hasOwnProperty('currentFormComponents') && req.currentFormComponents) {
+            delete req.currentFormComponents;
           }
           done();
         });
@@ -270,18 +287,30 @@ module.exports = (router, resourceName, resourceId) => {
         action,
         path,
       }) => {
+        const componentPath = util.valuePath(path, component.key);
+
         // Remove not persistent data
         if (
           data &&
           component.hasOwnProperty('persistent') &&
-          !component.persistent
+          !component.persistent &&
+          !['columns', 'fieldset', 'panel', 'table', 'tabs'].includes(component.type)
         ) {
           util.deleteProp(component.key)(data);
+        }
+        else if (req.method === 'PUT') {
+          // Restore value of components with calculated value and disabled server calculation
+          // if they don't present in submission data
+          const newCompData = _.get(submissionData, componentPath, undefined);
+          const currentCompData = _.get(req.currentSubmissionData, componentPath);
+
+          if (component.calculateValue && !component.calculateServer && currentCompData && newCompData === undefined) {
+            _.set(submissionData, componentPath, _.get(req.currentSubmissionData, componentPath));
+          }
         }
 
         const fieldActions = hook.alter('fieldActions', fActions);
         const propertyActions = hook.alter('propertyActions', pActions);
-        const componentPath = util.valuePath(path, component.key);
 
         // Execute the property handlers after validation has occurred.
         const handlerArgs = [

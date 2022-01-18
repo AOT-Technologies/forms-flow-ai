@@ -1,7 +1,9 @@
 # Download and Installation
+
 In the following document, we’ll describe about the different project dependencies, and the installation options being supported.
 
 ## Table of Contents
+
 1. [Prerequisites](#prerequisites)
 2. [Project Dependencies](#project-dependencies)
 3. [Download the formsflow.ai](#download-the-formsflowai)
@@ -42,6 +44,7 @@ There are multiple options for installing formsflow.ai. They are given below
   - [Openshift Full Deployment](#Openshift-Full-Deployment)
 
 ### Docker Based Installation
+
 ------------------
 #### Docker Full Deployment
 
@@ -58,8 +61,10 @@ Install the components in the listed order. *(NOTE: Keycloak, form.io and redash
  * [forms-flow-web](../forms-flow-web) formsflow.ai integration web UI
  
 ### Openshift Based Installation
+
 ------------------
 #### Openshift Full Deployment
+
  Follow the instructions on [openshift installation guide](./openshift)
  
 ## Verifying the Installation status

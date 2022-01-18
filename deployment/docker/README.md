@@ -1,4 +1,4 @@
-# formsflow.ai
+# formsflow.ai - Docker Setup
 
 This page elaborates how to setup the overall solution using docker.
 
@@ -77,6 +77,8 @@ Start the **analytics server** by following the instructions given [here](../../
 `FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|The URL of the forms-flow-forms server||`http://{your-ip-address}:3001`
 `FORMIO_ROOT_EMAIL`|forms-flow-forms admin login|eg. admin@example.com|`admin@example.com`
 `FORMIO_ROOT_PASSWORD`|forms-flow-forms admin password|eg.changeme|`changeme`
+`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
+ 
 
 
 *  Follow the below steps for mapping the role IDs.   
@@ -163,7 +165,7 @@ Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
 `APPLICATION_NAME`| Application_Name | eg: formsflow.ai| `formsflow.ai`
-`LANGUAGE`| Language_choosed | eg: en| `en`
+`WEB_BASE_CUSTOM_URL`| Custom_URL | eg: https://formsflow.ai| `custom url`
 `FORMSFLOW_API_CORS_ORIGINS`| formsflow.ai Rest API allowed origins, for allowing multiple origins you can separate host address using a comma seperated string or use * to allow all origins |eg:`host1, host2, host3`| `*`
 `CAMUNDA_API_URL` :triangular_flag_on_post: |Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
 `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow.ai Rest API URL||`http://{your-ip-address}:5000`
@@ -188,28 +190,28 @@ Variable name | Meaning | Possible values | Default value |
 
 ##### Camunda System Tuning  
 ----------------------------
- 
-   Variable name | Meaning | Possible values | Default value |
- --- | --- | --- | ---
-  `CAMUNDA_JOB_CORE_POOL_SIZE`|Job-Executor Configuration Properties||`10`
-  `CAMUNDA_JOB_MAX_POOL_SIZE`|Job-Executor Configuration Properties||`20`
-  `CAMUNDA_JOB_QUEUE_SIZE`|Job-Executor Configuration Properties||`10`
-  `CAMUNDA_JOB_LOCK_TIME_MILLIS`|Job-Executor Configuration Properties||`300000`
-  `CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION`|Job-Executor Configuration Properties||`10`
-  `CAMUNDA_JOB_WAIT_TIME_MILLIS`|Job-Executor Configuration Properties||`5000`
-  `CAMUNDA_JOB_MAX_WAIT`|Job-Executor Configuration Properties||`60000`
-  `CAMUNDA_METRICS_FLAG`|Job-Executor Configuration Properties||`false`
+
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`CAMUNDA_JOB_CORE_POOL_SIZE`|Job-Executor Configuration Properties||`10`
+`CAMUNDA_JOB_MAX_POOL_SIZE`|Job-Executor Configuration Properties||`20`
+`CAMUNDA_JOB_QUEUE_SIZE`|Job-Executor Configuration Properties||`10`
+`CAMUNDA_JOB_LOCK_TIME_MILLIS`|Job-Executor Configuration Properties||`300000`
+`CAMUNDA_JOB_MAXJOBS_PER_ACQUISITION`|Job-Executor Configuration Properties||`10`
+`CAMUNDA_JOB_WAIT_TIME_MILLIS`|Job-Executor Configuration Properties||`5000`
+`CAMUNDA_JOB_MAX_WAIT`|Job-Executor Configuration Properties||`60000`
+`CAMUNDA_METRICS_FLAG`|Job-Executor Configuration Properties||`false`
   
 ##### Camunda formsflow.ai Integration variable settings  
 ------------------------------------------------
 
-   Variable name | Meaning | Possible values | Default value |
- --- | --- | --- | ---
- `WEBSOCKET_SECURITY_ORIGIN` :triangular_flag_on_post:|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`http://{your-ip-address}:3000`
- `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
- `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
+Variable name | Meaning | Possible values | Default value |
+--- | --- | --- | ---
+`WEBSOCKET_SECURITY_ORIGIN` :triangular_flag_on_post:|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`http://{your-ip-address}:3000`
+`WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
+`WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
  
- ```
+```
 Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resources/`). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
 ```
 
@@ -220,6 +222,8 @@ Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resou
  --- | --- | --- | ---
  `APP_SECURITY_ORIGIN`|CORS setup, for multiple origins you can separate host address using a comma |eg:`host1, host2`| `*` 
  `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
+ `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`2 (In MB)`
+ `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
 
 ### Running the application
 * For Linux,

@@ -182,6 +182,9 @@ module.exports = function(router) {
 
     // Iterate through each permission level
     Object.entries(req.submissionFieldMatchAccess).forEach(([permissionLevel, conditions]) => {
+      if (!Array.isArray(conditions)) {
+        return;
+      }
       // Iterate through each condition within a permission level
       conditions.forEach((condition) => {
         // Get intersection of roles within condition and the user's roles
@@ -280,7 +283,6 @@ module.exports = function(router) {
 
   // Add this access handlers for all to use.
   router.formio.access = {
-
     /**
      * Get the access for all defined entities.
      *
@@ -403,12 +405,17 @@ module.exports = function(router) {
               return roleId;
             }) : [];
 
+            if (access.primaryAdminRole) {
+              validRoles.push(access.primaryAdminRole);
+            }
+
             // Default the access roles.
             access.roles = [access.defaultRole];
 
             // Ensure the user only has valid roles.
             if (req.user) {
-              access.roles = _(req.user.roles || [])
+              let userRoles = _.clone(access.roles);
+              userRoles = _(req.user.roles || [])
                 .filter()
                 .map(util.idToString)
                 .intersection(validRoles)
@@ -416,8 +423,11 @@ module.exports = function(router) {
                 .value();
 
               if (req.user._id && (req.user._id !== 'external')) {
-                access.roles.push(req.user._id.toString());
+                userRoles.push(req.user._id.toString());
               }
+
+              userRoles = hook.alter('userRoles', userRoles, access.defaultRole, req);
+              access.roles =_.clone( userRoles);
             }
 
             // Add the EVERYONE role.
@@ -440,7 +450,7 @@ module.exports = function(router) {
               return callback(`No Form found with formId: ${req.formId}`);
             }
 
-            if (item.fieldMatchAccess) {
+            if (item.fieldMatchAccess && !_.isEmpty(item.fieldMatchAccess)) {
               req.submissionFieldMatchAccess = item.fieldMatchAccess;
             }
             return callback(null);
@@ -454,8 +464,16 @@ module.exports = function(router) {
             return callback(null);
           }
 
-          if (req.submissionFieldMatchAccess) {
-            req.submissionFieldMatchAccessFilter = true;
+          if (req.submissionFieldMatchAccess && _.isObject(req.submissionFieldMatchAccess)) {
+            const hasRoles = Object.keys(req.submissionFieldMatchAccess).some(accessKey => {
+              if (!Array.isArray(req.submissionFieldMatchAccess[accessKey])) {
+                return false;
+              }
+              return req.submissionFieldMatchAccess[accessKey].some(item=>{
+                return item.roles.some(role => req.accessRoles.includes(role.toString()));
+              });
+            });
+            req.submissionFieldMatchAccessFilter = hasRoles;
           }
           return callback(null);
         },
@@ -569,6 +587,9 @@ module.exports = function(router) {
                 }
 
                 userRoles.forEach(function(roleEntity) {
+                  if ( typeof roleEntity !== 'string') {
+                    return;
+                  }
                   const role = roleEntity.split(':')[1];
 
                   if (role && readBlockingRoles.includes(role)) {
@@ -614,8 +635,9 @@ module.exports = function(router) {
     /* eslint-disable max-statements */
     hasAccess(req, access, entity, res) {
       const method = req.method.toUpperCase();
-      const user = req.user ? util.idToString(req.user._id) : null;
+      let user = req.user ? util.idToString(req.user._id) : null;
 
+      user = hook.alter('twoFAuthenticatedUser', user, req);
       // Setup some flags for other handlers.
       req.isAdmin = false;
 
@@ -649,6 +671,14 @@ module.exports = function(router) {
       // Check to see if this user has an admin role.
       const hasAdminRole = access.adminRole ? (_.indexOf(access.roles, access.adminRole) !== -1) : false;
       if (hasAdminRole || hook.alter('isAdmin', req.isAdmin, req)) {
+        req.isAdmin = true;
+        return true;
+      }
+
+      // Check to see if this user has an admin role of the primary project.
+      const hasPrimaryAdminRole = access.primaryAdminRole ? (_.indexOf(access.roles, access.primaryAdminRole) !== -1) : false;
+
+      if (hasPrimaryAdminRole) {
         req.isAdmin = true;
         return true;
       }

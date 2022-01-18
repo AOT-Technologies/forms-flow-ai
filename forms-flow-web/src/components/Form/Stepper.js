@@ -31,7 +31,6 @@ import { SUBMISSION_ACCESS } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
-
 import "./stepper.scss";
 import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
 
@@ -44,7 +43,7 @@ class StepperPage extends PureComponent {
   // UNSAFE_componentWillMount() {
   //   this.props.getAllProcesses();
   // }
-  
+
   constructor(props) {
     super(props);
     this.state = {
@@ -75,7 +74,7 @@ class StepperPage extends PureComponent {
   }
 
   componentDidMount() {
-    if(this.state && this.state.displayMode === "View") {
+    if(this.state && this.state.displayMode === "view") {
       this.setState({ disableWorkflowAssociation: true });
       this.setState({ disablePreview: true });
     }
@@ -88,12 +87,9 @@ class StepperPage extends PureComponent {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let stateData = null;
-
     if(nextProps.match.params.step !== undefined && !STEPPER_ROUTES.includes(nextProps.match.params.step)){
       nextProps.goToPageNotFound();
     }
-
-
     if (
       nextProps.match.params.formId &&
       nextProps.match.params.formId !== prevState.formId
@@ -290,8 +286,8 @@ class StepperPage extends PureComponent {
       workflow,
     } = this.state;
     // const { editMode } = this.state;
-    
     const { form, formProcessList } = this.props;
+
     switch (step) {
       case 0:
         // return(
@@ -352,6 +348,7 @@ class StepperPage extends PureComponent {
   render() {
     // const { process } = this.props;
     const steps = this.getSteps();
+
     const handleReset = () => {
       this.setActiveStep(0);
     };

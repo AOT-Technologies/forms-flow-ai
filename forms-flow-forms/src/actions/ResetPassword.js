@@ -57,6 +57,7 @@ module.exports = (router) => {
             placeholder: 'Select the resources we should reset password against.',
             dataSrc: 'url',
             data: {url: `${basePath}?type=resource`},
+            authenticate: true,
             valueProperty: '_id',
             template: '<span>{{ item.title }}</span>',
             multiple: true,
@@ -139,7 +140,7 @@ module.exports = (router) => {
             label: 'From:',
             key: 'from',
             inputType: 'email',
-            defaultValue: 'no-reply@form.io',
+            defaultValue: router.formio.config.defaultEmailSource,
             input: true,
             placeholder: 'Send the email from the following address',
             type: 'textfield',
@@ -298,11 +299,11 @@ module.exports = (router) => {
           this.getSubmission(req, token, (err, submission) => {
             if (err || !submission) {
               log(req, ecode.user.ENOUSER, err);
-              return res.status(400).send(ecode.user.ENOUSER);
+              return next(ecode.user.ENOUSER);
             }
 
             // Generate a temporary token for resetting their password.
-            const resetToken = jwt.sign(token, router.formio.config.jwt.secret, {
+            const resetToken = jwt.sign(token,  process.env.FORMIO_JWT_SECRET||router.formio.config.jwt.secret , {
               expiresIn: 5 * 60,
             });
 

@@ -41,7 +41,7 @@ const View = React.memo((props) => {
    },[getForm, isAuthenticated, dispatch])
 
     if (isActive) {
-      return <Loading />;
+      return <div data-testid="loading-view-component"><Loading /></div>;
     }
 
     return (
@@ -130,7 +130,7 @@ const mapStateToProps = (state) => {
       noAlerts: false,
       i18n: {
         en: {
-          error:<Translation>{(t)=>t("message")}</Translation> 
+          error:<Translation>{(t)=>t("message")}</Translation>
         },
       }
     },

@@ -143,5 +143,14 @@ export const TRANSLATIONS_EN = {
   date_format:"{{date, DD-MM-YYYY}}",
   total_submissions:"Total Submissions",
   save_preview:"Save & Preview",
-  add:"Add +"
+  operation:"Operations",
+  access_groups:"Access Groups",
+  action:"Action",
+  add:"Add",
+  admin:"Admin",
+  upload_form:"Upload Form",
+  download_form:"Download Form",
+  upload_json:"Upload json form only",
+  select_form:"Select atleast one form",
+  select_all:"Select All"
 };

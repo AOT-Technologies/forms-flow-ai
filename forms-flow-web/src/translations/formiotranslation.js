@@ -1,4 +1,4 @@
-export const trad_form = {
+export const formio_translation = {
    
    "zh":{
        "Text Field":"文本域",
@@ -408,7 +408,7 @@ export const trad_form = {
        "The date format for displaying the datetime value.":"用于显示日期时间值的日期格式。",
        "Shortcut Buttons":"快捷按钮",
        "You can specify few buttons which will be shown above the calendar. Use Label to specify the name of the button and onClick to specify which date/time will be set when user clicks the button. ":"您可以指定几个将显示在日历上方的按钮。使用 Label 指定按钮的名称，使用 onClick 指定用户单击按钮时将设置的日期/时间。",
-       "Label":"标签",
+      //  "Label":"标签",
        "onClick":"点击",
        "Enable Date Input":"启用日期输入",
        "Enables date input for this field.":"启用此字段的日期输入。",
@@ -815,7 +815,7 @@ export const trad_form = {
        "Right":"право",
        "Inline Layout":"вградено оформление",
        "Displays the checkboxes/radios horizontally.":"Показвайте хоризонтално квадратчетата за отметка/радио.",
-       "Checkbox":"квадратче за отметка",
+      //  "Checkbox":"квадратче за отметка",
        "Allow only available values":"Разрешени са само налични стойности",
        "Minimum checked number":"Минимален брой проверки",
        "Minimum checkboxes required before form can be submitted.":"Преди изпращане на формуляра са необходими минимални квадратчета за отметка.",
@@ -1847,7 +1847,7 @@ export const trad_form = {
       'Right':'à droite',
       'Inline Layout':'mise en page intégrée',
       'Displays the checkboxes/radios horizontally.':'Afficher les cases radio / radio horizontalement.',
-      'Checkbox':'case à cocher',
+      //'Checkbox':'case à cocher',
       'Allow only available values':'Seules les valeurs disponibles sont autorisées',
       'Minimum checked number':"Nombre minimal d'inspections",
       'Minimum checkboxes required before form can be submitted.':'Un minimum de cases à cocher est requis avant de soumettre le formulaire.',
@@ -1906,7 +1906,7 @@ export const trad_form = {
       'Success':'Bonne chance',
       'Danger':'Danger',
       'Warning':'prévenir',
-      'Size':'Taille',
+      //'Size':'Taille',
       'The size of this button.':'La taille de ce bouton',
       'Medium':'modérer',
       'Extra Small':'très peu',

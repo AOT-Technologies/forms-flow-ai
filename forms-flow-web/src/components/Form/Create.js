@@ -6,9 +6,10 @@ import { push } from "connected-react-router";
 import { Translation } from "react-i18next";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
-import { trad_form } from "../../translations/formiotranslation";
+import { formio_translation } from "../../translations/formiotranslation";
 //import {useSelector } from 'react-redux';
 const Create = React.memo((props) => {
+  //const {t} = useTranslation();
   //const lang = useSelector((state) => state.user.lang);
   return (
     <div>
@@ -17,7 +18,7 @@ const Create = React.memo((props) => {
       <Errors errors={props.errors} />
       <FormEdit options={{
 							language: props.lang,
-							i18n: trad_form
+							i18n: formio_translation
 							}}{...props} />
     </div>
   );

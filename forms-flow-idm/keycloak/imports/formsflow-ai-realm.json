@@ -429,6 +429,31 @@
 		  ]
         }
       ]
+    },
+    {
+      "name": "formsflow-analytics",
+      "path": "/formsflow-analytics",
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {},
+      "subGroups": [
+        {
+          "name": "group2",
+          "path": "/formsflow-analytics/group2",
+          "attributes": {},
+          "realmRoles": [],
+          "clientRoles": {},
+          "subGroups": []
+        },
+        {
+          "name": "group1",
+          "path": "/formsflow-analytics/group1",
+          "attributes": {},
+          "realmRoles": [],
+          "clientRoles": {},
+          "subGroups": []
+        }
+      ]
     }
   ],
   "defaultRoles": [
@@ -437,7 +462,8 @@
   ],
   "defaultGroups": [
     "/camunda-admin",
-    "/formsflow"
+    "/formsflow",
+    "/formsflow-analytics"
   ],
   "requiredCredentials": [
     "password"
@@ -540,7 +566,7 @@
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ "UPDATE_PASSWORD" ],
     "notBefore" : 0,
-    "groups" : [ "/formsflow/formsflow-reviewer/approver", "/camunda-admin", "/formsflow" ]
+    "groups" : [ "/formsflow/formsflow-reviewer/approver", "/camunda-admin", "/formsflow" , "/formsflow-analytics/group1"]
   }, {
     "createdTimestamp" : 1625009564217,
     "username" : "formsflow-clerk",
@@ -559,7 +585,7 @@
     "disableableCredentialTypes" : [ ],
     "requiredActions" : [ "UPDATE_PASSWORD" ],
     "notBefore" : 0,
-    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer/clerk", "/formsflow" ]
+    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer/clerk", "/formsflow", "/formsflow-analytics/group2" ]
   }, {
     "createdTimestamp" : 1621862578318,
     "username" : "formsflow-reviewer",
@@ -582,7 +608,7 @@
       "account" : [ "view-profile", "manage-account" ]
     },
     "notBefore" : 0,
-    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer" ]
+    "groups" : [ "/camunda-admin", "/formsflow/formsflow-reviewer", "/formsflow-analytics/group1" ]
   }, {
     "createdTimestamp" : 1621585233480,
     "username" : "service-account-forms-flow-bpm",
@@ -1100,6 +1126,21 @@
             "access.token.claim": "true",
             "claim.name": "groups",
             "userinfo.token.claim": "true"
+          }
+        },
+        {
+          "name": "dashboard-mapper",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
+          "consentRequired": false,
+          "config": {
+            "aggregate.attrs": "true",
+            "userinfo.token.claim": "true",
+            "multivalued": "true",
+            "user.attribute": "dashboards",
+            "id.token.claim": "true",
+            "access.token.claim": "true",
+            "claim.name": "dashboards"
           }
         }
       ],

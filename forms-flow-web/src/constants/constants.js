@@ -10,6 +10,11 @@ export const LANGUAGE =
   (window._env_ && window._env_.REACT_APP_LANGUAGE) ||
   process.env.REACT_APP_LANGUAGE ||
   "en";
+//custom url
+export const WEB_BASE_CUSTOM_URL =
+  (window._env_ && window._env_.REACT_APP_WEB_BASE_CUSTOM_URL) ||
+  process.env.REACT_APP_WEB_BASE_CUSTOM_URL||"";
+
 //keycloak
 export const Keycloak_Client =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_CLIENT) ||
@@ -34,6 +39,10 @@ export const STAFF_REVIEWER =
   (window._env_ && window._env_.REACT_APP_STAFF_REVIEWER_ROLE) ||
   process.env.REACT_APP_STAFF_REVIEWER_ROLE;
 export const ANONYMOUS_USER = "anonymous";
+
+
+export const FORMIO_JWT_SECRET =
+  (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) || process.env.REACT_APP_FORMIO_JWT_SECRET;
 
 export const USER_RESOURCE_FORM_ID =
   (window._env_ && window._env_.REACT_APP_USER_RESOURCE_FORM_ID) ||

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { ListGroup, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import {fetchServiceTaskList, fetchServiceTaskListCount} from "../../../apiManager/services/bpmTaskServices";
+import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServices";
 import {
   setBPMTaskListActivePage,
   setBPMTaskLoader
@@ -29,12 +29,11 @@ const ServiceFlowTaskList = React.memo(() => {
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const activePage = useSelector(state=>state.bpmTasks.activePage);
   const tasksPerPage = MAX_RESULTS;
-  const {t} = useTranslation();
+  const {t}=useTranslation();
   useEffect(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
       dispatch(setBPMTaskListActivePage(1));
-      dispatch(fetchServiceTaskListCount(selectedFilter.id, reqData))
       dispatch(fetchServiceTaskList(selectedFilter.id, 0, reqData));
     }
   }, [dispatch, selectedFilter, reqData]);
@@ -49,7 +48,6 @@ const ServiceFlowTaskList = React.memo(() => {
     dispatch(setBPMTaskListActivePage(pageNumber));
     dispatch(setBPMTaskLoader(true));
     let firstResultIndex = getFirstResultIndex(pageNumber) ;
-    dispatch(fetchServiceTaskListCount(selectedFilter.id, reqData))
     dispatch(fetchServiceTaskList(selectedFilter.id, firstResultIndex, reqData));
   };
 

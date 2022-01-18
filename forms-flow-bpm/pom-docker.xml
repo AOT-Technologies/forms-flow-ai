@@ -4,12 +4,12 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.camunda.bpm.extension.examples</groupId>
-	<artifactId>camunda-bpm-identity-keycloak-examples-sso-kubernetes</artifactId>
+	<groupId>org.camunda.bpm</groupId>
+	<artifactId>extension</artifactId>
 	<version>2.0.0</version>
 
-	<name>camunda BPM - engine plugins - identity - keycloak - examples - showcase</name>
-	<description>Showcase for using Camunda Keycloak Identity Provider </description>
+	<name>Forms flow BPM Extension</name>
+	<description>Forms flow BPM Extension</description>
 
 	<properties>
 		<version.java>11</version.java>
@@ -21,10 +21,14 @@
 		<failOnMissingWebXml>false</failOnMissingWebXml>
 
 		<!-- versions -->
-		<version.camunda>7.13.0</version.camunda>
-		<version.camundaSpringBoot>7.13.0</version.camundaSpringBoot>
-		<version.springBoot>2.4.2</version.springBoot>
-		<version.springSecurityOauth2>2.4.2</version.springSecurityOauth2>
+		<version.camundaKeycloak>2.2.1</version.camundaKeycloak>
+		<version.camunda>7.15.0</version.camunda>
+		<version.camundaSpringBoot>7.15.0</version.camundaSpringBoot>
+		<version.camundaConnect>1.2.2</version.camundaConnect><!-- 1.5.0 -->
+		<version.camundaMail>1.2.0</version.camundaMail><!-- 1.3.0 -->
+		<version.springBoot>2.4.8</version.springBoot><!-- 2.4.2 - 2.4.8 -->
+		<version.springSecurityOauth2>2.4.8</version.springSecurityOauth2><!-- 2.4.2 - 2.4.8 -->
+		<version.jackson>2.12.2</version.jackson>
 	</properties>
 
 	<dependencyManagement>
@@ -47,7 +51,7 @@
 			<dependency>
 				<groupId>org.camunda.bpm.extension</groupId>
 				<artifactId>camunda-bpm-identity-keycloak</artifactId>
-				<version>${project.version}</version>
+				<version>${version.camundaKeycloak}</version>
 				<scope>provided</scope>
 			</dependency>
 		</dependencies>
@@ -55,18 +59,15 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-web</artifactId>
-			<version>5.3.4</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
 		<dependency>
 			<groupId>org.camunda.bpm.springboot</groupId>
 			<artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
-			<!-- 			<artifactId>camunda-bpm-spring-boot-starter-webapp-ee</artifactId> -->
 			<version>${version.camundaSpringBoot}</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.camunda.bpm.springboot</groupId>
@@ -105,55 +106,11 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-resource-server</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-oauth2-jose</artifactId>
 		</dependency>
-
-		<!-- Redis Session Cache
-		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-data-redis</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-redis</artifactId>
-		</dependency>
-		-->
-
-		<!-- jdbc Session Cache -->
-		<!--dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-jdbc</artifactId>
-		</dependency-->
-
-		<!-- MongoDB Session Cache -->
-		<!--dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-data-mongodb</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency-->
-
-
-
-
-		<!-- MongoDB Session Cache
-            <dependency>
-                <groupId>org.springframework.session</groupId>
-                <artifactId>spring-session-data-mongodb</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-mongodb</artifactId>
-            </dependency>
-        -->
 
 		<!-- Keycloak Identity Prover Plugin  -->
 		<dependency>
@@ -162,7 +119,6 @@
 		</dependency>
 
 		<!-- Add Email Component -->
-
 		<dependency>
 			<groupId>org.camunda.connect</groupId>
 			<artifactId>camunda-connect-connectors-all</artifactId>
@@ -171,13 +127,13 @@
 		<dependency>
 			<groupId>org.camunda.bpm.extension</groupId>
 			<artifactId>camunda-bpm-mail-core</artifactId>
-			<version>1.2.0</version>
+			<version>${version.camundaMail}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.camunda.connect</groupId>
 			<artifactId>camunda-connect-core</artifactId>
-			<version>1.2.2</version>
+			<version>${version.camundaConnect}</version>
 		</dependency>
 
 		<dependency>
@@ -215,6 +171,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -255,19 +212,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- TODO Upgrade to newer BPM assert version
-		     See: https://docs.camunda.org/manual/7.11/user-guide/testing/#migration-from-community-versions
-		  -->
 		<dependency>
 			<groupId>org.camunda.bpm.assert</groupId>
 			<artifactId>camunda-bpm-assert</artifactId>
-			<version>5.0.0</version>
+			<version>12.0.0</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.assertj</groupId>
 			<artifactId>assertj-core</artifactId>
-			<version>1.7.1</version>
+			<version>3.21.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -296,25 +250,25 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<version>2.12.2</version>
+			<version>${version.jackson}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<version>2.12.2</version>
+			<version>${version.jackson}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-xml</artifactId>
-			<version>2.12.2</version>
+			<version>${version.jackson}</version>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-annotations</artifactId>
-			<version>2.12.2</version>
+			<version>${version.jackson}</version>
 		</dependency>
 
 		<dependency>
@@ -354,18 +308,47 @@
 			<url>https://app.camunda.com/nexus/repository/camunda-bpm-community-extensions-snapshots</url>
 		</repository>
 
-		<!-- Camunda EE Repository, login data see settings-docker.xml
-		<repository>
-			<id>camunda-bpm-ee</id>
-			<name>Camunda Enterprise Maven Repository</name>
-			<url>https://app.camunda.com/nexus/content/repositories/camunda-bpm-ee</url>
-		</repository>
-		-->
 	</repositories>
 
 	<build>
-		<finalName>${project.artifactId}</finalName>
+		<finalName>forms-flow-bpm</finalName>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.7</version>
+				<configuration>
+					<outputDirectory>target/jacoco-ut</outputDirectory>
+					<excludes>
+						<exclude>org/camunda/bpm/extension/keycloak/sso/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/keycloak/rest/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/keycloak/rest/oauth2client/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/keycloak/plugin/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/controllers/data/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/listeners/data/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/services/IUser.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/delegates/data/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/io/socket/message/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/io/socket/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/connector/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/CamundaApplication.class</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -386,7 +369,7 @@
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>3.0.0</version>
 				<configuration>
-					<mainClass>org.camunda.bpm.extension.keycloak.showcase.CamundaApplication</mainClass>
+					<mainClass>org.camunda.bpm.extension.CamundaApplication</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -405,8 +388,23 @@
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-surefire-plugin</artifactId>
+						<version>3.0.0-M5</version>
+					</plugin>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+						<artifactId>jacoco-maven-plugin</artifactId>
+						<version>0.8.7</version>
 						<configuration>
+							<outputDirectory>target/jacoco-ut</outputDirectory>
 						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>prepare-agent</goal>
+									<goal>report</goal>
+								</goals>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>

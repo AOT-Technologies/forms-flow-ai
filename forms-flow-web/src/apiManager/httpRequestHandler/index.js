@@ -4,14 +4,14 @@ import UserService from "../../services/UserService";
 
 // const qs = require("querystring");
 
-export const httpGETRequest = (url, data, token, isBearer = true) => {
+export const httpGETRequest = (url, data, token, isBearer = true, headers=null) => {
   return axios.get(url, {
     params: data,
-    headers: {
+    headers: !headers?{
       Authorization: isBearer
         ? `Bearer ${token || UserService.getToken()}`
         : token,
-    },
+    }:headers,
   });
 };
 
@@ -21,6 +21,17 @@ export const httpPOSTRequest = (url, data, token, isBearer = true) => {
       Authorization: isBearer
         ? `Bearer ${token || UserService.getToken()}`
         : token,
+    },
+  });
+};
+
+export const httpPOSTRequestWithHAL = (url, data, token, isBearer = true) => {
+  return axios.post(url, data, {
+    headers: {
+      Authorization: isBearer
+        ? `Bearer ${token || UserService.getToken()}`
+        : token,
+      Accept: 'application/hal+json'
     },
   });
 };

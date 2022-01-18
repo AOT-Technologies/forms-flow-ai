@@ -52,7 +52,4 @@ public class FormSubmissionListener extends BaseListener implements ExecutionLis
     private String getUrl(DelegateExecution execution){
         return StringUtils.substringBeforeLast(String.valueOf(execution.getVariables().get("formUrl")),"/");
     }
-
-
-
 }

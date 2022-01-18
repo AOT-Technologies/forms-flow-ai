@@ -7,7 +7,6 @@ services:
       POSTGRES_USER: ${CAMUNDA_JDBC_USER:-admin}
       POSTGRES_PASSWORD: ${CAMUNDA_JDBC_PASSWORD:-changeme}
       POSTGRES_DB: ${CAMUNDA_JDBC_DB_NAME:-formsflow-bpm}
-      POSTGRES_HOST_AUTH_METHOD: 'trust'
     volumes:
       - ./postgres/camunda:/var/lib/postgresql/data
     ports:
@@ -60,6 +59,8 @@ services:
       - WEBSOCKET_SECURITY_ORIGIN=${WEBSOCKET_SECURITY_ORIGIN}
       - WEBSOCKET_MESSAGE_TYPE=${WEBSOCKET_MESSAGE_TYPE:-TASK_EVENT}
       - WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
+      - DATA_BUFFER_SIZE=${DATA_BUFFER_SIZE:-2}
+      - IDENTITY_PROVIDER_MAX_RESULT_SIZE=${IDENTITY_PROVIDER_MAX_RESULT_SIZE:-250}
     networks:
       - forms-flow-bpm-network
     

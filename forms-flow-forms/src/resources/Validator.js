@@ -63,14 +63,18 @@ class Validator {
     const emptyData = _.isEmpty(submission.data);
     let unsetsEnabled = false;
 
+    const {validateReCaptcha} = this;
+
     // Create the form, then check validity.
     Formio.createForm(this.form, {
       server: true,
+      noDefaults: true,
       hooks: {
         setDataValue: function(value, key, data) {
           if (!unsetsEnabled) {
             return value;
           }
+
           // Check if this component is not persistent.
           if (this.component.hasOwnProperty('persistent') &&
             (!this.component.persistent || this.component.persistent === 'client-only')
@@ -90,7 +94,14 @@ class Validator {
             unsets.push({key, data});
           }
           return value;
-        }
+        },
+        validateReCaptcha(responseToken) {
+          if (validateReCaptcha) {
+            return validateReCaptcha(responseToken);
+          }
+
+          return true;
+        },
       }
     }).then((form) => {
       // Set the validation config.
@@ -105,8 +116,8 @@ class Validator {
       form.data = submission.data;
 
       // Perform calculations and conditions.
-      form.calculateValue();
       form.checkConditions();
+      form.calculateValue();
 
       // Reset the data
       form.data = {};
@@ -132,6 +143,11 @@ class Validator {
           submission.data = emptyData ? {} : form.data;
           const visibleComponents = (form.getComponents() || []).map(comp => comp.component);
           return next(null, submission.data, visibleComponents);
+        }
+
+        if (form.form.display === 'wizard') {
+          // Wizard errors object contains all wizard errors only on last page
+          form.page = form.pages.length - 1;
         }
 
         const details = [];

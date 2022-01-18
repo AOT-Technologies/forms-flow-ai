@@ -432,6 +432,11 @@ i.fa.fa-question-circle.text-muted {
   float: right;
   margin-left: auto;
 }
+.btn-center {
+  float: right;
+  margin-left: auto;
+}
+
 .btn.btn-link:focus,
 .btn.btn-link.focus {
   box-shadow: none;
@@ -524,4 +529,10 @@ div[disabled] {
 }
 .css-79elbk {
  // position: none;
+}
+.classApplicationId{
+  width: 15%;
+}
+.classApplicationName{
+  width: 20%;
 }

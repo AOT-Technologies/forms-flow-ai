@@ -1,0 +1,65 @@
+import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
+import pick from "lodash/pick";
+import {CLIENT, OPERATIONS, STAFF_DESIGNER, STAFF_REVIEWER} from "../../../constants/constants";
+//import { useTranslation } from "react-i18next";
+import { Translation } from "react-i18next";
+export const designerColumns = [
+  {
+    key: 'title',
+    sort: true,
+    title: <Translation>{(t)=>t("form")}</Translation>,
+    width: 6,
+  },
+  {
+    key: 'operations',
+    title: <Translation>{(t)=>t("operation")}</Translation>,
+    width: 5,
+  },
+  {
+    key: 'id',
+    title: <SelectFormForDownload type="all"/>,
+    width: 1,
+    value: (form) => <SelectFormForDownload form={form}/>
+  },
+]
+
+export const userColumns = [
+  {
+    key: 'title',
+    sort: true,
+    title: <Translation>{(t)=>t("form")}</Translation>,
+    width: 8,
+  },
+  {
+    key: 'operations',
+    title: <Translation>{(t)=>t("operation")}</Translation>,
+    width: 4,
+  }
+];
+
+const columnsToPick = [
+  "title",
+  "display",
+  "type",
+  "name",
+  "path",
+  "tags",
+  "components"];
+
+export const getFormattedForm = (form)=>{
+  return pick(form,columnsToPick);
+}
+
+export const getOperations = (userRoles, showViewSubmissions) => {
+  let operations = [];
+  if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {
+    operations.push(OPERATIONS.insert);
+  }
+  if (userRoles.includes(STAFF_REVIEWER) && showViewSubmissions) {
+    operations.push(OPERATIONS.submission);
+  }
+  if (userRoles.includes(STAFF_DESIGNER)) {
+    operations.push(OPERATIONS.viewForm, OPERATIONS.delete); //  OPERATIONS.edit,
+  }
+  return operations;
+}

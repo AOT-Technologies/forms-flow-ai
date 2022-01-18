@@ -1,9 +1,11 @@
+ /* istanbul ignore file */
 import {
   ROLES,
   USER_RESOURCE_FORM_ID,
   Keycloak_Client,
   ANONYMOUS_USER,
   ANONYMOUS_ID,
+  FORMIO_JWT_SECRET
 } from "../constants/constants";
 import {
   setUserRole,
@@ -12,7 +14,8 @@ import {
 } from "../actions/bpmActions";
 import {BPM_BASE_URL} from "../apiManager/endpoints/config";
 import {AppConfig} from '../config';
-import {WEB_BASE_URL} from "../apiManager/endpoints/config";
+import {WEB_BASE_URL , WEB_BASE_CUSTOM_URL} from "../apiManager/endpoints/config";
+
 import {_kc} from "../constants/tenantConstant";
 
 const jwt = require("jsonwebtoken");
@@ -23,6 +26,7 @@ const jwt = require("jsonwebtoken");
  * @param onAuthenticatedCallback
  */
 // const KeycloakData = new Keycloak(tenantDetail);
+
 
 const initKeycloak = (store, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -96,6 +100,7 @@ const setApiBaseUrlToLocalStorage = ()=> {
   localStorage.setItem("formioApiUrl", AppConfig.projectUrl);
   localStorage.setItem("formsflow.ai.url",window.location.origin)
   localStorage.setItem("formsflow.ai.api.url", WEB_BASE_URL);
+  localStorage.setItem("customApiUrl", WEB_BASE_CUSTOM_URL);
 }
 
 
@@ -116,6 +121,7 @@ const authenticateAnonymousUser = (store) => {
 };
 
 const authenticateFormio = (user, roles) => {
+  
   const FORMIO_TOKEN = jwt.sign(
     {
       external: true,
@@ -127,7 +133,7 @@ const authenticateFormio = (user, roles) => {
         roles: roles,
       },
     },
-    "--- change me now ---"
+    FORMIO_JWT_SECRET
   ); // TODO Move JWT secret key to COME From ENV
   //TODO remove this token from local Storage on logout and try to move to redux store as well
   localStorage.setItem("formioToken", FORMIO_TOKEN);

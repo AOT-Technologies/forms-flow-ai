@@ -142,6 +142,15 @@ export const TRANSLATIONS_ZH = {
   select_dashboard:"选择仪表板",
   total_submissions:"提交总数",
   save_preview:"保存和预览",
-  add:"添加 +",
+  operation:"运营",
+  access_groups:"访问组",
+  action:"行动",
+  add:"添加",
+  admin:"行政",
+  upload_form:"上传表格",
+  download_form:"下载表格",
+  upload_json:"仅上传 json 表单",
+  select_form:"选择至少一种形式",
+  select_all:"全选"
 }
 

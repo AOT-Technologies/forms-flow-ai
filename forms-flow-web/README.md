@@ -2,7 +2,7 @@
 
 ![React](https://img.shields.io/badge/React-17.0.2-blue)
 
-**formsflow.ai** delivers progressive web application with React version `17.0.2` and `create-react-app`. Also currently uses  [form.io](https://github.com/formio/formio) version `2.0.0--rc.34`.
+**formsflow.ai** delivers progressive web application with React version `17.0.2` and `create-react-app`. Also currently uses  [form.io](https://github.com/formio/formio) version `2.3.0`.
 
 A React library for rendering out forms based on the form.io platform.
 
@@ -51,8 +51,6 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  --- | --- | --- | ---
  `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
  `FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|The URL of the form.io server||`http://{your-ip-address}:3001`
- `INSIGHT_API_URL`:triangular_flag_on_post:|Insight Api base end-point||`http://{your-ip-address}:7000`
- `INSIGHT_API_KEY`:triangular_flag_on_post:|API_KEY from REDASH|eg. G6ozrFn15l5YJkpHcMZaKOlAhYZxFPhJl5Xr7vQw|`Get the api key from forms-flow-analytics (REDASH) by following the 'Get the Redash API Key' steps from `[here](../forms-flow-analytics/README.md#get-the-redash-api-key)
  `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow Rest API URL||`http://{your-ip-address}:5000/api`
  `CAMUNDA_API_URL`:triangular_flag_on_post:|Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`
  `KEYCLOAK_URL`:triangular_flag_on_post:| URL to your Keycloak server || `http://{your-ip-address}:8080`
@@ -60,11 +58,10 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  `KEYCLOAK_WEB_CLIENTID`|Your Keycloak Client ID within the realm| eg. forms-flow-web | `forms-flow-web`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token| | `giert989jkwrgb@DR55`
  `APPLICATION_NAME`|Application name is used to provide clients application name|
- `LANGUAGE`|Language is used to  choose which language in which User interface is displayed |
+ `WEB_BASE_CUSTOM_URL`|Clients can use WEB_BASE_CUSTOM_URL env variable to provide their custom URL |
  `USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
+ |`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
 
-* NOTE - While configuring LANGUAGE currently two options are provided Chineese and English.If we need to add more languages then 
-add translation messages in translation folder and also configure the env variable  LANGUAGE in sample.env to corresponding name(eg:en/zh)
 * NOTE - While configuring USER_ACCESS_PERMISSIONS the accessAllowApplications will hide / show application tab, the same way accessAllowSubmissions does for viewSubmission button. To enable this feature you need to add access-allow-applications, access-allow-submissions with the respective user group in keycloak.
 
 * [STEP 1](): Getting **ROLE_ID** and **RESOURCE_ID** are mandatory for role based access. To generate ID go to ["Formsflow-forms user/role API"](../forms-flow-forms/README.md#formsflow-forms-api-requesting) and follow the steps.

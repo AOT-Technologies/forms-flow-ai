@@ -23,3 +23,10 @@ window.camCockpitConf = {
     vendor: ' '
   }
 };
+
+export default {
+    bpmnJs: {},
+    customScripts: [
+        'custom/logout'
+    ]
+}

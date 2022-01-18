@@ -1,11 +1,12 @@
 # Test configuration using spring-boot
 
+formsflow.ai:
+  api:
+    url: http://localhost:5000
+
 camunda.bpm:
   job-execution.enabled: true
   id-generator: simple
-
-spring.datasource:
-  url: jdbc:h2:mem:camunda-spring-boot-test;DB_CLOSE_ON_EXIT=false
 
 plugin.identity.keycloak.rest:
   userNameClaim: preferred_username
@@ -25,3 +26,26 @@ spring:
 spring.data.redis.repositories.enabled: false
 spring.autoconfigure.exclude:
   - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+
+rest.security:
+  enabled: true
+  provider: keycloak
+  required-audience: camunda-rest-api
+
+plugin.identity.keycloak:
+  keycloakIssuerUrl: http://localhost:8080/auth/realms/forms-flow-ai
+  keycloakAdminUrl: http://localhost:8080/auth/admin/realms/forms-flow-ai
+  clientId: forms-flow-bpm
+  clientSecret: e3238a38-5e5a-45bb-b4e6-d7eb5855cf3a
+  useEmailAsCamundaUserId: false
+  useUsernameAsCamundaUserId: true
+  useGroupPathAsCamundaGroupId: true
+  administratorGroupName: camunda-admin
+  disableSSLCertificateValidation: true
+
+spring.datasource:
+  jdbc-url: jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+  username: sa
+  password: sa
+  driverClassName: org.h2.Driver
+  type: com.zaxxer.hikari.HikariDataSource

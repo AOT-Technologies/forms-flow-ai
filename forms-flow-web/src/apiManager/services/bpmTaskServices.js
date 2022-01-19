@@ -36,10 +36,18 @@ export const fetchServiceTaskList = (filterId,firstResult,reqData,taskIdToRemove
           let responseData = res.data;
           const _embedded = responseData['_embedded']; // data._embedded.task is where the task list is.
           if (!_embedded || !_embedded['task'] || !responseData['count']) {
-            // Display error if the necessary values are unavailable.
-            console.log("Error", res);
-            dispatch(serviceActionError(res));
-            dispatch(setBPMTaskLoader(false));
+            if (responseData['count'] !== undefined && responseData['count'] === 0) {
+              const tasks = []
+              dispatch(setBPMTaskCount(0));
+              dispatch(setBPMTaskList(tasks));
+              dispatch(setBPMTaskLoader(false));
+              done(null, tasks);
+            } else {
+                  // Display error if the necessary values are unavailable.
+                  console.log("Error", res);
+                  dispatch(serviceActionError(res));
+                  dispatch(setBPMTaskLoader(false));
+            }
           } else {
             const taskListFromResponse = _embedded['task']; // Gets the task array
             const taskCount = {

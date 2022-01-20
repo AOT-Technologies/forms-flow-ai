@@ -165,7 +165,7 @@ export const getProcessActivities = (process_instance_id, ...rest) => {
 };
 
 export const fetchDiagram = (process_key, ...rest) => {
-  const url =API.PROCESSES+'/'+process_key+'/xml';
+  const url =replaceUrl(API.PROCESSES_XML,"<process_key>",process_key)
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     httpGETRequest(

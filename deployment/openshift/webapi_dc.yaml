@@ -50,16 +50,6 @@ objects:
               secretKeyRef:
                 key: INSIGHTS_API_KEY
                 name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: KEYCLOAK_ADMIN_USERNAME
-            valueFrom:
-              secretKeyRef:
-                key: KEYCLOAK_ADMIN_USERNAME
-                name: ${FORMSFLOW_CONFIG_NAME}-config
-          - name: KEYCLOAK_ADMIN_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                key: KEYCLOAK_ADMIN_PASSWORD
-                name: ${FORMSFLOW_CONFIG_NAME}-config
           - name: BPM_CLIENT_ID
             valueFrom:
               secretKeyRef:

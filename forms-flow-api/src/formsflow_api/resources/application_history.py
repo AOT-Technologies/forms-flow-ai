@@ -23,7 +23,9 @@ class ApplicationHistoryResource(Resource):
     @auth.require
     @profiletime
     def get(application_id):
-        """Get application histry."""
+        """Get application history.
+        : application_id:- Getting application history by providing application_id
+        """
         return (
             (
                 {

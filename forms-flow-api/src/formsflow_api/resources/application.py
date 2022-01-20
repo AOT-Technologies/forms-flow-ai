@@ -29,18 +29,18 @@ class ApplicationsResource(Resource):
     @profiletime
     def get():
         """Get applications
-        Fetch applications list based on parameters
-        :params Id: list the application for particular id
-        :params applicationName: retrieve application list based on application name
-        :params applicationStatus: list all applications based on status
-        :params createdBy: to retrieve applications based on createdby
-        :params created: retrieve the applications based on date and time
-        :params modified: retrieve the applications based on modified date and time
-        :params pageNo: to retrieve page number
-        :params limit: to retrieve limit for each page
-        :params orderBy: Name of column to order by (default: created)
+
+        : Id:- List the application for particular id
+        : applicationName:- Retrieve application list based on application name
+        : applicationStatus:- List all applications based on status
+        : createdBy:- To retrieve applications based on createdby
+        : created:- Retrieve the applications based on date and time
+        : modified:- Retrieve the applications based on modified date and time
+        : pageNo:- To retrieve page number
+        : limit:- To retrieve limit for each page
+        : orderBy:- Name of column to order by (default: id)
         """
-        try: 
+        try:
             dict_data = ApplicationListRequestSchema().load(request.args) or {}
             page_no = dict_data.get("page_no")
             limit = dict_data.get("limit")
@@ -123,13 +123,15 @@ class ApplicationsResource(Resource):
 @cors_preflight("GET,PUT,OPTIONS")
 @API.route("/<int:application_id>", methods=["GET", "PUT", "OPTIONS"])
 class ApplicationResourceById(Resource):
-    """Resource for submissions."""
+    """Resource for getting application by id."""
 
     @staticmethod
     @auth.require
     @profiletime
     def get(application_id):
-        """Get application by id."""
+        """Get application by id.
+        : application_id:- List the application for particular application_id
+        """
         try:
             if auth.has_role([REVIEWER_GROUP]):
                 (
@@ -156,7 +158,9 @@ class ApplicationResourceById(Resource):
     @auth.require
     @profiletime
     def put(application_id):
-        """Update application details."""
+        """Update application details.
+        : application_id:- Update the application for particular application_id
+        """
         application_json = request.get_json()
         try:
             application_schema = ApplicationUpdateSchema()
@@ -182,13 +186,14 @@ class ApplicationResourceById(Resource):
 @cors_preflight("GET,OPTIONS")
 @API.route("/formid/<string:form_id>", methods=["GET", "OPTIONS"])
 class ApplicationResourceByFormId(Resource):
-    """Resource for submissions."""
-
+    """Resource for getting applications based on formid."""
     @staticmethod
     @auth.require
     @profiletime
     def get(form_id):
-        """Get applications."""
+        """Get applications.
+        : form_id:- Retrieve application list based on formid
+        """
         if request.args:
             dict_data = ApplicationListReqSchema().load(request.args)
             page_no = dict_data["page_no"]
@@ -248,13 +253,17 @@ class ApplicationResourceByFormId(Resource):
 @cors_preflight("POST,OPTIONS")
 @API.route("/create", methods=["POST", "OPTIONS"])
 class ApplicationResourcesByIds(Resource):
-    """Resource for submissions."""
+    """Resource for application creation."""
 
     @staticmethod
     @auth.require
     @profiletime
     def post():
-        """Post a new application using the request body."""
+        """Post a new application using the request body.
+        : formId:- Unique Id for the corresponding form
+        : submissionId:- Unique Id for the submitted form
+        : formUrl:- Unique URL for the submitted application
+        """
         application_json = request.get_json()
 
         try:
@@ -286,7 +295,9 @@ class ProcessMapperResourceByApplicationId(Resource):
     @auth.require
     @profiletime
     def get(application_id):
-
+        """Get process details.
+        : application_id:- Retreiving process details for corresponding application_id
+        """
         try:
             return (
                 ApplicationService.get_application_form_mapper_by_id(application_id),

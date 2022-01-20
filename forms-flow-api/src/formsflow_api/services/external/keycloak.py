@@ -10,20 +10,20 @@ class KeycloakAdminAPIService(object):
 
     def __init__(self):
         self.session = requests.Session()
-        username = current_app.config.get("KEYCLOAK_ADMIN_USERNAME")
-        password = current_app.config.get("KEYCLOAK_ADMIN_PASSWORD")
-
+        bpm_token_api = current_app.config.get("BPM_TOKEN_API")
+        bpm_client_id = current_app.config.get("BPM_CLIENT_ID")
+        bpm_client_secret = current_app.config.get("BPM_CLIENT_SECRET")
+        bpm_grant_type = current_app.config.get("BPM_GRANT_TYPE")
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         payload = {
-            "client_id": "admin-cli",
-            "username": username,
-            "password": password,
-            "grant_type": "password",
+            "client_id": bpm_client_id,
+            "client_secret": bpm_client_secret,
+            "grant_type": bpm_grant_type,
         }
 
-        token_api = f"{current_app.config.get('KEYCLOAK_URL')}/auth/realms/master/protocol/openid-connect/token"
-        response = requests.post(token_api, headers=headers, data=payload)
+        response = requests.post(bpm_token_api, headers=headers, data=payload)
         data = json.loads(response.text)
+        assert data["access_token"] is not None
         self.session.headers.update(
             {
                 "Authorization": "Bearer " + data["access_token"],

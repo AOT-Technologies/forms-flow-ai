@@ -18,7 +18,10 @@ API = Namespace("Form", description="Form")
 @cors_preflight("GET,POST,OPTIONS")
 @API.route("", methods=["GET", "POST", "OPTIONS"])
 class FormResource(Resource):
-    """Resource for managing forms."""
+    """Resource for managing forms.
+    : pageNo:- To retrieve page number
+    : limit:- To retrieve limit for each page
+    """
 
     @staticmethod
     @auth.require
@@ -121,7 +124,9 @@ class FormResourceById(Resource):
     @auth.require
     @profiletime
     def get(mapper_id):
-        """Get form process mapper by id."""
+        """Get forms.
+        : mapper_id:- Get form process mapper by mapper_id
+        """
         try:
             return (
                 FormProcessMapperService.get_mapper(form_process_mapper_id=mapper_id),
@@ -143,7 +148,9 @@ class FormResourceById(Resource):
     @auth.require
     @profiletime
     def delete(mapper_id):
-        """Delete form process mapper by id."""
+        """
+        : mapper_id:- Delete form process mapper by mapper_id.
+        """
         try:
             FormProcessMapperService.mark_inactive(form_process_mapper_id=mapper_id)
             return "Deleted", HTTPStatus.OK
@@ -163,7 +170,15 @@ class FormResourceById(Resource):
     @staticmethod
     @auth.require
     def put(mapper_id):
-        """Update form process mapper details."""
+        """
+        : comments:- Brief description 
+        : formId:- Unique Id for the corresponding form
+        : formName:- Name for the corresponding form
+        : id:- Id for particular form
+        : processKey:- Workflow associated for particular form
+        : processName:- Workflow associated for particular form
+        : status:- Status of the form
+        """
         application_json = request.get_json()
 
         try:
@@ -199,7 +214,9 @@ class FormResourceByFormId(Resource):
     @auth.require
     @profiletime
     def get(form_id):
-        """Get details of only form corresponding to a particular formId."""
+        """
+        : form_id:- Get details of only form corresponding to a particular formId
+        """
         try:
             return (
                 FormProcessMapperService.get_mapper_by_formid(form_id=form_id),

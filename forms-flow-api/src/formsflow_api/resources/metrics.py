@@ -17,7 +17,11 @@ API = Namespace("Metrics", description="Application Metrics endpoint")
 @cors_preflight("GET,OPTIONS")
 @API.route("", methods=["GET", "OPTIONS"])
 class AggregatedApplicationsResource(Resource):
-    """Resource for managing aggregated applications."""
+    """Resource for managing aggregated applications.
+    : from:- To retrieve applications based on from_date
+    : to:- To retrieve applications based on to_date
+    : orderBy:- Name of column to order by
+    """
 
     @staticmethod
     @auth.require
@@ -85,7 +89,9 @@ class AggregatedApplicationStatusResource(Resource):
     @auth.require
     @profiletime
     def get(mapper_id):
-        """Get aggregated application status."""
+        """
+        : mapper_id:- Get aggregated application status.
+        """
         try:
             request_schema = ApplicationMetricsRequestSchema()
             dict_data = request_schema.load(request.args)

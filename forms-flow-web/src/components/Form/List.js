@@ -15,7 +15,7 @@ import {
 } from "react-formio";
 import Loading from "../../containers/Loading";
 import {
-  STAFF_DESIGNER,
+  STAFF_DESIGNER, SUBMISSION_ACCESS,
 } from "../../constants/constants";
 import "../Form/List.scss";
 import {
@@ -30,6 +30,7 @@ import {designerColumns, getOperations, userColumns} from "./constants/formListC
 import FileService from "../../services/FileService";
 import {setFormCheckList, setFormUploadList, updateFormUploadCounter} from "../../actions/checkListActions";
 import FileModal from './FileUpload/fileUploadModal'
+import {addHiddenApplicationComponent} from "../../constants/applicationComponent";
  const List = React.memo((props)=> {
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
   //const [selectedForm,setSelectedForms] = useState([]);
@@ -106,13 +107,19 @@ import FileModal from './FileUpload/fileUploadModal'
     await Promise.all(
       fileContent.forms.map(async (formData)=>{
         return new Promise((resolve, reject) => {
-          dispatch(saveForm("form", formData, async (err, form) => {
+          formData = addHiddenApplicationComponent(formData);
+          const newFormData = {
+            ...formData,
+            tags: ["common"],
+          };
+          newFormData.submissionAccess = SUBMISSION_ACCESS;
+          dispatch(saveForm("form", newFormData, async (err, form) => { // TODO add Default SubmissionAccess to formData
             if (err) {
               // get the form Id of the form if exists already in the server
-              dispatch(fetchFormByAlias(formData.path, async (err, formObj) => {
+              dispatch(fetchFormByAlias(newFormData.path, async (err, formObj) => {
                 if (!err) {
-                  formData._id = formObj._id;
-                  dispatch(saveForm("form", formData, (err, form) => {
+                  newFormData._id = formObj._id;
+                  dispatch(saveForm("form", newFormData, (err, form) => {
                     if (!err) {
                       dispatch(updateFormUploadCounter())
                       resolve();

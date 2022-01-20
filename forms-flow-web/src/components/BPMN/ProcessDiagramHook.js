@@ -108,7 +108,7 @@ const ProcessDiagram = React.memo((props)=>{
     }
   }*/
 
-  if (isProcessDiagramLoading) {
+  if (isProcessDiagramLoading && processInstanceId) {
     return <div className="bpmn-viewer-container">
       <div className="bpm-container">
       <Loading/>

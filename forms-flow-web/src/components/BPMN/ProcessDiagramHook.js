@@ -107,22 +107,27 @@ const ProcessDiagram = React.memo((props)=>{
       onShown(warnings);
     }
   }*/
-
-  if (isProcessDiagramLoading && processInstanceId) {
+  
+  if(!(processInstanceId && process_key ))
+  {
+      dispatch(setProcessDiagramLoading(false));
+  }
+  
+  if (isProcessDiagramLoading) {
     return <div className="bpmn-viewer-container">
       <div className="bpm-container">
       <Loading/>
       </div>
     </div>
   }
-  if(diagramXML===""){
+  if( diagramXML=== ""){
     return <div className="bpmn-viewer-container">
       <div className="bpm-container">
         <Nodata text={"No Process Diagram found"} className={"div-no-application-list text-center"}/>
       </div>
     </div>
   }
-
+  
   return (
     <div className="bpmn-viewer-container">
       <div id="process-diagram-container" className="bpm-container grab-cursor" ref={containerRef}/>

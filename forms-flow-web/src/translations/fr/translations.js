@@ -149,6 +149,9 @@ export const TRANSLATIONS_FR = {
   download_form:"Télécharger le formulaire",
   upload_json:"Télécharger le formulaire json uniquement",
   select_form:"Sélectionnez au moins un formulaire",
-  select_all:"Tout sélectionner"
+  select_all:"Tout sélectionner",
+  created_date:"Date de création",
+  modified_date:"Date modifiée",
+  submission_status:"État de la soumission"
   };
   

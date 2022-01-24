@@ -152,5 +152,8 @@ export const TRANSLATIONS_EN = {
   download_form:"Download Form",
   upload_json:"Upload json form only",
   select_form:"Select atleast one form",
-  select_all:"Select All"
+  select_all:"Select All",
+  created_date:"Created Date",
+  modified_date:"Modified Date",
+  submission_status:"Submission Status"
 };

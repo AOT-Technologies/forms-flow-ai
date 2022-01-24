@@ -151,6 +151,10 @@ export const TRANSLATIONS_ZH = {
   download_form:"下载表格",
   upload_json:"仅上传 json 表单",
   select_form:"选择至少一种形式",
-  select_all:"全选"
+  select_all:"全选",
+  created_date:"创建日期",
+  modified_date:"修改日期",
+  submission_status:"提交状态"
+
 }
 

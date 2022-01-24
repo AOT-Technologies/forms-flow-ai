@@ -151,5 +151,9 @@ export const TRANSLATIONS_BG = {
     download_form:"Изтеглете формуляр",
     upload_json:"Качете само json формуляр",
     select_form:"Изберете поне един формуляр",
-    select_all:"Избери всички"
+    select_all:"Избери всички",
+    created_date:"Дата на създаване",
+    modified_date:"Дата на промяна",
+    submission_status:"Състояние на подаване",
+    
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import { Translation } from "react-i18next";
 
 import { Legend, PieChart, Pie, Cell, LabelList } from "recharts";
 
@@ -30,7 +31,7 @@ const ChartForm = React.memo((props) => {
         <div className="card-counter">
           <div className="white-box status-container d-flex">
             <div className="col-lg-6  col-xs-12">
-              <h2>Submission Status - {applicationName }</h2>
+              <h2><Translation>{(t)=>t("submission_status")}</Translation> - {applicationName }</h2>
               <div className="chart text-center">
                 <PieChart width={600} height={400}>
                   <Pie

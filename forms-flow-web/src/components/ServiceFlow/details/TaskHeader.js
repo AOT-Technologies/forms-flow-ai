@@ -224,7 +224,7 @@ const TaskHeader = React.memo(() => {
           {task?.assignee ? (<span>
               <span className="change-tooltip" onClick={()=>setIsEditAssignee(true)} dat-title="Click to Change Assignee">{task.assignee}</span>
               <i className="fa fa-times ml-1" onClick={onUnClaimTask} dat-title={t("reset_assigne")}/></span>) :
-              <span data-testid="clam-btn" onClick={onClaim}> Claim</span>
+              <span data-testid="clam-btn" onClick={onClaim}>{t("Claim")}</span>
             }
             </>)
           }

@@ -89,7 +89,7 @@ export const TRANSLATIONS_EN = {
   operator:"Operator",
   ttl_result:"Total number of results",
   fltr_task:"Filter Tasks",
-  all:"ALL",
+  all:"All",
   any:"ANY",
   task_assigne:"Task assignee",
   app_history:"Application History",

@@ -45,17 +45,17 @@ class BPMService(BaseBPMService):
         logging.log(logging.DEBUG, "process def url>>" + url)
         return cls.get_request(url, token)
 
-    @classmethod
-    def get_process_actions(cls, process_key, token):
-        """Get process actions."""
-        url = cls._get_url_(BPMEndpointType.ProcessDefinition) + process_key
-        return cls.get_request(url, token)
+    # @classmethod
+    # def get_process_actions(cls, process_key, token):
+    #     """Get process actions."""
+    #     url = cls._get_url_(BPMEndpointType.ProcessDefinition) + process_key
+    #     return cls.get_request(url, token)
 
-    @classmethod
-    def post_process_evaluate(cls, payload, token):
-        """Get states by evaluating process."""
-        url = f"{cls._get_url_(BPMEndpointType.DecisionDefinition)}key/state-decision/evaluate"
-        return cls.post_request(url, token, payload=payload)
+    # @classmethod
+    # def post_process_evaluate(cls, payload, token):
+    #     """Get states by evaluating process."""
+    #     url = f"{cls._get_url_(BPMEndpointType.DecisionDefinition)}key/state-decision/evaluate"
+    #     return cls.post_request(url, token, payload=payload)
 
     @classmethod
     def post_process_start(cls, process_key, payload, token):
@@ -128,33 +128,29 @@ class BPMService(BaseBPMService):
         """Get Url."""
         bpm_api_base = current_app.config.get("BPM_API_BASE")
         try:
-            if not bpm_api_base.endswith("/"):
-                bpm_api_base += "/"
-
-            url = ""
             if endpoint_type == BPMEndpointType.ProcessDefinition:
-                url = bpm_api_base + "engine-rest/process-definition"
+                url = (
+                    f"{bpm_api_base}/engine-rest/process-definition?latestVersion=true"
+                )
             elif endpoint_type == BPMEndpointType.DecisionDefinition:
-                url = bpm_api_base + "engine-rest/decision-definition"
+                url = f"{bpm_api_base}/engine-rest/decision-definition/"
             elif endpoint_type == BPMEndpointType.AuthFormDetails:
-                url = bpm_api_base + "engine-rest-ext/form"
+                url = f"{bpm_api_base}/engine-rest-ext/form/"
             elif endpoint_type == BPMEndpointType.History:
-                url = bpm_api_base + "engine-rest-ext/task"
+                url = f"{bpm_api_base}/engine-rest-ext/task/"
             elif endpoint_type == BPMEndpointType.Task:
-                url = bpm_api_base + "engine-rest/task"
+                url = f"{bpm_api_base}/engine-rest/task/"
             elif endpoint_type == BPMEndpointType.ProcessDefinitionXML:
-                url = bpm_api_base + "engine-rest/process-definition/key"
+                url = f"{bpm_api_base}/engine-rest/process-definition/key/"
             elif endpoint_type == BPMEndpointType.MessageEvent:
-                url = bpm_api_base + "engine-rest/message"
+                url = f"{bpm_api_base}/engine-rest/message/"
             elif endpoint_type == BPMEndpointType.ProcessInstance:
-                url = bpm_api_base + "engine-rest/process-instance"
-            if not url.endswith("/"):
-                url += "/"
+                url = f"{bpm_api_base}/engine-rest/process-instance/"
 
             return url
 
-        except BaseException as form_err:
+        except BaseException:
             return {
-                "type": "Missing environment variable CAMUNDA_API_URL",
-                "message": form_err.messages,
+                "type": "Environment missing",
+                "message": "Missing environment variable CAMUNDA_API_URL",
             }

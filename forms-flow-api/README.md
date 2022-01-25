@@ -146,3 +146,13 @@ We have implemented unit tests with pytest.
 setup in the [.env file](.sample.env).
 * Using the make command, run the tests by running `make test`.
 
+Things to note when writing tests:
+
+* Isolated: Each test should be an introvert, working in their own isolated bubble. You should never have to think about what other tests have put in the database.
+* Tests functions should contain always `app, client, session`
+
+#### References for Testing in Python
+
+* [pytest](https://docs.pytest.org/en/latest/getting-started.html)
+* [Real Python Unit Testing with Pytest](https://realpython.com/pytest-python-testing/)
+* [More about similar test config we have used](http://alexmic.net/flask-sqlalchemy-pytest/)

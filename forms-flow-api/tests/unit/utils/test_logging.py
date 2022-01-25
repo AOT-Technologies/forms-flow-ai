@@ -2,9 +2,6 @@
 
 Test-Suite to ensure that the logging setup is working as expected.
 """
-
-import os
-
 from formsflow_api.utils.logging import setup_logging
 
 

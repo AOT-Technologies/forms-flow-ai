@@ -56,7 +56,7 @@ class DashboardDetail(Resource):
     @auth.require
     @profiletime
     def get(self, dashboard_id):
-        """Get  dashboard 
+        """Get  dashboard
         : dashboard_id:- Get dashboard with given dashboard_id
         """
         try:

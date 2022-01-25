@@ -15,3 +15,4 @@ ALLOW_ALL_APPLICATIONS = "/formsflow/formsflow-reviewer/access-allow-application
 
 NEW_APPLICATION_STATUS = "New"
 KEYCLOAK_DASHBOARD_BASE_GROUP = "formsflow-analytics"
+ANONYMOUS_USER = "Anonymous-user"

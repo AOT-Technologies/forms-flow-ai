@@ -264,7 +264,6 @@ class StepperPage extends PureComponent {
     const data = {
       formId: form.id,
       formName: form.form && form.form.title,
-      formRevisionNumber: "V1", // to do
       status: processData.status? processData.status:"inactive"
     };
     if (associateWorkFlow === "yes" && workflow) {

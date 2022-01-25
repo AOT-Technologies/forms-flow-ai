@@ -32,8 +32,8 @@ class FormResource(Resource):
             request_schema = ApplicationListReqSchema()
             if request.args:
                 dict_data = request_schema.load(request.args)
-                page_no = dict_data["page_no"]
-                limit = dict_data["limit"]
+                page_no: str = dict_data["page_no"]
+                limit: str = dict_data["limit"]
             else:
                 page_no = 0
                 limit = 0
@@ -95,11 +95,10 @@ class FormResource(Resource):
         """Post a form process mapper using the request body."""
         mapper_json = request.get_json()
         try:
-            sub = g.token_info.get("preferred_username")
+            sub: str = g.token_info.get("preferred_username")
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(mapper_json)
             dict_data["created_by"] = sub
-
             mapper = FormProcessMapperService.create_mapper(dict_data)
 
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
@@ -123,7 +122,7 @@ class FormResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def get(mapper_id):
+    def get(mapper_id: int):
         """Get forms.
         : mapper_id:- Get form process mapper by mapper_id
         """
@@ -132,7 +131,7 @@ class FormResourceById(Resource):
                 FormProcessMapperService.get_mapper(form_process_mapper_id=mapper_id),
                 HTTPStatus.OK,
             )
-        except BusinessException as err:
+        except BusinessException:
             response, status = (
                 {
                     "type": "Invalid response data",
@@ -147,7 +146,7 @@ class FormResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def delete(mapper_id):
+    def delete(mapper_id: int):
         """
         : mapper_id:- Delete form process mapper by mapper_id.
         """
@@ -169,9 +168,9 @@ class FormResourceById(Resource):
 
     @staticmethod
     @auth.require
-    def put(mapper_id):
+    def put(mapper_id: int):
         """
-        : comments:- Brief description 
+        : comments:- Brief description
         : formId:- Unique Id for the corresponding form
         : formName:- Name for the corresponding form
         : id:- Id for particular form
@@ -184,7 +183,7 @@ class FormResourceById(Resource):
         try:
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(application_json)
-            sub = g.token_info.get("preferred_username")
+            sub: str = g.token_info.get("preferred_username")
             dict_data["modified_by"] = sub
             FormProcessMapperService.update_mapper(
                 form_process_mapper_id=mapper_id, data=dict_data
@@ -213,7 +212,7 @@ class FormResourceByFormId(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def get(form_id):
+    def get(form_id: str):
         """
         : form_id:- Get details of only form corresponding to a particular formId
         """

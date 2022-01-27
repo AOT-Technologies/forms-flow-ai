@@ -90,7 +90,7 @@ import { useTranslation } from "react-i18next";
 
   const downloadForms = () => {
     FileService.downloadFile({forms:formCheckList},()=>{
-      toast.success(`${formCheckList.length} ${formCheckList.length===1?"Form":"Forms"} Downloaded Successfully`)
+      toast.success(`${formCheckList.length} ${formCheckList.length===1?t("form"):t("Forms")} Downloaded Successfully`)
       dispatch(setFormCheckList([]));
     })
   }

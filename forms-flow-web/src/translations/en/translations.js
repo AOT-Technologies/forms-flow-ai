@@ -157,5 +157,6 @@ export const TRANSLATIONS_EN = {
   modified_date:"Modified Date",
   submission_status:"Submission Status",
   file_upload_confirmation:"Files Upload Confirmation",
-  forms_completed:"Forms Completed"
+  forms_completed:"Forms Completed",
+  no_forms_found:"No forms found"
 };

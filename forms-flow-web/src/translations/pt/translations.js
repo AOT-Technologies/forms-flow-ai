@@ -154,6 +154,7 @@ export const TRANSLATIONS_PT = {
   modified_date:"Data modificada",
   submission_status:"Status de submissão",
   file_upload_confirmation:"Confirmação de upload de arquivos",
-  forms_completed:"Formulários preenchidos"
+  forms_completed:"Formulários preenchidos",
+  no_forms_found:"Nenhum formulário encontrado"
   };
   

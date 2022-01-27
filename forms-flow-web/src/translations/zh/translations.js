@@ -156,7 +156,8 @@ export const TRANSLATIONS_ZH = {
   modified_date:"修改日期",
   submission_status:"提交状态",
   file_upload_confirmation:"文件上传确认",
-  forms_completed:"完成的表格"
+  forms_completed:"完成的表格",
+  no_forms_found:"没有找到表格"
 
 }
 

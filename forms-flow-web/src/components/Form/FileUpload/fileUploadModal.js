@@ -26,10 +26,10 @@ const FileModal= React.memo(({modalOpen=false, onClose,forms})=> {
               <Modal.Body>
                 <div>{`${formUploadCounter}/${formUploadList.length} Forms  completed`} {(formUploadList.length!==formUploadCounter)?<Spinner animation="border" variant="primary" />:""}</div>
                 {formUploadList.length?<ProgressBar now={formsUploaded} label={`${formsUploaded}%`} />
-                  : <div>No forms found</div>}
+                  : <div><Translation>{(t)=>t("no_forms_found")}</Translation></div>}
               </Modal.Body>
               <Modal.Footer>
-              <Button type="button" className="btn btn-default" onClick={onClose}><Translation>{(t)=>t("close")}</Translation></Button>
+              <Button type="button" className="btn btn-default" onClick={onClose}><Translation>{(t)=>t("Close")}</Translation></Button>
               </Modal.Footer>
           </Modal>
         </>

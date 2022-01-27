@@ -49,9 +49,13 @@ const ProcessDiagram = React.memo((props)=>{
 
 
   useEffect(()=>{
-    dispatch(setProcessDiagramLoading(true));
     if(process_key){
+      dispatch(setProcessDiagramLoading(true));
       dispatch(fetchDiagram(process_key));
+    }
+    else
+    {
+      dispatch(setProcessDiagramLoading(false));
     }
     return ()=>{
       dispatch(setProcessDiagramLoading(true));
@@ -104,11 +108,16 @@ const ProcessDiagram = React.memo((props)=>{
     }
   }*/
   
-  if(!(processInstanceId && process_key ))
-  {
-      dispatch(setProcessDiagramLoading(false));
-  }
   
+  // if(processInstanceId === null && isProcessDiagramLoading === false)
+  // { 
+  //   return <div className="bpmn-viewer-container">
+  //     <div className="bpm-container">
+  //       <Nodata text={"No Process Diagram found"} className={"div-no-application-list text-center"}/>
+  //     </div>
+  //   </div>
+  // }
+
   if (isProcessDiagramLoading) {
     return <div className="bpmn-viewer-container">
       <div className="bpm-container">

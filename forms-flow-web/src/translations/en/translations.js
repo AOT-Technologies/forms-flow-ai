@@ -158,5 +158,6 @@ export const TRANSLATIONS_EN = {
   submission_status:"Submission Status",
   file_upload_confirmation:"Files Upload Confirmation",
   forms_completed:"Forms Completed",
-  no_forms_found:"No forms found"
+  no_forms_found:"No forms found",
+  powered_by:"Powered by"
 };

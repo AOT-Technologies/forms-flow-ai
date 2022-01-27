@@ -155,6 +155,7 @@ export const TRANSLATIONS_PT = {
   submission_status:"Status de submissão",
   file_upload_confirmation:"Confirmação de upload de arquivos",
   forms_completed:"Formulários preenchidos",
-  no_forms_found:"Nenhum formulário encontrado"
+  no_forms_found:"Nenhum formulário encontrado",
+  powered_by:"Distribuído por"
   };
   

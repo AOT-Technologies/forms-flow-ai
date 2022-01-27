@@ -6,7 +6,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 import { useSelector } from "react-redux";
-
+import { useTranslation } from "react-i18next";
 import SaveNext from "./SaveNext";
 
 const Preview = React.memo(

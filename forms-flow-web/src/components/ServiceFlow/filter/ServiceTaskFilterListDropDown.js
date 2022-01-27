@@ -12,7 +12,6 @@ const ServiceFlowFilterListDropDown = React.memo(() => {
   const isFilterLoading = useSelector(state=> state.bpmTasks.isFilterLoading);
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
   const {t} = useTranslation();
-  const tasksCount = useSelector(state=>state.bpmTasks.tasksCount)
   const changeFilterSelection = (filter)=>{
     dispatch(setSelectedBPMFilter(filter));
     dispatch(setSelectedTaskID(null));

@@ -158,6 +158,7 @@ export const TRANSLATIONS_BG = {
     file_upload_confirmation:"Потвърждение за качване на файлове",
     forms_completed:"Формулярите са попълнени",
     no_forms_found:"Няма намерени формуляри",
-    powered_by:"Задвижвани от"
+    powered_by:"Задвижвани от",
+    anonymous_form:"анонимен формуляр?"
     
 }

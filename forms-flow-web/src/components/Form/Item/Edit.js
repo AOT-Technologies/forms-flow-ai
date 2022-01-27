@@ -92,11 +92,11 @@ const Edit = React.memo(() => {
             dispatch(setFormProcessesData(newData));
             dispatch(setFormPreviosData(newData));
           }
-          toast.success("Form Saved");
+          toast.success(<Translation>{(t)=>t("form_saved")}</Translation>);
           dispatch(push(`/formflow/${submittedData._id}/preview`));
           // ownProps.setPreviewMode(true);
         } else {
-          toast.error("Error while saving Form");
+          toast.error(<Translation>{(t)=>t("form_save_error")}</Translation>);
         }
       })
     );

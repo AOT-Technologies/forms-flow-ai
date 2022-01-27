@@ -158,7 +158,8 @@ export const TRANSLATIONS_ZH = {
   file_upload_confirmation:"文件上传确认",
   forms_completed:"完成的表格",
   no_forms_found:"没有找到表格",
-  powered_by:"供电"
+  powered_by:"供电",
+  anonymous_form:"匿名表格？"
 
 }
 

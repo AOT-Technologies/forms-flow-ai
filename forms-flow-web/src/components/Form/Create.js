@@ -10,7 +10,7 @@ import { Translation } from "react-i18next";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import { saveFormProcessMapper } from "../../apiManager/services/processServices";
 import { useDispatch,useSelector } from "react-redux";
-
+import { formio_translation } from "../../translations/formiotranslation";
 const Create = React.memo((props) => {
 const dispatch = useDispatch()
 const [anonymous, setAnonymous] = useState(false);
@@ -71,6 +71,7 @@ const saveFormData =(formData) => {
       <h2><Translation>{(t)=>t("create_form")}</Translation></h2>
       <hr />
       <Errors errors={errors} />
+    
       {props && (
         <div class="form-check text-right">
           <input
@@ -80,11 +81,16 @@ const saveFormData =(formData) => {
             onChange={(e) =>{setAnonymous(!anonymous)}}
           /> 
           <label   class="pl-2 form-check-label" for="anonymousCheckBox">
-          Anonymous Form ?
+          <Translation>{(t)=>t("anonymous_form")}</Translation>
            </label>
         </div>
       )}
-      <FormEdit form={form} saveText={saveText} saveForm={(formData)=>{saveFormData(formData)}}/>
+      <FormEdit
+      options={{
+        language: props.lang,
+        i18n: formio_translation
+        }}{...props}
+      form={form} saveText={saveText} saveForm={(formData)=>{saveFormData(formData)}}/>
     </div>
   );
 });

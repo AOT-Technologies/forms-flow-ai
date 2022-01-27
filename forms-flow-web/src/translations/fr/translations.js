@@ -156,6 +156,7 @@ export const TRANSLATIONS_FR = {
   file_upload_confirmation:"Confirmation du téléchargement des arquivosn",
   forms_completed:"Formulaires remplis",
   no_forms_found:"Aucun formulaire trouvé",
-  powered_by:"Alimenté par"
+  powered_by:"Alimenté par",
+  anonymous_form:"Formulaire anonyme ?"
   };
   

@@ -156,6 +156,7 @@ export const TRANSLATIONS_PT = {
   file_upload_confirmation:"Confirmação de upload de arquivos",
   forms_completed:"Formulários preenchidos",
   no_forms_found:"Nenhum formulário encontrado",
-  powered_by:"Distribuído por"
+  powered_by:"Distribuído por",
+  anonymous_form:"Formulário anônimo?"
   };
   

@@ -2,7 +2,7 @@
 from formsflow_api.models import ApplicationHistory
 
 
-def test_application_audit_creation():
+def test_application_audit_creation(app, client, session):
     """Test Application History Model creation"""
     instance1 = ApplicationHistory(
         id=1,

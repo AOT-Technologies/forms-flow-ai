@@ -54,7 +54,7 @@ class StepperPage extends PureComponent {
       previewMode: false,
       editMode: false,
       associateWorkFlow: "no",
-      processData: { status: "inactive", isAnonymousAllowd: false, comments: "" },
+      processData: { status: "inactive", comments: "" },
       formId: "",
       processList: [],
       processListLoaded: false,
@@ -260,7 +260,6 @@ class StepperPage extends PureComponent {
     const data = {
       formId: form.id,
       formName: form.form && form.form.title,
-      formRevisionNumber: "V1", // to do
       status: processData.status? processData.status:"inactive"
     };
     if (associateWorkFlow === "yes" && workflow) {

@@ -97,12 +97,45 @@ def get_form_request_payload():
     return {
         "formId": "1234",
         "formName": "Sample form",
-        "formRevisionNumber": "v1",
         "processKey": "121312",
         "processName": "OneStep Approval",
         "status": "active",
-        "commeIs": "test",
-        "tenantId": 12,
+        "comments": "test",
+        "tenant": 12,
+    }
+def get_form_request_payload_private():
+    """Return a form request payload object which is not anonymous"""
+    return {
+        "formId": "12",
+        "formName": "Sample private form",
+        "processKey": "one_step",
+        "processName": "OneStep Approval",
+        "status": "active",
+        "comments": "test",
+        "tenant": 11,
+        "anonymous":False
+    }
+
+def get_form_request_payload_public_inactive():
+    """Return a form request payload object which is not active"""
+    return {
+        "formId": "12",
+        "formName": "Sample private form",
+        "processKey": "one_step",
+        "processName": "OneStep Approval",
+        "status": "Inactive",
+        "comments": "test",
+        "tenant": 11,
+        "anonymous":True
+    }
+
+def get_form_request_anonymous_payload():
+    """Return a form request payload object with anonymous true"""
+    return {
+        "formId": "1234",
+        "formName": "Sample form",
+        "anonymous": True,
+        "status": "active"
     }
 
 
@@ -124,7 +157,7 @@ def get_form_service_payload():
         "process_name": "OneStep Approval",
         "status": "active",
         "comments": "test",
-        "tenant_id": 12,
+        "tenant": 12,
         "created_by": "test-user",
     }
 

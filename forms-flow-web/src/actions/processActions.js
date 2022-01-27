@@ -79,3 +79,10 @@ export const setProcessDiagramLoading = (data) => (dispatch) => {
   });
 };
 
+export const setFormPreviosData = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.FORM_PREVIOUS_DATA,
+    payload: data,
+  });
+};
+

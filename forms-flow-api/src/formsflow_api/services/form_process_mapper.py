@@ -29,7 +29,7 @@ class FormProcessMapperService:
         return FormProcessMapper.find_all_count()
 
     @staticmethod
-    def get_mapper(form_process_mapper_id):
+    def get_mapper(form_process_mapper_id: int):
         """Get form process mapper."""
         mapper = FormProcessMapper.find_form_by_id_active_status(
             form_process_mapper_id=form_process_mapper_id

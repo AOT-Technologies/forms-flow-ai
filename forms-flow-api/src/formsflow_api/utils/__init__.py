@@ -11,6 +11,7 @@ from .constants import (
     KEYCLOAK_DASHBOARD_BASE_GROUP,
     NEW_APPLICATION_STATUS,
     REVIEWER_GROUP,
+    ANONYMOUS_USER,
 )
 from .enums import ApplicationSortingParameters
 from .format import CustomFormatter

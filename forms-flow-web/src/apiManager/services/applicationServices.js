@@ -1,5 +1,5 @@
  /* istanbul ignore file */
-import {httpGETRequest, httpPOSTRequest} from "../httpRequestHandler";
+import {httpGETRequest, httpPOSTRequest,httpPOSTRequestWithoutToken} from "../httpRequestHandler";
 import API from "../endpoints";
 import {
   setApplicationListByFormId,
@@ -132,6 +132,27 @@ export const applicationCreate = (data, ...rest) => {
   const URL = API.APPLICATION_START;
   return (dispatch) => {
     httpPOSTRequest(URL, data)
+      .then((res) => {
+        if (res.data) {
+          done(null, res.data);
+        } else {
+          dispatch(serviceActionError(res));
+          done("Error Posting data");
+        }
+      })
+      .catch((error) => {
+        dispatch(serviceActionError(error));
+        done(error);
+      });
+  };
+};
+
+
+export const publicApplicationCreate = (data, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const URL = API.PUBLIC_APPLICATION_START;
+  return (dispatch) => {
+    httpPOSTRequestWithoutToken(URL, data)
       .then((res) => {
         if (res.data) {
           done(null, res.data);

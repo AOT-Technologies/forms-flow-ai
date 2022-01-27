@@ -2,7 +2,7 @@
 from tests.utilities.base_test import factory_auth_header, update_dashboard_payload
 
 
-def test_group_list(client):
+def test_group_list(app, client, session):
     """Passing case of Group List API"""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -11,7 +11,7 @@ def test_group_list(client):
     assert response.status_code == 200
 
 
-def test_group_list_wrongmethod(client):
+def test_group_list_wrongmethod(app, client, session):
     """Instead of Get Request, what if POST request comes"""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -23,7 +23,7 @@ def test_group_list_wrongmethod(client):
     }
 
 
-def test_group_list_wrong_auth_header(client):
+def test_group_list_wrong_auth_header(app, client, session):
     """Wrong Authorization header"""
     response = client.get("/groups")
     assert response.status_code == 401
@@ -33,7 +33,7 @@ def test_group_list_wrong_auth_header(client):
     }
 
 
-def test_group_details(client):
+def test_group_details(app, client, session):
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -46,7 +46,7 @@ def test_group_details(client):
     assert len(response.json) > 0
 
 
-def test_groups_put_details(client):
+def test_groups_put_details(app, client, session):
     """good cases"""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -61,7 +61,7 @@ def test_groups_put_details(client):
     assert response.status_code == 200
 
 
-def test_groups_put_wrong_details(client):
+def test_groups_put_wrong_details(app, client, session):
     """wrong request object"""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}

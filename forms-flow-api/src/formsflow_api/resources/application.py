@@ -93,8 +93,8 @@ class ApplicationsResource(Resource):
                     application_status=application_status,
                 )
             application_schema = ApplicationService.apply_custom_attributes(
-                    application_schema=application_schema_dump
-                )
+                application_schema=application_schema_dump
+            )
             return (
                 (
                     {
@@ -187,6 +187,7 @@ class ApplicationResourceById(Resource):
 @API.route("/formid/<string:form_id>", methods=["GET", "OPTIONS"])
 class ApplicationResourceByFormId(Resource):
     """Resource for getting applications based on formid."""
+
     @staticmethod
     @auth.require
     @profiletime
@@ -271,10 +272,10 @@ class ApplicationResourcesByIds(Resource):
             dict_data = application_schema.load(application_json)
             sub = g.token_info.get("preferred_username")
             dict_data["created_by"] = sub
-            application = ApplicationService.create_application(
+            application, status = ApplicationService.create_application(
                 data=dict_data, token=request.headers["Authorization"]
             )
-            response, status = application_schema.dump(application), HTTPStatus.CREATED
+            response = application_schema.dump(application)
             return response, status
         except BaseException as application_err:
             response, status = {

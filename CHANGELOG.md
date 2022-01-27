@@ -110,7 +110,7 @@ Removed environment variables `INSIGHT_API_URL`, `INSIGHT_API_KEY`
 
 *Upgrade notes:*
 
-After v4.0.4 version upgrade, Run the migrations with [upgrade file](https://github.com/AOT-Technologies/forms-flow-ai-dev/blob/develop/forms-flow-bpm/upgrade/process-engine_7.13_to_7.15.sql).
+After v4.0.4 version upgrade, Run the migrations with [upgrade file](./forms-flow-bpm/upgrade/process-engine_7.13_to_7.15.sql).
 
 **forms-flow-analytics**
 

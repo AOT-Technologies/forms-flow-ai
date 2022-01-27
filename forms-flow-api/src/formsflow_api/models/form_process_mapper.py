@@ -18,15 +18,16 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     id = db.Column(db.Integer, primary_key=True)
     form_id = db.Column(db.String(50), nullable=False)
     form_name = db.Column(db.String(100), nullable=False)
-    form_revision_number = db.Column(db.String(10), nullable=False)
     process_key = db.Column(db.String(50), nullable=True)
     process_name = db.Column(db.String(100), nullable=True)
     status = db.Column(db.String(10), nullable=True)
     comments = db.Column(db.String(300), nullable=True)
-    tenant_id = db.Column(db.Integer, nullable=True)
+    tenant = db.Column(db.String(100), nullable=True)
     application = db.relationship(
         "Application", backref="form_process_mapper", lazy=True
     )
+    is_anonymous = db.Column(db.Boolean, nullable=True)
+    deleted = db.Column(db.Boolean, nullable=True, default=False)
 
     @classmethod
     def create_from_dict(cls, mapper_info: dict) -> FormProcessMapper:
@@ -36,13 +37,13 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper = FormProcessMapper()
                 mapper.form_id = mapper_info["form_id"]
                 mapper.form_name = mapper_info["form_name"]
-                mapper.form_revision_number = mapper_info["form_revision_number"]
                 mapper.process_key = mapper_info.get("process_key")
                 mapper.process_name = mapper_info.get("process_name")
                 mapper.status = mapper_info.get("status")
                 mapper.comments = mapper_info.get("comments")
                 mapper.created_by = mapper_info["created_by"]
-                mapper.tenant_id = mapper_info.get("tenant_id")
+                mapper.tenant = mapper_info.get("tenant")
+                mapper.is_anonymous = mapper_info.get("is_anonymous")
                 mapper.save()
                 return mapper
         except BaseException:
@@ -64,14 +65,16 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "status",
                 "comments",
                 "modified_by",
+                "is_anonymous",
             ],
             mapper_info,
         )
         self.commit()
 
     def mark_inactive(self):
-        """Mark form process mapper as inactive."""
-        self.status = str(FormProcessMapperStatus.Inactive.value)
+        """Mark form process mapper as inactive and deleted."""
+        self.status: str = str(FormProcessMapperStatus.Inactive.value)
+        self.deleted: bool = True
         self.commit()
 
     @classmethod

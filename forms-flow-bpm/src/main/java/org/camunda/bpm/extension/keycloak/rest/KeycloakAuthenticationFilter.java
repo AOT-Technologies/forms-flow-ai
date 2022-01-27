@@ -50,7 +50,7 @@ public class KeycloakAuthenticationFilter implements Filter {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userId = null;
 		Map<String, Object> claims;
-		if (authentication instanceof JwtAuthenticationToken) {	
+		if (authentication instanceof JwtAuthenticationToken) {
 			userId = ((JwtAuthenticationToken) authentication).getToken().getClaimAsString("preferred_username");
 			claims = ((JwtAuthenticationToken)authentication).getToken().getClaims();
 		} else if (authentication.getPrincipal() instanceof OidcUser) {

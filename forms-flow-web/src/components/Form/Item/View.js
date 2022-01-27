@@ -13,13 +13,15 @@ import {
   setMaintainBPMFormPagination
 } from "../../../actions/formActions";
 import SubmissionError from '../../../containers/SubmissionError';
-import {applicationCreate} from "../../../apiManager/services/applicationServices";
+import {applicationCreate, publicApplicationCreate} from "../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay";
 import {CUSTOM_EVENT_TYPE} from "../../ServiceFlow/constants/customEventTypes";
 import {toast} from "react-toastify";
-
+import { setFormSubmitted } from '../../../actions/formActions';
 const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
+  const isFormSubmitted = useSelector(state=>state.formDelete.formSubmitted);
+
   const {
       isAuthenticated,
       submission,
@@ -44,6 +46,14 @@ const View = React.memo((props) => {
       return <div data-testid="loading-view-component"><Loading /></div>;
     }
 
+    if(isFormSubmitted){
+      return (
+      <div className="text-center pt-5">
+      <h1>Thank you for your response.</h1>
+      <p>saved successfully</p>
+      </div>
+    )
+    }
     return (
       <div className="container">
         <div className="main-header">
@@ -80,6 +90,7 @@ const View = React.memo((props) => {
             />
           </div>
         </LoadingOverlay>
+        
       </div>
     );
 })
@@ -91,29 +102,52 @@ const doProcessActions = (submission, ownProps,  t) => {
     let IsAuth = getState().user.isAuthenticated
     dispatch(resetSubmissions('submission'));
     const data = getProcessReq(form, submission._id, "new", user);
-    dispatch(applicationCreate(data, (err, res) => {
-          if (!err) {
-            if (IsAuth) {
-              dispatch(setFormSubmissionLoading(false));
-              dispatch(setMaintainBPMFormPagination(true));
-              /*dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))*/
-              toast.success(t("submission_success"))
-              dispatch(push(`/form`));
-            }else{
-              dispatch(setFormSubmissionLoading(false));
+    
+    const isPublic = window.location.href.includes('public')
+   
+    if (isPublic){
+      
+      // this is for anonymous
+      dispatch(publicApplicationCreate(data, (err, res) => {
+        if (!err) {
+          dispatch(setFormSubmissionLoading(false));
+          toast.success("Submission Saved.")
+          dispatch(setFormSubmitted(true))
+        } else { //TO DO Update to show error message
+          dispatch(setFormSubmissionLoading(false));
+          toast.success("Submission failed")
+          // dispatch(setFormSubmitted())
+          // dispatch(push(`/public/submitted`));
+        }
+  }));
+
+    }else{
+        dispatch(applicationCreate(data, (err, res) => {
+            if (!err) {
+              if (IsAuth) {
+                dispatch(setFormSubmissionLoading(false));
+                dispatch(setMaintainBPMFormPagination(true));
+                /*dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))*/
+                toast.success("Submission Saved.")
+                dispatch(push(`/form`));
+              }else{
+                dispatch(setFormSubmissionLoading(false));
+              }
+            } else { //TO DO Update to show error message
+              if (IsAuth) {
+                dispatch(setFormSubmissionLoading(false));
+                dispatch(setMaintainBPMFormPagination(true));
+                //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
+                toast.success("Submission Saved.")
+                dispatch(push(`/form`));
+              }else{
+                dispatch(setFormSubmissionLoading(false));
+              }
             }
-          } else { //TO DO Update to show error message
-            if (IsAuth) {
-              dispatch(setFormSubmissionLoading(false));
-              dispatch(setMaintainBPMFormPagination(true));
-              //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
-              toast.success(t("submission_success"))
-              dispatch(push(`/form`));
-            }else{
-              dispatch(setFormSubmissionLoading(false));
-            }
-          }
-    }));
+      }));
+
+    }
+
   }
 };
 

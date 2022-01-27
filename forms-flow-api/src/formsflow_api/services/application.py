@@ -54,15 +54,13 @@ class ApplicationService:
                     "error": camunda_error,
                 }
                 current_app.logger.critical(response)
-                return response, HTTPStatus.BAD_GATEWAY
             except BaseException as application_err:
                 response = {
                     "systemErrors": application_err,
                     "message": "Camunda Process Mapper Key not provided",
                 }, HTTPStatus.BAD_REQUEST
                 current_app.logger.warning(response)
-                return response
-        return application
+        return application, HTTPStatus.CREATED
 
     @staticmethod
     @lru_cache(maxsize=32)
@@ -153,18 +151,6 @@ class ApplicationService:
         else:
             return (application_schema.dump([])), HTTPStatus.FORBIDDEN
 
-    # @staticmethod
-    # def get_all_applications(page_no: int, limit: int):
-    #     """Get all applications."""
-    #     if page_no:
-    #         page_no = int(page_no)
-    #     if limit:
-    #         limit = int(limit)
-
-    #     applications = Application.find_all(page_no=page_no, limit=limit)
-    #     application_schema = ApplicationSchema()
-    #     return application_schema.dump(applications, many=True)
-
     @staticmethod
     def get_all_applications_by_user(
         user_id: str,
@@ -222,72 +208,6 @@ class ApplicationService:
         )
 
     @staticmethod
-    def get_all_application_by_user_group(page_no: int, limit: int, user_id: str):
-        if page_no:
-            page_no = int(page_no)
-        if limit:
-            limit = int(limit)
-        applications = Application.find_all_by_user_group(
-            user_id=user_id, page_no=page_no, limit=limit
-        )
-        application_schema = ApplicationSchema()
-
-        return (
-            application_schema.dump(applications, many=True),
-            get_all_applications_count,
-        )
-
-    # @staticmethod
-    # def get_all_application_by_user_group(page_no: int, limit: int, user_id: str):
-    #     if page_no:
-    #         page_no = int(page_no)
-    #     if limit:
-    #         limit = int(limit)
-    #     applications = Application.find_all_by_user_group(
-    #         user_id=user_id, page_no=page_no, limit=limit
-    #     )
-    #     application_schema = ApplicationSchema()
-    #     return application_schema.dump(applications, many=True)
-
-    # @staticmethod
-    # def get_all_applications_ids(application_ids):
-    #     applications = Application.find_by_ids(application_ids=application_ids)
-    #     application_schema = ApplicationSchema()
-    #     return application_schema.dump(applications, many=True)
-
-    # @staticmethod
-    # def get_all_application_count(
-    #     token: str,
-    #     page_no: int,
-    #     limit: int,
-    # ):
-    #     """Get application count."""
-    #     if page_no:
-    #         page_no = int(page_no)
-    #     if limit:
-    #         limit = int(limit)
-    #     auth_form_details = ApplicationService.get_authorised_form_list(token=token)
-    #     form_names = []
-    #     application_schema = ApplicationSchema()
-    #     if auth_form_details:
-    #         for auth_form_detail in auth_form_details:
-    #             form_names.append(auth_form_detail["formName"])
-    #         applications = Application.find_all_applications(
-    #             form_names=form_names, page_no=page_no, limit=limit
-    #         )
-    #         return (
-    #             application_schema.dump(applications, many=True),
-    #             applications.count(),
-    #         )
-    #     else:
-    #         return (application_schema.dump([], many=True), 0)
-
-    # @staticmethod
-    # def get_all_application_by_user_count(user_id: str):
-    #     """Get application count."""
-    #     return Application.find_all_by_user_count(user_id=user_id)
-
-    @staticmethod
     def get_all_application_status():
         """Get all application status"""
         status_list = Application.find_all_application_status()
@@ -336,13 +256,6 @@ class ApplicationService:
         return Application.find_all_by_form_id_user_count(
             form_id=form_id, user_id=user_id
         )
-
-    # @staticmethod
-    # def get_application(application_id: int):
-    #     """Get application by id."""
-    #     return ApplicationSchema().dump(
-    #         Application.find_by_id(application_id=application_id)
-    #     )
 
     @staticmethod
     def get_application_by_user(application_id: int, user_id: str):

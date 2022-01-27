@@ -64,10 +64,12 @@ export const getUserNamefromList = (userList,userId) => {
 }
 
 //formURl is of https://base-url/form/:formId/submission/:submissionId
+ // formURl is of https://base-url/public/form/:formId/submission/:submissionId
 export const getFormIdSubmissionIdFromURL = (formUrl) => {
-  const formArr = formUrl.split("/");
-  const formId = formArr[4];
-  const submissionId = formArr[6];
+  // Regex Extracts formId from */form/formId/submission/*
+  const formId = formUrl.match(/(?<=\/form\/)(.*)(?=\/submission)/)[0];
+  // Regex Extracts submissionId from */submission/submissionId
+  const submissionId = formUrl.match(/(?<=\/submission\/)(.*)(?=)/)[0];
   return {formId,submissionId};
 }
 

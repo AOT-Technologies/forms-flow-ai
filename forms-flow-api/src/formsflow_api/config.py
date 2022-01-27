@@ -55,10 +55,6 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     # POSTGRESQL
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "")
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        "pool_pre_ping": True,
-        "pool_recycle": 300,
-    }
 
     TESTING = False
     DEBUG = False
@@ -125,6 +121,10 @@ class ProdConfig(_Config):  # pylint: disable=too-few-public-methods
     """Production environment configuration."""
 
     SECRET_KEY = os.getenv("SECRET_KEY", None)
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "pool_recycle": 300,
+    }
 
     if not SECRET_KEY:
         SECRET_KEY = os.urandom(24)

@@ -2,7 +2,7 @@
 from tests.utilities.base_test import factory_auth_header
 
 
-def test_get_dashboards(client):
+def test_get_dashboards(app, client, session):
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get("/dashboards", headers=headers)
@@ -10,7 +10,7 @@ def test_get_dashboards(client):
     assert len(rv.json) >= 1
 
 
-def test_get_dashboard_details(client):
+def test_get_dashboard_details(app, client, session):
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get("/dashboards", headers=headers)
@@ -21,12 +21,12 @@ def test_get_dashboard_details(client):
     assert rv.json is not None
 
 
-def test_no_auth_get_dashboards(client):
+def test_no_auth_get_dashboards(app, client, session):
     rv = client.get("/dashboards")
     assert rv.status_code == 401
 
 
-def test_get_dashboard_error_details(client):
+def test_get_dashboard_error_details(app, client, session):
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 

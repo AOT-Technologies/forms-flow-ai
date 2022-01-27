@@ -22,7 +22,6 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     )
     form_url = db.Column(db.String(500), nullable=True)
     process_instance_id = db.Column(db.String(100), nullable=True)
-    revision_no = db.Column(db.Integer, nullable=False)  # set 1 now
 
     @classmethod
     def create_from_dict(cls, application_info: dict) -> Application:
@@ -35,7 +34,6 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 "form_process_mapper_id"
             ]
             application.form_url = application_info["form_url"]
-            application.revision_no = 1  # application_info['revision_no']
             application.created_by = application_info["created_by"]
             application.save()
             return application
@@ -50,7 +48,6 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 "form_url",
                 "form_process_mapper_id",
                 "process_instance_id",
-                "revision_no",
                 "modified_by",
             ],
             mapper_info,
@@ -219,20 +216,6 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count
 
-    # @classmethod
-    # def find_all_by_user_group(cls, user_id: str, page_no: int, limit: int):
-    #     if page_no == 0:
-    #         return cls.query.filter(Application.created_by == user_id).order_by(
-    #             Application.id.desc()
-    #         )
-    #     else:
-    #         return (
-    #             cls.query.filter(Application.created_by == user_id)
-    #             .order_by(Application.id.desc())
-    #             .paginate(page_no, limit, False)
-    #             .items
-    #         )
-
     @classmethod
     def find_id_by_user(cls, application_id: int, user_id: str) -> Application:
         """Find application that matches the provided id."""
@@ -390,20 +373,6 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count
-
-    # @classmethod
-    # def find_all_applications(cls, page_no: int, limit: int, form_names: str):
-    #     if page_no == 0:
-    #         return cls.query.filter(
-    #             Application.application_name.in_(form_names)
-    #         ).order_by(Application.id.desc())
-    #     else:
-    #         return (
-    #             cls.query.filter(Application.application_name.in_(form_names))
-    #             .order_by(Application.id.desc())
-    #             .paginate(page_no, limit, False)
-    #             .items
-    #         )
 
     @classmethod
     def find_id_by_form_names(cls, application_id: int, form_names):

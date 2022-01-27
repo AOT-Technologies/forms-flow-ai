@@ -6,59 +6,59 @@ from tests.utilities.base_test import (
 )
 
 
-# def test_get_application_history(client, jwt):
-#     """Get the json request for application /application/{application_id}/history"""
-#     token = factory_auth_header()
-#     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+def test_get_application_history(app, client, session):
+    """Get the json request for application /application/{application_id}/history"""
+    token = factory_auth_header()
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
-#     rv = client.post("/form", headers=headers, json=get_form_request_payload())
-#     assert rv.status_code == 201
+    rv = client.post("/form", headers=headers, json=get_form_request_payload())
+    assert rv.status_code == 201
 
-#     form_id = rv.json.get("formId")
+    form_id = rv.json.get("formId")
 
-#     rv = client.post(
-#         "/application/create",
-#         headers=headers,
-#         json=get_application_create_payload(form_id),
-#     )
-#     assert rv.status_code == 201
+    rv = client.post(
+        "/application/create",
+        headers=headers,
+        json=get_application_create_payload(form_id),
+    )
+    assert rv.status_code == 201
 
-#     ## This application create fails because of pessimistic DB management
+    ## This application create fails because of pessimistic DB management
 
-#     application_id = rv.json.get("applicationId")
+    application_id = rv.json["id"]
 
-#     rv = client.get(f"/application/{application_id}/history", headers=headers)
-#     assert rv.status_code == 200
+    rv = client.get(f"/application/{application_id}/history", headers=headers)
+    assert rv.status_code == 200
 
 
-def test_get_application_history_unauthorized(client):
+def test_get_application_history_unauthorized(app, client, session):
     """Testing the response of unauthorized application /application/{application_id}/history"""
     rv = client.get("/application/1/history")
     assert rv.status_code == 401
 
 
-# def test_post_application_history_create_method(client, jwt):
-#     token = factory_auth_header()
-#     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+def test_post_application_history_create_method(app, client, session):
+    token = factory_auth_header()
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
-#     rv = client.post("/form", headers=headers, json=get_form_request_payload())
-#     assert rv.status_code == 201
-#     form_id = rv.json.get("formId")
+    # rv = client.post("/form", headers=headers, json=get_form_request_payload())
+    # assert rv.status_code == 201
+    # form_id = rv.json.get("formId")
 
-#     rv = client.post(
-#         "/application/create",
-#         headers=headers,
-#         json=get_application_create_payload(form_id),
-#     )
-#     assert rv.status_code == 201
-#     application_id = rv.json.get("applicationId")
-#     new_application = client.post(
-#         f"/application/{application_id}/history",
-#         headers=headers,
-#         json={
-#             "applicationId": 1,
-#             "applicationStatus": "New",
-#             "formUrl": "http://testsample.com/form/23/submission/3423",
-#         },
-#     )
-#     assert new_application.status_code == 201
+    # rv = client.post(
+    #     "/application/create",
+    #     headers=headers,
+    #     json=get_application_create_payload(form_id),
+    # )
+    # assert rv.status_code == 201
+    # application_id = rv.json.get("applicationId")
+    new_application = client.post(
+        f"/application/1/history",
+        headers=headers,
+        json={
+            "applicationId": 1,
+            "applicationStatus": "New",
+            "formUrl": "http://testsample.com/form/23/submission/3423",
+        },
+    )
+    assert new_application.status_code == 201

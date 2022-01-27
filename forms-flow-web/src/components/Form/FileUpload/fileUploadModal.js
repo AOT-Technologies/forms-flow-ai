@@ -3,7 +3,9 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import {useSelector} from "react-redux";
-import Spinner from 'react-bootstrap/Spinner'
+import Spinner from 'react-bootstrap/Spinner';
+import {Translation} from "react-i18next";
+
 
 const FileModal= React.memo(({modalOpen=false, onClose,forms})=> {
     const formUploadList = useSelector(state => state.formCheckList.formUploadFormList);
@@ -19,7 +21,7 @@ const FileModal= React.memo(({modalOpen=false, onClose,forms})=> {
       <>
           <Modal show={modalOpen} onHide={onClose}>
               <Modal.Header>
-                 <Modal.Title><b>Forms Upload Confirmation</b></Modal.Title>
+                 <Modal.Title><b><Translation>{(t)=>t("file_upload_confirmation")}</Translation>)</b></Modal.Title>
               </Modal.Header>
               <Modal.Body>
                 <div>{`${formUploadCounter}/${formUploadList.length} Forms  completed`} {(formUploadList.length!==formUploadCounter)?<Spinner animation="border" variant="primary" />:""}</div>
@@ -27,7 +29,7 @@ const FileModal= React.memo(({modalOpen=false, onClose,forms})=> {
                   : <div>No forms found</div>}
               </Modal.Body>
               <Modal.Footer>
-              <Button type="button" className="btn btn-default" onClick={onClose}>Close</Button>
+              <Button type="button" className="btn btn-default" onClick={onClose}><Translation>{(t)=>t("close")}</Translation></Button>
               </Modal.Footer>
           </Modal>
         </>

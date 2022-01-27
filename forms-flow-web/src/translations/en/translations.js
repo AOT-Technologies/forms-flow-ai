@@ -155,5 +155,7 @@ export const TRANSLATIONS_EN = {
   select_all:"Select All",
   created_date:"Created Date",
   modified_date:"Modified Date",
-  submission_status:"Submission Status"
+  submission_status:"Submission Status",
+  file_upload_confirmation:"Files Upload Confirmation",
+  forms_completed:"Forms Completed"
 };

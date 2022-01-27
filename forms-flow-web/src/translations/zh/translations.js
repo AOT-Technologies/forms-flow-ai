@@ -154,7 +154,9 @@ export const TRANSLATIONS_ZH = {
   select_all:"全选",
   created_date:"创建日期",
   modified_date:"修改日期",
-  submission_status:"提交状态"
+  submission_status:"提交状态",
+  file_upload_confirmation:"文件上传确认",
+  forms_completed:"完成的表格"
 
 }
 

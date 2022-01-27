@@ -155,5 +155,7 @@ export const TRANSLATIONS_BG = {
     created_date:"Дата на създаване",
     modified_date:"Дата на промяна",
     submission_status:"Състояние на подаване",
+    file_upload_confirmation:"Потвърждение за качване на файлове",
+    forms_completed:"Формулярите са попълнени"
     
 }

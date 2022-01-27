@@ -152,6 +152,8 @@ export const TRANSLATIONS_PT = {
   select_all:"Selecionar tudo",
   created_date:"Data de criação",
   modified_date:"Data modificada",
-  submission_status:"Status de submissão"
+  submission_status:"Status de submissão",
+  file_upload_confirmation:"Confirmação de upload de arquivos",
+  forms_completed:"Formulários preenchidos"
   };
   

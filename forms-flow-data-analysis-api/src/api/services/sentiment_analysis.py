@@ -50,7 +50,7 @@ def sentiment_entity_analysis_old(text: str, topics: List[str] = None) -> Dict:
         full_sentence = []
         full_text = text.split(".")
 
-        # code to match entities based on splliting point `.`. Scope for further improvement
+        # code to match entities based on splitting point `.`. Scope for further improvement
         for i in range(len(ent)):
             temp = ""
             for t in full_text:

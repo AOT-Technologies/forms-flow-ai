@@ -77,3 +77,9 @@ export const setBPMFormListSort = (sort) => dispatch =>{
   })
 }
 
+export const setFormSubmitted =(data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.PUBLIC_FORM_SUBMIT,
+    payload:data
+  })
+}

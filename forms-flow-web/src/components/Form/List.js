@@ -15,6 +15,7 @@ import {
 } from "react-formio";
 import Loading from "../../containers/Loading";
 import {
+  FORM_ACCESS,
   STAFF_DESIGNER, SUBMISSION_ACCESS,
 } from "../../constants/constants";
 import "../Form/List.scss";
@@ -110,8 +111,9 @@ import {addHiddenApplicationComponent} from "../../constants/applicationComponen
           formData = addHiddenApplicationComponent(formData);
           const newFormData = {
             ...formData,
-            tags: ["common"],
+            tags: ["common"]
           };
+          newFormData.access = FORM_ACCESS;
           newFormData.submissionAccess = SUBMISSION_ACCESS;
           dispatch(saveForm("form", newFormData, async (err, form) => { // TODO add Default SubmissionAccess to formData
             if (err) {
@@ -119,6 +121,9 @@ import {addHiddenApplicationComponent} from "../../constants/applicationComponen
               dispatch(fetchFormByAlias(newFormData.path, async (err, formObj) => {
                 if (!err) {
                   newFormData._id = formObj._id;
+                  newFormData.access = formObj.access;
+                  newFormData.submissionAccess = formObj.submissionAccess;
+                  // newFormData.tags = formObj.tags;
                   dispatch(saveForm("form", newFormData, (err, form) => {
                     if (!err) {
                       dispatch(updateFormUploadCounter())

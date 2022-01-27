@@ -5396,7 +5396,6 @@
             "roles": [
               "administrator",
               "authenticated",
-              "anonymous",
               "formsflowReviewer",
               "formsflowClient"
             ],
@@ -10164,7 +10163,6 @@
             "roles": [
               "administrator",
               "authenticated",
-              "anonymous",
               "formsflowReviewer",
               "formsflowClient"
             ],

@@ -25,6 +25,15 @@ export const httpPOSTRequest = (url, data, token, isBearer = true) => {
   });
 };
 
+export const httpPOSTRequestWithoutToken = (url, data, token, isBearer = true) => {
+  return axios.post(url, data, {
+    headers: {
+      'Content-Type':'application/json'
+    }
+  });
+};
+
+
 export const httpPOSTRequestWithHAL = (url, data, token, isBearer = true) => {
   return axios.post(url, data, {
     headers: {

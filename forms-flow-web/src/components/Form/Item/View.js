@@ -115,7 +115,7 @@ const doProcessActions = (submission, ownProps) => {
           dispatch(setFormSubmitted(true))
         } else { //TO DO Update to show error message
           dispatch(setFormSubmissionLoading(false));
-          toast.success("Submission failed")
+          toast.error("Submission failed")
           // dispatch(setFormSubmitted())
           // dispatch(push(`/public/submitted`));
         }

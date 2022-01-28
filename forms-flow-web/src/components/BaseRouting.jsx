@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import {useSelector} from "react-redux";
 
-// import PublicRoute from "./PublicRoute";
+import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
 
 /*import SideBar from "../containers/SideBar";*/
@@ -22,7 +22,7 @@ const BaseRouting = React.memo(({store}) => {
           <div className="container-fluid content main-container">
             <ToastContainer />
             <Switch>
-              {/* <Route path="/public"><PublicRoute store={store}/></Route> */}
+              <Route path="/public"><PublicRoute store={store}/></Route>
               <Route path="/">
                 <PrivateRoute store={store} />
               </Route>

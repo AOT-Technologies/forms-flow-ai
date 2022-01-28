@@ -28,7 +28,7 @@ class BPMService(BaseBPMService):
     @classmethod
     def get_all_process(cls, token):
         """Get all process."""
-        url = cls._get_url_(BPMEndpointType.ProcessDefinition)
+        url = cls._get_url_(BPMEndpointType.ProcessDefinition) + "?latestVersion=true"
         return cls.get_request(url, token)
 
     @classmethod
@@ -60,9 +60,7 @@ class BPMService(BaseBPMService):
     @classmethod
     def post_process_start(cls, process_key, payload, token):
         """Post process start."""
-        url = (
-            f"{cls._get_url_(BPMEndpointType.ProcessDefinition)}key/{process_key}/start"
-        )
+        url = f"{cls._get_url_(BPMEndpointType.ProcessDefinition)}/key/{process_key}/start"
         return cls.post_request(url, token, payload=payload)
 
     @classmethod
@@ -129,9 +127,7 @@ class BPMService(BaseBPMService):
         bpm_api_base = current_app.config.get("BPM_API_BASE")
         try:
             if endpoint_type == BPMEndpointType.ProcessDefinition:
-                url = (
-                    f"{bpm_api_base}/engine-rest/process-definition?latestVersion=true"
-                )
+                url = f"{bpm_api_base}/engine-rest/process-definition"
             elif endpoint_type == BPMEndpointType.DecisionDefinition:
                 url = f"{bpm_api_base}/engine-rest/decision-definition/"
             elif endpoint_type == BPMEndpointType.AuthFormDetails:

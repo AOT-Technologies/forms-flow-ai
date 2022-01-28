@@ -6,6 +6,7 @@ const initialState = {
   formSubmissionError:{modalOpen:false,message:""},
   isFormSubmissionLoading: false,
   isFormWorkflowSaved: false,
+  formSubmitted:false,
 }
 
 const formDelete = (state = initialState, action)=> {
@@ -20,6 +21,8 @@ const formDelete = (state = initialState, action)=> {
       return {...state, isFormSubmissionLoading: action.payload};
     case ACTION_CONSTANTS.IS_FORM_WORKFLOW_SAVED:
       return {...state, isFormWorkflowSaved: action.payload};
+    case  ACTION_CONSTANTS.PUBLIC_FORM_SUBMIT:
+      return {...state, formSubmitted:action.payload}
     default:
       return state;
   }

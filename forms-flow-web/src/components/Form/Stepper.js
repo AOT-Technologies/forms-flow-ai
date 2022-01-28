@@ -55,7 +55,7 @@ class StepperPage extends PureComponent {
       previewMode: false,
       editMode: false,
       associateWorkFlow: "no",
-      processData: { status: "inactive", isAnonymousAllowd: false, comments: "" },
+      processData: { status: "inactive", comments: "" },
       formId: "",
       processList: [],
       processListLoaded: false,

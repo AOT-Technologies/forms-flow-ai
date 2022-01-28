@@ -18,6 +18,7 @@ const [anonymous, setAnonymous] = useState(false);
 const form = { display: "form" }
 const saveText = <Translation>{(t)=>t("save_preview")}</Translation>;
 const errors = useSelector((state)=>state.form.error)
+const lang = useSelector((state) => state.user.lang);
 // for update form access and submission access
 useEffect(()=>{
   FORM_ACCESS.forEach(role=>{
@@ -87,7 +88,7 @@ const saveFormData =(formData) => {
       )}
       <FormEdit 
       options={{
-        language: props.lang,
+        language: lang,
         i18n: formio_translation
         }}{...props}
       form={form} saveText={saveText} saveForm={(formData)=>{saveFormData(formData)}}/>

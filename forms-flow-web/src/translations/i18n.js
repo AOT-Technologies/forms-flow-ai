@@ -33,7 +33,7 @@ i18n
   });
   
 
-i18n.changeLanguage('zh'); // default language 'en'
+//i18n.changeLanguage('zh'); // default language 'en'
 
   export default i18n;
   

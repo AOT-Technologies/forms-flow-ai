@@ -46,7 +46,7 @@ const initKeycloak = (store, ...rest) => {
           const UserRoles = KeycloakData.resourceAccess[Keycloak_Client].roles;
           store.dispatch(setUserRole(UserRoles));
           store.dispatch(setUserToken(KeycloakData.token));
-          store.dispatch(setLanguage(KeycloakData.tokenParsed.locale||'en'));
+          //store.dispatch(setLanguage(KeycloakData.tokenParsed.locale||'en'));
           //Set Cammunda/Formio Base URL
           setApiBaseUrlToLocalStorage();
 

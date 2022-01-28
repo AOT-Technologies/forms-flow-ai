@@ -1,6 +1,6 @@
 """Exposes all of the resource endpoints mounted in Flask-Blueprint style.
 
-Uses restx namespaces to mount individual api endpoints into the service.
+Uses flask-restx namespaces to mount individual api endpoints into the service.
 """
 
 from flask_restx import Api

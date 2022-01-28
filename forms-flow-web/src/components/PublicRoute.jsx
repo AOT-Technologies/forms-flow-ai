@@ -10,7 +10,6 @@ import NavBar from "../containers/NavBar";
 const PublicRoute =({store})=>{
 
     useEffect(()=>{
-        console.log('this is working')
         UserService.authenticateAnonymousUser(store)
     },[store])
     return (

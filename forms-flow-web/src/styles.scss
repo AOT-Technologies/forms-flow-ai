@@ -54,6 +54,16 @@ $dark: $gray-800;
   //height: 100vh;
   height: 100%;
 }
+.overflow-x-auto{
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.overflow-y-auto{
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
 .task-container{
   height: 100% !important;
 }

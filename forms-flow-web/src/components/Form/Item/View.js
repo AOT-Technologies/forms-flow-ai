@@ -55,7 +55,7 @@ const View = React.memo((props) => {
     )
     }
     return (
-      <div className="container">
+      <div className="container overflow-y-auto">
         <div className="main-header">
           <SubmissionError modalOpen={props.submissionError.modalOpen}
             message={props.submissionError.message}

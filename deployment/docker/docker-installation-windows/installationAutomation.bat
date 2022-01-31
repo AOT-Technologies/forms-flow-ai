@@ -22,7 +22,7 @@ echo 5. camunda
 
 
 echo press enter to continue
-pause>null
+pause> null 
 goto :KEYCLOAK
 
 :INSTALL_WITHOUT_ANALYTICS
@@ -60,8 +60,11 @@ findstr /v /i /c:"FORMIO_DEFAULT_PROJECT_URL" sample.env > .env
 for /f "tokens=*" %%s in (.env) do (
  echo %%s
 )
-
+echo Please wait, keycloak is setting up!
 ::docker-compose up -d
+set /p keySecret="what is your Keycloak client secret key?"
+echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% 
+
 
 :choice
 set /P c=process FAILD with some error? please repeat. [y/n]?
@@ -112,6 +115,7 @@ echo %strng%>>".env"
 for /f "tokens=*" %%s in (.env) do (
  echo %%s
 )
+echo Please wait, forms is getting up!
 	
 ::docker-compose -f docker-compose-windows.yml up -d forms-flow-forms 
 
@@ -124,6 +128,7 @@ pause> null
 echo formsflow custom setup here
 echo please wait until the process complete
 echo BEFORE MOVING TO THE NEXT STEP PLEASE MAKE SURE THAT FORMSFLOW FORMS IS UP IN http://localhost:3001
+echo Press enter to continue!
 pause> null
 
 ::------------------------------------------
@@ -265,7 +270,7 @@ echo USER_RESOURCE_ID=%User% >> .env
 for /f "tokens=*" %%s in (.env) do (
 echo %%s
 )
-
+echo Please wait,web is getting up!
 ::docker-compose up -d 
 
 if %analytics% ==1 (
@@ -334,7 +339,7 @@ echo %strng%>>".env"
 for /f "tokens=*" %%s in (.env) do (
  echo %%s
 )
-::docker-compose up -d
+::docker-compose -f docker-compose-windows.yml run --rm server create_db
 echo press ENTER to move to API installation
 pause>null
 goto :API 
@@ -364,7 +369,6 @@ goto :choice
 
 findstr /v /i /c:"INSIGHT_API_URL=" /c:"KEYCLOAK_URL=" /c:"FORMSFLOW_API_URL=" /c:"CAMUNDA_API_URL=" /c:"INSIGHT_API_KEY=" /c:"KEYCLOAK_BPM_CLIENT_SECRET="  sample.env > .env
 
-set /p keycloakSecret="what is your Keycloak client secret key?"
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keycloakSecret% >> .env
 
 set /p redashApiKey="what is your Redash API key?"
@@ -398,7 +402,7 @@ KEYCLOAK_ADMIN_PASSWORD=changeme >> .env
 for /f "tokens=*" %%s in (.env) do (
 echo %%s
 )
-
+echo Please wait, analytics is getting up!
 ::docker-compose -f docker-compose-windows.yml up -d
 
 echo press ENTER to install BPM
@@ -460,13 +464,12 @@ echo %stng% >>".env"
 echo %strong% >>".env"
 echo %streng% >>".env"
 
-set /p clientsecret="what is your client secret?"
-echo KEYCLOAK_BPM_CLIENT_SECRET=%clientsecret% >> .env
+echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
 
 for /f "tokens=*" %%s in (.env) do (
 echo %%s
 )
-
+echo Please wait,bpm is getting up!
 ::docker-compose -f docker-compose-windows.yml up -d forms-flow-bpm 
 
 pause

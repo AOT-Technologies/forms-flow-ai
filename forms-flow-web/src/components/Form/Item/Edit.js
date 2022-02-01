@@ -20,14 +20,15 @@ import { saveFormProcessMapper } from "../../../apiManager/services/processServi
 const Edit = React.memo(() => {
   const dispatch = useDispatch();
   const processListData = useSelector((state) => state.process.formProcessList);
+ 
   const formData = useSelector((state) => state.form.form);
   const errors = useSelector((state) => state.form.error);
   const prviousData = useSelector((state) => state.process.formPreviousData);
   const saveText = "Save Form";
   const history = useHistory();
 
-  const changeAnonymous = () => {
-    let latestValue = !processListData.anonymous;
+  const changeAnonymous = (setvalue) => {
+    let latestValue = setvalue||!processListData.anonymous;
     let newData = {
       ...processListData,
       anonymous: latestValue,
@@ -134,6 +135,7 @@ const Edit = React.memo(() => {
       <div className="d-flex justify-content-end mt-3">
         <button
           onClick={() => {
+            changeAnonymous(prviousData.anonymous)
             history.goBack();
           }}
           className="btn btn-danger"

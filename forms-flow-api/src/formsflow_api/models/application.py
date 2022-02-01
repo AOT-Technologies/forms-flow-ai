@@ -22,6 +22,8 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     )
     form_url = db.Column(db.String(500), nullable=True)
     process_instance_id = db.Column(db.String(100), nullable=True)
+    process_key = db.Column(db.String(50), nullable=True)
+    process_name = db.Column(db.String(100), nullable=True)
 
     @classmethod
     def create_from_dict(cls, application_info: dict) -> Application:
@@ -29,12 +31,14 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         if application_info:
             application = Application()
             application.application_name = application_info["application_name"]
+            application.created_by = application_info["created_by"]
             application.application_status = application_info["application_status"]
             application.form_process_mapper_id = application_info[
                 "form_process_mapper_id"
             ]
             application.form_url = application_info["form_url"]
-            application.created_by = application_info["created_by"]
+            application.process_key = application_info["process_key"]
+            application.process_name = application_info["process_name"]
             application.save()
             return application
         return None
@@ -527,6 +531,10 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 Application.application_status,
                 func.count(Application.application_name).label("count"),
             )
+            .join(
+                FormProcessMapper,
+                FormProcessMapper.id == Application.form_process_mapper_id,
+            )
             .filter(
                 and_(
                     Application.modified >= from_date,
@@ -538,3 +546,18 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         )
 
         return result_proxy
+
+    @classmethod
+    def get_total_application_corresponding_to_mapper_id(
+        cls, form_process_mapper_id: int
+    ):
+        result_proxy = (
+            db.session.query(func.count(Application.id).label("count"))
+            .join(
+                FormProcessMapper,
+                FormProcessMapper.id == Application.form_process_mapper_id,
+            )
+            .filter(FormProcessMapper.id == form_process_mapper_id)
+        )
+        # It always returns a list of one element with count denoting total number of applications
+        return [dict(row) for row in result_proxy][0]["count"]

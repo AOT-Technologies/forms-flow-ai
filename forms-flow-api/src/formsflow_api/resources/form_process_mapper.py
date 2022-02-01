@@ -7,7 +7,7 @@ from flask_restx import Namespace, Resource
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.schemas import ApplicationListReqSchema, FormProcessMapperSchema
-from formsflow_api.services import FormProcessMapperService
+from formsflow_api.services import FormProcessMapperService, ApplicationService
 
 from formsflow_api.utils import auth, cors_preflight, profiletime
 
@@ -231,3 +231,21 @@ class FormResourceByFormId(Resource):
             )
             current_app.logger.info(response)
             return response, status
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/<int:mapper_id>/application/count", methods=["GET", "OPTIONS"])
+class FormResourceApplicationCount(Resource):
+    """Resource for getting applications count according to a mapper id"""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def get(mapper_id: int):
+        (
+            response,
+            status,
+        ) = ApplicationService.get_total_application_corresponding_to_mapper_id(
+            mapper_id
+        )
+        return {"message": response}, status

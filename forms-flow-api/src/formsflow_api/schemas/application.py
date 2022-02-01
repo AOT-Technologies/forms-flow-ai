@@ -53,6 +53,8 @@ class ApplicationSchema(Schema):
     form_process_mapper_id = fields.Str(data_key="formProcessMapperId")
     form_url = fields.Str(data_key="formUrl")
     process_instance_id = fields.Str(data_key="processInstanceId")
+    process_key = fields.Str(data_key="processKey")
+    process_name = fields.Str(data_key="processName")
     created_by = fields.Str(data_key="createdBy")
     created = fields.Str()
     modified_by = fields.Str(data_key="modifiedBy")

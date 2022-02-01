@@ -18,6 +18,8 @@ from formsflow_api.schemas import (
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import NEW_APPLICATION_STATUS
 
+application_schema = ApplicationSchema()
+
 
 class ApplicationService:
     """This class manages application service."""
@@ -30,9 +32,15 @@ class ApplicationService:
         mapper = FormProcessMapper.find_form_by_form_id(data["form_id"])
         data["form_process_mapper_id"] = mapper.id
         data["application_name"] = mapper.form_name
+        data["process_key"] = mapper.process_key
+        data["process_name"] = mapper.process_name
+
+        # Function to create application in DB
         application = Application.create_from_dict(data)
+        # process_instance_id in request object is usually used in Scripts
         if "process_instance_id" in data:
             application.update({"process_instance_id": data["process_instance_id"]})
+        # In normal cases, it's through this else case task is being created
         else:
             payload = {
                 "variables": {
@@ -54,12 +62,6 @@ class ApplicationService:
                     "error": camunda_error,
                 }
                 current_app.logger.critical(response)
-            except BaseException as application_err:
-                response = {
-                    "systemErrors": application_err,
-                    "message": "Camunda Process Mapper Key not provided",
-                }, HTTPStatus.BAD_REQUEST
-                current_app.logger.warning(response)
         return application, HTTPStatus.CREATED
 
     @staticmethod
@@ -107,7 +109,7 @@ class ApplicationService:
 
         auth_form_details = ApplicationService.get_authorised_form_list(token=token)
         form_names = []
-        application_schema = ApplicationSchema()
+
         if auth_form_details:
             for auth_form_detail in auth_form_details:
                 form_names.append(auth_form_detail["formName"])
@@ -138,7 +140,6 @@ class ApplicationService:
     def get_auth_by_application_id(application_id: int, token: str):
         """Get authorized Application by id."""
         auth_form_details = ApplicationService.get_authorised_form_list(token=token)
-        application_schema = ApplicationSchema()
         if auth_form_details:
             form_names = []
             for auth_form_detail in auth_form_details:
@@ -200,7 +201,6 @@ class ApplicationService:
             created_from=created_from,
             created_to=created_to,
         )
-        application_schema = ApplicationSchema()
 
         return (
             application_schema.dump(applications, many=True),
@@ -226,7 +226,6 @@ class ApplicationService:
         applications = Application.find_by_form_id(
             form_id=form_id, page_no=page_no, limit=limit
         )
-        application_schema = ApplicationSchema()
         return application_schema.dump(applications, many=True)
 
     @staticmethod
@@ -242,7 +241,6 @@ class ApplicationService:
         applications = Application.find_by_form_id_user(
             form_id=form_id, user_id=user_id, page_no=page_no, limit=limit
         )
-        application_schema = ApplicationSchema()
         return application_schema.dump(applications, many=True)
 
     @staticmethod
@@ -337,6 +335,14 @@ class ApplicationService:
             ApplicationSchemaWrapper.apply_attributes(application_schema)
         return application_schema
 
+    @staticmethod
+    def get_total_application_corresponding_to_mapper_id(mapper_id: int):
+        count = Application.get_total_application_corresponding_to_mapper_id(mapper_id)
+        if count == 0:
+            return ("No Applications found", HTTPStatus.OK)
+        else:
+            return (f"Total Applications found are: {count}", HTTPStatus.OK)
+
 
 class ApplicationSchemaWrapper:
     """ApplicationSchemaWrapper Class"""
@@ -344,7 +350,7 @@ class ApplicationSchemaWrapper:
     @staticmethod
     def apply_attributes(application):
         """Wrapper function to call Application Schema Wrapper class
-        to find formid, submissionid from passed formUrl
+        to find formid, submissionId from passed formUrl
         """
         try:
             formurl = application["formUrl"]

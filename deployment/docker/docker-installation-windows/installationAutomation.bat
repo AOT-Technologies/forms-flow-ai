@@ -37,9 +37,10 @@ echo press enter to continue
 pause>null
 goto :KEYCLOAK
 
-
-
-::================KEYCLOAK=========================>
+echo.
+echo                                         KEYCLOAK
+echo.
+  
 :KEYCLOAK
 cd ..\..\..\forms-flow-idm\keycloak
 :keycloak repeat
@@ -62,7 +63,7 @@ for /f "tokens=*" %%s in (.env) do (
 )
 echo Please wait, keycloak is setting up!
 ::docker-compose up -d
-set /p keySecret="what is your Keycloak client secret key?"
+set /p keySecret="what is your bpm client secret key?"
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% 
 
 
@@ -84,18 +85,21 @@ if /I "%c%" EQU "y" goto :keycloak repeat
 if /I "%c%" EQU "n" goto :FORMSFLOW FORMS
 goto :choice
 ::------------------------------------------
-::================KEYCLOAK-ENDS=========================>
+echo             KEYCLOAK-ENDS
 
 ::=================FORMS-STARTS=========================>
 :FORMSFLOW FORMS
 cls
-echo FORMSFLOW FORMS
-
+echo.
+echo.
+echo                                          FORMSFLOW FORMS
+echo.
 cd ..\..\forms-flow-forms
 
 ::fetching ip address
 for /f "tokens=14" %%a in ('ipconfig ^| findstr IPv4') do set _IPaddr=%%a
 
+:formsflow repeat
 :choice
 set /P choice=Are you sure you want run default settings[y/n]?
 if /I "%choice%" EQU "y" goto :FORMS DEFAULT SETUP
@@ -120,6 +124,12 @@ echo Please wait, forms is getting up!
 ::docker-compose -f docker-compose-windows.yml up -d forms-flow-forms 
 
 pause> null
+:choice
+set /P c=process FAILD with some error? please repeat. [y/n]?
+if /I "%c%" EQU "y" goto :formsflow repeat
+if /I "%c%" EQU "n" goto :ROLS
+goto :choice
+pause
 
 :ROLS
 
@@ -218,7 +228,6 @@ set formsflowClient=%id[3]%
 set formsflowReviewer=%id[4]%
 set User=%id[5]%
 
-:WEB
 ::==========PASSING ROLIDS========>
 
 
@@ -226,8 +235,13 @@ set User=%id[5]%
 
 ::================WEB STARTS=========================>
 :WEB
-echo FORMS FLOW WEB
+echo.
+echo.
+echo                                                       FORMS FLOW WEB
+echo.
+echo.
 cd ..\..\forms-flow-web
+:web repeat
 :choice
 set /P c=Are you sure you want run default settings[Y/N]?
 if /I "%c%" EQU "Y" goto :WEB DEFAULT INSTALLATION
@@ -273,6 +287,46 @@ echo %%s
 echo Please wait,web is getting up!
 ::docker-compose up -d 
 
+:choice
+set /P c=process FAILD with some error? please repeat. [y/n]?
+if /I "%c%" EQU "y" goto :web repeat
+if /I "%c%" EQU "n" goto :analycs
+goto :choice
+pause
+
+::WEB CUSTOM INSTALLATION
+::findstr /v /i /c:"CLIENT_ROLE_ID=" /c:"DESIGNER_ROLE_ID=" /c:"REVIEWER_ROLE_ID" /c:"ANONYMOUS_ID" /c:"USER_RESOURCE_ID" sample.env > .env
+
+::setlocal ENABLEDELAYEDEXPANSION
+::set /p clientsecret="what is your client role id?"
+::echo CLIENT_ROLE_ID=%clientsecret% >> .env
+
+::set /p designer="what is your designer role id?"
+::echo DESIGNER_ROLE_ID=%designer% >> .env
+
+::set /p reviewer="what is your reviewer role id?"
+::echo REVIEWER_ROLE_ID=%reviewer% >> .env
+
+::set /p anonymous="what is your anonymous id?"
+::echo ANONYMOUS_ID=%anonymous% >> .env
+
+::set /p user="what is your user resouce id?"
+::echo USER_RESOURCE_ID=%user% >> .env
+
+
+::for /f "tokens=*" %%s in (.env) do (
+::echo %%s
+::)
+
+::set /P c=process FAILD with some error? please repeat. [y/n]?
+::if /I "%c%" EQU "y" goto :web repeat
+::if /I "%c%" EQU "n" goto :analycs
+::goto :choice
+::pause
+
+:analycs
+echo.
+echo.
 if %analytics% ==1 (
 echo you have chosen the option to install analytics.
 echo press ENTER to continue
@@ -316,9 +370,13 @@ goto :API
 
 ::============ANALYTICS STARTS=======================>
 :ANALYTICS
-echo ANALYTICS
+echo.
+echo.
+echo                                                 ANALYTICS
+echo.
+echo.
 cd ..\forms-flow-analytics
-
+:analytics repeat
 :choice
 set /P c=Are you sure you want run default settings[y/n]?
 if /I "%c%" EQU "y" goto :ANALYTICS DEFAULT INSTALLATION
@@ -340,9 +398,24 @@ for /f "tokens=*" %%s in (.env) do (
  echo %%s
 )
 ::docker-compose -f docker-compose-windows.yml run --rm server create_db
+
+echo analytics database has been created.. wait for a moment for the analytics to get up.
+
+::docker-compose -f docker-compose-windows.yml up --build -d 
+
+pause
+echo please collect the redash api key from localhost:7000
+set /p redashApiKey="what is your Redash API key?"
+echo INSIGHT_API_KEY=%redashApiKey%
+
 echo press ENTER to move to API installation
 pause>null
-goto :API 
+:choice
+set /P c=process FAILD with some error? please repeat. [y/n]?
+if /I "%c%" EQU "y" goto :analytics repeat
+if /I "%c%" EQU "n" goto :API
+goto :choice
+pause
 
 ::------------------------------------------
 :ANALYTICS CUSTOM INSTALLATION
@@ -350,6 +423,12 @@ echo ANALYTICS custom setup
 echo press ENTER to move to API installation
 pause
 goto :API 
+:choice
+set /P c=process FAILD with some error? please repeat. [y/n]?
+if /I "%c%" EQU "y" goto :analytics repeat
+if /I "%c%" EQU "n" goto :analycs
+goto :choice
+pause
 ::------------------------------------------
 
 ::============ANALYTICS ENDS=========================>
@@ -357,8 +436,13 @@ goto :API
 
 ::================API STARTS=========================>
 :API 
-echo FORMSFLOW API
+echo.
+echo.
+echo                                                     FORMSFLOW API
+echo.
+echo.
 cd ..\forms-flow-api
+:api repeat
 :choice
 set /P c=Are you sure you want run default settings?: [y/n]
 if /I "%c%" EQU "y" goto :API DEFAULT INSTALLATION
@@ -369,9 +453,9 @@ goto :choice
 
 findstr /v /i /c:"INSIGHT_API_URL=" /c:"KEYCLOAK_URL=" /c:"FORMSFLOW_API_URL=" /c:"CAMUNDA_API_URL=" /c:"INSIGHT_API_KEY=" /c:"KEYCLOAK_BPM_CLIENT_SECRET="  sample.env > .env
 
-echo KEYCLOAK_BPM_CLIENT_SECRET=%keycloakSecret% >> .env
 
-set /p redashApiKey="what is your Redash API key?"
+echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
+
 echo INSIGHT_API_KEY=%redashApiKey% >> .env
 
 setlocal ENABLEDELAYEDEXPANSION
@@ -404,7 +488,15 @@ echo %%s
 )
 echo Please wait, analytics is getting up!
 ::docker-compose -f docker-compose-windows.yml up -d
+pause
+:choice
+set /P c=process FAILD with some error? please repeat. [y/n]?
+if /I "%c%" EQU "y" goto :api repeat
+if /I "%c%" EQU "n" goto :newlis
+goto :choice
+pause
 
+:newlis
 echo press ENTER to install BPM
 pause> null
 goto :BPM
@@ -415,7 +507,13 @@ goto :BPM
 echo API custom installation here
 echo press ENTER to install BPM
 pause> null
-goto :BPM
+
+:choice
+set /P c=process FAILD with some error? please repeat. [y/n]?
+if /I "%c%" EQU "y" goto :api repeat
+if /I "%c%" EQU "n" goto :BPM
+goto :choice
+pause
 
 ::------------------------------------------
 
@@ -427,9 +525,13 @@ goto :BPM
 ::=================BPM STARTS===========================>
 :BPM
 cls
-echo FORMSFLOW BPM
+echo.
+echo.
+echo                                          FORMSFLOW BPM
+echo.
+echo.
 cd ..\forms-flow-bpm
-
+:bpm repeat
 :choice
 set /P c=Are you sure you want run default settings[y/n]?
 if /I "%c%" EQU "y" goto :BPM DEFAULT INSTALLATION
@@ -473,13 +575,25 @@ echo Please wait,bpm is getting up!
 ::docker-compose -f docker-compose-windows.yml up -d forms-flow-bpm 
 
 pause
+:choice
+set /P c=process FAILD with some error? please repeat. [y/n]?
+if /I "%c%" EQU "y" goto :bpm repeat
+if /I "%c%" EQU "n" goto :END
+goto :choice
+pause
 goto :END
 
 ::------------------------------------------
 :BPM CUSTOM INSTALLATION
 echo bpm custom installation here
 pause
-goto :END
+:choice
+set /P c=process FAILD with some error? please repeat. [y/n]?
+if /I "%c%" EQU "y" goto :bpm repeat
+if /I "%c%" EQU "n" goto :END
+goto :choice
+pause
+
 ::------------------------------------------
 
 ::=================BPM ENDS===========================>
@@ -487,6 +601,8 @@ goto :END
 
 
 :END
-echo INSTALLATION FLOW IS COMPLETED
+echo.
+echo                               INSTALLATION FLOW IS COMPLETED
+echo.
 Pause
 

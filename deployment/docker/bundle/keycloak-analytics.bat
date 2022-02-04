@@ -76,7 +76,7 @@ echo KEYCLOAK_URL_REALM=%realm% >> .env
 
 set keycloak_url=%_IPaddr%
 set str=KEYCLOAK_URL=http://{your-ip-address}:8080
-set strng=%str:{your-ip-address}=!keycloak!% >> .env
+set strng=%str:{your-ip-address}=!keycloak_url!% >> .env
 
 set /p keySecret="what is your bpm client secret key?"
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env

@@ -16,7 +16,7 @@ import History from "../../Application/ApplicationHistory";
 import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
 import LoadingOverlay from "react-loading-overlay";
-import {getForm, getSubmission, Formio} from "react-formio";
+import {getForm, getSubmission, Formio} from "@formio/react";
 import {CUSTOM_EVENT_TYPE} from "../constants/customEventTypes";
 import {getTaskSubmitFormReq} from "../../../apiManager/services/bpmServices";
 import {useParams} from "react-router-dom";

@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect, useSelector} from 'react-redux'
-import {selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors} from 'react-formio';
+import {selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors} from '@formio/react';
 import {push} from 'connected-react-router';
 import {Button} from "react-bootstrap";
 

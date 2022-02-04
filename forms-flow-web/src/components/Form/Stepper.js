@@ -25,7 +25,7 @@ import {
   setFormProcessesData
 } from "../../actions/processActions";
 //import { saveFormProcessMapper } from "../../apiManager/services/formServices";
-import { selectRoot, saveForm, selectError, getForm } from "react-formio";
+import { selectRoot, saveForm, selectError, getForm } from "@formio/react";
 import { SUBMISSION_ACCESS } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";

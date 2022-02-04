@@ -5,7 +5,7 @@ import App from "./components/App";
 import StoreService from "./services/StoreService";
 // import UserService from "./services/UserService";
 
-import { Formio, Components} from 'react-formio';
+import { Formio, Components} from '@formio/react';
 import {AppConfig} from './config';
 //import * as serviceWorker from './serviceWorker';
 

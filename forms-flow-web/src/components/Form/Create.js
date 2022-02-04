@@ -1,5 +1,5 @@
 import React, { useState ,useEffect} from "react";
-import { saveForm, FormEdit, Errors } from "react-formio";
+import { saveForm, FormEdit, Errors } from "@formio/react";
 import { push } from "connected-react-router";
 import {
   SUBMISSION_ACCESS,
@@ -71,14 +71,14 @@ const saveFormData =(formData) => {
       <hr />
       <Errors errors={errors} />
       {props && (
-        <div class="form-check text-right">
+        <div className="form-check text-right">
           <input
-            class="form-check-input big-checkbox"
+            className="form-check-input big-checkbox"
             type="checkbox"
             checked={anonymous}
             onChange={(e) =>{setAnonymous(!anonymous)}}
           /> 
-          <label   class="pl-2 form-check-label" for="anonymousCheckBox">
+          <label   className="pl-2 form-check-label" htmlFor="anonymousCheckBox">
           Anonymous Form ?
            </label>
         </div>

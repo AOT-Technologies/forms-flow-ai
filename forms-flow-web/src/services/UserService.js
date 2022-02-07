@@ -17,7 +17,7 @@ import {AppConfig} from '../config';
 import {WEB_BASE_URL , WEB_BASE_CUSTOM_URL} from "../apiManager/endpoints/config";
 
 import {_kc} from "../constants/tenantConstant";
-import { setLanguage } from "../actions/languageSetAction";
+//import { setLanguage } from "../actions/languageSetAction";
 
 const jwt = require("jsonwebtoken");
 

@@ -7,4 +7,11 @@ from formsflow_api.models.application import Application
 from formsflow_api.models.application_history import ApplicationHistory
 
 
-__all__ = ["db", "ma", "FormProcessMapper", "Application", "ApplicationHistory"]
+__all__ = [
+    "db",
+    "ma",
+    "Application",
+    "ApplicationHistory",
+    "BaseModel",
+    "FormProcessMapper",
+]

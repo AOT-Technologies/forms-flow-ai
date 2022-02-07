@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {connect, useDispatch, useSelector} from 'react-redux'
-import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors, getForm } from 'react-formio';
+import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors, getForm } from '@formio/react';
 import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
 import { useTranslation,Translation } from "react-i18next";
@@ -55,7 +55,7 @@ const View = React.memo((props) => {
     )
     }
     return (
-      <div className="container">
+      <div className="container overflow-y-auto">
         <div className="main-header">
           <SubmissionError modalOpen={props.submissionError.modalOpen}
             message={props.submissionError.message}
@@ -115,7 +115,7 @@ const doProcessActions = (submission, ownProps,  t) => {
           dispatch(setFormSubmitted(true))
         } else { //TO DO Update to show error message
           dispatch(setFormSubmissionLoading(false));
-          toast.success("Submission failed")
+          toast.error("Submission failed")
           // dispatch(setFormSubmitted())
           // dispatch(push(`/public/submitted`));
         }

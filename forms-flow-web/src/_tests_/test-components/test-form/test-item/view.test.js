@@ -10,8 +10,8 @@ import { mockstate } from './constatnts-edit';
 import thunk from 'redux-thunk'
 
 
-jest.mock('react-formio', () => ({
-  ...jest.requireActual('react-formio'),
+jest.mock('@formio/react', () => ({
+  ...jest.requireActual('@formio/react'),
 }));
 
 const middlewares = [thunk] 

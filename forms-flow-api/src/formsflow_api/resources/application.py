@@ -128,7 +128,7 @@ class ApplicationResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def get(application_id):
+    def get(application_id: int):
         """Get application by id.
         : application_id:- List the application for particular application_id
         """
@@ -157,7 +157,7 @@ class ApplicationResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def put(application_id):
+    def put(application_id: int):
         """Update application details.
         : application_id:- Update the application for particular application_id
         """
@@ -191,7 +191,7 @@ class ApplicationResourceByFormId(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def get(form_id):
+    def get(form_id: str):
         """Get applications.
         : form_id:- Retrieve application list based on formid
         """
@@ -288,14 +288,14 @@ class ApplicationResourcesByIds(Resource):
 
 
 @cors_preflight("GET,OPTIONS")
-@API.route("/<string:application_id>/process", methods=["GET", "OPTIONS"])
+@API.route("/<int:application_id>/process", methods=["GET", "OPTIONS"])
 class ProcessMapperResourceByApplicationId(Resource):
     """Resource for managing process details."""
 
     @staticmethod
     @auth.require
     @profiletime
-    def get(application_id):
+    def get(application_id: int):
         """Get process details.
         : application_id:- Retreiving process details for corresponding application_id
         """

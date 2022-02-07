@@ -2,7 +2,7 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import { selectRoot } from "react-formio";
+import { selectRoot } from "@formio/react";
 import { useLocation } from "react-router-dom";
 
 import {CLIENT, STAFF_REVIEWER } from "../constants/constants";

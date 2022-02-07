@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { saveForm, FormEdit, Errors } from "react-formio";
+import { saveForm, FormEdit, Errors } from "@formio/react";
 import { push } from "connected-react-router";
 import { useHistory } from "react-router-dom";
 /*import { Link } from "react-router-dom";*/
@@ -21,14 +21,15 @@ import { saveFormProcessMapper } from "../../../apiManager/services/processServi
 const Edit = React.memo(() => {
   const dispatch = useDispatch();
   const processListData = useSelector((state) => state.process.formProcessList);
+ 
   const formData = useSelector((state) => state.form.form);
   const errors = useSelector((state) => state.form.error);
   const prviousData = useSelector((state) => state.process.formPreviousData);
   const saveText = "Save Form";
   const history = useHistory();
 
-  const changeAnonymous = () => {
-    let latestValue = !processListData.anonymous;
+  const changeAnonymous = (setvalue) => {
+    let latestValue = setvalue||!processListData.anonymous;
     let newData = {
       ...processListData,
       anonymous: latestValue,
@@ -119,22 +120,23 @@ const Edit = React.memo(() => {
 
       <hr />
       <Errors errors={errors} />
-      <div class="form-check text-right">
+      <div className="form-check text-right">
         <input
-          class="form-check-input big-checkbox"
+          className="form-check-input big-checkbox"
           type="checkbox"
           checked={processListData.anonymous || false}
           onChange={(e) => {
             changeAnonymous();
           }}
         />
-        <label class="pl-2 form-check-label" for="flexCheckDefault">
+        <label className="pl-2 form-check-label" htmlFor="flexCheckDefault">
           Anonymous Form
         </label>
       </div>
       <div className="d-flex justify-content-end mt-3">
         <button
           onClick={() => {
+            changeAnonymous(prviousData.anonymous)
             history.goBack();
           }}
           className="btn btn-danger"

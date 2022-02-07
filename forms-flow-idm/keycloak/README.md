@@ -66,7 +66,7 @@ Variable name | Meaning | Possible values | Default value |
 
 * Run `docker-compose up -d` to start.
 
-*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+*NOTE: Use --build command with the start command to reflect any future changes eg : `docker-compose up --build -d`*
 
 #### To stop the keycloak server
 

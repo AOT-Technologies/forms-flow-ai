@@ -9,6 +9,7 @@
     "build": "react-scripts --max_old_space_size=6144 build",
     "eject": "react-scripts eject",
     "test": "react-scripts test --detectOpenHandles",
+    "preinstall": "npx npm-force-resolutions",
     "coverage": "react-scripts test --coverage --watchAll=false"
   },
   "author": {
@@ -26,10 +27,10 @@
     "jspdf": "^2.3.1",
     "msw": "^0.36.0",
     "redux-mock-store": "^1.5.4",
-    "underscore": "^1.12.1",
     "xmldom": "^0.6.0"
   },
   "dependencies": {
+    "@formio/react": "^5.2.0",
     "@material-ui/core": "^4.11.4",
     "@wojtekmaj/react-daterange-picker": "^3.1.0",
     "aot-formio-export": "file:forms-flow-util",
@@ -39,9 +40,9 @@
     "connected-react-router": "^6.9.1",
     "create-react-class": "^15.7.0",
     "crypto-js": "^4.0.0",
-    "formiojs": "^4.13.1",
     "i18next": "^21.6.6",
     "i18next-browser-languagedetector": "^6.1.2",
+    "formiojs": "^4.14.0",
     "jsonwebtoken": "^8.5.1",
     "keycloak-js": "^10.0.2",
     "lodash": "^4.17.21",
@@ -57,7 +58,6 @@
     "react-datepicker": "^3.8.0",
     "react-dom": "^17.0.2",
     "react-dropdown-select": "^4.7.4",
-    "react-formio": "^4.3.0",
     "react-helmet": "^6.1.0",
     "react-i18next": "^11.15.3",
     "react-js-pagination": "^3.0.3",
@@ -76,6 +76,23 @@
     "source-map-explorer": "^2.5.2",
     "stompjs": "^2.3.3",
     "ws": "^7.4.6"
+  },
+  "resolutions": {
+    "css-what": "^5.0.1",
+    "browserslist": "^4.17.6",
+    "glob-parent": "^6.0.2",
+    "tar": "^6.1.11",
+    "immer": "^9.0.6",
+    "set-value": "^4.1.0",
+    "nth-check": "^2.0.1",
+    "ansi-regex": "^5.0.1",
+    "ansi-html": "^0.0.7",
+    "min-dash": "^3.8.1",
+    "node-fetch": "^3.2.0",
+    "nanoid": "^3.2.0",
+    "follow-redirects": "^1.14.7",
+    "node-forge": "^1.2.1",
+    "underscore": "1.12.1"
   },
   "browserslist": [
     ">0.2%",

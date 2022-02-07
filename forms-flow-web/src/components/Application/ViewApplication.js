@@ -11,7 +11,7 @@ import {setApplicationDetailLoader, setApplicationDetailStatusCode} from "../../
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 import History from "./ApplicationHistory";
 import View from "../Form/Item/Submission/Item/View";
-import {getForm, getSubmission} from "react-formio";
+import {getForm, getSubmission} from "@formio/react";
 import NotFound from "../NotFound";
 import { Translation } from "react-i18next";
 //import { useDispatch } from 'react-redux'

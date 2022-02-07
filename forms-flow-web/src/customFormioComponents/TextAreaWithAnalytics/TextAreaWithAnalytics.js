@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { ReactComponent } from 'react-formio';
+import { ReactComponent } from '@formio/react';
 import settingsForm from './TextAreaWithAnalytics.settingsForm';
 import SentimentAnalytics from "./TextAreaWithAnalyticsInputComponent";
 
@@ -48,8 +48,10 @@ export default class TextAreaWithAnalytics extends ReactComponent {
    * #returns ReactInstance
    */
   attachReact (element) {
+    let instance;
     return ReactDOM.render(
       <SentimentAnalytics
+        ref={(refer) => {instance = refer;}}
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataValue} // The starting value of the component.
         data={this.data}
@@ -58,7 +60,7 @@ export default class TextAreaWithAnalytics extends ReactComponent {
         disabled={this.disabled}
         // The onChange event to call when the value changes.
       />,
-      element
+      element,() => (this.reactInstance = instance)
     );
   }
 

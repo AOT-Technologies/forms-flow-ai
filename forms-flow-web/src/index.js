@@ -4,8 +4,8 @@ import ReactDOM from "react-dom";
 import App from "./components/App";
 import StoreService from "./services/StoreService";
 // import UserService from "./services/UserService";
-//import i18n from "./translations/i18n";
-import { Formio, Components} from 'react-formio';
+
+import { Formio, Components} from '@formio/react';
 import {AppConfig} from './config';
 //import * as serviceWorker from './serviceWorker';
 

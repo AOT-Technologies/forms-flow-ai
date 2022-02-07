@@ -1,6 +1,5 @@
 """Test suite for application API endpoint"""
 import pytest
-from pytest import mark
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_form_request_payload,
@@ -8,7 +7,6 @@ from tests.utilities.base_test import (
 )
 
 
-@mark.describe("Initialize application API")
 class TestApplicationResource:
     def test_application_no_auth_api(self, app, client, session):
         """Assert that API /application when passed with no token returns 401 status code"""
@@ -162,6 +160,31 @@ def test_application_create_method(app, client, session):
         json=get_application_create_payload(form_id),
     )
     assert rv.status_code == 201
+
+
+def test_application_payload(app, client, session):
+    token = factory_auth_header()
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    rv = client.post("/form", headers=headers, json=get_form_request_payload())
+    assert rv.status_code == 201
+
+    form_id = rv.json.get("formId")
+
+    rv = client.post(
+        "/application/create",
+        headers=headers,
+        json=get_application_create_payload(form_id),
+    )
+    assert rv.status_code == 201
+    application_response = rv.json
+
+    assert application_response["processKey"] == "oneStepApproval"
+    assert application_response["processName"] == "One Step Approval"
+    assert application_response["applicationStatus"] == "New"
+    assert application_response["applicationName"] == "Sample form"
 
 
 def test_application_update_details_api(app, client, session):

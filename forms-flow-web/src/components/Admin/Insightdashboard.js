@@ -5,7 +5,7 @@ import {useDispatch} from "react-redux";
 import ListGroup from 'react-bootstrap/ListGroup'
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import { Errors } from "react-formio/lib/components";
+import { Errors } from "@formio/react/lib/components";
 import Loading from "../../containers/Loading";
 import { connect } from "react-redux";
 import { updateGroup } from "../../apiManager/services/dashboardsService";
@@ -31,7 +31,7 @@ export const InsightDashboard = (props)=> {
   const [activeRow,setActiveRow] = useState(null);
   const [show, setShow] = useState(false);
   const [activePage,setActivePage] = useState(1);
-
+  const [sizePerPage,setSizePerPage] = useState(5)
   const useNoRenderRef = (currentValue)=>{
     const ref = useRef(currentValue);
     ref.current = currentValue;
@@ -176,11 +176,18 @@ const getpageList = ()=>{
   return list
 }
 
+const handleSizeChange = (sizePerPage,page)=>{
+    setActivePage(page)
+    setSizePerPage(sizePerPage)
+}
+
   const pagination = paginationFactory({
     showTotal :true,
     sizePerPageList:getpageList(),
     page:activePage,
-    onPageChange :(page)=>setActivePage(page)
+    sizePerPage:sizePerPage,
+    onPageChange :(page)=>setActivePage(page),
+    onSizePerPageChange:(size,page)=>handleSizeChange(size,page)
   })
 
   return (

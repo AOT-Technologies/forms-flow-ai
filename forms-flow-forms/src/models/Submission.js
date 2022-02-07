@@ -100,10 +100,8 @@ module.exports = function(formio) {
     partialFilterExpression: {deleted: {$eq: null}}
   });
 
-  // Add a "recommmended" combined index.
+  // Add a "recommended" combined index.
   model.schema.index({
-    "data.process_pid ": 1,
-    "data.applicationId": 1,
     form: 1,
     deleted: 1,
     created: -1

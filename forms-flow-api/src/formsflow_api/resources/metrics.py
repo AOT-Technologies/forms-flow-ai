@@ -61,7 +61,7 @@ class AggregatedApplicationsResource(Resource):
         except ValidationError as metrics_err:
             response = {
                 "message": "Missing from_date or to_date. Invalid request object for application metrics endpoint",
-                "errors": metrics_err,
+                "errors": "Bad request error",
             }
 
             current_app.logger.warning(response)

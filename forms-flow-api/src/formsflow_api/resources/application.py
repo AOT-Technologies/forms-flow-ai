@@ -14,7 +14,7 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import ApplicationService
 from formsflow_api.utils import REVIEWER_GROUP, auth, cors_preflight, profiletime
-
+from marshmallow.exceptions import ValidationError
 
 API = Namespace("Application", description="Application")
 
@@ -106,6 +106,19 @@ class ApplicationsResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
+        except ValidationError as err:
+            response, status = (
+                {
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
+
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
+            return response, status
+
         except KeyError as err:
             response, status = (
                 {

@@ -1,13 +1,12 @@
 import logging
 import os
-from flask import Flask, request
+from flask import Flask, request, g, current_app
 from flask.logging import default_handler
 from werkzeug.middleware.proxy_fix import ProxyFix
-
 from formsflow_api import models, config
 from formsflow_api.resources import API
 from formsflow_api.models import db, ma
-
+import json
 from formsflow_api.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
@@ -15,7 +14,9 @@ from formsflow_api.utils import (
     FORMSFLOW_API_CORS_ORIGINS,
     jwt,
     setup_logging,
+    translate,
 )
+from http import HTTPStatus
 
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
@@ -68,6 +69,31 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     def add_additional_headers(response):  # pylint: disable=unused-variable
         response.headers["X-Frame-Options"] = "DENY"
         return response
+
+    @app.after_request
+    def translate_response(response):  # pylint: disable=unused-variable
+        """Select the client specific language from the token locale attribute"""
+        try:
+            if response.status_code in [
+                HTTPStatus.BAD_REQUEST,
+                HTTPStatus.UNAUTHORIZED,
+                HTTPStatus.FORBIDDEN,
+                HTTPStatus.NOT_FOUND,
+            ]:
+                lang = g.token_info["locale"]
+                if lang == "en":
+                    return response
+                json_response = response.get_json()
+                translated_response = translate(lang, json_response)
+                str_response = json.dumps(translated_response)
+                response.set_data(str_response)
+            return response
+        except KeyError as err:
+            current_app.logger.warning(err)
+            return response
+        except Exception as err:
+            current_app.logger.critical(err)
+            return response
 
     register_shellcontext(app)
 

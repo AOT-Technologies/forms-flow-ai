@@ -15,7 +15,7 @@ from formsflow_api.resources.checkpoint import API as CHECKPOINT_API
 from formsflow_api.resources.dashboards import API as DASHBOARDS_API
 from formsflow_api.resources.form_process_mapper import API as FORM_API
 from formsflow_api.resources.groups import API as KEYCLOAK_GROUPS_API
-
+from formsflow_api.resources.user import API as KEYCLOAK_USER_API
 from formsflow_api.resources.process import API as PROCESS_API
 from formsflow_api.utils.constants import ALLOW_ALL_ORIGINS
 
@@ -66,3 +66,4 @@ API.add_namespace(FORM_API, path="/form")
 API.add_namespace(KEYCLOAK_GROUPS_API, path="/groups")
 API.add_namespace(PROCESS_API, path="/process")
 API.add_namespace(PUBLIC_API, path="/public")
+API.add_namespace(KEYCLOAK_USER_API, path="/user")

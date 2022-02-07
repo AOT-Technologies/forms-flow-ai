@@ -178,3 +178,8 @@ def update_dashboard_payload():
             {"15": "Sample 4"},
         ]
     }
+
+def get_locale_update_valid_payload():
+    return {
+        "locale":"en"
+    }

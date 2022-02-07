@@ -5,7 +5,7 @@ import {useDispatch} from "react-redux";
 import ListGroup from 'react-bootstrap/ListGroup'
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import { Errors } from "@formio/react/lib/components";
+import { Errors } from "react-formio/lib/components";
 import Loading from "../../containers/Loading";
 import { connect } from "react-redux";
 import { updateGroup } from "../../apiManager/services/dashboardsService";

@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { connectRouter } from "connected-react-router";
-import { form, forms, submission, submissions } from "@formio/react";
+import { form, forms, submission, submissions } from "react-formio";
 
 import user from "./userDetailReducer";
 import tasks from "./tasksReducer";

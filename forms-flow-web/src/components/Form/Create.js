@@ -1,5 +1,5 @@
 import React, { useState ,useEffect} from "react";
-import { saveForm, FormEdit, Errors } from "@formio/react";
+import { saveForm, FormEdit, Errors } from "react-formio";
 import { push } from "connected-react-router";
 import {
   SUBMISSION_ACCESS,

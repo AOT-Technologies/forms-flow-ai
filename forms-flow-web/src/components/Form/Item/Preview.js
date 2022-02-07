@@ -1,6 +1,6 @@
 import React, {PureComponent} from "react";
 import { connect } from "react-redux";
-import { selectRoot, Form, selectError, Errors } from "@formio/react";
+import { selectRoot, Form, selectError, Errors } from "react-formio";
 import { push } from "connected-react-router";
 import { Button } from "react-bootstrap";
 /*import { Link } from "react-router-dom";

@@ -1,6 +1,6 @@
 import React, {useEffect} from 'react';
 import {connect, useDispatch, useSelector} from 'react-redux'
-import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors, getForm } from '@formio/react';
+import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors, getForm } from 'react-formio';
 import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
 

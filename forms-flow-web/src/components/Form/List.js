@@ -12,7 +12,7 @@ import {
   FormGrid,
   deleteForm,
   saveForm
-} from "@formio/react";
+} from "react-formio";
 import Loading from "../../containers/Loading";
 import {
   FORM_ACCESS,

@@ -124,7 +124,7 @@ if %analytics% ==0 (
 echo let's move to the installation without analytics
 echo press ENTER to continue
 pause> nul
-goto :API 
+goto :end 
 )
 ::------------------------------------------
 :WEB CUSTOM INSTALLATION
@@ -143,7 +143,7 @@ echo let's move to the installation of api
 echo press ENTER to continue
 pause> nul
 
-::============ANALYTICS STARTS=======================>
+::<===================ANALYTICS STARTS=======================>
 :ANALYTICS
 echo.
 echo.
@@ -189,6 +189,158 @@ pause
 
 ::============ANALYTICS ENDS=========================>
 
-: end
+:configuration section
+echo.
+echo.
+echo                                                 
+echo.
+echo.
+cd ..\sample.env
+echo %cd%
+pause
 
-echo installation over
+findstr /v /i /c:"FORMIO_DEFAULT_PROJECT_URL=" /c:"#KEYCLOAK_URL_REALM=" /c:"KEYCLOAK_URL=" /c:"KEYCLOAK_BPM_CLIENT_SECRET=" /c:"INSIGHT_API_URL=" /c:"INSIGHT_API_KEY=" /c:"CLIENT_ROLE_ID=" /c:"DESIGNER_ROLE_ID=" /c:"REVIEWER_ROLE_ID" /c:"ANONYMOUS_ID" /c:"USER_RESOURCE_ID" /c:"CAMUNDA_API_URL=" /c:"FORMSFLOW_API_URL=" /c:"WEBSOCKET_SECURITY_ORIGIN=" sample.env > .env
+
+for /f "tokens=14" %%a in ('ipconfig ^| findstr IPv4') do set _IPaddr=%%a
+
+setlocal ENABLEDELAYEDEXPANSION
+
+set default_url=%_IPaddr%
+set str=FORMIO_DEFAULT_PROJECT_URL=http://{your-ip-address}:3001
+set strng=%str:{your-ip-address}=!default_url!%
+
+echo KEYCLOAK_URL_REALM=%realm%
+
+set keycloak_url=%_IPaddr%
+set str=KEYCLOAK_URL=http://{your-ip-address}:8080
+set strng=%str:{your-ip-address}=!keycloak_url!%
+
+echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret%
+
+set API_URL=%_IPaddr%
+set url=INSIGHT_API_URL=http://{your-ip-address}:7000
+set strinnng=%url:{your-ip-address}=!API_URL!%
+
+echo INSIGHT_API_KEY=%redashApiKey%
+
+echo Please wait, forms is getting up!
+	
+docker-compose -f docker-compose-windows.yml up -d forms-flow-forms 
+
+set websock=%_IPaddr%
+set lpu=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
+set streng=%lpu:{your-ip-address}=!websock!%
+
+set api=%_IPaddr%
+set stp=FORMSFLOW_API_URL=http://{your-ip-address}:5000
+set strong=%stp:{your-ip-address}=!api!%
+
+set websock=%_IPaddr%
+set lpu=WEBSOCKET_SECURITY_ORIGIN=http://{your-ip-address}:3000
+set streng=%lpu:{your-ip-address}=!websock!%
+
+
+
+echo PLEASE MAKE SURE THAT FORMSFLOW FORMS IS UP IN http://localhost:3001
+pause> nul
+set hour=6
+set res=F
+SET email=admin@example.com
+SET password=changeme
+SET host=http://localhost:3001
+
+set token=nul
+
+setlocal ENABLEDELAYEDEXPANSION
+
+:: Getting x-jwt-token
+for /F "skip=1delims=" %%I in ('curl -d "{ \"data\": { \"email\": \"!email!\", \"password\": \"!password!\"} }" -H "Content-Type: application/json" -sSL -D - !host!/user/login  -o null') do (
+  set header=%%I
+  if "!header:~0,11!"=="x-jwt-token" (
+     set token=!header:~13!
+  )
+)
+
+:: Getting role id's and mapping it into an array
+for /f "delims=" %%R in ('curl -H "x-jwt-token:!token!"  -sSL -D - !host!/role') do (
+set "JSON=%%R"
+)
+
+SET id[]=0
+SET title[]=""
+SET i=0
+for %%a in (!JSON!) do ( 
+   set line=%%a
+   set line=!line:{=!
+   set line=!line:[=!
+   set line=!line:"=!
+   if "!line:~0,3!"=="_id" (
+     set id=!line:~4!
+	 set id[!i!]=!id!
+   )
+   if "!line:~0,5!"=="title" (
+     set title=!line:~6!
+	 set title[!i!]=!title!
+	 set /a i=i+1
+   )
+)
+
+:: Getting user id's and mapping it into an array
+for /f "delims=" %%R in ('curl -H "x-jwt-token:!token!"  -sSL -D - !host!/user') do (
+set "JSON=%%R"
+)
+
+for %%a in (!JSON!) do ( 
+   set line=%%a
+   set line=!line:{=!
+   set line=!line:[=!
+   set line=!line:"=!
+   if "!line:~0,3!"=="_id" (
+     set id=!line:~4!
+	 set id[!i!]=!id!
+   )
+   if "!line:~0,5!"=="title" (
+     set title=!line:~6!
+	 set title[!i!]=!title!
+	 set /a i=i+1
+   )
+)
+echo -------------------------------------------
+echo Role Name       -          ID
+echo -------------------------------------------
+for /L %%a in (0,1,!i!) do (
+echo !title[%%a]!   -           !id[%%a]!
+set !title[%%a]!=!id[%%a]!
+)
+
+set Administrator=%id[0]%
+set Anonymous=%id[1]%
+set Authenticated=%id[2]%
+set formsflowClient=%id[3]%
+set formsflowReviewer=%id[4]%
+set User=%id[5]%
+
+pause
+
+echo need to add some more files for the complete flow
+
+
+echo CLIENT_ROLE_ID=%formsflowClient% >> .env
+echo DESIGNER_ROLE_ID=%Administrator% >> .env
+echo REVIEWER_ROLE_ID=%formsflowReviewer% >> .env
+echo ANONYMOUS_ID=%Anonymous% >> .env
+echo USER_RESOURCE_ID=%User% >> .env
+
+for /f "tokens=*" %%s in (.env) do (
+echo %%s
+)
+
+pause> nul
+:choice
+set /P c=process FAILD with some error? please repeat. [y/n]?
+if /I "%c%" EQU "y" goto :configuration section
+if /I "%c%" EQU "n" goto :end
+goto :choice
+pause
+:end
+echo automation comleted

@@ -72,13 +72,17 @@ echo you can pick up the bpm client secret id from localhost:8080
 set /p realm="what is your keycloak url realm name?"
 echo.
 echo.
-echo KEYCLOAK_URL_REALM=%realm% >> .env
+echo KEYCLOAK_URL_REALM=%realm% 
 
 set keycloak_url=%_IPaddr%
 set str=KEYCLOAK_URL=http://{your-ip-address}:8080
-set strng=%str:{your-ip-address}=!keycloak_url!% >> .env
+set strng=%str:{your-ip-address}=!keycloak_url!%
 
 set /p keySecret="what is your bpm client secret key?"
+echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret%
+
+echo KEYCLOAK_URL_REALM=%realm% >> .env
+echo %strng% >> .env
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
 
 :choice
@@ -101,7 +105,11 @@ set /p keyurl="what is your Keycloak url?"
 echo KEYCLOAK_URL=%keyurl%
 
 set /p realm="what is your keycloak url realm name?"
+echo KEYCLOAK_URL_REALM=%realm%
+
 echo KEYCLOAK_URL_REALM=%realm% >> .env
+echo KEYCLOAK_URL=%keyurl% >> .env
+echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
 
 :choice
 set /P c=process FAILD with some error? please repeat. [y/n]?
@@ -124,7 +132,7 @@ if %analytics% ==0 (
 echo let's move to the installation without analytics
 echo press ENTER to continue
 pause> nul
-goto :end 
+goto :configuration section
 )
 ::------------------------------------------
 :WEB CUSTOM INSTALLATION
@@ -167,12 +175,12 @@ for /f "tokens=*" %%s in (.env) do (
 )
 docker-compose -f docker-compose-windows.yml run --rm server create_db
 
-echo analytics database has been created.. wait for a moment for the analytics to get up.
+echo analytics database has been created.. wait for a moment for the analytics to start.
 
 docker-compose -f docker-compose-windows.yml up --build -d 
 
 pause
-echo please collect the redash api key from localhost:7000
+echo please collect the redash api key
 set /p redashApiKey="what is your Redash API key?"
 echo INSIGHT_API_KEY=%redashApiKey% >> .env
 
@@ -181,7 +189,7 @@ pause>nul
 :choice
 set /P c=process FAILD with some error? please repeat. [y/n]?
 if /I "%c%" EQU "y" goto :ANALYTICS DEFAULT INSTALLATION
-if /I "%c%" EQU "n" goto :end
+if /I "%c%" EQU "n" goto :configuration section
 goto :choice
 pause
 
@@ -192,12 +200,10 @@ pause
 :configuration section
 echo.
 echo.
-echo                                                 
+echo                                                  Installation-Automation                                                                        
 echo.
 echo.
-cd ..\sample.env
-echo %cd%
-pause
+cd ..
 
 findstr /v /i /c:"FORMIO_DEFAULT_PROJECT_URL=" /c:"#KEYCLOAK_URL_REALM=" /c:"KEYCLOAK_URL=" /c:"KEYCLOAK_BPM_CLIENT_SECRET=" /c:"INSIGHT_API_URL=" /c:"INSIGHT_API_KEY=" /c:"CLIENT_ROLE_ID=" /c:"DESIGNER_ROLE_ID=" /c:"REVIEWER_ROLE_ID" /c:"ANONYMOUS_ID" /c:"USER_RESOURCE_ID" /c:"CAMUNDA_API_URL=" /c:"FORMSFLOW_API_URL=" /c:"WEBSOCKET_SECURITY_ORIGIN=" sample.env > .env
 
@@ -206,8 +212,8 @@ for /f "tokens=14" %%a in ('ipconfig ^| findstr IPv4') do set _IPaddr=%%a
 setlocal ENABLEDELAYEDEXPANSION
 
 set default_url=%_IPaddr%
-set str=FORMIO_DEFAULT_PROJECT_URL=http://{your-ip-address}:3001
-set strng=%str:{your-ip-address}=!default_url!%
+set ste=FORMIO_DEFAULT_PROJECT_URL=http://{your-ip-address}:3001
+set strong=%ste:{your-ip-address}=!default_url!%
 
 echo KEYCLOAK_URL_REALM=%realm%
 
@@ -225,19 +231,19 @@ echo INSIGHT_API_KEY=%redashApiKey%
 
 echo Please wait, forms is getting up!
 	
-docker-compose -f docker-compose-windows.yml up -d forms-flow-forms 
+docker-compose -f docker-compose-windows.yml up -d forms-flow-forms
 
 set websock=%_IPaddr%
-set lpu=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
-set streng=%lpu:{your-ip-address}=!websock!%
+set lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
+set streng=%lpi:{your-ip-address}=!websock!%
 
 set api=%_IPaddr%
 set stp=FORMSFLOW_API_URL=http://{your-ip-address}:5000
-set strong=%stp:{your-ip-address}=!api!%
+set strongs=%stp:{your-ip-address}=!api!%
 
 set websock=%_IPaddr%
 set lpu=WEBSOCKET_SECURITY_ORIGIN=http://{your-ip-address}:3000
-set streng=%lpu:{your-ip-address}=!websock!%
+set streeng=%lpu:{your-ip-address}=!websock!%
 
 
 
@@ -320,11 +326,20 @@ set formsflowClient=%id[3]%
 set formsflowReviewer=%id[4]%
 set User=%id[5]%
 
-pause
+echo Press enter to continue!
+pause> nul
 
-echo need to add some more files for the complete flow
-
-
+echo FORM.IO ENV Variables - START
+echo %strong% >> .env
+echo Keycloak ENV Variables - START 
+echo KEYCLOAK_URL_REALM=%realm% >> .env
+echo %strng% >> .env
+echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
+echo %strinnng% >> .env
+echo INSIGHT_API_KEY=%redashApiKey% >> .env
+echo %streng% >> .env
+echo %strongs% >> .env
+echo %streeng% >> .env
 echo CLIENT_ROLE_ID=%formsflowClient% >> .env
 echo DESIGNER_ROLE_ID=%Administrator% >> .env
 echo REVIEWER_ROLE_ID=%formsflowReviewer% >> .env
@@ -334,6 +349,7 @@ echo USER_RESOURCE_ID=%User% >> .env
 for /f "tokens=*" %%s in (.env) do (
 echo %%s
 )
+docker-compose -f docker-compose-windows.yml up --build -d
 
 pause> nul
 :choice
@@ -342,5 +358,3 @@ if /I "%c%" EQU "y" goto :configuration section
 if /I "%c%" EQU "n" goto :end
 goto :choice
 pause
-:end
-echo automation comleted

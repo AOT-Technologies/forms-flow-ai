@@ -33,7 +33,7 @@ goto :KEYCLOAK
 :INSTALL_WITHOUT_ANALYTICS
 
 echo The installation will be completed in the following order
-echo 1. keycloak
+echo 1. keycloak	
 echo 2. form.io
 echo 3. web
 echo 4. webapi
@@ -59,13 +59,9 @@ goto :choice
 echo WE ARE SETING UP OUR DEFAULT KEYCLOCK FOR YOU
 echo press enter to continue
 pause> nul
-findstr /v /i /c:"FORMIO_DEFAULT_PROJECT_URL" sample.env > .env
+copy sample.env  .env
 for /f "tokens=14" %%a in ('ipconfig ^| findstr IPv4') do set _IPaddr=%%a
 
-
-for /f "tokens=*" %%s in (.env) do (
- echo %%s
-)
 echo Please wait, keycloak is setting up!
 docker-compose up -d
 echo you can pick up the bpm client secret id from localhost:8080

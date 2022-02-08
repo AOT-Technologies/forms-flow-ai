@@ -24,7 +24,8 @@ export const updateUserlang = (data)=>{
     )
     .catch((error)=>{
         console.log(error);
-      toast.error("Failed");
+      toast.error(<Translation>{(t)=>t("failed")}</Translation>);
     })
+    
   }
 }

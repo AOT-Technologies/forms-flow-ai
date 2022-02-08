@@ -160,5 +160,8 @@ export const TRANSLATIONS_EN = {
   forms_completed:"Forms Completed",
   no_forms_found:"No forms found",
   powered_by:"Powered by",
-  anonymous_form:"Anonymous Form ?"
+  anonymous_form:"Anonymous Form ?",
+  no_applications_found:"No applications found",
+  successfully_updated:"Successfully Updated",
+  failed:"Failed"
 };

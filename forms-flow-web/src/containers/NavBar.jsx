@@ -128,7 +128,7 @@ const NavBar = React.memo(() => {
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <Dropdown.Item><button class="button_component" value='en' onClick={handleOnclick}>English</button>  </Dropdown.Item>
-                      <Dropdown.Item><button class="button_component" value='zh' onClick={handleOnclick}>中国人</button> </Dropdown.Item>
+                      <Dropdown.Item><button class="button_component" value='zh-CN' onClick={handleOnclick}>中国人</button> </Dropdown.Item>
                       <Dropdown.Item><button class="button_component" value='pt' onClick={handleOnclick}>Português</button>  </Dropdown.Item>
                       <Dropdown.Item><button class="button_component" value='fr' onClick={handleOnclick}>français</button> </Dropdown.Item>
                       <Dropdown.Item><button class="button_component" value='bg' onClick={handleOnclick}>български</button> </Dropdown.Item>

@@ -159,6 +159,10 @@ export const TRANSLATIONS_BG = {
     forms_completed:"Формулярите са попълнени",
     no_forms_found:"Няма намерени формуляри",
     powered_by:"Задвижвани от",
-    anonymous_form:"анонимен формуляр?"
+    anonymous_form:"анонимен формуляр?",
+    no_applications_found:"No applications found",
+    successfully_updated:"Актуализирано успешно",
+    failed:"Се провали"
+
     
 }

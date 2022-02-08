@@ -159,7 +159,9 @@ export const TRANSLATIONS_ZH = {
   forms_completed:"完成的表格",
   no_forms_found:"没有找到表格",
   powered_by:"供电",
-  anonymous_form:"匿名表格？"
-
+  anonymous_form:"匿名表格？",
+  no_applications_found:"未找到任何应​​用程序",
+  successfully_updated:"成功更新",
+  failed:"失败的"
 }
 

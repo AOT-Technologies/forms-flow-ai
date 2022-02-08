@@ -13,19 +13,19 @@ i18n
     fallbackLng: 'en',
     resources: {
       fallbackLng: 'en',
-      en: {
+      "en": {
         translation: TRANSLATIONS_EN
       },
-      zh: {
+      "zh-CN": {
         translation: TRANSLATIONS_ZH
       },
-      pt: {
+      "pt": {
         translation: TRANSLATIONS_PT
       },
-      fr: {
+      "fr": {
         translation: TRANSLATIONS_FR
       },
-      bg:
+      "bg":
       {
         translation: TRANSLATIONS_BG
       }

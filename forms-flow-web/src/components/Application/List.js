@@ -77,7 +77,7 @@ export const ApplicationList = React.memo(() => {
   const getNoDataIndicationContent = () => {
     return (
       <div className="div-no-application">
-        <label className="lbl-no-application"> No applications found </label>
+        <label className="lbl-no-application"> <Translation>{(t)=>t("no_applications_found")}</Translation> </label>
         <br />
         <label className="lbl-no-application-desc">
           {" "}

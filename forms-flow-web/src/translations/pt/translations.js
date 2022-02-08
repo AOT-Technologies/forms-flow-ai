@@ -157,6 +157,9 @@ export const TRANSLATIONS_PT = {
   forms_completed:"Formulários preenchidos",
   no_forms_found:"Nenhum formulário encontrado",
   powered_by:"Distribuído por",
-  anonymous_form:"Formulário anônimo?"
+  anonymous_form:"Formulário anônimo?",
+  no_applications_found:"Nenhum aplicativo encontrado",
+  successfully_updated:"Atualizado com sucesso",
+  failed:"Fracassada"
   };
   

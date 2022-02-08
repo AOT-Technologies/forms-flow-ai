@@ -1,6 +1,6 @@
 export const formio_translation = {
    
-   "zh":{
+   "zh-CN":{
        "Text Field":"文本域",
        "Text Area":"文本区",
        "Number":"数字",

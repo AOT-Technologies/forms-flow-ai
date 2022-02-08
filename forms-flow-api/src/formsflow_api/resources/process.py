@@ -33,7 +33,7 @@ class ProcessResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except BaseException as err:
+        except BaseException as err: # pylint:disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
@@ -62,7 +62,7 @@ class ProcessDefinitionResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except BaseException as err:
+        except BaseException as err: # pylint:disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
@@ -82,10 +82,11 @@ class ProcessEventResource(Resource):
     @auth.require
     @profiletime
     def post():
+        """Create a process event."""
         message_json = request.get_json()
         message_schema = ProcessMessageSchema()
         dict_data = message_schema.load(message_json)
-        """Get states by process and task key."""
+        # Get states by process and task key.
         try:
             return (
                 (
@@ -100,7 +101,7 @@ class ProcessEventResource(Resource):
                 {
                     "type": "Invalid Request Object",
                     "message": "Required fields are not passed",
-                    "errors": err.messages,
+                    "errors": err.messages, # pylint:disable=no-member
                 },
                 HTTPStatus.BAD_REQUEST,
             )
@@ -108,7 +109,7 @@ class ProcessEventResource(Resource):
             current_app.logger.critical(response)
             current_app.logger.critical(err)
             return response, status
-        except BaseException as err:
+        except BaseException as err: # pylint:disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
@@ -121,7 +122,7 @@ class ProcessEventResource(Resource):
 
 @cors_preflight("GET,OPTIONS")
 @API.route(
-    "/process-instance/<string:process_InstanceId>/activity-instances",
+    "/process-instance/<string:process_instance_id>/activity-instances",
     methods=["GET", "OPTIONS"],
 )
 class ProcessInstanceResource(Resource):
@@ -130,16 +131,16 @@ class ProcessInstanceResource(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def get(process_InstanceId):
+    def get(process_instance_id):
         """Get states by process and task key."""
         try:
             return (
                 ProcessService.get_process_activity_instances(
-                    process_InstanceId, request.headers["Authorization"]
+                    process_instance_id, request.headers["Authorization"]
                 ),
                 HTTPStatus.OK,
             )
-        except BaseException:
+        except BaseException: # pylint:disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",

@@ -1,3 +1,7 @@
+"""App inititlization.
+
+Initialize app and the dependencies.
+"""
 import logging
 import os
 from flask import Flask, request
@@ -33,15 +37,17 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     )
     app.logger = flask_logger
     app.logger = logging.getLogger("app")
-    ch = logging.StreamHandler()
 
-    ch.setFormatter(CustomFormatter())
-    app.logger.handlers = [ch]
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(CustomFormatter())
+    app.logger.handlers = [stream_handler]
     app.logger.propagate = False
     logging.log.propagate = False
-    with open("logo.txt") as f:
+
+    with open("logo.txt", encoding="utf-8") as f:
         contents = f.read()
         print(contents)
+
     app.logger.info("Welcome to formsflow-API server...!")
     db.init_app(app)
     ma.init_app(app)

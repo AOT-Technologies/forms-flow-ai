@@ -48,7 +48,8 @@ def handle_auth_error(error: AuthError):
     return (
         {
             "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for Authorization or has expired.",
+            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for '\
+                'Authorization or has expired.",
         },
         error.status_code,
         {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},

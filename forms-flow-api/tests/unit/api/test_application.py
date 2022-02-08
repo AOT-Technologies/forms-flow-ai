@@ -1,5 +1,6 @@
 """Test suite for application API endpoint"""
 from pytest import mark
+
 from tests.utilities.base_test import (
     get_token_header,
     get_token_body,
@@ -42,7 +43,7 @@ class TestApplicationResource:
         assert response.status_code == 200
 
     def test_application_paginated_sorted_list(
-        self, session, client, jwt, pageNo, limit, sortBy, sortOrder
+            self, session, client, jwt, pageNo, limit, sortBy, sortOrder
     ):
         token = jwt.create_jwt(get_token_body(), get_token_header())
         headers = {

@@ -53,36 +53,39 @@ class KeycloakDashboardGroupList(Resource):
                     return {
                         "message": "No Dashboard authorized Group found"
                     }, HTTPStatus.NOT_FOUND
-                else:
-                    for group in dashboard_group_list:
-                        group["dashboards"] = (
-                            client.get_request(url_path=f"groups/{group['id']}")
-                            .get("attributes")
-                            .get("dashboards")
-                        )
-                    return dashboard_group_list, HTTPStatus.OK
+
+                for group in dashboard_group_list:  # pylint:disable=redefined-outer-name
+                    group["dashboards"] = (
+                        client.get_request(url_path=f"groups/{group['id']}")
+                        .get("attributes")
+                        .get("dashboards")
+                    )
+                return dashboard_group_list, HTTPStatus.OK
+        return None, HTTPStatus.NOT_FOUND
 
 
 @cors_preflight("GET,PUT,OPTIONS")
-@API.route("/<string:id>", methods=["GET", "PUT", "OPTIONS"])
+@API.route("/<string:group_id>", methods=["GET", "PUT", "OPTIONS"])
 class KeycloakDashboardGroupDetail(Resource):
+    """Keycloak dashboard group detail class."""
+
     @staticmethod
     @auth.require
     @profiletime
-    def get(id):
+    def get(group_id):
         """GET request to fetch groups details API
         :params str id: group-id of Keycloak Dashboard Authorized groups
         """
         client = KeycloakAdminAPIService()
-        response = client.get_request(url_path=f"groups/{id}")
+        response = client.get_request(url_path=f"groups/{group_id}")
         if response is None:
-            return {"message": f"Group - {id} not found"}, HTTPStatus.NOT_FOUND
+            return {"message": f"Group - {group_id} not found"}, HTTPStatus.NOT_FOUND
         return response
 
     @staticmethod
     @auth.require
     @profiletime
-    def put(id):
+    def put(group_id):
         """Update request to update dashboard details
         :params str id: group-id of Keycloak Dashboard Authorized groups
         """
@@ -91,22 +94,21 @@ class KeycloakDashboardGroupDetail(Resource):
         try:
             dict_data = KeycloakDashboardGroupSchema().load(group_json)
 
-            dashboard_id_details = client.get_request(url_path=f"groups/{id}")
-            if dashboard_id_details == None:
-                return {"message": f"Group - {id} not found"}, HTTPStatus.NOT_FOUND
-            else:
-                dashboard_id_details["attributes"]["dashboards"] = [
-                    str(dict_data["dashboards"])
-                ]
-                response = client.update_request(
-                    url_path=f"groups/{id}", data=dashboard_id_details
-                )
-                if response is None:
-                    return {
-                        "message": f"Group - {id} not updated successfully"
-                    }, HTTPStatus.SERVICE_UNAVAILABLE
-                else:
-                    return response
+            dashboard_id_details = client.get_request(url_path=f"groups/{group_id}")
+            if dashboard_id_details is None:
+                return {"message": f"Group - {group_id} not found"}, HTTPStatus.NOT_FOUND
+
+            dashboard_id_details["attributes"]["dashboards"] = [
+                str(dict_data["dashboards"])
+            ]
+            response = client.update_request(
+                url_path=f"groups/{group_id}", data=dashboard_id_details
+            )
+            if response is None:
+                return {
+                    "message": f"Group - {group_id} not updated successfully"
+                }, HTTPStatus.SERVICE_UNAVAILABLE
+            return response
         except ValidationError as err:
             pprint(err.messages)
             return {"message": "Invalid Request Object format"}, HTTPStatus.BAD_REQUEST

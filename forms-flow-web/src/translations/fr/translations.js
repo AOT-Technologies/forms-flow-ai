@@ -160,6 +160,8 @@ export const TRANSLATIONS_FR = {
   anonymous_form:"Formulaire anonyme ?",
   no_applications_found:"No applications found",
   successfully_updated:"Mise à jour réussie",
-  failed:"Manquée"
+  failed:"Manquée",
+  submission_saved:"Изпращането е запазено.",
+  submission_failed:"Изпращането не бе успешно."
   };
   

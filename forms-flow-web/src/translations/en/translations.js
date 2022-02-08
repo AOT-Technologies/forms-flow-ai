@@ -1,5 +1,5 @@
 export const TRANSLATIONS_EN = {
-  submission_success:"Submission Saved.",
+  submission_saved:"Submission Saved.",
   submission_error:"Error while Submission.",
   message:"Please fix the errors before submitting again.",
   message_submission:"Submission cannot be done.",
@@ -163,5 +163,6 @@ export const TRANSLATIONS_EN = {
   anonymous_form:"Anonymous Form ?",
   no_applications_found:"No applications found",
   successfully_updated:"Successfully Updated",
-  failed:"Failed"
+  failed:"Failed",
+  submission_failed:"Submission Failed."
 };

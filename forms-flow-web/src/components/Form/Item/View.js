@@ -111,11 +111,11 @@ const doProcessActions = (submission, ownProps,  t) => {
       dispatch(publicApplicationCreate(data, (err, res) => {
         if (!err) {
           dispatch(setFormSubmissionLoading(false));
-          toast.success("Submission Saved.")
+          toast.success(<Translation>{(t)=>t("submission_saved")}</Translation>)
           dispatch(setFormSubmitted(true))
         } else { //TO DO Update to show error message
           dispatch(setFormSubmissionLoading(false));
-          toast.error("Submission failed")
+          toast.error(<Translation>{(t)=>t("submission_failed")}</Translation>)
           // dispatch(setFormSubmitted())
           // dispatch(push(`/public/submitted`));
         }
@@ -128,7 +128,7 @@ const doProcessActions = (submission, ownProps,  t) => {
                 dispatch(setFormSubmissionLoading(false));
                 dispatch(setMaintainBPMFormPagination(true));
                 /*dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))*/
-                toast.success("Submission Saved.")
+                toast.success(<Translation>{(t)=>t("submission_saved")}</Translation>)
                 dispatch(push(`/form`));
               }else{
                 dispatch(setFormSubmissionLoading(false));
@@ -138,7 +138,7 @@ const doProcessActions = (submission, ownProps,  t) => {
                 dispatch(setFormSubmissionLoading(false));
                 dispatch(setMaintainBPMFormPagination(true));
                 //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
-                toast.success("Submission Saved.")
+                toast.success(<Translation>{(t)=>t("submission_saved")}</Translation>)
                 dispatch(push(`/form`));
               }else{
                 dispatch(setFormSubmissionLoading(false));

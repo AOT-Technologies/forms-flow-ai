@@ -162,6 +162,8 @@ export const TRANSLATIONS_ZH = {
   anonymous_form:"匿名表格？",
   no_applications_found:"未找到任何应​​用程序",
   successfully_updated:"成功更新",
-  failed:"失败的"
+  failed:"失败的",
+  submission_saved:"提交已保存。",
+  submission_failed:"提交失败。"
 }
 

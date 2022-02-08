@@ -162,7 +162,9 @@ export const TRANSLATIONS_BG = {
     anonymous_form:"анонимен формуляр?",
     no_applications_found:"No applications found",
     successfully_updated:"Актуализирано успешно",
-    failed:"Се провали"
+    failed:"Се провали",
+    submission_saved:"Изпращането е запазено.",
+    submission_failed:"Изпращането не бе успешно."
 
     
 }

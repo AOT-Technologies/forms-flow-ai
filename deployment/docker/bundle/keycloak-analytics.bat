@@ -22,8 +22,8 @@ echo 1. keycloak
 echo 2. form.io
 echo 3. analytics
 echo 4. web
-echo 5. webapi
-echo 6. camunda
+echo 5. camunda
+echo 6. webapi
 
 
 echo press enter to continue
@@ -36,8 +36,8 @@ echo The installation will be completed in the following order
 echo 1. keycloak
 echo 2. form.io
 echo 3. web
-echo 4. webapi
-echo 5. camunda
+echo 4. camunda
+echo 5. webapi
 
 echo press enter to continue
 pause>nul
@@ -212,7 +212,7 @@ echo INSIGHT_API_KEY=%redashApiKey%
 
 echo Please wait, forms is getting up!
 	
-docker-compose -f docker-compose-windows.yml up -d formsflow-forms
+docker-compose up -d forms-flow-forms
 
 set websock=%_IPaddr%
 set lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
@@ -326,9 +326,9 @@ echo REVIEWER_ROLE_ID=%formsflowReviewer% >> .env
 echo ANONYMOUS_ID=%Anonymous% >> .env
 echo USER_RESOURCE_ID=%User% >> .env
 
-docker-compose -f docker-compose-windows.yml up -d formsflow-webapi
-docker-compose -f docker-compose-windows.yml up -d formsflow-bpm
-docker-compose -f docker-compose-windows.yml up -d forms-flow-web
+docker-compose up -d forms-flow-web
+docker-compose up -d forms-flow-bpm
+docker-compose up -d forms-flow-webapi
 
 pause> nul
 goto :end

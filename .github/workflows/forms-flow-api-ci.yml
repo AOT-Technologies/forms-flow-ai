@@ -109,7 +109,7 @@ jobs:
       #     name: codecov-formsflow-api
       #     fail_ci_if_error: true
   build:
-    needs: tests
+    needs: PyTest
     runs-on: ubuntu-20.04
     name: Build
     steps:

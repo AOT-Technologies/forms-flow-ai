@@ -33,7 +33,7 @@ goto :KEYCLOAK
 :INSTALL_WITHOUT_ANALYTICS
 
 echo The installation will be completed in the following order
-echo 1. keycloak	
+echo 1. keycloak
 echo 2. form.io
 echo 3. web
 echo 4. webapi
@@ -58,8 +58,8 @@ goto :choice
 :USE DEFAULT KEYCLOAK SETUP
 echo WE ARE SETING UP OUR DEFAULT KEYCLOCK FOR YOU
 echo press enter to continue
-pause> nul
-copy sample.env  .env
+pause> nuls
+copy sample.env .env
 for /f "tokens=14" %%a in ('ipconfig ^| findstr IPv4') do set _IPaddr=%%a
 
 echo Please wait, keycloak is setting up!
@@ -70,24 +70,21 @@ echo.
 echo.
 echo KEYCLOAK_URL_REALM=%realm% 
 
-set keycloak_url=%_IPaddr%
+setlocal ENABLEDELAYEDEXPANSION
+
+set keyurl=%_IPaddr%
 set str=KEYCLOAK_URL=http://{your-ip-address}:8080
-set strng=%str:{your-ip-address}=!keycloak_url!%
+set stg=%str:{your-ip-address}=!keyurl!%
 
 set /p keySecret="what is your bpm client secret key?"
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret%
 
+echo. >>".env"
 echo KEYCLOAK_URL_REALM=%realm% >> .env
-echo %strng% >> .env
+echo %stg%>>".env"
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
 
-:choice
-set /P c=process FAILD with some error? please repeat. [y/n]?
-if /I "%c%" EQU "y" goto :KEYCLOAK
-if /I "%c%" EQU "n" goto :analycs
-goto :choice
-pause
-
+goto :analycs
 
 :INSTALL WITH EXISTING KEYCLOAK
 set customKeycloak=1;
@@ -103,23 +100,20 @@ echo KEYCLOAK_URL=%keyurl%
 set /p realm="what is your keycloak url realm name?"
 echo KEYCLOAK_URL_REALM=%realm%
 
+echo. >>".env"
 echo KEYCLOAK_URL_REALM=%realm% >> .env
 echo KEYCLOAK_URL=%keyurl% >> .env
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
 
-:choice
-set /P c=process FAILD with some error? please repeat. [y/n]?
-if /I "%c%" EQU "y" goto :keycloak repeat
-if /I "%c%" EQU "n" goto :analycs
-goto :choice
-pause
+goto :analycs
+
 
 :analycs
 echo.
 echo.
 if %analytics% ==1 (
-echo you have chosen the option to install analytics.
-echo press ENTER to continue
+echo analytics.
+echo press ENTER to continue to analytics
 pause> nul
 goto :ANALYTICS
 )
@@ -136,14 +130,13 @@ goto :configuration section
 echo web custom installation here
 
 if %analytics% ==1 (
-echo you have chosen the option to install analytics.
 echo press ENTER to continue
 pause> nul
 goto :ANALYTICS
 )
 
 if %analytics% ==0 (
-echo let's move to the installation of api
+echo let's move to the installation
 echo press ENTER to continue
 pause> nul
 
@@ -166,9 +159,6 @@ set ste=REDASH_HOST=http://{your-ip-address}:7000
 set strng=%ste:{your-ip-address}=!key!%
 echo %strng%>>".env"
 
-for /f "tokens=*" %%s in (.env) do (
- echo %%s
-)
 docker-compose -f docker-compose-windows.yml run --rm server create_db
 
 echo analytics database has been created.. wait for a moment for the analytics to start.
@@ -182,12 +172,7 @@ echo INSIGHT_API_KEY=%redashApiKey% >> .env
 
 echo press ENTER to move to next installation
 pause>nul
-:choice
-set /P c=process FAILD with some error? please repeat. [y/n]?
-if /I "%c%" EQU "y" goto :ANALYTICS DEFAULT INSTALLATION
-if /I "%c%" EQU "n" goto :configuration section
-goto :choice
-pause
+goto :configuration section
 
 ::------------------------------------------
 
@@ -227,7 +212,7 @@ echo INSIGHT_API_KEY=%redashApiKey%
 
 echo Please wait, forms is getting up!
 	
-docker-compose -f docker-compose-windows.yml up -d forms-flow-forms
+docker-compose -f docker-compose-windows.yml up -d formsflow-forms
 
 set websock=%_IPaddr%
 set lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
@@ -242,8 +227,7 @@ set lpu=WEBSOCKET_SECURITY_ORIGIN=http://{your-ip-address}:3000
 set streeng=%lpu:{your-ip-address}=!websock!%
 
 
-
-echo PLEASE MAKE SURE THAT FORMSFLOW FORMS IS UP IN http://localhost:3001
+echo FORMSFLOW FORMS IS UP 
 pause> nul
 set hour=6
 set res=F
@@ -307,13 +291,13 @@ for %%a in (!JSON!) do (
 	 set /a i=i+1
    )
 )
-echo -------------------------------------------
-echo Role Name       -          ID
-echo -------------------------------------------
-for /L %%a in (0,1,!i!) do (
-echo !title[%%a]!   -           !id[%%a]!
-set !title[%%a]!=!id[%%a]!
-)
+:: -------------------------------------------
+:: Role Name       -          ID
+:: -------------------------------------------
+:: for /L %%a in (0,1,!i!) do (
+:: !title[%%a]!   -           !id[%%a]!
+:: set !title[%%a]!=!id[%%a]!
+:: )
 
 set Administrator=%id[0]%
 set Anonymous=%id[1]%
@@ -342,15 +326,13 @@ echo REVIEWER_ROLE_ID=%formsflowReviewer% >> .env
 echo ANONYMOUS_ID=%Anonymous% >> .env
 echo USER_RESOURCE_ID=%User% >> .env
 
-for /f "tokens=*" %%s in (.env) do (
-echo %%s
-)
-docker-compose -f docker-compose-windows.yml up --build -d
+docker-compose -f docker-compose-windows.yml up -d formsflow-webapi
+docker-compose -f docker-compose-windows.yml up -d formsflow-bpm
+docker-compose -f docker-compose-windows.yml up -d forms-flow-web
 
 pause> nul
-:choice
-set /P c=process FAILD with some error? please repeat. [y/n]?
-if /I "%c%" EQU "y" goto :configuration section
-if /I "%c%" EQU "n" goto :end
-goto :choice
+goto :end
 pause
+
+:end
+echo                                Installation Automation completed

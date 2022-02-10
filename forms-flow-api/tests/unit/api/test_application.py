@@ -73,7 +73,19 @@ class TestApplicationDetailView:
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        response = client.get("/application/1", headers=headers)
+        rv = client.post("/form", headers=headers, json=get_form_request_payload())
+        assert rv.status_code == 201
+
+        form_id = rv.json.get("formId")
+        rv = client.post(
+            "/application/create",
+            headers=headers,
+            json=get_application_create_payload(form_id),
+        )
+        assert rv.status_code == 201
+        application_id = rv.json.get("id")
+
+        response = client.get(f"/application/{application_id}", headers=headers)
         assert response.status_code == 200
 
 

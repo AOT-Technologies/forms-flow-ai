@@ -108,3 +108,16 @@ jobs:
       #     flags: formsflowapi
       #     name: codecov-formsflow-api
       #     fail_ci_if_error: true
+  build:
+    needs: tests
+    runs-on: ubuntu-20.04
+    name: Build
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build
+        run: |
+          docker build . -t forms-flow-api

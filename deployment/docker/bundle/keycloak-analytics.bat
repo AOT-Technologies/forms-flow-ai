@@ -79,6 +79,7 @@ set stg=%str:{your-ip-address}=!keyurl!%
 set /p keySecret="what is your bpm client secret key?"
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret%
 
+echo. >>".env"
 echo KEYCLOAK_URL_REALM=%realm% >> .env
 echo %stg%>>".env"
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
@@ -99,6 +100,7 @@ echo KEYCLOAK_URL=%keyurl%
 set /p realm="what is your keycloak url realm name?"
 echo KEYCLOAK_URL_REALM=%realm%
 
+echo. >>".env"
 echo KEYCLOAK_URL_REALM=%realm% >> .env
 echo KEYCLOAK_URL=%keyurl% >> .env
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
@@ -110,8 +112,8 @@ goto :analycs
 echo.
 echo.
 if %analytics% ==1 (
-echo you have chosen the option to install analytics.
-echo press ENTER to continue
+echo analytics.
+echo press ENTER to continue to analytics
 pause> nul
 goto :ANALYTICS
 )
@@ -210,7 +212,7 @@ echo INSIGHT_API_KEY=%redashApiKey%
 
 echo Please wait, forms is getting up!
 	
-docker-compose -f docker-compose-windows.yml up -d forms-flow-forms
+docker-compose -f docker-compose-windows.yml up -d formsflow-forms
 
 set websock=%_IPaddr%
 set lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
@@ -289,13 +291,13 @@ for %%a in (!JSON!) do (
 	 set /a i=i+1
    )
 )
-echo -------------------------------------------
-echo Role Name       -          ID
-echo -------------------------------------------
-for /L %%a in (0,1,!i!) do (
-!title[%%a]!   -           !id[%%a]!
-set !title[%%a]!=!id[%%a]!
-)
+:: -------------------------------------------
+:: Role Name       -          ID
+:: -------------------------------------------
+:: for /L %%a in (0,1,!i!) do (
+:: !title[%%a]!   -           !id[%%a]!
+:: set !title[%%a]!=!id[%%a]!
+:: )
 
 set Administrator=%id[0]%
 set Anonymous=%id[1]%
@@ -324,8 +326,8 @@ echo REVIEWER_ROLE_ID=%formsflowReviewer% >> .env
 echo ANONYMOUS_ID=%Anonymous% >> .env
 echo USER_RESOURCE_ID=%User% >> .env
 
-docker-compose -f docker-compose-windows.yml up -d forms-flow-webapi
-docker-compose -f docker-compose-windows.yml up -d forms-flow-bpm
+docker-compose -f docker-compose-windows.yml up -d formsflow-webapi
+docker-compose -f docker-compose-windows.yml up -d formsflow-bpm
 docker-compose -f docker-compose-windows.yml up -d forms-flow-web
 
 pause> nul

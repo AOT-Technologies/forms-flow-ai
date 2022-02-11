@@ -31,8 +31,8 @@ def cors_preflight(methods: str = "GET"):
 
 def camel_to_snake(name: str) -> str:
     """Convert camel case to snake case."""
-    s1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
-    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s1).lower()
+    s_1 = re.sub("(.)([A-Z][a-z]+)", r"\1_\2", name)
+    return re.sub("([a-z0-9])([A-Z])", r"\1_\2", s_1).lower()
 
 
 def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
@@ -51,20 +51,26 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
     return order_by, sort_order
 
 
-def translate(to: str, data: dict) -> dict:
-    """Translate the response to provided language, will return the translated object if there is match
+def translate(to_lang: str, data: dict) -> dict:
+    """Translate the response to provided language,
+    will return the translated object if there is match
     else return the original object
     """
     try:
         translated_data = {}
-        if to not in translations:
+        if to_lang not in translations:
             raise KeyError
         for key, value in data.items():
-            # if matching translation is present for either key / value, then translated string is used
+            # if matching translation is present for either key / value,
+            # then translated string is used
             # original string otherwise
             translated_data[
-                translations[to][key] if key in translations[to] else key
-            ] = (translations[to][value] if value in translations[to] else value)
+                translations[to_lang][key] if key in translations[to_lang] else key
+            ] = (
+                translations[to_lang][value]
+                if value in translations[to_lang]
+                else value
+            )
         return translated_data
     except KeyError as err:
         raise err

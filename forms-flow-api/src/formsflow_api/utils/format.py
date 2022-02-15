@@ -3,7 +3,7 @@ import logging
 
 
 class CustomFormatter(logging.Formatter):
-    """ this class extends the logging Formatter class to support custom colour messages"""
+    """this class extends the logging Formatter class to support custom colour messages"""
 
     blue = "\x1b[34;21m"
     grey = "\x1b[38;21m"
@@ -23,6 +23,7 @@ class CustomFormatter(logging.Formatter):
         logging.ERROR: red + __format + reset,
         logging.CRITICAL: bold_red + __format + reset,
     }
+
     def format(self, record):
         """returns the formatted information"""
 

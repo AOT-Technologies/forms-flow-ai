@@ -3,8 +3,8 @@
 from __future__ import annotations
 from http import HTTPStatus
 
-from sqlalchemy import and_, func
-
+from sqlalchemy import and_
+from flask import current_app
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import BaseModel, db
 from formsflow_api.models.audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -45,7 +45,14 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.is_anonymous = mapper_info.get("is_anonymous")
                 mapper.save()
                 return mapper
-        except BaseException:
+        except KeyError as err:
+            current_app.logger.warning(err)
+            response, status = {
+                "type": "Bad Request Error",
+                "message": "Invalid application request passed",
+            }, HTTPStatus.BAD_REQUEST
+        except Exception as err:  # pylint: disable=broad-except
+            current_app.logger.critical(err)
             response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid application request passed",
@@ -80,19 +87,20 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     def find_all(cls, page_number, limit):
         """Fetch all the form process mappers."""
         if page_number == 0:
-            return cls.query.order_by(FormProcessMapper.id.desc()).all()
+            query = cls.query.order_by(FormProcessMapper.id.desc()).all()
         else:
-            return (
+            query = (
                 cls.query.order_by(FormProcessMapper.id.desc())
                 .paginate(page_number, limit, False)
                 .items
             )
+        return query
 
     @classmethod
     def find_all_active(cls, page_number, limit):
         """Fetch all active form process mappers"""
         if page_number == 0:
-            return (
+            result = (
                 cls.query.filter(
                     FormProcessMapper.status
                     == str(FormProcessMapperStatus.Active.value)
@@ -102,7 +110,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             )
 
         else:
-            return (
+            result = (
                 cls.query.filter(
                     FormProcessMapper.status
                     == str(FormProcessMapperStatus.Active.value)
@@ -110,6 +118,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 .paginate(page_number, limit, False)
                 .items
             )
+        return result
 
     @classmethod
     def find_all_count(cls):
@@ -162,6 +171,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
             return result[0]
         except IndexError as err:
+            current_app.logger.warning(err)
             return (
                 "List index out of range",
                 HTTPStatus.BAD_REQUEST,

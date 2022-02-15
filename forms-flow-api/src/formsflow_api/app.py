@@ -1,12 +1,14 @@
+"""This module sets up the flask application"""
 import logging
 import os
+from http import HTTPStatus
+import json
 from flask import Flask, request, g, current_app
 from flask.logging import default_handler
 from werkzeug.middleware.proxy_fix import ProxyFix
 from formsflow_api import models, config
 from formsflow_api.resources import API
 from formsflow_api.models import db, ma
-import json
 from formsflow_api.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
@@ -16,7 +18,6 @@ from formsflow_api.utils import (
     setup_logging,
     translate,
 )
-from http import HTTPStatus
 
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
@@ -34,14 +35,14 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     )
     app.logger = flask_logger
     app.logger = logging.getLogger("app")
-    ch = logging.StreamHandler()
+    logs = logging.StreamHandler()
 
-    ch.setFormatter(CustomFormatter())
-    app.logger.handlers = [ch]
+    logs.setFormatter(CustomFormatter())
+    app.logger.handlers = [logs]
     app.logger.propagate = False
     logging.log.propagate = False
-    with open("logo.txt") as f:
-        contents = f.read()
+    with open("logo.txt") as file:  # pylint: disable=unspecified-encoding
+        contents = file.read()
         print(contents)
     app.logger.info("Welcome to formsflow-API server...!")
     db.init_app(app)
@@ -91,7 +92,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
         except KeyError as err:
             current_app.logger.warning(err)
             return response
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-except
             current_app.logger.critical(err)
             return response
 

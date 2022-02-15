@@ -497,7 +497,8 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def find_aggregated_application_status(
         cls, mapper_id: int, from_date: str, to_date: str
     ):
-        """Fetch aggregated application status corresponding to mapper_id ordered by created date."""
+        """Fetch aggregated application status corresponding
+        to mapper_id ordered by created date."""
         result_proxy = (
             db.session.query(
                 Application.application_status,
@@ -524,7 +525,8 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def find_aggregated_application_status_modified(
         cls, mapper_id: int, from_date: str, to_date: str
     ):
-        """Fetch aggregated application status corresponding to mapper_id ordered by modified date.."""
+        """Fetch aggregated application status corresponding
+        to mapper_id ordered by modified date.."""
         result_proxy = (
             db.session.query(
                 Application.application_name,

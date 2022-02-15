@@ -1,0 +1,40 @@
+@media only screen and (min-width: 800px) {
+  .main_div {
+    display: flex;
+    flex-direction: row;
+  }
+  .input_search {
+    width: fit-content;
+    height: 31px;
+    margin-left: 30px;
+    margin-top: -3px;
+  }
+}
+@media only screen and (max-width: 800px) {
+  .main_div {
+    display: flex;
+    flex-direction: column;
+  }
+  .input_search {
+    width: 90%;
+    height: 31px;
+    margin-top: 3px;
+    margin-bottom: 5px;
+  }
+}
+@media only screen and (max-width: 800px) and (min-width: 500px) {
+  .input_box {
+    width: 100px !important;
+  }
+}
+
+@media only screen and (max-width: 500px) and (min-width: 400px) {
+  .input_box {
+    width: 60px !important;
+  }
+}
+@media only screen and (max-width: 400px) and (min-width: 100px) {
+  .input_box {
+    width: 40px !important;
+  }
+}

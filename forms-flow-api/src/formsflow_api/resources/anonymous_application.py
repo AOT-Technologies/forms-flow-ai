@@ -2,7 +2,7 @@
 
 from http import HTTPStatus
 
-from flask import current_app, g, request
+from flask import current_app, request
 from flask_restx import Namespace, Resource
 from formsflow_api.schemas import ApplicationSchema
 from formsflow_api.services import ApplicationService
@@ -53,3 +53,32 @@ class ApplicationAnonymousResourcesByIds(Resource):
             current_app.logger.warning(response)
             current_app.logger.warning(application_err)
             return response, status
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/form/<string:form_id>", methods=["GET", "OPTIONS"])
+class AnonymousResourceById(Resource):
+    """Resource to check form is Anonymous and published"""
+
+    @staticmethod
+    @profiletime
+    def get(form_id: str):
+        """Get form by form id and return is_anonymous and published status.
+        : formId:- Unique Id for the corresponding form
+        : response: is_anonymous, status(published or not)
+        """
+
+        try:
+            mapper = FormProcessMapper.find_form_by_form_id(form_id)
+            response, status = {
+                "is_anonymous": bool(mapper.is_anonymous),
+                "status": mapper.status,
+            }, HTTPStatus.OK
+        except BaseException as application_err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid application request passed",
+            }, HTTPStatus.BAD_REQUEST
+            current_app.logger.warning(response)
+            current_app.logger.warning(application_err)
+        return response, status

@@ -293,6 +293,15 @@
 			<artifactId>spring-messaging</artifactId>
 			<version>5.3.4</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.camunda.spin</groupId>
+		    <artifactId>camunda-spin-core</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.camunda.spin</groupId>
+		    <artifactId>camunda-spin-dataformat-json-jackson</artifactId>
+		</dependency>
 
 	</dependencies>
 

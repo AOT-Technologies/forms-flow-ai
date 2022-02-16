@@ -36,9 +36,26 @@ def downgrade():
         "form_process_mapper",
         "modified",
         existing_type=postgresql.TIMESTAMP(),
+        nullable=True,
+    )
+
+    op.execute("update form_process_mapper set modified = now() where modified is null")
+
+    op.alter_column(
+        "form_process_mapper",
+        "modified",
+        existing_type=postgresql.TIMESTAMP(),
         nullable=False,
     )
+
+    op.alter_column(
+        "application", "modified", existing_type=postgresql.TIMESTAMP(), nullable=True
+    )
+
+    op.execute("update application set modified = now() where modified is null")
+
     op.alter_column(
         "application", "modified", existing_type=postgresql.TIMESTAMP(), nullable=False
     )
+
     # ### end Alembic commands ###

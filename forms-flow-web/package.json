@@ -85,7 +85,6 @@
     "ansi-regex": "^5.0.1",
     "ansi-html": "^0.0.7",
     "min-dash": "^3.8.1",
-    "node-fetch": "^3.2.0",
     "nanoid": "^3.2.0",
     "follow-redirects": "^1.14.7",
     "node-forge": "^1.2.1",

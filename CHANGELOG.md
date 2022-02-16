@@ -2,6 +2,41 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 4.0.5 - 2022-02-15
+
+`Added`
+
+
+**forms-flow-web**
+
+* Added `anonymous user` feature .
+* Added count for Filter Tasks .
+* Added form search and sort fields for formsflow-designer.
+
+
+**forms-flow-api**
+
+* Added public application create api for anonymous forms.
+* Added migration scripts in the alembic file to resolve schema conflicts while db upgrade and downgrade, check out [here](./forms-flow-api/migrations/versions/80b8d5e95e9b_set_modification_date_on_create.py).
+* Added new api for updating user locale attribute in Keycloak with the help of Keycloak admin API.
+* Added form list page search and sort.
+
+*Upgrade notes:*
+
+Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` are removed .
+
+
+`Fixed`
+
+**forms-flow-web**
+
+* Uploaded forms cannot submit by client issue fixed .
+
+**forms-flow-api**
+
+* Postgres schema upgraded to enable updating the workflow after publising the form 
+
+
 ## 4.0.4 - 2021-12-27
 
 `Added`

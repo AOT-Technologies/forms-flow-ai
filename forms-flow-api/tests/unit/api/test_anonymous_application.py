@@ -1,5 +1,6 @@
 """Test suite for application API public endpoint"""
 from pytest import mark
+
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_form_request_anonymous_payload,
@@ -11,7 +12,8 @@ from tests.utilities.base_test import (
 
 @mark.describe("Initialize application public API")
 class TestApplicationAnonymousResourcesByIds:
-    def test_application_valid_post(self, client):
+
+    def test_application_valid_post(self, app, client, session):
         """Assert that public API /application when passed with valid payload returns 201 status code"""
         token = factory_auth_header()
         headers = {
@@ -26,9 +28,10 @@ class TestApplicationAnonymousResourcesByIds:
         response = client.post(
             "/public/application/create", json=get_application_create_payload(form_id)
         )
+
         assert response.status_code == 201
 
-    def test_application_invalid_post(self, client):
+    def test_application_invalid_post(self, app, client, session):
         """Assert that public API /application when passed with invalid payload returns 400 status code"""
 
         response = client.post(
@@ -41,7 +44,7 @@ class TestApplicationAnonymousResourcesByIds:
             "message": "Invalid application request passed",
         }
 
-    def test_application_unauthorized_post(self, client):
+    def test_application_unauthorized_post(self, app, client, session):
         """Assert that public API /application when passed with valid payload returns 401 status code when the form is not anonymos"""
         token = factory_auth_header()
         headers = {
@@ -62,7 +65,7 @@ class TestApplicationAnonymousResourcesByIds:
             "message": "Permission denied",
         }
 
-    def test_application_inactive_post(self, client):
+    def test_application_inactive_post(self, app, client, session):
         """Assert that public API /application when passed with valid payload returns 401 status code when the form is anonymous but Inactive"""
         token = factory_auth_header()
         headers = {

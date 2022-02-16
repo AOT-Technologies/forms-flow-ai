@@ -168,7 +168,25 @@ export const publicApplicationCreate = (data, ...rest) => {
   };
 };
 
-
+export const publicApplicationStatus = (data, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const URL = `${API.PUBLIC_APPLICATION_STATUS}/${data}`;
+  return (dispatch) => {
+    httpGETRequest(URL)
+      .then((res) => {
+        if (res.data) {
+          done(null, res.data);
+        } else {
+          dispatch(serviceActionError(res));
+          done("Error Fetching Data");
+        }
+      })
+      .catch((error) => {
+        dispatch(serviceActionError(error));
+        done(error);
+      });
+  };
+};
 
 export const updateApplicationEvent = (data,...rest) => {
   /* * Data Format

@@ -9,7 +9,7 @@ const FormSearch = React.memo(() => {
   //Search query /form?type=form&title__regex=%2Fnew%2Fi  query Format title__regex= /^title/i
   const dispatch = useDispatch()
   const { formSearchQuery } = useSelector((state) => state.formCheckList)
-  const { query, sort } = useSelector((state) => state.forms)
+  const { query } = useSelector((state) => state.forms)
   const [searchText, setSearchText] = useState(formSearchQuery)
   const [clearbutton, setClearButton] = useState(formSearchQuery)
 
@@ -71,7 +71,7 @@ const FormSearch = React.memo(() => {
             />
             <InputGroup.Text>
               {clearbutton && (
-                <a
+                <span
                   onClick={() => {
                     handleSearch('')
                   }}
@@ -80,10 +80,10 @@ const FormSearch = React.memo(() => {
                 >
                   <i className="fa fa-times" />
                   <p></p>
-                </a>
+                </span>
               )}
 
-              <a
+              <span
                 onClick={() => {
                   handleSearch(searchText)
                 }}
@@ -92,7 +92,7 @@ const FormSearch = React.memo(() => {
                   className="fa fa-search"
                   title="click to search"
                 />
-              </a>
+              </span>
             </InputGroup.Text>
           </InputGroup>
         </div>

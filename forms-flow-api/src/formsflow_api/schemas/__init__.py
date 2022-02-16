@@ -11,7 +11,7 @@ from formsflow_api.schemas.application import (
     ApplicationUpdateSchema,
 )
 from formsflow_api.schemas.application_history import ApplicationHistorySchema
-from formsflow_api.schemas.form_process_mapper import FormProcessMapperSchema
+from formsflow_api.schemas.form_process_mapper import FormProcessMapperSchema, FormProcessMapperListReqSchema, FormProcessMapperListRequestSchema
 
 from .process import (
     # ProcessActivityInstanceSchema,

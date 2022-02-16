@@ -6,7 +6,7 @@ from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 
 from formsflow_api.exceptions import BusinessException
-from formsflow_api.schemas import ApplicationListReqSchema, FormProcessMapperSchema
+from formsflow_api.schemas import FormProcessMapperListRequestSchema, FormProcessMapperSchema
 from formsflow_api.services import FormProcessMapperService, ApplicationService
 
 from formsflow_api.utils import auth, cors_preflight, profiletime
@@ -18,33 +18,36 @@ API = Namespace("Form", description="Form")
 @cors_preflight("GET,POST,OPTIONS")
 @API.route("", methods=["GET", "POST", "OPTIONS"])
 class FormResource(Resource):
-    """Resource for managing forms.
-    : pageNo:- To retrieve page number
-    : limit:- To retrieve limit for each page
-    """
+    """Resource for managing forms."""
 
     @staticmethod
     @auth.require
     @profiletime
     def get():
-        """Get form process mapper."""
+        """Get form process mapper.
+        : pageNo:- To retrieve page number
+        : limit:- To retrieve limit for each page
+        : formName:- Retrieve form list based on form name
+        """
         try:
-            request_schema = ApplicationListReqSchema()
+            request_schema = FormProcessMapperListRequestSchema()
             if request.args:
                 dict_data = request_schema.load(request.args)
-                page_no: str = dict_data["page_no"]
-                limit: str = dict_data["limit"]
+                page_no: str = dict_data.get("page_no")
+                limit: str = dict_data.get("limit")
+                form_name: str = dict_data.get("form_name")
             else:
                 page_no = 0
                 limit = 0
+                form_name = None
             if page_no > 0:
                 response, status = (
                     (
                         {
                             "forms": FormProcessMapperService.get_all_mappers(
-                                page_no, limit
+                                page_no, limit, form_name
                             ),
-                            "totalCount": FormProcessMapperService.get_mapper_count(),
+                            "totalCount": FormProcessMapperService.get_mapper_count(form_name),
                             "pageNo": page_no,
                             "limit": limit,
                         }
@@ -57,9 +60,9 @@ class FormResource(Resource):
                     (
                         {
                             "forms": FormProcessMapperService.get_all_mappers(
-                                page_no, limit
+                                page_no, limit, form_name
                             ),
-                            "totalCount": FormProcessMapperService.get_mapper_count(),
+                            "totalCount": FormProcessMapperService.get_mapper_count(form_name),
                         }
                     ),
                     HTTPStatus.OK,

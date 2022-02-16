@@ -85,3 +85,33 @@ class TestApplicationAnonymousResourcesByIds:
             "type": "Authorization error",
             "message": "Permission denied",
         }
+
+
+class TestAnonymousFormById:
+    """Class for unit test check form is Anonymous and published """
+
+    def test_anonymous_active_form_by_form_id(self, client, session):
+        """Assert that public API when passed with valid payload returns 200 status code"""
+
+        token = factory_auth_header()
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        response = client.post('/form', headers=headers, json=get_form_request_anonymous_payload())
+        assert response.status_code == 201
+
+        form_id = response.json.get('formId')
+
+        response = client.get(f"/public/form/{form_id}")
+        assert response.status_code == 200
+
+    def test_invalid_form_id(self, app, client, session):
+        """Assert that public API when passed with invalid payload returns 400 status code"""
+
+        response = client.get(f"/public/form/2ddse3")
+        assert response.status_code == 400
+        assert response.json == {
+            "type": "Bad request error",
+            "message": "Invalid application request passed",
+        }

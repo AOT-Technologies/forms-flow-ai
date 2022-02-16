@@ -12,6 +12,7 @@ from .constants import (
     NEW_APPLICATION_STATUS,
     REVIEWER_GROUP,
     ANONYMOUS_USER,
+    FILTER_MAPS,
 )
 from .enums import ApplicationSortingParameters
 from .format import CustomFormatter

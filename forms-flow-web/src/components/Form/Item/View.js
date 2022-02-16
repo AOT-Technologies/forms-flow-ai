@@ -59,9 +59,7 @@ const View = React.memo((props) => {
     }
 
     if(publicFormStatus==="checking"&&isPublic){
-      return <div class="alert alert-primary mt-4" role="alert">
-      Fetching
-      </div>
+      return <div data-testid="loading-view-component"><Loading /></div>;
     }
     if(!publicFormStatus&&isPublic){
       return <div class="alert alert-danger mt-4" role="alert">
@@ -192,15 +190,17 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     getForm: () => {
       const isPublic = window.location.href.includes('public')
       dispatch(publicApplicationStatus(ownProps.match.params.formId,(err,res)=>{
-        if(isPublic&&res&& res.is_anonymous&&res.status==="active"){
-          dispatch(setPublicFormStatus(true))
-          return dispatch(getForm('form', ownProps.match.params.formId))
-        }else if (res&&res.status==="active"){
-          dispatch(setPublicFormStatus(true))
-          return dispatch(getForm('form', ownProps.match.params.formId))
+        if(isPublic){
+          if(res&& res.is_anonymous&&res.status==="active"){
+            dispatch(setPublicFormStatus(true))
+            return dispatch(getForm('form', ownProps.match.params.formId))
+          }else{
+             dispatch(setPublicFormStatus(false))
+          }
         }else{
-           dispatch(setPublicFormStatus(false))
+          return dispatch(getForm('form', ownProps.match.params.formId))
         }
+        
     }))
   },
     onSubmit: (submission) => {

@@ -17,7 +17,7 @@ const FormSearch = React.memo(() => {
   const sortAscending = () => {
     const updatedQuery = {
       ...query,
-      title__regex: `/^${searchText}/i`,
+      title__regex: `/${searchText}/i`,
       sort: 'title',
     }
     dispatch(indexForms('forms', 1, updatedQuery))
@@ -27,7 +27,7 @@ const FormSearch = React.memo(() => {
   const sortDescending = () => {
     const updatedQuery = {
       ...query,
-      title__regex: `/^${searchText}/i`,
+      title__regex: `/${searchText}/i`,
       sort: '-title',
     }
 
@@ -36,7 +36,7 @@ const FormSearch = React.memo(() => {
 
   // To handle the search option
   const handleSearch = (searchForm) => {
-    const searchTitle = searchForm ? `/^${searchForm}/i` : ''
+    const searchTitle = searchForm ? `/${searchText}/i` : ''
     const updatedQuery = { ...query, title__regex: searchTitle }
     dispatch(setFormSearchQuery(searchForm))
     dispatch(indexForms('forms', 1, updatedQuery))

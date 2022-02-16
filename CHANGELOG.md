@@ -35,6 +35,7 @@ Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` ar
 **forms-flow-api**
 
 * Postgres schema upgraded to enable updating the workflow after publising the form 
+* Disabled internal workflows for  process API.
 
 
 ## 4.0.4 - 2021-12-27

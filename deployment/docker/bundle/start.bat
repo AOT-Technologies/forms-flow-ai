@@ -214,7 +214,7 @@ echo INSIGHT_API_KEY=%redashApiKey%
 
 echo Please wait, forms is getting up!
 	
-docker-compose -f up -d formsflow-forms
+docker-compose -f up -d forms-flow-forms
 
 set websock=%_IPaddr%
 set lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda

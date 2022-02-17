@@ -83,7 +83,7 @@ services:
       - forms-flow-network
 
   forms-flow-forms:
-   container_name: forms-flow-forms
+    container_name: forms-flow-forms
     image: formsflowai/formsflow-forms:latest
     # The app will restart until Mongo is listening
     restart: always
@@ -161,11 +161,11 @@ services:
       - forms-flow-network
 
   forms-flow-webapi:
-  container_name: formsflow-webapi
+    container_name: forms-flow-webapi
     image: formsflowai/formsflow-webapi:latest
     restart: always
     links:
-      - formsflow-webapi-db
+      - forms-flow-webapi-db
     ports:
       - '5000:5000'
     volumes:

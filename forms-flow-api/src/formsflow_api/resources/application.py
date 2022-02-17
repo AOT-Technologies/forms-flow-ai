@@ -14,7 +14,7 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import ApplicationService
 from formsflow_api.utils import REVIEWER_GROUP, auth, cors_preflight, profiletime
-
+from marshmallow.exceptions import ValidationError
 
 API = Namespace("Application", description="Application")
 
@@ -93,8 +93,8 @@ class ApplicationsResource(Resource):
                     application_status=application_status,
                 )
             application_schema = ApplicationService.apply_custom_attributes(
-                    application_schema=application_schema_dump
-                )
+                application_schema=application_schema_dump
+            )
             return (
                 (
                     {
@@ -106,7 +106,7 @@ class ApplicationsResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except KeyError as err:
+        except ValidationError as err:
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -115,6 +115,18 @@ class ApplicationsResource(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
+            return response, status
+
+        except KeyError as err:
+            response, status = (
+                {
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
             current_app.logger.critical(response)
             current_app.logger.critical(err)
             return response, status
@@ -128,7 +140,7 @@ class ApplicationResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def get(application_id):
+    def get(application_id: int):
         """Get application by id.
         : application_id:- List the application for particular application_id
         """
@@ -157,7 +169,7 @@ class ApplicationResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def put(application_id):
+    def put(application_id: int):
         """Update application details.
         : application_id:- Update the application for particular application_id
         """
@@ -187,10 +199,11 @@ class ApplicationResourceById(Resource):
 @API.route("/formid/<string:form_id>", methods=["GET", "OPTIONS"])
 class ApplicationResourceByFormId(Resource):
     """Resource for getting applications based on formid."""
+
     @staticmethod
     @auth.require
     @profiletime
-    def get(form_id):
+    def get(form_id: str):
         """Get applications.
         : form_id:- Retrieve application list based on formid
         """
@@ -271,10 +284,10 @@ class ApplicationResourcesByIds(Resource):
             dict_data = application_schema.load(application_json)
             sub = g.token_info.get("preferred_username")
             dict_data["created_by"] = sub
-            application = ApplicationService.create_application(
+            application, status = ApplicationService.create_application(
                 data=dict_data, token=request.headers["Authorization"]
             )
-            response, status = application_schema.dump(application), HTTPStatus.CREATED
+            response = application_schema.dump(application)
             return response, status
         except BaseException as application_err:
             response, status = {
@@ -287,14 +300,14 @@ class ApplicationResourcesByIds(Resource):
 
 
 @cors_preflight("GET,OPTIONS")
-@API.route("/<string:application_id>/process", methods=["GET", "OPTIONS"])
+@API.route("/<int:application_id>/process", methods=["GET", "OPTIONS"])
 class ProcessMapperResourceByApplicationId(Resource):
     """Resource for managing process details."""
 
     @staticmethod
     @auth.require
     @profiletime
-    def get(application_id):
+    def get(application_id: int):
         """Get process details.
         : application_id:- Retreiving process details for corresponding application_id
         """

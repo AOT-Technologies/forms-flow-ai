@@ -3,12 +3,11 @@
 from __future__ import annotations
 from http import HTTPStatus
 
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 
 from formsflow_api.exceptions import BusinessException
+from formsflow_api.models import BaseModel, db
 from formsflow_api.models.audit_mixin import AuditDateTimeMixin, AuditUserMixin
-from formsflow_api.models.base_model import BaseModel
-from formsflow_api.models.db import db
 from formsflow_api.utils.enums import FormProcessMapperStatus
 
 
@@ -18,15 +17,16 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     id = db.Column(db.Integer, primary_key=True)
     form_id = db.Column(db.String(50), nullable=False)
     form_name = db.Column(db.String(100), nullable=False)
-    form_revision_number = db.Column(db.String(10), nullable=False)
     process_key = db.Column(db.String(50), nullable=True)
     process_name = db.Column(db.String(100), nullable=True)
     status = db.Column(db.String(10), nullable=True)
     comments = db.Column(db.String(300), nullable=True)
-    tenant_id = db.Column(db.Integer, nullable=True)
+    tenant = db.Column(db.String(100), nullable=True)
     application = db.relationship(
         "Application", backref="form_process_mapper", lazy=True
     )
+    is_anonymous = db.Column(db.Boolean, nullable=True)
+    deleted = db.Column(db.Boolean, nullable=True, default=False)
 
     @classmethod
     def create_from_dict(cls, mapper_info: dict) -> FormProcessMapper:
@@ -36,13 +36,13 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper = FormProcessMapper()
                 mapper.form_id = mapper_info["form_id"]
                 mapper.form_name = mapper_info["form_name"]
-                mapper.form_revision_number = mapper_info["form_revision_number"]
                 mapper.process_key = mapper_info.get("process_key")
                 mapper.process_name = mapper_info.get("process_name")
                 mapper.status = mapper_info.get("status")
                 mapper.comments = mapper_info.get("comments")
                 mapper.created_by = mapper_info["created_by"]
-                mapper.tenant_id = mapper_info.get("tenant_id")
+                mapper.tenant = mapper_info.get("tenant")
+                mapper.is_anonymous = mapper_info.get("is_anonymous")
                 mapper.save()
                 return mapper
         except BaseException:
@@ -64,14 +64,16 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "status",
                 "comments",
                 "modified_by",
+                "is_anonymous",
             ],
             mapper_info,
         )
         self.commit()
 
     def mark_inactive(self):
-        """Mark form process mapper as inactive."""
-        self.status = str(FormProcessMapperStatus.Inactive.value)
+        """Mark form process mapper as inactive and deleted."""
+        self.status: str = str(FormProcessMapperStatus.Inactive.value)
+        self.deleted: bool = True
         self.commit()
 
     @classmethod
@@ -87,8 +89,20 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             )
 
     @classmethod
-    def find_all_active(cls, page_number, limit):
+    def find_all_active(cls, page_number, limit, form_name=None):
         """Fetch all active form process mappers"""
+        if form_name:
+            return (
+                cls.query.filter(
+                    and_(
+                        FormProcessMapper.form_name.ilike(f"%{form_name}%"),
+                        FormProcessMapper.status
+                        == str(FormProcessMapperStatus.Active.value),
+                    )
+                )
+                .paginate(page_number, limit, False)
+                .items
+            )
         if page_number == 0:
             return (
                 cls.query.filter(
@@ -117,6 +131,12 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         ).count()
 
     @classmethod
+    def find_count_form_name(cls, form_name):
+        return cls.query.filter(
+            FormProcessMapper.form_name.ilike(f"%{form_name}%")
+        ).count()
+
+    @classmethod
     def find_form_by_id_active_status(cls, form_process_mapper_id) -> FormProcessMapper:
         """Find active form process mapper that matches the provided id."""
         return cls.query.filter(
@@ -133,7 +153,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
     @classmethod
     def find_form_by_form_id(cls, form_id) -> FormProcessMapper:
-        """Find active form process mapper that matches the provided form_id."""
+        """Find form process mapper that matches the provided form_id."""
         return cls.query.filter(
             FormProcessMapper.form_id == form_id,
         ).first()  # pylint: disable=no-member

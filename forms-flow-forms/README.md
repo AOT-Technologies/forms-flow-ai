@@ -158,14 +158,14 @@ You can add new indexes in Mongodb shell, according to your requirement. You can
 
 ```
 db.submissions.createIndex({
-    "data.applicationStatus ": 1,
-    "modified": 1,
+    "data.applicationStatus ": 1
 })
 ```
 
 In this example:
+
 * `submissions` is the collection name.
-* `modified` and `data.applicationStatus` is the fields which are to be added in index.
+* `data.applicationStatus` is the fields which are to be added in index.
 
 ## LICENSE
 

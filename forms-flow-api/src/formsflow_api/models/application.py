@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 from datetime import datetime
+from typing import Any
 from flask import current_app
 from sqlalchemy import and_, func, or_
 from sqlalchemy.sql.expression import text
 
 from formsflow_api.models.audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from formsflow_api.models import BaseModel, db, FormProcessMapper
-from formsflow_api.utils import validate_sort_order_and_order_by
+from formsflow_api.utils import validate_sort_order_and_order_by, FILTER_MAPS
 
 
 class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
@@ -22,7 +23,8 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     )
     form_url = db.Column(db.String(500), nullable=True)
     process_instance_id = db.Column(db.String(100), nullable=True)
-    revision_no = db.Column(db.Integer, nullable=False)  # set 1 now
+    process_key = db.Column(db.String(50), nullable=True)
+    process_name = db.Column(db.String(100), nullable=True)
 
     @classmethod
     def create_from_dict(cls, application_info: dict) -> Application:
@@ -30,13 +32,14 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         if application_info:
             application = Application()
             application.application_name = application_info["application_name"]
+            application.created_by = application_info["created_by"]
             application.application_status = application_info["application_status"]
             application.form_process_mapper_id = application_info[
                 "form_process_mapper_id"
             ]
             application.form_url = application_info["form_url"]
-            application.revision_no = 1  # application_info['revision_no']
-            application.created_by = application_info["created_by"]
+            application.process_key = application_info["process_key"]
+            application.process_name = application_info["process_name"]
             application.save()
             return application
         return None
@@ -50,7 +53,6 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 "form_url",
                 "form_process_mapper_id",
                 "process_instance_id",
-                "revision_no",
                 "modified_by",
             ],
             mapper_info,
@@ -87,130 +89,34 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
             )
 
     @classmethod
+    def filter_conditions(cls, **filters):
+        filter_conditions = []
+        for key, value in filters.items():
+            if value:
+                filter_map = FILTER_MAPS[key]
+                condition = Application.create_filter_condition(
+                    model=Application,
+                    column_name=filter_map["field"],
+                    operator=filter_map["operator"],
+                    value=value,
+                )
+                filter_conditions.append(condition)
+        query = cls.query.filter(*filter_conditions) if filter_conditions else cls.query
+        return query
+
+    @classmethod
     def find_all_by_user(
         cls,
         user_id: str,
         page_no: int,
         limit: int,
         order_by: str,
-        application_id: int,
-        application_name: str,
-        application_status: str,
-        created_by: str,
-        modified_from: datetime,
-        modified_to: datetime,
         sort_order: str,
-        created_from: datetime,
-        created_to: datetime,
+        **filters,
     ) -> Application:
         """Fetch applications list based on searching parameters for Non-reviewer"""
-
-        if (
-            application_id
-            and application_name
-            and application_status
-            and modified_from
-            and modified_to
-        ):
-            query = cls.query.filter(
-                Application.id == application_id,
-                Application.application_name.like(f"{application_name}%"),
-                Application.application_status == application_status,
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_id and application_name and application_status:
-            query = cls.query.filter(
-                Application.id == application_id,
-                Application.application_name.like(f"{application_name}%"),
-                Application.application_status == application_status,
-            )
-        elif application_id and application_name and modified_from and modified_to:
-            query = cls.query.filter(
-                Application.id == application_id,
-                Application.application_name.like(f"{application_name}%"),
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_id and application_status and modified_from and modified_to:
-            query = cls.query.filter(
-                Application.id == application_id,
-                Application.application_status == application_status,
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_name and application_status and modified_from and modified_to:
-            query = cls.query.filter(
-                Application.application_name.like(f"{application_name}%"),
-                Application.application_status == application_status,
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_id and application_name:
-            query = cls.query.filter(
-                Application.id == application_id,
-                Application.application_name.like(f"{application_name}%"),
-            )
-        elif application_id and application_status:
-            query = cls.query.filter(
-                Application.id == application_id,
-                Application.application_status == application_status,
-            )
-        elif application_id and modified_from and modified_to:
-            query = query = cls.query.filter(
-                Application.id == application_id,
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_name and application_status:
-            query = cls.query.filter(
-                Application.application_name.like(f"{application_name}%"),
-                Application.application_status == application_status,
-            )
-        elif application_name and modified_from and modified_to:
-            query = cls.query.filter(
-                Application.application_name.like(f"{application_name}%"),
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_status and modified_from and modified_to:
-            query = cls.query.filter(
-                Application.application_status == application_status,
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_id:
-            query = cls.query.filter(
-                Application.id == application_id,
-            )
-        elif application_name:
-            query = cls.query.filter(
-                Application.application_name.like(f"{application_name}%"),
-            )
-        elif application_status:
-            query = cls.query.filter(
-                Application.application_status == application_status,
-            )
-        elif created_by:
-            query = cls.query.filter(Application.created_by.like(f"{created_by}%"))
-        elif modified_from and modified_to:
-            query = cls.query.filter(
-                and_(
-                    Application.modified >= modified_from,
-                    Application.modified <= modified_to,
-                )
-            )
-        elif created_from and created_to:
-            query = cls.query.filter(
-                and_(
-                    Application.created >= created_from,
-                    Application.created <= created_to,
-                )
-            )
-        else:
-            query = cls.query
+        query = Application.filter_conditions(**filters)
         query = query.filter(Application.created_by == user_id)
-
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
             query = query.order_by(text(f"Application.{order_by} {sort_order}"))
@@ -218,20 +124,6 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count
-
-    # @classmethod
-    # def find_all_by_user_group(cls, user_id: str, page_no: int, limit: int):
-    #     if page_no == 0:
-    #         return cls.query.filter(Application.created_by == user_id).order_by(
-    #             Application.id.desc()
-    #         )
-    #     else:
-    #         return (
-    #             cls.query.filter(Application.created_by == user_id)
-    #             .order_by(Application.id.desc())
-    #             .paginate(page_no, limit, False)
-    #             .items
-    #         )
 
     @classmethod
     def find_id_by_user(cls, application_id: int, user_id: str) -> Application:
@@ -264,125 +156,14 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def find_by_form_names(
         cls,
         form_names: str,
-        application_id: int,
-        modified_from: datetime,
-        modified_to: datetime,
-        application_name: str,
-        application_status: str,
-        created_by: str,
         page_no: int,
         limit: int,
         order_by: str,
         sort_order: str,
-        created_from: datetime,
-        created_to: datetime,
+        **filters,
     ):
         """Fetch applications list based on searching parameters for Reviewer"""
-        if (
-            application_id
-            and application_name
-            and application_status
-            and modified_from
-            and modified_to
-        ):
-            query = cls.query.filter(
-                Application.id == application_id,
-                Application.application_name.like(f"{application_name}%"),
-                Application.application_status == application_status,
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_id and application_name and application_status:
-            query = cls.query.filter(
-                Application.id == application_id,
-                Application.application_name.like(f"{application_name}%"),
-                Application.application_status == application_status,
-            )
-        elif application_id and application_name and modified_from and modified_to:
-            query = cls.query.filter(
-                Application.id == application_id,
-                Application.application_name.like(f"{application_name}%"),
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_id and application_status and modified_from and modified_to:
-            query = cls.query.filter(
-                Application.id == application_id,
-                Application.application_status == application_status,
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_name and application_status and modified_from and modified_to:
-            query = cls.query.filter(
-                Application.application_name.like(f"{application_name}%"),
-                Application.application_status == application_status,
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_id and application_name:
-            query = cls.query.filter(
-                Application.id == application_id,
-                Application.application_name.like(f"{application_name}%"),
-            )
-        elif application_id and application_status:
-            query = cls.query.filter(
-                Application.id == application_id,
-                Application.application_status == application_status,
-            )
-        elif application_id and modified_from and modified_to:
-            query = query = cls.query.filter(
-                Application.id == application_id,
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_name and application_status:
-            query = cls.query.filter(
-                Application.application_name.like(f"{application_name}%"),
-                Application.application_status == application_status,
-            )
-        elif application_name and modified_from and modified_to:
-            query = cls.query.filter(
-                Application.application_name.like(f"{application_name}%"),
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_status and modified_from and modified_to:
-            query = cls.query.filter(
-                Application.application_status == application_status,
-                Application.modified >= modified_from,
-                Application.modified <= modified_to,
-            )
-        elif application_id:
-            query = cls.query.filter(
-                Application.id == application_id,
-            )
-        elif application_name:
-            query = cls.query.filter(
-                Application.application_name.like(f"{application_name}%"),
-            )
-        elif application_status:
-            query = cls.query.filter(
-                Application.application_status == application_status,
-            )
-        elif created_by:
-            query = cls.query.filter(Application.created_by.like(f"{created_by}%"))
-        elif modified_from and modified_to:
-            current_app.logger.debug((modified_from, modified_to))
-            query = cls.query.filter(
-                and_(
-                    Application.modified <= modified_to,
-                    Application.modified >= modified_from,
-                )
-            )
-        elif created_from and created_to:
-            query = cls.query.filter(
-                and_(
-                    Application.created >= created_from,
-                    Application.created <= created_to,
-                )
-            )
-        else:
-            query = cls.query
+        query = Application.filter_conditions(**filters)
         query = query.filter(Application.application_name.in_(form_names))
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -390,20 +171,6 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count
-
-    # @classmethod
-    # def find_all_applications(cls, page_no: int, limit: int, form_names: str):
-    #     if page_no == 0:
-    #         return cls.query.filter(
-    #             Application.application_name.in_(form_names)
-    #         ).order_by(Application.id.desc())
-    #     else:
-    #         return (
-    #             cls.query.filter(Application.application_name.in_(form_names))
-    #             .order_by(Application.id.desc())
-    #             .paginate(page_no, limit, False)
-    #             .items
-    #         )
 
     @classmethod
     def find_id_by_form_names(cls, application_id: int, form_names):
@@ -558,6 +325,10 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 Application.application_status,
                 func.count(Application.application_name).label("count"),
             )
+            .join(
+                FormProcessMapper,
+                FormProcessMapper.id == Application.form_process_mapper_id,
+            )
             .filter(
                 and_(
                     Application.modified >= from_date,
@@ -569,3 +340,18 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         )
 
         return result_proxy
+
+    @classmethod
+    def get_total_application_corresponding_to_mapper_id(
+        cls, form_process_mapper_id: int
+    ):
+        result_proxy = (
+            db.session.query(func.count(Application.id).label("count"))
+            .join(
+                FormProcessMapper,
+                FormProcessMapper.id == Application.form_process_mapper_id,
+            )
+            .filter(FormProcessMapper.id == form_process_mapper_id)
+        )
+        # It always returns a list of one element with count denoting total number of applications
+        return [dict(row) for row in result_proxy][0]["count"]

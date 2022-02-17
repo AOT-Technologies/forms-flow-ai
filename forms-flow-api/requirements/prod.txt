@@ -13,4 +13,3 @@ marshmallow-sqlalchemy
 requests
 Werkzeug
 sqlalchemy_utils
-flask-marshmallow

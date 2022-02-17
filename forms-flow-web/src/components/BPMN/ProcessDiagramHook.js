@@ -49,9 +49,13 @@ const ProcessDiagram = React.memo((props)=>{
 
 
   useEffect(()=>{
-    dispatch(setProcessDiagramLoading(true));
     if(process_key){
+      dispatch(setProcessDiagramLoading(true));
       dispatch(fetchDiagram(process_key));
+    }
+    else
+    {
+      dispatch(setProcessDiagramLoading(false));
     }
     return ()=>{
       dispatch(setProcessDiagramLoading(true));
@@ -78,15 +82,11 @@ const ProcessDiagram = React.memo((props)=>{
   useEffect(()=> {
     if(diagramXML && bpmnViewer && markers && markers[0]) {
         let marker = markers;
-        marker = marker.replace(/'/g, '"');
-        const markerJson = JSON.parse(marker);
       if ((!prevMarkers || (prevMarkers[0] && markers[0].id === prevMarkers[0].id))&& marker!=null){
-        for (let i=0; i < markerJson.length; i++) {
           setTimeout(() => {
             bpmnViewer && bpmnViewer.get('canvas') &&
-            bpmnViewer.get('canvas').addMarker({'id':markerJson[i].activityId}, 'highlight');
+            bpmnViewer.get('canvas').addMarker({'id':markers[0].activityId}, 'highlight');
           },0);
-        }
       }
    }
  },[diagramXML,bpmnViewer,markers,prevMarkers]);
@@ -107,12 +107,17 @@ const ProcessDiagram = React.memo((props)=>{
       onShown(warnings);
     }
   }*/
-  
-  if(!(processInstanceId && process_key ))
-  {
-      dispatch(setProcessDiagramLoading(false));
-  }
-  
+
+
+  // if(processInstanceId === null && isProcessDiagramLoading === false)
+  // {
+  //   return <div className="bpmn-viewer-container">
+  //     <div className="bpm-container">
+  //       <Nodata text={"No Process Diagram found"} className={"div-no-application-list text-center"}/>
+  //     </div>
+  //   </div>
+  // }
+
   if (isProcessDiagramLoading) {
     return <div className="bpmn-viewer-container">
       <div className="bpm-container">
@@ -127,7 +132,7 @@ const ProcessDiagram = React.memo((props)=>{
       </div>
     </div>
   }
-  
+
   return (
     <div className="bpmn-viewer-container">
       <div id="process-diagram-container" className="bpm-container grab-cursor" ref={containerRef}/>

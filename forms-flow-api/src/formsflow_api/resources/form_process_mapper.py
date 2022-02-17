@@ -6,8 +6,11 @@ from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 
 from formsflow_api.exceptions import BusinessException
-from formsflow_api.schemas import ApplicationListReqSchema, FormProcessMapperSchema
-from formsflow_api.services import FormProcessMapperService
+from formsflow_api.schemas import (
+    FormProcessMapperListRequestSchema,
+    FormProcessMapperSchema,
+)
+from formsflow_api.services import FormProcessMapperService, ApplicationService
 
 from formsflow_api.utils import auth, cors_preflight, profiletime
 
@@ -18,33 +21,38 @@ API = Namespace("Form", description="Form")
 @cors_preflight("GET,POST,OPTIONS")
 @API.route("", methods=["GET", "POST", "OPTIONS"])
 class FormResource(Resource):
-    """Resource for managing forms.
-    : pageNo:- To retrieve page number
-    : limit:- To retrieve limit for each page
-    """
+    """Resource for managing forms."""
 
     @staticmethod
     @auth.require
     @profiletime
     def get():
-        """Get form process mapper."""
+        """Get form process mapper.
+        : pageNo:- To retrieve page number
+        : limit:- To retrieve limit for each page
+        : formName:- Retrieve form list based on form name
+        """
         try:
-            request_schema = ApplicationListReqSchema()
+            request_schema = FormProcessMapperListRequestSchema()
             if request.args:
                 dict_data = request_schema.load(request.args)
-                page_no = dict_data["page_no"]
-                limit = dict_data["limit"]
+                page_no: str = dict_data.get("page_no")
+                limit: str = dict_data.get("limit")
+                form_name: str = dict_data.get("form_name")
             else:
                 page_no = 0
                 limit = 0
+                form_name = None
             if page_no > 0:
                 response, status = (
                     (
                         {
                             "forms": FormProcessMapperService.get_all_mappers(
-                                page_no, limit
+                                page_no, limit, form_name
                             ),
-                            "totalCount": FormProcessMapperService.get_mapper_count(),
+                            "totalCount": FormProcessMapperService.get_mapper_count(
+                                form_name
+                            ),
                             "pageNo": page_no,
                             "limit": limit,
                         }
@@ -57,9 +65,11 @@ class FormResource(Resource):
                     (
                         {
                             "forms": FormProcessMapperService.get_all_mappers(
-                                page_no, limit
+                                page_no, limit, form_name
                             ),
-                            "totalCount": FormProcessMapperService.get_mapper_count(),
+                            "totalCount": FormProcessMapperService.get_mapper_count(
+                                form_name
+                            ),
                         }
                     ),
                     HTTPStatus.OK,
@@ -95,11 +105,10 @@ class FormResource(Resource):
         """Post a form process mapper using the request body."""
         mapper_json = request.get_json()
         try:
-            sub = g.token_info.get("preferred_username")
+            sub: str = g.token_info.get("preferred_username")
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(mapper_json)
             dict_data["created_by"] = sub
-
             mapper = FormProcessMapperService.create_mapper(dict_data)
 
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
@@ -123,7 +132,7 @@ class FormResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def get(mapper_id):
+    def get(mapper_id: int):
         """Get forms.
         : mapper_id:- Get form process mapper by mapper_id
         """
@@ -132,7 +141,7 @@ class FormResourceById(Resource):
                 FormProcessMapperService.get_mapper(form_process_mapper_id=mapper_id),
                 HTTPStatus.OK,
             )
-        except BusinessException as err:
+        except BusinessException:
             response, status = (
                 {
                     "type": "Invalid response data",
@@ -147,7 +156,7 @@ class FormResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def delete(mapper_id):
+    def delete(mapper_id: int):
         """
         : mapper_id:- Delete form process mapper by mapper_id.
         """
@@ -169,9 +178,9 @@ class FormResourceById(Resource):
 
     @staticmethod
     @auth.require
-    def put(mapper_id):
+    def put(mapper_id: int):
         """
-        : comments:- Brief description 
+        : comments:- Brief description
         : formId:- Unique Id for the corresponding form
         : formName:- Name for the corresponding form
         : id:- Id for particular form
@@ -184,7 +193,7 @@ class FormResourceById(Resource):
         try:
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(application_json)
-            sub = g.token_info.get("preferred_username")
+            sub: str = g.token_info.get("preferred_username")
             dict_data["modified_by"] = sub
             FormProcessMapperService.update_mapper(
                 form_process_mapper_id=mapper_id, data=dict_data
@@ -213,7 +222,7 @@ class FormResourceByFormId(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def get(form_id):
+    def get(form_id: str):
         """
         : form_id:- Get details of only form corresponding to a particular formId
         """
@@ -232,3 +241,21 @@ class FormResourceByFormId(Resource):
             )
             current_app.logger.info(response)
             return response, status
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/<int:mapper_id>/application/count", methods=["GET", "OPTIONS"])
+class FormResourceApplicationCount(Resource):
+    """Resource for getting applications count according to a mapper id"""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def get(mapper_id: int):
+        (
+            response,
+            status,
+        ) = ApplicationService.get_total_application_corresponding_to_mapper_id(
+            mapper_id
+        )
+        return {"message": response}, status

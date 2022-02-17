@@ -77,3 +77,16 @@ export const setBPMFormListSort = (sort) => dispatch =>{
   })
 }
 
+export const setFormSubmitted =(data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.PUBLIC_FORM_SUBMIT,
+    payload:data
+  })
+}
+
+export const setPublicFormStatus =(data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.PUBLIC_FORM_STATUS,
+    payload:data
+  })
+}

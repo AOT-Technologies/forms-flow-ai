@@ -126,7 +126,7 @@ const NavBar = React.memo(() => {
                     </Dropdown.Menu>
                   </Dropdown>
                 </Nav>
-          </Navbar.Collapse>:null}
+          </Navbar.Collapse>:<Link to="/" className="btn btn-primary">Login</Link>}
         </Container>
       </Navbar>
     </header>

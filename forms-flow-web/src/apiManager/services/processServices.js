@@ -12,10 +12,11 @@ import {
   setProcessActivityData,
   setProcessDiagramXML,
   setProcessDiagramLoading,
+  setFormPreviosData,
 } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
 import UserService from "../../services/UserService";
-
+import { toast } from "react-toastify";
 export const getProcessStatusList = (processId, taskId) => {
   return (dispatch) => {
     dispatch(setProcessStatusLoading(true));
@@ -86,9 +87,11 @@ export const getFormProcesses = (formId, ...rest) => {
     )
       .then((res) => {
         if (res.data) {
+          dispatch(setFormPreviosData(res.data))
           dispatch(setFormProcessesData(res.data)); // need to check api and put exact respose
           done(null, res.data);
         } else {
+          dispatch(setFormPreviosData([]))
           dispatch(setFormProcessesData([]));
           dispatch(setProcessLoadError(true));
         }
@@ -104,7 +107,6 @@ export const saveFormProcessMapper = (data, update = false, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     let request;
-
     if (update) {
       request = httpPUTRequest(`${API.FORM}/${data.id}`, data);
     } else {
@@ -115,12 +117,16 @@ export const saveFormProcessMapper = (data, update = false, ...rest) => {
         // if (res.status === 200) {
         //TODO REMOVE
         done(null, res.data);
-        //dispatch(setFormProcessesData(res.data));
-        dispatch(setFormProcessesData([]));
+        if(!update){  
+          dispatch(setFormProcessesData(res.data));
+        }
+        // dispatch(setFormProcessesData([]));
 
         // }
       })
       .catch((error) => {
+        dispatch(getFormProcesses(data.formId))
+        toast.error("Form process failed")
         console.log("Error", error);
         dispatch(setFormProcessLoadError(true));
         done(error);
@@ -165,7 +171,7 @@ export const getProcessActivities = (process_instance_id, ...rest) => {
 };
 
 export const fetchDiagram = (process_key, ...rest) => {
-  const url =API.PROCESSES+'/'+process_key+'/xml';
+  const url =replaceUrl(API.PROCESSES_XML,"<process_key>",process_key)
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     httpGETRequest(

@@ -8,6 +8,7 @@ const API = {
   METRICS_SUBMISSIONS: `${WEB_BASE_URL}/metrics`,
   APPLICATION_START: `${WEB_BASE_URL}/application/create`,
   PUBLIC_APPLICATION_START: `${WEB_BASE_URL}/public/application/create`,
+  PUBLIC_APPLICATION_STATUS: `${WEB_BASE_URL}/public/form`,
   PROCESS_STATE: `${WEB_BASE_URL}/process/<process_key>/task/<task_key>/state`,
   GET_APPLICATION: `${WEB_BASE_URL}/application/<application_id>`,
   GET_APPLICATION_HISTORY_API: `${WEB_BASE_URL}/application/<application_id>/history`,

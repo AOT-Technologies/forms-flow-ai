@@ -83,3 +83,17 @@ export const setFormSubmitted =(data)=>dispatch=>{
     payload:data
   })
 }
+
+export const setPublicFormStatus =(data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.PUBLIC_FORM_STATUS,
+    payload:data
+  })
+}
+
+export const setFormSearchQuery =(data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.FORM_SEARCH_QUERY,
+    payload:data
+  })
+}

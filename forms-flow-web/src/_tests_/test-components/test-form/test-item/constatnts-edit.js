@@ -219,7 +219,7 @@ export const mockstate = {
                     "showWordCount": false,
                     "allowMultipleMasks": false,
                     "inputType": "hidden",
-                    "id": "e6z1qd9",
+                    "id": "e7s8f3k7",
                     "addons": []
                 }
             ],
@@ -250,5 +250,76 @@ export const mockstate = {
         },
         isFormSubmissionLoading: false,
         isFormWorkflowSaved: false
+    },
+    process:
+    {
+        "isProcessLoading": true,
+        "processStatusList": [],
+        "processLoadError": false,
+        "processList": [
+            {
+                "key": "two",
+                "name": "Two"
+            },
+            {
+                "key": "keyvalue",
+                "name": "Pname"
+            },
+            {
+                "key": "one",
+                "name": "One"
+            },
+            {
+                "key": "first",
+                "name": "First"
+            },
+            {
+                "key": "Process1234",
+                "name": "sample "
+            },
+            {
+                "key": "Process3465",
+                "name": "sample1"
+            },
+            {
+                "key": "two",
+                "name": "Two"
+            }
+        ],
+        "formProcessError": false,
+        "formProcessList": {
+            "processName": "Pname",
+            "anonymous": true,
+            "id": "672",
+            "modifiedBy": "user",
+            "modified": "2022-02-08 06:55:30.360213",
+            "status": "active",
+            "createdBy": "user",
+            "processKey": "keyvalue",
+            "comments": null,
+            "formId": "678402837578393964",
+            "created": "2022-02-08 06:24:03.498023",
+            "formName": "demoname"
+        },
+        "formPreviousData": {
+            "processName": "Pname",
+            "anonymous": true,
+            "id": "672",
+            "modifiedBy": "user",
+            "modified": "2022-02-08 06:55:30.360213",
+            "status": "active",
+            "createdBy": "user",
+            "processKey": "keyvalue",
+            "comments": null,
+            "formId": "62020c8373d4a1110a5db771",
+            "created": "2022-02-08 06:24:03.498023",
+            "formName": "demoname"
+        },
+        "processActivityList": null,
+        "processDiagramXML": "",
+        "processActivityLoadError": false,
+        "isProcessDiagramLoading": true
     }
+
+    
 }

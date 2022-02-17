@@ -127,7 +127,6 @@ class ApplicationsResource(Resource):
                 },
                 HTTPStatus.BAD_REQUEST,
             )
-
             current_app.logger.critical(response)
             current_app.logger.critical(err)
             return response, status

@@ -69,7 +69,7 @@ class ApplicationHistoryResource(Resource):
             current_app.logger.error(err)
             return response, status
 
-        except BaseException as application_err:
+        except BaseException as application_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Invalid Request Object",
                 "message": "Invalid Request Object Passed ",

@@ -78,7 +78,7 @@ class FormProcessMapperService:
         mapper = FormProcessMapper.find_form_by_id(
             form_process_mapper_id=form_process_mapper_id
         )
-        if not ((data.get("process_key")) and (data.get("process_name"))):
+        if not data.get("process_key") and data.get("process_name"):
             data["process_key"] = None
             data["process_name"] = None
 

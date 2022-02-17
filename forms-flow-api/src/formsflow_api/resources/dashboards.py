@@ -26,7 +26,7 @@ class DashboardList(Resource):
     @API.doc("list_dashboards")
     @auth.require
     @profiletime
-    def get(self):
+    def get():
         """List all dashboards"""
         if request.args:
             dict_data = ApplicationListReqSchema().load(request.args)
@@ -39,12 +39,12 @@ class DashboardList(Resource):
             url_path="dashboards", page_no=page_no, limit=limit
         )
         if response == "unauthorized":
-            return {"message": "Dashboards not available"}, HTTPStatus.NOT_FOUND
-        elif response is None:
+            return {"message": "Dashboard not found"}, HTTPStatus.NOT_FOUND
+        if response is None:
             return {"message": "Error"}, HTTPStatus.SERVICE_UNAVAILABLE
-        else:
-            assert response != None
-            return response, HTTPStatus.OK
+
+        assert response is not None
+        return response, HTTPStatus.OK
 
 
 @cors_preflight("GET,OPTIONS")
@@ -55,7 +55,7 @@ class DashboardDetail(Resource):
     @API.doc("get_dashboard")
     @auth.require
     @profiletime
-    def get(self, dashboard_id):
+    def get(dashboard_id: int):
         """Get  dashboard
         : dashboard_id:- Get dashboard with given dashboard_id
         """
@@ -75,8 +75,8 @@ class DashboardDetail(Resource):
             )
             if response == "unauthorized":
                 return {"message": "Dashboard not found"}, HTTPStatus.NOT_FOUND
-            elif response is None:
+            if response is None:
                 return {"message": "Error"}, HTTPStatus.SERVICE_UNAVAILABLE
-            else:
-                assert response != None
-                return response, HTTPStatus.OK
+
+            assert response is not None
+            return response, HTTPStatus.OK

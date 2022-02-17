@@ -344,7 +344,7 @@ class ApplicationService:
             return (f"Total Applications found are: {count}", HTTPStatus.OK)
 
 
-class ApplicationSchemaWrapper:
+class ApplicationSchemaWrapper:  # pylint: disable=too-few-public-methods
     """ApplicationSchemaWrapper Class"""
 
     @staticmethod
@@ -361,7 +361,7 @@ class ApplicationSchemaWrapper:
                 formurl.find("/submission/") + 12 : len(formurl)
             ]
             return application
-        except KeyError as err:
+        except KeyError:
             return (
                 "The required fields of Input request are not passed",
                 HTTPStatus.BAD_REQUEST,

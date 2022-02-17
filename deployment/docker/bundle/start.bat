@@ -48,7 +48,6 @@ echo                                         KEYCLOAK
 echo.
   
 :KEYCLOAK
-cd configuration\keycloak
 
 set /P c=Do you have an existing keycloak?[y/n]?
 if /I "%c%" EQU "y" goto :INSTALL WITH EXISTING KEYCLOAK
@@ -63,7 +62,7 @@ copy sample.env .env
 for /f "tokens=14" %%a in ('ipconfig ^| findstr IPv4') do set _IPaddr=%%a
 
 echo Please wait, keycloak is setting up!
-docker-compose up -d
+docker-compose -f ./configuration/keycloak/docker-compose.yml up -d
 echo you can pick up the bpm client secret id from localhost:8080
 set /p realm="what is your keycloak url realm name?"
 echo.
@@ -182,7 +181,6 @@ echo.
 echo                                                  Installation-Automation                                                                        
 echo.
 echo.
-cd ..
 
 findstr /v /i /c:"FORMIO_DEFAULT_PROJECT_URL=" /c:"#KEYCLOAK_URL_REALM=" /c:"KEYCLOAK_URL=" /c:"KEYCLOAK_BPM_CLIENT_SECRET=" /c:"INSIGHT_API_URL=" /c:"INSIGHT_API_KEY=" /c:"CLIENT_ROLE_ID=" /c:"DESIGNER_ROLE_ID=" /c:"REVIEWER_ROLE_ID" /c:"ANONYMOUS_ID" /c:"USER_RESOURCE_ID" /c:"CAMUNDA_API_URL=" /c:"FORMSFLOW_API_URL=" /c:"WEBSOCKET_SECURITY_ORIGIN=" sample.env > .env
 
@@ -210,7 +208,7 @@ echo INSIGHT_API_KEY=%redashApiKey%
 
 echo Please wait, forms is getting up!
 	
-docker-compose -f up -d forms-flow-forms
+docker-compose -f ./configuration/docker-compose.yml up -d forms-flow-forms
 
 set websock=%_IPaddr%
 set lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda

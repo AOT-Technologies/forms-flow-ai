@@ -6,7 +6,10 @@ from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 
 from formsflow_api.exceptions import BusinessException
-from formsflow_api.schemas import FormProcessMapperListRequestSchema, FormProcessMapperSchema
+from formsflow_api.schemas import (
+    FormProcessMapperListRequestSchema,
+    FormProcessMapperSchema,
+)
 from formsflow_api.services import FormProcessMapperService, ApplicationService
 
 from formsflow_api.utils import auth, cors_preflight, profiletime
@@ -47,7 +50,9 @@ class FormResource(Resource):
                             "forms": FormProcessMapperService.get_all_mappers(
                                 page_no, limit, form_name
                             ),
-                            "totalCount": FormProcessMapperService.get_mapper_count(form_name),
+                            "totalCount": FormProcessMapperService.get_mapper_count(
+                                form_name
+                            ),
                             "pageNo": page_no,
                             "limit": limit,
                         }
@@ -62,7 +67,9 @@ class FormResource(Resource):
                             "forms": FormProcessMapperService.get_all_mappers(
                                 page_no, limit, form_name
                             ),
-                            "totalCount": FormProcessMapperService.get_mapper_count(form_name),
+                            "totalCount": FormProcessMapperService.get_mapper_count(
+                                form_name
+                            ),
                         }
                     ),
                     HTTPStatus.OK,

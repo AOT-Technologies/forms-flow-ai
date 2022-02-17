@@ -120,6 +120,8 @@ goto :ANALYTICS
 
 if %analytics% ==0 (
 echo let's move to the installation without analytics
+set /p redashApiKey="what is your Redash API key?"
+echo INSIGHT_API_KEY=%redashApiKey%
 echo press ENTER to continue
 pause> nul
 goto :configuration section

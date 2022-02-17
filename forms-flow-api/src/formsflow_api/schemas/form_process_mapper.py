@@ -24,6 +24,7 @@ class FormProcessMapperSchema(Schema):
     modified_by = fields.Str(data_key="modifiedBy")
     modified = fields.Str(data_key="modified")
 
+
 class FormProcessMapperListReqSchema(Schema):
     """This is a general class for paginated request schema."""
 

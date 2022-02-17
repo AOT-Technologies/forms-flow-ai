@@ -92,11 +92,15 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def filter_conditions(cls, **filters):
         filter_conditions = []
         for key, value in filters.items():
-                if value:
-                    filter_map = FILTER_MAPS[key]
-                    condition = Application.create_filter_condition(
-                        model=Application, column_name=filter_map['field'], operator=filter_map['operator'], value=value)
-                    filter_conditions.append(condition)
+            if value:
+                filter_map = FILTER_MAPS[key]
+                condition = Application.create_filter_condition(
+                    model=Application,
+                    column_name=filter_map["field"],
+                    operator=filter_map["operator"],
+                    value=value,
+                )
+                filter_conditions.append(condition)
         query = cls.query.filter(*filter_conditions) if filter_conditions else cls.query
         return query
 
@@ -108,7 +112,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         limit: int,
         order_by: str,
         sort_order: str,
-        **filters
+        **filters,
     ) -> Application:
         """Fetch applications list based on searching parameters for Non-reviewer"""
         query = Application.filter_conditions(**filters)
@@ -120,7 +124,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count
-    
+
     @classmethod
     def find_id_by_user(cls, application_id: int, user_id: str) -> Application:
         """Find application that matches the provided id."""
@@ -156,7 +160,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         limit: int,
         order_by: str,
         sort_order: str,
-        **filters
+        **filters,
     ):
         """Fetch applications list based on searching parameters for Reviewer"""
         query = Application.filter_conditions(**filters)

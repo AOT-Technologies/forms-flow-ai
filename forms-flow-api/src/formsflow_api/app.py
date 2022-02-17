@@ -1,4 +1,7 @@
-"""This module sets up the flask application"""
+""""App initialization.
+
+Initialize app and the dependencies.
+"""
 import logging
 import os
 from http import HTTPStatus

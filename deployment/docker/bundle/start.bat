@@ -168,10 +168,6 @@ echo analytics database has been created.. wait for a moment for the analytics t
 docker-compose -f docker-compose-windows.yml up --build -d 
 
 pause
-echo please collect the redash api key
-set /p redashApiKey="what is your Redash API key?"
-echo INSIGHT_API_KEY=%redashApiKey% >> .env
-
 echo press ENTER to move to next installation
 pause>nul
 goto :configuration section
@@ -229,7 +225,7 @@ set lpu=WEBSOCKET_SECURITY_ORIGIN=http://{your-ip-address}:3000
 set streeng=%lpu:{your-ip-address}=!websock!%
 
 
-echo FORMSFLOW FORMS IS UP 
+ 
 pause> nul
 set hour=6
 set res=F

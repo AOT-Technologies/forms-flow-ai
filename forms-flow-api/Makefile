@@ -40,7 +40,7 @@ install: clean ## Install python virtrual environment
 	. venv/bin/activate ;\
 	pip install --upgrade pip ;\
 	pip install -Ur requirements/prod.txt ;\
-	pip freeze | | grep -v "pkg-resources" | sort > requirements.txt ;\
+	pip freeze | grep -v "pkg-resources" | sort > requirements.txt ;\
 	pip install -Ur requirements/dev.txt  ;\
 	touch venv/bin/activate  # update so it's as new as requirements/prod.txt
 

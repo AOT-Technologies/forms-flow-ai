@@ -74,7 +74,7 @@ class ApplicationService:
         return response
 
     @staticmethod
-    def get_auth_applications_and_count(
+    def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals
         token: str,
         page_no: int,
         limit: int,
@@ -133,8 +133,8 @@ class ApplicationService:
                 application_schema.dump(applications, many=True),
                 get_all_applications_count,
             )
-        else:
-            return (application_schema.dump([], many=True), 0)
+
+        return (application_schema.dump([], many=True), 0)
 
     @staticmethod
     def get_auth_by_application_id(application_id: int, token: str):
@@ -149,11 +149,11 @@ class ApplicationService:
                 form_names=form_names, application_id=application_id
             )
             return application_schema.dump(application), HTTPStatus.OK
-        else:
-            return (application_schema.dump([])), HTTPStatus.FORBIDDEN
+
+        return (application_schema.dump([])), HTTPStatus.FORBIDDEN
 
     @staticmethod
-    def get_all_applications_by_user(
+    def get_all_applications_by_user(  # pylint: disable=too-many-arguments
         user_id: str,
         page_no: int,
         limit: int,
@@ -230,7 +230,7 @@ class ApplicationService:
 
     @staticmethod
     def get_all_applications_form_id_user(
-        form_id, user_id: str, page_no: int, limit: int  # pylint: disable=C0330
+        form_id: str, user_id: str, page_no: int, limit: int
     ):
         """Get all applications."""
         if page_no:
@@ -263,8 +263,8 @@ class ApplicationService:
         )
         if application:
             return ApplicationSchema().dump(application), HTTPStatus.OK
-        else:
-            return ApplicationSchema().dump([]), HTTPStatus.FORBIDDEN
+
+        return ApplicationSchema().dump([]), HTTPStatus.FORBIDDEN
 
     @staticmethod
     def update_application(application_id: int, data):
@@ -326,22 +326,22 @@ class ApplicationService:
         raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
-    def apply_custom_attributes(application_schema):
+    def apply_custom_attributes(application_schema_dump):
         """Wrapper function to call Application Schema Wrapper"""
-        if isinstance(application_schema, list):
-            for entry in application_schema:
+        if isinstance(application_schema_dump, list):
+            for entry in application_schema_dump:
                 ApplicationSchemaWrapper.apply_attributes(entry)
         else:
-            ApplicationSchemaWrapper.apply_attributes(application_schema)
-        return application_schema
+            ApplicationSchemaWrapper.apply_attributes(application_schema_dump)
+        return application_schema_dump
 
     @staticmethod
     def get_total_application_corresponding_to_mapper_id(mapper_id: int):
         count = Application.get_total_application_corresponding_to_mapper_id(mapper_id)
         if count == 0:
             return ("No Applications found", HTTPStatus.OK)
-        else:
-            return (f"Total Applications found are: {count}", HTTPStatus.OK)
+
+        return (f"Total Applications found are: {count}", HTTPStatus.OK)
 
 
 class ApplicationSchemaWrapper:  # pylint: disable=too-few-public-methods

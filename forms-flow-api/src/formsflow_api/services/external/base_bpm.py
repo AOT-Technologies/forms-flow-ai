@@ -68,10 +68,10 @@ class BaseBPMService:
         }
         if token:
             return {"Authorization": token, "content-type": "application/json"}
-        else:
-            response = requests.post(bpm_token_api, headers=headers, data=payload)
-            data = json.loads(response.text)
-            return {
-                "Authorization": "Bearer " + data["access_token"],
-                "Content-Type": "application/json",
-            }
+
+        response = requests.post(bpm_token_api, headers=headers, data=payload)
+        data = json.loads(response.text)
+        return {
+            "Authorization": "Bearer " + data["access_token"],
+            "Content-Type": "application/json",
+        }

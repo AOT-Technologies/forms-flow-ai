@@ -34,7 +34,7 @@ class ProcessResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except BaseException as err:
+        except BaseException as err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",

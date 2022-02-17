@@ -45,7 +45,7 @@ class ApplicationAnonymousResourcesByIds(Resource):
             )
             response, status = application_schema.dump(application), HTTPStatus.CREATED
             return response, status
-        except BaseException as application_err:
+        except BaseException as application_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid application request passed",
@@ -74,7 +74,7 @@ class AnonymousResourceById(Resource):
                 "is_anonymous": bool(mapper.is_anonymous),
                 "status": mapper.status,
             }, HTTPStatus.OK
-        except BaseException as application_err:
+        except BaseException as application_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid application request passed",

@@ -30,8 +30,8 @@ class FormProcessMapperService:
         """Get form process mapper count."""
         if form_name:
             return FormProcessMapper.find_count_form_name(form_name)
-        else:
-            return FormProcessMapper.find_all_count()
+
+        return FormProcessMapper.find_all_count()
 
     @staticmethod
     def get_mapper(form_process_mapper_id: int):
@@ -82,7 +82,7 @@ class FormProcessMapperService:
             data["process_key"] = None
             data["process_name"] = None
 
-        if not (data.get("comments")):
+        if not data.get("comments"):
             data["comments"] = None
 
         if mapper:

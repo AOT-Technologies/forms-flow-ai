@@ -59,7 +59,6 @@ class FormResource(Resource):
                     ),
                     HTTPStatus.OK,
                 )
-                return response, status
             else:
                 response, status = (
                     (
@@ -74,7 +73,7 @@ class FormResource(Resource):
                     ),
                     HTTPStatus.OK,
                 )
-                return response, status
+            return response, status
         except KeyError as err:
             response, status = (
                 {
@@ -88,7 +87,7 @@ class FormResource(Resource):
             current_app.logger.critical(err)
             return response, status
 
-        except BaseException as form_err:
+        except BaseException as form_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
@@ -113,10 +112,10 @@ class FormResource(Resource):
 
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
             return response, status
-        except BaseException as form_err:
+        except BaseException as form_err:  # pylint: disable=broad-except
             response, status = {
                 "message": "Invalid request object passed for FormProcessmapper POST API",
-                "errors": form_err.messages,
+                "errors": form_err,
             }, HTTPStatus.BAD_REQUEST
 
             current_app.logger.warning(response)
@@ -203,7 +202,7 @@ class FormResourceById(Resource):
                 f"Updated FormProcessMapper ID {mapper_id} successfully",
                 HTTPStatus.OK,
             )
-        except BaseException as mapper_err:
+        except BaseException as mapper_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid request passed",
@@ -240,6 +239,7 @@ class FormResourceByFormId(Resource):
                 HTTPStatus.NO_CONTENT,
             )
             current_app.logger.info(response)
+            current_app.logger.warning(err)
             return response, status
 
 
@@ -252,6 +252,7 @@ class FormResourceApplicationCount(Resource):
     @auth.require
     @profiletime
     def get(mapper_id: int):
+        """The method retrieves the total application count for th egiven mapper id"""
         (
             response,
             status,

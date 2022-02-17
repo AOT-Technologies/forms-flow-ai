@@ -19,8 +19,8 @@ API = Namespace("user", description="Keycloak user APIs")
 class KeycloakUserService(Resource):
     """Provides api interface for interacting with Keycloak user attributes"""
 
-    def __init__(self, api=None, *args, **kwargs):
-        super().__init__(api, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.client = KeycloakAdminAPIService()
 
     @auth.require
@@ -37,7 +37,7 @@ class KeycloakUserService(Resource):
         response = self.client.get_request(url_path=url_path)
         response = response[0]
         if response is None:
-            return {"message": f"User not found"}, HTTPStatus.NOT_FOUND
+            return {"message": "User not found"}, HTTPStatus.NOT_FOUND
         return response
 
     @auth.require
@@ -55,7 +55,7 @@ class KeycloakUserService(Resource):
                 url_path=f"users/{user['id']}", data=user
             )
             if response is None:
-                return {"message": f"User not found"}, HTTPStatus.NOT_FOUND
+                return {"message": "User not found"}, HTTPStatus.NOT_FOUND
             return response, HTTPStatus.OK
 
         except KeyError as err:
@@ -83,7 +83,7 @@ class KeycloakUserService(Resource):
 
             return response, status
 
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-except
             response, status = (
                 {
                     "type": "Internal error",

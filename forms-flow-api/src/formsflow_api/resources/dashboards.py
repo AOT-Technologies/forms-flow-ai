@@ -23,6 +23,7 @@ class DashboardList(Resource):
     : limit:- number of items per page (optional)
     """
 
+    @staticmethod
     @API.doc("list_dashboards")
     @auth.require
     @profiletime

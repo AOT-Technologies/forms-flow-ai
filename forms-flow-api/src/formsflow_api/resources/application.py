@@ -4,6 +4,7 @@ from http import HTTPStatus
 
 from flask import current_app, g, request
 from flask_restx import Namespace, Resource
+from marshmallow.exceptions import ValidationError
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.schemas import (
@@ -14,7 +15,6 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import ApplicationService
 from formsflow_api.utils import REVIEWER_GROUP, auth, cors_preflight, profiletime
-from marshmallow.exceptions import ValidationError
 
 API = Namespace("Application", description="Application")
 
@@ -327,7 +327,7 @@ class ApplicationResourceByApplicationStatus(Resource):
     @auth.require
     @profiletime
     def get():
-
+        """Method to get the application status lists"""
         try:
             return (
                 ApplicationService.get_all_application_status(),

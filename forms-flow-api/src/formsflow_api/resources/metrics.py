@@ -36,7 +36,7 @@ class AggregatedApplicationsResource(Resource):
             order_by = dict_data.get("order_by")
 
             if order_by == MetricsState.MODIFIED.value:
-                return (
+                response, status = (
                     (
                         {
                             "applications": ApplicationService.get_current_aggregated_applications(
@@ -48,7 +48,7 @@ class AggregatedApplicationsResource(Resource):
                 )
 
             else:
-                return (
+                response, status = (
                     (
                         {
                             "applications": ApplicationService.get_aggregated_applications(
@@ -58,6 +58,7 @@ class AggregatedApplicationsResource(Resource):
                     ),
                     HTTPStatus.OK,
                 )
+            return response, status
         except ValidationError as metrics_err:
             response = {
                 "message": "Missing from_date or to_date. Invalid request object for application metrics endpoint",
@@ -68,7 +69,7 @@ class AggregatedApplicationsResource(Resource):
             current_app.logger.warning(metrics_err)
             return response, HTTPStatus.BAD_REQUEST
 
-        except Exception as metrics_err:
+        except Exception as metrics_err:  # pylint: disable=broad-except
             response, status = {
                 "message": "Error while getting application metrics",
                 "errors": metrics_err,
@@ -100,7 +101,7 @@ class AggregatedApplicationStatusResource(Resource):
             order_by = dict_data.get("order_by")
 
             if order_by == MetricsState.MODIFIED.value:
-                return (
+                response, status = (
                     (
                         {
                             "applications": ApplicationService.get_current_aggregated_application_status(
@@ -114,7 +115,7 @@ class AggregatedApplicationStatusResource(Resource):
                 )
 
             else:
-                return (
+                response, status = (
                     (
                         {
                             "applications": ApplicationService.get_aggregated_application_status(
@@ -126,6 +127,7 @@ class AggregatedApplicationStatusResource(Resource):
                     ),
                     HTTPStatus.OK,
                 )
+            return response, status
         except ValidationError as metrics_err:
             response, status = {
                 "message": "Missing from_date or to_date. Invalid request object for application metrics endpoint",
@@ -136,7 +138,7 @@ class AggregatedApplicationStatusResource(Resource):
             current_app.logger.warning(metrics_err)
             return response, status
 
-        except Exception as metrics_err:
+        except Exception as metrics_err:  # pylint: disable=broad-except
             response, status = {
                 "message": "Error while getting application metrics",
                 "errors": metrics_err,

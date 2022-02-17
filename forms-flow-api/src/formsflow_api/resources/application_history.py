@@ -78,5 +78,4 @@ class ApplicationHistoryResource(Resource):
 
             current_app.logger.warning(response)
             current_app.logger.warning(application_err)
-        finally:
             return response, status

@@ -18,36 +18,12 @@ KEYCLOAK_DASHBOARD_BASE_GROUP = "formsflow-analytics"
 ANONYMOUS_USER = "Anonymous-user"
 
 FILTER_MAPS = {
-            "application_id": {
-                "field": 'id',
-                "operator": 'eq'
-            },
-            "application_name": {
-                "field": 'application_name',
-                "operator": 'like'
-            },
-            "application_status": {
-                "field": 'application_status',
-                "operator": 'eq'
-            },
-            "created_by": {
-                "field": 'created_by',
-                "operator": 'eq'
-            },
-            "modified_from": {
-                "field": 'modified',
-                "operator": 'ge'
-            },
-            "modified_to": {
-                "field": 'modified',
-                "operator": 'le'
-            },
-            "created_from": {
-                "field": 'created',
-                "operator": 'ge'
-            },
-            "created_to": {
-                "field": 'created',
-                "operator": 'le'
-            },
-        }
+    "application_id": {"field": "id", "operator": "eq"},
+    "application_name": {"field": "application_name", "operator": "like"},
+    "application_status": {"field": "application_status", "operator": "eq"},
+    "created_by": {"field": "created_by", "operator": "eq"},
+    "modified_from": {"field": "modified", "operator": "ge"},
+    "modified_to": {"field": "modified", "operator": "le"},
+    "created_from": {"field": "created", "operator": "ge"},
+    "created_to": {"field": "created", "operator": "le"},
+}

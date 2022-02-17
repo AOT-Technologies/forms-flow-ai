@@ -85,7 +85,12 @@ export const getISODateTime=(date)=>{
     }
 };
 
-
 export const getFormattedDateAndTime = (date)=>{
   return new Date(date).toLocaleDateString('en-us',  {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',hour: '2-digit', minute: '2-digit', hour12: true});
 };
+
+export const getSearchText = (query) => {
+   // Regex Extracts text from /text/g
+   const searchText = query===""?"":query.match(/(?<=\/)(.*)(?=\/i)/)[0];
+   return searchText;
+}

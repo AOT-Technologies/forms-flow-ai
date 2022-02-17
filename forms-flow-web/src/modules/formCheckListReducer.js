@@ -3,8 +3,7 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 const initialState = {
   formList: [],
   formUploadFormList:[],
-  formUploadCounter:0,
-  formSearchQuery:"",
+  formUploadCounter:0
 };
 
 const formCheckList= (state = initialState, action)=> {
@@ -15,8 +14,6 @@ const formCheckList= (state = initialState, action)=> {
       return {...state, formUploadFormList: action.payload, formUploadCounter:0 };
     case ACTION_CONSTANTS.FORM_UPLOAD_COUNTER:
       return {...state, formUploadCounter: state.formUploadCounter+1 };
-    case  ACTION_CONSTANTS.FORM_SEARCH_QUERY:
-      return {...state, formSearchQuery:action.payload};
     default:
       return state;
   }

@@ -48,6 +48,7 @@ echo                                         KEYCLOAK
 echo.
   
 :KEYCLOAK
+cd configuration\keycloak
 
 set /P c=Do you have an existing keycloak?[y/n]?
 if /I "%c%" EQU "y" goto :INSTALL WITH EXISTING KEYCLOAK
@@ -62,28 +63,27 @@ copy sample.env .env
 for /f "tokens=14" %%a in ('ipconfig ^| findstr IPv4') do set _IPaddr=%%a
 
 echo Please wait, keycloak is setting up!
-docker-compose -f ./configuration/keycloak/docker-compose.yml up -d
-echo you can pick up the bpm client secret id from localhost:8080
-set /p realm="what is your keycloak url realm name?"
+docker-compose up -d
+echo you can pick up the bpm client secret id
+set /p realm="what is your keycloak realm name?"
 echo.
 echo.
-echo KEYCLOAK_URL_REALM=%realm% 
 
 setlocal ENABLEDELAYEDEXPANSION
 
 set keyurl=%_IPaddr%
 set str=KEYCLOAK_URL=http://{your-ip-address}:8080
+set strng=%str:{your-ip-address}=!keycloak_url!%
 set stg=%str:{your-ip-address}=!keyurl!%
 
 set /p keySecret="what is your bpm client secret key?"
-echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret%
 
 echo. >>".env"
 echo KEYCLOAK_URL_REALM=%realm% >> .env
 echo %stg%>>".env"
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
 
-goto :analyticsoption
+goto :analyticssection
 
 :INSTALL WITH EXISTING KEYCLOAK
 set customKeycloak=1;
@@ -91,55 +91,33 @@ set customKeycloak=1;
 echo existing keycloak setup here
 
 set /p keySecret="what is your bpm client secret key?"
-echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% 
 
 set /p keyurl="what is your Keycloak url?"
-echo KEYCLOAK_URL=%keyurl%
 
 set /p realm="what is your keycloak url realm name?"
-echo KEYCLOAK_URL_REALM=%realm%
 
 echo. >>".env"
 echo KEYCLOAK_URL_REALM=%realm% >> .env
 echo KEYCLOAK_URL=%keyurl% >> .env
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
+goto :analyticssection
 
-goto :analyticsoption
 
-
-:analyticsoption
+:analyticssection
 echo.
 echo.
 if %analytics% ==1 (
-echo analytics.
-echo press ENTER to continue to analytics
+echo press ENTER to continue
 pause> nul
 goto :ANALYTICS
 )
 
 if %analytics% ==0 (
-echo let's move to the installation without analytics
-set /p redashApiKey="what is your Redash API key?"
-echo INSIGHT_API_KEY=%redashApiKey%
+echo let's move to the installation 
 echo press ENTER to continue
 pause> nul
 goto :configuration section
 )
-::------------------------------------------
-:WEB CUSTOM INSTALLATION
-
-echo web custom installation here
-
-if %analytics% ==1 (
-echo press ENTER to continue
-pause> nul
-goto :ANALYTICS
-)
-
-if %analytics% ==0 (
-echo let's move to the installation
-echo press ENTER to continue
-pause> nul
 
 ::<===================ANALYTICS STARTS=======================>
 :ANALYTICS
@@ -167,6 +145,10 @@ echo analytics database has been created.. wait for a moment for the analytics t
 docker-compose -f docker-compose-windows.yml up --build -d 
 
 pause
+echo please collect the redash api key
+set /p redashApiKey="what is your Redash API key?"
+echo INSIGHT_API_KEY=%redashApiKey% >> .env
+
 echo press ENTER to move to next installation
 pause>nul
 goto :configuration section
@@ -181,6 +163,7 @@ echo.
 echo                                                  Installation-Automation                                                                        
 echo.
 echo.
+cd ..
 
 findstr /v /i /c:"FORMIO_DEFAULT_PROJECT_URL=" /c:"#KEYCLOAK_URL_REALM=" /c:"KEYCLOAK_URL=" /c:"KEYCLOAK_BPM_CLIENT_SECRET=" /c:"INSIGHT_API_URL=" /c:"INSIGHT_API_KEY=" /c:"CLIENT_ROLE_ID=" /c:"DESIGNER_ROLE_ID=" /c:"REVIEWER_ROLE_ID" /c:"ANONYMOUS_ID" /c:"USER_RESOURCE_ID" /c:"CAMUNDA_API_URL=" /c:"FORMSFLOW_API_URL=" /c:"WEBSOCKET_SECURITY_ORIGIN=" sample.env > .env
 
@@ -192,23 +175,17 @@ set default_url=%_IPaddr%
 set ste=FORMIO_DEFAULT_PROJECT_URL=http://{your-ip-address}:3001
 set strong=%ste:{your-ip-address}=!default_url!%
 
-echo KEYCLOAK_URL_REALM=%realm%
-
 set keycloak_url=%_IPaddr%
 set str=KEYCLOAK_URL=http://{your-ip-address}:8080
 set strng=%str:{your-ip-address}=!keycloak_url!%
-
-echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret%
 
 set API_URL=%_IPaddr%
 set url=INSIGHT_API_URL=http://{your-ip-address}:7000
 set strinnng=%url:{your-ip-address}=!API_URL!%
 
-echo INSIGHT_API_KEY=%redashApiKey%
-
 echo Please wait, forms is getting up!
 	
-docker-compose -f ./configuration/docker-compose.yml up -d forms-flow-forms
+docker-compose up -d forms-flow-forms
 
 set websock=%_IPaddr%
 set lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
@@ -223,7 +200,6 @@ set lpu=WEBSOCKET_SECURITY_ORIGIN=http://{your-ip-address}:3000
 set streeng=%lpu:{your-ip-address}=!websock!%
 
 
- 
 pause> nul
 set hour=6
 set res=F
@@ -287,13 +263,6 @@ for %%a in (!JSON!) do (
 	 set /a i=i+1
    )
 )
-:: -------------------------------------------
-:: Role Name       -          ID
-:: -------------------------------------------
-:: for /L %%a in (0,1,!i!) do (
-:: !title[%%a]!   -           !id[%%a]!
-:: set !title[%%a]!=!id[%%a]!
-:: )
 
 set Administrator=%id[0]%
 set Anonymous=%id[1]%
@@ -323,8 +292,8 @@ echo ANONYMOUS_ID=%Anonymous% >> .env
 echo USER_RESOURCE_ID=%User% >> .env
 
 docker-compose up --build -d forms-flow-web
-docker-compose -f docker-compose-windows.yml up -d formsflow-bpm
-docker-compose -f docker-compose-windows.yml up -d formsflow-webapi
+docker-compose -f docker-compose.yml up -d forms-flow-bpm
+docker-compose -f docker-compose.yml up -d forms-flow-webapi
 
 pause> nul
 goto :end

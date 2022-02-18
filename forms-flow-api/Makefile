@@ -52,13 +52,15 @@ install-dev: ## Install local application
 #################################################################################
 ci: lint test ## CI flow
 
+format: ## CodeFormat python code with black & isort
+	. venv/bin/activate && isort --profile black src/${PROJECT_NAME} && black -t py39 src/$(PROJECT_NAME)
 pylint: ## Lint python code with black and pylint
-	. venv/bin/activate && isort src/${PROJECT_NAME} && black -t py39 src/$(PROJECT_NAME) && pylint --rcfile=setup.cfg  src/$(PROJECT_NAME)
+	. venv/bin/activate && pylint --rcfile=setup.cfg  src/$(PROJECT_NAME)
 
 flake8: ## Linting with flake8
 	. venv/bin/activate && flake8 src/$(PROJECT_NAME) tests
 
-lint: pylint flake8 ## run all lint type scripts
+lint: format pylint ## run all lint type scripts
 
 test: ## Unit testing
 	. venv/bin/activate && pytest

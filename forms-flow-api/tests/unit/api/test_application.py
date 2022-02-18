@@ -14,8 +14,8 @@ class TestApplicationResource:
         assert response.status_code == 401
         assert response.json == {
             "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for '\
-                'Authorization or has expired.",
+            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for"
+            "Authorization or has expired.",
         }
 
     def test_application_list(self, app, client, session):
@@ -104,8 +104,8 @@ class TestApplicationDetailView:
         assert response.status_code == 401
         assert response.json == {
             "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for '\
-                'Authorization or has expired.",
+            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for"
+            "Authorization or has expired.",
         }
 
     def test_application_detailed_view(self, app, client, session):

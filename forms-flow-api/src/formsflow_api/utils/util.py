@@ -3,6 +3,7 @@
 * CORS pre-flight decorator. A simple decorator to add the options method to a Request Class.
 """
 import re
+
 from .constants import ALLOW_ALL_ORIGINS
 from .enums import ApplicationSortingParameters
 from .translations.translations import translations

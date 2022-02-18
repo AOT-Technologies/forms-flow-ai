@@ -1,16 +1,20 @@
 """This manages Application submission Data."""
 
 from __future__ import annotations
+
 from datetime import datetime
+
 from sqlalchemy import and_, func, or_
 from sqlalchemy.sql.expression import text
 
+from formsflow_api.models import BaseModel, FormProcessMapper, db
 from formsflow_api.models.audit_mixin import AuditDateTimeMixin, AuditUserMixin
-from formsflow_api.models import BaseModel, db, FormProcessMapper
-from formsflow_api.utils import validate_sort_order_and_order_by, FILTER_MAPS
+from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
 
 
-class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
+class Application(
+    AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model
+):  # pylint: disable=too-many-public-methods
     """This class manages application against each form."""
 
     id = db.Column(db.Integer, primary_key=True)

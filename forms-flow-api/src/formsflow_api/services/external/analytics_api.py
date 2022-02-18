@@ -1,5 +1,6 @@
 """This exposes the analytics API"""
 from http import HTTPStatus
+
 import requests
 from flask import current_app
 

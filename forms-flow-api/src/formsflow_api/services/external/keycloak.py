@@ -1,7 +1,9 @@
 """This exposes the Keycloak Admin APIs"""
 import json
+
 import requests
 from flask import current_app
+
 from formsflow_api.utils import profiletime
 
 
@@ -61,7 +63,9 @@ class KeycloakAdminAPIService:
         return None
 
     @profiletime
-    def update_request(self, url_path, data=None):
+    def update_request(
+        self, url_path, data=None
+    ):  # pylint: disable=inconsistent-return-statements
         """Method to fetch get request of Keycloak Admin APIs
         :param url_path: The relative path of the API
         :param data: The request data object

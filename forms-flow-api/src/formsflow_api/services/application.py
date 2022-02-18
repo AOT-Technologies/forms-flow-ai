@@ -8,15 +8,14 @@ from flask import current_app
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import Application, FormProcessMapper
-
 from formsflow_api.schemas import (
     AggregatedApplicationSchema,
     ApplicationSchema,
     FormProcessMapperSchema,
 )
-
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import NEW_APPLICATION_STATUS
+
 
 application_schema = ApplicationSchema()
 

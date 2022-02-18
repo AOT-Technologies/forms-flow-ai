@@ -1,15 +1,14 @@
 """Resource to get Dashboard APIs from redash"""
 import re
 from http import HTTPStatus
-from flask import request, g
+
+from flask import g, request
 from flask_restx import Namespace, Resource
+
 from formsflow_api.schemas import ApplicationListReqSchema
 from formsflow_api.services import RedashAPIService
-from formsflow_api.utils import (
-    auth,
-    profiletime,
-    cors_preflight,
-)
+from formsflow_api.utils import auth, cors_preflight, profiletime
+
 
 API = Namespace("dashboards", description="Dashboard APIs")
 analytics_service = RedashAPIService()

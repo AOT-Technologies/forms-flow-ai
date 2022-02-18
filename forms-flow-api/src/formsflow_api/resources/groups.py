@@ -1,18 +1,20 @@
 """Resource to call Keycloak Service API calls and filter responses"""
 from http import HTTPStatus
 from pprint import pprint
+
 from flask import request
 from flask_restx import Namespace, Resource
 from marshmallow import ValidationError
 
-from formsflow_api.services import KeycloakAdminAPIService
 from formsflow_api.schemas import ApplicationListReqSchema, KeycloakDashboardGroupSchema
+from formsflow_api.services import KeycloakAdminAPIService
 from formsflow_api.utils import (
     KEYCLOAK_DASHBOARD_BASE_GROUP,
     auth,
     cors_preflight,
     profiletime,
 )
+
 
 API = Namespace("groups", description="Keycloak wrapper APIs")
 

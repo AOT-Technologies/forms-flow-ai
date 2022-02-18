@@ -2,21 +2,23 @@
 
 Initialize app and the dependencies.
 """
+import json
 import logging
 import os
 from http import HTTPStatus
-import json
-from flask import Flask, request, g, current_app
+
+from flask import Flask, current_app, g, request
 from flask.logging import default_handler
 from werkzeug.middleware.proxy_fix import ProxyFix
-from formsflow_api import models, config
-from formsflow_api.resources import API
+
+from formsflow_api import config, models
 from formsflow_api.models import db, ma
+from formsflow_api.resources import API
 from formsflow_api.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
-    CustomFormatter,
     FORMSFLOW_API_CORS_ORIGINS,
+    CustomFormatter,
     jwt,
     setup_logging,
     translate,

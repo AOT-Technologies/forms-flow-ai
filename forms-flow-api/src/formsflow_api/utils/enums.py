@@ -5,8 +5,8 @@ from enum import Enum
 class FormProcessMapperStatus(Enum):
     """This enum provides the list of FormProcessMapper Status."""
 
-    Active = "active"
-    Inactive = "inactive"
+    ACTIVE = "active"
+    INACTIVE = "inactive"
 
 
 class MetricsState(Enum):

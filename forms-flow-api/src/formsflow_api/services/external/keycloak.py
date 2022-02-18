@@ -75,6 +75,5 @@ class KeycloakAdminAPIService:
             )
         except Exception as e:
             raise f"Request to Keycloak Admin APIs failed., {e}"
-        else:
-            if response.status_code == 204:
-                return f"Updated - {url_path}"
+        if response.status_code == 204:
+            return f"Updated - {url_path}"

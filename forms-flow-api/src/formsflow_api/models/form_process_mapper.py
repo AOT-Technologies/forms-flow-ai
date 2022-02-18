@@ -79,7 +79,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
     def mark_inactive(self):
         """Mark form process mapper as inactive and deleted."""
-        self.status: str = str(FormProcessMapperStatus.Inactive.value)
+        self.status: str = str(FormProcessMapperStatus.INACTIVE.value)
         self.deleted: bool = True
         self.commit()
 
@@ -105,7 +105,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                     and_(
                         FormProcessMapper.form_name.ilike(f"%{form_name}%"),
                         FormProcessMapper.status
-                        == str(FormProcessMapperStatus.Active.value),
+                        == str(FormProcessMapperStatus.ACTIVE.value),
                     )
                 )
                 .paginate(page_number, limit, False)
@@ -115,7 +115,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             result = (
                 cls.query.filter(
                     FormProcessMapper.status
-                    == str(FormProcessMapperStatus.Active.value)
+                    == str(FormProcessMapperStatus.ACTIVE.value)
                 )
                 .order_by(FormProcessMapper.id.desc())
                 .all()
@@ -125,7 +125,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             result = (
                 cls.query.filter(
                     FormProcessMapper.status
-                    == str(FormProcessMapperStatus.Active.value)
+                    == str(FormProcessMapperStatus.ACTIVE.value)
                 )
                 .paginate(page_number, limit, False)
                 .items
@@ -136,7 +136,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     def find_all_count(cls):
         """Fetch the total active form process mapper which are active."""
         return cls.query.filter(
-            FormProcessMapper.status == str(FormProcessMapperStatus.Active.value)
+            FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value)
         ).count()
 
     @classmethod
@@ -151,7 +151,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         return cls.query.filter(
             and_(
                 FormProcessMapper.id == form_process_mapper_id,
-                FormProcessMapper.status == str(FormProcessMapperStatus.Active.value),
+                FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value),
             )
         ).first()  # pylint: disable=no-member
 

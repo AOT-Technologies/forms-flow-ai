@@ -64,7 +64,7 @@ for /f "tokens=14" %%a in ('ipconfig ^| findstr IPv4') do set _IPaddr=%%a
 
 echo Please wait, keycloak is setting up!
 docker-compose up -d
-echo you can pick up the bpm client secret id
+echo you can pick up the bpm client secret id 
 set /p realm="what is your keycloak realm name?"
 echo.
 echo.
@@ -73,7 +73,6 @@ setlocal ENABLEDELAYEDEXPANSION
 
 set keyurl=%_IPaddr%
 set str=KEYCLOAK_URL=http://{your-ip-address}:8080
-set strng=%str:{your-ip-address}=!keycloak_url!%
 set stg=%str:{your-ip-address}=!keyurl!%
 
 set /p keySecret="what is your bpm client secret key?"
@@ -83,7 +82,7 @@ echo KEYCLOAK_URL_REALM=%realm% >> .env
 echo %stg%>>".env"
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
 
-goto :analyticssection
+goto :analyticsoption
 
 :INSTALL WITH EXISTING KEYCLOAK
 set customKeycloak=1;
@@ -100,13 +99,15 @@ echo. >>".env"
 echo KEYCLOAK_URL_REALM=%realm% >> .env
 echo KEYCLOAK_URL=%keyurl% >> .env
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
-goto :analyticssection
+
+goto :analyticsoption
 
 
-:analyticssection
+:analyticsoption
 echo.
 echo.
 if %analytics% ==1 (
+echo.
 echo press ENTER to continue
 pause> nul
 goto :ANALYTICS
@@ -118,6 +119,21 @@ echo press ENTER to continue
 pause> nul
 goto :configuration section
 )
+::------------------------------------------
+:WEB CUSTOM INSTALLATION
+
+echo web custom installation here
+
+if %analytics% ==1 (
+echo press ENTER to continue
+pause> nul
+goto :ANALYTICS
+)
+
+if %analytics% ==0 (
+echo let's move to the installation
+echo press ENTER to continue
+pause> nul
 
 ::<===================ANALYTICS STARTS=======================>
 :ANALYTICS
@@ -185,7 +201,8 @@ set strinnng=%url:{your-ip-address}=!API_URL!%
 
 echo Please wait, forms is getting up!
 	
-docker-compose up -d forms-flow-forms
+docker-compose -f docker-compose.yml up --build -d forms-flow-forms
+timeout 15
 
 set websock=%_IPaddr%
 set lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
@@ -200,6 +217,7 @@ set lpu=WEBSOCKET_SECURITY_ORIGIN=http://{your-ip-address}:3000
 set streeng=%lpu:{your-ip-address}=!websock!%
 
 
+echo.
 pause> nul
 set hour=6
 set res=F

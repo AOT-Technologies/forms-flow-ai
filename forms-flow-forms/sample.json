@@ -4988,7 +4988,7 @@
             "key": "review",
             "tags": [],
             "properties": {},
-            "customConditional": "const UserDetails = JSON.parse(localStorage.getItem(\"UserDetails\"))\nconst groups = UserDetails[\"groups\"]\n\nif(groups.includes(\"/formsflow/formsflow-reviewer\") && data.applicationStatus===\"New\") {\n  show = true;\n}\nelse {\nshow = false;\n}",
+            "customConditional": "const UserDetails = JSON.parse(localStorage.getItem(\"UserDetails\"))\nif(!UserDetails){\n  show = false\n}else{\n  const groups = UserDetails[\"groups\"]\n\nif(groups.includes(\"/formsflow/formsflow-reviewer\") && data.applicationStatus===\"New\") {\n  show = true;\n}\nelse {\nshow = false;\n}\n}",
             "conditional": {
               "json": "",
               "show": null,
@@ -5396,7 +5396,6 @@
             "roles": [
               "administrator",
               "authenticated",
-              "anonymous",
               "formsflowReviewer",
               "formsflowClient"
             ],
@@ -8941,7 +8940,7 @@
             "key": "action",
             "tags": [],
             "properties": {},
-            "customConditional": "const UserDetails = JSON.parse(localStorage.getItem(\"UserDetails\"))\nconst groups = UserDetails[\"groups\"]\n\nif(groups.includes(\"/formsflow/formsflow-reviewer/clerk\") && data.applicationStatus===\"New\") {\n  show = true;\n}\nelse if(groups.includes(\"/formsflow/formsflow-reviewer/clerk\") && data.sendback_by===\"Clerk\" && (data.applicationStatus==\"Resubmitted\")) {\n  show = true;\n}\nelse {\nshow = false;\n}",
+            "customConditional": "\nconst UserDetails = JSON.parse(localStorage.getItem(\"UserDetails\")) \nif(!UserDetails){\n  show = false\n}else{\n  \nconst groups = UserDetails[\"groups\"]\nif(groups.includes(\"/formsflow/formsflow-reviewer/clerk\") && data.applicationStatus===\"New\") {\n  show = true;\n}\nelse if(groups.includes(\"/formsflow/formsflow-reviewer/clerk\") && data.sendback_by===\"Clerk\" && (data.applicationStatus==\"Resubmitted\")) {\n  show = true;\n}\nelse {\nshow = false;\n}\n\n}\n\n\n",
             "conditional": {
               "json": "",
               "show": null,
@@ -9449,7 +9448,7 @@
             "key": "managerPanel",
             "tags": [],
             "properties": {},
-            "customConditional": "const UserDetails = JSON.parse(localStorage.getItem(\"UserDetails\"))\nconst groups = UserDetails[\"groups\"]\nif(groups.includes(\"/formsflow/formsflow-reviewer/approver\") && (data.applicationStatus===\"Reviewed\")) {\n  show = true;\n}\nelse if((data.sendback_by===\"Approver\" && data.applicationStatus===\"Resubmitted\") && groups.includes(\"/formsflow/formsflow-reviewer/approver\")) {\n  show = true;\n}\nelse {\nshow = false;\n}",
+            "customConditional": "const UserDetails = JSON.parse(localStorage.getItem(\"UserDetails\"))\nif(!UserDetails){\n  show = false\n}else\n{\n  \nconst groups = UserDetails[\"groups\"]\nif(groups.includes(\"/formsflow/formsflow-reviewer/approver\") && (data.applicationStatus===\"Reviewed\")) {\n  show = true;\n}\nelse if((data.sendback_by===\"Approver\" && data.applicationStatus===\"Resubmitted\") && groups.includes(\"/formsflow/formsflow-reviewer/approver\")) {\n  show = true;\n}\nelse {\nshow = false;\n}\n\n}\n",
             "conditional": {
               "json": "",
               "show": null,
@@ -10164,7 +10163,6 @@
             "roles": [
               "administrator",
               "authenticated",
-              "anonymous",
               "formsflowReviewer",
               "formsflowClient"
             ],

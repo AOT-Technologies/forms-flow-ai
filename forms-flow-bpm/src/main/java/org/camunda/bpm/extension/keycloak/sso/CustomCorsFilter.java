@@ -59,8 +59,7 @@ public class CustomCorsFilter implements Filter {
         //Response Headers to all
         response.setHeader("Access-Control-Allow-Origin", getOrigin(request));
         response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS");
-        //response.setHeader("Access-Control-Allow-Headers","access-control-allow-methods, access-control-allow-origin, authorization, Content-Type, Accept, X-Requested-With, Origin, Token, Auth-Token, Email, X-User-Token, X-User-Email");
-        response.setHeader("Access-Control-Allow-Headers", "*");
+        response.setHeader("Access-Control-Allow-Headers","access-control-allow-methods, access-control-allow-origin, authorization, Content-Type, Accept, X-Requested-With, Origin, Token, Auth-Token, Email, X-User-Token, X-User-Email");
         response.setHeader("Access-Control-Max-Age", "3600");
 
         if ("OPTIONS".equalsIgnoreCase(requestMethod) && isEngineRestRequest(request)) {

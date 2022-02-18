@@ -14,7 +14,7 @@ def test_checkpoint_api():
         assert response.json == {"message": "Welcome to formsflow.ai API"}
 
 
-def test_checkpoint_test_api(session, client):
+def test_checkpoint_test_api(app, client, session):
     """Assert that checkpoint API status code"""
     response = client.get("/checkpoint")
     assert response.status_code == 200

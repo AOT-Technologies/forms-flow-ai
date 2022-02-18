@@ -55,17 +55,13 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     # POSTGRESQL
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "")
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        "pool_pre_ping": True,
-        "pool_recycle": 300,
-    }
 
     TESTING = False
     DEBUG = False
 
     # JWT_OIDC Settings
     JWT_OIDC_WELL_KNOWN_CONFIG = os.getenv("JWT_OIDC_WELL_KNOWN_CONFIG")
-    JWT_OIDC_ALGORITHMS = os.getenv("JWT_OIDC_ALGORITHMS")
+    JWT_OIDC_ALGORITHMS = os.getenv("JWT_OIDC_ALGORITHMS", "RS256")
     JWT_OIDC_JWKS_URI = os.getenv("JWT_OIDC_JWKS_URI")
     JWT_OIDC_ISSUER = os.getenv("JWT_OIDC_ISSUER")
     JWT_OIDC_AUDIENCE = os.getenv("JWT_OIDC_AUDIENCE")
@@ -125,6 +121,10 @@ class ProdConfig(_Config):  # pylint: disable=too-few-public-methods
     """Production environment configuration."""
 
     SECRET_KEY = os.getenv("SECRET_KEY", None)
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "pool_recycle": 300,
+    }
 
     if not SECRET_KEY:
         SECRET_KEY = os.urandom(24)

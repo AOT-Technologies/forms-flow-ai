@@ -64,10 +64,12 @@ export const getUserNamefromList = (userList,userId) => {
 }
 
 //formURl is of https://base-url/form/:formId/submission/:submissionId
+ // formURl is of https://base-url/public/form/:formId/submission/:submissionId
 export const getFormIdSubmissionIdFromURL = (formUrl) => {
-  const formArr = formUrl.split("/");
-  const formId = formArr[4];
-  const submissionId = formArr[6];
+  // Regex Extracts formId from */form/formId/submission/*
+  const formId = formUrl.match(/(?<=\/form\/)(.*)(?=\/submission)/)[0];
+  // Regex Extracts submissionId from */submission/submissionId
+  const submissionId = formUrl.match(/(?<=\/submission\/)(.*)(?=)/)[0];
   return {formId,submissionId};
 }
 
@@ -83,7 +85,12 @@ export const getISODateTime=(date)=>{
     }
 };
 
-
 export const getFormattedDateAndTime = (date)=>{
   return new Date(date).toLocaleDateString('en-us',  {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',hour: '2-digit', minute: '2-digit', hour12: true});
 };
+
+export const getSearchText = (query) => {
+   // Regex Extracts text from /text/g
+   const searchText = query===""?"":query.match(/(?<=\/)(.*)(?=\/i)/)[0];
+   return searchText;
+}

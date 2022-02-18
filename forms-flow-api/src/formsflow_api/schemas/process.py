@@ -1,4 +1,4 @@
-"""This manages process Response Schema."""
+# """This manages process Response Schema."""
 
 from marshmallow import EXCLUDE, Schema, fields
 
@@ -15,41 +15,41 @@ class ProcessListSchema(Schema):
     name = fields.Str()
 
 
-class ProcessDefinitionXMLSchema(Schema):
-    """This class manages process definition response schema."""
+# class ProcessDefinitionXMLSchema(Schema):
+#     """This class manages process definition response schema."""
 
-    class Meta:  # pylint: disable=too-few-public-methods
-        """Exclude unknown fields in the deserialized output."""
+#     class Meta:  # pylint: disable=too-few-public-methods
+#         """Exclude unknown fields in the deserialized output."""
 
-        unknown = EXCLUDE
+#         unknown = EXCLUDE
 
-    id = fields.Str()
-    processXml = fields.Str(data_key="bpmn20Xml", attribute="bpmn20Xml")
-
-
-class ProcessActivityInstanceSchema(Schema):
-    """This class manages task response schema."""
-
-    class Meta:  # pylint: disable=too-few-public-methods
-        """Exclude unknown fields in the deserialized output."""
-
-        unknown = EXCLUDE
-
-    process_instance_id = fields.Str(
-        data_key="processInstanceId", attribute="processInstanceId"
-    )
-    childActivityInstances = fields.Str(
-        data_key="childActivityInstances", attribute="childActivityInstances"
-    )
+#     id = fields.Str()
+#     processXml = fields.Str(data_key="bpmn20Xml", attribute="bpmn20Xml")
 
 
-class ProcessMessageSchema(Schema):
-    """This class manages process definition response schema."""
+# class ProcessActivityInstanceSchema(Schema):
+#     """This class manages task response schema."""
 
-    class Meta:  # pylint: disable=too-few-public-methods
-        """Exclude unknown fields in the deserialized output."""
+#     class Meta:  # pylint: disable=too-few-public-methods
+#         """Exclude unknown fields in the deserialized output."""
 
-        unknown = EXCLUDE
+#         unknown = EXCLUDE
 
-    messageName = fields.Str()
-    processInstanceId = fields.Str()
+#     process_instance_id = fields.Str(
+#         data_key="processInstanceId", attribute="processInstanceId"
+#     )
+#     childActivityInstances = fields.Str(
+#         data_key="childActivityInstances", attribute="childActivityInstances"
+#     )
+
+
+# class ProcessMessageSchema(Schema):
+#     """This class manages process definition response schema."""
+
+#     class Meta:  # pylint: disable=too-few-public-methods
+#         """Exclude unknown fields in the deserialized output."""
+
+#         unknown = EXCLUDE
+
+#     messageName = fields.Str()
+#     processInstanceId = fields.Str()

@@ -69,6 +69,15 @@ export const ROLES = [
   },
 ];
 
+
+export const FORM_ACCESS =[{
+  type: "read_all",
+  roles:  [CLIENT_ID,
+    STAFF_REVIEWER_ID,
+    STAFF_DESIGNER_ID
+      ]
+  }]
+
 export const OPERATIONS = {
   insert: {
     action: "insert",
@@ -166,16 +175,16 @@ export const SUBMISSION_ACCESS = [
     roles: [STAFF_DESIGNER_ID, STAFF_REVIEWER_ID],
     type: "delete_all",
   },
+  {
+    roles:[CLIENT_ID],
+    type:"create_own"
+  },
   // {
-  //   roles:[CLIENT_ID, ANONYMOUS_ID],
-  //   type:"create_own"
+  //   roles: [CLIENT_ID],
+  //   type: "create_own",
   // },
   {
-    roles: [CLIENT_ID],
-    type: "create_own",
-  },
-  {
-    roles: [CLIENT_ID],
+    roles: [CLIENT_ID,],
     type: "read_own",
   },
   {
@@ -187,3 +196,4 @@ export const SUBMISSION_ACCESS = [
     type: "delete_own",
   },
 ];
+

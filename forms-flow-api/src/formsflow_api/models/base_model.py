@@ -1,6 +1,7 @@
 """This manages Base Model functions."""
 
 from typing import Any
+
 from flask import current_app
 
 from formsflow_api.models.db import db

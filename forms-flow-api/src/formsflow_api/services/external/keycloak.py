@@ -52,7 +52,7 @@ class KeycloakAdminAPIService:
         """Method to fetch GET paginated request of Keycloak Admin APIs
         :param url_path: The relative path of the API
         :param first: The page_number
-        :param max: The max number of items per page
+        :param max_results: The max number of items per page
         """
         url = f"{self.base_url}/{url_path}?first={first}&max={max_results}"
         response = self.session.request("GET", url)

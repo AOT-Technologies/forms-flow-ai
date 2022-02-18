@@ -94,7 +94,7 @@ class ApplicationsResource(Resource):
                     application_status=application_status,
                 )
             application_schema = ApplicationService.apply_custom_attributes(
-                application_schema=application_schema_dump
+                application_schema_dump=application_schema_dump
             )
             return (
                 (

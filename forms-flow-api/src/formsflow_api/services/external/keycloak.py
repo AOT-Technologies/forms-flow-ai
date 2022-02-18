@@ -63,9 +63,9 @@ class KeycloakAdminAPIService:
         return None
 
     @profiletime
-    def update_request(
+    def update_request(  # pylint: disable=inconsistent-return-statements
         self, url_path, data=None
-    ):  # pylint: disable=inconsistent-return-statements
+    ):
         """Method to fetch get request of Keycloak Admin APIs
         :param url_path: The relative path of the API
         :param data: The request data object

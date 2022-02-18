@@ -52,6 +52,7 @@ class DashboardList(Resource):
 class DashboardDetail(Resource):
     """Resource to fetch Dashboard Detail"""
 
+    @staticmethod
     @API.doc("get_dashboard")
     @auth.require
     @profiletime

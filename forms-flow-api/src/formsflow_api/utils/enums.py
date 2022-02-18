@@ -16,7 +16,7 @@ class MetricsState(Enum):
     MODIFIED = "modified"
 
 
-class ApplicationSortingParameters:
+class ApplicationSortingParameters:  # pylint: disable=too-few-public-methods
     """This enum provides the list of Sorting Parameters."""
 
     Id = "id"

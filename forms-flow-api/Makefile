@@ -54,7 +54,7 @@ ci: lint test ## CI flow
 
 format: ## CodeFormat python code with black & isort
 	. venv/bin/activate && isort --profile black src/${PROJECT_NAME} && black -t py39 src/$(PROJECT_NAME)
-pylint: ## Lint python code with black and pylint
+pylint: ## Lint python code with pylint
 	. venv/bin/activate && pylint --rcfile=setup.cfg  src/$(PROJECT_NAME)
 
 flake8: ## Linting with flake8

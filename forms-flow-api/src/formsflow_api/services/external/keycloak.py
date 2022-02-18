@@ -32,8 +32,10 @@ class KeycloakAdminAPIService:
                 "Content-Type": "application/json",
             }
         )
-        self.base_url = f"{current_app.config.get('KEYCLOAK_URL')}/auth/admin/realms/\
-        {current_app.config.get('KEYCLOAK_URL_REALM')}"
+        self.base_url = (
+            f"{current_app.config.get('KEYCLOAK_URL')}/auth/admin/realms/"
+            f"{current_app.config.get('KEYCLOAK_URL_REALM')}"
+        )
 
     @profiletime
     def get_request(self, url_path):

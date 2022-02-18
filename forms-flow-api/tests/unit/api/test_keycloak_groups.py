@@ -29,7 +29,8 @@ def test_group_list_wrong_auth_header(app, client, session):
     assert response.status_code == 401
     assert response.json == {
         "type": "Invalid Token Error",
-        "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for Authorization or has expired.",
+        "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for '\
+                    'Authorization or has expired.",
     }
 
 

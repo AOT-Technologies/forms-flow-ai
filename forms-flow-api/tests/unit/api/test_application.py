@@ -14,7 +14,8 @@ class TestApplicationResource:
         assert response.status_code == 401
         assert response.json == {
             "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for Authorization or has expired.",
+            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for '\
+                'Authorization or has expired.",
         }
 
     def test_application_list(self, app, client, session):
@@ -56,12 +57,23 @@ class TestApplicationResource:
             headers=headers,
         )
         assert response.status_code == 200
+
     @pytest.mark.parametrize(
         ("pageNo", "limit", "filters"),
-        ((1, 5, "Id=1"), (1, 10, "applicationName=Free"), (1, 20, "applicationStatus=New")),
+        (
+            (1, 5, "Id=1"),
+            (1, 10, "applicationName=Free"),
+            (1, 20, "applicationStatus=New"),
+        ),
     )
     def test_application_paginated_filtered_list(
-        self, app, client, session, pageNo, limit, filters,
+        self,
+        app,
+        client,
+        session,
+        pageNo,
+        limit,
+        filters,
     ):
         token = factory_auth_header()
         headers = {
@@ -83,8 +95,7 @@ class TestApplicationResource:
             f"/application?pageNo={pageNo}&limit={limit}&{filters}",
             headers=headers,
         )
-        assert response.status_code == 200 
-
+        assert response.status_code == 200
 
 
 class TestApplicationDetailView:
@@ -93,7 +104,8 @@ class TestApplicationDetailView:
         assert response.status_code == 401
         assert response.json == {
             "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for Authorization or has expired.",
+            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for '\
+                'Authorization or has expired.",
         }
 
     def test_application_detailed_view(self, app, client, session):

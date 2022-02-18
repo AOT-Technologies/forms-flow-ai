@@ -10,7 +10,6 @@ from formsflow_api.services import ApplicationService
 from formsflow_api.utils import auth, cors_preflight, profiletime
 from formsflow_api.utils.enums import MetricsState
 
-
 API = Namespace("Metrics", description="Application Metrics endpoint")
 
 

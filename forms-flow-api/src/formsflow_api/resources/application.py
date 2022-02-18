@@ -16,7 +16,6 @@ from formsflow_api.schemas import (
 from formsflow_api.services import ApplicationService
 from formsflow_api.utils import REVIEWER_GROUP, auth, cors_preflight, profiletime
 
-
 API = Namespace("Application", description="Application")
 
 

@@ -6,7 +6,6 @@ from .base_model import BaseModel
 from .db import db, ma
 from .form_process_mapper import FormProcessMapper
 
-
 __all__ = [
     "db",
     "ma",

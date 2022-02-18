@@ -16,7 +16,6 @@ from formsflow_api.schemas import (
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import NEW_APPLICATION_STATUS
 
-
 application_schema = ApplicationSchema()
 
 

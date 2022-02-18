@@ -6,7 +6,6 @@ from flask_restx import Namespace, Resource
 
 from formsflow_api.utils import cors_preflight, profiletime
 
-
 API = Namespace("Checkpoint", description="Checkpoint")
 
 

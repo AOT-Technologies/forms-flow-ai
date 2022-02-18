@@ -10,7 +10,6 @@ from formsflow_api.schemas import ApplicationSchema
 from formsflow_api.services import ApplicationService
 from formsflow_api.utils import ANONYMOUS_USER, cors_preflight, profiletime
 
-
 API = Namespace("Public", description="Public api endpoints")
 
 

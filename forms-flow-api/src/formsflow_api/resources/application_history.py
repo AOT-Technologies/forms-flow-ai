@@ -9,7 +9,6 @@ from formsflow_api.schemas import ApplicationHistorySchema
 from formsflow_api.services import ApplicationHistoryService
 from formsflow_api.utils import auth, cors_preflight, profiletime
 
-
 # keeping the base path same for application history and application/
 API = Namespace("Application", description="Application")
 

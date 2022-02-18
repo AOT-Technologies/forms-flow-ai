@@ -9,7 +9,6 @@ from formsflow_api.schemas import ApplicationListReqSchema
 from formsflow_api.services import RedashAPIService
 from formsflow_api.utils import auth, cors_preflight, profiletime
 
-
 API = Namespace("dashboards", description="Dashboard APIs")
 analytics_service = RedashAPIService()
 

@@ -7,7 +7,6 @@ from formsflow_api.services.external.keycloak import KeycloakAdminAPIService
 from formsflow_api.services.form_process_mapper import FormProcessMapperService
 from formsflow_api.services.process import ProcessService
 
-
 __all__ = [
     "ApplicationService",
     "ApplicationHistoryService",

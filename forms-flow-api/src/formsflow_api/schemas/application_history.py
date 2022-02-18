@@ -2,7 +2,6 @@
 
 from marshmallow import EXCLUDE, Schema, fields
 
-
 # class ApplicationHistoryReqSchema(Schema):
 #     """This class manages application list request schema."""
 

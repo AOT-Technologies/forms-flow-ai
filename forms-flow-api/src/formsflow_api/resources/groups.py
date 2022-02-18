@@ -15,7 +15,6 @@ from formsflow_api.utils import (
     profiletime,
 )
 
-
 API = Namespace("groups", description="Keycloak wrapper APIs")
 
 

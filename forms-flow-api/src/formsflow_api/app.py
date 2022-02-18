@@ -1,4 +1,4 @@
-""""App initialization.
+"""App initialization.
 
 Initialize app and the dependencies.
 """

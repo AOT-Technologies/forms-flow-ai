@@ -73,6 +73,7 @@ jobs:
       TEST_REVIEWER_PASSWORD: ${{ secrets.TEST_REVIEWER_PASSWORD }}
       INSIGHT_API_URL: ${{ secrets.INSIGHT_API_URL }}
       INSIGHT_API_KEY: ${{ secrets.INSIGHT_API_KEY }}
+      SKIP_IN_CI: "True"
 
     runs-on: ubuntu-20.04
 

@@ -45,22 +45,20 @@ class KeycloakDashboardGroupList(Resource):
             group_list_response = client.get_request(url_path="groups")
         else:
             group_list_response = client.get_paginated_request(
-                url_path="groups", first=page_no, max=limit
+                url_path="groups", first=page_no, max_results=limit
             )
 
         for group in group_list_response:
             if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
-                dashboard_group_list = [x for x in group["subGroups"]]
+                dashboard_group_list = list(group["subGroups"])
                 if dashboard_group_list == []:
                     return {
                         "message": "No Dashboard authorized Group found"
                     }, HTTPStatus.NOT_FOUND
 
-                for (
-                    group
-                ) in dashboard_group_list:  # pylint:disable=redefined-outer-name
-                    group["dashboards"] = (
-                        client.get_request(url_path=f"groups/{group['id']}")
+                for dashboard_group in dashboard_group_list:
+                    dashboard_group["dashboards"] = (
+                        client.get_request(url_path=f"groups/{dashboard_group['id']}")
                         .get("attributes")
                         .get("dashboards")
                     )

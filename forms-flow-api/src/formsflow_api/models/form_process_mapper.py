@@ -8,9 +8,10 @@ from flask import current_app
 from sqlalchemy import and_
 
 from formsflow_api.exceptions import BusinessException
-from formsflow_api.models import BaseModel, db
-from formsflow_api.models.audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from formsflow_api.utils.enums import FormProcessMapperStatus
+from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
+from .base_model import BaseModel
+from .db import db
 
 
 class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):

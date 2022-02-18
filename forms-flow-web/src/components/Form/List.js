@@ -56,6 +56,7 @@ const List = React.memo((props) => {
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const operations = getOperations(userRoles, showViewSubmissions);
   const columns = isDesigner ? designerColumns : userColumns;
+  const paginatedForms = isDesigner? forms.forms : bpmForms.forms;
 
 
   const getFormsList = (page, query) => {
@@ -101,6 +102,10 @@ const List = React.memo((props) => {
     uploadFormNode.current?.click();
     return false;
   };
+   
+  const resetForms = ()=>{
+    dispatch(indexForms('forms', 1, {query:{ ...forms.query, title__regex: "" }}))
+  }
 
   const uploadFileContents = async (fileContent) => {
     if (fileContent.forms && Array.isArray(fileContent.forms)) {
@@ -213,14 +218,38 @@ const List = React.memo((props) => {
             </div>
             <section className="custom-grid grid-forms">
               <Errors errors={errors}/>
-              <FormGrid
-                columns={columns}
-                forms={isDesigner ? forms : bpmForms}
-                onAction={onAction}
-                getForms={isDesigner ? getForms : getFormsList}
-                operations={operations}
-                onPageSizeChanged={onPageSizeChanged}
-              />
+              {
+               paginatedForms.length?
+               <FormGrid
+               columns={columns}
+               forms={isDesigner ? forms : bpmForms}
+               onAction={onAction}
+               getForms={isDesigner ? getForms : getFormsList}
+               operations={operations}
+               onPageSizeChanged={onPageSizeChanged}
+             />: <span 
+                  style={{ 
+                  textAlign:"center",
+                  display:"block",
+                  margin:"0px auto",
+                  justifyContent: "center",
+                  marginTop:"260px" }}
+                  >
+                  <h3 >No forms found </h3> 
+                 
+                    <Button variant="outline-primary" size="sm"
+                    style={{
+                      
+                      cursor:"pointer"}}
+                      onClick={resetForms}
+                    >
+                    Click here to go back
+                   </Button>
+                    
+                  </span>
+              }
+              
+              
             </section>
           </div>
       }

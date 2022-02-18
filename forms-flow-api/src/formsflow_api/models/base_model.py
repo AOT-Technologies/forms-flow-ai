@@ -58,7 +58,7 @@ class BaseModel:
                 raise Exception("Invalid filter operator: %s" % operator)
             if value == "null":
                 value = None
-            if operator == "like":
+            if operator == "ilike":
                 value = f"%{value}%"
             # Corresponding to model.column_name apply operator with specific value
             filt = getattr(column, attr)(value)

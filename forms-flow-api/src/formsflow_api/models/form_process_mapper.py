@@ -103,7 +103,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             return (
                 cls.query.filter(
                     and_(
-                        FormProcessMapper.form_name.like(f"{form_name}%"),
+                        FormProcessMapper.form_name.ilike(f"%{form_name}%"),
                         FormProcessMapper.status
                         == str(FormProcessMapperStatus.Active.value),
                     )
@@ -142,7 +142,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     @classmethod
     def find_count_form_name(cls, form_name):
         return cls.query.filter(
-            FormProcessMapper.form_name.like(f"{form_name}%")
+            FormProcessMapper.form_name.ilike(f"%{form_name}%")
         ).count()
 
     @classmethod

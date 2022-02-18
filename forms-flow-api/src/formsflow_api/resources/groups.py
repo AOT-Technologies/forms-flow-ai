@@ -51,7 +51,7 @@ class KeycloakDashboardGroupList(Resource):
         for group in group_list_response:
             if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
                 dashboard_group_list = list(group["subGroups"])
-                if dashboard_group_list == []:
+                if not dashboard_group_list:
                     return {
                         "message": "No Dashboard authorized Group found"
                     }, HTTPStatus.NOT_FOUND

@@ -94,3 +94,12 @@ export const getSearchText = (query) => {
    const searchText = query===""?"":query.match(/(?<=\/)(.*)(?=\/i)/)[0];
    return searchText;
 }
+
+export const getFormattedProcess = (application)=>{
+  const processData = {
+    processName:application.processName,
+    formProcessMapperId:application.formProcessMapperId,
+    processKey:application.processKey
+  }
+  return processData;
+}

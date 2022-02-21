@@ -15,7 +15,6 @@ const API = {
   GET_ALL_APPLICATIONS_FROM_FORM_ID: `${WEB_BASE_URL}/application/formid`,
   GET_ALL_APPLICATIONS: `${WEB_BASE_URL}/application`,
   GET_ALL_APPLICATIONS_STATUS: `${WEB_BASE_URL}/application/status/list`,
-  GET_PROCESS_MAPPER_FOR_APPLICATION: `${WEB_BASE_URL}/application/<application_id>/process`,
   PROCESSES: `${WEB_BASE_URL}/process`,
   PROCESSES_XML:`${BPM_BASE_URL}/process-definition/key/<process_key>/xml`,
   PROCESS_ACTIVITIES: `${BPM_BASE_URL}/process-instance/<process_instance_id>/activity-instances`,

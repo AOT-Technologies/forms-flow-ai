@@ -4,15 +4,8 @@ export const TRANSLATIONS_ZH = {
   message:"请在再次提交之前修复错误。",
   message_submission:"无法提交。 ",
   workflow_association:"表单工作流关联已保存。",
-  workflow_association_failed:"表单工作流关联失败。",
-  workflow_error:"获取工作流过程时出错。",
-  form_saved:"表格已保存。",
-  form_save_error:"保存表单时出错。",
-  create_form:"创建表格  ",
-  design_form:"设计形式  ",
-  associate_workflow:"将此表单与工作流相关联？",
-  preview_confirm:"预览并确认",
-  all_steps:"已完成所有步骤 - 您已完成",
+  
+  
   delete_form_message:"您确定要删除表格吗",
   Forms:"表格  ",
   Edit:"编辑",
@@ -141,12 +134,12 @@ export const TRANSLATIONS_ZH = {
   edit:"编辑",
   select_dashboard:"选择仪表板",
   total_submissions:"提交总数",
-  save_preview:"保存和预览",
   operation:"运营",
   access_groups:"访问组",
   action:"行动",
   add:"添加",
   admin:"行政",
+  create_form:"创建表格  ",
   upload_form:"上传表格",
   download_form:"下载表格",
   upload_json:"仅上传 json 表单",
@@ -158,12 +151,21 @@ export const TRANSLATIONS_ZH = {
   file_upload_confirmation:"文件上传确认",
   forms_completed:"完成的表格",
   no_forms_found:"没有找到表格",
-  powered_by:"供电",
-  anonymous_form:"匿名表格？",
+  
+  
   no_applications_found:"未找到任何应​​用程序",
   successfully_updated:"成功更新",
   failed:"失败的",
   submission_saved:"提交已保存。",
-  submission_failed:"提交失败。"
+  submission_failed:"提交失败。",
+  formsearch_hover:"按 Enter 键或点击此处搜索",
+  click_to_clear:"点击清除",
+  search:"搜索...",
+  
+
+
+
+
+
 }
 

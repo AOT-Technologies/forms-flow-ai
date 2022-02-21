@@ -1,13 +1,14 @@
 import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import pick from "lodash/pick";
 import {CLIENT, OPERATIONS, STAFF_DESIGNER, STAFF_REVIEWER} from "../../../constants/constants";
-//import { useTranslation } from "react-i18next";
+import FormSearch from "../FormSearch/FormSearch";
 import { Translation } from "react-i18next";
+
 export const designerColumns = [
   {
     key: 'title',
-    sort: true,
-    title: <Translation>{(t)=>t("form")}</Translation>,
+    sort: false,
+    title: <FormSearch/>,
     width: 6,
   },
   {

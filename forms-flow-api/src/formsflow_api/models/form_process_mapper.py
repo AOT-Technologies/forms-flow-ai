@@ -1,14 +1,18 @@
 """This manages Form ProcessMapper Database Models."""
 
 from __future__ import annotations
+
 from http import HTTPStatus
 
-from sqlalchemy import and_, func
+from flask import current_app
+from sqlalchemy import and_
 
 from formsflow_api.exceptions import BusinessException
-from formsflow_api.models import BaseModel, db
-from formsflow_api.models.audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from formsflow_api.utils.enums import FormProcessMapperStatus
+
+from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
+from .base_model import BaseModel
+from .db import db
 
 
 class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
@@ -45,7 +49,14 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.is_anonymous = mapper_info.get("is_anonymous")
                 mapper.save()
                 return mapper
-        except BaseException:
+        except KeyError as err:
+            current_app.logger.warning(err)
+            response, status = {
+                "type": "Bad Request Error",
+                "message": "Invalid application request passed",
+            }, HTTPStatus.BAD_REQUEST
+        except Exception as err:  # pylint: disable=broad-except
+            current_app.logger.critical(err)
             response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid application request passed",
@@ -72,7 +83,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
     def mark_inactive(self):
         """Mark form process mapper as inactive and deleted."""
-        self.status: str = str(FormProcessMapperStatus.Inactive.value)
+        self.status: str = str(FormProcessMapperStatus.INACTIVE.value)
         self.deleted: bool = True
         self.commit()
 
@@ -80,42 +91,62 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     def find_all(cls, page_number, limit):
         """Fetch all the form process mappers."""
         if page_number == 0:
-            return cls.query.order_by(FormProcessMapper.id.desc()).all()
+            query = cls.query.order_by(FormProcessMapper.id.desc()).all()
         else:
-            return (
+            query = (
                 cls.query.order_by(FormProcessMapper.id.desc())
                 .paginate(page_number, limit, False)
                 .items
             )
+        return query
 
     @classmethod
-    def find_all_active(cls, page_number, limit):
+    def find_all_active(cls, page_number, limit, form_name=None):
         """Fetch all active form process mappers"""
-        if page_number == 0:
+        if form_name:
             return (
                 cls.query.filter(
+                    and_(
+                        FormProcessMapper.form_name.ilike(f"%{form_name}%"),
+                        FormProcessMapper.status
+                        == str(FormProcessMapperStatus.ACTIVE.value),
+                    )
+                )
+                .paginate(page_number, limit, False)
+                .items
+            )
+        if page_number == 0:
+            result = (
+                cls.query.filter(
                     FormProcessMapper.status
-                    == str(FormProcessMapperStatus.Active.value)
+                    == str(FormProcessMapperStatus.ACTIVE.value)
                 )
                 .order_by(FormProcessMapper.id.desc())
                 .all()
             )
 
         else:
-            return (
+            result = (
                 cls.query.filter(
                     FormProcessMapper.status
-                    == str(FormProcessMapperStatus.Active.value)
+                    == str(FormProcessMapperStatus.ACTIVE.value)
                 )
                 .paginate(page_number, limit, False)
                 .items
             )
+        return result
 
     @classmethod
     def find_all_count(cls):
         """Fetch the total active form process mapper which are active."""
         return cls.query.filter(
-            FormProcessMapper.status == str(FormProcessMapperStatus.Active.value)
+            FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value)
+        ).count()
+
+    @classmethod
+    def find_count_form_name(cls, form_name):
+        return cls.query.filter(
+            FormProcessMapper.form_name.ilike(f"%{form_name}%")
         ).count()
 
     @classmethod
@@ -124,7 +155,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         return cls.query.filter(
             and_(
                 FormProcessMapper.id == form_process_mapper_id,
-                FormProcessMapper.status == str(FormProcessMapperStatus.Active.value),
+                FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value),
             )
         ).first()  # pylint: disable=no-member
 
@@ -135,7 +166,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
     @classmethod
     def find_form_by_form_id(cls, form_id) -> FormProcessMapper:
-        """Find active form process mapper that matches the provided form_id."""
+        """Find form process mapper that matches the provided form_id."""
         return cls.query.filter(
             FormProcessMapper.form_id == form_id,
         ).first()  # pylint: disable=no-member
@@ -162,6 +193,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
             return result[0]
         except IndexError as err:
+            current_app.logger.warning(err)
             return (
                 "List index out of range",
                 HTTPStatus.BAD_REQUEST,

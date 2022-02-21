@@ -37,8 +37,11 @@ const apiUrlAppHistoryEmpty = replaceUrl(
     102
     );
 
+const mockAPI = jest.fn();
+
 export const handlers = [
     rest.get(apiUrlAppHistory, (req, res, ctx) => {
+        mockAPI()
       return res(ctx.status(200),ctx.json({
         applications:[
             {
@@ -67,8 +70,7 @@ export const handlers = [
 describe("Integration test for HistoryList component",()=>{
     test("Should render the history list table when the valid props are passed",async()=>{
         render(<HistoryList applicationId={100} />)
-        await waitFor(() => expect(screen.getByText("New")).toBeInTheDocument());
-        await waitFor(() => expect(screen.getByText("View Submission")).toBeInTheDocument());
+        await waitFor(()=>expect(mockAPI).toHaveBeenCalledTimes(1))
     })
     test("Should not render the history list table when the invalid props are passed",async()=>{
         render(<HistoryList applicationId={101} />)
@@ -85,4 +87,3 @@ describe("Integration test for HistoryList component",()=>{
         await waitFor(() => expect(screen.getByText("No Application History found")).toBeInTheDocument());
     })
 })
-   

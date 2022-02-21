@@ -83,3 +83,10 @@ export const setFormSubmitted =(data)=>dispatch=>{
     payload:data
   })
 }
+
+export const setPublicFormStatus =(data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.PUBLIC_FORM_STATUS,
+    payload:data
+  })
+}

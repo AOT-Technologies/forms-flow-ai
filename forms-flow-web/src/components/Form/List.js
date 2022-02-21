@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState} from "react";
 import {connect, useDispatch, useSelector} from "react-redux";
-import { push } from "connected-react-router";
-import { Link } from "react-router-dom";
+import {push} from "connected-react-router";
+import {Link} from "react-router-dom";
 import {Button} from "react-bootstrap";
-import { toast } from 'react-toastify';
+import {toast} from 'react-toastify';
 import {
   indexForms,
   selectRoot,
@@ -12,7 +12,7 @@ import {
   FormGrid,
   deleteForm,
   saveForm
-} from "@formio/react";
+} from "react-formio";
 import Loading from "../../containers/Loading";
 import {
   FORM_ACCESS,
@@ -31,12 +31,11 @@ import {designerColumns, getOperations, userColumns} from "./constants/formListC
 import FileService from "../../services/FileService";
 import {setFormCheckList, setFormUploadList, updateFormUploadCounter} from "../../actions/checkListActions";
 import FileModal from './FileUpload/fileUploadModal'
-import { useTranslation } from "react-i18next";
+import { useTranslation,Translation } from "react-i18next";
 import {addHiddenApplicationComponent} from "../../constants/applicationComponent";
  const List = React.memo((props)=> {
   const {t}=useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
-  //const [selectedForm,setSelectedForms] = useState([]);
   const dispatch = useDispatch();
   const uploadFormNode = useRef();
   const {
@@ -51,48 +50,49 @@ import {addHiddenApplicationComponent} from "../../constants/applicationComponen
     onYes,
   } = props;
 
-  const isBPMFormListLoading = useSelector(state=> state.bpmForms.isActive);
-  const bpmForms = useSelector(state=> state.bpmForms);
-  const showViewSubmissions= useSelector((state) => state.user.showViewSubmissions);
+  const isBPMFormListLoading = useSelector(state => state.bpmForms.isActive);
+  const bpmForms = useSelector(state => state.bpmForms);
+  const showViewSubmissions = useSelector((state) => state.user.showViewSubmissions);
   const formCheckList = useSelector(state => state.formCheckList.formList);
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const operations = getOperations(userRoles, showViewSubmissions);
-  const columns= isDesigner? designerColumns: userColumns;
+  const columns = isDesigner ? designerColumns : userColumns;
+  const paginatedForms = isDesigner? forms.forms : bpmForms.forms;
 
 
-  const getFormsList = (page,query)=>{
-    if(page){
+  const getFormsList = (page, query) => {
+    if (page) {
       dispatch(setBPMFormListPage(page));
     }
-    if(query){
-      dispatch(setBPMFormListSort(query.sort||''));
+    if (query) {
+      dispatch(setBPMFormListSort(query.sort || ''));
     }
   }
 
-  const onPageSizeChanged=(pageSize)=>{
-    if(isDesigner){
-      dispatch(indexForms("forms", 1, {limit:pageSize}));
-    }else{
+  const onPageSizeChanged = (pageSize) => {
+    if (isDesigner) {
+      dispatch(indexForms("forms", 1, {limit: pageSize}));
+    } else {
       dispatch(setBPMFormLimit(pageSize));
     }
   }
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(setFormCheckList([]))
-  },[dispatch])
+  }, [dispatch])
 
-  useEffect(()=>{
-    if(isDesigner){
+  useEffect(() => {
+    if (isDesigner) {
       getFormsInit(1);
-    }else {
+    } else {
       dispatch(setBPMFormListLoading(true))
       dispatch(fetchBPMFormList());
     }
-  },[getFormsInit, dispatch, isDesigner])
+  }, [getFormsInit, dispatch, isDesigner])
 
   const downloadForms = () => {
-    FileService.downloadFile({forms:formCheckList},()=>{
-      toast.success(`${formCheckList.length} ${formCheckList.length===1?t("form"):t("Forms")} Downloaded Successfully`)
+    FileService.downloadFile({forms: formCheckList}, () => {
+      toast.success(`${formCheckList.length} ${formCheckList.length === 1 ? "Form" : "Forms"} Downloaded Successfully`)
       dispatch(setFormCheckList([]));
     })
   }
@@ -103,58 +103,60 @@ import {addHiddenApplicationComponent} from "../../constants/applicationComponen
     uploadFormNode.current?.click();
     return false;
   };
-
-  const uploadFileContents = async (fileContent)=>{
-    if(fileContent.forms && Array.isArray(fileContent.forms))
-      {
-    await Promise.all(
-      fileContent.forms.map(async (formData)=>{
-        return new Promise((resolve, reject) => {
-          formData = addHiddenApplicationComponent(formData);
-          const newFormData = {
-            ...formData,
-            tags: ["common"]
-          };
-          newFormData.access = FORM_ACCESS;
-          newFormData.submissionAccess = SUBMISSION_ACCESS;
-          dispatch(saveForm("form", newFormData, async (err, form) => { // TODO add Default SubmissionAccess to formData
-            if (err) {
-              // get the form Id of the form if exists already in the server
-              dispatch(fetchFormByAlias(newFormData.path, async (err, formObj) => {
-                if (!err) {
-                  newFormData._id = formObj._id;
-                  newFormData.access = formObj.access;
-                  newFormData.submissionAccess = formObj.submissionAccess;
-                  // newFormData.tags = formObj.tags;
-                  dispatch(saveForm("form", newFormData, (err, form) => {
-                    if (!err) {
-                      dispatch(updateFormUploadCounter())
-                      resolve();
-                    }else{
-                      reject();
-                    }
-                  }));
-                }else{
-                  reject();
-                }
-              }));
-            } else {
-              dispatch(updateFormUploadCounter())
-              resolve()
-            }
-          }))
-        });
-    }));
-  }
-  else{
-    setShowFormUploadModal(false);
-    return (toast.error('Error in Json file structure'))
-  }
+   
+  const resetForms = ()=>{
+    dispatch(indexForms('forms', 1, {query:{ ...forms.query, title__regex: "" }}))
   }
 
-  const fileUploaded = async (evt) =>{
-    FileService.uploadFile(evt,async (fileContent)=> {
-      dispatch(setFormUploadList(fileContent?.forms||[]));
+  const uploadFileContents = async (fileContent) => {
+    if (fileContent.forms && Array.isArray(fileContent.forms)) {
+      await Promise.all(
+        fileContent.forms.map(async (formData) => {
+          return new Promise((resolve, reject) => {
+            formData = addHiddenApplicationComponent(formData);
+            const newFormData = {
+              ...formData,
+              tags: ["common"]
+            };
+            newFormData.access = FORM_ACCESS;
+            newFormData.submissionAccess = SUBMISSION_ACCESS;
+            dispatch(saveForm("form", newFormData, async (err, form) => { // TODO add Default SubmissionAccess to formData
+              if (err) {
+                // get the form Id of the form if exists already in the server
+                dispatch(fetchFormByAlias(newFormData.path, async (err, formObj) => {
+                  if (!err) {
+                    newFormData._id = formObj._id;
+                    newFormData.access = formObj.access;
+                    newFormData.submissionAccess = formObj.submissionAccess;
+                    // newFormData.tags = formObj.tags;
+                    dispatch(saveForm("form", newFormData, (err, form) => {
+                      if (!err) {
+                        dispatch(updateFormUploadCounter())
+                        resolve();
+                      } else {
+                        reject();
+                      }
+                    }));
+                  } else {
+                    reject();
+                  }
+                }));
+              } else {
+                dispatch(updateFormUploadCounter())
+                resolve()
+              }
+            }))
+          });
+        }));
+    } else {
+      setShowFormUploadModal(false);
+      return (toast.error('Error in Json file structure'))
+    }
+  }
+
+  const fileUploaded = async (evt) => {
+    FileService.uploadFile(evt, async (fileContent) => {
+      dispatch(setFormUploadList(fileContent?.forms || []));
       setShowFormUploadModal(true);
       await uploadFileContents(fileContent);
       dispatch(indexForms("forms", 1, forms.query))
@@ -162,72 +164,98 @@ import {addHiddenApplicationComponent} from "../../constants/applicationComponen
   }
 
   return (
-     <>
-      <FileModal modalOpen={showFormUploadModal} onClose={()=>setShowFormUploadModal(false)} />
-       {
-    (forms.isActive || isBPMFormListLoading) ? <div data-testid="Form-list-component-loader"><Loading/></div> :
-      <div className="container">
-        <Confirm
-          modalOpen={props.modalOpen}
-          message={
-            t("delete_form_message")  +
-            props.formName +
-            "?"
-          }
-          onNo={() => onNo()}
-          onYes={() => onYes(formId, forms)}
-        />
-        <div className="flex-container">
-          {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
-          <div className="flex-item-left">
-          <h3 className="task-head">
-          <i className="fa fa-wpforms" aria-hidden="true"/>
-             <span className="forms-text">{t("Forms")}</span></h3>
+    <>
+      <FileModal modalOpen={showFormUploadModal} onClose={() => setShowFormUploadModal(false)}/>
+      {
+        (forms.isActive || isBPMFormListLoading) ? <div data-testid="Form-list-component-loader"><Loading/></div> :
+          <div className="container">
+            <Confirm
+              modalOpen={props.modalOpen}
+              message={
+                t("delete_form_message")  +
+                props.formName +
+                "?"
+              }
+              onNo={() => onNo()}
+              onYes={() => onYes(formId, forms)}
+            />
+            <div className="flex-container">
+              {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
+              <div className="flex-item-left">
+                <h3 className="task-head">
+                  <i className="fa fa-wpforms" aria-hidden="true"/>
+                  <span className="forms-text">{t("Forms")}</span></h3>
+              </div>
+              <div className="flex-item-right">
+                {isDesigner && (
+                  <Link
+                    to="/formflow/create"
+                    className="btn btn-primary btn-left btn-sm"
+                  >
+                    <i className="fa fa-plus fa-lg"/> <Translation>{(t)=>t("create_form")}</Translation>
+                  </Link>
+                )}
+                {isDesigner && (
+                  <>
+                    <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={uploadClick}
+                            title={t("upload_json")}>
+                      <i className="fa fa-upload fa-lg" aria-hidden="true"/> {t("upload_form")}</Button>
+                    <input type="file" className="d-none"
+                           multiple={false}
+                           accept=".json,application/json"
+                           onChange={fileUploaded}
+                           ref={uploadFormNode}
+                    />
+                  </>
+                )}
+                {isDesigner && (
+                  <>
+                    <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={downloadForms}
+                            disabled={formCheckList.length === 0} title={t("select_form")}>
+                      <i className="fa fa-download fa-lg" aria-hidden="true"/> {t("download_form")}</Button>
+                  </>
+                )}
+              </div>
+            </div>
+            <section className="custom-grid grid-forms">
+              <Errors errors={errors}/>
+              {
+               paginatedForms.length?
+               <FormGrid
+               columns={columns}
+               forms={isDesigner ? forms : bpmForms}
+               onAction={onAction}
+               getForms={isDesigner ? getForms : getFormsList}
+               operations={operations}
+               onPageSizeChanged={onPageSizeChanged}
+             />: <span 
+                  style={{ 
+                  textAlign:"center",
+                  display:"block",
+                  margin:"0px auto",
+                  justifyContent: "center",
+                  marginTop:"260px" }}
+                  >
+                  <h3 >No forms found </h3> 
+                 
+                    <Button variant="outline-primary" size="sm"
+                    style={{
+                      
+                      cursor:"pointer"}}
+                      onClick={resetForms}
+                    >
+                    Click here to go back
+                   </Button>
+                    
+                  </span>
+              }
+              
+              
+            </section>
           </div>
-          <div className="flex-item-right">
-          {userRoles.includes(STAFF_DESIGNER) && (
-            <Link
-              to="/formflow/create"
-              className="btn btn-primary btn-left btn-sm"
-            >
-              <i className="fa fa-plus fa-lg" />{t("create_form")}
-            </Link>
-          )}
-          {userRoles.includes(STAFF_DESIGNER) && (
-            <>
-            <Button className="btn btn-primary btn-sm form-btn pull{-right btn-left" onClick={uploadClick} title={t("upload_json")}>
-            <i className="fa fa-upload fa-lg" aria-hidden="true"/> {t("upload_form")}</Button>
-              <input type="file" className="d-none"
-                     multiple={false}
-                     accept=".json,application/json"
-                     onChange={fileUploaded}
-                     ref={uploadFormNode}
-              />
-          </>
-          )}
-          {userRoles.includes(STAFF_DESIGNER) && (
-             <>
-             <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={downloadForms} disabled={formCheckList.length===0}  title={t("select_form")}>
-             <i className="fa fa-download fa-lg" aria-hidden="true"/> {t("download_form")}</Button>
-             </>
-          )}
-          </div>
-        </div>
-        <section className="custom-grid grid-forms">
-          <Errors errors={errors} />
-          <FormGrid
-            columns={columns}
-            forms={isDesigner?forms:bpmForms}
-            onAction={onAction}
-            getForms={isDesigner?getForms:getFormsList}
-            operations={operations}
-            onPageSizeChanged={onPageSizeChanged}
-          />
-        </section>
-      </div>
-     }
-     </>
-    );
+      }
+    </>
+  );
 });
 
 const mapStateToProps = (state) => {
@@ -242,22 +270,22 @@ const mapStateToProps = (state) => {
   };
 };
 
-const getInitForms =  (page=1, query)=>{
+const getInitForms = (page = 1, query) => {
   return (dispatch, getState) => {
     const state = getState();
-    const currentPage =state.forms.pagination.page;
+    const currentPage = state.forms.pagination.page;
     const maintainPagination = state.bpmForms.maintainPagination;
-    dispatch(indexForms("forms", maintainPagination?currentPage:page, query));
+    dispatch(indexForms("forms", maintainPagination ? currentPage : page, query));
   }
 }
 
-const mapDispatchToProps = (dispatch,ownProps) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     getForms: (page, query) => {
       dispatch(indexForms("forms", page, query));
     },
     getFormsInit: (page, query) => {
-      dispatch(getInitForms( page, query));
+      dispatch(getInitForms(page, query));
     },
     onAction: (form, action) => {
       switch (action) {
@@ -289,7 +317,7 @@ const mapDispatchToProps = (dispatch,ownProps) => {
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {
-            const formDetails = { modalOpen: false, formId: "", formName: "" };
+            const formDetails = {modalOpen: false, formId: "", formName: ""};
             dispatch(setFormDeleteStatus(formDetails));
             dispatch(indexForms("forms", 1, forms.query));
           }
@@ -297,7 +325,7 @@ const mapDispatchToProps = (dispatch,ownProps) => {
       );
     },
     onNo: () => {
-      const formDetails = { modalOpen: false, formId: "", formName: "" };
+      const formDetails = {modalOpen: false, formId: "", formName: ""};
       dispatch(setFormDeleteStatus(formDetails));
     },
   };

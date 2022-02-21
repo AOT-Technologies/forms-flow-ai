@@ -11,10 +11,10 @@ import thunk from 'redux-thunk'
 import {
   saveForm,
   
-} from "@formio/react";
+} from "react-formio";
 
-jest.mock('@formio/react', () => ({
-  ...jest.requireActual('@formio/react'),
+jest.mock('react-formio', () => ({
+  ...jest.requireActual('react-formio'),
   saveForm: jest.fn(),
 }));
 

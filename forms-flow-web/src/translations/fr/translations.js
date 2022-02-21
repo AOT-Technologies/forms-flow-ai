@@ -4,14 +4,8 @@ export const TRANSLATIONS_FR = {
   message:"Veuillez corriger les erreurs avant de soumettre à nouveau.",
   message_submission:"La soumission ne peut pas être faite.",
   workflow_association:"Association de workflow de formulaire enregistrée.",
-  workflow_association_failed:"Échec de l'association de flux de travail de formulaire.",
-  workflow_error:"Erreur lors de l'obtention du processus de workflow.",
-  form_saved:"Formulaire enregistré.",
-  form_save_error:"Erreur lors de l'enregistrement du formulaire.",
-  create_form:"Créer un formulaire",
-  design_form:"Formulaire de conception",
-  associate_workflow:"Associer ce formulaire à un workflow ?",
-  preview_confirm:"Aperçu et confirmation",
+ 
+ 
   all_steps:"Toutes les étapes terminées - vous avez terminé",
   delete_form_message:"Êtes-vous sûr de vouloir supprimer le formulaire",
   Forms:"Formes",
@@ -139,12 +133,12 @@ export const TRANSLATIONS_FR = {
   placeholder_appid:"ID d'application",
   edit:"Éditer",
   total_submissions:"Nombre total de soumissions",
-  save_preview:"Enregistrer et prévisualiser",
   operation:"Opérations",
   access_groups:"Groupes d'accès",
   action:"action",
   add:"Ajouter",
   admin:"Administratrice",
+  create_form:"Créer un formulaire",
   upload_form:"Télécharger le formulaire",
   download_form:"Télécharger le formulaire",
   upload_json:"Télécharger le formulaire json uniquement",
@@ -156,12 +150,24 @@ export const TRANSLATIONS_FR = {
   file_upload_confirmation:"Confirmation du téléchargement des arquivosn",
   forms_completed:"Formulaires remplis",
   no_forms_found:"Aucun formulaire trouvé",
-  powered_by:"Alimenté par",
-  anonymous_form:"Formulaire anonyme ?",
+  
+  
   no_applications_found:"No applications found",
   successfully_updated:"Mise à jour réussie",
   failed:"Manquée",
-  submission_saved:"Изпращането е запазено.",
-  submission_failed:"Изпращането не бе успешно."
+  submission_failed:"Изпращането не бе успешно.",
+  formsearch_hover:"Appuyez sur la touche Entrée ou cliquez ici pour rechercher",
+  click_to_clear:"Cliquez pour effacer",
+  search:"Rechercher...",
+  
   };
+  
+
+  
+
+
+
+
+
+  
   

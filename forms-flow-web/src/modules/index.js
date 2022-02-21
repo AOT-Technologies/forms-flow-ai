@@ -1,6 +1,6 @@
 import { combineReducers } from "redux";
 import { connectRouter } from "connected-react-router";
-import { form, forms, submission, submissions } from "@formio/react";
+import { form, forms, submission, submissions } from "react-formio";
 
 import user from "./userDetailReducer";
 import tasks from "./tasksReducer";
@@ -25,7 +25,7 @@ const createRootReducer = (history) =>
     bpmTasks,
     bpmForms,
     form: form({ name: "form" }),
-    forms: forms({ name: "forms", query: { type: "form", tags: "common" }, sort: "title" }),
+    forms: forms({ name: "forms", query: { type: "form", tags: "common", title__regex: "" }, sort: "title" }),
     submission: submission({ name: "submission" }),
     submissions: submissions({ name: "submissions" }),
     router: connectRouter(history),

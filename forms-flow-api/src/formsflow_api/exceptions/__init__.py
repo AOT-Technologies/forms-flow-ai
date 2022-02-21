@@ -11,6 +11,6 @@ class BusinessException(Exception):
 
     def __init__(self, error, status_code, *args, **kwargs):
         """Return a valid BusinessException."""
-        super(BusinessException, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.error = error
         self.status_code = status_code

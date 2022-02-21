@@ -5,11 +5,7 @@ export const TRANSLATIONS_PT = {
   workflow_error:"Erro ao obter o processo de fluxo de trabalho.",
   form_saved:"Formulário salvo.",
   form_save_error:"Erro ao salvar o formulário.",
-  create_form:"Criar formulário",
-  design_form:"Formulário de Design",
-  associate_workflow:"Associar este formulário a um fluxo de trabalho?",
-  preview_confirm:"Pré-visualizar e confirmar",
-  all_steps:"Todas as etapas concluídas - você terminou",
+  
   delete_form_message:"Tem certeza que deseja deletar o formulário",
   Forms:"Formulários",
   Edit:"Editar",
@@ -108,10 +104,7 @@ export const TRANSLATIONS_PT = {
   follow_up:"Acompanhamento",
   message:"Corrija os erros antes de enviar novamente.",
   workflow_association:"Associação de fluxo de trabalho de formulário salva.",
-  workflow_association_failed:"Falha na associação do fluxo de trabalho do formulário.",
-  application_id:"ID do aplicativo",
-  application_name:"Nome da Aplicação",
-  created_by:"Criado por",
+  
   application_status:"Status do aplicativo",
   submitted_on:"Enviado em",
   modified_on:"Modificado em",
@@ -138,13 +131,13 @@ export const TRANSLATIONS_PT = {
   results:"Resultados",
   placeholder_appid:"ID do aplicativo",
   edit:"Editar",
-  total_submissions:"Total de inscrições",
-  save_preview:"Salvar e visualizar", 
+  total_submissions:"Total de inscrições", 
   operation:"Operações", 
   access_groups:"Grupos de acesso",
   action:"Açao", 
   add:"Adicionar", 
   admin:"Administrador",  
+  create_form:"Criar formulário",
   upload_form:"Carregar formulário",
   download_form:"Baixar formulário",
   upload_json:"Carregar apenas o formulário json",
@@ -156,12 +149,15 @@ export const TRANSLATIONS_PT = {
   file_upload_confirmation:"Confirmação de upload de arquivos",
   forms_completed:"Formulários preenchidos",
   no_forms_found:"Nenhum formulário encontrado",
-  powered_by:"Distribuído por",
-  anonymous_form:"Formulário anônimo?",
+  
+  
   no_applications_found:"Nenhum aplicativo encontrado",
   successfully_updated:"Atualizado com sucesso",
   failed:"Fracassada",
-  submission_saved:"Envio salvo.",
-  submission_failed:"Falha no envio."
-  };
+formsearch_hover:"Pressione a tecla Enter ou clique aqui para pesquisar",
+  click_to_clear:"Clique para limpar",
+  search:"Procurar...",
+ 
+
+};
   

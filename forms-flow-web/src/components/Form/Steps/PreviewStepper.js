@@ -31,14 +31,17 @@ const Preview = React.memo(
     const copyPublicUrl = () => {
       const hostName = window.location.host;
       const url = `${hostName}/public/form/${formData.form._id}`;
-
-      navigator.clipboard.writeText(url);
-      setCopied(()=>{
-        setTimeout(()=>{
-          setCopied(false)
-        },3000)
-        return true
-      });
+      navigator.clipboard?.writeText(url).then(()=>{
+        setCopied(()=>{
+          setTimeout(()=>{
+            setCopied(false)
+          },3000)
+          return true
+        });
+      }).catch((err)=>{
+        console.log(err)
+      })
+    
     };
 
     return (
@@ -100,7 +103,7 @@ const Preview = React.memo(
                         }}
                       >
                         <i
-                           class={`${copied?'fa fa-check':'fa fa-copy'}`}
+                           className={`${copied?'fa fa-check':'fa fa-copy'}`}
                         ></i>
                       </div>
                     </div>

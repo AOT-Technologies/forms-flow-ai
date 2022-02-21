@@ -1,0 +1,124 @@
+name: Forms Flow API CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - "forms-flow-api/**"
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./forms-flow-api
+
+jobs:
+  setup-job:
+    runs-on: ubuntu-20.04
+
+    if: github.repository == 'AOT-Technologies/forms-flow-ai-dev'
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: "true"
+
+  linting:
+    needs: setup-job
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -r requirements/dev.txt
+      - name: Pylint
+        id: pylint
+        run: |
+          pylint --rcfile=setup.cfg  src/formsflow_api
+      # - name: Flake8
+      #   id: flake8
+      #   run: |
+      #     flake8 src/formsflow_api tests
+
+  PyTest:
+    needs: setup-job
+    env:
+      FLASK_ENV: "testing"
+      DATABASE_URL_TEST: "postgresql://postgres:postgres@localhost:5432/postgres"
+      FORMSFLOW_API_URL: "http://localhost:5000"
+      KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
+      KEYCLOAK_URL_REALM: ${{ secrets.KEYCLOAK_URL_REALM }}
+      KEYCLOAK_BPM_CLIENT_SECRET: ${{ secrets.KEYCLOAK_BPM_CLIENT_SECRET }}
+      CAMUNDA_API_URL: ${{ secrets.CAMUNDA_API_URL }}
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${{ secrets.JWT_OIDC_WELL_KNOWN_CONFIG }}
+      JWT_OIDC_ALGORITHMS: "RS256"
+      JWT_OIDC_JWKS_URI: ${{ secrets.JWT_OIDC_JWKS_URI }}
+      JWT_OIDC_ISSUER: ${{ secrets.JWT_OIDC_ISSUER }}
+      JWT_OIDC_AUDIENCE: ${{ secrets.JWT_OIDC_AUDIENCE }}
+      JWT_OIDC_CACHING_ENABLED: "True"
+      BPM_API_BASE: ${{ secrets.BPM_API_BASE }}
+      BPM_CLIENT_SECRET: ${{ secrets.BPM_CLIENT_SECRET }}
+      BPM_CLIENT_ID: ${{ secrets.BPM_CLIENT_ID }}
+      BPM_TOKEN_API: ${{ secrets.BPM_TOKEN_API }}
+      TEST_REVIEWER_USERID: ${{ secrets.TEST_REVIEWER_USERID }}
+      TEST_REVIEWER_PASSWORD: ${{ secrets.TEST_REVIEWER_PASSWORD }}
+      INSIGHT_API_URL: ${{ secrets.INSIGHT_API_URL }}
+      INSIGHT_API_KEY: ${{ secrets.INSIGHT_API_KEY }}
+      SKIP_IN_CI: "True"
+
+    runs-on: ubuntu-20.04
+
+    services:
+      postgres:
+        image: postgres:11
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          make setup
+      - name: Test
+        id: test
+        run: |
+          make test
+      # - name: Upload coverage to Codecov
+      #   uses: codecov/codecov-action@v1
+      #   with:
+      #     file: ./forms-flow-api/coverage.xml
+      #     flags: formsflowapi
+      #     name: codecov-formsflow-api
+      #     fail_ci_if_error: true
+  build:
+    needs: PyTest
+    runs-on: ubuntu-20.04
+    name: Build
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build
+        run: |
+          docker build . -t forms-flow-api

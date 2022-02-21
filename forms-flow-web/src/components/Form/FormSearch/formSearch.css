@@ -1,0 +1,56 @@
+@media only screen and (min-width: 800px) {
+  .main_div {
+    display: flex;
+    flex-direction: row;
+  }
+  .input_search {
+    width: fit-content;
+    height: 31px;
+    margin-left: 30px;
+    margin-top: -3px;
+  }
+}
+@media only screen and (max-width: 800px) {
+  .main_div {
+    display: flex;
+    flex-direction: column;
+  }
+  .input_search {
+    width: 90%;
+    height: 31px;
+    margin-top: 3px;
+    margin-bottom: 5px;
+  }
+}
+@media only screen and (max-width: 800px) and (min-width: 500px) {
+  .input_box {
+    width: 100px !important;
+  }
+}
+
+@media only screen and (max-width: 500px) and (min-width: 400px) {
+  .input_box {
+    width: 60px !important;
+  }
+}
+@media only screen and (max-width: 400px) and (min-width: 100px) {
+  .input_box {
+    width: 40px !important;
+  }
+}
+.clear_button{
+  border: none;
+  background-color: white;
+  padding: 3px;
+  position: static;
+  width: 35px;
+  margin-left: -5px;
+  height: 33px;
+}
+.clear_button:hover{
+  border:4px solid #B5D4F5;
+  transform: scale(1.1);
+  transform-origin: center;
+  background-color: white;
+  color:#6C757D
+}

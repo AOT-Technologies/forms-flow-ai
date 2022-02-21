@@ -14,7 +14,8 @@ class TestApplicationResource:
         assert response.status_code == 401
         assert response.json == {
             "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for Authorization or has expired.",
+            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for"
+            "Authorization or has expired.",
         }
 
     def test_application_list(self, app, client, session):
@@ -57,6 +58,45 @@ class TestApplicationResource:
         )
         assert response.status_code == 200
 
+    @pytest.mark.parametrize(
+        ("pageNo", "limit", "filters"),
+        (
+            (1, 5, "Id=1"),
+            (1, 10, "applicationName=Free"),
+            (1, 20, "applicationStatus=New"),
+        ),
+    )
+    def test_application_paginated_filtered_list(
+        self,
+        app,
+        client,
+        session,
+        pageNo,
+        limit,
+        filters,
+    ):
+        token = factory_auth_header()
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        }
+        rv = client.post("/form", headers=headers, json=get_form_request_payload())
+        assert rv.status_code == 201
+
+        form_id = rv.json.get("formId")
+
+        rv = client.post(
+            "/application/create",
+            headers=headers,
+            json=get_application_create_payload(form_id),
+        )
+        assert rv.status_code == 201
+        response = client.get(
+            f"/application?pageNo={pageNo}&limit={limit}&{filters}",
+            headers=headers,
+        )
+        assert response.status_code == 200
+
 
 class TestApplicationDetailView:
     def test_application_no_auth_api(self, app, client, session):
@@ -64,7 +104,8 @@ class TestApplicationDetailView:
         assert response.status_code == 401
         assert response.json == {
             "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for Authorization or has expired.",
+            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for"
+            "Authorization or has expired.",
         }
 
     def test_application_detailed_view(self, app, client, session):
@@ -73,7 +114,19 @@ class TestApplicationDetailView:
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        response = client.get("/application/1", headers=headers)
+        rv = client.post("/form", headers=headers, json=get_form_request_payload())
+        assert rv.status_code == 201
+
+        form_id = rv.json.get("formId")
+        rv = client.post(
+            "/application/create",
+            headers=headers,
+            json=get_application_create_payload(form_id),
+        )
+        assert rv.status_code == 201
+        application_id = rv.json.get("id")
+
+        response = client.get(f"/application/{application_id}", headers=headers)
         assert response.status_code == 200
 
 

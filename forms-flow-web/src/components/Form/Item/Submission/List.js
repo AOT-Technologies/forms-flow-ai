@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Link, useParams} from 'react-router-dom'
 import {connect, useDispatch, useSelector} from 'react-redux';
 import {push} from 'connected-react-router';
-import {getSubmissions, selectRoot, selectError, SubmissionGrid, Errors, deleteSubmission} from '@formio/react';
+import {getSubmissions, selectRoot, selectError, SubmissionGrid, Errors, deleteSubmission} from 'react-formio';
 import cloneDeep from 'lodash/cloneDeep';
 
 import Loading from '../../../../containers/Loading';

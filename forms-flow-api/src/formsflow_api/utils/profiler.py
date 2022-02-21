@@ -1,7 +1,7 @@
 """Utility function for profiling functions"""
 import time
-
 from functools import wraps
+
 from flask import current_app
 
 

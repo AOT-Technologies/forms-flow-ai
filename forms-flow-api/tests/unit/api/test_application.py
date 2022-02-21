@@ -151,29 +151,6 @@ def test_application_resource_by_form_id(app, client, session):
     assert response.status_code == 200
 
 
-def test_application_process_details(app, client, session):
-    token = factory_auth_header()
-    headers = {
-        "Authorization": f"Bearer {token}",
-        "content-type": "application/json",
-    }
-    rv = client.post("/form", headers=headers, json=get_form_request_payload())
-    assert rv.status_code == 201
-
-    form_id = rv.json["formId"]
-
-    rv = client.post(
-        "/application/create",
-        headers=headers,
-        json=get_application_create_payload(form_id),
-    )
-    assert rv.status_code == 201
-
-    application_id = rv.json["id"]
-    response = client.get(f"/application/{application_id}/process", headers=headers)
-    assert response.status_code == 200
-
-
 def test_application_status_list(app, client, session):
     token = factory_auth_header()
     headers = {

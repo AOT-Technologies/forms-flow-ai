@@ -23,31 +23,31 @@ jobs:
       - uses: actions/checkout@v2
       - run: "true"
 
-  # linting:
-  #   needs: setup-job
-  #   runs-on: ubuntu-20.04
+  linting:
+    needs: setup-job
+    runs-on: ubuntu-20.04
 
-  #   strategy:
-  #     matrix:
-  #       python-version: [3.8]
+    strategy:
+      matrix:
+        python-version: [3.8]
 
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - name: Set up Python ${{ matrix.python-version }}
-  #       uses: actions/setup-python@v1
-  #       with:
-  #         python-version: ${{ matrix.python-version }}
-  #     - name: Install dependencies
-  #       run: |
-  #         pip install -r requirements/dev.txt
-  #     - name: Pylint
-  #       id: pylint
-  #       run: |
-  #         pylint --rcfile=setup.cfg  src/formsflow_api
-  #     - name: Flake8
-  #       id: flake8
-  #       run: |
-  #         flake8 src/formsflow_api tests
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -r requirements/dev.txt
+      - name: Pylint
+        id: pylint
+        run: |
+          pylint --rcfile=setup.cfg  src/formsflow_api
+      # - name: Flake8
+      #   id: flake8
+      #   run: |
+      #     flake8 src/formsflow_api tests
 
   PyTest:
     needs: setup-job
@@ -73,6 +73,7 @@ jobs:
       TEST_REVIEWER_PASSWORD: ${{ secrets.TEST_REVIEWER_PASSWORD }}
       INSIGHT_API_URL: ${{ secrets.INSIGHT_API_URL }}
       INSIGHT_API_KEY: ${{ secrets.INSIGHT_API_KEY }}
+      SKIP_IN_CI: "True"
 
     runs-on: ubuntu-20.04
 

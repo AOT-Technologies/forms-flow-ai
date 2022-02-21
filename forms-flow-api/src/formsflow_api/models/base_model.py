@@ -1,7 +1,10 @@
 """This manages Base Model functions."""
 
-from formsflow_api.models.db import db
 from typing import Any
+
+from flask import current_app
+
+from formsflow_api.models.db import db
 
 
 class BaseModel:
@@ -36,7 +39,8 @@ class BaseModel:
                 if val != "~skip~it~":
                     setattr(self, key, values[key])
 
-    def create_filter_condition(
+    @staticmethod
+    def create_filter_condition(  # pylint: disable=inconsistent-return-statements
         model: Any, column_name: str, operator: str, value: str
     ):
         """Function to transform column_name, operator and values to filtering condiitons"""
@@ -54,8 +58,11 @@ class BaseModel:
                     )[0]
                     % operator
                 )
-            except IndexError:
-                raise Exception("Invalid filter operator: %s" % operator)
+            except IndexError as err:
+                current_app.logger.warning(
+                    f"Invalid filter operator: {operator}, {err}"
+                )
+                raise err
             if value == "null":
                 value = None
             if operator == "ilike":

@@ -1,18 +1,23 @@
 """This manages Application submission Data."""
 
 from __future__ import annotations
+
 from datetime import datetime
-from typing import Any
-from flask import current_app
+
 from sqlalchemy import and_, func, or_
 from sqlalchemy.sql.expression import text
 
-from formsflow_api.models.audit_mixin import AuditDateTimeMixin, AuditUserMixin
-from formsflow_api.models import BaseModel, db, FormProcessMapper
-from formsflow_api.utils import validate_sort_order_and_order_by, FILTER_MAPS
+from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
+
+from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
+from .base_model import BaseModel
+from .db import db
+from .form_process_mapper import FormProcessMapper
 
 
-class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
+class Application(
+    AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model
+):  # pylint: disable=too-many-public-methods
     """This class manages application against each form."""
 
     id = db.Column(db.Integer, primary_key=True)
@@ -80,16 +85,18 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def find_all(cls, page_no: int, limit: int) -> Application:
         """Fetch all application."""
         if page_no == 0:
-            return cls.query.order_by(Application.id.desc()).all()
+            result = cls.query.order_by(Application.id.desc()).all()
         else:
-            return (
+            result = (
                 cls.query.order_by(Application.id.desc())
                 .paginate(page_no, limit, False)
                 .items
             )
+        return result
 
     @classmethod
     def filter_conditions(cls, **filters):
+        """This method creates dynamic filter conditions based on the input param"""
         filter_conditions = []
         for key, value in filters.items():
             if value:
@@ -105,7 +112,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
         return query
 
     @classmethod
-    def find_all_by_user(
+    def find_all_by_user(  # pylint: disable=too-many-arguments
         cls,
         user_id: str,
         page_no: int,
@@ -141,19 +148,20 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def find_by_form_id(cls, form_id, page_no: int, limit: int):
         """Fetch all application by form_id."""
         if page_no == 0:
-            return cls.query.filter(
+            result = cls.query.filter(
                 Application.form_url.like("%" + form_id + "%")
             ).order_by(Application.id.desc())
         else:
-            return (
+            result = (
                 cls.query.filter(Application.form_url.like("%" + form_id + "%"))
                 .order_by(Application.id.desc())
                 .paginate(page_no, limit, False)
                 .items
             )
+        return result
 
     @classmethod
-    def find_by_form_names(
+    def find_by_form_names(  # pylint: disable=too-many-arguments
         cls,
         form_names: str,
         page_no: int,
@@ -186,32 +194,33 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def find_by_form_id_user(cls, form_id, user_id: str, page_no: int, limit: int):
         """Fetch applications by form_id."""
         if page_no == 0:
-            return (
+            result = (
                 cls.query.filter(Application.form_url.like("%" + form_id + "%"))
                 .filter(Application.created_by == user_id)
                 .order_by(Application.id.desc())
             )
         else:
-            return (
+            result = (
                 cls.query.filter(Application.form_url.like("%" + form_id + "%"))
                 .filter(Application.created_by == user_id)
                 .order_by(Application.id.desc())
                 .paginate(page_no, limit, False)
                 .items
             )
+        return result
 
     @classmethod
     def find_by_form_ids(cls, form_ids, page_no: int, limit: int):
         """Fetch application based on multiple form ids."""
         if page_no == 0:
-            return cls.query.filter(
+            result = cls.query.filter(
                 or_(
                     Application.form_url.like("%" + form_id + "%")
                     for form_id in form_ids
                 )
             ).order_by(Application.id.desc())
         else:
-            return (
+            result = (
                 cls.query.filter(
                     or_(
                         Application.form_url.like("%" + form_id + "%")
@@ -222,6 +231,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
                 .paginate(page_no, limit, False)
                 .items
             )
+        return result
 
     @classmethod
     def find_all_by_form_id_count(cls, form_id):
@@ -291,7 +301,8 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def find_aggregated_application_status(
         cls, mapper_id: int, from_date: str, to_date: str
     ):
-        """Fetch aggregated application status corresponding to mapper_id ordered by created date."""
+        """Fetch aggregated application status corresponding
+        to mapper_id ordered by created date."""
         result_proxy = (
             db.session.query(
                 Application.application_status,
@@ -318,7 +329,8 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def find_aggregated_application_status_modified(
         cls, mapper_id: int, from_date: str, to_date: str
     ):
-        """Fetch aggregated application status corresponding to mapper_id ordered by modified date.."""
+        """Fetch aggregated application status corresponding
+        to mapper_id ordered by modified date.."""
         result_proxy = (
             db.session.query(
                 Application.application_name,
@@ -345,6 +357,7 @@ class Application(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model):
     def get_total_application_corresponding_to_mapper_id(
         cls, form_process_mapper_id: int
     ):
+        """This method resturns the total applications corresponding to a form_process_mapper"""
         result_proxy = (
             db.session.query(func.count(Application.id).label("count"))
             .join(

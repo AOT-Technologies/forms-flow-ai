@@ -1,11 +1,13 @@
 """This exposes the Keycloak Admin APIs"""
 import json
+
 import requests
 from flask import current_app
+
 from formsflow_api.utils import profiletime
 
 
-class KeycloakAdminAPIService(object):
+class KeycloakAdminAPIService:
     """This class manages all the Keycloak service API calls"""
 
     def __init__(self):
@@ -30,7 +32,10 @@ class KeycloakAdminAPIService(object):
                 "Content-Type": "application/json",
             }
         )
-        self.base_url = f"{current_app.config.get('KEYCLOAK_URL')}/auth/admin/realms/{current_app.config.get('KEYCLOAK_URL_REALM')}"
+        self.base_url = (
+            f"{current_app.config.get('KEYCLOAK_URL')}/auth/admin/realms/"
+            f"{current_app.config.get('KEYCLOAK_URL_REALM')}"
+        )
 
     @profiletime
     def get_request(self, url_path):
@@ -43,26 +48,26 @@ class KeycloakAdminAPIService(object):
 
         if response.ok:
             return response.json()
-        else:
-            return None
+        return None
 
-    def get_paginated_request(self, url_path, first, max):
+    def get_paginated_request(self, url_path, first, max_results):
         """Method to fetch GET paginated request of Keycloak Admin APIs
         :param url_path: The relative path of the API
         :param first: The page_number
-        :param max: The max number of items per page
+        :param max_results: The max number of items per page
         """
-        url = f"{self.base_url}/{url_path}?first={first}&max={max}"
+        url = f"{self.base_url}/{url_path}?first={first}&max={max_results}"
         response = self.session.request("GET", url)
         response.raise_for_status()
 
         if response.ok:
             return response.json()
-        else:
-            return None
+        return None
 
     @profiletime
-    def update_request(self, url_path, data=None):
+    def update_request(  # pylint: disable=inconsistent-return-statements
+        self, url_path, data=None
+    ):
         """Method to fetch get request of Keycloak Admin APIs
         :param url_path: The relative path of the API
         :param data: The request data object
@@ -76,6 +81,5 @@ class KeycloakAdminAPIService(object):
             )
         except Exception as e:
             raise f"Request to Keycloak Admin APIs failed., {e}"
-        else:
-            if response.status_code == 204:
-                return f"Updated - {url_path}"
+        if response.status_code == 204:
+            return f"Updated - {url_path}"

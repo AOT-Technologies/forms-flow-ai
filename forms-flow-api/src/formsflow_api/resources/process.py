@@ -9,7 +9,6 @@ from flask_restx import Namespace, Resource
 from formsflow_api.services import ProcessService
 from formsflow_api.utils import auth, cors_preflight, profiletime
 
-
 API = Namespace("Process", description="Process")
 
 
@@ -34,7 +33,7 @@ class ProcessResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except BaseException as err:
+        except BaseException as err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",

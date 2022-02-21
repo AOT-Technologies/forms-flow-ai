@@ -1,9 +1,10 @@
 """API endpoints for managing healthcheckpoint API resource."""
 
 from http import HTTPStatus
-from flask_restx import Namespace, Resource
-from formsflow_api.utils import cors_preflight, profiletime
 
+from flask_restx import Namespace, Resource
+
+from formsflow_api.utils import cors_preflight, profiletime
 
 API = Namespace("Checkpoint", description="Checkpoint")
 

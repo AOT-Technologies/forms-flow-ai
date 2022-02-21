@@ -4,10 +4,11 @@ from http import HTTPStatus
 
 from flask import current_app, request
 from flask_restx import Namespace, Resource
+
+from formsflow_api.models import FormProcessMapper
 from formsflow_api.schemas import ApplicationSchema
 from formsflow_api.services import ApplicationService
-from formsflow_api.utils import cors_preflight, profiletime, ANONYMOUS_USER
-from formsflow_api.models import FormProcessMapper
+from formsflow_api.utils import ANONYMOUS_USER, cors_preflight, profiletime
 
 API = Namespace("Public", description="Public api endpoints")
 
@@ -45,7 +46,7 @@ class ApplicationAnonymousResourcesByIds(Resource):
             )
             response, status = application_schema.dump(application), HTTPStatus.CREATED
             return response, status
-        except BaseException as application_err:
+        except BaseException as application_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid application request passed",
@@ -74,7 +75,7 @@ class AnonymousResourceById(Resource):
                 "is_anonymous": bool(mapper.is_anonymous),
                 "status": mapper.status,
             }, HTTPStatus.OK
-        except BaseException as application_err:
+        except BaseException as application_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid application request passed",

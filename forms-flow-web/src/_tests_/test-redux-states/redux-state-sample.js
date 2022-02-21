@@ -45,6 +45,8 @@ export const appState = {
     formSubmissionError:{modalOpen:false,message:""},
     isFormSubmissionLoading: false,
     isFormWorkflowSaved: false,
+    formSubmitted:false,
+    publicFormStatus:"checking",
   },
   bpmTasks:{
     isTaskListLoading:false,
@@ -119,7 +121,8 @@ export const appState = {
     processActivityList: null,
     processDiagramXML: "",
     processActivityLoadError: false,
-    isProcessDiagramLoading: true
+    isProcessDiagramLoading: true,
+    formPreviousData:[],
   },
   menu:{
     isMenuOpen: false

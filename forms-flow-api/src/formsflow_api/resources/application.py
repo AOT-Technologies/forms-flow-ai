@@ -298,27 +298,6 @@ class ApplicationResourcesByIds(Resource):
 
 
 @cors_preflight("GET,OPTIONS")
-@API.route("/<int:application_id>/process", methods=["GET", "OPTIONS"])
-class ProcessMapperResourceByApplicationId(Resource):
-    """Resource for managing process details."""
-
-    @staticmethod
-    @auth.require
-    @profiletime
-    def get(application_id: int):
-        """Get process details.
-        : application_id:- Retreiving process details for corresponding application_id
-        """
-        try:
-            return (
-                ApplicationService.get_application_form_mapper_by_id(application_id),
-                HTTPStatus.OK,
-            )
-        except BusinessException as err:
-            return err.error, err.status_code
-
-
-@cors_preflight("GET,OPTIONS")
 @API.route("/status/list", methods=["GET", "OPTIONS"])
 class ApplicationResourceByApplicationStatus(Resource):
     """Get application status list."""

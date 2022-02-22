@@ -225,7 +225,7 @@ if(!form._id){
                 onChange={event => handleChange('display', event)}
               >
                 <option label="Form" value="form">Form</option>
-                <option label="Wizard" value="wizard">Wizard</option>
+                <option label="Wizard" value="wizard"><Translation>{(t)=>t("wizard")}</Translation></option>
               </select>
             </div>
           </div>
@@ -265,7 +265,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-anonymous" className="form-group">
-            <label htmlFor="anonymous" className="control-label">Anonymous Form</label>
+            <label htmlFor="anonymous" className="control-label"><Translation>{(t)=>t("anonymous_form")}</Translation></label>
             <div className="input-group align-items-center">
               <input
                className="mr-3" style={{height:'20px', width:'20px'}}

@@ -52,7 +52,7 @@ const saveText = <Translation>{(t)=>t("save_preview")}</Translation>;
 const errors = useSelector((state)=>state.form.error)
 const lang = useSelector((state) => state.user.lang); 
 const {t}=useTranslation();
- 
+
 // for update form access and submission access
 useEffect(()=>{
   FORM_ACCESS.forEach(role=>{

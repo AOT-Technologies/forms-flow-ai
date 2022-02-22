@@ -4,8 +4,8 @@ export const TRANSLATIONS_FR = {
   message:"Veuillez corriger les erreurs avant de soumettre à nouveau.",
   message_submission:"La soumission ne peut pas être faite.",
   workflow_association:"Association de workflow de formulaire enregistrée.",
- 
- 
+  "No Process Diagram found":"Aucun diagramme de processus trouvé",
+  "No forms found":"Aucun formulaire trouvé",
   all_steps:"Toutes les étapes terminées - vous avez terminé",
   delete_form_message:"Êtes-vous sûr de vouloir supprimer le formulaire",
   Forms:"Formes",
@@ -150,7 +150,7 @@ export const TRANSLATIONS_FR = {
   file_upload_confirmation:"Confirmation du téléchargement des arquivosn",
   forms_completed:"Formulaires remplis",
   no_forms_found:"Aucun formulaire trouvé",
-  
+  powered_by:"Alimenté par",
   
   no_applications_found:"No applications found",
   successfully_updated:"Mise à jour réussie",
@@ -159,7 +159,18 @@ export const TRANSLATIONS_FR = {
   formsearch_hover:"Appuyez sur la touche Entrée ou cliquez ici pour rechercher",
   click_to_clear:"Cliquez pour effacer",
   search:"Rechercher...",
-  
+  "Click here to back":"Cliquez ici pour revenir",
+  "Enter the form machine name":"Entrez le nom de la machine de formulaire",
+  'Enter the form title':"Entrez le titre du formulaire",
+  title:"Titre",
+  display_as:"Afficher comme",
+  anonymous_form:"Formulaire anonyme",
+  "Do you want to  make this form public ?":"Voulez-vous rendre ce formulaire public ?",
+  save_preview:"Enregistrer et prévisualiser",
+  select_dashboard:"Sélectionnez Tableau de bord",
+  design_form:"Formulaire de conception",
+  associate_workflow:"Associer ce formulaire à un workflow ?",
+  preview_confirm:"Aperçu et confirmation",
   };
   
 

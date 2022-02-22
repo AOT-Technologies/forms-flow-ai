@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { Translation } from "react-i18next";
 
 
-export const updateUserlang = (data)=>{
+/*export const updateUserlang = (data)=>{
   const apiUpdatelang = API.LANG_UPDATE
     
     
@@ -28,4 +28,4 @@ export const updateUserlang = (data)=>{
     })
     
   }
-}
+}*/

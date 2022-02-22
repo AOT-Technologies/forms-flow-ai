@@ -236,7 +236,7 @@ import {addHiddenApplicationComponent} from "../../constants/applicationComponen
                   justifyContent: "center",
                   marginTop:"260px" }}
                   >
-                  <h3 >No forms found </h3> 
+                  <h3 ><Translation>{(t)=>t("No forms found")}</Translation> </h3> 
                  
                     <Button variant="outline-primary" size="sm"
                     style={{
@@ -244,7 +244,7 @@ import {addHiddenApplicationComponent} from "../../constants/applicationComponen
                       cursor:"pointer"}}
                       onClick={resetForms}
                     >
-                    Click here to go back
+                    <Translation>{(t)=>t("Click here to back")}</Translation>
                    </Button>
                     
                   </span>

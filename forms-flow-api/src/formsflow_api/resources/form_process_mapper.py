@@ -29,49 +29,39 @@ class FormResource(Resource):
         : pageNo:- To retrieve page number
         : limit:- To retrieve limit for each page
         : formName:- Retrieve form list based on form name
+        : sortBy:- Name of column to sort by (default: id)
+        : sortOrder:- Order for sorting (asc/desc) (default: desc)
         """
         try:
-            request_schema = FormProcessMapperListRequestSchema()
-            if request.args:
-                dict_data = request_schema.load(request.args)
-                page_no: str = dict_data.get("page_no")
-                limit: str = dict_data.get("limit")
-                form_name: str = dict_data.get("form_name")
+            dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
+            page_no: int = dict_data.get("page_no")
+            limit: int = dict_data.get("limit")
+            form_name: str = dict_data.get("form_name")
+            sort_by: str = dict_data.get("sort_by") or "id"
+            sort_order:str = dict_data.get("sort_order") or "desc"
+            
+            if page_no and limit:
+                (
+                    form_process_mapper_schema,
+                    form_process_mapper_count,
+                ) = FormProcessMapperService.get_all_mappers(page_no, limit, form_name, sort_by, sort_order)
             else:
-                page_no = 0
-                limit = 0
-                form_name = None
-            if page_no > 0:
-                response, status = (
-                    (
-                        {
-                            "forms": FormProcessMapperService.get_all_mappers(
-                                page_no, limit, form_name
-                            ),
-                            "totalCount": FormProcessMapperService.get_mapper_count(
-                                form_name
-                            ),
-                            "pageNo": page_no,
-                            "limit": limit,
-                        }
-                    ),
-                    HTTPStatus.OK,
-                )
-            else:
-                response, status = (
-                    (
-                        {
-                            "forms": FormProcessMapperService.get_all_mappers(
-                                page_no, limit, form_name
-                            ),
-                            "totalCount": FormProcessMapperService.get_mapper_count(
-                                form_name
-                            ),
-                        }
-                    ),
-                    HTTPStatus.OK,
-                )
-            return response, status
+                (
+                    form_process_mapper_schema,
+                    form_process_mapper_count,
+                ) = FormProcessMapperService.get_all_mappers(page_no, limit, form_name, sort_by, sort_order)
+            return(
+                (
+                    {
+                        "forms":form_process_mapper_schema,
+                        "totalcount":form_process_mapper_count,
+                        "pageNo":page_no,
+                        "limit":limit,
+                    }
+                ),
+                HTTPStatus.OK,
+            )
+            
         except KeyError as err:
             response, status = (
                 {

@@ -118,12 +118,21 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 filter_conditions.append(condition)
         query = cls.query.filter(*filter_conditions) if filter_conditions else cls.query
         return query
-    
+
     @classmethod
-    def find_all_active(cls, page_number=None, limit=None, sort_by=None, sort_order=None, **filters,):
+    def find_all_active(
+        cls,
+        page_number=None,
+        limit=None,
+        sort_by=None,
+        sort_order=None,
+        **filters,
+    ):
         """Fetch all active form process mappers"""
         query = FormProcessMapper.filter_conditions(**filters)
-        query = query.filter(FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value))
+        query = query.filter(
+            FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value)
+        )
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
         if sort_by and sort_order:
             query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))

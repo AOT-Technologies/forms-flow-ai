@@ -38,30 +38,34 @@ class FormResource(Resource):
             limit: int = dict_data.get("limit")
             form_name: str = dict_data.get("form_name")
             sort_by: str = dict_data.get("sort_by") or "id"
-            sort_order:str = dict_data.get("sort_order") or "desc"
-            
+            sort_order: str = dict_data.get("sort_order") or "desc"
+
             if page_no and limit:
                 (
                     form_process_mapper_schema,
                     form_process_mapper_count,
-                ) = FormProcessMapperService.get_all_mappers(page_no, limit, form_name, sort_by, sort_order)
+                ) = FormProcessMapperService.get_all_mappers(
+                    page_no, limit, form_name, sort_by, sort_order
+                )
             else:
                 (
                     form_process_mapper_schema,
                     form_process_mapper_count,
-                ) = FormProcessMapperService.get_all_mappers(page_no, limit, form_name, sort_by, sort_order)
-            return(
+                ) = FormProcessMapperService.get_all_mappers(
+                    page_no, limit, form_name, sort_by, sort_order
+                )
+            return (
                 (
                     {
-                        "forms":form_process_mapper_schema,
-                        "totalcount":form_process_mapper_count,
-                        "pageNo":page_no,
-                        "limit":limit,
+                        "forms": form_process_mapper_schema,
+                        "totalcount": form_process_mapper_count,
+                        "pageNo": page_no,
+                        "limit": limit,
                     }
                 ),
                 HTTPStatus.OK,
             )
-            
+
         except KeyError as err:
             response, status = (
                 {

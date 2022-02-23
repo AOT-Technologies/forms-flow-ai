@@ -24,7 +24,11 @@ class FormProcessMapperService:
         if sort_order:
             sort_order = str(sort_order)
         mappers, get_all_mappers_count = FormProcessMapper.find_all_active(
-            page_number=page_number, limit=limit, form_name=form_name, sort_by=sort_by, sort_order=sort_order
+            page_number=page_number,
+            limit=limit,
+            form_name=form_name,
+            sort_by=sort_by,
+            sort_order=sort_order,
         )
         mapper_schema = FormProcessMapperSchema()
         return (

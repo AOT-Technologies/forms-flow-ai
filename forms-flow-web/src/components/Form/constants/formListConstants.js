@@ -1,12 +1,13 @@
 import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import pick from "lodash/pick";
 import {CLIENT, OPERATIONS, STAFF_DESIGNER, STAFF_REVIEWER} from "../../../constants/constants";
+import FormSearch from "../FormSearch/FormSearch";
 
 export const designerColumns = [
   {
     key: 'title',
-    sort: true,
-    title: 'Form',
+    sort: false,
+    title: <FormSearch/>,
     width: 6,
   },
   {

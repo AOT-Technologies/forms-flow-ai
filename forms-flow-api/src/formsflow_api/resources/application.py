@@ -4,17 +4,17 @@ from http import HTTPStatus
 
 from flask import current_app, g, request
 from flask_restx import Namespace, Resource
+from marshmallow.exceptions import ValidationError
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.schemas import (
-    ApplicationListRequestSchema,
     ApplicationListReqSchema,
+    ApplicationListRequestSchema,
     ApplicationSchema,
     ApplicationUpdateSchema,
 )
 from formsflow_api.services import ApplicationService
 from formsflow_api.utils import REVIEWER_GROUP, auth, cors_preflight, profiletime
-
 
 API = Namespace("Application", description="Application")
 
@@ -27,7 +27,7 @@ class ApplicationsResource(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def get():
+    def get():  # pylint:disable=too-many-locals
         """Get applications
 
         : Id:- List the application for particular id
@@ -93,7 +93,7 @@ class ApplicationsResource(Resource):
                     application_status=application_status,
                 )
             application_schema = ApplicationService.apply_custom_attributes(
-                application_schema=application_schema_dump
+                application_schema_dump=application_schema_dump
             )
             return (
                 (
@@ -106,7 +106,7 @@ class ApplicationsResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except KeyError as err:
+        except ValidationError as err:
             response, status = (
                 {
                     "type": "Invalid Request Object",
@@ -115,6 +115,18 @@ class ApplicationsResource(Resource):
                 HTTPStatus.BAD_REQUEST,
             )
 
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
+            return response, status
+
+        except KeyError as err:
+            response, status = (
+                {
+                    "type": "Invalid Request Object",
+                    "message": "Required fields are not passed",
+                },
+                HTTPStatus.BAD_REQUEST,
+            )
             current_app.logger.critical(response)
             current_app.logger.critical(err)
             return response, status
@@ -128,7 +140,7 @@ class ApplicationResourceById(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def get(application_id):
+    def get(application_id: int):
         """Get application by id.
         : application_id:- List the application for particular application_id
         """
@@ -145,19 +157,18 @@ class ApplicationResourceById(Resource):
                     ApplicationService.apply_custom_attributes(application_schema_dump),
                     status,
                 )
-            else:
-                application, status = ApplicationService.get_application_by_user(
-                    application_id=application_id,
-                    user_id=g.token_info.get("preferred_username"),
-                )
-                return (ApplicationService.apply_custom_attributes(application), status)
+            application, status = ApplicationService.get_application_by_user(
+                application_id=application_id,
+                user_id=g.token_info.get("preferred_username"),
+            )
+            return (ApplicationService.apply_custom_attributes(application), status)
         except BusinessException as err:
             return err.error, err.status_code
 
     @staticmethod
     @auth.require
     @profiletime
-    def put(application_id):
+    def put(application_id: int):
         """Update application details.
         : application_id:- Update the application for particular application_id
         """
@@ -171,7 +182,7 @@ class ApplicationResourceById(Resource):
                 application_id=application_id, data=dict_data
             )
             return "Updated successfully", HTTPStatus.OK
-        except BaseException as submission_err:
+        except BaseException as submission_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data",
@@ -191,7 +202,7 @@ class ApplicationResourceByFormId(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def get(form_id):
+    def get(form_id: str):
         """Get applications.
         : form_id:- Retrieve application list based on formid
         """
@@ -237,18 +248,17 @@ class ApplicationResourceByFormId(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        else:
-            return (
-                (
-                    {
-                        "applications": application_schema,
-                        "totalCount": application_count,
-                        "limit": limit,
-                        "pageNo": page_no,
-                    }
-                ),
-                HTTPStatus.OK,
-            )
+        return (
+            (
+                {
+                    "applications": application_schema,
+                    "totalCount": application_count,
+                    "limit": limit,
+                    "pageNo": page_no,
+                }
+            ),
+            HTTPStatus.OK,
+        )
 
 
 @cors_preflight("POST,OPTIONS")
@@ -277,7 +287,7 @@ class ApplicationResourcesByIds(Resource):
             )
             response = application_schema.dump(application)
             return response, status
-        except BaseException as application_err:
+        except BaseException as application_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid application request passed",
@@ -288,36 +298,15 @@ class ApplicationResourcesByIds(Resource):
 
 
 @cors_preflight("GET,OPTIONS")
-@API.route("/<string:application_id>/process", methods=["GET", "OPTIONS"])
-class ProcessMapperResourceByApplicationId(Resource):
-    """Resource for managing process details."""
-
-    @staticmethod
-    @auth.require
-    @profiletime
-    def get(application_id):
-        """Get process details.
-        : application_id:- Retreiving process details for corresponding application_id
-        """
-        try:
-            return (
-                ApplicationService.get_application_form_mapper_by_id(application_id),
-                HTTPStatus.OK,
-            )
-        except BusinessException as err:
-            return err.error, err.status_code
-
-
-@cors_preflight("GET,OPTIONS")
 @API.route("/status/list", methods=["GET", "OPTIONS"])
 class ApplicationResourceByApplicationStatus(Resource):
-    """Get application status."""
+    """Get application status list."""
 
     @staticmethod
     @auth.require
     @profiletime
     def get():
-
+        """Method to get the application status lists"""
         try:
             return (
                 ApplicationService.get_all_application_status(),

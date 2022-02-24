@@ -1,13 +1,15 @@
 """This exposes the analytics API"""
 from http import HTTPStatus
+
 import requests
 from flask import current_app
 
 
-class RedashAPIService:
+class RedashAPIService:  # pylint: disable=too-few-public-methods
     """This class manages all the Redash analytics service API calls"""
 
-    def get_request(self, url_path, page_no=None, limit=None):
+    @staticmethod
+    def get_request(url_path, page_no=None, limit=None):
         """This method makes the GET request to Redash API"""
         if page_no is None:
             url = f"{current_app.config.get('ANALYTICS_API_URL')}/api/{url_path}"
@@ -19,7 +21,6 @@ class RedashAPIService:
 
         if response.ok:
             return response.json()
-        elif response.status_code == HTTPStatus.NOT_FOUND:
+        if response.status_code == HTTPStatus.NOT_FOUND:
             return "unauthorized"
-        else:
-            return None
+        return None

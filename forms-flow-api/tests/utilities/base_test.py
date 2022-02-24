@@ -97,37 +97,42 @@ def get_form_request_payload():
     return {
         "formId": "1234",
         "formName": "Sample form",
-        "processKey": "121312",
-        "processName": "OneStep Approval",
+        "processKey": "oneStepApproval",
+        "processName": "One Step Approval",
         "status": "active",
         "comments": "test",
         "tenant": 12,
+        "anonymous": False,
     }
+
+
 def get_form_request_payload_private():
     """Return a form request payload object which is not anonymous"""
     return {
         "formId": "12",
         "formName": "Sample private form",
-        "processKey": "one_step",
+        "processKey": "oneStepApproval",
         "processName": "OneStep Approval",
         "status": "active",
         "comments": "test",
         "tenant": 11,
-        "anonymous":False
+        "anonymous": False,
     }
+
 
 def get_form_request_payload_public_inactive():
     """Return a form request payload object which is not active"""
     return {
         "formId": "12",
         "formName": "Sample private form",
-        "processKey": "one_step",
+        "processKey": "oneStepApproval",
         "processName": "OneStep Approval",
         "status": "Inactive",
         "comments": "test",
         "tenant": 11,
-        "anonymous":True
+        "anonymous": True,
     }
+
 
 def get_form_request_anonymous_payload():
     """Return a form request payload object with anonymous true"""
@@ -135,7 +140,7 @@ def get_form_request_anonymous_payload():
         "formId": "1234",
         "formName": "Sample form",
         "anonymous": True,
-        "status": "active"
+        "status": "active",
     }
 
 
@@ -172,4 +177,9 @@ def update_dashboard_payload():
             {"13": "sample2"},
             {"15": "Sample 4"},
         ]
+    }
+
+def get_locale_update_valid_payload():
+    return {
+        "locale":"en"
     }

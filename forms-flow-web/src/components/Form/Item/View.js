@@ -12,14 +12,16 @@ import {
   setMaintainBPMFormPagination
 } from "../../../actions/formActions";
 import SubmissionError from '../../../containers/SubmissionError';
-import {applicationCreate, publicApplicationCreate} from "../../../apiManager/services/applicationServices";
+import {applicationCreate, publicApplicationCreate,publicApplicationStatus} from "../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay";
 import {CUSTOM_EVENT_TYPE} from "../../ServiceFlow/constants/customEventTypes";
 import {toast} from "react-toastify";
-import { setFormSubmitted } from '../../../actions/formActions';
+import { setFormSubmitted , setPublicFormStatus} from '../../../actions/formActions';
 const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
   const isFormSubmitted = useSelector(state=>state.formDelete.formSubmitted);
+  const publicFormStatus = useSelector(state=>state.formDelete.publicFormStatus);
+  const isPublic = window.location.href.includes('public') //need to remove 
 
   const {
       isAuthenticated,
@@ -34,7 +36,6 @@ const View = React.memo((props) => {
     } = props;
    const dispatch = useDispatch();
 
-   
    useEffect(()=>{
     if (!isAuthenticated) {
       getForm();
@@ -45,6 +46,8 @@ const View = React.memo((props) => {
     if (isActive) {
       return <div data-testid="loading-view-component"><Loading /></div>;
     }
+    
+ 
 
     if(isFormSubmitted){
       return (
@@ -54,6 +57,14 @@ const View = React.memo((props) => {
       </div>
     )
     }
+
+    if(!publicFormStatus&&isPublic){
+      return <div class="alert alert-danger mt-4" role="alert">
+      Form not available
+      </div>
+    }
+
+
     return (
       <div className="container overflow-y-auto">
         <div className="main-header">
@@ -69,12 +80,15 @@ const View = React.memo((props) => {
             :
             null
           }
-{/*          <span className="ml-3">
+          {/*   <span className="ml-3">
             <img src="/form.svg" width="30" height="30" alt="form" />
           </span>*/}
-          <h3 className="ml-3">
-            <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms /</span> {form.title}
-          </h3>
+          {form.title?
+              <h3 className="ml-3">
+              <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms /</span> {form.title}
+              </h3>
+              :""
+          }
         </div>
         <Errors errors={errors} />
         <LoadingOverlay active={isFormSubmissionLoading} spinner text='Loading...' className="col-12">
@@ -106,7 +120,6 @@ const doProcessActions = (submission, ownProps) => {
     const isPublic = window.location.href.includes('public')
    
     if (isPublic){
-      
       // this is for anonymous
       dispatch(publicApplicationCreate(data, (err, res) => {
         if (!err) {
@@ -174,7 +187,22 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    getForm: () => dispatch(getForm('form', ownProps.match.params.formId)),
+    getForm: () => {
+      const isPublic = window.location.href.includes('public')
+      dispatch(publicApplicationStatus(ownProps.match.params.formId,(err,res)=>{
+        if(isPublic){
+          if(res&& res.is_anonymous&&res.status==="active"){
+            dispatch(setPublicFormStatus(true))
+            return dispatch(getForm('form', ownProps.match.params.formId))
+          }else{
+             dispatch(setPublicFormStatus(false))
+          }
+        }else{
+          return dispatch(getForm('form', ownProps.match.params.formId))
+        }
+        
+    }))
+  },
     onSubmit: (submission) => {
       dispatch(setFormSubmissionLoading(true));
       dispatch(saveSubmission('submission', submission, ownProps.match.params.formId, (err, submission) => {

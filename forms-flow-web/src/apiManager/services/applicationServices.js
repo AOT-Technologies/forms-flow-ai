@@ -11,6 +11,7 @@ import {
 } from "../../actions/applicationActions";
 import {replaceUrl} from "../../helper/helper";
 import moment from 'moment';
+ import {getFormattedProcess} from "./formatterService";
 
 export const getAllApplicationsByFormId = (formId,...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -74,11 +75,12 @@ export const getApplicationById = (applicationId, ...rest) => {
       .then((res) => {
         if (res.data && Object.keys(res.data).length) {
           const application = res.data;
+          const processData = getFormattedProcess(application);
           dispatch(setApplicationDetail(application));
+          dispatch(setApplicationProcess(processData));
           dispatch(setApplicationDetailStatusCode(res.status));
           done(null, application);
         } else {
-          console.log("Error", res);
           dispatch(serviceActionError(res));
           dispatch(setApplicationDetail({}));
           dispatch(setApplicationDetailStatusCode(403));
@@ -99,33 +101,7 @@ export const getApplicationById = (applicationId, ...rest) => {
   };
 };
 
-export const getApplicationFormDataByAppId = (application_id,...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  return (dispatch) => {
-    const apiUrlAppFormProcess = replaceUrl(
-      API.GET_PROCESS_MAPPER_FOR_APPLICATION,
-      "<application_id>",
-      application_id
-    );
-    httpGETRequest(apiUrlAppFormProcess)
-      .then((res) => {
-        if (res.data) {
-          const process = res.data || [];
-          dispatch(setApplicationProcess(process));
-          done(null, process);
-        } else {
-          console.log("Error", res);
-          dispatch(serviceActionError(res));
-        }
-        done(null, res.data);
-      })
-      .catch((error) => {
-        console.log("Error", error);
-        dispatch(serviceActionError(error));
-        done(error);
-      });
-  };
-};
+
 
 export const applicationCreate = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -168,7 +144,25 @@ export const publicApplicationCreate = (data, ...rest) => {
   };
 };
 
-
+export const publicApplicationStatus = (data, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const URL = `${API.PUBLIC_APPLICATION_STATUS}/${data}`;
+  return (dispatch) => {
+    httpGETRequest(URL)
+      .then((res) => {
+        if (res.data) {
+          done(null, res.data);
+        } else {
+          dispatch(serviceActionError(res));
+          done("Error Fetching Data");
+        }
+      })
+      .catch((error) => {
+        dispatch(serviceActionError(error));
+        done(error);
+      });
+  };
+};
 
 export const updateApplicationEvent = (data,...rest) => {
   /* * Data Format
@@ -208,7 +202,7 @@ export const FilterApplications = (params,...rest) => {
     if(id && id !==""){
       url+=`&Id=${id.filterVal}`
     }
-  
+
     if(applicationStatus && applicationStatus !==""){
       url+=`&applicationStatus=${applicationStatus?.filterVal}`
     }
@@ -218,9 +212,9 @@ export const FilterApplications = (params,...rest) => {
       let modifiedTo = moment.utc(modified.filterVal[1]).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B");
       url+=`&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`
   }
- 
+
     if(params.sortField !== null){
-      url+=`&sortBy=${params.sortField}&sortOrder=${params.sortOrder}` 
+      url+=`&sortBy=${params.sortField}&sortOrder=${params.sortOrder}`
     }
 
     httpGETRequest(url)

@@ -1,0 +1,63 @@
+#Workflow name
+name: Forms Flow BPM CI
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - "forms-flow-api/**"
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./forms-flow-bpm
+
+jobs:
+  setup-job:
+    runs-on: ubuntu-20.04
+
+    if: github.repository == 'AOT-Technologies/forms-flow-ai-dev'
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: "true"
+  tests:
+    needs: setup-job
+    runs-on: ubuntu-20.04
+    name: Unit tests
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom-docker.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Run Tests
+        run: mvn -B test --file pom-docker.xml
+  build:
+    needs: tests
+    runs-on: ubuntu-20.04
+    name: Build
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK
+        uses: actions/setup-java@v1
+        with:
+          java-version: '11'
+      - name: Cache Maven packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom-docker.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - name: Build with Maven
+        run: mvn -B package -DskipTests --file pom-docker.xml

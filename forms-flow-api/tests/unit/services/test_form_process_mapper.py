@@ -34,10 +34,14 @@ def test_create_form_mapper(app, client, session):
     assert rv.form_name == "Sample form"
 
 
-# def test_update_form_mapper(session, client):
-#     rv = form_service.update_mapper(1, data=get_form_service_payload())
-#     assert rv.form_id == "1234"
-#     assert rv.form_name == "Sample form"
+def test_update_form_mapper(app, session, client):
+    rv = form_service.create_mapper(data=get_form_service_payload())
+    assert rv.form_id == "1234"
+    assert rv.form_name == "Sample form"
+    form_id = rv.id
+    rv = form_service.update_mapper(form_id, data=get_form_service_payload())
+    assert rv.form_id == "1234"
+    assert rv.form_name == "Sample form"
 
 
 # def test_mark_inactive(session):

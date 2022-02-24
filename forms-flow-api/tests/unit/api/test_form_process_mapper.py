@@ -19,7 +19,7 @@ def test_form_process_mapper_list(app, client, session):
 def test_form_process_mapper_creation(app, client, session):
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.post(f"/form", headers=headers, json=get_form_request_payload())
+    response = client.post("/form", headers=headers, json=get_form_request_payload())
     assert response.status_code == 201
     assert response.json.get("id") != None
 
@@ -28,7 +28,7 @@ def test_form_process_mapper_creation(app, client, session):
 def test_form_process_mapper_paginated_list(app, client, session, pageNo, limit):
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.get("/form?pageNo={pageNo}&limit={limit}", headers=headers)
+    response = client.get(f"/form?pageNo={pageNo}&limit={limit}", headers=headers)
     assert response.status_code == 200
 
 

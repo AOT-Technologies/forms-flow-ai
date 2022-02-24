@@ -12,7 +12,6 @@ from tests.utilities.base_test import (
 
 @mark.describe("Initialize application public API")
 class TestApplicationAnonymousResourcesByIds:
-
     def test_application_valid_post(self, app, client, session):
         """Assert that public API /application when passed with valid payload returns 201 status code"""
         token = factory_auth_header()
@@ -88,7 +87,7 @@ class TestApplicationAnonymousResourcesByIds:
 
 
 class TestAnonymousFormById:
-    """Class for unit test check form is Anonymous and published """
+    """Class for unit test check form is Anonymous and published"""
 
     def test_anonymous_active_form_by_form_id(self, client, session):
         """Assert that public API when passed with valid payload returns 200 status code"""
@@ -98,10 +97,12 @@ class TestAnonymousFormById:
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        response = client.post('/form', headers=headers, json=get_form_request_anonymous_payload())
+        response = client.post(
+            "/form", headers=headers, json=get_form_request_anonymous_payload()
+        )
         assert response.status_code == 201
 
-        form_id = response.json.get('formId')
+        form_id = response.json.get("formId")
 
         response = client.get(f"/public/form/{form_id}")
         assert response.status_code == 200

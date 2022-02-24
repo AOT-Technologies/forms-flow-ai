@@ -1,4 +1,5 @@
 """Test suite for FormProcessMapper API endpoint"""
+import pytest
 from tests.utilities.base_test import (
     factory_auth_header,
     get_form_request_payload,
@@ -21,6 +22,49 @@ def test_form_process_mapper_creation(app, client, session):
     response = client.post("/form", headers=headers, json=get_form_request_payload())
     assert response.status_code == 201
     assert response.json.get("id") != None
+
+
+@pytest.mark.parametrize(("pageNo", "limit"), ((1, 5), (1, 10), (1, 20)))
+def test_form_process_mapper_paginated_list(app, client, session, pageNo, limit):
+    token = factory_auth_header()
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    response = client.get("/form?pageNo={pageNo}&limit={limit}", headers=headers)
+    assert response.status_code == 200
+
+
+@pytest.mark.parametrize(
+    ("pageNo", "limit", "sortBy", "sortOrder"),
+    ((1, 5, "id", "asc"), (1, 10, "id", "desc"), (1, 20, "id", "desc")),
+)
+def test_form_process_mapper_paginated_sorted_list(
+    app, client, session, pageNo, limit, sortBy, sortOrder
+):
+    token = factory_auth_header()
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    response = client.get(
+        f"/application?pageNo={pageNo}&limit={limit}&sortBy={sortBy}&sortOrder={sortOrder}",
+        headers=headers,
+    )
+    assert response.status_code == 200
+
+
+@pytest.mark.parametrize(
+    ("pageNo", "limit", "filters"),
+    (
+        (1, 5, "formName=free"),
+        (1, 10, "formName=Free"),
+        (1, 20, "formName=privacy"),
+    ),
+)
+def test_form_process_mapper_paginated_filtered_list(
+    app, client, session, pageNo, limit, filters
+):
+    token = factory_auth_header()
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    response = client.post("/form", headers=headers, json=get_form_request_payload())
+    assert response.status_code == 201
+    rv = client.get(f"/form?pageNo={pageNo}&limit={limit}&{filters}", headers=headers)
+    assert rv.status_code == 200
 
 
 def test_anonymous_form_process_mapper_creation(app, client, session):

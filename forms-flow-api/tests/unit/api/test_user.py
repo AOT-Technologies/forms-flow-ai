@@ -17,7 +17,9 @@ class TestKeycloakUserServiceResource:
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
         }
-        rv = client.put("/user/locale", headers=headers, json=get_locale_update_valid_payload())
+        rv = client.put(
+            "/user/locale", headers=headers, json=get_locale_update_valid_payload()
+        )
         assert rv.status_code == 200
 
     """Assert that API/user when passed with invalid payload return 400 status code"""

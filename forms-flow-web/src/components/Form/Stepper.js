@@ -13,7 +13,8 @@ import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
 import { Translation } from "react-i18next";
-import "../../translations/i18n"
+import "../../translations/i18n";
+import { formio_translation } from "../../translations/formiotranslation";
 //TODO convert this code to functional component
 
 // for edit

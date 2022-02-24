@@ -8,7 +8,6 @@ export const TRANSLATIONS_FR = {
   "No forms found":"Aucun formulaire trouvé",
   all_steps:"Toutes les étapes terminées - vous avez terminé",
   delete_form_message:"Êtes-vous sûr de vouloir supprimer le formulaire",
-  Forms:"Formes",
   Edit:"Éditer",
  'Text Field': 'champ de texte',
   workflow_message:"Vous souhaitez associer un formulaire à un workflow ?",
@@ -172,6 +171,10 @@ export const TRANSLATIONS_FR = {
   design_form:"Formulaire de conception",
   associate_workflow:"Associer ce formulaire à un workflow ?",
   preview_confirm:"Aperçu et confirmation",
+  Forms:"Formes",
+  Form:"Forme",
+  "Downloaded Successfully":"Téléchargé avec succès",
+  "Error in JSON file structure":"Erreur dans la structure du fichier JSON"
   };
   
 

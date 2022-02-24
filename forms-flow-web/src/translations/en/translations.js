@@ -10,6 +10,8 @@ export const TRANSLATIONS_EN = {
   "No Process Diagram found": "No Process Diagram found",
   delete_form_message: "Are you sure you wish to delete the form",
   Forms: "Forms",
+  Form:"Form",
+  "Downloaded Successfully":"Downloaded Successfully",
   Edit: "Edit",
   workflow_message: "Do you want to associate form with a workflow ?",
   yes: "Yes",
@@ -171,7 +173,8 @@ export const TRANSLATIONS_EN = {
   preview_confirm: "Preview and Confirm",
   all_steps: "All steps completed - you're finished",
   "Enter the form machine name": "Enter the form machine name",
-  "Enter the form title": "Enter the form title"
+  "Enter the form title": "Enter the form title",
+  "Error in JSON file structure":"Error in JSON file structure"
 
 
 

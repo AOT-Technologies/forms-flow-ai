@@ -1,6 +1,8 @@
 export const formio_translation = {
 
    "en": {
+
+       "Error in JSON file structure":"Error in JSON file structure",
       metrics: "Metrics",
       dashboard: "Dashboard",
       insights: "Insights",
@@ -178,7 +180,10 @@ export const formio_translation = {
       submission_failed: "Submission Failed.",
       "Click here to back": "Click here to back",
       "Enter the form machine name": "Enter the form machine name",
-      "Enter the form title": "Enter the form title"
+      "Enter the form title": "Enter the form title",
+      Form:"Form",
+      "Downloaded Successfully":"Downloaded Successfully"
+      
 
 
 
@@ -186,6 +191,9 @@ export const formio_translation = {
 
    "zh-CN": {
 
+      "Error in JSON file structure":"JSON文件结构错误",
+      Form:"形式",
+     "Downloaded Successfully":"下载成功",
       submission_success: "提交已保存。",
       submission_error: "提交时出错。",
       message: "请在再次提交之前修复错误。",
@@ -850,7 +858,6 @@ export const formio_translation = {
       "Specify type of event that this reCAPTCHA would react to": "指定此 reCAPTCHA 将响应的事件类型",
       "Form Load": "表单加载",
       "Button Click": "按钮点击",
-      "Form": "形式",
       "The form to load within this form component.": "要在此表单组件中加载的表单。",
       "Form Revision": "表格修订",
       "You can lock the nested form to a specific revision by entering the revision number here.": "您可以通过在此处输入修订号将嵌套表单锁定到特定修订。",
@@ -878,7 +885,9 @@ export const formio_translation = {
 
 
    "bg": {
-
+ 
+      "Error in JSON file structure":"Грешка във файловата структура на JSON",
+      "Downloaded Successfully":"Изтеглено успешно",
       submission_success: "Изпращането е запазено.",
       submission_error: "Грешка при изпращане.",
       message: "Моля, поправете грешките, преди да изпратите отново.",
@@ -1571,6 +1580,9 @@ export const formio_translation = {
 
 
    "pt": {
+
+      "Error in JSON file structure":"Erro na estrutura do arquivo JSON",
+      "Downloaded Successfully":"Baixado com sucesso",
       select_dashboard: "Selecionar painel",
       dashboard: "Painel",
       insights: "Intuições",
@@ -2261,6 +2273,9 @@ export const formio_translation = {
 },
 
    "fr": {
+
+      "Error in JSON file structure":"Erreur dans la structure du fichier JSON",
+      "Downloaded Successfully":"Téléchargé avec succès",
       select_dashboard: "Sélectionnez Tableau de bord",
       metrics: "Métrique",
       insights: "Connaissances",
@@ -3639,6 +3654,10 @@ export const formio_translation = {
       no_forms_found: "Keine Formulare gefunden",
       wizard:"Magier",
       'Text Field':"Textfeld",
+      Form:"Bilden",
+     "Downloaded Successfully":"Erfolgreich heruntergeladen",
+     "Error in JSON file structure":"Fehler in der JSON-Dateistruktur"
+
       
       
       

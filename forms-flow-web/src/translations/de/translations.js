@@ -10,7 +10,6 @@ export const TRANSLATIONS_DE = {
   message_submission: "Eine Abgabe ist nicht möglich.",
   "No Process Diagram found": "Kein Prozessdiagramm gefunden",
   delete_form_message: "Möchten Sie das Formular wirklich löschen?",
-  Forms: "Formen",
   Edit: "Bearbeiten",
   workflow_message: "Möchten Sie ein Formular mit einem Workflow verknüpfen?",
   yes: "Jawohl",
@@ -176,7 +175,11 @@ export const TRANSLATIONS_DE = {
   wizard:"Magier",
   'Text Field':"Textfeld",
   type: "Art",
-  example:"Beispiel"
+  example:"Beispiel",
+  Forms: "Formen",
+  Form:"Bilden",
+  "Downloaded Successfully":"Erfolgreich heruntergeladen",
+  "Error in JSON file structure":"Fehler in der JSON-Dateistruktur"
 
 
 

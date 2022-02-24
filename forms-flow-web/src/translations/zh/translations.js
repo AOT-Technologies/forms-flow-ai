@@ -4,7 +4,7 @@ export const TRANSLATIONS_ZH = {
   message: "请在再次提交之前修复错误。",
   message_submission: "无法提交。 ",
   workflow_association: "表单工作流关联已保存。",
- delete_form_message: "您确定要删除表格吗",
+  delete_form_message: "您确定要删除表格吗",
   Forms: "表格  ",
   Edit: "编辑",
 "Text Field": "文本域",
@@ -175,6 +175,9 @@ export const TRANSLATIONS_ZH = {
   associate_workflow: "将此表单与工作流相关联？",
   preview_confirm: "预览并确认",
   all_steps: "已完成所有步骤 - 您已完成",
+  Form:"形式",
+  "Downloaded Successfully":"下载成功",
+  "Error in JSON file structure":"JSON文件结构错误"
 
 
 

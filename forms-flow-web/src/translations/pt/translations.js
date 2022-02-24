@@ -170,5 +170,8 @@ export const TRANSLATIONS_PT = {
   associate_workflow: "Associar este formulário a um fluxo de trabalho?",
   preview_confirm: "Pré-visualizar e confirmar",
   all_steps: "Todas as etapas concluídas - você terminou",
+  Form:"Forma",
+  "Downloaded Successfully":"Baixado com sucesso",
+  "Error in JSON file structure":"Erro na estrutura do arquivo JSON"
 };
 

@@ -92,7 +92,7 @@ import {addHiddenApplicationComponent} from "../../constants/applicationComponen
 
   const downloadForms = () => {
     FileService.downloadFile({forms: formCheckList}, () => {
-      toast.success(`${formCheckList.length} ${formCheckList.length === 1 ? "Form" : "Forms"} Downloaded Successfully`)
+      toast.success(`${formCheckList.length} ${formCheckList.length === 1 ? (t("Form")) : (t("Forms"))} Downloaded Successfully`)
       dispatch(setFormCheckList([]));
     })
   }
@@ -150,7 +150,7 @@ import {addHiddenApplicationComponent} from "../../constants/applicationComponen
         }));
     } else {
       setShowFormUploadModal(false);
-      return (toast.error('Error in Json file structure'))
+      return (toast.error(t("Error in JSON file structure")))
     }
   }
 

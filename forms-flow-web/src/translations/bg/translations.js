@@ -4,7 +4,6 @@ export const TRANSLATIONS_BG = {
     message: "Моля, поправете грешките, преди да изпратите отново.",
     message_submission: "Подаването не може да се извърши.",
     delete_form_message: "Сигурни ли сте, че искате да изтриете формуляра",
-    Forms: "Форми",
     Edit: "редактиране",
     "Text Field": "текстово поле",
     workflow_message: "Искате ли да свържете формата с работен поток?",
@@ -175,6 +174,10 @@ export const TRANSLATIONS_BG = {
     associate_workflow: "Да се ​​свърже ли този формуляр с работен поток?",
     preview_confirm: "Преглед и потвърждение",
     all_steps: "Всички стъпки завършени - сте готови",
+    Forms: "Форми",
+    Form:"Формуляр",
+    "Downloaded Successfully":"Изтеглено успешно",
+    "Error in JSON file structure":"Грешка във файловата структура на JSON"
 
 }
 

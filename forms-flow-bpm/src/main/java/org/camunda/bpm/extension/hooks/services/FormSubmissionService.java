@@ -33,9 +33,6 @@ public class FormSubmissionService {
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
-    @Autowired
-    private FormTokenAccessHandler formTokenAccessHandler;
-
     public String readSubmission(String formUrl) {
         ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
         if(response.getStatusCode().value() == HttpStatus.OK.value()) {
@@ -162,11 +159,6 @@ public class FormSubmissionService {
         Map<String, Map<String,Object>> data = new HashMap<>();
         data.put("data",bpmVariables);
         return getObjectMapper().writeValueAsString(data);
-    }
-
-
-    public String getAccessToken() {
-        return formTokenAccessHandler.getAccessToken();
     }
 
     private ObjectMapper getObjectMapper(){

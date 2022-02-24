@@ -1,4 +1,4 @@
--r ./prod.txt
+-r prod.txt
 autopep8
 black==21.12b0
 flake8

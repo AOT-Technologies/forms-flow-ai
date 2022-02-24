@@ -6,7 +6,7 @@ form_service = FormProcessMapperService()
 
 
 def test_form_get_all_mappers(app, client, session):
-    rv = form_service.get_all_mappers(page_number=0, limit=0)
+    rv = form_service.get_all_mappers(page_number=0, limit=0, form_name=None, sort_by=None, sort_order=None)
     assert not rv
 
 

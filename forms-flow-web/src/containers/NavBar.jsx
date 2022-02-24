@@ -132,6 +132,7 @@ const NavBar = React.memo(() => {
                       <Dropdown.Item><button class="button_component" value='pt' onClick={handleOnclick}>Português</button>  </Dropdown.Item>
                       <Dropdown.Item><button class="button_component" value='fr' onClick={handleOnclick}>français</button> </Dropdown.Item>
                       <Dropdown.Item><button class="button_component" value='bg' onClick={handleOnclick}>български</button> </Dropdown.Item>
+                      <Dropdown.Item><button class="button_component" value='de' onClick={handleOnclick}>Deutsch</button> </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
             </Nav>

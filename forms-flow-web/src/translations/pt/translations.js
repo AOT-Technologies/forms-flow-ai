@@ -8,6 +8,7 @@ export const TRANSLATIONS_PT = {
   delete_form_message: "Tem certeza que deseja deletar o formulário",
   Forms: "Formulários",
   Edit: "Editar",
+ "Text Field": "Campo de texto",
   workflow_message: "Você deseja associar o formulário a um fluxo de trabalho?",
   yes: "sim",
   no: "Não",

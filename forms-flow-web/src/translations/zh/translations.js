@@ -7,6 +7,7 @@ export const TRANSLATIONS_ZH = {
  delete_form_message: "您确定要删除表格吗",
   Forms: "表格  ",
   Edit: "编辑",
+"Text Field": "文本域",
   workflow_message: "您想将表单与工作流相关联吗？",
   yes: "是的",
   no: "否",

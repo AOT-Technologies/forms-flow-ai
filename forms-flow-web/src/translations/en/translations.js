@@ -170,6 +170,8 @@ export const TRANSLATIONS_EN = {
   associate_workflow: "Associate this form with a workflow?",
   preview_confirm: "Preview and Confirm",
   all_steps: "All steps completed - you're finished",
+  "Enter the form machine name": "Enter the form machine name",
+  "Enter the form title": "Enter the form title"
 
 
 

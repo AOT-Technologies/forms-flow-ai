@@ -6,6 +6,7 @@ export const TRANSLATIONS_BG = {
     delete_form_message: "Сигурни ли сте, че искате да изтриете формуляра",
     Forms: "Форми",
     Edit: "редактиране",
+    "Text Field": "текстово поле",
     workflow_message: "Искате ли да свържете формата с работен поток?",
     yes: "да",
     no: "Не",

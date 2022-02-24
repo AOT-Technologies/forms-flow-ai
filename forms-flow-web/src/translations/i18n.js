@@ -6,6 +6,7 @@ import { TRANSLATIONS_EN } from "./en/translations";
 import { TRANSLATIONS_FR } from "./fr/translations";
 import { TRANSLATIONS_PT } from "./pt/translations";
 import { TRANSLATIONS_BG } from "./bg/translations";
+import { TRANSLATIONS_DE } from "./de/translations";
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -28,12 +29,17 @@ i18n
       "bg":
       {
         translation: TRANSLATIONS_BG
+      },
+      "de":
+      {
+        translation: TRANSLATIONS_DE
       }
+
     }
   });
   
 
 //i18n.changeLanguage('zh'); // default language 'en'
-
+  i18n.fallbacks = true;
   export default i18n;
   

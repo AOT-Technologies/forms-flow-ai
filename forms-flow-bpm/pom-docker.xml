@@ -336,6 +336,8 @@
 						<exclude>org/camunda/bpm/extension/hooks/delegates/data/*.class</exclude>
 						<exclude>org/camunda/bpm/extension/commons/io/socket/message/*.class</exclude>
 						<exclude>org/camunda/bpm/extension/commons/io/socket/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/connector/auth/FormioConfiguration.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/connector/auth/FormioContext.class</exclude>
 						<exclude>org/camunda/bpm/extension/commons/connector/*.class</exclude>
 						<exclude>org/camunda/bpm/extension/CamundaApplication.class</exclude>
 					</excludes>

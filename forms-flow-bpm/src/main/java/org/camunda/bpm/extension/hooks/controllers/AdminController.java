@@ -13,11 +13,13 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 
 import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizedAction;
+import org.camunda.bpm.extension.hooks.controllers.data.FormRO;
 import org.camunda.bpm.extension.hooks.controllers.mapper.AuthorizationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -28,9 +30,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
 import org.camunda.bpm.engine.authorization.Resources;
 
@@ -63,8 +63,11 @@ public class AdminController {
     @Value("${plugin.identity.keycloak.administratorGroupName}")
     private String adminGroupName;
 
-    @RequestMapping(value = "/engine-rest-ext/form", method = RequestMethod.GET, produces = "application/json")
-    private @ResponseBody List<AuthorizedAction> getForms() throws ServletException {
+    @GetMapping(value = "/engine-rest-ext/form",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    private @ResponseBody List<AuthorizedAction> getForms(@RequestBody FormRO formRO) throws ServletException
+    {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
         List<Authorization> authorizationList =  getAuthorization(groups);
@@ -72,7 +75,8 @@ public class AdminController {
         List<AuthorizedAction> filteredList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, null);
+            String payload = objectMapper.writeValueAsString(formRO);
+            ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, payload);
             if (response.getStatusCode().value() == HttpStatus.OK.value()) {
                 JsonNode jsonNode = objectMapper.readTree(response.getBody());
                 if (jsonNode.get("totalCount") != null && jsonNode.get("totalCount").asInt() > 0) {
@@ -84,6 +88,7 @@ public class AdminController {
                             action.setFormName(formNode.get("formName").asText());
                             action.setProcessKey(formNode.get("processKey").asText());
                             formList.add(action);
+
                         }
                     }
 

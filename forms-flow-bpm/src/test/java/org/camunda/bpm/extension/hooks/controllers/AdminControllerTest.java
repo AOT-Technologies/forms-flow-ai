@@ -138,7 +138,8 @@ public class AdminControllerTest {
                 MockMvcRequestBuilders.get("/engine-rest-ext/form")
                         .contentType(APPLICATION_JSON_UTF8)
         )
-                .andExpect(status().is4xxClientError());
+                .andExpect(status().isOk())
+                .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"},{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]"));
     }
 
     /**

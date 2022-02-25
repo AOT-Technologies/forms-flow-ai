@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- *
+ * This class has the sorting deatils
  */
 @Data
 @NoArgsConstructor
@@ -17,11 +17,11 @@ public class Sorting implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 *
+	 *Column name - search string
 	 */
 	private String sortBy;
 	/**
-	 *
+	 * Sort by ascending or decending
 	 */
 	private String sortOrder;
 }

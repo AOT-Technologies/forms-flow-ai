@@ -16,7 +16,6 @@ import {push} from "connected-react-router";
 import {MAX_RESULTS} from "../constants/taskConstants";
 import {getFirstResultIndex} from "../../../apiManager/services/taskSearchParamsFormatterService";
 import TaskVariable from "./TaskVariable";
-
 const ServiceFlowTaskList = React.memo(() => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const taskVariable = useSelector((state)=>state.bpmTasks.selectedFilter?.properties?.variables ||[])

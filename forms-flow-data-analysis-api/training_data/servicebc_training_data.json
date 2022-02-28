@@ -1,0 +1,8248 @@
+{
+  "classes": [
+    "FACILITY",
+    "STAFF",
+    "SERVICE",
+    "LOCATION",
+    "TIME"
+  ],
+  "annotations": [
+    [
+      "Nothing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Serve coffee",
+      {
+        "entities": [
+          [
+            6,
+            12,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Keep up the great work!",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Completely separate Income Assistance from ServiceBC and provide 2 local Chetwynd workers.",
+      {
+        "entities": [
+          [
+            20,
+            37,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Same",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "well I had to leave so the wait was (can't read the rest )",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "have more employees available",
+      {
+        "entities": [
+          [
+            10,
+            19,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Question about charge on tax bill - could not answer and would not find out answer even when requested. I was told to call number in Victoria. Staff told me I wasn't 1st person to ask very same question so why didn't staff find out the answer? Need to be knowledgeable about issues brought up by customers",
+      {
+        "entities": [
+          [
+            25,
+            33,
+            "SERVICE"
+          ],
+          [
+            145,
+            150,
+            "STAFF"
+          ],
+          [
+            258,
+            292,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "everything great",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "not a thing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Staff could check things when you ask.",
+      {
+        "entities": [
+          [
+            0,
+            5,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "keep up the good work",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "take responsibility for PWD/IA (? )",
+      {
+        "entities": [
+          [
+            24,
+            30,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" More staff , 5 empty kiosks. You were...mine payment. Please be more customer focus . \"",
+      {
+        "entities": [
+          [
+            6,
+            12,
+            "STAFF"
+          ],
+          [
+            21,
+            28,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "the workers take same training",
+      {
+        "entities": [
+          [
+            4,
+            11,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "shorter line",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" nothing, was very happy \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "very satisfied",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "get the self serve working",
+      {
+        "entities": [
+          [
+            8,
+            18,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Faster computers",
+      {
+        "entities": [
+          [
+            0,
+            16,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "more staff",
+      {
+        "entities": [
+          [
+            5,
+            10,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Play soft background music",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have a Service BC and Service Canada",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Make sure all services get address, phone etc update \"",
+      {
+        "entities": [
+          [
+            28,
+            42,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Service was spot on",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "A private room for personal problems when talking to social services or important phones",
+      {
+        "entities": [
+          [
+            2,
+            14,
+            "FACILITY"
+          ],
+          [
+            53,
+            71,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing. Excellent Service.",
+      {
+        "entities": [
+          [
+            20,
+            27,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" More receptions, \"",
+      {
+        "entities": [
+          [
+            6,
+            16,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "It is difficult to protect privacy in an & #34; open & #34; office is voices carry.",
+      {
+        "entities": [
+          [
+            56,
+            62,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Water fountain",
+      {
+        "entities": [
+          [
+            0,
+            14,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have more service desks open/ quicker service on testing",
+      {
+        "entities": [
+          [
+            10,
+            23,
+            "FACILITY"
+          ],
+          [
+            38,
+            48,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Not a thing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Nothing, same great service \"",
+      {
+        "entities": [
+          [
+            21,
+            29,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have someone who can help immediatley",
+      {
+        "entities": [
+          [
+            0,
+            12,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have notary services like website states",
+      {
+        "entities": [
+          [
+            5,
+            20,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nothing it was great",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have a water jug.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Coffee",
+      {
+        "entities": [
+          [
+            0,
+            6,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "great experience. fast & efficient",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "speed up wait time",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "move welfare to it's own building",
+      {
+        "entities": [
+          [
+            5,
+            12,
+            "SERVICE"
+          ],
+          [
+            16,
+            33,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "It was very satisfactory",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Info around the corner. I got a bit lost",
+      {
+        "entities": [
+          [
+            0,
+            41,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "Get more documents online",
+      {
+        "entities": [
+          [
+            9,
+            25,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "a little faster service",
+      {
+        "entities": [
+          [
+            16,
+            23,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "The agent 'Laura' went the extra mile getting me the documents needed despite their technical difficulties. I received the documents needed on time in a professional manner. Thank you.",
+      {
+        "entities": [
+          [
+            4,
+            17,
+            "STAFF"
+          ],
+          [
+            110,
+            132,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "More people on staff",
+      {
+        "entities": [
+          [
+            15,
+            20,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" nothing, smiles were welcoming \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Take PASB payments as in past",
+      {
+        "entities": [
+          [
+            5,
+            18,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "order and correct direction by staff",
+      {
+        "entities": [
+          [
+            31,
+            36,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" move welfare office to it's own office!! And have more workers at the counter, the number tickets were ridiculous . \"",
+      {
+        "entities": [
+          [
+            6,
+            39,
+            "LOCATION"
+          ],
+          [
+            51,
+            63,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "HAVE THE OPTION TO EXPEDITE DELIVERY OF ID/NEW CARE CARD",
+      {
+        "entities": [
+          [
+            40,
+            56,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Number system so people could sit if need",
+      {
+        "entities": [
+          [
+            0,
+            13,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "keep up the good work",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "he was super helpful and friendly",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "polite courteous friendly",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Simplify the system",
+      {
+        "entities": [
+          [
+            9,
+            19,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "accessibility for phone service",
+      {
+        "entities": [
+          [
+            0,
+            31,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Hot coffee for staff and customer.",
+      {
+        "entities": [
+          [
+            0,
+            14,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Candies at the desk",
+      {
+        "entities": [
+          [
+            0,
+            19,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "New Service is great.",
+      {
+        "entities": [
+          [
+            4,
+            11,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "my file was weird",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Faster service",
+      {
+        "entities": [
+          [
+            7,
+            14,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "More staff during tax time",
+      {
+        "entities": [
+          [
+            5,
+            10,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "In-office quick counselling. Just someone to talk to while we wait",
+      {
+        "entities": [
+          [
+            10,
+            28,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "More staff possibly",
+      {
+        "entities": [
+          [
+            5,
+            10,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "None",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Hire more staff.",
+      {
+        "entities": [
+          [
+            10,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have internet & phone as a courtesy.",
+      {
+        "entities": [
+          [
+            5,
+            21,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Was great, no change needed \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" hire more people like Ben. He was very helpful, competent and professional \"",
+      {
+        "entities": [
+          [
+            11,
+            27,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Get rid of that phone crap useless",
+      {
+        "entities": [
+          [
+            0,
+            26,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing! I had a great visit",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Louder calling",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "open a office for welfare so the would have []",
+      {
+        "entities": [
+          [
+            0,
+            25,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "everything correct",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "better signs to get here",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "None",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Give the GF service reps a bonus",
+      {
+        "entities": [
+          [
+            9,
+            26,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "No",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Everything was perfect",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Change signage and website that advised BC Safety Authority Services available at Service BC",
+      {
+        "entities": [
+          [
+            40,
+            68,
+            "STAFF"
+          ],
+          [
+            82,
+            92,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "workers in office",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have a worker available to deal with scheduled appointments.",
+      {
+        "entities": [
+          [
+            7,
+            13,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Be more sure about whether or not money got deposited in account",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing - Everything was great",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Get more staff",
+      {
+        "entities": [
+          [
+            9,
+            14,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "The lady was patient and thorough",
+      {
+        "entities": [
+          [
+            4,
+            8,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "You gave me perfect help!!!",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "My visit was perfect.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Service was satisfactory, no change needed \"",
+      {
+        "entities": [
+          [
+            1,
+            8,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "More access of funds for wildfire evac",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing - fantastic service",
+      {
+        "entities": [
+          [
+            20,
+            27,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Nothing, you're always awesome! \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "More waiting area",
+      {
+        "entities": [
+          [
+            5,
+            17,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Dividers between customers",
+      {
+        "entities": [
+          [
+            0,
+            8,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "New magazines",
+      {
+        "entities": [
+          [
+            0,
+            13,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Seemed fairly well organized",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Free doughnuts",
+      {
+        "entities": [
+          [
+            0,
+            14,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have an employee available to deal with a scheduled appointment.",
+      {
+        "entities": [
+          [
+            8,
+            16,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "make more parking",
+      {
+        "entities": [
+          [
+            10,
+            17,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "I would add wifi to office",
+      {
+        "entities": [
+          [
+            12,
+            16,
+            "FACILITY"
+          ],
+          [
+            20,
+            26,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "Social assistance for disability in the valley",
+      {
+        "entities": [
+          [
+            0,
+            32,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Friendly and helpful",
+      {
+        "entities": [
+          [
+            0,
+            20,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Bit of Christmas!",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Not so much on-line",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "HAVE MORE KNOWLEDGEABLE STAFF!",
+      {
+        "entities": [
+          [
+            24,
+            29,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "improve computer website",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "NOT HAVE A SEPARATE SILO TO FCBC",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "outline the required steps info needed",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "have coffee and donuts",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Keep being a great help",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Service was excellent.",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have been in 4 X's for same thing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Make BusinessEID registration more user friendly.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Give Chrystal a raise",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "more staff-too long waiting",
+      {
+        "entities": [
+          [
+            0,
+            14,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Great Service",
+      {
+        "entities": [
+          [
+            6,
+            13,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "CSR was very helpful.",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" the service is very good. I first emailed and the office called me back 50 minutes which I missed . Then I called back and left a message, then the office called me again and I got the search result . I like their service. Staff are very nice . \"",
+      {
+        "entities": [
+          [
+            5,
+            12,
+            "SERVICE"
+          ],
+          [
+            51,
+            57,
+            "FACILITY"
+          ],
+          [
+            225,
+            230,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Nothing, server was nice \"",
+      {
+        "entities": [
+          [
+            10,
+            16,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Absolutely nothing. Please don't change",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "have washrooms available",
+      {
+        "entities": [
+          [
+            5,
+            14,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have a business line",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Golden",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "can be request the search through intennet",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have mobile services for the disabled.",
+      {
+        "entities": [
+          [
+            5,
+            37,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Be very clear that BCeid is different than when they say BCID. I thought they were the same and when I returned to the 2nd clerk to ask a question she was very curt with me and acted as though I was a dummy for not realizing there was more than one type of ID. Sorry for bothering her. That is why she has a job to provide information to those of us that don't know and are asking questions. Might seem like a stupid question but to me it was valid. If I knew the answer and the information I wouldn't have taken her time and bothered her.",
+      {
+        "entities": [
+          [
+            57,
+            62,
+            "SERVICE"
+          ],
+          [
+            119,
+            128,
+            "STAFF"
+          ],
+          [
+            298,
+            314,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "more staff",
+      {
+        "entities": [
+          [
+            0,
+            10,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "have a paper test",
+      {
+        "entities": [
+          [
+            0,
+            17,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" nothing, the service provided was exceptional \"",
+      {
+        "entities": [
+          [
+            14,
+            21,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Awesome!",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "hire more staff",
+      {
+        "entities": [
+          [
+            5,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "include computer and printer for bank services",
+      {
+        "entities": [
+          [
+            0,
+            28,
+            "FACILITY"
+          ],
+          [
+            33,
+            46,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "offer more options for BCID",
+      {
+        "entities": [
+          [
+            23,
+            27,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" nothing, very friendly and helpful . \"",
+      {
+        "entities": [
+          [
+            10,
+            35,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Please make the process easy and understandable",
+      {
+        "entities": [
+          [
+            7,
+            23,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "I was satisfied. CSR was very nice.",
+      {
+        "entities": [
+          [
+            17,
+            20,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "n/a you gals are sexeh",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "CSR is always very polite and helpful. She goes above and beyond",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "It was Halloween Friday - make approx. 10 customers wait while they gathered together to take a group shot of them all together in their costumes. No impressed. We could see them and knew exactly what they were making us wait for.",
+      {
+        "entities": [
+          [
+            57,
+            106,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have candies",
+      {
+        "entities": [
+          [
+            0,
+            12,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Act to preserve dignity",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Everything went well",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "everything was perfect",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have more staff. Your staff are great but service is slow.",
+      {
+        "entities": [
+          [
+            10,
+            16,
+            "STAFF"
+          ],
+          [
+            23,
+            28,
+            "STAFF"
+          ],
+          [
+            43,
+            50,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "more front end staff",
+      {
+        "entities": [
+          [
+            5,
+            20,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" online application - not user friendly, pregnancy option not available \"",
+      {
+        "entities": [
+          [
+            1,
+            19,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" put playroom for children, watercooler \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have internet and phone courtesy",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "All Good.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "great job",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" more training, more staff \"",
+      {
+        "entities": [
+          [
+            21,
+            27,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have my card reactivated.",
+      {
+        "entities": [
+          [
+            5,
+            12,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Great service - attentive",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "not make people wait so long",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "First Come First Served",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "use different offices",
+      {
+        "entities": [
+          [
+            0,
+            21,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "Less waiting time and more than 1 person on to help out",
+      {
+        "entities": [
+          [
+            0,
+            21,
+            "SERVICE"
+          ],
+          [
+            32,
+            40,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "These people work hard. Smile more. Life is short.",
+      {
+        "entities": [
+          [
+            0,
+            23,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "move the welfare office",
+      {
+        "entities": [
+          [
+            0,
+            23,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have more knowledgeable staff!",
+      {
+        "entities": [
+          [
+            10,
+            30,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "nothing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Get workers in office",
+      {
+        "entities": [
+          [
+            4,
+            11,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" get rid of how you are doing now, go back to old way \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" not have it at Access-Intimating environment, no privacy, too exposed to town \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Nothing, it's great . \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Staff told me they would fill in homeowners grant and that I didn't need to do it and I would be called to inform me it went through.",
+      {
+        "entities": [
+          [
+            0,
+            5,
+            "STAFF"
+          ],
+          [
+            33,
+            49,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "() was very helpful & patient!!!!",
+      {
+        "entities": [
+          [
+            3,
+            19,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "A place to have a seat if taking more than 10 min",
+      {
+        "entities": [
+          [
+            18,
+            22,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "nothing you did great",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have a water cooler! Thanks",
+      {
+        "entities": [
+          [
+            7,
+            19,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "serve beverages",
+      {
+        "entities": [
+          [
+            0,
+            15,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "It was all very pleasant at a busy time",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Had to wait to use the CAT",
+      {
+        "entities": [
+          [
+            23,
+            26,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "no birth certificate but lots of other ID",
+      {
+        "entities": [
+          [
+            3,
+            24,
+            "SERVICE"
+          ],
+          [
+            39,
+            41,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" client software update, not user friendly \"",
+      {
+        "entities": [
+          [
+            25,
+            42,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "hire more like Laurie",
+      {
+        "entities": [
+          [
+            15,
+            21,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "More tellers for Service BC",
+      {
+        "entities": [
+          [
+            5,
+            12,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Nothing, service was perfect . \"",
+      {
+        "entities": [
+          [
+            10,
+            17,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Ministry needs to be more consistent.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" You did great, no changes \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "more staff",
+      {
+        "entities": [
+          [
+            5,
+            10,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Thank you CSR",
+      {
+        "entities": [
+          [
+            10,
+            13,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "I would enjoy some sort of water fountain.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "not charge for searches",
+      {
+        "entities": [
+          [
+            15,
+            23,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Absolutely nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Have the meetings, casually in the outdoors . \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Perfect very helpful.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Service was great",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Keep smokers farther away from doors.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Nothing, I am satisfied \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "We needed personal help - looked on line and found address of BC Service Centre for Blanshard @ 940 suite 200. This is provided on email form REG 707/web. Revised 2014/01/08. The actual location is 771 Vernon. You need to update and make current your information about location on the website.",
+      {
+        "entities": [
+          [
+            62,
+            79,
+            "LOCATION"
+          ],
+          [
+            84,
+            93,
+            "LOCATION"
+          ],
+          [
+            198,
+            209,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "service was good",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "nothing - keep staff",
+      {
+        "entities": [
+          [
+            15,
+            20,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "all good",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have someone direct or ask why you are here",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Take cash at reception.",
+      {
+        "entities": [
+          [
+            13,
+            22,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "bring back neighbourhood MHR offices",
+      {
+        "entities": [
+          [
+            11,
+            28,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "more fun",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "While waiting did not have a toilet to use. Told me to use the toilet across the road at highway gas station. You service the public!",
+      {
+        "entities": [
+          [
+            29,
+            35,
+            "FACILITY"
+          ],
+          [
+            63,
+            69,
+            "FACILITY"
+          ],
+          [
+            89,
+            109,
+            "LOCATION"
+          ],
+          [
+            114,
+            121,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have more than one person on.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" We were told to come at 11 am, but then told to come back in 2 hours . \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have more guy employees here.",
+      {
+        "entities": [
+          [
+            10,
+            23,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "all staff were very helpful and friendly",
+      {
+        "entities": [
+          [
+            0,
+            9,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Nothing, CSR was great \"",
+      {
+        "entities": [
+          [
+            10,
+            13,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Was great",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Everything is good.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Friendly",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have more staff - I was 5th and it took 20 minutes",
+      {
+        "entities": [
+          [
+            10,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "can't think of anything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "many people waited for awhile then left. <br /> One one staff member at the counter",
+      {
+        "entities": [
+          [
+            50,
+            66,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have coffee",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "No. Fire that kid",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Provide trapping renewal through Service BC",
+      {
+        "entities": [
+          [
+            8,
+            24,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Nothing, Very happy \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Be of service and genuinely care.",
+      {
+        "entities": [
+          [
+            6,
+            13,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Not a thing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Nothing, service was very good! \"",
+      {
+        "entities": [
+          [
+            10,
+            17,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Better training on mobile home transfers.",
+      {
+        "entities": [
+          [
+            19,
+            40,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Nothing, love the service \"",
+      {
+        "entities": [
+          [
+            19,
+            27,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Totally well served/satisfied",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "coffee pot",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very courteous staff - Kathleen Woodworth & Joanne",
+      {
+        "entities": [
+          [
+            5,
+            20,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "offered seat immediately - noticed difficulty",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Not have it at [Access Intatry (illegible) ] no privacy. too exposed to [town ]",
+      {
+        "entities": [
+          [
+            16,
+            30,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Free money.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Service was appreciated",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Kind and Friendly, Knowledgeable . \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Locate ground floor",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Pay your employees more.",
+      {
+        "entities": [
+          [
+            9,
+            18,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "your ding everything wonderfully! Way 2 go",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "None",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "excellent help",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "More privacy in the cubicles",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "More service representatives available",
+      {
+        "entities": [
+          [
+            5,
+            28,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "All fine",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nil",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing. Everything was great.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have a social service representative",
+      {
+        "entities": [
+          [
+            7,
+            36,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Put more staff on the wicketts",
+      {
+        "entities": [
+          [
+            9,
+            17,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "387-6121 sent me to the WRONG PLACE!",
+      {
+        "entities": [
+          [
+            24,
+            35,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "the entrance to the building doesn't have automatic doors. I'm a wheelchair user and was unable to open them myself.",
+      {
+        "entities": [
+          [
+            42,
+            58,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "friendly and professional",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "If the website states notary services then they should be available. I & #8217; ve never had this problem as there has ALWAYS been someone at this office to witness documents!",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Had to find a pen to full out survey- 2 staff on duty- building was hot waited too long",
+      {
+        "entities": [
+          [
+            40,
+            48,
+            "STAFF"
+          ],
+          [
+            55,
+            63,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "drinks - pop - water",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Ease into online form filling",
+      {
+        "entities": [
+          [
+            5,
+            29,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "The ladies need air conditioning in the summer. And air conditioning for customers and elderly as well.",
+      {
+        "entities": [
+          [
+            16,
+            32,
+            "FACILITY"
+          ],
+          [
+            52,
+            72,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have washrooms available",
+      {
+        "entities": [
+          [
+            5,
+            14,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" I was helped by () she was filling in over the holidays. She was wonderful, helpful & efficient. Good choice for a temp! \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have more knowledgeable STAFF! Train staff on the BC Society Act procedures so that clients don't have to come back a 2nd time for the same request.",
+      {
+        "entities": [
+          [
+            24,
+            29,
+            "STAFF"
+          ],
+          [
+            50,
+            78,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have more than one worker working",
+      {
+        "entities": [
+          [
+            10,
+            25,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Keep it as is",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Hire more Bradens",
+      {
+        "entities": [
+          [
+            5,
+            17,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Stay open on Saturdays",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing. Was all good.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nil",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Designated workers who specialize in an area",
+      {
+        "entities": [
+          [
+            11,
+            18,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Registering to apply for FWID was labour intensive and very difficult as I had to still personally bring in my person documents for verification despite already having a government issued resident hunter number. The website did not indicate that only a basic BCeID was necessary, rather than a Personal one . \"",
+      {
+        "entities": [
+          [
+            26,
+            30,
+            "SERVICE"
+          ],
+          [
+            255,
+            266,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "you need to do nothing if you have Alison. Other like her there",
+      {
+        "entities": [
+          [
+            35,
+            42,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Normal wait",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "All of the above.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Always, always pleasant & welcoming service. A shout out to () who served me today . \"",
+      {
+        "entities": [
+          [
+            27,
+            45,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Last time I wrote an exam love there was a rattle from the HVAC. I reported it, they said it would get fixed. It did. Thank you \"",
+      {
+        "entities": [
+          [
+            1,
+            55,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing. It's always good here",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "outstanding customer service",
+      {
+        "entities": [
+          [
+            12,
+            28,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "none",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "More staff on because its super busy",
+      {
+        "entities": [
+          [
+            5,
+            13,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Provide a complete service in my community.",
+      {
+        "entities": [
+          [
+            10,
+            26,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Take PASB payments as in past",
+      {
+        "entities": [
+          [
+            5,
+            18,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Not you guys, but ICBC should let me dispute email \"",
+      {
+        "entities": [
+          [
+            1,
+            13,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Not much, staff was helpful \"",
+      {
+        "entities": [
+          [
+            11,
+            16,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "have extra seats for people with disabilities. I had to stand after having recent back surgery",
+      {
+        "entities": [
+          [
+            0,
+            46,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Helpful and polite to seniors?",
+      {
+        "entities": [
+          [
+            0,
+            30,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing she does fine.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "hire more representatives",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "provide full service instead of bits",
+      {
+        "entities": [
+          [
+            8,
+            20,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "computer communication is sometimes poor",
+      {
+        "entities": [
+          [
+            0,
+            8,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "You could make 2 waiting lines",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Get act together. 4 people who came after me were served first.",
+      {
+        "entities": [
+          [
+            0,
+            17,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "[ CSR name] was excellent no changes",
+      {
+        "entities": [
+          [
+            1,
+            9,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing - all good",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Hire more staff. There two are over worked.",
+      {
+        "entities": [
+          [
+            10,
+            16,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Hire more people. I have resume with me wanted to drop one off.",
+      {
+        "entities": [
+          [
+            5,
+            17,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "good service",
+      {
+        "entities": [
+          [
+            5,
+            12,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "hire more people",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "have people in person",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "All was good",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "All day",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Hire staff. Totally unacceptable level of staffing",
+      {
+        "entities": [
+          [
+            5,
+            11,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "more wickets open",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Ticket no. system not good to fall in line for long time for me as an old timer.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing keep up the good job.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "service! respect would be another good thing too. managers to take ownership on duties",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "have more staff",
+      {
+        "entities": [
+          [
+            5,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "People picking up cheques/envelops - a separate counter for less wait.",
+      {
+        "entities": [
+          [
+            39,
+            55,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Donuts",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Would be hard to improve the service I received.",
+      {
+        "entities": [
+          [
+            29,
+            38,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Help old people",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Numbered desks/System to let you know who to see.",
+      {
+        "entities": [
+          [
+            0,
+            21,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "keep up the good work",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Increase the services re: MSD that Vanderhoof Service BC can provide",
+      {
+        "entities": [
+          [
+            13,
+            46,
+            "SERVICE"
+          ],
+          [
+            47,
+            61,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing - perfect",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "correct address and process on website of BC Registry. Form have wrong address and process",
+      {
+        "entities": [
+          [
+            8,
+            54,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "Make wait time shorter",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "awesome job",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Provide a public washroom for the customers alternative washrooms provided at gas station across the highway.",
+      {
+        "entities": [
+          [
+            10,
+            29,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Your desk was fantastic.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "clone Devon - he is phenomenal!",
+      {
+        "entities": [
+          [
+            6,
+            11,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "more security for SIN at desk",
+      {
+        "entities": [
+          [
+            0,
+            24,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "took 3 days to find the office",
+      {
+        "entities": [
+          [
+            12,
+            30,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "have more staff/less wait time",
+      {
+        "entities": [
+          [
+            10,
+            20,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing all awesome",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Stay the same.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Register all in one place.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Be open at noon hour- I had to take time off work to go.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "provide sitting in Vancouver",
+      {
+        "entities": [
+          [
+            19,
+            28,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "I came back it worked out perfect",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "she was very helpful and would not quit even though it was a very difficult transaction",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ],
+          [
+            61,
+            87,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing comes to mind.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "direct service",
+      {
+        "entities": [
+          [
+            0,
+            14,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Not much",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "move location",
+      {
+        "entities": [
+          [
+            0,
+            13,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "No",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "can't think of anything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" I can't think of anything, the staff here are incredible, very pleasant and helpful \"",
+      {
+        "entities": [
+          [
+            32,
+            37,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "more workers",
+      {
+        "entities": [
+          [
+            5,
+            12,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have more staff to serve people faster. A one hour wait is too long. The lady at the front desk had a poor attitude and very little knowledge of her job.",
+      {
+        "entities": [
+          [
+            10,
+            15,
+            "STAFF"
+          ],
+          [
+            69,
+            77,
+            "STAFF"
+          ],
+          [
+            85,
+            95,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "took interest in these services. Spend the time to learn about future references and info",
+      {
+        "entities": [
+          [
+            17,
+            32,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "The service is outstanding",
+      {
+        "entities": [
+          [
+            4,
+            11,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "it was wonderful",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Train people on your time",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have more staff; then less wait time",
+      {
+        "entities": [
+          [
+            10,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Everything was perfect. Especially CSR. She was very smiley and great customer service",
+      {
+        "entities": [
+          [
+            35,
+            39,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Give raises",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Can't think of anything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Faster computer system",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have more people working",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "have more staff to help the 25-30 people that were waiting by number",
+      {
+        "entities": [
+          [
+            10,
+            18,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "I am very grateful for service received.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "open more hours",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have an RTA office in Kamloops on the north shore",
+      {
+        "entities": [
+          [
+            8,
+            21,
+            "SERVICE"
+          ],
+          [
+            22,
+            30,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing. [CSR] was great!",
+      {
+        "entities": [
+          [
+            9,
+            14,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "have a water cooler for patrons",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Nope, all ok . \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Free cookies",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "have to come a few more times and see",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "relocate to a building with a parking lot",
+      {
+        "entities": [
+          [
+            30,
+            41,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "No comment needed",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have a small dog to pet.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Stay open during lunch hour",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "my file was weird",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Separate line-up for Income Assistance cheque pick-up",
+      {
+        "entities": [
+          [
+            21,
+            45,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "nil",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Ed and Suzanne make a wonderful team; you guys are great",
+      {
+        "entities": [
+          [
+            0,
+            14,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Provide front counter services again (even calls placed @ 13:42 were busy for 19 min )",
+      {
+        "entities": [
+          [
+            8,
+            30,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Give me cash.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Sending in papers for Income assistance for Susan LaFleur",
+      {
+        "entities": [
+          [
+            44,
+            57,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "you have excellent staff",
+      {
+        "entities": [
+          [
+            19,
+            24,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Everything was great and Efficient",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "fast service",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "unknown",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" more training so they can process quicker, more staff \"",
+      {
+        "entities": [
+          [
+            49,
+            55,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Everything was fine",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Move the chairs. No privacy.",
+      {
+        "entities": [
+          [
+            9,
+            16,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing! The lady was fabulous.",
+      {
+        "entities": [
+          [
+            10,
+            18,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "More people as friendly and helpful as her!",
+      {
+        "entities": [
+          [
+            36,
+            43,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nope",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Be more organized",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Train counter staff to be personable",
+      {
+        "entities": [
+          [
+            6,
+            19,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Allow drinks in test area",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "none",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Recovering identification for low income folks facing legal and addiction issues?",
+      {
+        "entities": [
+          [
+            26,
+            46,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing-The staff was very helpful.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "computer system shut down. Less chatting at the front when there are people waiting",
+      {
+        "entities": [
+          [
+            0,
+            15,
+            "FACILITY"
+          ],
+          [
+            28,
+            54,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" open more desks, go by the #'s \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "What is the sense in having a fast lane when you have to stand in line behind lengthy services in order to access the fast lane. It doenst work!",
+      {
+        "entities": [
+          [
+            86,
+            94,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "She did things perfectly",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "All was perfect.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Hire more staff.",
+      {
+        "entities": [
+          [
+            10,
+            16,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "be respectful",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Just keep up the good work",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Serve Beer",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Seek help from staff who are present.",
+      {
+        "entities": [
+          [
+            15,
+            20,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have to wait time max 20 min",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have an office in the Tri-City area",
+      {
+        "entities": [
+          [
+            18,
+            35,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have ID made in building.",
+      {
+        "entities": [
+          [
+            5,
+            12,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Fire the office that stopped us [name ]",
+      {
+        "entities": [
+          [
+            29,
+            38,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Get rid of line up to reception and then have to go to next line up to see another person. Get more staff and have one line up like it used to be.",
+      {
+        "entities": [
+          [
+            22,
+            31,
+            "FACILITY"
+          ],
+          [
+            101,
+            106,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "empower workers to handle cases",
+      {
+        "entities": [
+          [
+            8,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "have up to date shelter forms out",
+      {
+        "entities": [
+          [
+            16,
+            29,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing!",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "start class earlier in the AM",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "not needing to call 1-866-866-0800",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "more clairty with serivces",
+      {
+        "entities": [
+          [
+            18,
+            26,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Everything was ok",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Staff at more than one window.",
+      {
+        "entities": [
+          [
+            0,
+            8,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Jade was so awesome",
+      {
+        "entities": [
+          [
+            0,
+            8,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "make wait times shorter",
+      {
+        "entities": [
+          [
+            0,
+            23,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Was perfect, thank you \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Hire polite competent staff. Be nice.",
+      {
+        "entities": [
+          [
+            5,
+            28,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Allow people with disabilities no wait time access.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Keep doing what you do",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Smile",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Extended hours?",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Be more consistent.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "stop cutting service and delaying processes",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Answer your welfare service phone",
+      {
+        "entities": [
+          [
+            12,
+            33,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "nothing- [name] is extremely confident",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "hire more staff",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "was very helpful on finding a hidden form",
+      {
+        "entities": [
+          [
+            0,
+            16,
+            "STAFF"
+          ],
+          [
+            30,
+            41,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Hire more staff",
+      {
+        "entities": [
+          [
+            10,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Very good service.",
+      {
+        "entities": [
+          [
+            10,
+            17,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "serve coffee",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Air conditioning",
+      {
+        "entities": [
+          [
+            0,
+            16,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" If you have a client, you should bring and ASL interpreter . \"",
+      {
+        "entities": [
+          [
+            44,
+            59,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "No",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Do not fix what is not broken!",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Great staff att",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nice smiles.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "more staff",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" friendly, personable \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "unsure",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Victoria, was very professional helped me through a complicated payment. She explained things to me in a way I could easily understand. She helped me last year with my mum's drivers license \"",
+      {
+        "entities": [
+          [
+            1,
+            32,
+            "STAFF"
+          ],
+          [
+            177,
+            192,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Service is very good - no complaints",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Have coffee",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Receptionist was extremely helpful",
+      {
+        "entities": [
+          [
+            0,
+            12,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "customer service",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "All good",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "This office is the best I've ever dealt with",
+      {
+        "entities": [
+          [
+            0,
+            11,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "The lady at the front desk was very rude while I was using the telephone she demanded that I tell her who I was calling in front of another customer. The phone call was for income assistance so she embarrassed my privacy. Thanks a lot.",
+      {
+        "entities": [
+          [
+            0,
+            8,
+            "STAFF"
+          ],
+          [
+            16,
+            26,
+            "FACILITY"
+          ],
+          [
+            59,
+            76,
+            "FACILITY"
+          ],
+          [
+            174,
+            191,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "speed up service",
+      {
+        "entities": [
+          [
+            9,
+            16,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Staff didn't know proper information about business registration",
+      {
+        "entities": [
+          [
+            0,
+            5,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "doing just fine",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "better hours",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "have a better phone service",
+      {
+        "entities": [
+          [
+            14,
+            27,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "None",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Serve Timbits",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have 2 front staff to help the line up.",
+      {
+        "entities": [
+          [
+            7,
+            18,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "() was very helpful & patient!!",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Personal help to register business (computer )",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "The seating is limited and dirty. You can hear people going to the bathroom from the seating area.",
+      {
+        "entities": [
+          [
+            4,
+            11,
+            "FACILITY"
+          ],
+          [
+            67,
+            75,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Private and sound proof room",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "perfect for today",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "More staff.",
+      {
+        "entities": [
+          [
+            5,
+            10,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Office location, move to central Nanaimo with easier parking for access \"",
+      {
+        "entities": [
+          [
+            0,
+            16,
+            "LOCATION"
+          ],
+          [
+            26,
+            41,
+            "LOCATION"
+          ],
+          [
+            54,
+            65,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "provide service",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" 1st person Rude. 2nd person unhelpful , 3rd person unsure . \"",
+      {
+        "entities": [
+          [
+            1,
+            58,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Thank you for the Great Services",
+      {
+        "entities": [
+          [
+            24,
+            32,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "lower counters",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Make a location in surrey BC.",
+      {
+        "entities": [
+          [
+            19,
+            28,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "Louder music",
+      {
+        "entities": [
+          [
+            0,
+            12,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Min. gut info straight for front line",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Take PASB payments as in past",
+      {
+        "entities": [
+          [
+            5,
+            18,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Perhaps the staff might be trained on how to help someone like myself fill out applications for replacement yearly bus passes with a test of questions that will be asked",
+      {
+        "entities": [
+          [
+            12,
+            17,
+            "STAFF"
+          ],
+          [
+            96,
+            125,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "rude and aggressive employee (Jim Chotka )",
+      {
+        "entities": [
+          [
+            0,
+            28,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "There needs to be an option for issuing a temporary license to people who have no funds.",
+      {
+        "entities": [
+          [
+            42,
+            59,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Very knowledgeable of the service I need.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Not a thing trainee was great",
+      {
+        "entities": [
+          [
+            12,
+            23,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Better division of lineups for EI/Service BC.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Washroom for clients, service-wise no . \"",
+      {
+        "entities": [
+          [
+            1,
+            9,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "absolutely nothing. I had a fun encounter",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "everything seems sufficient",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "ensure other staff are as helpful as Teresa. Other staff was NOT helpful",
+      {
+        "entities": [
+          [
+            7,
+            18,
+            "STAFF"
+          ],
+          [
+            37,
+            44,
+            "STAFF"
+          ],
+          [
+            52,
+            57,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" shorter wait time to be served.... We waited an hour to be served, which is a long time. Just as we were called, it was time to move the car from the 1 hour parking. The service by Anita was excellent . \"",
+      {
+        "entities": [
+          [
+            151,
+            166,
+            "FACILITY"
+          ],
+          [
+            171,
+            178,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Without the #card I had no knowledge that I had been missed after 40 min I finally realized that people where being processed.",
+      {
+        "entities": [
+          [
+            12,
+            18,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Be truthful",
+      {
+        "entities": [
+          [
+            0,
+            11,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Needed clarification of order of events, that is to go computer first . \"",
+      {
+        "entities": [
+          [
+            56,
+            64,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "of course-faster",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "give me the winning lotto max numbers",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "very poor service",
+      {
+        "entities": [
+          [
+            5,
+            17,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Praise the efficiency of the staff at service BC",
+      {
+        "entities": [
+          [
+            29,
+            34,
+            "STAFF"
+          ],
+          [
+            38,
+            48,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Take a number and let people sit down",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Really went out of her way to help me the best way she could",
+      {
+        "entities": [
+          [
+            19,
+            26,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Give staff more knowledge or more easily accessible knowledge beforehand",
+      {
+        "entities": [
+          [
+            5,
+            10,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nothing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Have more tills open",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "amazing service",
+      {
+        "entities": [
+          [
+            0,
+            15,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Not sure",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "You're doing great",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Listened to problem and helped solve it",
+      {
+        "entities": [
+          [
+            0,
+            39,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Wonderful customer service",
+      {
+        "entities": [
+          [
+            0,
+            26,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Very quick and very nice to talk to.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Got my check issued no problems",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very Friendly",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very helpful",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "The same pleasant service",
+      {
+        "entities": [
+          [
+            18,
+            25,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "very friendly",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Approachable and willing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "[ CSR Name] was great!",
+      {
+        "entities": [
+          [
+            1,
+            9,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Great communication!",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Your worker is a saint despite being caught in the middle of a frustrating circumstance.",
+      {
+        "entities": [
+          [
+            5,
+            11,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "person was very helpful",
+      {
+        "entities": [
+          [
+            0,
+            6,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "explained the procedure/rules very well",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Staff great",
+      {
+        "entities": [
+          [
+            0,
+            11,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Good service",
+      {
+        "entities": [
+          [
+            0,
+            12,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Both help really well",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "offered to process my birth certificate online",
+      {
+        "entities": [
+          [
+            11,
+            39,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "You were polite to customers",
+      {
+        "entities": [
+          [
+            9,
+            28,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "the same",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Super nice and quick",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "All of the above",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "everything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Finding my information",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "research information",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "lots of lovely ladies here",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very polite and smiley",
+      {
+        "entities": [
+          [
+            0,
+            22,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Intelligent people treating intelligent people with respect",
+      {
+        "entities": [
+          [
+            0,
+            18,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Quick Courteous service",
+      {
+        "entities": [
+          [
+            0,
+            23,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Good in house service",
+      {
+        "entities": [
+          [
+            5,
+            21,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Kindness",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "communication",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Helped us vent our frustration and send everything to the government by fax.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "problem solve",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "have an attractive woman working",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Very helpful, patient, helped with forms \"",
+      {
+        "entities": [
+          [
+            1,
+            23,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Serve immediately.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very professional and patient staff",
+      {
+        "entities": [
+          [
+            0,
+            35,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "CSR has assisted me a few times now",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Very personable, very helpfull \"",
+      {
+        "entities": [
+          [
+            1,
+            16,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "You had similar stamps",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Courtesy",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "updated all of my info this time",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Always smiling and happy",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "My teller gave great service while also training another employee",
+      {
+        "entities": [
+          [
+            0,
+            9,
+            "STAFF"
+          ],
+          [
+            15,
+            28,
+            "SERVICE"
+          ],
+          [
+            57,
+            65,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "communicate b3etween organization",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" reception welcomed me right away, she was very friendly . \"",
+      {
+        "entities": [
+          [
+            0,
+            10,
+            "STAFF"
+          ],
+          [
+            35,
+            38,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Everything was excellent.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Behavior was sound",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Went above and beyond to give me correct info",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "lady at front desk was super friendly.",
+      {
+        "entities": [
+          [
+            0,
+            22,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "All is amazing",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very polite and courteous",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "CSR was fabulous! Everything was so great.",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "assisted access to bcid program",
+      {
+        "entities": [
+          [
+            19,
+            31,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "front person was great & helpful",
+      {
+        "entities": [
+          [
+            0,
+            12,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Elaine's customer service excellent",
+      {
+        "entities": [
+          [
+            0,
+            8,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Informative, pleasant \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Not back in line to return forms",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Customer service - pleasant",
+      {
+        "entities": [
+          [
+            0,
+            16,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Awesome friendly staff",
+      {
+        "entities": [
+          [
+            8,
+            22,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "greeting customers and friendliness",
+      {
+        "entities": [
+          [
+            0,
+            35,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Two things (same same )",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Good service",
+      {
+        "entities": [
+          [
+            0,
+            12,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Gave me info and I didn't have to ask",
+      {
+        "entities": [
+          [
+            8,
+            12,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Knowledge of request",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "customer service",
+      {
+        "entities": [
+          [
+            0,
+            16,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "systematically dealing with list of requests",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "everything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Friendly, competent, with humor a help \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Very helpful, had all the answers . \"",
+      {
+        "entities": [
+          [
+            1,
+            13,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "No",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Excellent people skills",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Fast, friendly service \"",
+      {
+        "entities": [
+          [
+            1,
+            23,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Everyone was very warm/polite",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Helped me find info I was looking for",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "provided best service for the job.",
+      {
+        "entities": [
+          [
+            14,
+            21,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Helped me feel comfortable.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" polite, personable friendly, quick \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Welcomed us!",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Timely action.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" No complaints, very nice . \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "S V S",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Polite",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "smiled",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Everything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Person at counter was so helpful and friendly",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Go out of their way to help",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Pleasant, respectful service \"",
+      {
+        "entities": [
+          [
+            11,
+            29,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Provided information above and beyond",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Friendly, helpful service from worker and trainee \"",
+      {
+        "entities": [
+          [
+            11,
+            26,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "quickness",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "everything is set up",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Focus on client.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" CSR was outstanding as she worked wit my son who has challenges. She was patient, friendly and courteous \"",
+      {
+        "entities": [
+          [
+            1,
+            8,
+            "STAFF"
+          ],
+          [
+            66,
+            73,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Knowledgeable",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Smiling staff",
+      {
+        "entities": [
+          [
+            0,
+            13,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Tressa was amazing! Followed up next day to ensure the document I needed had arrived only if needed.",
+      {
+        "entities": [
+          [
+            0,
+            6,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "everything else was suberb",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "fast convenient and great customer service",
+      {
+        "entities": [
+          [
+            20,
+            42,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Everything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "CSR excellent agent",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "explain the services provided by Service BC",
+      {
+        "entities": [
+          [
+            8,
+            20,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Everything! Very fast",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Everything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "service",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "lots of smiles",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "explained what I needed",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "CSR was super efficient and lovely",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "The service was wonderful. The staff was fabulous.",
+      {
+        "entities": [
+          [
+            4,
+            15,
+            "SERVICE"
+          ],
+          [
+            28,
+            41,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "helped me get my rent paid",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "HIRING..... WAS AN EXCELLENT DECISION. SHE WAS VERY HELPFUL.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Able to assist clients even thought they can't find the information.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very friendly",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "everything mentioned above",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Friendly",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "excellent staff",
+      {
+        "entities": [
+          [
+            0,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "The person was very helpful",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Helped me with many things",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "She was friendly.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "assisted with info",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Helping me with income asst.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "CSR tried really hard and was patient",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Very helpful",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "On the ball with help I needed and quick on getting back.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Everything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" The clarity of information, helpful \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "she was awesome and extremely good",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Questions are always answered.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Explained options paperwork",
+      {
+        "entities": [
+          [
+            10,
+            27,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "being absolutely respectful and helpful",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "service - politeness",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "CSR was funny and sincere",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "you went above and beyond!",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Friendly and smiling faces/good service",
+      {
+        "entities": [
+          [
+            0,
+            8,
+            "STAFF"
+          ],
+          [
+            32,
+            39,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Lisa is a saint!",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "CSR was very proficient in helping me sort out everything",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" thorough, explanatory \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Everything time and very helpful",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Friendly & effient",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "great attitudes fast service",
+      {
+        "entities": [
+          [
+            21,
+            28,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Excellent CSR",
+      {
+        "entities": [
+          [
+            10,
+            13,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Murdena Sampson is a very competent woman who goes out of her way to help!",
+      {
+        "entities": [
+          [
+            0,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Fast Service",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "All service was great <br / >",
+      {
+        "entities": [
+          [
+            0,
+            11,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Helped me understand forms",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very fast and polite service with a smile.",
+      {
+        "entities": [
+          [
+            21,
+            28,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Helpful service and professional.",
+      {
+        "entities": [
+          [
+            8,
+            15,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Was able to get the information to the correct office",
+      {
+        "entities": [
+          [
+            20,
+            31,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Courteous.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Staff is friendly and helpful.",
+      {
+        "entities": [
+          [
+            0,
+            5,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Front reception was VERY helpful.",
+      {
+        "entities": [
+          [
+            0,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Everything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Betty was extremely efficient. We as citizens are luck to have her went above and beyond. She was incredible. Awesome knowlege and efficiency",
+      {
+        "entities": [
+          [
+            0,
+            9,
+            "STAFF"
+          ],
+          [
+            64,
+            67,
+            "STAFF"
+          ],
+          [
+            92,
+            95,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "CSR is new and in training and was exceptional!",
+      {
+        "entities": [
+          [
+            0,
+            6,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Kind, efficient, friendly \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "prompt",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Courteous, polite, efficient \"",
+      {
+        "entities": [
+          [
+            1,
+            29,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Took the time to explain about driver license/care card - benefit of",
+      {
+        "entities": [
+          [
+            31,
+            55,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Went the extra mile.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Made the calls to get my complex paperwork done. Awesome job, thankyou \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "No",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "helping people",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Friendliness",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Great Service",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "pleasant and calm",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Stuff",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Reprint since I missed one page and corrected",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "The lady who helped me went above and beyond. It was raining and I had been sent up and down the street trying to find BC [illegible comment ]",
+      {
+        "entities": [
+          [
+            4,
+            8,
+            "STAFF"
+          ],
+          [
+            119,
+            121,
+            "LOCATION"
+          ]
+        ]
+      }
+    ],
+    [
+      "Great communications and customer service.",
+      {
+        "entities": [
+          [
+            25,
+            42,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Service was great.",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "CSR was great",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "went extra mile",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Professional, friendly, concise service \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Effective, helpful \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Blaine was very helpful and pleasant",
+      {
+        "entities": [
+          [
+            0,
+            6,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Treated us very well! Very helpful and kind",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "all for name change",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Listened - problem solved",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "list to my enquiry",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "CSR was an excellent staff member and represents the company well.",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "knowledgeable staff",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Everything.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Start to finish",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very courteous",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "very nice/very explanatory",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "efficient",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Service",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "payment ready",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very helpful",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Excellent service",
+      {
+        "entities": [
+          [
+            10,
+            17,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "No",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Listened, kind, patient . \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Got cheque to me again!!",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Quality and Service",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Everything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "[ CSR Name] is just the best at everything",
+      {
+        "entities": [
+          [
+            0,
+            13,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" You helped patiently, knew what you were doing and smiled . \"",
+      {
+        "entities": [
+          [
+            1,
+            4,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Fast and friendly",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "The lovely lady that helped me really went the extra mile.",
+      {
+        "entities": [
+          [
+            11,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "quick accurate service",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" balancing folks coming in, waiting folks and doing change of address \"",
+      {
+        "entities": [
+          [
+            46,
+            69,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Had a receptionist at the entrance",
+      {
+        "entities": [
+          [
+            6,
+            18,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Completed tasks in an efficient manner.",
+      {
+        "entities": [
+          [
+            0,
+            39,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Being very attentive",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Cheerful",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very professional in test administration",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Courtesy",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Friendly",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Everything as per usual",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Nice staff",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Outstanding service",
+      {
+        "entities": [
+          [
+            12,
+            19,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "All staff was very friendly",
+      {
+        "entities": [
+          [
+            4,
+            9,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Very sweet CSR, smiled \"",
+      {
+        "entities": [
+          [
+            12,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "went extra mile getting a form",
+      {
+        "entities": [
+          [
+            26,
+            30,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Friendly/courteous",
+      {
+        "entities": [
+          [
+            0,
+            18,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Helped direct and copy forms.",
+      {
+        "entities": [
+          [
+            0,
+            22,
+            "STAFF"
+          ],
+          [
+            23,
+            28,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Great service with a smile.",
+      {
+        "entities": [
+          [
+            6,
+            13,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Better facilities, simulation system \"",
+      {
+        "entities": [
+          [
+            8,
+            19,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "Fast friendly & personal service",
+      {
+        "entities": [
+          [
+            5,
+            13,
+            "STAFF"
+          ],
+          [
+            25,
+            32,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Customer service",
+      {
+        "entities": [
+          [
+            0,
+            16,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Friendly and helpful",
+      {
+        "entities": [
+          [
+            13,
+            20,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Great service. Thanks.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Fast and friendly",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Amazing knowledge, customer service and efficiency . \"",
+      {
+        "entities": [
+          [
+            1,
+            18,
+            "STAFF"
+          ],
+          [
+            20,
+            36,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "prompt service",
+      {
+        "entities": [
+          [
+            0,
+            14,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Courteous and quick.",
+      {
+        "entities": [
+          [
+            0,
+            9,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Gaming and had title info",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "The staff was very understanding.",
+      {
+        "entities": [
+          [
+            4,
+            9,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nice rep",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "I felt really like welcome",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" Polite, friendly, helpful . \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "CSR helped me with very professional services",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Follow through and confirm.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Service was 5 stars",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Very friendly, professional and patient [CSR] \"",
+      {
+        "entities": [
+          [
+            42,
+            45,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Compassionate",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very polite and cheerful",
+      {
+        "entities": [
+          [
+            5,
+            24,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "REALLY FAST SERVICE",
+      {
+        "entities": [
+          [
+            0,
+            19,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Cheerfully processed the payment",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "you have good staff",
+      {
+        "entities": [
+          [
+            9,
+            19,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "staff friendly & helpful <br / >",
+      {
+        "entities": [
+          [
+            0,
+            5,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "I liked the immediate service with a smile",
+      {
+        "entities": [
+          [
+            22,
+            29,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Great Service",
+      {
+        "entities": [
+          [
+            6,
+            13,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Thanks.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "CSR went above and beyond to get my transaction completed",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Very informative. The clerk.... was awesome!",
+      {
+        "entities": [
+          [
+            23,
+            28,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Yes, the service is wonderful and I got my company search results twice and staff were very nice. I am really happy with the service . \"",
+      {
+        "entities": [
+          [
+            10,
+            17,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "courteous",
+      {
+        "entities": [
+          [
+            0,
+            9,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "smiles and friendliness",
+      {
+        "entities": [
+          [
+            0,
+            23,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "courteous service",
+      {
+        "entities": [
+          [
+            10,
+            17,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Made me feel very comfortable",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Great friendly service",
+      {
+        "entities": [
+          [
+            15,
+            22,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "staff very helpful",
+      {
+        "entities": [
+          [
+            0,
+            5,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Processed",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "No snow at the front door but cement was very rough for my wheelchair.",
+      {
+        "entities": [
+          [
+            15,
+            25,
+            "FACILITY"
+          ],
+          [
+            30,
+            36,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "friendliness and smiles",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" The first clerk was very courteous and polite as was the last person I dealt with to pay the fee, but the 2nd one I asked the question to was very abrupt. <br /> Did very well at accepting the fees . \"",
+      {
+        "entities": [
+          [
+            11,
+            16,
+            "STAFF"
+          ],
+          [
+            58,
+            69,
+            "STAFF"
+          ],
+          [
+            107,
+            114,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "courteous staff",
+      {
+        "entities": [
+          [
+            10,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Very kind and friendly",
+      {
+        "entities": [
+          [
+            0,
+            22,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "the assistance quality - they helped even more than usual",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Everything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "didn't act like bigoted asshats. Improvement",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Explained everything very well",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very pleasant customer service",
+      {
+        "entities": [
+          [
+            14,
+            30,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "smiled",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Alison 150% extra effort",
+      {
+        "entities": [
+          [
+            0,
+            6,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Quick service.",
+      {
+        "entities": [
+          [
+            0,
+            13,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Made really pleasant contact and gave very efficient service.",
+      {
+        "entities": [
+          [
+            43,
+            60,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Staff was really helpful",
+      {
+        "entities": [
+          [
+            0,
+            5,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Made me feel at ease and happy.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Polite",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "everything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "CSR went the extra mile",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Gave information. Helped with computer",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Very helpful",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nice lady at service counter",
+      {
+        "entities": [
+          [
+            5,
+            9,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "time management",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "\" I am always couriering our chq to upload our bc online account and i ask that when it is received that they process it and email me the receipt and each time they do so, same day and quickly. \"",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "were very prompt",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Quickness of service",
+      {
+        "entities": [
+          [
+            13,
+            20,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Everything",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "perfect service ovall",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Sent request Nov 23 Mon; Reply Nov 25 Wed reply received",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Great service from staff",
+      {
+        "entities": [
+          [
+            19,
+            24,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Shannon was very competent and friendly",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Went the extra mile.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "communication from CSR",
+      {
+        "entities": [
+          [
+            19,
+            22,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "information",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Citizen approached with goal of telling me what wonderful staff I have. Referred to them by name & #34; Edie and Karin & #34 ;",
+      {
+        "entities": [
+          [
+            48,
+            63,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Front reception was very helpful.",
+      {
+        "entities": [
+          [
+            0,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Great Smiles and efficient.",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "nice lady at service counter",
+      {
+        "entities": [
+          [
+            5,
+            9,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "I love that you are open until 5:30 now I can finally make it in without leaving work early",
+      {
+        "entities": [
+          [
+            31,
+            39,
+            "TIME"
+          ]
+        ]
+      }
+    ],
+    [
+      "information",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Service",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Susan was familiar with agencies and forms after death of spouse",
+      {
+        "entities": [
+          [
+            0,
+            5,
+            "STAFF"
+          ],
+          [
+            37,
+            64,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "friendly people",
+      {
+        "entities": [
+          [
+            0,
+            15,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "reviewed options to ensure clients needs achieved",
+      {
+        "entities": [
+          [
+            0,
+            40,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Friendly service.",
+      {
+        "entities": [
+          [
+            0,
+            17,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Very polite and prompt",
+      {
+        "entities": []
+      }
+    ],
+    [
+      "Instant pleasant greeting and courteous competency.",
+      {
+        "entities": [
+          [
+            0,
+            51,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Helped me fill out difficult form.",
+      {
+        "entities": [
+          [
+            19,
+            33,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Give information beyond",
+      {
+        "entities": [
+          [
+            0,
+            23,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "very nice service with a happy attitude",
+      {
+        "entities": [
+          [
+            5,
+            17,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Prompt friendly service.",
+      {
+        "entities": [
+          [
+            7,
+            24,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Angie was incredibly thorough, patient, humble, kind and joyful . \"",
+      {
+        "entities": [
+          [
+            0,
+            6,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Grand Forks staff were very helpful",
+      {
+        "entities": [
+          [
+            0,
+            17,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "CSR's were very friendly & helpful",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "All CSR's were very friendly and kind",
+      {
+        "entities": [
+          [
+            4,
+            9,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Helped me with everything without question",
+      {
+        "entities": [
+          [
+            0,
+            33,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Got my FMC renewal for 65.",
+      {
+        "entities": [
+          [
+            7,
+            22,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Helped with filling out paperwork",
+      {
+        "entities": [
+          [
+            12,
+            33,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "() was extremely helpful! I couldn't have done this without her.",
+      {
+        "entities": [
+          [
+            60,
+            63,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Tara was very informative and helpful",
+      {
+        "entities": [
+          [
+            0,
+            4,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "helped me individual assistance computer iliterale",
+      {
+        "entities": [
+          [
+            10,
+            50,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Assisted self service and staff were friendly and helpful",
+      {
+        "entities": [
+          [
+            9,
+            21,
+            "SERVICE"
+          ],
+          [
+            26,
+            31,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Efficient, positive attitudes, kindness \"",
+      {
+        "entities": [
+          [
+            1,
+            40,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Friendly",
+      {
+        "entities": [
+          [
+            0,
+            8,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "fast service",
+      {
+        "entities": [
+          [
+            0,
+            12,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "personnel client interaction",
+      {
+        "entities": [
+          [
+            0,
+            16,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "CSR was so nice",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Fast, friendly service \"",
+      {
+        "entities": [
+          [
+            1,
+            23,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "CSR that served me was lovely and nice.",
+      {
+        "entities": [
+          [
+            0,
+            3,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "staff are very helpful and knowledgeable.",
+      {
+        "entities": [
+          [
+            0,
+            5,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Help me fill out my name request.",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "STAFF"
+          ],
+          [
+            20,
+            32,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Nice Staff",
+      {
+        "entities": [
+          [
+            0,
+            10,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Courteous",
+      {
+        "entities": [
+          [
+            0,
+            9,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "\" Kind, courteous and always dressed beautifully . \"",
+      {
+        "entities": [
+          [
+            1,
+            16,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Service Excellence",
+      {
+        "entities": [
+          [
+            0,
+            7,
+            "SERVICE"
+          ]
+        ]
+      }
+    ],
+    [
+      "Computer help.",
+      {
+        "entities": [
+          [
+            0,
+            8,
+            "FACILITY"
+          ]
+        ]
+      }
+    ],
+    [
+      "The new girl was very friendly.",
+      {
+        "entities": [
+          [
+            8,
+            12,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Very helpful staff as always",
+      {
+        "entities": [
+          [
+            5,
+            21,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Courteous and helpful",
+      {
+        "entities": [
+          [
+            0,
+            21,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "personal service",
+      {
+        "entities": [
+          [
+            0,
+            16,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "friendly workers",
+      {
+        "entities": [
+          [
+            9,
+            16,
+            "STAFF"
+          ]
+        ]
+      }
+    ],
+    [
+      "Pamela Ryan was excellent",
+      {
+        "entities": [
+          [
+            0,
+            11,
+            "STAFF"
+          ]
+        ]
+      }
+    ]
+  ]
+}

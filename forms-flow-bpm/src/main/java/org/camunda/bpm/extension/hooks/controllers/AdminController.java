@@ -69,6 +69,7 @@ public class AdminController {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String payload = objectMapper.writeValueAsString(formRO);
+            if(payload != null & payload.length() == 0) {payload = null;}
             LOGGER.log(Level.SEVERE, "data", payload);
             ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.POST, payload);
             if (response.getStatusCode().value() == HttpStatus.OK.value()) {

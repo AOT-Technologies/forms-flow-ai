@@ -123,23 +123,19 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
                       onChange={(e) =>{filterTaskVariable(e); setSelectedFilterInputName(e.target.value)}}
                       onKeyDown={(e) => handleFilterNameChange(e, index)}
                     />
-<<<<<<< HEAD
-                    : <span title={t("property")} className="click-element"
-=======
-                   <div className="filter-items">
-                  {filterTaskVaribale.map((variable) => (
-                  <div
-                   key={variable.label}
-                   className="clickable p-0 mb-2"
-                   onClick={()=>{setSelectedFilterInputName(variable.name);updateFilterName(index,variable.name)}}
-                  >
-                 {variable.name}  ({variable.label}) 
-                 </div>
-                  ))}
-                  </div>
-                 </div>
-                    : <span title="Property" className="click-element"
->>>>>>> 6713486beb73c38b53ac6ebd15d7286d6a25495b
+                    <div className="filter-items">
+                    {filterTaskVaribale.map((variable) => (
+                    <div
+                     key={variable.label}
+                     className="clickable p-0 mb-2"
+                     onClick={()=>{setSelectedFilterInputName(variable.name);updateFilterName(index,variable.name)}}
+                    >
+                   {variable.name}  ({variable.label}) 
+                   </div>
+                    ))}
+                    </div>
+                   </div>
+                   : <span title={t("property")} className="click-element"
                             onClick={() => handleNameInput(index, filter.name)}>{filter.name ? filter.name : '??'}</span> : null}
 
                 <span className="condition-container">
@@ -156,13 +152,8 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
               <i className="fa fa-times" aria-hidden="true"/>
             </button></span>
               </span> : null}
-<<<<<<< HEAD
                   <div className="operator-box-container">
             <span title={t("operator")} className="operator-container">
-=======
-            <div className="operator-box-container">
-            <span title="Operator" className="operator-container">
->>>>>>> 6713486beb73c38b53ac6ebd15d7286d6a25495b
               <OperatorFilterDropDown compareOptions={FILTER_COMPARE_OPTIONS[filter.type]} operator={filter.operator}
                 changeOperator={(value) => updateOperator(index, value)}/>
             </span>

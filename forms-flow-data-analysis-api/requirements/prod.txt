@@ -1,0 +1,15 @@
+gunicorn
+Flask
+Flask-SQLAlchemy
+flask-restx
+flask-jwt-oidc
+python-dotenv
+psycopg2-binary
+requests
+attrs
+Werkzeug
+sqlalchemy_utils
+sqlalchemy
+spacy<3
+nltk
+Flask-Migrate

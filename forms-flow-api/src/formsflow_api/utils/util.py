@@ -1,6 +1,6 @@
 """Common utils.
-
-* CORS pre-flight decorator. A simple decorator to add the options method to a Request Class.
+CORS pre-flight decorator. A simple decorator to add the options
+method to a Request Class.
 """
 import re
 

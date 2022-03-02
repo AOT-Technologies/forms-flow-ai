@@ -24,7 +24,7 @@ class FormProcessMapperSchema(Schema):
     modified_by = fields.Str(data_key="modifiedBy")
     modified = fields.Str(data_key="modified")
 
-class FormProcessMapperListRequestSchema(Schema):
+class FormProcessMapperSortingSchema(Schema):
 
     """This class manages formprocessmapper list request schema."""
 
@@ -41,7 +41,7 @@ class FormProcessMapperPaginationSchema(Schema):
 
     page_no = fields.Int(data_key="pageNo", required=False, allow_none=True)
     limit = fields.Int(data_key="limit", required=False, allow_none=True)
-    sorting = fields.Nested(FormProcessMapperListRequestSchema, required=False, allow_none=True)
+    sorting = fields.Nested(FormProcessMapperSortingSchema, required=False, allow_none=True)
 
 class FormProcessMapperSearchSchema(Schema):
     """This is a general class for paginated request schema."""

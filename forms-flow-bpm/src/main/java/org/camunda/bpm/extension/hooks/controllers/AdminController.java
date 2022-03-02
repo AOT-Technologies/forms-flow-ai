@@ -56,7 +56,7 @@ public class AdminController {
     @Value("${plugin.identity.keycloak.administratorGroupName}")
     private String adminGroupName;
 
-    @GetMapping(value = "/engine-rest-ext/form",
+    @PostMapping(value = "/engine-rest-ext/form",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     private @ResponseBody List<AuthorizedAction> getForms(@RequestBody(required = false) FormRO formRO) throws ServletException
@@ -69,7 +69,8 @@ public class AdminController {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String payload = objectMapper.writeValueAsString(formRO);
-            ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, payload);
+            LOGGER.log(Level.SEVERE, "data", payload);
+            ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.POST, payload);
             if (response.getStatusCode().value() == HttpStatus.OK.value()) {
                 JsonNode jsonNode = objectMapper.readTree(response.getBody());
                 if (jsonNode.get("totalCount") != null && jsonNode.get("totalCount").asInt() > 0) {

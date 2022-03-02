@@ -33,7 +33,7 @@ class FormResource(Resource):
         : sortOrder:- Order for sorting (asc/desc) (default: desc)
         """
         try:
-            dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
+            dict_data = FormProcessMapperListRequestSchema().load(request.get_json()) or {}
             page_no: int = dict_data.get("page_no")
             limit: int = dict_data.get("limit")
             form_name: str = dict_data.get("form_name")
@@ -58,7 +58,7 @@ class FormResource(Resource):
                 (
                     {
                         "forms": form_process_mapper_schema,
-                        "totalcount": form_process_mapper_count,
+                        "totalCount": form_process_mapper_count,
                         "pageNo": page_no,
                         "limit": limit,
                     }

@@ -6,7 +6,9 @@ from http import HTTPStatus
 
 from flask import current_app
 from sqlalchemy import and_
+from sqlalchemy.sql.expression import text
 
+from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.utils.enums import FormProcessMapperStatus
 
@@ -101,52 +103,49 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         return query
 
     @classmethod
-    def find_all_active(cls, page_number, limit, form_name=None):
-        """Fetch all active form process mappers"""
-        if form_name:
-            return (
-                cls.query.filter(
-                    and_(
-                        FormProcessMapper.form_name.ilike(f"%{form_name}%"),
-                        FormProcessMapper.status
-                        == str(FormProcessMapperStatus.ACTIVE.value),
-                    )
+    def filter_conditions(cls, **filters):
+        """This method creates dynamic filter conditions based on the input param"""
+        filter_conditions = []
+        for key, value in filters.items():
+            if value:
+                filter_map = FILTER_MAPS[key]
+                condition = FormProcessMapper.create_filter_condition(
+                    model=FormProcessMapper,
+                    column_name=filter_map["field"],
+                    operator=filter_map["operator"],
+                    value=value,
                 )
-                .paginate(page_number, limit, False)
-                .items
-            )
-        if page_number == 0:
-            result = (
-                cls.query.filter(
-                    FormProcessMapper.status
-                    == str(FormProcessMapperStatus.ACTIVE.value)
-                )
-                .order_by(FormProcessMapper.id.desc())
-                .all()
-            )
+                filter_conditions.append(condition)
+        query = cls.query.filter(*filter_conditions) if filter_conditions else cls.query
+        return query
 
-        else:
-            result = (
-                cls.query.filter(
-                    FormProcessMapper.status
-                    == str(FormProcessMapperStatus.ACTIVE.value)
-                )
-                .paginate(page_number, limit, False)
-                .items
-            )
-        return result
+    @classmethod
+    def find_all_active(
+        cls,
+        page_number=None,
+        limit=None,
+        sort_by=None,
+        sort_order=None,
+        **filters,
+    ):
+        """Fetch all active form process mappers"""
+        query = FormProcessMapper.filter_conditions(**filters)
+        query = query.filter(
+            FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value)
+        )
+        sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
+        if sort_by and sort_order:
+            query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))
+
+        total_count = query.count()
+        pagination = query.paginate(page_number, limit)
+        return pagination.items, total_count
 
     @classmethod
     def find_all_count(cls):
         """Fetch the total active form process mapper which are active."""
         return cls.query.filter(
             FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value)
-        ).count()
-
-    @classmethod
-    def find_count_form_name(cls, form_name):
-        return cls.query.filter(
-            FormProcessMapper.form_name.ilike(f"%{form_name}%")
         ).count()
 
     @classmethod

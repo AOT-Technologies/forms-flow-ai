@@ -1,4 +1,5 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
+import { useSelector } from "react-redux";
 import {FILTER_COMPARE_OPTIONS, Filter_Search_Types} from "../../constants/taskConstants";
 import OperatorFilterDropDown from "../../filter/OperatorFilterDropdown";
 import TaskFilterSearchType from "./TaskFilterSearchType";
@@ -13,6 +14,16 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
   const [selectedFilterInputName, setSelectedFilterInputName] = useState('');
   const [inputDate, setUpInputDate] = useState(null);
   const {t} = useTranslation();
+  const taskVariable = useSelector((state)=>state.bpmTasks.selectedFilter?.properties?.variables ||[])
+  const [filterTaskVaribale,setFilterTaskVaribale]=useState(taskVariable)
+
+ useEffect(()=>{
+  setFilterTaskVaribale(taskVariable)
+ },[taskVariable])
+
+  const filterTaskVariable = (e)=>{ 
+    setFilterTaskVaribale(taskVariable.filter((task,index)=>task?.name.includes(e.target.value)))
+  }
 
   const handleFilterValueChange = (e, index) => {
     if (e.key === 'Enter') {
@@ -31,11 +42,12 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
     updateSearchFilterData(index, 'operator', value);
   };
 
-  const updateFilterName = (index) => {
-    updateSearchFilterData(index, 'name', selectedFilterInputName);
+  const updateFilterName = (index,value) => {
+    updateSearchFilterData(index, 'name', value||selectedFilterInputName);
     setShowNameBoxIndex(null);
     setSelectedFilterInputName('');
   };
+
 
   const handleFilterNameChange = (e, index) => {
     if (e.key === 'Enter') {
@@ -101,24 +113,40 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
                </> : null
                }
                </span>
-
                 {filter.type === Filter_Search_Types.VARIABLES ?
-                  nameBoxIndex === index ? <input
+                  nameBoxIndex === index ?<div>
+                     <input
                       type="text"
                       className="filters position-box"
                       placeholder=""
                       value={selectedFilterInputName}
-                      onChange={(e) => setSelectedFilterInputName(e.target.value)}
+                      onChange={(e) =>{filterTaskVariable(e); setSelectedFilterInputName(e.target.value)}}
                       onKeyDown={(e) => handleFilterNameChange(e, index)}
                     />
+<<<<<<< HEAD
                     : <span title={t("property")} className="click-element"
+=======
+                   <div className="filter-items">
+                  {filterTaskVaribale.map((variable) => (
+                  <div
+                   key={variable.label}
+                   className="clickable p-0 mb-2"
+                   onClick={()=>{setSelectedFilterInputName(variable.name);updateFilterName(index,variable.name)}}
+                  >
+                 {variable.name}  ({variable.label}) 
+                 </div>
+                  ))}
+                  </div>
+                 </div>
+                    : <span title="Property" className="click-element"
+>>>>>>> 6713486beb73c38b53ac6ebd15d7286d6a25495b
                             onClick={() => handleNameInput(index, filter.name)}>{filter.name ? filter.name : '??'}</span> : null}
 
                 <span className="condition-container">
               {valueBoxIndex === index && filter.type !== Filter_Search_Types.DATE ?
                 <span className="btn-container second-box">
                 <span className="second-inner-box">
-{/*              {filter.type === Filter_Search_Types.VARIABLES ? <button className="btn">
+              {/*{filter.type === Filter_Search_Types.VARIABLES ? <button className="btn">
                 <i className="fa fa-calendar" aria-hidden="true"/>
               </button> : null}*/}
                   <button className="btn click-element" onClick={() => updateFilterValue(index)}>
@@ -128,10 +156,15 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
               <i className="fa fa-times" aria-hidden="true"/>
             </button></span>
               </span> : null}
+<<<<<<< HEAD
                   <div className="operator-box-container">
             <span title={t("operator")} className="operator-container">
+=======
+            <div className="operator-box-container">
+            <span title="Operator" className="operator-container">
+>>>>>>> 6713486beb73c38b53ac6ebd15d7286d6a25495b
               <OperatorFilterDropDown compareOptions={FILTER_COMPARE_OPTIONS[filter.type]} operator={filter.operator}
-                                      changeOperator={(value) => updateOperator(index, value)}/>
+                changeOperator={(value) => updateOperator(index, value)}/>
             </span>
 
             <span id="task-search-input" className={filter.type === Filter_Search_Types.DATE && inputDate?'date-with-value':''}>

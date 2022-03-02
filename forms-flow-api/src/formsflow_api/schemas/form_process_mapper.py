@@ -34,7 +34,7 @@ class FormProcessMapperListReqSchema(Schema):
         unknown = EXCLUDE
 
     page_no = fields.Int(data_key="pageNo", required=False, allow_none=True)
-    limit = fields.Int(required=False, allow_none=True)
+    limit = fields.Int(data_key="limit", required=False, allow_none=True)
 
 
 class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
@@ -42,3 +42,5 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     """This class manages formprocessmapper list request schema."""
 
     form_name = fields.Str(data_key="formName", required=False)
+    sort_by = fields.Str(data_key="sortBy", required=False)
+    sort_order = fields.Str(data_key="sortOrder", required=False)

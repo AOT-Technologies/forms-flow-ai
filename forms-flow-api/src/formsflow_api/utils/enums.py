@@ -24,3 +24,4 @@ class ApplicationSortingParameters:  # pylint: disable=too-few-public-methods
     Name = "applicationName"
     Status = "applicationStatus"
     Modified = "modified"
+    FormName = "formName"

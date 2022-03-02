@@ -24,8 +24,14 @@ class FormProcessMapperSchema(Schema):
     modified_by = fields.Str(data_key="modifiedBy")
     modified = fields.Str(data_key="modified")
 
+class FormProcessMapperListRequestSchema(Schema):
 
-class FormProcessMapperListReqSchema(Schema):
+    """This class manages formprocessmapper list request schema."""
+
+    sort_by = fields.Str(data_key="sortBy", required=False)
+    sort_order = fields.Str(data_key="sortOrder", required=False)
+
+class FormProcessMapperPaginationSchema(Schema):
     """This is a general class for paginated request schema."""
 
     class Meta:  # pylint: disable=too-few-public-methods
@@ -35,12 +41,15 @@ class FormProcessMapperListReqSchema(Schema):
 
     page_no = fields.Int(data_key="pageNo", required=False, allow_none=True)
     limit = fields.Int(data_key="limit", required=False, allow_none=True)
+    sorting = fields.Nested(FormProcessMapperListRequestSchema())
 
+class FormProcessMapperSearchSchema(Schema):
+    """This is a general class for paginated request schema."""
 
-class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
 
-    """This class manages formprocessmapper list request schema."""
+        unknown = EXCLUDE
 
-    form_name = fields.Str(data_key="formName", required=False)
-    sort_by = fields.Str(data_key="sortBy", required=False)
-    sort_order = fields.Str(data_key="sortOrder", required=False)
+    form_name = fields.Str(data_key="formName", required=False, allow_none=True)
+    pagination = fields.Nested(FormProcessMapperPaginationSchema())

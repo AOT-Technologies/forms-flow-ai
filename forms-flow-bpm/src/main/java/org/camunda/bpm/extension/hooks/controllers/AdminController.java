@@ -11,6 +11,7 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizedAction;
 import org.camunda.bpm.extension.hooks.controllers.data.FormRO;
+import org.camunda.bpm.extension.hooks.controllers.data.FormSearchInfo;
 import org.camunda.bpm.extension.hooks.controllers.mapper.AuthorizationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,24 +57,26 @@ public class AdminController {
     @Value("${plugin.identity.keycloak.administratorGroupName}")
     private String adminGroupName;
 
-    @PostMapping(value = "/engine-rest-ext/form",
+    @GetMapping(value = "/engine-rest-ext/form",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    private @ResponseBody List<AuthorizedAction> getForms(@RequestBody(required = false) FormRO formRO) throws ServletException
+    private @ResponseBody FormSearchInfo getForms(@RequestBody(required = false) FormRO formRO) throws ServletException
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
         List<Authorization> authorizationList =  getAuthorization(groups);
         List<AuthorizedAction> formList = new ArrayList<>();
-        List<AuthorizedAction> filteredList = new ArrayList<>();
+        FormSearchInfo formSearchInfo = new FormSearchInfo();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String payload = objectMapper.writeValueAsString(formRO);
             payload = (Objects.equals(payload,"")?null:payload);
-            ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.POST, payload);
+            ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, payload);
             if (response.getStatusCode().value() == HttpStatus.OK.value()) {
+                List<AuthorizedAction> filteredList = new ArrayList<>();
                 JsonNode jsonNode = objectMapper.readTree(response.getBody());
-                if (jsonNode.get("totalCount") != null && jsonNode.get("totalCount").asInt() > 0) {
+                JsonNode totalCount = jsonNode.get("totalCount");
+                if (totalCount != null && totalCount.asInt() > 0) {
                     JsonNode arrayNode = jsonNode.get("forms");
                     if (arrayNode.isArray()) {
                         for (JsonNode formNode : arrayNode) {
@@ -103,12 +106,15 @@ public class AdminController {
                         }
                     }
                 }
-                return filteredList;
+                formSearchInfo.setFormDataList(filteredList);
+                formSearchInfo.setPagination(formRO.getPagination());
+                formSearchInfo.setTotalCount(totalCount.asInt());
+                return formSearchInfo;
             }
         } catch (JsonProcessingException e) {
             LOGGER.log(Level.SEVERE, "Exception occurred in reading form", e);
         }
-        return filteredList;
+        return formSearchInfo;
     }
 
     /**

@@ -70,12 +70,7 @@ const FormSearch = React.memo(() => {
                   <i className="fa fa-times fa-lg" />
                 </Button>
               )}
-<<<<<<< HEAD
-            <Button variant="outline-primary" title={t("formsearch_hover")}>
-              <i
-=======
             <Button
->>>>>>> ed9fa84b350464c30840ebb043dfea496c24a918
                 onClick={() => {
                   handleSearch(searchText)
                 }}

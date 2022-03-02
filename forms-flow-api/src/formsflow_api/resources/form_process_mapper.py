@@ -33,8 +33,9 @@ class FormResource(Resource):
         : sortOrder:- Order for sorting (asc/desc) (default: desc)
         """
         try:
-            request_data = 
-            dict_data = FormProcessMapperListRequestSchema().load(request.get_json()) or {}
+            request_data = request.get_json()
+            current_app.logger.warning(request_data)
+            dict_data = FormProcessMapperListRequestSchema().load(request_data) or {}
             page_no: int = dict_data.get("page_no")
             limit: int = dict_data.get("limit")
             form_name: str = dict_data.get("form_name")

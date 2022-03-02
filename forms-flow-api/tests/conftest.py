@@ -77,8 +77,8 @@ def db(app):  # pylint: disable=redefined-outer-name, invalid-name
         sess.commit()
 
         # ############################################
-        # There are 2 approaches, an empty database, or the same one that the app will use
-        #     create the tables
+        # There are 2 approaches, an empty database, or the same one that the app
+        # will use create the tables
         #     _db.create_all()
         # or
         # Use Alembic to load all of the DB revisions including supporting lookup data

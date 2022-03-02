@@ -1,6 +1,8 @@
 <div align="center"><img src=".images/logo.png"/></div>
 <hr/>  
 
+[![FormsFlow API CI](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions/workflows/forms-flow-api-ci.yml/badge.svg)](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions)
+[![FormsFlow BPM CI](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions/workflows/forms-flow-bpm-ci.yml/badge.svg)](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions)
 [![Join the chat at https://gitter.im/forms-flow-ai/community](https://badges.gitter.im/forms-flow-ai/community.svg)](https://gitter.im/forms-flow-ai/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Join the chat at https://stackoverflow.com/questions/tagged/formsflow.ai](https://img.shields.io/badge/ask%20-on%20%20stackoverflow-F47F24)](https://stackoverflow.com/questions/tagged/formsflow.ai?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 <img src="https://img.shields.io/badge/release-v4.0.4-blue"/>

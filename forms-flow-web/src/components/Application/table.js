@@ -16,9 +16,9 @@ let statusFilter,
 
 export const defaultSortedBy = [
   {
-    dataField: "name",
-    order: "asc", // or desc
-  },
+    dataField: "id",
+    order: "desc", // or desc
+  }
 ];
 
 const getApplicationStatusOptions = (rows) => {
@@ -82,13 +82,14 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
       headerClasses: 'classApplicationId',
       sort: true,
       filter: textFilter({
-        placeholder: `\uf002 ${t("placeholder_appid")}` , // custom the input placeholder
-        caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-        className: "icon-search",
-        style:cutomStyle,
-        getFilter: (filter) => {
-        idFilter = filter;
-        },
+      delay:800,  
+      placeholder: `\uf002 ${t("placeholder_appid")}` , // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      className: "icon-search",
+      style:cutomStyle,
+      getFilter: (filter) => {
+      idFilter = filter;
+     },
       }),
     },
     {
@@ -98,7 +99,12 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
       headerClasses: 'classApplicationName',
       formatter: nameFormatter,
       filter: textFilter({
+<<<<<<< HEAD
         placeholder: `\uf002 ${t("application_name")}`, // custom the input placeholder
+=======
+        delay:800,
+        placeholder: "\uf002 Application Name", // custom the input placeholder
+>>>>>>> ed9fa84b350464c30840ebb043dfea496c24a918
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
         style:cutomStyle,
@@ -147,8 +153,12 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
           maxDate={new Date()}
         />}
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> ed9fa84b350464c30840ebb043dfea496c24a918
   ];
+ 
 }
 
 const customTotal = (from, to, size) => (
@@ -225,4 +235,3 @@ export const clearFilter = () => {
     nameFilter("");
     modifiedDateFilter("");
 };
-

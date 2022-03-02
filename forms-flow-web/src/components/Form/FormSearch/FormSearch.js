@@ -60,24 +60,29 @@ const FormSearch = React.memo(() => {
               style={{border:"none"}}
             />
             {searchText!=="" && (
-                <Button variant="outline-secondary" title={t("click_to_clear")}
-                className='clear_button'
-                >
-                  <i
+                <Button
                     onClick={() => {
                       handleSearch('')
                     }}
-                     className="fa fa-times fa-lg"
-                  />
+                    variant="outline-secondary" title="Click to clear"
+                    className='clear_button'
+                    >
+                  <i className="fa fa-times fa-lg" />
                 </Button>
               )}
+<<<<<<< HEAD
             <Button variant="outline-primary" title={t("formsearch_hover")}>
               <i
+=======
+            <Button
+>>>>>>> ed9fa84b350464c30840ebb043dfea496c24a918
                 onClick={() => {
                   handleSearch(searchText)
                 }}
-                className="fa fa-search fa-lg"
-              />
+                variant="outline-primary"
+                title="Press Enter key or click here to search"
+                >
+              <i className="fa fa-search fa-lg"/>
             </Button>
           </InputGroup>
         </div>

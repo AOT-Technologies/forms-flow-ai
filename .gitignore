@@ -26,6 +26,15 @@ yarn-error.log*
 .idea
 *.iml
 
+# ML Jobs
+jobs/sentiment-analysis/venv
+jobs/sentiment-analysis/__pycache__
+jobs/sentiment-analysis/sentiment_analysis.egg-info
+jobs/sentiment-analysis/tests/__pycache__
+
+#Visual Studio Code
+.vscode
+
 #Visual Studio Code
 .vscode
 

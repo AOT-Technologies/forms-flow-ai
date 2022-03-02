@@ -7,7 +7,9 @@ from flask_restx import Namespace, Resource
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.schemas import (
+    FormProcessMapperSortingSchema,
     FormProcessMapperListRequestSchema,
+    FormProcessMapperSearchSchema,
     FormProcessMapperSchema,
 )
 from formsflow_api.services import ApplicationService, FormProcessMapperService
@@ -35,12 +37,14 @@ class FormResource(Resource):
         try:
             request_data = request.get_json()
             current_app.logger.warning(request_data)
-            dict_data = FormProcessMapperListRequestSchema().load(request_data) or {}
-            page_no: int = dict_data.get("page_no")
-            limit: int = dict_data.get("limit")
+            dict_data = FormProcessMapperSearchSchema().load(request_data) or {}
             form_name: str = dict_data.get("form_name")
-            sort_by: str = dict_data.get("sort_by") or "id"
-            sort_order: str = dict_data.get("sort_order") or "desc"
+            pagination: FormProcessMapperPaginationSchema = dict_data.get("pagination")
+            page_no: int = pagination.get("page_no")
+            limit: int = pagination.get("limit")
+            sorting: FormProcessMapperSortingSchema = pagination.get("sorting")
+            sort_by: str = sorting.get("sort_by") or "id"
+            sort_order: str = sorting.get("sort_order") or "desc"
 
             if page_no and limit:
                 (

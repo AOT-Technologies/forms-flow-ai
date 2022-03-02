@@ -26,7 +26,7 @@ class FormResource(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def post():
+    def get():
         """Get form process mapper.
         : pageNo:- To retrieve page number
         : limit:- To retrieve limit for each page
@@ -39,10 +39,10 @@ class FormResource(Resource):
             current_app.logger.warning(request_data)
             dict_data = FormProcessMapperSearchSchema().load(request_data) or {}
             form_name: str = dict_data.get("form_name")
-            pagination: FormProcessMapperPaginationSchema = dict_data.get("pagination")
+            pagination: FormProcessMapperPaginationSchema = dict_data.get("pagination") or {}
             page_no: int = pagination.get("page_no")
             limit: int = pagination.get("limit")
-            sorting: FormProcessMapperSortingSchema = pagination.get("sorting")
+            sorting: FormProcessMapperSortingSchema = pagination.get("sorting") or {}
             sort_by: str = sorting.get("sort_by") or "id"
             sort_order: str = sorting.get("sort_order") or "desc"
 

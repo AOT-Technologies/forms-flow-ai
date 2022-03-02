@@ -113,7 +113,7 @@ public class AdminControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(formRO );
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/engine-rest-ext/form")
+                MockMvcRequestBuilders.post("/engine-rest-ext/form")
                         .content(requestJson)
                         .contentType(APPLICATION_JSON_UTF8)
         )
@@ -135,7 +135,7 @@ public class AdminControllerTest {
                         "{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]}"));
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/engine-rest-ext/form")
+                MockMvcRequestBuilders.post("/engine-rest-ext/form")
                         .contentType(APPLICATION_JSON_UTF8)
         )
                 .andExpect(status().isOk())
@@ -162,7 +162,7 @@ public class AdminControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(formRO );
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/engine-rest-ext/form")
+                MockMvcRequestBuilders.post("/engine-rest-ext/form")
                         .content(requestJson)
                         .contentType(APPLICATION_JSON_UTF8)
         )
@@ -189,7 +189,7 @@ public class AdminControllerTest {
         ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
         String requestJson=ow.writeValueAsString(formRO );
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/engine-rest-ext/form")
+                MockMvcRequestBuilders.post("/engine-rest-ext/form")
                         .content(requestJson)
                         .contentType(APPLICATION_JSON_UTF8)
         )

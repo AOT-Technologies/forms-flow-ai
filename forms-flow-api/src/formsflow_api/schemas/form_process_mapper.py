@@ -41,7 +41,7 @@ class FormProcessMapperPaginationSchema(Schema):
 
     page_no = fields.Int(data_key="pageNo", required=False, allow_none=True)
     limit = fields.Int(data_key="limit", required=False, allow_none=True)
-    sorting = fields.Nested(FormProcessMapperListRequestSchema())
+    sorting = fields.Nested(FormProcessMapperListRequestSchema, required=False, allow_none=True)
 
 class FormProcessMapperSearchSchema(Schema):
     """This is a general class for paginated request schema."""
@@ -52,4 +52,4 @@ class FormProcessMapperSearchSchema(Schema):
         unknown = EXCLUDE
 
     form_name = fields.Str(data_key="formName", required=False, allow_none=True)
-    pagination = fields.Nested(FormProcessMapperPaginationSchema())
+    pagination = fields.Nested(FormProcessMapperPaginationSchema, required=False, allow_none=True)

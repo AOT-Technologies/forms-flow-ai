@@ -34,7 +34,7 @@ class FormProcessMapperListReqSchema(Schema):
         unknown = EXCLUDE
 
     page_no = fields.Int(data_key="pageNo", required=False, allow_none=True)
-    limit = fields.Int(required=False, allow_none=True)
+    limit = fields.Int(data_key="limit", required=False, allow_none=True)
 
 
 class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):

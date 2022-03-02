@@ -13,16 +13,6 @@ class FormProcessMapperService:
     @staticmethod
     def get_all_mappers(page_number: int, limit: int, form_name: str, sort_by: str, sort_order: str):
         """Get all form process mappers."""
-        if page_number:
-            page_number = int(page_number)
-        if limit:
-            limit = int(limit)
-        if form_name:
-            form_name = str(form_name)
-        if sort_by:
-            sort_by = str(sort_by)
-        if sort_order:
-            sort_order = str(sort_order)
         mappers, get_all_mappers_count = FormProcessMapper.find_all_active(
             page_number=page_number,
             limit=limit,

@@ -24,7 +24,7 @@ class FormResource(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def get():
+    def post():
         """Get form process mapper.
         : pageNo:- To retrieve page number
         : limit:- To retrieve limit for each page
@@ -33,6 +33,7 @@ class FormResource(Resource):
         : sortOrder:- Order for sorting (asc/desc) (default: desc)
         """
         try:
+            request_data = 
             dict_data = FormProcessMapperListRequestSchema().load(request.get_json()) or {}
             page_no: int = dict_data.get("page_no")
             limit: int = dict_data.get("limit")
@@ -89,6 +90,9 @@ class FormResource(Resource):
             current_app.logger.warning(form_err)
             return response, status
 
+@cors_preflight("GET,POST,OPTIONS")
+@API.route("/create", methods=["GET", "POST", "OPTIONS"])
+class FormResourceByIds(Resource):
     @staticmethod
     @auth.require
     @profiletime

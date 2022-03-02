@@ -174,7 +174,15 @@ export const TRANSLATIONS_FR = {
   Forms:"Formes",
   Form:"Forme",
   "Downloaded Successfully":"Téléchargé avec succès",
-  "Error in JSON file structure":"Erreur dans la structure du fichier JSON"
+  "Error in JSON file structure":"Erreur dans la structure du fichier JSON",
+  path:"Chemin",
+  example:"Exemple",
+  fix_errors:"Veuillez corriger les erreurs avant de soumettre à nouveau.",
+  "loading...":"Chargement...",
+  wizard:"sorcier",
+  save_form:"Enregistrer le formulaire",
+  cancel:"Annuler"
+
   };
   
 

@@ -11,6 +11,7 @@ export const TRANSLATIONS_PT = {
  "Text Field": "Campo de texto",
   workflow_message: "Você deseja associar o formulário a um fluxo de trabalho?",
   yes: "sim",
+  type:"Tipo",
   no: "Não",
   select_workflow_message: "Selecione um dos seguintes fluxos de trabalho.",
   form_name: "Nome do formulario :",
@@ -112,7 +113,9 @@ export const TRANSLATIONS_PT = {
   process_diagram: "Diagrama de Processo",
   history: "história",
   details: "Detalhes",
+  example:"exemplo",
   form: "Forma",
+  path:"Caminho",
   status: "Status",
   submissions: "Submissões",
   no_application_history_found: "Nenhum histórico de aplicativo encontrado",
@@ -172,6 +175,12 @@ export const TRANSLATIONS_PT = {
   all_steps: "Todas as etapas concluídas - você terminou",
   Form:"Forma",
   "Downloaded Successfully":"Baixado com sucesso",
-  "Error in JSON file structure":"Erro na estrutura do arquivo JSON"
-};
+  "Error in JSON file structure":"Erro na estrutura do arquivo JSON",
+  fix_errors:"Corrija os erros antes de enviar novamente.",
+  "loading...":"Carregando...",
+  wizard:"Mago",
+  save_form:"Salvar formulário",
+  cancel:"Cancelar"
 
+
+}

@@ -19,6 +19,7 @@ import {
 } from "../../../actions/processActions";
 import { Translation } from "react-i18next";
 import { saveFormProcessMapper } from "../../../apiManager/services/processServices";
+import { formio_translation } from "../../../translations/formiotranslation";
 
 const reducer = (form, {type, value}) => {
   const formCopy = _cloneDeep(form);
@@ -52,7 +53,8 @@ const Edit = React.memo(() => {
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const errors = useSelector((state) => state.form.error);
   const prviousData = useSelector((state) => state.process.formPreviousData);
-  const saveText = "Save Form";
+  const saveText = (<Translation>{(t)=>t("save_form")}</Translation>);
+  const lang = useSelector((state) => state.user.lang); 
   const history = useHistory();
  
   // setting the form data 
@@ -154,7 +156,7 @@ const Edit = React.memo(() => {
 if(!form._id){
  return <div class="d-flex justify-content-center">
  <div class="spinner-grow" role="status">
-  <span class="sr-only">Loading...</span>
+  <span class="sr-only"><Translation>{(t)=>t("loading...")}</Translation></span>
 </div>
 </div>
 }
@@ -175,7 +177,7 @@ if(!form._id){
        <div id="save-buttons" className=" mr-4 save-buttons pull-right">
           <div className="form-group pull-right">
             <span className="btn btn-danger" onClick={() =>{ changeAnonymous(prviousData.anonymous); history.goBack()} }>
-              Cancel
+            <Translation>{(t)=>t("cancel")}</Translation>
             </span>
           </div>
         </div>
@@ -190,7 +192,7 @@ if(!form._id){
       <div className="row">
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-title" className="form-group">
-            <label htmlFor="title" className="control-label field-required">Title</label>
+            <label htmlFor="title" className="control-label field-required"><Translation>{(t)=>t("title")}</Translation></label>
             <input
               type="text"
               className="form-control" id="title"
@@ -202,7 +204,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-name" className="form-group">
-            <label htmlFor="name" className="control-label field-required">Name</label>
+            <label htmlFor="name" className="control-label field-required"><Translation>{(t)=>t("name")}</Translation></label>
             <input
               type="text"
               className="form-control"
@@ -215,7 +217,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-3 col-sm-3">
           <div id="form-group-display" className="form-group">
-            <label htmlFor="name" className="control-label">Display as</label>
+            <label htmlFor="name" className="control-label"><Translation>{(t)=>t("display_as")}</Translation></label>
             <div className="input-group">
               <select
                 className="form-control"
@@ -224,7 +226,7 @@ if(!form._id){
                 value={form.display || ''}
                 onChange={event => handleChange('display', event)}
               >
-                <option label="Form" value="form">Form</option>
+                <option label="Form" value="form"><Translation>{(t)=>t("Form")}</Translation></option>
                 <option label="Wizard" value="wizard"><Translation>{(t)=>t("wizard")}</Translation></option>
               </select>
             </div>
@@ -232,7 +234,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-3 col-sm-3">
           <div id="form-group-type" className="form-group">
-            <label htmlFor="form-type" className="control-label">Type</label>
+            <label htmlFor="form-type" className="control-label"><Translation>{(t)=>t("Type")}</Translation></label>
             <div className="input-group">
               <select
                 className="form-control"
@@ -241,7 +243,7 @@ if(!form._id){
                 value={form.type}
                 onChange={event => handleChange('type', event)}
               >
-                <option label="Form" value="form">Form</option>
+                <option label="Form" value="form"><Translation>{(t)=>t("form")}</Translation></option>
                 <option label="Resource" value="resource">Resource</option>
               </select>
             </div>
@@ -249,7 +251,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-path" className="form-group">
-            <label htmlFor="path" className="control-label field-required">Path</label>
+            <label htmlFor="path" className="control-label field-required"><Translation>{(t)=>t("path")}</Translation></label>
             <div className="input-group">
               <input
                 type="text"
@@ -286,6 +288,11 @@ if(!form._id){
         key={form._id}
         form={form}
         onChange={formChange}
+        options={{
+          language: lang,
+          i18n: formio_translation
+          }}
+          
       />
     </div>
     </div>

@@ -8,7 +8,7 @@ import { connect } from 'react-redux';
 
 const Details = React.memo((props) => {
     return (
-        <LoadingOverlay active={props.isTaskUpdating} spinner text='Loading...'>
+        <LoadingOverlay active={props.isTaskUpdating} spinner text={<Translation>{(t)=>t("loading...")}</Translation>}>
             <div className="row" style={{ marginTop: '26.5px', fontWeight: "500px" }}>
                 <div className="col-md-6">
                     <View />

@@ -177,7 +177,13 @@ export const TRANSLATIONS_BG = {
     Forms: "Форми",
     Form:"Формуляр",
     "Downloaded Successfully":"Изтеглено успешно",
-    "Error in JSON file structure":"Грешка във файловата структура на JSON"
+    "Error in JSON file structure":"Грешка във файловата структура на JSON",
+    fix_errors:"Моля, поправете грешките, преди да изпратите отново.",
+    "loading...":"Зареждане...",
+    wizard:"Магьосник",
+    save_form:"Запазване на формуляр",
+    cancel:"Отмяна"
+
 
 }
 

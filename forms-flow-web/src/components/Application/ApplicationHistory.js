@@ -7,7 +7,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import LoadingOverlay from "react-loading-overlay";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import { Translation } from "react-i18next";
+import { Translation,useTranslation } from "react-i18next";
 import {
   fetchApplicationAuditHistoryList
 } from "../../apiManager/services/applicationAuditServices";
@@ -26,6 +26,7 @@ const HistoryList = React.memo((props) => {
   const isHistoryListLoading = useSelector(state => state.tasks.isHistoryListLoading);
   const appHistory = useSelector(state => state.tasks.appHistory);
   const applicationId = props.applicationId;
+  const {t}=useTranslation();
 
   useEffect(()=>{
     dispatch(setUpdateHistoryLoader(true));
@@ -77,7 +78,7 @@ const HistoryList = React.memo((props) => {
               <LoadingOverlay
                 active={isHistoryListLoading}
                 spinner
-                text="Loading..."
+                text={t("select_task")}
               >
                 <BootstrapTable
                   loading={isHistoryListLoading}

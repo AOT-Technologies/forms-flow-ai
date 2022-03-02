@@ -75,7 +75,7 @@ const FormSearch = React.memo(() => {
                   handleSearch(searchText)
                 }}
                 variant="outline-primary"
-                title="Press Enter key or click here to search"
+                title={t("formsearch_hover")}
                 >
               <i className="fa fa-search fa-lg"/>
             </Button>

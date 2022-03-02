@@ -14,7 +14,7 @@ import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
 import { Translation } from "react-i18next";
 import "../../translations/i18n";
-import { formio_translation } from "../../translations/formiotranslation";
+//import { formio_translation } from "../../translations/formiotranslation";
 //TODO convert this code to functional component
 
 // for edit
@@ -34,6 +34,7 @@ import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
 import "./stepper.scss";
 import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
+//import { Form } from "react-formio/lib/components";
 
 /*const statusList = [
   { label: "Active", value: "active" },
@@ -204,6 +205,7 @@ class StepperPage extends PureComponent {
       <Translation>{(t)=>t("design_form")}</Translation>,
       <Translation>{(t)=>t("associate_workflow")}</Translation>,
       <Translation>{(t)=>t("preview_confirm")}</Translation>,
+      
     ];
   }
 
@@ -387,7 +389,9 @@ class StepperPage extends PureComponent {
                   {this.state.activeStep === steps.length ? (
                     <div>
                       <Typography>
-                      <Translation>{(t)=>t("all_steps")}</Translation>
+                      
+                      
+                    <Translation>{(t)=>t("all_steps")}</Translation>
                       </Typography>
                       <Button onClick={handleReset}>Reset</Button>
                     </div>

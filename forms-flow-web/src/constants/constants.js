@@ -111,7 +111,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: "Edit Form",
+    title: <Translation>{(t)=>t("edit_form")}</Translation>,
   },
   viewForm: {
     action: "viewForm",

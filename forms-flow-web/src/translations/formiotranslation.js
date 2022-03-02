@@ -1,7 +1,11 @@
 export const formio_translation = {
 
    "en": {
-
+      
+      save_form:"Save Form",
+      cancel:"Cancel",
+      wizard:"Wizard",
+      fix_errors:"Please fix the errors before submitting again.",
        "Error in JSON file structure":"Error in JSON file structure",
       metrics: "Metrics",
       dashboard: "Dashboard",
@@ -191,6 +195,10 @@ export const formio_translation = {
 
    "zh-CN": {
 
+     save_form:"保存表格",
+     cancel:"取消",
+      wizard:"向导", 
+      fix_errors:"请在重新提交之前修复错误。",
       "Error in JSON file structure":"JSON文件结构错误",
       Form:"形式",
      "Downloaded Successfully":"下载成功",
@@ -885,7 +893,11 @@ export const formio_translation = {
 
 
    "bg": {
- 
+  
+      save_form:"Запазване на формуляр",
+     cancel:"Отмяна",
+      wizard:"Магьосник",
+      fix_errors:"Моля, поправете грешките, преди да изпратите отново.",
       "Error in JSON file structure":"Грешка във файловата структура на JSON",
       "Downloaded Successfully":"Изтеглено успешно",
       submission_success: "Изпращането е запазено.",
@@ -1054,7 +1066,7 @@ export const formio_translation = {
       display_as: "Показване като",
       type: "Тип",
       path: "пътека",
-      example: "Exemplo",
+      example: "пример",
       "Do you want to  make this form public ?": "Искате ли да направите този формуляр публичен?",
       design_form: "Формуляр за проектиране",
       associate_workflow: "Да се ​​свърже ли този формуляр с работен поток?",
@@ -1581,6 +1593,10 @@ export const formio_translation = {
 
    "pt": {
 
+      
+      save_form:"Salvar formulário",
+      cancel:"Cancelar",   
+      wizard:"Mago",
       "Error in JSON file structure":"Erro na estrutura do arquivo JSON",
       "Downloaded Successfully":"Baixado com sucesso",
       select_dashboard: "Selecionar painel",
@@ -2274,6 +2290,10 @@ export const formio_translation = {
 
    "fr": {
 
+     save_form:"Enregistrer le formulaire",
+     cancel:"Annuler",
+      wizard:"Magier",
+      fix_errors:"Veuillez corriger les erreurs avant de soumettre à nouveau.",
       "Error in JSON file structure":"Erreur dans la structure du fichier JSON",
       "Downloaded Successfully":"Téléchargé avec succès",
       select_dashboard: "Sélectionnez Tableau de bord",
@@ -2966,6 +2986,9 @@ export const formio_translation = {
    },
 
    "de": {
+
+      save_form:"Formular speichern",
+      cancel:"Stornieren",
       metrics: "Metriken",
       dashboard: "Armaturenbrett",
       insights: "Einblicke",
@@ -3656,7 +3679,8 @@ export const formio_translation = {
       'Text Field':"Textfeld",
       Form:"Bilden",
      "Downloaded Successfully":"Erfolgreich heruntergeladen",
-     "Error in JSON file structure":"Fehler in der JSON-Dateistruktur"
+     "Error in JSON file structure":"Fehler in der JSON-Dateistruktur",
+     fix_errors:"Bitte beheben Sie die Fehler, bevor Sie sie erneut senden."
 
       
       

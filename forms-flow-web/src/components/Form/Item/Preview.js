@@ -7,6 +7,7 @@ import { Button } from "react-bootstrap";
 import StepperPage from "../Stepper.js";*/
 import Loading from "../../../containers/Loading";
 import { Translation } from "react-i18next";
+import { formio_translation } from "../../../translations/formiotranslation";
 
 const Preview = class extends PureComponent {
   constructor(props) {
@@ -17,6 +18,7 @@ const Preview = class extends PureComponent {
       workflow: null,
       status: null,
     };
+     
   }
 
   render() {
@@ -60,7 +62,8 @@ const Preview = class extends PureComponent {
           form={form}
           hideComponents={hideComponents}
           onSubmit={onSubmit}
-          options={{ ...options }}
+          options={{ ...options,
+            i18n: formio_translation}}
         />
       </div>
     );
@@ -72,6 +75,7 @@ const mapStateToProps = (state) => {
     form: selectRoot("form", state),
     options: {
       readOnly: true,
+      language: state.user.lang,
     },
     errors: [selectError("submission", state), selectError("form", state)],
   };

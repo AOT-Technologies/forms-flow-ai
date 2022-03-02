@@ -179,7 +179,12 @@ export const TRANSLATIONS_DE = {
   Forms: "Formen",
   Form:"Bilden",
   "Downloaded Successfully":"Erfolgreich heruntergeladen",
-  "Error in JSON file structure":"Fehler in der JSON-Dateistruktur"
+  "Error in JSON file structure":"Fehler in der JSON-Dateistruktur",
+  fix_errors:"Bitte beheben Sie die Fehler, bevor Sie sie erneut senden.",
+  "loading...":"Wird geladen...",
+  save_form:"Formular speichern",
+  cancel:"Stornieren"
+
 
 
 

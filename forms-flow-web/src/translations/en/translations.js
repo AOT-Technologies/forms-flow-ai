@@ -99,6 +99,7 @@ export const TRANSLATIONS_EN = {
   select_task: "Select a task in the list.",
   no_filter_found: "No Filters Found",
   loading: "Loading",
+  "loading...":"Loading...",
   form_task: "Form",
   History: "History",
   Diagram: "Diagram",
@@ -174,7 +175,12 @@ export const TRANSLATIONS_EN = {
   all_steps: "All steps completed - you're finished",
   "Enter the form machine name": "Enter the form machine name",
   "Enter the form title": "Enter the form title",
-  "Error in JSON file structure":"Error in JSON file structure"
+  "Error in JSON file structure":"Error in JSON file structure",
+  example:"example",
+  fix_errors:"Please fix the errors before submitting again.",
+  wizard:"Wizard",
+  save_form:"Save Form",
+  cancel:"Cancel"
 
 
 

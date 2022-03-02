@@ -177,7 +177,13 @@ export const TRANSLATIONS_ZH = {
   all_steps: "已完成所有步骤 - 您已完成",
   Form:"形式",
   "Downloaded Successfully":"下载成功",
-  "Error in JSON file structure":"JSON文件结构错误"
+  "Error in JSON file structure":"JSON文件结构错误",
+  fix_errors:"请在重新提交之前修复错误。",
+  "loading...":"正在加载...",
+  wizard:"向导",
+  save_form:"保存表格",
+  cancel:"取消"
+
 
 
 

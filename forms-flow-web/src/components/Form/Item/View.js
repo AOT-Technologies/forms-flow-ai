@@ -7,6 +7,7 @@ import { useTranslation,Translation } from "react-i18next";
 import "../../../translations/i18n";
 import Loading from '../../../containers/Loading';
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
+import { formio_translation } from "../../../translations/formiotranslation";
 import {
   setFormSubmissionError,
   setFormSubmissionLoading,
@@ -22,6 +23,7 @@ const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
   const isFormSubmitted = useSelector(state=>state.formDelete.formSubmitted);
   const publicFormStatus = useSelector(state=>state.formDelete.publicFormStatus);
+  const lang = useSelector((state) => state.user.lang);
   const isPublic = window.location.href.includes('public') //need to remove 
 
   const {
@@ -98,7 +100,11 @@ const View = React.memo((props) => {
               form={form}
               submission={submission}
               url={url}
-              options={{ ...options }}
+              options={
+                { ...options,
+                  language: lang,
+                  i18n: formio_translation
+                  }}
               hideComponents={hideComponents}
               onSubmit={(s)=>onSubmit(s,t)}
               onCustomEvent={(ce)=>onCustomEvent(ce,t)}

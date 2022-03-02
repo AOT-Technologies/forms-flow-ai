@@ -11,6 +11,7 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
+    
     fallbackLng: 'en',
     resources: {
       fallbackLng: 'en',
@@ -40,6 +41,6 @@ i18n
   
 
 //i18n.changeLanguage('zh'); // default language 'en'
-  i18n.fallbacks = true;
+  //i18n.fallbacks = true;
   export default i18n;
   

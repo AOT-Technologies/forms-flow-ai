@@ -91,7 +91,9 @@ const refreshToken = (store) => {
  * Logout function
  */
 const userLogout = () => {
+  const language=localStorage.getItem("lang")
   localStorage.clear();
+  localStorage.setItem("lang",language)
   sessionStorage.clear();
   clearInterval(refreshInterval);
   doLogout();

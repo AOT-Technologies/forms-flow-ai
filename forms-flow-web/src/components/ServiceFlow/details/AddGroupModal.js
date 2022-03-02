@@ -6,7 +6,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {addBPMGroup, getBPMGroups, removeBPMGroup} from "../../../apiManager/services/bpmTaskServices";
 import {setBPMTaskGroupsLoading} from "../../../actions/bpmTaskActions";
 import LoadingOverlay from "react-loading-overlay";
-import { useTranslation } from 'react-i18next';
+import { useTranslation,Translation } from 'react-i18next';
 const AddGroupModal= React.memo((props)=> {
     const {t} = useTranslation();
     const { modalOpen=false, onClose , groups} = props;
@@ -48,7 +48,7 @@ const AddGroupModal= React.memo((props)=> {
             <LoadingOverlay
               active={isGroupLoading}
               spinner
-              text="Loading..."
+              text={<Translation>{(t)=>t("loading...")}</Translation>}
             >
               <Modal.Body>
 

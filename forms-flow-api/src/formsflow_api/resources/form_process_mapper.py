@@ -8,7 +8,7 @@ from flask_restx import Namespace, Resource
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.schemas import (
     FormProcessMapperSortingSchema,
-    FormProcessMapperListRequestSchema,
+    FormProcessMapperPaginationSchema,
     FormProcessMapperSearchSchema,
     FormProcessMapperSchema,
 )

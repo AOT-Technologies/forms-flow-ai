@@ -35,7 +35,7 @@ class FormResource(Resource):
         : sortOrder:- Order for sorting (asc/desc) (default: desc)
         """
         try:
-            request_data = request.get_json()
+            request_data = request.get_json() or {}
             current_app.logger.warning(request_data)
             dict_data = FormProcessMapperSearchSchema().load(request_data) or {}
             form_name: str = dict_data.get("form_name")

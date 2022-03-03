@@ -97,10 +97,6 @@ class FormResource(Resource):
             current_app.logger.warning(form_err)
             return response, status
 
-
-@cors_preflight("GET,POST,OPTIONS")
-@API.route("/create", methods=["GET", "POST", "OPTIONS"])
-class FormResourceByIds(Resource):
     @staticmethod
     @auth.require
     @profiletime

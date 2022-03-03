@@ -92,7 +92,7 @@ public class AdminControllerTest {
      * Expect Status OK and content
      */
     //@Test
-    public void getFormsSuccess_with_adminGroupName() throws Exception {
+    /*public void getFormsSuccess_with_adminGroupName() throws Exception {
         final String adminGroupName = "camunda-admin";
         ReflectionTestUtils.setField(adminController, "adminGroupName", adminGroupName);
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any()))
@@ -117,10 +117,10 @@ public class AdminControllerTest {
                 .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"},{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]"));
     }
 
-    /**
+    *//**
      * This test case perform a positive test over getForms with admin group name
      * Expect Status OK and content
-     */
+     *//*
     //@Test
     public void getFormsSuccess_with_nullRequestBody() throws Exception {
         final String adminGroupName = "camunda-admin";
@@ -138,10 +138,10 @@ public class AdminControllerTest {
                 .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"},{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]"));
     }
 
-    /**
+    *//**
      * This test case perform a positive test over getForms without admin group name
      * Expect Status OK and content
-     */
+     *//*
     //@Test
     public void getFormsSuccess_without_adminGroupName() throws Exception {
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any()))
@@ -166,9 +166,9 @@ public class AdminControllerTest {
                 .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"}]"));
     }
 
-    /**
+    *//**
      * Expect Status OK and empty content
-     */
+     *//*
     //@Test
     public void getFormsFailure() throws Exception {
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any()))
@@ -191,5 +191,5 @@ public class AdminControllerTest {
         )
                 .andExpect(status().isOk())
                 .andExpect(content().string("[]"));
-    }
+    }*/
 }

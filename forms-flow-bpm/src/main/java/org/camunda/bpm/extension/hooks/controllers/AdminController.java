@@ -56,20 +56,16 @@ public class AdminController {
     @Value("${formsflow.ai.api.url}")
     private String formsflowApiUrl;
 
-    @GetMapping(value = "/engine-rest-ext/form/authorization",
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    private @ResponseBody
-    AuthorizationInfo getFormAuthorization() throws ServletException {
+    @GetMapping(value = "/engine-rest-ext/form/authorization", produces = MediaType.APPLICATION_JSON_VALUE)
+    private @ResponseBody AuthorizationInfo getFormAuthorization() throws ServletException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
         AuthorizationInfo authorizationInfo = null;
 
-        if(CollectionUtils.isNotEmpty(groups)) {
-            if (groups.contains(adminGroupName)) {
-                authorizationInfo = new AuthorizationInfo(true, null);
-            } else {
-                authorizationInfo = new AuthorizationInfo(false, getAuthorization(groups));
-            }
+        if (CollectionUtils.isNotEmpty(groups) && groups.contains(adminGroupName)) {
+            authorizationInfo = new AuthorizationInfo(true, null);
+        } else {
+            authorizationInfo = new AuthorizationInfo(false, getAuthorization(groups));
         }
         return authorizationInfo;
     }
@@ -144,7 +140,7 @@ public class AdminController {
 
         List<Authorization> authorizationList = new ArrayList<>();
 
-        String[] groupIds = (String[]) groups.toArray();
+        String[] groupIds = groups.size() > 0 ? groups.toArray(new String[0]) : new String[]{};
         List<org.camunda.bpm.engine.authorization.Authorization> authorizations =  ProcessEngines.getDefaultProcessEngine().getAuthorizationService().createAuthorizationQuery()
                 .resourceType(Resources.PROCESS_DEFINITION.resourceType())
                 .hasPermission(ProcessDefinitionPermissions.CREATE_INSTANCE)

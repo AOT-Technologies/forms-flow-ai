@@ -24,6 +24,24 @@ class FormProcessMapperSchema(Schema):
     modified_by = fields.Str(data_key="modifiedBy")
     modified = fields.Str(data_key="modified")
 
+class FormAuthorizationSchema(Schema):
+
+    """This class manages formprocessmapper list request schema."""
+
+    group_id = fields.Str(data_key="groupId", required=False)
+    user_id = fields.Str(data_key="userId", required=False)
+    resource_id = fields.Str(data_key="resourceId", required=False)
+
+class FormAuthorizationInfoSchema(Schema):
+
+    """This class manages formprocessmapper list request schema."""
+
+    admin_group_enabled = fields.Bool(data_key="adminGroupEnabled", required=False)
+    authorizationList = fields.Nested(
+        FormAuthorizationSchema, required=False, allow_none=True
+    )
+
+
 
 class FormProcessMapperSortingSchema(Schema):
 

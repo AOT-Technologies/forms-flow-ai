@@ -15,7 +15,7 @@ from formsflow_api.schemas.form_process_mapper import (
     FormProcessMapperSchema,
     FormProcessMapperSortingSchema,
     FormProcessMapperPaginationSchema,
-    FormProcessMapperSearchSchema
+    FormProcessMapperSearchSchema,
 )
 from formsflow_api.schemas.keycloak_groups import KeycloakDashboardGroupSchema
 from formsflow_api.schemas.user import UserlocaleReqSchema

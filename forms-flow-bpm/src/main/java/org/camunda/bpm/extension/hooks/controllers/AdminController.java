@@ -107,7 +107,7 @@ public class AdminController {
                     }
                 }
                 formSearchInfo.setFormDataList(filteredList);
-                formSearchInfo.setPagination(formRO.getPagination());
+                if(formRO != null) formSearchInfo.setPagination(formRO.getPagination());
                 formSearchInfo.setTotalCount(totalCount.asInt());
                 return formSearchInfo;
             }

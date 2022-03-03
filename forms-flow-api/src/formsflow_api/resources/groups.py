@@ -28,8 +28,8 @@ class KeycloakDashboardGroupList(Resource):
     @profiletime
     def get():
         """GET request to fetch all dashboard groups from Keycloak
-        :params int pageNo: page number (optional)
-        :params int limit: number of items per page (optional)
+        : pageNo:- page number (optional)
+        : limit:- number of items per page (optional)
         """
         client = KeycloakAdminAPIService()
         if request.args:
@@ -75,7 +75,7 @@ class KeycloakDashboardGroupDetail(Resource):
     @profiletime
     def get(group_id):
         """GET request to fetch groups details API
-        :params str id: group-id of Keycloak Dashboard Authorized groups
+        : id:- group-id of Keycloak Dashboard Authorized groups
         """
         client = KeycloakAdminAPIService()
         response = client.get_request(url_path=f"groups/{group_id}")
@@ -88,7 +88,7 @@ class KeycloakDashboardGroupDetail(Resource):
     @profiletime
     def put(group_id):
         """Update request to update dashboard details
-        :params str id: group-id of Keycloak Dashboard Authorized groups
+        : dashboards:- a list of dashboards to be updated in group id
         """
         client = KeycloakAdminAPIService()
         group_json = request.get_json()

@@ -60,20 +60,20 @@ public class AdminController {
     @GetMapping(value = "/engine-rest-ext/form",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    private @ResponseBody FormSearchInfo getForms(@RequestBody(required = false) FormRO formRO) throws ServletException
+    private @ResponseBody List<AuthorizedAction> getForms(@RequestBody(required = false) FormRO formRO) throws ServletException
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
         List<Authorization> authorizationList =  getAuthorization(groups);
         List<AuthorizedAction> formList = new ArrayList<>();
-        FormSearchInfo formSearchInfo = new FormSearchInfo();
+        //FormSearchInfo formSearchInfo = new FormSearchInfo();
+        List<AuthorizedAction> filteredList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String payload = objectMapper.writeValueAsString(formRO);
             payload = (Objects.equals(payload,"")?null:payload);
             ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, payload);
             if (response.getStatusCode().value() == HttpStatus.OK.value()) {
-                List<AuthorizedAction> filteredList = new ArrayList<>();
                 JsonNode jsonNode = objectMapper.readTree(response.getBody());
                 JsonNode totalCount = jsonNode.get("totalCount");
                 if (totalCount != null && totalCount.asInt() > 0) {
@@ -106,15 +106,15 @@ public class AdminController {
                         }
                     }
                 }
-                formSearchInfo.setFormDataList(filteredList);
-                if(formRO != null) formSearchInfo.setPagination(formRO.getPagination());
-                formSearchInfo.setTotalCount(totalCount.asInt());
-                return formSearchInfo;
+                //formSearchInfo.setFormDataList(filteredList);
+                //if(formRO != null) formSearchInfo.setPagination(formRO.getPagination());
+                //formSearchInfo.setTotalCount(totalCount.asInt());
+                return filteredList;
             }
         } catch (JsonProcessingException e) {
             LOGGER.log(Level.SEVERE, "Exception occurred in reading form", e);
         }
-        return formSearchInfo;
+        return filteredList;
     }
 
     /**

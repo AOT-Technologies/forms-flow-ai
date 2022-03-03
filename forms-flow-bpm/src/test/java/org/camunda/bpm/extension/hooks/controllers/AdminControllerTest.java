@@ -118,7 +118,7 @@ public class AdminControllerTest {
                         .contentType(APPLICATION_JSON_UTF8)
         )
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"formDataList\":[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"},{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}],\"pagination\":{\"pageNo\":1,\"limit\":10,\"sorting\":{\"sortBy\":\"businessName\",\"sortOrder\":\"ASC\"}},\"totalCount\":2}"));
+                .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"},{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]"));
     }
 
     /**
@@ -139,7 +139,7 @@ public class AdminControllerTest {
                         .contentType(APPLICATION_JSON_UTF8)
         )
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"formDataList\":[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"},{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}],\"pagination\":null,\"totalCount\":2}"));
+                .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"},{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]"));
     }
 
     /**
@@ -167,7 +167,7 @@ public class AdminControllerTest {
                         .contentType(APPLICATION_JSON_UTF8)
         )
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"formDataList\":[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"}],\"pagination\":{\"pageNo\":1,\"limit\":10,\"sorting\":{\"sortBy\":\"businessName\",\"sortOrder\":\"ASC\"}},\"totalCount\":2}"));
+                .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"}]"));
     }
 
     /**
@@ -194,6 +194,6 @@ public class AdminControllerTest {
                         .contentType(APPLICATION_JSON_UTF8)
         )
                 .andExpect(status().isOk())
-                .andExpect(content().string("{\"formDataList\":null,\"pagination\":null,\"totalCount\":0}"));
+                .andExpect(content().string("[]"));
     }
 }

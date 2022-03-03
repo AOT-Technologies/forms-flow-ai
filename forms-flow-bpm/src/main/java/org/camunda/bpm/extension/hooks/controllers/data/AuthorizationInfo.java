@@ -5,24 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
-/**
- * This class has the form search information and pagination details
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class FormRO implements Serializable {
+public class AuthorizationInfo implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Wild card form Name - search string
-	 */
-	private String formName;
-	/**
-	 * Pagination Data
-	 */
-	private Pagination pagination;
-
+    private boolean adminGroupEnabled;
+    private List<Authorization> authorizationList;
 }

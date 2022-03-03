@@ -128,7 +128,7 @@ class BPMService(BaseBPMService):
             if endpoint_type == BPMEndpointType.PROCESS_DEFINITION:
                 url = f"{bpm_api_base}/engine-rest/process-definition"
             elif endpoint_type == BPMEndpointType.AUTH_FORM_DETAILS:
-                url = f"{bpm_api_base}/engine-rest-ext/form/"
+                url = f"{bpm_api_base}/engine-rest-ext/form/authorization"
             elif endpoint_type == BPMEndpointType.HISTORY:
                 url = f"{bpm_api_base}/engine-rest-ext/task/"
             elif endpoint_type == BPMEndpointType.TASK:
@@ -139,7 +139,6 @@ class BPMService(BaseBPMService):
                 url = f"{bpm_api_base}/engine-rest/message/"
             elif endpoint_type == BPMEndpointType.PROCESS_INSTANCE:
                 url = f"{bpm_api_base}/engine-rest/process-instance/"
-
             return url
 
         except BaseException:  # pylint: disable=broad-except

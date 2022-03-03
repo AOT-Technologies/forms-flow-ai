@@ -107,6 +107,26 @@ const ProcessDiagram = React.memo((props)=>{
       onShown(warnings);
     }
   }*/
+  
+  
+  // if(processInstanceId === null && isProcessDiagramLoading === false)
+  // { 
+  //   return <div className="bpmn-viewer-container">
+  //     <div className="bpm-container">
+  //       <Nodata text={"No Process Diagram found"} className={"div-no-application-list text-center"}/>
+  //     </div>
+  //   </div>
+  // }
+
+
+  // if(processInstanceId === null && isProcessDiagramLoading === false)
+  // {
+  //   return <div className="bpmn-viewer-container">
+  //     <div className="bpm-container">
+  //       <Nodata text={"No Process Diagram found"} className={"div-no-application-list text-center"}/>
+  //     </div>
+  //   </div>
+  // }
 
 
   // if(processInstanceId === null && isProcessDiagramLoading === false)
@@ -132,7 +152,7 @@ const ProcessDiagram = React.memo((props)=>{
       </div>
     </div>
   }
-
+  
   return (
     <div className="bpmn-viewer-container">
       <div id="process-diagram-container" className="bpm-container grab-cursor" ref={containerRef}/>

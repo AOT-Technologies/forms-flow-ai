@@ -135,11 +135,11 @@ export const ApplicationList = React.memo(() => {
                     loading={isLoading}
                     filter={filterFactory()}
                     pagination={paginationFactory(getoptions(applicationCount,page,countPerPage))}
-                    defaultSorted={defaultSortedBy}
                     onTableChange={handlePageChange}
                     filterPosition={'top'}
                     {...props.baseProps}
                     noDataIndication={() => !isLoading && getNoDataIndicationContent()}
+                    defaultSorted={ defaultSortedBy }
                     overlay={ overlayFactory({ spinner: <SpinnerSVG/>, styles: { overlay: (base) => ({...base,background: 'rgba(255, 255, 255)',height:`${countPerPage > 5 ? '100% !important':'350px !important'}`,top:'65px'}) } }) }
                   />
               </div>

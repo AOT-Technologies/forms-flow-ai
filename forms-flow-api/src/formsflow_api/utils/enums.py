@@ -5,8 +5,8 @@ from enum import Enum
 class FormProcessMapperStatus(Enum):
     """This enum provides the list of FormProcessMapper Status."""
 
-    Active = "active"
-    Inactive = "inactive"
+    ACTIVE = "active"
+    INACTIVE = "inactive"
 
 
 class MetricsState(Enum):
@@ -16,7 +16,7 @@ class MetricsState(Enum):
     MODIFIED = "modified"
 
 
-class ApplicationSortingParameters:
+class ApplicationSortingParameters:  # pylint: disable=too-few-public-methods
     """This enum provides the list of Sorting Parameters."""
 
     Id = "id"
@@ -24,3 +24,4 @@ class ApplicationSortingParameters:
     Name = "applicationName"
     Status = "applicationStatus"
     Modified = "modified"
+    FormName = "formName"

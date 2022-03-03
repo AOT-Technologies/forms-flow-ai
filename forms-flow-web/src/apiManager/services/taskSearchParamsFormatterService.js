@@ -40,7 +40,6 @@ const getVariableOperator = (operator)=>{
      return "like";
    default:
  }
-
 }
 
 export const getFormattedParams = (searchOptionList, searchQueryType, variableNameIgnoreCase, variableValueIgnoreCase)=>{
@@ -57,7 +56,7 @@ export const getFormattedParams = (searchOptionList, searchQueryType, variableNa
       case Filter_Search_Types.VARIABLES:
         if(searchOption.value && searchOption.name){
           isParamsHasValue=true;
-          paramList[searchOption.key].push({name: searchOption.name, operator: getVariableOperator(searchOption.operator), value: searchOption.value})
+          paramList[searchOption.key].push({name: searchOption.name, operator: getVariableOperator(searchOption.operator), value: searchOption.operator==="like"?`%${searchOption.value}%`:searchOption.value})
         }
         break;
       case Filter_Search_Types.STRING:

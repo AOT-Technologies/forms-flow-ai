@@ -1,15 +1,13 @@
 """Resource to call Keycloak Service API calls and filter responses"""
 from http import HTTPStatus
-from flask import request, g, current_app
+
+from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 from marshmallow import ValidationError
-from formsflow_api.services import KeycloakAdminAPIService
+
 from formsflow_api.schemas import UserlocaleReqSchema
-from formsflow_api.utils import (
-    auth,
-    cors_preflight,
-    profiletime,
-)
+from formsflow_api.services import KeycloakAdminAPIService
+from formsflow_api.utils import auth, cors_preflight, profiletime
 
 API = Namespace("user", description="Keycloak user APIs")
 
@@ -19,8 +17,8 @@ API = Namespace("user", description="Keycloak user APIs")
 class KeycloakUserService(Resource):
     """Provides api interface for interacting with Keycloak user attributes"""
 
-    def __init__(self, api=None, *args, **kwargs):
-        super().__init__(api, *args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.client = KeycloakAdminAPIService()
 
     @auth.require
@@ -37,7 +35,7 @@ class KeycloakUserService(Resource):
         response = self.client.get_request(url_path=url_path)
         response = response[0]
         if response is None:
-            return {"message": f"User not found"}, HTTPStatus.NOT_FOUND
+            return {"message": "User not found"}, HTTPStatus.NOT_FOUND
         return response
 
     @auth.require
@@ -50,12 +48,15 @@ class KeycloakUserService(Resource):
             user = self.__get_user_data()
             json_payload = request.get_json()
             dict_data = UserlocaleReqSchema().load(json_payload)
+            if user.get("attributes") is None:
+                user["attributes"] = {}
+                user["attributes"]["locale"] = []
             user["attributes"]["locale"] = [dict_data["locale"]]
             response = self.client.update_request(
                 url_path=f"users/{user['id']}", data=user
             )
             if response is None:
-                return {"message": f"User not found"}, HTTPStatus.NOT_FOUND
+                return {"message": "User not found"}, HTTPStatus.NOT_FOUND
             return response, HTTPStatus.OK
 
         except KeyError as err:
@@ -83,7 +84,7 @@ class KeycloakUserService(Resource):
 
             return response, status
 
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-except
             response, status = (
                 {
                     "type": "Internal error",

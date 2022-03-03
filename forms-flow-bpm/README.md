@@ -1,4 +1,6 @@
 # Workflow Engine
+
+[![FormsFlow BPM CI](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions/workflows/forms-flow-api-ci.yml/badge.svg?branch=develop)](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions)
 ![Camunda](https://img.shields.io/badge/Camunda-7.15.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.4.8.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
 **formsflow.ai** leverages Camunda for workflow and decision automation.
 
@@ -47,7 +49,7 @@ To know more about Camunda, visit https://camunda.com/.
  `KEYCLOAK_URL`:triangular_flag_on_post:| URL to your Keycloak server || `http://{your-ip-address}:8080`
  `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
  `KEYCLOAK_BPM_CLIENT_ID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | `forms-flow-bpm`
- `KEYCLOAK_BPM_CLIENT_SECRET`:triangular_flag_on_post:|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret`go to [link](../forms-flow-idm/keycloak/README.md#get-the-keycloak-client-secret)
+ `KEYCLOAK_BPM_CLIENT_SECRET`|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`e4bdbd25-1467-4f7f-b993-bc4b1944c943` <br><br> `To generate a new keycloak client secret by yourself go to` [link](../forms-flow-idm/keycloak/README.md#get-the-keycloak-client-secret)
 
 ##### CAMUNDA_JDBC : Dedicated camunda database (Prefixed with CAMUNDA_).
 -----------------------------------------------------------------------

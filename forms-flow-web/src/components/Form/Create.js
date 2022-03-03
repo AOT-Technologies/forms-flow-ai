@@ -217,6 +217,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
                className="mr-3" style={{height:'20px', width:'20px'}}
                 type="checkbox"
                 id="anonymous"
+                data-testid="anonymous"
                 checked={anonymous}
                 onChange={(e) =>{setAnonymous(!anonymous)}}
               />

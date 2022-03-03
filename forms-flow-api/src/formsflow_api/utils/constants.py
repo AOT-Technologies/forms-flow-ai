@@ -1,4 +1,6 @@
+"""All constants for project"""
 import os
+
 from dotenv import find_dotenv, load_dotenv
 
 # this will load all the envars from a .env file located in the project root (api)
@@ -26,4 +28,5 @@ FILTER_MAPS = {
     "modified_to": {"field": "modified", "operator": "le"},
     "created_from": {"field": "created", "operator": "ge"},
     "created_to": {"field": "created", "operator": "le"},
+    "form_name": {"field": "form_name", "operator": "ilike"},
 }

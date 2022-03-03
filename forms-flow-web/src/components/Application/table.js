@@ -15,9 +15,9 @@ let statusFilter,
 
 export const defaultSortedBy = [
   {
-    dataField: "name",
-    order: "asc", // or desc
-  },
+    dataField: "id",
+    order: "desc", // or desc
+  }
 ];
 
 const getApplicationStatusOptions = (rows) => {
@@ -81,6 +81,7 @@ export const columns  = (applicationStatus,lastModified,callback) => {
       headerClasses: 'classApplicationId',
       sort: true,
       filter: textFilter({
+        delay:800,
         placeholder: "\uf002 Application ID", // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
@@ -97,6 +98,7 @@ export const columns  = (applicationStatus,lastModified,callback) => {
       headerClasses: 'classApplicationName',
       formatter: nameFormatter,
       filter: textFilter({
+        delay:800,
         placeholder: "\uf002 Application Name", // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
@@ -146,8 +148,8 @@ export const columns  = (applicationStatus,lastModified,callback) => {
           maxDate={new Date()}
         />}
     }
-  
   ];
+ 
 }
 
 const customTotal = (from, to, size) => (
@@ -224,4 +226,3 @@ export const clearFilter = () => {
     nameFilter("");
     modifiedDateFilter("");
 };
-

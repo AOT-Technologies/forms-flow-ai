@@ -13,3 +13,4 @@ marshmallow-sqlalchemy
 requests
 Werkzeug
 sqlalchemy_utils
+markupsafe==2.0.1

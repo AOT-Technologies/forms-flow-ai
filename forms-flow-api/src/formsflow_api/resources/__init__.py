@@ -7,18 +7,17 @@ from flask_jwt_oidc import AuthError
 from flask_restx import Api
 
 from formsflow_api.exceptions import BusinessException
-from formsflow_api.resources.application import API as APPLICATION_API
 from formsflow_api.resources.anonymous_application import API as PUBLIC_API
+from formsflow_api.resources.application import API as APPLICATION_API
 from formsflow_api.resources.application_history import API as APPLICATION_HISTORY_API
-from formsflow_api.resources.metrics import API as APPLICATION_METRICS_API
 from formsflow_api.resources.checkpoint import API as CHECKPOINT_API
 from formsflow_api.resources.dashboards import API as DASHBOARDS_API
 from formsflow_api.resources.form_process_mapper import API as FORM_API
 from formsflow_api.resources.groups import API as KEYCLOAK_GROUPS_API
-from formsflow_api.resources.user import API as KEYCLOAK_USER_API
+from formsflow_api.resources.metrics import API as APPLICATION_METRICS_API
 from formsflow_api.resources.process import API as PROCESS_API
+from formsflow_api.resources.user import API as KEYCLOAK_USER_API
 from formsflow_api.utils.constants import ALLOW_ALL_ORIGINS
-
 
 # This will add the Authorize button to the swagger docs
 # oauth2 & openid may not yet be supported by restplus
@@ -50,7 +49,8 @@ def handle_auth_error(error: AuthError):
     return (
         {
             "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for Authorization or has expired.",
+            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for"
+            "Authorization or has expired.",
         },
         error.status_code,
         {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},

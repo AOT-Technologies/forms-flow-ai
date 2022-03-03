@@ -10,10 +10,8 @@ from formsflow_api.schemas import (
     FormProcessMapperListRequestSchema,
     FormProcessMapperSchema,
 )
-from formsflow_api.services import FormProcessMapperService, ApplicationService
-
+from formsflow_api.services import ApplicationService, FormProcessMapperService
 from formsflow_api.utils import auth, cors_preflight, profiletime
-
 
 API = Namespace("Form", description="Form")
 
@@ -31,50 +29,43 @@ class FormResource(Resource):
         : pageNo:- To retrieve page number
         : limit:- To retrieve limit for each page
         : formName:- Retrieve form list based on form name
+        : sortBy:- Name of column to sort by (default: id)
+        : sortOrder:- Order for sorting (asc/desc) (default: desc)
         """
         try:
-            request_schema = FormProcessMapperListRequestSchema()
-            if request.args:
-                dict_data = request_schema.load(request.args)
-                page_no: str = dict_data.get("page_no")
-                limit: str = dict_data.get("limit")
-                form_name: str = dict_data.get("form_name")
-            else:
-                page_no = 0
-                limit = 0
-                form_name = None
-            if page_no > 0:
-                response, status = (
-                    (
-                        {
-                            "forms": FormProcessMapperService.get_all_mappers(
-                                page_no, limit, form_name
-                            ),
-                            "totalCount": FormProcessMapperService.get_mapper_count(
-                                form_name
-                            ),
-                            "pageNo": page_no,
-                            "limit": limit,
-                        }
-                    ),
-                    HTTPStatus.OK,
+            dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
+            page_no: int = dict_data.get("page_no")
+            limit: int = dict_data.get("limit")
+            form_name: str = dict_data.get("form_name")
+            sort_by: str = dict_data.get("sort_by") or "id"
+            sort_order: str = dict_data.get("sort_order") or "desc"
+
+            if page_no and limit:
+                (
+                    form_process_mapper_schema,
+                    form_process_mapper_count,
+                ) = FormProcessMapperService.get_all_mappers(
+                    page_no, limit, form_name, sort_by, sort_order
                 )
-                return response, status
             else:
-                response, status = (
-                    (
-                        {
-                            "forms": FormProcessMapperService.get_all_mappers(
-                                page_no, limit, form_name
-                            ),
-                            "totalCount": FormProcessMapperService.get_mapper_count(
-                                form_name
-                            ),
-                        }
-                    ),
-                    HTTPStatus.OK,
+                (
+                    form_process_mapper_schema,
+                    form_process_mapper_count,
+                ) = FormProcessMapperService.get_all_mappers(
+                    page_no, limit, form_name, sort_by, sort_order
                 )
-                return response, status
+            return (
+                (
+                    {
+                        "forms": form_process_mapper_schema,
+                        "totalcount": form_process_mapper_count,
+                        "pageNo": page_no,
+                        "limit": limit,
+                    }
+                ),
+                HTTPStatus.OK,
+            )
+
         except KeyError as err:
             response, status = (
                 {
@@ -88,7 +79,7 @@ class FormResource(Resource):
             current_app.logger.critical(err)
             return response, status
 
-        except BaseException as form_err:
+        except BaseException as form_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
@@ -113,10 +104,10 @@ class FormResource(Resource):
 
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
             return response, status
-        except BaseException as form_err:
+        except BaseException as form_err:  # pylint: disable=broad-except
             response, status = {
                 "message": "Invalid request object passed for FormProcessmapper POST API",
-                "errors": form_err.messages,
+                "errors": form_err,
             }, HTTPStatus.BAD_REQUEST
 
             current_app.logger.warning(response)
@@ -203,7 +194,7 @@ class FormResourceById(Resource):
                 f"Updated FormProcessMapper ID {mapper_id} successfully",
                 HTTPStatus.OK,
             )
-        except BaseException as mapper_err:
+        except BaseException as mapper_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid request passed",
@@ -240,6 +231,7 @@ class FormResourceByFormId(Resource):
                 HTTPStatus.NO_CONTENT,
             )
             current_app.logger.info(response)
+            current_app.logger.warning(err)
             return response, status
 
 
@@ -252,6 +244,7 @@ class FormResourceApplicationCount(Resource):
     @auth.require
     @profiletime
     def get(mapper_id: int):
+        """The method retrieves the total application count for th egiven mapper id"""
         (
             response,
             status,

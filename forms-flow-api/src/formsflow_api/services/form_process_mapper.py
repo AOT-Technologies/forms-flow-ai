@@ -11,27 +11,27 @@ class FormProcessMapperService:
     """This class manages form process mapper service."""
 
     @staticmethod
-    def get_all_mappers(page_number: int, limit: int, form_name=None):
+    def get_all_mappers(
+        page_number: int, limit: int, form_name: str, sort_by: str, sort_order: str
+    ):
         """Get all form process mappers."""
-        if page_number:
-            page_number = int(page_number)
-        if limit:
-            limit = int(limit)
-        if form_name:
-            form_name = str(form_name)
-        mappers = FormProcessMapper.find_all_active(
-            page_number=page_number, limit=limit, form_name=form_name
+        mappers, get_all_mappers_count = FormProcessMapper.find_all_active(
+            page_number=page_number,
+            limit=limit,
+            form_name=form_name,
+            sort_by=sort_by,
+            sort_order=sort_order,
         )
         mapper_schema = FormProcessMapperSchema()
-        return mapper_schema.dump(mappers, many=True)
+        return (
+            mapper_schema.dump(mappers, many=True),
+            get_all_mappers_count,
+        )
 
     @staticmethod
-    def get_mapper_count(form_name=None):
+    def get_mapper_count():
         """Get form process mapper count."""
-        if form_name:
-            return FormProcessMapper.find_count_form_name(form_name)
-        else:
-            return FormProcessMapper.find_all_count()
+        return FormProcessMapper.find_all_count()
 
     @staticmethod
     def get_mapper(form_process_mapper_id: int):
@@ -78,11 +78,11 @@ class FormProcessMapperService:
         mapper = FormProcessMapper.find_form_by_id(
             form_process_mapper_id=form_process_mapper_id
         )
-        if not ((data.get("process_key")) and (data.get("process_name"))):
+        if not data.get("process_key") and data.get("process_name"):
             data["process_key"] = None
             data["process_name"] = None
 
-        if not (data.get("comments")):
+        if not data.get("comments"):
             data["comments"] = None
 
         if mapper:

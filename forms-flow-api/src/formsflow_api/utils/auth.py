@@ -8,7 +8,6 @@ from flask_jwt_oidc import JwtManager
 
 from ..exceptions import BusinessException
 
-
 jwt = JwtManager()  # pylint: disable=invalid-name
 
 

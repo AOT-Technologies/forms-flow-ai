@@ -21,7 +21,7 @@ const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
   const isFormSubmitted = useSelector(state=>state.formDelete.formSubmitted);
   const publicFormStatus = useSelector(state=>state.formDelete.publicFormStatus);
-  const isPublic = window.location.href.includes('public') //need to remove 
+  const isPublic = window.location.href.includes('public') //need to remove
 
   const {
       isAuthenticated,
@@ -46,8 +46,8 @@ const View = React.memo((props) => {
     if (isActive) {
       return <div data-testid="loading-view-component"><Loading /></div>;
     }
-    
- 
+
+
 
     if(isFormSubmitted){
       return (
@@ -58,9 +58,6 @@ const View = React.memo((props) => {
     )
     }
 
-    if(publicFormStatus==="checking"&&isPublic){
-      return <div data-testid="loading-view-component"><Loading /></div>;
-    }
     if(!publicFormStatus&&isPublic){
       return <div class="alert alert-danger mt-4" role="alert">
       Form not available
@@ -83,12 +80,15 @@ const View = React.memo((props) => {
             :
             null
           }
-{/*          <span className="ml-3">
+          {/*   <span className="ml-3">
             <img src="/form.svg" width="30" height="30" alt="form" />
           </span>*/}
-          <h3 className="ml-3">
-            <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms /</span> {form.title}
-          </h3>
+          {form.title?
+              <h3 className="ml-3">
+              <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms /</span> {form.title}
+              </h3>
+              :""
+          }
         </div>
         <Errors errors={errors} />
         <LoadingOverlay active={isFormSubmissionLoading} spinner text='Loading...' className="col-12">
@@ -104,7 +104,7 @@ const View = React.memo((props) => {
             />
           </div>
         </LoadingOverlay>
-        
+
       </div>
     );
 })
@@ -116,9 +116,9 @@ const doProcessActions = (submission, ownProps) => {
     let IsAuth = getState().user.isAuthenticated
     dispatch(resetSubmissions('submission'));
     const data = getProcessReq(form, submission._id, "new", user);
-    
+
     const isPublic = window.location.href.includes('public')
-   
+
     if (isPublic){
       // this is for anonymous
       dispatch(publicApplicationCreate(data, (err, res) => {
@@ -200,7 +200,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }else{
           return dispatch(getForm('form', ownProps.match.params.formId))
         }
-        
+
     }))
   },
     onSubmit: (submission) => {

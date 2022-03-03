@@ -3676,7 +3676,7 @@ export const formio_translation = {
       "Auto Expand": "automatisch erweitern",
       no_forms_found: "Keine Formulare gefunden",
       wizard:"Magier",
-      'Text Field':"Textfeld",
+      'Text Field':"Textfield",
       Form:"Bilden",
      "Downloaded Successfully":"Erfolgreich heruntergeladen",
      "Error in JSON file structure":"Fehler in der JSON-Dateistruktur",

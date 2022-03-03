@@ -173,7 +173,7 @@ export const TRANSLATIONS_DE = {
   "Enter the form machine name": "Geben Sie den Namen der Formularmaschine ein",
   "Enter the form title": "Geben Sie den Formulartitel ein",
   wizard:"Magier",
-  'Text Field':"Textfeld",
+  'Text Field':"Textfield",
   type: "Art",
   example:"Beispiel",
   Forms: "Formen",

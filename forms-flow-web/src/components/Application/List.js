@@ -81,7 +81,7 @@ export const ApplicationList = React.memo(() => {
         <br />
         <label className="lbl-no-application-desc">
           {" "}
-          Please change the selected filters to view applications{" "}
+          <Translation>{(t)=>t("filter_change")}</Translation>
         </label>
         <br />
        {/* <label className="lbl-clear" onClick={clearFilter}>

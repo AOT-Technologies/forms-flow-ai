@@ -181,7 +181,8 @@ export const TRANSLATIONS_FR = {
   "loading...":"Chargement...",
   wizard:"sorcier",
   save_form:"Enregistrer le formulaire",
-  cancel:"Annuler"
+  cancel:"Annuler",
+  filter_change:"Veuillez modifier les filtres sélectionnés pour afficher les candidatures"
 
   };
   

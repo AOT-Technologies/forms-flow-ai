@@ -182,7 +182,8 @@ export const TRANSLATIONS_BG = {
     "loading...":"Зареждане...",
     wizard:"Магьосник",
     save_form:"Запазване на формуляр",
-    cancel:"Отмяна"
+    cancel:"Отмяна",
+    filter_change:"Моля, променете избраните филтри, за да видите приложения"
 
 
 }

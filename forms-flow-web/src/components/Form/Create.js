@@ -173,8 +173,8 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
                 value={form.display || ''}
                 onChange={event => handleChange('display', event)}
               >
-                <option label="Form" value="form"><Translation>{(t)=>t("form")}</Translation></option>
-                <option label="Wizard" value="wizard"><Translation>{(t)=>t("wizard")}</Translation></option>
+                <option label={t("Form")} value="form"><Translation>{(t)=>t("form")}</Translation></option>
+                <option label={t("wizard")} value="wizard"><Translation>{(t)=>t("wizard")}</Translation></option>
               </select>
             </div>
           </div>
@@ -190,8 +190,8 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
                 value={form.type}
                 onChange={event => handleChange('type', event)}
               >
-                <option label="Form" value="form">{t("Form")}</option>
-                <option label="Resource" value="resource">{t("Resource")}</option>
+                <option label={t("Form")} value="form">{t("Form")}</option>
+                <option label={t("Resource")} value="resource">{t("Resource")}</option>
               </select>
             </div>
           </div>

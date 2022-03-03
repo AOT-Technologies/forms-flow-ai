@@ -183,7 +183,8 @@ export const TRANSLATIONS_DE = {
   fix_errors:"Bitte beheben Sie die Fehler, bevor Sie sie erneut senden.",
   "loading...":"Wird geladen...",
   save_form:"Formular speichern",
-  cancel:"Stornieren"
+  cancel:"Stornieren",
+  filter_change:"Wijzig de geselecteerde filters om applicaties te bekijken"
 
 
 

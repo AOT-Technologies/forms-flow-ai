@@ -92,7 +92,7 @@ import {addHiddenApplicationComponent} from "../../constants/applicationComponen
 
   const downloadForms = () => {
     FileService.downloadFile({forms: formCheckList}, () => {
-      toast.success(`${formCheckList.length} ${formCheckList.length === 1 ? (t("Form")) : (t("Forms"))} Downloaded Successfully`)
+      toast.success(`${formCheckList.length} ${formCheckList.length === 1 ? (t("Form")) : (t("Forms"))} ${t("Downloaded Successfully")}`)
       dispatch(setFormCheckList([]));
     })
   }

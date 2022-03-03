@@ -17,8 +17,8 @@ export const TRANSLATIONS_EN = {
   yes: "Yes",
   no: "No",
   select_workflow_message: "Please select from one of the following workflows.",
-  form_name: "Form Name :",
-  workflow_name: "Workflow Name :",
+  form_name: "Form Name ",
+  workflow_name: "Workflow Name ",
   publish_workflow: "Publish this form for Client Users.",
   Comments: "Comments",
   Back: "Back",
@@ -181,7 +181,12 @@ export const TRANSLATIONS_EN = {
   wizard:"Wizard",
   save_form:"Save Form",
   cancel:"Cancel",
-  filter_change:"Please change the selected filters to view applications"
+  filter_change:"Please change the selected filters to view applications",
+  "No submissions available for the selected date range":"No submissions available for the selected date range",
+  Ok:"Ok",
+  "Form not available": "Form not available",
+  "Thank you for your response.":"Thank you for your response.",
+  "saved successfully":"saved successfully"
 
 
 

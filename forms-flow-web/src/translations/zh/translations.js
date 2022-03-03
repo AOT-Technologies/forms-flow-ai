@@ -12,9 +12,9 @@ export const TRANSLATIONS_ZH = {
   yes: "是的",
   no: "否",
   select_workflow_message: "请从以下工作流程之一中进行选择。",
-  form_name: "表格名称 :",
-  workflow_name: "工作流程名称：",
-  publish_workflow: "为客户用户发布此表单",
+  form_name: "表格名称 ",
+  workflow_name: "工作流程名称",
+  publish_workflow: "为客户用户发布此表单.",
   Comments: "评论",
   Back: "返回",
   edit_form: "编辑表格  ",
@@ -183,7 +183,13 @@ export const TRANSLATIONS_ZH = {
   wizard:"向导",
   save_form:"保存表格",
   cancel:"取消",
-  filter_change:"请更改所选过滤器以查看应用程序"
+  filter_change:"请更改所选过滤器以查看应用程序",
+  "No submissions available for the selected date range":"所选日期范围内没有可用的提交",
+  Ok:"好的",
+  "Form not available": "不适用公式",
+  "Thank you for your response.":"谢谢您的答复。",
+  "saved successfully":"保存成功"
+
 
 
 

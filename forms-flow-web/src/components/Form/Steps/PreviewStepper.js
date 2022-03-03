@@ -85,7 +85,7 @@ const Preview = React.memo(
                     </span>
                   </div>
                   <div>
-                    <span className="font-weight-bolder">Workflow Name : </span>
+                    <span className="font-weight-bolder">{t("workflow_name")} : </span>
                     <span>
                       {workflow && workflow.label ? workflow.label : "-"}
                     </span>
@@ -145,11 +145,11 @@ const Preview = React.memo(
                             color="primary"
                           />
                         }
-                        label="Publish this form for Client Users."
+                        label={t("publish_workflow")}
                       />
                     </label>
                   </div>
-                  <label className="text-label">Comments</label>
+                  <label className="text-label">{t("Comments")}</label>
                   {/* <TextareaAutosize
                 aria-label="minimum height"
                 rowsMin={3}

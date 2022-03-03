@@ -10,8 +10,8 @@ export const TRANSLATIONS_BG = {
     yes: "да",
     no: "Не",
     select_workflow_message: "Моля, изберете един от следните работни потоци.",
-    form_name: "Име на формуляра:",
-    workflow_name: "Име на работния процес:",
+    form_name: "Име на формуляра",
+    workflow_name: "Име на работния процес",
     publish_workflow: "Публикувайте този формуляр за Клиентски потребители.", Comments: "Коментари",
     Back: "обратно",
     edit_form: "Редактиране на формуляр",
@@ -183,7 +183,12 @@ export const TRANSLATIONS_BG = {
     wizard:"Магьосник",
     save_form:"Запазване на формуляр",
     cancel:"Отмяна",
-    filter_change:"Моля, променете избраните филтри, за да видите приложения"
+    filter_change:"Моля, променете избраните филтри, за да видите приложения",
+    "No submissions available for the selected date range":"Няма налични заявки за избрания период от време",
+    Ok:"Добре",
+    "Form not available":"Формулярът не е наличен",
+    "Thank you for your response.":"Благодаря ви за отговора.",
+    "saved successfully":"Запазено успешно"
 
 
 }

@@ -14,8 +14,8 @@ export const TRANSLATIONS_PT = {
   type:"Tipo",
   no: "Não",
   select_workflow_message: "Selecione um dos seguintes fluxos de trabalho.",
-  form_name: "Nome do formulario :",
-  workflow_name: "Nome do fluxo de trabalho:",
+  form_name: "Nome do formulario ",
+  workflow_name: "Nome do fluxo de trabalho",
   publish_workflow: "Publique este formulário para usuários clientes.",
   Comments: "Comentários",
   Back: "Voltar",
@@ -181,7 +181,13 @@ export const TRANSLATIONS_PT = {
   wizard:"Mago",
   save_form:"Salvar formulário",
   cancel:"Cancelar",
-  filter_change:"Por favor, altere os filtros selecionados para visualizar os aplicativos"
+  filter_change:"Por favor, altere os filtros selecionados para visualizar os aplicativos",
+  "No submissions available for the selected date range":"Nenhum envio disponível para o período selecionado",
+  Ok:"OK",
+  "Form not available": "Formulário não disponível",
+  "Thank you for your response.":"Obrigado pela sua resposta.",
+  "saved successfully":"Salvo com sucesso"
+
 
 
 }

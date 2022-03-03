@@ -15,8 +15,8 @@ export const TRANSLATIONS_DE = {
   yes: "Jawohl",
   no: "Nein",
   select_workflow_message: "Bitte wählen Sie einen der folgenden Workflows aus.",
-  form_name: "Formularname :",
-  workflow_name: "Workflow-Name:",
+  form_name: "Formularname ",
+  workflow_name: "Workflow-Name",
   publish_workflow: "Veröffentlichen Sie dieses Formular für Clientbenutzer.",
   Comments: "Bemerkungen",
   Back: "Zurück",
@@ -184,7 +184,13 @@ export const TRANSLATIONS_DE = {
   "loading...":"Wird geladen...",
   save_form:"Formular speichern",
   cancel:"Stornieren",
-  filter_change:"Wijzig de geselecteerde filters om applicaties te bekijken"
+  filter_change:"Wijzig de geselecteerde filters om applicaties te bekijken",
+  "No submissions available for the selected date range":"Für den ausgewählten Zeitraum sind keine Einreichungen verfügbar",
+  Ok:"OK",
+  "Form not available": "Formular nicht verfügbar",
+  "Thank you for your response.":"Danke für Ihre Antwort.",
+  "saved successfully":"Erfolgreich gespeichert"
+
 
 
 

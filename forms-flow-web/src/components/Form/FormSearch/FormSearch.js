@@ -64,7 +64,7 @@ const FormSearch = React.memo(() => {
                     onClick={() => {
                       handleSearch('')
                     }}
-                    variant="outline-secondary" title="Click to clear"
+                    variant="outline-secondary" title={t("click_to_clear")}
                     className='clear_button'
                     >
                   <i className="fa fa-times fa-lg" />

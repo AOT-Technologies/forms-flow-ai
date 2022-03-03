@@ -411,7 +411,7 @@ class StepperPage extends PureComponent {
 const mapStateToProps = (state) => {
   return {
     form: selectRoot("form", state),
-    saveText: "Next",
+    saveText: <Translation>{(t)=>t("next")}</Translation>,
     errors: selectError("form", state),
     processList: state.process.processList,
     formProcessList: state.process.formProcessList,

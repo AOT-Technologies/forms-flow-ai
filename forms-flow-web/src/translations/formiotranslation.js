@@ -2,6 +2,11 @@ export const formio_translation = {
 
    "en": {
       
+      "saved successfully":"saved successfully",
+      "Thank you for your response.":"Thank you for your response.",
+      "Form not available": "Form not available",
+      Ok:"Ok",
+      "No submissions available for the selected date range":"No submissions available for the selected date range",
       save_form:"Save Form",
       cancel:"Cancel",
       wizard:"Wizard",
@@ -43,8 +48,8 @@ export const formio_translation = {
       yes: "Yes",
       no: "No",
       select_workflow_message: "Please select from one of the following workflows.",
-      form_name: "Form Name :",
-      workflow_name: "Workflow Name :",
+      form_name: "Form Name ",
+      workflow_name: "Workflow Name ",
       publish_workflow: "Publish this form for Client Users.",
       Comments: "Comments",
       Back: "Back",
@@ -195,7 +200,12 @@ export const formio_translation = {
 
    "zh-CN": {
 
-     save_form:"保存表格",
+       "saved successfully":"保存成功",
+      "Thank you for your response.":"谢谢您的答复。",
+      "Form not available": "不适用公式",
+      Ok:"好的",
+      "No submissions available for the selected date range":"所选日期范围内没有可用的提交",
+      save_form:"保存表格",
      cancel:"取消",
       wizard:"向导", 
       fix_errors:"请在重新提交之前修复错误。",
@@ -214,9 +224,9 @@ export const formio_translation = {
       yes: "是的",
       no: "否",
       select_workflow_message: "请从以下工作流程之一中进行选择。",
-      form_name: "表格名称 :",
-      workflow_name: "工作流程名称：",
-      publish_workflow: "为客户用户发布此表单",
+      form_name: "表格名称 ",
+      workflow_name: "工作流程名称",
+      publish_workflow: "为客户用户发布此表单.",
       Comments: "评论",
       Back: "返回",
       edit_form: "编辑表格  ",
@@ -893,7 +903,12 @@ export const formio_translation = {
 
 
    "bg": {
-  
+      
+      "saved successfully":"Запазено успешно",
+      "Thank you for your response.":"Благодаря ви за отговора.",
+      "Form not available":"Формулярът не е наличен",
+      Ok:"Добре",
+      "No submissions available for the selected date range":"Няма налични заявки за избрания период от време",  
       save_form:"Запазване на формуляр",
      cancel:"Отмяна",
       wizard:"Магьосник",
@@ -911,8 +926,8 @@ export const formio_translation = {
       yes: "да",
       no: "Не",
       select_workflow_message: "Моля, изберете един от следните работни потоци.",
-      form_name: "Име на формуляра:",
-      workflow_name: "Име на работния процес:",
+      form_name: "Име на формуляра",
+      workflow_name: "Име на работния процес",
       publish_workflow: "Публикувайте този формуляр за Клиентски потребители.", Comments: "Коментари",
       Back: "обратно",
       edit_form: "Редактиране на формуляр",
@@ -1592,9 +1607,13 @@ export const formio_translation = {
 
 
    "pt": {
-
       
-      save_form:"Salvar formulário",
+      "saved successfully":"Salvo com sucesso",
+      "Thank you for your response.":"Obrigado pela sua resposta.",
+      "Form not available": "Formulário não disponível",
+      Ok:"OK",
+      "No submissions available for the selected date range":"Nenhum envio disponível para o período selecionado",
+       save_form:"Salvar formulário",
       cancel:"Cancelar",   
       wizard:"Mago",
       "Error in JSON file structure":"Erro na estrutura do arquivo JSON",
@@ -2151,8 +2170,8 @@ export const formio_translation = {
       yes: "sim",
       no: "Não",
       select_workflow_message: "Selecione um dos seguintes fluxos de trabalho.",
-      form_name: "Nome do formulario :",
-      workflow_name: "Nome do fluxo de trabalho:",
+      form_name: "Nome do formulario ",
+      workflow_name: "Nome do fluxo de trabalho",
       publish_workflow: "Publique este formulário para usuários clientes.",
       Comments: "Comentários",
       Back: "Voltar",
@@ -2289,8 +2308,13 @@ export const formio_translation = {
 },
 
    "fr": {
-
-     save_form:"Enregistrer le formulaire",
+      
+      "saved successfully":"enregistré avec succès",
+      "Thank you for your response.":"Merci pour votre réponse.",
+      "Form not available": "Formulaire non disponible",
+      Ok:"D'accord",
+      "No submissions available for the selected date range":"Aucune soumission disponible pour la plage de dates sélectionnée",
+      save_form:"Enregistrer le formulaire",
      cancel:"Annuler",
       wizard:"Magier",
       fix_errors:"Veuillez corriger les erreurs avant de soumettre à nouveau.",
@@ -2847,8 +2871,8 @@ export const formio_translation = {
       yes: "Oui",
       no: "Non",
       select_workflow_message: "Veuillez sélectionner l'un des flux de travail suivants.",
-      form_name: "Nom de forme :",
-      workflow_name: "Nom du flux de travail :",
+      form_name: "Nom de forme ",
+      workflow_name: "Nom du flux de travail ",
       publish_workflow: "Publiez ce formulaire pour les utilisateurs clients.",
       Comments: "commentaires",
       Back: "Arrière",
@@ -2986,7 +3010,10 @@ export const formio_translation = {
    },
 
    "de": {
-
+       
+      "saved successfully":"Erfolgreich gespeichert",
+      "Thank you for your response.":"Danke für Ihre Antwort.",
+      "Form not available": "Formular nicht verfügbar",
       save_form:"Formular speichern",
       cancel:"Stornieren",
       metrics: "Metriken",
@@ -3025,8 +3052,8 @@ export const formio_translation = {
       yes: "Jawohl",
       no: "Nein",
       select_workflow_message: "Bitte wählen Sie einen der folgenden Workflows aus.",
-      form_name: "Formularname :",
-      workflow_name: "Workflow-Name:",
+      form_name: "Formularname ",
+      workflow_name: "Workflow-Name",
       publish_workflow: "Veröffentlichen Sie dieses Formular für Clientbenutzer.",
       Comments: "Bemerkungen",
       Back: "Zurück",
@@ -3680,7 +3707,10 @@ export const formio_translation = {
       Form:"Bilden",
      "Downloaded Successfully":"Erfolgreich heruntergeladen",
      "Error in JSON file structure":"Fehler in der JSON-Dateistruktur",
-     fix_errors:"Bitte beheben Sie die Fehler, bevor Sie sie erneut senden."
+     fix_errors:"Bitte beheben Sie die Fehler, bevor Sie sie erneut senden.",
+     "No submissions available for the selected date range":"Für den ausgewählten Zeitraum sind keine Einreichungen verfügbar",
+     Ok:"OK"
+
 
       
       

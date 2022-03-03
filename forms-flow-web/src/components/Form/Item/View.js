@@ -55,15 +55,15 @@ const View = React.memo((props) => {
     if(isFormSubmitted){
       return (
       <div className="text-center pt-5">
-      <h1>Thank you for your response.</h1>
-      <p>saved successfully</p>
+      <h1>{t("Thank you for your response.")}</h1>
+      <p>{t("saved successfully")}</p>
       </div>
     )
     }
 
     if(!publicFormStatus&&isPublic){
       return <div class="alert alert-danger mt-4" role="alert">
-      Form not available
+      {t("Form not available")}
       </div>
     }
 
@@ -88,13 +88,13 @@ const View = React.memo((props) => {
           </span>*/}
           {form.title?
               <h3 className="ml-3">
-              <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms /</span> {form.title}
+              <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; {t("Forms")} /</span> {form.title}
               </h3>
               :""
           }
         </div>
         <Errors errors={errors} />
-        <LoadingOverlay active={isFormSubmissionLoading} spinner text='Loading...' className="col-12">
+        <LoadingOverlay active={isFormSubmissionLoading} spinner text={t('loading...')} className="col-12">
           <div className="ml-4 mr-4">
             <Form
               form={form}

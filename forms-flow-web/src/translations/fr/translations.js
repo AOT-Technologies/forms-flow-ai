@@ -14,8 +14,8 @@ export const TRANSLATIONS_FR = {
   yes:"Oui",
   no:"Non",
   select_workflow_message:"Veuillez sélectionner l'un des flux de travail suivants.",
-  form_name:"Nom de forme :",
-  workflow_name:"Nom du flux de travail :",
+  form_name:"Nom de forme ",
+  workflow_name:"Nom du flux de travail ",
   publish_workflow:"Publiez ce formulaire pour les utilisateurs clients.",
   Comments:"commentaires",
   Back:"Arrière",
@@ -182,7 +182,13 @@ export const TRANSLATIONS_FR = {
   wizard:"sorcier",
   save_form:"Enregistrer le formulaire",
   cancel:"Annuler",
-  filter_change:"Veuillez modifier les filtres sélectionnés pour afficher les candidatures"
+  filter_change:"Veuillez modifier les filtres sélectionnés pour afficher les candidatures",
+  "No submissions available for the selected date range":"Aucune soumission disponible pour la plage de dates sélectionnée",
+  Ok:"D'accord",
+  "Form not available": "Formulaire non disponible",
+  "Thank you for your response.":"Merci pour votre réponse.",
+  "saved successfully":"enregistré avec succès"
+
 
   };
   

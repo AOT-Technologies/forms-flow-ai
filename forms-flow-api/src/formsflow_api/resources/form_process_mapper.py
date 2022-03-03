@@ -39,7 +39,9 @@ class FormResource(Resource):
             current_app.logger.warning(request_data)
             dict_data = FormProcessMapperSearchSchema().load(request_data) or {}
             form_name: str = dict_data.get("form_name")
-            pagination: FormProcessMapperPaginationSchema = dict_data.get("pagination") or {}
+            pagination: FormProcessMapperPaginationSchema = (
+                dict_data.get("pagination") or {}
+            )
             page_no: int = pagination.get("page_no")
             limit: int = pagination.get("limit")
             sorting: FormProcessMapperSortingSchema = pagination.get("sorting") or {}
@@ -94,6 +96,7 @@ class FormResource(Resource):
             current_app.logger.warning(response)
             current_app.logger.warning(form_err)
             return response, status
+
 
 @cors_preflight("GET,POST,OPTIONS")
 @API.route("/create", methods=["GET", "POST", "OPTIONS"])

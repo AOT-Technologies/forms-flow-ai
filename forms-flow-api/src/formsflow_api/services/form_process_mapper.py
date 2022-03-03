@@ -11,7 +11,9 @@ class FormProcessMapperService:
     """This class manages form process mapper service."""
 
     @staticmethod
-    def get_all_mappers(page_number: int, limit: int, form_name: str, sort_by: str, sort_order: str):
+    def get_all_mappers(
+        page_number: int, limit: int, form_name: str, sort_by: str, sort_order: str
+    ):
         """Get all form process mappers."""
         mappers, get_all_mappers_count = FormProcessMapper.find_all_active(
             page_number=page_number,

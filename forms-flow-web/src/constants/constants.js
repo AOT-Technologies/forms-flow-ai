@@ -40,9 +40,9 @@ export const STAFF_REVIEWER =
   process.env.REACT_APP_STAFF_REVIEWER_ROLE;
 export const ANONYMOUS_USER = "anonymous";
 
-
+//default FORMIO_JWT_SECRET is --- change me now ---
 export const FORMIO_JWT_SECRET =
-  (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) || process.env.REACT_APP_FORMIO_JWT_SECRET;
+  (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) || process.env.REACT_APP_FORMIO_JWT_SECRET || "--- change me now ---";
 
 export const USER_RESOURCE_FORM_ID =
   (window._env_ && window._env_.REACT_APP_USER_RESOURCE_FORM_ID) ||

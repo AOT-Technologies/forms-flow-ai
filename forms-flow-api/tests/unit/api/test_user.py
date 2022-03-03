@@ -1,6 +1,6 @@
 """Test suite for keycloak user API endpoint"""
 
-from tests import skip_in_ci
+# from tests import skip_in_ci
 from tests.utilities.base_test import (
     factory_auth_header,
     get_locale_update_valid_payload,
@@ -10,7 +10,7 @@ from tests.utilities.base_test import (
 class TestKeycloakUserServiceResource:
     """Assert that API /user when passed with valid payload returns 200 status code"""
 
-    @skip_in_ci
+    # @skip_in_ci
     def test_successful_user_locale_update(self, app, client, session):
         token = factory_auth_header()
         headers = {

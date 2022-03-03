@@ -180,7 +180,8 @@ export const TRANSLATIONS_EN = {
   fix_errors:"Please fix the errors before submitting again.",
   wizard:"Wizard",
   save_form:"Save Form",
-  cancel:"Cancel"
+  cancel:"Cancel",
+  filter_change:"Please change the selected filters to view applications"
 
 
 

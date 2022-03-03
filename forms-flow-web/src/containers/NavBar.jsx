@@ -11,7 +11,7 @@ import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/Serv
 import {push} from "connected-react-router";
 import i18n from "../translations/i18n";
 import { setLanguage } from "../actions/languageSetAction";
-//import {updateUserlang} from "../apiManager/services/userservices";
+import {updateUserlang} from "../apiManager/services/userservices";
 
 const NavBar = React.memo(() => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
@@ -33,7 +33,7 @@ const NavBar = React.memo(() => {
   const handleOnclick=(e)=>{
    e.preventDefault();
    dispatch(setLanguage(e.target.value))
-   //dispatch(updateUserlang(e.target.value))
+   dispatch(updateUserlang(e.target.value))
  }
   const logout = () => {
       dispatch(push(`/`));

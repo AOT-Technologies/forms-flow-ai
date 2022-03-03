@@ -180,7 +180,8 @@ export const TRANSLATIONS_PT = {
   "loading...":"Carregando...",
   wizard:"Mago",
   save_form:"Salvar formulário",
-  cancel:"Cancelar"
+  cancel:"Cancelar",
+  filter_change:"Por favor, altere os filtros selecionados para visualizar os aplicativos"
 
 
 }

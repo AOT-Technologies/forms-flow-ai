@@ -182,7 +182,8 @@ export const TRANSLATIONS_ZH = {
   "loading...":"正在加载...",
   wizard:"向导",
   save_form:"保存表格",
-  cancel:"取消"
+  cancel:"取消",
+  filter_change:"请更改所选过滤器以查看应用程序"
 
 
 

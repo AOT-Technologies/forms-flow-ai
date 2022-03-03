@@ -19,14 +19,14 @@ API = Namespace("Form", description="Form")
 
 
 @cors_preflight("GET,POST,OPTIONS")
-@API.route("", methods=["GET", "POST", "OPTIONS"])
+@API.route("/list", methods=["GET", "POST", "OPTIONS"])
 class FormResource(Resource):
     """Resource for managing forms."""
 
     @staticmethod
     @auth.require
     @profiletime
-    def get():
+    def post():
         """Get form process mapper.
         : pageNo:- To retrieve page number
         : limit:- To retrieve limit for each page

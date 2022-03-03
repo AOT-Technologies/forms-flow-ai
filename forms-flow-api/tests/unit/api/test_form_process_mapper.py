@@ -11,7 +11,7 @@ from tests.utilities.base_test import (
 def test_form_process_mapper_list(app, client, session):
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.get("/form", headers=headers)
+    response = client.get("/form", headers=headers, json={})
     assert response.status_code == 200
     assert response.json != None
 
@@ -24,46 +24,42 @@ def test_form_process_mapper_creation(app, client, session):
     assert response.json.get("id") != None
 
 
-@pytest.mark.parametrize(("pageNo", "limit"), ((1, 5), (1, 10), (1, 20)))
-def test_form_process_mapper_paginated_list(app, client, session, pageNo, limit):
+def test_form_process_mapper_paginated_list(app, client, session):
+    json_data = {"pagination": {"pageNo": 1, "limit": 10}}
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.get(f"/form?pageNo={pageNo}&limit={limit}", headers=headers)
+    response = client.get(f"/form", headers=headers, json=json_data)
     assert response.status_code == 200
 
 
-@pytest.mark.parametrize(
-    ("pageNo", "limit", "sortBy", "sortOrder"),
-    ((1, 5, "id", "asc"), (1, 10, "id", "desc"), (1, 20, "id", "desc")),
-)
-def test_form_process_mapper_paginated_sorted_list(
-    app, client, session, pageNo, limit, sortBy, sortOrder
-):
+def test_form_process_mapper_paginated_sorted_list(app, client, session):
+    json_data = {
+        "pagination": {
+            "pageNo": 1,
+            "limit": 5,
+            "sorting": {"sortBy": "formName", "sortOrder": "asc"},
+        }
+    }
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.get(
-        f"/application?pageNo={pageNo}&limit={limit}&sortBy={sortBy}&sortOrder={sortOrder}",
-        headers=headers,
-    )
+    response = client.get(f"/form", headers=headers, json=json_data)
     assert response.status_code == 200
 
 
-@pytest.mark.parametrize(
-    ("pageNo", "limit", "filters"),
-    (
-        (1, 5, "formName=free"),
-        (1, 10, "formName=Free"),
-        (1, 20, "formName=privacy"),
-    ),
-)
-def test_form_process_mapper_paginated_filtered_list(
-    app, client, session, pageNo, limit, filters
-):
+def test_form_process_mapper_paginated_filtered_list(app, client, session):
+    json_data = {
+        "formName": "privacy",
+        "pagination": {
+            "pageNo": 1,
+            "limit": 5,
+            "sorting": {"sortBy": "formName", "sortOrder": "desc"},
+        },
+    }
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     response = client.post("/form", headers=headers, json=get_form_request_payload())
     assert response.status_code == 201
-    rv = client.get(f"/form?pageNo={pageNo}&limit={limit}&{filters}", headers=headers)
+    rv = client.get(f"/form", headers=headers, json=json_data)
     assert rv.status_code == 200
 
 
@@ -117,7 +113,7 @@ def test_form_process_mapper_id_deletion(app, client, session):
     )
     assert response.status_code == 201
 
-    response = client.get("/form", headers=headers)
+    response = client.get("/form", headers=headers, json={})
     assert response.status_code == 200
 
     data = response.json
@@ -137,7 +133,7 @@ def test_form_process_mapper_test_update(app, client, session):
     )
     assert response.status_code == 201
 
-    response = client.get("/form", headers=headers)
+    response = client.get("/form", headers=headers, json={})
     assert response.status_code == 200
     form_id = response.json["forms"][0]["id"]
     rv = client.put(
@@ -157,7 +153,7 @@ def test_anonymous_form_process_mapper_test_update(app, client, session):
     )
     assert response.status_code == 201
 
-    response = client.get("/form", headers=headers)
+    response = client.get("/form", headers=headers, json={})
     assert response.status_code == 200
     data = response.json
     form_id = data["forms"][0]["id"]
@@ -179,12 +175,12 @@ def test_get_application_count_based_on_form_process_mapper_id(app, client, sess
     )
     assert response.status_code == 201
 
-    response = client.get("/form", headers=headers)
+    response = client.get("/form", headers=headers, json={})
     assert response.status_code == 200
     data = response.json
     form_id = data["forms"][0]["id"]
 
-    rv = client.get(f"/form/{form_id}/application/count", headers=headers)
+    rv = client.get(f"/form/{form_id}/application/count", headers=headers, json={})
     assert rv.status_code == 200
     assert rv.json == {"message": "No Applications found"}
 
@@ -207,5 +203,5 @@ def test_get_application_count_based_on_form_process_mapper_id1(app, client, ses
     )
     assert rv.status_code == 201
 
-    rv = client.get(f"/form/{form_id}/application/count", headers=headers)
+    rv = client.get(f"/form/{form_id}/application/count", headers=headers, json={})
     assert rv.status_code == 200

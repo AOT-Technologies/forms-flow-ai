@@ -48,6 +48,9 @@ class KeycloakUserService(Resource):
             user = self.__get_user_data()
             json_payload = request.get_json()
             dict_data = UserlocaleReqSchema().load(json_payload)
+            if user.get("attributes") is None:
+                user["attributes"] = {}
+                user["attributes"]["locale"] = []
             user["attributes"]["locale"] = [dict_data["locale"]]
             response = self.client.update_request(
                 url_path=f"users/{user['id']}", data=user

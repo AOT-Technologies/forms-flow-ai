@@ -234,9 +234,10 @@ Create a realm **forms-flow-ai**
 	* Service Accounts Tab  
 		* Select Client roles as "realm-management"  
 		* Map the listed "Available Roles" to "Assigned Roles"  
-				a. query-groups  
-				b. query-users  
-				c. view-users  
+				a. manage-users
+				b. query-groups  
+				c. query-users  
+				d. view-users  			
 * Configure > Client Scopes > Create
 	* Name = camunda-rest-api
 	* Click Save

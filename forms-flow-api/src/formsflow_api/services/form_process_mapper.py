@@ -11,7 +11,14 @@ class FormProcessMapperService:
     """This class manages form process mapper service."""
 
     @staticmethod
-    def get_all_mappers(page_number: int, limit: int, form_name: str, sort_by: str, sort_order: str, process_key: list=None):
+    def get_all_mappers(
+        page_number: int,
+        limit: int,
+        form_name: str,
+        sort_by: str,
+        sort_order: str,
+        process_key: list = None,
+    ):  # pylint: disable=too-many-arguments
         """Get all form process mappers."""
 
         mappers, get_all_mappers_count = FormProcessMapper.find_all_active(
@@ -20,7 +27,8 @@ class FormProcessMapperService:
             form_name=form_name,
             sort_by=sort_by,
             sort_order=sort_order,
-            process_key=process_key)
+            process_key=process_key,
+        )
         mapper_schema = FormProcessMapperSchema()
         return (
             mapper_schema.dump(mappers, many=True),

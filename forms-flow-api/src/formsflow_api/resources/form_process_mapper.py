@@ -7,14 +7,13 @@ from flask_restx import Namespace, Resource
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.schemas import (
-    FormProcessMapperSortingSchema,
     FormProcessMapperPaginationSchema,
-    FormProcessMapperSearchSchema,
     FormProcessMapperSchema,
+    FormProcessMapperSearchSchema,
+    FormProcessMapperSortingSchema,
 )
 from formsflow_api.services import ApplicationService, FormProcessMapperService
 from formsflow_api.utils import auth, cors_preflight, profiletime
-from pyparsing import empty
 
 API = Namespace("Form", description="Form")
 
@@ -27,7 +26,7 @@ class FormResourceList(Resource):
     @staticmethod
     @auth.require
     @profiletime
-    def post():
+    def post():  # pylint: disable=too-many-locals
         """Get form process mapper.
         : pageNo:- To retrieve page number
         : limit:- To retrieve limit for each page
@@ -36,7 +35,9 @@ class FormResourceList(Resource):
         : sortOrder:- Order for sorting (asc/desc) (default: desc)
         """
         try:
-            auth_form_details = ApplicationService.get_authorised_form_list(token=request.headers["Authorization"])
+            auth_form_details = ApplicationService.get_authorised_form_list(
+                token=request.headers["Authorization"]
+            )
             current_app.logger.warning(auth_form_details)
             request_data = request.get_json() or {}
             dict_data = FormProcessMapperSearchSchema().load(request_data) or {}
@@ -49,7 +50,7 @@ class FormResourceList(Resource):
             sorting: FormProcessMapperSortingSchema = pagination.get("sorting") or {}
             sort_by: str = sorting.get("sort_by") or "id"
             sort_order: str = sorting.get("sort_order") or "desc"
-            if auth_form_details.get('adminGroupEnabled') == True:
+            if auth_form_details.get("adminGroupEnabled") is True:
                 (
                     form_process_mapper_schema,
                     form_process_mapper_count,
@@ -57,19 +58,19 @@ class FormResourceList(Resource):
                     page_no, limit, form_name, sort_by, sort_order
                 )
             else:
-                auth_list = auth_form_details.get('authorizationList')
+                auth_list = auth_form_details.get("authorizationList")
                 resource_list = []
                 admin_flag = False
                 for group in auth_list:
-                    if group['resourceId'] == "*":
+                    if group["resourceId"] == "*":
                         admin_flag = True
                         break
-                    resource_list.append(group['resourceId'])
-                
-                if admin_flag == True:
+                    resource_list.append(group["resourceId"])
+
+                if admin_flag is True:
                     (
-                    form_process_mapper_schema,
-                    form_process_mapper_count,
+                        form_process_mapper_schema,
+                        form_process_mapper_count,
                     ) = FormProcessMapperService.get_all_mappers(
                         page_no, limit, form_name, sort_by, sort_order
                     )
@@ -85,7 +86,7 @@ class FormResourceList(Resource):
                         ),
                         HTTPStatus.OK,
                     )
-                else:                    
+                else:
                     (
                         form_process_mapper_schema,
                         form_process_mapper_count,

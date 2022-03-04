@@ -128,16 +128,6 @@ const ProcessDiagram = React.memo((props)=>{
   //   </div>
   // }
 
-
-  // if(processInstanceId === null && isProcessDiagramLoading === false)
-  // {
-  //   return <div className="bpmn-viewer-container">
-  //     <div className="bpm-container">
-  //       <Nodata text={"No Process Diagram found"} className={"div-no-application-list text-center"}/>
-  //     </div>
-  //   </div>
-  // }
-
   if (isProcessDiagramLoading) {
     return <div className="bpmn-viewer-container">
       <div className="bpm-container">

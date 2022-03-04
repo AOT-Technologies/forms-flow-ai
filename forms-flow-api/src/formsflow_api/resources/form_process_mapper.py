@@ -14,19 +14,20 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services import ApplicationService, FormProcessMapperService
 from formsflow_api.utils import auth, cors_preflight, profiletime
+from pyparsing import empty
 
 API = Namespace("Form", description="Form")
 
 
 @cors_preflight("GET,POST,OPTIONS")
-@API.route("", methods=["GET", "POST", "OPTIONS"])
-class FormResource(Resource):
-    """Resource for managing forms."""
+@API.route("/list", methods=["POST", "OPTIONS"])
+class FormResourceList(Resource):
+    """Resource for getting forms."""
 
     @staticmethod
     @auth.require
     @profiletime
-    def get():
+    def post():
         """Get form process mapper.
         : pageNo:- To retrieve page number
         : limit:- To retrieve limit for each page
@@ -35,8 +36,9 @@ class FormResource(Resource):
         : sortOrder:- Order for sorting (asc/desc) (default: desc)
         """
         try:
+            auth_form_details = ApplicationService.get_authorised_form_list(token=request.headers["Authorization"])
+            current_app.logger.warning(auth_form_details)
             request_data = request.get_json() or {}
-            current_app.logger.warning(request_data)
             dict_data = FormProcessMapperSearchSchema().load(request_data) or {}
             form_name: str = dict_data.get("form_name")
             pagination: FormProcessMapperPaginationSchema = (
@@ -47,8 +49,7 @@ class FormResource(Resource):
             sorting: FormProcessMapperSortingSchema = pagination.get("sorting") or {}
             sort_by: str = sorting.get("sort_by") or "id"
             sort_order: str = sorting.get("sort_order") or "desc"
-
-            if page_no and limit:
+            if auth_form_details.get('adminGroupEnabled') == True:
                 (
                     form_process_mapper_schema,
                     form_process_mapper_count,
@@ -56,12 +57,41 @@ class FormResource(Resource):
                     page_no, limit, form_name, sort_by, sort_order
                 )
             else:
-                (
+                auth_list = auth_form_details.get('authorizationList')
+                resource_list = []
+                admin_flag = False
+                for group in auth_list:
+                    if group['resourceId'] == "*":
+                        admin_flag = True
+                        break
+                    resource_list.append(group['resourceId'])
+                
+                if admin_flag == True:
+                    (
                     form_process_mapper_schema,
                     form_process_mapper_count,
-                ) = FormProcessMapperService.get_all_mappers(
-                    page_no, limit, form_name, sort_by, sort_order
-                )
+                    ) = FormProcessMapperService.get_all_mappers(
+                        page_no, limit, form_name, sort_by, sort_order
+                    )
+                elif not resource_list:
+                    return (
+                        (
+                            {
+                                "forms": [],
+                                "totalCount": 0,
+                                "pageNo": None,
+                                "limit": None,
+                            }
+                        ),
+                        HTTPStatus.OK,
+                    )
+                else:                    
+                    (
+                        form_process_mapper_schema,
+                        form_process_mapper_count,
+                    ) = FormProcessMapperService.get_all_mappers(
+                        page_no, limit, form_name, sort_by, sort_order, resource_list
+                    )
             return (
                 (
                     {
@@ -73,7 +103,6 @@ class FormResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-
         except KeyError as err:
             response, status = (
                 {
@@ -96,6 +125,12 @@ class FormResource(Resource):
             current_app.logger.warning(response)
             current_app.logger.warning(form_err)
             return response, status
+
+
+@cors_preflight("GET,POST,OPTIONS")
+@API.route("", methods=["POST", "OPTIONS"])
+class FormResource(Resource):
+    """Resource for creating forms."""
 
     @staticmethod
     @auth.require

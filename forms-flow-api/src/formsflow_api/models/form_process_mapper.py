@@ -8,8 +8,8 @@ from flask import current_app
 from sqlalchemy import and_
 from sqlalchemy.sql.expression import text
 
-from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
 from formsflow_api.exceptions import BusinessException
+from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
 from formsflow_api.utils.enums import FormProcessMapperStatus
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -126,10 +126,13 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         limit=None,
         sort_by=None,
         sort_order=None,
+        process_key=None,
         **filters,
-    ):
+    ):  # pylint: disable=too-many-arguments
         """Fetch all active form process mappers"""
         query = FormProcessMapper.filter_conditions(**filters)
+        if process_key:
+            query = query.filter(FormProcessMapper.process_key.in_(process_key))
         query = query.filter(
             FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value)
         )

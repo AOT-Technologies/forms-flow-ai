@@ -6,7 +6,10 @@ from flask import request
 from flask_restx import Namespace, Resource
 from marshmallow import ValidationError
 
-from formsflow_api.schemas import ApplicationListReqSchema, KeycloakDashboardGroupSchema
+from formsflow_api.schemas import (
+    ApplicationListReqSchema,
+    KeycloakDashboardGroupSchema,
+)
 from formsflow_api.services import KeycloakAdminAPIService
 from formsflow_api.utils import (
     KEYCLOAK_DASHBOARD_BASE_GROUP,

@@ -45,7 +45,7 @@ class FormResourceList(Resource):
             sort_by: str = dict_data.get("sort_by") or "id"
             sort_order: str = dict_data.get("sort_order") or "desc"
             auth_list = auth_form_details.get("authorizationList") or {}
-            resource_list = [group["resourceId"] for group in auth_list if auth_list]
+            resource_list = [group["resourceId"] for group in auth_list]
             if (
                 auth_form_details.get("adminGroupEnabled") is True
                 or "*" in resource_list
@@ -55,18 +55,6 @@ class FormResourceList(Resource):
                     form_process_mapper_count,
                 ) = FormProcessMapperService.get_all_mappers(
                     page_no, limit, form_name, sort_by, sort_order
-                )
-            elif not resource_list:
-                return (
-                    (
-                        {
-                            "forms": [],
-                            "totalCount": 0,
-                            "pageNo": None,
-                            "limit": None,
-                        }
-                    ),
-                    HTTPStatus.OK,
                 )
             else:
                 (

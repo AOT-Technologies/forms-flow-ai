@@ -131,7 +131,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     ):  # pylint: disable=too-many-arguments
         """Fetch all active form process mappers"""
         query = FormProcessMapper.filter_conditions(**filters)
-        if process_key:
+        if process_key is not None:
             query = query.filter(FormProcessMapper.process_key.in_(process_key))
         query = query.filter(
             FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value)

@@ -25,34 +25,7 @@ class FormProcessMapperSchema(Schema):
     modified = fields.Str(data_key="modified")
 
 
-class FormAuthorizationSchema(Schema):
-
-    """This class manages formprocessmapper list request schema."""
-
-    group_id = fields.Str(data_key="groupId", required=False)
-    user_id = fields.Str(data_key="userId", required=False)
-    resource_id = fields.Str(data_key="resourceId", required=False)
-
-
-class FormAuthorizationInfoSchema(Schema):
-
-    """This class manages formprocessmapper list request schema."""
-
-    admin_group_enabled = fields.Bool(data_key="adminGroupEnabled", required=False)
-    authorizationList = fields.Nested(
-        FormAuthorizationSchema, required=False, allow_none=True
-    )
-
-
-class FormProcessMapperSortingSchema(Schema):
-
-    """This class manages formprocessmapper list request schema."""
-
-    sort_by = fields.Str(data_key="sortBy", required=False)
-    sort_order = fields.Str(data_key="sortOrder", required=False)
-
-
-class FormProcessMapperPaginationSchema(Schema):
+class FormProcessMapperListReqSchema(Schema):
     """This is a general class for paginated request schema."""
 
     class Meta:  # pylint: disable=too-few-public-methods
@@ -61,21 +34,13 @@ class FormProcessMapperPaginationSchema(Schema):
         unknown = EXCLUDE
 
     page_no = fields.Int(data_key="pageNo", required=False, allow_none=True)
-    limit = fields.Int(data_key="limit", required=False, allow_none=True)
-    sorting = fields.Nested(
-        FormProcessMapperSortingSchema, required=False, allow_none=True
-    )
+    limit = fields.Int(required=False, allow_none=True)
 
 
-class FormProcessMapperSearchSchema(Schema):
-    """This is a general class for paginated request schema."""
+class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
 
-    class Meta:  # pylint: disable=too-few-public-methods
-        """Exclude unknown fields in the deserialized output."""
+    """This class manages formprocessmapper list request schema."""
 
-        unknown = EXCLUDE
-
-    form_name = fields.Str(data_key="formName", required=False, allow_none=True)
-    pagination = fields.Nested(
-        FormProcessMapperPaginationSchema, required=False, allow_none=True
-    )
+    form_name = fields.Str(data_key="formName", required=False)
+    sort_by = fields.Str(data_key="sortBy", required=False)
+    sort_order = fields.Str(data_key="sortOrder", required=False)

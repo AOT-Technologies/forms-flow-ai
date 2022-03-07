@@ -7,10 +7,8 @@ from flask_restx import Namespace, Resource
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.schemas import (
-    FormProcessMapperPaginationSchema,
     FormProcessMapperSchema,
-    FormProcessMapperSearchSchema,
-    FormProcessMapperSortingSchema,
+    FormProcessMapperListRequestSchema,
 )
 from formsflow_api.services import ApplicationService, FormProcessMapperService
 from formsflow_api.utils import auth, cors_preflight, profiletime
@@ -40,16 +38,12 @@ class FormResourceList(Resource):
             )
             current_app.logger.warning(auth_form_details)
             request_data = request.get_json() or {}
-            dict_data = FormProcessMapperSearchSchema().load(request_data) or {}
+            dict_data = FormProcessMapperListRequestSchema().load(request_data) or {}
             form_name: str = dict_data.get("form_name")
-            pagination: FormProcessMapperPaginationSchema = (
-                dict_data.get("pagination") or {}
-            )
-            page_no: int = pagination.get("page_no")
-            limit: int = pagination.get("limit")
-            sorting: FormProcessMapperSortingSchema = pagination.get("sorting") or {}
-            sort_by: str = sorting.get("sort_by") or "id"
-            sort_order: str = sorting.get("sort_order") or "desc"
+            page_no: int = dict_data.get("page_no")
+            limit: int = dict_data.get("limit")
+            sort_by: str = dict_data.get("sort_by") or "id"
+            sort_order: str = dict_data.get("sort_order") or "desc"
             if auth_form_details.get("adminGroupEnabled") is True:
                 (
                     form_process_mapper_schema,

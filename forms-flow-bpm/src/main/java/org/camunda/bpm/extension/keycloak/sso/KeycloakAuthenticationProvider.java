@@ -11,8 +11,11 @@ import org.camunda.bpm.engine.rest.security.auth.AuthenticationResult;
 import org.camunda.bpm.engine.rest.security.auth.impl.ContainerBasedAuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.util.ObjectUtils;
+
+import net.minidev.json.JSONArray;
 
 /**
  * OAuth2 Authentication Provider for usage with Keycloak and
@@ -20,35 +23,54 @@ import org.springframework.util.ObjectUtils;
  */
 public class KeycloakAuthenticationProvider extends ContainerBasedAuthenticationProvider {
 
-    @Override
-    public AuthenticationResult extractAuthenticatedUser(HttpServletRequest request, ProcessEngine engine) {
+	@Override
+	public AuthenticationResult extractAuthenticatedUser(HttpServletRequest request, ProcessEngine engine) {
 
-        // Extract authentication details
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof OAuth2AuthenticationToken) || !(authentication.getPrincipal() instanceof OidcUser)) {
-            return AuthenticationResult.unsuccessful();
-        }
+		// Extract authentication details
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (!(authentication instanceof OAuth2AuthenticationToken)
+				|| !(authentication.getPrincipal() instanceof OidcUser)) {
+			return AuthenticationResult.unsuccessful();
+		}
 
-        String userId = ((OidcUser)authentication.getPrincipal()).getName();
+		OidcUser oidcUserPrincipal = (OidcUser) authentication.getPrincipal();
 
-        if (ObjectUtils.isEmpty(userId)) {
-            return AuthenticationResult.unsuccessful();
-        }
+		String userId = oidcUserPrincipal.getName();
 
-        // Authentication successful
-        AuthenticationResult authenticationResult = new AuthenticationResult(userId, true);
-        authenticationResult.setGroups(getUserGroups(userId, engine));
+		if (ObjectUtils.isEmpty(userId)) {
+			return AuthenticationResult.unsuccessful();
+		}
 
-        return authenticationResult;
-    }
+		// Authentication successful
+		AuthenticationResult authenticationResult = new AuthenticationResult(userId, true);
+		authenticationResult.setGroups(getUserGroups(userId, engine, oidcUserPrincipal));
 
-    private List<String> getUserGroups(String userId, ProcessEngine engine) {
-        List<String> groupIds = new ArrayList<>();
-        // query groups using KeycloakIdentityProvider plugin
-        engine.getIdentityService().createGroupQuery().groupMember(userId).list().forEach(g -> groupIds.add(g.getId()));
-        return groupIds;
-    }
+		return authenticationResult;
+	}
 
+	private List<String> getUserGroups(String userId, ProcessEngine engine, OidcUser principal) {
+		List<String> groupIds = new ArrayList<>();
+		// Find groups or roles from the idToken.
+		if (principal.getIdToken().containsClaim("groups")) {
+			groupIds.addAll(getKeys(principal.getIdToken(), "groups"));
+		} else if (principal.getIdToken().containsClaim("roles")) {
+			groupIds.addAll(getKeys(principal.getIdToken(), "roles"));
+		} else {
+			// query groups using KeycloakIdentityProvider plugin
+			engine.getIdentityService().createGroupQuery().groupMember(userId).list()
+					.forEach(g -> groupIds.add(g.getId()));
+		}
+		return groupIds;
+	}
 
+	private List<String> getKeys(OidcIdToken token, String nodeName) {
+		List<String> keys = new ArrayList<>();
+		if (token.containsClaim(nodeName)) {
+			for (Object key : (JSONArray) token.getClaim(nodeName)) {
+				keys.add(key.toString());
+			}
+		}
+		return keys;
+	}
 
 }

@@ -50,6 +50,7 @@ class BaseBPMService:
                 + ", "
                 + response.text
             )
+            response.raise_for_status()
         return data
 
     @classmethod

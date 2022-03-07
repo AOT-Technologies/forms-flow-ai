@@ -46,7 +46,10 @@ class FormResourceList(Resource):
             sort_order: str = dict_data.get("sort_order") or "desc"
             auth_list = auth_form_details.get("authorizationList") or {}
             resource_list = [group["resourceId"] for group in auth_list if auth_list]
-            if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
+            if (
+                auth_form_details.get("adminGroupEnabled") is True
+                or "*" in resource_list
+            ):
                 (
                     form_process_mapper_schema,
                     form_process_mapper_count,

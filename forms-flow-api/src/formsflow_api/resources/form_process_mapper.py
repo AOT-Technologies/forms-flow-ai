@@ -50,49 +50,34 @@ class FormResourceList(Resource):
             sorting: FormProcessMapperSortingSchema = pagination.get("sorting") or {}
             sort_by: str = sorting.get("sort_by") or "id"
             sort_order: str = sorting.get("sort_order") or "desc"
-            if auth_form_details.get("adminGroupEnabled") is True:
+            auth_list = auth_form_details.get("authorizationList") or {}
+            resource_list = [group["resourceId"] for group in auth_list if auth_list]
+            if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
                 (
                     form_process_mapper_schema,
                     form_process_mapper_count,
                 ) = FormProcessMapperService.get_all_mappers(
                     page_no, limit, form_name, sort_by, sort_order
                 )
+            elif not resource_list:
+                return (
+                    (
+                        {
+                            "forms": [],
+                            "totalCount": 0,
+                            "pageNo": None,
+                            "limit": None,
+                        }
+                    ),
+                    HTTPStatus.OK,
+                )
             else:
-                auth_list = auth_form_details.get("authorizationList")
-                resource_list = []
-                admin_flag = False
-                for group in auth_list:
-                    if group["resourceId"] == "*":
-                        admin_flag = True
-                        break
-                    resource_list.append(group["resourceId"])
-
-                if admin_flag is True:
-                    (
-                        form_process_mapper_schema,
-                        form_process_mapper_count,
-                    ) = FormProcessMapperService.get_all_mappers(
-                        page_no, limit, form_name, sort_by, sort_order
-                    )
-                elif not resource_list:
-                    return (
-                        (
-                            {
-                                "forms": [],
-                                "totalCount": 0,
-                                "pageNo": None,
-                                "limit": None,
-                            }
-                        ),
-                        HTTPStatus.OK,
-                    )
-                else:
-                    (
-                        form_process_mapper_schema,
-                        form_process_mapper_count,
-                    ) = FormProcessMapperService.get_all_mappers(
-                        page_no, limit, form_name, sort_by, sort_order, resource_list
-                    )
+                (
+                    form_process_mapper_schema,
+                    form_process_mapper_count,
+                ) = FormProcessMapperService.get_all_mappers(
+                    page_no, limit, form_name, sort_by, sort_order, resource_list
+                )
             return (
                 (
                     {

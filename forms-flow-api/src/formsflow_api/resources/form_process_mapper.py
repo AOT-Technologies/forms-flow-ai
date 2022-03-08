@@ -17,14 +17,14 @@ API = Namespace("Form", description="Form")
 
 
 @cors_preflight("GET,POST,OPTIONS")
-@API.route("/list", methods=["POST", "OPTIONS"])
+@API.route("", methods=["GET", "POST", "OPTIONS"])
 class FormResourceList(Resource):
     """Resource for getting forms."""
 
     @staticmethod
     @auth.require
     @profiletime
-    def post():  # pylint: disable=too-many-locals
+    def get():  # pylint: disable=too-many-locals
         """Get form process mapper.
         : pageNo:- To retrieve page number
         : limit:- To retrieve limit for each page
@@ -37,7 +37,7 @@ class FormResourceList(Resource):
                 token=request.headers["Authorization"]
             )
             current_app.logger.warning(auth_form_details)
-            request_data = request.get_json() or {}
+            request_data = request.args or {}
             dict_data = FormProcessMapperListRequestSchema().load(request_data) or {}
             form_name: str = dict_data.get("form_name")
             page_no: int = dict_data.get("page_no")

@@ -37,8 +37,7 @@ class FormResourceList(Resource):
                 token=request.headers["Authorization"]
             )
             current_app.logger.warning(auth_form_details)
-            request_data = request.args or {}
-            dict_data = FormProcessMapperListRequestSchema().load(request_data) or {}
+            dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
             form_name: str = dict_data.get("form_name")
             page_no: int = dict_data.get("page_no")
             limit: int = dict_data.get("limit")

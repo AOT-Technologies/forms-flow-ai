@@ -3,7 +3,6 @@ import {connect, useDispatch, useSelector} from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors, getForm } from 'react-formio';
 import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
-
 import Loading from '../../../containers/Loading';
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
 import {
@@ -21,7 +20,7 @@ const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
   const isFormSubmitted = useSelector(state=>state.formDelete.formSubmitted);
   const publicFormStatus = useSelector(state=>state.formDelete.publicFormStatus);
-  const isPublic = window.location.href.includes('public') //need to remove 
+  const isPublic = window.location.href.includes('public') //need to remove
 
   const {
       isAuthenticated,
@@ -46,8 +45,8 @@ const View = React.memo((props) => {
     if (isActive) {
       return <div data-testid="loading-view-component"><Loading /></div>;
     }
-    
- 
+
+
 
     if(isFormSubmitted){
       return (
@@ -63,8 +62,6 @@ const View = React.memo((props) => {
       Form not available
       </div>
     }
-
-
     return (
       <div className="container overflow-y-auto">
         <div className="main-header">
@@ -104,7 +101,7 @@ const View = React.memo((props) => {
             />
           </div>
         </LoadingOverlay>
-        
+
       </div>
     );
 })
@@ -116,9 +113,9 @@ const doProcessActions = (submission, ownProps) => {
     let IsAuth = getState().user.isAuthenticated
     dispatch(resetSubmissions('submission'));
     const data = getProcessReq(form, submission._id, "new", user);
-    
+
     const isPublic = window.location.href.includes('public')
-   
+
     if (isPublic){
       // this is for anonymous
       dispatch(publicApplicationCreate(data, (err, res) => {
@@ -200,7 +197,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }else{
           return dispatch(getForm('form', ownProps.match.params.formId))
         }
-        
+
     }))
   },
     onSubmit: (submission) => {
@@ -222,6 +219,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             toast.success("Submission Saved.")
             dispatch(push(`/form`));
             break;
+          case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:
+            dispatch(push(`/form`));
+              break;
           default: return;
         }
     },

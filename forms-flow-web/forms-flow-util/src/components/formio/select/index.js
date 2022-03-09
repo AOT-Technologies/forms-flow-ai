@@ -42,6 +42,9 @@ class SelectComponent extends BaseComponent {
       case 'json':
         let valueProperty = this.valueProperty || 'value';
         let item = _.find(this.data[this.dataSrc], (o) => {
+          if (typeof value === 'object') {
+            return _.isEqual(value, o);
+          }
           return o[valueProperty] === value;
         });
 

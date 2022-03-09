@@ -1,7 +1,8 @@
 export const formio_translation = {
 
    "en": {
-      
+      "Text Field": "Text Field",
+      "Label":"Label",
       "saved successfully":"saved successfully",
       "Thank you for your response.":"Thank you for your response.",
       "Form not available": "Form not available",
@@ -199,7 +200,8 @@ export const formio_translation = {
    },
 
    "zh-CN": {
-
+      
+      "Label":"标签",
        "saved successfully":"保存成功",
       "Thank you for your response.":"谢谢您的答复。",
       "Form not available": "不适用公式",
@@ -2309,6 +2311,7 @@ export const formio_translation = {
 
    "fr": {
       
+      
       "saved successfully":"enregistré avec succès",
       "Thank you for your response.":"Merci pour votre réponse.",
       "Form not available": "Formulaire non disponible",
@@ -3709,7 +3712,8 @@ export const formio_translation = {
      "Error in JSON file structure":"Fehler in der JSON-Dateistruktur",
      fix_errors:"Bitte beheben Sie die Fehler, bevor Sie sie erneut senden.",
      "No submissions available for the selected date range":"Für den ausgewählten Zeitraum sind keine Einreichungen verfügbar",
-     Ok:"OK"
+     Ok:"OK",
+     
 
 
       

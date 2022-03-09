@@ -1,6 +1,6 @@
-"""Base Test Class to be used by test suites. Used for getting JWT token purpose"""
-import os
+"""Base Test Class to be used by test suites. Used for getting JWT token purpose."""
 import ast
+import os
 import requests
 from dotenv import find_dotenv, load_dotenv
 
@@ -179,7 +179,6 @@ def update_dashboard_payload():
         ]
     }
 
+
 def get_locale_update_valid_payload():
-    return {
-        "locale":"en"
-    }
+    return {"locale": "en"}

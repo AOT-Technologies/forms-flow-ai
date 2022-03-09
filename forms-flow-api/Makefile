@@ -47,6 +47,14 @@ install: clean ## Install python virtrual environment
 install-dev: ## Install local application
 	. venv/bin/activate && pip install -e .
 
+build: ## Build the project with basic python dependencies
+	test -f venv/bin/activate || python3 -m venv  $(CURRENT_ABS_DIR)/venv ;\
+	. venv/bin/activate ;\
+	pip install --upgrade pip ;\
+	pip install -Ur requirements.txt ;\
+	pip install -Ur requirements_dev.txt ;\
+	pip install -e .
+
 #################################################################################
 # COMMANDS - CI                                                                 #
 #################################################################################

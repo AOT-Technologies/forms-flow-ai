@@ -49,3 +49,13 @@ it("should render the View component without breaking",async()=>{
   expect(screen.getByText("the form title")).toBeInTheDocument();
   expect(screen.getByText("Submit")).toBeInTheDocument();  
 })
+
+it("should render the public View component without breaking ",async()=>{
+  renderWithRouterMatch(View,{
+      path:"/public/form/:formId",
+      route:"/public/form/123",
+  }
+  )
+expect(screen.getByText("the form title")).toBeInTheDocument();
+expect(screen.getByText("Submit")).toBeInTheDocument();  
+})

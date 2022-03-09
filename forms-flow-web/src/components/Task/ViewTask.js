@@ -9,7 +9,7 @@ import Loading from "../../containers/Loading";
 import {setLoader} from "../../actions/taskActions";
 import View from "../Form/Item/Submission/Item/View";
 import {getProcessStatusList} from "../../apiManager/services/processServices";
-import {getApplicationById, getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
+import {getApplicationById} from "../../apiManager/services/applicationServices";
 import History from '../Application/ApplicationHistory';
 // import ProcessDiagram from "../BPMN/ProcessDiagram";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
@@ -90,9 +90,7 @@ const mapDispatchToProps = (dispatch) => {
                 )
               );
 
-              dispatch(
-                getApplicationFormDataByAppId(res.applicationId)
-              );
+             
               dispatch(getApplicationById(res.applicationId,(err,res)=>{
                 if (!err) {
                   if (res.submissionId && res.formId) {

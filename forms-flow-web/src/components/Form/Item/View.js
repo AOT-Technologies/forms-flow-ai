@@ -3,7 +3,6 @@ import {connect, useDispatch, useSelector} from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors, getForm } from 'react-formio';
 import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
-
 import Loading from '../../../containers/Loading';
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
 import {
@@ -58,16 +57,11 @@ const View = React.memo((props) => {
     )
     }
 
-    if(publicFormStatus==="checking"&&isPublic){
-      return <div data-testid="loading-view-component"><Loading /></div>;
-    }
     if(!publicFormStatus&&isPublic){
       return <div class="alert alert-danger mt-4" role="alert">
       Form not available
       </div>
     }
-
-
     return (
       <div className="container overflow-y-auto">
         <div className="main-header">
@@ -83,12 +77,15 @@ const View = React.memo((props) => {
             :
             null
           }
-{/*          <span className="ml-3">
+          {/*   <span className="ml-3">
             <img src="/form.svg" width="30" height="30" alt="form" />
           </span>*/}
-          <h3 className="ml-3">
-            <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms /</span> {form.title}
-          </h3>
+          {form.title?
+              <h3 className="ml-3">
+              <span className="task-head-details"><i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; Forms /</span> {form.title}
+              </h3>
+              :""
+          }
         </div>
         <Errors errors={errors} />
         <LoadingOverlay active={isFormSubmissionLoading} spinner text='Loading...' className="col-12">
@@ -222,6 +219,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             toast.success("Submission Saved.")
             dispatch(push(`/form`));
             break;
+          case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:
+            dispatch(push(`/form`));
+              break;
           default: return;
         }
     },

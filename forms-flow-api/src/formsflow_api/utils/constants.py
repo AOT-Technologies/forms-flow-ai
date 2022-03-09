@@ -28,4 +28,5 @@ FILTER_MAPS = {
     "modified_to": {"field": "modified", "operator": "le"},
     "created_from": {"field": "created", "operator": "ge"},
     "created_to": {"field": "created", "operator": "le"},
+    "form_name": {"field": "form_name", "operator": "ilike"},
 }

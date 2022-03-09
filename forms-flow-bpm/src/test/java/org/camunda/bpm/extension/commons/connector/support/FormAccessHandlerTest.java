@@ -1,10 +1,7 @@
 package org.camunda.bpm.extension.commons.connector.support;
 
-import org.camunda.bpm.engine.ProcessEngine;
-import org.camunda.bpm.engine.ProcessEngines;
-import org.camunda.bpm.engine.RepositoryService;
-import org.camunda.bpm.engine.repository.ProcessDefinition;
-import org.camunda.bpm.engine.repository.ProcessDefinitionQuery;
+import org.camunda.bpm.extension.commons.connector.auth.FormioContextProvider;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -13,15 +10,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -41,8 +34,7 @@ class FormAccessHandlerTest {
 	@InjectMocks
 	private FormAccessHandler formAccessHandler;
 
-	@Mock
-	private NamedParameterJdbcTemplate bpmJdbcTemplate;
+	private FormioContextProvider formioContextProvider;
 
 	@Mock
 	private WebClient webClient;
@@ -50,28 +42,19 @@ class FormAccessHandlerTest {
 	@Mock
 	private Properties integrationCredentialProperties;
 
+	@BeforeEach
+	public void setup() {
+		formioContextProvider = mock(FormioContextProvider.class);
+		ReflectionTestUtils.setField(formAccessHandler, "formioContextProvider", formioContextProvider);
+	}
+
 	/**
 	 * This test perform a positive test over FormAccessHandler
 	 * This  will validate the response entity is Success
 	 */
 	@Test
 	public void exchange_happyFlow_withPatch() {
-		ProcessEngines processEngines = mock(ProcessEngines.class);
-		Map<String, ProcessEngine> processEngineMap = new HashMap<String, ProcessEngine>();
-		ProcessEngine processEngine = mock(ProcessEngine.class);
-		processEngineMap.put("default", processEngine);
-		ReflectionTestUtils.setField(processEngines, "processEngines", processEngineMap);
-		ReflectionTestUtils.setField(processEngines, "isInitialized", true);
-		RepositoryService repositoryService = mock(RepositoryService.class);
-		when(processEngine.getRepositoryService()).thenReturn(repositoryService);
-		ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class);
-		when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
-		when(processDefinitionQuery.latestVersion()).thenReturn(processDefinitionQuery);
-		when(processDefinitionQuery.processDefinitionKey(anyString())).thenReturn(processDefinitionQuery);
-		ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-		when(processDefinitionQuery.singleResult()).thenReturn(processDefinition);
-		when(processDefinition.getId()).thenReturn("abcd123");
-		when(bpmJdbcTemplate.queryForObject(anyString(), any(MapSqlParameterSource.class), any(Class.class)))
+		when(formioContextProvider.createFormioRequestAccessToken())
 				.thenReturn("adhjsadhajyuyuxyuxyvxucvyxcuvtyatd");
 		WebClient.RequestBodyUriSpec requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
 		when(webClient.patch()).thenReturn(requestBodyUriSpec);
@@ -100,17 +83,8 @@ class FormAccessHandlerTest {
 	public void exchange_withPatch_with_tokenExpired() {
 		WebClient.RequestBodyUriSpec requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
 		WebClient.RequestHeadersSpec requestHeadersSpec = mock(WebClient.RequestHeadersSpec.class);
-		when(integrationCredentialProperties.getProperty("formio.security.username")).thenReturn("admin@example.com");
-		when(integrationCredentialProperties.getProperty("formio.security.password")).thenReturn("changeme");
-		when(integrationCredentialProperties.getProperty("formio.security.accessTokenUri"))
-				.thenReturn("http://localhost:3001/login");
-		when(webClient.post()).thenReturn(requestBodyUriSpec);
-		when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodyUriSpec);
-		when(requestBodyUriSpec.bodyValue(any(Map.class))).thenReturn(requestHeadersSpec);
-		when(requestHeadersSpec.accept(any(MediaType.class))).thenReturn(requestBodyUriSpec);
-		when(requestBodyUriSpec.header(anyString(), anyString())).thenReturn(requestBodyUriSpec);
-		when(requestBodyUriSpec.exchangeToMono(any(Function.class)))
-				.thenReturn(Mono.just("adhjsadhajyuyuxyuxyvxucvyxcuvtyatd"));
+		when(formioContextProvider.createFormioRequestAccessToken())
+				.thenReturn("adhjsadhajyuyuxyuxyvxucvyxcuvtyatd");
 
 		when(webClient.patch()).thenReturn(requestBodyUriSpec);
 		when(integrationCredentialProperties.getProperty(anyString())).thenReturn("http://localhost:3001");
@@ -136,22 +110,7 @@ class FormAccessHandlerTest {
 	 */
 	@Test
 	public void exchange_happyFlow_withAnyMethod() {
-		ProcessEngines processEngines = mock(ProcessEngines.class);
-		Map<String, ProcessEngine> processEngineMap = new HashMap<String, ProcessEngine>();
-		ProcessEngine processEngine = mock(ProcessEngine.class);
-		processEngineMap.put("default", processEngine);
-		ReflectionTestUtils.setField(processEngines, "processEngines", processEngineMap);
-		ReflectionTestUtils.setField(processEngines, "isInitialized", true);
-		RepositoryService repositoryService = mock(RepositoryService.class);
-		when(processEngine.getRepositoryService()).thenReturn(repositoryService);
-		ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class);
-		when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
-		when(processDefinitionQuery.latestVersion()).thenReturn(processDefinitionQuery);
-		when(processDefinitionQuery.processDefinitionKey(anyString())).thenReturn(processDefinitionQuery);
-		ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-		when(processDefinitionQuery.singleResult()).thenReturn(processDefinition);
-		when(processDefinition.getId()).thenReturn("abcd123");
-		when(bpmJdbcTemplate.queryForObject(anyString(), any(MapSqlParameterSource.class), any(Class.class)))
+		when(formioContextProvider.createFormioRequestAccessToken())
 				.thenReturn("adhjsadhajyuyuxyuxyvxucvyxcuvtyatd");
 
 		WebClient.RequestBodyUriSpec requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
@@ -181,17 +140,8 @@ class FormAccessHandlerTest {
 	public void exchange_withPatch_with_noAccessTokenInDB() {
 		WebClient.RequestBodyUriSpec requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
 		WebClient.RequestHeadersSpec requestHeadersSpec = mock(WebClient.RequestHeadersSpec.class);
-		when(integrationCredentialProperties.getProperty("formio.security.username")).thenReturn("admin@example.com");
-		when(integrationCredentialProperties.getProperty("formio.security.password")).thenReturn("changeme");
-		when(integrationCredentialProperties.getProperty("formio.security.accessTokenUri"))
-				.thenReturn("http://localhost:3001/login");
-		when(webClient.post()).thenReturn(requestBodyUriSpec);
-		when(requestBodyUriSpec.uri(anyString())).thenReturn(requestBodyUriSpec);
-		when(requestBodyUriSpec.bodyValue(any(Map.class))).thenReturn(requestHeadersSpec);
-		when(requestHeadersSpec.accept(any(MediaType.class))).thenReturn(requestBodyUriSpec);
-		when(requestBodyUriSpec.header(anyString(), anyString())).thenReturn(requestBodyUriSpec);
-		when(requestBodyUriSpec.exchangeToMono(any(Function.class)))
-				.thenReturn(Mono.just("adhjsadhajyuyuxyuxyvxucvyxcuvtyatd"));
+		when(formioContextProvider.createFormioRequestAccessToken())
+				.thenReturn("adhjsadhajyuyuxyuxyvxucvyxcuvtyatd");
 
 		when(webClient.patch()).thenReturn(requestBodyUriSpec);
 		when(integrationCredentialProperties.getProperty(anyString())).thenReturn("http://localhost:3001");
@@ -216,22 +166,7 @@ class FormAccessHandlerTest {
 	 */
 	@Test
 	public void exchange_withPatch_andBlankAccessToken() {
-		ProcessEngines processEngines = mock(ProcessEngines.class);
-		Map<String, ProcessEngine> processEngineMap = new HashMap<String, ProcessEngine>();
-		ProcessEngine processEngine = mock(ProcessEngine.class);
-		processEngineMap.put("default", processEngine);
-		ReflectionTestUtils.setField(processEngines, "processEngines", processEngineMap);
-		ReflectionTestUtils.setField(processEngines, "isInitialized", true);
-		RepositoryService repositoryService = mock(RepositoryService.class);
-		when(processEngine.getRepositoryService()).thenReturn(repositoryService);
-		ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class);
-		when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
-		when(processDefinitionQuery.latestVersion()).thenReturn(processDefinitionQuery);
-		when(processDefinitionQuery.processDefinitionKey(anyString())).thenReturn(processDefinitionQuery);
-		ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-		when(processDefinitionQuery.singleResult()).thenReturn(processDefinition);
-		when(processDefinition.getId()).thenReturn("abcd123");
-		when(bpmJdbcTemplate.queryForObject(anyString(), any(MapSqlParameterSource.class), any(Class.class)))
+		when(formioContextProvider.createFormioRequestAccessToken())
 				.thenReturn("");
 		WebClient.RequestBodyUriSpec requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
 		when(webClient.patch()).thenReturn(requestBodyUriSpec);
@@ -258,22 +193,7 @@ class FormAccessHandlerTest {
 	 */
 	@Test
 	public void exchange_happyFlow_withUrlEndsWithForm() {
-		ProcessEngines processEngines = mock(ProcessEngines.class);
-		Map<String, ProcessEngine> processEngineMap = new HashMap<String, ProcessEngine>();
-		ProcessEngine processEngine = mock(ProcessEngine.class);
-		processEngineMap.put("default", processEngine);
-		ReflectionTestUtils.setField(processEngines, "processEngines", processEngineMap);
-		ReflectionTestUtils.setField(processEngines, "isInitialized", true);
-		RepositoryService repositoryService = mock(RepositoryService.class);
-		when(processEngine.getRepositoryService()).thenReturn(repositoryService);
-		ProcessDefinitionQuery processDefinitionQuery = mock(ProcessDefinitionQuery.class);
-		when(repositoryService.createProcessDefinitionQuery()).thenReturn(processDefinitionQuery);
-		when(processDefinitionQuery.latestVersion()).thenReturn(processDefinitionQuery);
-		when(processDefinitionQuery.processDefinitionKey(anyString())).thenReturn(processDefinitionQuery);
-		ProcessDefinition processDefinition = mock(ProcessDefinition.class);
-		when(processDefinitionQuery.singleResult()).thenReturn(processDefinition);
-		when(processDefinition.getId()).thenReturn("abcd123");
-		when(bpmJdbcTemplate.queryForObject(anyString(), any(MapSqlParameterSource.class), any(Class.class)))
+		when(formioContextProvider.createFormioRequestAccessToken())
 				.thenReturn("adhjsadhajyuyuxyuxyvxucvyxcuvtyatd");
 		WebClient.RequestBodyUriSpec requestBodyUriSpec = mock(WebClient.RequestBodyUriSpec.class);
 		when(webClient.patch()).thenReturn(requestBodyUriSpec);

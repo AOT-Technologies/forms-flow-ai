@@ -48,6 +48,8 @@ To know more about Camunda, visit https://camunda.com/.
  `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
  `KEYCLOAK_BPM_CLIENT_ID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | `forms-flow-bpm`
  `KEYCLOAK_BPM_CLIENT_SECRET`:triangular_flag_on_post:|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret`go to [link](../forms-flow-idm/keycloak/README.md#get-the-keycloak-client-secret)
+ `KEYCLOAK_WEB_CLIENTID`|	The Keycloak client id used by forms-flow-web, used only if Client based authorization is enabled in keycloak.|eg. forms-flow-web | `forms-flow-web`
+ `KEYCLOAK_ENABLE_CLIENT_AUTH`|	Boolean flag to enable client based authorization in keycloak.|eg. true | false
 
 ##### CAMUNDA_JDBC : Dedicated camunda database (Prefixed with CAMUNDA_).
 -----------------------------------------------------------------------

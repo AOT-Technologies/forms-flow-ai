@@ -193,6 +193,36 @@ class Application(
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count
 
+    
+    @classmethod
+    def find_applications_by_process_key(  # pylint: disable=too-many-arguments
+        cls,
+        page_no: int,
+        limit: int,
+        order_by: str,
+        sort_order: str,
+        process_key: str,
+        **filters,
+    ):
+        """Fetch applications list based on searching parameters for Reviewer"""
+        print("entering...", process_key)
+        query = Application.filter_conditions(**filters)
+        # query = FormProcessMapper.filter(process_key.in_(process_key))
+        # print(query, "prcesskey")
+        # query = query.join(
+        #     FormProcessMapper, process_key.in_(FormProcessMapper.id)
+        # )
+        query = FormProcessMapper.process_key.in_(process_key)
+        print(query, "prcesskey")
+        query =query.filter(Application.form_process_mapper_id.in_())
+        print(query, "idlist")
+        order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
+        if order_by and sort_order:
+            query = query.order_by(text(f"Application.{order_by} {sort_order}"))
+        total_count = query.count()
+        pagination = query.paginate(page_no, limit)
+        return pagination.items, total_count
+
     @classmethod
     def find_id_by_form_names(cls, application_id: int, form_names):
         """Fetch applications by id."""

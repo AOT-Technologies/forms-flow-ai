@@ -97,6 +97,7 @@ class ApplicationService:
                 auth_form_details.get("adminGroupEnabled") is True
                 or "*" in resource_list
             ):
+            print("if")
             applications, get_all_applications_count = Application.find_all(page_no=page_no, limit=limit,application_id=application_id,
                     application_name=application_name,
                     application_status=application_status,
@@ -112,34 +113,34 @@ class ApplicationService:
                 get_all_applications_count,
             )
         else:
-            form_names = []
+            print("else")
+            # form_names = []
 
-            if auth_form_details:
-                for auth_form_detail in auth_form_details:
-                    form_names.append(auth_form_detail["formName"])
-                applications, get_all_applications_count = Application.find_by_form_names(
-                    form_names=form_names,
-                    application_id=application_id,
-                    application_name=application_name,
-                    application_status=application_status,
-                    created_by=created_by,
-                    page_no=page_no,
-                    limit=limit,
-                    order_by=order_by,
-                    modified_from=modified_from,
-                    modified_to=modified_to,
-                    sort_order=sort_order,
-                    created_from=created_from,
-                    created_to=created_to,
-                    resource_list=resource_list
-                )
+            # if auth_form_details:
+            #     for auth_form_detail in auth_form_details:
+            #         form_names.append(auth_form_detail["formName"])
+            applications, get_all_applications_count = Application.find_applications_by_process_key(
+                application_id=application_id,
+                application_name=application_name,
+                application_status=application_status,
+                created_by=created_by,
+                page_no=page_no,
+                limit=limit,
+                order_by=order_by,
+                modified_from=modified_from,
+                modified_to=modified_to,
+                sort_order=sort_order,
+                created_from=created_from,
+                created_to=created_to,
+                process_key=resource_list
+            )
 
             return (
                 application_schema.dump(applications, many=True),
                 get_all_applications_count,
             )
 
-        return (application_schema.dump([], many=True), 0)
+        # return (application_schema.dump([], many=True), 0)
 
     @staticmethod
     def get_auth_by_application_id(application_id: int, token: str):

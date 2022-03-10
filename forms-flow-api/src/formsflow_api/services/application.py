@@ -4,7 +4,7 @@ from datetime import datetime
 from functools import lru_cache
 from http import HTTPStatus
 
-from flask import current_app
+from flask import current_app, request
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import Application, FormProcessMapper
@@ -88,44 +88,51 @@ class ApplicationService:
         sort_order: str,
     ):
         """Get applications only from authorized groups."""
-        if page_no:
-            page_no = int(page_no)
-        if limit:
-            limit = int(limit)
-        if order_by:
-            order_by = str(order_by)
-        if application_id:
-            application_id = int(application_id)
-        if application_name:
-            application_name = str(application_name)
-        if application_status:
-            application_status = str(application_status)
-        if created_by:
-            created_by = str(created_by)
-        if sort_order:
-            sort_order = str(sort_order)
 
-        auth_form_details = ApplicationService.get_authorised_form_list(token=token)
-        form_names = []
-
-        if auth_form_details:
-            for auth_form_detail in auth_form_details:
-                form_names.append(auth_form_detail["formName"])
-            applications, get_all_applications_count = Application.find_by_form_names(
-                form_names=form_names,
-                application_id=application_id,
-                application_name=application_name,
-                application_status=application_status,
-                created_by=created_by,
-                page_no=page_no,
-                limit=limit,
-                order_by=order_by,
-                modified_from=modified_from,
-                modified_to=modified_to,
-                sort_order=sort_order,
-                created_from=created_from,
-                created_to=created_to,
+        auth_form_details = ApplicationService.get_authorised_form_list(token=request.headers["Authorization"])
+        current_app.logger.warning(auth_form_details)
+        auth_list = auth_form_details.get("authorizationList") or {}
+        resource_list = [group["resourceId"] for group in auth_list]
+        if (
+                auth_form_details.get("adminGroupEnabled") is True
+                or "*" in resource_list
+            ):
+            applications, get_all_applications_count = Application.find_all(page_no=page_no, limit=limit,application_id=application_id,
+                    application_name=application_name,
+                    application_status=application_status,
+                    created_by=created_by,
+                    order_by=order_by,
+                    modified_from=modified_from,
+                    modified_to=modified_to,
+                    sort_order=sort_order,
+                    created_from=created_from,
+                    created_to=created_to,)
+            return (
+                application_schema.dump(applications, many=True),
+                get_all_applications_count,
             )
+        else:
+            form_names = []
+
+            if auth_form_details:
+                for auth_form_detail in auth_form_details:
+                    form_names.append(auth_form_detail["formName"])
+                applications, get_all_applications_count = Application.find_by_form_names(
+                    form_names=form_names,
+                    application_id=application_id,
+                    application_name=application_name,
+                    application_status=application_status,
+                    created_by=created_by,
+                    page_no=page_no,
+                    limit=limit,
+                    order_by=order_by,
+                    modified_from=modified_from,
+                    modified_to=modified_to,
+                    sort_order=sort_order,
+                    created_from=created_from,
+                    created_to=created_to,
+                    resource_list=resource_list
+                )
 
             return (
                 application_schema.dump(applications, many=True),

@@ -89,30 +89,36 @@ class ApplicationService:
     ):
         """Get applications only from authorized groups."""
 
-        auth_form_details = ApplicationService.get_authorised_form_list(token=request.headers["Authorization"])
+        auth_form_details = ApplicationService.get_authorised_form_list(
+            token=request.headers["Authorization"]
+        )
         current_app.logger.warning(auth_form_details)
         auth_list = auth_form_details.get("authorizationList") or {}
         resource_list = [group["resourceId"] for group in auth_list]
-        if (
-                auth_form_details.get("adminGroupEnabled") is True
-                or "*" in resource_list
-            ):
-            applications, get_all_applications_count = Application.find_all(page_no=page_no, limit=limit,application_id=application_id,
-                    application_name=application_name,
-                    application_status=application_status,
-                    created_by=created_by,
-                    order_by=order_by,
-                    modified_from=modified_from,
-                    modified_to=modified_to,
-                    sort_order=sort_order,
-                    created_from=created_from,
-                    created_to=created_to,)
+        if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
+            applications, get_all_applications_count = Application.find_all(
+                page_no=page_no,
+                limit=limit,
+                application_id=application_id,
+                application_name=application_name,
+                application_status=application_status,
+                created_by=created_by,
+                order_by=order_by,
+                modified_from=modified_from,
+                modified_to=modified_to,
+                sort_order=sort_order,
+                created_from=created_from,
+                created_to=created_to,
+            )
             return (
                 application_schema.dump(applications, many=True),
                 get_all_applications_count,
             )
         else:
-            applications, get_all_applications_count = Application.find_applications_by_process_key(
+            (
+                applications,
+                get_all_applications_count,
+            ) = Application.find_applications_by_process_key(
                 application_id=application_id,
                 application_name=application_name,
                 application_status=application_status,
@@ -125,7 +131,7 @@ class ApplicationService:
                 sort_order=sort_order,
                 created_from=created_from,
                 created_to=created_to,
-                process_key=resource_list
+                process_key=resource_list,
             )
 
             return (
@@ -140,13 +146,12 @@ class ApplicationService:
         current_app.logger.warning(auth_form_details)
         auth_list = auth_form_details.get("authorizationList") or {}
         resource_list = [group["resourceId"] for group in auth_list]
-        if (
-                auth_form_details.get("adminGroupEnabled") is True
-                or "*" in resource_list
-            ):
-            application = application.find_by_id(application_id=application_id)
+        if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
+            application = Application.find_by_id(application_id=application_id)
         else:
-            application = Application.find_auth_application_by_process_key(process_key=resource_list,application_id=application_id)
+            application = Application.find_auth_application_by_process_key(
+                process_key=resource_list, application_id=application_id
+            )
         return application_schema.dump(application), HTTPStatus.OK
 
     @staticmethod

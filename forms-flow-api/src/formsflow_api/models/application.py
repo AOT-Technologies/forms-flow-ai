@@ -82,12 +82,14 @@ class Application(
         )
 
     @classmethod
-    def find_all( cls,
+    def find_all(
+        cls,
         page_no: int,
         limit: int,
         order_by: str,
         sort_order: str,
-        **filters,) -> Application:
+        **filters,
+    ) -> Application:
         """Fetch all application."""
         query = Application.filter_conditions(**filters)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
@@ -193,7 +195,6 @@ class Application(
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count
 
-    
     @classmethod
     def find_applications_by_process_key(  # pylint: disable=too-many-arguments
         cls,
@@ -207,15 +208,17 @@ class Application(
         """Fetch applications list based on searching parameters for Reviewer"""
         print("entering...", process_key)
         query = Application.filter_conditions(**filters)
-        query = query.join(FormProcessMapper, 
-            Application.form_process_mapper_id == FormProcessMapper.id).filter(FormProcessMapper.process_key.in_(process_key))
+        query = query.join(
+            FormProcessMapper,
+            Application.form_process_mapper_id == FormProcessMapper.id,
+        ).filter(FormProcessMapper.process_key.in_(process_key))
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
             query = query.order_by(text(f"Application.{order_by} {sort_order}"))
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count
-    
+
     @classmethod
     def find_auth_application_by_process_key(  # pylint: disable=too-many-arguments
         cls,
@@ -223,9 +226,16 @@ class Application(
         application_id: int,
     ):
         """Fetch applications list based on searching parameters for Reviewer"""
-        print("entering...", process_key,application_id)
-        query = cls.query.filter(Application.id == application_id).join(FormProcessMapper, 
-            Application.form_process_mapper_id == FormProcessMapper.id).filter(FormProcessMapper.process_key.in_(process_key)).first()
+        print("entering...", process_key, application_id)
+        query = (
+            cls.query.filter(Application.id == application_id)
+            .join(
+                FormProcessMapper,
+                Application.form_process_mapper_id == FormProcessMapper.id,
+            )
+            .filter(FormProcessMapper.process_key.in_(process_key))
+            .first()
+        )
         return query
 
     @classmethod

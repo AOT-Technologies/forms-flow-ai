@@ -20,7 +20,7 @@ const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
   const isFormSubmitted = useSelector(state=>state.formDelete.formSubmitted);
   const publicFormStatus = useSelector(state=>state.formDelete.publicFormStatus);
-  const isPublic = window.location.href.includes('public') //need to remove
+  const isPublic = window.location.href.includes('public') //need to remove 
 
   const {
       isAuthenticated,
@@ -45,8 +45,8 @@ const View = React.memo((props) => {
     if (isActive) {
       return <div data-testid="loading-view-component"><Loading /></div>;
     }
-
-
+    
+ 
 
     if(isFormSubmitted){
       return (
@@ -101,7 +101,7 @@ const View = React.memo((props) => {
             />
           </div>
         </LoadingOverlay>
-
+        
       </div>
     );
 })
@@ -113,9 +113,9 @@ const doProcessActions = (submission, ownProps) => {
     let IsAuth = getState().user.isAuthenticated
     dispatch(resetSubmissions('submission'));
     const data = getProcessReq(form, submission._id, "new", user);
-
+    
     const isPublic = window.location.href.includes('public')
-
+   
     if (isPublic){
       // this is for anonymous
       dispatch(publicApplicationCreate(data, (err, res) => {
@@ -197,7 +197,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         }else{
           return dispatch(getForm('form', ownProps.match.params.formId))
         }
-
+        
     }))
   },
     onSubmit: (submission) => {

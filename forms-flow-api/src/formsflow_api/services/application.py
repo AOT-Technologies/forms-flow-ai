@@ -4,7 +4,7 @@ from datetime import datetime
 from functools import lru_cache
 from http import HTTPStatus
 
-from flask import current_app, request
+from flask import current_app
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import Application, FormProcessMapper

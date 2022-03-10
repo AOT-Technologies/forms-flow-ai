@@ -205,7 +205,6 @@ class Application(
         **filters,
     ):
         """Fetch applications list based on searching parameters for Reviewer"""
-        print("entering...", process_key)
         query = Application.filter_conditions(**filters)
         query = query.join(
             FormProcessMapper,

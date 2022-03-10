@@ -1,47 +1,47 @@
-#!/bin/sh
+#!/bin/bash
 
-function installation()
+installation()
 {
-ip="$(ifconfig | grep -A 1 'eth0' | tail -1 | cut -d ':' -f 2 | cut -d ' ' -f 1)"
+ip="$(ipconfig | grep -A 1 'IPv4' | tail -1 |-f 1)"
 }
 
 while true; do
     read -p "Do you want to include analytics in the installation?[y/n]?" yn
     case $yn in
-        [Yy]* ) jumpto INSTALL_WITH_ANALYTICS(); break;;
-        [Nn]* ) jumpto INSTALL_WITHOUT_ANALYTICS();;
+        [Yy]* ) INSTALL_WITH_ANALYTICS(); break;;
+        [Nn]* ) INSTALL_WITHOUT_ANALYTICS();;
         * ) echo "error";;
     esac
 done
 
-run INSTALL_WITH_ANALYTICS()
+INSTALL_WITH_ANALYTICS
 
-function INSTALL_WITH_ANALYTICS()
+INSTALL_WITH_ANALYTICS()
 {
-printf installation will be completed in the following order:
-printf 1. keycloak
-printf 2. form.io
-printf 3. analytics
-printf 4. web
-printf 5. camunda
-printf 6. webapi
+echo installation will be completed in the following order:
+echo 1. keycloak
+echo 2. form.io
+echo 3. analytics
+echo 4. web
+echo 5. camunda
+echo 6. webapi
 }
 
-pause(){
- read -s -n 1 -p "Press any key to continue . . ."
- echo ""
+function pause(){
+   read -p "$*"
 }
+pause 'Press [Enter] key to continue...'
 
-$KEYCLOAK()
+KEYCLOAK
 
 INSTALL_WITHOUT_ANALYTICS()
 {
-printf installation will be completed in the following order:
-printf 1. keycloak
-printf 2. form.io
-printf 3. web
-printf 4. camunda
-printf 5. webapi
+echo installation will be completed in the following order:
+echo 1. keycloak
+echo 2. form.io
+echo 3. web
+echo 4. camunda
+echo 5. webapi
 }
 
 pause(){
@@ -53,10 +53,12 @@ pause(){
 /n
 export PATH="$PATH:keycloak"
 /n
-printf        Keycloak
+echo                                   Keycloak
 /n
 /n
-
+cd configuration\keycloak
+KEYCLOAK()
+{
 while true; do
     read -p "Do you have an existing keycloak?[y/n]?" yn
     case $yn in
@@ -65,21 +67,21 @@ while true; do
         * ) echo "error";;
     esac
 done
-
+}
 defaultinstallation()
 {
-printf WE ARE SETING UP OUR DEFAULT KEYCLOCK FOR YOU
+echo WE AREING UP OUR DEFAULT KEYCLOCK FOR YOU
 function pause(){
- read -s -n 1 -p "Press any key to continue . . ."
- echo ""
+   read -p "$*"
 }
+pause 'Press [Enter] key to continue...'
 
 cp sample.env .env
 ip="$(ifconfig | grep -A 1 'eth0' | tail -1 | cut -d ':' -f 2 | cut -d ' ' -f 1)"
-printf Please wait, keycloak is setting up!
+echo Please wait, keycloak isting up!
 docker-compose up -d
 
-printf what is your keycloak url realm name?
+echo what is your keycloak url realm name?
 read realmname
 
 Keyurl=$ip
@@ -90,14 +92,19 @@ str keycloak urlrelm name is $name
 echo what is your bpm client secret key?
 read keysecret
 
+echo KEYCLOAK_URL_REALM=$realm >> .env
+echo $stg>>".env"
+echo KEYCLOAK_BPM_CLIENT_SECRET=$keysecret >> .env
+
+
 analyticsoption()
 
 INSTALL WITH EXISTING KEYCLOAK()
 {
-set customKeycloak=1;
-echo existing keycloak setup here
+customKeycloak=1;
+echo existing keycloakup here
 
-printf what is your keycloak url realm name?
+echo what is your keycloak url realm name?
 read realmname
 
 echo what is your bpm client secret key?
@@ -106,6 +113,11 @@ read keysecret
 echo what is your Keycloak url?
 read keyurl
 
+echo KEYCLOAK_URL_REALM=$realm >> .env
+echo KEYCLOAK_URL=$keyurl >> .env
+echo KEYCLOAK_BPM_CLIENT_SECRET=$keySecret >> .env
+
+
 analyticsoption()
 
 echo.
@@ -113,18 +125,18 @@ echo.
 if $analytics ==1 (
 echo.
 function pause(){
- read -s -n 1 -p "Press any key to continue . . ."
- echo ""
+   read -p "$*"
 }
+pause 'Press [Enter] key to continue...'
 ANALYTICS()
 )
 
 if $analytics ==0 (
 echo let us move to the installation 
 function pause(){
- read -s -n 1 -p "Press any key to continue . . ."
- echo ""
+   read -p "$*"
 }
+pause 'Press [Enter] key to continue...'
 configuration section()
 
 ANALYTICS()
@@ -134,13 +146,14 @@ echo.
 echo                                                 ANALYTICS
 echo.
 echo.
+cd ..\analytics
 
 ip="$(ifconfig | grep -A 1 'eth0' | tail -1 | cut -d ':' -f 2 | cut -d ' ' -f 1)"
 cp sample.env .env
 
-set key=$_IPaddr
-set ste=REDASH_HOST=http://{your-ip-address}:7000
-set strng=$ste:{your-ip-address}=$key
+ key=$_IPaddr
+ ste=REDASH_HOST=http://{your-ip-address}:7000
+ strng=$ste:{your-ip-address}=$key
 
 docker-compose -f docker-compose-windows.yml run --rm server create_db
 
@@ -151,46 +164,47 @@ docker-compose -f docker-compose-windows.yml up --build -d
 echo please collect the redash api key
 echo what is your Redash API key?
 read redashApiKey
-`cat < $redashApiKey` > .env
+echo INSIGHT_API_KEY=$redashApiKey >> .env
 
 function pause(){
- read -s -n 1 -p "Press any key to continue . . ."
- echo ""
+   read -p "$*"
 }
+pause 'Press [Enter] key to continue...'
 
 configuration section()
 {
 echo                                                  Installation-Automation                                                                        
-
+/n
+cd ..
 findstr /v /i /c:"FORMIO_DEFAULT_PROJECT_URL=" /c:"#KEYCLOAK_URL_REALM=" /c:"KEYCLOAK_URL=" /c:"KEYCLOAK_BPM_CLIENT_SECRET=" /c:"INSIGHT_API_URL=" /c:"INSIGHT_API_KEY=" /c:"CLIENT_ROLE_ID=" /c:"DESIGNER_ROLE_ID=" /c:"REVIEWER_ROLE_ID" /c:"ANONYMOUS_ID" /c:"USER_RESOURCE_ID" /c:"CAMUNDA_API_URL=" /c:"FORMSFLOW_API_URL=" /c:"WEBSOCKET_SECURITY_ORIGIN=" sample.env > .env
 ip="$(ifconfig | grep -A 1 'eth0' | tail -1 | cut -d ':' -f 2 | cut -d ' ' -f 1)"
 
-set default_url=$_IPaddr
-set ste=FORMIO_DEFAULT_PROJECT_URL=http://{your-ip-address}:3001
-set strong=$ste:{your-ip-address}=$default_url
+ default_url=$_IPaddr
+ ste=FORMIO_DEFAULT_PROJECT_URL=http://{your-ip-address}:3001
+ strong=$ste:{your-ip-address}=$default_url
 
-set keycloak_url=$_IPaddr
-set str=KEYCLOAK_URL=http://{your-ip-address}:8080
-set strng=$str:{your-ip-address}=$keycloak_url!
+ keycloak_url=$_IPaddr
+ str=KEYCLOAK_URL=http://{your-ip-address}:8080
+ strng=$str:{your-ip-address}=$keycloak_url!
 
-set API_URL=$_IPaddr
-set url=INSIGHT_API_URL=http://{your-ip-address}:7000
-set strinnng=$url:{your-ip-address}=$API_URL
+ API_URL=$_IPaddr
+ url=INSIGHT_API_URL=http://{your-ip-address}:7000
+ strinnng=$url:{your-ip-address}=$API_URL
 
 echo Please wait, forms is getting up!
 docker-compose -f docker-compose.yml up --build -d forms-flow-forms
 
-set websock=$_IPaddr
-set lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
-set streng=$lpi:{your-ip-address}=$websock
+ websock=$_IPaddr
+ lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
+ streng=$lpi:{your-ip-address}=$websock
 
-set api=$_IPaddr
-set stp=FORMSFLOW_API_URL=http://{your-ip-address}:5000
-set strongs=$stp:{your-ip-address}=$api
+ api=$_IPaddr
+ stp=FORMSFLOW_API_URL=http://{your-ip-address}:5000
+ strongs=$stp:{your-ip-address}=$api
 
-set websock=$_IPaddr
-set lpu=WEBSOCKET_SECURITY_ORIGIN=http://{your-ip-address}:3000
-set streeng=$lpu:{your-ip-address}=$websock
+ websock=$_IPaddr
+ lpu=WEBSOCKET_SECURITY_ORIGIN=http://{your-ip-address}:3000
+ streeng=$lpu:{your-ip-address}=$websock
 
 
 
@@ -248,10 +262,41 @@ do
 
 done
 
+Administrator=$id[0]
+Anonymous=$id[1]
+Authenticated=$id[2]
+formsflowClient=$id[3]
+formsflowReviewer=$id[4]
+User=$id[5]
+
+
 function pause(){
- read -s -n 1 -p "Press any key to continue . . ."
- echo ""
+   read -p "$*"
 }
+pause 'Press [Enter] key to continue...'
 
+echo FORM.IO ENV Variables - START
+echo $strong >> .env
+echo Keycloak ENV Variables - START 
+echo KEYCLOAK_URL_REALM=$realm >> .env
+echo $strng >> .env
+echo KEYCLOAK_BPM_CLIENT_SECRET=$keySecret >> .env
+echo $strinnng >> .env
+echo INSIGHT_API_KEY=$redashApiKey >> .env
+echo $streng >> .env
+echo $strongs >> .env
+echo $streeng >> .env
+echo CLIENT_ROLE_ID=$formsflowClient >> .env
+echo DESIGNER_ROLE_ID=$Administrator >> .env
+echo REVIEWER_ROLE_ID=$formsflowReviewer >> .env
+echo ANONYMOUS_ID=$Anonymous >> .env
+echo USER_RESOURCE_ID=$User >> .env
 
+docker-compose up --build -d forms-flow-web
+docker-compose -f docker-compose.yml up -d forms-flow-bpm
+docker-compose -f docker-compose.yml up -d forms-flow-webapi
 
+endofinstallation()
+{
+echo The Installation has finished!
+}

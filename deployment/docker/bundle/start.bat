@@ -1,3 +1,4 @@
+
 @echo off
 
 ::=================== INIT =====================>
@@ -64,8 +65,7 @@ for /f "tokens=14" %%a in ('ipconfig ^| findstr IPv4') do set _IPaddr=%%a
 
 echo Please wait, keycloak is setting up!
 docker-compose up -d
-echo you can pick up the bpm client secret id 
-set /p realm="what is your keycloak realm name?"
+timeout 8
 echo.
 echo.
 
@@ -74,13 +74,13 @@ setlocal ENABLEDELAYEDEXPANSION
 set keyurl=%_IPaddr%
 set str=KEYCLOAK_URL=http://{your-ip-address}:8080
 set stg=%str:{your-ip-address}=!keyurl!%
-
-set /p keySecret="what is your bpm client secret key?"
+set keysecret=e4bdbd25-1467-4f7f-b993-bc4b1944c943 
 
 echo. >>".env"
-echo KEYCLOAK_URL_REALM=%realm% >> .env
+echo KEYCLOAK_URL_REALM=forms-flow-ai >> .env
 echo %stg%>>".env"
-echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
+echo KEYCLOAK_BPM_CLIENT_SECRET=%keysecret% >> .env
+
 
 goto :analyticsoption
 
@@ -119,22 +119,6 @@ echo press ENTER to continue
 pause> nul
 goto :configuration section
 )
-::------------------------------------------
-:WEB CUSTOM INSTALLATION
-
-echo web custom installation here
-
-if %analytics% ==1 (
-echo press ENTER to continue
-pause> nul
-goto :ANALYTICS
-)
-
-if %analytics% ==0 (
-echo let's move to the installation
-echo press ENTER to continue
-pause> nul
-
 ::<===================ANALYTICS STARTS=======================>
 :ANALYTICS
 echo.
@@ -181,8 +165,8 @@ echo.
 echo.
 cd ..
 
-findstr /v /i /c:"FORMIO_DEFAULT_PROJECT_URL=" /c:"#KEYCLOAK_URL_REALM=" /c:"KEYCLOAK_URL=" /c:"KEYCLOAK_BPM_CLIENT_SECRET=" /c:"INSIGHT_API_URL=" /c:"INSIGHT_API_KEY=" /c:"CLIENT_ROLE_ID=" /c:"DESIGNER_ROLE_ID=" /c:"REVIEWER_ROLE_ID" /c:"ANONYMOUS_ID" /c:"USER_RESOURCE_ID" /c:"CAMUNDA_API_URL=" /c:"FORMSFLOW_API_URL=" /c:"WEBSOCKET_SECURITY_ORIGIN=" sample.env > .env
 
+copy sample.env .env
 for /f "tokens=14" %%a in ('ipconfig ^| findstr IPv4') do set _IPaddr=%%a
 
 setlocal ENABLEDELAYEDEXPANSION
@@ -292,12 +276,10 @@ set User=%id[5]%
 echo Press enter to continue!
 pause> nul
 
-echo FORM.IO ENV Variables - START
-echo %strong% >> .env
-echo Keycloak ENV Variables - START 
-echo KEYCLOAK_URL_REALM=%realm% >> .env
+echo %strong% >> .env 
+echo KEYCLOAK_URL_REALM=forms-flow-ai >> .env
 echo %strng% >> .env
-echo KEYCLOAK_BPM_CLIENT_SECRET=%keySecret% >> .env
+echo KEYCLOAK_BPM_CLIENT_SECRET=%keysecret% >> .env
 echo %strinnng% >> .env
 echo INSIGHT_API_KEY=%redashApiKey% >> .env
 echo %streng% >> .env
@@ -310,8 +292,8 @@ echo ANONYMOUS_ID=%Anonymous% >> .env
 echo USER_RESOURCE_ID=%User% >> .env
 
 docker-compose up --build -d forms-flow-web
-docker-compose -f docker-compose.yml up -d forms-flow-bpm
-docker-compose -f docker-compose.yml up -d forms-flow-webapi
+docker-compose -f docker-compose.yml up --build -d forms-flow-bpm
+docker-compose -f docker-compose.yml up --build -d forms-flow-webapi
 
 pause> nul
 goto :end

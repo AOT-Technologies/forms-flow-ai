@@ -1,5 +1,5 @@
 #!/bin/bash
-_IPdr=192.168.1.3
+_IPdr=$(hostname -i)
 echo "Do you wish to continue installation that include ANALYTICS? [y/n]" 
 read choice
 if [[ $choice == "y" ]]; then
@@ -11,7 +11,7 @@ function installAnaly
 {
     cd ../analytics
     cp sample.env .env
-    _IPdr=192.168.1.3
+    _IPdr=$(hostname -i)
     REDASH_HOST=http://{your-ip-address}:7000
     REDASH_HOST=http://$_IPdr:7000
     echo REDASH_HOST=$REDASH_HOST >>.env
@@ -29,7 +29,7 @@ function forms-flow-forms
 {
     cd ..
     cp sample.env .env
-    _IPdr=192.168.1.3
+    _IPdr=$(hostname -i)
     FORMIO_DEFAULT_PROJECT_URL=http://{your-ip-address}:8080
     FORMIO_DEFAULT_PROJECT_URL=http://$_IPdr:8080
     KEYCLOAK_URL=http://{your-ip-address}:8080
@@ -105,8 +105,8 @@ done
 	echo INSIGHT_API_URL=$INSIGHT_API_URL >>.env
 	echo INSIGHT_API_KEY=$readash >>.env
 	echo CAMUNDA_API_URL=$CAMUNDA_API_URL >>.env
-    echo FORMSFLOW_API_URL=$FORMSFLOW_API_URL >>.env
-    echo WEBSOCKET_SECURITY_ORIGIN=$WEBSOCKET_SECURITY_ORIGIN >>.env
+        echo FORMSFLOW_API_URL=$FORMSFLOW_API_URL >>.env
+        echo WEBSOCKET_SECURITY_ORIGIN=$WEBSOCKET_SECURITY_ORIGIN >>.env
 	echo Administrator="${id[0]}" >>.env
     echo Anonymous= "${id[1]}" >>.env
     echo Authenticated= "${id[2]}" >>.env
@@ -131,7 +131,7 @@ function keycloak
         printf "%s " "Press enter to continue"
         read that
         cp sample.env .env
-        _IPdr=192.168.1.3
+        _IPdr=$(hostname -i)
         echo Please wait, keycloak is setting up!
         docker-compose up -d
         KEYCLOAK_URL_REALM=forms-flow-ai

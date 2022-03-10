@@ -225,7 +225,6 @@ class Application(
         application_id: int,
     ):
         """Fetch applications list based on searching parameters for Reviewer"""
-        print("entering...", process_key, application_id)
         query = (
             cls.query.filter(Application.id == application_id)
             .join(

@@ -85,9 +85,9 @@ class ApplicationService:
         application_status: str,
         created_by: str,
         sort_order: str,
+        token: str,
     ):
         """Get applications only from authorized groups."""
-
         auth_form_details = ApplicationService.get_authorised_form_list(
             token=request.headers["Authorization"]
         )

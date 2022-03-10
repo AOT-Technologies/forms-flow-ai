@@ -97,7 +97,6 @@ class ApplicationService:
                 auth_form_details.get("adminGroupEnabled") is True
                 or "*" in resource_list
             ):
-            print("if")
             applications, get_all_applications_count = Application.find_all(page_no=page_no, limit=limit,application_id=application_id,
                     application_name=application_name,
                     application_status=application_status,
@@ -113,12 +112,6 @@ class ApplicationService:
                 get_all_applications_count,
             )
         else:
-            print("else")
-            # form_names = []
-
-            # if auth_form_details:
-            #     for auth_form_detail in auth_form_details:
-            #         form_names.append(auth_form_detail["formName"])
             applications, get_all_applications_count = Application.find_applications_by_process_key(
                 application_id=application_id,
                 application_name=application_name,
@@ -140,23 +133,21 @@ class ApplicationService:
                 get_all_applications_count,
             )
 
-        # return (application_schema.dump([], many=True), 0)
-
     @staticmethod
     def get_auth_by_application_id(application_id: int, token: str):
         """Get authorized Application by id."""
         auth_form_details = ApplicationService.get_authorised_form_list(token=token)
-        if auth_form_details:
-            form_names = []
-            for auth_form_detail in auth_form_details:
-                form_names.append(auth_form_detail["formName"])
-
-            application = Application.find_id_by_form_names(
-                form_names=form_names, application_id=application_id
-            )
-            return application_schema.dump(application), HTTPStatus.OK
-
-        return (application_schema.dump([])), HTTPStatus.FORBIDDEN
+        current_app.logger.warning(auth_form_details)
+        auth_list = auth_form_details.get("authorizationList") or {}
+        resource_list = [group["resourceId"] for group in auth_list]
+        if (
+                auth_form_details.get("adminGroupEnabled") is True
+                or "*" in resource_list
+            ):
+            application = application.find_by_id(application_id=application_id)
+        else:
+            application = Application.find_auth_application_by_process_key(process_key=resource_list,application_id=application_id)
+        return application_schema.dump(application), HTTPStatus.OK
 
     @staticmethod
     def get_all_applications_by_user(  # pylint: disable=too-many-arguments

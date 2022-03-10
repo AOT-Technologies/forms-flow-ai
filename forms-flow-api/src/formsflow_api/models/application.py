@@ -182,7 +182,6 @@ class Application(
         limit: int,
         order_by: str,
         sort_order: str,
-        resource_list: str,
         **filters,
     ):
         """Fetch applications list based on searching parameters for Reviewer"""

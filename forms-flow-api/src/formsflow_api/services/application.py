@@ -73,7 +73,6 @@ class ApplicationService:
 
     @staticmethod
     def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals
-        token: str,
         page_no: int,
         limit: int,
         order_by: str,

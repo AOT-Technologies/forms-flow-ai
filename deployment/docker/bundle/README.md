@@ -15,7 +15,7 @@ In this document we will discuss the Installation process that we have automated
 
 ## Windows Installation
 
-After you extract the file you will get a bundle as a folder. You can see two script files and one configuration file in it. You can just double click on the windows batch script file “start.bat” to start the installation procedure. While installation you must provide some prompt answers and the redash api key (you will get the redash api key only if you include analytics in your installation and after the analytics is up in the docker). .[Bundle](./bundle)
+After you extract the file you will get a bundle as a folder. You can see two script files and one configuration file in it. You can just double click on the windows batch script file “start.bat” to start the installation procedure. While installation you must provide some prompt answers and the redash api key (you will get the redash api key only if you include analytics in your installation and after the analytics is up in the docker).
 Now you can follow the steps below to understand the installation:
 *	Firstly, you will receive a prompt question regarding the installation of analytics in the process. Its your choice to add   analyctics or just type n and continue.
 *	You can see the order of installation in the screen.

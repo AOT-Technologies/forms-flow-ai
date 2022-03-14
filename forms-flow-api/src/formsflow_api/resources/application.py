@@ -49,7 +49,7 @@ class ApplicationsResource(Resource):
             dict_data = ApplicationListRequestSchema().load(request.args) or {}
             page_no = dict_data.get("page_no")
             limit = dict_data.get("limit")
-            order_by = dict_data.get("order_by") or "id"
+            order_by = dict_data.get("order_by", "id")
             application_id = dict_data.get("application_id")
             application_name = dict_data.get("application_name")
             application_status = dict_data.get("application_status")
@@ -58,7 +58,7 @@ class ApplicationsResource(Resource):
             created_to_date = dict_data.get("created_to_date")
             modified_from_date = dict_data.get("modified_from_date")
             modified_to_date = dict_data.get("modified_to_date")
-            sort_order = dict_data.get("sort_order") or "desc"
+            sort_order = dict_data.get("sort_order", "desc")
             if auth.has_role([REVIEWER_GROUP]):
                 (
                     application_schema_dump,

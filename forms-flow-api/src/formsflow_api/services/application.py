@@ -91,7 +91,7 @@ class ApplicationService:
         auth_form_details = ApplicationService.get_authorised_form_list(
             token=token
         )
-        current_app.logger.warning(auth_form_details)
+        current_app.logger.info(auth_form_details)
         auth_list = auth_form_details.get("authorizationList") or {}
         resource_list = [group["resourceId"] for group in auth_list]
         if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
@@ -138,7 +138,7 @@ class ApplicationService:
     def get_auth_by_application_id(application_id: int, token: str):
         """Get authorized Application by id."""
         auth_form_details = ApplicationService.get_authorised_form_list(token=token)
-        current_app.logger.warning(auth_form_details)
+        current_app.logger.info(auth_form_details)
         auth_list = auth_form_details.get("authorizationList") or {}
         resource_list = [group["resourceId"] for group in auth_list]
         if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:

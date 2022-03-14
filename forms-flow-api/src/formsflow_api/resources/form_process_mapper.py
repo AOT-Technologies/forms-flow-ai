@@ -36,13 +36,13 @@ class FormResourceList(Resource):
             auth_form_details = ApplicationService.get_authorised_form_list(
                 token=request.headers["Authorization"]
             )
-            current_app.logger.warning(auth_form_details)
+            current_app.logger.info(auth_form_details)
             dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
             form_name: str = dict_data.get("form_name")
             page_no: int = dict_data.get("page_no")
             limit: int = dict_data.get("limit")
-            sort_by: str = dict_data.get("sort_by") or "id"
-            sort_order: str = dict_data.get("sort_order") or "desc"
+            sort_by: str = dict_data.get("sort_by", "id")
+            sort_order: str = dict_data.get("sort_order", "desc")
             auth_list = auth_form_details.get("authorizationList") or {}
             resource_list = [group["resourceId"] for group in auth_list]
             if (

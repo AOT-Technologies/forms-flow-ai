@@ -91,22 +91,13 @@ class Application(
         **filters,
     ) -> Application:
         """Fetch all application."""
-        query = Application.filter_conditions(**filters)
+        query = cls.filter_conditions(**filters)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
             query = query.order_by(text(f"Application.{order_by} {sort_order}"))
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count
-        # if page_no == 0:
-        #     result = cls.query.order_by(Application.id.desc()).all()
-        # else:
-        #     result = (
-        #         cls.query.order_by(Application.id.desc())
-        #         .paginate(page_no, limit, False)
-        #         .items
-        #     )
-        # return result
 
     @classmethod
     def filter_conditions(cls, **filters):
@@ -136,7 +127,7 @@ class Application(
         **filters,
     ) -> Application:
         """Fetch applications list based on searching parameters for Non-reviewer"""
-        query = Application.filter_conditions(**filters)
+        query = cls.filter_conditions(**filters)
         query = query.filter(Application.created_by == user_id)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -185,7 +176,7 @@ class Application(
         **filters,
     ):
         """Fetch applications list based on searching parameters for Reviewer"""
-        query = Application.filter_conditions(**filters)
+        query = cls.filter_conditions(**filters)
         query = query.filter(Application.application_name.in_(form_names))
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -205,7 +196,7 @@ class Application(
         **filters,
     ):
         """Fetch applications list based on searching parameters for Reviewer"""
-        query = Application.filter_conditions(**filters)
+        query = cls.filter_conditions(**filters)
         query = query.join(
             FormProcessMapper,
             Application.form_process_mapper_id == FormProcessMapper.id,

@@ -1,6 +1,6 @@
 """Common utils.
-
-* CORS pre-flight decorator. A simple decorator to add the options method to a Request Class.
+CORS pre-flight decorator. A simple decorator to add the options
+method to a Request Class.
 """
 import re
 
@@ -43,6 +43,7 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
         ApplicationSortingParameters.Name,
         ApplicationSortingParameters.Status,
         ApplicationSortingParameters.Modified,
+        ApplicationSortingParameters.FormName,
     ]:
         order_by = None
     else:

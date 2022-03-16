@@ -3,7 +3,6 @@ import {connect, useDispatch, useSelector} from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors, getForm } from 'react-formio';
 import { push } from 'connected-react-router';
 import { Link } from 'react-router-dom'
-
 import Loading from '../../../containers/Loading';
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
 import {
@@ -63,8 +62,6 @@ const View = React.memo((props) => {
       Form not available
       </div>
     }
-
-
     return (
       <div className="container overflow-y-auto">
         <div className="main-header">
@@ -222,6 +219,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             toast.success("Submission Saved.")
             dispatch(push(`/form`));
             break;
+          case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:
+            dispatch(push(`/form`));
+              break;
           default: return;
         }
     },

@@ -1,6 +1,6 @@
-"""Base Test Class to be used by test suites. Used for getting JWT token purpose"""
-import os
+"""Base Test Class to be used by test suites. Used for getting JWT token purpose."""
 import ast
+import os
 import requests
 from dotenv import find_dotenv, load_dotenv
 
@@ -148,7 +148,7 @@ def get_application_create_payload(form_id: str = "1234"):
     return {
         "formId": form_id,
         "submissionId": "1233432",
-        "formUrl": f"http://sample.com/formid/{form_id}/submissionid/1233432",
+        "formUrl": f"http://sample.com/form/{form_id}/submission/1233432",
     }
 
 
@@ -179,7 +179,6 @@ def update_dashboard_payload():
         ]
     }
 
+
 def get_locale_update_valid_payload():
-    return {
-        "locale":"en"
-    }
+    return {"locale": "en"}

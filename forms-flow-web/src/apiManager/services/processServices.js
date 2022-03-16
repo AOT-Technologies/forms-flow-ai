@@ -14,6 +14,7 @@ import {
   setProcessDiagramLoading,
   setFormPreviosData,
 } from "../../actions/processActions";
+import { setApplicationCount } from "../../actions/processActions";
 import { replaceUrl } from "../../helper/helper";
 import UserService from "../../services/UserService";
 import { toast } from "react-toastify";
@@ -85,8 +86,9 @@ export const getFormProcesses = (formId, ...rest) => {
       UserService.getToken(),
       true
     )
-      .then((res) => {
+      .then(async(res) => {
         if (res.data) {
+          dispatch(getApplicationCount(res.data.id))
           dispatch(setFormPreviosData(res.data))
           dispatch(setFormProcessesData(res.data)); // need to check api and put exact respose
           done(null, res.data);
@@ -103,17 +105,26 @@ export const getFormProcesses = (formId, ...rest) => {
   };
 };
 
+export const getApplicationCount = (mapperId)=>{
+  return async(dispatch) => {
+    let apiUrlClaimTask = replaceUrl(
+      API.GET_FORM_COUNT,
+      "<mapper id>",
+       mapperId
+    );
+     await httpGETRequest(apiUrlClaimTask).then((res)=>{
+        const applicationCount = +res.data?.value;
+        dispatch(setApplicationCount(applicationCount))
+      })
+  }
+}
+
 export const saveFormProcessMapper = (data, update = false, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  return (dispatch) => {
-    let request;
+  return  async (dispatch) => {
+    
     if (update) {
-      request = httpPUTRequest(`${API.FORM}/${data.id}`, data);
-    } else {
-      request = httpPOSTRequest(`${API.FORM}`, data);
-    }
-    request
-      .then((res) => {
+      httpPUTRequest(`${API.FORM}/${data.id}`, data).then(async(res) => {
         // if (res.status === 200) {
         //TODO REMOVE
         done(null, res.data);
@@ -130,7 +141,30 @@ export const saveFormProcessMapper = (data, update = false, ...rest) => {
         console.log("Error", error);
         dispatch(setFormProcessLoadError(true));
         done(error);
+      });;
+    } else {
+       httpPOSTRequest(`${API.FORM}`, data).then(async(res) => {
+        // if (res.status === 200) {
+        //TODO REMOVE
+        dispatch(getApplicationCount(res.data.id))
+        done(null, res.data);
+        if(!update){  
+          dispatch(setFormProcessesData(res.data));
+        }
+        // dispatch(setFormProcessesData([]));
+
+        // }
+      })
+      .catch((error) => {
+        dispatch(getFormProcesses(data.formId))
+        toast.error("Form process failed")
+        console.log("Error", error);
+        dispatch(setFormProcessLoadError(true));
+        done(error);
       });
+    }
+    
+
   };
 };
 

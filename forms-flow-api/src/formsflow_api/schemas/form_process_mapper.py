@@ -23,6 +23,7 @@ class FormProcessMapperSchema(Schema):
     created = fields.Str(data_key="created")
     modified_by = fields.Str(data_key="modifiedBy")
     modified = fields.Str(data_key="modified")
+    version = fields.Str(data_key="version")
 
 
 class FormProcessMapperListReqSchema(Schema):

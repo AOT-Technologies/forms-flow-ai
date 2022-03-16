@@ -29,9 +29,6 @@ class ApplicationService:
 
         mapper = FormProcessMapper.find_form_by_form_id(data["form_id"])
         data["form_process_mapper_id"] = mapper.id
-        data["application_name"] = mapper.form_name
-        data["process_key"] = mapper.process_key
-        data["process_name"] = mapper.process_name
 
         # Function to create application in DB
         application = Application.create_from_dict(data)
@@ -44,7 +41,7 @@ class ApplicationService:
                 "variables": {
                     "applicationId": {"value": application.id},
                     "formUrl": {"value": application.form_url},
-                    "formName": {"value": application.application_name},
+                    "formName": {"value": mapper.form_name},
                     "submitterName": {"value": application.created_by},
                     "submissionDate": {"value": application.created.__str__()},
                 }
@@ -126,7 +123,6 @@ class ApplicationService:
                 created_from=created_from,
                 created_to=created_to,
             )
-
             return (
                 application_schema.dump(applications, many=True),
                 get_all_applications_count,
@@ -337,9 +333,12 @@ class ApplicationService:
     def get_total_application_corresponding_to_mapper_id(mapper_id: int):
         count = Application.get_total_application_corresponding_to_mapper_id(mapper_id)
         if count == 0:
-            return ("No Applications found", HTTPStatus.OK)
+            return ({"message": "No Applications found", "value": count}, HTTPStatus.OK)
 
-        return (f"Total Applications found are: {count}", HTTPStatus.OK)
+        return (
+            {"message": f"Total Applications found are: {count}", "value": count},
+            HTTPStatus.OK,
+        )
 
 
 class ApplicationSchemaWrapper:  # pylint: disable=too-few-public-methods

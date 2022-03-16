@@ -38,6 +38,7 @@ function forms-flow-forms
     INSIGHT_API_URL=http://$_IPdr:7000
     echo Please wait, forms is getting up!
     docker-compose -f docker-compose.yml up --build -d forms-flow-forms
+	sleep 15
 	CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
     CAMUNDA_API_URL=http://$_IPdr:8000/camunda
     FORMSFLOW_API_URL=http://{your-ip-address}:5000
@@ -101,12 +102,14 @@ done
 	echo FORMIO_DEFAULT_PROJECT_URL=$FORMIO_DEFAULT_PROJECT_URL >>.env
 	echo KEYCLOAK_URL_REALM=$KEYCLOAK_URL_REALM >>.env
 	echo KEYCLOAK_BPM_CLIENT_SECRET=$Keysecret >>.env
-	echo KEYCLOAK_URL=http:$KEYCLOAK_URL >>.env
+	echo KEYCLOAK_URL=$KEYCLOAK_URL >>.env
 	echo INSIGHT_API_URL=$INSIGHT_API_URL >>.env
 	echo INSIGHT_API_KEY=$readash >>.env
 	echo CAMUNDA_API_URL=$CAMUNDA_API_URL >>.env
     echo FORMSFLOW_API_URL=$FORMSFLOW_API_URL >>.env
     echo WEBSOCKET_SECURITY_ORIGIN=$WEBSOCKET_SECURITY_ORIGIN >>.env
+	echo FORMSFLOW_API_DB_URL=postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi >>.env
+	echo FORMSFLOW_API_CORS_ORIGINS=* >>.env
 	echo Administrator="${id[0]}" >>.env
     echo Anonymous= "${id[1]}" >>.env
     echo Authenticated= "${id[2]}" >>.env
@@ -138,8 +141,9 @@ function keycloak
         KEYCLOAK_URL=http://{your-ip-address}:8080
         KEYCLOAK_URL=http://$_IPdr:8080
 		Keysecret=e4bdbd25-1467-4f7f-b993-bc4b1944c943
-		echo $KEYCLOAK_URL_REALM >>.env
-		echo $KEYCLOAK_URL >>.env
+		echo " "
+		echo KEYCLOAK_URL_REALM=$KEYCLOAK_URL_REALM >>.env
+		echo KEYCLOAK_URL=$KEYCLOAK_URL >>.env
 		echo KEYCLOAK_BPM_CLIENT_SECRET=$Keysecret >>.env
 
         printf "%s " "Press enter to continue"

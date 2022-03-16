@@ -142,7 +142,7 @@ def test_get_application_count_based_on_form_process_mapper_id(app, client, sess
 
     rv = client.get(f"/form/{form_id}/application/count", headers=headers)
     assert rv.status_code == 200
-    assert rv.json == {"message": "No Applications found"}
+    assert rv.json == {'message': 'No Applications found', 'value': 0}
 
 
 def test_get_application_count_based_on_form_process_mapper_id1(app, client, session):

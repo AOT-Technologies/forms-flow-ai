@@ -86,3 +86,9 @@ export const setFormPreviosData = (data) => (dispatch) => {
   });
 };
 
+export const setApplicationCount = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.APPLICATION_COUNT,
+    payload:data
+  })
+}

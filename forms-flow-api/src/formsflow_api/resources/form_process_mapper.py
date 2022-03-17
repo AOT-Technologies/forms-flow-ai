@@ -26,6 +26,7 @@ class FormResource(Resource):
     @profiletime
     def get():
         """Get form process mapper.
+
         : pageNo:- To retrieve page number
         : limit:- To retrieve limit for each page
         : formName:- Retrieve form list based on form name
@@ -112,7 +113,7 @@ class FormResource(Resource):
             return response, status
         except BaseException as form_err:  # pylint: disable=broad-except
             response, status = {
-                "message": "Invalid request object passed for FormProcessmapper POST API",
+                "message": "Invalid request object passed",
                 "errors": form_err,
             }, HTTPStatus.BAD_REQUEST
 
@@ -130,7 +131,8 @@ class FormResourceById(Resource):
     @auth.require
     @profiletime
     def get(mapper_id: int):
-        """Get forms.
+        """Get form by mapper_id.
+
         : mapper_id:- Get form process mapper by mapper_id
         """
         try:
@@ -154,7 +156,8 @@ class FormResourceById(Resource):
     @auth.require
     @profiletime
     def delete(mapper_id: int):
-        """
+        """Delete form by mapper_id.
+
         : mapper_id:- Delete form process mapper by mapper_id.
         """
         try:
@@ -176,7 +179,8 @@ class FormResourceById(Resource):
     @staticmethod
     @auth.require
     def put(mapper_id: int):
-        """
+        """Update form by mapper_id.
+
         : comments:- Brief description
         : formId:- Unique Id for the corresponding form
         : formName:- Name for the corresponding form
@@ -220,7 +224,8 @@ class FormResourceByFormId(Resource):
     @auth.require
     @profiletime
     def get(form_id: str):
-        """
+        """Get form by form_id.
+
         : form_id:- Get details of only form corresponding to a particular formId
         """
         try:
@@ -232,7 +237,10 @@ class FormResourceByFormId(Resource):
             response, status = (
                 {
                     "type": "No Response",
-                    "message": f"No Response found as FormProcessMapper with FormID - {form_id} not stored in DB",
+                    "message": (
+                        "No Response found as FormProcessMapper with"
+                        f"FormID - {form_id} not stored in DB"
+                    ),
                 },
                 HTTPStatus.NO_CONTENT,
             )
@@ -244,13 +252,13 @@ class FormResourceByFormId(Resource):
 @cors_preflight("GET,OPTIONS")
 @API.route("/<int:mapper_id>/application/count", methods=["GET", "OPTIONS"])
 class FormResourceApplicationCount(Resource):
-    """Resource for getting applications count according to a mapper id"""
+    """Resource for getting applications count according to a mapper id."""
 
     @staticmethod
     @auth.require
     @profiletime
     def get(mapper_id: int):
-        """The method retrieves the total application count for the given mapper id"""
+        """The method retrieves the total application count for th egiven mapper id."""
         (
             response,
             status,

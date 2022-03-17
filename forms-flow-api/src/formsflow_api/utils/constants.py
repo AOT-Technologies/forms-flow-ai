@@ -1,4 +1,4 @@
-"""All constants for project"""
+"""All constants for project."""
 import os
 
 from dotenv import find_dotenv, load_dotenv

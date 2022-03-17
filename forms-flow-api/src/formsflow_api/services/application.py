@@ -62,9 +62,12 @@ class ApplicationService:
     @staticmethod
     @lru_cache(maxsize=32)
     def get_authorised_form_list(token):
-        """Function to get the authorized forms based on token passed.
+        """
+        Function to get the authorized forms based on token passed.
+
         Used LRU cache to memoize results and parameter maxsize defines
-        the no of function calls."""
+        the no of function calls.
+        """
         response = BPMService.get_auth_form_details(token=token)
         return response
 
@@ -203,7 +206,7 @@ class ApplicationService:
 
     @staticmethod
     def get_all_application_status():
-        """Get all application status"""
+        """Get all application status."""
         status_list = Application.find_all_application_status()
         status_list = [x.application_status for x in status_list]
         current_app.logger.debug(status_list)
@@ -251,7 +254,7 @@ class ApplicationService:
 
     @staticmethod
     def get_application_by_user(application_id: int, user_id: str):
-        """Get application by user id"""
+        """Get application by user id."""
         application = Application.find_id_by_user(
             application_id=application_id, user_id=user_id
         )
@@ -279,7 +282,7 @@ class ApplicationService:
         return schema.dump(applications, many=True)
 
     @staticmethod
-    def get_current_aggregated_applications(from_date: datetime, to_date: datetime):
+    def get_aggregated_applications_modified(from_date: datetime, to_date: datetime):
         """Get aggregated applications."""
         applications = Application.find_aggregated_applications_modified(
             from_date=from_date, to_date=to_date
@@ -288,9 +291,7 @@ class ApplicationService:
         return schema.dump(applications, many=True)
 
     @staticmethod
-    def get_aggregated_application_status(
-        mapper_id: int, from_date: datetime, to_date: datetime
-    ):
+    def get_applications_status(mapper_id: int, from_date: datetime, to_date: datetime):
         """Get aggregated application status."""
         application_status = Application.find_aggregated_application_status(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date
@@ -299,9 +300,7 @@ class ApplicationService:
         return schema.dump(application_status, many=True)
 
     @staticmethod
-    def get_current_aggregated_application_status(
-        mapper_id: int, from_date: str, to_date: str
-    ):
+    def get_applications_status_modified(mapper_id: int, from_date: str, to_date: str):
         """Get aggregated application status."""
         application_status = Application.find_aggregated_application_status_modified(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date
@@ -321,7 +320,7 @@ class ApplicationService:
 
     @staticmethod
     def apply_custom_attributes(application_schema_dump):
-        """Wrapper function to call Application Schema Wrapper"""
+        """Wrapper function to call Application Schema Wrapper."""
         if isinstance(application_schema_dump, list):
             for entry in application_schema_dump:
                 ApplicationSchemaWrapper.apply_attributes(entry)
@@ -331,6 +330,7 @@ class ApplicationService:
 
     @staticmethod
     def get_total_application_corresponding_to_mapper_id(mapper_id: int):
+        """Retrieves application count related to a mapper_id."""
         count = Application.get_total_application_corresponding_to_mapper_id(mapper_id)
         if count == 0:
             return ({"message": "No Applications found", "value": count}, HTTPStatus.OK)
@@ -342,12 +342,14 @@ class ApplicationService:
 
 
 class ApplicationSchemaWrapper:  # pylint: disable=too-few-public-methods
-    """ApplicationSchemaWrapper Class"""
+    """ApplicationSchemaWrapper Class."""
 
     @staticmethod
     def apply_attributes(application):
-        """Wrapper function to call Application Schema Wrapper class
-        to find formid, submissionId from passed formUrl
+        """
+        Wrapper function to call Application Schema Wrapper class.
+
+        finds formid, submissionId from passed formUrl.
         """
         try:
             formurl = application["formUrl"]

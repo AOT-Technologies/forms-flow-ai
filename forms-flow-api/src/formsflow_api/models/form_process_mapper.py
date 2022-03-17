@@ -111,7 +111,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
     @classmethod
     def find_all_active(cls, page_number, limit, form_name=None):
-        """Fetch all active form process mappers"""
+        """Fetch all active form process mappers."""
         if form_name:
             return (
                 cls.query.filter(
@@ -154,6 +154,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
     @classmethod
     def find_count_form_name(cls, form_name):
+        """Fetch the total count of form process mapper with a specific form_name."""
         return cls.query.filter(
             FormProcessMapper.form_name.ilike(f"%{form_name}%")
         ).count()
@@ -221,6 +222,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     ) -> FormProcessMapper:
         """
         Return the form process mapper with given form_id and version.
+
         : form_id : form_id corresponding to the mapper
         : version : version corresponding to the mapper
         """

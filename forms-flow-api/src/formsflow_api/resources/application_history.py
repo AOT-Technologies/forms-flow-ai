@@ -23,6 +23,7 @@ class ApplicationHistoryResource(Resource):
     @profiletime
     def get(application_id):
         """Get application history.
+
         : application_id:- Getting application history by providing application_id
         """
         return (

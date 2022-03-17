@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import RadioGroup from "@material-ui/core/RadioGroup";
@@ -10,6 +10,7 @@ import Card from "@material-ui/core/Card";
 import Select from "react-dropdown-select";
 import SaveNext from "./SaveNext";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
+
 
 const WorkFlow = React.memo(({
     associateWorkFlow,
@@ -24,13 +25,15 @@ const WorkFlow = React.memo(({
     workflow,
     disableWorkflowAssociation
 }) => {
-
+  const[modified,setModified] = useState(false)
+  
   return (
     <Grid container direction="row" justify="flex-start" alignItems="baseline">
       {/* <FormControl component="fieldset"> */}
 
       <Grid item xs={12} sm={1} spacing={3}>
-       <button className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" onClick={handleEditAssociation}>Edit</button>
+       <button className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary" onClick={()=>{
+       handleEditAssociation()}}>Edit</button>
       </Grid>
       <Grid item xs={12} sm={8} spacing={3}/>
       <Grid item xs={12} sm={3} className="next-btn">
@@ -39,6 +42,8 @@ const WorkFlow = React.memo(({
           handleNext={handleNext}
           activeStep={activeStep}
           steps={steps}
+          changeWorkFlowStatus={changeWorkFlowStatus}
+          modified={modified}
         />
       </Grid>
       <Grid item xs={12} sm={12} spacing={3}><br/></Grid>
@@ -66,6 +71,7 @@ const WorkFlow = React.memo(({
                 <FormControlLabel
                   value="no"
                   control={<Radio color="primary" />}
+                  onClick={(item)=>setModified(true)}
                   label="No"
                 />
               </RadioGroup>
@@ -77,7 +83,8 @@ const WorkFlow = React.memo(({
                   <h5> Please select from one of the following workflows. </h5>
                   <Select
                     options={populateDropdown()}
-                    onChange={(item) => associateToWorkFlow(item)}
+                    onChange={(item) =>{setModified(true);
+                      associateToWorkFlow(item)}}
                     values={workflow && workflow.value ? [workflow] : []}
                     disabled={disableWorkflowAssociation}
                   />

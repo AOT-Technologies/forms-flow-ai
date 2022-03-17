@@ -14,7 +14,12 @@ from formsflow_api.schemas import (
     ApplicationUpdateSchema,
 )
 from formsflow_api.services import ApplicationService
-from formsflow_api.utils import REVIEWER_GROUP, auth, cors_preflight, profiletime
+from formsflow_api.utils import (
+    REVIEWER_GROUP,
+    auth,
+    cors_preflight,
+    profiletime,
+)
 
 API = Namespace("Application", description="Application")
 
@@ -28,7 +33,7 @@ class ApplicationsResource(Resource):
     @auth.require
     @profiletime
     def get():  # pylint:disable=too-many-locals
-        """Get applications
+        """Get applications.
 
         : Id:- List the application for particular id
         : applicationName:- Retrieve application list based on application name
@@ -142,6 +147,7 @@ class ApplicationResourceById(Resource):
     @profiletime
     def get(application_id: int):
         """Get application by id.
+
         : application_id:- List the application for particular application_id
         """
         try:
@@ -170,6 +176,7 @@ class ApplicationResourceById(Resource):
     @profiletime
     def put(application_id: int):
         """Update application details.
+
         : application_id:- Update the application for particular application_id
         """
         application_json = request.get_json()
@@ -204,6 +211,7 @@ class ApplicationResourceByFormId(Resource):
     @profiletime
     def get(form_id: str):
         """Get applications.
+
         : form_id:- Retrieve application list based on formid
         """
         if request.args:
@@ -271,6 +279,7 @@ class ApplicationResourcesByIds(Resource):
     @profiletime
     def post():
         """Post a new application using the request body.
+
         : formId:- Unique Id for the corresponding form
         : submissionId:- Unique Id for the submitted form
         : formUrl:- Unique URL for the submitted application
@@ -306,7 +315,7 @@ class ApplicationResourceByApplicationStatus(Resource):
     @auth.require
     @profiletime
     def get():
-        """Method to get the application status lists"""
+        """Method to get the application status lists."""
         try:
             return (
                 ApplicationService.get_all_application_status(),

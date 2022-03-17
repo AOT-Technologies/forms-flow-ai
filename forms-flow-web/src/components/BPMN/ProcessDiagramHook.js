@@ -4,7 +4,6 @@ import {useDispatch,useSelector} from "react-redux";
 
 import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
 import Loading from "../../containers/Loading";
-
 import {fetchDiagram, getProcessActivities} from "../../apiManager/services/processServices";
 import {setProcessActivityData, setProcessDiagramLoading, setProcessDiagramXML} from "../../actions/processActions";
 import "./bpm.scss"
@@ -90,9 +89,16 @@ const ProcessDiagram = React.memo((props)=>{
       }
    }
  },[diagramXML,bpmnViewer,markers,prevMarkers]);
+ 
+ const zoom = () => {
+  bpmnViewer.get('zoomScroll').stepZoom(1)
+  }
 
-
-
+  const zoomOut = () => {
+    bpmnViewer.get('zoomScroll').stepZoom(-1)
+    }
+  const zoomReset = ()=>{ bpmnViewer.get('zoomScroll').reset();}
+    
   /*const handleError = (err) => {
     console.log(err);
     const { onError } = props;
@@ -144,9 +150,27 @@ const ProcessDiagram = React.memo((props)=>{
   }
   
   return (
+    <>
     <div className="bpmn-viewer-container">
       <div id="process-diagram-container" className="bpm-container grab-cursor" ref={containerRef}/>
+    </div >
+    <div className="d-flex  justify-content-end btn_zoom">
+      <div className="d-flex flex-column">
+    <button className='mb-3' title='Reset Zoom' onClick={()=>zoomReset()}>
+     <i class="fa fa-retweet" aria-hidden="true"></i> 
+    {/* <i className="icon-screenshot"></i> */}
+   </button> 
+    <button  title='Zoom In' onClick={()=>zoom()}>
+    <i class="fa fa-search-plus" aria-hidden="true"></i>
+    {/* <i className="fa fa-plus" aria-hidden="true"></i> */}
+   </button>
+   <button title='Zoom Out' onClick={()=>zoomOut()}>
+   <i class="fa fa-search-minus" aria-hidden="true"></i>
+    {/* <i className="fa fa-minus" aria-hidden="true"></i> */}
+  </button>
+  </div>
     </div>
+    </>
   );
 });
 

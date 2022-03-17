@@ -59,6 +59,7 @@ def test_post_application_history_create_method(app, client, session):
             "applicationId": 1,
             "applicationStatus": "New",
             "formUrl": "http://testsample.com/form/23/submission/3423",
+            "submittedBy": "client"
         },
     )
     assert new_application.status_code == 201

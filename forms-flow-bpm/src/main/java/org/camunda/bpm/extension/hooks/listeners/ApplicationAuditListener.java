@@ -13,7 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+
 import java.io.IOException;
+import java.util.*;
 
 
 /**
@@ -65,10 +71,15 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
      * @param execution
      * @return
      */
-    private Application prepareApplicationAudit(DelegateExecution execution) {
+    protected Application prepareApplicationAudit(DelegateExecution execution) {
         String applicationStatus = String.valueOf(execution.getVariable("applicationStatus"));
         String formUrl = String.valueOf(execution.getVariable("formUrl"));
-        return new Application(applicationStatus, formUrl);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String submittedBy = null;
+		if (authentication instanceof JwtAuthenticationToken) {
+			submittedBy = ((JwtAuthenticationToken) authentication).getToken().getClaimAsString("preferred_username");
+		}
+        return new Application(applicationStatus, formUrl, submittedBy);
     }
 
 

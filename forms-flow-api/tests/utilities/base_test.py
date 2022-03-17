@@ -148,7 +148,7 @@ def get_application_create_payload(form_id: str = "1234"):
     return {
         "formId": form_id,
         "submissionId": "1233432",
-        "formUrl": f"http://sample.com/formid/{form_id}/submissionid/1233432",
+        "formUrl": f"http://sample.com/form/{form_id}/submission/1233432",
     }
 
 

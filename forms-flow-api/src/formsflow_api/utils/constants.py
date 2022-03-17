@@ -21,7 +21,7 @@ ANONYMOUS_USER = "Anonymous-user"
 
 FILTER_MAPS = {
     "application_id": {"field": "id", "operator": "eq"},
-    "application_name": {"field": "application_name", "operator": "ilike"},
+    "application_name": {"field": "form_name", "operator": "ilike"},
     "application_status": {"field": "application_status", "operator": "eq"},
     "created_by": {"field": "created_by", "operator": "eq"},
     "modified_from": {"field": "modified", "operator": "ge"},

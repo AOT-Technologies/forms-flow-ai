@@ -5,7 +5,9 @@ from flask import current_app, request
 from flask_restx import Namespace, Resource
 from marshmallow.exceptions import ValidationError
 
-from formsflow_api.schemas.aggregated_application import ApplicationMetricsRequestSchema
+from formsflow_api.schemas.aggregated_application import (
+    ApplicationMetricsRequestSchema,
+)
 from formsflow_api.services import ApplicationService
 from formsflow_api.utils import auth, cors_preflight, profiletime
 from formsflow_api.utils.enums import MetricsState

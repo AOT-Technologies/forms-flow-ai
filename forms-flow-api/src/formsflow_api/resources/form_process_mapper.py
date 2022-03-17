@@ -107,7 +107,7 @@ class FormResource(Resource):
             dict_data = mapper_schema.load(mapper_json)
             dict_data["created_by"] = sub
             mapper = FormProcessMapperService.create_mapper(dict_data)
-
+            FormProcessMapperService.unpublish_previous_mapper(dict_data)
             response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
             return response, status
         except BaseException as form_err:  # pylint: disable=broad-except
@@ -250,11 +250,11 @@ class FormResourceApplicationCount(Resource):
     @auth.require
     @profiletime
     def get(mapper_id: int):
-        """The method retrieves the total application count for th egiven mapper id"""
+        """The method retrieves the total application count for the given mapper id"""
         (
             response,
             status,
         ) = ApplicationService.get_total_application_corresponding_to_mapper_id(
             mapper_id
         )
-        return {"message": response}, status
+        return response, status

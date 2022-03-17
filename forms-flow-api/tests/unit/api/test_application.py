@@ -128,6 +128,8 @@ class TestApplicationDetailView:
 
         response = client.get(f"/application/{application_id}", headers=headers)
         assert response.status_code == 200
+        assert response.json['applicationName'] == 'Sample form'
+        assert response.json['processKey'] == 'oneStepApproval'
 
 
 def test_application_resource_by_form_id(app, client, session):
@@ -210,11 +212,8 @@ def test_application_payload(app, client, session):
     )
     assert rv.status_code == 201
     application_response = rv.json
-
-    assert application_response["processKey"] == "oneStepApproval"
-    assert application_response["processName"] == "One Step Approval"
     assert application_response["applicationStatus"] == "New"
-    assert application_response["applicationName"] == "Sample form"
+    assert application_response["formUrl"] == f"http://sample.com/form/{form_id}/submission/1233432"
 
 
 def test_application_update_details_api(app, client, session):

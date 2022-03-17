@@ -133,7 +133,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
           </div>
         </div>
        </div>
-      <div className="row">
+      <div className="row align-item-center">
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-title" className="form-group">
             <label htmlFor="title" className="control-label field-required">Title</label>
@@ -201,7 +201,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
                 type="text"
                 className="form-control"
                 id="path"
-                placeholder="example"
+                placeholder="Enter pathname"
                 style={{'textTransform': 'lowercase', width:'120px'}}
                 value={form.path || ''}
                 onChange={event => handleChange('path', event)}
@@ -210,8 +210,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
           </div>
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
-          <div id="form-group-anonymous" className="form-group">
-            <label htmlFor="anonymous" className="control-label">Anonymous Form</label>
+          <div id="form-group-anonymous" className="form-group" style={{marginTop:"25px"}}>
             <div className="input-group align-items-center">
               <input
                className="mr-3" style={{height:'20px', width:'20px'}}

@@ -5,6 +5,7 @@ from http import HTTPStatus
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import FormProcessMapper
 from formsflow_api.schemas import FormProcessMapperSchema
+from formsflow_api.utils.enums import FormProcessMapperStatus
 
 
 class FormProcessMapperService:
@@ -62,7 +63,9 @@ class FormProcessMapperService:
         raise BusinessException(
             {
                 "type": "No Response",
-                "message": f"FormProcessMapper with FormID - {form_id} not stored in DB",
+                "message": (
+                    f"FormProcessMapper with FormID -{form_id} not stored in DB"
+                ),
             },
             HTTPStatus.NO_CONTENT,
         )
@@ -92,14 +95,16 @@ class FormProcessMapperService:
         raise BusinessException(
             {
                 "type": "Invalid response data",
-                "message": f"Unable to updated FormProcessMapperId - {form_process_mapper_id}",
+                "message": (
+                    f"Unable to update FormProcessMapperId- {form_process_mapper_id}"
+                ),
             },
             HTTPStatus.BAD_REQUEST,
         )
 
     @staticmethod
     def mark_inactive(form_process_mapper_id):
-        """Mark form process mapper as inactive."""
+        """Mark form process mapper as inactive and deleted."""
         application = FormProcessMapper.find_form_by_id_active_status(
             form_process_mapper_id=form_process_mapper_id
         )
@@ -109,7 +114,61 @@ class FormProcessMapperService:
             raise BusinessException(
                 {
                     "type": "Invalid response data",
-                    "message": f"Unable to set FormProcessMapperId - {form_process_mapper_id} inactive",
+                    "message": (
+                        "Unable to set FormProcessMapperId -"
+                        f"{form_process_mapper_id} inactive"
+                    ),
                 },
                 HTTPStatus.BAD_REQUEST,
             )
+
+    @staticmethod
+    def mark_unpublished(form_process_mapper_id):
+        """Mark form process mapper as inactive."""
+        try:
+            mapper = FormProcessMapper.find_form_by_id_active_status(
+                form_process_mapper_id=form_process_mapper_id
+            )
+            if mapper:
+                mapper.mark_unpublished()
+                return
+        except Exception as err:
+            raise err
+
+    @staticmethod
+    def get_mapper_by_formid_and_version(form_id: int, version: int):
+        """Returns a serialized form process mapper given a form_id and version."""
+        mapper = FormProcessMapper.find_mapper_by_form_id_and_version(form_id, version)
+        if mapper:
+            mapper_schema = FormProcessMapperSchema()
+            return mapper_schema.dump(mapper)
+
+        return None
+
+    @staticmethod
+    def unpublish_previous_mapper(mapper_data: dict) -> None:
+        """
+        This method unpublishes the previous version of the form process mapper.
+
+        : mapper_data: serialized create mapper payload
+        : Should be called with create_mapper method
+        """
+        try:
+            form_id = mapper_data.get("form_id")
+            version = mapper_data.get("version")
+            if version is None or form_id is None:
+                return
+            version = int(version) - 1
+            previous_mapper = FormProcessMapperService.get_mapper_by_formid_and_version(
+                form_id, version
+            )
+            previous_status = previous_mapper.get("status")
+            if (
+                previous_mapper
+                and previous_status == FormProcessMapperStatus.ACTIVE.value
+            ):
+                previous_mapper_id = previous_mapper.get("id")
+                FormProcessMapperService.mark_unpublished(previous_mapper_id)
+
+        except Exception as err:
+            raise err

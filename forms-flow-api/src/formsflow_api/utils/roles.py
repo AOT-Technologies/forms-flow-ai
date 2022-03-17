@@ -1,4 +1,4 @@
-# """Role definitions."""
+"""Role definitions."""
 
 
 # class Role:  # pylint: disable=too-few-public-methods

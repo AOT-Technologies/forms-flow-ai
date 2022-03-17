@@ -1,6 +1,11 @@
 """Common utils.
+
 CORS pre-flight decorator. A simple decorator to add the options
 method to a Request Class.
+camel_to_snake - Converts camel case to snake case.
+validate_sort_order_and_order_by - Utility function to validate
+if sort order and sort order by is correct.
+translate - Translate the response to provided language
 """
 import re
 
@@ -54,7 +59,8 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
 
 
 def translate(to_lang: str, data: dict) -> dict:
-    """Translate the response to provided language,
+    """Translate the response to provided language.
+
     will return the translated object if there is match
     else return the original object
     """

@@ -1,8 +1,9 @@
-"""Unit test for APIs of Dashboards"""
+"""Unit test for APIs of Dashboards."""
 from tests.utilities.base_test import factory_auth_header
 
 
 def test_get_dashboards(app, client, session):
+    """Testing the get dashboards endpoint."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get("/dashboards", headers=headers)
@@ -11,6 +12,7 @@ def test_get_dashboards(app, client, session):
 
 
 def test_get_dashboard_details(app, client, session):
+    """Testing the get dashboard details endpoint."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get("/dashboards", headers=headers)
@@ -22,11 +24,13 @@ def test_get_dashboard_details(app, client, session):
 
 
 def test_no_auth_get_dashboards(app, client, session):
+    """Get dashboards with invalid authentication."""
     rv = client.get("/dashboards")
     assert rv.status_code == 401
 
 
 def test_get_dashboard_error_details(app, client, session):
+    """Get dashboards with invalid resource id."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 

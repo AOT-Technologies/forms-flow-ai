@@ -19,30 +19,30 @@ In this document we will discuss the Installation process that we have automated
 2.  You can just double click on the windows batch script file ``“start.bat”`` to start the installation procedure. 
 3. While installation you must provide some prompt answers and the redash api key (you will get the redash api key only if you include analytics in your installation and after the analytics is up in the docker).Now you can follow the steps below to understand the installation:
 *	Firstly, you will receive a prompt question regarding the installation of analytics in the process. Its your choice to add   analyctics or just type n and continue.
-``
+```
 Do you want to include analytics in the installation?
-``
+```
 *	You can see the order of installation in the screen.
 *	First, it will automatically take you to the keycloak installation.
-``
+```
 Do you have an existing keycloak?
-``
+```
 If you chose yes it will ask you certain details about your keycloak.
-``
+```
 bpm client secret key
-``
-``
+```
+```
 Keycloak url
-``
-``
+```
+```
 keycloak url realm name
-``
+```
 *	If you do not have a keycloak It will automatically setup a keycloak for you.
 *	Then it will take you to the analytics if you have chosen analytics in your installation.
 You have to collect the redash api key for further analytics installation.
-``
+```
 localhost:7000 -> API Key
-``
+```
  or else it will go to the further installation.
 *	After the forms-flow-forms gets up, you can wait for a couple of seconds as shown for the browser to load.
 *	Then it moves in the order-> ``web->BPM->web-api``.
@@ -58,30 +58,30 @@ Same as mentioned in windows installation,
  3. While installation you must provide some prompt answers and the redash api key (you will get the redash api key only if you include analytics in your installation and after the analytics is up in the docker). Now you can follow the steps below to understand the installation:
 
 *	Firstly, you will receive a prompt question regarding the installation of analytics in the process. Its your choice to add analytics or just type n and continue.
-``
+```
 Do you want to include analytics in the installation?
-``
+```
 *	You can see the order of installation in the screen.
 *	First, it will automatically take you to the keycloak installation.
-``
+```
 Do you have an existing keycloak?
-``
+```
 If you chose yes it will ask you certain details about your keycloak.
-``
+```
 bpm client secret key
-``
-``
+```
+```
 Keycloak url
-``
-``
+```
+```
 keycloak url realm name
-``
+```
 *	If you do not have a keycloak It will automatically setup a keycloak for you.
 *	Then it will take you to the analytics if you have chosen analyctics in your installation.
 You have to collect the redash api key for further analytics installation.
-``
+```
 localhost:7000 -> API Key
-``
+```
  or else it will go to the further installation.
 *	After the forms-flow-forms gets up, you can wait for a couple of seconds as shown for the browser to load.
 *	Then it moves in the order-> ``web->BPM->web-api``.

@@ -1,20 +1,18 @@
 package org.camunda.bpm.extension.keycloak.plugin;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
-import org.springframework.util.StringUtils;
 
 public class CustomKeycloakIdentityProviderPlugin extends KeycloakIdentityProviderPlugin {
-	
+
 	/** custom interceptors to modify behaviour of default KeycloakRestTemplate */
 	private List<ClientHttpRequestInterceptor> customHttpRequestInterceptors = Collections.emptyList();
-	
+
 	private KeycloakIdentityProviderFactory keycloakIdentityProviderFactory = null;
-	
+
 	/**
 	 * Web application client ID
 	 */
@@ -24,14 +22,15 @@ public class CustomKeycloakIdentityProviderPlugin extends KeycloakIdentityProvid
 	 * Enable client based auth.
 	 */
 	protected boolean enableClientAuth = false;
-	
+
 	@Override
 	public void preInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
 		super.preInit(processEngineConfiguration);
-		keycloakIdentityProviderFactory = new KeycloakIdentityProviderFactory(this, customHttpRequestInterceptors, this.webClientId, this.enableClientAuth);
+		keycloakIdentityProviderFactory = new KeycloakIdentityProviderFactory(this, customHttpRequestInterceptors,
+				this.webClientId, this.enableClientAuth);
 		processEngineConfiguration.setIdentityProviderSessionFactory(keycloakIdentityProviderFactory);
 	}
-	
+
 	/**
 	 * immediately clear entries from cache
 	 */
@@ -41,7 +40,6 @@ public class CustomKeycloakIdentityProviderPlugin extends KeycloakIdentityProvid
 		this.keycloakIdentityProviderFactory.clearCache();
 	}
 
-	
 	public String getWebClientId() {
 		return webClientId;
 	}

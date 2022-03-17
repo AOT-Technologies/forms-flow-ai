@@ -1,5 +1,5 @@
 # """This manages process Response Schema."""
-
+"""Process schema."""
 from marshmallow import EXCLUDE, Schema, fields
 
 

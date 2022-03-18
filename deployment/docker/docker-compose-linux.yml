@@ -2,9 +2,9 @@
 version: '3.7'
 
 services:
-  formsflowbpm-db:
+  forms-flow-bpm-db:
     image: postgres:latest
-    container_name: formsflow-bpm-db
+    container_name: forms-flow-bpm-db
     environment:
       POSTGRES_USER: ${CAMUNDA_JDBC_USER:-admin}
       POSTGRES_PASSWORD: ${CAMUNDA_JDBC_PASSWORD:-changeme}
@@ -15,14 +15,16 @@ services:
       - '5432:5432'
     restart: always
     networks:
-      - formsflow-network
+      - forms-flow-network
 
-  formsflow-bpm:
-    container_name: formsflow-bpm
-    image: formsflowai/formsflow-bpm:latest
+  forms-flow-bpm:
+    container_name: forms-flow-bpm
+    build:
+      context: ./../../forms-flow-bpm/
+      dockerfile: Dockerfile
     restart: always
     links:
-      - formsflow-bpm-db
+      - forms-flow-bpm-db
     ports:
       - '8000:8080'
     environment:
@@ -60,15 +62,14 @@ services:
       - WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
       - DATA_BUFFER_SIZE=${DATA_BUFFER_SIZE:-2}
       - IDENTITY_PROVIDER_MAX_RESULT_SIZE=${IDENTITY_PROVIDER_MAX_RESULT_SIZE:-250}
-      - BPM_CLIENT_CONN_TIMEOUT=${BPM_CLIENT_CONN_TIMEOUT:-5000}
     networks:
-      - formsflow-network
+      - forms-flow-network
  
-  formsflow-forms-db:
-    container_name: formsflow-forms-db
+  forms-flow-forms-db:
+    container_name: forms-flow-forms-db
     image: mongo:5.0
     restart: always
-    hostname: formsflow-forms-db
+    hostname: forms-flow-forms-db
     ports:
       - '27018:27017'
     environment:
@@ -76,20 +77,22 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${FORMIO_DB_PASSWORD:-changeme}
       MONGO_INITDB_DATABASE: ${FORMIO_DB_NAME:-formio}
     volumes:
-      - ./../../formsflow-forms/mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
+      - ./../../forms-flow-forms/mongo_entrypoint/001_user.js:/docker-entrypoint-initdb.d/001_user.js:ro
       - ./mongodb/data/db/:/data/db/
       - ./mongodb/data/log/:/var/log/mongodb/
       - ./mongodb/mongod.conf:/etc/mongod.conf
     networks:
-      - formsflow-network
+      - forms-flow-network
 
-  formsflow-forms:
-   container_name: formsflow-forms
-    image: formsflowai/formsflow-forms:latest
+  forms-flow-forms:
+    container_name: forms-flow-forms
+    build:
+      context: ./../../forms-flow-forms/
+      dockerfile: Dockerfile
     # The app will restart until Mongo is listening
     restart: always
     links:
-      - formsflow-forms-db
+      - forms-flow-forms-db
     ports:
       - '3001:3001'
     # The application wants to download things to the local directory
@@ -97,7 +100,7 @@ services:
       - ./:/app:rw
     environment:
       DEBUG: formio:*
-      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_DB_USERNAME:-admin}:${FORMIO_DB_PASSWORD:-changeme}@formsflow-forms-db:27017/${FORMIO_DB_NAME:-formio}?authMechanism=SCRAM-SHA-1&authSource=admin\"}"
+      NODE_CONFIG: "{\"mongo\":\"mongodb://${FORMIO_DB_USERNAME:-admin}:${FORMIO_DB_PASSWORD:-changeme}@forms-flow-forms-db:27017/${FORMIO_DB_NAME:-formio}?authMechanism=SCRAM-SHA-1&authSource=admin\"}"
       ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
       FORMIO_DOMAIN: ${FORMIO_DEFAULT_PROJECT_URL}
@@ -106,13 +109,14 @@ services:
     stdin_open: true # -i
     tty: true # -t
     networks:
-      - formsflow-network
+      - forms-flow-network
 
-  formsflow-web:
- container_name: formsflow-web
+  forms-flow-web:
+    container_name: forms-flow-web
     restart: always
-    image: formsflowai/formsflow-web:latest
-        
+    build:
+      context: ./../../forms-flow-web/
+      dockerfile: Dockerfile
       args:
         - NODE_ENV=${NODE_ENV:-development}
         - GENERATE_SOURCEMAP=false
@@ -125,12 +129,12 @@ services:
         - REACT_APP_USER_RESOURCE_FORM_ID=${USER_RESOURCE_ID}
         - REACT_APP_API_SERVER_URL=${FORMIO_DEFAULT_PROJECT_URL}
         - REACT_APP_API_PROJECT_URL=${FORMIO_DEFAULT_PROJECT_URL}
-        - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENT_ID:-formsflow-web}
+        - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
         - REACT_APP_ANONYMOUS_ID=${ANONYMOUS_ID}
         - REACT_APP_WEB_BASE_URL=${FORMSFLOW_API_URL}
         - REACT_APP_CAMUNDA_API_URI=${CAMUNDA_API_URL}
         - REACT_APP_WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
-        - REACT_APP_KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-formsflow-ai}
+        - REACT_APP_KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
         - REACT_APP_KEYCLOAK_URL=${KEYCLOAK_URL}
         - REACT_APP_APPLICATION_NAME=${APPLICATION_NAME:-formsflow.ai}
         - REACT_APP_USER_ACCESS_PERMISSIONS=${USER_ACCESS_PERMISSIONS}
@@ -144,11 +148,11 @@ services:
     tty: true
 
     networks:
-      - formsflow-network
+      - forms-flow-network
 
 
-  formsflow-webapi-db:
-    container_name: formsflow-webapi-db
+  forms-flow-webapi-db:
+    container_name: forms-flow-webapi-db
     image: postgres:11
     environment:
       POSTGRES_USER: ${FORMSFLOW_API_DB_USER:-postgres}
@@ -160,14 +164,16 @@ services:
     volumes:
       - ./postgres/webapi:/var/lib/postgresql/data
     networks:
-      - formsflow-network
+      - forms-flow-network
 
-  formsflow-webapi:
-  container_name: formsflow-webapi
-    image: formsflowai/formsflow-webapi:latest
+  forms-flow-webapi:
+    container_name: forms-flow-webapi
+    build:
+      context: ./../../forms-flow-api/
+      dockerfile: Dockerfile
     restart: always
     links:
-      - formsflow-webapi-db
+      - forms-flow-webapi-db
     ports:
       - '5000:5000'
     volumes:
@@ -175,29 +181,29 @@ services:
     environment:
       INSIGHT_API_KEY: ${INSIGHT_API_KEY}
       INSIGHT_API_URL: ${INSIGHT_API_URL}
-      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@formsflow-webapi-db:5432/webapi}
-      BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-formsflow-ai}/protocol/openid-connect/token
-      BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-formsflow-bpm}
-      BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET}
+      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+      BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
+      BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
+      BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET:-e4bdbd25-1467-4f7f-b993-bc4b1944c943}
       BPM_API_BASE: ${CAMUNDA_API_URL}
       FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
-      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-formsflow-ai}/.well-known/openid-configuration
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
       JWT_OIDC_ALGORITHMS: 'RS256'
-      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-formsflow-ai}/protocol/openid-connect/certs
-      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-formsflow-ai}
-      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-formsflow-web}
+      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
+      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
       KEYCLOAK_URL: ${KEYCLOAK_URL}
-      KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-formsflow-ai}
+      KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
     stdin_open: true # -i
     tty: true # -t
     networks:
-      - formsflow-network
+      - forms-flow-network
 
 networks:
-  formsflow-network:
+  forms-flow-network:
     driver: 'bridge'
 
 volumes:

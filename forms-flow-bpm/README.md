@@ -105,6 +105,7 @@ To know more about Camunda, visit https://camunda.com/.
  `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
  `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`2  (In MB)`
  `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
+ `BPM_CLIENT_CONN_TIMEOUT`|Webclient Connection timeout in milli seconds||`5000`
    
  **Additionally, you may want to change these**  
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)

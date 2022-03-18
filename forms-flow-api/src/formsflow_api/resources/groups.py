@@ -1,4 +1,4 @@
-"""Resource to call Keycloak Service API calls and filter responses"""
+"""Resource to call Keycloak Service API calls and filter responses."""
 from http import HTTPStatus
 from pprint import pprint
 
@@ -24,13 +24,14 @@ API = Namespace("groups", description="Keycloak wrapper APIs")
 @cors_preflight("GET, OPTIONS")
 @API.route("", methods=["GET", "OPTIONS"])
 class KeycloakDashboardGroupList(Resource):
-    """Resource to fetch Dashboard List"""
+    """Resource to fetch Dashboard List."""
 
     @staticmethod
     @auth.require
     @profiletime
     def get():
-        """GET request to fetch all dashboard groups from Keycloak
+        """GET request to fetch all dashboard groups from Keycloak.
+
         :params int pageNo: page number (optional)
         :params int limit: number of items per page (optional)
         """
@@ -77,7 +78,8 @@ class KeycloakDashboardGroupDetail(Resource):
     @auth.require
     @profiletime
     def get(group_id):
-        """GET request to fetch groups details API
+        """GET request to fetch groups details API.
+
         :params str id: group-id of Keycloak Dashboard Authorized groups
         """
         client = KeycloakAdminAPIService()
@@ -90,7 +92,8 @@ class KeycloakDashboardGroupDetail(Resource):
     @auth.require
     @profiletime
     def put(group_id):
-        """Update request to update dashboard details
+        """Update request to update dashboard details.
+
         :params str id: group-id of Keycloak Dashboard Authorized groups
         """
         client = KeycloakAdminAPIService()

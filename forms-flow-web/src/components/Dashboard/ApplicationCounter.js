@@ -7,6 +7,7 @@ const ApplicationCounter = React.memo((props) => {
     getStatusDetails,
     selectedMetricsId,
     noOfApplicationsAvailable,
+    setSHowSubmissionData
   } = props;
   if (noOfApplicationsAvailable === 0) {
     return (
@@ -22,7 +23,7 @@ const ApplicationCounter = React.memo((props) => {
     <Fragment>
       <div className="row">
         {application.map((app, idx) => (
-          <div className="col-lg-4 col-sm-6 col-xs-12" key={idx}>
+          <div className="col-lg-4 col-sm-6 col-xs-12" onClick={()=>{setSHowSubmissionData(app)}} key={idx}>
             <CardFormCounter
               submitionData={app}
               getStatusDetails={getStatusDetails}

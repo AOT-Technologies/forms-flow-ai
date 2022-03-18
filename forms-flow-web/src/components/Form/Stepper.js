@@ -259,25 +259,40 @@ class StepperPage extends PureComponent {
   }
 
   submitData = () => {
-    const { form, onSaveFormProcessMapper, formProcessList } = this.props;
+    const { form, onSaveFormProcessMapper, formProcessList, formPreviousData ,ApplicationCount} = this.props;
     const { workflow, processData, associateWorkFlow} = this.state;
     const data = {
       formId: form.id,
       formName: form.form && form.form.title,
       status: processData.status? processData.status:"inactive"
     };
+    
     if (associateWorkFlow === "yes" && workflow) {
       data["processKey"]= workflow && workflow.value;
       data["processName"]= workflow && workflow.label;
+    }else if(associateWorkFlow === "no"){
+      data["processKey"]= "";
+      data["processName"]= "";
     }
+    
+    const processNameChecking= data.processName!==formPreviousData.processName;
+    const processKeyChecking= data.processKey!==formPreviousData.processKey;
+    
     if(processData.comments){
       data["comments"] = processData.comments;
     }
-    const isUpdate = formProcessList && formProcessList.id ? true : false;
-    if (isUpdate) {
-      data.id = formProcessList.id;
+
+    let putRequest=true;
+    // const isUpdate = formProcessList && formProcessList.id ? true : false;
+    if(ApplicationCount > 0){
+      if(formPreviousData.isTitleChanged || processKeyChecking || processNameChecking ){
+      putRequest=false;
+      let version = +formProcessList.version+1
+      data.version = `${version}`
     }
-    onSaveFormProcessMapper(data, isUpdate);
+  }
+      data.id = formProcessList.id;
+    onSaveFormProcessMapper(data, putRequest);
   };
 
   getStepContent(step) {
@@ -416,7 +431,9 @@ const mapStateToProps = (state) => {
     errors: selectError("form", state),
     processList: state.process.processList,
     formProcessList: state.process.formProcessList,
-    isAuthenticated: state.user.isAuthenticated
+    isAuthenticated: state.user.isAuthenticated,
+    formPreviousData:state.process.formPreviousData,
+    ApplicationCount:state.process.ApplicationCount
   };
 };
 

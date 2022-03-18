@@ -61,14 +61,15 @@ build: ## Build the project with basic python dependencies
 ci: lint test ## CI flow
 
 format: ## CodeFormat python code with black & isort
-	. venv/bin/activate && isort --profile black src/${PROJECT_NAME} && black -t py39 src/$(PROJECT_NAME)
+	. venv/bin/activate && isort --settings-path setup.cfg src/${PROJECT_NAME} black src/${PROJECT_NAME} && black src/$(PROJECT_NAME);\
+	isort --settings-path setup.cfg tests black src/${PROJECT_NAME} && black tests
 pylint: ## Lint python code with pylint
 	. venv/bin/activate && pylint --rcfile=setup.cfg  src/$(PROJECT_NAME)
 
 flake8: ## Linting with flake8
 	. venv/bin/activate && flake8 src/$(PROJECT_NAME) tests
 
-lint: format pylint ## run all lint type scripts
+lint: format pylint flake8 ## run all lint type scripts
 
 test: ## Unit testing
 	. venv/bin/activate && pytest

@@ -113,7 +113,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
     @classmethod
     def filter_conditions(cls, **filters):
-        """This method creates dynamic filter conditions based on the input param"""
+        """This method creates dynamic filter conditions based on the input param."""
         filter_conditions = []
         for key, value in filters.items():
             if value:
@@ -138,7 +138,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         process_key=None,
         **filters,
     ):  # pylint: disable=too-many-arguments
-        """Fetch all active form process mappers"""
+        """Fetch all active form process mappers."""
         query = cls.filter_conditions(**filters)
         if process_key is not None:
             query = query.filter(FormProcessMapper.process_key.in_(process_key))

@@ -228,7 +228,7 @@ class Application(
         process_key: str,
         **filters,
     ):
-        """Fetch applications list based on searching parameters for Reviewer"""
+        """Fetch applications list based on searching parameters for Reviewer."""
         query = cls.filter_conditions(**filters)
         query = query.join(
             FormProcessMapper,
@@ -247,7 +247,7 @@ class Application(
         process_key: str,
         application_id: int,
     ):
-        """Fetch applications list based on searching parameters for Reviewer"""
+        """Fetch applications list based on searching parameters for Reviewer."""
         query = (
             cls.query.filter(Application.id == application_id)
             .join(

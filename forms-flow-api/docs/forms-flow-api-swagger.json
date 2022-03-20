@@ -2,552 +2,550 @@
   "swagger": "2.0",
   "basePath": "/",
   "paths": {
-    "/application": {
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      "/application": {
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get applications",
+              "description": ": Id:- List the application for particular id\n: applicationName:- Retrieve application list based on application name\n: applicationStatus:- List all applications based on status\n: createdBy:- To retrieve applications based on createdby\n: created:- Retrieve the applications based on date and time\n: modified:- Retrieve the applications based on modified date and time\n: pageNo:- To retrieve page number\n: limit:- To retrieve limit for each page\n: orderBy:- Name of column to order by (default: id)",
+              "operationId": "get_applications_resource",
+              "tags": [
+                  "Application"
+              ]
           }
-        },
-        "summary": "Get applications",
-        "operationId": "get_applications_resource",
-        "tags": [
-          "Application"
-        ]
-      }
-    },
-    "/application/create": {
-      "post": {
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "summary": "Post a new application using the request body",
-        "operationId": "post_application_resources_by_ids",
-        "tags": [
-          "Application"
-        ]
-      }
-    },
-    "/application/formid/{form_id}": {
-      "parameters": [
-        {
-          "name": "form_id",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        }
-      ],
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "summary": "Get applications",
-        "operationId": "get_application_resource_by_form_id",
-        "tags": [
-          "Application"
-        ]
-      }
-    },
-    "/application/metrics": {
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "summary": "Get aggregated applications",
-        "operationId": "get_aggregated_applications_resource",
-        "tags": [
-          "Application"
-        ]
-      }
-    },
-    "/application/metrics/{mapper_id}": {
-      "parameters": [
-        {
-          "name": "mapper_id",
-          "in": "path",
-          "required": true,
-          "type": "integer"
-        }
-      ],
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "summary": "Get aggregated application status",
-        "operationId": "get_aggregated_application_status_resource",
-        "tags": [
-          "Application"
-        ]
-      }
-    },
-    "/application/{application_id}": {
-      "parameters": [
-        {
-          "name": "application_id",
-          "in": "path",
-          "required": true,
-          "type": "integer"
-        }
-      ],
-      "put": {
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "summary": "Update application details",
-        "operationId": "put_application_resource_by_id",
-        "tags": [
-          "Application"
-        ]
       },
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      "/application/create": {
+          "post": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Post a new application using the request body",
+              "description": ": formId:- Unique Id for the corresponding form\n: submissionId:- Unique Id for the submitted form\n: formUrl:- Unique URL for the submitted application",
+              "operationId": "post_application_resources_by_ids",
+              "tags": [
+                  "Application"
+              ]
           }
-        },
-        "summary": "Get application by id",
-        "operationId": "get_application_resource_by_id",
-        "tags": [
-          "Application"
-        ]
-      }
-    },
-    "/application/{application_id}/history": {
-      "parameters": [
-        {
-          "name": "application_id",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        }
-      ],
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "summary": "Get application histry",
-        "operationId": "get_application_history_resource",
-        "tags": [
-          "Application"
-        ]
       },
-      "post": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      "/application/formid/{form_id}": {
+          "parameters": [
+              {
+                  "name": "form_id",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+              }
+          ],
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get applications",
+              "description": ": form_id:- Retrieve application list based on formid",
+              "operationId": "get_application_resource_by_form_id",
+              "tags": [
+                  "Application"
+              ]
           }
-        },
-        "summary": "Post a new application using the request body",
-        "operationId": "post_application_history_resource",
-        "tags": [
-          "Application"
-        ]
-      }
-    },
-    "/application/{application_id}/process": {
-      "parameters": [
-        {
-          "name": "application_id",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        }
-      ],
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "operationId": "get_process_mapper_resource_by_application_id",
-        "tags": [
-          "Application"
-        ]
-      }
-    },
-    "/checkpoint": {
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "summary": "Get the status of API",
-        "operationId": "get_health_checkpoint_resource",
-        "tags": [
-          "Checkpoint"
-        ]
-      }
-    },
-    "/form": {
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "summary": "Get form process mapper",
-        "operationId": "get_form_resource",
-        "tags": [
-          "Form"
-        ]
       },
-      "post": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      "/application/status/list": {
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Method to get the application status lists",
+              "operationId": "get_application_resource_by_application_status",
+              "tags": [
+                  "Application"
+              ]
           }
-        },
-        "summary": "Post a form process mapper using the request body",
-        "operationId": "post_form_resource",
-        "tags": [
-          "Form"
-        ]
-      }
-    },
-    "/form/formid/{form_id}": {
-      "parameters": [
-        {
-          "name": "form_id",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        }
-      ],
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "summary": "Get details of only form corresponding to a particular formId",
-        "operationId": "get_form_resource_by_form_id",
-        "tags": [
-          "Form"
-        ]
-      }
-    },
-    "/form/{mapper_id}": {
-      "parameters": [
-        {
-          "name": "mapper_id",
-          "in": "path",
-          "required": true,
-          "type": "integer"
-        }
-      ],
-      "put": {
-        "responses": {
-          "200": {
-            "description": "Success"
-          }
-        },
-        "summary": "Update form process mapper details",
-        "operationId": "put_form_resource_by_id",
-        "tags": [
-          "Form"
-        ]
       },
-      "delete": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      "/application/{application_id}": {
+          "parameters": [
+              {
+                  "name": "application_id",
+                  "in": "path",
+                  "required": true,
+                  "type": "integer"
+              }
+          ],
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get application by id",
+              "description": ": application_id:- List the application for particular application_id",
+              "operationId": "get_application_resource_by_id",
+              "tags": [
+                  "Application"
+              ]
+          },
+          "put": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Update application details",
+              "description": ": application_id:- Update the application for particular application_id",
+              "operationId": "put_application_resource_by_id",
+              "tags": [
+                  "Application"
+              ]
           }
-        },
-        "summary": "Delete form process mapper by id",
-        "operationId": "delete_form_resource_by_id",
-        "tags": [
-          "Form"
-        ]
       },
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      "/application/{application_id}/history": {
+          "parameters": [
+              {
+                  "name": "application_id",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+              }
+          ],
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get application history",
+              "description": ": application_id:- Getting application history by providing application_id",
+              "operationId": "get_application_history_resource",
+              "tags": [
+                  "Application"
+              ]
+          },
+          "post": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Post a new application using the request body",
+              "operationId": "post_application_history_resource",
+              "tags": [
+                  "Application"
+              ]
           }
-        },
-        "summary": "Get form process mapper by id",
-        "operationId": "get_form_resource_by_id",
-        "tags": [
-          "Form"
-        ]
-      }
-    },
-    "/process": {
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      },
+      "/checkpoint": {
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get the status of API",
+              "operationId": "get_health_checkpoint_resource",
+              "tags": [
+                  "Checkpoint"
+              ]
           }
-        },
-        "summary": "Get all process",
-        "operationId": "get_process_resource",
-        "tags": [
-          "Process"
-        ]
-      }
-    },
-    "/process/event": {
-      "post": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      },
+      "/dashboards": {
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "List all dashboards",
+              "operationId": "list_dashboards",
+              "tags": [
+                  "dashboards"
+              ]
           }
-        },
-        "operationId": "post_process_event_resource",
-        "tags": [
-          "Process"
-        ]
-      }
-    },
-    "/process/process-instance/{process_InstanceId}/activity-instances": {
-      "parameters": [
-        {
-          "name": "process_InstanceId",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        }
-      ],
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      },
+      "/dashboards/{dashboard_id}": {
+          "parameters": [
+              {
+                  "name": "dashboard_id",
+                  "in": "path",
+                  "required": true,
+                  "type": "integer"
+              }
+          ],
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get  dashboard",
+              "description": ": dashboard_id:- Get dashboard with given dashboard_id",
+              "operationId": "get_dashboard",
+              "tags": [
+                  "dashboards"
+              ]
           }
-        },
-        "summary": "Get states by process and task key",
-        "operationId": "get_process_instance_resource",
-        "tags": [
-          "Process"
-        ]
-      }
-    },
-    "/process/{process_key}/task/{task_key}/state": {
-      "parameters": [
-        {
-          "name": "process_key",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        },
-        {
-          "name": "task_key",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        }
-      ],
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      },
+      "/form": {
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get form process mapper",
+              "description": ": pageNo:- To retrieve page number\n: limit:- To retrieve limit for each page\n: formName:- Retrieve form list based on form name",
+              "operationId": "get_form_resource",
+              "tags": [
+                  "Form"
+              ]
+          },
+          "post": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Post a form process mapper using the request body",
+              "operationId": "post_form_resource",
+              "tags": [
+                  "Form"
+              ]
           }
-        },
-        "summary": "Get states by process and task key",
-        "operationId": "get_process_state_resource",
-        "tags": [
-          "Process"
-        ]
-      }
-    },
-    "/process/{process_key}/xml": {
-      "parameters": [
-        {
-          "name": "process_key",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        }
-      ],
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      },
+      "/form/formid/{form_id}": {
+          "parameters": [
+              {
+                  "name": "form_id",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+              }
+          ],
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get form by form_id",
+              "description": ": form_id:- Get details of only form corresponding to a particular formId",
+              "operationId": "get_form_resource_by_form_id",
+              "tags": [
+                  "Form"
+              ]
           }
-        },
-        "summary": "Get process detailsXML",
-        "operationId": "get_process_definition_resource",
-        "tags": [
-          "Process"
-        ]
-      }
-    },
-    "/task": {
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      },
+      "/form/{mapper_id}": {
+          "parameters": [
+              {
+                  "name": "mapper_id",
+                  "in": "path",
+                  "required": true,
+                  "type": "integer"
+              }
+          ],
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get form by mapper_id",
+              "description": ": mapper_id:- Get form process mapper by mapper_id",
+              "operationId": "get_form_resource_by_id",
+              "tags": [
+                  "Form"
+              ]
+          },
+          "delete": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Delete form by mapper_id",
+              "description": ": mapper_id:- Delete form process mapper by mapper_id.",
+              "operationId": "delete_form_resource_by_id",
+              "tags": [
+                  "Form"
+              ]
+          },
+          "put": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Update form by mapper_id",
+              "description": ": comments:- Brief description\n: formId:- Unique Id for the corresponding form\n: formName:- Name for the corresponding form\n: id:- Id for particular form\n: processKey:- Workflow associated for particular form\n: processName:- Workflow associated for particular form\n: status:- Status of the form",
+              "operationId": "put_form_resource_by_id",
+              "tags": [
+                  "Form"
+              ]
           }
-        },
-        "summary": "List all tasks",
-        "operationId": "get_task_list",
-        "tags": [
-          "Task"
-        ]
-      }
-    },
-    "/task/{task_id}": {
-      "parameters": [
-        {
-          "name": "task_id",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        }
-      ],
-      "get": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      },
+      "/form/{mapper_id}/application/count": {
+          "parameters": [
+              {
+                  "name": "mapper_id",
+                  "in": "path",
+                  "required": true,
+                  "type": "integer"
+              }
+          ],
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "The method retrieves the total application count for th egiven mapper id",
+              "operationId": "get_form_resource_application_count",
+              "tags": [
+                  "Form"
+              ]
           }
-        },
-        "summary": "List specific tasks",
-        "operationId": "get_task",
-        "tags": [
-          "Task"
-        ]
-      }
-    },
-    "/task/{task_id}/claim": {
-      "parameters": [
-        {
-          "name": "task_id",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        }
-      ],
-      "post": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      },
+      "/groups": {
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "GET request to fetch all dashboard groups from Keycloak",
+              "description": ":params int pageNo: page number (optional)\n:params int limit: number of items per page (optional)",
+              "operationId": "get_keycloak_dashboard_group_list",
+              "tags": [
+                  "groups"
+              ]
           }
-        },
-        "summary": "Claim a task",
-        "operationId": "post_task_claim",
-        "tags": [
-          "Task"
-        ]
-      }
-    },
-    "/task/{task_id}/complete": {
-      "parameters": [
-        {
-          "name": "task_id",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        }
-      ],
-      "post": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      },
+      "/groups/{group_id}": {
+          "parameters": [
+              {
+                  "name": "group_id",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+              }
+          ],
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "GET request to fetch groups details API",
+              "description": ":params str id: group-id of Keycloak Dashboard Authorized groups",
+              "operationId": "get_keycloak_dashboard_group_detail",
+              "tags": [
+                  "groups"
+              ]
+          },
+          "put": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Update request to update dashboard details",
+              "description": ":params str id: group-id of Keycloak Dashboard Authorized groups",
+              "operationId": "put_keycloak_dashboard_group_detail",
+              "tags": [
+                  "groups"
+              ]
           }
-        },
-        "summary": "Complete a task",
-        "operationId": "post_task_complete",
-        "tags": [
-          "Task"
-        ]
-      }
-    },
-    "/task/{task_id}/unclaim": {
-      "parameters": [
-        {
-          "name": "task_id",
-          "in": "path",
-          "required": true,
-          "type": "string"
-        }
-      ],
-      "post": {
-        "responses": {
-          "200": {
-            "description": "Success"
+      },
+      "/metrics": {
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get aggregated applications",
+              "operationId": "get_aggregated_applications_resource",
+              "tags": [
+                  "Metrics"
+              ]
           }
-        },
-        "summary": "Unclaim a task",
-        "operationId": "post_task_un_claim",
-        "tags": [
-          "Task"
-        ]
+      },
+      "/metrics/{mapper_id}": {
+          "parameters": [
+              {
+                  "description": "Metrics corresponding to FormProcess mapperId",
+                  "name": "mapper_id",
+                  "in": "path",
+                  "required": true,
+                  "type": "integer"
+              }
+          ],
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get application metrics corresponding to a mapper_id",
+              "description": ": mapper_id:- Get aggregated application status.",
+              "operationId": "get_aggregated_application_status_resource",
+              "tags": [
+                  "Metrics"
+              ]
+          }
+      },
+      "/process": {
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get all process",
+              "operationId": "get_process_resource",
+              "tags": [
+                  "Process"
+              ]
+          }
+      },
+      "/public/application/create": {
+          "post": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Post a new anonymous application using the request body",
+              "description": ": formId:- Unique Id for the corresponding form\n: submissionId:- Unique Id for the submitted form\n: formUrl:- Unique URL for the submitted application",
+              "operationId": "post_application_anonymous_resources_by_ids",
+              "tags": [
+                  "Public"
+              ]
+          }
+      },
+      "/public/form/{form_id}": {
+          "parameters": [
+              {
+                  "name": "form_id",
+                  "in": "path",
+                  "required": true,
+                  "type": "string"
+              }
+          ],
+          "get": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Get form by form id and return is_anonymous and published status",
+              "description": ": formId:- Unique Id for the corresponding form\n: response: is_anonymous, status(published or not)",
+              "operationId": "get_anonymous_resource_by_id",
+              "tags": [
+                  "Public"
+              ]
+          }
+      },
+      "/user/locale": {
+          "put": {
+              "responses": {
+                  "200": {
+                      "description": "Success"
+                  }
+              },
+              "summary": "Update the user locale attribute",
+              "description": ": locale :- string representing the language value to update",
+              "operationId": "put_keycloak_user_service",
+              "tags": [
+                  "user"
+              ]
+          }
       }
-    }
   },
   "info": {
-    "title": "formsflow.ai API",
-    "version": "1.0",
-    "description": "The API for formsflow.ai. Checkout: formsflow.ai to know more"
+      "title": "formsflow.ai API",
+      "version": "1.0",
+      "description": "The API for formsflow.ai. Checkout: formsflow.ai to know more"
   },
   "produces": [
-    "application/json"
+      "application/json"
   ],
   "consumes": [
-    "application/json"
+      "application/json"
   ],
   "securityDefinitions": {
-    "apikey": {
-      "type": "apiKey",
-      "in": "header",
-      "name": "Authorization"
-    }
+      "apikey": {
+          "type": "apiKey",
+          "in": "header",
+          "name": "Authorization"
+      }
   },
   "security": [
-    {
-      "apikey": []
-    }
+      {
+          "apikey": []
+      }
   ],
   "tags": [
-    {
-      "name": "Application",
-      "description": "Application"
-    },
-    {
-      "name": "Application",
-      "description": "Application"
-    },
-    {
-      "name": "Checkpoint",
-      "description": "Checkpoint"
-    },
-    {
-      "name": "Form",
-      "description": "Form"
-    },
-    {
-      "name": "Process",
-      "description": "Process"
-    },
-    {
-      "name": "Task",
-      "description": "Task"
-    }
+      {
+          "name": "Application",
+          "description": "Application"
+      },
+      {
+          "name": "Application",
+          "description": "Application"
+      },
+      {
+          "name": "Metrics",
+          "description": "Application Metrics endpoint"
+      },
+      {
+          "name": "Checkpoint",
+          "description": "Checkpoint"
+      },
+      {
+          "name": "dashboards",
+          "description": "Dashboard APIs"
+      },
+      {
+          "name": "Form",
+          "description": "Form"
+      },
+      {
+          "name": "groups",
+          "description": "Keycloak wrapper APIs"
+      },
+      {
+          "name": "Process",
+          "description": "Process"
+      },
+      {
+          "name": "Public",
+          "description": "Public api endpoints"
+      },
+      {
+          "name": "user",
+          "description": "Keycloak user APIs"
+      }
   ],
   "responses": {
-    "ParseError": {
-      "description": "When a mask can't be parsed"
-    },
-    "MaskError": {
-      "description": "When any error occurs on mask"
-    },
-    "BusinessException": {
-      "description": "Handle Business exception"
-    },
-    "AuthError": {
-      "description": "Handle Auth exception"
-    }
+      "ParseError": {
+          "description": "When a mask can't be parsed"
+      },
+      "MaskError": {
+          "description": "When any error occurs on mask"
+      },
+      "BusinessException": {
+          "description": "Handle Business exception"
+      },
+      "AuthError": {
+          "description": "Handle Auth exception"
+      }
   }
 }

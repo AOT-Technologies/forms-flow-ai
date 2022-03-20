@@ -6,8 +6,8 @@ Test-Suite to ensure that the Configuration Classes are working as expected.
 from importlib import reload
 
 import pytest
-from formsflow_api import config
 
+from formsflow_api import config
 
 # testdata pattern is ({str: environment}, {expected return value})
 TEST_ENVIRONMENT_DATA = [

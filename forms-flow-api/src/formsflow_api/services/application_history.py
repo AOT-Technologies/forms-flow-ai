@@ -9,7 +9,6 @@ class ApplicationHistoryService:
     @staticmethod
     def create_application_history(data):
         """Create new application history."""
-
         application = ApplicationHistory.create_from_dict(data)
 
         return application

@@ -1,4 +1,4 @@
-"""Resource to call Keycloak Service API calls and filter responses"""
+"""Resource to call Keycloak Service API calls and filter responses."""
 from http import HTTPStatus
 
 from flask import current_app, g, request
@@ -15,17 +15,17 @@ API = Namespace("user", description="Keycloak user APIs")
 @cors_preflight("PUT, OPTIONS")
 @API.route("/locale", methods=["OPTIONS", "PUT"])
 class KeycloakUserService(Resource):
-    """Provides api interface for interacting with Keycloak user attributes"""
+    """Provides api interface for interacting with Keycloak user attributes."""
 
     def __init__(self, *args, **kwargs):
+        """Initializing client."""
         super().__init__(*args, **kwargs)
         self.client = KeycloakAdminAPIService()
 
     @auth.require
     @profiletime
     def __get_user_data(self) -> dict:
-        """GET the keycloak users based on the username and email params"""
-
+        """GET the keycloak users based on the username and email params."""
         user_name = g.token_info.get("preferred_username")
         email = g.token_info.get("email")
         if email is not None:
@@ -42,6 +42,7 @@ class KeycloakUserService(Resource):
     @profiletime
     def put(self) -> dict:
         """Update the user locale attribute.
+
         : locale :- string representing the language value to update
         """
         try:
@@ -63,7 +64,10 @@ class KeycloakUserService(Resource):
             response, status = (
                 {
                     "type": "Missing attributes",
-                    "message": "User Object has missing attributes make sure internationalization is enabled",
+                    "message": (
+                        "User Object has missing attributes make"
+                        "sure internationalization is enabled"
+                    ),
                 },
                 HTTPStatus.BAD_REQUEST,
             )

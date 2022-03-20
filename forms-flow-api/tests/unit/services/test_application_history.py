@@ -1,10 +1,11 @@
-"""Tests to assure the Application History Service"""
+"""Tests to assure the Application History Service."""
 from formsflow_api.services import ApplicationHistoryService
 
 application_history_service = ApplicationHistoryService()
 
 
 def test_create_application_history(app, client, session):
+    """Tests the application history creation with valid payload."""
     payload = {
         "application_status": "Pending",
         "form_url": "http://sample.com/form/23232/submission/2342",
@@ -23,6 +24,7 @@ def test_create_application_history(app, client, session):
 
 
 def test_get_application_history(app, client, session):
+    """Tests the application history retrieval."""
     # Need to have at least one application before running this test
     application_history = application_history_service.get_application_history(
         application_id=1

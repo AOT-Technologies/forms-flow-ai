@@ -22,6 +22,7 @@ class ApplicationAnonymousResourcesByIds(Resource):
     @profiletime
     def post():
         """Post a new anonymous application using the request body.
+
         : formId:- Unique Id for the corresponding form
         : submissionId:- Unique Id for the submitted form
         : formUrl:- Unique URL for the submitted application
@@ -31,9 +32,9 @@ class ApplicationAnonymousResourcesByIds(Resource):
             application_schema = ApplicationSchema()
             dict_data = application_schema.load(application_json)
             mapper = FormProcessMapper.find_form_by_form_id(dict_data["form_id"])
-            isanonymous = mapper.is_anonymous
+            is_anonymous = mapper.is_anonymous
             status = mapper.status
-            if not isanonymous or status != "active":
+            if not is_anonymous or status != "active":
                 response, status = {
                     "type": "Authorization error",
                     "message": "Permission denied",
@@ -59,16 +60,16 @@ class ApplicationAnonymousResourcesByIds(Resource):
 @cors_preflight("GET,OPTIONS")
 @API.route("/form/<string:form_id>", methods=["GET", "OPTIONS"])
 class AnonymousResourceById(Resource):
-    """Resource to check form is Anonymous and published"""
+    """Resource to check form is Anonymous and published."""
 
     @staticmethod
     @profiletime
     def get(form_id: str):
         """Get form by form id and return is_anonymous and published status.
+
         : formId:- Unique Id for the corresponding form
         : response: is_anonymous, status(published or not)
         """
-
         try:
             mapper = FormProcessMapper.find_form_by_form_id(form_id)
             response, status = {

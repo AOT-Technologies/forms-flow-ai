@@ -1,4 +1,4 @@
-"""This exposes the Keycloak Admin APIs"""
+"""This exposes the Keycloak Admin APIs."""
 import json
 
 import requests
@@ -8,9 +8,10 @@ from formsflow_api.utils import profiletime
 
 
 class KeycloakAdminAPIService:
-    """This class manages all the Keycloak service API calls"""
+    """This class manages all the Keycloak service API calls."""
 
     def __init__(self):
+        """Initializing the service."""
         self.session = requests.Session()
         bpm_token_api = current_app.config.get("BPM_TOKEN_API")
         bpm_client_id = current_app.config.get("BPM_CLIENT_ID")
@@ -39,8 +40,9 @@ class KeycloakAdminAPIService:
 
     @profiletime
     def get_request(self, url_path):
-        """Method to fetch get request of Keycloak Admin APIs
-        :param url_path: The relative path of the API
+        """Method to fetch get request of Keycloak Admin APIs.
+
+        : url_path: The relative path of the API
         """
         url = f"{self.base_url}/{url_path}"
         response = self.session.request("GET", url)
@@ -51,10 +53,11 @@ class KeycloakAdminAPIService:
         return None
 
     def get_paginated_request(self, url_path, first, max_results):
-        """Method to fetch GET paginated request of Keycloak Admin APIs
-        :param url_path: The relative path of the API
-        :param first: The page_number
-        :param max_results: The max number of items per page
+        """Method to fetch GET paginated request of Keycloak Admin APIs.
+
+        : url_path: The relative path of the API
+        : first: The page_number
+        : max_results: The max number of items per page
         """
         url = f"{self.base_url}/{url_path}?first={first}&max={max_results}"
         response = self.session.request("GET", url)
@@ -68,9 +71,10 @@ class KeycloakAdminAPIService:
     def update_request(  # pylint: disable=inconsistent-return-statements
         self, url_path, data=None
     ):
-        """Method to fetch get request of Keycloak Admin APIs
-        :param url_path: The relative path of the API
-        :param data: The request data object
+        """Method to fetch get request of Keycloak Admin APIs.
+
+        : url_path: The relative path of the API
+        : data: The request data object
         """
         url = f"{self.base_url}/{url_path}"
         try:
@@ -79,7 +83,7 @@ class KeycloakAdminAPIService:
                 url,
                 data=json.dumps(data),
             )
-        except Exception as e:
-            raise f"Request to Keycloak Admin APIs failed., {e}"
+        except Exception as err_code:
+            raise f"Request to Keycloak Admin APIs failed., {err_code}"
         if response.status_code == 204:
             return f"Updated - {url_path}"

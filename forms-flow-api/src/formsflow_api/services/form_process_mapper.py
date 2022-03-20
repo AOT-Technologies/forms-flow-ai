@@ -2,7 +2,6 @@
 
 from http import HTTPStatus
 
-from flask import current_app
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import FormProcessMapper
 from formsflow_api.schemas import FormProcessMapperSchema
@@ -64,7 +63,9 @@ class FormProcessMapperService:
         raise BusinessException(
             {
                 "type": "No Response",
-                "message": f"FormProcessMapper with FormID - {form_id} not stored in DB",
+                "message": (
+                    f"FormProcessMapper with FormID -{form_id} not stored in DB"
+                ),
             },
             HTTPStatus.NO_CONTENT,
         )
@@ -86,7 +87,6 @@ class FormProcessMapperService:
 
         if not data.get("comments"):
             data["comments"] = None
-
         if mapper:
             mapper.update(data)
             return mapper
@@ -94,7 +94,9 @@ class FormProcessMapperService:
         raise BusinessException(
             {
                 "type": "Invalid response data",
-                "message": f"Unable to updated FormProcessMapperId - {form_process_mapper_id}",
+                "message": (
+                    f"Unable to update FormProcessMapperId- {form_process_mapper_id}"
+                ),
             },
             HTTPStatus.BAD_REQUEST,
         )
@@ -111,7 +113,10 @@ class FormProcessMapperService:
             raise BusinessException(
                 {
                     "type": "Invalid response data",
-                    "message": f"Unable to set FormProcessMapperId - {form_process_mapper_id} inactive",
+                    "message": (
+                        "Unable to set FormProcessMapperId -"
+                        f"{form_process_mapper_id} inactive"
+                    ),
                 },
                 HTTPStatus.BAD_REQUEST,
             )
@@ -131,8 +136,7 @@ class FormProcessMapperService:
 
     @staticmethod
     def get_mapper_by_formid_and_version(form_id: int, version: int):
-        """Returns a form process mapper serialized object if present given a form_id and version."""
-
+        """Returns a serialized form process mapper given a form_id and version."""
         mapper = FormProcessMapper.find_mapper_by_form_id_and_version(form_id, version)
         if mapper:
             mapper_schema = FormProcessMapperSchema()
@@ -148,7 +152,6 @@ class FormProcessMapperService:
         : mapper_data: serialized create mapper payload
         : Should be called with create_mapper method
         """
-
         try:
             form_id = mapper_data.get("form_id")
             version = mapper_data.get("version")
@@ -165,11 +168,6 @@ class FormProcessMapperService:
             ):
                 previous_mapper_id = previous_mapper.get("id")
                 FormProcessMapperService.mark_unpublished(previous_mapper_id)
-
-        except AttributeError:
-            current_app.logger.info(
-                "Message from unpublish_previous_mapper: No previous versions found for the form"
-            )
 
         except Exception as err:
             raise err

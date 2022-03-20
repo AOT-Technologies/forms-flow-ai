@@ -1,9 +1,9 @@
-"""this module handle the console display formatting"""
+"""Module handle the console display formatting."""
 import logging
 
 
 class CustomFormatter(logging.Formatter):
-    """this class extends the logging Formatter class to support custom colour messages"""
+    """Class extends the logging Formatter class to support custom colour messages."""
 
     blue = "\x1b[34;21m"
     grey = "\x1b[38;21m"
@@ -25,8 +25,7 @@ class CustomFormatter(logging.Formatter):
     }
 
     def format(self, record):
-        """returns the formatted information"""
-
+        """Returns the formatted information."""
         log_fmt = self.FORMATS.get(record.levelno)
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)

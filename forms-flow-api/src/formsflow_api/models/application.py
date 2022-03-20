@@ -64,7 +64,7 @@ class Application(
 
     @classmethod
     def find_all_application_status(cls):
-        """Find all application status"""
+        """Find all application status."""
         return cls.query.distinct(Application.application_status).all()
 
     @classmethod
@@ -89,7 +89,7 @@ class Application(
 
     @classmethod
     def filter_conditions(cls, **filters):
-        """This method creates dynamic filter conditions based on the input param"""
+        """This method creates dynamic filter conditions based on the input param."""
         filter_conditions = []
         query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
@@ -136,7 +136,7 @@ class Application(
         sort_order: str,
         **filters,
     ) -> Application:
-        """Fetch applications list based on searching parameters for Non-reviewer"""
+        """Fetch applications list based on searching parameters for Non-reviewer."""
         query = Application.filter_conditions(**filters)
         query = query.filter(Application.created_by == user_id)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
@@ -203,7 +203,7 @@ class Application(
         sort_order: str,
         **filters,
     ):
-        """Fetch applications list based on searching parameters for Reviewer"""
+        """Fetch applications list based on searching parameters for Reviewer."""
         query = Application.filter_conditions(**filters)
         query = query.filter(FormProcessMapper.form_name.in_(form_names))
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
@@ -364,8 +364,7 @@ class Application(
     def find_aggregated_application_status(
         cls, mapper_id: int, from_date: str, to_date: str
     ):
-        """Fetch aggregated application status corresponding
-        to mapper_id ordered by created date."""
+        """Fetch application status corresponding to mapper_id by created date."""
         result_proxy = (
             db.session.query(
                 Application.application_status,
@@ -391,8 +390,7 @@ class Application(
     def find_aggregated_application_status_modified(
         cls, mapper_id: int, from_date: str, to_date: str
     ):
-        """Fetch aggregated application status corresponding
-        to mapper_id ordered by modified date.."""
+        """Get application status w.r.t to mapper_id ordered by modified date."""
         result_proxy = (
             db.session.query(
                 FormProcessMapper.form_name,
@@ -419,7 +417,7 @@ class Application(
     def get_total_application_corresponding_to_mapper_id(
         cls, form_process_mapper_id: int
     ):
-        """This method resturns the total applications corresponding to a form_process_mapper"""
+        """Returns the total applications corresponding to a form_process_mapper_id."""
         result_proxy = (
             db.session.query(func.count(Application.id).label("count"))
             .join(
@@ -428,5 +426,21 @@ class Application(
             )
             .filter(FormProcessMapper.id == form_process_mapper_id)
         )
-        # It always returns a list of one element with count denoting total number of applications
+        # returns a list of one element with count of applications
         return [dict(row) for row in result_proxy][0]["count"]
+
+    @classmethod
+    def get_form_mapper_by_application_id(cls, application_id: int):
+        """Fetch form process mapper details with application id."""
+        query = (
+            FormProcessMapper.query.with_entities(
+                FormProcessMapper.process_key,
+                FormProcessMapper.process_name,
+                FormProcessMapper.task_variable,
+            )
+            .join(cls, FormProcessMapper.id == cls.form_process_mapper_id)
+            .filter(Application.id == application_id)
+            .first()
+        )
+
+        return query

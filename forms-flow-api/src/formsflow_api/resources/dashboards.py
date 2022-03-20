@@ -1,4 +1,4 @@
-"""Resource to get Dashboard APIs from redash"""
+"""Resource to get Dashboard APIs from redash."""
 import re
 from http import HTTPStatus
 
@@ -16,7 +16,8 @@ analytics_service = RedashAPIService()
 @cors_preflight("GET, OPTIONS")
 @API.route("", methods=["GET", "OPTIONS"])
 class DashboardList(Resource):
-    """Resource to fetch Dashboard List
+    """Resource to fetch Dashboard List.
+
     : pageNo:- page number which starts from number 1 (optional)
     : limit:- number of items per page (optional)
     """
@@ -26,7 +27,7 @@ class DashboardList(Resource):
     @auth.require
     @profiletime
     def get():
-        """List all dashboards"""
+        """List all dashboards."""
         if request.args:
             dict_data = ApplicationListReqSchema().load(request.args)
             page_no = dict_data["page_no"]
@@ -49,14 +50,15 @@ class DashboardList(Resource):
 @cors_preflight("GET,OPTIONS")
 @API.route("/<int:dashboard_id>", methods=["GET", "OPTIONS"])
 class DashboardDetail(Resource):
-    """Resource to fetch Dashboard Detail"""
+    """Resource to fetch Dashboard Detail."""
 
     @staticmethod
     @API.doc("get_dashboard")
     @auth.require
     @profiletime
     def get(dashboard_id: int):
-        """Get  dashboard
+        """Get  dashboard.
+
         : dashboard_id:- Get dashboard with given dashboard_id
         """
         try:

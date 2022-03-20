@@ -1,4 +1,4 @@
-"""API endpoints for metrics resource"""
+"""API endpoints for metrics resource."""
 from http import HTTPStatus
 
 from flask import current_app, request
@@ -8,7 +8,7 @@ from marshmallow.exceptions import ValidationError
 from formsflow_api.schemas.aggregated_application import (
     ApplicationMetricsRequestSchema,
 )
-from formsflow_api.services import ApplicationService
+from formsflow_api.services import ApplicationService as AS
 from formsflow_api.utils import auth, cors_preflight, profiletime
 from formsflow_api.utils.enums import MetricsState
 
@@ -19,6 +19,7 @@ API = Namespace("Metrics", description="Application Metrics endpoint")
 @API.route("", methods=["GET", "OPTIONS"])
 class AggregatedApplicationsResource(Resource):
     """Resource for managing aggregated applications.
+
     : from:- To retrieve applications based on from_date
     : to:- To retrieve applications based on to_date
     : orderBy:- Name of column to order by
@@ -40,7 +41,7 @@ class AggregatedApplicationsResource(Resource):
                 response, status = (
                     (
                         {
-                            "applications": ApplicationService.get_current_aggregated_applications(
+                            "applications": AS.get_aggregated_applications_modified(
                                 from_date=from_date, to_date=to_date
                             )
                         }
@@ -52,7 +53,7 @@ class AggregatedApplicationsResource(Resource):
                 response, status = (
                     (
                         {
-                            "applications": ApplicationService.get_aggregated_applications(
+                            "applications": AS.get_aggregated_applications(
                                 from_date=from_date, to_date=to_date
                             )
                         }
@@ -62,7 +63,10 @@ class AggregatedApplicationsResource(Resource):
             return response, status
         except ValidationError as metrics_err:
             response = {
-                "message": "Missing from_date or to_date. Invalid request object for application metrics endpoint",
+                "message": (
+                    "Missing from_date or to_date. Invalid"
+                    "request object for application metrics endpoint"
+                ),
                 "errors": "Bad request error",
             }
 
@@ -92,6 +96,8 @@ class AggregatedApplicationStatusResource(Resource):
     @profiletime
     def get(mapper_id):
         """
+        Get application metrics corresponding to a mapper_id.
+
         : mapper_id:- Get aggregated application status.
         """
         try:
@@ -105,7 +111,7 @@ class AggregatedApplicationStatusResource(Resource):
                 response, status = (
                     (
                         {
-                            "applications": ApplicationService.get_current_aggregated_application_status(
+                            "applications": AS.get_applications_status_modified(
                                 mapper_id=mapper_id,
                                 from_date=from_date,
                                 to_date=to_date,
@@ -119,7 +125,7 @@ class AggregatedApplicationStatusResource(Resource):
                 response, status = (
                     (
                         {
-                            "applications": ApplicationService.get_aggregated_application_status(
+                            "applications": AS.get_applications_status(
                                 mapper_id=mapper_id,
                                 from_date=from_date,
                                 to_date=to_date,
@@ -131,7 +137,10 @@ class AggregatedApplicationStatusResource(Resource):
             return response, status
         except ValidationError as metrics_err:
             response, status = {
-                "message": "Missing from_date or to_date. Invalid request object for application metrics endpoint",
+                "message": (
+                    "Missing from_date or to_date. Invalid"
+                    "request object for application metrics endpoint"
+                ),
                 "errors": metrics_err,
             }, HTTPStatus.BAD_REQUEST
 

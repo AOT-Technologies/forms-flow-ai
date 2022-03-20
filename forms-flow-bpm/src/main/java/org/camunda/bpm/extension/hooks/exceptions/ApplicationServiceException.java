@@ -14,5 +14,9 @@ public class ApplicationServiceException  extends RuntimeException {
     public ApplicationServiceException(String message) {
         super(message);
     }
+
+    public ApplicationServiceException(String message, Exception ex) {
+        super(message, ex);
+    }
 }
 

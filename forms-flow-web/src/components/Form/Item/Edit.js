@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from "react";
+import React, {useState, useEffect, useReducer } from "react";
 import { saveForm, Errors,FormBuilder } from "react-formio";
 import { push } from "connected-react-router";
 import { useHistory } from "react-router-dom";
@@ -18,7 +18,8 @@ import {
   setFormPreviosData,
 } from "../../../actions/processActions";
 import { saveFormProcessMapper } from "../../../apiManager/services/processServices";
-
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal'
 const reducer = (form, {type, value}) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -51,9 +52,74 @@ const Edit = React.memo(() => {
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const errors = useSelector((state) => state.form.error);
   const prviousData = useSelector((state) => state.process.formPreviousData);
+  const ApplicationCount = useSelector((state) =>state.process.ApplicationCount)
+  const  formProcessList = useSelector((state)=>state.process.formProcessList)
+  const formPreviousData = useSelector((state)=>state.process.formPreviousData)
   const saveText = "Save Form";
   const history = useHistory();
- 
+  const [show, setShow] = useState(false);
+  
+  const handleClose = () => setShow(false);
+
+  const handleShow = () => setShow(true);
+  const handleSave=()=>{
+    setShow(false)
+    const newFormData = addHiddenApplicationComponent(form);
+    newFormData.submissionAccess = SUBMISSION_ACCESS;
+    newFormData.access = FORM_ACCESS;
+
+    dispatch(
+      saveForm("form", newFormData, (err, submittedData) => {
+        if (!err) {
+          // checking any changes
+          if (
+            prviousData.formName !== submittedData.title ||
+            prviousData.anonymous !== processListData.anonymous ||
+            processListData.anonymous === null
+          ) {
+            let isTitleChanged= prviousData.formName !== submittedData.title
+            let anonymousUpdate =
+              processListData.anonymous === null
+                ? false
+                : processListData.anonymous;
+            const data = {
+              anonymous: anonymousUpdate,
+              formName: submittedData.title,
+              id: processListData.id,
+              formId: submittedData._id,
+            };
+            let updated = true
+            if(isTitleChanged){
+              updated= false
+              data.processKey = formPreviousData.processKey
+              data.processName = formPreviousData.processName
+              data.status= formPreviousData.status
+              let version = +formProcessList.version+1
+              data.version = `${version}`
+            }else if( processListData && processListData.id){
+              updated = true
+            }
+            dispatch(saveFormProcessMapper(data, updated));
+            let newData = {
+              ...processListData,
+              formName: submittedData.title,
+            };
+            dispatch(setFormProcessesData(newData));
+            dispatch(setFormPreviosData({...newData,isTitleChanged}));
+          }
+          toast.success("Form Saved");
+          dispatch(push(`/formflow/${submittedData._id}/preview`));
+          // ownProps.setPreviewMode(true);
+        } else {
+          toast.error("Error while saving Form");
+        }
+      })
+    );
+
+    
+
+  }
+
   // setting the form data 
   useEffect(() => {
     const newForm= formData;
@@ -94,50 +160,55 @@ const Edit = React.memo(() => {
       }
     });
   }, [processListData]);
-
- 
 // save form data to submit
   const saveFormData = () => {
     const newFormData = addHiddenApplicationComponent(form);
-    newFormData.submissionAccess = SUBMISSION_ACCESS;
-    newFormData.access = FORM_ACCESS;
-    dispatch(
-      saveForm("form", newFormData, (err, submittedData) => {
-        if (!err) {
-          // checking any changes
-          if (
-            prviousData.formName !== submittedData.title ||
-            prviousData.anonymous !== processListData.anonymous ||
-            processListData.anonymous === null
-          ) {
-            let anonymousUpdate =
+    if(prviousData.formName !== newFormData.title && ApplicationCount >0){
+      handleShow()
+    }else{
+      newFormData.submissionAccess = SUBMISSION_ACCESS;
+      newFormData.access = FORM_ACCESS;
+  
+      dispatch(
+        saveForm("form", newFormData, (err, submittedData) => {
+          if (!err) {
+            // checking any changes
+            if (
+              prviousData.formName !== submittedData.title ||
+              prviousData.anonymous !== processListData.anonymous ||
               processListData.anonymous === null
-                ? false
-                : processListData.anonymous;
-            const data = {
-              anonymous: anonymousUpdate,
-              formName: submittedData.title,
-              id: processListData.id,
-              formId: submittedData._id,
-            };
-            const updated =
-              processListData && processListData.id ? true : false;
-            dispatch(saveFormProcessMapper(data, updated));
-            let newData = {
-              ...processListData,
-              formName: submittedData.title,
-            };
-            dispatch(setFormProcessesData(newData));
-            dispatch(setFormPreviosData(newData));
+            ) {
+              let isTitleChanged= prviousData.formName !== submittedData.title
+              let anonymousUpdate =
+                processListData.anonymous === null
+                  ? false
+                  : processListData.anonymous;
+              const data = {
+                anonymous: anonymousUpdate,
+                formName: submittedData.title,
+                id: processListData.id,
+                formId: submittedData._id,
+              };
+              const updated =
+                processListData && processListData.id ? true : false;
+              dispatch(saveFormProcessMapper(data, updated));
+              let newData = {
+                ...processListData,
+                formName: submittedData.title,
+              };
+              dispatch(setFormProcessesData(newData));
+              dispatch(setFormPreviosData({...newData,isTitleChanged}));
+            }
+            toast.success("Form Saved");
+            dispatch(push(`/formflow/${submittedData._id}/preview`));
+            // ownProps.setPreviewMode(true);
+          } else {
+            toast.error("Error while saving Form");
           }
-          toast.success("Form Saved");
-          dispatch(push(`/formflow/${submittedData._id}/preview`));
-          // ownProps.setPreviewMode(true);
-        } else {
-          toast.error("Error while saving Form");
-        }
-      })
-    );
+        })
+      );
+    }
+    
   };
 
 // setting the main option details to the formdata
@@ -180,9 +251,23 @@ if(!form._id){
         </div>
         <div id="save-buttons" className=" save-buttons pull-right">
           <div className="form-group pull-right">
-            <span className="btn btn-primary" onClick={() => saveFormData()}>
+            <span className="btn btn-primary" onClick={()=>saveFormData()}>
               {saveText}
             </span>
+            <Modal show={show} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirmation</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={()=>handleSave()}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
           </div>
         </div>
        </div>
@@ -263,11 +348,10 @@ if(!form._id){
           </div>
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
-          <div id="form-group-anonymous" className="form-group">
-            <label htmlFor="anonymous" className="control-label">Anonymous Form</label>
+          <div id="form-group-anonymous" className="form-group" style={{marginTop:'30px'}}>
             <div className="input-group align-items-center">
               <input
-               className="mr-3" style={{height:'20px', width:'20px'}}
+               className="m-0" style={{height:'20px', width:'20px'}}
                 type="checkbox"
                 id="anonymous"
                 checked={processListData.anonymous || false}
@@ -275,7 +359,7 @@ if(!form._id){
                   changeAnonymous();
                 }}
               />
-              <label htmlFor="anonymousLabel" className="form-control border-0">Do you want to  make this form public ?</label>
+              <label htmlFor="anonymousLabel" className="form-control control-label border-0" >Make this form public ?</label>
             </div>
           </div>
         </div>

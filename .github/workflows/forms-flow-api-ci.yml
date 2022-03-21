@@ -47,10 +47,10 @@ jobs:
         id: pylint
         run: |
           pylint --rcfile=setup.cfg  src/formsflow_api
-      # - name: Flake8
-      #   id: flake8
-      #   run: |
-      #     flake8 src/formsflow_api tests
+      - name: Flake8
+        id: flake8
+        run: |
+          flake8 src/formsflow_api tests
 
   PyTest:
     needs: setup-job

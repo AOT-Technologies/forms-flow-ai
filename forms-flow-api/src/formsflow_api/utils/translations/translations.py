@@ -1,4 +1,4 @@
-# Add the translations for the error messages in the following dictionary
+"""Translations dictionary."""
 # pylint: skip-file
 
 translations = {

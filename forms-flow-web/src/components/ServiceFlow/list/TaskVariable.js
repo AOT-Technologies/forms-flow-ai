@@ -10,7 +10,7 @@ const TaskVariable = ({ variables }) => {
     if(isValueNumber){
       return getFormattedDateAndTime(value)!=='Invalid Date'?getFormattedDateAndTime(value):value
     }else{
-      return value
+      return value.toString()
     }
   }
 
@@ -37,9 +37,9 @@ const TaskVariable = ({ variables }) => {
     <>
       <Row className="task-row-3 mt-3 justify-content-between">
         {variables.map((item, index) => {
-          if (index <= 1 && !showMore && item.value) {
+          if (index <= 1 && !showMore && item.value!==undefined) {
             return rowReturn(index, item);
-          } else if (showMore && item.value) {
+          } else if (showMore && item.value!==undefined) {
             return rowReturn(index, item);
           } else {
             return false;

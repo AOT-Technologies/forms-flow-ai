@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 4.0.5 - 2022-03-04
+## 4.0.5 - 2022-03-18
 
 `Added`
 
@@ -12,6 +12,10 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added count for Filter Tasks .
 * Added form search and sort fields for formsflow-designer.
 * Added new UI for task variable.
+* Added form name as part of filename when downloaded.
+* Added the status of the earlier version as inactive when a new version of the form is created.
+* Added submitter name in the application history table.
+* Added Cancel button for form submission.
 
 **forms-flow-api**
 
@@ -52,14 +56,18 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-web**
 
 * Modified application name search with lowercase and by intermediate search.
+* Front-end support for the form process mapper versioning and database normalization.
+* User is not be able to change the workflow of published form.
 
 **forms-flow-api**
 
-* Modified application name search with lowercase and by intermediate search.
+* API support for application name search with lowercase and by intermediate search.
+* Postgres database normalization and provided support for form process mapper versioning.
 
 *Upgrade notes:*
 
 `KEYCLOAK_BPM_CLIENT_SECRET` is not mandatory.
+ Due to the architectural changes to the Postgres database, it is recommended to back up the data before the upgrade.
 
 **forms-flow-bpm**
 
@@ -79,6 +87,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` are  removed since now the 
    admin APIs are accessed using the service account.
+   
 
 
 ## 4.0.4 - 2021-12-27

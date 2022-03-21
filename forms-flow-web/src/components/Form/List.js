@@ -162,6 +162,7 @@ const List = React.memo((props) => {
     })
   }
 
+ 
   return (
     <>
       <FileModal modalOpen={showFormUploadModal} onClose={() => setShowFormUploadModal(false)}/>
@@ -176,7 +177,7 @@ const List = React.memo((props) => {
                 "?"
               }
               onNo={() => onNo()}
-              onYes={() => onYes(formId, forms)}
+              onYes={() => {onYes(formId, forms)}}
             />
             <div className="flex-container">
               {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}

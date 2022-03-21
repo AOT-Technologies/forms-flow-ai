@@ -44,22 +44,13 @@ class BPMService(BaseBPMService):
         current_app.logger.debug(f"process def url>> {url}")
         return cls.get_request(url, token)
 
-    # @classmethod
-    # def get_process_actions(cls, process_key, token):
-    #     """Get process actions."""
-    #     url = cls._get_url_(BPMEndpointType.PROCESS_DEFINITION) + process_key
-    #     return cls.get_request(url, token)
-
-    # @classmethod
-    # def post_process_evaluate(cls, payload, token):
-    #     """Get states by evaluating process."""
-    #     url = f"{cls._get_url_(BPMEndpointType.DecisionDefinition)}key/state-decision/evaluate"
-    #     return cls.post_request(url, token, payload=payload)
-
     @classmethod
     def post_process_start(cls, process_key, payload, token):
         """Post process start."""
-        url = f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/key/{process_key}/start"
+        url = (
+            f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"
+            f"key/{process_key}/start"
+        )
         return cls.post_request(url, token, payload=payload)
 
     @classmethod

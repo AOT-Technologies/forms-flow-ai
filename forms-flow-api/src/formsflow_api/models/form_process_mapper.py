@@ -7,6 +7,7 @@ from http import HTTPStatus
 from flask import current_app
 from sqlalchemy.sql.expression import text
 from sqlalchemy import UniqueConstraint, and_, desc
+from sqlalchemy.dialects.postgresql import JSON
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
@@ -33,6 +34,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     )
     is_anonymous = db.Column(db.Boolean, nullable=True)
     deleted = db.Column(db.Boolean, nullable=True, default=False)
+    task_variable = db.Column(JSON, nullable=True)
     version = db.Column(db.Integer, nullable=False, default=1)
 
     __table_args__ = (UniqueConstraint("form_id", "version", name="_form_version_uc"),)
@@ -52,6 +54,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.created_by = mapper_info["created_by"]
                 mapper.tenant = mapper_info.get("tenant")
                 mapper.is_anonymous = mapper_info.get("is_anonymous")
+                mapper.task_variable = mapper_info.get("task_variable")
                 mapper.version = mapper_info.get("version")
                 mapper.save()
                 return mapper
@@ -82,6 +85,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "comments",
                 "modified_by",
                 "is_anonymous",
+                "task_variable",
             ],
             mapper_info,
         )
@@ -186,36 +190,6 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             .limit(1)
             .first()
         )  # pylint: disable=no-member
-
-    @classmethod
-    def find_by_application_id(cls, application_id: int):
-        """Fetch form process mapper details with application id."""
-        where_condition = ""
-        where_condition += f""" app.id  = {str(application_id)} """
-
-        result_proxy = db.session.execute(
-            f"""select
-            mapper.id,mapper.process_key,mapper.process_name
-            from application app, form_process_mapper mapper
-            where app.form_process_mapper_id=mapper.id and
-                {where_condition}
-            """
-        )
-        try:
-            result = []
-            for row in result_proxy:
-                info = dict(row)
-                result.append(info)
-
-            return result[0]
-        except IndexError as err:
-            current_app.logger.warning(err)
-            return (
-                "List index out of range",
-                HTTPStatus.BAD_REQUEST,
-            )
-        except BusinessException as err:
-            return err.error, err.status_code
 
     @classmethod
     def find_mapper_by_form_id_and_version(

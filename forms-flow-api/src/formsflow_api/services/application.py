@@ -294,7 +294,9 @@ class ApplicationService:
     @staticmethod
     def get_application_form_mapper_by_id(application_id: int):
         """Get form process mapper."""
-        mapper = FormProcessMapper.find_by_application_id(application_id=application_id)
+        mapper = Application.get_form_mapper_by_application_id(
+            application_id=application_id
+        )
         if mapper:
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)

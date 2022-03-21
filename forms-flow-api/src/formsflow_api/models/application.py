@@ -474,3 +474,19 @@ class Application(
         )
         # returns a list of one element with count of applications
         return [dict(row) for row in result_proxy][0]["count"]
+
+    @classmethod
+    def get_form_mapper_by_application_id(cls, application_id: int):
+        """Fetch form process mapper details with application id."""
+        query = (
+            FormProcessMapper.query.with_entities(
+                FormProcessMapper.process_key,
+                FormProcessMapper.process_name,
+                FormProcessMapper.task_variable,
+            )
+            .join(cls, FormProcessMapper.id == cls.form_process_mapper_id)
+            .filter(Application.id == application_id)
+            .first()
+        )
+
+        return query

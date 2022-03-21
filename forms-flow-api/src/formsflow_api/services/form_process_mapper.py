@@ -96,7 +96,6 @@ class FormProcessMapperService:
 
         if not data.get("comments"):
             data["comments"] = None
-
         if mapper:
             mapper.update(data)
             return mapper

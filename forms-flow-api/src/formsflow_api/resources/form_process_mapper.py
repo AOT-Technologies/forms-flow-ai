@@ -1,5 +1,6 @@
 """API endpoints for managing form resource."""
 
+import json
 from http import HTTPStatus
 
 from flask import current_app, g, request
@@ -105,13 +106,17 @@ class FormResourceList(Resource):
         mapper_json = request.get_json()
         try:
             sub: str = g.token_info.get("preferred_username")
+            mapper_json["taskVariable"] = json.dumps(
+                mapper_json.get("taskVariable") or []
+            )
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(mapper_json)
             dict_data["created_by"] = sub
             mapper = FormProcessMapperService.create_mapper(dict_data)
             FormProcessMapperService.unpublish_previous_mapper(dict_data)
-            response, status = mapper_schema.dump(mapper), HTTPStatus.CREATED
-            return response, status
+            response = mapper_schema.dump(mapper)
+            response["taskVariable"] = json.loads(response["taskVariable"])
+            return response, HTTPStatus.CREATED
         except BaseException as form_err:  # pylint: disable=broad-except
             response, status = {
                 "message": "Invalid request object passed",
@@ -193,6 +198,10 @@ class FormResourceById(Resource):
         application_json = request.get_json()
 
         try:
+            if "taskVariable" in application_json:
+                application_json["taskVariable"] = json.dumps(
+                    application_json.get("taskVariable")
+                )
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(application_json)
             sub: str = g.token_info.get("preferred_username")
@@ -230,8 +239,10 @@ class FormResourceByFormId(Resource):
         : form_id:- Get details of only form corresponding to a particular formId
         """
         try:
+            response = FormProcessMapperService.get_mapper_by_formid(form_id=form_id)
+            response["taskVariable"] = json.loads(response["taskVariable"])
             return (
-                FormProcessMapperService.get_mapper_by_formid(form_id=form_id),
+                response,
                 HTTPStatus.OK,
             )
         except BusinessException as err:
@@ -267,3 +278,19 @@ class FormResourceApplicationCount(Resource):
             mapper_id
         )
         return response, status
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/applicationid/<int:application_id>", methods=["GET", "OPTIONS"])
+class FormResourceTaskVariablesbyApplicationId(Resource):
+    """Resource to get task filter variables of a form based on application id."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def get(application_id: int):
+        """The method retrieves task variables based on application id."""
+        return (
+            ApplicationService.get_application_form_mapper_by_id(application_id),
+            HTTPStatus.OK,
+        )

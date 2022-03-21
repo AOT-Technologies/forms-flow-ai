@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import net.minidev.json.JSONArray;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 
@@ -23,20 +20,14 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
 import org.camunda.bpm.engine.authorization.Resources;
 
 import javax.servlet.ServletException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -84,6 +75,7 @@ public class AdminController {
                             action.setFormName(formNode.get("formName").asText());
                             action.setProcessKey(formNode.get("processKey").asText());
                             formList.add(action);
+
                         }
                     }
 
@@ -98,7 +90,7 @@ public class AdminController {
                 } else {
                     for (Authorization authObj : authorizationList) {
                         for (AuthorizedAction formObj : formList) {
-                            if (authObj.getResourceId().equals(formObj.getProcessKey()) && !isExists(filteredList, formObj.getFormId()))  {
+                            if (("*".equals(authObj.getResourceId()) || authObj.getResourceId().equals(formObj.getProcessKey())) && !isExists(filteredList, formObj.getFormId()))  {
                                 filteredList.add(formObj);
                             }
                         }
@@ -144,20 +136,28 @@ public class AdminController {
             throw new ServletException("Invalid authentication request token");
         }
 
-        List<String> groupIds = new ArrayList<>();
+        List<String> groupIds = null;
         if(claims != null && claims.containsKey("groups")) {
-            JSONArray groups = (JSONArray)claims.get("groups");
-            for (Object group1 : groups) {
-                String groupName = group1.toString();
-                if(StringUtils.startsWith(groupName,"/")) {
-                    groupIds.add(StringUtils.substring(groupName,1));
-                } else {
-                    groupIds.add(groupName);
-                }
-            }
+        	groupIds = getKeyValues(claims, "groups");
+        } else if (claims != null && claims.containsKey("roles")) {
+        	groupIds = getKeyValues(claims, "roles");
         }
         return groupIds;
     }
+
+	private List<String> getKeyValues(Map<String, Object> claims, String claimName) {
+		List<String> groupIds = new ArrayList<String>();
+		JSONArray groups = (JSONArray)claims.get(claimName);
+		for (Object group1 : groups) {
+		    String groupName = group1.toString();
+		    if(StringUtils.startsWith(groupName,"/")) {
+		        groupIds.add(StringUtils.substring(groupName,1));
+		    } else {
+		        groupIds.add(groupName);
+		    }
+		}
+		return groupIds;
+	}
 
     /**
      * This method returns all authorization details of Groups.

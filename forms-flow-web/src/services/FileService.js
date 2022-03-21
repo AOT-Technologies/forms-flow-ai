@@ -1,7 +1,14 @@
  /* istanbul ignore file */
 const downloadFile = async (data={},callback) => {
   const myData = data;
-  const fileName = `forms-${new Date().toJSON()}`;
+  let fileName ;
+   if(myData.forms.length === 1)
+   {  
+      fileName = `${myData.forms[0].title}-${new Date().toJSON()}`;
+   }
+   else{
+     fileName = `forms(${myData.forms.length})-${new Date().toJSON()}`;
+   }
   const json = JSON.stringify(myData);
   const blob = new Blob([json],{type:'application/json'});
   const href = await URL.createObjectURL(blob);

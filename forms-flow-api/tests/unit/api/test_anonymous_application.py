@@ -1,10 +1,10 @@
-"""Test suite for application API public endpoint"""
+"""Test suite for application API public endpoint."""
 from pytest import mark
 
 from tests.utilities.base_test import (
+    factory_auth_header,
     get_application_create_payload,
     get_form_request_anonymous_payload,
-    factory_auth_header,
     get_form_request_payload_private,
     get_form_request_payload_public_inactive,
 )
@@ -12,8 +12,10 @@ from tests.utilities.base_test import (
 
 @mark.describe("Initialize application public API")
 class TestApplicationAnonymousResourcesByIds:
+    """Test suite for anonymosu application endpoint."""
+
     def test_application_valid_post(self, app, client, session):
-        """Assert that public API /application when passed with valid payload returns 201 status code"""
+        """Assert that public API /application when passed with valid payload returns 201 status code."""
         token = factory_auth_header()
         headers = {
             "Authorization": f"Bearer {token}",
@@ -31,8 +33,7 @@ class TestApplicationAnonymousResourcesByIds:
         assert response.status_code == 201
 
     def test_application_invalid_post(self, app, client, session):
-        """Assert that public API /application when passed with invalid payload returns 400 status code"""
-
+        """Assert that public API /application when passed with invalid payload returns 400 status code."""
         response = client.post(
             "/public/application/create",
             json=get_application_create_payload("asgdgasjg"),
@@ -44,7 +45,7 @@ class TestApplicationAnonymousResourcesByIds:
         }
 
     def test_application_unauthorized_post(self, app, client, session):
-        """Assert that public API /application when passed with valid payload returns 401 status code when the form is not anonymos"""
+        """Assert that public API /application when passed with valid payload returns 401 status code when the form is not anonymos."""
         token = factory_auth_header()
         headers = {
             "Authorization": f"Bearer {token}",
@@ -65,7 +66,7 @@ class TestApplicationAnonymousResourcesByIds:
         }
 
     def test_application_inactive_post(self, app, client, session):
-        """Assert that public API /application when passed with valid payload returns 401 status code when the form is anonymous but Inactive"""
+        """Assert that public API /application when passed with valid payload returns 401 status code when the form is anonymous but Inactive."""
         token = factory_auth_header()
         headers = {
             "Authorization": f"Bearer {token}",
@@ -87,11 +88,10 @@ class TestApplicationAnonymousResourcesByIds:
 
 
 class TestAnonymousFormById:
-    """Class for unit test check form is Anonymous and published"""
+    """Class for unit test check form is Anonymous and published."""
 
     def test_anonymous_active_form_by_form_id(self, client, session):
-        """Assert that public API when passed with valid payload returns 200 status code"""
-
+        """Assert that public API when passed with valid payload returns 200 status code."""
         token = factory_auth_header()
         headers = {
             "Authorization": f"Bearer {token}",
@@ -108,9 +108,8 @@ class TestAnonymousFormById:
         assert response.status_code == 200
 
     def test_invalid_form_id(self, app, client, session):
-        """Assert that public API when passed with invalid payload returns 400 status code"""
-
-        response = client.get(f"/public/form/2ddse3")
+        """Assert that public API when passed with invalid payload returns 400 status code."""
+        response = client.get("/public/form/2ddse3")
         assert response.status_code == 400
         assert response.json == {
             "type": "Bad request error",

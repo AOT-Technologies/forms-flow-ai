@@ -9,7 +9,9 @@ from flask_restx import Api
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.resources.anonymous_application import API as PUBLIC_API
 from formsflow_api.resources.application import API as APPLICATION_API
-from formsflow_api.resources.application_history import API as APPLICATION_HISTORY_API
+from formsflow_api.resources.application_history import (
+    API as APPLICATION_HISTORY_API,
+)
 from formsflow_api.resources.checkpoint import API as CHECKPOINT_API
 from formsflow_api.resources.dashboards import API as DASHBOARDS_API
 from formsflow_api.resources.form_process_mapper import API as FORM_API
@@ -49,8 +51,8 @@ def handle_auth_error(error: AuthError):
     return (
         {
             "type": "Invalid Token Error",
-            "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for"
-            "Authorization or has expired.",
+            "message": "Access to formsflow.ai API Denied. Check if the "
+            "bearer token is passed for Authorization or has expired.",
         },
         error.status_code,
         {"Access-Control-Allow-Origin": ALLOW_ALL_ORIGINS},

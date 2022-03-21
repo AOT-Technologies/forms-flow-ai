@@ -16,7 +16,6 @@ class ApplicationListReqSchema(Schema):
 
 
 class ApplicationListRequestSchema(ApplicationListReqSchema):
-
     """This class manages application list request schema."""
 
     order_by = fields.Str(data_key="sortBy", required=False)

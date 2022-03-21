@@ -1,4 +1,4 @@
-"""Enum User Definition"""
+"""Enum User Definition."""
 from enum import Enum
 
 
@@ -10,7 +10,7 @@ class FormProcessMapperStatus(Enum):
 
 
 class MetricsState(Enum):
-    """This enum provides the list of states of Metrics"""
+    """This enum provides the list of states of Metrics."""
 
     CREATED = "created"
     MODIFIED = "modified"

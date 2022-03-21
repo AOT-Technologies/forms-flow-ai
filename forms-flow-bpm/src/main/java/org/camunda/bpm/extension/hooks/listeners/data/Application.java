@@ -14,4 +14,5 @@ import lombok.NoArgsConstructor;
 public class Application{
     private String applicationStatus;
     private String formUrl;
+    private String submittedBy;
 }

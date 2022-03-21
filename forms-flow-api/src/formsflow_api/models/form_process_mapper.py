@@ -9,7 +9,6 @@ from sqlalchemy.sql.expression import text
 from sqlalchemy import UniqueConstraint, and_, desc
 from sqlalchemy.dialects.postgresql import JSON
 
-from formsflow_api.exceptions import BusinessException
 from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
 from formsflow_api.utils.enums import FormProcessMapperStatus
 

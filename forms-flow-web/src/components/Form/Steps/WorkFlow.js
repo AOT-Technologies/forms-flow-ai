@@ -224,15 +224,15 @@ const WorkFlow = React.memo(
                     Create Your Task Variable
                   </FormLabel>
                   {selectedTaskVariable.length !== 0 ? (
-                    <Grid item xs={12} md={4} className="mb-2">
+                    <Grid item xs={12} md={5} className="mb-2">
                       <TableContainer component={Paper} style={{maxHeight:"250px"}}>
                         <Table stickyHeader aria-label="simple table">
                           <TableHead>
-                            <TableRow>
-                              <TableCell>Key</TableCell>
-                              <TableCell align="left">Label</TableCell>
-                              <TableCell align="left">Show in list</TableCell>
-                              <TableCell align="right">
+                            <TableRow >
+                              <TableCell className="font-weight-bold">Key</TableCell>
+                              <TableCell className="font-weight-bold" align="left">Label</TableCell>
+                              <TableCell className="font-weight-bold"align="left">Show in list</TableCell>
+                              <TableCell className="font-weight-bold" align="right">
                                 Action
                               </TableCell>
                              
@@ -246,7 +246,7 @@ const WorkFlow = React.memo(
                                 </TableCell>
                                 <TableCell align="left"> {item.label} </TableCell>
                                 <TableCell align="left">{item.showInList?'yes':'no'}</TableCell>
-                                <TableCell align="right"><button onClick={()=>{deleteTaskVariable(item)}}> <i className="fa fa-times"></i></button>
+                                <TableCell align="right"> <i role="button" onClick={()=>{deleteTaskVariable(item)}} className="fa fa-times"></i> 
                                 </TableCell>
                                </TableRow>
                             ))}

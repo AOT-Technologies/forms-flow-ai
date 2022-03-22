@@ -23,6 +23,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { setFormProcessesData } from "../../../actions/processActions";
+import ViewAndEditTaskvariable  from "./ViewAndEditTaskvariable";
 const WorkFlow = React.memo(
   ({
     associateWorkFlow,
@@ -106,6 +107,17 @@ const WorkFlow = React.memo(
       );
     };
 
+    const editTaskVariable= (data)=>{
+      setSelectedTaskVariable((prev)=>{
+        return prev.map(item=>item.key===data.key?{...data}:item)
+      })
+      dispatch(
+        setFormProcessesData({
+          ...formProcessList,
+          taskVariable: selectedTaskVariable.map(variable=>variable.key===data.key?{...data}:variable)
+        })
+      );
+    }
     const handleChange = (event, newValue) => {
       setTabValue(newValue);
     };
@@ -224,7 +236,7 @@ const WorkFlow = React.memo(
                     Create Your Task Variable
                   </FormLabel>
                   {selectedTaskVariable.length !== 0 ? (
-                    <Grid item xs={12} md={5} className="mb-2">
+                    <Grid item xs={12} md={8} className="mb-2">
                       <TableContainer component={Paper} style={{maxHeight:"250px"}}>
                         <Table stickyHeader aria-label="simple table">
                           <TableHead>
@@ -240,15 +252,11 @@ const WorkFlow = React.memo(
                           </TableHead>
                           <TableBody>
                             {selectedTaskVariable.map((item,index) => (
-                              <TableRow key={index}>
-                                <TableCell scope="row">
-                                  {item.key}
-                                </TableCell>
-                                <TableCell align="left"> {item.label} </TableCell>
-                                <TableCell align="left">{item.showInList?'yes':'no'}</TableCell>
-                                <TableCell align="right"> <i role="button" onClick={()=>{deleteTaskVariable(item)}} className="fa fa-times"></i> 
-                                </TableCell>
-                               </TableRow>
+                              <ViewAndEditTaskvariable key={index}  
+                              item={item}
+                              deleteTaskVariable={deleteTaskVariable}
+                              editTaskVariable={editTaskVariable}
+                              />
                             ))}
                           </TableBody>
                         </Table>

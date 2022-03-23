@@ -13,15 +13,22 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
   const [selectedFilterInputValue, setSelectedFilterInputValue] = useState('');
   const [selectedFilterInputName, setSelectedFilterInputName] = useState('');
   const [inputDate, setUpInputDate] = useState(null);
-  const taskVariable = useSelector((state)=>state.bpmTasks.selectedFilter?.properties?.variables ||[])
-  const [filterTaskVaribale,setFilterTaskVaribale]=useState(taskVariable)
+  const selectedFilter = useSelector((state)=>state.bpmTasks.selectedFilter)
+  const [filterTaskVariableArray,setFilterTaskVariableArray]=useState([])
+  const [taskVariable,setTaskVariable]=useState([])
+
 
  useEffect(()=>{
-  setFilterTaskVaribale(taskVariable)
- },[taskVariable])
+  if(selectedFilter){
+    const taskVariable = selectedFilter?.properties?.variables || [];
+      setTaskVariable(taskVariable)
+      setFilterTaskVariableArray(taskVariable)
+  }
+ 
+ },[selectedFilter]);
 
-  const filterTaskVariable = (e)=>{ 
-    setFilterTaskVaribale(taskVariable.filter((task,index)=>task?.name.includes(e.target.value)))
+  const filterTaskVariable = (e)=>{
+    setFilterTaskVariableArray(taskVariable.filter((task,index)=>task?.name.includes(e.target.value)))
   }
 
   const handleFilterValueChange = (e, index) => {
@@ -123,13 +130,13 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
                       onKeyDown={(e) => handleFilterNameChange(e, index)}
                     />
                    <div className="filter-items">
-                  {filterTaskVaribale.map((variable) => (
+                  {filterTaskVariableArray.map((variable) => (
                   <div
                    key={variable.label}
                    className="clickable p-0 mb-2"
                    onClick={()=>{setSelectedFilterInputName(variable.name);updateFilterName(index,variable.name)}}
                   >
-                 {variable.name}  ({variable.label}) 
+                 {variable.name}  ({variable.label})
                  </div>
                   ))}
                   </div>

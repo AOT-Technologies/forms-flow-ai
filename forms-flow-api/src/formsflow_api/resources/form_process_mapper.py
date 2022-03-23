@@ -167,7 +167,9 @@ class FormResourceById(Resource):
         : mapper_id:- Delete form process mapper by mapper_id.
         """
         try:
-            FormProcessMapperService.mark_inactive(form_process_mapper_id=mapper_id)
+            FormProcessMapperService.mark_inactive_and_delete(
+                form_process_mapper_id=mapper_id
+            )
             return "Deleted", HTTPStatus.OK
         except BusinessException as err:
             response, status = (

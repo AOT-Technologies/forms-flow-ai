@@ -41,7 +41,7 @@ public class FormTokenAccessHandler {
         }
     }
 
-    protected String getAccessToken(){
+    public String getAccessToken(){
         LOGGER.info("Getting access token from the formio context");
         return formioContextProvider.createFormioRequestAccessToken();
     }

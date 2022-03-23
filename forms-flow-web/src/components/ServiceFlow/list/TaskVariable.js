@@ -17,9 +17,11 @@ const TaskVariable = ({ variables }) => {
   const rowReturn = (index, item) => {
     return (
       <Col xs={12} lg={6} key={index} className="mb-2">
-        <p style={{ margin: "0px",fontWeight:"bold"}}>
+        <div class="text-truncate"  data-toggle="tooltip" data-placement="top" title= {taskVariableObject[item.name]} >
+        <span style={{ margin: "0px",fontWeight:"bold"}}>
            {taskVariableObject[item.name]} 
-        </p>
+        </span>
+        </div>
         <div class="text-truncate">
           <span
            data-toggle="tooltip" data-placement="top" title={

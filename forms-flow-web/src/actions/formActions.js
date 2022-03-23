@@ -90,3 +90,31 @@ export const setPublicFormStatus =(data)=>dispatch=>{
     payload:data
   })
 }
+
+export const setFormSuccessData =( name,
+                                   form,
+                                   url)=>dispatch=>{
+   dispatch({
+     type:ACTION_CONSTANTS.FORM_SUCCESS,
+     form,
+     name,
+     url,
+   })
+ }
+
+ export const setFormRequestData =(name, id, url)=>dispatch=>{
+   dispatch({
+     type:ACTION_CONSTANTS.FORM_REQUEST,
+     name,
+     id,
+     url,
+   })
+ }
+
+ export const setFormFailureErrorData =(name, error)=>dispatch=>{
+   dispatch({
+     type:ACTION_CONSTANTS.FORM_FAILURE,
+     name,
+     error
+   })
+ }

@@ -4,7 +4,7 @@ import { Row, Col } from "react-bootstrap";
 import { getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
 const TaskVariable = ({ variables }) => {
   const [showMore, setShowMore] = useState(false);
-  const taskVariableObject = useSelector((state)=>state.bpmTasks.selectedFilterAction)
+  const taskVariableObject = useSelector((state)=>state.bpmTasks.selectedFilterAction);
   const checkVlaueIsDateOrNOt=(value)=>{
     const isValueNumber = isNaN(value)
     if(isValueNumber){
@@ -17,12 +17,12 @@ const TaskVariable = ({ variables }) => {
   const rowReturn = (index, item) => {
     return (
       <Col xs={12} lg={6} key={index} className="mb-2">
-        <div class="text-truncate"  data-toggle="tooltip" data-placement="top" title= {taskVariableObject[item.name]} >
+        <div className="text-truncate"  data-toggle="tooltip" data-placement="top" title= {taskVariableObject[item.name]} >
         <span style={{ margin: "0px",fontWeight:"bold"}}>
-           {taskVariableObject[item.name]} 
+           {taskVariableObject[item.name]}
         </span>
         </div>
-        <div class="text-truncate">
+        <div className="text-truncate">
           <span
            data-toggle="tooltip" data-placement="top" title={
             checkVlaueIsDateOrNOt(item.value)

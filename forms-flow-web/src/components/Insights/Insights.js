@@ -41,7 +41,7 @@ const NoPublicUrlMessage = ()=>(
       <i className="fa fa-tachometer fa-lg"/>
       <br></br>
       <br></br>
-      <label> No Public url found </label>
+      <label> <Translation>{(t)=>t("No Public url found")}</Translation></label>
     </div>
 )
   if (isDashboardLoading) {

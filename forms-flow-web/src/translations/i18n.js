@@ -40,7 +40,5 @@ i18n
   });
   
 
-//i18n.changeLanguage('zh'); // default language 'en'
-  //i18n.fallbacks = true;
   export default i18n;
   

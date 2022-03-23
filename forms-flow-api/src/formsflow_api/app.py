@@ -78,7 +78,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
 
     @app.after_request
     def translate_response(response):  # pylint: disable=unused-variable
-        """Select the client specific language from the token locale attribute"""
+        """Select the client specific language from the token locale attribute."""
         try:
             if response.status_code in [
                 HTTPStatus.BAD_REQUEST,

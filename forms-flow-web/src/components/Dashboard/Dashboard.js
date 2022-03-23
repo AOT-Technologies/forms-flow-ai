@@ -26,7 +26,6 @@ const Dashboard = React.memo(() => {
   const submissionsStatusList = useSelector(
     (state) => state.metrics.submissionsStatusList
   );
-
   const isMetricsLoading = useSelector(
     (state) => state.metrics.isMetricsLoading
   );
@@ -51,6 +50,8 @@ const Dashboard = React.memo(() => {
     moment(firsDay),
     moment(lastDay),
   ]);
+  const [showSubmissionData,setSHowSubmissionData]=useState({})
+
   const getFormattedDate = (date) => {
     return moment.utc(date).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B")
   };
@@ -60,7 +61,10 @@ const Dashboard = React.memo(() => {
     dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy.value));
   }, [dispatch,searchBy.value,dateRange]);
 
-
+  useEffect(()=>{
+    setSHowSubmissionData(submissionsList[0])
+  },[submissionsList])
+  
   const  onChangeInput =(option) => {
     setSearchBy(option);
 
@@ -135,6 +139,7 @@ const Dashboard = React.memo(() => {
               getStatusDetails={getStatusDetails}
               selectedMetricsId={selectedMetricsId}
               noOfApplicationsAvailable={noOfApplicationsAvailable}
+              setSHowSubmissionData={setSHowSubmissionData}
             />
           </div>
           {metricsStatusLoadError && <LoadError />}
@@ -143,7 +148,7 @@ const Dashboard = React.memo(() => {
               {isMetricsStatusLoading ? (
                 <Loading />
               ) : (
-                <StatusChart submissionsStatusList={submissionsStatusList} />
+                <StatusChart  submissionsStatusList={submissionsStatusList} submissionData={showSubmissionData} />
               )}
             </div>
           )}

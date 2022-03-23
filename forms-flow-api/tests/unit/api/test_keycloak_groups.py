@@ -1,10 +1,13 @@
-"""Unit test for APIs of Keycloak Group"""
+"""Unit test for APIs of Keycloak Group."""
 from tests import skip_in_ci
-from tests.utilities.base_test import factory_auth_header, update_dashboard_payload
+from tests.utilities.base_test import (
+    factory_auth_header,
+    update_dashboard_payload,
+)
 
 
 def test_group_list(app, client, session):
-    """Passing case of Group List API"""
+    """Passing case of Group List API."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -13,7 +16,7 @@ def test_group_list(app, client, session):
 
 
 def test_group_list_wrongmethod(app, client, session):
-    """Instead of Get Request, what if POST request comes"""
+    """Instead of Get Request, what if POST request comes."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -25,17 +28,18 @@ def test_group_list_wrongmethod(app, client, session):
 
 
 def test_group_list_wrong_auth_header(app, client, session):
-    """Wrong Authorization header"""
+    """Wrong Authorization header."""
     response = client.get("/groups")
     assert response.status_code == 401
     assert response.json == {
         "type": "Invalid Token Error",
-        "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for"
-        "Authorization or has expired.",
+        "message": "Access to formsflow.ai API Denied. Check if the "
+        "bearer token is passed for Authorization or has expired.",
     }
 
 
 def test_group_details(app, client, session):
+    """Testing group details API."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -50,7 +54,7 @@ def test_group_details(app, client, session):
 
 @skip_in_ci
 def test_groups_put_details(app, client, session):
-    """good cases"""
+    """Good cases."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -65,7 +69,7 @@ def test_groups_put_details(app, client, session):
 
 
 def test_groups_put_wrong_details(app, client, session):
-    """wrong request object"""
+    """Wrong request object."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 

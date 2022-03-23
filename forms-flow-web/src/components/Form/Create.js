@@ -75,14 +75,14 @@ if (anonymous) {
 });
 },[anonymous])
 
-  // setting the form data 
+  // setting the form data
   useEffect(() => {
     const newForm=  { display: "form" };
     if (newForm && (form._id !== newForm._id || form.modified !== newForm.modified)) {
       dispatchFormAction({type: 'replaceForm', value: newForm});
     }
   }, [form]);
- 
+
 
 // submitting form
 const saveFormData =() => {
@@ -91,7 +91,7 @@ const saveFormData =() => {
     ...newFormData,
     tags: ["common"],
   };
-  newForm.submissionAccess = SUBMISSION_ACCESS; 
+  newForm.submissionAccess = SUBMISSION_ACCESS;
   newForm.access=FORM_ACCESS
   dispatch(
     saveForm("form", newForm, (err, form) => {
@@ -136,7 +136,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
           </div>
         </div>
        </div>
-      <div className="row">
+      <div className="row align-item-center">
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-title" className="form-group">
             <label htmlFor="title" className="control-label field-required"> <Translation>{(t)=>t("title")}</Translation></label>
@@ -204,7 +204,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
                 type="text"
                 className="form-control"
                 id="path"
-                placeholder={t("example")}
+                placeholder={t("Enter pathname")}
                 style={{'textTransform': 'lowercase', width:'120px'}}
                 value={form.path || ''}
                 onChange={event => handleChange('path', event)}
@@ -213,22 +213,21 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
           </div>
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
-          <div id="form-group-anonymous" className="form-group">
-            <label htmlFor="anonymous" className="control-label"><Translation>{(t)=>t("anonymous_form")}</Translation></label>
+          <div id="form-group-anonymous" className="form-group"  style={{marginTop:'30px'}}>
             <div className="input-group align-items-center">
               <input
-               className="mr-3" style={{height:'20px', width:'20px'}}
+               className="m-0" style={{height:'20px', width:'20px'}}
                 type="checkbox"
                 id="anonymous"
                 data-testid="anonymous"
                 checked={anonymous}
                 onChange={(e) =>{setAnonymous(!anonymous)}}
               />
-              <label htmlFor="anonymousLabel" className="form-control border-0"><Translation>{(t)=>t("Do you want to  make this form public ?")}</Translation></label>
+              <label htmlFor="anonymousLabel" className="form-control border-0"><Translation>{(t)=>t("Make this form public ?")}</Translation></label>
             </div>
           </div>
         </div>
-   
+
       </div>
       <FormBuilder
       options={{
@@ -242,5 +241,5 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
     </div>
   );
 });
- 
+
 export default Create;

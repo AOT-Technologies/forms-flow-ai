@@ -5,7 +5,7 @@ import { Translation } from "react-i18next";
 
 const CardFormCounter = React.memo((props) => {
   const { submitionData, getStatusDetails, selectedMetricsId } = props;
-  const { formName, mapperId, count } = submitionData;
+  const { formName, mapperId, count ,version } = submitionData;
   return (
     <Fragment>
       <div
@@ -25,7 +25,7 @@ const CardFormCounter = React.memo((props) => {
               delay={{ show: 0, hide: 400 }}
               overlay={(propsData) => (
                 <Tooltip id="overlay-example" {...propsData}>
-                  {formName}
+                  {formName} <span>Version {version}</span>
                 </Tooltip>
               )}
             >

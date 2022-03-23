@@ -14,10 +14,10 @@ export const updateUserlang = (data)=>{
     httpPUTRequest(apiUpdatelang,{"locale":data},UserService.getToken())
     .then((res)=>{
       if(res.data){
-          toast.success(<Translation>{(t)=>t("successfully_updated")}</Translation>);
+          //toast.success(<Translation>{(t)=>t("successfully_updated")}</Translation>);
         
       }else{
-          toast.error(<Translation>{(t)=>t("failed")}</Translation>);
+          //toast.error(<Translation>{(t)=>t("failed")}</Translation>);
         
         }
       }

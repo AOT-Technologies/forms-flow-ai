@@ -23,6 +23,8 @@ class FormProcessMapperSchema(Schema):
     created = fields.Str(data_key="created")
     modified_by = fields.Str(data_key="modifiedBy")
     modified = fields.Str(data_key="modified")
+    task_variable = fields.Str(data_key="taskVariable")
+    version = fields.Str(data_key="version")
 
 
 class FormProcessMapperListReqSchema(Schema):
@@ -34,13 +36,10 @@ class FormProcessMapperListReqSchema(Schema):
         unknown = EXCLUDE
 
     page_no = fields.Int(data_key="pageNo", required=False, allow_none=True)
-    limit = fields.Int(data_key="limit", required=False, allow_none=True)
+    limit = fields.Int(required=False, allow_none=True)
 
 
 class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
-
     """This class manages formprocessmapper list request schema."""
 
     form_name = fields.Str(data_key="formName", required=False)
-    sort_by = fields.Str(data_key="sortBy", required=False)
-    sort_order = fields.Str(data_key="sortOrder", required=False)

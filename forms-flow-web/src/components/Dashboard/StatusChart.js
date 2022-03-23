@@ -1,5 +1,5 @@
 import React from "react";
-import { Translation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 import { Legend, PieChart, Pie, Cell, LabelList } from "recharts";
 
@@ -16,22 +16,24 @@ const COLORS = [
 
 // label={renderCustomizedLabel}
 const ChartForm = React.memo((props) => {
-  const { submissionsStatusList } = props;
-
+  
+  const { submissionsStatusList,submissionData } = props;
+ const {t} = useTranslation();
   const pieData = submissionsStatusList;
-
+  
   if (pieData?.length === 0) {
-    return <div>No submission status</div>;
+    return <div>{t("No submission status")}</div>;
   }
 
   const { applicationName  } = pieData[0];
+  
   return (
     <div className="row">
       <div className="col-12">
         <div className="card-counter">
           <div className="white-box status-container d-flex">
             <div className="col-lg-6  col-xs-12">
-              <h2><Translation>{(t)=>t("submission_status")}</Translation> - {applicationName }</h2>
+              <h2>{t("Submission Status")} - {applicationName} <span>{t("Version")} :</span> {submissionData?.version}</h2>
               <div className="chart text-center">
                 <PieChart width={600} height={400}>
                   <Pie

@@ -1,4 +1,4 @@
-"""Unit tests for application Model"""
+"""Unit tests for application Model."""
 from formsflow_api.models import Application, FormProcessMapper
 
 
@@ -17,20 +17,15 @@ def test_application_model_can_create_application(app, client, session):
     assert form.id == 1
     form.save()
     application1 = Application(
-        application_name="Test Form Application",
         application_status="Approved",
         form_url="https://testsample.com/api/form/123/submission/2313",
-        process_name="test",
-        process_key="test",
         process_instance_id="213123",
         form_process_mapper_id=1,
         created_by="test-user",
     )
 
-    assert application1.application_name == "Test Form Application"
     assert application1.application_status == "Approved"
     assert (
         application1.form_url == "https://testsample.com/api/form/123/submission/2313"
     )
-    assert application1.process_name == "test"
     application1.save()

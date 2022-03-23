@@ -1,4 +1,4 @@
-"""Tests to assure the FormProcessMapper Service"""
+"""Tests to assure the FormProcessMapper Service."""
 from formsflow_api.services import FormProcessMapperService
 from tests.utilities.base_test import get_form_service_payload
 
@@ -6,11 +6,13 @@ form_service = FormProcessMapperService()
 
 
 def test_form_get_all_mappers(app, client, session):
-    rv = form_service.get_all_mappers(page_number=None, limit=None, form_name=None, sort_by=None, sort_order=None)
-    assert rv == ([], 0)
+    """Tests get_all_mappers handler when query params are None."""
+    rv = form_service.get_all_mappers(page_number=None, limit=None, form_name=None)
+    assert rv == []
 
 
 def test_get_form_mapper_count(app, client, session):
+    """Tets the get_mapper_count method."""
     rv = form_service.get_mapper_count()
     assert not rv
     assert type(rv) == int
@@ -29,12 +31,14 @@ def test_get_form_mapper_count(app, client, session):
 
 
 def test_create_form_mapper(app, client, session):
+    """Tests the create_mapper method with valid payload."""
     rv = form_service.create_mapper(data=get_form_service_payload())
     assert rv.form_id == "1234"
     assert rv.form_name == "Sample form"
 
 
 def test_update_form_mapper(app, session, client):
+    """Tests the update_mapper method with valid payload."""
     rv = form_service.create_mapper(data=get_form_service_payload())
     assert rv.form_id == "1234"
     assert rv.form_name == "Sample form"

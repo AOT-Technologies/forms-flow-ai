@@ -39,7 +39,8 @@ const API = {
   UPDATE_ASSIGNEE_BPM_TASK:`${BPM_BASE_URL}/task/<task_id>/assignee`,
   GET_FORM_BY_ALIAS:`${AppConfig.projectUrl}/<form_path>`,
   GET_GROUPS:`${WEB_BASE_URL}/groups`,
-  UPDATE_GROUPS:`${WEB_BASE_URL}/groups/<groupId>`
+  UPDATE_GROUPS:`${WEB_BASE_URL}/groups/<groupId>`,
+  GET_FORM_COUNT:`${WEB_BASE_URL}/form/<mapper id>/application/count`,
 };
 
 export default API;

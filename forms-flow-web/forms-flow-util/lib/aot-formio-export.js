@@ -1243,9 +1243,17 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _base = __webpack_require__(7441);
 
 var _base2 = _interopRequireDefault(_base);
+
+var _lodash = __webpack_require__(5825);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _plugins = __webpack_require__(3534);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1263,15 +1271,198 @@ var EditGridComponent = function (_BaseComponent) {
 
     var _this = _possibleConstructorReturn(this, (EditGridComponent.__proto__ || Object.getPrototypeOf(EditGridComponent)).call(this, component, data, options));
 
-    console.log(_this);
+    _this.numCols = Array.isArray(_this.components) ? _this.components.length : 0;
+    _this.numRows = Array.isArray(_this._value) ? _this._value.length : 0;
+    _this.rows = [];
+
+    if (_lodash2.default.isArray(_this._value)) {
+      _lodash2.default.forEach(_this._value, function (value) {
+        var row = [];
+
+        _lodash2.default.forEach(_this.components, function (c) {
+          row.push(_this.createComponent(c, value, options));
+        });
+        _this.rows.push(row);
+      });
+    }
     return _this;
   }
+
+  _createClass(EditGridComponent, [{
+    key: 'getDimensions',
+    value: function getDimensions() {
+      return (0, _plugins.getDimensions)(this);
+    }
+  }, {
+    key: 'toHtml',
+    value: function toHtml(element) {
+      return (0, _plugins.toHtml)(element, this);
+    }
+  }]);
 
   return EditGridComponent;
 }(_base2.default);
 
 exports.default = EditGridComponent;
 module.exports = exports['default'];
+
+/***/ }),
+
+/***/ 6882:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+
+var _lodash = __webpack_require__(5825);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (component) {
+  var dims = {
+    width: component._baseWidth,
+    height: component._baseHeight
+  };
+
+  var maxWidth = 0;
+
+  _lodash2.default.forEach(component.components, function (c) {
+    if (c) {
+      var d = c.getDimensions();
+
+      dims.width += d.width;
+    }
+  });
+  dims.width += maxWidth;
+  return dims;
+};
+
+module.exports = exports['default'];
+
+/***/ }),
+
+/***/ 2991:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+
+var _lodash = __webpack_require__(5825);
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
+var _utils = __webpack_require__(1899);
+
+var _utils2 = _interopRequireDefault(_utils);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = function (element, component) {
+  if (component && component.components) {
+    var componentElement = _utils2.default.createElement('div', {
+      class: 'formio-component grid-component ' + component.type + '-component card',
+      id: Math.random().toString(36).substring(7)
+    });
+    var labelElement = _utils2.default.createElement('div', {
+      class: 'component-label card-header'
+    }, component.getLabel());
+    var valueElement = _utils2.default.createElement('div', {
+      class: 'component-value card-body'
+    });
+
+    var transpose = component.numRows < component.numCols;
+
+    if (!transpose) {
+      var headerElement = _utils2.default.createElement('div', { class: 'row grid-row grid-header' });
+
+      _lodash2.default.forEach(component.rows[0], function (c) {
+        if (c) {
+          headerElement.appendChild(_utils2.default.createElement('div', { class: 'col grid-cell' }, c.getLabel()));
+        }
+      });
+      valueElement.appendChild(headerElement);
+      _lodash2.default.forEach(component.rows, function (row) {
+        var rowElement = _utils2.default.createElement('div', { class: 'row grid-row' });
+
+        _lodash2.default.forEach(row, function (col) {
+          if (col) {
+            var colElement = _utils2.default.createElement('div', { class: 'col grid-cell' });
+
+            col.toHtml(colElement);
+            rowElement.appendChild(colElement);
+          }
+        });
+        valueElement.appendChild(rowElement);
+      });
+    } else {
+      valueElement.className += ' grid-transpose';
+      _lodash2.default.forEach(component.components, function (row, i) {
+        var rowElement = _utils2.default.createElement('div', {
+          class: 'row grid-row'
+        }, _utils2.default.createElement('div', {
+          class: 'col col-sm-3 grid-cell text-bold'
+        }, row.legend || row.title || row.label));
+
+        _lodash2.default.forEach(component.rows, function (col) {
+          var colElement = _utils2.default.createElement('div', { class: 'col grid-cell' });
+
+          col[i].toHtml(colElement);
+          rowElement.appendChild(colElement);
+        });
+        valueElement.appendChild(rowElement);
+      });
+    }
+
+    if (!component.hideLabel && (!component.inDataGrid || component.dataGridLabel)) {
+      componentElement.appendChild(labelElement);
+    }
+    componentElement.appendChild(valueElement);
+
+    if (_lodash2.default.isElement(element)) {
+      element.appendChild(componentElement);
+    }
+    return componentElement;
+  }
+  return null;
+};
+
+module.exports = exports['default'];
+
+/***/ }),
+
+/***/ 3534:
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", ({
+  value: true
+}));
+exports.getDimensions = exports.toHtml = undefined;
+
+var _html = __webpack_require__(2991);
+
+var _html2 = _interopRequireDefault(_html);
+
+var _dims = __webpack_require__(6882);
+
+var _dims2 = _interopRequireDefault(_dims);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.toHtml = _html2.default;
+exports.getDimensions = _dims2.default;
 
 /***/ }),
 
@@ -2250,6 +2441,8 @@ Object.defineProperty(exports, "__esModule", ({
   value: true
 }));
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _lodash = __webpack_require__(5825);
@@ -2324,6 +2517,9 @@ var SelectComponent = function (_BaseComponent) {
         case 'json':
           var valueProperty = this.valueProperty || 'value';
           var item = _lodash2.default.find(this.data[this.dataSrc], function (o) {
+            if ((typeof value === 'undefined' ? 'undefined' : _typeof(value)) === 'object') {
+              return _lodash2.default.isEqual(value, o);
+            }
             return o[valueProperty] === value;
           });
 

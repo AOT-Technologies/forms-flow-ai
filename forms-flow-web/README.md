@@ -121,3 +121,24 @@ Variable name | Meaning | Possible values | Default value |
    8. Copy the key-value pairs of any of the language provided and translate the values to the required language using google translator and add it back to the same file.
    9. Login to **http://localhost:3000/** to check your updations. 
              
+### Code coverage
+  * Test cases for the files are provided at forms-flow-web using [testing-library/jest-dom](https://testing-library.com/docs/ecosystem-jest-dom/) , [testing-library/react](https://testing-library.com/docs/react-testing-library/intro/) , [msw](https://mswjs.io/) and [redux-mock-store](https://www.npmjs.com/package/redux-mock-store).
+  * `cd {Your Directory}/forms-flow-ai/forms-flow-web`.
+  * Test files are available at `forms-flow-ai\forms-flow-web\src\_tests_`
+  * Run the command `npm run coverage` to get the total coverage and for individual files run `npm test --<test file name>`.
+  * Total code coverage can obtain by opening `forms-flow-ai\forms-flow-web\coverage\lcov-report\index.html` with browser.
+  
+## forms-flow-web Events
+ > This section elaborates events used in forms-flow-web.
+ >  The Form.io renderer uses the [EventEmitter3](https://github.com/primus/eventemitter3) library to manage all of the event handling that occurs within the renderer. 
+ >  Custom events are triggered for button components and are fired when they are clicked. More details are [here](https://docs.form.io/developers/form-renderer#form-events)
+## Events
+| Name | Description  &nbsp;&nbsp;&nbsp;| Arguments &nbsp;&nbsp;&nbsp; | Example |
+| --- | --- | --- |--- |
+| `reloadTasks` | <li>Used in the task page</li><li>Triggered for button components</li><li>Refresh the Task List  and remove the selected  task from RHS.</li>  | <li> type:The configured event type </li> |form.emit('customEvent', {  type: "reloadTasks"}); |
+| `reloadCurrentTask` | <li>Used in the task page</li><li>Triggered for button components</li> <li>Refreshes the current task selected</li> |<li>type:The configured event type</li>|form.emit('customEvent', { type: "reloadCurrentTask"}); |
+| `customSubmitDone` | <li>Used in the create form page</li><li>Triggered for button components</li><li>Similar to submit button to implement custom logic</li> |<li>type:The configured event type</li>|form.emit('customEvent', {type: "customSubmitDone"}); |
+| `actionComplete` | <li>Triggered for button components</li> |<li>type:The configured event type</li><li>component:The component json</li><li>actionType: Form submit action values</li> | form.emit('customEvent', { type: "actionComplete",    component: component, actionType: actionType }); |
+| `cancelSubmission` | <li>Used in the create form page</li><li>Triggered for button components</li><li>Used for Canceling current submission and goin back to Form List Page</li> |<li>type:The configured event type</li>|form.emit('customEvent', {type: "cancelSubmission"}); |
+
+ 

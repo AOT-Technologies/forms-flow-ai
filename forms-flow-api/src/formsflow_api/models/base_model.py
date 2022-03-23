@@ -43,7 +43,11 @@ class BaseModel:
     def create_filter_condition(  # pylint: disable=inconsistent-return-statements
         model: Any, column_name: str, operator: str, value: str
     ):
-        """Function to transform column_name, operator and values to filtering condiitons"""
+        """Function to create_filter_condition.
+
+        To transform column_name, operator and values
+        with a filtering conditions used by DB Model.
+        """
         # get in format model.colum_name
         column = getattr(model, column_name)
         if column:

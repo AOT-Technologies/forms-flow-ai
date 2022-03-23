@@ -163,6 +163,7 @@ import {addHiddenApplicationComponent} from "../../constants/applicationComponen
     })
   }
 
+ 
   return (
     <>
       <FileModal modalOpen={showFormUploadModal} onClose={() => setShowFormUploadModal(false)}/>
@@ -177,7 +178,7 @@ import {addHiddenApplicationComponent} from "../../constants/applicationComponen
                 "?"
               }
               onNo={() => onNo()}
-              onYes={() => onYes(formId, forms)}
+              onYes={() => {onYes(formId, forms)}}
             />
             <div className="flex-container">
               {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}

@@ -39,6 +39,11 @@ export const columns_history = [
     formatter: timeFormatter,
   },
   {
+      dataField: "submittedBy",
+      text: "Submitted By",
+      sort: true,
+  },
+  {
     dataField: "formUrl",
     text: <Translation>{(t)=>t("submissions")}</Translation>,
     formatter: linkSubmision,

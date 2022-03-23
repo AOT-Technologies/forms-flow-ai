@@ -66,8 +66,6 @@ const View = React.memo((props) => {
       {t("Form not available")}
       </div>
     }
-
-
     return (
       <div className="container overflow-y-auto">
         <div className="main-header">
@@ -229,6 +227,9 @@ const mapDispatchToProps = (dispatch, ownProps,t) => {
             toast.success(t("submission_success"))
             dispatch(push(`/form`));
             break;
+          case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:
+            dispatch(push(`/form`));
+              break;
           default: return;
         }
     },

@@ -6,7 +6,6 @@ import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
-import org.camunda.bpm.extension.hooks.listeners.data.Application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -14,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.*;
 
 /**
  * This class updates the application state and also capture audit.
@@ -57,23 +57,13 @@ public class ApplicationStateListener extends BaseListener implements ExecutionL
      * @param execution
      */
     private void invokeApplicationService(DelegateExecution execution) throws IOException {
-        ResponseEntity<String> response = httpServiceInvoker.execute(getApplicationUrl(execution), HttpMethod.PUT,  prepareApplication(execution));
+        ResponseEntity<String> response = httpServiceInvoker.execute(getApplicationUrl(execution), HttpMethod.PUT,  applicationAuditListener.prepareApplicationAudit(execution));
         if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
             throw new ApplicationServiceException("Unable to update application "+ ". Message Body: " +
                     response.getBody());
         }
     }
 
-    /**
-     * Prepares and returns the Application object.
-     * @param execution
-     * @return
-     */
-    private Application prepareApplication(DelegateExecution execution) {
-        String applicationStatus = String.valueOf(execution.getVariable("applicationStatus"));
-        String formUrl = String.valueOf(execution.getVariable("formUrl"));
-        return new Application(applicationStatus, formUrl);
-    }
 
     /**
      * Returns the endpoint of application API.

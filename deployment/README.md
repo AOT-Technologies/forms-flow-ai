@@ -31,7 +31,7 @@ In the following document, we’ll describe about the different project dependen
 ## Download the formsflow.ai
 
 * Clone this github repo:  https://github.com/AOT-Technologies/forms-flow-ai
-* If deploying to a remote server, you can use nginx as a reverse proxy and SSL engine. To help you, follow the instructions in the nginx [README](./nginx/README.md)
+* If deploying to a remote server, you can use nginx as a reverse proxy and SSL engine. To help you, follow the instructions in the nginx [README](./server/nginx/README.md)
 
 ## Installation
 

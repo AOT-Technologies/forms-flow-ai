@@ -32,6 +32,10 @@ import FileService from "../../services/FileService";
 import {setFormCheckList, setFormUploadList, updateFormUploadCounter} from "../../actions/checkListActions";
 import FileModal from './FileUpload/fileUploadModal'
 import {addHiddenApplicationComponent} from "../../constants/applicationComponent";
+import LoadingOverlay from "react-loading-overlay";
+import { getFormProcesses,getApplicationCount } from "../../apiManager/services/processServices";
+import { unPublishForm } from "../../apiManager/services/processServices";
+import { setIsApplicationCountLoading } from "../../actions/processActions";
 
 const List = React.memo((props) => {
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
@@ -46,7 +50,7 @@ const List = React.memo((props) => {
     userRoles,
     formId,
     onNo,
-    onYes,
+    onYes
   } = props;
 
   const isBPMFormListLoading = useSelector(state => state.bpmForms.isActive);
@@ -57,6 +61,11 @@ const List = React.memo((props) => {
   const operations = getOperations(userRoles, showViewSubmissions);
   const columns = isDesigner ? designerColumns : userColumns;
   const paginatedForms = isDesigner? forms.forms : bpmForms.forms;
+  const searchFormLoading = useSelector(state=> state.formCheckList.searchFormLoading)
+  const isApplicationCountLoading = useSelector(state=> state.process.isApplicationCountLoading)
+  const applicationCountResponse = useSelector(state=> state.process.applicationCountResponse)
+  const formProcessData = useSelector(state=>state.process.formProcessList)
+  const applicationCount = useSelector(state => state.process.ApplicationCount)
 
 
   const getFormsList = (page, query) => {
@@ -95,7 +104,7 @@ const List = React.memo((props) => {
       dispatch(setFormCheckList([]));
     })
   }
-
+  
   const uploadClick = e => {
     dispatch(setFormUploadList([]));
     e.preventDefault();
@@ -167,18 +176,32 @@ const List = React.memo((props) => {
     <>
       <FileModal modalOpen={showFormUploadModal} onClose={() => setShowFormUploadModal(false)}/>
       {
-        (forms.isActive || isBPMFormListLoading) ? <div data-testid="Form-list-component-loader"><Loading/></div> :
+        (forms.isActive || isBPMFormListLoading) ? (searchFormLoading?<LoadingOverlay
+          active={true}
+          spinner
+          text="Loading..."
+          >
+            <div className="contianer" style={{height:"100vh"}}>
+  
+            </div>
+          </LoadingOverlay>:
+        <div data-testid="Form-list-component-loader"><Loading/></div> ):
           <div className="container">
-            <Confirm
-              modalOpen={props.modalOpen}
-              message={
-                "Are you sure you wish to delete the form " +
-                props.formName +
-                "?"
-              }
-              onNo={() => onNo()}
-              onYes={() => {onYes(formId, forms)}}
-            />
+               <Confirm
+                 modalOpen={props.modalOpen}
+                 message={
+                   (formProcessData.id  && applicationCount!==0) ?  `${applicationCountResponse  ? applicationCount :  "Are you sure you wish to delete the form " +
+                   props.formName +
+                   "?"}`
+                   + "  Applications are submitted against " + props.formName +". Are you sure want to delete ?":
+                   "Are you sure you wish to delete the form " +
+                   props.formName +
+                   "?"
+                   
+                 }
+                 onNo={() => onNo()}
+                 onYes={() => {onYes(formId, forms,formProcessData)}}
+               />
             <div className="flex-container">
               {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
               <div className="flex-item-left">
@@ -220,11 +243,20 @@ const List = React.memo((props) => {
             <section className="custom-grid grid-forms">
               <Errors errors={errors}/>
               {
+               
+              <LoadingOverlay
+               active={searchFormLoading || isApplicationCountLoading}
+               spinner
+               text="Loading..."
+              >
+              {
                paginatedForms.length?
                <FormGrid
                columns={columns}
                forms={isDesigner ? forms : bpmForms}
-               onAction={onAction}
+               onAction={(form,action)=>{
+                 onAction(form, action)
+               }}
                getForms={isDesigner ? getForms : getFormsList}
                operations={operations}
                onPageSizeChanged={onPageSizeChanged}
@@ -249,8 +281,8 @@ const List = React.memo((props) => {
                     
                   </span>
               }
-              
-              
+              </LoadingOverlay>
+              }
             </section>
           </div>
       }
@@ -266,7 +298,7 @@ const mapStateToProps = (state) => {
     modalOpen: selectRoot("formDelete", state).formDelete.modalOpen,
     formId: selectRoot("formDelete", state).formDelete.formId,
     formName: selectRoot("formDelete", state).formDelete.formName,
-    isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved,
+    isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved
   };
 };
 
@@ -279,7 +311,7 @@ const getInitForms = (page = 1, query) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapDispatchToProps = (dispatch,state, ownProps) => {
   return {
     getForms: (page, query) => {
       dispatch(indexForms("forms", page, query));
@@ -287,7 +319,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     getFormsInit: (page, query) => {
       dispatch(getInitForms(page, query));
     },
-    onAction: (form, action) => {
+    onAction: async (form, action) => {
       switch (action) {
         case "insert":
           dispatch(push(`/form/${form._id}`));
@@ -299,12 +331,25 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         //   dispatch(push(`/form/${form._id}/edit`));
         //   break;
         case "delete":
-          const formDetails = {
-            modalOpen: true,
-            formId: form._id,
-            formName: form.title,
-          };
-          dispatch(setFormDeleteStatus(formDetails));
+          dispatch(setIsApplicationCountLoading(true)) 
+          dispatch(getFormProcesses(form._id,(err,data)=>{
+            const formDetails = {
+              modalOpen: true,
+              formId: form._id,
+              formName: form.title,
+            };
+            if(data){
+              dispatch(getApplicationCount(data.id,(err,res)=>{
+                dispatch(setIsApplicationCountLoading(false));
+                dispatch(setFormDeleteStatus(formDetails));
+              }));
+             
+            }else{
+              dispatch(setIsApplicationCountLoading(false));
+                dispatch(setFormDeleteStatus(formDetails));
+            }
+          }))
+          
           break;
         case "viewForm":
           dispatch(setMaintainBPMFormPagination(true));
@@ -313,7 +358,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         default:
       }
     },
-    onYes: (formId, forms) => {
+    onYes: (formId, forms,formData) => {
+    if(formData.id){
+      dispatch(unPublishForm(formData.id)) 
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {
@@ -322,7 +369,19 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(indexForms("forms", 1, forms.query));
           }
         })
+      )
+    }else{
+      dispatch(
+        deleteForm("form", formId, (err) => {
+          if (!err) {
+            toast.success( 'Form deleted successfully')
+            const formDetails = {modalOpen: false, formId: "", formName: ""};
+            dispatch(setFormDeleteStatus(formDetails));
+            dispatch(indexForms("forms", 1, forms.query));
+          }
+        })
       );
+    }
     },
     onNo: () => {
       const formDetails = {modalOpen: false, formId: "", formName: ""};

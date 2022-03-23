@@ -232,16 +232,14 @@ const WorkFlow = React.memo(
             <>
               <Card variant="outlined" className="card-overflow">
                 <CardContent>
-                  <FormLabel component="legend" className="mb-3">
-                    Create Your Task Variable
-                  </FormLabel>
+                  <p> Add form fields to display in task list </p>
                   {selectedTaskVariable.length !== 0 ? (
-                    <Grid item xs={12} md={8} className="mb-2">
+                    <Grid item xs={12} md={12} className="mb-2">
                       <TableContainer component={Paper} style={{maxHeight:"250px"}}>
                         <Table stickyHeader aria-label="simple table">
                           <TableHead>
                             <TableRow >
-                              <TableCell className="font-weight-bold">Key</TableCell>
+                              <TableCell className="font-weight-bold">Form field</TableCell>
                               <TableCell className="font-weight-bold" align="left">Label</TableCell>
                               <TableCell className="font-weight-bold"align="left">Show in list</TableCell>
                               <TableCell className="font-weight-bold" align="right">
@@ -263,7 +261,9 @@ const WorkFlow = React.memo(
                       </TableContainer>
                     </Grid>
                   ) : (
-                    <p>No Task variable selected</p>
+                   <div className="border p-2 mb-2">
+                      <FormLabel>No Task variable selected</FormLabel>
+                   </div>
                   )}
 
                   {showTaskVaribleCrete && (

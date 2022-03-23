@@ -14,7 +14,7 @@ aniso8601==9.0.1
 attrs==21.4.0
 cachelib==0.6.0
 certifi==2021.10.8
-charset-normalizer==2.0.11
+charset-normalizer==2.0.12
 click==7.1.2
 ecdsa==0.17.0
 flask-jwt-oidc==0.3.0

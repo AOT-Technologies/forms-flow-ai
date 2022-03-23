@@ -25,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Keycloak Authentication Filter Test - used for REST API Security.
@@ -89,5 +90,37 @@ public class KeycloakAuthenticationFilterTest {
 		userGroups.add("formsflow/formsflow-reviewer");
 		assertEquals("User1", userIdCaptor.getValue());
 		assertEquals(userGroups, userGroupsCaptor.getValue());
+	}
+	
+	/**
+	 * This test perform to check the roels and users
+	 * This will validate the userId and user roles
+	 */
+	@Test
+	public void doFilterTestForclientRoles() throws IOException, ServletException {
+		SecurityContextHolder.getContext().setAuthentication(auth);
+
+		Map<String, Object> claims = new HashMap<>();
+		String userId = "User1";
+		JSONArray roles = new JSONArray();
+		roles.add(new String("camunda-admin"));
+		roles.add(new String("formsflow-reviewer"));
+		claims.put("roles", roles);
+
+		OidcUser oidcUser = mock(OidcUser.class);
+		when(auth.getPrincipal()).thenReturn(oidcUser);
+		when(oidcUser.getName()).thenReturn(userId);
+		when(oidcUser.getPreferredUsername()).thenReturn(userId);
+		when(oidcUser.getClaims()).thenReturn(claims);
+
+		keycloakAuthenticationFilter.doFilter(request, response, chain);
+		
+		ArgumentCaptor<String> userIdCaptor = ArgumentCaptor.forClass(String.class);
+		ArgumentCaptor<List> userRolesCaptor = ArgumentCaptor.forClass(List.class);
+		verify(identityService).setAuthentication(userIdCaptor.capture(), userRolesCaptor.capture());
+		assertEquals("User1", userIdCaptor.getValue());
+		
+		assertTrue(userRolesCaptor.getValue().contains("camunda-admin"));
+		assertTrue(userRolesCaptor.getValue().contains("formsflow-reviewer"));
 	}
 }

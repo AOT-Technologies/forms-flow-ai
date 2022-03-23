@@ -23,17 +23,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
 import org.camunda.bpm.engine.authorization.Resources;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -88,11 +83,28 @@ public class AdminController {
                             action.setFormName(formNode.get("formName").asText());
                             action.setProcessKey(formNode.get("processKey").asText());
                             formList.add(action);
+
                         }
                     }
 
                 }
-                return formList;
+                if(CollectionUtils.isNotEmpty(groups) && groups.contains(adminGroupName)) {
+                    for(AuthorizedAction formObj : formList) {
+                        if(!isExists(filteredList, formObj.getFormId())) {
+                            filteredList.add(formObj);
+                        }
+
+                    }
+                } else {
+                    for (Authorization authObj : authorizationList) {
+                        for (AuthorizedAction formObj : formList) {
+                            if (("*".equals(authObj.getResourceId()) || authObj.getResourceId().equals(formObj.getProcessKey())) && !isExists(filteredList, formObj.getFormId()))  {
+                                filteredList.add(formObj);
+                            }
+                        }
+                    }
+                }
+                return filteredList;
             }
         } catch (JsonProcessingException e) {
             LOGGER.log(Level.SEVERE, "Exception occurred in reading form", e);
@@ -116,20 +128,28 @@ public class AdminController {
             throw new ServletException("Invalid authentication request token");
         }
 
-        List<String> groupIds = new ArrayList<>();
+        List<String> groupIds = null;
         if(claims != null && claims.containsKey("groups")) {
-            JSONArray groups = (JSONArray)claims.get("groups");
-            for (Object group1 : groups) {
-                String groupName = group1.toString();
-                if(StringUtils.startsWith(groupName,"/")) {
-                    groupIds.add(StringUtils.substring(groupName,1));
-                } else {
-                    groupIds.add(groupName);
-                }
-            }
+        	groupIds = getKeyValues(claims, "groups");
+        } else if (claims != null && claims.containsKey("roles")) {
+        	groupIds = getKeyValues(claims, "roles");
         }
         return groupIds;
     }
+
+	private List<String> getKeyValues(Map<String, Object> claims, String claimName) {
+		List<String> groupIds = new ArrayList<String>();
+		JSONArray groups = (JSONArray)claims.get(claimName);
+		for (Object group1 : groups) {
+		    String groupName = group1.toString();
+		    if(StringUtils.startsWith(groupName,"/")) {
+		        groupIds.add(StringUtils.substring(groupName,1));
+		    } else {
+		        groupIds.add(groupName);
+		    }
+		}
+		return groupIds;
+	}
 
     /**
      * This method returns all authorization details of Groups.

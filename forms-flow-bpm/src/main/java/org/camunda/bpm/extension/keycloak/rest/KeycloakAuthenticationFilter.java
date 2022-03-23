@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
@@ -83,18 +84,27 @@ public class KeycloakAuthenticationFilter implements Filter {
 	private List<String> getUserGroups(String userId, Map<String, Object> claims){
 		List<String> groupIds = new ArrayList<>();
 		if(claims != null && claims.containsKey("groups")) {
-			JSONArray groups = (JSONArray)claims.get("groups");
-			for (Object group1 : groups) {
-				String group = group1.toString();
-				String groupName = StringUtils.contains(group, "/") ? StringUtils.substringAfter(group, "/") : group;
-				groupIds.add(groupName);
-			}
+			groupIds.addAll(getKeys(claims, "groups"));
+		} else if(claims != null && claims.containsKey("roles")) { // Treat roles as alternative to groups
+			groupIds.addAll(getKeys(claims, "roles"));
 		} else {
 			identityService.createGroupQuery().groupMember(userId).list()
 					.forEach( g -> groupIds.add(g.getId()));
 		}
        return groupIds;
     }
+	
+	private List<String> getKeys(Map<String, Object> claims, String nodeName) {
+		List<String> keys = new ArrayList<>();
+		if (claims.containsKey(nodeName)) {
+			for (Object key : (JSONArray) claims.get(nodeName)) {
+				String keyValue = key.toString();
+				keyValue = StringUtils.contains(keyValue, "/") ? StringUtils.substringAfter(keyValue, "/") : keyValue;
+				keys.add(keyValue);
+			}
+		}
+		return keys;
+	}
 
 
 }

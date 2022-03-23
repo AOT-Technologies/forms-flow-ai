@@ -68,7 +68,11 @@ public class AdminController {
     @Deprecated
     @RequestMapping(value = "/engine-rest-ext/form", method = RequestMethod.GET, produces = "application/json")
     private @ResponseBody List<AuthorizedAction> getForms() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> groups = getGroups(authentication);
+        List<Authorization> authorizationList =  getAuthorization(groups);
         List<AuthorizedAction> formList = new ArrayList<>();
+        List<AuthorizedAction> filteredList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, null);
@@ -109,7 +113,23 @@ public class AdminController {
         } catch (JsonProcessingException e) {
             LOGGER.log(Level.SEVERE, "Exception occurred in reading form", e);
         }
-        return formList;
+        return filteredList;
+    }
+
+    /**
+     * Utility method to avoid duplicate form entry in response.
+     *
+     * @param filteredList
+     * @param formId
+     * @return
+     */
+    private boolean isExists(List<AuthorizedAction> filteredList, String formId) {
+        for(AuthorizedAction entry : filteredList) {
+            if(entry.getFormId().equals(formId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

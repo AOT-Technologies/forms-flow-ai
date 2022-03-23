@@ -1,5 +1,5 @@
 #!/bin/bash
-_IPdr=192.168.1.5
+_IPdr=$(hostname -i)
 echo "Do you wish to continue installation that include ANALYTICS? [y/n]" 
 read choice
 if [[ $choice == "y" ]]; then
@@ -11,13 +11,13 @@ function installAnaly
 {
     cd ../analytics
     cp sample.env .env
-    _IPdr=192.168.1.5
+    _IPdr=$(hostname -i)
     REDASH_HOST=http://{your-ip-address}:7000
     REDASH_HOST=http://$_IPdr:7000
     echo REDASH_HOST=$REDASH_HOST >>.env
-    docker-compose -f docker-compose-windows.yml run --rm server create_db
+    docker-compose -f docker-compose.yml run --rm server create_db
     echo analytics database has been created.. wait for a moment for the analytics to start.
-    docker-compose -f docker-compose-windows.yml up --build -d 
+    docker-compose -f docker-compose.yml up --build -d 
     echo What is your redash api key?
     read readash
 	echo INSIGHT_API_KEY=$readash >>.env
@@ -29,7 +29,7 @@ function forms-flow-forms
 {
     cd ..
     cp sample.env .env
-    _IPdr=192.168.1.5
+    _IPdr=$(hostname -i)
     FORMIO_DEFAULT_PROJECT_URL=http://{your-ip-address}:8080
     FORMIO_DEFAULT_PROJECT_URL=http://$_IPdr:8080
     KEYCLOAK_URL=http://{your-ip-address}:8080
@@ -134,7 +134,7 @@ function keycloak
         printf "%s " "Press enter to continue"
         read that
         cp sample.env .env
-        _IPdr=192.168.1.5
+        _IPdr=$(hostname -i)
         echo Please wait, keycloak is setting up!
         docker-compose up -d
         KEYCLOAK_URL_REALM=forms-flow-ai

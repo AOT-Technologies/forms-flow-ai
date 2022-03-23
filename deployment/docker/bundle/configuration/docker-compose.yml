@@ -19,7 +19,7 @@ services:
 
   forms-flow-bpm:
     container_name: forms-flow-bpm
-    image: formsflowai/formsflow-bpm:latest
+    image: formsflow/forms-flow-bpm:v4.0.5-alpha
     restart: always
     links:
       - forms-flow-bpm-db
@@ -84,7 +84,7 @@ services:
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflowai/formsflow-forms:latest
+    image: formsflow/forms-flow-forms:v4.0.5-alpha
     # The app will restart until Mongo is listening
     restart: always
     links:
@@ -110,7 +110,7 @@ services:
   forms-flow-web:
     container_name: forms-flow-web
     restart: always
-    image: formsflowai/formsflow-web:latest
+    image: formsflow/forms-flow-web:v4.0.5-alpha
     environment:
         - NODE_ENV=${NODE_ENV:-development}
         - GENERATE_SOURCEMAP=false
@@ -162,7 +162,7 @@ services:
 
   forms-flow-webapi:
     container_name: forms-flow-webapi
-    image: formsflowai/formsflow-webapi:latest
+    image: formsflow/forms-flow-webapi:v4.0.5-alpha
     restart: always
     links:
       - forms-flow-webapi-db

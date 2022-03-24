@@ -348,11 +348,10 @@ if(!form._id){
           </div>
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
-          <div id="form-group-anonymous" className="form-group">
-            <label htmlFor="anonymous" className="control-label">Anonymous Form</label>
+          <div id="form-group-anonymous" className="form-group" style={{marginTop:'30px'}}>
             <div className="input-group align-items-center">
               <input
-               className="mr-3" style={{height:'20px', width:'20px'}}
+               className="m-0" style={{height:'20px', width:'20px'}}
                 type="checkbox"
                 id="anonymous"
                 checked={processListData.anonymous || false}
@@ -360,7 +359,7 @@ if(!form._id){
                   changeAnonymous();
                 }}
               />
-              <label htmlFor="anonymousLabel" className="form-control border-0">Do you want to  make this form public ?</label>
+              <label htmlFor="anonymousLabel" className="form-control control-label border-0" >Make this form public ?</label>
             </div>
           </div>
         </div>

@@ -175,3 +175,28 @@ def test_get_application_count_based_on_form_process_mapper_id1(app, client, ses
 
     rv = client.get(f"/form/{form_id}/application/count", headers=headers)
     assert rv.status_code == 200
+
+
+def test_get_task_variable_based_on_form_process_mapper_id(app, client, session):
+    """Assert that API when passed with valid payload returns 200 status code."""
+    token = factory_auth_header()
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    rv = client.post("/form", headers=headers, json=get_form_request_payload())
+    assert rv.status_code == 201
+
+    form_id = rv.json.get("formId")
+
+    rv = client.post(
+        "/application/create",
+        headers=headers,
+        json=get_application_create_payload(form_id),
+    )
+    assert rv.status_code == 201
+
+    application_id = rv.json.get("id")
+
+    rv = client.get(f"/form/applicationid/{application_id}", headers=headers)
+    assert rv.status_code == 200

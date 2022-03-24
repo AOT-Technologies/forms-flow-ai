@@ -61,12 +61,16 @@ const View = React.memo((props) => {
   } = props;
   const dispatch = useDispatch();
 
-  const getPublicForm = useCallback((form_id, isObjectId) => {
+  const getPublicForm = useCallback((form_id, isObjectId, formObj) => {
     dispatch(
       publicApplicationStatus(form_id, (err, res) => {
         if (isPublic) {
           if(isObjectId){
             dispatch(getForm("form", form_id));
+          }
+          else{
+            dispatch(setFormRequestData('form',form_id,`${Formio.getProjectUrl()}/form/${form_id}`));
+            dispatch(setFormSuccessData('form',formObj));
           }
           if (res && res.is_anonymous && res.status === "active") {
             dispatch(setPublicFormStatus(true));
@@ -87,9 +91,7 @@ const View = React.memo((props) => {
         fetchFormByAlias(formId, async (err, formObj) => {
           if (!err) {
             const form_id = formObj._id;
-            dispatch(setFormRequestData('form',form_id,`${Formio.getProjectUrl()}/form/${form_id}`));
-            dispatch(setFormSuccessData('form',formObj));
-            getPublicForm(form_id,isObjectId);
+            getPublicForm(form_id,isObjectId,formObj);
           }else{
             dispatch(setFormFailureErrorData('form',err));
           }

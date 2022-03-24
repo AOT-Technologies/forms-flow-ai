@@ -111,9 +111,9 @@ class FormProcessMapperService:
         )
 
     @staticmethod
-    def mark_inactive(form_process_mapper_id):
+    def mark_inactive_and_delete(form_process_mapper_id):
         """Mark form process mapper as inactive and deleted."""
-        application = FormProcessMapper.find_form_by_id_active_status(
+        application = FormProcessMapper.find_form_by_id(
             form_process_mapper_id=form_process_mapper_id
         )
         if application:

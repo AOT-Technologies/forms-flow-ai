@@ -88,9 +88,7 @@ class ApplicationService:
         token: str,
     ):
         """Get applications only from authorized groups."""
-        auth_form_details = ApplicationService.get_authorised_form_list(
-            token=token
-        )
+        auth_form_details = ApplicationService.get_authorised_form_list(token=token)
         current_app.logger.info(auth_form_details)
         auth_list = auth_form_details.get("authorizationList") or {}
         resource_list = [group["resourceId"] for group in auth_list]
@@ -142,7 +140,7 @@ class ApplicationService:
         auth_list = auth_form_details.get("authorizationList") or {}
         resource_list = [group["resourceId"] for group in auth_list]
         if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
-            application = Application.find_by_id(application_id=application_id)
+            application = Application.find_auth_by_id(application_id=application_id)
         else:
             application = Application.find_auth_application_by_process_key(
                 process_key=resource_list, application_id=application_id

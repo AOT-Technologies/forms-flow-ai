@@ -52,6 +52,8 @@ def validate_sort_order_and_order_by(order_by: str, sort_order: str) -> bool:
     ]:
         order_by = None
     else:
+        if order_by == ApplicationSortingParameters.Name:
+            order_by = ApplicationSortingParameters.FormName
         order_by = camel_to_snake(order_by)
     if sort_order not in ["asc", "desc"]:
         sort_order = None

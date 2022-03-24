@@ -63,6 +63,30 @@ class Application(
         return cls.query.filter_by(id=application_id).first()
 
     @classmethod
+    def find_auth_by_id(cls, application_id: int) -> Application:
+        """Find application that matches the provided id."""
+        result = (
+            FormProcessMapper.query.with_entities(
+                cls.id,
+                cls.application_status,
+                cls.form_url,
+                cls.form_process_mapper_id,
+                cls.process_instance_id,
+                cls.created_by,
+                cls.created,
+                cls.modified,
+                cls.modified_by,
+                FormProcessMapper.process_key,
+                FormProcessMapper.process_name,
+                FormProcessMapper.form_name.label("application_name"),
+            )
+            .join(cls, FormProcessMapper.id == cls.form_process_mapper_id)
+            .filter(Application.id == application_id)
+            .first()
+        )
+        return result
+
+    @classmethod
     def find_all_application_status(cls):
         """Find all application status."""
         return cls.query.distinct(Application.application_status).all()
@@ -261,6 +285,20 @@ class Application(
                 Application.form_process_mapper_id == FormProcessMapper.id,
             )
             .filter(FormProcessMapper.process_key.in_(process_key))
+            .add_columns(
+                cls.id,
+                cls.application_status,
+                cls.form_url,
+                cls.form_process_mapper_id,
+                cls.process_instance_id,
+                cls.created_by,
+                cls.created,
+                cls.modified,
+                cls.modified_by,
+                FormProcessMapper.form_name.label("application_name"),
+                FormProcessMapper.process_key.label("process_key"),
+                FormProcessMapper.process_name.label("process_name"),
+            )
             .first()
         )
         return query

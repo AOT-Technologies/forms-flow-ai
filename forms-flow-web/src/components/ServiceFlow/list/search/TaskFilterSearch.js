@@ -129,20 +129,28 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
                       onChange={(e) =>{filterTaskVariable(e); setSelectedFilterInputName(e.target.value)}}
                       onKeyDown={(e) => handleFilterNameChange(e, index)}
                     />
-                   <div className="filter-items">
+                  <div className="filter-items variable-filter-item"  >
                   {filterTaskVariableArray.map((variable) => (
                   <div
                    key={variable.label}
-                   className="clickable p-0 mb-2"
+                   className="clickable p-0 mb-2 text-truncate"
                    onClick={()=>{setSelectedFilterInputName(variable.name);updateFilterName(index,variable.name)}}
+                   data-bs-toggle="tooltip" data-bs-placement="top" title={`${variable.name}  (${variable.label})`}
                   >
-                 {variable.name}  ({variable.label})
+                 <span>{variable.name} <span className="text-muted"> ({variable.label})</span></span> 
                  </div>
                   ))}
                   </div>
                  </div>
-                    : <span title="Property" className="click-element"
-                            onClick={() => handleNameInput(index, filter.name)}>{filter.name ? filter.name : '??'}</span> : null}
+                    :
+                    <div className="text-truncate" >
+                      <span   data-bs-toggle="tooltip" data-bs-placement="top" title={`${filter.name ? filter.name : 'property'}`} className="click-element"
+                       onClick={() => handleNameInput(index, filter.name)}>
+                         {filter.name ? filter.name : '??'}
+                      </span>
+                             
+                    </div>
+                    : null}
 
                 <span className="condition-container">
               {valueBoxIndex === index && filter.type !== Filter_Search_Types.DATE ?

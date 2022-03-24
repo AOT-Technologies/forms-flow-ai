@@ -260,10 +260,7 @@ class Application(
     ):
         """Fetch applications list based on searching parameters for Reviewer."""
         query = cls.filter_conditions(**filters)
-        query = query.join(
-            FormProcessMapper,
-            Application.form_process_mapper_id == FormProcessMapper.id,
-        ).filter(FormProcessMapper.process_key.in_(process_key))
+        query = query.filter(FormProcessMapper.process_key.in_(process_key))
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
             query = query.order_by(text(f"Application.{order_by} {sort_order}"))

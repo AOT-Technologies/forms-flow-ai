@@ -20,3 +20,10 @@ export const updateFormUploadCounter = () => dispatch =>{
     type:ACTION_CONSTANTS.FORM_UPLOAD_COUNTER,
   })
 }
+
+export const setFormLoading = (data) => dispatch =>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_FORM_LOADING,
+    payload:data
+  })
+}

@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.security.core.context.SecurityContextHolder;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.rest.security.auth.AuthenticationResult;
 import org.camunda.bpm.engine.rest.security.auth.impl.ContainerBasedAuthenticationProvider;
@@ -70,7 +71,7 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 		List<String> keys = new ArrayList<>();
 		if (token.containsClaim(nodeName)) {
 			for (Object key : (JSONArray) token.getClaim(nodeName)) {
-				keys.add(key.toString());
+				keys.add(StringUtils.contains(key.toString(), "/") ? StringUtils.substringAfter(key.toString(), "/") : key.toString());
 			}
 		}
 		return keys;

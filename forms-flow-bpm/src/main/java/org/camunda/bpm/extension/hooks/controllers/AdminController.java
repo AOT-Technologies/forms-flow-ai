@@ -73,9 +73,12 @@ public class AdminController {
 
     @Deprecated
     @RequestMapping(value = "/engine-rest-ext/form", method = RequestMethod.GET, produces = "application/json")
-    private @ResponseBody List<AuthorizedAction> getForms() {
+    private @ResponseBody List<AuthorizedAction> getForms() throws ServletException {
         List<AuthorizedAction> formList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<String> groups = getGroups(authentication);
+        LOGGER.error(groups.toString() + " "+((JwtAuthenticationToken)authentication).getToken().getTokenValue());
         try {
             ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, null);
             if (response.getStatusCode().value() == HttpStatus.OK.value()) {

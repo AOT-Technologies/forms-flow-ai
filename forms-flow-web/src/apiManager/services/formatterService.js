@@ -103,3 +103,8 @@ export const getFormattedProcess = (application)=>{
   }
   return processData;
 }
+
+export const checkIsObjectId = (data) => {
+  // Regex check if the data is a mongoDb object Id or not 
+  return data.match(/^[0-9a-fA-F]{24}$/) !== null;;
+}

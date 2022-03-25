@@ -41,6 +41,7 @@ const API = {
   GET_GROUPS:`${WEB_BASE_URL}/groups`,
   UPDATE_GROUPS:`${WEB_BASE_URL}/groups/<groupId>`,
   GET_FORM_COUNT:`${WEB_BASE_URL}/form/<mapper id>/application/count`,
+  UNPUBLISH_FORMS:`${WEB_BASE_URL}/form/<mapper id>`
 };
 
 export default API;

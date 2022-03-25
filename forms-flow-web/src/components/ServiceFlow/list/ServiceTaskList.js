@@ -19,7 +19,6 @@ import {getFirstResultIndex} from "../../../apiManager/services/taskSearchParams
 import TaskVariable from "./TaskVariable";
 const ServiceFlowTaskList = React.memo(() => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
-  const taskVariable = useSelector((state)=>state.bpmTasks.selectedFilter?.properties?.variables ||[])
   const tasksCount = useSelector(state=> state.bpmTasks.tasksCount);
   const bpmTaskId = useSelector(state => state.bpmTasks.taskId);
   const isTaskListLoading = useSelector(
@@ -31,15 +30,22 @@ const ServiceFlowTaskList = React.memo(() => {
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const activePage = useSelector(state=>state.bpmTasks.activePage);
   const tasksPerPage = MAX_RESULTS;
-  const {t}=useTranslation();
-  useEffect(()=>{
-    const taskVariableObject = {}
-    taskVariable.forEach(item => {
-        taskVariableObject[item.name]=item.label
-    });
-  
-    dispatch(setSelectedFilterAction(taskVariableObject))
-  },[dispatch,taskVariable])
+  const taskVariableObject = useSelector((state)=>state.bpmTasks.selectedFilterAction)
+
+useEffect(()=>{
+  if(selectedFilter){
+    let taskVariableNewObject = null;
+    const taskVariable = selectedFilter?.properties?.variables || [];
+    if(taskVariable.length){
+      taskVariableNewObject={};
+      taskVariable.forEach(item => {
+        taskVariableNewObject[item.name]=item.label
+      });
+    }
+    dispatch(setSelectedFilterAction(taskVariableNewObject))
+  }
+},[dispatch,selectedFilter])
+
   useEffect(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
@@ -118,9 +124,9 @@ const ServiceFlowTaskList = React.memo(() => {
                 </Col>
               </Row>
               {
-                task._embedded?.variable&&<TaskVariable variables={task._embedded?.variable||[]}/>
-              } 
-                       
+                task._embedded?.variable && taskVariableObject && <TaskVariable variables={task._embedded?.variable||[]}/>
+              }
+
             </div>
           ))}
           <div className="pagination-wrapper">

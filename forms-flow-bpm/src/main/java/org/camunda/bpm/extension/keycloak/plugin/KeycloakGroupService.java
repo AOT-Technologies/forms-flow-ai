@@ -22,6 +22,8 @@ import org.camunda.bpm.extension.keycloak.KeycloakContextProvider;
 import org.camunda.bpm.extension.keycloak.KeycloakUserNotFoundException;
 import org.camunda.bpm.extension.keycloak.json.JsonException;
 import org.camunda.bpm.extension.keycloak.rest.KeycloakRestTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,6 +34,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.KeycloakGroupService {
+
+	/** This class' logger. */
+	private static final Logger LOG = LoggerFactory.getLogger(KeycloakGroupService.class);
 
 	private String webClientId;
 	private boolean enableClientAuth;
@@ -50,6 +55,7 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 	 * @return list of matching groups
 	 */
 	public List<Group> requestGroupsByUserId(CacheableKeycloakGroupQuery query) {
+		LOG.debug("enableClientAuth value " + enableClientAuth);	
 		List<Group> userGroups = null;
 		if (enableClientAuth) {
 			userGroups = this.requestClientRolesByUserId(query);
@@ -108,15 +114,16 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 
 		return roleList;
 	}
-	
-	
+
 	/**
-	 * Get the group ID of the configured admin group. Enable configuration using group path as well.
-	 * This prevents common configuration pitfalls and makes it consistent to other configuration options
-	 * like the flag 'useGroupPathAsCamundaGroupId'.
+	 * Get the group ID of the configured admin group. Enable configuration using
+	 * group path as well. This prevents common configuration pitfalls and makes it
+	 * consistent to other configuration options like the flag
+	 * 'useGroupPathAsCamundaGroupId'.
 	 * 
 	 * @param configuredAdminGroupName the originally configured admin group name
-	 * @return the corresponding keycloak group ID to use: either internal keycloak ID or path, depending on config
+	 * @return the corresponding keycloak group ID to use: either internal keycloak
+	 *         ID or path, depending on config
 	 */
 	public String getKeycloakAdminGroupId(String configuredAdminGroupName) {
 		String groupId = null;
@@ -127,7 +134,7 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 		}
 		return groupId;
 	}
-	
+
 	public String getKeycloakAdminClientId(String configuredAdminGroupName) {
 		if (StringUtils.isBlank(getKeycloakAdminClientId(configuredAdminGroupName))) {
 			return null;
@@ -185,9 +192,11 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 	 * @throws JsonException in case of errors
 	 */
 	private boolean isCamundAdmin(JsonObject result) throws JsonException {
+
 		String name = getJsonString(result, "name");
-//		if (Groups.CAMUNDA_ADMIN.equals(name) || name.equals(keycloakConfiguration.getAdministratorGroupName())) {
-		if (Groups.CAMUNDA_ADMIN.equals(name) || name.equals("sk-camunda-admin")) {
+		LOG.debug("Name from JSON " + name);
+		LOG.debug("Administrator Group Name " + keycloakConfiguration.getAdministratorGroupName());
+		if (Groups.CAMUNDA_ADMIN.equals(name) || name.equals(keycloakConfiguration.getAdministratorGroupName())) {
 			return true;
 		}
 		try {

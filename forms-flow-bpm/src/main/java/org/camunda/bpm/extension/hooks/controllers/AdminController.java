@@ -12,8 +12,6 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizedAction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -23,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
@@ -37,6 +34,8 @@ import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class assist with admin operations of formsflow.ai: Giving all authorized form details
@@ -46,7 +45,7 @@ import java.util.Map;
 @Controller
 public class AdminController {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
+    private static final Logger LOGGER = Logger.getLogger(AdminController.class.getName());
 
     @Value("${plugin.identity.keycloak.administratorGroupName}")
     private String adminGroupName;
@@ -62,7 +61,7 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
         AuthorizationInfo authorizationInfo = null;
-        LOGGER.error(groups.toString() + " "+((JwtAuthenticationToken)authentication).getToken().getTokenValue());
+
         if (CollectionUtils.isNotEmpty(groups) && groups.contains(adminGroupName)) {
             authorizationInfo = new AuthorizationInfo(true, null);
         } else {
@@ -74,11 +73,12 @@ public class AdminController {
     @Deprecated
     @RequestMapping(value = "/engine-rest-ext/form", method = RequestMethod.GET, produces = "application/json")
     private @ResponseBody List<AuthorizedAction> getForms() throws ServletException {
-        List<AuthorizedAction> formList = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
-        LOGGER.error(groups.toString() + " "+((JwtAuthenticationToken)authentication).getToken().getTokenValue());
+        List<Authorization> authorizationList =  getAuthorization(groups);
+        List<AuthorizedAction> formList = new ArrayList<>();
+        List<AuthorizedAction> filteredList = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
             ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, null);
             if (response.getStatusCode().value() == HttpStatus.OK.value()) {
@@ -96,12 +96,44 @@ public class AdminController {
                     }
 
                 }
-                return formList;
+                if(CollectionUtils.isNotEmpty(groups) && groups.contains(adminGroupName)) {
+                    for(AuthorizedAction formObj : formList) {
+                        if(!isExists(filteredList, formObj.getFormId())) {
+                            filteredList.add(formObj);
+                        }
+
+                    }
+                } else {
+                    for (Authorization authObj : authorizationList) {
+                        for (AuthorizedAction formObj : formList) {
+                            if (authObj.getResourceId().equals(formObj.getProcessKey()) && !isExists(filteredList, formObj.getFormId()))  {
+                                filteredList.add(formObj);
+                            }
+                        }
+                    }
+                }
+                return filteredList;
             }
         } catch (JsonProcessingException e) {
-            LOGGER.error("Exception occurred in reading form", e);
+            LOGGER.log(Level.SEVERE, "Exception occurred in reading form", e);
         }
-        return formList;
+        return filteredList;
+    }
+
+    /**
+     * Utility method to avoid duplicate form entry in response.
+     *
+     * @param filteredList
+     * @param formId
+     * @return
+     */
+    private boolean isExists(List<AuthorizedAction> filteredList, String formId) {
+        for(AuthorizedAction entry : filteredList) {
+            if(entry.getFormId().equals(formId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -154,7 +186,6 @@ public class AdminController {
             Authorization auth = new Authorization(authorization.getGroupId(), authorization.getUserId(), authorization.getResourceId());
             authorizationList.add(auth);
         });
-        LOGGER.error(authorizationList.toString());
         return authorizationList;
     }
 }

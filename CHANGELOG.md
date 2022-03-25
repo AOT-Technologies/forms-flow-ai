@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 4.0.5 - 2022-03-23
+## 4.0.5 - 2022-03-25
 
 `Added`
 
@@ -98,6 +98,10 @@ Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` ar
 
 * For the upgrading user's process definition / workflow should be deleted.
 * To delete a process definition, refer https://docs.camunda.org/manual/7.8/reference/rest/process-definition/delete-process-definition/
+
+`Generic Changes`
+
+* Added docker based automated installation.For installation guide, check out [here](./deployment/docker/bundle).
 
 ## 4.0.4 - 2021-12-27
 

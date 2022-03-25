@@ -23,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
@@ -61,8 +62,11 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
         AuthorizationInfo authorizationInfo = null;
-        OidcUser oidcUserPrincipal = (OidcUser) authentication.getPrincipal();
-        LOGGER.error(groups.toString() + " "+oidcUserPrincipal.getName());
+        String token = null;
+        if (authentication != null) {
+            token = ((OAuth2AuthenticationDetails) authentication.getDetails()).getTokenValue();
+        }
+        LOGGER.error(groups.toString() + " "+token);
         if (CollectionUtils.isNotEmpty(groups) && groups.contains(adminGroupName)) {
             authorizationInfo = new AuthorizationInfo(true, null);
         } else {

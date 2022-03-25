@@ -42,7 +42,7 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
     public void notify(DelegateExecution execution) {
         try {
             syncFormVariables(execution);
-        } catch (IOException e) {
+        } catch (IOException | ApplicationServiceException e) {
             handleException(execution, ExceptionSource.EXECUTION, e);
         }
     }
@@ -51,7 +51,7 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
     public void notify(DelegateTask delegateTask) {
         try {
             syncFormVariables(delegateTask.getExecution());
-        } catch (IOException e) {
+        } catch (IOException | ApplicationServiceException e) {
             handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
     }
@@ -68,7 +68,7 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
         Map<String, FilterInfo> filterInfoMap = new HashMap<>();
         try {
             FormProcessMappingData body = mapper.readValue(response.getBody(), FormProcessMappingData.class);
-            List<FilterInfo> filterInfoList = mapper.readValue(body.getTaskVariable(), new TypeReference<List<FilterInfo>>(){});
+            List<FilterInfo> filterInfoList = body.getTaskVariable();
             filterInfoMap = filterInfoList.stream()
                     .collect(Collectors.toMap(FilterInfo::getKey, Function.identity()));
         } catch (JsonProcessingException e) {

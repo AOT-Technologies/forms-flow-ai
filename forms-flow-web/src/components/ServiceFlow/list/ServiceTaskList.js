@@ -18,6 +18,7 @@ import {MAX_RESULTS} from "../constants/taskConstants";
 import {getFirstResultIndex} from "../../../apiManager/services/taskSearchParamsFormatterService";
 import TaskVariable from "./TaskVariable";
 const ServiceFlowTaskList = React.memo(() => {
+  const {t}= useTranslation();
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const tasksCount = useSelector(state=> state.bpmTasks.tasksCount);
   const bpmTaskId = useSelector(state => state.bpmTasks.taskId);

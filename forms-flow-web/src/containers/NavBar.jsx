@@ -29,6 +29,7 @@ const NavBar = React.memo(() => {
     console.log(lang);
     i18n.changeLanguage(lang);
   },[lang]);
+ const langarr=["en"];
 
   const handleOnclick=(e)=>{
    e.preventDefault();
@@ -121,21 +122,25 @@ const NavBar = React.memo(() => {
                 }`}><i className="fa fa-lightbulb-o fa-fw fa-lg"/> {t("insights")}</NavDropdown.Item>}
               </NavDropdown>:null}
             </Nav>
-            <Nav className="ml-auto">
+            {
+              langarr.length===1 ? null :
+            
+             <Nav className="ml-auto">
             <Dropdown alignRight>
                     <Dropdown.Toggle id="dropdown-basic" as="div">
                     <i className="fa fa-globe fa-lg" aria-hidden="true"/> {lang?lang:'LANGUAGE'}
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
                       <Dropdown.Item><button class="button_component" value='en' onClick={handleOnclick}>English</button>  </Dropdown.Item>
-                      {/* <Dropdown.Item><button class="button_component" value='zh-CN' onClick={handleOnclick}>中国人</button> </Dropdown.Item>
+                      <Dropdown.Item><button class="button_component" value='zh-CN' onClick={handleOnclick}>中国人</button> </Dropdown.Item>
                       <Dropdown.Item><button class="button_component" value='pt' onClick={handleOnclick}>Português</button>  </Dropdown.Item>
                       <Dropdown.Item><button class="button_component" value='fr' onClick={handleOnclick}>français</button> </Dropdown.Item>
                       <Dropdown.Item><button class="button_component" value='bg' onClick={handleOnclick}>български</button> </Dropdown.Item>
-                      <Dropdown.Item><button class="button_component" value='de' onClick={handleOnclick}>Deutsch</button> </Dropdown.Item> */}
+                      <Dropdown.Item><button class="button_component" value='de' onClick={handleOnclick}>Deutsch</button> </Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
-            </Nav>
+            </Nav> 
+}
             <Nav className="ml-auto">
                   <Dropdown alignRight>
                     <Dropdown.Toggle id="dropdown-basic" as="div">

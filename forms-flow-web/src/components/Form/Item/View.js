@@ -40,6 +40,7 @@ import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import {checkIsObjectId} from "../../../apiManager/services/formatterService";
 
 const View = React.memo((props) => {
+ const{t}=useTranslation();
  const lang = useSelector((state) => state.user.lang);
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading

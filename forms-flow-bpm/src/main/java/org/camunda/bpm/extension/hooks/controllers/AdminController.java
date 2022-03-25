@@ -12,6 +12,8 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizedAction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -34,8 +36,6 @@ import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class assist with admin operations of formsflow.ai: Giving all authorized form details
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 @Controller
 public class AdminController {
 
-    private static final Logger LOGGER = Logger.getLogger(AdminController.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(AdminController.class);
 
     @Value("${plugin.identity.keycloak.administratorGroupName}")
     private String adminGroupName;
@@ -95,7 +95,7 @@ public class AdminController {
                 return formList;
             }
         } catch (JsonProcessingException e) {
-            LOGGER.log(Level.SEVERE, "Exception occurred in reading form", e);
+            LOGGER.error("Exception occurred in reading form", e);
         }
         return formList;
     }
@@ -150,6 +150,7 @@ public class AdminController {
             Authorization auth = new Authorization(authorization.getGroupId(), authorization.getUserId(), authorization.getResourceId());
             authorizationList.add(auth);
         });
+        LOGGER.error(authorizationList.toString());
         return authorizationList;
     }
 }

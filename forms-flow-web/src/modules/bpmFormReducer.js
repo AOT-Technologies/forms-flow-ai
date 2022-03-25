@@ -22,10 +22,10 @@ const initialState = {
 const bpmForms = (state = initialState, action)=> {
   switch (action.type) {
     case ACTION_CONSTANTS.BPM_FORM_LIST:
-      return {...state, forms: getPaginatedForms(formatForms(action.payload),state.limit, state.maintainPagination? state.pagination.page:1, state.sort), formsFullList:formatForms(action.payload), isActive: false,  totalForms:action.payload.length,  pagination: {
-          numPages: Math.ceil(action.payload.length/ state.limit),
+      return {...state, forms: getPaginatedForms(formatForms(action.payload.forms),state.limit, state.maintainPagination? state.pagination.page:1, state.sort), formsFullList:formatForms(action.payload.forms), isActive: false,  totalForms:action.payload.length,  pagination: {
+          numPages: Math.ceil(action.payload.forms.length/ state.limit),
           page: state.maintainPagination? state.pagination.page:1,
-          total: action.payload.length,
+          total: action.payload.totalCount,
         }};
     case ACTION_CONSTANTS.IS_BPM_FORM_LIST_LOADING:
       return {...state, isActive: action.payload};

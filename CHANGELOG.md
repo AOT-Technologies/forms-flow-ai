@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 4.0.5 - 2022-03-18
+## 4.0.5 - 2022-03-23
 
 `Added`
 
@@ -32,7 +32,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-idm**
 
-* Added manage-users group to formsflow-ai-realm.
+* Added `manage-users` group to assigned client roles in realm-management.Check out the details at Service Accounts Tab from [here](./forms-flow-idm/keycloak/README.md#create-a-forms-flow-bpm-client).
 
 **forms-flow-bpm**
 
@@ -75,6 +75,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 `KEYCLOAK_BPM_CLIENT_SECRET` is not mandatory.
 
+
 `Removed`
 
 **forms-flow-web**
@@ -88,7 +89,15 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` are  removed since now the 
    admin APIs are accessed using the service account.
    
+**forms-flow-bpm**
 
+* FormAccessTokenCacheListener is deprecated ,will be removed from the codebase in the upcoming releases.
+* formio-access-token.bpmn workflow is permanently removed from the codebase.
+
+*Upgrade notes:*
+
+* For the upgrading user's process definition / workflow should be deleted.
+* To delete a process definition, refer https://docs.camunda.org/manual/7.8/reference/rest/process-definition/delete-process-definition/
 
 ## 4.0.4 - 2021-12-27
 

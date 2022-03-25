@@ -10,13 +10,11 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 
 import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizedAction;
-import org.camunda.bpm.extension.hooks.controllers.data.FormRO;
 import org.camunda.bpm.extension.hooks.controllers.mapper.AuthorizationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -56,11 +54,8 @@ public class AdminController {
     @Value("${plugin.identity.keycloak.administratorGroupName}")
     private String adminGroupName;
 
-    @GetMapping(value = "/engine-rest-ext/form",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
-            produces = MediaType.APPLICATION_JSON_VALUE)
-    private @ResponseBody List<AuthorizedAction> getForms(@RequestBody(required = false) FormRO formRO) throws ServletException
-    {
+    @RequestMapping(value = "/engine-rest-ext/form", method = RequestMethod.GET, produces = "application/json")
+    private @ResponseBody List<AuthorizedAction> getForms() throws ServletException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
         List<Authorization> authorizationList =  getAuthorization(groups);
@@ -68,8 +63,7 @@ public class AdminController {
         List<AuthorizedAction> filteredList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         try {
-            String payload = objectMapper.writeValueAsString(formRO);
-            ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, payload);
+            ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, null);
             if (response.getStatusCode().value() == HttpStatus.OK.value()) {
                 JsonNode jsonNode = objectMapper.readTree(response.getBody());
                 if (jsonNode.get("totalCount") != null && jsonNode.get("totalCount").asInt() > 0) {
@@ -96,7 +90,7 @@ public class AdminController {
                 } else {
                     for (Authorization authObj : authorizationList) {
                         for (AuthorizedAction formObj : formList) {
-                            if (authObj.getResourceId().equals(formObj.getProcessKey()) && !isExists(filteredList, formObj.getFormId()))  {
+                            if (("*".equals(authObj.getResourceId()) || authObj.getResourceId().equals(formObj.getProcessKey())) && !isExists(filteredList, formObj.getFormId()))  {
                                 filteredList.add(formObj);
                             }
                         }
@@ -142,20 +136,28 @@ public class AdminController {
             throw new ServletException("Invalid authentication request token");
         }
 
-        List<String> groupIds = new ArrayList<>();
+        List<String> groupIds = null;
         if(claims != null && claims.containsKey("groups")) {
-            JSONArray groups = (JSONArray)claims.get("groups");
-            for (Object group1 : groups) {
-                String groupName = group1.toString();
-                if(StringUtils.startsWith(groupName,"/")) {
-                    groupIds.add(StringUtils.substring(groupName,1));
-                } else {
-                    groupIds.add(groupName);
-                }
-            }
+        	groupIds = getKeyValues(claims, "groups");
+        } else if (claims != null && claims.containsKey("roles")) {
+        	groupIds = getKeyValues(claims, "roles");
         }
         return groupIds;
     }
+
+	private List<String> getKeyValues(Map<String, Object> claims, String claimName) {
+		List<String> groupIds = new ArrayList<String>();
+		JSONArray groups = (JSONArray)claims.get(claimName);
+		for (Object group1 : groups) {
+		    String groupName = group1.toString();
+		    if(StringUtils.startsWith(groupName,"/")) {
+		        groupIds.add(StringUtils.substring(groupName,1));
+		    } else {
+		        groupIds.add(groupName);
+		    }
+		}
+		return groupIds;
+	}
 
     /**
      * This method returns all authorization details of Groups.

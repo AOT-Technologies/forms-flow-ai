@@ -29,7 +29,7 @@ const Preview = React.memo(
     //  taking the url and make the copy button
     const copyPublicUrl = () => {
       const hostName = window.location.host;
-      const url = `${hostName}/public/form/${formData.form._id}`;
+      const url = `${hostName}/public/form/${formData.form.path}`;
       navigator.clipboard?.writeText(url).then(()=>{
         setCopied(()=>{
           setTimeout(()=>{

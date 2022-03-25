@@ -62,7 +62,7 @@ public class AdminController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
         AuthorizationInfo authorizationInfo = null;
-        LOGGER.error(groups.toString());
+        LOGGER.error(groups.toString() + " "+((JwtAuthenticationToken)authentication).getToken());
         if (CollectionUtils.isNotEmpty(groups) && groups.contains(adminGroupName)) {
             authorizationInfo = new AuthorizationInfo(true, null);
         } else {

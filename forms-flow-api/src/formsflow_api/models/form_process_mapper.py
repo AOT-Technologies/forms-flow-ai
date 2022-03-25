@@ -57,18 +57,12 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.version = mapper_info.get("version")
                 mapper.save()
                 return mapper
-        except KeyError as err:
-            current_app.logger.warning(err)
-            response, status = {
-                "type": "Bad Request Error",
-                "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
         except Exception as err:  # pylint: disable=broad-except
             current_app.logger.critical(err)
-            response, status = {
-                "type": "Bad Request Error",
-                "message": "Invalid application request passed",
-            }, HTTPStatus.BAD_REQUEST
+        response, status = {
+            "type": "Bad Request Error",
+            "message": "Invalid application request passed",
+        }, HTTPStatus.BAD_REQUEST
         return response, status
 
     def update(self, mapper_info: dict):

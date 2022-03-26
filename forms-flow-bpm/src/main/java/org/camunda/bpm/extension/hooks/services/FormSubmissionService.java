@@ -31,6 +31,8 @@ public class FormSubmissionService {
     private final Logger LOGGER = Logger.getLogger(FormSubmissionService.class.getName());
 
     @Autowired
+    private FormTokenAccessHandler formTokenAccessHandler;
+    @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
     public String readSubmission(String formUrl) {
@@ -163,6 +165,11 @@ public class FormSubmissionService {
 
     private ObjectMapper getObjectMapper(){
         return new ObjectMapper();
+    }
+
+    @Deprecated
+    public String getAccessToken() {
+        return formTokenAccessHandler.getAccessToken();
     }
 
 }

@@ -32,7 +32,7 @@ const initialState = {
   taskFormSubmissionReload:false,
   activePage:1,
   firstResult:0,
-  selectedFilterAction:{}
+  selectedFilterAction:null
 }
 
 const bpmTasks =(state = initialState, action)=> {

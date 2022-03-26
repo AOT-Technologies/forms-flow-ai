@@ -23,6 +23,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { setFormProcessesData } from "../../../actions/processActions";
+import ViewAndEditTaskvariable  from "./ViewAndEditTaskvariable";
 const WorkFlow = React.memo(
   ({
     associateWorkFlow,
@@ -106,6 +107,17 @@ const WorkFlow = React.memo(
       );
     };
 
+    const editTaskVariable= (data)=>{
+      setSelectedTaskVariable((prev)=>{
+        return prev.map(item=>item.key===data.key?{...data}:item)
+      })
+      dispatch(
+        setFormProcessesData({
+          ...formProcessList,
+          taskVariable: selectedTaskVariable.map(variable=>variable.key===data.key?{...data}:variable)
+        })
+      );
+    }
     const handleChange = (event, newValue) => {
       setTabValue(newValue);
     };
@@ -220,16 +232,14 @@ const WorkFlow = React.memo(
             <>
               <Card variant="outlined" className="card-overflow">
                 <CardContent>
-                  <FormLabel component="legend" className="mb-3">
-                    Create Your Task Variable
-                  </FormLabel>
+                  <p> Add form fields to display in task list </p>
                   {selectedTaskVariable.length !== 0 ? (
-                    <Grid item xs={12} md={5} className="mb-2">
+                    <Grid item xs={12} md={12} className="mb-2">
                       <TableContainer component={Paper} style={{maxHeight:"250px"}}>
                         <Table stickyHeader aria-label="simple table">
                           <TableHead>
                             <TableRow >
-                              <TableCell className="font-weight-bold">Key</TableCell>
+                              <TableCell className="font-weight-bold">Form field</TableCell>
                               <TableCell className="font-weight-bold" align="left">Label</TableCell>
                               <TableCell className="font-weight-bold"align="left">Show in list</TableCell>
                               <TableCell className="font-weight-bold" align="right">
@@ -240,22 +250,20 @@ const WorkFlow = React.memo(
                           </TableHead>
                           <TableBody>
                             {selectedTaskVariable.map((item,index) => (
-                              <TableRow key={index}>
-                                <TableCell scope="row">
-                                  {item.key}
-                                </TableCell>
-                                <TableCell align="left"> {item.label} </TableCell>
-                                <TableCell align="left">{item.showInList?'yes':'no'}</TableCell>
-                                <TableCell align="right"> <i role="button" onClick={()=>{deleteTaskVariable(item)}} className="fa fa-times"></i> 
-                                </TableCell>
-                               </TableRow>
+                              <ViewAndEditTaskvariable key={index}  
+                              item={item}
+                              deleteTaskVariable={deleteTaskVariable}
+                              editTaskVariable={editTaskVariable}
+                              />
                             ))}
                           </TableBody>
                         </Table>
                       </TableContainer>
                     </Grid>
                   ) : (
-                    <p>No Task variable selected</p>
+                   <div className="border p-2 mb-2">
+                      <FormLabel>No Task variable selected</FormLabel>
+                   </div>
                   )}
 
                   {showTaskVaribleCrete && (

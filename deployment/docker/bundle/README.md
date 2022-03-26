@@ -14,6 +14,7 @@ The root directory contains two start scripts. One for Windows (.bat) and one fo
 
 - NOTE: configuration/ 
 This directory contains all resources to configure the distro.
+- In the base directory execute start scripts, Double click on the start.bat (For Windows) and ./start.bash (For Linux).
 - The following image depicts the installation flow with user input required for configuration.
 
 ![Drawing (3)](https://user-images.githubusercontent.com/94040192/160104985-35e13a88-1384-48e7-8701-87ac9fc66cb1.jpg)

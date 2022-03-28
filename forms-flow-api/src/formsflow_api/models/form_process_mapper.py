@@ -147,11 +147,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))
 
         total_count = query.count()
-        if page_number == 0:
-            query = query.all()
-        else:
-            query = query.paginate(page_number, limit).items
-        return query, total_count
+        limit = total_count if limit is None else limit
+        query = query.paginate(page_number, limit)
+        return query.items, total_count
 
     @classmethod
     def find_all_count(cls):

@@ -148,6 +148,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
 
         total_count = query.count()
         query = query.with_entities(
+            cls.id,
             cls.process_key,
             cls.form_id,
             cls.form_name,

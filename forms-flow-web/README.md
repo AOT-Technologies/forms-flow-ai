@@ -19,6 +19,7 @@ with your project by installing our [npm package](https://www.npmjs.com/package/
    - [Step 4 : Health Check](#health-check)
 3. [How to Create Your First Form](#how-to-create-your-first-form)
 4. [Logo change](#logo-change)
+5. [Code coverage](#code-coverage)
 
 ## Prerequisites
 
@@ -104,7 +105,7 @@ Variable name | Meaning | Possible values | Default value |
   * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web.
      The default width and height of the logo is 50 and 55 also the image format is svg
   * The icon can also be replaced to the users icon by replacing the favicon in the public folder of forms-flow-web
-  *  
+   
              
 ### Code coverage
   * Test cases for the files are provided at forms-flow-web using [testing-library/jest-dom](https://testing-library.com/docs/ecosystem-jest-dom/) , [testing-library/react](https://testing-library.com/docs/react-testing-library/intro/) , [msw](https://mswjs.io/) and [redux-mock-store](https://www.npmjs.com/package/redux-mock-store).

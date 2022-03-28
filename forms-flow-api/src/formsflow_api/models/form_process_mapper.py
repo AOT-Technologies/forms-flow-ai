@@ -147,6 +147,11 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
             query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))
 
         total_count = query.count()
+        query = query.with_entities(
+            cls.process_key,
+            cls.form_id,
+            cls.form_name,
+        )
         limit = total_count if limit is None else limit
         query = query.paginate(page_number, limit)
         return query.items, total_count

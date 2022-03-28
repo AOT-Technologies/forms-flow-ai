@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 4.0.5 - 2022-03-23
+## 4.0.5 - 2022-03-25
 
 `Added`
 
@@ -58,6 +58,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Modified application name search with lowercase and by intermediate search.
 * Front-end support for the form process mapper versioning and database normalization.
 * User is not be able to change the workflow of published form.
+* Url support both pathname and formid to fetch the form.
 
 **forms-flow-api**
 
@@ -98,6 +99,10 @@ Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` ar
 
 * For the upgrading user's process definition / workflow should be deleted.
 * To delete a process definition, refer https://docs.camunda.org/manual/7.8/reference/rest/process-definition/delete-process-definition/
+
+`Generic Changes`
+
+* Added docker based automated installation.For installation guide, check out [here](./deployment/docker/bundle).
 
 ## 4.0.4 - 2021-12-27
 

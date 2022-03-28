@@ -2,6 +2,10 @@ export const formio_translation = {
 
    "en": {
 
+      "Form field":"Form field",
+      "Enter Label":"Enter Label",
+      "Select form field":"Select form field",
+      "Add form fields to display in task list":"Add form fields to display in task list",
       "Version":"Version",
       "Submission Status":"Submission Status",
       "No submission status":"No submission status",
@@ -216,6 +220,10 @@ export const formio_translation = {
 
    "zh-CN": {
       
+      "Form field":"表单域",
+      "Enter Label":"输入标签",
+      "Select form field":"选择表单域",
+      "Add form fields to display in task list":"添加表单域以显示在任务列表中",
       "Version":"版本",
       "Submission Status":"提交状态",
       "No submission status":"无提交状态",
@@ -935,6 +943,10 @@ export const formio_translation = {
 
    "bg": {
       
+      "Form field":"Поле за формуляр",
+      "Enter Label":"Въведете етикет",
+      "Select form field":"Изберете поле на формуляра",
+      "Add form fields to display in task list":"Добавете полета на формуляра за показване в списъка със задачи",
       "Version":"Версия",
       "Submission Status":"Състояние на подаване",
       "No submission status":"Няма състояние на подаване",
@@ -1653,6 +1665,10 @@ export const formio_translation = {
 
    "pt": {
       
+      "Form field":"Campo do formulário",
+      "Enter Label":"Digite o rótulo",
+      "Select form field":"Selecione o campo do formulário",
+      "Add form fields to display in task list":"Adicionar campos de formulário para exibir na lista de tarefas",
       "Version":"Versão",
       "Submission Status":"Status de submissão",
       "No submission status":"Sem status de envio",
@@ -2367,6 +2383,10 @@ export const formio_translation = {
 
    "fr": {
 
+      "Form field":"Champ de formulaire",
+      "Enter Label":"Entrez l'étiquette",
+      "Select form field":"Sélectionnez le champ du formulaire",
+      "Add form fields to display in task list":"Ajouter des champs de formulaire à afficher dans la liste des tâches",
       "Version":"Version",
       "Submission Status":"État de la soumission",
       "No submission status":"Aucun statut de soumission",
@@ -3083,6 +3103,10 @@ export const formio_translation = {
 
    "de": {
 
+      "Form field":"Formularfeld",
+      "Enter Label":"Bezeichnung eingeben",
+      "Select form field":"Formularfeld auswählen",   
+      "Add form fields to display in task list":"Fügen Sie Formularfelder zur Anzeige in der Aufgabenliste hinzu",
       "Version":"Ausführung",
       "Submission Status":"Submission Status",
       "No submission status":"Kein Übermittlungsstatus",

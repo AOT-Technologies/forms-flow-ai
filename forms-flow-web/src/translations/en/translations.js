@@ -1,5 +1,9 @@
 export const TRANSLATIONS_EN = {
-
+ 
+  "Form field":"Form field",
+  "Enter Label":"Enter Label",
+  "Select form field":"Select form field",
+  "Add form fields to display in task list":"Add form fields to display in task list",
   "Version":"Version",
   "Submission Status":"Submission Status",
   "No submission status":"No submission status",

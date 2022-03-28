@@ -50,7 +50,7 @@ const TaskvariableCreate = ({ options ,addTaskVariable}) => {
                 selectTaskVariable(item);
             }} 
             formatOptionLabel={fomatOptionLabel}
-            placeholder="Select form field"
+            placeholder={t("Select form field")}
           />
         </Grid>
         <Grid item xs={12} md={2}>
@@ -60,7 +60,7 @@ const TaskvariableCreate = ({ options ,addTaskVariable}) => {
             value={taskLabel}
             onChange={(e)=>{setTaskLable(e.target.value)}}
             className="form-control"
-            placeholder="Enter Label"
+            placeholder={t("Enter Label")}
           />
         </Grid>
         <Grid item xs={12} md={2}>

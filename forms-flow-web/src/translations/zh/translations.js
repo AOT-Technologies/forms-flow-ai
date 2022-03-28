@@ -1,5 +1,9 @@
 export const TRANSLATIONS_ZH = {
 
+  "Form field":"表单域",
+  "Enter Label":"输入标签",
+  "Select form field":"选择表单域",
+  "Add form fields to display in task list":"添加表单域以显示在任务列表中",
   "Version":"版本",
   "Submission Status":"提交状态",
   "No submission status":"无提交状态",

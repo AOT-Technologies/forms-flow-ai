@@ -1,5 +1,9 @@
 export const TRANSLATIONS_BG = {
  
+    "Form field":"Поле за формуляр",
+    "Enter Label":"Въведете етикет",
+    "Select form field":"Изберете поле на формуляра",
+    "Add form fields to display in task list":"Добавете полета на формуляра за показване в списъка със задачи",
     "Version":"Версия",
     "Submission Status":"Състояние на подаване",
     "No submission status":"Няма състояние на подаване",

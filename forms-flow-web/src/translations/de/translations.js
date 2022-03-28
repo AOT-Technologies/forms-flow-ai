@@ -1,5 +1,9 @@
 export const TRANSLATIONS_DE = {
 
+  "Form field":"Formularfeld",
+  "Enter Label":"Bezeichnung eingeben",
+  "Select form field":"Formularfeld auswählen",
+  "Add form fields to display in task list":"Fügen Sie Formularfelder zur Anzeige in der Aufgabenliste hinzu",
   "Version":"Ausführung",
   "Submission Status":"Submission Status",
   "No submission status":"Kein Übermittlungsstatus",

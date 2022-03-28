@@ -1,5 +1,9 @@
 export const TRANSLATIONS_PT = {
 
+  "Form field":"Campo do formulário",
+  "Enter Label":"Digite o rótulo",
+  "Select form field":"Selecione o campo do formulário",
+  "Add form fields to display in task list":"Adicionar campos de formulário para exibir na lista de tarefas",
   "Version":"Versão",
   "Submission Status":"Status de submissão",
   "No submission status":"Sem status de envio",

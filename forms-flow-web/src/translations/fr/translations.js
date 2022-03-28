@@ -1,5 +1,9 @@
 export const TRANSLATIONS_FR = {
 
+  "Form field":"Champ de formulaire",
+  "Enter Label":"Entrez l'étiquette",
+  "Select form field":"Sélectionnez le champ du formulaire",
+  "Add form fields to display in task list":"Ajouter des champs de formulaire à afficher dans la liste des tâches",
   "Version":"Version",
   "Submission Status":"État de la soumission",
   "No submission status":"Aucun statut de soumission",

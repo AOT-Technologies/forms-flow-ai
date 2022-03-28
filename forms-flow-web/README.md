@@ -20,6 +20,7 @@ with your project by installing our [npm package](https://www.npmjs.com/package/
 3. [How to Create Your First Form](#how-to-create-your-first-form)
 4. [Logo change](#logo-change)
 5. [Code coverage](#code-coverage)
+6. [Internationalization](#internationalization)
 
 ## Prerequisites
 
@@ -113,6 +114,19 @@ Variable name | Meaning | Possible values | Default value |
   * Test files are available at `forms-flow-ai\forms-flow-web\src\_tests_`
   * Run the command `npm run coverage` to get the total coverage and for individual files run `npm test --<test file name>`.
   * Total code coverage can obtain by opening `forms-flow-ai\forms-flow-web\coverage\lcov-report\index.html` with browser.
+
+### Internationalization
+  * Default language 'English' can be changed to other languages according to the   user.
+  * The languages currently provided are `Chinese,Portuguese,French and Bulgarian`.
+  * User can add more languages by following the steps :
+   1. Create a folder at *forms-flow-web/src/translations* with folder name as the abbrevation of the required language.
+   2. Create a file named translations.js inside the folder.
+   3. Copy the key-value pairs from *translations.js* file inside *en* folder and paste it to the new file.
+   4. Translate the value of the keys to the required language using google translator and paste the values to the same file
+   5. Import the same file to *forms-flow-web/src/translations/i18n.js* like rest of the languages.
+   6. You can add the button component at *forms-flow-web/src/containers/NavBar.jsx* by simply copying the dropdown menu and providing language abbrevation,name and language abbrevation to the array *langarr* inside the samw file. .
+   7. You should add content of new trnslation file to *forms-flow-web/src/translations/formiotranslation.js* also.
+   8. Login to **http://localhost:3000/** to check your updations.
   
 ## forms-flow-web Events
  > This section elaborates events used in forms-flow-web.

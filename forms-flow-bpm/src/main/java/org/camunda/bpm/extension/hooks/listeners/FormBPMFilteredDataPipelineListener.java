@@ -64,10 +64,18 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
         }
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
         Map<String, FilterInfo> filterInfoMap = new HashMap<>();
         try {
-            FormProcessMappingData body = mapper.readValue(response.getBody(), FormProcessMappingData.class);
+            String responseBody = response.getBody();
+            if(responseBody != null) {
+                LOGGER.error(responseBody);
+                responseBody = responseBody.replace("\"[{", "[{")
+                        .replace("}]\"", "}]").replace("\\", "");
+                LOGGER.error(responseBody);
+            }
+            FormProcessMappingData body = mapper.readValue(responseBody, FormProcessMappingData.class);
             List<FilterInfo> filterInfoList = body.getTaskVariable();
             filterInfoMap = filterInfoList.stream()
                     .collect(Collectors.toMap(FilterInfo::getKey, Function.identity()));

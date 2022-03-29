@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import '../FormSearch/formSearch.css'
 import { useDispatch, useSelector } from 'react-redux'
 import { indexForms } from 'react-formio'
+import { setFormLoading } from '../../../actions/checkListActions'
 import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'
 import {getSearchText} from "../../../apiManager/services/formatterService";
@@ -18,15 +19,23 @@ const FormSearch = React.memo(() => {
 
   //function for sorting in descending order
   const updateSort = () => {
+    dispatch(setFormLoading(true))
     const updatedQuery = {
       sort: `${isAscending?'-':''}title`,
     }
-    dispatch(indexForms('forms', 1, updatedQuery))
+    dispatch(indexForms('forms', 1, updatedQuery,()=>{
+      dispatch(setFormLoading(false))
+    }))
   }
+
   // To handle the search option
   const handleSearch = (searchForm) => {
+    dispatch(setFormLoading(true))
     const searchTitle = searchForm ? `/${searchText}/i` : '';
-    dispatch(indexForms('forms', 1, {query:{ ...query, title__regex: searchTitle }}))
+    dispatch(indexForms('forms', 1, {query:{ ...query, title__regex: searchTitle}},()=>{
+      dispatch(setFormLoading(false))
+      setSearchText(searchForm)
+    }))
   }
   return (
     <>

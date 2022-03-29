@@ -67,7 +67,6 @@ const List = React.memo((props) => {
   const formProcessData = useSelector(state=>state.process.formProcessList)
   const applicationCount = useSelector(state => state.process.ApplicationCount)
 
-
   const getFormsList = (page, query) => {
     if (page) {
       dispatch(setBPMFormListPage(page));
@@ -76,7 +75,7 @@ const List = React.memo((props) => {
       dispatch(setBPMFormListSort(query.sort || ''));
     }
   }
-
+const [previousForms,setPreviousForms] = useState({})
   const onPageSizeChanged = (pageSize) => {
     if (isDesigner) {
       dispatch(indexForms("forms", 1, {limit: pageSize}));
@@ -84,6 +83,11 @@ const List = React.memo((props) => {
       dispatch(setBPMFormLimit(pageSize));
     }
   }
+  useEffect(()=>{
+    if(forms.forms.length > 0){
+      setPreviousForms(forms)
+    }
+  },[forms])
 
   useEffect(() => {
     dispatch(setFormCheckList([]))
@@ -171,21 +175,12 @@ const List = React.memo((props) => {
     })
   }
 
- 
   return (
     <>
       <FileModal modalOpen={showFormUploadModal} onClose={() => setShowFormUploadModal(false)}/>
       {
-        (forms.isActive || isBPMFormListLoading) ? (searchFormLoading?<LoadingOverlay
-          active={true}
-          spinner
-          text="Loading..."
-          >
-            <div className="contianer" style={{height:"100vh"}}>
-  
-            </div>
-          </LoadingOverlay>:
-        <div data-testid="Form-list-component-loader"><Loading/></div> ):
+        (forms.isActive || isBPMFormListLoading ) && !searchFormLoading  ? 
+        <div data-testid="Form-list-component-loader"><Loading/></div> :
           <div className="container">
                <Confirm
                  modalOpen={props.modalOpen}
@@ -243,41 +238,43 @@ const List = React.memo((props) => {
             <section className="custom-grid grid-forms">
               <Errors errors={errors}/>
               {
-               
               <LoadingOverlay
                active={searchFormLoading || isApplicationCountLoading}
                spinner
                text="Loading..."
               >
               {
-               paginatedForms.length?
+              (searchFormLoading || paginatedForms.length) ?
                <FormGrid
                columns={columns}
-               forms={isDesigner ? forms : bpmForms}
+               forms={isDesigner ?(forms.forms.length? forms: previousForms) : bpmForms}
                onAction={(form,action)=>{
                  onAction(form, action)
                }}
                getForms={isDesigner ? getForms : getFormsList}
                operations={operations}
                onPageSizeChanged={onPageSizeChanged}
-             />: <span 
-                  style={{ 
-                  textAlign:"center",
-                  display:"block",
-                  margin:"0px auto",
-                  justifyContent: "center",
-                  marginTop:"260px" }}
-                  >
-                  <h3 >No forms found </h3> 
-                 
-                    <Button variant="outline-primary" size="sm"
+             />: <span>
+                  <div 
+                    className="container"
                     style={{
-                      
-                      cursor:"pointer"}}
-                      onClick={resetForms}
-                    >
-                    Click here to go back
-                   </Button>
+                    maxWidth:"900px",
+                    margin:"auto",
+                    height:"60vh",
+                    display:"flex",
+                    flexDirection:"column",
+                    alignItems:"center",
+                    justifyContent:"center"}}> 
+                  <h3 >No forms found </h3> 
+                 <Button variant="outline-primary" size="sm"
+                 style={{
+                   cursor:"pointer"}}
+                   onClick={resetForms}
+                 >
+                 Click here to go back
+                </Button>
+                  </div>
+                 
                     
                   </span>
               }

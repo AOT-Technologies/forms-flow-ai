@@ -76,12 +76,15 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
             throw new ApplicationServiceException(e.getMessage(), e);
         }
 
-        Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
-        for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
-            if(filterInfoMap.containsKey(entry.getKey())) {
-                execution.setVariable(entry.getKey(), entry.getValue());
+        if(!filterInfoMap.isEmpty()){
+            Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
+            for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
+                if(filterInfoMap.containsKey(entry.getKey())) {
+                    execution.setVariable(entry.getKey(), entry.getValue());
+                }
             }
         }
+
     }
 
     /**

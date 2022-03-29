@@ -166,7 +166,28 @@ public class FormBPMFilteredDataPipelineListenerTest {
     }
 
     @Test
-    public void syncFormVariables_with_500_api_test() throws Exception {
+    public void syncFormVariables_with_delegateexecution_and_500_api_test() throws Exception {
+
+        DelegateExecution delegateExecution = mock(DelegateExecution.class);
+
+        Properties properties = mock(Properties.class);
+        when(httpServiceInvoker.getProperties())
+                .thenReturn(properties);
+        when(properties.getProperty(anyString()))
+                .thenReturn("http://localhost:5000/api");
+        when(delegateExecution.getVariable("applicationId"))
+                .thenReturn(100);
+
+        when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any()))
+                .thenReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(""));
+
+        assertThrows(RuntimeException.class, () -> {
+            formBPMFilteredDataPipelineListener.notify(delegateExecution);
+        });
+    }
+
+    @Test
+    public void syncFormVariables_with_delegatetask_and_500_api_test() throws Exception {
 
         DelegateTask delegateTask = mock(DelegateTask.class);
         DelegateExecution delegateExecution = mock(DelegateExecution.class);

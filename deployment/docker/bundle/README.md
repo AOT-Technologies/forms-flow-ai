@@ -1,96 +1,22 @@
-# Installation-Automation
-In the following document, we’ll describe about the various steps involved in the automation installation.
+# Forms-Flow-AI Installation 
+This is a distribution of formsflow.ai latest release.
  
 # Table of Contents
 1. [Summary](#summary)
-2. [Windows Installation](#windows-installation)
-3. [Linux Installation](#linux-installation)
-4. [Conclusion](#conclusion)
+2. [Installation](#installation)
 
 
 ## Summary
 
-In this document we will discuss the Installation process that we have automated for the users. The installation procedures and time consuming has been reduced for the better implementation. Now we will provide a bundle in the docker as well as in the Forms-Flow-AI home page. You just need to download the zip file and extract it wherever you want the project to be installed. Then follow the below steps and instructions for the installation.
+The root directory contains two start scripts. One for Windows (.bat) and one for Linux/Mac (.bash). After executing it, you can access the web applications by following the link from [here](../../#verifying-the-installation-status)
 
+## Installation
 
-## Windows Installation
+- NOTE: configuration/ 
+This directory contains all resources to configure the distro.
+- In the base directory execute start scripts, Double click on the start.bat (For Windows) and ./start.bash (For Linux).
+- The following image depicts the installation flow with user input required for configuration.
 
-1. After you extract the file you will get a bundle as a folder. You can see two script files and one configuration file in it.
-2.  You can just double click on the windows batch script file ``“start.bat”`` to start the installation procedure. 
-3. While installation you must provide some prompt answers and the redash api key (you will get the redash api key only if you include analytics in your installation and after the analytics is up in the docker).Now you can follow the steps below to understand the installation:
-*	Firstly, you will receive a prompt question regarding the installation of analytics in the process. Its your choice to add   analyctics or just type n and continue.
-```
-Do you want to include analytics in the installation?
-```
-*	You can see the order of installation in the screen.
-*	First, it will automatically take you to the keycloak installation.
-```
-Do you have an existing keycloak?
-```
-If you chose yes it will ask you certain details about your keycloak.
-```
-bpm client secret key
-```
-```
-Keycloak url
-```
-```
-keycloak url realm name
-```
-*	If you do not have a keycloak It will automatically setup a keycloak for you.
-*	Then it will take you to the analytics if you have chosen analytics in your installation.
-You have to collect the redash api key for further analytics installation.
-```
-localhost:7000 -> API Key
-```
- or else it will go to the further installation.
-*	After the forms-flow-forms gets up, you can wait for a couple of seconds as shown for the browser to load.
-*	Then it moves in the order-> ``web->BPM->web-api``.
-*	Then the installation will be finished and you can see the >env’s automatically created and you can check the docker desktop to see whether all are working fine.
-4. if you want to install all componants individually, you can refer the main .[README](../README.md)
+![Drawing (3)](https://user-images.githubusercontent.com/94040192/160104985-35e13a88-1384-48e7-8701-87ac9fc66cb1.jpg)
 
-
-## Linux Installation
-
-Same as mentioned in windows installation, 
- 1. You will get a bundle as a folder. You can see two script files and one configuration file in it. 
- 2. You can run the shell script file ``“start.sh”`` in the terminal from the corresponding folder to start the installation procedure in the terminal.
- 3. While installation you must provide some prompt answers and the redash api key (you will get the redash api key only if you include analytics in your installation and after the analytics is up in the docker). Now you can follow the steps below to understand the installation:
-
-*	Firstly, you will receive a prompt question regarding the installation of analytics in the process. Its your choice to add analytics or just type n and continue.
-```
-Do you want to include analytics in the installation?
-```
-*	You can see the order of installation in the screen.
-*	First, it will automatically take you to the keycloak installation.
-```
-Do you have an existing keycloak?
-```
-If you chose yes it will ask you certain details about your keycloak.
-```
-bpm client secret key
-```
-```
-Keycloak url
-```
-```
-keycloak url realm name
-```
-*	If you do not have a keycloak It will automatically setup a keycloak for you.
-*	Then it will take you to the analytics if you have chosen analyctics in your installation.
-You have to collect the redash api key for further analytics installation.
-```
-localhost:7000 -> API Key
-```
- or else it will go to the further installation.
-*	After the forms-flow-forms gets up, you can wait for a couple of seconds as shown for the browser to load.
-*	Then it moves in the order-> ``web->BPM->web-api``.
-*	Then the installation will be finished and you can see the >env’s automatically created and you can check the docker desktop to see whether all are working fine.
-4. if you want to install all componants individually, you can refer the main .[README](../README.md)
-
-
-
-## Conclusion
-
-This installation is set up for the easy installation of the project Foms-flow.ai. You are free to change your .env file variable at any time you wish. Any further changes that will be added in the future will be added in the installation. If you need to to statically change it, you are free to do any updates in the env file.
 

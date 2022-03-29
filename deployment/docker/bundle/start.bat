@@ -186,14 +186,14 @@ set strinnng=%url:{your-ip-address}=!API_URL!%
 echo Please wait, forms is getting up!
 	
 docker-compose -f docker-compose.yml up --build -d forms-flow-forms
-timeout 15
+timeout 55
 
 set websock=%_IPaddr%
 set lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
 set streng=%lpi:{your-ip-address}=!websock!%
 
 set api=%_IPaddr%
-set stp=FORMSFLOW_API_URL=http://{your-ip-address}:5000
+set stp=FORMSFLOW_API_URL=http://{your-ip-address}:5000/api
 set strongs=%stp:{your-ip-address}=!api!%
 
 set websock=%_IPaddr%
@@ -294,10 +294,10 @@ echo USER_RESOURCE_ID=%User% >> .env
 docker-compose up --build -d forms-flow-web
 docker-compose -f docker-compose.yml up --build -d forms-flow-bpm
 docker-compose -f docker-compose.yml up --build -d forms-flow-webapi
+echo.
+echo.
+echo Installation Automation completed
 
 pause> nul
-goto :end
-pause
 
-:end
-echo                                Installation Automation completed
+

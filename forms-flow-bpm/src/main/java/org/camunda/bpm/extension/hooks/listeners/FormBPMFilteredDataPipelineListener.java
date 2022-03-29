@@ -70,10 +70,8 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
         try {
             String responseBody = response.getBody();
             if(responseBody != null) {
-                LOGGER.error(responseBody);
                 responseBody = responseBody.replace("\"[{", "[{")
                         .replace("}]\"", "}]").replace("\\", "");
-                LOGGER.error(responseBody);
             }
             FormProcessMappingData body = mapper.readValue(responseBody, FormProcessMappingData.class);
             List<FilterInfo> filterInfoList = body.getTaskVariable();

@@ -6,15 +6,16 @@ import java.util.List;
 import org.springframework.security.core.context.SecurityContextHolder;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.rest.security.auth.AuthenticationResult;
 import org.camunda.bpm.engine.rest.security.auth.impl.ContainerBasedAuthenticationProvider;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.util.ObjectUtils;
-
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import net.minidev.json.JSONArray;
 
 /**
@@ -22,6 +23,9 @@ import net.minidev.json.JSONArray;
  * KeycloakIdentityProviderPlugin.
  */
 public class KeycloakAuthenticationProvider extends ContainerBasedAuthenticationProvider {
+	
+	@Value("${plugin.identity.keycloak.enableClientAuth}")
+    private boolean enableClientAuth;
 
 	@Override
 	public AuthenticationResult extractAuthenticatedUser(HttpServletRequest request, ProcessEngine engine) {
@@ -47,13 +51,13 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 
 		return authenticationResult;
 	}
-
+	
 	private List<String> getUserGroups(String userId, ProcessEngine engine, OidcUser principal) {
 		List<String> groupIds = new ArrayList<>();
 		// Find groups or roles from the idToken.
-		if (principal.getIdToken().containsClaim("groups")) {
+		if (!enableClientAuth && principal.getIdToken().containsClaim("groups")) {
 			groupIds.addAll(getKeys(principal.getIdToken(), "groups"));
-		} else if (principal.getIdToken().containsClaim("roles")) {
+		} else if (enableClientAuth && principal.getIdToken().containsClaim("roles")) {
 			groupIds.addAll(getKeys(principal.getIdToken(), "roles"));
 		} else {
 			// query groups using KeycloakIdentityProvider plugin
@@ -67,10 +71,11 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 		List<String> keys = new ArrayList<>();
 		if (token.containsClaim(nodeName)) {
 			for (Object key : (JSONArray) token.getClaim(nodeName)) {
-				keys.add(key.toString());
+				keys.add(StringUtils.contains(key.toString(), "/") ? StringUtils.substringAfter(key.toString(), "/") : key.toString());
 			}
 		}
 		return keys;
 	}
+
 
 }

@@ -111,7 +111,10 @@ class Application(
         query = cls.filter_conditions(**filters)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
-            query = query.order_by(text(f"Application.{order_by} {sort_order}"))
+            table_name = "application"
+            if order_by == "form_name":
+                table_name = "form_process_mapper"
+            query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count

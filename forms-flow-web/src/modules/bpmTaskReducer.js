@@ -32,7 +32,6 @@ const initialState = {
   taskFormSubmissionReload:false,
   activePage:1,
   firstResult:0,
-  selectedFilterAction:null
 }
 
 const bpmTasks =(state = initialState, action)=> {
@@ -87,8 +86,6 @@ const bpmTasks =(state = initialState, action)=> {
       return {...state, taskFormSubmissionReload:action.payload}
     case ACTION_CONSTANTS.BPM_TASK_LIST_ACTIVE_PAGE:
       return {...state, activePage:action.payload, firstResult: getFirstResultIndex(action.payload)}
-    case ACTION_CONSTANTS.SELECTED_FILTER_ACTION:
-      return {...state,selectedFilterAction:action.payload }
     default:
       return state;
   }

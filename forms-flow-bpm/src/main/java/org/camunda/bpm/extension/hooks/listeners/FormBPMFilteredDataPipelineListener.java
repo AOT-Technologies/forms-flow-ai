@@ -42,7 +42,7 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
     public void notify(DelegateExecution execution) {
         try {
             syncFormVariables(execution);
-        } catch (IOException e) {
+        } catch (IOException | ApplicationServiceException e) {
             handleException(execution, ExceptionSource.EXECUTION, e);
         }
     }
@@ -51,7 +51,7 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
     public void notify(DelegateTask delegateTask) {
         try {
             syncFormVariables(delegateTask.getExecution());
-        } catch (IOException e) {
+        } catch (IOException | ApplicationServiceException e) {
             handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
         }
     }
@@ -64,11 +64,17 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
         }
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
         Map<String, FilterInfo> filterInfoMap = new HashMap<>();
         try {
-            FormProcessMappingData body = mapper.readValue(response.getBody(), FormProcessMappingData.class);
-            List<FilterInfo> filterInfoList = mapper.readValue(body.getTaskVariable(), new TypeReference<List<FilterInfo>>(){});
+            String responseBody = response.getBody();
+            if(responseBody != null) {
+                responseBody = responseBody.replace("\"[{", "[{")
+                        .replace("}]\"", "}]").replace("\\", "");
+            }
+            FormProcessMappingData body = mapper.readValue(responseBody, FormProcessMappingData.class);
+            List<FilterInfo> filterInfoList = body.getTaskVariable();
             filterInfoMap = filterInfoList.stream()
                     .collect(Collectors.toMap(FilterInfo::getKey, Function.identity()));
         } catch (JsonProcessingException e) {
@@ -76,12 +82,15 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
             throw new ApplicationServiceException(e.getMessage(), e);
         }
 
-        Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
-        for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
-            if(filterInfoMap.containsKey(entry.getKey())) {
-                execution.setVariable(entry.getKey(), entry.getValue());
+        if(!filterInfoMap.isEmpty()){
+            Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
+            for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
+                if(filterInfoMap.containsKey(entry.getKey())) {
+                    execution.setVariable(entry.getKey(), entry.getValue());
+                }
             }
         }
+
     }
 
     /**

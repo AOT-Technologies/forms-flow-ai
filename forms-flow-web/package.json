@@ -83,12 +83,15 @@
     "set-value": "^4.1.0",
     "nth-check": "^2.0.1",
     "ansi-regex": "^5.0.1",
-    "ansi-html": "^0.0.7",
+    "ansi-html": "^0.0.9",
     "min-dash": "^3.8.1",
     "nanoid": "^3.2.0",
     "follow-redirects": "^1.14.7",
     "node-forge": "^1.2.1",
-    "underscore": "1.12.1"
+    "underscore": "1.12.1",
+    "xmldom": "0.6.0",
+    "minimist": "1.2.6",
+    "url-parse": "1.5.10"
   },
   "browserslist": [
     ">0.2%",

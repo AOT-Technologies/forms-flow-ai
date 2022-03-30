@@ -66,10 +66,13 @@ export const getUserNamefromList = (userList,userId) => {
 //formURl is of https://base-url/form/:formId/submission/:submissionId
  // formURl is of https://base-url/public/form/:formId/submission/:submissionId
 export const getFormIdSubmissionIdFromURL = (formUrl) => {
-  // Regex Extracts formId from */form/formId/submission/*
-  const formId = formUrl.match(/(?<=\/form\/)(.*)(?=\/submission)/)[0];
-  // Regex Extracts submissionId from */submission/submissionId
-  const submissionId = formUrl.match(/(?<=\/submission\/)(.*)(?=)/)[0];
+  let formString = "/form/"
+  let submissionString = "/submission/"
+  let firstPositionOfString = formUrl.indexOf("/form/")
+  let lastPositionOfString = formUrl.indexOf("/submission")
+  const formId = formUrl.substring(firstPositionOfString+formString.length,lastPositionOfString)
+  let firstPositionOfSubmissionString = formUrl.indexOf(submissionString) + submissionString.length
+  const submissionId = formUrl.substring(firstPositionOfSubmissionString)
   return {formId,submissionId};
 }
 
@@ -90,8 +93,14 @@ export const getFormattedDateAndTime = (date)=>{
 };
 
 export const getSearchText = (query) => {
-   // Regex Extracts text from /text/g
-   const searchText = query===""?"":query.match(/(?<=\/)(.*)(?=\/i)/)[0];
+  //  Function Extracts text from /text/i 
+   let searchText = ""
+   if(query !== ""){
+     let searchString = "/"
+     let firstPosition = query.indexOf('/')
+     let lastPosition = query.indexOf('/i')
+    searchText = query.substring(firstPosition + searchString.length,lastPosition)
+   }
    return searchText;
 }
 
@@ -105,6 +114,6 @@ export const getFormattedProcess = (application)=>{
 }
 
 export const checkIsObjectId = (data) => {
-  // Regex check if the data is a mongoDb object Id or not 
-  return data.match(/^[0-9a-fA-F]{24}$/) !== null;;
+  // Condition to check if the data is a mongoDb object Id or not 
+  return data.length === 24 && !isNaN(Number('0x' + data));
 }

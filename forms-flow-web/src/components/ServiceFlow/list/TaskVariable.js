@@ -4,7 +4,7 @@ import { Row, Col } from "react-bootstrap";
 import { getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
 const TaskVariable = ({ variables }) => {
   const [showMore, setShowMore] = useState(false);
-  const taskVariableObject = useSelector((state)=>state.bpmTasks.selectedFilterAction);
+  const taskvariable = useSelector((state)=>state.bpmTasks.selectedFilter?.properties?.variables||[]);
   const checkVlaueIsDateOrNOt=(value)=>{
     const isValueNumber = isNaN(value)
     if(isValueNumber){
@@ -14,42 +14,63 @@ const TaskVariable = ({ variables }) => {
     }
   }
 
-  const rowReturn = (index, item) => {
+  const rowReturn = (taskItem,data,index) => {
     return (
       <Col xs={12} lg={6} key={index} className="mb-2">
-        <div className="text-truncate"  data-toggle="tooltip" data-placement="top" title= {taskVariableObject[item.name]} >
+        <div className="text-truncate"  data-toggle="tooltip" data-placement="top" title= {taskItem.label} >
         <span style={{ margin: "0px",fontWeight:"bold"}}>
-           {taskVariableObject[item.name]}
+           {taskItem.label}
         </span>
         </div>
         <div className="text-truncate">
           <span
            data-toggle="tooltip" data-placement="top" title={
-            checkVlaueIsDateOrNOt(item.value)
+            checkVlaueIsDateOrNOt(data.value)
           }
           >
-           {checkVlaueIsDateOrNOt(item.value)}
+           {checkVlaueIsDateOrNOt(data.value)}
           </span>
         </div>
       </Col>
     );
   };
 
+  const matchingVariableItem = (taskItem,index)=>{
+    const data = variables.find(variableItem=> variableItem.name===taskItem.name)
+    if(data&&data.value!==(undefined || null)){
+    return rowReturn(taskItem,data,index) 
+    }else{
+      return false
+    }
+  }
   return (
     <>
       <Row className="task-row-3 mt-3 justify-content-between">
-        {variables.map((item, index) => {
+
+        {
+          taskvariable&&taskvariable.map((taskItem,index)=>{
+            if(index <= 1 && !showMore){
+              return matchingVariableItem(taskItem,index)
+            }else if(showMore){
+              return matchingVariableItem(taskItem,index)
+            }else{
+              return false;
+            }
+          })
+        }
+
+        {/* {variables.map((item, index) => {
           if (index <= 1 && !showMore && item.value!==undefined) {
             return rowReturn(index, item);
-          } else if (showMore && item.value!==undefined) {
+          } else if (showMore && item.value!==(undefined || null) && taskVariableObject[item.name]) {
             return rowReturn(index, item);
           } else {
             return false;
           }
-        })}
+        })} */}
       </Row>
      {
-       variables.length> 2 && <Row className="justify-content-center">
+       taskvariable.length> 2 && <Row className="justify-content-center">
        <i
          onClick={(e) => {
            e.stopPropagation();

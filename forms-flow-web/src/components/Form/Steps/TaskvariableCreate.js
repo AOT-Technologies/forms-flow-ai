@@ -46,7 +46,7 @@ const TaskvariableCreate = ({ options ,addTaskVariable}) => {
             options={options}
             onChange={(item) => {
                 selectTaskVariable(item);
-            }}
+            }} 
             formatOptionLabel={fomatOptionLabel}
             placeholder="Select form field"
           />

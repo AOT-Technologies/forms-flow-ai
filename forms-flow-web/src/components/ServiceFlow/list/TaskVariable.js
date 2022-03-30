@@ -39,9 +39,9 @@ const TaskVariable = ({ variables }) => {
     <>
       <Row className="task-row-3 mt-3 justify-content-between">
         {variables.map((item, index) => {
-          if (index <= 1 && !showMore && item.value!==undefined) {
+          if (index <= 1 && !showMore && item.value!==(undefined || null) && taskVariableObject[item.name] ) {
             return rowReturn(index, item);
-          } else if (showMore && item.value!==undefined) {
+          } else if (showMore && item.value!==(undefined || null) && taskVariableObject[item.name]) {
             return rowReturn(index, item);
           } else {
             return false;

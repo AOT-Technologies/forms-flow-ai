@@ -5,7 +5,6 @@ import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServic
 import {
   setBPMTaskListActivePage,
   setBPMTaskLoader,
-  setSelectedFilterAction
 } from "../../../actions/bpmTaskActions";
 import Loading from "../../../containers/Loading";
 import moment from "moment";
@@ -29,21 +28,6 @@ const ServiceFlowTaskList = React.memo(() => {
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const activePage = useSelector(state=>state.bpmTasks.activePage);
   const tasksPerPage = MAX_RESULTS;
-  const taskVariableObject = useSelector((state)=>state.bpmTasks.selectedFilterAction)
-
-useEffect(()=>{
-  if(selectedFilter){
-    let taskVariableNewObject = null;
-    const taskVariable = selectedFilter?.properties?.variables || [];
-    if(taskVariable.length){
-      taskVariableNewObject={};
-      taskVariable.forEach(item => {
-        taskVariableNewObject[item.name]=item.label
-      });
-    }
-    dispatch(setSelectedFilterAction(taskVariableNewObject))
-  }
-},[dispatch,selectedFilter])
 
   useEffect(() => {
     if (selectedFilter) {
@@ -123,7 +107,7 @@ useEffect(()=>{
                 </Col>
               </Row>
               {
-                task._embedded?.variable && taskVariableObject && <TaskVariable variables={task._embedded?.variable||[]}/>
+                task._embedded?.variable &&  <TaskVariable variables={task._embedded?.variable||[]}/>
               }
 
             </div>

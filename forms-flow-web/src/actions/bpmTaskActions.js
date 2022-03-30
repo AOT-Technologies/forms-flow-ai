@@ -175,10 +175,3 @@ export const serviceActionError = (data) => dispatch => {
     payload: 'Error Handling API'
   })
 }
-
-export const setSelectedFilterAction = (data)=> dispatch=>{
-  dispatch({
-    type:ACTION_CONSTANTS.SELECTED_FILTER_ACTION,
-    payload:data
-  })
-}

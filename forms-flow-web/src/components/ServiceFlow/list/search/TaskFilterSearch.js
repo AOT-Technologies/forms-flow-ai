@@ -13,9 +13,10 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
   const [selectedFilterInputValue, setSelectedFilterInputValue] = useState('');
   const [selectedFilterInputName, setSelectedFilterInputName] = useState('');
   const [inputDate, setUpInputDate] = useState(null);
+  const selectedFilter = useSelector((state)=>state.bpmTasks.selectedFilter)
   const [filterTaskVariableArray,setFilterTaskVariableArray]=useState([])
   const [taskVariable,setTaskVariable]=useState([])
-  const selectedFilter = useSelector((state)=>state.bpmTasks.selectedFilter)
+
 
  useEffect(()=>{
   if(selectedFilter){
@@ -63,7 +64,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
 
   const handleValueInput = (index, value = '',type) => {
     setShowValueBoxIndex(index);
-    type !== Filter_Search_Types.DATE ? setSelectedFilterInputValue(value.toString()):setUpInputDate(value?new Date(value):null);
+    type !== Filter_Search_Types.DATE ? setSelectedFilterInputValue(value):setUpInputDate(value?new Date(value):null);
   }
 
   const handleNameInput = (index, value = '') => {
@@ -203,7 +204,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
                     />)
                 : <span title="Value" className="click-element"
                         onClick={() => handleValueInput(index, filter.value, filter.type)}>
-                  {filter.value!==(undefined||null||'') ? (filter.type !== Filter_Search_Types.DATE ? filter.value.toString() : getFormattedDateAndTime(filter.value)) : '??'}</span>}
+                  {filter.value ? (filter.type !== Filter_Search_Types.DATE ? filter.value : getFormattedDateAndTime(filter.value)) : '??'}</span>}
              </span>
              </div>
              </span>

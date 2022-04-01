@@ -56,11 +56,7 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
   const updateSearchFilterData = (index, key, value)=>{
     let updatedSelectionsArray = [...filterSelections];
     let newValue ;
-    if(value==='false'){
-      newValue = false
-    }else if (value==='true'){
-      newValue=true
-    }else if(isNaN(value)){
+    if(isNaN(value)){
       newValue=value
     }else{
       newValue= Number(value)

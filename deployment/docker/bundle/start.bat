@@ -135,7 +135,7 @@ echo %strng%>>".env"
 
 docker-compose -f docker-compose-windows.yml run --rm server create_db
 
-echo analytics database has been created.. wait for a moment for the analytics to start.
+echo Wait for a moment for the analytics to start.
 
 docker-compose -f docker-compose-windows.yml up --build -d 
 
@@ -179,7 +179,7 @@ set strinnng=%url:{your-ip-address}=!API_URL!%
 echo Please wait, forms is getting up!
 	
 docker-compose -f docker-compose.yml up --build -d forms-flow-forms
-timeout 55
+timeout 40
 
 set websock=%localIp%
 set lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
@@ -192,7 +192,6 @@ set strongs=%stp:{your-ip-address}=!api!%
 set websock=%localIp%
 set lpu=WEBSOCKET_SECURITY_ORIGIN=http://{your-ip-address}:3000
 set streeng=%lpu:{your-ip-address}=!websock!%
-
 
 echo.
 pause> nul
@@ -270,10 +269,10 @@ echo Press enter to continue!
 pause> nul
 
 echo %strong%>>.env
+echo %strinnng%>>.env
 echo KEYCLOAK_URL_REALM=%realmname%>>.env
 echo %keyurls%>>.env
 echo KEYCLOAK_BPM_CLIENT_SECRET=%keysecret%>>.env
-echo %strinnng%>>.env
 echo INSIGHT_API_KEY=%redashApiKey%>>.env
 echo %streng%>>.env
 echo %strongs%>>.env
@@ -284,9 +283,8 @@ echo REVIEWER_ROLE_ID=%formsflowReviewer%>>.env
 echo ANONYMOUS_ID=%Anonymous%>>.env
 echo USER_RESOURCE_ID=%User%>>.env
 
-docker-compose up --build -d forms-flow-web
-docker-compose -f docker-compose.yml up --build -d forms-flow-bpm
-docker-compose -f docker-compose.yml up --build -d forms-flow-webapi
+docker-compose up --build -d
+
 echo.
 echo.
 echo Installation Automation completed

@@ -19,7 +19,7 @@ services:
 
   forms-flow-bpm:
     container_name: forms-flow-bpm
-    image: formsflow/forms-flow-bpm:v4.0.5-alpha
+    image: formsflow/forms-flow-bpm:latest
     restart: always
     links:
       - forms-flow-bpm-db
@@ -27,10 +27,10 @@ services:
       - '8000:8080'
     environment:
       - KEYCLOAK_URL=${KEYCLOAK_URL}
-      - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
-      - KEYCLOAK_CLIENTID=${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
-      - KEYCLOAK_CLIENTSECRET=${KEYCLOAK_BPM_CLIENT_SECRET:-e4bdbd25-1467-4f7f-b993-bc4b1944c943}
-      - CAMUNDA_JDBC_URL=${CAMUNDA_JDBC_URL:-jdbc:postgresql://forms-flow-bpm-db:5432/formsflow-bpm}
+      - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-formsflow-ai}
+      - KEYCLOAK_CLIENTID=${KEYCLOAK_BPM_CLIENT_ID:-formsflow-bpm}
+      - KEYCLOAK_CLIENTSECRET=${KEYCLOAK_BPM_CLIENT_SECRET}
+      - CAMUNDA_JDBC_URL=${CAMUNDA_JDBC_URL:-jdbc:postgresql://formsflow-bpm-db:5432/formsflow-bpm}
       - CAMUNDA_JDBC_USER=${CAMUNDA_JDBC_USER:-admin}
       - CAMUNDA_JDBC_PASSWORD=${CAMUNDA_JDBC_PASSWORD:-changeme}
       - CAMUNDA_JDBC_DRIVER=${CAMUNDA_JDBC_DRIVER:-org.postgresql.Driver}
@@ -60,9 +60,6 @@ services:
       - WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
       - DATA_BUFFER_SIZE=${DATA_BUFFER_SIZE:-2}
       - IDENTITY_PROVIDER_MAX_RESULT_SIZE=${IDENTITY_PROVIDER_MAX_RESULT_SIZE:-250}
-      - KEYCLOAK_WEB_CLIENTID=${KEYCLOAK_WEB_CLIENTID:-}
-      - KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
-      - BPM_CLIENT_CONN_TIMEOUT=${BPM_CLIENT_CONN_TIMEOUT:-5000}
     networks:
       - forms-flow-network
  
@@ -87,7 +84,7 @@ services:
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflow/forms-flow-forms:v4.0.5-alpha
+    image: formsflow/forms-flow-forms:latest
     # The app will restart until Mongo is listening
     restart: always
     links:
@@ -113,7 +110,7 @@ services:
   forms-flow-web:
     container_name: forms-flow-web
     restart: always
-    image: formsflow/forms-flow-web:v4.0.5-alpha
+    image: formsflow/forms-flow-web:latest
     environment:
         - NODE_ENV=${NODE_ENV:-development}
         - GENERATE_SOURCEMAP=false
@@ -124,18 +121,18 @@ services:
         - REACT_APP_STAFF_REVIEWER_ID=${REVIEWER_ROLE_ID}
         - REACT_APP_STAFF_DESIGNER_ID=${DESIGNER_ROLE_ID}
         - REACT_APP_USER_RESOURCE_FORM_ID=${USER_RESOURCE_ID}
-        - REACT_APP_ANONYMOUS_ID=${ANONYMOUS_ID}
         - REACT_APP_API_SERVER_URL=${FORMIO_DEFAULT_PROJECT_URL}
         - REACT_APP_API_PROJECT_URL=${FORMIO_DEFAULT_PROJECT_URL}
-        - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENTID:-forms-flow-web}
+        - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENT_ID:-formsflow-web}
+        - REACT_APP_ANONYMOUS_ID=${ANONYMOUS_ID}
         - REACT_APP_WEB_BASE_URL=${FORMSFLOW_API_URL}
         - REACT_APP_CAMUNDA_API_URI=${CAMUNDA_API_URL}
-        - REACT_APP_WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY}
-        - REACT_APP_KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-forms-flow-ai}
+        - REACT_APP_WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
+        - REACT_APP_KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-formsflow-ai}
         - REACT_APP_KEYCLOAK_URL=${KEYCLOAK_URL}
         - REACT_APP_APPLICATION_NAME=${APPLICATION_NAME:-formsflow.ai}
         - REACT_APP_USER_ACCESS_PERMISSIONS=${USER_ACCESS_PERMISSIONS}
-        - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL}
+        - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL:-}
         - REACT_APP_FORMIO_JWT_SECRET=${FORMIO_JWT_SECRET:---- change me now ---}
     volumes:
       - '.:/app'
@@ -165,7 +162,7 @@ services:
 
   forms-flow-webapi:
     container_name: forms-flow-webapi
-    image: formsflow/forms-flow-webapi:v4.0.5-alpha
+    image: formsflow/forms-flow-webapi:latest
     restart: always
     links:
       - forms-flow-webapi-db
@@ -176,21 +173,21 @@ services:
     environment:
       INSIGHT_API_KEY: ${INSIGHT_API_KEY}
       INSIGHT_API_URL: ${INSIGHT_API_URL}
-      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
-      BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
-      BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
-      BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET:-e4bdbd25-1467-4f7f-b993-bc4b1944c943}
+      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@formsflow-webapi-db:5432/webapi}
+      BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-formsflow-ai}/protocol/openid-connect/token
+      BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-formsflow-bpm}
+      BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET}
       BPM_API_BASE: ${CAMUNDA_API_URL}
       FORMSFLOW_API_CORS_ORIGINS: ${FORMSFLOW_API_CORS_ORIGINS:-*}
-      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-formsflow-ai}/.well-known/openid-configuration
       JWT_OIDC_ALGORITHMS: 'RS256'
-      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
-      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
-      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
+      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-formsflow-ai}/protocol/openid-connect/certs
+      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-formsflow-ai}
+      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-formsflow-web}
       JWT_OIDC_CACHING_ENABLED: 'True'
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
       KEYCLOAK_URL: ${KEYCLOAK_URL}
-      KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-formsflow-ai}
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
     stdin_open: true # -i
     tty: true # -t

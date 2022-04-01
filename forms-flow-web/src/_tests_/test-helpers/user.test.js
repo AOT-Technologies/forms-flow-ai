@@ -33,8 +33,8 @@ test("should check wheather to show applications or not",()=>{
 
     expect(setShowApplications()).toBeTruthy();
     defaultUserAccessGroupCheck.accessAllowApplications=true;
-    expect(setShowApplications(["/camunda-admin","/formsflow/formsflow-designer"])).toBeTruthy();
-    expect(setShowApplications([])).toBeTruthy();
+    expect(setShowApplications(["/camunda-admin","/formsflow/formsflow-designer"])).toBeFalsy();
+    expect(setShowApplications([])).toBeFalsy();
     expect(setShowApplications(["/formsflow/formsflow-reviewer/access-allow-applications"])).toBeTruthy();
    
 })
@@ -44,7 +44,7 @@ test("should check wheather to show applications or not",()=>{
 test("should check wheather to show submissions or not",()=>{
     expect(setShowViewSubmissions()).toBeTruthy();
     defaultUserAccessGroupCheck.accessAllowSubmissions=true;
-    expect(setShowViewSubmissions([])).toBeTruthy();
+    expect(setShowViewSubmissions([])).toBeFalsy();
     expect(setShowViewSubmissions(["/formsflow/formsflow-reviewer/access-allow-submissions"])).toBeTruthy();
 
 })

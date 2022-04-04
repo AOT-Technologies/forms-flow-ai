@@ -1,7 +1,6 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -70,8 +69,8 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
         try {
             String responseBody = response.getBody();
             if(responseBody != null) {
-                responseBody = responseBody.replace("\"[{", "[{")
-                        .replace("}]\"", "}]").replace("\\", "");
+                responseBody = responseBody.replace("\"[", "[")
+                        .replace("]\"", "]").replace("\\", "");
             }
             FormProcessMappingData body = mapper.readValue(responseBody, FormProcessMappingData.class);
             List<FilterInfo> filterInfoList = body.getTaskVariable();

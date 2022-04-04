@@ -4,6 +4,7 @@ import { Row, Col } from "react-bootstrap";
 import { getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
 const TaskVariable = ({ variables }) => {
   const [showMore, setShowMore] = useState(false);
+  let variableCount=0;
   const taskvariable = useSelector((state)=>state.bpmTasks.selectedFilter?.properties?.variables||[]);
   const checkVlaueIsDateOrNOt=(value)=>{
     const isValueNumber = isNaN(value)
@@ -35,47 +36,36 @@ const TaskVariable = ({ variables }) => {
     );
   };
 
-  const matchingVariableItem = (taskItem,index)=>{
-    const data = variables.find(variableItem=> variableItem.name===taskItem.name)
-    if(data&&data.value!==(undefined || null)){
-    return rowReturn(taskItem,data,index) 
-    }else{
-      return false
-    }
-  }
   return (
     <>
       <Row className="task-row-3 mt-3 justify-content-between">
 
         {
           taskvariable&&taskvariable.map((taskItem,index)=>{
-            if(index <= 1 && !showMore){
-              return matchingVariableItem(taskItem,index)
-            }else if(showMore){
-              return matchingVariableItem(taskItem,index)
+            const data = variables.find(variableItem=> variableItem.name===taskItem.name)
+            if(data&&data.value!==(undefined || null)){
+              if(variableCount<2){
+                variableCount++;
+                return rowReturn(taskItem,data,index) 
+              }else if(showMore){
+                return rowReturn(taskItem,data,index) 
+              }else{
+                return false
+              }
             }else{
-              return false;
+              return false
             }
           })
         }
-
-        {/* {variables.map((item, index) => {
-          if (index <= 1 && !showMore && item.value!==undefined) {
-            return rowReturn(index, item);
-          } else if (showMore && item.value!==(undefined || null) && taskVariableObject[item.name]) {
-            return rowReturn(index, item);
-          } else {
-            return false;
-          }
-        })} */}
       </Row>
      {
-       taskvariable.length> 2 && <Row className="justify-content-center">
+       taskvariable.length> 2 && variables.length>2&& <Row className="justify-content-center" 
+       onClick={(e) => {
+        e.stopPropagation();
+        setShowMore(!showMore);
+      }}
+       >
        <i
-         onClick={(e) => {
-           e.stopPropagation();
-           setShowMore(!showMore);
-         }}
          className="fa fa-angle-down"
          style={{
            transform: `${showMore ? "rotate(180deg)" : "rotate(0deg)"}`,

@@ -56,7 +56,11 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
   const updateSearchFilterData = (index, key, value)=>{
     let updatedSelectionsArray = [...filterSelections];
     let newValue ;
-    if(isNaN(value)){
+    if(value==='false'){
+      newValue = false
+    }else if (value==='true'){
+      newValue=true
+    }else if(isNaN(value)){
       newValue=value
     }else{
       newValue= Number(value)
@@ -90,7 +94,7 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
           {filterSelections.length ?
             <div>
               <span className="button click-element" onClick={changeQueryType}>{queryType}</span>
-              <span> {t("criteria")}</span>
+              <span> {t(""of the criteria are met."")}</span>
             </div> : null}
 
           <TaskFilterSearch updateSearchFilterData={updateSearchFilterData}
@@ -101,7 +105,7 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
             <input
               type="text"
               className="filter"
-              placeholder={t("fltr_task")}
+              placeholder={t(""Filter Tasks"")}
               onClick={() => {
               }}
               onFocus={() => setShowFilterItems(true)}
@@ -109,7 +113,7 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
             {showFilterItems ? (
               <TaskFilterDropdown onFilterSelect={setFilter}/>
             ) : null}
-            <span dat-title={t("ttl_result")}>{totalTasks}</span>
+            <span dat-title={t(""Total number of results"")}>{totalTasks}</span>
           </div>
         </div>
         <TaskIgnoreCaseComponent/>

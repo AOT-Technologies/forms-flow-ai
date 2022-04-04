@@ -91,7 +91,7 @@ export const OPERATIONS = {
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    title: <Translation>{(t)=>t("submit_new")}</Translation>,
+    title: <Translation>{(t)=>t(""Submit New"")}</Translation>,
   },
   submission: {
     action: "submission",
@@ -101,7 +101,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: <Translation>{(t)=>t("view_submission")}</Translation>,
+    title: <Translation>{(t)=>t(""View Submissions"")}</Translation>,
   },
   edit: {
     action: "edit",
@@ -111,7 +111,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: <Translation>{(t)=>t("edit_form")}</Translation>,
+    title: <Translation>{(t)=>t(""Edit Form"")}</Translation>,
   },
   viewForm: {
     action: "viewForm",
@@ -121,7 +121,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: <Translation>{(t)=>t("view_edit")}</Translation>,
+    title: <Translation>{(t)=>t(""View/Edit Form"")}</Translation>,
   },
   delete: {
     action: "delete",
@@ -130,7 +130,7 @@ export const OPERATIONS = {
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    title: <Translation>{(t)=>t("del_form")}</Translation>,
+    title: <Translation>{(t)=>t(""Delete Form"")}</Translation>,
   },
   view: {
     action: "viewSubmission",
@@ -140,7 +140,7 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: <Translation>{(t)=>t("view")}</Translation>,
+    title: <Translation>{(t)=>t("View")}</Translation>,
   },
   editSubmission: {
     action: "edit",

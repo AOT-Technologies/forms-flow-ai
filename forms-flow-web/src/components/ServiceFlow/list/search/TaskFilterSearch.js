@@ -18,7 +18,6 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
   const [filterTaskVariableArray,setFilterTaskVariableArray]=useState([])
   const [taskVariable,setTaskVariable]=useState([])
 
-
  useEffect(()=>{
   if(selectedFilter){
     const taskVariable = selectedFilter?.properties?.variables || [];
@@ -65,7 +64,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
 
   const handleValueInput = (index, value = '',type) => {
     setShowValueBoxIndex(index);
-    type !== Filter_Search_Types.DATE ? setSelectedFilterInputValue(value):setUpInputDate(value?new Date(value):null);
+    type !== Filter_Search_Types.DATE ? setSelectedFilterInputValue(value.toString()):setUpInputDate(value?new Date(value):null);
   }
 
   const handleNameInput = (index, value = '') => {
@@ -101,7 +100,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
           <div className="filter-details" key={index}>
 
             <div className="close-container  click-element" onClick={() => deleteSearchFilter(filter, index)}>
-              <span className="close-btn" title={t("rmv_search")}>
+              <span className="close-btn" title={t("Remove search")}>
               <i className="fa fa-times" aria-hidden="true"/>
              </span>
             </div>
@@ -168,7 +167,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
             </button></span>
               </span> : null}
                   <div className="operator-box-container">
-            <span title={t("operator")} className="operator-container">
+            <span title={t("Operator")} className="operator-container">
               <OperatorFilterDropDown compareOptions={FILTER_COMPARE_OPTIONS[filter.type]} operator={filter.operator}
                 changeOperator={(value) => updateOperator(index, value)}/>
             </span>
@@ -205,7 +204,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
                     />)
                 : <span title={t("value")} className="click-element"
                         onClick={() => handleValueInput(index, filter.value, filter.type)}>
-                  {filter.value ? (filter.type !== Filter_Search_Types.DATE ? filter.value : getFormattedDateAndTime(filter.value)) : '??'}</span>}
+                  {filter.value!==(undefined||null||'') ? (filter.type !== Filter_Search_Types.DATE ? filter.value.toString() : getFormattedDateAndTime(filter.value)) : '??'}</span>}
              </span>
              </div>
              </span>

@@ -58,22 +58,22 @@ const ViewApplication = React.memo(() => {
         <i className="fa fa-chevron-left fa-lg" />
         </Link>
         <h3 className="ml-3">
-          <span className="application-head-details"><i className="fa fa-list-alt" aria-hidden="true"/>&nbsp; <Translation>{(t)=>t("applications")}</Translation> /</span>{" "}
+          <span className="application-head-details"><i className="fa fa-list-alt" aria-hidden="true"/>&nbsp; <Translation>{(t)=>t("Applications")}</Translation> /</span>{" "}
           {`${startCase(applicationDetail.applicationName)}`}
         </h3>
       </div>
       <br/>
       <Tabs id="application-details" defaultActiveKey="details" mountOnEnter>
-        <Tab eventKey="details" title={<Translation>{(t)=>t("details")}</Translation>}>
+        <Tab eventKey="details" title={<Translation>{(t)=>t("Details")}</Translation>}>
           <Details application={applicationDetail}/>
         </Tab>
-        <Tab eventKey="form" title={<Translation>{(t)=>t("form")}</Translation>}>
+        <Tab eventKey="form" title={<Translation>{(t)=>t("Form")}</Translation>}>
           <View page="application-detail"/>
         </Tab>
         <Tab eventKey="history" title={<Translation>{(t)=>t("history")}</Translation>}>
             <History page="application-detail" applicationId={applicationId}/>
         </Tab>
-        <Tab eventKey="process-diagram" title={<Translation>{(t)=>t("process_diagram")}</Translation>}>
+        <Tab eventKey="process-diagram" title={<Translation>{(t)=>t(""Process Diagram"")}</Translation>}>
             <ProcessDiagram
               process_key={applicationProcess.processKey}
               processInstanceId={applicationDetail.processInstanceId}

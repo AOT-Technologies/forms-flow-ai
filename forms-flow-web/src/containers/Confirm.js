@@ -10,7 +10,7 @@ const Confirm = React.memo((props)=>{
       <>
           <Modal show={modalOpen}>
               <Modal.Header>
-                 <Modal.Title>{t("del_confirmation")}</Modal.Title>
+                 <Modal.Title>{t(""Delete Confirmation"")}</Modal.Title>
               </Modal.Header>
               <Modal.Body>{message}</Modal.Body>
               <Modal.Footer>

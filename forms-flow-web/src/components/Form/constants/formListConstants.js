@@ -13,7 +13,7 @@ export const designerColumns = [
   },
   {
     key: 'operations',
-    title: <Translation>{(t)=>t("operation")}</Translation>,
+    title: <Translation>{(t)=>t("Operations")}</Translation>,
     width: 5,
   },
   {
@@ -33,7 +33,7 @@ export const userColumns = [
   },
   {
     key: 'operations',
-    title: <Translation>{(t)=>t("operation")}</Translation>,
+    title: <Translation>{(t)=>t("Operations")}</Translation>,
     width: 4,
   }
 ];

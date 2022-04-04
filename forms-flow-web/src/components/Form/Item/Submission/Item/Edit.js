@@ -65,7 +65,7 @@ const Edit = React.memo((props) => {
           <h3 className="task-head">{form.title}</h3>
         </div>
         <Errors errors={errors} />
-        <LoadingOverlay active={isFormSubmissionLoading} spinner text={t(<Translation>{(t)=>t("submission_error")}</Translation>)} className="col-12">
+        <LoadingOverlay active={isFormSubmissionLoading} spinner text={t(<Translation>{(t)=>t(""Error while Submission."")}</Translation>)} className="col-12">
           <div className="ml-4 mr-4">
         <Form
           form={form}
@@ -100,7 +100,7 @@ const mapStateToProps = (state) => {
       noAlerts: false,
       i18n: {
         en: {
-          error:<Translation>{(t)=>t("fix_errors")}</Translation>,
+          error:<Translation>{(t)=>t(""Please fix the errors before submitting again."")}</Translation>,
         },
       }
     },
@@ -122,7 +122,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
               if(onFormSubmit){
                 onFormSubmit();
               }else{
-                toast.success(<Translation>{(t)=>t("submission_success")}</Translation>);
+                toast.success(<Translation>{(t)=>t("Submission Saved")}</Translation>);
                 dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
               }
             }));
@@ -132,15 +132,15 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             if(onFormSubmit){
              onFormSubmit();
             }else{
-              toast.success(<Translation>{(t)=>t("submission_success")}</Translation>);
+              toast.success(<Translation>{(t)=>t("Submission Saved")}</Translation>);
               dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
             }
           }
         }
         else {
           dispatch(setFormSubmissionLoading(false));
-          const ErrorDetails = { modalOpen: true, message: (<Translation>{(t)=>t("message_submission")}</Translation>) }
-          toast.error(<Translation>{(t)=>t("submission_error")}</Translation>);
+          const ErrorDetails = { modalOpen: true, message: (<Translation>{(t)=>t(""Submission cannot be done."")}</Translation>) }
+          toast.error(<Translation>{(t)=>t(""Error while Submission."")}</Translation>);
           dispatch(setFormSubmissionError(ErrorDetails))
         }
       }));

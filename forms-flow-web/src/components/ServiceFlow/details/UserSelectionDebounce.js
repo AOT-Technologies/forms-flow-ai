@@ -77,7 +77,7 @@ const UserSelectionDebounce = React.memo((props) => {
   return (<>
     <Row md={{span: 3, offset: 3}}>
       <Col xs={12} md={10}>
-      <button className="btn btn-pos" title={t("update_user")} onClick={() => onChangeClaim(selectedValue?.value || null)}>
+      <button className="btn btn-pos" title={t(""Update User"")} onClick={() => onChangeClaim(selectedValue?.value || null)}>
         <i className="fa fa-check fa-lg mr-1" />
         </button>
         <button className="btn btn-pos" onClick={onClose} title={t("Close")}>

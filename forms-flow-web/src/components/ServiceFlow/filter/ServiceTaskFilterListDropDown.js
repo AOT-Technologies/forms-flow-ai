@@ -35,13 +35,13 @@ const ServiceFlowFilterListDropDown = React.memo(() => {
       return (
           <NavDropdown.Item className="not-selected mt-2 ml-1">
             <i className="fa fa-info-circle mr-2 mt-1"/>
-           {t("no_filter_found")}
+           {t(""No Filters Found"")}
           </NavDropdown.Item>
       )
     }
   }
   return  <>
-    {isFilterLoading? <NavDropdown.Item>{t("loading")}...</NavDropdown.Item>: renderFilterList()}
+    {isFilterLoading? <NavDropdown.Item>{t("Loading")}...</NavDropdown.Item>: renderFilterList()}
     </>
 });
 

@@ -150,7 +150,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
    if(!bpmTaskId){
      return <Row className="not-selected mt-2 ml-1">
        <i className="fa fa-info-circle mr-2 mt-1"/>
-      {t("select_task")}
+      {t(""Select a task in the list."")}
        </Row>
    }else if(isTaskLoading) {
    return <div className="service-task-details">
@@ -166,7 +166,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
        >
        <TaskHeader />
        <Tabs defaultActiveKey="form" id="service-task-details" mountOnEnter>
-         <Tab eventKey="form" title={t("form_task")}>
+         <Tab eventKey="form" title={t(""Form"")}>
            <LoadingOverlay active={task?.assignee!==currentUser}
                            styles={{
                              overlay: (base) => ({

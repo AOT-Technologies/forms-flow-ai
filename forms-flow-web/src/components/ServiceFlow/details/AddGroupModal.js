@@ -54,17 +54,17 @@ const AddGroupModal= React.memo((props)=> {
 
                 <div className="modal-text">
                 <i className="fa fa-info-circle mr-2"/>
-                 {t("modal_description")}
+                 {t(""You can add a group by typing a group ID into the input field and afterwards clicking the button with the plus sign."")}
                 </div>
                 <Row className="mt-2 mb-1">
                   <Col lg={4} xs={12} sm={4} md={4} xl={4} className="text-right">
                     <button className="add btn btn-link" onClick={onAddGroup} disabled={!groupToAdd}>
-                      <span>{t("adda_group")}</span>
+                      <span>{t(""Add a group"")}</span>
                       <span className="ml-2"><i className="fa fa-plus fa-lg"/></span>
                     </button>
                   </Col>
                   <Col lg={8} xs={12} sm={8} md={8} xl={8}>
-                    <input type="text" placeholder={t("group_id")} className="add text-color" value={groupToAdd} onChange={(e)=>updateGroupToAdd(e.target.value)}/>
+                    <input type="text" placeholder={t("Group ID")} className="add text-color" value={groupToAdd} onChange={(e)=>updateGroupToAdd(e.target.value)}/>
                   </Col>
                 </Row>
                 <Row className="mb-2 modal-scroll">

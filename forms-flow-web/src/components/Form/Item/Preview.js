@@ -46,14 +46,14 @@ const Preview = class extends PureComponent {
             }}
           >
             <i className="fa fa-pencil" aria-hidden="true"/>
-            &nbsp;&nbsp;<Translation>{(t)=>t("edit_form")}</Translation>
+            &nbsp;&nbsp;<Translation>{(t)=>t(""Edit Form"")}</Translation>
           </Button>
           <Button
             variant="contained"
             onClick={handleNext}
             className="ml-3 btn btn-primary btn-sm form-btn"
           >
-            {(this.state.activeStep === 1, <Translation>{(t)=>t("next")}</Translation>)}
+            {(this.state.activeStep === 1, <Translation>{(t)=>t("Next")}</Translation>)}
           </Button>
         </div>
 

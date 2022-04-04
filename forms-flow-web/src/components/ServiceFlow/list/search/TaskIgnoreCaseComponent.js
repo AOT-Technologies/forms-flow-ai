@@ -24,14 +24,14 @@ const TaskIgnoreCaseComponent = React.memo(()=>{
   },[filterSelections]);
 
   return <>{ filterSelections.length && isVariableTypeInFilter? <div>
-          <span className="name-value-container">{t("for_variables")}
+          <span className="name-value-container">{t(""For Variable, ignore case of"")}
             <Checkbox
               className="check-box-design"
               checked={variableNameIgnoreCase}
               onChange={()=>setVariableNameIgnoreCase(!variableNameIgnoreCase)}
               inputProps={{'aria-label': 'primary checkbox'}}
             />
-            {t("name_1")}
+            {t(""name"")}
             <Checkbox
               className="check-box-design"
               checked={variableValueIgnoreCase}

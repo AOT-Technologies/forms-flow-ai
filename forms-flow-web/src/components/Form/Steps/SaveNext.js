@@ -35,7 +35,7 @@ const SaveNext = React.memo(({ handleNext, handleBack, activeStep, isLastStep, s
         color="primary"
         onClick={handleChanges}
       >
-        {isLastStep ? t("save") : t("next") }
+        {isLastStep ? t("Save") : t("Next") }
       </Button>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

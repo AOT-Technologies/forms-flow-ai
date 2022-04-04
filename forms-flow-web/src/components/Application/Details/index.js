@@ -10,7 +10,7 @@ const Details = React.memo((props) => {
     const {t}=useTranslation();
     const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
     return (
-        <LoadingOverlay active={isApplicationDetailLoading} spinner text={t("select_task")}>
+        <LoadingOverlay active={isApplicationDetailLoading} spinner text={t(""Select a task in the list."")}>
             <div className="row" style={{ marginTop: '26.5px', fontWeight: "500px" }}>
                 <div className="col-md-6">
                     <ApplicationDetails application={props.application} />

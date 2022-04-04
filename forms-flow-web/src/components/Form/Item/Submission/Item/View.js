@@ -31,7 +31,7 @@ const View = React.memo((props) => {
         <h3 className="task-head"> {form.title}</h3>
         {showPrintButton?<div className="btn-right">
           <Button className="btn btn-primary btn-sm form-btn pull-right btn-right" onClick={() => PdfDownloadService.getPdf(form, submission)}>
-          <i className="fa fa-print" aria-hidden="true"/>{t("print_pdf")}</Button></div>:null}
+          <i className="fa fa-print" aria-hidden="true"/>{t(""Print As PDF"")}</Button></div>:null}
       </div>
 
       <Errors errors={errors}/>

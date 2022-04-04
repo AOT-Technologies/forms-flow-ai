@@ -212,14 +212,14 @@ const [previousForms,setPreviousForms] = useState({})
                     to="/formflow/create"
                     className="btn btn-primary btn-left btn-sm"
                   >
-                    <i className="fa fa-plus fa-lg"/> <Translation>{(t)=>t("create_form")}</Translation>
+                    <i className="fa fa-plus fa-lg"/> <Translation>{(t)=>t(""Create Form"")}</Translation>
                   </Link>
                 )}
                 {isDesigner && (
                   <>
                     <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={uploadClick}
-                            title={t("upload_json")}>
-                      <i className="fa fa-upload fa-lg" aria-hidden="true"/> {t("upload_form")}</Button>
+                            title={t(""Upload json form only"")}>
+                      <i className="fa fa-upload fa-lg" aria-hidden="true"/> {t(""Upload Form"")}</Button>
                     <input type="file" className="d-none"
                            multiple={false}
                            accept=".json,application/json"
@@ -231,8 +231,8 @@ const [previousForms,setPreviousForms] = useState({})
                 {isDesigner && (
                   <>
                     <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={downloadForms}
-                            disabled={formCheckList.length === 0} title={t("select_form")}>
-                      <i className="fa fa-download fa-lg" aria-hidden="true"/> {t("download_form")}</Button>
+                            disabled={formCheckList.length === 0} title={t(""Select atleast one form"")}>
+                      <i className="fa fa-download fa-lg" aria-hidden="true"/> {t(""Download Form"")}</Button>
                   </>
                 )}
               </div>

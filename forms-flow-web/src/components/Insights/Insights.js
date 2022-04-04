@@ -54,20 +54,20 @@ const NoPublicUrlMessage = ()=>(
         <div className="row ">
           <div className="col-12"  data-testid="Insight">
             <h1 className="insights-title">
-            <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> <Translation>{(t)=>t("insights")}</Translation>
+            <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> <Translation>{(t)=>t("Insights")}</Translation>
             </h1>
             <hr className="line-hr"/>
             <div className="col-12">
               <div className="app-title-container mt-3" data-testid="Insight">
                 <h3 className="insight-title" data-testid="Dashboard">
-                  <i className="fa fa-bars mr-1"/> <Translation>{(t)=>t("dashboard")}</Translation>
+                  <i className="fa fa-bars mr-1"/> <Translation>{(t)=>t("Dashboard")}</Translation>
                 </h3>
 
                 <div className="col-3 mb-2">
                   <Select
                     options={dashboards}
                     onChange={setDashboardSelected}
-                    placeholder={t("select_dashboard")}
+                    placeholder={t(""Select Dashboard"")}
                     value={dashboardSelected}
                   />
                 </div>
@@ -82,7 +82,7 @@ const NoPublicUrlMessage = ()=>(
       }} spinner={<SpinnerSVG />} className="col-12">
             {dashboards.length > 0 ?
              ( activeDashboard.public_url ? <iframe
-                  title="dashboard"
+                  title="Dashboard"
                   style={{
                     width: '100%',
                     height: 'auto',

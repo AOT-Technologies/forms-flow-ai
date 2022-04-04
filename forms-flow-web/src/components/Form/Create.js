@@ -48,7 +48,7 @@ const dispatch = useDispatch()
 const [anonymous, setAnonymous] = useState(false);
 const formData = { display: "form" }
 const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
-const saveText = <Translation>{(t)=>t("save_preview")}</Translation>;
+const saveText = <Translation>{(t)=>t("Save & Preview")}</Translation>;
 const errors = useSelector((state)=>state.form.error)
 const lang = useSelector((state) => state.user.lang); 
 const {t}=useTranslation();
@@ -123,7 +123,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
 
   return (
     <div>
-      <h2><Translation>{(t)=>t("create_form")}</Translation></h2>
+      <h2><Translation>{(t)=>t(""Create Form"")}</Translation></h2>
       <hr />
       <Errors errors={errors} />
       <div>
@@ -139,7 +139,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
       <div className="row align-item-center">
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-title" className="form-group">
-            <label htmlFor="title" className="control-label field-required"> <Translation>{(t)=>t("title")}</Translation></label>
+            <label htmlFor="title" className="control-label field-required"> <Translation>{(t)=>t("Title")}</Translation></label>
             <input
               type="text"
               className="form-control" id="title"
@@ -151,7 +151,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-name" className="form-group">
-            <label htmlFor="name" className="control-label field-required"><Translation>{(t)=>t("name")}</Translation></label>
+            <label htmlFor="name" className="control-label field-required"><Translation>{(t)=>t("Name")}</Translation></label>
             <input
               type="text"
               className="form-control"
@@ -164,7 +164,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
         </div>
         <div className="col-lg-4 col-md-3 col-sm-3">
           <div id="form-group-display" className="form-group">
-            <label htmlFor="name" className="control-label"><Translation>{(t)=>t("display_as")}</Translation></label>
+            <label htmlFor="name" className="control-label"><Translation>{(t)=>t("Name")}</Translation></label>
             <div className="input-group">
               <select
                 className="form-control"
@@ -173,15 +173,15 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
                 value={form.display || ''}
                 onChange={event => handleChange('display', event)}
               >
-                <option label={t("Form")} value="form"><Translation>{(t)=>t("form")}</Translation></option>
-                <option label={t("wizard")} value="wizard"><Translation>{(t)=>t("wizard")}</Translation></option>
+                <option label={t("Form")} value="form"><Translation>{(t)=>t("Form")}</Translation></option>
+                <option label={t("Wizard")} value="Wizard"><Translation>{(t)=>t("Wizard")}</Translation></option>
               </select>
             </div>
           </div>
         </div>
         <div className="col-lg-4 col-md-3 col-sm-3">
           <div id="form-group-type" className="form-group">
-            <label htmlFor="form-type" className="control-label"><Translation>{(t)=>t("type")}</Translation></label>
+            <label htmlFor="form-type" className="control-label"><Translation>{(t)=>t("Type")}</Translation></label>
             <div className="input-group">
               <select
                 className="form-control"
@@ -198,7 +198,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-path" className="form-group">
-            <label htmlFor="path" className="control-label field-required"><Translation>{(t)=>t("path")}</Translation></label>
+            <label htmlFor="path" className="control-label field-required"><Translation>{(t)=>t("Path")}</Translation></label>
             <div className="input-group">
               <input
                 type="text"

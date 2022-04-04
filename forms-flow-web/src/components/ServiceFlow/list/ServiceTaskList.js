@@ -5,7 +5,6 @@ import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServic
 import {
   setBPMTaskListActivePage,
   setBPMTaskLoader,
-  setSelectedFilterAction
 } from "../../../actions/bpmTaskActions";
 import Loading from "../../../containers/Loading";
 import { useTranslation} from "react-i18next";
@@ -31,21 +30,6 @@ const ServiceFlowTaskList = React.memo(() => {
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const activePage = useSelector(state=>state.bpmTasks.activePage);
   const tasksPerPage = MAX_RESULTS;
-  const taskVariableObject = useSelector((state)=>state.bpmTasks.selectedFilterAction)
-
-useEffect(()=>{
-  if(selectedFilter){
-    let taskVariableNewObject = null;
-    const taskVariable = selectedFilter?.properties?.variables || [];
-    if(taskVariable.length){
-      taskVariableNewObject={};
-      taskVariable.forEach(item => {
-        taskVariableNewObject[item.name]=item.label
-      });
-    }
-    dispatch(setSelectedFilterAction(taskVariableNewObject))
-  }
-},[dispatch,selectedFilter])
 
   useEffect(() => {
     if (selectedFilter) {
@@ -93,7 +77,7 @@ useEffect(()=>{
                     "name"
                   )}
                 </div>
-                <div data-title={t("task_assigne")} className="col-6 pr-0 text-right">
+                <div data-title={t(""Task assignee"")} className="col-6 pr-0 text-right">
                   {task.assignee}
                 </div>
               </Row>
@@ -106,11 +90,11 @@ useEffect(()=>{
                   xl={8}
                   className="pr-0"
                 >
-                 <span className="tooltiptext" data-title={task.due?getFormattedDateAndTime(task.due):''}> {task.due ? `${t("due")} ${moment(task.due).fromNow()}, ` : ""}{" "}</span>
+                 <span className="tooltiptext" data-title={task.due?getFormattedDateAndTime(task.due):''}> {task.due ? `${t("Due")} ${moment(task.due).fromNow()}, ` : ""}{" "}</span>
                  <span className="tooltiptext" data-title={task.followUp?getFormattedDateAndTime(task.followUp):''}> {task.followUp
-                    ? `${t("follow_up")} ${moment(task.followUp).fromNow()}, `
+                    ? `${t(""Follow-up"")} ${moment(task.followUp).fromNow()}, `
                     : ""} </span>
-                 <span className="tooltiptext" data-title={task.created?getFormattedDateAndTime(task.created):''}> {t("created")} {moment(task.created).fromNow()}</span>
+                 <span className="tooltiptext" data-title={task.created?getFormattedDateAndTime(task.created):''}> {t("Created")} {moment(task.created).fromNow()}</span>
                 </Col>
                 <Col
                   lg={4}
@@ -119,13 +103,13 @@ useEffect(()=>{
                   md={4}
                   xl={4}
                   className="pr-0 text-right tooltips"
-                  dat-title={t("priority")}
+                  dat-title={t("Priority")}
                 >
                   {task.priority}
                 </Col>
               </Row>
               {
-                task._embedded?.variable && taskVariableObject && <TaskVariable variables={task._embedded?.variable||[]}/>
+                task._embedded?.variable &&  <TaskVariable variables={task._embedded?.variable||[]}/>
               }
 
             </div>
@@ -147,7 +131,7 @@ useEffect(()=>{
       return (
         <Row className="not-selected mt-2 ml-1">
           <i className="fa fa-info-circle mr-2 mt-1" />
-         {t("no_filter")}
+         {t("No task matching filters found.")}
         </Row>
       );
     }

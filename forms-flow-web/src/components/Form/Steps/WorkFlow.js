@@ -177,7 +177,7 @@ const WorkFlow = React.memo(
               <CardContent>
                 <Grid item xs={12} sm={12} spacing={3}>
                   <FormLabel component="legend">
-                    {t("workflow_message")}
+                    {t(""Do you want to associate form with a workflow ?"")}
                   </FormLabel>
                   <RadioGroup
                     aria-label="associateWorkFlow"
@@ -191,13 +191,13 @@ const WorkFlow = React.memo(
                     <FormControlLabel
                       value="yes"
                       control={<Radio color="primary" />}
-                      label={t("yes")}
+                      label={t("Yes")}
                     />
                     <FormControlLabel
                       value="no"
                       control={<Radio color="primary" />}
                       onClick={(item)=>setModified(true)}
-                      label={t("no")}
+                      label={t("No")}
                     />
                   </RadioGroup>
                 </Grid>
@@ -241,11 +241,11 @@ const WorkFlow = React.memo(
                         <Table stickyHeader aria-label="simple table">
                           <TableHead>
                             <TableRow >
-                              <TableCell className="font-weight-bold">t("Form field")</TableCell>
-                              <TableCell className="font-weight-bold" align="left">t("Label")</TableCell>
-                              <TableCell className="font-weight-bold"align="left">t("Show in list")</TableCell>
+                              <TableCell className="font-weight-bold">{t("Form field")}</TableCell>
+                              <TableCell className="font-weight-bold" align="left">{t("Label")}</TableCell>
+                              <TableCell className="font-weight-bold"align="left">{t("Show in list")}</TableCell>
                               <TableCell className="font-weight-bold" align="right">
-                                t("action")
+                                t("Action")
                               </TableCell>
                              
                             </TableRow>
@@ -282,7 +282,7 @@ const WorkFlow = React.memo(
                       }
                       color={showTaskVaribleCrete ? "secondary" : "primary"}
                     >
-                      {showTaskVaribleCrete ? t("cancel") : t("add")}
+                      {showTaskVaribleCrete ? t("Cancel") : t("Add")}
                     </Button>
                   )}
                 </CardContent>

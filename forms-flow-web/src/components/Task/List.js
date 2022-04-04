@@ -66,15 +66,15 @@ const List = class extends PureComponent {
     const getNoDataIndicationContent = () => {
       return (
         <div className="div-no-task">
-          <label className="lbl-no-task"> <Translation>{(t)=>t("no_task")}</Translation></label>
+          <label className="lbl-no-task"> <Translation>{(t)=>t(""No tasks found"")}</Translation></label>
           <br />
           <label className="lbl-no-task-desc">
             {" "}
-            <Translation>{(t)=>t("change_filter")}</Translation>{" "}
+            <Translation>{(t)=>t(""Please change the selected filters to view tasks"")}</Translation>{" "}
           </label>
           <br />
           <label className="lbl-clear" onClick={clearFilter}>
-          <Translation>{(t)=>t("clear_filter")}</Translation>
+          <Translation>{(t)=>t(""Clear all filters"")}</Translation>
           </label>
         </div>
       );
@@ -93,7 +93,7 @@ const List = class extends PureComponent {
               <div className="main-header">
               <h3 className="task-head">
               <i className="fa fa-list" />
-                &nbsp; <Translation>{(t)=>t("task")}</Translation>
+                &nbsp; <Translation>{(t)=>t("Tasks")}</Translation>
                   <div className="col-md-1 task-count">({tasks.length})</div>
                 </h3>
                 <div className="col-md-2 btn-group">

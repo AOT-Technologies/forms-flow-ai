@@ -39,7 +39,7 @@ const linkApplication = (cell, row) => {
 
 const linkSubmission = (cell,row) => {
   const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
-  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':<Translation>{(t)=>t("edit")}</Translation>) : <Translation>{(t)=>t("view")}</Translation>
+  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':<Translation>{(t)=>t("Edit")}</Translation>) : <Translation>{(t)=>t("View")}</Translation>
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
   <div onClick={()=> window.open(url, "_blank")}>
@@ -63,12 +63,12 @@ const cutomStyle = { border: '1px solid #ced4da' , fontStyle:'normal'}
 export const columns_history = [
   {
     dataField: "applicationname",
-    text: <Translation>{(t)=>t("application_name")}</Translation>,
+    text: <Translation>{(t)=>t(""Application Name"")}</Translation>,
     sort: true,
   },
   {
     dataField: "applicationstatus",
-    text: <Translation>{(t)=>t("application_status")}</Translation>,
+    text: <Translation>{(t)=>t(""Application Status"")}</Translation>,
     sort: true,
   },
 ];
@@ -77,13 +77,13 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
   return [
     {
       dataField: "id",
-      text: <Translation>{(t)=>t("application_id")}</Translation>,
+      text: <Translation>{(t)=>t(" "Application ID"")}</Translation>,
       formatter: linkApplication,
       headerClasses: 'classApplicationId',
       sort: true,
       filter: textFilter({
       delay:800,  
-      placeholder: `\uf002 ${t("placeholder_appid")}` , // custom the input placeholder
+      placeholder: `\uf002 ${t(""Application ID"")}` , // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       className: "icon-search",
       style:cutomStyle,
@@ -94,13 +94,13 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
     },
     {
       dataField: "applicationName",
-      text: <Translation>{(t)=>t("application_name")}</Translation>,
+      text: <Translation>{(t)=>t(""Application Name"")}</Translation>,
       sort: true,
       headerClasses: 'classApplicationName',
       formatter: nameFormatter,
       filter: textFilter({
        delay:800,
-      placeholder: `\uf002 ${t("application_name")}`, // custom the input placeholder
+      placeholder: `\uf002 ${t(""Application Name"")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
         style:cutomStyle,
@@ -111,12 +111,12 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
     },
     {
       dataField: "applicationStatus",
-      text: <Translation>{(t)=>t("application_status")}</Translation>,
+      text: <Translation>{(t)=>t(""Application Status"")}</Translation>,
       sort: true,
       filter: applicationStatus?.length > 0 && selectFilter({
         options: getApplicationStatusOptions(applicationStatus),
         style:cutomStyle,
-        placeholder: `${t("all")}`,
+        placeholder: `${t("All")}`,
         defaultValue: 'All',
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         getFilter: (filter) => {
@@ -126,13 +126,13 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
     },
     {
       dataField: "formUrl",
-      text: <Translation>{(t)=>t("link_to_form_submission")}</Translation>,
+      text: <Translation>{(t)=>t(""Link To Form Submission")}</Translation>,
       formatter: linkSubmission,
     },
 
     {
       dataField: "modified",
-      text: <Translation>{(t)=>t("last_modified")}</Translation>,
+      text: <Translation>{(t)=>t(""Last Modified"")}</Translation>,
       formatter: timeFormatter,
       sort: true,
       filter: customFilter({
@@ -155,7 +155,7 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
 
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">
-    <Translation>{(t)=>t("showing")}</Translation> {from} <Translation>{(t)=>t("to")}</Translation> {to} <Translation>{(t)=>t("of")}</Translation> {size} <Translation>{(t)=>t("results")}</Translation>
+    <Translation>{(t)=>t("Showing")}</Translation> {from} <Translation>{(t)=>t("to")}</Translation> {to} <Translation>{(t)=>t("of")}</Translation> {size} <Translation>{(t)=>t("Results")}</Translation>
   </span>
 );
 const customDropUp = ({options,currSizePerPage,onSizePerPageChange})=>{

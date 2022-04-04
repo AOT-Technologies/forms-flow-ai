@@ -77,11 +77,11 @@ export const ApplicationList = React.memo(() => {
   const getNoDataIndicationContent = () => {
     return (
       <div className="div-no-application">
-        <label className="lbl-no-application"> <Translation>{(t)=>t("no_applications_found")}</Translation> </label>
+        <label className="lbl-no-application"> <Translation>{(t)=>t(""No applications found"")}</Translation> </label>
         <br />
         <label className="lbl-no-application-desc">
           {" "}
-          <Translation>{(t)=>t("filter_change")}</Translation>
+          <Translation>{(t)=>t("Please change the selected filters to view applications")}</Translation>
         </label>
         <br />
        {/* <label className="lbl-clear" onClick={clearFilter}>
@@ -128,7 +128,7 @@ export const ApplicationList = React.memo(() => {
               <div className="main-header">
                 <h3 className="application-head">
                 <i className="fa fa-list" aria-hidden="true"/>
-              <span className="application-text"><Translation>{(t)=>t("applications")}</Translation></span>
+              <span className="application-text"><Translation>{(t)=>t("Applications")}</Translation></span>
                   <div className="col-md-1 application-count">({applicationCount})</div>
                 </h3>
               </div>

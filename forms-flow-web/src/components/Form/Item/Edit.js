@@ -57,7 +57,7 @@ const Edit = React.memo(() => {
   const ApplicationCount = useSelector((state) =>state.process.ApplicationCount)
   const  formProcessList = useSelector((state)=>state.process.formProcessList)
   const formPreviousData = useSelector((state)=>state.process.formPreviousData)
-  const saveText = (<Translation>{(t)=>t("save_form")}</Translation>);
+  const saveText = (<Translation>{(t)=>t(""Save Form"")}</Translation>);
   const lang = useSelector((state) => state.user.lang);
   const history = useHistory();
   const [show, setShow] = useState(false);
@@ -248,7 +248,7 @@ if(!form._id){
        <div id="save-buttons" className=" mr-4 save-buttons pull-right">
           <div className="form-group pull-right">
             <span className="btn btn-danger" onClick={() =>{ changeAnonymous(prviousData.anonymous); history.goBack()} }>
-            <Translation>{(t)=>t("cancel")}</Translation>
+            <Translation>{(t)=>t("Cancel")}</Translation>
             </span>
           </div>
         </div>
@@ -277,7 +277,7 @@ if(!form._id){
       <div className="row">
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-title" className="form-group">
-            <label htmlFor="title" className="control-label field-required"><Translation>{(t)=>t("title")}</Translation></label>
+            <label htmlFor="title" className="control-label field-required"><Translation>{(t)=>t("Title")}</Translation></label>
             <input
               type="text"
               className="form-control" id="title"
@@ -289,7 +289,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-name" className="form-group">
-            <label htmlFor="name" className="control-label field-required"><Translation>{(t)=>t("name")}</Translation></label>
+            <label htmlFor="name" className="control-label field-required"><Translation>{(t)=>t("Name")}</Translation></label>
             <input
               type="text"
               className="form-control"
@@ -302,7 +302,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-3 col-sm-3">
           <div id="form-group-display" className="form-group">
-            <label htmlFor="name" className="control-label"><Translation>{(t)=>t("display_as")}</Translation></label>
+            <label htmlFor="name" className="control-label"><Translation>{(t)=>t(""Display as"")}</Translation></label>
             <div className="input-group">
               <select
                 className="form-control"
@@ -336,7 +336,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-path" className="form-group">
-            <label htmlFor="path" className="control-label field-required"><Translation>{(t)=>t("path")}</Translation></label>
+            <label htmlFor="path" className="control-label field-required"><Translation>{(t)=>t("Path")}</Translation></label>
             <div className="input-group">
               <input
                 type="text"

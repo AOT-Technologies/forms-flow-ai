@@ -6,7 +6,7 @@ const Nodata = React.memo(() => (
 <i className="fa fa-clipboard fa-lg"/>
 <br/>
 <br/>
-<label className="lbl-no-application"> <Translation>{(t)=>t("no_applications_found")}</Translation> </label>
+<label className="lbl-no-application"> <Translation>{(t)=>t(""No applications found"")}</Translation> </label>
 <br/>
   {/*  <label className="lbl-no-application-desc"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do </label>
   */}  </div>

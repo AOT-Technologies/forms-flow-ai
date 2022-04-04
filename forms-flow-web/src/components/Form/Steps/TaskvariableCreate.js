@@ -81,7 +81,7 @@ const TaskvariableCreate = ({ options ,addTaskVariable}) => {
             size="small"
             onClick={()=>{addTask()}}
             startIcon={<i className="fa fa-check"></i>}
-          >{t("add")}</Button>
+          >{t("Add")}</Button>
         </Grid>
       </Grid>
     </>

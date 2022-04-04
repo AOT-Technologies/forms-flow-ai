@@ -77,7 +77,7 @@ const Preview = React.memo(
               <CardContent>
                 <form noValidate autoComplete="off">
                   <div>
-                    <span className="font-weight-bolder">{t("form_name")} : </span>
+                    <span className="font-weight-bolder">{t("Form Name")} : </span>
                     <span>
                       {formData && formData.form && formData.form.title
                         ? formData.form.title
@@ -85,7 +85,7 @@ const Preview = React.memo(
                     </span>
                   </div>
                   <div>
-                    <span className="font-weight-bolder">{t("workflow_name")} : </span>
+                    <span className="font-weight-bolder">{t(""Workflow Name"")} : </span>
                     <span>
                       {workflow && workflow.label ? workflow.label : "-"}
                     </span>
@@ -145,7 +145,7 @@ const Preview = React.memo(
                             color="primary"
                           />
                         }
-                        label={t("publish_workflow")}
+                        label={t(""Publish this form for Client Users."")}
                       />
                     </label>
                   </div>

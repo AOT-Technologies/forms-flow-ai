@@ -30,7 +30,7 @@ services:
       - KEYCLOAK_URL_REALM=${KEYCLOAK_URL_REALM:-formsflow-ai}
       - KEYCLOAK_CLIENTID=${KEYCLOAK_BPM_CLIENT_ID:-formsflow-bpm}
       - KEYCLOAK_CLIENTSECRET=${KEYCLOAK_BPM_CLIENT_SECRET}
-      - CAMUNDA_JDBC_URL=${CAMUNDA_JDBC_URL:-jdbc:postgresql://formsflow-bpm-db:5432/formsflow-bpm}
+      - CAMUNDA_JDBC_URL=${CAMUNDA_JDBC_URL:-jdbc:postgresql://forms-flow-bpm-db:5432/formsflow-bpm}
       - CAMUNDA_JDBC_USER=${CAMUNDA_JDBC_USER:-admin}
       - CAMUNDA_JDBC_PASSWORD=${CAMUNDA_JDBC_PASSWORD:-changeme}
       - CAMUNDA_JDBC_DRIVER=${CAMUNDA_JDBC_DRIVER:-org.postgresql.Driver}
@@ -173,7 +173,7 @@ services:
     environment:
       INSIGHT_API_KEY: ${INSIGHT_API_KEY}
       INSIGHT_API_URL: ${INSIGHT_API_URL}
-      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@formsflow-webapi-db:5432/webapi}
+      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
       BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-formsflow-ai}/protocol/openid-connect/token
       BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-formsflow-bpm}
       BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET}

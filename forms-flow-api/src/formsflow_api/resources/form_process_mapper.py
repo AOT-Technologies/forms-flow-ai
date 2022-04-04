@@ -19,61 +19,62 @@ API = Namespace("Form", description="Form")
 
 @cors_preflight("GET,POST,OPTIONS")
 @API.route("", methods=["GET", "POST", "OPTIONS"])
-class FormResource(Resource):
-    """Resource for managing forms."""
+class FormResourceList(Resource):
+    """Resource for getting forms."""
 
     @staticmethod
     @auth.require
     @profiletime
-    def get():
+    def get():  # pylint: disable=too-many-locals
         """Get form process mapper.
 
         : pageNo:- To retrieve page number
         : limit:- To retrieve limit for each page
         : formName:- Retrieve form list based on form name
+        : sortBy:- Name of column to sort by (default: id)
+        : sortOrder:- Order for sorting (asc/desc) (default: desc)
         """
         try:
-            request_schema = FormProcessMapperListRequestSchema()
-            if request.args:
-                dict_data = request_schema.load(request.args)
-                page_no: str = dict_data.get("page_no")
-                limit: str = dict_data.get("limit")
-                form_name: str = dict_data.get("form_name")
-            else:
-                page_no = 0
-                limit = 0
-                form_name = None
-            if page_no > 0:
-                response, status = (
-                    (
-                        {
-                            "forms": FormProcessMapperService.get_all_mappers(
-                                page_no, limit, form_name
-                            ),
-                            "totalCount": FormProcessMapperService.get_mapper_count(
-                                form_name
-                            ),
-                            "pageNo": page_no,
-                            "limit": limit,
-                        }
-                    ),
-                    HTTPStatus.OK,
+            auth_form_details = ApplicationService.get_authorised_form_list(
+                token=request.headers["Authorization"]
+            )
+            current_app.logger.info(auth_form_details)
+            dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
+            form_name: str = dict_data.get("form_name")
+            page_no: int = dict_data.get("page_no")
+            limit: int = dict_data.get("limit")
+            sort_by: str = dict_data.get("sort_by", "id")
+            sort_order: str = dict_data.get("sort_order", "desc")
+            auth_list = auth_form_details.get("authorizationList") or {}
+            resource_list = [group["resourceId"] for group in auth_list]
+            if (
+                auth_form_details.get("adminGroupEnabled") is True
+                or "*" in resource_list
+            ):
+                (
+                    form_process_mapper_schema,
+                    form_process_mapper_count,
+                ) = FormProcessMapperService.get_all_mappers(
+                    page_no, limit, form_name, sort_by, sort_order
                 )
             else:
-                response, status = (
-                    (
-                        {
-                            "forms": FormProcessMapperService.get_all_mappers(
-                                page_no, limit, form_name
-                            ),
-                            "totalCount": FormProcessMapperService.get_mapper_count(
-                                form_name
-                            ),
-                        }
-                    ),
-                    HTTPStatus.OK,
+                (
+                    form_process_mapper_schema,
+                    form_process_mapper_count,
+                ) = FormProcessMapperService.get_all_mappers(
+                    page_no, limit, form_name, sort_by, sort_order, resource_list
                 )
-            return response, status
+            return (
+                (
+                    {
+                        "forms": form_process_mapper_schema,
+                        "totalCount": form_process_mapper_count,
+                        "pageNo": page_no,
+                        "limit": limit,
+                    }
+                ),
+                HTTPStatus.OK,
+            )
         except KeyError as err:
             response, status = (
                 {

@@ -73,7 +73,6 @@ class ApplicationService:
 
     @staticmethod
     def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals
-        token: str,
         page_no: int,
         limit: int,
         order_by: str,
@@ -86,33 +85,33 @@ class ApplicationService:
         application_status: str,
         created_by: str,
         sort_order: str,
+        token: str,
     ):
         """Get applications only from authorized groups."""
-        if page_no:
-            page_no = int(page_no)
-        if limit:
-            limit = int(limit)
-        if order_by:
-            order_by = str(order_by)
-        if application_id:
-            application_id = int(application_id)
-        if application_name:
-            application_name = str(application_name)
-        if application_status:
-            application_status = str(application_status)
-        if created_by:
-            created_by = str(created_by)
-        if sort_order:
-            sort_order = str(sort_order)
-
         auth_form_details = ApplicationService.get_authorised_form_list(token=token)
-        form_names = []
-
-        if auth_form_details:
-            for auth_form_detail in auth_form_details:
-                form_names.append(auth_form_detail["formName"])
-            applications, get_all_applications_count = Application.find_by_form_names(
-                form_names=form_names,
+        current_app.logger.info(auth_form_details)
+        auth_list = auth_form_details.get("authorizationList") or {}
+        resource_list = [group["resourceId"] for group in auth_list]
+        if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
+            applications, get_all_applications_count = Application.find_all(
+                page_no=page_no,
+                limit=limit,
+                application_id=application_id,
+                application_name=application_name,
+                application_status=application_status,
+                created_by=created_by,
+                order_by=order_by,
+                modified_from=modified_from,
+                modified_to=modified_to,
+                sort_order=sort_order,
+                created_from=created_from,
+                created_to=created_to,
+            )
+        else:
+            (
+                applications,
+                get_all_applications_count,
+            ) = Application.find_applications_by_process_key(
                 application_id=application_id,
                 application_name=application_name,
                 application_status=application_status,
@@ -125,29 +124,28 @@ class ApplicationService:
                 sort_order=sort_order,
                 created_from=created_from,
                 created_to=created_to,
-            )
-            return (
-                application_schema.dump(applications, many=True),
-                get_all_applications_count,
+                process_key=resource_list,
             )
 
-        return (application_schema.dump([], many=True), 0)
+        return (
+            application_schema.dump(applications, many=True),
+            get_all_applications_count,
+        )
 
     @staticmethod
     def get_auth_by_application_id(application_id: int, token: str):
         """Get authorized Application by id."""
         auth_form_details = ApplicationService.get_authorised_form_list(token=token)
-        if auth_form_details:
-            form_names = []
-            for auth_form_detail in auth_form_details:
-                form_names.append(auth_form_detail["formName"])
-
-            application = Application.find_id_by_form_names(
-                form_names=form_names, application_id=application_id
+        current_app.logger.info(auth_form_details)
+        auth_list = auth_form_details.get("authorizationList") or {}
+        resource_list = [group["resourceId"] for group in auth_list]
+        if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
+            application = Application.find_auth_by_id(application_id=application_id)
+        else:
+            application = Application.find_auth_application_by_process_key(
+                process_key=resource_list, application_id=application_id
             )
-            return application_schema.dump(application), HTTPStatus.OK
-
-        return (application_schema.dump([])), HTTPStatus.FORBIDDEN
+        return application_schema.dump(application), HTTPStatus.OK
 
     @staticmethod
     def get_all_applications_by_user(  # pylint: disable=too-many-arguments
@@ -166,23 +164,6 @@ class ApplicationService:
         application_id: int,
     ):
         """Get all applications based on user."""
-        if page_no:
-            page_no = int(page_no)
-        if limit:
-            limit = int(limit)
-        if order_by:
-            order_by = str(order_by)
-        if sort_order:
-            sort_order = str(sort_order)
-        if application_id:
-            application_id = int(application_id)
-        if application_name:
-            application_name = str(application_name)
-        if application_status:
-            application_status = str(application_status)
-        if created_by:
-            created_by = str(created_by)
-
         applications, get_all_applications_count = Application.find_all_by_user(
             user_id=user_id,
             page_no=page_no,

@@ -54,7 +54,7 @@ export const getFormattedParams = (searchOptionList, searchQueryType, variableNa
   searchOptionList.forEach((searchOption)=>{
     switch(searchOption.type){
       case Filter_Search_Types.VARIABLES:
-        if(searchOption.value!==(undefined||null||'') && searchOption.name){
+        if(searchOption.value && searchOption.name){
           isParamsHasValue=true;
           paramList[searchOption.key].push({name: searchOption.name, operator: getVariableOperator(searchOption.operator), value: searchOption.operator==="like"?`%${searchOption.value}%`:searchOption.value})
         }

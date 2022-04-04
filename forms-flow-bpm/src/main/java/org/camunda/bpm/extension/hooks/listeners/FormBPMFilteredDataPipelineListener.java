@@ -63,7 +63,6 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
         }
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
         Map<String, FilterInfo> filterInfoMap = new HashMap<>();
         try {

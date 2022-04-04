@@ -14,4 +14,13 @@ public class Authorization {
     private String groupId;
     private String userId;
     private String resourceId;
+
+    @Override
+    public String toString() {
+        return "Authorization{" +
+                "groupId='" + groupId + '\'' +
+                ", userId='" + userId + '\'' +
+                ", resourceId='" + resourceId + '\'' +
+                '}';
+    }
 }

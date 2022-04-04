@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - develop
+      - master
     paths:
       - "forms-flow-data-analysis-api/**"
 
@@ -16,8 +17,6 @@ defaults:
 jobs:
   setup-job:
     runs-on: ubuntu-20.04
-
-    if: github.repository == 'AOT-Technologies/forms-flow-ai-dev'
 
     steps:
       - uses: actions/checkout@v2

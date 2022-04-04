@@ -484,7 +484,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         getFormProcesses(formId, (err, res) => {
           if (err) {
-            toast.error('Error in getting Workflow Process.');
             console.log(err);
           }
         })

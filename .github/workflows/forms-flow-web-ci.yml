@@ -1,0 +1,80 @@
+name: Forms Flow Web CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - develop
+      - master
+  pull_request:
+    branches:
+      - develop
+      - master
+    paths:
+      - "forms-flow-web/**"
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./forms-flow-web
+
+jobs:
+  setup-job:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: "true"
+
+  linting:
+    needs: setup-job
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        node-version: [14]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: |
+          npm ci
+      # - name: Linting
+      #   run: |
+      #     npm run lint
+  unit-tests:
+    needs: setup-job
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        node-version: [14]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install dependencies
+        run: |
+          npm ci
+      - name: Unit Test
+        id: test
+        run: |
+          npm test a
+
+  build-check:
+    needs: setup-job
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: build to check strictness
+        id: build
+        run: |
+          docker build . -t forms-flow-web

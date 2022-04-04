@@ -85,18 +85,16 @@ public class FormioContextProvider {
      */
     public String createFormioRequestAccessToken() {
         if (context == null) {
-            LOG.error("context is null, creating new");
+            LOG.info("context is null, creating new");
             context = openAuthorizationContext();
         } else if (context.needsRefresh()) {
             try {
-                LOG.error("Need refresh");
+                LOG.info("Token Need refresh");
                 context = openAuthorizationContext();
             } catch (FormioIdentityException ipe) {
-                LOG.error("Need refresh failed");
+                LOG.info("Token refresh failed");
                 context = openAuthorizationContext();
             }
-        } else {
-            LOG.error("token is available in the store");
         }
         return context.getAccessToken();
     }

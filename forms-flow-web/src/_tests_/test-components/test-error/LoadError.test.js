@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import LoadError from '../../../components/Error/Loaderror';
+import LoadError from '../../../components/Error/index';
 
 test('render LoadError with nostyle', () => {
   render(<LoadError noStyle="true" text="Something went wrong." />);

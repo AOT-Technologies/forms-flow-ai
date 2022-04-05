@@ -3,12 +3,18 @@ package org.camunda.bpm.extension.hooks.controllers;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
 import net.minidev.json.JSONArray;
+import org.camunda.bpm.engine.AuthorizationService;
+import org.camunda.bpm.engine.ProcessEngine;
+import org.camunda.bpm.engine.ProcessEngines;
+import org.camunda.bpm.engine.authorization.AuthorizationQuery;
+import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
+import org.camunda.bpm.engine.authorization.Resources;
+import org.camunda.bpm.engine.impl.ProcessEngineImpl;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.mapper.AuthorizationMapper;
@@ -18,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -75,17 +82,34 @@ public class AdminControllerTest {
         when(oidcUser.getClaims())
                 .thenReturn(claims);
 
-        List<Authorization> authorizationList = new ArrayList<>();
+        List<org.camunda.bpm.engine.authorization.Authorization> authorizationList = new ArrayList<>();
         authorizationList.add(new AuthorizationStub("test-id-1","test-id-1","224233456456"));
-        given(bpmJdbcTemplate.query(anyString(), any(SqlParameterSource.class), any(AuthorizationMapper.class)))
-                .willReturn(authorizationList);
+
+        List<String> groupIds = new ArrayList<>();
+        ProcessEngineImpl processEngine = mock(ProcessEngineImpl.class);
+        AuthorizationService authorizationService = mock(AuthorizationService.class);
+        AuthorizationQuery authorizationQuery = mock(AuthorizationQuery.class);
+        when(processEngine.getAuthorizationService())
+                .thenReturn(authorizationService);
+        when(authorizationService.createAuthorizationQuery())
+                .thenReturn(authorizationQuery);
+        when(authorizationQuery.resourceType(anyInt()))
+                .thenReturn(authorizationQuery);
+        when(authorizationQuery.hasPermission(any(ProcessDefinitionPermissions.class)))
+                .thenReturn(authorizationQuery);
+        when(authorizationQuery.groupIdIn(any(String[].class)))
+                .thenReturn(authorizationQuery);
+        when(authorizationQuery.list())
+                .thenReturn(authorizationList);
+                ProcessEngines.registerProcessEngine(processEngine);
+                ProcessEngines.init();
     }
 
     /**
      * This test case perform a positive test over getForms with admin group name
      * Expect Status OK and content
      */
-    //@Test
+    @Test
     public void getFormsSuccess_with_adminGroupName() throws Exception {
         final String adminGroupName = "camunda-admin";
         ReflectionTestUtils.setField(adminController, "adminGroupName", adminGroupName);
@@ -103,7 +127,7 @@ public class AdminControllerTest {
      * This test case perform a positive test over getForms without admin group name
      * Expect Status OK and content
      */
-    //@Test
+    @Test
     public void getFormsSuccess_without_adminGroupName() throws Exception {
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any()))
                 .thenReturn(ResponseEntity.ok("{\"totalCount\":\"2\",\"forms\":[" +
@@ -118,12 +142,12 @@ public class AdminControllerTest {
     /**
      * Expect Status OK and empty content
      */
-    //@Test
+    @Test
     public void getFormsFailure() throws Exception {
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any()))
                 .thenReturn(ResponseEntity.ok("{\"totalCount\":\"2\",\"forms\":[" +
                         "{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"}," +
-                        "{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"]}"));
+                        "{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]}"));
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/engine-rest-ext/form"))
                 .andExpect(status().isOk())

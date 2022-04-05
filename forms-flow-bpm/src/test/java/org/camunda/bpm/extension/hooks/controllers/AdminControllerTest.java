@@ -87,6 +87,7 @@ public class AdminControllerTest {
 
         List<String> groupIds = new ArrayList<>();
         ProcessEngineImpl processEngine = mock(ProcessEngineImpl.class);
+        when(processEngine.getName()).thenReturn("default");
         AuthorizationService authorizationService = mock(AuthorizationService.class);
         AuthorizationQuery authorizationQuery = mock(AuthorizationQuery.class);
         when(processEngine.getAuthorizationService())
@@ -97,19 +98,19 @@ public class AdminControllerTest {
                 .thenReturn(authorizationQuery);
         when(authorizationQuery.hasPermission(any(ProcessDefinitionPermissions.class)))
                 .thenReturn(authorizationQuery);
-        when(authorizationQuery.groupIdIn(any(String[].class)))
+        when(authorizationQuery.groupIdIn(any(String.class)))
                 .thenReturn(authorizationQuery);
         when(authorizationQuery.list())
                 .thenReturn(authorizationList);
-                ProcessEngines.registerProcessEngine(processEngine);
-                ProcessEngines.init();
+        ProcessEngines.init();
+        ProcessEngines.registerProcessEngine(processEngine);
     }
 
     /**
      * This test case perform a positive test over getForms with admin group name
      * Expect Status OK and content
      */
-    //@Test
+    @Test
     public void getFormsSuccess_with_adminGroupName() throws Exception {
         final String adminGroupName = "camunda-admin";
         ReflectionTestUtils.setField(adminController, "adminGroupName", adminGroupName);

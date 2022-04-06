@@ -13,7 +13,7 @@ def preprocess_incoming(str_data) -> str:
         return str_data
 
 
-def predict(string_data: str):
+def overall_sentiment_transformers(string_data: str):
     """Function to get the inference and return the readable sentiment."""
     data = preprocess_incoming(string_data)
     prediction = current_app.classifier(data)
@@ -25,6 +25,16 @@ def predict(string_data: str):
         return "POSITIVE"
 
 
-def overall_sentiment_transformers(text: dict) -> Dict:
-    """Function to return the sentiment of the input text blob."""
-    return {"overall_sentiment": predict(text)}
+def sentiment_analysis_pipeline_transformers(text: str) -> Dict:
+    """A input pipeline which returns for a given text blob, output of
+    sentiment analaysis as either POSITIVE, NEGATIVE, or NEUTRAL.
+
+    :params text: The input text blob being entered by user
+
+    Usage:
+        >> sentiment_analysis_pipeline_transformers(
+            "awesome location and great staff. Staff provided excellent service."
+            )
+        returns {'overall_sentiment': 'POSITIVE'}
+    """
+    return {"overall_sentiment": overall_sentiment_transformers(text)}

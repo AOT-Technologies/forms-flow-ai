@@ -13,7 +13,7 @@ ADD . /forms-flow-data-analysis-api/app
 RUN pip install .
 
 EXPOSE 5001
-RUN python3 -m nltk.downloader punkt vader_lexicon subjectivity && python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='xaqren/sentiment_analysis')"
+RUN python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='xaqren/sentiment_analysis')"
 
 RUN chmod u+x ./entrypoint
 ENTRYPOINT ["/bin/sh", "entrypoint"]

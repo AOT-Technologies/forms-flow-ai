@@ -76,9 +76,11 @@ class _Config:  # pylint: disable=too-few-public-methods
         "user": os.getenv("POSTGRES_USER"),
         "password": os.getenv("POSTGRES_PASSWORD"),
     }
-    SQLALCHEMY_DATABASE_URI = f"postgresql://\
-    {DB_PG_CONFIG['user']}:{DB_PG_CONFIG['password']}\
-    @{DB_PG_CONFIG['host']}:{int(DB_PG_CONFIG['port'])}/{DB_PG_CONFIG['dbname']}"
+    SQLALCHEMY_DATABASE_URI = (
+        f"postgresql://"
+        f"{DB_PG_CONFIG['user']}:{DB_PG_CONFIG['password']}"
+        f"@{DB_PG_CONFIG['host']}:{int(DB_PG_CONFIG['port'])}/{DB_PG_CONFIG['dbname']}"
+    )
 
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods

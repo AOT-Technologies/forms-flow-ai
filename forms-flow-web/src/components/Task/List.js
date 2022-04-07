@@ -108,7 +108,7 @@ const List = class extends PureComponent {
                 <LoadingOverlay
                   active={isTaskUpdating}
                   spinner
-                  text={<Translation>{(t)=>t("loading...")}</Translation>}
+                  text={<Translation>{(t)=>t("Loading...")}</Translation>}
                 >
                   <BootstrapTable
                     loading={isTaskUpdating}

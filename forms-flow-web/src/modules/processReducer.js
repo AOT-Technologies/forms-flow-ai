@@ -12,7 +12,7 @@ const initialState = {
   processDiagramXML: "",
   processActivityLoadError: false,
   isProcessDiagramLoading: true,
-  ApplicationCount:0,
+  applicationCount:0,
   isApplicationCountLoading:false,
   applicationCountResponse:false,
   unPublishApiError:false
@@ -44,7 +44,7 @@ const process = (state = initialState, action) => {
     case ACTION_CONSTANTS.FORM_PREVIOUS_DATA:
       return {...state,formPreviousData:action.payload};
     case  ACTION_CONSTANTS.APPLICATION_COUNT:
-      return {...state, ApplicationCount:action.payload}  
+      return {...state, applicationCount:action.payload}  
     case  ACTION_CONSTANTS.IS_APPLICATION_COUNT_LOADING:
       return {...state, isApplicationCountLoading:action.payload} 
     case  ACTION_CONSTANTS.APPLICATION_COUNT_RESPONSE:

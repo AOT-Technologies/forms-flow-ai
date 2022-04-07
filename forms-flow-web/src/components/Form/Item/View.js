@@ -30,8 +30,7 @@ import LoadingOverlay from "react-loading-overlay";
 import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes";
 import { toast } from "react-toastify";
 import {
-  setFormSubmitted,
-  setPublicFormStatus,
+  setFormSubmitted
 } from "../../../actions/formActions";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import {checkIsObjectId} from "../../../apiManager/services/formatterService";
@@ -64,6 +63,8 @@ const View = React.memo((props) => {
   const getPublicForm = useCallback((form_id, isObjectId, formObj) => {
     dispatch(
       publicApplicationStatus(form_id, (err, res) => {
+        if(!err)
+        {
         if (isPublic) {
           if(isObjectId){
             dispatch(getForm("form", form_id));
@@ -72,11 +73,8 @@ const View = React.memo((props) => {
             dispatch(setFormRequestData('form',form_id,`${Formio.getProjectUrl()}/form/${form_id}`));
             dispatch(setFormSuccessData('form',formObj));
           }
-          if (res && res.is_anonymous && res.status === "active") {
-            dispatch(setPublicFormStatus(true));
-          } else {
-            dispatch(setPublicFormStatus(false));
-          }
+        }
+          
         }
       })
     );

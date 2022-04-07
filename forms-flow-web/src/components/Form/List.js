@@ -65,7 +65,7 @@ const List = React.memo((props) => {
   const isApplicationCountLoading = useSelector(state=> state.process.isApplicationCountLoading)
   const applicationCountResponse = useSelector(state=> state.process.applicationCountResponse)
   const formProcessData = useSelector(state=>state.process.formProcessList)
-  const applicationCount = useSelector(state => state.process.ApplicationCount)
+  const applicationCount = useSelector(state => state.process.applicationCount)
 
   const getFormsList = (page, query) => {
     if (page) {

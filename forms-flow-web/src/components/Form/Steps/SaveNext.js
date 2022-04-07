@@ -4,9 +4,9 @@ import Buttons from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useSelector } from "react-redux";
 const SaveNext = React.memo(({ handleNext, handleBack, activeStep, isLastStep, submitData,modified }) => {
-  const ApplicationCount = useSelector((state) =>state.process.ApplicationCount)
+  const applicationCount = useSelector((state) =>state.process.applicationCount)
   const handleChanges = ()=>{
-   if( ApplicationCount > 0){
+   if( applicationCount > 0){
     if(modified){
       handleShow()
     }else if(!isLastStep){

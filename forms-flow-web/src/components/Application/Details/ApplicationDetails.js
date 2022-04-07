@@ -15,34 +15,34 @@ const ApplicationDetails = React.memo((props) => {
     <Table responsive>
       <tbody>
       <tr>
-        <td className="border-0"><Translation>{(t)=>t(" "Application ID"")}</Translation></td>
+        <td className="border-0"><Translation>{(t)=>t("Application ID")}</Translation></td>
         <td className="border-0">:</td>
         <td className="border-0" id="application-id">{application.id}</td>
       </tr>
       <tr>
-        <td className="border-0"><Translation>{(t)=>t(""Application Name"")}</Translation></td>
+        <td className="border-0"><Translation>{(t)=>t("Application Name")}</Translation></td>
         <td className="border-0">:</td>
         <td className="border-0" id="application-name">{startCase(application.applicationName)}</td>
       </tr>
       <tr>
-        <td className="border-0"><Translation>{(t)=>t(""Created By"")}</Translation></td>
+        <td className="border-0"><Translation>{(t)=>t("Created By")}</Translation></td>
         <td className="border-0">:</td>
         <td className="border-0" id="created-by">{application.createdBy}</td>
       </tr>
       <tr>
-        <td className="border-0"><Translation>{(t)=>t(""Application Status"")}</Translation></td>
+        <td className="border-0"><Translation>{(t)=>t("Application Status")}</Translation></td>
         <td className="border-0">:</td>
         <td className="border-0" id="application-status">{application.applicationStatus}</td>
       </tr>
       <tr>
-        <td className="border-0"><Translation>{(t)=>t(""Submitted On"")}</Translation></td>
+        <td className="border-0"><Translation>{(t)=>t("Submitted On")}</Translation></td>
         <td className="border-0">:</td>
         <td className="border-0" id="application-created">
           {getLocalDateTime(application.created)}
         </td>
       </tr>
       <tr>
-        <td className="border-0"><Translation>{(t)=>t(""Modified On"")}</Translation></td>
+        <td className="border-0"><Translation>{(t)=>t("Modified On")}</Translation></td>
         <td className="border-0">:</td>
         <td className="border-0" id="application-modified">
           {getLocalDateTime(application.modified)}

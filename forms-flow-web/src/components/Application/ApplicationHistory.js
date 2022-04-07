@@ -39,7 +39,7 @@ const HistoryList = React.memo((props) => {
   }, [applicationId, isHistoryListLoading, dispatch]);
 
   if(!applicationId){
-    return <Nodata text={<Translation>{(t)=>t(""No Application History Found"")}</Translation>} className={"div-no-application-list text-center"}/>
+    return <Nodata text={<Translation>{(t)=>t("No Application History Found")}</Translation>} className={"div-no-application-list text-center"}/>
   }
   if (isHistoryListLoading) {
     return <Loading/>;
@@ -48,7 +48,7 @@ const HistoryList = React.memo((props) => {
   const getNoDataIndicationContent = () => {
     return (
       <div className="div-no-task">
-        <label className="lbl-no-task"> <Translation>{(t)=>t(""No History Found"")}</Translation> </label>
+        <label className="lbl-no-task"> <Translation>{(t)=>t("No History Found")}</Translation> </label>
         <br/>
       </div>
     );
@@ -70,7 +70,7 @@ const HistoryList = React.memo((props) => {
               <h3 className="task-head">
               {/* <i class="fa fa-list-alt" alt="Task" aria-hidden="true"></i> */}
               <i className="fa fa-list" aria-hidden="true"/>
-              &nbsp;<Translation>{(t)=>t(""Application History"")}</Translation>
+              &nbsp;<Translation>{(t)=>t("Application History")}</Translation>
               </h3>
             </div>
             <br/>
@@ -78,7 +78,7 @@ const HistoryList = React.memo((props) => {
               <LoadingOverlay
                 active={isHistoryListLoading}
                 spinner
-                text={t(""Select a task in the list."")}
+                text={t("Select a task in the list.")}
               >
                 <BootstrapTable
                   loading={isHistoryListLoading}
@@ -94,7 +94,7 @@ const HistoryList = React.memo((props) => {
         )}
       </ToolkitProvider>
     ) : (
-      <Nodata text={<Translation>{(t)=>t(""No Application History Found"")}</Translation>} className={"div-no-application-list text-center"}/>
+      <Nodata text={<Translation>{(t)=>t("No Application History Found")}</Translation>} className={"div-no-application-list text-center"}/>
     )
   );
 });

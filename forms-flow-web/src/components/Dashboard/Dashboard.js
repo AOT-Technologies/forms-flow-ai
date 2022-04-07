@@ -42,7 +42,7 @@ const Dashboard = React.memo(() => {
     (state) => state.metrics.metricsStatusLoadError
   );
   const searchOptions = [
-    { value: 'created', label: <Translation>{(t)=>t(""Created Date")}</Translation> },
+    { value: 'created', label: <Translation>{(t)=>t("Created Date")}</Translation> },
     { value: 'modified', label: <Translation>{(t)=>t("modified_date")}</Translation> },
   ];
   const [searchBy, setSearchBy] = useState(searchOptions[0]);

@@ -63,12 +63,12 @@ const cutomStyle = { border: '1px solid #ced4da' , fontStyle:'normal'}
 export const columns_history = [
   {
     dataField: "applicationname",
-    text: <Translation>{(t)=>t(""Application Name"")}</Translation>,
+    text: <Translation>{(t)=>t("Application Name")}</Translation>,
     sort: true,
   },
   {
     dataField: "applicationstatus",
-    text: <Translation>{(t)=>t(""Application Status"")}</Translation>,
+    text: <Translation>{(t)=>t("Application Status")}</Translation>,
     sort: true,
   },
 ];
@@ -77,13 +77,13 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
   return [
     {
       dataField: "id",
-      text: <Translation>{(t)=>t(" "Application ID"")}</Translation>,
+      text: <Translation>{(t)=>t("Application ID")}</Translation>,
       formatter: linkApplication,
       headerClasses: 'classApplicationId',
       sort: true,
       filter: textFilter({
       delay:800,  
-      placeholder: `\uf002 ${t(""Application ID"")}` , // custom the input placeholder
+      placeholder: `\uf002 ${t("Application ID")}` , // custom the input placeholder
       caseSensitive: false, // default is false, and true will only work when comparator is LIKE
       className: "icon-search",
       style:cutomStyle,
@@ -94,13 +94,13 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
     },
     {
       dataField: "applicationName",
-      text: <Translation>{(t)=>t(""Application Name"")}</Translation>,
+      text: <Translation>{(t)=>t("Application Name")}</Translation>,
       sort: true,
       headerClasses: 'classApplicationName',
       formatter: nameFormatter,
       filter: textFilter({
        delay:800,
-      placeholder: `\uf002 ${t(""Application Name"")}`, // custom the input placeholder
+      placeholder: `\uf002 ${t("Application Name")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
         style:cutomStyle,
@@ -111,7 +111,7 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
     },
     {
       dataField: "applicationStatus",
-      text: <Translation>{(t)=>t(""Application Status"")}</Translation>,
+      text: <Translation>{(t)=>t("Application Status")}</Translation>,
       sort: true,
       filter: applicationStatus?.length > 0 && selectFilter({
         options: getApplicationStatusOptions(applicationStatus),
@@ -126,13 +126,13 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
     },
     {
       dataField: "formUrl",
-      text: <Translation>{(t)=>t(""Link To Form Submission")}</Translation>,
+      text: <Translation>{(t)=>t("Link To Form Submission")}</Translation>,
       formatter: linkSubmission,
     },
 
     {
       dataField: "modified",
-      text: <Translation>{(t)=>t(""Last Modified"")}</Translation>,
+      text: <Translation>{(t)=>t("Last Modified")}</Translation>,
       formatter: timeFormatter,
       sort: true,
       filter: customFilter({

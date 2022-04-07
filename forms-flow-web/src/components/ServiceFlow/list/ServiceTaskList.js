@@ -77,7 +77,7 @@ const ServiceFlowTaskList = React.memo(() => {
                     "name"
                   )}
                 </div>
-                <div data-title={t(""Task assignee"")} className="col-6 pr-0 text-right">
+                <div data-title={t("Task assignee")} className="col-6 pr-0 text-right">
                   {task.assignee}
                 </div>
               </Row>
@@ -92,7 +92,7 @@ const ServiceFlowTaskList = React.memo(() => {
                 >
                  <span className="tooltiptext" data-title={task.due?getFormattedDateAndTime(task.due):''}> {task.due ? `${t("Due")} ${moment(task.due).fromNow()}, ` : ""}{" "}</span>
                  <span className="tooltiptext" data-title={task.followUp?getFormattedDateAndTime(task.followUp):''}> {task.followUp
-                    ? `${t(""Follow-up"")} ${moment(task.followUp).fromNow()}, `
+                    ? `${t("Follow-up")} ${moment(task.followUp).fromNow()}, `
                     : ""} </span>
                  <span className="tooltiptext" data-title={task.created?getFormattedDateAndTime(task.created):''}> {t("Created")} {moment(task.created).fromNow()}</span>
                 </Col>

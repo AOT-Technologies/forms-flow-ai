@@ -123,7 +123,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
 
   return (
     <div>
-      <h2><Translation>{(t)=>t(""Create Form"")}</Translation></h2>
+      <h2><Translation>{(t)=>t("Create Form")}</Translation></h2>
       <hr />
       <Errors errors={errors} />
       <div>

@@ -70,10 +70,10 @@ const ViewApplication = React.memo(() => {
         <Tab eventKey="form" title={<Translation>{(t)=>t("Form")}</Translation>}>
           <View page="application-detail"/>
         </Tab>
-        <Tab eventKey="history" title={<Translation>{(t)=>t("history")}</Translation>}>
+        <Tab eventKey="history" title={<Translation>{(t)=>t("History")}</Translation>}>
             <History page="application-detail" applicationId={applicationId}/>
         </Tab>
-        <Tab eventKey="process-diagram" title={<Translation>{(t)=>t(""Process Diagram"")}</Translation>}>
+        <Tab eventKey="process-diagram" title={<Translation>{(t)=>t("Process Diagram")}</Translation>}>
             <ProcessDiagram
               process_key={applicationProcess.processKey}
               processInstanceId={applicationDetail.processInstanceId}

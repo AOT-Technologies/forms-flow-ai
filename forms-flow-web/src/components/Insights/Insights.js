@@ -67,7 +67,7 @@ const NoPublicUrlMessage = ()=>(
                   <Select
                     options={dashboards}
                     onChange={setDashboardSelected}
-                    placeholder={t(""Select Dashboard"")}
+                    placeholder={t("Select Dashboard")}
                     value={dashboardSelected}
                   />
                 </div>

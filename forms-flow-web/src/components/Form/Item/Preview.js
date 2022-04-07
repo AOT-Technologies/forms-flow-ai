@@ -46,7 +46,7 @@ const Preview = class extends PureComponent {
             }}
           >
             <i className="fa fa-pencil" aria-hidden="true"/>
-            &nbsp;&nbsp;<Translation>{(t)=>t(""Edit Form"")}</Translation>
+            &nbsp;&nbsp;<Translation>{(t)=>t("Edit Form")}</Translation>
           </Button>
           <Button
             variant="contained"

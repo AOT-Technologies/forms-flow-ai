@@ -5,7 +5,7 @@ const Back = () => {
     const {t} = useTranslation();
   return (
     <div>
-      <Link to="/form" title={t(""Back to Form List"")}>
+      <Link to="/form" title={t("Back to Form List")}>
     <i className="fa fa-chevron-left fa-lg" />
     </Link>
     </div>

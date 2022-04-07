@@ -35,7 +35,7 @@ const CardFormCounter = React.memo((props) => {
           </div>
           <div className="count">
             <div className="counter ">{count}</div>
-            <div className="small-title"><Translation>{(t)=>t(""Total Submissions"")}</Translation></div>
+            <div className="small-title"><Translation>{(t)=>t("Total Submissions")}</Translation></div>
           </div>
         </div>
       </div>

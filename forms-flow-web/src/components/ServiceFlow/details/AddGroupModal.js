@@ -54,12 +54,12 @@ const AddGroupModal= React.memo((props)=> {
 
                 <div className="modal-text">
                 <i className="fa fa-info-circle mr-2"/>
-                 {t(""You can add a group by typing a group ID into the input field and afterwards clicking the button with the plus sign."")}
+                 {t("You can add a group by typing a group ID into the input field and afterwards clicking the button with the plus sign.")}
                 </div>
                 <Row className="mt-2 mb-1">
                   <Col lg={4} xs={12} sm={4} md={4} xl={4} className="text-right">
                     <button className="add btn btn-link" onClick={onAddGroup} disabled={!groupToAdd}>
-                      <span>{t(""Add a group"")}</span>
+                      <span>{t("Add a group")}</span>
                       <span className="ml-2"><i className="fa fa-plus fa-lg"/></span>
                     </button>
                   </Col>

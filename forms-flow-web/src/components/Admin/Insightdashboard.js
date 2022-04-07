@@ -102,7 +102,7 @@ export const InsightDashboard = (props)=> {
     },
    {
     dataField: 'approvedGroups',
-    text: <Translation>{(t)=>t(""Access Groups"")}</Translation>,
+    text: <Translation>{(t)=>t("Access Groups")}</Translation>,
     formatter: (cell,rowData) => {
       return  <> 
         {cell?.map(label => 

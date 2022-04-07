@@ -22,10 +22,10 @@ const FileModal= React.memo(({modalOpen=false, onClose,forms})=> {
       <>
           <Modal show={modalOpen} onHide={onClose}>
               <Modal.Header>
-                 <Modal.Title><b><Translation>{(t)=>t(""Files Upload Confirmation"")}</Translation>)</b></Modal.Title>
+                 <Modal.Title><b><Translation>{(t)=>t("Files Upload Confirmation")}</Translation>)</b></Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <div>{`${formUploadCounter}/${formUploadList.length} ${t(""Forms Completed"")}`} {(formUploadList.length!==formUploadCounter)?<Spinner animation="border" variant="primary" />:""}</div>
+                <div>{`${formUploadCounter}/${formUploadList.length} ${t("Forms Completed")}`} {(formUploadList.length!==formUploadCounter)?<Spinner animation="border" variant="primary" />:""}</div>
                 {formUploadList.length?<ProgressBar now={formsUploaded} label={`${formsUploaded}%`} />
                   : <div><Translation>{(t)=>t("no_forms_found")}</Translation></div>}
               </Modal.Body>

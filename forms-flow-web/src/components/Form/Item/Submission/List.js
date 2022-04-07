@@ -71,7 +71,7 @@ const List = React.memo((props) => {
   return (
     <div className="container">
       <Confirm modalOpen={props.modalOpen}
-               message={<Translation>{(t)=>t(""Are you sure you wish to delete this submission?"")}</Translation>}
+               message={<Translation>{(t)=>t("Are you sure you wish to delete this submission?")}</Translation>}
                onNo={() => onNo()}
                onYes={() => onYes(submissionFormId, submissionId, submissions)}
       >

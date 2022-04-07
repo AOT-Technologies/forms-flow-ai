@@ -57,7 +57,7 @@ const Edit = React.memo(() => {
   const ApplicationCount = useSelector((state) =>state.process.ApplicationCount)
   const  formProcessList = useSelector((state)=>state.process.formProcessList)
   const formPreviousData = useSelector((state)=>state.process.formPreviousData)
-  const saveText = (<Translation>{(t)=>t(""Save Form"")}</Translation>);
+  const saveText = (<Translation>{(t)=>t("Save Form")}</Translation>);
   const lang = useSelector((state) => state.user.lang);
   const history = useHistory();
   const [show, setShow] = useState(false);
@@ -227,7 +227,7 @@ const Edit = React.memo(() => {
 if(!form._id){
  return <div class="d-flex justify-content-center">
  <div class="spinner-grow" role="status">
-  <span class="sr-only"><Translation>{(t)=>t("loading...")}</Translation></span>
+  <span class="sr-only"><Translation>{(t)=>t("Loading...")}</Translation></span>
 </div>
 </div>
 }
@@ -302,7 +302,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-3 col-sm-3">
           <div id="form-group-display" className="form-group">
-            <label htmlFor="name" className="control-label"><Translation>{(t)=>t(""Display as"")}</Translation></label>
+            <label htmlFor="name" className="control-label"><Translation>{(t)=>t("Display as")}</Translation></label>
             <div className="input-group">
               <select
                 className="form-control"

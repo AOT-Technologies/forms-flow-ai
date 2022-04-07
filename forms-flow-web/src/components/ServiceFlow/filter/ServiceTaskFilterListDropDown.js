@@ -35,7 +35,7 @@ const ServiceFlowFilterListDropDown = React.memo(() => {
       return (
           <NavDropdown.Item className="not-selected mt-2 ml-1">
             <i className="fa fa-info-circle mr-2 mt-1"/>
-           {t(""No Filters Found"")}
+           {t("No Filters Found")}
           </NavDropdown.Item>
       )
     }

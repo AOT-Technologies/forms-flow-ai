@@ -94,7 +94,7 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
           {filterSelections.length ?
             <div>
               <span className="button click-element" onClick={changeQueryType}>{queryType}</span>
-              <span> {t(""of the criteria are met."")}</span>
+              <span> {t("of the criteria are met.")}</span>
             </div> : null}
 
           <TaskFilterSearch updateSearchFilterData={updateSearchFilterData}
@@ -105,7 +105,7 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
             <input
               type="text"
               className="filter"
-              placeholder={t(""Filter Tasks"")}
+              placeholder={t("Filter Tasks")}
               onClick={() => {
               }}
               onFocus={() => setShowFilterItems(true)}
@@ -113,7 +113,7 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
             {showFilterItems ? (
               <TaskFilterDropdown onFilterSelect={setFilter}/>
             ) : null}
-            <span dat-title={t(""Total number of results"")}>{totalTasks}</span>
+            <span dat-title={t("Total number of results")}>{totalTasks}</span>
           </div>
         </div>
         <TaskIgnoreCaseComponent/>

@@ -216,7 +216,7 @@ const doProcessActions = (submission, ownProps,  t) => {
           } else {
             //TO DO Update to show error message
             dispatch(setFormSubmissionLoading(false));
-            toast.error(<Translation>{(t)=>t(""Submission Failed."")}</Translation>)
+            toast.error(<Translation>{(t)=>t("Submission Failed.")}</Translation>)
             // dispatch(setFormSubmitted())
             // dispatch(push(`/public/submitted`));
           }
@@ -282,9 +282,9 @@ const mapDispatchToProps = (dispatch, ownProps,t) => {
           } else {
             const ErrorDetails = {
               modalOpen: true,
-              message: t(""Submission cannot be done.""),
+              message: t("Submission cannot be done."),
             };
-            toast.error(t(""Error while Submission.""));
+            toast.error(t("Error while Submission."));
             dispatch(setFormSubmissionLoading(false));
             dispatch(setFormSubmissionError(ErrorDetails));
           }

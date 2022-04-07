@@ -85,14 +85,14 @@ const Preview = React.memo(
                     </span>
                   </div>
                   <div>
-                    <span className="font-weight-bolder">{t(""Workflow Name"")} : </span>
+                    <span className="font-weight-bolder">{t("Workflow Name")} : </span>
                     <span>
                       {workflow && workflow.label ? workflow.label : "-"}
                     </span>
                   </div>
                   {processListData.anonymous && (
                     <div>
-                      <span>Copy anonymous form URL</span>
+                      <span>{t("Copy anonymous form URL")}</span>
                       <div
                         data-toggle="tooltip"
                         data-placement="top"
@@ -145,7 +145,7 @@ const Preview = React.memo(
                             color="primary"
                           />
                         }
-                        label={t(""Publish this form for Client Users."")}
+                        label={t("Publish this form for Client Users.")}
                       />
                     </label>
                   </div>

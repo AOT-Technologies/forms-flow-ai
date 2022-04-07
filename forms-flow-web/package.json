@@ -8,7 +8,7 @@
     "start": "react-scripts start",
     "build": "react-scripts --max_old_space_size=6144 build",
     "eject": "react-scripts eject",
-    "test": "react-scripts test --detectOpenHandles",
+    "test": "react-scripts test --detectOpenHandles --silent",
     "preinstall": "npx npm-force-resolutions",
     "coverage": "react-scripts test --coverage --watchAll=false"
   },

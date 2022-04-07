@@ -31,13 +31,13 @@ export const KEYCLOAK_AUTH_URL = `${KEYCLOAK_URL}/auth`;
 // export const _kc = new Keycloak("/config/kc/keycloak.json");
 
 export const CLIENT =
-  (window._env_ && window._env_.REACT_APP_CLIENT_ROLE) || process.env.REACT_APP_CLIENT_ROLE;
+  (window._env_ && window._env_.REACT_APP_CLIENT_ROLE) || process.env.REACT_APP_CLIENT_ROLE || "formsflow-client";
 export const STAFF_DESIGNER =
   (window._env_ && window._env_.REACT_APP_STAFF_DESIGNER_ROLE) ||
-  process.env?.REACT_APP_STAFF_DESIGNER_ROLE;
+  process.env?.REACT_APP_STAFF_DESIGNER_ROLE || "formsflow-designer";
 export const STAFF_REVIEWER =
   (window._env_ && window._env_.REACT_APP_STAFF_REVIEWER_ROLE) ||
-  process.env.REACT_APP_STAFF_REVIEWER_ROLE;
+  process.env.REACT_APP_STAFF_REVIEWER_ROLE || "formsflow-reviewer";
 export const ANONYMOUS_USER = "anonymous";
 
 //default FORMIO_JWT_SECRET is --- change me now ---

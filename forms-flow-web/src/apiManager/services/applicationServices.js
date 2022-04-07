@@ -11,7 +11,8 @@ import {
 } from "../../actions/applicationActions";
 import {replaceUrl} from "../../helper/helper";
 import moment from 'moment';
- import {getFormattedProcess} from "./formatterService";
+import {getFormattedProcess} from "./formatterService";
+import {setPublicFormStatus} from '../../actions/formActions';
 
 export const getAllApplicationsByFormId = (formId,...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -144,13 +145,18 @@ export const publicApplicationCreate = (data, ...rest) => {
   };
 };
 
-export const publicApplicationStatus = (data, ...rest) => {
+export const publicApplicationStatus = (formId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const URL = `${API.PUBLIC_APPLICATION_STATUS}/${data}`;
+  const URL = `${API.PUBLIC_APPLICATION_STATUS}/${formId}`;
   return (dispatch) => {
     httpGETRequest(URL)
       .then((res) => {
         if (res.data) {
+          if (res.data.is_anonymous && res.data.status === "active") {
+            dispatch(setPublicFormStatus(true));
+          } else {
+            dispatch(setPublicFormStatus(false));
+          }
           done(null, res.data);
         } else {
           dispatch(serviceActionError(res));

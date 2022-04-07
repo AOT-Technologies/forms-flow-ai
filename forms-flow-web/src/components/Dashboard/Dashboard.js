@@ -50,7 +50,7 @@ const Dashboard = React.memo(() => {
     moment(firsDay),
     moment(lastDay),
   ]);
-  const [showSubmissionData,setSHowSubmissionData]=useState({})
+  const [showSubmissionData,setSHowSubmissionData]=useState(submissionsList[0])
 
   const getFormattedDate = (date) => {
     return moment.utc(date).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B")

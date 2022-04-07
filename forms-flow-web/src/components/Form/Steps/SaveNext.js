@@ -5,10 +5,10 @@ import Modal from 'react-bootstrap/Modal';
 import { useSelector } from "react-redux";
 import {useTranslation} from 'react-i18next'
 const SaveNext = React.memo(({ handleNext, handleBack, activeStep, isLastStep, submitData,modified }) => {
+  const applicationCount = useSelector((state) =>state.process.applicationCount)
   const {t} = useTranslation();
-  const ApplicationCount = useSelector((state) =>state.process.ApplicationCount)
   const handleChanges = ()=>{
-   if( ApplicationCount > 0){
+   if( applicationCount > 0){
     if(modified){
       handleShow()
     }else if(!isLastStep){

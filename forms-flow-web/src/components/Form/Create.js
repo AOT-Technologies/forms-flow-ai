@@ -1,8 +1,8 @@
-import React, { useState ,useEffect,useReducer} from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { saveForm, FormBuilder, Errors } from "react-formio";
-import _set from 'lodash/set';
-import _cloneDeep from 'lodash/cloneDeep';
-import _camelCase from 'lodash/camelCase';
+import _set from "lodash/set";
+import _cloneDeep from "lodash/cloneDeep";
+import _camelCase from "lodash/camelCase";
 import { push } from "connected-react-router";
 import {
   SUBMISSION_ACCESS,
@@ -11,25 +11,26 @@ import {
 } from "../../constants/constants";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import { saveFormProcessMapper } from "../../apiManager/services/processServices";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { useTranslation,Translation } from "react-i18next";
 import { formio_translation } from "../../translations/formiotranslation";
 
 // reducer from react-formio code
-const reducer = (form, {type, value}) => {
+const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
-    case 'formChange':
+    case "formChange":
       for (let prop in value) {
         if (value.hasOwnProperty(prop)) {
           form[prop] = value[prop];
         }
       }
       return form;
-    case 'replaceForm':
+    case "replaceForm":
       return _cloneDeep(value);
-    case 'title':
-      if (type === 'title' && !form._id) {
+    case "title":
+      if (type === "title" && !form._id) {
         formCopy.name = _camelCase(value);
         formCopy.path = _camelCase(value).toLowerCase();
       }
@@ -41,10 +42,8 @@ const reducer = (form, {type, value}) => {
   return formCopy;
 };
 
-
-
 const Create = React.memo((props) => {
-const dispatch = useDispatch()
+const dispatch = useDispatch();
 const [anonymous, setAnonymous] = useState(false);
 const formData = { display: "form" }
 const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
@@ -53,73 +52,83 @@ const errors = useSelector((state)=>state.form.error)
 const lang = useSelector((state) => state.user.lang); 
 const {t}=useTranslation();
 
-// for update form access and submission access
-useEffect(()=>{
-  FORM_ACCESS.forEach(role=>{
-    if(anonymous){
-      role.roles.push(ANONYMOUS_ID)
-    }else{
-      role.roles = role.roles.filter(id=>id!==ANONYMOUS_ID)
-    }
-  });
-SUBMISSION_ACCESS.forEach((access) => {
-if (anonymous) {
-  if (access.type === "create_own") {
-    access.roles.push(ANONYMOUS_ID);
-  }
-} else {
-  if (access.type === "create_own") {
-    access.roles = access.roles.filter((id) => id !== ANONYMOUS_ID);
-  }
-}
-});
-},[anonymous])
+  // for update form access and submission access
+  useEffect(() => {
+    FORM_ACCESS.forEach((role) => {
+      if (anonymous) {
+        role.roles.push(ANONYMOUS_ID);
+      } else {
+        role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+      }
+    });
+    SUBMISSION_ACCESS.forEach((access) => {
+      if (anonymous) {
+        if (access.type === "create_own") {
+          access.roles.push(ANONYMOUS_ID);
+        }
+      } else {
+        if (access.type === "create_own") {
+          access.roles = access.roles.filter((id) => id !== ANONYMOUS_ID);
+        }
+      }
+    });
+  }, [anonymous]);
 
   // setting the form data
   useEffect(() => {
-    const newForm=  { display: "form" };
-    if (newForm && (form._id !== newForm._id || form.modified !== newForm.modified)) {
-      dispatchFormAction({type: 'replaceForm', value: newForm});
+    const newForm = { display: "form" };
+    if (
+      newForm &&
+      (form._id !== newForm._id || form.modified !== newForm.modified)
+    ) {
+      dispatchFormAction({ type: "replaceForm", value: newForm });
     }
   }, [form]);
 
-
-// submitting form
-const saveFormData =() => {
-  const newFormData = addHiddenApplicationComponent(form);
-  const newForm = {
-    ...newFormData,
-    tags: ["common"],
+  // submitting form
+  const saveFormData = () => {
+    const newFormData = addHiddenApplicationComponent(form);
+    const newForm = {
+      ...newFormData,
+      tags: ["common"],
+    };
+    newForm.submissionAccess = SUBMISSION_ACCESS;
+    newForm.access = FORM_ACCESS;
+    dispatch(
+      saveForm("form", newForm, (err, form) => {
+        if (!err) {
+          // ownProps.setPreviewMode(true);
+          const data = {
+            formId: form._id,
+            formName: form.title,
+            formRevisionNumber: "V1", // to do
+            anonymous: FORM_ACCESS[0].roles.includes(ANONYMOUS_ID),
+          };
+          const update = false;
+          dispatch(
+            saveFormProcessMapper(data, update, (err, res) => {
+              if (!err) {
+                toast.success("Form Saved");
+                dispatch(push(`/formflow/${form._id}/view-edit/`));
+              } else {
+                toast.error("Error in creating form process mapper");
+              }
+            })
+          );
+        }
+      })
+    );
   };
-  newForm.submissionAccess = SUBMISSION_ACCESS;
-  newForm.access=FORM_ACCESS
-  dispatch(
-    saveForm("form", newForm, (err, form) => {
-      if (!err) {
-        // ownProps.setPreviewMode(true);
-        const data = {
-          formId: form._id,
-          formName:form.title,
-          formRevisionNumber: "V1", // to do
-          anonymous:FORM_ACCESS[0].roles.includes(ANONYMOUS_ID)
-        };
-        const update = false
-        dispatch( saveFormProcessMapper(data,update) );
-        dispatch(push(`/formflow/${form._id}/view-edit/`));
-      }
-    })
-  );
-}
 
-// setting the main option details to the formdata
-const handleChange = (path, event) => {
-  const {target} = event;
-  const value = target.type === 'checkbox' ? target.checked : target.value;
-  dispatchFormAction({type: path, value});
-};
+  // setting the main option details to the formdata
+  const handleChange = (path, event) => {
+    const { target } = event;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    dispatchFormAction({ type: path, value });
+  };
 
-const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: newForm});
-
+  const formChange = (newForm) =>
+    dispatchFormAction({ type: "formChange", value: newForm });
 
   return (
     <div>
@@ -227,7 +236,7 @@ const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: n
             </div>
           </div>
         </div>
-
+        <FormBuilder form={form} onChange={formChange} />
       </div>
       <FormBuilder
       options={{

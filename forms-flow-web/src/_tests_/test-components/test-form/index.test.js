@@ -148,7 +148,11 @@ it("should render the Form list component without breaking",()=>{
         },
         formDelete:{
             isFormSubmissionLoading:true
+        },
+        applications:{
+            isPublicStatusLoading:true
         }
+
     }))  
      renderWithRouterMatch(Index,{
         path:"/form/:formId",

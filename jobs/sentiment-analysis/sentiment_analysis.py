@@ -4,18 +4,30 @@ This module will create statement records for each account.
 """
 
 import os
+import threading
 
 import psycopg2
-from api.services.sentiment_analysis import overall_sentiment
+from transformers import pipeline
+from api.services.transformers import overall_sentiment_transformers
 from flask import Flask
 
 import config
-from utils.logger import setup_logging
+from utils.logger import setup_logging, log_info
 
 setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'logging.conf'))  # important to do this first
 APP_CONFIG = config.get_named_config(os.getenv('DEPLOYMENT_ENV', 'production'))
 
+class LoadModel:  # pylint: disable=too-few-public-methods
+    """Manages the model."""
 
+    classifier = None
+    model_id = APP_CONFIG.MODEL_ID
+
+    @classmethod
+    def preload_models(cls):
+        """Function to load the fine-tuned transformer model."""
+        cls.classifier = pipeline("sentiment-analysis", model=cls.model_id)
+        return 0
 # pylint:disable=no-member
 
 def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
@@ -24,6 +36,12 @@ def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
     app.config.from_object(config.CONFIGURATION[run_mode])
     app.logger.info('<<<< Starting Sentiment analysis job >>>>')
     register_shellcontext(app)
+    preloading = threading.Thread(target=LoadModel.preload_models)
+    preloading.start()
+    log_info("Model is loading...")
+    preloading.join()
+    log_info("Model loading complete.")
+    app.classifier = LoadModel.classifier
     return app
 
 
@@ -103,7 +121,7 @@ def _perform_analysis(colnames, conn, results):
     query_results = [dict(zip(colnames, result)) for result in results]
     count: int = 0
     for result_dict in query_results:
-        sentiment = overall_sentiment(result_dict.get(input_col))
+        sentiment = overall_sentiment_transformers(result_dict.get(input_col))
         update_qry = f"update {table_name} set {output_col}='{sentiment}' where 1=1 "
         for key, value in result_dict.items():
             if key != input_col:

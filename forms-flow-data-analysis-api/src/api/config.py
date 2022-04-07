@@ -81,7 +81,7 @@ class _Config:  # pylint: disable=too-few-public-methods
         f"{DB_PG_CONFIG['user']}:{DB_PG_CONFIG['password']}"
         f"@{DB_PG_CONFIG['host']}:{int(DB_PG_CONFIG['port'])}/{DB_PG_CONFIG['dbname']}"
     )
-
+    MODEL_ID=os.getenv("MODEL_ID")
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""

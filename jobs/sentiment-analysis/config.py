@@ -51,7 +51,7 @@ class _Config(object):  # pylint: disable=too-few-public-methods
     DATABASE_TABLE_NAME = os.getenv('DATABASE_TABLE_NAME')
     DATABASE_INPUT_COLUMN = os.getenv('DATABASE_INPUT_COLUMN')
     DATABASE_OUTPUT_COLUMN = os.getenv('DATABASE_OUTPUT_COLUMN')
-
+    MODEL_ID = os.getenv('MODEL_ID')
     TESTING = False
     DEBUG = True
 

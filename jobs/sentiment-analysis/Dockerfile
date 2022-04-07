@@ -4,6 +4,7 @@ ARG SOURCE_REPO=BCDevOps
 ARG GOCROND_VERSION=0.6.2
 ARG VCS_REF="missing"
 ARG BUILD_DATE="missing"
+ARG MODEL_ID=xaqren/sentiment_analysis
 
 ENV VCS_REF=${VCS_REF}
 ENV BUILD_DATE=${BUILD_DATE}
@@ -44,7 +45,7 @@ RUN chown -R $user:root $HOME \
     && chmod g+rw /etc/passwd \
     && chmod g-w $HOME/cron/crontab
 
-RUN python -m nltk.downloader punkt vader_lexicon subjectivity
+RUN python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='$MODEL_ID')"
 
 USER $user
 ENTRYPOINT ["bash", "docker-entrypoint.sh"]

@@ -54,7 +54,7 @@ export const TRANSLATIONS_EN = {
   "Applications": "Applications",
   "Task": "Tasks",
   "Metrics": "Metrics",
-  "Dashboard": "Dashboard",
+  "Dashboards": "Dashboard",
   "Logout": "Logout",
   "No tasks found": "No tasks found",
   "Please change the selected filters to view tasks": "Please change the selected filters to view tasks",

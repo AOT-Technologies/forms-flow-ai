@@ -29,7 +29,7 @@ const NavBar = React.memo(() => {
     console.log(lang);
     i18n.changeLanguage(lang);
   },[lang]);
- const langarr=["en"];
+ const langarr=["en",""];
   const handleOnclick=(e)=>{
    e.preventDefault();
    dispatch(setLanguage(e.target.value))
@@ -108,7 +108,7 @@ const NavBar = React.memo(() => {
                   <ServiceFlowFilterListDropDown/>
               </NavDropdown>:null}
 
-              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><i className="fa fa-tachometer fa-lg fa-fw"/>{t("Dashboard")}</>}
+              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown title={<><i className="fa fa-tachometer fa-lg fa-fw"/>{t("Dashboards")}</>}
                                                                               id="dashboard-dropdown"
                                                                               className={`main-nav nav-item ${
                                                                                 pathname.match(/^\/metrics/) || pathname.match(/^\/insights/) ? "active-tab-dropdown" : ""

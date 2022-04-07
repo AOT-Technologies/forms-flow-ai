@@ -51,7 +51,7 @@ export const TRANSLATIONS_DE = {
   "Applications": "Anwendungen",
   "Task": "Aufgaben",
   "Metrics": "Metriken",
-  "Dashboard": "Armaturenbrett",
+  "Dashboards": "Armaturenbrett",
   "Logout": "Ausloggen",
   "No tasks found": "Keine Aufgaben gefunden",
   "Please change the selected filters to view tasks": "Bitte ändern Sie die ausgewählten Filter, um Aufgaben anzuzeigen",

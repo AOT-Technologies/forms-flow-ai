@@ -46,7 +46,7 @@ export const TRANSLATIONS_ZH = {
   "Applications": "应用",
   "Tasks": "任务",
   "Insights": "洞察力",
-  "Dashboard": "仪表盘  ",
+  "Dashboards": "仪表盘  ",
   "Logout": "登出",
   "No tasks found": "没有找到任务 ",
   "Please change the selected filters to view tasks": "请更改所选过滤器以查看任务",

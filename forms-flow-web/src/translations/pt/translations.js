@@ -50,7 +50,7 @@ export const TRANSLATIONS_PT = {
   "Print As PDF": "Imprimir como PDF",
   "Applications": "Formulários",
   "Task": "Tarefas",
-  "Dashboard": "Painel",
+  "Dashboards": "Painel",
   "Logout": "Sair",
   "No tasks found": "Nenhuma tarefa encontrada",
   "Please change the selected filters to view tasks": "Por favor, mude os filtros selecionados para ver as tarefas",

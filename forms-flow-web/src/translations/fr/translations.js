@@ -52,7 +52,7 @@ export const TRANSLATIONS_FR = {
   "Task":"Tâches",
   "Metrics":"Métrique",
   "Insights":"Connaissances",
-  "Dashboard":"Tableau de bord",
+  "Dashboards":"Tableau de bord",
   "Logout":"Se déconnecter",
   "No tasks found":"Aucune tâche trouvée",
   "Please change the selected filters to view tasks":"Veuillez modifier les filtres sélectionnés pour afficher les tâches",

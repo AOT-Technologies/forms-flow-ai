@@ -46,7 +46,7 @@ export const TRANSLATIONS_BG = {
     "Applications": "Приложения",
     "Task": "Задачи",
     "Metrics": "Метрика",
-    "Dashboard": "Табло",
+    "Dashboards": "Табло",
     "Logout": "Излез от профила си",
     "No tasks found": "Няма намерени задачи",
     "Please change the selected filters to view tasks": "Моля, променете избраните филтри, за да видите задачите",

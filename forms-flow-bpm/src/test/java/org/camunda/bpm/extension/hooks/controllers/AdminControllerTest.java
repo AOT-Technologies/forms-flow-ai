@@ -14,7 +14,6 @@ import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
 import org.camunda.bpm.engine.impl.ProcessEngineImpl;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.controllers.stubs.AuthorizationStub;
-import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,16 +22,19 @@ import org.mockito.Mock;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -63,8 +65,8 @@ public class AdminControllerTest {
 
         Map<String, Object> claims = new HashMap<>();
         JSONArray groups = new JSONArray();
-        groups.add(new String("/camunda-admin"));
-        groups.add(new String("/formsflow/formsflow-reviewer"));
+        groups.add("camunda-admin");
+        groups.add("/formsflow/formsflow-reviewer");
         claims.put("groups", groups);
 
         OidcUser oidcUser = mock(OidcUser.class);
@@ -75,6 +77,7 @@ public class AdminControllerTest {
                 .thenReturn(claims);
 
         List<org.camunda.bpm.engine.authorization.Authorization> authorizationList = new ArrayList<>();
+        authorizationList.add(new AuthorizationStub("test-id-1", "test-id-1", "224233456456"));
         authorizationList.add(new AuthorizationStub("test-id-1", "test-id-1", "224233456456"));
 
 
@@ -176,6 +179,51 @@ public class AdminControllerTest {
 
     @Test
     public void getFormsAuthorizationSuccess_without_adminGroupName() throws Exception {
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/engine-rest-ext/form/authorization"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"adminGroupEnabled\":false,\"authorizationList\":" +
+                        "[{\"groupId\":\"test-id-1\",\"userId\":\"test-id-1\",\"resourceId\":\"224233456456\"}]}"));
+    }
+
+    /*
+     * Expect JSON parse exception
+     */
+    @Test
+    public void getForms_with_servletException() throws Exception {
+
+        AnonymousAuthenticationToken anonymousAuthenticationToken = mock(AnonymousAuthenticationToken.class);
+        when(auth.getPrincipal())
+                .thenReturn(anonymousAuthenticationToken);
+
+        when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any()))
+                .thenReturn(ResponseEntity.ok("{\"totalCount\":\"2\",\"forms\":[" +
+                        "{:\"foi\",[]," +
+                        "{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]}"));
+        assertThrows(ServletException.class,  () -> {
+            mockMvc.perform(
+                    MockMvcRequestBuilders.get("/engine-rest-ext/form"))
+                    .andExpect(content().string(""));
+        });
+    }
+
+    @Test
+    public void getFormsAuthorizationSuccess_without_adminGroupName_and_JwtAuthenticationToken() throws Exception {
+        JwtAuthenticationToken jwtAuthenticationToken = mock(JwtAuthenticationToken.class);
+        SecurityContextHolder.getContext().setAuthentication(jwtAuthenticationToken);
+        Jwt jwt = mock(Jwt.class);
+        when(jwtAuthenticationToken.getToken())
+                .thenReturn(jwt);
+
+        Map<String, Object> claims = new HashMap<>();
+        JSONArray groups = new JSONArray();
+        groups.add("camunda-admin");
+        groups.add("/formsflow/formsflow-reviewer");
+        claims.put("groups", groups);
+
+        when(jwt.getClaims())
+                .thenReturn(claims);
+
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/engine-rest-ext/form/authorization"))
                 .andExpect(status().isOk())

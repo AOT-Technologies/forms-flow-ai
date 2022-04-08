@@ -33,9 +33,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -77,7 +75,7 @@ public class AdminController {
     private @ResponseBody List<AuthorizedAction> getForms() throws ServletException,  ApplicationServiceException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
-        List<Authorization> authorizationList =  getAuthorization(groups);
+        Set<Authorization> authorizationList =  getAuthorization(groups);
         List<AuthorizedAction> formList = new ArrayList<>();
         List<AuthorizedAction> filteredList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -177,9 +175,9 @@ public class AdminController {
      * @param groups
      * @return
      */
-    private List<Authorization> getAuthorization(List<String> groups) {
+    private Set<Authorization> getAuthorization(List<String> groups) {
 
-        List<Authorization> authorizationList = new ArrayList<>();
+        Set<Authorization> authorizationList = new HashSet<>();
 
         String[] groupIds = groups.size() > 0 ? groups.toArray(new String[0]) : new String[]{};
         List<org.camunda.bpm.engine.authorization.Authorization> authorizations =  ProcessEngines.getDefaultProcessEngine().getAuthorizationService().createAuthorizationQuery()

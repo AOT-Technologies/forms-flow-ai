@@ -7,8 +7,7 @@ const initialState = {
   isFormSubmissionLoading: false,
   isFormWorkflowSaved: false,
   formSubmitted:false,
-  publicFormStatus:"checking"
-  
+  publicFormStatus:false
 }
 
 const formDelete = (state = initialState, action)=> {

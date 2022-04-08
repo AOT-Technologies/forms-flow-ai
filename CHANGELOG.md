@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 4.0.5 - 2022-03-31
+## 4.0.5 - 2022-04-05
 
 `Added`
 
@@ -106,6 +106,7 @@ Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` ar
 `Generic Changes`
 
 * Added docker based automated installation.For installation guide, check out [here](./deployment/docker/bundle).
+* Existing users should build forms-flow-bpm,forms-flow-webapi and forms-flow-web together.
 
 ## 4.0.4 - 2021-12-27
 

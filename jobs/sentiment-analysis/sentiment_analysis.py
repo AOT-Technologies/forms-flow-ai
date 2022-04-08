@@ -61,6 +61,7 @@ def update_sentiment():
     """Update sentiment by querying the records."""
     conn = None
     try:
+        log_info("Starting sentiment analysis.")
         # connect to the PostgreSQL server
         conn = psycopg2.connect(**APP_CONFIG.DB_PG_CONFIG)
 
@@ -70,11 +71,11 @@ def update_sentiment():
 
         # Find primary key for the table.
         primary_keys = _find_primary_keys(conn, table_name)
-
+        log_info(f"found primary keys : {primary_keys}")
         # Query the rows from table.
         cols_to_query = f'{primary_keys},{input_col}'
-        rows_query = f"select {cols_to_query} from {table_name} where coalesce({output_col}, '') = ''"
-
+        rows_query = f"select {cols_to_query} from {table_name} where coalesce({output_col}, '') = '' limit 100"
+        log_info("Query executed")
         try:
             cur = conn.cursor()
             cur.execute(rows_query)
@@ -121,7 +122,9 @@ def _perform_analysis(colnames, conn, results):
     query_results = [dict(zip(colnames, result)) for result in results]
     count: int = 0
     for result_dict in query_results:
+        log_info(f"Finding sentiment for for {result_dict}")
         sentiment = overall_sentiment_transformers(result_dict.get(input_col))
+        log_info(f"Sentiment {sentiment}")
         update_qry = f"update {table_name} set {output_col}='{sentiment}' where 1=1 "
         for key, value in result_dict.items():
             if key != input_col:

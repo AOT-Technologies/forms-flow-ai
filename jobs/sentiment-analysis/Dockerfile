@@ -6,6 +6,7 @@ ARG VCS_REF="missing"
 ARG BUILD_DATE="missing"
 ARG MODEL_ID=xaqren/sentiment_analysis
 
+ENV MODEL_ID=${MODEL_ID}
 ENV VCS_REF=${VCS_REF}
 ENV BUILD_DATE=${BUILD_DATE}
 
@@ -45,7 +46,7 @@ RUN chown -R $user:root $HOME \
     && chmod g+rw /etc/passwd \
     && chmod g-w $HOME/cron/crontab
 
-RUN python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='$MODEL_ID')"
+RUN python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='$MODEL_ID', truncation=True)"
 
 USER $user
 ENTRYPOINT ["bash", "docker-entrypoint.sh"]

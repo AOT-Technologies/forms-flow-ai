@@ -26,7 +26,7 @@ class LoadModel:  # pylint: disable=too-few-public-methods
     @classmethod
     def preload_models(cls):
         """Function to load the fine-tuned transformer model."""
-        cls.classifier = pipeline("sentiment-analysis", model=cls.model_id)
+        cls.classifier = pipeline("sentiment-analysis", model=cls.model_id, truncation=True)
         return 0
 
 

@@ -2,6 +2,7 @@ export const formio_translation = {
 
    "en": {
 
+      "Submitted By":"Submitted By",
       "Copy anonymous form URL":"Copy anonymous form URL",
       "Form field":"Form field",
       "Enter Label":"Enter Label",
@@ -203,6 +204,7 @@ export const formio_translation = {
 
    "zh-CN": {
       
+      "Submitted By":"由...所提交",
       "Copy anonymous form URL":"复制匿名表单 URL",
       "Form field":"表单域",
       "Enter Label":"输入标签",
@@ -902,6 +904,7 @@ export const formio_translation = {
 
    "bg": {
       
+      "Submitted By":"Изпратено от",
       "Copy anonymous form URL":"Копирайте URL на анонимен формуляр",
       "Form field":"Поле за формуляр",
       "Enter Label":"Въведете етикет",
@@ -1599,6 +1602,7 @@ export const formio_translation = {
 
    "pt": {
       
+      "Submitted By":"Enviado por",
       "Copy anonymous form URL":"Copiar URL de formulário anônimo",
       "Form field":"Campo do formulário",
       "Enter Label":"Digite o rótulo",
@@ -2299,6 +2303,7 @@ export const formio_translation = {
 
    "fr": {
 
+      "Submitted By":"Proposé par",
       "Copy anonymous form URL":"Copier l'URL du formulaire anonyme",
       "Form field":"Champ de formulaire",
       "Enter Label":"Entrez l'étiquette",
@@ -3000,6 +3005,7 @@ export const formio_translation = {
 
    "de": {
 
+      "Submitted By":"Eingereicht von",
       "Copy anonymous form URL":"Kopieren Sie die anonyme Formular-URL",
       "Form field":"Formularfeld",
       "Enter Label":"Bezeichnung eingeben",

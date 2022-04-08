@@ -188,7 +188,8 @@ export const TRANSLATIONS_ZH = {
   "Form not available": "不适用公式",
   "Thank you for your response.":"谢谢您的答复。",
   "saved successfully":"保存成功",
-  "Copy anonymous form URL":"复制匿名表单 URL"
+  "Copy anonymous form URL":"复制匿名表单 URL",
+  "Submitted By":"由...所提交"
 
 
 

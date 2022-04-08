@@ -34,13 +34,13 @@ export const columns_history = [
   },
   {
     dataField: "created",
-    text: <Translation>{(t)=>t("created")}</Translation>,
+    text: <Translation>{(t)=>t("Created")}</Translation>,
     sort: true,
     formatter: timeFormatter,
   },
   {
       dataField: "submittedBy",
-      text: "Submitted By",
+      text:  <Translation>{(t)=>t("Submitted By")}</Translation>,
       sort: true,
   },
   {

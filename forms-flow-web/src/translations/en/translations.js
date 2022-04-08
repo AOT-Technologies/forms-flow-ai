@@ -190,7 +190,8 @@ export const TRANSLATIONS_EN = {
   "Form not available": "Form not available",
   "Thank you for your response.":"Thank you for your response.",
   "saved successfully":"saved successfully",
-  "Copy anonymous form URL":"Copy anonymous form URL"
+  "Copy anonymous form URL":"Copy anonymous form URL",
+  "Submitted By":"Submitted By"
 
 
 

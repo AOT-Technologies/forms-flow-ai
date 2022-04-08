@@ -188,7 +188,8 @@ export const TRANSLATIONS_BG = {
     "Form not available":"Формулярът не е наличен",
     "Thank you for your response.":"Благодаря ви за отговора.",
     "saved successfully":"Запазено успешно",
-    "Copy anonymous form URL":"Копирайте URL на анонимен формуляр"
+    "Copy anonymous form URL":"Копирайте URL на анонимен формуляр",
+    "Submitted By":"Изпратено от"
 
 
 }

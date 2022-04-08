@@ -191,7 +191,8 @@ export const TRANSLATIONS_DE = {
   "Form not available": "Formular nicht verfügbar",
   "Thank you for your response.":"Danke für Ihre Antwort.",
   "saved successfully":"Erfolgreich gespeichert",
-  "Copy anonymous form URL":"Kopieren Sie die anonyme Formular-URL"
+  "Copy anonymous form URL":"Kopieren Sie die anonyme Formular-URL",
+  "Submitted By":"Eingereicht von"
 
 
 

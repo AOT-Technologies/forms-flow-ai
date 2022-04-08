@@ -236,16 +236,11 @@ const {t}=useTranslation();
             </div>
           </div>
         </div>
-        <FormBuilder form={form} onChange={formChange} />
       </div>
-      <FormBuilder
-      options={{
+      <FormBuilder form={form} onChange={formChange} options={{
         language: lang,
         i18n: formio_translation
-        }}
-        form={form}
-        onChange={formChange}
-      />
+        }}/>
     </div>
     </div>
   );

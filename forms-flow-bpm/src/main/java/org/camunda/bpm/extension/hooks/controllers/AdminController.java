@@ -106,7 +106,7 @@ public class AdminController {
                 } else {
                     for (Authorization authObj : authorizationList) {
                         for (AuthorizedAction formObj : formList) {
-                            if (authObj.getResourceId().equals(formObj.getProcessKey()) && !isExists(filteredList, formObj.getFormId()))  {
+                            if (("*".equals(authObj.getResourceId()) || authObj.getResourceId().equals(formObj.getProcessKey())) && !isExists(filteredList, formObj.getFormId()))  {
                                 filteredList.add(formObj);
                             }
                         }

@@ -7,7 +7,7 @@ const initialState = {
   isFormSubmissionLoading: false,
   isFormWorkflowSaved: false,
   formSubmitted:false,
-  publicFormStatus:false
+  publicFormStatus:null //expected values sample {anonymous:false,status:inactive}
 }
 
 const formDelete = (state = initialState, action)=> {

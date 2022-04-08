@@ -37,6 +37,7 @@ import LoadingOverlay from "react-loading-overlay";
 import { getFormProcesses,getApplicationCount } from "../../apiManager/services/processServices";
 import { unPublishForm } from "../../apiManager/services/processServices";
 import { setIsApplicationCountLoading } from "../../actions/processActions";
+import { setBpmFormSearch } from "../../actions/formActions";
 
 const List = React.memo((props) => {
   const {t}=useTranslation();
@@ -63,11 +64,12 @@ const List = React.memo((props) => {
   const operations = getOperations(userRoles, showViewSubmissions);
   const columns = isDesigner ? designerColumns : userColumns;
   const paginatedForms = isDesigner? forms.forms : bpmForms.forms;
-  const searchFormLoading = useSelector(state=> state.formCheckList.searchFormLoading)
-  const isApplicationCountLoading = useSelector(state=> state.process.isApplicationCountLoading)
-  const applicationCountResponse = useSelector(state=> state.process.applicationCountResponse)
+  const searchFormLoading = useSelector(state=> state.formCheckList.searchFormLoading);
+  const isApplicationCountLoading = useSelector(state=> state.process.isApplicationCountLoading);
+  const applicationCountResponse = useSelector(state=> state.process.applicationCountResponse);
   const formProcessData = useSelector(state=>state.process.formProcessList)
   const applicationCount = useSelector(state => state.process.applicationCount)
+  const bpmFormLoading = useSelector(state => state.bpmForms.bpmFormLoading)
 
   const getFormsList = (page, query) => {
     if (page) {
@@ -77,7 +79,7 @@ const List = React.memo((props) => {
       dispatch(setBPMFormListSort(query.sort || ''));
     }
   }
-const [previousForms,setPreviousForms] = useState({})
+  const [previousForms,setPreviousForms] = useState({})
   const onPageSizeChanged = (pageSize) => {
     if (isDesigner) {
       dispatch(indexForms("forms", 1, {limit: pageSize}));
@@ -119,7 +121,8 @@ const [previousForms,setPreviousForms] = useState({})
   };
    
   const resetForms = ()=>{
-    dispatch(indexForms('forms', 1, {query:{ ...forms.query, title__regex: "" }}))
+  isDesigner ?  dispatch(indexForms('forms', 1, {query:{ ...forms.query, title__regex: "" }})) :
+  dispatch(setBpmFormSearch(''));
   }
 
   const uploadFileContents = async (fileContent) => {
@@ -241,7 +244,7 @@ const [previousForms,setPreviousForms] = useState({})
               <Errors errors={errors}/>
               {
               <LoadingOverlay
-               active={searchFormLoading || isApplicationCountLoading}
+               active={searchFormLoading || isApplicationCountLoading || bpmFormLoading }
                spinner
                text="Loading..."
               >

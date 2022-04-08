@@ -13,7 +13,8 @@ export const appState = {
     isApplicationDetailLoading:false,
     isApplicationUpdating:false,
     applicationCount:0,
-    applicationDetailStatusCode:''
+    applicationDetailStatusCode:'',
+    isPublicStatusLoading:false
   },
   user:{
     bearerToken: '',
@@ -46,7 +47,7 @@ export const appState = {
     isFormSubmissionLoading: false,
     isFormWorkflowSaved: false,
     formSubmitted:false,
-    publicFormStatus:"checking",
+    publicFormStatus:null
   },
   bpmTasks:{
     isTaskListLoading:false,

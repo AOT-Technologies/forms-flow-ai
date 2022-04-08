@@ -1,49 +1,75 @@
-import React, { useState } from 'react'
-import '../FormSearch/formSearch.css'
-import { useDispatch, useSelector } from 'react-redux'
-import { indexForms } from 'react-formio'
-import { setFormLoading } from '../../../actions/checkListActions'
-import InputGroup from 'react-bootstrap/InputGroup'
-import FormControl from 'react-bootstrap/FormControl'
+import React, { useState } from 'react';
+import '../FormSearch/formSearch.css';
+import { useDispatch, useSelector } from 'react-redux';
+import { indexForms} from 'react-formio';
+import { setFormLoading } from '../../../actions/checkListActions';
+import InputGroup from 'react-bootstrap/InputGroup';
+import FormControl from 'react-bootstrap/FormControl';
 import {getSearchText} from "../../../apiManager/services/formatterService";
 import {Button} from "react-bootstrap";
+
+import { STAFF_DESIGNER } from '../../../constants/constants';
+import { setBPMFormListSort,setBpmFormSearch,setBpmFormLoading} from '../../../actions/formActions';
 import { useTranslation,Translation } from "react-i18next";
 
 const FormSearch = React.memo(() => {
   //Search query /form?type=form&title__regex=%2Fnew%2Fi  query Format title__regex= /^title/i
   const {t}=useTranslation();
   const dispatch = useDispatch();
-  const { query, sort } = useSelector((state) => state.forms);
+  const query = useSelector((state) => state.forms.query);
+  const sort =  useSelector((state) => state.forms.sort)
   const [searchText, setSearchText] = useState(getSearchText(query?.title__regex||''));
+  const bpmSort = useSelector((state)=> state.bpmForms.sort);
+  const userRoles = useSelector((state) => state.user.roles);
+  const isDesigner = userRoles.includes(STAFF_DESIGNER);
 
   // if ascending sort value is title else -title for this case
-  const isAscending = !sort.match(/^-/g);
-
-  //function for sorting in descending order
+  // const isAscending = !sort.match(/^-/g);
+  const isAscending = isDesigner ? !sort.match(/^-/g) : (bpmSort ==='-title'? false : true);
+  //function for sorting  order
+  let updatedQuery ={}
   const updateSort = () => {
-    dispatch(setFormLoading(true))
-    const updatedQuery = {
-      sort: `${isAscending?'-':''}title`,
+    if(isDesigner){
+      dispatch(setFormLoading(true));
+      updatedQuery = {
+        sort: `${isAscending?'-':''}title`,
+      }
+      dispatch(indexForms('forms', 1, updatedQuery,()=>{
+        dispatch(setFormLoading(false));
+      })) 
+    }else{
+      dispatch(setBpmFormLoading(true))
+      updatedQuery = {
+        sort: `${isAscending?'-':''}title`,
+      }
+     dispatch(setBPMFormListSort(updatedQuery.sort || ''));
+     dispatch(setBpmFormLoading(false))
     }
-    dispatch(indexForms('forms', 1, updatedQuery,()=>{
-      dispatch(setFormLoading(false))
-    }))
   }
 
   // To handle the search option
+  let searchTitle
   const handleSearch = (searchForm) => {
-    dispatch(setFormLoading(true))
-    const searchTitle = searchForm ? `/${searchText}/i` : '';
-    dispatch(indexForms('forms', 1, {query:{ ...query, title__regex: searchTitle}},()=>{
-      dispatch(setFormLoading(false))
-      setSearchText(searchForm)
-    }))
+    if(isDesigner){
+      dispatch(setFormLoading(true));
+       searchTitle = searchForm ? `/${searchText}/i` : '';
+      dispatch(indexForms('forms', 1, {query:{ ...query, title__regex: searchTitle}},()=>{
+        dispatch(setFormLoading(false));
+        setSearchText(searchForm);
+      }))
+    }else{
+      dispatch(setBpmFormLoading(true))
+     searchTitle = searchForm ? searchText : '';
+     dispatch(setBpmFormSearch(searchTitle))
+     setSearchText(searchTitle);
+     dispatch(setBpmFormLoading(false))
+    }
   }
   return (
     <>
       <div className="container main_div">
-        <span className="">
-        <Translation>{(t)=>t("form")}</Translation>
+        <span className="" data-testid = "sample">
+        <Translation>{(t)=>t("Form")}</Translation>
           <i
             onClick={updateSort}
             className="fa fa-long-arrow-up ml-2"

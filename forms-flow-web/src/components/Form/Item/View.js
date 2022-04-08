@@ -37,6 +37,8 @@ import {
 } from "../../../actions/formActions";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import {checkIsObjectId} from "../../../apiManager/services/formatterService";
+import { setPublicStatusLoading } from "../../../actions/applicationActions";
+
 
 const View = React.memo((props) => {
  const{t}=useTranslation();
@@ -44,6 +46,10 @@ const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
+  const isPublicStatusLoading = useSelector(
+    (state) => state.applications.isPublicStatusLoading
+  );
+  
   const isFormSubmitted = useSelector(
     (state) => state.formDelete.formSubmitted
   );
@@ -66,8 +72,10 @@ const View = React.memo((props) => {
   const dispatch = useDispatch();
 
   const getPublicForm = useCallback((form_id, isObjectId, formObj) => {
+    dispatch(setPublicStatusLoading(true));
     dispatch(
       publicApplicationStatus(form_id, (err, res) => {
+        dispatch(setPublicStatusLoading(false));
         if(!err)
         {
         if (isPublic) {
@@ -112,7 +120,7 @@ const View = React.memo((props) => {
     }
   }, [isPublic, dispatch,getFormData]);
 
-  if (isActive) {
+  if (isActive || isPublicStatusLoading) {
     return (
       <div data-testid="loading-view-component">
         <Loading />
@@ -129,11 +137,13 @@ const View = React.memo((props) => {
     );
   }
 
-  if (!publicFormStatus && isPublic) {
+
+  if (isPublic && publicFormStatus && publicFormStatus.anonymous && publicFormStatus.status === "inactive" ) {
     return (
       <div className="alert alert-danger mt-4" role="alert">
         Form not available
       </div>
+
     );
   }
 
@@ -166,7 +176,7 @@ const View = React.memo((props) => {
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
-        active={isFormSubmissionLoading}
+        active={isFormSubmissionLoading }
         spinner
         text="Loading..."
         className="col-12"

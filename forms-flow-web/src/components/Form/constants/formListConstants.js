@@ -4,6 +4,7 @@ import {CLIENT, OPERATIONS, STAFF_DESIGNER, STAFF_REVIEWER} from "../../../const
 import FormSearch from "../FormSearch/FormSearch";
 import { Translation } from "react-i18next";
 
+
 export const designerColumns = [
   {
     key: 'title',
@@ -27,8 +28,8 @@ export const designerColumns = [
 export const userColumns = [
   {
     key: 'title',
-    sort: true,
-    title: <Translation>{(t)=>t("form")}</Translation>,
+    sort: false,
+    title: <FormSearch/>,
     width: 8,
   },
   {

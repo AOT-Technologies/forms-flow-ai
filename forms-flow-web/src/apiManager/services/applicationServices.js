@@ -152,18 +152,16 @@ export const publicApplicationStatus = (formId, ...rest) => {
     httpGETRequest(URL)
       .then((res) => {
         if (res.data) {
-          if (res.data.is_anonymous && res.data.status === "active") {
-            dispatch(setPublicFormStatus(true));
-          } else {
-            dispatch(setPublicFormStatus(false));
-          }
-          done(null, res.data);
+            dispatch(setPublicFormStatus({anonymous:res.data.is_anonymous,status:res.data.status}));
+            done(null, res.data);
         } else {
+          dispatch(setPublicFormStatus(null));
           dispatch(serviceActionError(res));
           done("Error Fetching Data");
         }
       })
       .catch((error) => {
+        dispatch(setPublicFormStatus(null));
         dispatch(serviceActionError(error));
         done(error);
       });

@@ -6,6 +6,7 @@ import { Provider } from 'react-redux'
 import { Router,Route } from 'react-router';
 import { createMemoryHistory } from "history";
 import configureStore from 'redux-mock-store';
+import * as redux from 'react-redux' 
 
 let store;
 let mockStore = configureStore([]);
@@ -35,17 +36,28 @@ function renderWithRouterMatch( ui,{
     
   }
 
+  
+
 it("should render the create component without braking",()=>{
+
+  const spy = jest.spyOn(redux,"useSelector");
+  spy.mockImplementation((callback) => callback(
+    {user:{lang:''},form:{error:""}}
+))
     renderWithRouterMatch(Create,{
         path:"/formflow/:formId",
         route:"/formflow/create",
     }
     )
-    expect(screen.getByText("Drag and Drop a form component")).toBeInTheDocument();
     expect(screen.getByText("Save & Preview")).toBeInTheDocument();
 })
 
 it("should render the create  anonymous component without braking",()=>{
+
+  const spy = jest.spyOn(redux,"useSelector");
+  spy.mockImplementation((callback) => callback(
+    {user:{lang:''},form:{error:""}}
+))
   renderWithRouterMatch(Create,{
       path:"/formflow/:formId",
       route:"/formflow/create",

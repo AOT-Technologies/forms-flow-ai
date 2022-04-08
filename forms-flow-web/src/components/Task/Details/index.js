@@ -4,11 +4,12 @@ import LoadingOverlay from 'react-loading-overlay';
 import View from './View'
 import Review from './Review';
 import { connect } from 'react-redux';
+import {Translation} from 'react-i18next';
 
 
 const Details = React.memo((props) => {
     return (
-        <LoadingOverlay active={props.isTaskUpdating} spinner text={<Translation>{(t)=>t("loading...")}</Translation>}>
+        <LoadingOverlay active={props.isTaskUpdating} spinner text={<Translation>{(t)=>t("Loading...")}</Translation>}>
             <div className="row" style={{ marginTop: '26.5px', fontWeight: "500px" }}>
                 <div className="col-md-6">
                     <View />

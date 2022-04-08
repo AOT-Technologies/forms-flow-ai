@@ -64,7 +64,7 @@ const AddGroupModal= React.memo((props)=> {
                     </button>
                   </Col>
                   <Col lg={8} xs={12} sm={8} md={8} xl={8}>
-                    <input type="text" placeholder={t("Group ID")} className="add text-color" value={groupToAdd} onChange={(e)=>updateGroupToAdd(e.target.value)}/>
+                    <input type="text" data-testid = "Group ID" placeholder={t("Group ID")} className="add text-color" value={groupToAdd} onChange={(e)=>updateGroupToAdd(e.target.value)}/>
                   </Col>
                 </Row>
                 <Row className="mb-2 modal-scroll">

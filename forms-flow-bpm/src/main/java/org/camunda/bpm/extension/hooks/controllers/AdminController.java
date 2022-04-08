@@ -155,16 +155,24 @@ public class AdminController {
             throw new ServletException("Invalid authentication request token");
         }
 
-        List<String> groupIds = new ArrayList<>();
+        List<String> groupIds = null;
         if(claims != null && claims.containsKey("groups")) {
-            JSONArray groups = (JSONArray)claims.get("groups");
-            for (Object group1 : groups) {
-                String groupName = group1.toString();
-                if(StringUtils.startsWith(groupName,"/")) {
-                    groupIds.add(StringUtils.substring(groupName,1));
-                } else {
-                    groupIds.add(groupName);
-                }
+            groupIds = getKeyValues(claims, "groups");
+        } else if (claims != null && claims.containsKey("roles")) {
+            groupIds = getKeyValues(claims, "roles");
+        }
+        return groupIds;
+    }
+
+    private List<String> getKeyValues(Map<String, Object> claims, String claimName) {
+        List<String> groupIds = new ArrayList<String>();
+        JSONArray groups = (JSONArray)claims.get(claimName);
+        for (Object group1 : groups) {
+            String groupName = group1.toString();
+            if(StringUtils.startsWith(groupName,"/")) {
+                groupIds.add(StringUtils.substring(groupName,1));
+            } else {
+                groupIds.add(groupName);
             }
         }
         return groupIds;

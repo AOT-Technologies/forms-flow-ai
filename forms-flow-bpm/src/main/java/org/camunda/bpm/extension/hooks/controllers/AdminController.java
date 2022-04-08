@@ -13,7 +13,6 @@ import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizedAction;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
-import org.jsoup.HttpStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -177,6 +176,7 @@ public class AdminController {
         }
         return groupIds;
     }
+
 
     /**
      * This method returns all authorization details of Groups.

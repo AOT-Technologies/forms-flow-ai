@@ -1,5 +1,7 @@
 package org.camunda.bpm.extension.hooks.controllers;
 
+import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
@@ -17,8 +19,12 @@ import org.camunda.bpm.engine.authorization.Resources;
 import org.camunda.bpm.engine.impl.ProcessEngineImpl;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
+import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.mapper.AuthorizationMapper;
 import org.camunda.bpm.extension.hooks.controllers.stubs.AuthorizationStub;
+import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
+import org.jsoup.HttpStatusException;
+import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +32,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -37,6 +44,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import spinjar.com.fasterxml.jackson.core.JsonParseException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,7 +91,8 @@ public class AdminControllerTest {
                 .thenReturn(claims);
 
         List<org.camunda.bpm.engine.authorization.Authorization> authorizationList = new ArrayList<>();
-        authorizationList.add(new AuthorizationStub("test-id-1","test-id-1","224233456456"));
+        authorizationList.add(new AuthorizationStub("test-id-1", "test-id-1", "224233456456"));
+
 
         List<String> groupIds = new ArrayList<>();
         ProcessEngineImpl processEngine = mock(ProcessEngineImpl.class);
@@ -119,7 +128,7 @@ public class AdminControllerTest {
                         "{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"}," +
                         "{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]}"));
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/engine-rest-ext/form"))
+                        MockMvcRequestBuilders.get("/engine-rest-ext/form"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"},{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]"));
     }
@@ -128,16 +137,16 @@ public class AdminControllerTest {
      * This test case perform a positive test over getForms without admin group name
      * Expect Status OK and content
      */
-    //@Test
+    @Test
     public void getFormsSuccess_without_adminGroupName() throws Exception {
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any()))
                 .thenReturn(ResponseEntity.ok("{\"totalCount\":\"2\",\"forms\":[" +
                         "{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"}," +
                         "{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]}"));
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/engine-rest-ext/form"))
+                        MockMvcRequestBuilders.get("/engine-rest-ext/form"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"},{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]"));
+                .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"}]"));
     }
 
     /**
@@ -146,12 +155,48 @@ public class AdminControllerTest {
     //@Test
     public void getFormsFailure() throws Exception {
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any()))
-                .thenReturn(ResponseEntity.ok("{\"totalCount\":\"2\",\"forms\":[" +
-                        "{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"}," +
-                        "{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]}"));
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/engine-rest-ext/form"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("[]"));
+                .thenReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(""));
+        assertThrows(RuntimeException.class, () ->{
+            mockMvc.perform(
+                            MockMvcRequestBuilders.get("/engine-rest-ext/form"))
+                    .andExpect(content().string("[]"));
+        });
+
     }
+
+    /*
+     * Expect JSON parse exception
+     */
+    //@Test
+    public void getForms_with_parseException() throws Exception {
+        when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any()))
+                .thenReturn(ResponseEntity.ok("{\"totalCount\":\"2\",\"forms\":[" +
+                        "{:\"foi\",[]," +
+                        "{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]}"));
+        assertThrows(RuntimeException.class, () -> {
+            mockMvc.perform(
+                    MockMvcRequestBuilders.get("/engine-rest-ext/form"));
+
+        });
+    }
+
+    @Test
+    public void getFormsAuthorizationSuccess_with_adminGroupName() throws Exception {
+        final String adminGroupName = "camunda-admin";
+        ReflectionTestUtils.setField(adminController, "adminGroupName", adminGroupName);
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/engine-rest-ext/form/authorization"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"adminGroupEnabled\":true,\"authorizationList\":null}"));
+    }
+
+    @Test
+    public void getFormsAuthorizationSuccess_without_adminGroupName() throws Exception {
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/engine-rest-ext/form/authorization"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("{\"adminGroupEnabled\":false,\"authorizationList\":" +
+                        "[{\"groupId\":\"test-id-1\",\"userId\":\"test-id-1\",\"resourceId\":\"224233456456\"}]}"));
+    }
+
 }

@@ -12,6 +12,8 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizedAction;
+import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
+import org.jsoup.HttpStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -72,7 +74,7 @@ public class AdminController {
 
     @Deprecated
     @RequestMapping(value = "/engine-rest-ext/form", method = RequestMethod.GET, produces = "application/json")
-    private @ResponseBody List<AuthorizedAction> getForms() throws ServletException {
+    private @ResponseBody List<AuthorizedAction> getForms() throws ServletException,  ApplicationServiceException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
         List<Authorization> authorizationList =  getAuthorization(groups);
@@ -112,12 +114,15 @@ public class AdminController {
                         }
                     }
                 }
-                return filteredList;
+            }else{
+                throw new ApplicationServiceException("Error while processing form data");
             }
         } catch (JsonProcessingException e) {
             LOGGER.log(Level.SEVERE, "Exception occurred in reading form", e);
+            throw new ApplicationServiceException(e.getMessage(), e);
+        }finally {
+            return filteredList;
         }
-        return filteredList;
     }
 
     /**

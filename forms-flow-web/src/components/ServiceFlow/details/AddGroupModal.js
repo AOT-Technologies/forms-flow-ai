@@ -48,7 +48,7 @@ const AddGroupModal= React.memo((props)=> {
             <LoadingOverlay
               active={isGroupLoading}
               spinner
-              text={<Translation>{(t)=>t("loading...")}</Translation>}
+              text={<Translation>{(t)=>t("Loading...")}</Translation>}
             >
               <Modal.Body>
 

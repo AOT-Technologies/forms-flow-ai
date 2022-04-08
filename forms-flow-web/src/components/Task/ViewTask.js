@@ -15,6 +15,8 @@ import History from '../Application/ApplicationHistory';
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 import {getProcessActivities} from "../../apiManager/services/processServices";
 
+
+
 const ViewTask = React.memo((props) => {
     const {taskId} = useParams();
     const taskDetail = useSelector(state => state.tasks.taskDetail);

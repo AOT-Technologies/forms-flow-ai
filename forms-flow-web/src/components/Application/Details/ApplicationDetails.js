@@ -15,7 +15,7 @@ const ApplicationDetails = React.memo((props) => {
     <Table responsive>
       <tbody>
       <tr>
-        <td className="border-0"><Translation>{(t)=>t("Application ID")}</Translation></td>
+        <td className="border-0"><Translation>{(t)=>t("Application Id")}</Translation></td>
         <td className="border-0">:</td>
         <td className="border-0" id="application-id">{application.id}</td>
       </tr>

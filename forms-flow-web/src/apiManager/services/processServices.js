@@ -136,11 +136,10 @@
  export const saveFormProcessMapper = (data, update = false, ...rest) => {
    const done = rest.length ? rest[0] : () => {};
    return  async (dispatch) => {
-     
      if (update) {
        httpPUTRequest(`${API.FORM}/${data.id}`, data).then(async(res) => {
          if(res.data){
-         dispatch(setFormProcessesData(res.data));
+        // dispatch(setFormProcessesData(res.data));
          done(null, res.data);
          }
          else{

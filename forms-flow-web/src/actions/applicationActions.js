@@ -107,3 +107,10 @@ export const setApplicationError = (data) => dispatch =>{
     payload:data
   })
 }
+
+export const setPublicStatusLoading = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_PUBLIC_STATUS_LOADING,
+    payload:data
+  })
+}

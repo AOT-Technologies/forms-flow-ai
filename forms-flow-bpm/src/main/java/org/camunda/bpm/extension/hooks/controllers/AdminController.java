@@ -115,14 +115,14 @@ public class AdminController {
                     }
                 }
             }else{
+                LOGGER.log(Level.SEVERE, "Error while processing form data");
                 throw new ApplicationServiceException("Error while processing form data");
             }
         } catch (JsonProcessingException e) {
             LOGGER.log(Level.SEVERE, "Exception occurred in reading form", e);
-            throw new ApplicationServiceException(e.getMessage(), e);
-        }finally {
-            return filteredList;
+            throw new ApplicationServiceException("Exception occurred in reading form", e);
         }
+        return filteredList;
     }
 
     /**

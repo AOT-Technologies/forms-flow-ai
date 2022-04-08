@@ -1,41 +1,29 @@
 package org.camunda.bpm.extension.hooks.controllers;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import net.minidev.json.JSONArray;
 import org.camunda.bpm.engine.AuthorizationService;
-import org.camunda.bpm.engine.ProcessEngine;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.authorization.AuthorizationQuery;
 import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
-import org.camunda.bpm.engine.authorization.Resources;
 import org.camunda.bpm.engine.impl.ProcessEngineImpl;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
-import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
-import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
-import org.camunda.bpm.extension.hooks.controllers.mapper.AuthorizationMapper;
 import org.camunda.bpm.extension.hooks.controllers.stubs.AuthorizationStub;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
-import org.jsoup.HttpStatusException;
-import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -44,7 +32,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import spinjar.com.fasterxml.jackson.core.JsonParseException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,9 +51,6 @@ public class AdminControllerTest {
 
     @Mock
     private Authentication auth;
-
-    @Mock
-    private NamedParameterJdbcTemplate bpmJdbcTemplate;
 
     @Mock
     private HTTPServiceInvoker httpServiceInvoker;
@@ -94,7 +78,6 @@ public class AdminControllerTest {
         authorizationList.add(new AuthorizationStub("test-id-1", "test-id-1", "224233456456"));
 
 
-        List<String> groupIds = new ArrayList<>();
         ProcessEngineImpl processEngine = mock(ProcessEngineImpl.class);
         when(processEngine.getName()).thenReturn("default");
         AuthorizationService authorizationService = mock(AuthorizationService.class);
@@ -128,7 +111,7 @@ public class AdminControllerTest {
                         "{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"}," +
                         "{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]}"));
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/engine-rest-ext/form"))
+                MockMvcRequestBuilders.get("/engine-rest-ext/form"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"},{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]"));
     }
@@ -144,7 +127,7 @@ public class AdminControllerTest {
                         "{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"}," +
                         "{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]}"));
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/engine-rest-ext/form"))
+                MockMvcRequestBuilders.get("/engine-rest-ext/form"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"}]"));
     }
@@ -152,32 +135,33 @@ public class AdminControllerTest {
     /**
      * Expect Status OK and empty content
      */
-    //@Test
+    @Test
     public void getFormsFailure() throws Exception {
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any()))
                 .thenReturn(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(""));
-        assertThrows(RuntimeException.class, () ->{
-            mockMvc.perform(
-                            MockMvcRequestBuilders.get("/engine-rest-ext/form"))
-                    .andExpect(content().string("[]"));
-        });
-
+        String message = mockMvc.perform(
+                MockMvcRequestBuilders.get("/engine-rest-ext/form"))
+                .andExpect(content().string(""))
+                .andExpect(status().isInternalServerError())
+                .andReturn().getResolvedException().getMessage();
+        assertEquals("Error while processing form data", message);
     }
 
     /*
      * Expect JSON parse exception
      */
-    //@Test
+    @Test
     public void getForms_with_parseException() throws Exception {
         when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any()))
                 .thenReturn(ResponseEntity.ok("{\"totalCount\":\"2\",\"forms\":[" +
                         "{:\"foi\",[]," +
                         "{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]}"));
-        assertThrows(RuntimeException.class, () -> {
-            mockMvc.perform(
-                    MockMvcRequestBuilders.get("/engine-rest-ext/form"));
-
-        });
+        String message = mockMvc.perform(
+                MockMvcRequestBuilders.get("/engine-rest-ext/form"))
+                .andExpect(content().string(""))
+                .andExpect(status().isInternalServerError())
+                .andReturn().getResolvedException().getMessage();
+        assertEquals("Exception occurred in reading form", message);
     }
 
     @Test
@@ -185,7 +169,7 @@ public class AdminControllerTest {
         final String adminGroupName = "camunda-admin";
         ReflectionTestUtils.setField(adminController, "adminGroupName", adminGroupName);
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/engine-rest-ext/form/authorization"))
+                MockMvcRequestBuilders.get("/engine-rest-ext/form/authorization"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"adminGroupEnabled\":true,\"authorizationList\":null}"));
     }
@@ -193,7 +177,7 @@ public class AdminControllerTest {
     @Test
     public void getFormsAuthorizationSuccess_without_adminGroupName() throws Exception {
         mockMvc.perform(
-                        MockMvcRequestBuilders.get("/engine-rest-ext/form/authorization"))
+                MockMvcRequestBuilders.get("/engine-rest-ext/form/authorization"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("{\"adminGroupEnabled\":false,\"authorizationList\":" +
                         "[{\"groupId\":\"test-id-1\",\"userId\":\"test-id-1\",\"resourceId\":\"224233456456\"}]}"));

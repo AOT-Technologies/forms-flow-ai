@@ -113,7 +113,9 @@ EXIT /B 0
 :forms-flow-web
 
 SETLOCAL
-
+timeout 10
+set attemptCount=2
+:fetchRoleId
 set hour=6
 set res=F
 SET email=admin@example.com

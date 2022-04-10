@@ -32,11 +32,11 @@ EXIT /B %ERRORLEVEL%
 	call:keycloak %~2 source\forms-flow-idm\keycloak
     call:forms-flow-forms source\forms-flow-forms
     call:forms-flow-web source\forms-flow-web
-    ::call:forms-flow-bpm source\forms-flow-bpm
+    call:forms-flow-bpm source\forms-flow-bpm
 	if %~1 == 0 (
         call:forms-flow-analytics source\forms-flow-analytics
 	)
-    ::call:forms-flow-api forms-flow-api
+    call:forms-flow-api forms-flow-api
 	EXIT /B 0
 	
 :: #############################################################
@@ -114,12 +114,10 @@ EXIT /B 0
 
 SETLOCAL
 
-timeout 10
-set attemptCount=2
-
-:get-forms-roleIds
 set hour=6
 set res=F
+SET email=admin@example.com
+SET password=changeme
 SET host=http://%ip-add%:3001
 
 set token=nul
@@ -177,31 +175,43 @@ for %%a in (!JSON!) do (
 	 set /a i=i+1
    )
 )
+set len=0
+:Loop 
 
-:: Retry logic for forms role id
-:roleId-retry
-
-    if defined %id[0]% ( 
-        set /a len+=1
-        GOTO :roleId-retry
-    )
-    if %len% ==0 (
-        echo Retrying attempt %attemptCount% of 5 
-        set /a attemptCount+=1
-        if %attemptCount%==5 (
-    
-    )
-        timeout 10
-        goto :fetchRoleId
+if defined id[%len%] ( 
+set /a len+=1
+GOTO :Loop 
+)
+if %len% ==0 (
+  echo.
+  echo.
+  echo Could not find Role Ids...!
+  echo Kindly make sure the localhost:3001 is up.
+  echo.
+  echo Repeating attempt %attemptCount% of 5 Please wait 
+  set /a attemptCount+=1
+  if %attemptCount%==5 (
+      echo.
+      echo Could not find the role Ids...
+      goto :setUpEnv
+      pause
+  )
+  timeout 10
+ goto :fetchRoleId
 )
 
+set Administrator=%id[0]%
+set Anonymous=%id[1]%
+set Authenticated=%id[2]%
+set formsflowClient=%id[3]%
+set formsflowReviewer=%id[4]%
+set User=%id[5]%
 set FORMIO_DEFAULT_PROJECT_URL=http://%ip-add%:3001
 set FORMSFLOW_API_URL=http://%ip-add%:5000
 set CAMUNDA_API_URL=http://%ip-add%:8000/camunda
 set WEBSOCKET_ENCRYPT_KEY=agahdaghdagh
 set APPLICATION_NAME=formsflow.ai
 set USER_ACCESS_PERMISSIONS={"accessAllowApplications":false,"accessAllowSubmissions":false}
-
 echo FORMIO_DEFAULT_PROJECT_URL=%FORMIO_DEFAULT_PROJECT_URL%>>%~1\.env
 echo KEYCLOAK_URL=%KEYCLOAK_URL%>>%~1\.env
 echo FORMSFLOW_API_URL=%FORMSFLOW_API_URL%>>%~1\.env
@@ -210,11 +220,11 @@ echo WEBSOCKET_ENCRYPT_KEY=%WEBSOCKET_ENCRYPT_KEY%>>%~1\.env
 echo APPLICATION_NAME=%APPLICATION_NAME%>>%~1\.env
 echo KEYCLOAK_URL_REALM=%KEYCLOAK_URL_REALM%>>%~1\.env
 echo USER_ACCESS_PERMISSIONS=%USER_ACCESS_PERMISSIONS%>>%~1\.env
-echo DESIGNER_ROLE_ID=%id[0]%>>%~1\.env
-echo ANONYMOUS_ID=%id[1]%>>%~1\.env
-echo CLIENT_ROLE_ID=%id[3]%>>%~1\.env
-echo REVIEWER_ROLE_ID=%id[4]%>>%~1\.env
-echo USER_RESOURCE_ID=%id[5]%>>%~1\.env
+echo CLIENT_ROLE_ID=%formsflowClient%>>%~1\.env
+echo DESIGNER_ROLE_ID=%Administrator%>>%~1\.env
+echo REVIEWER_ROLE_ID=%formsflowReviewer%>>%~1\.env
+echo ANONYMOUS_ID=%Anonymous%>>%~1\.env
+echo USER_RESOURCE_ID=%User%>>%~1\.env
 ENDLOCAL
 docker-compose -f %~1\docker-compose.yml up --build -d
 EXIT /B 0

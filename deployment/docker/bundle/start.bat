@@ -1,212 +1,133 @@
 @echo off
 
-::=================== INIT =====================>
-:Installation
-::fetching ip address
-FOR /F "tokens=4 delims= " %%i in ('route print ^| find " 0.0.0.0"') do set localIp=%%i
+:: cloning into opensource formsflow.ai repository
 
-set analytics=0;
-set customKeycloak=0;
-set /p choice=Do you want to include analytics in the installation? [y/n]
+set /p choice=Do you want analytics to include in the installation? [y/n]
 if %choice%==y (
-set analytics=1;
-goto :INSTALL_WITH_ANALYTICS
+    set /a analytics=1
+) else (
+    set /a analytics=0
 )
-if %choice% ==n (
-goto :INSTALL_WITHOUT_ANALYTICS
-)
-
-:INSTALL_WITH_ANALYTICS
-echo installation will be completed in the following order:
-echo 1. keycloak
-echo 2. form.io
-echo 3. analytics
-echo 4. web
-echo 5. camunda
-echo 6. webapi
-
-
-echo press enter to continue
-pause> null 
-goto :KEYCLOAK
-
-:INSTALL_WITHOUT_ANALYTICS
-
-echo The installation will be completed in the following order
-echo 1. keycloak
-echo 2. form.io
-echo 3. web
-echo 4. camunda
-echo 5. webapi
-
-echo press enter to continue
-pause>nul
-goto :KEYCLOAK
-
-echo.
-echo                                         KEYCLOAK
-echo.
-  
-:KEYCLOAK
-cd configuration\keycloak
-
-set /P c=Do you have an existing keycloak?[y/n]?
-if /I "%c%" EQU "y" goto :INSTALL WITH EXISTING KEYCLOAK
-if /I "%c%" EQU "n" goto :USE DEFAULT KEYCLOAK SETUP
-goto :choice
-
-:USE DEFAULT KEYCLOAK SETUP
-echo WE ARE SETING UP OUR DEFAULT KEYCLOCK FOR YOU
-echo press enter to continue
-pause> nuls
-copy sample.env .env
-FOR /F "tokens=4 delims= " %%i in ('route print ^| find " 0.0.0.0"') do set localIp=%%i
-
-echo Please wait, keycloak is setting up!
-docker-compose up -d
-timeout 8
-echo.
-echo.
-
-setlocal ENABLEDELAYEDEXPANSION
-
-set keyurl=%localIp%
-set str=KEYCLOAK_URL=http://{your-ip-address}:8080
-set keyurls=%str:{your-ip-address}=!keyurl!%
-set /p keysecret="What is your bpm client secret key?"
-set realmname=forms-flow-ai
-
-echo. >>".env"
-echo KEYCLOAK_URL_REALM=%realmname%>>.env
-echo %keyurls%>>".env"
-echo KEYCLOAK_BPM_CLIENT_SECRET=%keysecret%>>.env
-
-goto :analyticsoption
-
-:INSTALL WITH EXISTING KEYCLOAK
-set customKeycloak=1;
-
-echo existing keycloak setup here
-
-set /p keySecret="what is your bpm client secret key?"
-
-set /p keyurls="what is your Keycloak url?"
-
-set /p realmname="what is your keycloak url realm name?"
-
-goto :analyticsoption
-
-
-:analyticsoption
-echo.
-echo.
-if %analytics% ==1 (
-echo.
-echo press ENTER to continue
-pause> nul
-goto :ANALYTICS
+set /p choice=Do you have an existing keycloak?[y/n]?
+if %choice%==y (
+    set /a keycloak=1
+) else (
+    set /a keycloak=0
 )
 
-if %analytics% ==0 (
-echo let's move to the installation 
-echo press ENTER to continue
-pause> nul
-goto :configuration section
-)
-::<===================ANALYTICS STARTS=======================>
-:ANALYTICS
-echo.
-echo.
-echo                                                 ANALYTICS
-echo.
-echo.
-cd ..\analytics
+call:main %analytics% %keycloak%
 
-:ANALYTICS DEFAULT INSTALLATION
 
-findstr /v /i /c:"REDASH_HOST=" sample.env > .env
-FOR /F "tokens=4 delims= " %%i in ('route print ^| find " 0.0.0.0"') do set localIp=%%i
+EXIT /B %ERRORLEVEL%
 
-setlocal ENABLEDELAYEDEXPANSION
-set key=%localIp%
-set ste=REDASH_HOST=http://{your-ip-address}:7000
-set strng=%ste:{your-ip-address}=!key!%
-echo %strng%>>".env"
 
-docker-compose -f docker-compose-windows.yml run --rm server create_db
+:: Functions
 
-echo Wait for a moment for the analytics to start.
-
-docker-compose -f docker-compose-windows.yml up --build -d 
-
-pause
-echo please collect the redash api key
-set /p redashApiKey="what is your Redash API key?"
-echo INSIGHT_API_KEY=%redashApiKey%>>.env
-
-echo press ENTER to move to next installation
-pause>nul
-goto :configuration section
-
-::------------------------------------------
-
-::============ANALYTICS ENDS=========================>
-
-:configuration section
-echo.
-echo.
-echo                                                  Installation-Automation                                                                        
-echo.
-echo.
-cd ..
-
-FOR /F "tokens=4 delims= " %%i in ('route print ^| find " 0.0.0.0"') do set localIp=%%i
-
-setlocal ENABLEDELAYEDEXPANSION
-
-set default_url=%localIp%
-set ste=FORMIO_DEFAULT_PROJECT_URL=http://{your-ip-address}:3001
-set strong=%ste:{your-ip-address}=!default_url!%
-
-set keycloak_url=%localIp%
-set str=KEYCLOAK_URL=http://{your-ip-address}:8080
-set keyurls=%str:{your-ip-address}=!keycloak_url!%
-
-set API_URL=%localIp%
-set url=INSIGHT_API_URL=http://{your-ip-address}:7000
-set strinnng=%url:{your-ip-address}=!API_URL!%
-
-echo Please wait, forms is getting up!
+:: #############################################################
+:: ################### Main Function ###########################
+:: #############################################################
+:main
+    call:get-repo
+	call:find-my-ip
+	call:keycloak %~2 source\forms-flow-idm\keycloak
+    call:forms-flow-forms source\forms-flow-forms
+    call:forms-flow-web source\forms-flow-web
+    ::call:forms-flow-bpm source\forms-flow-bpm
+	if %~1 == 0 (
+        call:forms-flow-analytics source\forms-flow-analytics
+	)
+    ::call:forms-flow-api forms-flow-api
+	EXIT /B 0
 	
-docker-compose -f docker-compose.yml up --build -d forms-flow-forms
-timeout 40
+:: #############################################################
+:: ################### Finding IP Address ######################
+:: #############################################################
 
-set websock=%localIp%
-set lpi=CAMUNDA_API_URL=http://{your-ip-address}:8000/camunda
-set streng=%lpi:{your-ip-address}=!websock!%
+:find-my-ip
+    FOR /F "tokens=4 delims= " %%i in ('route print ^| find " 0.0.0.0"') do set ip-add=%%i
+    
 
-set api=%localIp%
-set stp=FORMSFLOW_API_URL=http://{your-ip-address}:5000/api
-set strongs=%stp:{your-ip-address}=!api!%
+:: #############################################################
+:: ################### Clone formsflow repo ####################
+:: #############################################################
+:get-repo
+    SETLOCAL
+    Set _folder=source
+    if exist %_folder% (
+        For /F %%A in ('dir /b /a %_folder%') Do (
+            git -C %_folder% pull origin master
+            EXIT /B 0
+        )
+    ) else (
+        mkdir %_folder%
+    )
+    ENDLOCAL
+    git clone https://github.com/AOT-Technologies/forms-flow-ai.git source
+    EXIT /B 0
 
-set websock=%localIp%
-set lpu=WEBSOCKET_SECURITY_ORIGIN=http://{your-ip-address}:3000
-set streeng=%lpu:{your-ip-address}=!websock!%
 
-echo.
-pause> nul
+:: #############################################################
+:: ########################### Keycloak ########################
+:: #############################################################
+
+:keycloak
+
+	if %~1 == 1 (
+        set /p KEYCLOAK_URL="What is your Keycloak url?"
+        set /p KEYCLOAK_URL_REALM="What is your keycloak url realm name?"
+		set /p KEYCLOAK_ADMIN_USERNAME="what is your keycloak admin user name?"
+		set /p KEYCLOAK_ADMIN_PASSWORD="what is your keycloak admin password?"
+	) else (
+	    docker-compose -f %~2\docker-compose.yml up --build -d
+		timeout 5
+		set KEYCLOAK_URL=http://%ip-add%:8080
+		set KEYCLOAK_URL_REALM=forms-flow-ai
+		set KEYCLOAK_ADMIN_USERNAME=admin
+		set KEYCLOAK_ADMIN_PASSWORD=changeme
+	)
+	set /p KEYCLOAK_BPM_CLIENT_SECRET="What is your [Keycloak] forms-flow-bpm client secret key?"
+	EXIT /B 0
+   
+:: #############################################################
+:: ################### forms-flow-forms ########################
+:: #############################################################
+
+:forms-flow-forms
+
+set FORMIO_ROOT_EMAIL=admin@example.com
+set FORMIO_ROOT_PASSWORD=changeme
+set FORMIO_DEFAULT_PROJECT_URL=http://%ip-add%:3001
+
+
+echo FORMIO_DEFAULT_PROJECT_URL=%FORMIO_DEFAULT_PROJECT_URL%>>%~1\.env
+echo FORMIO_ROOT_PASSWORD=%FORMIO_ROOT_PASSWORD%>>%~1\.env
+echo FORMIO_DEFAULT_PROJECT_URL=%FORMIO_DEFAULT_PROJECT_URL%>>%~1\.env
+
+docker-compose -f %~1\docker-compose-windows.yml up --build -d
+EXIT /B 0
+
+
+:: #########################################################################
+:: ######################### forms-flow-web ################################
+:: #########################################################################
+:forms-flow-web
+
+SETLOCAL
+
+timeout 10
+set attemptCount=2
+
+:get-forms-roleIds
 set hour=6
 set res=F
-SET email=admin@example.com
-SET password=changeme
-SET host=http://localhost:3001
+SET host=http://%ip-add%:3001
 
 set token=nul
 
 setlocal ENABLEDELAYEDEXPANSION
 
 :: Getting x-jwt-token
-for /F "skip=1delims=" %%I in ('curl -d "{ \"data\": { \"email\": \"!email!\", \"password\": \"!password!\"} }" -H "Content-Type: application/json" -sSL -D - !host!/user/login  -o null') do (
+for /F "skip=1delims=" %%I in ('curl -d "{ \"data\": { \"email\": \"!FORMIO_ROOT_EMAIL!\", \"password\": \"!FORMIO_ROOT_PASSWORD!\"} }" -H "Content-Type: application/json" -sSL -D - !FORMIO_DEFAULT_PROJECT_URL!/user/login  -o null') do (
   set header=%%I
   if "!header:~0,11!"=="x-jwt-token" (
      set token=!header:~13!
@@ -214,7 +135,7 @@ for /F "skip=1delims=" %%I in ('curl -d "{ \"data\": { \"email\": \"!email!\", \
 )
 
 :: Getting role id's and mapping it into an array
-for /f "delims=" %%R in ('curl -H "x-jwt-token:!token!"  -sSL -D - !host!/role') do (
+for /f "delims=" %%R in ('curl -H "x-jwt-token:!token!"  -sSL -D - !FORMIO_DEFAULT_PROJECT_URL!/role') do (
 set "JSON=%%R"
 )
 
@@ -236,9 +157,8 @@ for %%a in (!JSON!) do (
 	 set /a i=i+1
    )
 )
-
 :: Getting user id's and mapping it into an array
-for /f "delims=" %%R in ('curl -H "x-jwt-token:!token!"  -sSL -D - !host!/user') do (
+for /f "delims=" %%R in ('curl -H "x-jwt-token:!token!"  -sSL -D - !FORMIO_DEFAULT_PROJECT_URL!/user') do (
 set "JSON=%%R"
 )
 
@@ -258,37 +178,103 @@ for %%a in (!JSON!) do (
    )
 )
 
-set Administrator=%id[0]%
-set Anonymous=%id[1]%
-set Authenticated=%id[2]%
-set formsflowClient=%id[3]%
-set formsflowReviewer=%id[4]%
-set User=%id[5]%
+:: Retry logic for forms role id
+:roleId-retry
 
-echo Press enter to continue!
-pause> nul
+    if defined %id[0]% ( 
+        set /a len+=1
+        GOTO :roleId-retry
+    )
+    if %len% ==0 (
+        echo Retrying attempt %attemptCount% of 5 
+        set /a attemptCount+=1
+        if %attemptCount%==5 (
+    
+    )
+        timeout 10
+        goto :fetchRoleId
+)
 
-echo %strong%>>.env
-echo %strinnng%>>.env
-echo KEYCLOAK_URL_REALM=%realmname%>>.env
-echo %keyurls%>>.env
-echo KEYCLOAK_BPM_CLIENT_SECRET=%keysecret%>>.env
-echo INSIGHT_API_KEY=%redashApiKey%>>.env
-echo %streng%>>.env
-echo %strongs%>>.env
-echo %streeng%>>.env
-echo CLIENT_ROLE_ID=%formsflowClient%>>.env
-echo DESIGNER_ROLE_ID=%Administrator%>>.env
-echo REVIEWER_ROLE_ID=%formsflowReviewer%>>.env
-echo ANONYMOUS_ID=%Anonymous%>>.env
-echo USER_RESOURCE_ID=%User%>>.env
+set FORMIO_DEFAULT_PROJECT_URL=http://%ip-add%:3001
+set FORMSFLOW_API_URL=http://%ip-add%:5000
+set CAMUNDA_API_URL=http://%ip-add%:8000/camunda
+set WEBSOCKET_ENCRYPT_KEY=agahdaghdagh
+set APPLICATION_NAME=formsflow.ai
+set USER_ACCESS_PERMISSIONS={"accessAllowApplications":false,"accessAllowSubmissions":false}
 
-docker-compose up --build -d
+echo FORMIO_DEFAULT_PROJECT_URL=%FORMIO_DEFAULT_PROJECT_URL%>>%~1\.env
+echo KEYCLOAK_URL=%KEYCLOAK_URL%>>%~1\.env
+echo FORMSFLOW_API_URL=%FORMSFLOW_API_URL%>>%~1\.env
+echo CAMUNDA_API_URL=%CAMUNDA_API_URL%>>%~1\.env
+echo WEBSOCKET_ENCRYPT_KEY=%WEBSOCKET_ENCRYPT_KEY%>>%~1\.env
+echo APPLICATION_NAME=%APPLICATION_NAME%>>%~1\.env
+echo KEYCLOAK_URL_REALM=%KEYCLOAK_URL_REALM%>>%~1\.env
+echo USER_ACCESS_PERMISSIONS=%USER_ACCESS_PERMISSIONS%>>%~1\.env
+echo DESIGNER_ROLE_ID=%id[0]%>>%~1\.env
+echo ANONYMOUS_ID=%id[1]%>>%~1\.env
+echo CLIENT_ROLE_ID=%id[3]%>>%~1\.env
+echo REVIEWER_ROLE_ID=%id[4]%>>%~1\.env
+echo USER_RESOURCE_ID=%id[5]%>>%~1\.env
+ENDLOCAL
+docker-compose -f %~1\docker-compose.yml up --build -d
+EXIT /B 0
 
-echo.
-echo.
-echo Installation Automation completed
 
-pause> nul
+:: #############################################################
+:: ################### forms-flow-bpm ########################
+:: #############################################################
+:forms-flow-bpm
 
+SETLOCAL
+set FORMSFLOW_API_URL=http://%ip-add%:5000
+set WEBSOCKET_SECURITY_ORIGIN=http://%ip-add%:3000
+set FORMIO_DEFAULT_PROJECT_URL=http://%ip-add%:3001
+echo KEYCLOAK_URL=%KEYCLOAK_URL%>>%~1\.env
+echo KEYCLOAK_BPM_CLIENT_SECRET=%KEYCLOAK_BPM_CLIENT_SECRET%>>%~1\.env
+echo KEYCLOAK_URL_REALM=%KEYCLOAK_URL_REALM%>>%~1\.env
+echo FORMSFLOW_API_URL=%FORMSFLOW_API_URL%>>%~1\.env
+echo WEBSOCKET_SECURITY_ORIGIN=%WEBSOCKET_SECURITY_ORIGIN%>>%~1\.env
+echo FORMIO_DEFAULT_PROJECT_URL=%FORMIO_DEFAULT_PROJECT_URL%>>%~1\.env
+ENDLOCAL
+docker-compose -f %~1\docker-compose-windows.yml up --build -d
+EXIT /B 0
 
+:: #############################################################
+:: ################### forms-flow-analytics ########################
+:: #############################################################
+
+:forms-flow-analytics
+
+SETLOCAL
+set REDASH_HOST=http://%ip-add%:7000
+
+echo REDASH_HOST=%REDASH_HOST%>>%~2\.env
+ENDLOCAL
+docker-compose -f %~2\docker-compose-windows.yml up --build -d
+EXIT /B 0
+
+:: #############################################################
+:: ################### forms-flow-api ########################
+:: #############################################################
+:forms-flow-api
+
+SETLOCAL
+set FORMSFLOW_API_URL=http://%ip-add%:5000
+set CAMUNDA_API_URL=http://%ip-add%:8000/camunda
+set FORMSFLOW_API_CORS_ORIGINS=*
+set INSIGHT_API_KEY=abdnasdb
+set INSIGHT_API_URL=http://%ip-add%:7000
+
+echo KEYCLOAK_URL=%KEYCLOAK_URL%>>%~1\.env
+echo KEYCLOAK_BPM_CLIENT_SECRET=%KEYCLOAK_BPM_CLIENT_SECRET%>>%~1\.env
+echo KEYCLOAK_URL_REALM=%KEYCLOAK_URL_REALM%>>%~1\.env
+echo KEYCLOAK_ADMIN_USERNAME=%KEYCLOAK_ADMIN_USERNAME%>>%~1\.env
+echo KEYCLOAK_ADMIN_PASSWORD=%KEYCLOAK_ADMIN_PASSWORD%>>%~1\.env
+echo CAMUNDA_API_URL=%CAMUNDA_API_URL%>>%~1\.env
+echo FORMSFLOW_API_CORS_ORIGINS=%FORMSFLOW_API_CORS_ORIGINS%>>%~1\.env
+echo INSIGHT_API_URL=%INSIGHT_API_URL%>>%~1\.env
+echo INSIGHT_API_KEY=%INSIGHT_API_KEY%>>%~1\.env
+echo FORMSFLOW_API_URL=%FORMSFLOW_API_URL%>>%~1\.env
+ENDLOCAL
+docker-compose -f %~1\docker-compose-windows.yml up --build -d
+EXIT /B 0

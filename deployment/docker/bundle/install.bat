@@ -17,7 +17,7 @@ call:find-my-ip
 call:main %analytics% %keycloak%
 
 echo ********************** formsflow.ai is successfully installed ****************************
-
+pause
 
 EXIT /B %ERRORLEVEL%
 

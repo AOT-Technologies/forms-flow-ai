@@ -15,14 +15,6 @@ export const setApplicationListByFormId = (data) => dispatch =>{
   })
 }
 
-export const setLoader = (data) => dispatch =>{
-  dispatch({
-      type:ACTION_CONSTANTS.IS_LOADING,
-      payload:data
-  })
-}
-
-
 export const setApplicationDetail = (data) => dispatch =>{
     dispatch({
         type:ACTION_CONSTANTS.APPLICATION_DETAIL,

@@ -2,8 +2,6 @@ import { WEB_BASE_URL, BPM_BASE_URL} from "./config";
 import {AppConfig} from "../../config";
 
 const API = {
-  GET_TASK_API: `${WEB_BASE_URL}/task`,
-  GET_TASK_DETAIL_API: `${WEB_BASE_URL}/task/`,
   GET_DASHBOARDS: `${WEB_BASE_URL}/dashboards`,
   METRICS_SUBMISSIONS: `${WEB_BASE_URL}/metrics`,
   APPLICATION_START: `${WEB_BASE_URL}/application/create`,

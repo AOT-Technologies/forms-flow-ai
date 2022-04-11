@@ -22,9 +22,6 @@ export const KEYCLOAK_REALM =
 export const KEYCLOAK_URL =(window._env_ && window._env_.REACT_APP_KEYCLOAK_URL) || process.env.REACT_APP_KEYCLOAK_URL;
 export const KEYCLOAK_AUTH_URL = `${KEYCLOAK_URL}/auth`;
 
-
-// export const _kc = new Keycloak("/config/kc/keycloak.json");
-
 export const CLIENT =
   (window._env_ && window._env_.REACT_APP_CLIENT_ROLE) || process.env.REACT_APP_CLIENT_ROLE || "formsflow-client";
 export const STAFF_DESIGNER =
@@ -35,7 +32,6 @@ export const STAFF_REVIEWER =
   process.env.REACT_APP_STAFF_REVIEWER_ROLE || "formsflow-reviewer";
 export const ANONYMOUS_USER = "anonymous";
 
-//default FORMIO_JWT_SECRET is --- change me now ---
 export const FORMIO_JWT_SECRET =
   (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) || process.env.REACT_APP_FORMIO_JWT_SECRET || "--- change me now ---";
 
@@ -179,10 +175,6 @@ export const SUBMISSION_ACCESS = [
     roles:[CLIENT_ID],
     type:"create_own"
   },
-  // {
-  //   roles: [CLIENT_ID],
-  //   type: "create_own",
-  // },
   {
     roles: [CLIENT_ID,],
     type: "read_own",

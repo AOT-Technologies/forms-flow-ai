@@ -18,13 +18,13 @@ import {
 } from "./historyTable";
 import Loading from "../../containers/Loading";
 import Nodata from '../../components/Nodata';
-import {setUpdateHistoryLoader} from "../../actions/taskActions";
+import {setUpdateHistoryLoader} from "../../actions/taskApplicationHistoryActions";
 
 
 const HistoryList = React.memo((props) => {
   const dispatch = useDispatch();
-  const isHistoryListLoading = useSelector(state => state.tasks.isHistoryListLoading);
-  const appHistory = useSelector(state => state.tasks.appHistory);
+  const isHistoryListLoading = useSelector(state => state.taskAppHistory.isHistoryListLoading);
+  const appHistory = useSelector(state => state.taskAppHistory.appHistory);
   const applicationId = props.applicationId;
 
   useEffect(()=>{
@@ -67,7 +67,6 @@ const HistoryList = React.memo((props) => {
           <div className="container">
             <div className="main-header">
               <h3 className="task-head">
-              {/* <i class="fa fa-list-alt" alt="Task" aria-hidden="true"></i> */}
               <i className="fa fa-list" aria-hidden="true"/>
               &nbsp;Application History
               </h3>

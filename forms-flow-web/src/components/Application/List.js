@@ -23,7 +23,7 @@ import { SpinnerSVG } from '../../containers/SpinnerSVG';
 
 export const ApplicationList = React.memo(() => {
   const applications = useSelector(state=>state.applications.applicationsList);
-  const countPerPage = useSelector(state=>state.applications.countPerPage); 
+  const countPerPage = useSelector(state=>state.applications.countPerPage);
   const applicationStatus = useSelector(state=>state.applications.applicationStatus);
   const isApplicationListLoading = useSelector(state=>state.applications.isApplicationListLoading);
   const applicationCount = useSelector(state=>state.applications.applicationCount);
@@ -33,7 +33,7 @@ export const ApplicationList = React.memo(() => {
   const iserror = useSelector(state=>state.applications.iserror);
   const error = useSelector(state=>state.applications.error);
   const [filtermode,setfiltermode] = React.useState(false);
-  
+
   const [lastModified,setLastModified] = React.useState(null);
   const [isLoading,setIsLoading] = React.useState(false);
   useEffect(()=>{
@@ -52,7 +52,7 @@ export const ApplicationList = React.memo(() => {
   const countPerPageRef = useNoRenderRef(countPerPage);
 
   const currentPage = useNoRenderRef(page);
-  
+
   useEffect(()=>{
     dispatch(getAllApplications(currentPage.current,countPerPageRef.current));
   },[dispatch,currentPage,countPerPageRef])
@@ -80,9 +80,6 @@ export const ApplicationList = React.memo(() => {
           Please change the selected filters to view applications{" "}
         </label>
         <br />
-       {/* <label className="lbl-clear" onClick={clearFilter}>
-          Clear all filters
-        </label>*/}
       </div>
     );
   };

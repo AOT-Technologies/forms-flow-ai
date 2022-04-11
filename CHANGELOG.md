@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 4.0.5 - 2022-03-25
+## 4.0.5 - 2022-04-05
 
 `Added`
 
@@ -16,6 +16,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added the status of the earlier version as inactive when a new version of the form is created.
 * Added submitter name in the application history table.
 * Added Cancel button for form submission.
+* Added task variable in tasklist with ordering.
 
 **forms-flow-api**
 
@@ -43,6 +44,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-web**
 
 * Uploaded forms cannot submit by client issue fixed .
+* Application not getting in iOS issue fixed.
+* Fixed process variable's data type in task filter.
 
 
 **forms-flow-api**
@@ -103,6 +106,7 @@ Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` ar
 `Generic Changes`
 
 * Added docker based automated installation.For installation guide, check out [here](./deployment/docker/bundle).
+* Existing users should build forms-flow-bpm,forms-flow-webapi and forms-flow-web together.
 
 ## 4.0.4 - 2021-12-27
 

@@ -16,7 +16,7 @@ class BPMEndpointType(IntEnum):
     PROCESS_DEFINITION_XML = 6
     MESSAGE_EVENT = 7
     PROCESS_INSTANCE = 8
-    AUTH_FORM_DETAILS = 9
+    FORM_AUTH_DETAILS = 9
 
 
 class BPMService(BaseBPMService):
@@ -56,7 +56,7 @@ class BPMService(BaseBPMService):
     @classmethod
     def get_auth_form_details(cls, token):
         """Get authorized form details."""
-        url = cls._get_url_(BPMEndpointType.AUTH_FORM_DETAILS)
+        url = cls._get_url_(BPMEndpointType.FORM_AUTH_DETAILS)
         return cls.get_request(url, token)
 
     @classmethod
@@ -118,8 +118,8 @@ class BPMService(BaseBPMService):
         try:
             if endpoint_type == BPMEndpointType.PROCESS_DEFINITION:
                 url = f"{bpm_api_base}/engine-rest/process-definition"
-            elif endpoint_type == BPMEndpointType.AUTH_FORM_DETAILS:
-                url = f"{bpm_api_base}/engine-rest-ext/form/"
+            elif endpoint_type == BPMEndpointType.FORM_AUTH_DETAILS:
+                url = f"{bpm_api_base}/engine-rest-ext/form/authorization"
             elif endpoint_type == BPMEndpointType.HISTORY:
                 url = f"{bpm_api_base}/engine-rest-ext/task/"
             elif endpoint_type == BPMEndpointType.TASK:
@@ -130,7 +130,6 @@ class BPMService(BaseBPMService):
                 url = f"{bpm_api_base}/engine-rest/message/"
             elif endpoint_type == BPMEndpointType.PROCESS_INSTANCE:
                 url = f"{bpm_api_base}/engine-rest/process-instance/"
-
             return url
 
         except BaseException:  # pylint: disable=broad-except

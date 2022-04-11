@@ -2,7 +2,6 @@ import React from "react";
 import {Table} from "react-bootstrap";
 import startCase from "lodash/startCase";
 import {getLocalDateTime} from "../../../apiManager/services/formatterService";
-//import {setUpdateLoader} from "../../../actions/taskActions";
 
 
 

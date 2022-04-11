@@ -71,10 +71,10 @@ export const setMaintainBPMFormPagination = (maintainList) => dispatch =>{
 }
 
 export const setBPMFormListSort = (sort) => dispatch =>{
-  dispatch({
-    type:ACTION_CONSTANTS.BPM_FORM_LIST_SORT_CHANGE,
-    payload:sort
-  })
+    dispatch({
+      type:ACTION_CONSTANTS.BPM_FORM_LIST_SORT_CHANGE,
+      payload:sort
+    })
 }
 
 export const setFormSubmitted =(data)=>dispatch=>{
@@ -118,3 +118,18 @@ export const setFormSuccessData =( name,
      error
    })
  }
+
+ export const setBpmFormSearch = (data) => dispatch =>{
+   dispatch({
+    type:ACTION_CONSTANTS.BPM_FORM_SEARCH,
+    payload:data
+   })
+   return Promise.resolve()
+ }
+
+ export const setBpmFormLoading = (data) => dispatch =>{
+  dispatch({
+   type:ACTION_CONSTANTS.BPM_FORM_LOADING,
+   payload:data
+  })
+}

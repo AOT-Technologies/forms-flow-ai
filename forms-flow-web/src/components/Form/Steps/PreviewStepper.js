@@ -16,13 +16,10 @@ const Preview = React.memo(
     activeStep,
     steps,
     processData,
-    // handleAnonymous,
     setProcessData,
     workflow,
     formData,
-    submitData,
-    // handleEditPreview,
-    // disablePreview,
+    submitData
   }) => {
     const [copied, setCopied] = useState(false);
     const processListData = useSelector((state)=>state.process.formProcessList)
@@ -40,7 +37,7 @@ const Preview = React.memo(
       }).catch((err)=>{
         console.log(err)
       })
-    
+
     };
 
     return (
@@ -53,12 +50,6 @@ const Preview = React.memo(
           spacing={3}
         >
           <Grid item xs={12} sm={1} spacing={3}>
-            {/* <button
-              className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
-              onClick={handleEditPreview}
-            >
-              Edit
-            </button> */}
           </Grid>
           <Grid item xs={12} sm={8} spacing={3} />
           <Grid item xs={12} sm={3} className="next-btn">
@@ -101,32 +92,10 @@ const Preview = React.memo(
                           copyPublicUrl();
                         }}
                       >
-                        <i
-                           className={`${copied?'fa fa-check':'fa fa-copy'}`}
-                        ></i>
+                        <i className={`${copied?'fa fa-check':'fa fa-copy'}`}/>
                       </div>
                     </div>
                   )}
-                  {/*<div>
-                <label>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={processData.isAnonymousAllowd}
-                        onChange={(e) =>
-                          setProcessData({
-                            isAnonymousAllowd: !processData.isAnonymousAllowd,
-                          })
-                        }
-                        name="Check box to associate form with a workflow"
-                        color="primary"
-                      />
-                    }
-                    label="Anonymous"
-                  />
-                   <span>Check box to associate form with a workflow</span>
-                </label>
-              </div>*/}
                   <div>
                     <label>
                       <FormControlLabel
@@ -149,11 +118,6 @@ const Preview = React.memo(
                     </label>
                   </div>
                   <label className="text-label">Comments</label>
-                  {/* <TextareaAutosize
-                aria-label="minimum height"
-                rowsMin={3}
-                placeholder="Comments"
-              /> */}
                   <TextField
                     id="comments"
                     // label="Multiline"

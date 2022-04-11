@@ -37,13 +37,6 @@ export const setAllProcessList = (data) => (dispatch) => {
   });
 };
 
-export const setApplicationAuditList = (data) => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.APPLICATION_AUDIT_LIST,
-    payload: data,
-  });
-};
-
 export const setFormProcessLoadError = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_FORM_PROCESS_STATUS_LOAD_ERROR,

@@ -3,12 +3,18 @@ This is a distribution of formsflow.ai latest release.
  
 # Table of Contents
 1. [Summary](#summary)
-2. [Installation](#installation)
+2. [Dependency](#dependency)
+3. [Installation](#installation)
 
 
 ## Summary
 
 The root directory contains the start script. The  Windows file (.bat). After executing it, you can access the web applications by following the link from [here](../../#verifying-the-installation-status)
+
+## Dependency
+
+1. Docker
+2. Git desktop
 
 ## Installation
 

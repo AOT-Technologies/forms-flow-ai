@@ -266,6 +266,7 @@ if %len% ==0 (
     set REDASH_HOST=http://%ip-add%:7000
     echo REDASH_HOST=%REDASH_HOST%>>%~1\.env
     ENDLOCAL
+    docker-compose -f docker-compose-windows.yml run --rm server create_db
     docker-compose -f %~1\docker-compose-windows.yml up --build -d
 	timeout 5
     EXIT /B 0

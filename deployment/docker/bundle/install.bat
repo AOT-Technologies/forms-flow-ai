@@ -30,15 +30,15 @@ EXIT /B %ERRORLEVEL%
 
 :main
     call:get-repo
-	call:set-common-properties
-    call:keycloak source\forms-flow-idm\keycloak %~2
-    call:forms-flow-forms source\forms-flow-forms
-    call:forms-flow-web source\forms-flow-web
+    call:set-common-properties
+    call:keycloak source\forms-flow-idm\keycloak %~2   
     call:forms-flow-bpm source\forms-flow-bpm
     if %~1==1 (
         call:forms-flow-analytics source\forms-flow-analytics
     )
     call:forms-flow-api source\forms-flow-api %~1
+    call:forms-flow-forms source\forms-flow-forms
+    call:forms-flow-web source\forms-flow-web
     EXIT /B 0
 	
 :: #############################################################

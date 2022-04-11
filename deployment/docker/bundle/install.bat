@@ -111,8 +111,14 @@ EXIT /B %ERRORLEVEL%
     echo FORMIO_DEFAULT_PROJECT_URL=%FORMIO_DEFAULT_PROJECT_URL%>>%~1\.env
 
     docker-compose -f %~1\docker-compose-windows.yml up --build -d
-	timeout 5
+	call:fetch-role-ids
     EXIT /B 0
+	
+:restart-forms-service
+
+    docker-compose -f %~1\docker-compose-windows.yml down
+    docker-compose -f %~1\docker-compose-windows.yml up --build -d
+	EXIT /B 0
 
 
 :: #########################################################################
@@ -121,94 +127,9 @@ EXIT /B %ERRORLEVEL%
 
 :forms-flow-web
 
-    SETLOCAL
     call:clear-dir %~1
-    timeout 10
-    set attemptCount=2
-    :fetchRoleId
-        set hour=6
-set res=F
-
-set token=nul
-
-setlocal ENABLEDELAYEDEXPANSION
-
-:: Getting x-jwt-token
-for /F "skip=1delims=" %%I in ('curl -d "{ \"data\": { \"email\": \"!FORMIO_ROOT_EMAIL!\", \"password\": \"!FORMIO_ROOT_PASSWORD!\"} }" -H "Content-Type: application/json" -sSL -D - !FORMIO_DEFAULT_PROJECT_URL!/user/login  -o null') do (
-  set header=%%I
-  if "!header:~0,11!"=="x-jwt-token" (
-     set token=!header:~13!
-  )
-)
-
-:: Getting role id's and mapping it into an array
-for /f "delims=" %%R in ('curl -H "x-jwt-token:!token!"  -sSL -D - !FORMIO_DEFAULT_PROJECT_URL!/role') do (
-set "JSON=%%R"
-)
-
-SET id[]=0
-SET title[]=""
-SET i=0
-for %%a in (!JSON!) do ( 
-   set line=%%a
-   set line=!line:{=!
-   set line=!line:[=!
-   set line=!line:"=!
-   if "!line:~0,3!"=="_id" (
-     set id=!line:~4!
-	 set id[!i!]=!id!
-   )
-   if "!line:~0,5!"=="title" (
-     set title=!line:~6!
-	 set title[!i!]=!title!
-	 set /a i=i+1
-   )
-)
-:: Getting user id's and mapping it into an array
-for /f "delims=" %%R in ('curl -H "x-jwt-token:!token!"  -sSL -D - !FORMIO_DEFAULT_PROJECT_URL!/user') do (
-set "JSON=%%R"
-)
-
-for %%a in (!JSON!) do ( 
-   set line=%%a
-   set line=!line:{=!
-   set line=!line:[=!
-   set line=!line:"=!
-   if "!line:~0,3!"=="_id" (
-     set id=!line:~4!
-	 set id[!i!]=!id!
-   )
-   if "!line:~0,5!"=="title" (
-     set title=!line:~6!
-	 set title[!i!]=!title!
-	 set /a i=i+1
-   )
-)
-set len=0
-:Loop 
-
-if defined id[%len%] ( 
-set /a len+=1
-GOTO :Loop 
-)
-if %len% ==0 (
-  echo.
-  echo.
-  echo Could not find Role Ids...!
-  echo Kindly make sure the localhost:3001 is up.
-  echo.
-  echo Repeating attempt %attemptCount% of 5 Please wait 
-  set /a attemptCount+=1
-  if %attemptCount%==5 (
-      echo.
-      echo Could not find the role Ids...
-      goto :setUpEnv
-      pause
-  )
-  timeout 10
- goto :fetchRoleId
-)
-
+    SETLOCAL
+	
     set FORMSFLOW_API_URL=http://%ip-add%:5000
     set CAMUNDA_API_URL=http://%ip-add%:8000/camunda
     set APPLICATION_NAME=formsflow.ai
@@ -222,11 +143,11 @@ if %len% ==0 (
     echo APPLICATION_NAME=%APPLICATION_NAME%>>%~1\.env
     echo KEYCLOAK_URL_REALM=%KEYCLOAK_URL_REALM%>>%~1\.env
     echo USER_ACCESS_PERMISSIONS=%USER_ACCESS_PERMISSIONS%>>%~1\.env
-    echo DESIGNER_ROLE_ID=%id[0]%>>%~1\.env
-    echo ANONYMOUS_ID=%id[1]%>>%~1\.env
-    echo CLIENT_ROLE_ID=%id[3]%>>%~1\.env
-    echo REVIEWER_ROLE_ID=%id[4]%>>%~1\.env
-    echo USER_RESOURCE_ID=%id[5]%>>%~1\.env
+    echo DESIGNER_ROLE_ID=%DESIGNER_ROLE_ID%>>%~1\.env
+    echo ANONYMOUS_ID=%ANONYMOUS_ID%>>%~1\.env
+    echo CLIENT_ROLE_ID=%CLIENT_ROLE_ID%>>%~1\.env
+    echo REVIEWER_ROLE_ID=%REVIEWER_ROLE_ID%>>%~1\.env
+    echo USER_RESOURCE_ID=%USER_RESOURCE_ID%>>%~1\.env
     ENDLOCAL
     docker-compose -f %~1\docker-compose.yml up --build -d
     EXIT /B 0
@@ -313,3 +234,39 @@ if %len% ==0 (
         del %~1\.env
     )
     EXIT /B 0
+
+:: #############################################################
+:: ################### fetching role ids #######################
+:: #############################################################
+	
+:fetch-role-ids
+
+    timeout 10
+    set /a len=0
+    set /a attemptCount=1
+	echo %DESIGNER_ROLE_ID%
+    :Loop 
+	    call fetch_role_ids.bat
+        if defined DESIGNER_ROLE_ID ( 
+            EXIT /B 0
+        )
+        echo Could not find Role Ids, Kindly make sure the localhost:3001 is up.
+        set /a attemptCount+=1
+        if %attemptCount% GTR  6 (
+            echo Unable to find form role ids, please fix the issue and retry.
+            EXIT /B 0
+	    ) else (
+		    echo Retrying attempt %attemptCount% of 6 Please wait 
+		    if %attemptCount%==2 (
+		        call:restart-forms-service source\forms-flow-forms
+		    )
+		    if %attemptCount%==4 (
+		        call:restart-forms-service source\forms-flow-forms
+		    )
+		    if %attemptCount%==6 (
+		        call:restart-forms-service source\forms-flow-forms
+		    )
+			timeout 10
+            call:Loop
+		)
+	EXIT /B 0

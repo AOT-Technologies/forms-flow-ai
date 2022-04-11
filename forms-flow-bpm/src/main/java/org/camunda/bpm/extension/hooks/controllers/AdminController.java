@@ -12,6 +12,7 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizedAction;
+import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
@@ -31,9 +32,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.ServletException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -72,10 +71,10 @@ public class AdminController {
 
     @Deprecated
     @RequestMapping(value = "/engine-rest-ext/form", method = RequestMethod.GET, produces = "application/json")
-    private @ResponseBody List<AuthorizedAction> getForms() throws ServletException {
+    private @ResponseBody List<AuthorizedAction> getForms() throws ServletException,  ApplicationServiceException{
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<String> groups = getGroups(authentication);
-        List<Authorization> authorizationList =  getAuthorization(groups);
+        Set<Authorization> authorizationList =  getAuthorization(groups);
         List<AuthorizedAction> formList = new ArrayList<>();
         List<AuthorizedAction> filteredList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
@@ -112,10 +111,13 @@ public class AdminController {
                         }
                     }
                 }
-                return filteredList;
+            }else{
+                LOGGER.log(Level.SEVERE, "Error while processing form data");
+                throw new ApplicationServiceException("Error while processing form data");
             }
         } catch (JsonProcessingException e) {
             LOGGER.log(Level.SEVERE, "Exception occurred in reading form", e);
+            throw new ApplicationServiceException("Exception occurred in reading form", e);
         }
         return filteredList;
     }
@@ -154,26 +156,26 @@ public class AdminController {
 
         List<String> groupIds = null;
         if(claims != null && claims.containsKey("groups")) {
-        	groupIds = getKeyValues(claims, "groups");
+            groupIds = getKeyValues(claims, "groups");
         } else if (claims != null && claims.containsKey("roles")) {
-        	groupIds = getKeyValues(claims, "roles");
+            groupIds = getKeyValues(claims, "roles");
         }
         return groupIds;
     }
 
-	private List<String> getKeyValues(Map<String, Object> claims, String claimName) {
-		List<String> groupIds = new ArrayList<String>();
-		JSONArray groups = (JSONArray)claims.get(claimName);
-		for (Object group1 : groups) {
-		    String groupName = group1.toString();
-		    if(StringUtils.startsWith(groupName,"/")) {
-		        groupIds.add(StringUtils.substring(groupName,1));
-		    } else {
-		        groupIds.add(groupName);
-		    }
-		}
-		return groupIds;
-	}
+    private List<String> getKeyValues(Map<String, Object> claims, String claimName) {
+        List<String> groupIds = new ArrayList<String>();
+        JSONArray groups = (JSONArray)claims.get(claimName);
+        for (Object group1 : groups) {
+            String groupName = group1.toString();
+            if(StringUtils.startsWith(groupName,"/")) {
+                groupIds.add(StringUtils.substring(groupName,1));
+            } else {
+                groupIds.add(groupName);
+            }
+        }
+        return groupIds;
+    }
 
 
     /**
@@ -181,9 +183,9 @@ public class AdminController {
      * @param groups
      * @return
      */
-    private List<Authorization> getAuthorization(List<String> groups) {
+    private Set<Authorization> getAuthorization(List<String> groups) {
 
-        List<Authorization> authorizationList = new ArrayList<>();
+        Set<Authorization> authorizationList = new HashSet<>();
 
         String[] groupIds = groups.size() > 0 ? groups.toArray(new String[0]) : new String[]{};
         List<org.camunda.bpm.engine.authorization.Authorization> authorizations =  ProcessEngines.getDefaultProcessEngine().getAuthorizationService().createAuthorizationQuery()

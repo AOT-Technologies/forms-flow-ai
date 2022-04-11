@@ -259,7 +259,7 @@ class StepperPage extends PureComponent {
   }
 
   submitData = () => {
-    const { form, onSaveFormProcessMapper, formProcessList, formPreviousData ,ApplicationCount} = this.props;
+    const { form, onSaveFormProcessMapper, formProcessList, formPreviousData ,applicationCount} = this.props;
     const { workflow, processData, associateWorkFlow} = this.state;
     const data = {
       formId: form.id,
@@ -267,7 +267,6 @@ class StepperPage extends PureComponent {
       status: processData.status? processData.status:"inactive",
       taskVariable:formProcessList.taskVariable?formProcessList.taskVariable:[]
     };
-    
     if (associateWorkFlow === "yes" && workflow) {
       data["processKey"]= workflow && workflow.value;
       data["processName"]= workflow && workflow.label;
@@ -283,17 +282,19 @@ class StepperPage extends PureComponent {
       data["comments"] = processData.comments;
     }
 
-    let putRequest=true;
-    // const isUpdate = formProcessList && formProcessList.id ? true : false;
-    if(ApplicationCount > 0){
+    let isUpdate = formProcessList && formProcessList.id ? true : false;
+    if(applicationCount > 0){
       if(formPreviousData.isTitleChanged || processKeyChecking || processNameChecking ){
-      putRequest=false;
+      isUpdate=false;
       let version = +formProcessList.version+1
       data.version = `${version}`
     }
-  }
-      data.id = formProcessList.id;
-    onSaveFormProcessMapper(data, putRequest);
+  } 
+  
+  if(formProcessList && formProcessList.id ){
+    data.id = formProcessList.id;
+  }  
+    onSaveFormProcessMapper(data, isUpdate);
   };
 
   getStepContent(step) {
@@ -434,7 +435,7 @@ const mapStateToProps = (state) => {
     formProcessList: state.process.formProcessList,
     isAuthenticated: state.user.isAuthenticated,
     formPreviousData:state.process.formPreviousData,
-    ApplicationCount:state.process.ApplicationCount
+    applicationCount:state.process.applicationCount
   };
 };
 
@@ -484,7 +485,6 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         getFormProcesses(formId, (err, res) => {
           if (err) {
-            toast.error('Error in getting Workflow Process.');
             console.log(err);
           }
         })

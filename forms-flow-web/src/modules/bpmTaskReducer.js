@@ -58,7 +58,7 @@ const bpmTasks =(state = initialState, action)=> {
       return {...state, isHistoryListLoading: action.payload};
     case ACTION_CONSTANTS.LIST_APPLICATION_HISTORY:
       return {...state, appHistory: action.payload};
-    case ACTION_CONSTANTS.BPM_FITER_LIST:
+    case ACTION_CONSTANTS.BPM_FILTER_LIST:
       return {...state, filterList: sortByPriorityList(action.payload)};
     case ACTION_CONSTANTS.IS_BPM_FILTERS_LOADING:
       return {...state, isFilterLoading: action.payload};

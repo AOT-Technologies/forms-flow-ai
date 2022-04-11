@@ -124,44 +124,50 @@
          dispatch(setApplicationCountResponse(true));
         done(null,res)
        })
+       .catch((error) => {
+        // dispatch(setProcessStatusLoading(false));
+        dispatch(setApplicationCount(0));
+        dispatch(setApplicationCountResponse(true));
+        done('no data', null);
+      });
    }
  }
  
  export const saveFormProcessMapper = (data, update = false, ...rest) => {
    const done = rest.length ? rest[0] : () => {};
    return  async (dispatch) => {
-     
      if (update) {
        httpPUTRequest(`${API.FORM}/${data.id}`, data).then(async(res) => {
-         // if (res.status === 200) {
-         //TODO REMOVE
+         if(res.data){
+        // dispatch(setFormProcessesData(res.data));
          done(null, res.data);
-         if(!update){  
-           dispatch(setFormProcessesData(res.data));
+         }
+         else{
+          dispatch(setFormProcessesData([]));
+          done(null, []);
          }
          // dispatch(setFormProcessesData([]));
- 
-         // }
        })
        .catch((error) => {
          dispatch(getFormProcesses(data.formId));
+         dispatch(setFormProcessesData([]));
          toast.error("Form process failed");
          console.log("Error", error);
          dispatch(setFormProcessLoadError(true));
          done(error);
-       });;
+       });
      } else {
         httpPOSTRequest(`${API.FORM}`, data).then(async(res) => {
-         // if (res.status === 200) {
-         //TODO REMOVE
-         dispatch(getApplicationCount(res.data.id));
-         done(null, res.data);
-         if(!update){  
+
+         if(res.data){  
+           dispatch(getApplicationCount(res.data.id));
            dispatch(setFormProcessesData(res.data));
+           done(null, res.data);
          }
-         // dispatch(setFormProcessesData([]));
- 
-         // }
+         else{
+          dispatch(setFormProcessesData([]));
+          done(null, []);
+         }
        })
        .catch((error) => {
          dispatch(getFormProcesses(data.formId));

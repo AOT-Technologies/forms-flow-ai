@@ -15,14 +15,6 @@ export const setApplicationListByFormId = (data) => dispatch =>{
   })
 }
 
-export const setLoader = (data) => dispatch =>{
-  dispatch({
-      type:ACTION_CONSTANTS.IS_LOADING,
-      payload:data
-  })
-}
-
-
 export const setApplicationDetail = (data) => dispatch =>{
     dispatch({
         type:ACTION_CONSTANTS.APPLICATION_DETAIL,
@@ -104,6 +96,13 @@ export const setApplicationStatusList = (data) => dispatch =>{
 export const setApplicationError = (data) => dispatch =>{
   dispatch({
     type:ACTION_CONSTANTS.APPLICATIONS_ERROR,
+    payload:data
+  })
+}
+
+export const setPublicStatusLoading = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_PUBLIC_STATUS_LOADING,
     payload:data
   })
 }

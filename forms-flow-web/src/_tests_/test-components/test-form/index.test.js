@@ -6,7 +6,8 @@ import { Provider } from 'react-redux'
 import StoreService from '../../../services/StoreService'
 import { Router,Route } from 'react-router';
 import { createMemoryHistory } from "history";
-import * as redux from 'react-redux' 
+import * as redux from 'react-redux';
+
 
 let store;
 
@@ -51,13 +52,52 @@ it("should render the loading component without breaking when not authenticated"
 
 it("should render the Form list component without breaking",()=>{
     const spy = jest.spyOn(redux,"useSelector");
-    spy.mockReturnValue({user:{isAuthenticated:true}})
+    spy.mockImplementation((callback) => callback({
+       
+        bpmForms:{
+            isActive:false,
+            forms:[
+                {
+                    "_id": "sample",
+                    "title": "sample",
+                    "processKey": "sample"
+                }
+            ],
+            pagination:{
+                "numPages": 0,
+                "page": 1,
+                "total": 0
+            }
+        },
+        user:{
+            isAuthenticated:true
+        },
+        formCheckList:{
+            formList:[]
+        },
+        process:{
+            isApplicationCountLoading:false,
+            formProcessList:[]
+        },
+        formCheckList:{
+            formUploadFormList:[]
+        },
+        forms:{
+           query: {type: 'form', tags: 'common', title__regex: ''},
+           sort:"title"
+        },
+        user:{
+            roles:['']
+        }
+    }));
      renderWithRouterMatch(Index,{
          path:"/form",
          route:"/form",
      }
      )
-    expect(screen.getByTestId("Form-list-component-loader")).toBeInTheDocument()
+    // expect(screen.getByTestId("sample")).toBeInTheDocument() 
+    // expect(screen.getByText("Operations")).toBeInTheDocument()
+    // expect(screen.getByText("Form")).toBeInTheDocument()
  })
 
  it("should render the Stepper component without breaking",()=>{
@@ -108,14 +148,18 @@ it("should render the Form list component without breaking",()=>{
         },
         formDelete:{
             isFormSubmissionLoading:true
+        },
+        applications:{
+            isPublicStatusLoading:true
         }
+
     }))  
      renderWithRouterMatch(Index,{
         path:"/form/:formId",
          route:"/form/123",
      }
      )
-    expect(screen.getByTestId("loading-view-component")).toBeInTheDocument();
+    expect(screen.getByTestId("Form-index")).toBeInTheDocument();
  })
 
  it("should redirect to base url  without breaking",()=>{
@@ -134,6 +178,6 @@ it("should render the Form list component without breaking",()=>{
          route:"/form/123",
      }
      )
-    expect(screen.queryByTestId("loading-view-component")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("Form-index")).not.toBeInTheDocument();
  })
  

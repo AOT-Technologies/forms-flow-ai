@@ -1,7 +1,7 @@
  /* istanbul ignore file */
 import {  httpGETRequest } from '../httpRequestHandler';
 import API from '../endpoints';
-import { serviceActionError } from '../../actions/taskActions'; //TODO move to a common action
+import { serviceActionError } from '../../actions/taskApplicationHistoryActions'; //TODO move to a common action
 import {
   getDashboards,
   getDashboardDetail,
@@ -22,7 +22,7 @@ export const fetchDashboardsList = (dashboardsFromRedash) =>{
         dispatch(setInsightDetailLoader(false));
       return dispatch(serviceActionError("No Dashboards found"))
     }
-    dashboards = JSON.parse(dashboards).dashboards;   
+    dashboards = JSON.parse(dashboards).dashboards;
     for(let dashboard of dashboards){
       let entry = fetchCleanedDashboardsFromLocalStorage(dashboard,dashboardsFromRedash)
       result = [...result,...entry]
@@ -55,14 +55,14 @@ export const fetchDashboardDetails = (id, ...rest) =>{
 
 // retrieves the associated dashboards from the string data
 export const fetchCleanedDashboardsFromLocalStorage = (dashboards,dashboardsFromRedash)=>{
-  
-  // since the data we need is not a valid json / or stringified json, the approach taken 
+
+  // since the data we need is not a valid json / or stringified json, the approach taken
   // to extract the data is string manipulation and create the objects from the extracted information.
-  
+
   let result =[];
   let dashboardsString = dashboards.substring(1,dashboards.length-1);
   let dashboardsArray = dashboardsString.split(",")
-  
+
   for(let dashboard of dashboardsArray){
     if(dashboard === "{}" || dashboard === ""){
       // skip the remaining steps for the above entries
@@ -71,7 +71,7 @@ export const fetchCleanedDashboardsFromLocalStorage = (dashboards,dashboardsFrom
     // to identify possible object patterns and to extract the key and value splits the string based on ":" seperator
       let item = dashboard.split(":");
       let id =null;
-    // The data given by the api seems to have consistent patterns which are essential for 
+    // The data given by the api seems to have consistent patterns which are essential for
     // a non fragile implmentation. All the entries after the first entry in the string representation of the array have
     // space before the entry, so need to handle the two cases
       if(dashboardsArray.indexOf(dashboard) === 0){
@@ -92,7 +92,7 @@ export const fetchCleanedDashboardsFromLocalStorage = (dashboards,dashboardsFrom
               addedIdxs.push(id)
               }
         }
-      }    
+      }
   }
   return result;
 }

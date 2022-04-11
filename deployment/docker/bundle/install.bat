@@ -264,7 +264,31 @@ if %len% ==0 (
     SETLOCAL
     call:clear-dir %~1
     set REDASH_HOST=http://%ip-add%:7000
+    set PYTHONUNBUFFERED=0
+    set REDASH_LOG_LEVEL=INFO
+    set REDASH_REDIS_URL=redis://redis:6379/0
+    set POSTGRES_USER=postgres
+    set POSTGRES_PASSWORD=changeme
+    set POSTGRES_DB=postgres
+    set REDASH_COOKIE_SECRET=redash-selfhosted
+    set REDASH_SECRET_KEY=redash-selfhosted
+    set REDASH_DATABASE_URL=postgresql://postgres:changeme@postgres/postgres
+    set REDASH_CORS_ACCESS_CONTROL_ALLOW_ORIGIN=*
+    set REDASH_REFERRER_POLICY=no-referrer-when-downgrade
+    set REDASH_CORS_ACCESS_CONTROL_ALLOW_HEADERS=Content-Type, Authorization
     echo REDASH_HOST=%REDASH_HOST%>>%~1\.env
+    echo PYTHONUNBUFFERED=%PYTHONUNBUFFERED%>>%~1\.env
+    echo REDASH_LOG_LEVEL=%REDASH_LOG_LEVEL%>>%~1\.env
+    echo REDASH_REDIS_URL=%REDASH_REDIS_URL%>>%~1\.env
+    echo POSTGRES_USER=%POSTGRES_USER%>>%~1\.env
+    echo POSTGRES_PASSWORD=%POSTGRES_PASSWORD%>>%~1\.env
+    echo POSTGRES_DB=%POSTGRES_DB%>>%~1\.env
+    echo REDASH_COOKIE_SECRET=%REDASH_COOKIE_SECRET%>>%~1\.env
+    echo REDASH_SECRET_KEY=%REDASH_SECRET_KEY%>>%~1\.env
+    echo REDASH_DATABASE_URL=%REDASH_DATABASE_URL%>>%~1\.env
+    echo REDASH_CORS_ACCESS_CONTROL_ALLOW_ORIGIN=%REDASH_CORS_ACCESS_CONTROL_ALLOW_ORIGIN%>>%~1\.env
+    echo REDASH_REFERRER_POLICY=%REDASH_REFERRER_POLICY%>>%~1\.env
+    echo REDASH_CORS_ACCESS_CONTROL_ALLOW_HEADERS=%REDASH_CORS_ACCESS_CONTROL_ALLOW_HEADERS%>>%~1\.env
     ENDLOCAL
     docker-compose -f %~1\docker-compose-windows.yml run --rm server create_db
     docker-compose -f %~1\docker-compose-windows.yml up --build -d

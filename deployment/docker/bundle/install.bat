@@ -62,14 +62,14 @@ EXIT /B %ERRORLEVEL%
     Set _folder=source
     if exist %_folder% (
         For /F %%A in ('dir /b /a %_folder%') Do (
-            git -C %_folder% pull origin master
+            git -C %_folder% pull origin v4.0.5-alpha
             EXIT /B 0
         )
     ) else (
         mkdir %_folder%
     )
     ENDLOCAL
-    git clone https://github.com/AOT-Technologies/forms-flow-ai.git source
+    git clone https://github.com/AOT-Technologies/forms-flow-ai.git -b v4.0.5-alpha source
     EXIT /B 0
 
 

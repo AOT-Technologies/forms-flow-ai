@@ -30,14 +30,15 @@ EXIT /B %ERRORLEVEL%
 
 :main
     call:get-repo
+	call:set-common-properties
     call:keycloak source\forms-flow-idm\keycloak %~2
     call:forms-flow-forms source\forms-flow-forms
+    call:forms-flow-web source\forms-flow-web
     call:forms-flow-bpm source\forms-flow-bpm
     if %~1==1 (
         call:forms-flow-analytics source\forms-flow-analytics
     )
     call:forms-flow-api source\forms-flow-api %~1
-    call:forms-flow-web source\forms-flow-web
     EXIT /B 0
 	
 :: #############################################################
@@ -46,7 +47,11 @@ EXIT /B %ERRORLEVEL%
 
 :find-my-ip
     FOR /F "tokens=4 delims= " %%i in ('route print ^| find " 0.0.0.0"') do set ip-add=%%i
-    
+    EXIT /B 0
+  
+:set-common-properties
+    set WEBSOCKET_ENCRYPT_KEY=giert989jkwrgb@DR55
+    EXIT /B 0
 
 :: #############################################################
 :: ################### Clone formsflow repo ####################
@@ -101,7 +106,7 @@ EXIT /B %ERRORLEVEL%
     set FORMIO_ROOT_PASSWORD=changeme
     set FORMIO_DEFAULT_PROJECT_URL=http://%ip-add%:3001
 
-    echo FORMIO_DEFAULT_PROJECT_URL=%FORMIO_DEFAULT_PROJECT_URL%>>%~1\.env
+    echo FORMIO_ROOT_EMAIL=%FORMIO_ROOT_EMAIL%>>%~1\.env
     echo FORMIO_ROOT_PASSWORD=%FORMIO_ROOT_PASSWORD%>>%~1\.env
     echo FORMIO_DEFAULT_PROJECT_URL=%FORMIO_DEFAULT_PROJECT_URL%>>%~1\.env
 
@@ -206,7 +211,6 @@ if %len% ==0 (
 
     set FORMSFLOW_API_URL=http://%ip-add%:5000
     set CAMUNDA_API_URL=http://%ip-add%:8000/camunda
-    set WEBSOCKET_ENCRYPT_KEY=giert989jkwrgb@DR55
     set APPLICATION_NAME=formsflow.ai
     set USER_ACCESS_PERMISSIONS={"accessAllowApplications":false,"accessAllowSubmissions":false}
 
@@ -239,7 +243,6 @@ if %len% ==0 (
     set FORMSFLOW_API_URL=http://%ip-add%:5000
     set WEBSOCKET_SECURITY_ORIGIN=http://%ip-add%:3000
     set FORMIO_DEFAULT_PROJECT_URL=http://%ip-add%:3001
-    set WEBSOCKET_ENCRYPT_KEY=giert989jkwrgb@DR55
 
     echo KEYCLOAK_URL=%KEYCLOAK_URL%>>%~1\.env
     echo KEYCLOAK_BPM_CLIENT_SECRET=%KEYCLOAK_BPM_CLIENT_SECRET%>>%~1\.env
@@ -297,7 +300,7 @@ if %len% ==0 (
     echo FORMSFLOW_API_URL=%FORMSFLOW_API_URL%>>%~1\.env
     
     ENDLOCAL
-    docker-compose -f %~2\docker-compose-windows.yml up --build -d
+    docker-compose -f %~1\docker-compose-windows.yml up --build -d
     EXIT /B 0
 
 :: #############################################################

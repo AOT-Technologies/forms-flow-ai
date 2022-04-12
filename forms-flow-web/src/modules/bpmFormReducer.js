@@ -36,10 +36,11 @@ const bpmForms = (state = initialState, action)=> {
       return {...state, pagination: {...state.pagination,...{
           page: action.payload}},forms:state.searchText?getPaginatedForms(state.formSearchList,state.limit,action.payload, state.sort): getPaginatedForms(state.formsFullList,state.limit,action.payload, state.sort)};
     case ACTION_CONSTANTS.BPM_FORM_LIST_LIMIT_CHANGE:
+      const totalFormsLength = state.searchText? state.formSearchList.length : state.formsFullList.length
       return {...state, limit:action.payload, pagination: {
-          numPages: Math.ceil(state.totalForms/ action.payload),
+          numPages: Math.ceil(totalFormsLength/ action.payload),
           page: 1,
-          total: state.totalForms,
+          total: totalFormsLength,
         }, forms:state.searchText?getPaginatedForms(state.formSearchList,action.payload,1, state.sort):getPaginatedForms(state.formsFullList,action.payload,1, state.sort)}
     case ACTION_CONSTANTS.BPM_FORM_LIST_SORT_CHANGE:
       return {...state, sort:action.payload,forms:state.searchText?getPaginatedForms(state.formSearchList,state.limit,state.maintainPagination?state.page:1,action.payload):getPaginatedForms(state.formsFullList,state.limit,state.maintainPagination? state.pagination.page:1, action.payload),pagination:{...state.pagination,page:1}};

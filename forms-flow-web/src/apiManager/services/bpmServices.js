@@ -53,9 +53,10 @@ export const getSearchResults = (forms,searchText) => {
   let searchResult = [];
   if(searchText === ""){
     searchResult = forms;
-  }else{
+  }else {
      searchResult = forms?.filter((e)=>{
-      return e.title.includes(searchText);
+      const caseInSensitive = e.title.toUpperCase()
+      return caseInSensitive.includes(searchText.toUpperCase());
    })
   }
   return searchResult; 

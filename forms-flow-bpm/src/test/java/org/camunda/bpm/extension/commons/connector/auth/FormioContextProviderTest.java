@@ -54,8 +54,6 @@ public class FormioContextProviderTest {
                 .thenReturn(requestHeadersSpec);
         when(requestHeadersSpec.exchangeToMono(any(Function.class)))
                 .thenReturn(mono);
-        when(mono.log())
-                .thenReturn(mono);
 
         String expected = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyNGJlMGI2YTQzMWUxOTY0MmEzYzRiZSJ9LCJmb3JtIjp7Il9pZCI6IjYyNGJlMGIxYTQzMWUxOTY0MmEzYzQ0MiJ9LCJpYXQiOjE2NDkxMzk5NjAsImV4cCI6MTY0OTE2NTcxOTA4NX0.KtR1e4y3jaRHuOYBUmr9VBxsQweIrAJtdjEWsKXKrG0";
         when(mono.block())

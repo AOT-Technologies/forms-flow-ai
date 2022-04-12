@@ -17,12 +17,16 @@ def overall_sentiment_transformers(string_data: str):
     """Function to get the inference and return the readable sentiment."""
     data = preprocess_incoming(string_data)
     prediction = current_app.classifier(data)
+    sentiment = None
     if prediction[0]["label"] == "LABEL_1":
-        return "NEUTRAL"
+        sentiment = "NEUTRAL"
     if prediction[0]["label"] == "LABEL_0":
-        return "NEGATIVE"
+        sentiment = "NEGATIVE"
     if prediction[0]["label"] == "LABEL_2":
-        return "POSITIVE"
+        sentiment = "POSITIVE"
+    if sentiment is None:
+        raise Exception("Failed to identify the sentiment.")
+    return sentiment
 
 
 def sentiment_analysis_pipeline_transformers(text: str) -> Dict:

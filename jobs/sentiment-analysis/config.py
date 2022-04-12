@@ -34,16 +34,28 @@ def get_named_config(config_name: str = 'production'):
 
 
 class _Config(object):  # pylint: disable=too-few-public-methods
-    """Base class configuration that should set reasonable defaults for all the other configurations. """
+    """Base class configuration that should set reasonable defaults for all the other configurations."""
+    
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 
     SECRET_KEY = 'a secret'
+    # which DBMS system should use, defaulted to postgres database.
+    DBMS = os.getenv('DBMS', 'POSTGRES')
 
     # POSTGRESQL
     DB_PG_CONFIG = {
         'host': os.getenv('DATABASE_HOST', ''),
         'port': os.getenv('DATABASE_PORT', '5432'),
         'dbname': os.getenv('DATABASE_NAME', ''),
+        'user': os.getenv('DATABASE_USERNAME', ''),
+        'password': os.getenv('DATABASE_PASSWORD', '')
+    }
+
+    # SQL SERVER
+    DB_MSSQL_CONFIG = {
+        'server':os.getenv('DATABASE_HOST', ''),
+        'port': os.getenv('DATABASE_PORT', '1433'),
+        'database': os.getenv('DATABASE_NAME', ''),
         'user': os.getenv('DATABASE_USERNAME', ''),
         'password': os.getenv('DATABASE_PASSWORD', '')
     }

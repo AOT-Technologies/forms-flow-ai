@@ -11,6 +11,7 @@ from api.utils import auth, cors_preflight
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
 
+
 @cors_preflight("POST,OPTIONS")
 @API.route("", methods=["POST", "OPTIONS"])
 class SentimentAnalysisTransformerResource(Resource):

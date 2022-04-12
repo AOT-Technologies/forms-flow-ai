@@ -16,7 +16,9 @@ setup_logging(
     os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf")
 )  # important to do this first
 
-API_CONFIG = config.get_named_config(os.getenv('FLASK_ENV','production'))
+API_CONFIG = config.get_named_config(os.getenv("FLASK_ENV", "production"))
+
+
 class LoadModel:  # pylint: disable=too-few-public-methods
     """Manages the model."""
 
@@ -26,7 +28,9 @@ class LoadModel:  # pylint: disable=too-few-public-methods
     @classmethod
     def preload_models(cls):
         """Function to load the fine-tuned transformer model."""
-        cls.classifier = pipeline("sentiment-analysis", model=cls.model_id, truncation=True)
+        cls.classifier = pipeline(
+            "sentiment-analysis", model=cls.model_id, truncation=True
+        )
         return 0
 
 

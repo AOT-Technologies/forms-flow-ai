@@ -14,8 +14,11 @@ from flask import Flask
 import config
 from utils.logger import setup_logging, log_info
 
+from dbms import client, Databse
+
 setup_logging(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'logging.conf'))  # important to do this first
 APP_CONFIG = config.get_named_config(os.getenv('DEPLOYMENT_ENV', 'production'))
+
 
 class LoadModel:  # pylint: disable=too-few-public-methods
     """Manages the model."""
@@ -29,6 +32,7 @@ class LoadModel:  # pylint: disable=too-few-public-methods
         cls.classifier = pipeline("sentiment-analysis", model=cls.model_id, truncation=True)
         return 0
 # pylint:disable=no-member
+
 
 def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
     """Return a configured Flask App using the Factory method."""
@@ -62,7 +66,7 @@ def update_sentiment():
     conn = None
     try:
         # connect to the PostgreSQL server
-        conn = psycopg2.connect(**APP_CONFIG.DB_PG_CONFIG)
+        conn = client.connect(Databse[APP_CONFIG.DBMS].value, APP_CONFIG)
 
         table_name = APP_CONFIG.DATABASE_TABLE_NAME
         input_col = APP_CONFIG.DATABASE_INPUT_COLUMN
@@ -96,12 +100,14 @@ def update_sentiment():
 
 
 def _find_primary_keys(conn, table_name):
-    pk_query = f'SELECT column_name FROM information_schema.table_constraints ' \
-               f'JOIN information_schema.key_column_usage ' \
-               f'USING (constraint_catalog, constraint_schema, constraint_name, table_catalog, table_schema, ' \
-               f"table_name) WHERE constraint_type = 'PRIMARY KEY'  " \
-               f"AND (table_name) = ( '{table_name}') ORDER BY ordinal_position;"
-
+    """Fetch the primary keys of rows that match the pf_query."""
+    # Generalized query to support different databases.
+    pk_query = f"SELECT column_name FROM information_schema.table_constraints AS tc " \
+        f"JOIN information_schema.key_column_usage AS kc ON tc.CONSTRAINT_CATALOG = " \
+        f"kc.CONSTRAINT_CATALOG AND tc.CONSTRAINT_SCHEMA = kc.CONSTRAINT_SCHEMA AND tc.CONSTRAINT_NAME " \
+        f" = kc.CONSTRAINT_NAME AND tc.TABLE_CATALOG = kc.TABLE_CATALOG AND tc.TABLE_SCHEMA " \
+        f"= kc.TABLE_SCHEMA AND tc.TABLE_NAME = kc.TABLE_NAME " \
+        f"WHERE constraint_type = 'PRIMARY KEY' AND (tc.table_name) = ('{table_name}') ORDER BY ordinal_position;"
     try:
         cur = conn.cursor()
         cur.execute(pk_query)

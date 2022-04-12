@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -44,7 +44,7 @@ const View = React.memo((props) => {
   const isPublicStatusLoading = useSelector(
     (state) => state.applications.isPublicStatusLoading
   );
-  
+
   const isFormSubmitted = useSelector(
     (state) => state.formDelete.formSubmitted
   );
@@ -53,6 +53,7 @@ const View = React.memo((props) => {
   );
   const isPublic = window.location.href.includes("public"); //need to remove
   const { formId } = useParams();
+  const [showPublicForm, setShowPublicForm] = useState('checking');
 
   const {
     isAuthenticated,
@@ -82,7 +83,7 @@ const View = React.memo((props) => {
             dispatch(setFormSuccessData('form',formObj));
           }
         }
-          
+
         }
       })
     );
@@ -115,6 +116,16 @@ const View = React.memo((props) => {
     }
   }, [isPublic, dispatch,getFormData]);
 
+  useEffect(()=>{
+    if(publicFormStatus){
+      if(publicFormStatus.anonymous===true && publicFormStatus.status==="active" ){
+        setShowPublicForm(true);
+      }else{
+        setShowPublicForm(false);
+      }
+    }
+  },[publicFormStatus])
+
   if (isActive || isPublicStatusLoading) {
     return (
       <div data-testid="loading-view-component">
@@ -132,13 +143,11 @@ const View = React.memo((props) => {
     );
   }
 
-
-  if (isPublic && publicFormStatus && publicFormStatus.anonymous && publicFormStatus.status === "inactive" ) {
+  if (isPublic && !showPublicForm) {
     return (
       <div className="alert alert-danger mt-4" role="alert">
         Form not available
       </div>
-
     );
   }
 

@@ -228,14 +228,6 @@ class StepperPage extends PureComponent {
     return listProcess(this.props.processList);
   }
 
-  // populateStatusDropdown() {
-  //   const list = [
-  //     { label: "Active", value: "active" },
-  //     { label: "Inactive", value: "inactive" },
-  //   ];
-  //   return list;
-  // }
-
   associateToWorkFlow = (item) => {
     this.setState({ workflow: item[0], dataModified: true });
   };
@@ -265,7 +257,8 @@ class StepperPage extends PureComponent {
       formId: form.id,
       formName: form.form && form.form.title,
       status: processData.status? processData.status:"inactive",
-      taskVariable:formProcessList.taskVariable?formProcessList.taskVariable:[]
+      taskVariable:formProcessList.taskVariable?formProcessList.taskVariable:[],
+      anonymous:formProcessList.anonymous
     };
     if (associateWorkFlow === "yes" && workflow) {
       data["processKey"]= workflow && workflow.value;
@@ -274,10 +267,10 @@ class StepperPage extends PureComponent {
       data["processKey"]= "";
       data["processName"]= "";
     }
-    
+
     const processNameChecking= data.processName!==formPreviousData.processName;
     const processKeyChecking= data.processKey!==formPreviousData.processKey;
-    
+
     if(processData.comments){
       data["comments"] = processData.comments;
     }
@@ -289,11 +282,11 @@ class StepperPage extends PureComponent {
       let version = +formProcessList.version+1
       data.version = `${version}`
     }
-  } 
-  
+  }
+
   if(formProcessList && formProcessList.id ){
     data.id = formProcessList.id;
-  }  
+  }
     onSaveFormProcessMapper(data, isUpdate);
   };
 

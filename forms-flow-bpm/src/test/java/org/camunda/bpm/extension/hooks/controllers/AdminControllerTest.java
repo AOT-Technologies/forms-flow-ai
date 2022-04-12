@@ -207,28 +207,4 @@ public class AdminControllerTest {
         });
     }
 
-    @Test
-    public void getFormsAuthorizationSuccess_without_adminGroupName_and_JwtAuthenticationToken() throws Exception {
-        JwtAuthenticationToken jwtAuthenticationToken = mock(JwtAuthenticationToken.class);
-        SecurityContextHolder.getContext().setAuthentication(jwtAuthenticationToken);
-        Jwt jwt = mock(Jwt.class);
-        when(jwtAuthenticationToken.getToken())
-                .thenReturn(jwt);
-
-        Map<String, Object> claims = new HashMap<>();
-        JSONArray groups = new JSONArray();
-        groups.add("camunda-admin");
-        groups.add("/formsflow/formsflow-reviewer");
-        claims.put("groups", groups);
-
-        when(jwt.getClaims())
-                .thenReturn(claims);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/engine-rest-ext/form/authorization"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("{\"adminGroupEnabled\":false,\"authorizationList\":" +
-                        "[{\"groupId\":\"test-id-1\",\"userId\":\"test-id-1\",\"resourceId\":\"224233456456\"}]}"));
-    }
-
 }

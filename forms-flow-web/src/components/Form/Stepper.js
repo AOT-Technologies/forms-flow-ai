@@ -258,7 +258,7 @@ class StepperPage extends PureComponent {
       formName: form.form && form.form.title,
       status: processData.status? processData.status:"inactive",
       taskVariable:formProcessList.taskVariable?formProcessList.taskVariable:[],
-      anonymous:formProcessList.anonymous
+      anonymous:formProcessList.anonymous?true:false
     };
     if (associateWorkFlow === "yes" && workflow) {
       data["processKey"]= workflow && workflow.value;

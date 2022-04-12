@@ -89,7 +89,7 @@ jobs:
       - name: Install dependencies
         run: |
           make setup
-      - name: Download NLTK Model
+      - name: Download Sentiment Analysis Model
         run: |
           make download-models
       - name: Test

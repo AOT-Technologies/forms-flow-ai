@@ -18,6 +18,9 @@ The root directory contains the install script for windows. After executing it, 
 
 ## Installation
 
+```
+  This setup is not recommended for production use 
+```
 - In the base directory execute install script by double clicking on the install.bat (For Windows).
 - The following image depicts the installation flow with user input required for configuration.
 

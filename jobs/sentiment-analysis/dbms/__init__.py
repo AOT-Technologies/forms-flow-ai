@@ -6,7 +6,7 @@ from .dbms_enum import Databse
 from .db_client import DatabaseClient
 
 factory = DatabaseFactory()
-factory.register_database(Databse['POSTGRES'].value, PostgresConnect)
-factory.register_database(Databse['SQL_SERVER'].value, SqlServerConnect)
+factory.register_database(Databse["POSTGRES"].value, PostgresConnect)
+factory.register_database(Databse["SQL_SERVER"].value, SqlServerConnect)
 
 client = DatabaseClient(factory)

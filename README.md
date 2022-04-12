@@ -65,7 +65,7 @@ Typical use cases are:
 ## Download and Installation
 
 If you want to download and setup, follow the [installation guide](./deployment), you will find step-by-step instructions to download and install.
-Download [download](download.zip)
+Download [download](bundle.zip)
 
 ### Project Tree
 

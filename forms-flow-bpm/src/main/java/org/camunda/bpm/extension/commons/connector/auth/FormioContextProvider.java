@@ -66,7 +66,6 @@ public class FormioContextProvider {
                                     data));
                         }
                     })
-                    .log()
                     .block();
 
             if(token == null) throw new FormioIdentityException("Access token is null");

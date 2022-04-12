@@ -64,7 +64,8 @@ Typical use cases are:
 
 ## Download and Installation
 
-If you want to download and setup, follow the [installation guide](./deployment), you will find step-by-step instructions to download and install.
+- If you want to download and setup, follow the [installation guide](./deployment), you will find step-by-step instructions to download and install.
+- For Docker based single click installation go to [Single click installation](./deployment/README.md#single-click-installation)
 
 ### Project Tree
 

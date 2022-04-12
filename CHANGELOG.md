@@ -10,7 +10,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Added `anonymous user` feature .
 * Added count for Filter Tasks .
-* Added form search and sort fields for all roles.
+* Added form list page search and sort.
 * Added new UI for task variable.
 * Added form name as part of filename when downloaded.
 * Added the status of the earlier version as inactive when a new version of the form is created.

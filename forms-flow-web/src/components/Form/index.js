@@ -3,7 +3,6 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import {useSelector} from "react-redux";
 
 import List from "./List";
-// import Create from "./Create";
 import Stepper from "./Stepper";
 import Item from "./Item/index";
 import { STAFF_DESIGNER, STAFF_REVIEWER, CLIENT } from "../../constants/constants";
@@ -48,7 +47,6 @@ export default React.memo(() => {
           component={Stepper}
         />
         <FormSubmissionRoute path="/form/:formId/" component={Item}/>
-        {/* <Route path="/form/:formId" component={Item} /> */}
       </Switch>
     </div>
   );

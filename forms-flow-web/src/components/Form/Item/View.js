@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -30,16 +30,21 @@ import LoadingOverlay from "react-loading-overlay";
 import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes";
 import { toast } from "react-toastify";
 import {
-  setFormSubmitted,
-  setPublicFormStatus,
+  setFormSubmitted
 } from "../../../actions/formActions";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import {checkIsObjectId} from "../../../apiManager/services/formatterService";
+import { setPublicStatusLoading } from "../../../actions/applicationActions";
+
 
 const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
+  const isPublicStatusLoading = useSelector(
+    (state) => state.applications.isPublicStatusLoading
+  );
+
   const isFormSubmitted = useSelector(
     (state) => state.formDelete.formSubmitted
   );
@@ -48,6 +53,7 @@ const View = React.memo((props) => {
   );
   const isPublic = window.location.href.includes("public"); //need to remove
   const { formId } = useParams();
+  const [showPublicForm, setShowPublicForm] = useState('checking');
 
   const {
     isAuthenticated,
@@ -62,8 +68,12 @@ const View = React.memo((props) => {
   const dispatch = useDispatch();
 
   const getPublicForm = useCallback((form_id, isObjectId, formObj) => {
+    dispatch(setPublicStatusLoading(true));
     dispatch(
       publicApplicationStatus(form_id, (err, res) => {
+        dispatch(setPublicStatusLoading(false));
+        if(!err)
+        {
         if (isPublic) {
           if(isObjectId){
             dispatch(getForm("form", form_id));
@@ -72,11 +82,8 @@ const View = React.memo((props) => {
             dispatch(setFormRequestData('form',form_id,`${Formio.getProjectUrl()}/form/${form_id}`));
             dispatch(setFormSuccessData('form',formObj));
           }
-          if (res && res.is_anonymous && res.status === "active") {
-            dispatch(setPublicFormStatus(true));
-          } else {
-            dispatch(setPublicFormStatus(false));
-          }
+        }
+
         }
       })
     );
@@ -109,7 +116,17 @@ const View = React.memo((props) => {
     }
   }, [isPublic, dispatch,getFormData]);
 
-  if (isActive) {
+  useEffect(()=>{
+    if(publicFormStatus){
+      if(publicFormStatus.anonymous===true && publicFormStatus.status==="active" ){
+        setShowPublicForm(true);
+      }else{
+        setShowPublicForm(false);
+      }
+    }
+  },[publicFormStatus])
+
+  if (isActive || isPublicStatusLoading) {
     return (
       <div data-testid="loading-view-component">
         <Loading />
@@ -126,7 +143,7 @@ const View = React.memo((props) => {
     );
   }
 
-  if (!publicFormStatus && isPublic) {
+  if (isPublic && !showPublicForm) {
     return (
       <div className="alert alert-danger mt-4" role="alert">
         Form not available
@@ -163,7 +180,7 @@ const View = React.memo((props) => {
       </div>
       <Errors errors={errors} />
       <LoadingOverlay
-        active={isFormSubmissionLoading}
+        active={isFormSubmissionLoading }
         spinner
         text="Loading..."
         className="col-12"

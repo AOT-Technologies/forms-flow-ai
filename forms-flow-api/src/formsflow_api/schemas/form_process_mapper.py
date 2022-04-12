@@ -43,3 +43,5 @@ class FormProcessMapperListRequestSchema(FormProcessMapperListReqSchema):
     """This class manages formprocessmapper list request schema."""
 
     form_name = fields.Str(data_key="formName", required=False)
+    sort_by = fields.Str(data_key="sortBy", required=False)
+    sort_order = fields.Str(data_key="sortOrder", required=False)

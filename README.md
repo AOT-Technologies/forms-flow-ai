@@ -1,6 +1,7 @@
 <div align="center"><img src=".images/logo.png"/></div>
-<hr/>  
-
+<hr/> 
+ 
+[![FormsFlow WEB CI](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions/workflows/forms-flow-web-ci.yml/badge.svg)](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions)
 [![FormsFlow API CI](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions/workflows/forms-flow-api-ci.yml/badge.svg)](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions)
 [![FormsFlow BPM CI](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions/workflows/forms-flow-bpm-ci.yml/badge.svg)](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions)
 [![Join the chat at https://gitter.im/forms-flow-ai/community](https://badges.gitter.im/forms-flow-ai/community.svg)](https://gitter.im/forms-flow-ai/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -63,7 +64,8 @@ Typical use cases are:
 
 ## Download and Installation
 
-If you want to download and setup, follow the [installation guide](./deployment), you will find step-by-step instructions to download and install.
+- If you want to download and setup, follow the [installation guide](./deployment), you will find step-by-step instructions to download and install.
+- For Docker based single click installation follow the instruction from [here](./deployment/README.md#docker-single-click-installation)
 
 ### Project Tree
 

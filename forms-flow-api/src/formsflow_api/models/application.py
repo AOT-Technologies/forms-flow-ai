@@ -63,6 +63,30 @@ class Application(
         return cls.query.filter_by(id=application_id).first()
 
     @classmethod
+    def find_auth_by_id(cls, application_id: int) -> Application:
+        """Find application that matches the provided id."""
+        result = (
+            FormProcessMapper.query.with_entities(
+                cls.id,
+                cls.application_status,
+                cls.form_url,
+                cls.form_process_mapper_id,
+                cls.process_instance_id,
+                cls.created_by,
+                cls.created,
+                cls.modified,
+                cls.modified_by,
+                FormProcessMapper.process_key,
+                FormProcessMapper.process_name,
+                FormProcessMapper.form_name.label("application_name"),
+            )
+            .join(cls, FormProcessMapper.id == cls.form_process_mapper_id)
+            .filter(Application.id == application_id)
+            .first()
+        )
+        return result
+
+    @classmethod
     def find_all_application_status(cls):
         """Find all application status."""
         return cls.query.distinct(Application.application_status).all()
@@ -75,17 +99,25 @@ class Application(
         )
 
     @classmethod
-    def find_all(cls, page_no: int, limit: int) -> Application:
+    def find_all(
+        cls,
+        page_no: int,
+        limit: int,
+        order_by: str,
+        sort_order: str,
+        **filters,
+    ) -> Application:
         """Fetch all application."""
-        if page_no == 0:
-            result = cls.query.order_by(Application.id.desc()).all()
-        else:
-            result = (
-                cls.query.order_by(Application.id.desc())
-                .paginate(page_no, limit, False)
-                .items
-            )
-        return result
+        query = cls.filter_conditions(**filters)
+        order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
+        if order_by and sort_order:
+            table_name = "application"
+            if order_by == "form_name":
+                table_name = "form_process_mapper"
+            query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
+        total_count = query.count()
+        pagination = query.paginate(page_no, limit)
+        return pagination.items, total_count
 
     @classmethod
     def filter_conditions(cls, **filters):
@@ -218,6 +250,61 @@ class Application(
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
         return pagination.items, total_count
+
+    @classmethod
+    def find_applications_by_process_key(  # pylint: disable=too-many-arguments
+        cls,
+        page_no: int,
+        limit: int,
+        order_by: str,
+        sort_order: str,
+        process_key: str,
+        **filters,
+    ):
+        """Fetch applications list based on searching parameters for Reviewer."""
+        query = cls.filter_conditions(**filters)
+        query = query.filter(FormProcessMapper.process_key.in_(process_key))
+        order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
+        if order_by and sort_order:
+            table_name = "application"
+            if order_by == "form_name":
+                table_name = "form_process_mapper"
+            query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
+        total_count = query.count()
+        pagination = query.paginate(page_no, limit)
+        return pagination.items, total_count
+
+    @classmethod
+    def find_auth_application_by_process_key(  # pylint: disable=too-many-arguments
+        cls,
+        process_key: str,
+        application_id: int,
+    ):
+        """Fetch applications list based on searching parameters for Reviewer."""
+        query = (
+            cls.query.filter(Application.id == application_id)
+            .join(
+                FormProcessMapper,
+                Application.form_process_mapper_id == FormProcessMapper.id,
+            )
+            .filter(FormProcessMapper.process_key.in_(process_key))
+            .add_columns(
+                cls.id,
+                cls.application_status,
+                cls.form_url,
+                cls.form_process_mapper_id,
+                cls.process_instance_id,
+                cls.created_by,
+                cls.created,
+                cls.modified,
+                cls.modified_by,
+                FormProcessMapper.form_name.label("application_name"),
+                FormProcessMapper.process_key.label("process_key"),
+                FormProcessMapper.process_name.label("process_name"),
+            )
+            .first()
+        )
+        return query
 
     @classmethod
     def find_id_by_form_names(cls, application_id: int, form_names):

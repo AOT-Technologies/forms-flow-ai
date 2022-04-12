@@ -57,7 +57,6 @@ export const fetchMetricsSubmissionStatusCount = (id, fromDate, toDate ,setSearc
 
   return (dispatch) => {
     dispatch(setSelectedMetricsId(id));
-    // httpPOSTRequest(API.GET_TASK_API, { taskVariables: [] })
     httpGETRequest(
       `${API.METRICS_SUBMISSIONS}/${id}?from=${fromDate}&to=${toDate}&orderBy=${setSearchBy}`)
       .then((res) => {

@@ -7,7 +7,6 @@ import Loading from "../../containers/Loading";
 import {fetchDiagram, getProcessActivities} from "../../apiManager/services/processServices";
 import {setProcessActivityData, setProcessDiagramLoading, setProcessDiagramXML} from "../../actions/processActions";
 import "./bpm.scss"
-//import BpmnJS from 'bpmn-js';
 import usePrevious from "./UsePrevious";
 import Nodata from "../Nodata";
 
@@ -35,10 +34,7 @@ const ProcessDiagram = React.memo((props)=>{
         } = event;
         if (error) {
           console.log('bpmnViewer error >', error);
-          //return handleError(error);
         }
-        //bpmnViewer.get('canvas').zoom('fit-viewport');
-        //return handleShown(warnings);
       });
     }
     return ()=>{
@@ -89,7 +85,7 @@ const ProcessDiagram = React.memo((props)=>{
       }
    }
  },[diagramXML,bpmnViewer,markers,prevMarkers]);
- 
+
  const zoom = () => {
   bpmnViewer.get('zoomScroll').stepZoom(1)
   }
@@ -98,41 +94,6 @@ const ProcessDiagram = React.memo((props)=>{
     bpmnViewer.get('zoomScroll').stepZoom(-1)
     }
   const zoomReset = ()=>{ bpmnViewer.get('zoomScroll').reset();}
-    
-  /*const handleError = (err) => {
-    console.log(err);
-    const { onError } = props;
-    if (onError) {
-      onError(err);
-    }
-  }
-
-  const handleShown = (warnings)=>{
-    const { onShown } = props;
-    if (onShown) {
-      onShown(warnings);
-    }
-  }*/
-  
-  
-  // if(processInstanceId === null && isProcessDiagramLoading === false)
-  // { 
-  //   return <div className="bpmn-viewer-container">
-  //     <div className="bpm-container">
-  //       <Nodata text={"No Process Diagram found"} className={"div-no-application-list text-center"}/>
-  //     </div>
-  //   </div>
-  // }
-
-
-  // if(processInstanceId === null && isProcessDiagramLoading === false)
-  // {
-  //   return <div className="bpmn-viewer-container">
-  //     <div className="bpm-container">
-  //       <Nodata text={"No Process Diagram found"} className={"div-no-application-list text-center"}/>
-  //     </div>
-  //   </div>
-  // }
 
   if (isProcessDiagramLoading) {
     return <div className="bpmn-viewer-container">
@@ -148,7 +109,7 @@ const ProcessDiagram = React.memo((props)=>{
       </div>
     </div>
   }
-  
+
   return (
     <>
     <div className="bpmn-viewer-container">
@@ -157,16 +118,13 @@ const ProcessDiagram = React.memo((props)=>{
     <div className="d-flex  justify-content-end btn_zoom">
       <div className="d-flex flex-column">
     <button className='mb-3' title='Reset Zoom' onClick={()=>zoomReset()}>
-     <i class="fa fa-retweet" aria-hidden="true"></i> 
-    {/* <i className="icon-screenshot"></i> */}
-   </button> 
+     <i className="fa fa-retweet" aria-hidden="true"/>
+   </button>
     <button  title='Zoom In' onClick={()=>zoom()}>
-    <i class="fa fa-search-plus" aria-hidden="true"></i>
-    {/* <i className="fa fa-plus" aria-hidden="true"></i> */}
+    <i className="fa fa-search-plus" aria-hidden="true"/>
    </button>
    <button title='Zoom Out' onClick={()=>zoomOut()}>
-   <i class="fa fa-search-minus" aria-hidden="true"></i>
-    {/* <i className="fa fa-minus" aria-hidden="true"></i> */}
+   <i className="fa fa-search-minus" aria-hidden="true"/>
   </button>
   </div>
     </div>

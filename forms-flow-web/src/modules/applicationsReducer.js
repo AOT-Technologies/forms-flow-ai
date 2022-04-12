@@ -14,7 +14,8 @@ export const initialState = {
   countPerPage:5,
   applicationStatus:[],
   iserror:false,
-  error:''
+  error:'',
+  isPublicStatusLoading:false
 }
 
 
@@ -46,6 +47,8 @@ const applications = (state = initialState, action)=> {
       return {...state,applicationStatus:action.payload}
     case ACTION_CONSTANTS.APPLICATIONS_ERROR:
       return {...state,iserror:true,error:action.payload,isApplicationListLoading:false}
+    case ACTION_CONSTANTS.IS_PUBLIC_STATUS_LOADING:
+      return {...state,isPublicStatusLoading:action.payload}
     default:
       return state;
   }

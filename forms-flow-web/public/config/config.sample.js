@@ -5,9 +5,9 @@ window["_env_"] = {
 
   // KEYCLOAK-CLIENT-Roles
 
-  REACT_APP_CLIENT_ROLE: "rpas-client",
-  REACT_APP_STAFF_DESIGNER_ROLE: "rpas-formdesigner",
-  REACT_APP_STAFF_REVIEWER_ROLE: "rpas-reviewer",
+  REACT_APP_CLIENT_ROLE: "formsflow-client",
+  REACT_APP_STAFF_DESIGNER_ROLE: "formsflow-designer",
+  REACT_APP_STAFF_REVIEWER_ROLE: "formsflow-reviewer",
   // Role Id's from forms-flow-forms
   // Form-IO-Client-Id
   REACT_APP_CLIENT_ID: "<Form-IO-SERVERS Client role-Id>",

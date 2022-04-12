@@ -7,6 +7,7 @@
    - [Step 2 : Environment Variables](#environment-variables)
    - [Step 3 : Starting / Stopping Keycloak server](#starting-or-stopping-keycloak-server)
    - [Step 4 : Health Check](#health-check)
+   - [Step 5 : Add custom login theme](#add-custom-login-theme)
      - [formsflow-ai user credentials](#formsflow-ai-user-credentials)
 2. [Server Keycloak setup](#server-keycloak-setup)
    - [Step 1 : Create Realm](#create-realm)
@@ -71,7 +72,7 @@ Variable name | Meaning | Possible values | Default value |
 #### To stop the keycloak server
 
 * Run `docker-compose stop` to stop.
-  
+
 ### Health Check
 
 The application should be up and available for use in http://localhost:8080
@@ -82,6 +83,12 @@ Login Credentials
 User Name : admin
 Password  : changeme
 ```
+
+### Add custom login theme
+
+* Log in to http://localhost:8080
+* Select Realm settings>Themes>Login Theme>formsflow>Save.
+* Run `docker-compose up --build -d` to verify the changes.
 
 #### formsflow-ai user credentials
 

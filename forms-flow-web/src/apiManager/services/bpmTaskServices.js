@@ -338,10 +338,7 @@ export const claimBPMTask = (taskId, user, ...rest) => {
   return (dispatch) => {
     httpPOSTRequest(apiUrlClaimTask, { userId: user })
       .then((res) => {
-        // if (res.status === 200) {
-        //TODO REMOVE
         done(null, res.data);
-        // }
       })
       .catch((error) => {
         console.log("Error", error);
@@ -362,10 +359,7 @@ export const updateAssigneeBPMTask = (taskId, user, ...rest) => {
   return (dispatch) => {
     httpPOSTRequest(apiUrlClaimTask, { userId: user })
       .then((res) => {
-        // if (res.status === 200) {
-        //TODO REMOVE
         done(null, res.data);
-        // }
       })
       .catch((error) => {
         console.log("Error", error);
@@ -446,26 +440,3 @@ export const onBPMTaskFormSubmit = (taskId, formReq, ...rest) => {
       });
   };
 };
-
-/*export const completeTask = (id, reviewStatus, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  const data = {
-    variables: {
-      action: {
-        value: reviewStatus,
-      },
-    },
-  };
-  return (dispatch) => {
-    httpPOSTRequest(`${API.GET_TASK_API}/${id}/complete`, data)
-      .then((res) => {
-        /!*dispatch(getTaskDetail(id));
-        done(null, res);*!/
-      })
-      .catch((error) => {
-        console.log("Error", error);
-        done(error);
-        dispatch(serviceActionError(error));
-      });
-  };
-};*/

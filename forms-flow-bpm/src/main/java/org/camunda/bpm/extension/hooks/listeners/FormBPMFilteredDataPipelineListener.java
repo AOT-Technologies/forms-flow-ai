@@ -1,7 +1,6 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
@@ -64,14 +63,13 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
         }
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        mapper.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
         Map<String, FilterInfo> filterInfoMap = new HashMap<>();
         try {
             String responseBody = response.getBody();
             if(responseBody != null) {
-                responseBody = responseBody.replace("\"[{", "[{")
-                        .replace("}]\"", "}]").replace("\\", "");
+                responseBody = responseBody.replace("\"[", "[")
+                        .replace("]\"", "]").replace("\\", "");
             }
             FormProcessMappingData body = mapper.readValue(responseBody, FormProcessMappingData.class);
             List<FilterInfo> filterInfoList = body.getTaskVariable();

@@ -74,11 +74,15 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
     protected Application prepareApplicationAudit(DelegateExecution execution) {
         String applicationStatus = String.valueOf(execution.getVariable("applicationStatus"));
         String formUrl = String.valueOf(execution.getVariable("formUrl"));
+        String submitterName = String.valueOf(execution.getVariable("submitterName"));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		String submittedBy = null;
-		if (authentication instanceof JwtAuthenticationToken) {
-			submittedBy = ((JwtAuthenticationToken) authentication).getToken().getClaimAsString("preferred_username");
-		}
+        String submittedBy = null;
+        if (submitterName.equals("Anonymous-user") && applicationStatus.equals("New")){
+            submittedBy = "Anonymous-user";
+        }
+        else if (authentication instanceof JwtAuthenticationToken) {
+            submittedBy = ((JwtAuthenticationToken) authentication).getToken().getClaimAsString("preferred_username");
+        }
         return new Application(applicationStatus, formUrl, submittedBy);
     }
 

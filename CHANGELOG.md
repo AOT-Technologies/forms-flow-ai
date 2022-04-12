@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 4.0.5 - 2022-04-05
+## 4.0.5 - 2022-04-12
 
 `Added`
 
@@ -10,7 +10,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Added `anonymous user` feature .
 * Added count for Filter Tasks .
-* Added form search and sort fields for formsflow-designer.
+* Added form search and sort fields for all roles.
 * Added new UI for task variable.
 * Added form name as part of filename when downloaded.
 * Added the status of the earlier version as inactive when a new version of the form is created.
@@ -34,6 +34,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-idm**
 
 * Added `manage-users` group to assigned client roles in realm-management.Check out the details at Service Accounts Tab from [here](./forms-flow-idm/keycloak/README.md#create-a-forms-flow-bpm-client).
+* Added project specific custom login theme , check out the steps [here](./forms-flow-idm/keycloak/README.md#add-custom-login-theme).
+
 
 **forms-flow-bpm**
 

@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 4.0.5 - 2022-03-25
+## 4.0.5 - 2022-04-12
 
 `Added`
 
@@ -10,12 +10,13 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Added `anonymous user` feature .
 * Added count for Filter Tasks .
-* Added form search and sort fields for formsflow-designer.
+* Added form list page search and sort.
 * Added new UI for task variable.
 * Added form name as part of filename when downloaded.
 * Added the status of the earlier version as inactive when a new version of the form is created.
 * Added submitter name in the application history table.
 * Added Cancel button for form submission.
+* Added task variable in tasklist with ordering.
 
 **forms-flow-api**
 
@@ -33,6 +34,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-idm**
 
 * Added `manage-users` group to assigned client roles in realm-management.Check out the details at Service Accounts Tab from [here](./forms-flow-idm/keycloak/README.md#create-a-forms-flow-bpm-client).
+* Added project specific custom login theme , check out the steps [here](./forms-flow-idm/keycloak/README.md#add-custom-login-theme).
+
 
 **forms-flow-bpm**
 
@@ -43,6 +46,8 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-web**
 
 * Uploaded forms cannot submit by client issue fixed .
+* Application not getting in iOS issue fixed.
+* Fixed process variable's data type in task filter.
 
 
 **forms-flow-api**
@@ -103,6 +108,7 @@ Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` ar
 `Generic Changes`
 
 * Added docker based automated installation.For installation guide, check out [here](./deployment/docker/bundle).
+* Existing users should build forms-flow-bpm,forms-flow-webapi and forms-flow-web together.
 
 ## 4.0.4 - 2021-12-27
 

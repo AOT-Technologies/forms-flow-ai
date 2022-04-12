@@ -3,7 +3,7 @@ import ACTION_CONSTANTS from "./actionConstants";
 
 export const setMetricsSubmissionCount = (data) => (dispatch) => {
   dispatch({
-    type: ACTION_CONSTANTS.METRICSSUBMISSIONS,
+    type: ACTION_CONSTANTS.METRICS_SUBMISSIONS,
     payload: data,
   });
 };

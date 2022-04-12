@@ -2,6 +2,7 @@ package org.camunda.bpm.extension.keycloak.sso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import javax.servlet.http.HttpServletRequest;
@@ -23,9 +24,9 @@ import net.minidev.json.JSONArray;
  * KeycloakIdentityProviderPlugin.
  */
 public class KeycloakAuthenticationProvider extends ContainerBasedAuthenticationProvider {
-	
+
 	@Value("${plugin.identity.keycloak.enableClientAuth}")
-    private boolean enableClientAuth;
+	private boolean enableClientAuth;
 
 	@Override
 	public AuthenticationResult extractAuthenticatedUser(HttpServletRequest request, ProcessEngine engine) {
@@ -51,7 +52,7 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 
 		return authenticationResult;
 	}
-	
+
 	private List<String> getUserGroups(String userId, ProcessEngine engine, OidcUser principal) {
 		List<String> groupIds = new ArrayList<>();
 		// Find groups or roles from the idToken.
@@ -70,9 +71,12 @@ public class KeycloakAuthenticationProvider extends ContainerBasedAuthentication
 	private List<String> getKeys(OidcIdToken token, String nodeName) {
 		List<String> keys = new ArrayList<>();
 		if (token.containsClaim(nodeName)) {
-			for (Object key : (JSONArray) token.getClaim(nodeName)) {
-				keys.add(StringUtils.contains(key.toString(), "/") ? StringUtils.substringAfter(key.toString(), "/") : key.toString());
-			}
+			keys  = ((JSONArray) token.getClaim(nodeName)).stream()
+					.map(key ->
+							StringUtils.contains(key.toString(), "/") ?
+							StringUtils.substringAfter(key.toString(), "/") :
+							key.toString())
+					.collect(Collectors.toList());
 		}
 		return keys;
 	}

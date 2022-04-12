@@ -4,7 +4,7 @@ import {
   setApplicationHistoryList,
   serviceActionError,
   setUpdateHistoryLoader
-} from "../../actions/taskActions";
+} from "../../actions/taskApplicationHistoryActions";
 import UserService from "../../services/UserService";
 import { replaceUrl } from "../../helper/helper";
 

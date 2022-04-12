@@ -1,9 +1,7 @@
-import { WEB_BASE_URL, BPM_BASE_URL, BPM_BASE_URL_EXT } from "./config";
+import { WEB_BASE_URL, BPM_BASE_URL} from "./config";
 import {AppConfig} from "../../config";
 
 const API = {
-  GET_TASK_API: `${WEB_BASE_URL}/task`,
-  GET_TASK_DETAIL_API: `${WEB_BASE_URL}/task/`,
   GET_DASHBOARDS: `${WEB_BASE_URL}/dashboards`,
   METRICS_SUBMISSIONS: `${WEB_BASE_URL}/metrics`,
   APPLICATION_START: `${WEB_BASE_URL}/application/create`,
@@ -34,7 +32,7 @@ const API = {
   BPM_GROUP:`${BPM_BASE_URL}/task/<task_id>/identity-links`,
   DELETE_BPM_GROUP:`${BPM_BASE_URL}/task/<task_id>/identity-links/delete`,
   BPM_FORM_SUBMIT:`${BPM_BASE_URL}/task/<task_id>/submit-form`,
-  GET_BPM_FORM_LIST:`${BPM_BASE_URL_EXT}/form`,
+  GET_BPM_FORM_LIST:`${WEB_BASE_URL}/form`,
   UPDATE_ASSIGNEE_BPM_TASK:`${BPM_BASE_URL}/task/<task_id>/assignee`,
   GET_FORM_BY_ALIAS:`${AppConfig.projectUrl}/<form_path>`,
   GET_GROUPS:`${WEB_BASE_URL}/groups`,

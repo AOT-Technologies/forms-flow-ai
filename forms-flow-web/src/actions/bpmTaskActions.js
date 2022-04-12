@@ -100,7 +100,7 @@ export const setBPMFilterLoader = (data) => dispatch =>{
 
 export const setBPMFilterList = (data) => dispatch =>{
   dispatch({
-    type:ACTION_CONSTANTS.BPM_FITER_LIST,
+    type:ACTION_CONSTANTS.BPM_FILTER_LIST,
     payload:data
   })
 }

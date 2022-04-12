@@ -52,7 +52,7 @@ const Edit = React.memo(() => {
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const errors = useSelector((state) => state.form.error);
   const prviousData = useSelector((state) => state.process.formPreviousData);
-  const ApplicationCount = useSelector((state) =>state.process.ApplicationCount)
+  const applicationCount = useSelector((state) =>state.process.applicationCount)
   const  formProcessList = useSelector((state)=>state.process.formProcessList)
   const formPreviousData = useSelector((state)=>state.process.formPreviousData)
   const saveText = "Save Form";
@@ -163,7 +163,7 @@ const Edit = React.memo(() => {
 // save form data to submit
   const saveFormData = () => {
     const newFormData = addHiddenApplicationComponent(form);
-    if(prviousData.formName !== newFormData.title && ApplicationCount >0){
+    if(prviousData.formName !== newFormData.title && applicationCount >0){
       handleShow()
     }else{
       newFormData.submissionAccess = SUBMISSION_ACCESS;

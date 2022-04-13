@@ -247,16 +247,27 @@
  };
  
  
- export const unPublishForm = (mapperId) =>{
+ export const unPublishForm = (mapperId, ...rest) =>{
+   const done = rest.length ? rest[0] : () => {};
    const url = replaceUrl(API.UNPUBLISH_FORMS,"<mapper id>",mapperId)
    return(dispatch) =>{
      httpDELETERequest(url).then((res)=>{
       toast.success(`Form deleted successfully`);
+      console.log("form deleted response",res.data)
+      dispatch(setFormPreviosData([]))
+      dispatch(setFormProcessesData([]));
+      dispatch(setProcessLoadError(false));
+      dispatch(setProcessDiagramXML(""));
+      dispatch(setProcessDiagramLoading(true));
+      dispatch(setApplicationCount(0));
+      dispatch(setApplicationCountResponse(false));
+      done(null,res.data);
      })
      .catch((error)=>{
        toast.error("Form unpublishing Failed");
        console.log("error",error)
        dispatch(setUnPublishApiError(true));
+       done(error);
      })
    }
  }

@@ -34,6 +34,7 @@ import PreviewStepper from "./Steps/PreviewStepper";
 import "./stepper.scss";
 import {Link} from "react-router-dom";
 import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
+import { resetFormData } from "../../actions/formActions.js";
 
 /*const statusList = [
   { label: "Active", value: "active" },
@@ -473,7 +474,10 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    getForm: (id) => dispatch(getForm("form", id)),
+    getForm: (id) => {
+      dispatch(resetFormData('form', id));
+      dispatch(getForm("form", id))
+  },
     getFormProcessesDetails: (formId) => {
       dispatch(
         getFormProcesses(formId, (err, res) => {

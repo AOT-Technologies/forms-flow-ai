@@ -19,6 +19,7 @@ import Edit from "./Item/Edit.js";
 import {
   fetchAllBpmProcesses,
   getFormProcesses,
+  resetFormProcessData,
   saveFormProcessMapper
 } from "../../apiManager/services/processServices";
 import {
@@ -288,6 +289,7 @@ class StepperPage extends PureComponent {
     data.id = formProcessList.id;
   }
     onSaveFormProcessMapper(data, isUpdate);
+    this.props.onResetFormProcessData()
   };
 
   getStepContent(step) {
@@ -484,6 +486,7 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
     clearFormProcessData: () => dispatch(setFormProcessesData([])),
+    onResetFormProcessData : () => dispatch(resetFormProcessData()),
     goToPageNotFound:()=>dispatch(push(`/404`))
   };
 };

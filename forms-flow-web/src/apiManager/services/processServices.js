@@ -245,6 +245,18 @@
        });
    };
  };
+
+ export const resetFormProcessData = ()=>{
+  return(dispatch)=>{
+    dispatch(setFormPreviosData([]))
+    dispatch(setFormProcessesData([]));
+    dispatch(setProcessLoadError(false));
+    dispatch(setProcessDiagramXML(""));
+    dispatch(setProcessDiagramLoading(true));
+    dispatch(setApplicationCount(0));
+    dispatch(setApplicationCountResponse(false));
+  }
+ }
  
  
  export const unPublishForm = (mapperId, ...rest) =>{
@@ -253,14 +265,7 @@
    return(dispatch) =>{
      httpDELETERequest(url).then((res)=>{
       toast.success(`Form deleted successfully`);
-      console.log("form deleted response",res.data)
-      dispatch(setFormPreviosData([]))
-      dispatch(setFormProcessesData([]));
-      dispatch(setProcessLoadError(false));
-      dispatch(setProcessDiagramXML(""));
-      dispatch(setProcessDiagramLoading(true));
-      dispatch(setApplicationCount(0));
-      dispatch(setApplicationCountResponse(false));
+      dispatch(resetFormProcessData());
       done(null,res.data);
      })
      .catch((error)=>{

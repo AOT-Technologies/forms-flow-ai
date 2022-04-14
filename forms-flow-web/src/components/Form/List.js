@@ -149,10 +149,14 @@ const List = React.memo((props) => {
                         dispatch(updateFormUploadCounter())
                         resolve();
                       } else {
+                        toast.error('Error in Json file structure');
+                        setShowFormUploadModal(false);
                         reject();
                       }
                     }));
                   } else {
+                    toast.error('Error in Json file structure');
+                    setShowFormUploadModal(false);
                     reject();
                   }
                 }));

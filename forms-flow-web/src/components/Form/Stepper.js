@@ -289,7 +289,6 @@ class StepperPage extends PureComponent {
     data.id = formProcessList.id;
   }
     onSaveFormProcessMapper(data, isUpdate);
-    this.props.onResetFormProcessData()
   };
 
   getStepContent(step) {
@@ -451,6 +450,7 @@ const mapDispatchToProps = (dispatch) => {
           if (!err) {
             toast.success('Form Workflow Association Saved.');
             dispatch(push(`/form`));
+            dispatch(resetFormProcessData())
           }else{
             toast.error('Form Workflow Association Failed.');
           }
@@ -486,7 +486,6 @@ const mapDispatchToProps = (dispatch) => {
       );
     },
     clearFormProcessData: () => dispatch(setFormProcessesData([])),
-    onResetFormProcessData : () => dispatch(resetFormProcessData()),
     goToPageNotFound:()=>dispatch(push(`/404`))
   };
 };

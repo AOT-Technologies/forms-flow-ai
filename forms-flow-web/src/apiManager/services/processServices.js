@@ -14,7 +14,8 @@
    setProcessDiagramLoading,
    setFormPreviosData,
    setApplicationCountResponse,
-   setUnPublishApiError
+   setUnPublishApiError,
+   setResetProcess
  } from "../../actions/processActions";
  import { setApplicationCount } from "../../actions/processActions";
  import { replaceUrl } from "../../helper/helper";
@@ -248,13 +249,7 @@
 
  export const resetFormProcessData = ()=>{
   return(dispatch)=>{
-    dispatch(setFormPreviosData([]))
-    dispatch(setFormProcessesData([]));
-    dispatch(setProcessLoadError(false));
-    dispatch(setProcessDiagramXML(""));
-    dispatch(setProcessDiagramLoading(true));
-    dispatch(setApplicationCount(0));
-    dispatch(setApplicationCountResponse(false));
+    dispatch(setResetProcess())
   }
  }
  

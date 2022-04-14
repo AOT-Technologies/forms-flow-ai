@@ -5,7 +5,8 @@ import {
   Keycloak_Client,
   ANONYMOUS_USER,
   ANONYMOUS_ID,
-  FORMIO_JWT_SECRET
+  FORMIO_JWT_SECRET,
+  FORMIO_JWT_EXPIRE
 } from "../constants/constants";
 import {
   setUserRole,
@@ -61,6 +62,7 @@ const initKeycloak = (store, ...rest) => {
           // onAuthenticatedCallback();
           done(null, KeycloakData);
           refreshToken(store);
+          formioRefreshToken();
         } else {
           doLogout();
         }
@@ -84,6 +86,16 @@ const refreshToken = (store) => {
   }, 6000);
 }
 
+// formio token refresh
+let refreshFormioInterval;
+
+const formioRefreshToken =()=>{
+  refreshFormioInterval = setInterval(()=>{
+    const user = ANONYMOUS_USER;
+    const roles = [ANONYMOUS_ID];
+   authenticateFormio(user, roles);
+  },FORMIO_JWT_EXPIRE)
+}
 
 /**
  * Logout function
@@ -92,6 +104,7 @@ const userLogout = () => {
   localStorage.clear();
   sessionStorage.clear();
   clearInterval(refreshInterval);
+  clearInterval(refreshFormioInterval);
   doLogout();
 };
 
@@ -133,7 +146,11 @@ const authenticateFormio = (user, roles) => {
         roles: roles,
       },
     },
-    FORMIO_JWT_SECRET
+    
+    FORMIO_JWT_SECRET,
+    {
+      expiresIn:FORMIO_JWT_EXPIRE
+    }
   ); // TODO Move JWT secret key to COME From ENV
   //TODO remove this token from local Storage on logout and try to move to redux store as well
   localStorage.setItem("formioToken", FORMIO_TOKEN);

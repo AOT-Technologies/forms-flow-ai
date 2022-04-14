@@ -46,10 +46,8 @@ module.exports = (router) => {
     } = jwtConfig;
 
     // changed the secret and expire to the env
-   
-
-    return jwt.sign(payload, customSecret ||process.env.FORMIO_JWT_SECRET||secret , {
-      expiresIn: (expireTime || process.env.FORMIO_JWT_EXPIRE||240) * 60,
+   return jwt.sign(payload, customSecret ||process.env.FORMIO_JWT_SECRET||secret , {
+      expiresIn: (expireTime || Number(process.env.FORMIO_JWT_EXPIRE) ||240) * 60,
     });
   };
   // Number(process.env.FORMIO_JWT_EXPIRE)|| todo 

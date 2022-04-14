@@ -15,8 +15,6 @@ services:
       - db-data:/var/lib/postgresql/data
     networks:
       - forms-flow-data-analysis-api-network
-    ports:
-      - '5430:5432'
 
   forms-flow-data-analysis-api:
     build:

@@ -22,12 +22,25 @@ public class CustomKeycloakIdentityProviderPlugin extends KeycloakIdentityProvid
 	 * Enable client based auth.
 	 */
 	protected boolean enableClientAuth = false;
+	
+	
+	/**
+	 * Enable multi tenancy for the environment.
+	 */
+	protected boolean enableMultiTenancy = false;
+	
+	/**
+	 * Admin URL for formsflow admin. Used only when multi tenancy is enabled.
+	 */
+	private String formsFlowAdminUrl;
+	
+	
 
 	@Override
 	public void preInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
 		super.preInit(processEngineConfiguration);
-		keycloakIdentityProviderFactory = new KeycloakIdentityProviderFactory(this, customHttpRequestInterceptors,
-				this.webClientId, this.enableClientAuth);
+		CustomConfig config = new CustomConfig(webClientId, enableClientAuth, enableMultiTenancy, formsFlowAdminUrl);
+		keycloakIdentityProviderFactory = new KeycloakIdentityProviderFactory(this, customHttpRequestInterceptors, config);
 		processEngineConfiguration.setIdentityProviderSessionFactory(keycloakIdentityProviderFactory);
 	}
 
@@ -54,5 +67,21 @@ public class CustomKeycloakIdentityProviderPlugin extends KeycloakIdentityProvid
 
 	public void setEnableClientAuth(boolean enableClientAuth) {
 		this.enableClientAuth = enableClientAuth;
+	}
+
+	public boolean isEnableMultiTenancy() {
+		return enableMultiTenancy;
+	}
+
+	public void setEnableMultiTenancy(boolean enableMultiTenancy) {
+		this.enableMultiTenancy = enableMultiTenancy;
+	}
+
+	public String getFormsFlowAdminUrl() {
+		return formsFlowAdminUrl;
+	}
+
+	public void setFormsFlowAdminUrl(String formsFlowAdminUrl) {
+		this.formsFlowAdminUrl = formsFlowAdminUrl;
 	}
 }

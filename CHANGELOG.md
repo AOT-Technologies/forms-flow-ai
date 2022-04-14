@@ -39,6 +39,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 **forms-flow-bpm**
 
+* New (Task / Execution) Listener FormBpmFilteredDataPipelineListener Included for the effective form to bpm data copy.
 * Added github badge for CI.
 
 `Fixed`
@@ -54,6 +55,11 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Postgres schema upgraded to enable updating the workflow after publising the form 
 * Disabled internal workflows for  process API.
+
+**forms-flow-bpm**
+
+* The asynchronous continuation was causing web clients to not authorize due to losing security context.
+* Many minor performance optimizations and fixes are done.
 
 
 `Modified`
@@ -102,8 +108,7 @@ Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` ar
 
 *Upgrade notes:*
 
-* For the upgrading user's process definition / workflow should be deleted.
-* To delete a process definition, refer https://docs.camunda.org/manual/7.8/reference/rest/process-definition/delete-process-definition/
+* For the upgrading user's formio-access-token.bpmn workflow should be manually stopped and deleted using these instructions [from here](https://docs.camunda.org/manual/7.8/reference/rest/process-definition/delete-process-definition/)
 
 `Generic Changes`
 

@@ -111,6 +111,13 @@ export const setFormSuccessData =( name,
    })
  }
 
+ export const resetFormData =(name)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.FORM_RESET,
+    name
+  })
+}
+
  export const setFormFailureErrorData =(name, error)=>dispatch=>{
    dispatch({
      type:ACTION_CONSTANTS.FORM_FAILURE,

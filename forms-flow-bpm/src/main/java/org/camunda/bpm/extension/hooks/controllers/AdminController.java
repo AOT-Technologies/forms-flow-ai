@@ -261,17 +261,20 @@ public class AdminController {
         } else {
             throw new ServletException("Invalid authentication request token");
         }
-
+        String tenantKey = null;
+		if (claims != null && claims.containsKey("tenantKey")) {
+			tenantKey = claims.get("tenantKey").toString();
+		}
         List<String> groupIds = null;
         if(claims != null && claims.containsKey("groups")) {
-            groupIds = getKeyValues(claims, "groups");
+            groupIds = getKeyValues(claims, "groups", null);
         } else if (claims != null && claims.containsKey("roles")) {
-            groupIds = getKeyValues(claims, "roles");
+            groupIds = getKeyValues(claims, "roles", tenantKey);
         }
         return groupIds;
     }
 
-    private List<String> getKeyValues(Map<String, Object> claims, String claimName) {
+    private List<String> getKeyValues(Map<String, Object> claims, String claimName, String tenantKey) {
         List<String> groupIds = new ArrayList<String>();
         JSONArray groups = (JSONArray)claims.get(claimName);
         for (Object group1 : groups) {
@@ -279,6 +282,8 @@ public class AdminController {
             if(StringUtils.startsWith(groupName,"/")) {
                 groupIds.add(StringUtils.substring(groupName,1));
             } else {
+            	if (tenantKey != null)
+            		groupName = tenantKey + "-" + groupName;
                 groupIds.add(groupName);
             }
         }

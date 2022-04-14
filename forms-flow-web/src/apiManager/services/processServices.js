@@ -14,7 +14,8 @@
    setProcessDiagramLoading,
    setFormPreviosData,
    setApplicationCountResponse,
-   setUnPublishApiError
+   setUnPublishApiError,
+   setResetProcess
  } from "../../actions/processActions";
  import { setApplicationCount } from "../../actions/processActions";
  import { replaceUrl } from "../../helper/helper";
@@ -245,18 +246,28 @@
        });
    };
  };
+
+ export const resetFormProcessData = ()=>{
+  return(dispatch)=>{
+    dispatch(setResetProcess())
+  }
+ }
  
  
- export const unPublishForm = (mapperId) =>{
+ export const unPublishForm = (mapperId, ...rest) =>{
+   const done = rest.length ? rest[0] : () => {};
    const url = replaceUrl(API.UNPUBLISH_FORMS,"<mapper id>",mapperId)
    return(dispatch) =>{
      httpDELETERequest(url).then((res)=>{
       toast.success(`Form deleted successfully`);
+      dispatch(resetFormProcessData());
+      done(null,res.data);
      })
      .catch((error)=>{
        toast.error("Form unpublishing Failed");
        console.log("error",error)
        dispatch(setUnPublishApiError(true));
+       done(error);
      })
    }
  }

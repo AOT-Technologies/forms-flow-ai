@@ -50,7 +50,9 @@ const process = (state = initialState, action) => {
     case  ACTION_CONSTANTS.APPLICATION_COUNT_RESPONSE:
       return {...state, applicationCountResponse:action.payload}   
     case  ACTION_CONSTANTS.UNPUBLISH_API_ERROR:
-        return {...state, unPublishApiError:action.payload}   
+        return {...state, unPublishApiError:action.payload}
+    case  ACTION_CONSTANTS.RESET_PROCESS:
+        return {...state,formPreviousData:[],formProcessList:[],processDiagramXML:"",isProcessDiagramLoading:true,applicationCount:0,applicationCountResponse:false,}    
     default:
       return state;
   }

@@ -19,6 +19,7 @@ import Edit from "./Item/Edit.js";
 import {
   fetchAllBpmProcesses,
   getFormProcesses,
+  resetFormProcessData,
   saveFormProcessMapper
 } from "../../apiManager/services/processServices";
 import {
@@ -450,6 +451,7 @@ const mapDispatchToProps = (dispatch) => {
           if (!err) {
             toast.success('Form Workflow Association Saved.');
             dispatch(push(`/form`));
+            dispatch(resetFormProcessData())
           }else{
             toast.error('Form Workflow Association Failed.');
           }

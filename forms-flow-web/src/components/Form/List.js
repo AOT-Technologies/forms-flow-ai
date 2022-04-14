@@ -33,7 +33,7 @@ import {setFormCheckList, setFormUploadList, updateFormUploadCounter} from "../.
 import FileModal from './FileUpload/fileUploadModal'
 import {addHiddenApplicationComponent} from "../../constants/applicationComponent";
 import LoadingOverlay from "react-loading-overlay";
-import { getFormProcesses,getApplicationCount } from "../../apiManager/services/processServices";
+import { getFormProcesses,getApplicationCount, resetFormProcessData } from "../../apiManager/services/processServices";
 import { unPublishForm } from "../../apiManager/services/processServices";
 import { setIsApplicationCountLoading } from "../../actions/processActions";
 import { setBpmFormSearch } from "../../actions/formActions";
@@ -355,6 +355,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
           
           break;
         case "viewForm":
+          dispatch(resetFormProcessData())
           dispatch(setMaintainBPMFormPagination(true));
           dispatch(push(`/formflow/${form._id}/view-edit`));
           break;

@@ -106,3 +106,10 @@ export const setUnPublishApiError = (data)=>dispatch=>{
     payload:data
   });
 };
+
+export const setResetProcess = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.RESET_PROCESS,
+    payload:data
+  });
+};

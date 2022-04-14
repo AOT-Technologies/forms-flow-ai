@@ -49,7 +49,7 @@ module.exports = (router) => {
    
 
     return jwt.sign(payload, customSecret ||process.env.FORMIO_JWT_SECRET||secret , {
-      expiresIn: (expireTime ||240) * 60,
+      expiresIn: (expireTime || process.env.FORMIO_JWT_EXPIRE||240) * 60,
     });
   };
   // Number(process.env.FORMIO_JWT_EXPIRE)|| todo 

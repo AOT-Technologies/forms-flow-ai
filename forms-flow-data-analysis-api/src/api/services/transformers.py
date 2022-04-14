@@ -30,8 +30,8 @@ def overall_sentiment_transformers(string_data: str):
 
 
 def sentiment_analysis_pipeline_transformers(text: str) -> Dict:
-    """A input pipeline which returns for a given text blob, output of
-    sentiment analaysis as either POSITIVE, NEGATIVE, or NEUTRAL.
+    """
+    A input pipeline which returns sentiment of input text.
 
     :params text: The input text blob being entered by user
 

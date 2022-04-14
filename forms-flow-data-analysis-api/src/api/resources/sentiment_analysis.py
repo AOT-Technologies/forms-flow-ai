@@ -1,15 +1,19 @@
 """API definition for sentiment analysis module."""
 import logging
+import os
 from http import HTTPStatus
 
 from flask import jsonify, request
 from flask_restx import Namespace, Resource, cors
 
+from api import config
 from api.services.store_sentiment_result import save_sentiment_result
 from api.services.transformers import sentiment_analysis_pipeline_transformers
-from api.utils import auth, cors_preflight
+from api.utils import Service, auth, cors_preflight
 
 API = Namespace("sentiment", description="API endpoint for sentiment analysis")
+
+APP_CONFIG = config.get_named_config(os.getenv("DEPLOYMENT_ENV", "production"))
 
 
 @cors_preflight("POST,OPTIONS")
@@ -37,14 +41,16 @@ class SentimentAnalysisTransformerResource(Resource):
                 response["formUrl"] = input_json["formUrl"]
                 response_json["data"].append(dict(response))
                 # function used to store entries to database
-                save_sentiment_result(
-                    input_text=text,
-                    overall_sentiment=response["overall_sentiment"],
-                    output_response=response,
-                )
-            return jsonify(response_json), HTTPStatus.CREATED
+                if APP_CONFIG.DATABASE_SUPPORT == Service.ENABLED.value:
+                    save_sentiment_result(
+                        input_text=text,
+                        overall_sentiment=response["overall_sentiment"],
+                        output_response=response,
+                    )
+                    return jsonify(response_json), HTTPStatus.CREATED
+                return jsonify(response_json), HTTPStatus.OK
 
-        except BaseException as err:  # pylint: disable=broad-except
+        except BaseException as err:  # pylint: disable=broad-except # noqa: B902
             response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid request object passed passed",

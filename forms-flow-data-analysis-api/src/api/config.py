@@ -12,6 +12,8 @@ import sys
 
 from dotenv import find_dotenv, load_dotenv
 
+from .utils.enumerator import Service
+
 # this will load all the envars from a .env file located in the project root (api)
 load_dotenv(find_dotenv())
 
@@ -69,9 +71,11 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     DATA_ANALYSIS_API_BASE_URL = os.getenv("DATA_ANALYSIS_API_BASE_URL", default="")
 
+    DATABASE_SUPPORT = os.getenv("DATABASE_SUPPORT", default=Service.ENABLED.value)
+
     DB_PG_CONFIG = {
-        "host": "forms-flow-data-analysis-db",
-        "port": "5432",
+        "host": os.getenv("POSTGRES_DB_HOST", "forms-flow-data-analysis-db"),
+        "port": os.getenv("POSTGRES_DB_PORT", "5432"),
         "dbname": os.getenv("POSTGRES_DB"),
         "user": os.getenv("POSTGRES_USER"),
         "password": os.getenv("POSTGRES_PASSWORD"),

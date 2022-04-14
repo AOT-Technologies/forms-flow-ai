@@ -10,7 +10,7 @@ from . import config, models
 from .models import db, migrate
 from .resources import data_analysis_api
 from .utils.auth import jwt
-from .utils.logging import setup_logging, log_info
+from .utils.logging import log_info, setup_logging
 
 setup_logging(
     os.path.join(os.path.abspath(os.path.dirname(__file__)), "logging.conf")

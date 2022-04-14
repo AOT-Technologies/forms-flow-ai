@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Row, Col } from "react-bootstrap";
-import { getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
 const TaskVariable = ({ variables }) => {
   const [showMore, setShowMore] = useState(false);
   let variableCount=0;

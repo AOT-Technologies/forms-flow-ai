@@ -89,7 +89,8 @@
     "underscore": "1.12.1",
     "xmldom": "0.6.0",
     "minimist": "1.2.6",
-    "url-parse": "1.5.10"
+    "url-parse": "1.5.10",
+    "async": "3.2.2"
   },
   "browserslist": [
     ">0.2%",

@@ -1,8 +1,8 @@
 # formsflow.ai Sentiment Analysis Component
 
 ![Python](https://img.shields.io/badge/Python-3.8-blue) ![Flask](https://img.shields.io/badge/Flask-1.1.4-blue) ![postgres](https://img.shields.io/badge/postgres-11.0-blue)
-[![Transformers](https://img.shields.io/badge/Transformers-4.18.0-blue)
-[![Torch](https://img.shields.io/badge/Torch-1.10.0+cu111-blue)]
+![Transformers](https://img.shields.io/badge/Transformers-4.18.0-blue)
+![Torch](https://img.shields.io/badge/Torch-1.10.0+cu111-blue)
 
 **formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
 

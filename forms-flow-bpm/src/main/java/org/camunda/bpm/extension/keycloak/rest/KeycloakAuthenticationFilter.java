@@ -74,7 +74,13 @@ public class KeycloakAuthenticationFilter implements Filter {
 		LOG.debug("Extracted userId from bearer token: {}", userId);
 
 		try {
-			identityService.setAuthentication(userId, getUserGroups(userId, claims));
+			String tenantKey = null;
+			List<String> tenantIds = new ArrayList<>();
+			if (claims != null && claims.containsKey("tenantKey")) {
+				tenantKey = claims.get("tenantKey").toString();
+				tenantIds.add(tenantKey);
+			}
+			identityService.setAuthentication(userId, getUserGroups(userId, claims, tenantKey), tenantIds);
 			chain.doFilter(request, response);
 		} finally {
 			identityService.clearAuthentication();
@@ -88,12 +94,9 @@ public class KeycloakAuthenticationFilter implements Filter {
 	 * @param claims
 	 * @return
 	 */
-	private List<String> getUserGroups(String userId, Map<String, Object> claims) {
+	private List<String> getUserGroups(String userId, Map<String, Object> claims, String tenantKey) {
 		List<String> groupIds = new ArrayList<>();
-		String tenantKey = null;
-		if (claims != null && claims.containsKey("tenantKey")) {
-			tenantKey = claims.get("tenantKey").toString();
-		}
+		
 		if (claims != null && claims.containsKey("groups")) {
 			groupIds.addAll(getKeys(claims, "groups", null));
 		} else if (claims != null && claims.containsKey("roles")) { // Treat roles as alternative to groups

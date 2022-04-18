@@ -75,12 +75,17 @@ public class KeycloakAuthenticationFilter implements Filter {
 
 		try {
 			String tenantKey = null;
+			List<String> userGroups = null;
 			List<String> tenantIds = new ArrayList<>();
 			if (claims != null && claims.containsKey("tenantKey")) {
 				tenantKey = claims.get("tenantKey").toString();
 				tenantIds.add(tenantKey);
 			}
-			identityService.setAuthentication(userId, getUserGroups(userId, claims, tenantKey), tenantIds);
+			userGroups = getUserGroups(userId, claims, tenantKey);
+			if (tenantKey != null)
+				identityService.setAuthentication(userId, userGroups, tenantIds);
+			else
+				identityService.setAuthentication(userId, userGroups);
 			chain.doFilter(request, response);
 		} finally {
 			identityService.clearAuthentication();

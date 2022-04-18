@@ -10,7 +10,6 @@ from http import HTTPStatus
 from flask import Flask, current_app, g, request
 from flask.logging import default_handler
 from werkzeug.middleware.proxy_fix import ProxyFix
-from typing import List
 
 from formsflow_api import config, models
 from formsflow_api.models import db, ma
@@ -112,7 +111,7 @@ def setup_jwt_manager(app, jwt_manager):
 
     def get_roles(a_dict):
         resource = a_dict["resource_access"].get(app.config["JWT_OIDC_AUDIENCE"])
-        return resource['roles'] if resource else a_dict["roles"]
+        return resource["roles"] if resource else a_dict["roles"]
 
     app.config["JWT_ROLE_CALLBACK"] = get_roles
     jwt_manager.init_app(app)

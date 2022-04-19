@@ -8,7 +8,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: .
+    working-directory: ./forms-flow-forms
     
 env:
   REGISTRY: ghcr.io
@@ -23,7 +23,7 @@ jobs:
       matrix:
         include:
           - image: ghcr.io/sumesh-aot/forms-flow-forms
-            context: ./forms-flow-forms
+            context: .
             dockerfile: Dockerfile
             name: forms-flow-forms
     permissions:
@@ -63,10 +63,10 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: ./forms-flow-forms
+          context: ${{ matrix.context }}
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          file: Dockerfile
+          file: ${{ matrix.dockerfile }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=local,src=/tmp/.buildx-cache

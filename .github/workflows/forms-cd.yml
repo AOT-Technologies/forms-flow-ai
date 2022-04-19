@@ -63,10 +63,10 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: ${{ matrix.context }}
+          context: ./forms-flow-forms
           builder: ${{ steps.buildx.outputs.name }}
           push: true
-          file: ${{ matrix.dockerfile }}
+          file: Dockerfile
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=local,src=/tmp/.buildx-cache

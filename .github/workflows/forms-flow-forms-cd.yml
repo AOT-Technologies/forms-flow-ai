@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - develop
+      - multi-tenancy
     paths:
       - "forms-flow-forms/**"
     workflow_dispatch:

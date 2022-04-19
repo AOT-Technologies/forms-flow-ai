@@ -68,7 +68,7 @@ jobs:
           context: forms-flow-web
           # builder: ${{ steps.buildx.outputs.name }}
           push: true
-          file: ${{ matrix.dockerfile }}
+#           file: ${{ matrix.dockerfile }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           # cache-from: type=local,src=/tmp/.buildx-cache

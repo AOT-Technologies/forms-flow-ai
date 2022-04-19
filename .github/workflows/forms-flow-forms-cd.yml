@@ -33,8 +33,8 @@ jobs:
       matrix:
         include:
           - image: ghcr.io/sumesh-aot/forms-flow-forms
-            context: ./forms-flow-forms
-            dockerfile: ./Dockerfile
+            context: .
+            dockerfile: ./forms-flow-forms/Dockerfile
             name: app
     permissions:
       contents: read

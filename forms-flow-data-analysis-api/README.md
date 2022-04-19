@@ -34,6 +34,7 @@ It's recommended to download dev-packages to follow Python coding standards for 
 You installing dev-packages using pip as follows:
 
 ```python3 -m pip install -r requirements/dev.txt```
+```python3 -m pip install -r requirements.txt```
 
 ### Keycloak Setup
 
@@ -55,13 +56,12 @@ Variable name | Meaning | Possible values | Default value |
 `KEYCLOAK_URL`:triangular_flag_on_post:| URL to your Keycloak server || `http://{your-ip-address}:8080`
 `KEYCLOAK_URL_REALM`|The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
 `KEYCLOAK_WEB_CLIENT_ID`|Client ID for Web to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
-`KEYCLOAK_WEB_CLIENT_ID`|Client ID for Web to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
 `DATA_ANALYSIS_DB_USER` |formsflow data analysis database postgres user|Used on installation to create the database.Choose your own|`general`
 `DATA_ANALYSIS_DB_PASSWORD` |formsflow data analysis database postgres password|Used on installation to create the database.Choose your own|`changeme`
 `DATA_ANALYSIS_DB_NAME` |formsflow data analysis database name|Used on installation to create the database.Choose your own|`dataanalysis`
 `DATA_ANALYSIS_DB_URL` |JDBC DB Connection URL for formsflow||`postgresql://general:changeme@forms-flow-data-analysis-db:5432/dataanalysis`
 `DATA_ANALYSIS_API_BASE_URL`:triangular_flag_on_post:|formsflow.ai Data analysis API URL||`http://{your-ip-address}:5001`
-`MODEL_ID`:triangular_flag_on_post:|formsflow.ai Hugging face model id||`xaqren/sentiment_analysis`
+`MODEL_ID`:triangular_flag_on_post:|formsflow.ai Hugging face model id||`Seethal/sentiment_analysis_generic_dataset`
 
 **NOTE : Default realm is `forms-flow-ai`**
 
@@ -136,7 +136,7 @@ Payload:
 
 ```
 
-## Model description [xaqren/sentiment_analysis](https://huggingface.co/xaqren/sentiment_analysis)
+## Model description [Seethal/sentiment_analysis_generic_dataset](https://huggingface.co/Seethal/sentiment_analysis_generic_dataset)
 
 
 This is a fine-tuned downstream version of the bert-base-uncased model for sentiment analysis, this model is not intended for further downstream fine-tuning for any other tasks. This model is trained on a classified dataset for text-classification.
@@ -147,7 +147,7 @@ This is a fine-tuned downstream version of the bert-base-uncased model for senti
 One of the unique features of the formsflow.ai framework is Sentiment Analysis. It can analyze the sentiment from forms based on specific topics mentioned by the designer during form creation.
 
 * A form designer can drag and drop **Text Area with Analytics component** and in section **Data** add key topics for Sentiment Analysis like facility, service, etc. This activates sentiment analysis component.
-* Based on the input responses of the user formsflow.ai process sentiment associated with each user's responses and stores it MongoDB database using **Python API**.
+* Based on the input responses of the user formsflow.ai process sentiment associated with each user's responses and the response will be patched to mongo by Camunda listener.
 * You can take data stored in mongodb and create **meaningful visualization** based on the  output of sentiment API in Redash dashboards. This information can be found in the **Insights section** for staff user formsflow.ai.
 
 A potential architectural conflict, which can happen is the choosing of postgres database and mongodb database. What database should we use, for which arhchitecure.

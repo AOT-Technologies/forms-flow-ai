@@ -18,7 +18,7 @@ on:
 defaults:
   run:
     shell: bash
-    working-directory: .
+    working-directory: ./forms-flow-forms
 
 env:
   REGISTRY: ghcr.io
@@ -34,7 +34,7 @@ jobs:
         include:
           - image: ghcr.io/sumesh-aot/forms-flow-forms
             context: ./forms-flow-forms
-            dockerfile: Dockerfile
+            dockerfile: ./Dockerfile
             name: app
     permissions:
       contents: read

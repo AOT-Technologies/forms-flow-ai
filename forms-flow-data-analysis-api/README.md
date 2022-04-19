@@ -4,7 +4,7 @@
 ![Transformers](https://img.shields.io/badge/Transformers-4.18.0-blue)
 ![Torch](https://img.shields.io/badge/Torch-1.10.0+cu111-blue)
 
-**formsflow.ai** has built this adaptive tier for correlating form management, BPM and analytics together.
+Sentiment Analysisis used to understand the sentiments of the customer for products, movies, and other such things, whether they feel positive, negative, or neutral about it. BERT is a very good pre-trained language model which helps machines learn excellent representations of text with respect to context in many natural language tasks. 
 
 The goal of the Data Analysis API is to provide access to all relevant interfaces of
 the system. It is built using Python :snake: .
@@ -61,7 +61,7 @@ Variable name | Meaning | Possible values | Default value |
 `DATA_ANALYSIS_DB_NAME` |formsflow data analysis database name|Used on installation to create the database.Choose your own|`dataanalysis`
 `DATA_ANALYSIS_DB_URL` |JDBC DB Connection URL for formsflow||`postgresql://general:changeme@forms-flow-data-analysis-db:5432/dataanalysis`
 `DATA_ANALYSIS_API_BASE_URL`:triangular_flag_on_post:|formsflow.ai Data analysis API URL||`http://{your-ip-address}:5001`
-`MODEL_ID`:triangular_flag_on_post:|formsflow.ai Hugging face model id||`[xaqren/sentiment_analysis](https://huggingface.co/xaqren/sentiment_analysis)`
+`MODEL_ID`:triangular_flag_on_post:|formsflow.ai Hugging face model id||`xaqren/sentiment_analysis`
 
 **NOTE : Default realm is `forms-flow-ai`**
 
@@ -135,6 +135,12 @@ Payload:
 }
 
 ```
+
+## Model description [xaqren/sentiment_analysis](https://huggingface.co/xaqren/sentiment_analysis)
+
+
+This is a fine-tuned downstream version of the bert-base-uncased model for sentiment analysis, this model is not intended for further downstream fine-tuning for any other tasks. This model is trained on a classified dataset for text-classification.
+
 
 ## Steps for enabling Sentiment Analysis component
 

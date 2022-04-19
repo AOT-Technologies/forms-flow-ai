@@ -63,15 +63,15 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: ${{ matrix.context }}
-          builder: ${{ steps.buildx.outputs.name }}
+          context: forms-flow-forms
+          # builder: ${{ steps.buildx.outputs.name }}
           push: true
-          file: ${{ matrix.dockerfile }}
+          # file: ${{ matrix.dockerfile }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          # cache-from: type=local,src=/tmp/.buildx-cache
+          # cache-to: type=local,dest=/tmp/.buildx-cache-new
+      # - name: Move cache
+      #  run: |
+      #    rm -rf /tmp/.buildx-cache
+      #    mv /tmp/.buildx-cache-new /tmp/.buildx-cache

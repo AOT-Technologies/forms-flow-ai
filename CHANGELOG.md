@@ -70,6 +70,11 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Modified application name search with lowercase and by intermediate search.
 * Front-end support for the form process mapper versioning and database normalization.
 * User is not be able to change the workflow of published form.
+* Form Url support both pathname and formid to fetch the form.
+
+**forms-flow-api**
+
+* API support for application name search with lowercase and by intermediate search.
 * Postgres database normalization and provided support for form process mapper versioning.
 
 *Upgrade notes:*

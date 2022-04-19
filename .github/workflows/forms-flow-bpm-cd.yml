@@ -3,6 +3,8 @@ name: Push Forms flow BPM to registry
 on:
   push:
     branches: [ multi-tenancy-gha, develop, multi-tenancy ]
+    paths:
+      - "forms-flow-bpm/**"
   workflow_dispatch:
 
 defaults:

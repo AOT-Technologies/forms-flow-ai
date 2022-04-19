@@ -4,7 +4,7 @@ ARG SOURCE_REPO=BCDevOps
 ARG GOCROND_VERSION=0.6.2
 ARG VCS_REF="missing"
 ARG BUILD_DATE="missing"
-ARG MODEL_ID=Seethal/sentiment_analysis_generic_dataset
+ARG MODEL_ID=xaqren/sentiment_analysis
 
 ENV MODEL_ID=${MODEL_ID}
 ENV VCS_REF=${VCS_REF}

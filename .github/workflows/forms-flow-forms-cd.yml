@@ -1,25 +1,15 @@
-name: Forms flow forms push to registry
+name: Push Forms flow forms to registry
 
 on:
   push:
-    branches:
-      - develop
-      - multi-tenancy
-    paths:
-      - "forms-flow-forms/**"
-      - "forms-flow-bpm/**"
-    workflow_dispatch:
-      inputs:
-        environment:
-          description: "Environment (dev/test/prod)"
-          required: true
-          default: "dev"
+    branches: [ multi-tenancy-gha, develop, multi-tenancy ]
+  workflow_dispatch:
 
 defaults:
   run:
     shell: bash
     working-directory: ./forms-flow-forms
-
+    
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -33,9 +23,9 @@ jobs:
       matrix:
         include:
           - image: ghcr.io/sumesh-aot/forms-flow-forms
-            context: .
-            dockerfile: ./forms-flow-forms/Dockerfile
-            name: app
+            context: forms-flow-forms
+            dockerfile: Dockerfile
+            name: forms-flow-forms
     permissions:
       contents: read
       packages: write
@@ -73,15 +63,15 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: ${{ matrix.context }}
-          builder: ${{ steps.buildx.outputs.name }}
+          context: forms-flow-forms
+          # builder: ${{ steps.buildx.outputs.name }}
           push: true
-          file: ${{ matrix.dockerfile }}
+          # file: ${{ matrix.dockerfile }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new
-      - name: Move cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          # cache-from: type=local,src=/tmp/.buildx-cache
+          # cache-to: type=local,dest=/tmp/.buildx-cache-new
+      # - name: Move cache
+      #  run: |
+      #    rm -rf /tmp/.buildx-cache
+      #    mv /tmp/.buildx-cache-new /tmp/.buildx-cache

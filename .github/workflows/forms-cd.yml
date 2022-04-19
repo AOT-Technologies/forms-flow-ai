@@ -24,7 +24,7 @@ jobs:
         include:
           - image: ghcr.io/sumesh-aot/forms-flow-forms
             context: .
-            dockerfile: Dockerfile
+            dockerfile: forms-flow-forms/Dockerfile
             name: forms-flow-forms
     permissions:
       contents: read

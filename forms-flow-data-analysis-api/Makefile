@@ -5,7 +5,7 @@
 
 MKFILE_PATH:=$(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_ABS_DIR:=$(patsubst %/,%,$(dir $(MKFILE_PATH)))
-MODEL_ID=xaqren/sentiment_analysis
+MODEL_ID=Seethal/sentiment_analysis_generic_dataset
 PROJECT_NAME:=api
 
 #################################################################################

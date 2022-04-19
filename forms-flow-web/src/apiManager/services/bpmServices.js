@@ -1,3 +1,4 @@
+
  /* istanbul ignore file */
 export const getProcessReq = (form, submissionId, action, user) => {
   const requestFormat = {
@@ -48,11 +49,19 @@ const dynamicSort = (property) => {
   }
 };
 
-export const getPaginatedForms = (forms, limit, page, sort) => {
-  if(sort){
-    forms.sort(dynamicSort(sort));
-    return forms.slice((page-1)*limit,((page-1)*limit)+limit);
+export const getSearchResults = (forms,searchText) => {
+  let searchResult = [];
+  if(searchText === ""){
+    searchResult = forms;
   }else {
-    return forms.slice((page-1)*limit,((page-1)*limit)+limit);
+     searchResult = forms?.filter((e)=>{
+      const caseInSensitive = e.title.toUpperCase()
+      return caseInSensitive.includes(searchText.toUpperCase());
+   })
   }
+  return searchResult; 
+}
+export const getPaginatedForms = (forms, limit, page, sort,search) => {
+      forms.sort(dynamicSort(sort));
+      return  forms.slice((page-1)*limit,((page-1)*limit)+limit);
 }

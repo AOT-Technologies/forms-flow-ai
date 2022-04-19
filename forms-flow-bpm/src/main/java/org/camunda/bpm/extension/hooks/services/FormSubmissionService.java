@@ -31,10 +31,9 @@ public class FormSubmissionService {
     private final Logger LOGGER = Logger.getLogger(FormSubmissionService.class.getName());
 
     @Autowired
-    private HTTPServiceInvoker httpServiceInvoker;
-
-    @Autowired
     private FormTokenAccessHandler formTokenAccessHandler;
+    @Autowired
+    private HTTPServiceInvoker httpServiceInvoker;
 
     public String readSubmission(String formUrl) {
         ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
@@ -164,13 +163,13 @@ public class FormSubmissionService {
         return getObjectMapper().writeValueAsString(data);
     }
 
-
-    public String getAccessToken() {
-        return formTokenAccessHandler.getAccessToken();
-    }
-
     private ObjectMapper getObjectMapper(){
         return new ObjectMapper();
+    }
+
+    @Deprecated
+    public String getAccessToken() {
+        return formTokenAccessHandler.getAccessToken();
     }
 
 }

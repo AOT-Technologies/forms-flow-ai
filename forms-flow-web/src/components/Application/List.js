@@ -4,9 +4,8 @@ import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
-import LoadingOverlay from "react-loading-overlay";
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
-import { setApplicationListActivePage,setCountPerpage } from '../../actions/applicationActions';
+import { setApplicationListActivePage,setCountPerpage,setApplicationListLoader } from '../../actions/applicationActions';
 import {getAllApplications,FilterApplications, getAllApplicationStatus} from "../../apiManager/services/applicationServices";
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
@@ -19,10 +18,12 @@ import {getUserRolePermission} from "../../helper/user";
 import {CLIENT, STAFF_REVIEWER} from "../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../constants/applicationConstants";
 import Alert from 'react-bootstrap/Alert'
+import overlayFactory from 'react-bootstrap-table2-overlay';
+import { SpinnerSVG } from '../../containers/SpinnerSVG';
 
 export const ApplicationList = React.memo(() => {
   const applications = useSelector(state=>state.applications.applicationsList);
-  const countPerPage = useSelector(state=>state.applications.countPerPage); 
+  const countPerPage = useSelector(state=>state.applications.countPerPage);
   const applicationStatus = useSelector(state=>state.applications.applicationStatus);
   const isApplicationListLoading = useSelector(state=>state.applications.isApplicationListLoading);
   const applicationCount = useSelector(state=>state.applications.applicationCount);
@@ -32,9 +33,12 @@ export const ApplicationList = React.memo(() => {
   const iserror = useSelector(state=>state.applications.iserror);
   const error = useSelector(state=>state.applications.error);
   const [filtermode,setfiltermode] = React.useState(false);
-  
-  const [lastModified,setLastModified] = React.useState(null);
 
+  const [lastModified,setLastModified] = React.useState(null);
+  const [isLoading,setIsLoading] = React.useState(false);
+  useEffect(()=>{
+    setIsLoading(false)
+  },[applications])
   useEffect(()=>{
       dispatch(getAllApplicationStatus());
   },[dispatch])
@@ -48,7 +52,7 @@ export const ApplicationList = React.memo(() => {
   const countPerPageRef = useNoRenderRef(countPerPage);
 
   const currentPage = useNoRenderRef(page);
-  
+
   useEffect(()=>{
     dispatch(getAllApplications(currentPage.current,countPerPageRef.current));
   },[dispatch,currentPage,countPerPageRef])
@@ -76,9 +80,6 @@ export const ApplicationList = React.memo(() => {
           Please change the selected filters to view applications{" "}
         </label>
         <br />
-       {/* <label className="lbl-clear" onClick={clearFilter}>
-          Clear all filters
-        </label>*/}
       </div>
     );
   };
@@ -86,6 +87,13 @@ export const ApplicationList = React.memo(() => {
   const handlePageChange = (type,newState) => {
     if(type === "filter"){
       setfiltermode(true)
+    }
+    else if(type==="pagination"){
+      if(countPerPage > 5){
+        dispatch(setApplicationListLoader(true))
+      }else{
+        setIsLoading(true)
+      }
     }
     dispatch(setCountPerpage(newState.sizePerPage));
     dispatch(FilterApplications(newState));
@@ -119,24 +127,18 @@ export const ApplicationList = React.memo(() => {
               </div>
               <br />
               <div>
-                <LoadingOverlay
-                  active={isApplicationListLoading}
-                  spinner
-                  text="Loading..."
-                >
                   <BootstrapTable
                     remote={ { pagination: true, filter: true, sort: true } }
-                    loading={isApplicationListLoading}
+                    loading={isLoading}
                     filter={filterFactory()}
                     pagination={paginationFactory(getoptions(applicationCount,page,countPerPage))}
-                    defaultSorted={defaultSortedBy}
                     onTableChange={handlePageChange}
                     filterPosition={'top'}
                     {...props.baseProps}
-                    noDataIndication={() => getNoDataIndicationContent()}
-                    // overlay={ overlayFactory({ spinner: true, styles: { overlay: (base) => ({...base}) } }) }
+                    noDataIndication={() => !isLoading && getNoDataIndicationContent()}
+                    defaultSorted={ defaultSortedBy }
+                    overlay={ overlayFactory({ spinner: <SpinnerSVG/>, styles: { overlay: (base) => ({...base,background: 'rgba(255, 255, 255)',height:`${countPerPage > 5 ? '100% !important':'350px !important'}`,top:'65px'}) } }) }
                   />
-                </LoadingOverlay>
               </div>
             </div>
           )}

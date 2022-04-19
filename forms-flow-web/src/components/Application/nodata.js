@@ -7,8 +7,7 @@ const Nodata = React.memo(() => (
 <br/>
 <label className="lbl-no-application"> No applications found </label>
 <br/>
-  {/*  <label className="lbl-no-application-desc"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do </label>
-  */}  </div>
+</div>
 ))
 
 export default Nodata;

@@ -40,7 +40,7 @@ your use case with formsflow.ai checkout [Redash Knowledge base](https://redash.
 * Modify the environment variables inside [.env](./sample.env) file if needed. Environment variables are given in the table below
 * **NOTE : `{your-ip-address}` given inside the [.env](./sample.env) file should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards**
 
-> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the `redash.env` file
+> :information_source: Variables with trailing :triangular_flag_on_post: in below table should be updated in the `.env` file
 
 Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
@@ -95,8 +95,8 @@ PONG.
 
 * Post registration, login to the application with admin credentials.
 * Click the menu icon to the left of the username and navigate to **Edit Profile**.
-* Go to tab "Settings", and then navigate to section "Authentication".
-  * Check the option "SAML".
+* Go to tab "Settings", and then navigate to "General". Under "Authentication".
+  * Check the option "Enabled(dynamic)".
   * Set the field "SAML Metadata URL" with value of Keycloak SAML descriptor URL. Example. <http://{your-ip-address}:8080/auth/realms/forms-flow-ai/protocol/saml/descriptor>. {your-ip-address} should be changed to your host system IP address. Please take special care to identify the correct IP address if your system has multiple network cards
   * Set the field "SAML Entity ID" value to be `forms-flow-analytics`.
   * Set the field "SAML NameID Format" value to be `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress`.

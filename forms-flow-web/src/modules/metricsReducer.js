@@ -7,10 +7,7 @@ const initialState = {
   isMetricsStatusLoading: true,
   selectedMetricsId: 0,
   metricsLoadError: false,
-  metricsStatusLoadError: false,
-  // tasksCount:0,
-  // taskDetail: {},
-  // isTaskUpdating:false,
+  metricsStatusLoadError: false
 };
 
 const metrics = (state = initialState, action) => {
@@ -19,7 +16,7 @@ const metrics = (state = initialState, action) => {
       return { ...state, isMetricsLoading: action.payload };
     case ACTION_CONSTANTS.IS_METRICS_STATUS_LOADING:
       return { ...state, isMetricsStatusLoading: action.payload };
-    case ACTION_CONSTANTS.METRICSSUBMISSIONS:
+    case ACTION_CONSTANTS.METRICS_SUBMISSIONS:
       return { ...state, submissionsList: action.payload };
     case ACTION_CONSTANTS.METRICS_SUBMISSIONS_STATUS:
       return { ...state, submissionsStatusList: action.payload };

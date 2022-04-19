@@ -119,10 +119,8 @@ Variable name | Meaning | Possible values | Default value |
 --- | --- | --- | ---
 `KEYCLOAK_URL`:triangular_flag_on_post:| URL to your Keycloak server || `http://{your-ip-address}:8080`
 `KEYCLOAK_URL_REALM`|The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
-`KEYCLOAK_ADMIN_USERNAME` :triangular_flag_on_post: | The admin username for Keycloak. This is used for using Keycloak internal APIs  | | |
-`KEYCLOAK_ADMIN_PASSWORD` :triangular_flag_on_post: | The admin password for Keycloak. | | |
 `KEYCLOAK_BPM_CLIENT_ID`|Client ID for Camunda to register with Keycloak|eg. forms-flow-bpm|`forms-flow-bpm`
-`KEYCLOAK_BPM_CLIENT_SECRET`:triangular_flag_on_post:|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|must be set to your Keycloak client secret. Follow the 'Get the keycloak client secret' steps from [Here](../../forms-flow-idm/keycloak/README.md#get-the-keycloak-client-secret)
+`KEYCLOAK_BPM_CLIENT_SECRET`|Client Secret of Camunda client in realm|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`e4bdbd25-1467-4f7f-b993-bc4b1944c943` <br><br>`To generate a new keycloak secret by yourself follow the steps from` [here](../../forms-flow-idm/keycloak/README.md#get-the-keycloak-client-secret)
 `KEYCLOAK_WEB_CLIENT_ID`|Client ID for formsflow.ai to register with Keycloak|eg. forms-flow-web|`forms-flow-web`
 
 ##### formsflow.ai analytics variable settings
@@ -226,6 +224,7 @@ Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resou
  `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
  `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`2 (In MB)`
  `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
+ `BPM_CLIENT_CONN_TIMEOUT`|Webclient Connection timeout in milli seconds||`5000`
 
 ### Running the application
 * For Linux,

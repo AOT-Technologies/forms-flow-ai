@@ -5,7 +5,7 @@ import startCase from "lodash/startCase";
 
 import {Tabs, Tab} from "react-bootstrap";
 import Details from "./Details";
-import {getApplicationById,getApplicationFormDataByAppId} from "../../apiManager/services/applicationServices";
+import {getApplicationById} from "../../apiManager/services/applicationServices";
 import Loading from "../../containers/Loading";
 import {setApplicationDetailLoader, setApplicationDetailStatusCode} from "../../actions/applicationActions";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
@@ -13,7 +13,6 @@ import History from "./ApplicationHistory";
 import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
 import NotFound from "../NotFound";
-//import { useDispatch } from 'react-redux'
 
 const ViewApplication = React.memo(() => {
   const {applicationId} = useParams();
@@ -35,7 +34,7 @@ const ViewApplication = React.memo(() => {
           }
         }
       }));
-      dispatch(getApplicationFormDataByAppId(applicationId));
+
       return ()=>{
         dispatch(setApplicationDetailLoader(true));
         dispatch(setApplicationDetailStatusCode(''));

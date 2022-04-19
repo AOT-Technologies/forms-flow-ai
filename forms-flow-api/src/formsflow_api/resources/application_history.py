@@ -9,7 +9,6 @@ from formsflow_api.schemas import ApplicationHistorySchema
 from formsflow_api.services import ApplicationHistoryService
 from formsflow_api.utils import auth, cors_preflight, profiletime
 
-
 # keeping the base path same for application history and application/
 API = Namespace("Application", description="Application")
 
@@ -23,7 +22,10 @@ class ApplicationHistoryResource(Resource):
     @auth.require
     @profiletime
     def get(application_id):
-        """Get application histry."""
+        """Get application history.
+
+        : application_id:- Getting application history by providing application_id
+        """
         return (
             (
                 {
@@ -67,7 +69,7 @@ class ApplicationHistoryResource(Resource):
             current_app.logger.error(err)
             return response, status
 
-        except BaseException as application_err:
+        except BaseException as application_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Invalid Request Object",
                 "message": "Invalid Request Object Passed ",
@@ -76,5 +78,4 @@ class ApplicationHistoryResource(Resource):
 
             current_app.logger.warning(response)
             current_app.logger.warning(application_err)
-        finally:
             return response, status

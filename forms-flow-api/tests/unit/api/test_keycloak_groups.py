@@ -1,9 +1,13 @@
-"""Unit test for APIs of Keycloak Group"""
-from tests.utilities.base_test import factory_auth_header
+"""Unit test for APIs of Keycloak Group."""
+from tests import skip_in_ci
+from tests.utilities.base_test import (
+    factory_auth_header,
+    update_dashboard_payload,
+)
 
 
-def test_group_list(client):
-    """Passing case of Group List API"""
+def test_group_list(app, client, session):
+    """Passing case of Group List API."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
@@ -11,76 +15,69 @@ def test_group_list(client):
     assert response.status_code == 200
 
 
-def test_group_list_wrongmethod(client):
-    """Instead of Get Request, what if POST request comes"""
+def test_group_list_wrongmethod(app, client, session):
+    """Instead of Get Request, what if POST request comes."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.post("/groups", headers=headers)
     assert response.status_code == 405
-    assert response.json() == {
+    assert response.json == {
         "message": "The method is not allowed for the requested URL."
     }
 
 
-def test_group_list_wrong_auth_header(client):
-    """Wrong Authorization header"""
+def test_group_list_wrong_auth_header(app, client, session):
+    """Wrong Authorization header."""
     response = client.get("/groups")
     assert response.status_code == 401
-    assert response.json() == {
+    assert response.json == {
         "type": "Invalid Token Error",
-        "message": "Access to formsflow.ai API Denied. Check if the bearer token is passed for Authorization or has expired.",
+        "message": "Access to formsflow.ai API Denied. Check if the "
+        "bearer token is passed for Authorization or has expired.",
     }
 
 
-def test_group_details(client):
+def test_group_details(app, client, session):
+    """Testing group details API."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.get("/groups", headers=headers)
-    assert len(response.json()) > 0
+    assert len(response.json) > 0
 
-    id = response.json()[0]["id"]
+    id = response.json[0]["id"]
     response = client.get(f"/groups/{id}", headers=headers)
     assert response.status_code == 200
-    assert len(response.json()) > 0
+    assert len(response.json) > 0
 
 
-def test_non_existential_group_id(client):
-    """non-existential group id"""
-    token = factory_auth_header()
-    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-
-    response = client.get("/groups/123", headers=headers)
-    assert response.status_code == 404
-
-
-def test_groups_put_details(client):
-    """good cases"""
+@skip_in_ci
+def test_groups_put_details(app, client, session):
+    """Good cases."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.get("/groups", headers=headers)
-    assert len(response.json()) > 0
-    id = response.json()[0]["id"]
+    assert len(response.json) > 0
+    id = response.json[0]["id"]
 
     response = client.put(
-        f"/groups/{id}", headers=headers, data={"dashboards": [{100: "Test Dashboard"}]}
+        f"/groups/{id}", headers=headers, json=update_dashboard_payload()
     )
-    assert response.status_code == 204
+    assert response.status_code == 200
 
 
-def test_groups_put_wrong_details(client):
-    """wrong request object"""
+def test_groups_put_wrong_details(app, client, session):
+    """Wrong request object."""
     token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.get("/groups", headers=headers)
-    assert len(response.json()) > 0
-    id = response.json()[0]["id"]
-
+    assert len(response.json) > 0
+    id = response.json[0]["id"]
+    # missing dashboards attribute
     response = client.put(
-        f"/groups/{id}", headers=headers, data={"dashboard": [{100: "Test Dashboard"}]}
+        f"/groups/{id}", headers=headers, data={"test": [{100: "Test Dashboard"}]}
     )
     assert response.status_code == 400
-    assert response.json() == {"message": "Invalid Request Object format"}

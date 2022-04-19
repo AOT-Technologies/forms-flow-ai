@@ -621,7 +621,7 @@
     "requiredActions" : [ ],
     "realmRoles" : [ "uma_authorization", "offline_access" ],
     "clientRoles" : {
-      "realm-management" : [ "query-users", "query-groups", "view-users" ],
+      "realm-management" : [ "manage-users", "query-users", "query-groups", "view-users" ],
       "account" : [ "view-profile", "manage-account" ]
     },
     "notBefore" : 0,
@@ -903,7 +903,7 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "secret": "**********",
+      "secret": "e4bdbd25-1467-4f7f-b993-bc4b1944c943",
       "redirectUris": [
 	    "http://localhost:8000/camunda/*",
         "*"

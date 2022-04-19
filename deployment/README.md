@@ -31,13 +31,16 @@ In the following document, we’ll describe about the different project dependen
 ## Download the formsflow.ai
 
 * Clone this github repo:  https://github.com/AOT-Technologies/forms-flow-ai
-* If deploying to a remote server, you can use nginx as a reverse proxy and SSL engine. To help you, follow the instructions in the nginx [README](./nginx/README.md)
+* If deploying to a remote server, you can use nginx as a reverse proxy and SSL engine. To help you, follow the instructions in the nginx [README](./server/nginx/README.md)
 
 ## Installation
 
 There are multiple options for installing formsflow.ai. They are given below
 
+- Quick Installation 
+  - Follow the instructions given in the readme[Quick Installation](./docker/bundle)
 - Docker Based installation
+  - [Docker single click installation](#docker-single-click-installation)
   - [Docker Full Deployment](#Docker-Full-Deployment)
   - [Docker Individual Service Deployment](#Docker-Individual-Service-Deployment)
 - Openshift Based Installation
@@ -46,6 +49,10 @@ There are multiple options for installing formsflow.ai. They are given below
 ### Docker Based Installation
 
 ------------------
+#### Docker single click installation
+
+Download the compressed [bundle](./docker/bundle/bundle.zip/?raw=true) and follow the instructions from [readme](./docker/bundle/README.md).
+
 #### Docker Full Deployment
 
 Follow the instructions on [docker installation guide](./docker)

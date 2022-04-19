@@ -11,7 +11,6 @@ import os
 
 from dotenv import find_dotenv, load_dotenv
 
-
 # this will load all the envars from a .env file located in the project root (api)
 load_dotenv(find_dotenv())
 
@@ -55,17 +54,13 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     # POSTGRESQL
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", "")
-    SQLALCHEMY_ENGINE_OPTIONS = {
-        "pool_pre_ping": True,
-        "pool_recycle": 300,
-    }
 
     TESTING = False
     DEBUG = False
 
     # JWT_OIDC Settings
     JWT_OIDC_WELL_KNOWN_CONFIG = os.getenv("JWT_OIDC_WELL_KNOWN_CONFIG")
-    JWT_OIDC_ALGORITHMS = os.getenv("JWT_OIDC_ALGORITHMS")
+    JWT_OIDC_ALGORITHMS = os.getenv("JWT_OIDC_ALGORITHMS", "RS256")
     JWT_OIDC_JWKS_URI = os.getenv("JWT_OIDC_JWKS_URI")
     JWT_OIDC_ISSUER = os.getenv("JWT_OIDC_ISSUER")
     JWT_OIDC_AUDIENCE = os.getenv("JWT_OIDC_AUDIENCE")
@@ -83,13 +78,11 @@ class _Config:  # pylint: disable=too-few-public-methods
 
     # API Base URL (Self)
     FORMSFLOW_API_URL = os.getenv("WEB_API_BASE_URL")
-    ## Analytics API End points
+    # Analytics API End points
     ANALYTICS_API_URL = os.getenv("INSIGHT_API_URL")
     ANALYTICS_API_KEY = os.getenv("INSIGHT_API_KEY")
 
-    # Keycloak Admin Service username
-    KEYCLOAK_ADMIN_USERNAME = os.getenv("KEYCLOAK_ADMIN_USERNAME")
-    KEYCLOAK_ADMIN_PASSWORD = os.getenv("KEYCLOAK_ADMIN_PASSWORD")
+    # Keycloak Admin Service
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
     KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM")
 
@@ -123,11 +116,14 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     JWT_OIDC_TEST_JWKS_CACHE_TIMEOUT = 6000
 
 
-
 class ProdConfig(_Config):  # pylint: disable=too-few-public-methods
     """Production environment configuration."""
 
     SECRET_KEY = os.getenv("SECRET_KEY", None)
+    SQLALCHEMY_ENGINE_OPTIONS = {
+        "pool_pre_ping": True,
+        "pool_recycle": 300,
+    }
 
     if not SECRET_KEY:
         SECRET_KEY = os.urandom(24)

@@ -37,7 +37,9 @@ export const fetchServiceTaskList = (filterId,firstResult,reqData,taskIdToRemove
           const _embedded = responseData['_embedded']; // data._embedded.task is where the task list is.
           if (!_embedded || !_embedded['task'] || !responseData['count']) {
             // Display error if the necessary values are unavailable.
-            console.log("Error", res);
+            // console.log("Error", res);
+            dispatch(setBPMTaskList([]));
+            dispatch(setBPMTaskCount(0));
             dispatch(serviceActionError(res));
             dispatch(setBPMTaskLoader(false));
           } else {
@@ -47,7 +49,7 @@ export const fetchServiceTaskList = (filterId,firstResult,reqData,taskIdToRemove
             };
             let taskData = taskListFromResponse;
             if(taskIdToRemove){
-              console.log("task----",taskIdToRemove);
+              // console.log("task----",taskIdToRemove);
               //if the list has the task with taskIdToRemove remove that task and decrement
               if(taskListFromResponse.find((task)=>task.id===taskIdToRemove)){
                 taskData=taskListFromResponse.filter( (task)=>task.id!==taskIdToRemove);
@@ -60,13 +62,17 @@ export const fetchServiceTaskList = (filterId,firstResult,reqData,taskIdToRemove
             done(null, taskData);
           }
         } else {
-          console.log("Error", res);
+          // console.log("Error", res);
+          dispatch(setBPMTaskList([]));
+          dispatch(setBPMTaskCount(0));
           dispatch(serviceActionError(res));
           dispatch(setBPMTaskLoader(false));
         }
       })
       .catch((error) => {
-        console.log("Error", error);
+        // console.log("Error", error);
+        dispatch(setBPMTaskList([]));
+        dispatch(setBPMTaskCount(0));
         dispatch(serviceActionError(error));
         dispatch(setBPMTaskLoader(false));
         done(error);
@@ -158,7 +164,7 @@ export const fetchUserListWithSearch = ({searchType,query},...rest) => {
 
 export const fetchFilterList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const getTaskFiltersAPI = `${API.GET_BPM_FILTERS}?resourceType=Task`
+  const getTaskFiltersAPI = `${API.GET_BPM_FILTERS}?resourceType=Task&itemCount=true`
   return (dispatch) => {
     httpGETRequest(getTaskFiltersAPI, {}, UserService.getToken())
       .then((res) => {
@@ -332,10 +338,7 @@ export const claimBPMTask = (taskId, user, ...rest) => {
   return (dispatch) => {
     httpPOSTRequest(apiUrlClaimTask, { userId: user })
       .then((res) => {
-        // if (res.status === 200) {
-        //TODO REMOVE
         done(null, res.data);
-        // }
       })
       .catch((error) => {
         console.log("Error", error);
@@ -356,10 +359,7 @@ export const updateAssigneeBPMTask = (taskId, user, ...rest) => {
   return (dispatch) => {
     httpPOSTRequest(apiUrlClaimTask, { userId: user })
       .then((res) => {
-        // if (res.status === 200) {
-        //TODO REMOVE
         done(null, res.data);
-        // }
       })
       .catch((error) => {
         console.log("Error", error);
@@ -440,26 +440,3 @@ export const onBPMTaskFormSubmit = (taskId, formReq, ...rest) => {
       });
   };
 };
-
-/*export const completeTask = (id, reviewStatus, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  const data = {
-    variables: {
-      action: {
-        value: reviewStatus,
-      },
-    },
-  };
-  return (dispatch) => {
-    httpPOSTRequest(`${API.GET_TASK_API}/${id}/complete`, data)
-      .then((res) => {
-        /!*dispatch(getTaskDetail(id));
-        done(null, res);*!/
-      })
-      .catch((error) => {
-        console.log("Error", error);
-        done(error);
-        dispatch(serviceActionError(error));
-      });
-  };
-};*/

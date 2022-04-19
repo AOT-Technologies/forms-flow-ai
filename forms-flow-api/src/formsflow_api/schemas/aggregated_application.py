@@ -30,6 +30,7 @@ class AggregatedApplicationSchema(Schema):
 
     form_process_mapper_id = fields.Int(data_key="mapperId")
     form_name = fields.Str(data_key="formName")
+    version = fields.Str(data_key="version")
     application_name = fields.Str(data_key="applicationName")
     application_status = fields.Str(data_key="statusName")
     count = fields.Int()

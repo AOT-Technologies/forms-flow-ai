@@ -37,13 +37,6 @@ export const setAllProcessList = (data) => (dispatch) => {
   });
 };
 
-export const setApplicationAuditList = (data) => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.APPLICATION_AUDIT_LIST,
-    payload: data,
-  });
-};
-
 export const setFormProcessLoadError = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_FORM_PROCESS_STATUS_LOAD_ERROR,
@@ -79,3 +72,44 @@ export const setProcessDiagramLoading = (data) => (dispatch) => {
   });
 };
 
+export const setFormPreviosData = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.FORM_PREVIOUS_DATA,
+    payload: data,
+  });
+};
+
+export const setApplicationCount = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.APPLICATION_COUNT,
+    payload:data
+  });
+};
+
+export const setIsApplicationCountLoading = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.IS_APPLICATION_COUNT_LOADING,
+    payload:data
+  });
+};
+
+export const setApplicationCountResponse = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.APPLICATION_COUNT_RESPONSE,
+    payload:data
+  });
+};
+
+export const setUnPublishApiError = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.UNPUBLISH_API_ERROR,
+    payload:data
+  });
+};
+
+export const setResetProcess = (data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.RESET_PROCESS,
+    payload:data
+  });
+};

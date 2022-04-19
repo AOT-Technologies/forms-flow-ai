@@ -22,22 +22,18 @@ export const KEYCLOAK_REALM =
 export const KEYCLOAK_URL =(window._env_ && window._env_.REACT_APP_KEYCLOAK_URL) || process.env.REACT_APP_KEYCLOAK_URL;
 export const KEYCLOAK_AUTH_URL = `${KEYCLOAK_URL}/auth`;
 
-
-// export const _kc = new Keycloak("/config/kc/keycloak.json");
-
 export const CLIENT =
-  (window._env_ && window._env_.REACT_APP_CLIENT_ROLE) || process.env.REACT_APP_CLIENT_ROLE;
+  (window._env_ && window._env_.REACT_APP_CLIENT_ROLE) || process.env.REACT_APP_CLIENT_ROLE || "formsflow-client";
 export const STAFF_DESIGNER =
   (window._env_ && window._env_.REACT_APP_STAFF_DESIGNER_ROLE) ||
-  process.env?.REACT_APP_STAFF_DESIGNER_ROLE;
+  process.env?.REACT_APP_STAFF_DESIGNER_ROLE || "formsflow-designer";
 export const STAFF_REVIEWER =
   (window._env_ && window._env_.REACT_APP_STAFF_REVIEWER_ROLE) ||
-  process.env.REACT_APP_STAFF_REVIEWER_ROLE;
+  process.env.REACT_APP_STAFF_REVIEWER_ROLE || "formsflow-reviewer";
 export const ANONYMOUS_USER = "anonymous";
 
-
 export const FORMIO_JWT_SECRET =
-  (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) || process.env.REACT_APP_FORMIO_JWT_SECRET;
+  (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) || process.env.REACT_APP_FORMIO_JWT_SECRET || "--- change me now ---";
 
 export const USER_RESOURCE_FORM_ID =
   (window._env_ && window._env_.REACT_APP_USER_RESOURCE_FORM_ID) ||
@@ -68,6 +64,15 @@ export const ROLES = [
     title: STAFF_DESIGNER,
   },
 ];
+
+
+export const FORM_ACCESS =[{
+  type: "read_all",
+  roles:  [CLIENT_ID,
+    STAFF_REVIEWER_ID,
+    STAFF_DESIGNER_ID
+      ]
+  }]
 
 export const OPERATIONS = {
   insert: {
@@ -166,16 +171,12 @@ export const SUBMISSION_ACCESS = [
     roles: [STAFF_DESIGNER_ID, STAFF_REVIEWER_ID],
     type: "delete_all",
   },
-  // {
-  //   roles:[CLIENT_ID, ANONYMOUS_ID],
-  //   type:"create_own"
-  // },
   {
-    roles: [CLIENT_ID],
-    type: "create_own",
+    roles:[CLIENT_ID],
+    type:"create_own"
   },
   {
-    roles: [CLIENT_ID],
+    roles: [CLIENT_ID,],
     type: "read_own",
   },
   {
@@ -187,3 +188,4 @@ export const SUBMISSION_ACCESS = [
     type: "delete_own",
   },
 ];
+

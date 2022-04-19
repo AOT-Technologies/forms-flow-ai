@@ -8,15 +8,15 @@ from flask import current_app
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import Application, FormProcessMapper
-
 from formsflow_api.schemas import (
     AggregatedApplicationSchema,
     ApplicationSchema,
     FormProcessMapperSchema,
 )
-
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import NEW_APPLICATION_STATUS
+
+application_schema = ApplicationSchema()
 
 
 class ApplicationService:
@@ -29,16 +29,19 @@ class ApplicationService:
 
         mapper = FormProcessMapper.find_form_by_form_id(data["form_id"])
         data["form_process_mapper_id"] = mapper.id
-        data["application_name"] = mapper.form_name
+
+        # Function to create application in DB
         application = Application.create_from_dict(data)
+        # process_instance_id in request object is usually used in Scripts
         if "process_instance_id" in data:
             application.update({"process_instance_id": data["process_instance_id"]})
+        # In normal cases, it's through this else case task is being created
         else:
             payload = {
                 "variables": {
                     "applicationId": {"value": application.id},
                     "formUrl": {"value": application.form_url},
-                    "formName": {"value": application.application_name},
+                    "formName": {"value": mapper.form_name},
                     "submitterName": {"value": application.created_by},
                     "submissionDate": {"value": application.created.__str__()},
                 }
@@ -54,28 +57,22 @@ class ApplicationService:
                     "error": camunda_error,
                 }
                 current_app.logger.critical(response)
-                return response, HTTPStatus.BAD_GATEWAY
-            except BaseException as application_err:
-                response = {
-                    "systemErrors": application_err,
-                    "message": "Camunda Process Mapper Key not provided",
-                }, HTTPStatus.BAD_REQUEST
-                current_app.logger.warning(response)
-                return response
-        return application
+        return application, HTTPStatus.CREATED
 
     @staticmethod
     @lru_cache(maxsize=32)
     def get_authorised_form_list(token):
-        """Function to get the authorized forms based on token passed.
+        """
+        Function to get the authorized forms based on token passed.
+
         Used LRU cache to memoize results and parameter maxsize defines
-        the no of function calls."""
+        the no of function calls.
+        """
         response = BPMService.get_auth_form_details(token=token)
         return response
 
     @staticmethod
-    def get_auth_applications_and_count(
-        token: str,
+    def get_auth_applications_and_count(  # pylint: disable=too-many-arguments,too-many-locals
         page_no: int,
         limit: int,
         order_by: str,
@@ -88,34 +85,33 @@ class ApplicationService:
         application_status: str,
         created_by: str,
         sort_order: str,
+        token: str,
     ):
         """Get applications only from authorized groups."""
-        if page_no:
-            page_no = int(page_no)
-        if limit:
-            limit = int(limit)
-        if order_by:
-            order_by = str(order_by)
-        if application_id:
-            application_id = int(application_id)
-        if application_name:
-            application_name = str(application_name)
-        if application_status:
-            application_status = str(application_status)
-        if created_by:
-            created_by = str(created_by)
-
-        if sort_order:
-            sort_order = str(sort_order)
-
         auth_form_details = ApplicationService.get_authorised_form_list(token=token)
-        form_names = []
-        application_schema = ApplicationSchema()
-        if auth_form_details:
-            for auth_form_detail in auth_form_details:
-                form_names.append(auth_form_detail["formName"])
-            applications, get_all_applications_count = Application.find_by_form_names(
-                form_names=form_names,
+        current_app.logger.info(auth_form_details)
+        auth_list = auth_form_details.get("authorizationList") or {}
+        resource_list = [group["resourceId"] for group in auth_list]
+        if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
+            applications, get_all_applications_count = Application.find_all(
+                page_no=page_no,
+                limit=limit,
+                application_id=application_id,
+                application_name=application_name,
+                application_status=application_status,
+                created_by=created_by,
+                order_by=order_by,
+                modified_from=modified_from,
+                modified_to=modified_to,
+                sort_order=sort_order,
+                created_from=created_from,
+                created_to=created_to,
+            )
+        else:
+            (
+                applications,
+                get_all_applications_count,
+            ) = Application.find_applications_by_process_key(
                 application_id=application_id,
                 application_name=application_name,
                 application_status=application_status,
@@ -128,46 +124,31 @@ class ApplicationService:
                 sort_order=sort_order,
                 created_from=created_from,
                 created_to=created_to,
+                process_key=resource_list,
             )
 
-            return (
-                application_schema.dump(applications, many=True),
-                get_all_applications_count,
-            )
-        else:
-            return (application_schema.dump([], many=True), 0)
+        return (
+            application_schema.dump(applications, many=True),
+            get_all_applications_count,
+        )
 
     @staticmethod
     def get_auth_by_application_id(application_id: int, token: str):
         """Get authorized Application by id."""
         auth_form_details = ApplicationService.get_authorised_form_list(token=token)
-        application_schema = ApplicationSchema()
-        if auth_form_details:
-            form_names = []
-            for auth_form_detail in auth_form_details:
-                form_names.append(auth_form_detail["formName"])
-
-            application = Application.find_id_by_form_names(
-                form_names=form_names, application_id=application_id
-            )
-            return application_schema.dump(application), HTTPStatus.OK
+        current_app.logger.info(auth_form_details)
+        auth_list = auth_form_details.get("authorizationList") or {}
+        resource_list = [group["resourceId"] for group in auth_list]
+        if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
+            application = Application.find_auth_by_id(application_id=application_id)
         else:
-            return (application_schema.dump([])), HTTPStatus.FORBIDDEN
+            application = Application.find_auth_application_by_process_key(
+                process_key=resource_list, application_id=application_id
+            )
+        return application_schema.dump(application), HTTPStatus.OK
 
     @staticmethod
-    def get_all_applications(page_no: int, limit: int):
-        """Get all applications."""
-        if page_no:
-            page_no = int(page_no)
-        if limit:
-            limit = int(limit)
-
-        applications = Application.find_all(page_no=page_no, limit=limit)
-        application_schema = ApplicationSchema()
-        return application_schema.dump(applications, many=True)
-
-    @staticmethod
-    def get_all_applications_by_user(
+    def get_all_applications_by_user(  # pylint: disable=too-many-arguments
         user_id: str,
         page_no: int,
         limit: int,
@@ -183,23 +164,6 @@ class ApplicationService:
         application_id: int,
     ):
         """Get all applications based on user."""
-        if page_no:
-            page_no = int(page_no)
-        if limit:
-            limit = int(limit)
-        if order_by:
-            order_by = str(order_by)
-        if sort_order:
-            sort_order = str(sort_order)
-        if application_id:
-            application_id = int(application_id)
-        if application_name:
-            application_name = str(application_name)
-        if application_status:
-            application_status = str(application_status)
-        if created_by:
-            created_by = str(created_by)
-
         applications, get_all_applications_count = Application.find_all_by_user(
             user_id=user_id,
             page_no=page_no,
@@ -215,7 +179,6 @@ class ApplicationService:
             created_from=created_from,
             created_to=created_to,
         )
-        application_schema = ApplicationSchema()
 
         return (
             application_schema.dump(applications, many=True),
@@ -223,58 +186,8 @@ class ApplicationService:
         )
 
     @staticmethod
-    def get_all_application_by_user_group(page_no: int, limit: int, user_id: str):
-        if page_no:
-            page_no = int(page_no)
-        if limit:
-            limit = int(limit)
-        applications = Application.find_all_by_user_group(
-            user_id=user_id, page_no=page_no, limit=limit
-        )
-        application_schema = ApplicationSchema()
-        return application_schema.dump(applications, many=True)
-
-    @staticmethod
-    def get_all_applications_ids(application_ids):
-        applications = Application.find_by_ids(application_ids=application_ids)
-        application_schema = ApplicationSchema()
-        return application_schema.dump(applications, many=True)
-
-    @staticmethod
-    def get_all_application_count(
-        token: str,
-        page_no: int,
-        limit: int,
-    ):
-        """Get application count."""
-        if page_no:
-            page_no = int(page_no)
-        if limit:
-            limit = int(limit)
-        auth_form_details = ApplicationService.get_authorised_form_list(token=token)
-        form_names = []
-        application_schema = ApplicationSchema()
-        if auth_form_details:
-            for auth_form_detail in auth_form_details:
-                form_names.append(auth_form_detail["formName"])
-            applications = Application.find_all_applications(
-                form_names=form_names, page_no=page_no, limit=limit
-            )
-            return (
-                application_schema.dump(applications, many=True),
-                applications.count(),
-            )
-        else:
-            return (application_schema.dump([], many=True), 0)
-
-    @staticmethod
-    def get_all_application_by_user_count(user_id: str):
-        """Get application count."""
-        return Application.find_all_by_user_count(user_id=user_id)
-
-    @staticmethod
     def get_all_application_status():
-        """Get all application status"""
+        """Get all application status."""
         status_list = Application.find_all_application_status()
         status_list = [x.application_status for x in status_list]
         current_app.logger.debug(status_list)
@@ -291,12 +204,11 @@ class ApplicationService:
         applications = Application.find_by_form_id(
             form_id=form_id, page_no=page_no, limit=limit
         )
-        application_schema = ApplicationSchema()
         return application_schema.dump(applications, many=True)
 
     @staticmethod
     def get_all_applications_form_id_user(
-        form_id, user_id: str, page_no: int, limit: int  # pylint: disable=C0330
+        form_id: str, user_id: str, page_no: int, limit: int
     ):
         """Get all applications."""
         if page_no:
@@ -307,7 +219,6 @@ class ApplicationService:
         applications = Application.find_by_form_id_user(
             form_id=form_id, user_id=user_id, page_no=page_no, limit=limit
         )
-        application_schema = ApplicationSchema()
         return application_schema.dump(applications, many=True)
 
     @staticmethod
@@ -323,22 +234,15 @@ class ApplicationService:
         )
 
     @staticmethod
-    def get_application(application_id: int):
-        """Get application by id."""
-        return ApplicationSchema().dump(
-            Application.find_by_id(application_id=application_id)
-        )
-
-    @staticmethod
     def get_application_by_user(application_id: int, user_id: str):
-        """Get application by user id"""
+        """Get application by user id."""
         application = Application.find_id_by_user(
             application_id=application_id, user_id=user_id
         )
         if application:
             return ApplicationSchema().dump(application), HTTPStatus.OK
-        else:
-            return ApplicationSchema().dump([]), HTTPStatus.FORBIDDEN
+
+        return ApplicationSchema().dump([]), HTTPStatus.FORBIDDEN
 
     @staticmethod
     def update_application(application_id: int, data):
@@ -359,7 +263,7 @@ class ApplicationService:
         return schema.dump(applications, many=True)
 
     @staticmethod
-    def get_current_aggregated_applications(from_date: datetime, to_date: datetime):
+    def get_aggregated_applications_modified(from_date: datetime, to_date: datetime):
         """Get aggregated applications."""
         applications = Application.find_aggregated_applications_modified(
             from_date=from_date, to_date=to_date
@@ -368,9 +272,7 @@ class ApplicationService:
         return schema.dump(applications, many=True)
 
     @staticmethod
-    def get_aggregated_application_status(
-        mapper_id: int, from_date: datetime, to_date: datetime
-    ):
+    def get_applications_status(mapper_id: int, from_date: datetime, to_date: datetime):
         """Get aggregated application status."""
         application_status = Application.find_aggregated_application_status(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date
@@ -379,9 +281,7 @@ class ApplicationService:
         return schema.dump(application_status, many=True)
 
     @staticmethod
-    def get_current_aggregated_application_status(
-        mapper_id: int, from_date: str, to_date: str
-    ):
+    def get_applications_status_modified(mapper_id: int, from_date: str, to_date: str):
         """Get aggregated application status."""
         application_status = Application.find_aggregated_application_status_modified(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date
@@ -392,7 +292,9 @@ class ApplicationService:
     @staticmethod
     def get_application_form_mapper_by_id(application_id: int):
         """Get form process mapper."""
-        mapper = FormProcessMapper.find_by_application_id(application_id=application_id)
+        mapper = Application.get_form_mapper_by_application_id(
+            application_id=application_id
+        )
         if mapper:
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)
@@ -400,23 +302,37 @@ class ApplicationService:
         raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
-    def apply_custom_attributes(application_schema):
-        """Wrapper function to call Application Schema Wrapper"""
-        if isinstance(application_schema, list):
-            for entry in application_schema:
+    def apply_custom_attributes(application_schema_dump):
+        """Wrapper function to call Application Schema Wrapper."""
+        if isinstance(application_schema_dump, list):
+            for entry in application_schema_dump:
                 ApplicationSchemaWrapper.apply_attributes(entry)
         else:
-            ApplicationSchemaWrapper.apply_attributes(application_schema)
-        return application_schema
+            ApplicationSchemaWrapper.apply_attributes(application_schema_dump)
+        return application_schema_dump
+
+    @staticmethod
+    def get_total_application_corresponding_to_mapper_id(mapper_id: int):
+        """Retrieves application count related to a mapper_id."""
+        count = Application.get_total_application_corresponding_to_mapper_id(mapper_id)
+        if count == 0:
+            return ({"message": "No Applications found", "value": count}, HTTPStatus.OK)
+
+        return (
+            {"message": f"Total Applications found are: {count}", "value": count},
+            HTTPStatus.OK,
+        )
 
 
-class ApplicationSchemaWrapper:
-    """ApplicationSchemaWrapper Class"""
+class ApplicationSchemaWrapper:  # pylint: disable=too-few-public-methods
+    """ApplicationSchemaWrapper Class."""
 
     @staticmethod
     def apply_attributes(application):
-        """Wrapper function to call Application Schema Wrapper class
-        to find formid, submissionid from passed formUrl
+        """
+        Wrapper function to call Application Schema Wrapper class.
+
+        finds formid, submissionId from passed formUrl.
         """
         try:
             formurl = application["formUrl"]
@@ -427,7 +343,7 @@ class ApplicationSchemaWrapper:
                 formurl.find("/submission/") + 12 : len(formurl)
             ]
             return application
-        except KeyError as err:
+        except KeyError:
             return (
                 "The required fields of Input request are not passed",
                 HTTPStatus.BAD_REQUEST,

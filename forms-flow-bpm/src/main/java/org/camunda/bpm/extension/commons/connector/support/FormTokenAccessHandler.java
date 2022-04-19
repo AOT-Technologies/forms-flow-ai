@@ -1,16 +1,14 @@
 package org.camunda.bpm.extension.commons.connector.support;
 
-import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
+import org.camunda.bpm.extension.commons.connector.auth.FormioConfiguration;
+import org.camunda.bpm.extension.commons.connector.auth.FormioContextProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.PostConstruct;
 import java.util.Properties;
 
 
@@ -28,39 +26,28 @@ public class FormTokenAccessHandler {
     private Properties integrationCredentialProperties;
 
     @Autowired
-    private WebClient unauthenticatedWebClient;
+    protected WebClient unauthenticatedWebClient;
+
+    private static FormioContextProvider formioContextProvider;
+
+    @PostConstruct
+    public void init(){
+        if(formioContextProvider == null) {
+            String email = integrationCredentialProperties.getProperty("formio.security.username");
+            String password = integrationCredentialProperties.getProperty("formio.security.password");
+            String accessTokenUri = integrationCredentialProperties.getProperty("formio.security.accessTokenUri");
+            FormioConfiguration formioConfiguration = new FormioConfiguration(email, password, accessTokenUri);
+            formioContextProvider = new FormioContextProvider(formioConfiguration, unauthenticatedWebClient);
+        }
+    }
 
     public String getAccessToken(){
-        Map<String,String> paramMap = new HashMap<>();
-        paramMap.put("email",getIntegrationCredentialProperties().getProperty("formio.security.username"));
-        paramMap.put("password",getIntegrationCredentialProperties().getProperty("formio.security.password"));
-        HashMap<String, Map> dataMap = new HashMap<>();
-        dataMap.put("data", paramMap);
-
-        String token = unauthenticatedWebClient.post().uri(getIntegrationCredentialProperties().getProperty("formio.security.accessTokenUri"))
-                .bodyValue(dataMap)
-                .accept(MediaType.APPLICATION_JSON)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .exchangeToMono(data -> {
-                    if(data.statusCode().is2xxSuccessful()){
-                        return Mono.just(data.headers().header("x-jwt-token").get(0));
-                    } else{
-                        return Mono.error(new FormioServiceException("Exception occurred in getting x-jwt-token"+  ". Message Body: " +
-                                data));
-                    }
-                })
-                .log()
-                .block();
-
-        LOGGER.debug("Fetched the x-jwt-token = "+token);
-
-        return token;
+        LOGGER.info("Getting access token from the formio context");
+        return formioContextProvider.createFormioRequestAccessToken();
     }
 
     protected Properties getIntegrationCredentialProperties() {
         return integrationCredentialProperties;
     }
-
-
 }
 

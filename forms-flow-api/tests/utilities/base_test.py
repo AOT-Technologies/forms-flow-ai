@@ -1,6 +1,7 @@
-"""Base Test Class to be used by test suites. Used for getting JWT token purpose"""
-import os
+"""Base Test Class to be used by test suites. Used for getting JWT token purpose."""
 import ast
+import os
+
 import requests
 from dotenv import find_dotenv, load_dotenv
 
@@ -87,36 +88,75 @@ TEST_USER_PAYLOAD = {
 
 
 def factory_auth_header():
+    """Returns authentication header."""
     url = f"{os.getenv('KEYCLOAK_URL')}/auth/realms/{os.getenv('KEYCLOAK_URL_REALM')}/protocol/openid-connect/token"
     x = requests.post(url, TEST_USER_PAYLOAD, verify=True).content.decode("utf-8")
-    print(x)
     return str(ast.literal_eval(x)["access_token"])
 
 
 def get_form_request_payload():
-    """Return a form request payload object"""
+    """Return a form request payload object."""
     return {
         "formId": "1234",
         "formName": "Sample form",
-        "formRevisionNumber": "v1",
-        "processKey": "121312",
+        "processKey": "oneStepApproval",
+        "processName": "One Step Approval",
+        "status": "active",
+        "comments": "test",
+        "tenant": 12,
+        "anonymous": False,
+    }
+
+
+def get_form_request_payload_private():
+    """Return a form request payload object which is not anonymous."""
+    return {
+        "formId": "12",
+        "formName": "Sample private form",
+        "processKey": "oneStepApproval",
         "processName": "OneStep Approval",
         "status": "active",
-        "commeIs": "test",
-        "tenantId": 12,
+        "comments": "test",
+        "tenant": 11,
+        "anonymous": False,
+    }
+
+
+def get_form_request_payload_public_inactive():
+    """Return a form request payload object which is not active."""
+    return {
+        "formId": "12",
+        "formName": "Sample private form",
+        "processKey": "oneStepApproval",
+        "processName": "OneStep Approval",
+        "status": "Inactive",
+        "comments": "test",
+        "tenant": 11,
+        "anonymous": True,
+    }
+
+
+def get_form_request_anonymous_payload():
+    """Return a form request payload object with anonymous true."""
+    return {
+        "formId": "1234",
+        "formName": "Sample form",
+        "anonymous": True,
+        "status": "active",
     }
 
 
 def get_application_create_payload(form_id: str = "1234"):
+    """Returns an application create payload."""
     return {
         "formId": form_id,
         "submissionId": "1233432",
-        "formUrl": f"http://sample.com/formid/{form_id}/submissionid/1233432",
+        "formUrl": f"http://sample.com/form/{form_id}/submission/1233432",
     }
 
 
 def get_form_service_payload():
-    """Return a form Service payload object"""
+    """Return a form Service payload object."""
     return {
         "form_id": "1234",
         "form_name": "Sample form",
@@ -125,6 +165,24 @@ def get_form_service_payload():
         "process_name": "OneStep Approval",
         "status": "active",
         "comments": "test",
-        "tenant_id": 12,
+        "tenant": 12,
         "created_by": "test-user",
     }
+
+
+def update_dashboard_payload():
+    """Return a payload for updating dashboard details."""
+    return {
+        "dashboards": [
+            {"8": "Sentiment Analysis"},
+            {"1": "SAMPLE"},
+            {"14": "Sample3"},
+            {"13": "sample2"},
+            {"15": "Sample 4"},
+        ]
+    }
+
+
+def get_locale_update_valid_payload():
+    """Returns a payload for updating the locale attribute."""
+    return {"locale": "en"}

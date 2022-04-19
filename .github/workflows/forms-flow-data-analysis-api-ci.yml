@@ -1,0 +1,112 @@
+name: Forms Flow Data Analysis API CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - develop
+      - master
+    paths:
+      - "forms-flow-data-analysis-api/**"
+
+defaults:
+  run:
+    shell: bash
+    working-directory: ./forms-flow-data-analysis-api
+
+jobs:
+  setup-job:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: "true"
+
+  linting:
+    needs: setup-job
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          pip install -r requirements/dev.txt
+      - name: Pylint
+        id: pylint
+        run: |
+          pylint --rcfile=setup.cfg  src/api
+  
+  PyTest:
+    needs: setup-job
+    env:
+      FLASK_ENV: "testing"
+      DATABASE_URL_TEST: "postgresql://postgres:postgres@localhost:6432/postgres"
+      DATA_ANALYSIS_API_BASE_URL: "http://localhost:5001"
+      KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
+      KEYCLOAK_URL_REALM: ${{ secrets.KEYCLOAK_URL_REALM }}
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${{ secrets.JWT_OIDC_WELL_KNOWN_CONFIG }}
+      JWT_OIDC_ALGORITHMS: "RS256"
+      JWT_OIDC_JWKS_URI: ${{ secrets.JWT_OIDC_JWKS_URI }}
+      JWT_OIDC_ISSUER: ${{ secrets.JWT_OIDC_ISSUER }}
+      JWT_OIDC_AUDIENCE: ${{ secrets.JWT_OIDC_AUDIENCE }}
+      JWT_OIDC_CACHING_ENABLED: "True"
+      BPM_API_BASE: ${{ secrets.BPM_API_BASE }}
+      BPM_CLIENT_SECRET: ${{ secrets.BPM_CLIENT_SECRET }}
+      BPM_CLIENT_ID: ${{ secrets.BPM_CLIENT_ID }}
+      BPM_TOKEN_API: ${{ secrets.BPM_TOKEN_API }}
+      TEST_REVIEWER_USERID: ${{ secrets.TEST_REVIEWER_USERID }}
+      TEST_REVIEWER_PASSWORD: ${{ secrets.TEST_REVIEWER_PASSWORD }}
+      MODEL_ID: ${{ secrets.MODEL_ID }}
+      SKIP_IN_CI: "True"
+
+    runs-on: ubuntu-20.04
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 6432:5432
+        # needed because the postgres container does not provide a healthcheck
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          make setup
+      - name: Download Sentiment Analysis Model
+        run: |
+          make download-models
+      - name: Test
+        id: test
+        run: |
+          make test
+
+  build:
+    runs-on: ubuntu-20.04
+    name: Build
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Build
+        run: |
+          docker build . -t forms-flow-data-analysis-api

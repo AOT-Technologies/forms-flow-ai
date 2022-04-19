@@ -34,7 +34,7 @@ class BaseBPMService:
     def post_request(cls, url, token, payload=None):
         """Post HTTP request to BPM API with auth header."""
         headers = cls._get_headers_(token)
-        payload = json.dumps(payload) if payload else payload
+        payload = json.dumps(payload)
         response = requests.post(url, data=payload, headers=headers, timeout=120)
 
         data = None
@@ -50,6 +50,7 @@ class BaseBPMService:
                 + ", "
                 + response.text
             )
+            # response.raise_for_status()
         return data
 
     @classmethod
@@ -68,10 +69,10 @@ class BaseBPMService:
         }
         if token:
             return {"Authorization": token, "content-type": "application/json"}
-        else:
-            response = requests.post(bpm_token_api, headers=headers, data=payload)
-            data = json.loads(response.text)
-            return {
-                "Authorization": "Bearer " + data["access_token"],
-                "Content-Type": "application/json",
-            }
+
+        response = requests.post(bpm_token_api, headers=headers, data=payload)
+        data = json.loads(response.text)
+        return {
+            "Authorization": "Bearer " + data["access_token"],
+            "Content-Type": "application/json",
+        }

@@ -8,7 +8,6 @@ from flask_jwt_oidc import JwtManager
 
 from ..exceptions import BusinessException
 
-
 jwt = JwtManager()  # pylint: disable=invalid-name
 
 
@@ -52,6 +51,7 @@ class Auth:
 
     @classmethod
     def has_role(cls, role):
+        """Method to validate the role."""
         return jwt.validate_roles(role)
 
 

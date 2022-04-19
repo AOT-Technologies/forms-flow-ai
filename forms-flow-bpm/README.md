@@ -1,4 +1,6 @@
 # Workflow Engine
+
+[![FormsFlow BPM CI](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions/workflows/forms-flow-api-ci.yml/badge.svg?branch=develop)](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions)
 ![Camunda](https://img.shields.io/badge/Camunda-7.15.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.4.8.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
 **formsflow.ai** leverages Camunda for workflow and decision automation.
 
@@ -48,6 +50,8 @@ To know more about Camunda, visit https://camunda.com/.
  `KEYCLOAK_URL_REALM`|	The Keycloak realm to use|eg. forms-flow-ai | `forms-flow-ai`
  `KEYCLOAK_BPM_CLIENT_ID`|Your Keycloak Client ID within the realm| eg. forms-flow-bpm | `forms-flow-bpm`
  `KEYCLOAK_BPM_CLIENT_SECRET`:triangular_flag_on_post:|The secret for your Keycloak Client Id|eg. 22ce6557-6b86-4cf4-ac3b-42338c7b1ac12|`must be set to your Keycloak client secret`go to [link](../forms-flow-idm/keycloak/README.md#get-the-keycloak-client-secret)
+ `KEYCLOAK_WEB_CLIENTID`|	The Keycloak client id used by forms-flow-web, used only if Client based authorization is enabled in keycloak.|eg. forms-flow-web | `forms-flow-web`
+ `KEYCLOAK_ENABLE_CLIENT_AUTH`|	Boolean flag to enable client based authorization in keycloak.|eg. true | false
 
 ##### CAMUNDA_JDBC : Dedicated camunda database (Prefixed with CAMUNDA_).
 -----------------------------------------------------------------------
@@ -103,6 +107,7 @@ To know more about Camunda, visit https://camunda.com/.
  `CAMUNDA_APP_ROOT_LOG_FLAG`|Log level setting||`error` 
  `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`2  (In MB)`
  `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
+ `BPM_CLIENT_CONN_TIMEOUT`|Webclient Connection timeout in milli seconds||`5000`
    
  **Additionally, you may want to change these**  
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)

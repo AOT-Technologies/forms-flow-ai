@@ -96,4 +96,3 @@ describe("Integration test for the ViewApplication component",()=>{
  
 })
 })
-

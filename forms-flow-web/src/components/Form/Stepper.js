@@ -19,6 +19,7 @@ import Edit from "./Item/Edit.js";
 import {
   fetchAllBpmProcesses,
   getFormProcesses,
+  resetFormProcessData,
   saveFormProcessMapper
 } from "../../apiManager/services/processServices";
 import {
@@ -34,6 +35,7 @@ import PreviewStepper from "./Steps/PreviewStepper";
 import "./stepper.scss";
 import {Link} from "react-router-dom";
 import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
+import { resetFormData } from "../../actions/formActions.js";
 
 /*const statusList = [
   { label: "Active", value: "active" },
@@ -55,7 +57,7 @@ class StepperPage extends PureComponent {
       previewMode: false,
       editMode: false,
       associateWorkFlow: "no",
-      processData: { status: "inactive", isAnonymousAllowd: false, comments: "" },
+      processData: { status: "inactive", comments: "" },
       formId: "",
       processList: [],
       processListLoaded: false,
@@ -228,14 +230,6 @@ class StepperPage extends PureComponent {
     return listProcess(this.props.processList);
   }
 
-  // populateStatusDropdown() {
-  //   const list = [
-  //     { label: "Active", value: "active" },
-  //     { label: "Inactive", value: "inactive" },
-  //   ];
-  //   return list;
-  // }
-
   associateToWorkFlow = (item) => {
     this.setState({ workflow: item[0], dataModified: true });
   };
@@ -259,25 +253,42 @@ class StepperPage extends PureComponent {
   }
 
   submitData = () => {
-    const { form, onSaveFormProcessMapper, formProcessList } = this.props;
+    const { form, onSaveFormProcessMapper, formProcessList, formPreviousData ,applicationCount} = this.props;
     const { workflow, processData, associateWorkFlow} = this.state;
     const data = {
       formId: form.id,
       formName: form.form && form.form.title,
-      formRevisionNumber: "V1", // to do
-      status: processData.status? processData.status:"inactive"
+      status: processData.status? processData.status:"inactive",
+      taskVariable:formProcessList.taskVariable?formProcessList.taskVariable:[],
+      anonymous:formProcessList.anonymous?true:false
     };
     if (associateWorkFlow === "yes" && workflow) {
       data["processKey"]= workflow && workflow.value;
       data["processName"]= workflow && workflow.label;
+    }else if(associateWorkFlow === "no"){
+      data["processKey"]= "";
+      data["processName"]= "";
     }
+
+    const processNameChecking= data.processName!==formPreviousData.processName;
+    const processKeyChecking= data.processKey!==formPreviousData.processKey;
+
     if(processData.comments){
       data["comments"] = processData.comments;
     }
-    const isUpdate = formProcessList && formProcessList.id ? true : false;
-    if (isUpdate) {
-      data.id = formProcessList.id;
+
+    let isUpdate = formProcessList && formProcessList.id ? true : false;
+    if(applicationCount > 0){
+      if(formPreviousData.isTitleChanged || processKeyChecking || processNameChecking ){
+      isUpdate=false;
+      let version = +formProcessList.version+1
+      data.version = `${version}`
     }
+  }
+
+  if(formProcessList && formProcessList.id ){
+    data.id = formProcessList.id;
+  }
     onSaveFormProcessMapper(data, isUpdate);
   };
 
@@ -417,7 +428,9 @@ const mapStateToProps = (state) => {
     errors: selectError("form", state),
     processList: state.process.processList,
     formProcessList: state.process.formProcessList,
-    isAuthenticated: state.user.isAuthenticated
+    isAuthenticated: state.user.isAuthenticated,
+    formPreviousData:state.process.formPreviousData,
+    applicationCount:state.process.applicationCount
   };
 };
 
@@ -438,6 +451,7 @@ const mapDispatchToProps = (dispatch) => {
           if (!err) {
             toast.success('Form Workflow Association Saved.');
             dispatch(push(`/form`));
+            dispatch(resetFormProcessData())
           }else{
             toast.error('Form Workflow Association Failed.');
           }
@@ -462,12 +476,14 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    getForm: (id) => dispatch(getForm("form", id)),
+    getForm: (id) => {
+      dispatch(resetFormData('form', id));
+      dispatch(getForm("form", id))
+  },
     getFormProcessesDetails: (formId) => {
       dispatch(
         getFormProcesses(formId, (err, res) => {
           if (err) {
-            toast.error('Error in getting Workflow Process.');
             console.log(err);
           }
         })

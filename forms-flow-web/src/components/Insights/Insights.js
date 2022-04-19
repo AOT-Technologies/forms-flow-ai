@@ -8,6 +8,7 @@ import {setInsightDetailLoader, setInsightDashboardListLoader} from "../../actio
 import LoadingOverlay from "react-loading-overlay";
 import Loading from "../../containers/Loading";
 import { fetchdashboards } from "../../apiManager/services/dashboardsService";
+import { SpinnerSVG } from "../../containers/SpinnerSVG";
 
 const Insights = React.memo((props) => {
   const {getDashboardsList, getDashboardDetail, dashboards, activeDashboard, isInsightLoading, isDashboardLoading,getDashboards,dashboardsFromRedash} = props;
@@ -32,6 +33,14 @@ const Insights = React.memo((props) => {
     }
   }, [dashboardSelected, getDashboardDetail]);
 
+const NoPublicUrlMessage = ()=>(
+  <div className="h-100 col-12 text-center div-middle">
+      <i className="fa fa-tachometer fa-lg"/>
+      <br></br>
+      <br></br>
+      <label> No Public url found </label>
+    </div>
+)
   if (isDashboardLoading) {
     return <Loading />;
   }
@@ -62,9 +71,14 @@ const Insights = React.memo((props) => {
               </div>
             </div>
           </div>
-          <LoadingOverlay active={isInsightLoading} spinner className="col-12">
+          <LoadingOverlay active={isInsightLoading || !activeDashboard.name} styles={{
+        overlay: (base) => ({
+          ...base,
+          background: 'rgba(255, 255, 255)'
+        })
+      }} spinner={<SpinnerSVG />} className="col-12">
             {dashboards.length > 0 ?
-                <iframe
+             ( activeDashboard.public_url ? <iframe
                   title="dashboard"
                   style={{
                     width: '100%',
@@ -73,7 +87,8 @@ const Insights = React.memo((props) => {
                     border: 'none',
                     minHeight: '100vh',
                   }}
-                  src={activeDashboard.public_url}/>
+                  src={activeDashboard.public_url}
+                  />:<NoPublicUrlMessage />)
               :
               <NoData/>
             }

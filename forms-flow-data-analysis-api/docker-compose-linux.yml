@@ -1,0 +1,54 @@
+#Author: Kurian Benoy
+version: '3.7'
+
+services:
+  forms-flow-data-analysis-db:
+    image: "postgres:13"
+    environment:
+      POSTGRES_USER: ${DATA_ANALYSIS_DB_USER}
+      POSTGRES_PASSWORD: ${DATA_ANALYSIS_DB_PASSWORD}
+      POSTGRES_DB: ${DATA_ANALYSIS_DB_NAME}
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - forms-flow-data-analysis-api-network
+    ports:
+      - '5430:5432'
+
+  forms-flow-data-analysis-api:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    links:
+      - forms-flow-data-analysis-db
+    ports:
+      - '5001:5000'
+    volumes:
+      - ./:/app:rw
+    environment:
+      POSTGRES_USER: ${DATA_ANALYSIS_DB_USER:-general}
+      POSTGRES_PASSWORD: ${DATA_ANALYSIS_DB_PASSWORD:-changeme}
+      POSTGRES_DB: ${DATA_ANALYSIS_DB_NAME:-dataanalysis}
+      JWT_OIDC_WELL_KNOWN_CONFIG: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/.well-known/openid-configuration
+      JWT_OIDC_ALGORITHMS: 'RS256'
+      JWT_OIDC_JWKS_URI: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/certs
+      JWT_OIDC_ISSUER: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      JWT_OIDC_AUDIENCE: ${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
+      JWT_OIDC_CACHING_ENABLED: 'True'
+      JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
+      DATA_ANALYSIS_API_BASE_URL: ${DATA_ANALYSIS_API_BASE_URL}
+      MODEL_ID: ${MODEL_ID:-Seethal/sentiment_analysis_generic_dataset}
+      DATABASE_SUPPORT: ${DATABASE_SUPPORT:-DISABLED}
+    stdin_open: true # -i
+    tty: true # -t
+    networks:
+      - forms-flow-data-analysis-api-network
+
+networks:
+  forms-flow-data-analysis-api-network:
+    driver: 'bridge'
+
+volumes:
+  db-data:

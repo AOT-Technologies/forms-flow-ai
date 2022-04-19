@@ -1,38 +1,45 @@
-"""Test suite for metrics API endpoint"""
+"""Test suite for metrics API endpoint."""
+import datetime
+
 import pytest
-from datetime import date
+
 from tests.utilities.base_test import (
+    factory_auth_header,
     get_application_create_payload,
-    get_token_header,
-    get_token_body,
     get_form_request_payload,
 )
 
 METRICS_ORDER_BY_VALUES = ["created", "modified"]
+today = datetime.date.today().strftime("%Y-%m-%dT%H:%M:%S+00:00").replace("+", "%2B")
+tomorrow = (
+    (datetime.date.today() + datetime.timedelta(days=1))
+    .strftime("%Y-%m-%dT%H:%M:%S+00:00")
+    .replace("+", "%2B")
+)
 
 
 @pytest.mark.parametrize("orderBy", METRICS_ORDER_BY_VALUES)
-def test_metrics_get_200(orderBy, session, client, jwt, app):
-    token = jwt.create_jwt(get_token_body(), get_token_header())
+def test_metrics_get_200(orderBy, app, client, session):
+    """Tests the API/metrics endpoint with valid param."""
+    token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-
-    today = date.today().strftime("%Y-%m-%d")
     rv = client.get(
-        f"/metrics?from={today}&to={today}&orderBy={orderBy}", headers=headers
+        f"/metrics?from={today}&to={tomorrow}&orderBy={orderBy}", headers=headers
     )
     assert rv.status_code == 200
-    assert rv.status_code == 200
 
 
 @pytest.mark.parametrize("orderBy", METRICS_ORDER_BY_VALUES)
-def test_metrics_get_401(orderBy, session, client, jwt, app):
+def test_metrics_get_401(orderBy, app, client, session):
+    """Tests the API/metrics endpoint with invalid param."""
     rv = client.get(f"/metrics?from=2021-10-10&to=2021-10-31&orderBy={orderBy}")
     assert rv.status_code == 401
 
 
 @pytest.mark.parametrize("orderBy", METRICS_ORDER_BY_VALUES)
-def test_metrics_list_view(orderBy, session, client, jwt, app):
-    token = jwt.create_jwt(get_token_body(), get_token_header())
+def test_metrics_list_view(orderBy, app, client, session):
+    """Tests API/metrics endpoint with valid data."""
+    token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     rv = client.post("/form", headers=headers, json=get_form_request_payload())
@@ -46,23 +53,24 @@ def test_metrics_list_view(orderBy, session, client, jwt, app):
     )
     assert rv.status_code == 201
 
-    today = date.today().strftime("%Y-%m-%d")
     rv = client.get(
-        f"/metrics?from={today}&to={today}&orderBy={orderBy}", headers=headers
+        f"/metrics?from={today}&to={tomorrow}&orderBy={orderBy}", headers=headers
     )
     assert rv.status_code == 200
     assert len(rv.json.get("applications")) == 1
 
 
 @pytest.mark.parametrize("orderBy", METRICS_ORDER_BY_VALUES)
-def test_metrics_detailed_get_401(orderBy, session, client, jwt, app):
+def test_metrics_detailed_get_401(orderBy, app, client, session):
+    """Tests API/metrics/<mapper_id> endpoint with invalid data."""
     rv = client.get(f"/metrics/1?from=2021-10-10&to=2021-10-31&orderBy={orderBy}")
     assert rv.status_code == 401
 
 
 @pytest.mark.parametrize("orderBy", METRICS_ORDER_BY_VALUES)
-def test_metrics_detailed_view(orderBy, session, client, jwt, app):
-    token = jwt.create_jwt(get_token_body(), get_token_header())
+def test_metrics_detailed_view(orderBy, app, client, session):
+    """Tests API/metrics/<mapper_id> endpoint with valid data."""
+    token = factory_auth_header()
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     rv = client.post("/form", headers=headers, json=get_form_request_payload())
@@ -77,10 +85,9 @@ def test_metrics_detailed_view(orderBy, session, client, jwt, app):
     )
     assert rv.status_code == 201
 
-    today = date.today().strftime("%Y-%m-%d")
     rv = client.get(
-        f"/metrics/{mapper_id}?from={today}&to={today}&orderBy={orderBy}",
+        f"/metrics/{mapper_id}?from={today}&to={tomorrow}&orderBy={orderBy}",
         headers=headers,
     )
     assert rv.status_code == 200
-    assert rv.json.get("applications")
+    assert rv.json["applications"]

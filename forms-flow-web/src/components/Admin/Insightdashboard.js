@@ -31,7 +31,7 @@ export const InsightDashboard = (props)=> {
   const [activeRow,setActiveRow] = useState(null);
   const [show, setShow] = useState(false);
   const [activePage,setActivePage] = useState(1);
-
+  const [sizePerPage,setSizePerPage] = useState(5)
   const useNoRenderRef = (currentValue)=>{
     const ref = useRef(currentValue);
     ref.current = currentValue;
@@ -176,11 +176,18 @@ const getpageList = ()=>{
   return list
 }
 
+const handleSizeChange = (sizePerPage,page)=>{
+    setActivePage(page)
+    setSizePerPage(sizePerPage)
+}
+
   const pagination = paginationFactory({
     showTotal :true,
     sizePerPageList:getpageList(),
     page:activePage,
-    onPageChange :(page)=>setActivePage(page)
+    sizePerPage:sizePerPage,
+    onPageChange :(page)=>setActivePage(page),
+    onSizePerPageChange:(size,page)=>handleSizeChange(size,page)
   })
 
   return (
@@ -208,4 +215,3 @@ const mapStateToProps = (state)=>{
 
 
 export default connect(mapStateToProps)(InsightDashboard);
-

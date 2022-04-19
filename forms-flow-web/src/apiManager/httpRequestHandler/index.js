@@ -25,6 +25,15 @@ export const httpPOSTRequest = (url, data, token, isBearer = true) => {
   });
 };
 
+export const httpPOSTRequestWithoutToken = (url, data, token, isBearer = true) => {
+  return axios.post(url, data, {
+    headers: {
+      'Content-Type':'application/json'
+    }
+  });
+};
+
+
 export const httpPOSTRequestWithHAL = (url, data, token, isBearer = true) => {
   return axios.post(url, data, {
     headers: {
@@ -38,6 +47,16 @@ export const httpPOSTRequestWithHAL = (url, data, token, isBearer = true) => {
 
 export const httpPUTRequest = (url, data, token, isBearer = true) => {
   return axios.put(url, data, {
+    headers: {
+      Authorization: isBearer
+        ? `Bearer ${token || UserService.getToken()}`
+        : token,
+    },
+  });
+};
+
+export const httpDELETERequest = (url,token, isBearer = true) => {
+  return axios.delete(url, {
     headers: {
       Authorization: isBearer
         ? `Bearer ${token || UserService.getToken()}`

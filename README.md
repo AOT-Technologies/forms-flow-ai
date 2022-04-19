@@ -1,9 +1,12 @@
 <div align="center"><img src=".images/logo.png"/></div>
-<hr/>  
-
+<hr/> 
+ 
+[![FormsFlow WEB CI](https://github.com/AOT-Technologies/forms-flow-ai/actions/workflows/forms-flow-web-ci.yml/badge.svg)](https://github.com/AOT-Technologies/forms-flow-ai/actions)
+[![FormsFlow API CI](https://github.com/AOT-Technologies/forms-flow-ai/actions/workflows/forms-flow-api-ci.yml/badge.svg)](https://github.com/AOT-Technologies/forms-flow-ai/actions)
+[![FormsFlow BPM CI](https://github.com/AOT-Technologies/forms-flow-ai/actions/workflows/forms-flow-bpm-ci.yml/badge.svg)](https://github.com/AOT-Technologies/forms-flow-ai/actions)
 [![Join the chat at https://gitter.im/forms-flow-ai/community](https://badges.gitter.im/forms-flow-ai/community.svg)](https://gitter.im/forms-flow-ai/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Join the chat at https://stackoverflow.com/questions/tagged/formsflow.ai](https://img.shields.io/badge/ask%20-on%20%20stackoverflow-F47F24)](https://stackoverflow.com/questions/tagged/formsflow.ai?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-<img src="https://img.shields.io/badge/release-v4.0.4-blue"/>
+<img src="https://img.shields.io/badge/release-v4.0.5-blue"/>
 <img src="https://img.shields.io/badge/LICENSE-Apache%202-green"/>
 
 **formsflow.ai**   is an open source solution framework developed and maintained by [AOT Technologies](https://www.aot-technologies.com/). The framework combines selected open source Forms, Workflow, Analytics, and Security products with custom-built integration code to provide a seamless solution that provides a viable alternative to expensive, enterprise software products.
@@ -61,7 +64,8 @@ Typical use cases are:
 
 ## Download and Installation
 
-If you want to download and setup, follow the [installation guide](./deployment), you will find step-by-step instructions to download and install.
+- If you want to download and setup, follow the [installation guide](./deployment), you will find step-by-step instructions to download and install.
+- For Docker based single click installation follow the instruction from [here](./deployment/README.md#docker-single-click-installation)
 
 ### Project Tree
 

@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, {useEffect } from "react";
 import { ListGroup, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServices";
 import {
   setBPMTaskListActivePage,
-  setBPMTaskLoader
+  setBPMTaskLoader,
 } from "../../../actions/bpmTaskActions";
 import Loading from "../../../containers/Loading";
 import moment from "moment";
@@ -14,7 +14,7 @@ import Pagination from "react-js-pagination";
 import {push} from "connected-react-router";
 import {MAX_RESULTS} from "../constants/taskConstants";
 import {getFirstResultIndex} from "../../../apiManager/services/taskSearchParamsFormatterService";
-
+import TaskVariable from "./TaskVariable";
 const ServiceFlowTaskList = React.memo(() => {
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
   const tasksCount = useSelector(state=> state.bpmTasks.tasksCount);
@@ -79,7 +79,7 @@ const ServiceFlowTaskList = React.memo(() => {
                   {task.assignee}
                 </div>
               </Row>
-              <Row className="task-row-3">
+              <Row className="task-row-3" style={{marginBottom:"-8px"}}>
                 <Col
                   lg={8}
                   xs={8}
@@ -106,6 +106,10 @@ const ServiceFlowTaskList = React.memo(() => {
                   {task.priority}
                 </Col>
               </Row>
+              {
+                task._embedded?.variable &&  <TaskVariable variables={task._embedded?.variable||[]}/>
+              }
+
             </div>
           ))}
           <div className="pagination-wrapper">

@@ -1,0 +1,1127 @@
+{
+	"info": {
+		"_postman_id": "f3dd13dc-3c5b-48c3-9cc1-708233e3987e",
+		"name": "formsflow.ai API 1.0",
+		"description": "The API for formsflow.ai. Checkout: formsflow.ai to know more",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Application",
+			"item": [
+				{
+					"name": "get_applications_resource",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{baseUrl}}/application",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"application"
+							]
+						},
+						"description": "Get applications"
+					},
+					"response": []
+				},
+				{
+					"name": "post_application_resources_by_ids",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"formId\": \"61bc84f80f3b9b6082679887\",\r\n    \"formUrl\": \"http://localhost:5000/form/61bc84f80f3b9b6082679887/submission/623310edb56285526241e49c\",\r\n    \"submissionId\": \"623310edb56285526241e49c\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/application/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"application",
+								"create"
+							]
+						},
+						"description": "Post a new application using the request body"
+					},
+					"response": []
+				},
+				{
+					"name": "get_application_resource_by_form_id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/application/formid/:form_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"application",
+								"formid",
+								":form_id"
+							],
+							"variable": [
+								{
+									"key": "form_id",
+									"value": "61bc84f80f3b9b6082679881"
+								}
+							]
+						},
+						"description": "Get applications"
+					},
+					"response": []
+				},
+				{
+					"name": "get_aggregated_applications_resource",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/application/metrics",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"application",
+								"metrics"
+							]
+						},
+						"description": "Get aggregated applications"
+					},
+					"response": []
+				},
+				{
+					"name": "get_aggregated_application_status_resource",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/application/metrics/:mapper_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"application",
+								"metrics",
+								":mapper_id"
+							],
+							"variable": [
+								{
+									"key": "mapper_id",
+									"value": 0
+								}
+							]
+						},
+						"description": "Get aggregated application status"
+					},
+					"response": []
+				},
+				{
+					"name": "put_application_resource_by_id",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"formId\": \"61bc84f80f3b9b6082679887\",\r\n    \"formUrl\": \"http://localhost:5000/form/61bc84f80f3b9b6082679887/submission/623310edb56285526241e49c\",\r\n    \"submissionId\": \"623310edb56285526241e49c\",\r\n    \"applicationStatus\":\"New\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/application/:application_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"application",
+								":application_id"
+							],
+							"variable": [
+								{
+									"key": "application_id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Update application details"
+					},
+					"response": []
+				},
+				{
+					"name": "get_application_resource_by_id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/application/:application_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"application",
+								":application_id"
+							],
+							"variable": [
+								{
+									"key": "application_id",
+									"value": 0
+								}
+							]
+						},
+						"description": "Get application by id"
+					},
+					"response": []
+				},
+				{
+					"name": "get_application_history_resource",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/application/:application_id/history",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"application",
+								":application_id",
+								"history"
+							],
+							"variable": [
+								{
+									"key": "application_id",
+									"value": ""
+								}
+							]
+						},
+						"description": "Get application histry"
+					},
+					"response": []
+				},
+				{
+					"name": "post_application_history_resource",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"formUrl\": \"http://localhost:5000/form/61bc84f80f3b9b6082679887/submission/623310edb56285526241e49c\",\r\n    \"applicationStatus\":\"New\",\r\n    \"submittedBy\":\"formsflow-reviewer\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/application/:application_id/history",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"application",
+								":application_id",
+								"history"
+							],
+							"variable": [
+								{
+									"key": "application_id",
+									"value": "1"
+								}
+							]
+						},
+						"description": "Post a new application using the request body"
+					},
+					"response": []
+				},
+				{
+					"name": "get_application_resource_by_application_status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/application/status/list",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"application",
+								"status",
+								"list"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "post_anonymous_resources_by_ids",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"formId\": \"61bc84f80f3b9b6082679887\",\r\n    \"formUrl\": \"http://localhost:5000/form/61bc84f80f3b9b6082679887/submission/623310edb56285526241e49c\",\r\n    \"submissionId\": \"623310edb56285526241e49c\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/application/create",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"application",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_anonymous_resource_by_id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/application/form/:form_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"application",
+								"form",
+								":form_id"
+							],
+							"variable": [
+								{
+									"key": "form_id",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Application"
+		},
+		{
+			"name": "Checkpoint",
+			"item": [
+				{
+					"name": "get_health_checkpoint_resource",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/checkpoint",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"checkpoint"
+							]
+						},
+						"description": "Get the status of API"
+					},
+					"response": []
+				}
+			],
+			"description": "Checkpoint"
+		},
+		{
+			"name": "Dashboards",
+			"item": [
+				{
+					"name": "get_dashboard_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/dashboards",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboards"
+							]
+						},
+						"description": "List all tasks"
+					},
+					"response": []
+				},
+				{
+					"name": "get_dashboard_detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/dashboards/:dashboard_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"dashboards",
+								":dashboard_id"
+							],
+							"variable": [
+								{
+									"key": "dashboard_id",
+									"value": null
+								}
+							]
+						},
+						"description": "List specific tasks"
+					},
+					"response": []
+				}
+			],
+			"description": "Task"
+		},
+		{
+			"name": "Form",
+			"item": [
+				{
+					"name": "get_form_resource",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/form",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"form"
+							]
+						},
+						"description": "Get form process mapper"
+					},
+					"response": []
+				},
+				{
+					"name": "post_form_resource",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"anonymous\": false,\r\n    \"formId\": \"6233228f2e15fde2b7ada4d9\",\r\n    \"formName\": \"newformfor\",\r\n    \"formRevisionNumber\": \"V1\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/form",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"form"
+							]
+						},
+						"description": "Post a form process mapper using the request body"
+					},
+					"response": []
+				},
+				{
+					"name": "get_form_resource_by_form_id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/form/formid/:form_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"form",
+								"formid",
+								":form_id"
+							],
+							"variable": [
+								{
+									"key": "form_id",
+									"value": "61bc84f80f3b9b6082679887"
+								}
+							]
+						},
+						"description": "Get details of only form corresponding to a particular formId"
+					},
+					"response": []
+				},
+				{
+					"name": "put_form_resource_by_id",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"formId\": \"6233228f2e15fde2b7ada4d0\",\r\n    \"formName\": \"sample\",\r\n    \"formRevisionNumber\": \"V1\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/form/:mapper_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"form",
+								":mapper_id"
+							],
+							"variable": [
+								{
+									"key": "mapper_id",
+									"value": 0
+								}
+							]
+						},
+						"description": "Update form process mapper details"
+					},
+					"response": []
+				},
+				{
+					"name": "delete_form_resource_by_id",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"formId\": \"6233228f2e15fde2b7ada4d0\",\r\n    \"formName\": \"sample\",\r\n    \"formRevisionNumber\": \"V1\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/form/:mapper_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"form",
+								":mapper_id"
+							],
+							"variable": [
+								{
+									"key": "mapper_id",
+									"value": 0
+								}
+							]
+						},
+						"description": "Delete form process mapper by id"
+					},
+					"response": []
+				},
+				{
+					"name": "get_form_resource_by_id",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/form/:mapper_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"form",
+								":mapper_id"
+							],
+							"variable": [
+								{
+									"key": "mapper_id",
+									"value": 0
+								}
+							]
+						},
+						"description": "Get form process mapper by id"
+					},
+					"response": []
+				},
+				{
+					"name": "get_form_resource_application_count",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/form/:mapper_id/application/count",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"form",
+								":mapper_id",
+								"application",
+								"count"
+							],
+							"variable": [
+								{
+									"key": "mapper_id",
+									"value": 0
+								}
+							]
+						},
+						"description": "Get form process mapper by id"
+					},
+					"response": []
+				}
+			],
+			"description": "Form"
+		},
+		{
+			"name": "Groups",
+			"item": [
+				{
+					"name": "get_keycloak_dashboard_group_list",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/groups",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups"
+							]
+						},
+						"description": "List all tasks"
+					},
+					"response": []
+				},
+				{
+					"name": "get_keycloak_dashboard_group_detail",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/groups/:group_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":group_id"
+							],
+							"variable": [
+								{
+									"key": "group_id",
+									"value": null
+								}
+							]
+						},
+						"description": "List specific tasks"
+					},
+					"response": []
+				},
+				{
+					"name": "put_keycloak_dashboard_group_detail",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"1\": \"SAMPLE\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups/:group_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":group_id"
+							],
+							"variable": [
+								{
+									"key": "group_id",
+									"value": null
+								}
+							]
+						},
+						"description": "Claim a task"
+					},
+					"response": []
+				}
+			],
+			"description": "Task"
+		},
+		{
+			"name": "Metrics",
+			"item": [
+				{
+					"name": "get_aggregated_applications_resource",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/metrics",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"metrics"
+							]
+						},
+						"description": "List all tasks"
+					},
+					"response": []
+				},
+				{
+					"name": "get_aggregated_applications_status_resource",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/metrics/:mapper_id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"metrics",
+								":mapper_id"
+							],
+							"variable": [
+								{
+									"key": "mapper_id",
+									"value": null
+								}
+							]
+						},
+						"description": "List specific tasks"
+					},
+					"response": []
+				}
+			],
+			"description": "Task"
+		},
+		{
+			"name": "Process",
+			"item": [
+				{
+					"name": "get_process_resource",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/process",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"process"
+							]
+						},
+						"description": "Get all process"
+					},
+					"response": []
+				},
+				{
+					"name": "post_process_event_resource",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/process/event",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"process",
+								"event"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get_process_instance_resource",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/process/process-instance/:process_InstanceId/activity-instances",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"process",
+								"process-instance",
+								":process_InstanceId",
+								"activity-instances"
+							],
+							"variable": [
+								{
+									"key": "process_InstanceId",
+									"value": ""
+								}
+							]
+						},
+						"description": "Get states by process and task key"
+					},
+					"response": []
+				},
+				{
+					"name": "get_process_definition_resource",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/process/:process_key/xml",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"process",
+								":process_key",
+								"xml"
+							],
+							"variable": [
+								{
+									"key": "process_key",
+									"value": ""
+								}
+							]
+						},
+						"description": "Get process detailsXML"
+					},
+					"response": []
+				}
+			],
+			"description": "Process"
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "put_keycloak_user_service",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"lang\":\"en\"\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/user/locale",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"user",
+								"locale"
+							]
+						},
+						"description": "List all tasks"
+					},
+					"response": []
+				}
+			],
+			"description": "Task"
+		},
+		{
+			"name": "Swagger specifications",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": ""
+					}
+				],
+				"url": {
+					"raw": "http://localhost:5000/swagger.json",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"swagger.json"
+					]
+				},
+				"description": "The API Swagger specifications as JSON"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"var client_id = \"{KEYCLOAK_BPM_CLIENT_ID}\" // the name of the client you created in Keycloak",
+					"var client_secret = \"{KEYCLOAK_BPM_CLIENT_SECRET}\" // the secret you copied earlier",
+					"var username = \"formsflow-reviewer\" //name of the reviewer/client",
+					"var password = \"changeme\" //password that you set",
+					"var grant_type = \"client_credentials\"",
+					"",
+					"// request to Keycloak",
+					"pm.sendRequest({",
+					"    url: \"http://{your-ip-address}:8080/auth/realms/{KEYCLOAK_URL_REALM}/protocol/openid-connect/token\",",
+					"    method: 'POST',",
+					"    header: {",
+					"        'Content-Type': 'application/x-www-form-urlencoded',",
+					"        //'Authorization': 'Basic ' + btoa(client_id + \":\" + client_secret)",
+					"    },",
+					"    body:{",
+					"   mode:\"urlencoded\",",
+					"   urlencoded:[",
+					"       {",
+					"         key:\"client_id\",",
+					"           value: client_id",
+					"      },",
+					"      {",
+					"         key:\"client_secret\",",
+					"         value: client_secret",
+					"      },",
+					"      {",
+					"         key:\"grant_type\",",
+					"         value: grant_type",
+					"      },",
+					"      {",
+					"         key:\"username\",",
+					"         value: username",
+					"      },",
+					"      {",
+					"         key:\"password\",",
+					"         value: password",
+					"      }",
+					"   ]",
+					"}",
+					"}, function (err, response) {",
+					"    // Set the environment variable for token",
+					"    const jsonResponse = response.json();",
+					"    //console.log(jsonResponse);",
+					"    pm.collectionVariables.set(\"access_token\", jsonResponse.access_token);",
+					"    //console.log(pm.collectionVariables.get(\"access_token\"));",
+					"});"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

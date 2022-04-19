@@ -1,12 +1,15 @@
 import {Route, Switch, Redirect, useParams} from 'react-router-dom'
 import React, {useEffect} from 'react'
-import {getForm} from 'react-formio'
+import {Formio, getForm} from 'react-formio'
 import {useDispatch, useSelector} from 'react-redux'
 import {STAFF_REVIEWER, CLIENT, STAFF_DESIGNER} from '../../../constants/constants'
 import View from './View'
 import Edit from './Edit'
 import Submission from './Submission/index'
 import Preview from './Preview'
+import {checkIsObjectId} from "../../../apiManager/services/formatterService";
+import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
+import {setFormFailureErrorData, setFormRequestData, setFormSuccessData, resetFormData} from "../../../actions/formActions";
 
 const Item = React.memo(()=>{
   const {formId} = useParams();
@@ -14,8 +17,23 @@ const Item = React.memo(()=>{
   const dispatch= useDispatch();
 
   useEffect(()=>{
-    //TODO add loader
-    dispatch(getForm('form', formId));
+    dispatch(resetFormData('form', formId));
+    if(checkIsObjectId(formId)){
+      dispatch(getForm('form', formId));
+    }
+    else{
+      dispatch(
+        fetchFormByAlias(formId, async (err, formObj) => {
+          if (!err) {
+            const form_id = formObj._id;
+            dispatch(setFormRequestData('form',form_id,`${Formio.getProjectUrl()}/form/${form_id}`));
+            dispatch(setFormSuccessData('form',formObj));
+          }else{
+            dispatch(setFormFailureErrorData('form',err));
+          }
+        })
+      );
+    }
   },[formId, dispatch]);
 
   /**

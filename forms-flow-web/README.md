@@ -112,10 +112,10 @@ Variable name | Meaning | Possible values | Default value |
   * Test files are available at `forms-flow-ai\forms-flow-web\src\_tests_`
   * Run the command `npm run coverage` to get the total coverage and for individual files run `npm test --<test file name>`.
   * Total code coverage can obtain by opening `forms-flow-ai\forms-flow-web\coverage\lcov-report\index.html` with browser.
-  
+
 ## forms-flow-web Events
  > This section elaborates events used in forms-flow-web.
- >  The Form.io renderer uses the [EventEmitter3](https://github.com/primus/eventemitter3) library to manage all of the event handling that occurs within the renderer. 
+ >  The Form.io renderer uses the [EventEmitter3](https://github.com/primus/eventemitter3) library to manage all of the event handling that occurs within the renderer.
  >  Custom events are triggered for button components and are fired when they are clicked. More details are [here](https://docs.form.io/developers/form-renderer#form-events)
 ## Events
 | Name | Description  &nbsp;&nbsp;&nbsp;| Arguments &nbsp;&nbsp;&nbsp; | Example |
@@ -124,5 +124,6 @@ Variable name | Meaning | Possible values | Default value |
 | `reloadCurrentTask` | <li>Used in the task page</li><li>Triggered for button components</li> <li>Refreshes the current task selected</li> |<li>type:The configured event type</li>|form.emit('customEvent', { type: "reloadCurrentTask"}); |
 | `customSubmitDone` | <li>Used in the create form page</li><li>Triggered for button components</li><li>Similar to submit button to implement custom logic</li> |<li>type:The configured event type</li>|form.emit('customEvent', {type: "customSubmitDone"}); |
 | `actionComplete` | <li>Triggered for button components</li> |<li>type:The configured event type</li><li>component:The component json</li><li>actionType: Form submit action values</li> | form.emit('customEvent', { type: "actionComplete",    component: component, actionType: actionType }); |
+| `cancelSubmission` | <li>Used in the create form page</li><li>Triggered for button components</li><li>Used for Canceling current submission and goin back to Form List Page</li> |<li>type:The configured event type</li>|form.emit('customEvent', {type: "cancelSubmission"}); |
 
- 
+

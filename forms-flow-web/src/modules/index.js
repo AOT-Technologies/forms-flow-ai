@@ -3,7 +3,7 @@ import { connectRouter } from "connected-react-router";
 import { form, forms, submission, submissions } from "react-formio";
 
 import user from "./userDetailReducer";
-import tasks from "./tasksReducer";
+import taskAppHistory from "./taskAppHistoryReducer";
 import formDelete from "./formReducer";
 import insights from "./insightReducer";
 import metrics from "./metricsReducer";
@@ -18,14 +18,14 @@ import dashboardReducer from "./dashboardReducer";
 const createRootReducer = (history) =>
   combineReducers({
     user,
-    tasks,
+    taskAppHistory,
     insights,
     formDelete,
     applications,
     bpmTasks,
     bpmForms,
     form: form({ name: "form" }),
-    forms: forms({ name: "forms", query: { type: "form", tags: "common" }, sort: "title" }),
+    forms: forms({ name: "forms", query: { type: "form", tags: "common", title__regex: "" }, sort: "title" }),
     submission: submission({ name: "submission" }),
     submissions: submissions({ name: "submissions" }),
     router: connectRouter(history),

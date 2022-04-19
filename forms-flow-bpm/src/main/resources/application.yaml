@@ -1,9 +1,11 @@
 # Set variables
+spring.config.import: "optional:file:.env[.properties]"
 
 keycloak.url: ${KEYCLOAK_URL}
 keycloak.url.realm: ${KEYCLOAK_URL_REALM}
 keycloak.clientId: ${KEYCLOAK_CLIENTID}
 keycloak.clientSecret: ${KEYCLOAK_CLIENTSECRET}
+
 
 spring.datasource:
   jdbc-url: ${CAMUNDA_JDBC_URL:jdbc:h2:./camunda-db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
@@ -41,7 +43,7 @@ formsflow.ai:
     spring:
       webclient:
         maxInMemorySize: ${DATA_BUFFER_SIZE:2}
-        connectionTimeout: 5000
+        connectionTimeout: ${BPM_CLIENT_CONN_TIMEOUT:5000}
 
 
 
@@ -173,6 +175,8 @@ plugin.identity.keycloak:
   administratorGroupName: camunda-admin
   disableSSLCertificateValidation: true
   maxResultSize: ${IDENTITY_PROVIDER_MAX_RESULT_SIZE:250}
+  webClientId: ${KEYCLOAK_WEB_CLIENTID:}
+  enableClientAuth: ${KEYCLOAK_ENABLE_CLIENT_AUTH:false}
 
 app.security.origin: ${APP_SECURITY_ORIGIN}
 

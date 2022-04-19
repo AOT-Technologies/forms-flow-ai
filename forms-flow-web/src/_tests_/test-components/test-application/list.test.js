@@ -75,4 +75,3 @@ test("Should render No results found when providing a filter value which is not 
     expect(screen.getAllByText(/Applications/i).length).toBe(3);
     expect(screen.queryByText('Please change the selected filters to view applications')).toBeInTheDocument();
 })
-

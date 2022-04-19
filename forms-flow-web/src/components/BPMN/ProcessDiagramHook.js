@@ -4,11 +4,9 @@ import {useDispatch,useSelector} from "react-redux";
 
 import BpmnJS from 'bpmn-js/dist/bpmn-navigated-viewer.production.min.js';
 import Loading from "../../containers/Loading";
-
 import {fetchDiagram, getProcessActivities} from "../../apiManager/services/processServices";
 import {setProcessActivityData, setProcessDiagramLoading, setProcessDiagramXML} from "../../actions/processActions";
 import "./bpm.scss"
-//import BpmnJS from 'bpmn-js';
 import usePrevious from "./UsePrevious";
 import Nodata from "../Nodata";
 
@@ -36,10 +34,7 @@ const ProcessDiagram = React.memo((props)=>{
         } = event;
         if (error) {
           console.log('bpmnViewer error >', error);
-          //return handleError(error);
         }
-        //bpmnViewer.get('canvas').zoom('fit-viewport');
-        //return handleShown(warnings);
       });
     }
     return ()=>{
@@ -49,9 +44,13 @@ const ProcessDiagram = React.memo((props)=>{
 
 
   useEffect(()=>{
-    dispatch(setProcessDiagramLoading(true));
     if(process_key){
+      dispatch(setProcessDiagramLoading(true));
       dispatch(fetchDiagram(process_key));
+    }
+    else
+    {
+      dispatch(setProcessDiagramLoading(false));
     }
     return ()=>{
       dispatch(setProcessDiagramLoading(true));
@@ -78,35 +77,23 @@ const ProcessDiagram = React.memo((props)=>{
   useEffect(()=> {
     if(diagramXML && bpmnViewer && markers && markers[0]) {
         let marker = markers;
-        marker = marker.replace(/'/g, '"');
-        const markerJson = JSON.parse(marker);
       if ((!prevMarkers || (prevMarkers[0] && markers[0].id === prevMarkers[0].id))&& marker!=null){
-        for (let i=0; i < markerJson.length; i++) {
           setTimeout(() => {
             bpmnViewer && bpmnViewer.get('canvas') &&
-            bpmnViewer.get('canvas').addMarker({'id':markerJson[i].activityId}, 'highlight');
+            bpmnViewer.get('canvas').addMarker({'id':markers[0].activityId}, 'highlight');
           },0);
-        }
       }
    }
  },[diagramXML,bpmnViewer,markers,prevMarkers]);
 
-
-
-  /*const handleError = (err) => {
-    console.log(err);
-    const { onError } = props;
-    if (onError) {
-      onError(err);
-    }
+ const zoom = () => {
+  bpmnViewer.get('zoomScroll').stepZoom(1)
   }
 
-  const handleShown = (warnings)=>{
-    const { onShown } = props;
-    if (onShown) {
-      onShown(warnings);
+  const zoomOut = () => {
+    bpmnViewer.get('zoomScroll').stepZoom(-1)
     }
-  }*/
+  const zoomReset = ()=>{ bpmnViewer.get('zoomScroll').reset();}
 
   if (isProcessDiagramLoading) {
     return <div className="bpmn-viewer-container">
@@ -115,7 +102,7 @@ const ProcessDiagram = React.memo((props)=>{
       </div>
     </div>
   }
-  if(diagramXML===""){
+  if( diagramXML=== ""){
     return <div className="bpmn-viewer-container">
       <div className="bpm-container">
         <Nodata text={"No Process Diagram found"} className={"div-no-application-list text-center"}/>
@@ -124,9 +111,24 @@ const ProcessDiagram = React.memo((props)=>{
   }
 
   return (
+    <>
     <div className="bpmn-viewer-container">
       <div id="process-diagram-container" className="bpm-container grab-cursor" ref={containerRef}/>
+    </div >
+    <div className="d-flex  justify-content-end btn_zoom">
+      <div className="d-flex flex-column">
+    <button className='mb-3' title='Reset Zoom' onClick={()=>zoomReset()}>
+     <i className="fa fa-retweet" aria-hidden="true"/>
+   </button>
+    <button  title='Zoom In' onClick={()=>zoom()}>
+    <i className="fa fa-search-plus" aria-hidden="true"/>
+   </button>
+   <button title='Zoom Out' onClick={()=>zoomOut()}>
+   <i className="fa fa-search-minus" aria-hidden="true"/>
+  </button>
+  </div>
     </div>
+    </>
   );
 });
 

@@ -1,13 +1,11 @@
 """Common setup and fixtures for the pytest suite used by this service."""
-from pathlib import Path
 
 import pytest
 from flask_migrate import Migrate, upgrade
 from sqlalchemy import event, text
 from sqlalchemy.schema import DropConstraint, MetaData
 
-from formsflow_api import create_app, setup_jwt_manager
-
+from formsflow_api import create_app
 from formsflow_api.models import db as _db
 from formsflow_api.utils import jwt as _jwt
 
@@ -77,8 +75,8 @@ def db(app):  # pylint: disable=redefined-outer-name, invalid-name
         sess.commit()
 
         # ############################################
-        # There are 2 approaches, an empty database, or the same one that the app will use
-        #     create the tables
+        # There are 2 approaches, an empty database, or the same one that the app
+        # will use create the tables
         #     _db.create_all()
         # or
         # Use Alembic to load all of the DB revisions including supporting lookup data

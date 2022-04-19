@@ -71,9 +71,72 @@ export const setMaintainBPMFormPagination = (maintainList) => dispatch =>{
 }
 
 export const setBPMFormListSort = (sort) => dispatch =>{
+    dispatch({
+      type:ACTION_CONSTANTS.BPM_FORM_LIST_SORT_CHANGE,
+      payload:sort
+    })
+}
+
+export const setFormSubmitted =(data)=>dispatch=>{
   dispatch({
-    type:ACTION_CONSTANTS.BPM_FORM_LIST_SORT_CHANGE,
-    payload:sort
+    type:ACTION_CONSTANTS.PUBLIC_FORM_SUBMIT,
+    payload:data
   })
 }
 
+export const setPublicFormStatus =(data)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.PUBLIC_FORM_STATUS,
+    payload:data
+  })
+}
+
+export const setFormSuccessData =( name,
+                                   form,
+                                   url)=>dispatch=>{
+   dispatch({
+     type:ACTION_CONSTANTS.FORM_SUCCESS,
+     form,
+     name,
+     url,
+   })
+ }
+
+ export const setFormRequestData =(name, id, url)=>dispatch=>{
+   dispatch({
+     type:ACTION_CONSTANTS.FORM_REQUEST,
+     name,
+     id,
+     url,
+   })
+ }
+
+ export const resetFormData =(name)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.FORM_RESET,
+    name
+  })
+}
+
+ export const setFormFailureErrorData =(name, error)=>dispatch=>{
+   dispatch({
+     type:ACTION_CONSTANTS.FORM_FAILURE,
+     name,
+     error
+   })
+ }
+
+ export const setBpmFormSearch = (data) => dispatch =>{
+   dispatch({
+    type:ACTION_CONSTANTS.BPM_FORM_SEARCH,
+    payload:data
+   })
+   return Promise.resolve()
+ }
+
+ export const setBpmFormLoading = (data) => dispatch =>{
+  dispatch({
+   type:ACTION_CONSTANTS.BPM_FORM_LOADING,
+   payload:data
+  })
+}

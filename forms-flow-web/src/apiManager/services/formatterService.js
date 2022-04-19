@@ -64,10 +64,15 @@ export const getUserNamefromList = (userList,userId) => {
 }
 
 //formURl is of https://base-url/form/:formId/submission/:submissionId
+ // formURl is of https://base-url/public/form/:formId/submission/:submissionId
 export const getFormIdSubmissionIdFromURL = (formUrl) => {
-  const formArr = formUrl.split("/");
-  const formId = formArr[4];
-  const submissionId = formArr[6];
+  let formString = "/form/"
+  let submissionString = "/submission/"
+  let firstPositionOfString = formUrl.indexOf("/form/")
+  let lastPositionOfString = formUrl.indexOf("/submission")
+  const formId = formUrl.substring(firstPositionOfString+formString.length,lastPositionOfString)
+  let firstPositionOfSubmissionString = formUrl.indexOf(submissionString) + submissionString.length
+  const submissionId = formUrl.substring(firstPositionOfSubmissionString)
   return {formId,submissionId};
 }
 
@@ -83,7 +88,32 @@ export const getISODateTime=(date)=>{
     }
 };
 
-
 export const getFormattedDateAndTime = (date)=>{
   return new Date(date).toLocaleDateString('en-us',  {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',hour: '2-digit', minute: '2-digit', hour12: true});
 };
+
+export const getSearchText = (query) => {
+  //  Function Extracts text from /text/i 
+   let searchText = ""
+   if(query !== ""){
+     let searchString = "/"
+     let firstPosition = query.indexOf('/')
+     let lastPosition = query.indexOf('/i')
+    searchText = query.substring(firstPosition + searchString.length,lastPosition)
+   }
+   return searchText;
+}
+
+export const getFormattedProcess = (application)=>{
+  const processData = {
+    processName:application.processName,
+    formProcessMapperId:application.formProcessMapperId,
+    processKey:application.processKey
+  }
+  return processData;
+}
+
+export const checkIsObjectId = (data) => {
+  // Condition to check if the data is a mongoDb object Id or not 
+  return data.length === 24 && !isNaN(Number('0x' + data));
+}

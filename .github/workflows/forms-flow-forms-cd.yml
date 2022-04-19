@@ -4,17 +4,19 @@ on:
   push:
     branches:
       - develop
+    paths:
+      - "forms-flow-forms/**"
     workflow_dispatch:
-    inputs:
-      environment:
-        description: "Environment (dev/test/prod)"
-        required: true
-        default: "dev"
+      inputs:
+        environment:
+          description: "Environment (dev/test/prod)"
+          required: true
+          default: "dev"
 
 defaults:
   run:
     shell: bash
-    working-directory: .
+    working-directory: ./forms-flow-forms
 
 env:
   REGISTRY: ghcr.io

@@ -3,6 +3,8 @@ name: Push Forms flow forms to registry
 on:
   push:
     branches: [ multi-tenancy-gha, develop, multi-tenancy ]
+    paths:
+      - "forms-flow-forms/**"
   workflow_dispatch:
 
 defaults:

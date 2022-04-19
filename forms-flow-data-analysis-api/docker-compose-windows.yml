@@ -41,6 +41,7 @@ services:
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
       DATA_ANALYSIS_API_BASE_URL: ${DATA_ANALYSIS_API_BASE_URL}
       MODEL_ID: ${MODEL_ID:-xaqren/sentiment_analysis}
+      DATABASE_SUPPORT: ${DATABASE_SUPPORT:-DISABLED}
     stdin_open: true # -i
     tty: true # -t
     networks:

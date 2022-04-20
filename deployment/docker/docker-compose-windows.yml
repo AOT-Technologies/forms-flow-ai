@@ -150,7 +150,7 @@ services:
 
   forms-flow-webapi-db:
     container_name: forms-flow-webapi-db
-    image: postgres:11
+    image: postgres:14
     environment:
       POSTGRES_USER: ${FORMSFLOW_API_DB_USER:-postgres}
       POSTGRES_PASSWORD: ${FORMSFLOW_API_DB_PASSWORD:-changeme}

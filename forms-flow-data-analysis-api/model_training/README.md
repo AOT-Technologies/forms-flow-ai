@@ -16,9 +16,10 @@ It is built using Python :snake: .
 
 You can install packages using pip as follows:
 
-```python3 -m pip install -r requirements.txt```
+Activate your virtualenv
+run : ```python3 -m pip install -r requirements.txt```
 
-Then run ```training.py```  
+Then run : ```training.py```  
 
 ## Steps for training
 

@@ -70,7 +70,7 @@ const mapStateToProps = (state) => {
     options: {
       readOnly: true,
     },
-    errors: [selectError("submission", state), selectError("form", state)],
+    errors: [selectError("form", state)],
   };
 };
 

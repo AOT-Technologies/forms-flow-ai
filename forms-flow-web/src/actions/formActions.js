@@ -140,3 +140,18 @@ export const setFormSuccessData =( name,
    payload:data
   })
 }
+
+export const clearFormError =(name)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.FORM_CLEAR_ERROR,
+    name
+  })
+}
+
+export const clearSubmissionError =(name)=>dispatch=>{
+  dispatch({
+    type:ACTION_CONSTANTS.SUBMISSION_CLEAR_ERROR,
+    name
+  })
+}
+

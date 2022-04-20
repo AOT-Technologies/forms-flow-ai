@@ -81,11 +81,11 @@ const refreshToken = (store) => {
       console.log(error);
       userLogout();
     });
-  }, tokenExpireTime(KeycloakData));
+  }, getTokenExpireTime(KeycloakData));
 }
 
 
-const tokenExpireTime =(keycloak)=>{
+const getTokenExpireTime =(keycloak)=>{
   const {exp, iat} = keycloak.idTokenParsed;
   if(exp&&iat){
     const toeknExpiretime =new Date(exp).getMilliseconds()-new Date(iat).getMilliseconds()

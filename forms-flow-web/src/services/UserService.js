@@ -81,32 +81,29 @@ const getTokenExpireTime =(keycloak)=>{
   }
 }
 
-let refreshStop= true;
+
 let refreshInterval;
 const refreshToken = (store) => {
+  const refreshTime = getTokenExpireTime(KeycloakData)
   refreshInterval = setInterval(() => {
     KeycloakData && KeycloakData.updateToken(5).then((refreshed)=> {
       if (refreshed) {
          clearInterval(refreshInterval)
          store.dispatch(setUserToken(KeycloakData.token));
-         if(refreshStop){
-          refreshToken(store)
-         }
+         refreshToken(store)
       }
     }).catch( (error)=> {
       console.log(error);
       userLogout();
     });
-  }, getTokenExpireTime(KeycloakData));
+  }, refreshTime);
 }
-
 
 
 /**
  * Logout function
  */
 const userLogout = () => {
-  refreshStop= false;
   localStorage.clear();
   sessionStorage.clear();
   clearInterval(refreshInterval);

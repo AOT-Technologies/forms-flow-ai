@@ -53,10 +53,10 @@ install-dev: ## Install local application
 ci: lint flake8 test ## CI flow
 
 pylint: ## Linting with pylint
-	. venv/bin/activate && pylint --rcfile=setup.cfg  sentiment_analysis.py
+	. venv/bin/activate && pylint --rcfile=setup.cfg  sentiment_analysis.py dbms
 
 flake8: ## Linting with flake8
-	. venv/bin/activate && flake8 sentiment_analysis.py tests
+	. venv/bin/activate && flake8 sentiment_analysis.py dbms
 
 lint: pylint flake8 ## run all lint type scripts
 

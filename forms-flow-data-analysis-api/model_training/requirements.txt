@@ -1,0 +1,6 @@
+NumPy==1.22.3
+Transformers==4.18.0
+torch==1.10.0+cu111
+scikit-learn==1.0.2
+datasets==2.1.0
+

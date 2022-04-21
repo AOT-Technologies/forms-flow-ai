@@ -2,35 +2,25 @@ name: Push Forms flow API to registry
 
 on:
   push:
-    branches: [ multi-tenancy-gha, develop, multi-tenancy ]
-    # paths:
-      # - "forms-flow-api/**"
+    branches: [ master, develop ]
+    paths:
+      - "forms-flow-api/**"
   workflow_dispatch:
 
 defaults:
   run:
     shell: bash
-    
+    working-directory: ./forms-flow-api
 
-- name: Set variables
-  run: |
-    VER=$(cat VERSION)
-    echo "VERSION=$VER" >> $GITHUB_ENV
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-  TAG: sha-${{ github.sha }}
 
 jobs:
-  build-and-push-image-to-ghcr:
-    # if: github.event_name == 'push' && github.repository == 'AOT-Technologies/redash'
+  build-and-push-image-to-dockerhub:
+    if: github.event_name == 'push' && github.repository == 'AOT-Technologies/forms-flow-ai'
     runs-on: ubuntu-latest
-    working-directory: ./forms-flow-api
     strategy:
       matrix:
         include:
-          - image: ghcr.io/sumesh-aot/forms-flow-api
+          - image: formsflow/forms-flow-webapi
             context: forms-flow-api
             dockerfile: Dockerfile
             name: forms-flow-api
@@ -46,6 +36,15 @@ jobs:
         uses: docker/setup-buildx-action@v1
         with:
           install: true
+
+      - name: Set version
+        working-directory: .
+        run: |
+          VER=$(cat VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
+      
+      - run: echo ${{ env.VERSION }}
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3
@@ -56,10 +55,9 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v1
         with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
+          # registry: ${{ env.REGISTRY }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_ACCESS_TOKEN }}
       - name: Cache Docker layers
         uses: actions/cache@v2
         with:
@@ -67,7 +65,7 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ matrix.name }}-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-${{ matrix.name }}
-
+      
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:

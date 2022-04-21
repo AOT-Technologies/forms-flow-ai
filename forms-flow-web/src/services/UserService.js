@@ -1,5 +1,5 @@
  /* istanbul ignore file */
- import {
+import {
   ROLES,
   USER_RESOURCE_FORM_ID,
   Keycloak_Client,
@@ -70,13 +70,12 @@ const initKeycloak = (store, ...rest) => {
       }
     });
 };
-
 let refreshInterval;
 const refreshToken = (store) => {
   refreshInterval = setInterval(() => {
     KeycloakData && KeycloakData.updateToken(5).then((refreshed)=> {
       if (refreshed) {
-         store.dispatch(setUserToken(KeycloakData.token));
+        store.dispatch(setUserToken(KeycloakData.token));
       }
     }).catch( (error)=> {
       console.log(error);

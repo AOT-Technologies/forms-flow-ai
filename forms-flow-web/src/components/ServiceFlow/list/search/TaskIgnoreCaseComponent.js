@@ -39,8 +39,6 @@ const TaskIgnoreCaseComponent = React.memo(()=>{
               inputProps={{'aria-label': 'primary checkbox'}}
             />{t("value")} 
           </span>
-    {/*<span className="filter-action-container">  <i className="fa fa-link item-pos" aria-hidden="true"/><i
-            className="fa fa-floppy-o item-pos" aria-hidden="true"/></span>*/}
   </div> : null}</>
 
 })

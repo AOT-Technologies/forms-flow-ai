@@ -5,7 +5,6 @@ FROM node:14.17.0-alpine as build-stage
 WORKDIR /forms-flow-web/app
 
 ARG NODE_ENV
-ARG GENERATE_SOURCEMAP
 ARG REACT_APP_CLIENT_ROLE
 ARG REACT_APP_STAFF_REVIEWER_ROLE
 ARG REACT_APP_STAFF_DESIGNER_ROLE
@@ -29,7 +28,6 @@ ARG REACT_APP_WEB_BASE_CUSTOM_URL
 ARG REACT_APP_FORMIO_JWT_SECRET
 
 ENV NODE_ENV ${NODE_ENV}
-ENV GENERATE_SOURCEMAP ${GENERATE_SOURCEMAP}
 ENV REACT_APP_CLIENT_ROLE ${REACT_APP_CLIENT_ROLE}
 ENV REACT_APP_STAFF_REVIEWER_ROLE ${REACT_APP_STAFF_REVIEWER_ROLE}
 ENV REACT_APP_STAFF_DESIGNER_ROLE ${REACT_APP_STAFF_DESIGNER_ROLE}
@@ -64,7 +62,7 @@ COPY package.json /forms-flow-web/app/package.json
 COPY forms-flow-util/package.json /forms-flow-web/app/forms-flow-util/package.json
 COPY forms-flow-util/package-lock.json /forms-flow-web/app/forms-flow-util/package-lock.json
 
-RUN npm install --unsafe-perm
+RUN npm install --unsafe-perm --production
 #RUN npm install react-scripts@3.0.1 -g --silent
 COPY . /forms-flow-web/app/
 RUN npm run build

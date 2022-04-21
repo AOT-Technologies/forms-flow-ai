@@ -2,6 +2,8 @@ export const formio_translation = {
 
    "en": {
 
+      "Error while saving Form":"Error while saving Form",
+      "Confirmation":"Confirmation",
       "Submitted By":"Submitted By",
       "Copy anonymous form URL":"Copy anonymous form URL",
       "Form field":"Form field",
@@ -9,6 +11,8 @@ export const formio_translation = {
       "Select form field":"Select form field",
       "Add form fields to display in task list":"Add form fields to display in task list",
       "Version":"Version",
+      "Dashboard":"Dashboard",
+      "Dashboards":"Dashboards",
       "Submission Status":"Submission Status",
       "No submission status":"No submission status",
       "No Public url found":"No Public url found",
@@ -17,6 +21,7 @@ export const formio_translation = {
       "Enter your Label":"Enter your Label",
       "Please select from one of the following workflows.":"Please select from one of the following workflows.",
       "Select Key":"Select Key",
+      "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
       "Create Your Task Variable":"Create Your Task Variable",
       "No Task variable selected":"No Task variable selected",
       "Workflow Associate":"Workflow Associate",
@@ -35,7 +40,6 @@ export const formio_translation = {
       "Please fix the errors before submitting again.":"Please fix the errors before submitting again.",
        "Error in JSON file structure":"Error in JSON file structure",
        "Metrics": "Metrics",
-       "Dashboards": "Dashboard",
       "Insights": "Insights",
       "Tasks": "Tasks",
       "Applications": "Applications",
@@ -187,7 +191,6 @@ export const formio_translation = {
       "No forms found": "No forms found",
       "Press Enter key or click here to search": "Press Enter key or click here to search",
       "Click to clear": "Click to clear",
-      "Search...": "Search...",
       "No applications found": "No applications found",
       "Successfully Updated": "Successfully Updated",
       "Failed": "Failed",
@@ -203,7 +206,10 @@ export const formio_translation = {
    },
 
    "zh-CN": {
-      
+
+      "Dashboards":"仪表板",
+      "Error while saving Form":"保存表单时出错",
+      "Confirmation":"确认",
       "Submitted By":"由...所提交",
       "Copy anonymous form URL":"复制匿名表单 URL",
       "Form field":"表单域",
@@ -222,6 +228,7 @@ export const formio_translation = {
       "Create Your Task Variable":"创建您的任务变量",
       "No Task variable selected":"未选择任务变量",
       "Workflow Associate":"工作流助理",
+      "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"更改表单标题不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
       "Task variable":"任务变量",
       "Enter pathname":"输入路径名",
       "Label":"标签",
@@ -266,7 +273,7 @@ export const formio_translation = {
       "Applications": "应用",
       "Tasks": "任务",
       "Insights": "洞察力",
-      "Dashboards": "仪表盘  ",
+      "Dashboard": "仪表盘  ",
       "Logout": "登出",
       "No tasks found": "没有找到任务 ",
       "Please change the selected filters to view tasks": "请更改所选过滤器以查看任务",
@@ -354,7 +361,7 @@ export const formio_translation = {
       "of": "的",
       "Select Dashboard": "选择仪表板",
       "Total Submissions": "提交总数",
-      "Operation": "运营",
+      "Operations": "运营",
       "Access Groups": "访问组",
       "Action": "行动",
       "Add": "添加",
@@ -903,7 +910,11 @@ export const formio_translation = {
 
 
    "bg": {
-      
+
+      "Dashboards":"Табла за управление",
+      "Tasks": "Задачи",
+      "Error while saving Form":"Грешка при запазване на формуляра",
+      "Confirmation":"Потвърждение",
       "Submitted By":"Изпратено от",
       "Copy anonymous form URL":"Копирайте URL на анонимен формуляр",
       "Form field":"Поле за формуляр",
@@ -962,7 +973,7 @@ export const formio_translation = {
       "Applications": "Приложения",
       "Task": "Задачи",
       "Metrics": "Метрика",
-      "Dashboards": "Табло",
+      "Dashboard": "Табло",
       "Logout": "Излез от профила си",
       "No tasks found": "Няма намерени задачи",
       "Please change the selected filters to view tasks": "Моля, променете избраните филтри, за да видите задачите",
@@ -1051,7 +1062,7 @@ export const formio_translation = {
       "of": "на",
       "Select Dashboard": "Изберете Табло за управление",
       "Total Submissions": "Общо представяне",
-      "Operation": "Операции",
+      "Operations": "Операции",
       "Access Groups": "Групи за достъп",
       "Action": "Действие",
       "Add": "Добавете",
@@ -1597,11 +1608,16 @@ export const formio_translation = {
       "Set the text of the Add Resource button.": "Задава текста за бутона Добавяне на ресурс.",
       "Auto Expand": "Автоматично разширяване",
       "Save & Preview": "Запазване и визуализация",
+      "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Промяната на заглавието на формуляра няма да засегне съществуващите приложения. Той ще се актуализира само в новосъздадените приложения. Натиснете Запазване на промените, за да продължите или отмените промените."
+
    },
 
 
    "pt": {
       
+      "Dashboards":"Painéis",
+      "Error while saving Form":"Erro ao salvar o formulário",
+      "Confirmation":"Confirmação",
       "Submitted By":"Enviado por",
       "Copy anonymous form URL":"Copiar URL de formulário anônimo",
       "Form field":"Campo do formulário",
@@ -1619,6 +1635,7 @@ export const formio_translation = {
       "Create Your Task Variable":"Crie sua variável de tarefa",
       "No Task variable selected":"Nenhuma variável de tarefa selecionada",
       "Workflow Associate":"Associado de fluxo de trabalho",
+      "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Alterar o título do formulário não afetará os aplicativos existentes. Ele só será atualizado nos aplicativos recém-criados. Pressione Salvar alterações para continuar ou cancelar as alterações.",
       "Task variable":"Variável de tarefa",
       "Enter pathname":"Digite o nome do caminho",
       "saved successfully":"Salvo com sucesso",
@@ -1632,10 +1649,10 @@ export const formio_translation = {
       "Error in JSON file structure":"Erro na estrutura do arquivo JSON",
       "Downloaded Successfully":"Baixado com sucesso",
       "Select Dashboard": "Selecionar painel",
-      "Dashboards": "Painel",
+      "Dashboard": "Painel",
       "Insights": "Intuições",
       "Metrics": "Métricas",
-      "TaskS": "Tarefas",
+      "Tasks": "Tarefas",
       "Applications": "Formulários",
       "Admin": "Administrador",
       "Powered by": "Distribuído por",
@@ -2276,7 +2293,7 @@ export const formio_translation = {
       "to": "para",
       "of": "do",
       "Total Submissions": "Total de inscrições",
-      "Operation": "Operações",
+      "Operations": "Operações",
       "Access Groups": "Grupos de acesso",
       "Action": "Açao",
       "Add": "Adicionar",
@@ -2303,6 +2320,11 @@ export const formio_translation = {
 
    "fr": {
 
+      "Dashboards":"Tableaux de bord",
+      "Tasks":"Tâches",
+      "Error while saving Form":"Erreur lors de l'enregistrement du formulaire",
+      "Confirmation":"Confirmation",
+      "Search...":"Recherche...",
       "Submitted By":"Proposé par",
       "Copy anonymous form URL":"Copier l'URL du formulaire anonyme",
       "Form field":"Champ de formulaire",
@@ -2321,6 +2343,7 @@ export const formio_translation = {
       "Create Your Task Variable":"Créez votre variable de tâche",
       "No Task variable selected":"Aucune variable de tâche sélectionnée",
       "Workflow Associate":"Associé au flux de travail",
+      "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"La modification du titre du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
       "Task variable":"Variable de tâche",
       "Enter pathname":"Entrez le nom du chemin",
       "saved successfully":"enregistré avec succès",
@@ -2337,7 +2360,7 @@ export const formio_translation = {
       "Select Dashboard": "Sélectionnez Tableau de bord",
       "Metrics": "Métrique",
       "Insights": "Connaissances",
-      "Dashboards": "Tableau de bord",
+      "Dashboard": "Tableau de bord",
       'Task': "Tâches",
       "Applications": "Applications",
       "Forms": "Formes",
@@ -2978,7 +3001,7 @@ export const formio_translation = {
       'View': "Vue",
        "No dashboard found": "Aucun tableau de bord trouvé",
       "Total Submissions": "Nombre total de soumissions",
-      "Operation": "Opérations",
+      "Operations": "Opérations",
       "Access Groups": "Groupes d'accès",
       "Action": "Action",
       "Add": "Ajouter",
@@ -3005,6 +3028,9 @@ export const formio_translation = {
 
    "de": {
 
+      "Dashboards":"Dashboards",
+      "Error while saving Form":"Fehler beim Speichern des Formulars",
+      "Confirmation":"Bestätigung",
       "Submitted By":"Eingereicht von",
       "Copy anonymous form URL":"Kopieren Sie die anonyme Formular-URL",
       "Form field":"Formularfeld",
@@ -3023,6 +3049,7 @@ export const formio_translation = {
       "Create Your Task Variable":"Erstellen Sie Ihre Aufgabenvariable",
       "No Task variable selected":"Keine Task-Variable ausgewählt",
       "Workflow Associate":"Workflow-Mitarbeiter",
+      "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Das Ändern des Formulartitels wirkt sich nicht auf die bestehenden Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen.",
       "Task variable":"Aufgabenvariable",
       "Enter pathname":"Geben Sie den Pfadnamen ein",
       "saved successfully":"Erfolgreich gespeichert",
@@ -3031,7 +3058,7 @@ export const formio_translation = {
       "Save Form":"Formular speichern",
       "Cancel":"Stornieren",
       "Metrics": "Metriken",
-      "Dashboards": "Armaturenbrett",
+      "Dashboard": "Armaturenbrett",
       "Insights": "Einblicke",
       "Task": "Aufgaben",
       "Applications": "Anwendungen",
@@ -3167,7 +3194,7 @@ export const formio_translation = {
       "results": "Ergebnisse",
       "Select Dashboard": "Wählen Sie Dashboard aus",
       "Total Submissions": "Einreichungen insgesamt",
-      "Operation": "Operationen",
+      "Operations": "Operationen",
       "Access Groups": "Zugriffsgruppen",
       "Action": "Aktion",
       "Add": "Addieren",

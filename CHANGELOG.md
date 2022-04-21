@@ -2,7 +2,7 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
-## 4.0.5 - 2022-04-05
+## 4.0.5 - 2022-04-19
 
 `Added`
 
@@ -10,13 +10,14 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Added `anonymous user` feature .
 * Added count for Filter Tasks .
-* Added form search and sort fields for formsflow-designer.
+* Added form list page search and sort.
 * Added new UI for task variable.
 * Added form name as part of filename when downloaded.
-* Added the status of the earlier version as inactive when a new version of the form is created.
+* Added the status of the earlier version as inactive when a new version of the form is created/deleted.
 * Added submitter name in the application history table.
-* Added Cancel button for form submission.
-* Added task variable in tasklist with ordering.
+* Added Cancel button for form edit.
+* Added task variable in tasklist page at LHS.
+* Added CI pipeline.
 
 **forms-flow-api**
 
@@ -24,7 +25,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added migration scripts in the alembic file to resolve schema conflicts while db upgrade and downgrade, check out [here](./forms-flow-api/migrations/versions/80b8d5e95e9b_set_modification_date_on_create.py).
 * Added new api for updating user locale attribute in Keycloak with the help of Keycloak admin API.
 * Added form list page search and sort.
-* Added github badge for CI.
+* Added CI pipeline.
 * Added DB changes to accomodate task variable. 
 
 **forms-flow-data-analysis-api**
@@ -34,10 +35,13 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 **forms-flow-idm**
 
 * Added `manage-users` group to assigned client roles in realm-management.Check out the details at Service Accounts Tab from [here](./forms-flow-idm/keycloak/README.md#create-a-forms-flow-bpm-client).
+* Added project specific custom login theme , check out the steps [here](./forms-flow-idm/keycloak/README.md#add-custom-login-theme).
+
 
 **forms-flow-bpm**
 
-* Added github badge for CI.
+* New (Task / Execution) Listener FormBpmFilteredDataPipelineListener Included for the effective form to bpm data copy.
+* Added CI pipeline.
 
 `Fixed`
 
@@ -53,6 +57,11 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Postgres schema upgraded to enable updating the workflow after publising the form 
 * Disabled internal workflows for  process API.
 
+**forms-flow-bpm**
+
+* Security context/authorization was not propogated to web-client while enabling asynchronous continutaion/intermediate timer events.
+* Many minor performance optimizations and fixes are done.
+
 
 `Modified`
 
@@ -61,7 +70,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Modified application name search with lowercase and by intermediate search.
 * Front-end support for the form process mapper versioning and database normalization.
 * User is not be able to change the workflow of published form.
-* Url support both pathname and formid to fetch the form.
+* Form Url support both pathname and formid to fetch the form.
 
 **forms-flow-api**
 
@@ -100,8 +109,7 @@ Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` ar
 
 *Upgrade notes:*
 
-* For the upgrading user's process definition / workflow should be deleted.
-* To delete a process definition, refer https://docs.camunda.org/manual/7.8/reference/rest/process-definition/delete-process-definition/
+* For the upgrading user's formio-access-token.bpmn workflow should be manually stopped and deleted using these instructions [from here](https://docs.camunda.org/manual/7.8/reference/rest/process-definition/delete-process-definition/)
 
 `Generic Changes`
 

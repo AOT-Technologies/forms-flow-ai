@@ -30,3 +30,9 @@ FILTER_MAPS = {
     "created_to": {"field": "created", "operator": "le"},
     "form_name": {"field": "form_name", "operator": "ilike"},
 }
+<<<<<<< HEAD
+=======
+
+DEFAULT_PROCESS_KEY = "Defaultflow"
+DEFAULT_PROCESS_NAME = "Default Flow"
+>>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689

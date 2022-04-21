@@ -140,10 +140,13 @@ services:
         - REACT_APP_USER_ACCESS_PERMISSIONS=${USER_ACCESS_PERMISSIONS}
         - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL:-}
         - REACT_APP_FORMIO_JWT_SECRET=${FORMIO_JWT_SECRET:---- change me now ---}
+<<<<<<< HEAD
         - REACT_APP_LANGUAGE=${LANGUAGE:-en}
     volumes:
       - '.:/app'
       - '/app/node_modules'
+=======
+>>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
     ports:
       - '3000:8080'
     tty: true

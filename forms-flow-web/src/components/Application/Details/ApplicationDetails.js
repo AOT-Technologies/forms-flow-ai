@@ -5,7 +5,7 @@ import {getLocalDateTime} from "../../../apiManager/services/formatterService";
 import { Translation } from "react-i18next";
 
 
-//import {setUpdateLoader} from "../../../actions/taskActions";
+
 
 
 

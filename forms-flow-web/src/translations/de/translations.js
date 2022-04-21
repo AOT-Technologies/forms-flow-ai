@@ -49,9 +49,10 @@ export const TRANSLATIONS_DE = {
   "Delete": "Löschen",
   "Print As PDF": "Als PDF drucken",
   "Applications": "Anwendungen",
-  "Task": "Aufgaben",
+  "Tasks": "Aufgaben",
   "Metrics": "Metriken",
-  "Dashboards": "Armaturenbrett",
+  "Dashboard": "Armaturenbrett",
+  "Dashboards":"Dashboards",
   "Logout": "Ausloggen",
   "No tasks found": "Keine Aufgaben gefunden",
   "Please change the selected filters to view tasks": "Bitte ändern Sie die ausgewählten Filter, um Aufgaben anzuzeigen",
@@ -142,7 +143,7 @@ export const TRANSLATIONS_DE = {
   "Select Dashboard": "Wählen Sie Dashboard aus",
   "Total Submissions": "Einreichungen insgesamt",
   "Save & Preview": "Speichern & Vorschau",
-  "Operation": "Operationen",
+  "Operations": "Operationen",
   "Access Groups": "Zugriffsgruppen",
   "Action": "Aktion",
   "Add": "Addieren",
@@ -192,7 +193,11 @@ export const TRANSLATIONS_DE = {
   "Thank you for your response.":"Danke für Ihre Antwort.",
   "saved successfully":"Erfolgreich gespeichert",
   "Copy anonymous form URL":"Kopieren Sie die anonyme Formular-URL",
-  "Submitted By":"Eingereicht von"
+  "Submitted By":"Eingereicht von",
+  "Confirmation":"Bestätigung",
+  "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Das Ändern des Formulartitels wirkt sich nicht auf die bestehenden Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen.",
+  "Error while saving Form":"Fehler beim Speichern des Formulars"
+
 
 
 

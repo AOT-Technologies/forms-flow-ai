@@ -29,7 +29,7 @@ const NavBar = React.memo(() => {
     console.log(lang);
     i18n.changeLanguage(lang);
   },[lang]);
- const langarr=["en"];
+ const langarr=["en",""];
   const handleOnclick=(e)=>{
    e.preventDefault();
    dispatch(setLanguage(e.target.value))

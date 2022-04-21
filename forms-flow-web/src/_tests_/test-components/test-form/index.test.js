@@ -95,9 +95,7 @@ it("should render the Form list component without breaking",()=>{
          route:"/form",
      }
      )
-    // expect(screen.getByTestId("sample")).toBeInTheDocument() 
-    // expect(screen.getByText("Operations")).toBeInTheDocument()
-    // expect(screen.getByText("Form")).toBeInTheDocument()
+ 
  })
 
  it("should render the Stepper component without breaking",()=>{

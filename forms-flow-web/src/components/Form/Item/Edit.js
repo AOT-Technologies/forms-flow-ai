@@ -17,7 +17,7 @@ import {
   setFormProcessesData,
   setFormPreviosData,
 } from "../../../actions/processActions";
-import { Translation } from "react-i18next";
+import { Translation,useTranslation } from "react-i18next";
 import { saveFormProcessMapper } from "../../../apiManager/services/processServices";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -60,6 +60,7 @@ const Edit = React.memo(() => {
   const saveText = (<Translation>{(t)=>t("Save Form")}</Translation>);
   const lang = useSelector((state) => state.user.lang);
   const history = useHistory();
+  const {t}=useTranslation();
   const [show, setShow] = useState(false);
   
   const handleClose = () => setShow(false);
@@ -110,7 +111,7 @@ const Edit = React.memo(() => {
             dispatch(setFormProcessesData(newData));
             dispatch(setFormPreviosData({...newData,isTitleChanged}));
           }
-          toast.success("Form Saved");
+          toast.success(t("Form Saved"));
           dispatch(push(`/formflow/${submittedData._id}/preview`));
           // ownProps.setPreviewMode(true);
         } else {
@@ -202,11 +203,11 @@ const Edit = React.memo(() => {
               dispatch(setFormProcessesData(newData));
               dispatch(setFormPreviosData({...newData,isTitleChanged}));
             }
-            toast.success("Form Saved");
+            toast.success(t("Form Saved"));
             dispatch(push(`/formflow/${submittedData._id}/preview`));
             // ownProps.setPreviewMode(true);
           } else {
-            toast.error("Error while saving Form");
+            toast.error(t("Error while saving Form"));
           }
         })
       );
@@ -259,9 +260,9 @@ if(!form._id){
             </span>
             <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Confirmation</Modal.Title>
+          <Modal.Title>{t("Confirmation")}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.</Modal.Body>
+        <Modal.Body>{t("Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.")}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Cancel

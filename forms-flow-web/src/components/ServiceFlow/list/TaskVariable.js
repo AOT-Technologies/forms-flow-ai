@@ -1,19 +1,11 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { Row, Col } from "react-bootstrap";
-import { getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
 const TaskVariable = ({ variables }) => {
   const [showMore, setShowMore] = useState(false);
   let variableCount=0;
   const taskvariable = useSelector((state)=>state.bpmTasks.selectedFilter?.properties?.variables||[]);
-  const checkVlaueIsDateOrNOt=(value)=>{
-    const isValueNumber = isNaN(value)
-    if(isValueNumber){
-      return getFormattedDateAndTime(value)!=='Invalid Date'?getFormattedDateAndTime(value):value
-    }else{
-      return value.toString()
-    }
-  }
+ 
 
   const rowReturn = (taskItem,data,index) => {
     return (
@@ -25,11 +17,9 @@ const TaskVariable = ({ variables }) => {
         </div>
         <div className="text-truncate">
           <span
-           data-toggle="tooltip" data-placement="top" title={
-            checkVlaueIsDateOrNOt(data.value)
-          }
+           data-toggle="tooltip" data-placement="top" title={data.value.toString()}
           >
-           {checkVlaueIsDateOrNOt(data.value)}
+           {data.value.toString()}
           </span>
         </div>
       </Col>

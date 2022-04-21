@@ -1,5 +1,6 @@
 export const TRANSLATIONS_BG = {
  
+    "Dashboards":"Табла за управление",
     "Form field":"Поле за формуляр",
     "Enter Label":"Въведете етикет",
     "Select form field":"Изберете поле на формуляра",
@@ -44,9 +45,9 @@ export const TRANSLATIONS_BG = {
     "Delete": "Изтрий",
     "Print As PDF": "Печат като PDF",
     "Applications": "Приложения",
-    "Task": "Задачи",
+    "Tasks": "Задачи",
     "Metrics": "Метрика",
-    "Dashboards": "Табло",
+    "Dashboard": "Табло",
     "Logout": "Излез от профила си",
     "No tasks found": "Няма намерени задачи",
     "Please change the selected filters to view tasks": "Моля, променете избраните филтри, за да видите задачите",
@@ -136,7 +137,7 @@ export const TRANSLATIONS_BG = {
     "results": "Резултати",
     "Select Dashboard": "Изберете Табло за управление",
     "Total Submissions": "Общо представяне",
-    "Operation": "Операции",
+    "Operations": "Операции",
     "Access Groups": "Групи за достъп",
     "Action": "Действие",
     "Add": "Добавете",
@@ -189,7 +190,11 @@ export const TRANSLATIONS_BG = {
     "Thank you for your response.":"Благодаря ви за отговора.",
     "saved successfully":"Запазено успешно",
     "Copy anonymous form URL":"Копирайте URL на анонимен формуляр",
-    "Submitted By":"Изпратено от"
+    "Submitted By":"Изпратено от",
+    "Confirmation":"Потвърждение",
+    "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Промяната на заглавието на формуляра няма да засегне съществуващите приложения. Той ще се актуализира само в новосъздадените приложения. Натиснете Запазване на промените, за да продължите или отмените промените.",
+    "Error while saving Form":"Грешка при запазване на формуляра"
+
 
 
 }

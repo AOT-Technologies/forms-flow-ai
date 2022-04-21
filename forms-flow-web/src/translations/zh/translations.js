@@ -1,5 +1,6 @@
 export const TRANSLATIONS_ZH = {
 
+  "Dashboards":"仪表板",
   "Form field":"表单域",
   "Enter Label":"输入标签",
   "Select form field":"选择表单域",
@@ -46,7 +47,7 @@ export const TRANSLATIONS_ZH = {
   "Applications": "应用",
   "Tasks": "任务",
   "Insights": "洞察力",
-  "Dashboards": "仪表盘  ",
+  "Dashboard": "仪表盘  ",
   "Logout": "登出",
   "No tasks found": "没有找到任务 ",
   "Please change the selected filters to view tasks": "请更改所选过滤器以查看任务",
@@ -135,7 +136,7 @@ export const TRANSLATIONS_ZH = {
   "of": "的",
   "Select Dashboard": "选择仪表板",
   "Total Submissions": "提交总数",
-  "Operation": "运营",
+  "Operations": "运营",
   "Access Groups": "访问组",
   "Action": "行动",
   "Add": "添加",
@@ -189,7 +190,11 @@ export const TRANSLATIONS_ZH = {
   "Thank you for your response.":"谢谢您的答复。",
   "saved successfully":"保存成功",
   "Copy anonymous form URL":"复制匿名表单 URL",
-  "Submitted By":"由...所提交"
+  "Submitted By":"由...所提交",
+  "Confirmation":"确认",
+  "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"更改表单标题不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
+  "Error while saving Form":"保存表单时出错"
+
 
 
 

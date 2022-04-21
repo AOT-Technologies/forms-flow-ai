@@ -3,8 +3,6 @@ import { connect } from "react-redux";
 import { selectRoot, Form, selectError, Errors } from "react-formio";
 import { push } from "connected-react-router";
 import { Button } from "react-bootstrap";
-/*import { Link } from "react-router-dom";
-import StepperPage from "../Stepper.js";*/
 import Loading from "../../../containers/Loading";
 import { Translation } from "react-i18next";
 import { formio_translation } from "../../../translations/formiotranslation";
@@ -34,7 +32,6 @@ const Preview = class extends PureComponent {
     if (isFormActive ) {
       return <Loading />;
     }
-    
     return (
       <div className="container">
         <div className="main-header">

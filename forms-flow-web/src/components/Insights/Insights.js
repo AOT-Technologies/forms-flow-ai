@@ -82,7 +82,7 @@ const NoPublicUrlMessage = ()=>(
       }} spinner={<SpinnerSVG />} className="col-12">
             {dashboards.length > 0 ?
              ( activeDashboard.public_url ? <iframe
-                  title="Dashboard"
+                  title="dashboard"
                   style={{
                     width: '100%',
                     height: 'auto',

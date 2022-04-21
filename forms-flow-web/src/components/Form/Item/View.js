@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -13,7 +13,6 @@ import { push } from "connected-react-router";
 import { Link, useParams } from "react-router-dom";
 import Loading from "../../../containers/Loading";
 import { useTranslation,Translation } from "react-i18next";
-import "../../../translations/i18n";
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
 import { formio_translation } from "../../../translations/formiotranslation";
 import {
@@ -41,15 +40,16 @@ import { setPublicStatusLoading } from "../../../actions/applicationActions";
 
 
 const View = React.memo((props) => {
- const{t}=useTranslation();
- const lang = useSelector((state) => state.user.lang);
+
+  const {t}= useTranslation();
+  const lang = useSelector((state) => state.user.lang);
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
   const isPublicStatusLoading = useSelector(
     (state) => state.applications.isPublicStatusLoading
   );
-  
+
   const isFormSubmitted = useSelector(
     (state) => state.formDelete.formSubmitted
   );
@@ -58,6 +58,7 @@ const View = React.memo((props) => {
   );
   const isPublic = window.location.href.includes("public"); //need to remove
   const { formId } = useParams();
+  const [showPublicForm, setShowPublicForm] = useState('checking');
 
   const {
     isAuthenticated,
@@ -87,7 +88,7 @@ const View = React.memo((props) => {
             dispatch(setFormSuccessData('form',formObj));
           }
         }
-          
+
         }
       })
     );
@@ -120,6 +121,16 @@ const View = React.memo((props) => {
     }
   }, [isPublic, dispatch,getFormData]);
 
+  useEffect(()=>{
+    if(publicFormStatus){
+      if(publicFormStatus.anonymous===true && publicFormStatus.status==="active" ){
+        setShowPublicForm(true);
+      }else{
+        setShowPublicForm(false);
+      }
+    }
+  },[publicFormStatus])
+
   if (isActive || isPublicStatusLoading) {
     return (
       <div data-testid="loading-view-component">
@@ -132,18 +143,16 @@ const View = React.memo((props) => {
     return (
       <div className="text-center pt-5">
        <h1>{t("Thank you for your response.")}</h1>
-      <p>{t("saved successfully")}</p>
+       <p>{t("saved successfully")}</p>
       </div>
     );
   }
 
-
-  if (isPublic && publicFormStatus && publicFormStatus.anonymous && publicFormStatus.status === "inactive" ) {
+  if (isPublic && !showPublicForm) {
     return (
       <div className="alert alert-danger mt-4" role="alert">
         Form not available
       </div>
-
     );
   }
 
@@ -160,9 +169,7 @@ const View = React.memo((props) => {
             <i className="fa fa-chevron-left fa-lg" />
           </Link>
         ) : null}
-        {/*   <span className="ml-3">
-            <img src="/form.svg" width="30" height="30" alt="form" />
-          </span>*/}
+        
         {form.title ? (
           <h3 className="ml-3">
             <span className="task-head-details">
@@ -203,7 +210,7 @@ const View = React.memo((props) => {
   );
 });
 
-const doProcessActions = (submission, ownProps,  t) => {
+const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
     let user = getState().user.userDetail;
     let form = getState().form.form;
@@ -249,7 +256,7 @@ const doProcessActions = (submission, ownProps,  t) => {
               dispatch(setFormSubmissionLoading(false));
               dispatch(setMaintainBPMFormPagination(true));
               //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
-              toast.success("Submission Saved.");
+              toast.success(<Translation>{(t)=>t("submission_saved")}</Translation>)
               dispatch(push(`/form`));
             } else {
               dispatch(setFormSubmissionLoading(false));
@@ -279,7 +286,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch, ownProps,t) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onSubmit: (submission, formId) => {
       dispatch(setFormSubmissionLoading(true));
@@ -290,9 +297,9 @@ const mapDispatchToProps = (dispatch, ownProps,t) => {
           } else {
             const ErrorDetails = {
               modalOpen: true,
-              message: t("Submission cannot be done."),
+              message: (<Translation>{(t)=>t("Submission cannot be done.")}</Translation>),
             };
-            toast.error(t("Error while Submission."));
+            toast.error(<Translation>{(t)=>t("Error while Submission.")}</Translation>);
             dispatch(setFormSubmissionLoading(false));
             dispatch(setFormSubmissionError(ErrorDetails));
           }

@@ -14,7 +14,6 @@ import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
 import NotFound from "../NotFound";
 import { Translation } from "react-i18next";
-//import { useDispatch } from 'react-redux'
 
 const ViewApplication = React.memo(() => {
   const {applicationId} = useParams();
@@ -36,7 +35,6 @@ const ViewApplication = React.memo(() => {
           }
         }
       }));
-     
       return ()=>{
         dispatch(setApplicationDetailLoader(true));
         dispatch(setApplicationDetailStatusCode(''));

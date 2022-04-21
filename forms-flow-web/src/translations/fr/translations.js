@@ -1,5 +1,6 @@
 export const TRANSLATIONS_FR = {
 
+  "Dashboards":"Tableaux de bord",
   "Form field":"Champ de formulaire",
   "Enter Label":"Entrez l'étiquette",
   "Select form field":"Sélectionnez le champ du formulaire",
@@ -49,10 +50,10 @@ export const TRANSLATIONS_FR = {
   "Delete":"Effacer",
   "Print As PDF":"Imprimer en PDF",
   "Applications":"Applications",
-  "Task":"Tâches",
+  "Tasks":"Tâches",
   "Metrics":"Métrique",
   "Insights":"Connaissances",
-  "Dashboards":"Tableau de bord",
+  "Dashboard":"Tableau de bord",
   "Logout":"Se déconnecter",
   "No tasks found":"Aucune tâche trouvée",
   "Please change the selected filters to view tasks":"Veuillez modifier les filtres sélectionnés pour afficher les tâches",
@@ -139,7 +140,7 @@ export const TRANSLATIONS_FR = {
   "View":"Vue",
    "No dashboard found":"Aucun tableau de bord trouvé",
   "Total Submissions":"Nombre total de soumissions",
-  "Operation":"Opérations",
+  "Operations":"Opérations",
   "Access Groups":"Groupes d'accès",
   "Action":"Action",
   "Add":"Ajouter",
@@ -192,7 +193,12 @@ export const TRANSLATIONS_FR = {
   "Thank you for your response.":"Merci pour votre réponse.",
   "saved successfully":"enregistré avec succès",
   "Copy anonymous form URL":"Copier l'URL du formulaire anonyme",
-  "Submitted By":"Proposé par"
+  "Submitted By":"Proposé par",
+  "Search...":"Recherche...",
+  "Confirmation":"Confirmation",
+  "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"La modification du titre du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
+  "Error while saving Form":"Erreur lors de l'enregistrement du formulaire"
+
 
 
   };

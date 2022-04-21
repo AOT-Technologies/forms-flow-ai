@@ -108,7 +108,7 @@ const {t}=useTranslation();
           dispatch(
             saveFormProcessMapper(data, update, (err, res) => {
               if (!err) {
-                toast.success("Form Saved");
+                toast.success(t("Form Saved"));
                 dispatch(push(`/formflow/${form._id}/view-edit/`));
               } else {
                 toast.error("Error in creating form process mapper");
@@ -173,7 +173,7 @@ const {t}=useTranslation();
         </div>
         <div className="col-lg-4 col-md-3 col-sm-3">
           <div id="form-group-display" className="form-group">
-            <label htmlFor="name" className="control-label"><Translation>{(t)=>t("Name")}</Translation></label>
+            <label htmlFor="name" className="control-label"><Translation>{(t)=>t("Display as")}</Translation></label>
             <div className="input-group">
               <select
                 className="form-control"

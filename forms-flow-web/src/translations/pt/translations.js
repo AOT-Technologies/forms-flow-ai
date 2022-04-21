@@ -1,5 +1,6 @@
 export const TRANSLATIONS_PT = {
 
+  "Dashboards":"Painéis",
   "Form field":"Campo do formulário",
   "Enter Label":"Digite o rótulo",
   "Select form field":"Selecione o campo do formulário",
@@ -49,8 +50,8 @@ export const TRANSLATIONS_PT = {
   "Delete": "Excluir",
   "Print As PDF": "Imprimir como PDF",
   "Applications": "Formulários",
-  "Task": "Tarefas",
-  "Dashboards": "Painel",
+  "Tasks": "Tarefas",
+  "Dashboard": "Painel",
   "Logout": "Sair",
   "No tasks found": "Nenhuma tarefa encontrada",
   "Please change the selected filters to view tasks": "Por favor, mude os filtros selecionados para ver as tarefas",
@@ -141,7 +142,7 @@ export const TRANSLATIONS_PT = {
   "of": "do",
   "Application Id": "ID do aplicativo",
   "Total Submissions": "Total de inscrições",
-  "Operation": "Operações",
+  "Operations": "Operações",
   "Access Groups": "Grupos de acesso",
   "Action": "Açao",
   "Add": "Adicionar",
@@ -191,7 +192,11 @@ export const TRANSLATIONS_PT = {
   "Thank you for your response.":"Obrigado pela sua resposta.",
   "saved successfully":"Salvo com sucesso",
   "Copy anonymous form URL":"Copiar URL de formulário anônimo",
-  "Submitted By":"Enviado por"
+  "Submitted By":"Enviado por",
+  "Confirmation":"Confirmação",
+  "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Alterar o título do formulário não afetará os aplicativos existentes. Ele só será atualizado nos aplicativos recém-criados. Pressione Salvar alterações para continuar ou cancelar as alterações.",
+  "Error while saving Form":"Erro ao salvar o formulário"
+
 
 
 

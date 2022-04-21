@@ -34,7 +34,7 @@ import FileModal from './FileUpload/fileUploadModal'
 import { useTranslation,Translation } from "react-i18next";
 import {addHiddenApplicationComponent} from "../../constants/applicationComponent";
 import LoadingOverlay from "react-loading-overlay";
-import { getFormProcesses,getApplicationCount } from "../../apiManager/services/processServices";
+import { getFormProcesses,getApplicationCount, resetFormProcessData } from "../../apiManager/services/processServices";
 import { unPublishForm } from "../../apiManager/services/processServices";
 import { setIsApplicationCountLoading } from "../../actions/processActions";
 import { setBpmFormSearch } from "../../actions/formActions";
@@ -151,10 +151,14 @@ const List = React.memo((props) => {
                         dispatch(updateFormUploadCounter())
                         resolve();
                       } else {
+                        toast.error('Error in Json file structure');
+                        setShowFormUploadModal(false);
                         reject();
                       }
                     }));
                   } else {
+                    toast.error('Error in Json file structure');
+                    setShowFormUploadModal(false);
                     reject();
                   }
                 }));
@@ -190,14 +194,13 @@ const List = React.memo((props) => {
                <Confirm
                  modalOpen={props.modalOpen}
                  message={
-                   (formProcessData.id  && applicationCount!==0) ?  `${applicationCountResponse  ? applicationCount :  "Are you sure you wish to delete the form " +
+                   (formProcessData.id  && applicationCount!==0) && applicationCount  ?  `${applicationCountResponse  ? applicationCount :  "Are you sure you wish to delete the form " +
                    props.formName +
                    "?"}`
-                   + "  Applications are submitted against " + props.formName +". Are you sure want to delete ?":
+                   + `${applicationCount > 1 ? ' Applications are submitted against' :' Application is submitted against'} ` + props.formName +". Are you sure want to delete ?":
                    "Are you sure you wish to delete the form " +
                    props.formName +
                    "?"
-                   
                  }
                  onNo={() => onNo()}
                  onYes={() => {onYes(formId, forms,formProcessData)}}
@@ -354,6 +357,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
           
           break;
         case "viewForm":
+          dispatch(resetFormProcessData())
           dispatch(setMaintainBPMFormPagination(true));
           dispatch(push(`/formflow/${form._id}/view-edit`));
           break;

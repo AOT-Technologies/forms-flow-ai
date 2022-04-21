@@ -21,6 +21,7 @@ import "../../translations/i18n";
 import {
   fetchAllBpmProcesses,
   getFormProcesses,
+  resetFormProcessData,
   saveFormProcessMapper
 } from "../../apiManager/services/processServices";
 import {
@@ -34,7 +35,7 @@ import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
 import "./stepper.scss";
 import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
-//import { Form } from "react-formio/lib/components";
+import { resetFormData } from "../../actions/formActions.js";
 
 /*const statusList = [
   { label: "Active", value: "active" },
@@ -227,14 +228,6 @@ class StepperPage extends PureComponent {
     return listProcess(this.props.processList);
   }
 
-  // populateStatusDropdown() {
-  //   const list = [
-  //     { label: "Active", value: "active" },
-  //     { label: "Inactive", value: "inactive" },
-  //   ];
-  //   return list;
-  // }
-
   associateToWorkFlow = (item) => {
     this.setState({ workflow: item[0], dataModified: true });
   };
@@ -264,7 +257,8 @@ class StepperPage extends PureComponent {
       formId: form.id,
       formName: form.form && form.form.title,
       status: processData.status? processData.status:"inactive",
-      taskVariable:formProcessList.taskVariable?formProcessList.taskVariable:[]
+      taskVariable:formProcessList.taskVariable?formProcessList.taskVariable:[],
+      anonymous:formProcessList.anonymous?true:false
     };
     if (associateWorkFlow === "yes" && workflow) {
       data["processKey"]= workflow && workflow.value;
@@ -273,10 +267,10 @@ class StepperPage extends PureComponent {
       data["processKey"]= "";
       data["processName"]= "";
     }
-    
+
     const processNameChecking= data.processName!==formPreviousData.processName;
     const processKeyChecking= data.processKey!==formPreviousData.processKey;
-    
+
     if(processData.comments){
       data["comments"] = processData.comments;
     }
@@ -288,11 +282,11 @@ class StepperPage extends PureComponent {
       let version = +formProcessList.version+1
       data.version = `${version}`
     }
-  } 
-  
+  }
+
   if(formProcessList && formProcessList.id ){
     data.id = formProcessList.id;
-  }  
+  }
     onSaveFormProcessMapper(data, isUpdate);
   };
 
@@ -455,6 +449,7 @@ const mapDispatchToProps = (dispatch) => {
           if (!err) {
             toast.success(<Translation>{(t)=>t("Form Workflow Association Saved.")}</Translation>);
             dispatch(push(`/form`));
+            dispatch(resetFormProcessData())
           }else{
             toast.error(<Translation>{(t)=>t("Form Workflow Association Failed.")}</Translation>);
           }
@@ -479,7 +474,10 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    getForm: (id) => dispatch(getForm("form", id)),
+    getForm: (id) => {
+      dispatch(resetFormData('form', id));
+      dispatch(getForm("form", id))
+  },
     getFormProcessesDetails: (formId) => {
       dispatch(
         getFormProcesses(formId, (err, res) => {

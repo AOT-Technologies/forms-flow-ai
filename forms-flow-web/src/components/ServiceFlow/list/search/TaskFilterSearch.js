@@ -13,10 +13,10 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
   const [selectedFilterInputValue, setSelectedFilterInputValue] = useState('');
   const [selectedFilterInputName, setSelectedFilterInputName] = useState('');
   const [inputDate, setUpInputDate] = useState(null);
-  const selectedFilter = useSelector((state)=>state.bpmTasks.selectedFilter)
-  const {t} = useTranslation();
   const [filterTaskVariableArray,setFilterTaskVariableArray]=useState([])
+  const {t} = useTranslation();
   const [taskVariable,setTaskVariable]=useState([])
+  const selectedFilter = useSelector((state)=>state.bpmTasks.selectedFilter)
 
  useEffect(()=>{
   if(selectedFilter){

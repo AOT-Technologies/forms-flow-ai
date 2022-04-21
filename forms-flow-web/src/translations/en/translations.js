@@ -52,9 +52,8 @@ export const TRANSLATIONS_EN = {
   "Delete": "Delete",
   "Print As PDF": "Print As PDF",
   "Applications": "Applications",
-  "Task": "Tasks",
+  "Tasks": "Tasks",
   "Metrics": "Metrics",
-  "Dashboards": "Dashboard",
   "Logout": "Logout",
   "No tasks found": "No tasks found",
   "Please change the selected filters to view tasks": "Please change the selected filters to view tasks",
@@ -142,10 +141,12 @@ export const TRANSLATIONS_EN = {
    "No dashboard found": "No dashboard found",
   "of": "of",
   "results": "Results",
+  "Dashbaord":"Dashboard",
+  "Dashboards":"Dashboards",
   "Select Dashboard": "Select Dashboard",
   "Total Submissions": "Total Submissions",
   "Save & Preview": "Save & Preview",
-  "Operation": "Operations",
+  "Operations": "Operations",
   "Access Groups": "Access Groups",
   "Action": "Action",
   "Add": "Add",
@@ -164,7 +165,6 @@ export const TRANSLATIONS_EN = {
   "Powered by": "Powered by",
   "Press Enter key or click here to search": "Press Enter key or click here to search",
   "Click to clear": "Click to clear",
-  "Search...": "Search...",
   "No applications found": "No applications found",
   "Successfully Updated": "Successfully Updated",
   "Failed": "Failed",
@@ -191,8 +191,10 @@ export const TRANSLATIONS_EN = {
   "Thank you for your response.":"Thank you for your response.",
   "saved successfully":"saved successfully",
   "Copy anonymous form URL":"Copy anonymous form URL",
-  "Submitted By":"Submitted By"
-
+  "Submitted By":"Submitted By",
+  "Confirmation":"Confirmation",
+  "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
+  "Error while saving Form":"Error while saving Form"
 
 
 };

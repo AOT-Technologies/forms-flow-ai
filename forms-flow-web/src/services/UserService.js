@@ -1,5 +1,5 @@
  /* istanbul ignore file */
-import {
+ import {
   ROLES,
   USER_RESOURCE_FORM_ID,
   Keycloak_Client,
@@ -15,10 +15,8 @@ import {
 import {BPM_BASE_URL} from "../apiManager/endpoints/config";
 import {AppConfig} from '../config';
 import {WEB_BASE_URL , WEB_BASE_CUSTOM_URL} from "../apiManager/endpoints/config";
-import {getUrlParamValue} from "../helper/helper";
 
-import {_kc, tenantDetail} from "../constants/tenantConstant";
-import Keycloak from "keycloak-js";
+import {_kc} from "../constants/tenantConstant";
 
 const jwt = require("jsonwebtoken");
 
@@ -31,15 +29,6 @@ const jwt = require("jsonwebtoken");
 
 
 const initKeycloak = (store, ...rest) => {
-  let keycloakClient = Keycloak_Client
-  let tenantKey = getUrlParamValue('tenantKey')
-  console.log('tenantKey  ' + tenantKey)
-  if (tenantKey) {
-    keycloakClient = tenantKey + '-' + keycloakClient
-    let kcConfig = tenantDetail
-    kcConfig['clientId'] = keycloakClient
-    KeycloakData = new Keycloak(kcConfig)
-  }
   const done = rest.length ? rest[0] : () => {};
   KeycloakData
     .init({
@@ -52,8 +41,8 @@ const initKeycloak = (store, ...rest) => {
     })
     .then((authenticated) => {
       if (authenticated) {
-        if (KeycloakData.resourceAccess[keycloakClient]) {
-          const UserRoles = KeycloakData.resourceAccess[keycloakClient].roles;
+        if (KeycloakData.resourceAccess[Keycloak_Client]) {
+          const UserRoles = KeycloakData.resourceAccess[Keycloak_Client].roles;
           store.dispatch(setUserRole(UserRoles));
           store.dispatch(setUserToken(KeycloakData.token));
           //Set Cammunda/Formio Base URL
@@ -73,26 +62,41 @@ const initKeycloak = (store, ...rest) => {
           done(null, KeycloakData);
           refreshToken(store);
         } else {
-          KeycloakData.logout();
+          doLogout();
         }
       } else {
         console.warn("not authenticated!");
-        KeycloakData.login();
+        doLogin();
       }
     });
 };
+
+const getTokenExpireTime =(keycloak)=>{
+  const {exp, iat} = keycloak.tokenParsed;
+  if(exp&&iat){
+    const toeknExpiretime =new Date(exp).getMilliseconds()-new Date(iat).getMilliseconds()
+    return toeknExpiretime*1000
+  }else{
+    return 60000
+  }
+}
+
+
 let refreshInterval;
 const refreshToken = (store) => {
+  const refreshTime = getTokenExpireTime(KeycloakData)
   refreshInterval = setInterval(() => {
     KeycloakData && KeycloakData.updateToken(5).then((refreshed)=> {
       if (refreshed) {
-        store.dispatch(setUserToken(KeycloakData.token));
+         clearInterval(refreshInterval)
+         store.dispatch(setUserToken(KeycloakData.token));
+         refreshToken(store)
       }
     }).catch( (error)=> {
       console.log(error);
       userLogout();
     });
-  }, 6000);
+  }, refreshTime);
 }
 
 
@@ -150,10 +154,11 @@ const authenticateFormio = (user, roles) => {
   localStorage.setItem("formioToken", FORMIO_TOKEN);
 };
 
-let KeycloakData= _kc;
 
-let doLogin = KeycloakData.login;
-let doLogout = KeycloakData.logout;
+const KeycloakData= _kc;
+
+const doLogin = KeycloakData.login;
+const doLogout = KeycloakData.logout;
 const getToken = () => KeycloakData.token;
 
 const UserService ={

@@ -19,11 +19,9 @@ class ProcessService:  # pylint: disable=too-few-public-methods
             new_result = []
             internal = re.compile(r"\((Internal+)\)")
             for data in result:
-                print(data, data['name'])
                 if data["name"] is not None and internal.search(data["name"]) is None:
                     new_result.append(data)
 
-            print(new_result)
             return new_result
 
         return process

@@ -13,7 +13,6 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.FormElement;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 
@@ -41,6 +40,8 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
 
     private Expression fields;
 
+    @Autowired
+    private ObjectMapper objectMapper;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
@@ -82,7 +83,6 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
 
     private List<FormElement> getModifiedFormElements(DelegateExecution execution) throws IOException {
         List<FormElement> elements = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
         List<String> injectableFields =  this.fields != null && this.fields.getValue(execution) != null ?
                 objectMapper.readValue(String.valueOf(this.fields.getValue(execution)),List.class): null;
         for(String entry: injectableFields) {

@@ -50,6 +50,8 @@ public class AdminController {
     private String adminGroupName;
 
     @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
     @Value("${formsflow.ai.api.url}")
@@ -77,7 +79,6 @@ public class AdminController {
         Set<Authorization> authorizationList =  getAuthorization(groups);
         List<AuthorizedAction> formList = new ArrayList<>();
         List<AuthorizedAction> filteredList = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
         try {
             ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, null);
             if (response.getStatusCode().value() == HttpStatus.OK.value()) {

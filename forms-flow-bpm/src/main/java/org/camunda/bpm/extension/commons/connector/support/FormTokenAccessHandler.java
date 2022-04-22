@@ -1,5 +1,6 @@
 package org.camunda.bpm.extension.commons.connector.support;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.extension.commons.connector.auth.FormioConfiguration;
 import org.camunda.bpm.extension.commons.connector.auth.FormioContextProvider;
 import org.slf4j.Logger;
@@ -24,7 +25,8 @@ public class FormTokenAccessHandler {
 
     @Autowired
     private Properties integrationCredentialProperties;
-
+    @Autowired
+    private ObjectMapper objectMapper;
     @Autowired
     protected WebClient unauthenticatedWebClient;
 
@@ -37,7 +39,7 @@ public class FormTokenAccessHandler {
             String password = integrationCredentialProperties.getProperty("formio.security.password");
             String accessTokenUri = integrationCredentialProperties.getProperty("formio.security.accessTokenUri");
             FormioConfiguration formioConfiguration = new FormioConfiguration(email, password, accessTokenUri);
-            formioContextProvider = new FormioContextProvider(formioConfiguration, unauthenticatedWebClient);
+            formioContextProvider = new FormioContextProvider(formioConfiguration, unauthenticatedWebClient, objectMapper);
         }
     }
 

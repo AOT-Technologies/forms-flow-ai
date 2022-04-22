@@ -37,6 +37,8 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
     private Expression copyDataIndicator;
 
     @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
     private FormSubmissionService formSubmissionService;
 
     @Override
@@ -62,7 +64,6 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
      */
     private String createSubmission(String sourceFormUrl, String targetFormUrl,DelegateTask delegateTask) throws IOException {
         String submission = formSubmissionService.readSubmission(sourceFormUrl);
-        ObjectMapper objectMapper = new ObjectMapper();
         Map<String,Object> superVariables = new HashMap<>();
         List<String> supFields =  this.fields != null && this.fields.getValue(delegateTask) != null ?
                 objectMapper.readValue(String.valueOf(this.fields.getValue(delegateTask)),List.class): null;
@@ -82,15 +83,15 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
      */
     private String createFormSubmissionData(String submission, Map<String,Object> superVariables, String propogateData) {
         try {
-            JsonNode submissionNode = getObjectMapper().readTree(submission);
+            JsonNode submissionNode = objectMapper.readTree(submission);
             JsonNode dataNode =submissionNode.get("data");
             if("Y".equals(propogateData)) {
                 for(Map.Entry<String,Object> entry : superVariables.entrySet()) {
-                    ((ObjectNode)dataNode).put(entry.getKey(), getObjectMapper().convertValue(entry.getValue(), JsonNode.class));
+                    ((ObjectNode)dataNode).put(entry.getKey(), objectMapper.convertValue(entry.getValue(), JsonNode.class));
                 }
-                return getObjectMapper().writeValueAsString(new FormSubmission(dataNode));
+                return objectMapper.writeValueAsString(new FormSubmission(dataNode));
             } else {
-                return getObjectMapper().writeValueAsString(new FormSubmission(getObjectMapper().convertValue(superVariables, JsonNode.class)));
+                return objectMapper.writeValueAsString(new FormSubmission(objectMapper.convertValue(superVariables, JsonNode.class)));
             }
 
 
@@ -149,14 +150,6 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
             return String.valueOf(this.copyDataIndicator.getValue(delegateTask));
         }
         return "N";
-    }
-
-    /**
-     * Returns Object Mapper Instance
-     * @return
-     */
-    private ObjectMapper getObjectMapper(){
-        return new ObjectMapper();
     }
 
     /**

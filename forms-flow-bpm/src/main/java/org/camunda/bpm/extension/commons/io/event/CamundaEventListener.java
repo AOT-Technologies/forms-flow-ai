@@ -38,6 +38,8 @@ public class CamundaEventListener {
 
     @Value("${websocket.messageEvents}")
     private String messageEvents;
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     @EventListener
@@ -45,20 +47,16 @@ public class CamundaEventListener {
         try {
             if (isRegisteredEvent(taskDelegate.getEventName())) {
                 if (isAllowed("TASK_EVENT_DETAILS")) {
-                    this.template.convertAndSend("/topic/task-event-details", getObjectMapper().writeValueAsString(getTaskMessage(taskDelegate)));
+                    this.template.convertAndSend("/topic/task-event-details", objectMapper.writeValueAsString(getTaskMessage(taskDelegate)));
                 }
                 if (isAllowed("TASK_EVENT")) {
-                    this.template.convertAndSend("/topic/task-event", getObjectMapper().writeValueAsString(getTaskEventMessage(taskDelegate)));
+                    this.template.convertAndSend("/topic/task-event", objectMapper.writeValueAsString(getTaskEventMessage(taskDelegate)));
                 }
             }
             } catch(JsonProcessingException e){
                 logger.error("Unable to send message", e);
             }
 
-    }
-
-    private ObjectMapper getObjectMapper() {
-        return new ObjectMapper();
     }
 
     private TaskMessage getTaskMessage(DelegateTask taskDelegate) {

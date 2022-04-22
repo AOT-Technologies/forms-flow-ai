@@ -24,12 +24,13 @@ public class HTTPServiceInvoker {
 
     @Autowired
     private AccessHandlerFactory accessHandlerFactory;
-
+    @Autowired
+    private ObjectMapper objectMapper;
     @Autowired
     private Properties integrationCredentialProperties;
 
     public ResponseEntity<String> execute(String url, HttpMethod method, Object payload) throws IOException {
-        String dataJson = payload != null ? new ObjectMapper().writeValueAsString(payload) : null;
+        String dataJson = payload != null ? objectMapper.writeValueAsString(payload) : null;
         return execute(url, method, dataJson);
 
     }

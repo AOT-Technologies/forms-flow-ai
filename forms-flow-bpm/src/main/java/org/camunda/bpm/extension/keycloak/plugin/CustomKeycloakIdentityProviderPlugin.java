@@ -23,7 +23,6 @@ public class CustomKeycloakIdentityProviderPlugin extends KeycloakIdentityProvid
 	 */
 	protected boolean enableClientAuth = false;
 	
-	
 	/**
 	 * Enable multi tenancy for the environment.
 	 */
@@ -35,7 +34,6 @@ public class CustomKeycloakIdentityProviderPlugin extends KeycloakIdentityProvid
 	private String formsFlowAdminUrl;
 	
 	
-
 	@Override
 	public void preInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
 		super.preInit(processEngineConfiguration);

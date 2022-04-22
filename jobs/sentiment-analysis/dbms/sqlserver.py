@@ -17,7 +17,13 @@ class SqlServerConnect:  # pylint: disable=too-few-public-methods
             raise err
 
     @staticmethod
-    def get_row_query(cols_to_query, table_name, output_col, limit=100) -> str:
+    def get_row_query(
+        primary_keys, input_col, table_name, output_col, limit=100
+    ) -> str:
         """Returns database specific query for retrieving rows."""
-        return f"select top {limit} {cols_to_query} from {table_name} where " \
+        cols_to_query = f"{primary_keys},{input_col}"
+        return (
+            f"select top {limit} {cols_to_query} from {table_name} where "
+            f"{input_col} is not null and "
             f"coalesce({output_col}, '') = ''"
+        )

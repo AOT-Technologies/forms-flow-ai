@@ -11,7 +11,6 @@ import org.camunda.bpm.extension.keycloak.KeycloakConfiguration;
 import org.camunda.bpm.extension.keycloak.cache.CacheConfiguration;
 import org.camunda.bpm.extension.keycloak.cache.CacheFactory;
 import org.camunda.bpm.extension.keycloak.cache.QueryCache;
-//import org.camunda.bpm.extension.keycloak.KeycloakConfiguration;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 
 /**

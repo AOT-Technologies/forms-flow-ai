@@ -62,8 +62,8 @@ public class KeycloakAuthenticationFilter implements Filter {
 			userId = ((JwtAuthenticationToken) authentication).getToken().getClaimAsString("preferred_username");
 			claims = ((JwtAuthenticationToken) authentication).getToken().getClaims();
 		} else if (authentication.getPrincipal() instanceof OidcUser) {
-			userId = ((OidcUser) authentication.getPrincipal()).getPreferredUsername();
-			claims = ((OidcUser) authentication.getPrincipal()).getClaims();
+			userId = ((OidcUser)authentication.getPrincipal()).getPreferredUsername();
+			claims = ((OidcUser)authentication.getPrincipal()).getClaims();
 		} else {
 			throw new ServletException("Invalid authentication request token");
 		}
@@ -109,8 +109,9 @@ public class KeycloakAuthenticationFilter implements Filter {
 		} else {
 			identityService.createGroupQuery().groupMember(userId).list().forEach(g -> groupIds.add(g.getId()));
 		}
-		return groupIds;
-	}
+       return groupIds;
+    }
+	
 
 	private List<String> getKeys(Map<String, Object> claims, String nodeName, String tenantKey) {
 		List<String> keys = new ArrayList<>();

@@ -13,6 +13,7 @@ import { addHiddenApplicationComponent } from "../../constants/applicationCompon
 import { saveFormProcessMapper } from "../../apiManager/services/processServices";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { clearFormError } from "../../actions/formActions";
 
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
@@ -47,6 +48,10 @@ const Create = React.memo((props) => {
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const saveText = "Save & Preview";
   const errors = useSelector((state) => state.form.error);
+
+  useEffect(() => {
+    dispatch(clearFormError("form"));
+  }, [dispatch]);
 
   // for update form access and submission access
   useEffect(() => {

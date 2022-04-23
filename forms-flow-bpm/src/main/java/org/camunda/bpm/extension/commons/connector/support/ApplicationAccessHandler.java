@@ -20,6 +20,7 @@ import static org.springframework.security.oauth2.client.web.reactive.function.c
  * This class serves as gateway for all application service interactions.
  *
  * @author sumathi.thirumani@aot-technologies.com
+ * @author Shibin Thomas
  */
 @Service("applicationAccessHandler")
 public class ApplicationAccessHandler implements IAccessHandler {
@@ -29,6 +30,13 @@ public class ApplicationAccessHandler implements IAccessHandler {
     @Autowired
     private WebClient webClient;
 
+    /**
+     * exchange function using json - string payload / string response
+     * @param url
+     * @param method
+     * @param payload
+     * @return
+     */
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
 
         payload = (payload == null) ? new JsonObject().toString() : payload;
@@ -46,6 +54,14 @@ public class ApplicationAccessHandler implements IAccessHandler {
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
+    /**
+     * exchange function using the custom class
+     * @param url
+     * @param method
+     * @param payload
+     * @param responseClazz
+     * @return
+     */
     public ResponseEntity<? extends IResponse> exchange(String url, HttpMethod method, IRequest payload,
                                                         Class<? extends IResponse> responseClazz) {
 

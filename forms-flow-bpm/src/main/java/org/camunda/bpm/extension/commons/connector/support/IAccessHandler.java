@@ -9,10 +9,26 @@ import org.springframework.http.ResponseEntity;
  * This class defines the AccessHandler implementation.
  *
  * @author sumathi.thirumani@aot-technologies.com
+ * @author Shibin Thomas
  */
 public interface IAccessHandler {
+
+    /**
+     * exchange function using json - string payload / string response
+     * @param url
+     * @param method
+     * @param payload
+     * @return
+     */
     ResponseEntity<String> exchange(String url, HttpMethod method, String payload);
 
-    ResponseEntity<? extends IResponse> exchange(String url, HttpMethod method, IRequest payload,
-                                                 Class<? extends IResponse> responseClazz);
+    /**
+     * exchange function using the custom class
+     * @param url
+     * @param method
+     * @param payload
+     * @param responseClazz
+     * @return
+     */
+    ResponseEntity<? extends IResponse> exchange(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz);
 }

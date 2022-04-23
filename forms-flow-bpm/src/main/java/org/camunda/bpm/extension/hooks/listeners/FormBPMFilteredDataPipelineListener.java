@@ -8,6 +8,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.ro.res.IResponse;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.FilterInfo;
 import org.camunda.bpm.extension.hooks.listeners.data.FormProcessMappingData;
@@ -56,39 +57,26 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
     }
 
     private void syncFormVariables(DelegateExecution execution) throws IOException {
-        ResponseEntity<String> response = httpServiceInvoker.execute(getApplicationUrl(execution), HttpMethod.GET,  null);
+        ResponseEntity<? extends IResponse> response = httpServiceInvoker.execute(getApplicationUrl(execution), HttpMethod.GET,  null, FormProcessMappingData.class);
         if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
             throw new ApplicationServiceException("Unable to update application "+ ". Message Body: " +
                     response.getBody());
         }
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        Map<String, FilterInfo> filterInfoMap = new HashMap<>();
-        try {
-            String responseBody = response.getBody();
-            if(responseBody != null) {
-                responseBody = responseBody.replace("\"[", "[")
-                        .replace("]\"", "]").replace("\\", "");
-            }
-            FormProcessMappingData body = mapper.readValue(responseBody, FormProcessMappingData.class);
+        FormProcessMappingData body = (FormProcessMappingData) response.getBody();
+        if(body != null) {
             List<FilterInfo> filterInfoList = body.getTaskVariable();
-            filterInfoMap = filterInfoList.stream()
+            Map<String, FilterInfo> filterInfoMap = filterInfoList.stream()
                     .collect(Collectors.toMap(FilterInfo::getKey, Function.identity()));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw new ApplicationServiceException(e.getMessage(), e);
-        }
 
-        if(!filterInfoMap.isEmpty()){
-            Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
-            for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
-                if(filterInfoMap.containsKey(entry.getKey())) {
-                    execution.setVariable(entry.getKey(), entry.getValue());
+            if (!filterInfoMap.isEmpty()) {
+                Map<String, Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
+                for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
+                    if (filterInfoMap.containsKey(entry.getKey())) {
+                        execution.setVariable(entry.getKey(), entry.getValue());
+                    }
                 }
             }
         }
-
     }
 
     /**

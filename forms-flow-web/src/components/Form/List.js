@@ -234,9 +234,9 @@ const List = React.memo((props) => {
                 )}
                 {isDesigner && (
                   <>
-                    <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={downloadForms}
-                            disabled={formCheckList.length === 0} title="Select atleast one form">
-                      <i className="fa fa-download fa-lg" aria-hidden="true"/> Download Form</Button>
+                   <button className="btn btn-outline-primary pull-right btn-left " onClick={downloadForms}
+                            disabled={formCheckList.length === 0}>
+                      <i className="fa fa-download fa-lg" aria-hidden="true"/> Download Form</button>
                   </>
                 )}
               </div>

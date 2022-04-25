@@ -74,7 +74,7 @@ const mapStateToProps = (state) => {
       readOnly: true,
       language: state.user.lang,
     },
-    errors: [selectError("submission", state), selectError("form", state)],
+    errors: [selectError("form", state)],
   };
 };
 

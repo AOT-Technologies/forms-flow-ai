@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useTranslation,Translation } from "react-i18next";
 import { formio_translation } from "../../translations/formiotranslation";
+import { clearFormError } from "../../actions/formActions";
 
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
@@ -51,6 +52,10 @@ const saveText = <Translation>{(t)=>t("Save & Preview")}</Translation>;
 const errors = useSelector((state)=>state.form.error)
 const lang = useSelector((state) => state.user.lang); 
 const {t}=useTranslation();
+
+  useEffect(() => {
+    dispatch(clearFormError("form"));
+  }, [dispatch]);
 
   // for update form access and submission access
   useEffect(() => {

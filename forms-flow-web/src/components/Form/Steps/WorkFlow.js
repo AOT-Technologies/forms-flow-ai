@@ -1,9 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import utils from 'formiojs/utils';
 import FormLabel from "@material-ui/core/FormLabel";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
@@ -27,8 +24,6 @@ import ViewAndEditTaskvariable  from "./ViewAndEditTaskvariable";
 import { useTranslation } from "react-i18next";
 const WorkFlow = React.memo(
   ({
-    associateWorkFlow,
-    changeWorkFlowStatus,
     populateDropdown,
     associateToWorkFlow,
     handleNext,
@@ -65,8 +60,13 @@ const WorkFlow = React.memo(
     );
     const [keyOfVariable, setKeyOfVariable] = useState(componentLabel.filter(item=>!selectedTaskVariable.find(variable=>item.value===variable.key)));
   
-
-  
+   const defaultWorkflow = populateDropdown().filter(i=> i.value==="Defaultflow")
+    useEffect(()=>{
+      if(!workflow&&defaultWorkflow){
+        setModified(true)
+        associateToWorkFlow(defaultWorkflow)
+      }
+    },[workflow,associateToWorkFlow,defaultWorkflow] )
 
 
     const addTaskVariable = (data) => {
@@ -148,7 +148,6 @@ const WorkFlow = React.memo(
             handleNext={handleNext}
             activeStep={activeStep}
             steps={steps}
-            changeWorkFlowStatus={changeWorkFlowStatus}
             modified={modified} 
           />
         </Grid>
@@ -175,35 +174,9 @@ const WorkFlow = React.memo(
           {tabValue === 0 ? (
             <Card variant="outlined" className="card-overflow">
               <CardContent>
-                <Grid item xs={12} sm={12} spacing={3}>
-                  <FormLabel component="legend">
-                    {t("Do you want to associate form with a workflow ?")}
-                  </FormLabel>
-                  <RadioGroup
-                    aria-label="associateWorkFlow"
-                    name="associateWorkFlow"
-                    value={associateWorkFlow}
-                    onChange={(e) => {
-                      changeWorkFlowStatus(e.target.value);
-                    }}
-                    row
-                  >
-                    <FormControlLabel
-                      value="yes"
-                      control={<Radio color="primary" />}
-                      label={t("Yes")}
-                    />
-                    <FormControlLabel
-                      value="no"
-                      control={<Radio color="primary" />}
-                      onClick={(item)=>setModified(true)}
-                      label={t("No")}
-                    />
-                  </RadioGroup>
-                </Grid>
+               
 
-                {associateWorkFlow === "yes" && (
-                  <>
+                
                     <Grid item xs={12} sm={6} spacing={3}>
                       <h5>
                         {t("Please select from one of the following workflows.")}
@@ -212,7 +185,7 @@ const WorkFlow = React.memo(
                         options={populateDropdown()}
                         onChange={(item) =>{setModified(true);
                         associateToWorkFlow(item)}}
-                        values={workflow && workflow.value ? [workflow] : []}
+                        values={workflow && workflow.value ? [workflow] :[]}
                         disabled={disableWorkflowAssociation}
                       />
                     </Grid>
@@ -225,8 +198,8 @@ const WorkFlow = React.memo(
                         />
                       </Grid>
                     )}
-                  </>
-                )}
+               
+              
                 {/* </FormControl> */}
               </CardContent>
             </Card>

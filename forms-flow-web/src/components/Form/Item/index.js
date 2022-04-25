@@ -9,7 +9,7 @@ import Submission from './Submission/index'
 import Preview from './Preview'
 import {checkIsObjectId} from "../../../apiManager/services/formatterService";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
-import {setFormFailureErrorData, setFormRequestData, setFormSuccessData, resetFormData} from "../../../actions/formActions";
+import {setFormFailureErrorData, setFormRequestData, setFormSuccessData, resetFormData, clearSubmissionError} from "../../../actions/formActions";
 
 const Item = React.memo(()=>{
   const {formId} = useParams();
@@ -18,6 +18,7 @@ const Item = React.memo(()=>{
 
   useEffect(()=>{
     dispatch(resetFormData('form', formId));
+    dispatch(clearSubmissionError('submission'));
     if(checkIsObjectId(formId)){
       dispatch(getForm('form', formId));
     }

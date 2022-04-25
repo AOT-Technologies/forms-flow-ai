@@ -56,7 +56,6 @@ class StepperPage extends PureComponent {
       status: null,
       previewMode: false,
       editMode: false,
-      associateWorkFlow: "no",
       processData: { status: "inactive", comments: "" },
       formId: "",
       processList: [],
@@ -151,7 +150,6 @@ class StepperPage extends PureComponent {
               label: nextProps.formProcessList.processName,
               value: nextProps.formProcessList.processKey,
             },
-            associateWorkFlow: "yes",
           };
         }
 
@@ -190,9 +188,6 @@ class StepperPage extends PureComponent {
   };
   // handleCheckboxChange = (event) =>
   //   this.setState({ checked: event.target.checked });
-  changeWorkFlowStatus = (isWorkFlowAssociated) => {
-    this.setState({workflow:null, associateWorkFlow: isWorkFlowAssociated, dataModified:true});
-  };
 
   setProcessData = (data) => {
     this.setState((prevState) => ({
@@ -252,7 +247,7 @@ class StepperPage extends PureComponent {
 
   submitData = () => {
     const { form, onSaveFormProcessMapper, formProcessList, formPreviousData ,applicationCount} = this.props;
-    const { workflow, processData, associateWorkFlow} = this.state;
+    const { workflow, processData} = this.state;
     const data = {
       formId: form.id,
       formName: form.form && form.form.title,
@@ -260,10 +255,10 @@ class StepperPage extends PureComponent {
       taskVariable:formProcessList.taskVariable?formProcessList.taskVariable:[],
       anonymous:formProcessList.anonymous?true:false
     };
-    if (associateWorkFlow === "yes" && workflow) {
+    if ( workflow) {
       data["processKey"]= workflow && workflow.value;
       data["processName"]= workflow && workflow.label;
-    }else if(associateWorkFlow === "no"){
+    }else{
       data["processKey"]= "";
       data["processName"]= "";
     }
@@ -320,8 +315,7 @@ class StepperPage extends PureComponent {
       case 1:
         return (
           <WorkFlow
-            associateWorkFlow={this.state.associateWorkFlow}
-            changeWorkFlowStatus={this.changeWorkFlowStatus}
+             
             populateDropdown={this.populateDropdown}
             associateToWorkFlow={this.associateToWorkFlow}
             handleNext={this.handleNext}
@@ -337,7 +331,6 @@ class StepperPage extends PureComponent {
       case 2:
         return (
           <PreviewStepper
-            associateWorkFlow={this.state.associateWorkFlow}
             setSelectedStatus={this.setSelectedStatus}
             handleNext={this.handleNext}
             handleBack={this.handleBack}

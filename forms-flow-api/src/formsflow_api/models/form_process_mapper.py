@@ -1,17 +1,6 @@
 """This manages Form ProcessMapper Database Models."""
 
 from __future__ import annotations
-<<<<<<< HEAD
-
-from http import HTTPStatus
-
-from flask import current_app
-from sqlalchemy import UniqueConstraint, and_, desc
-from sqlalchemy.dialects.postgresql import JSON
-from sqlalchemy.sql.expression import text
-
-from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
-=======
 
 from http import HTTPStatus
 
@@ -26,7 +15,6 @@ from formsflow_api.utils import (
     FILTER_MAPS,
     validate_sort_order_and_order_by,
 )
->>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
 from formsflow_api.utils.enums import FormProcessMapperStatus
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -40,15 +28,10 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     id = db.Column(db.Integer, primary_key=True)
     form_id = db.Column(db.String(50), nullable=False)
     form_name = db.Column(db.String(100), nullable=False)
-<<<<<<< HEAD
-    process_key = db.Column(db.String(50), nullable=True)
-    process_name = db.Column(db.String(100), nullable=True)
-=======
     process_key = db.Column(db.String(50), nullable=True, default=DEFAULT_PROCESS_KEY)
     process_name = db.Column(
         db.String(100), nullable=True, default=DEFAULT_PROCESS_NAME
     )
->>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
     status = db.Column(db.String(10), nullable=True)
     comments = db.Column(db.String(300), nullable=True)
     tenant = db.Column(db.String(100), nullable=True)

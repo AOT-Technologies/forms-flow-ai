@@ -34,30 +34,13 @@ class SentimentAnalysisTransformerResource(Resource):
                 data=[],
             )
             for data in input_json["data"]:
-<<<<<<< HEAD
-                text = data["text"].lower()
-                topics = data["topics"]
-                new_topics = [t.lower() for t in topics]
-                response = sentiment_analysis_pipeline(text=text, topics=new_topics)
-=======
                 text = data["text"]
                 response = sentiment_analysis_pipeline_transformers(text)
->>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
                 response["elementId"] = data["elementId"]
                 response["applicationId"] = input_json["applicationId"]
                 response["formUrl"] = input_json["formUrl"]
                 response_json["data"].append(dict(response))
                 # function used to store entries to database
-<<<<<<< HEAD
-                save_sentiment_result(
-                    input_text=text,
-                    overall_sentiment=response["overall_sentiment"],
-                    output_response=response,
-                )
-            return jsonify(response_json), HTTPStatus.CREATED
-
-        except BaseException as err:  # pylint: disable=broad-except
-=======
                 if APP_CONFIG.DATABASE_SUPPORT == Service.ENABLED.value:
                     save_sentiment_result(
                         input_text=text,
@@ -68,7 +51,6 @@ class SentimentAnalysisTransformerResource(Resource):
                 return jsonify(response_json), HTTPStatus.OK
 
         except BaseException as err:  # pylint: disable=broad-except # noqa: B902
->>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
             response, status = {
                 "type": "Bad Request Error",
                 "message": "Invalid request object passed passed",

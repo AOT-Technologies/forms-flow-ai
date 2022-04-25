@@ -21,11 +21,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(SpringExtension.class)
 public class FormioContextProviderTest {
 
-<<<<<<< HEAD
-    @Test
-    public void test_access_token_gen_when_null_context(){
-
-=======
     @InjectMocks
     private FormioContextProvider formioContextProvider;
 
@@ -65,7 +60,6 @@ public class FormioContextProviderTest {
                 .thenReturn(expected);
         String actual = formioContextProvider.createFormioRequestAccessToken();
         Assert.assertEquals(expected, actual);
->>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
     }
 
     @Test

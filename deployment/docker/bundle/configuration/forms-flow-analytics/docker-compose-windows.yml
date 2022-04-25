@@ -1,0 +1,55 @@
+# Author: Gurumoorthy Mohan, Kurian Benoy
+version: "3.7"
+
+x-redash-service: &redash-service
+  image: redash/redash:10.1.0.b50633
+  depends_on:
+      - postgres
+      - redis
+  env_file: .env
+  restart: always
+
+services:
+  server:
+    <<: *redash-service
+    command: server
+    ports:
+      - '7000:5000'
+    environment:
+      REDASH_WEB_WORKERS: 4
+  scheduler:
+    <<: *redash-service
+    command: scheduler
+    depends_on:
+      - server
+  worker:
+    <<: *redash-service
+    command: worker
+    environment:
+      QUEUES: "periodic emails default"
+      WORKERS_COUNT: 1
+    depends_on:
+      - server
+  scheduled_worker:
+    <<: *redash-service
+    command: worker
+  adhoc_worker:
+    <<: *redash-service
+    command: worker
+  redis:
+    image: redis:6-alpine
+    restart: always
+  postgres:
+    image: postgres:9.6-alpine
+    ports:
+      - '7432:5432'
+    restart: always
+    env_file: .env
+    volumes:
+      - ./postgres/analytics:/data/postgres
+  # Uncomment the following to enable redash mail server
+  # email:
+  #   image: djfarrelly/maildev
+  #   ports:
+  #     - "1080:80"
+  #   restart: unless-stopped

@@ -15,6 +15,7 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import NEW_APPLICATION_STATUS
+from .form_process_mapper import FormProcessMapperService
 
 application_schema = ApplicationSchema()
 
@@ -290,12 +291,16 @@ class ApplicationService:
         return schema.dump(application_status, many=True)
 
     @staticmethod
-    def get_application_form_mapper_by_id(application_id: int):
+    def get_application_form_mapper_by_id(application_id: int, tenant_key: str = None):
         """Get form process mapper."""
         mapper = Application.get_form_mapper_by_application_id(
             application_id=application_id
         )
         if mapper:
+            if mapper.mapper_id and tenant_key:
+                FormProcessMapperService.check_tenant_authentication(
+                    mapper_id=mapper.mapper_id, tenant_key=tenant_key
+                )
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)
 

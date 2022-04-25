@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from datetime import datetime
 
+from flask import g
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy import and_, func, or_
 from sqlalchemy.sql.expression import text
 
@@ -82,9 +84,9 @@ class Application(
             )
             .join(cls, FormProcessMapper.id == cls.form_process_mapper_id)
             .filter(Application.id == application_id)
-            .first()
         )
-        return result
+        result = cls.tenant_authentication(query=result)
+        return result.first()
 
     @classmethod
     def find_all_application_status(cls):
@@ -109,6 +111,7 @@ class Application(
     ) -> Application:
         """Fetch all application."""
         query = cls.filter_conditions(**filters)
+        query = cls.tenant_authentication(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
             table_name = "application"
@@ -170,6 +173,7 @@ class Application(
     ) -> Application:
         """Fetch applications list based on searching parameters for Non-reviewer."""
         query = Application.filter_conditions(**filters)
+        query = Application.tenant_authentication(query=query)
         query = query.filter(Application.created_by == user_id)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -203,9 +207,9 @@ class Application(
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
             )
-            .one_or_none()
         )
-        return result
+        result = cls.tenant_authentication(query=result)
+        return result.one_or_none()
 
     @classmethod
     def find_all_by_user_count(cls, user_id: str) -> Application:
@@ -263,6 +267,7 @@ class Application(
     ):
         """Fetch applications list based on searching parameters for Reviewer."""
         query = cls.filter_conditions(**filters)
+        query = cls.tenant_authentication(query=query)
         query = query.filter(FormProcessMapper.process_key.in_(process_key))
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -302,9 +307,9 @@ class Application(
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
             )
-            .first()
         )
-        return query
+        query = cls.tenant_authentication(query=query)
+        return query.first()
 
     @classmethod
     def find_id_by_form_names(cls, application_id: int, form_names):
@@ -530,6 +535,7 @@ class Application(
                 FormProcessMapper.process_key,
                 FormProcessMapper.process_name,
                 FormProcessMapper.task_variable,
+                FormProcessMapper.id.label("mapper_id"),
             )
             .join(cls, FormProcessMapper.id == cls.form_process_mapper_id)
             .filter(Application.id == application_id)
@@ -537,3 +543,16 @@ class Application(
         )
 
         return query
+
+    @classmethod
+    def tenant_authentication(cls, query: BaseQuery):
+        """Modifies the query to include tenant check if needed."""
+        tenant_auth_query = query
+        if type(query) is not BaseQuery:
+            raise TypeError("Query object must be of type BaseQuery")
+        tenant_key = g.token_info.get("tenantKey")
+        if tenant_key is not None:
+            tenant_auth_query = tenant_auth_query.filter(
+                FormProcessMapper.tenant == tenant_key
+            )
+        return tenant_auth_query

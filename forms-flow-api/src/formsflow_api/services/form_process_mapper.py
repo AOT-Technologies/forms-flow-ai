@@ -1,6 +1,7 @@
 """This exposes form process mapper service."""
 
 from http import HTTPStatus
+from typing import Any
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import FormProcessMapper
@@ -44,12 +45,14 @@ class FormProcessMapperService:
         return FormProcessMapper.find_all_count()
 
     @staticmethod
-    def get_mapper(form_process_mapper_id: int):
+    def get_mapper(form_process_mapper_id: int, tenant_key: Any = None):
         """Get form process mapper."""
         mapper = FormProcessMapper.find_form_by_id_active_status(
             form_process_mapper_id=form_process_mapper_id
         )
         if mapper:
+            if tenant_key is not None and mapper.tenant != tenant_key:
+                raise PermissionError("Tenant authentication failed.")
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)
 
@@ -62,10 +65,12 @@ class FormProcessMapperService:
         )
 
     @staticmethod
-    def get_mapper_by_formid(form_id):
+    def get_mapper_by_formid(form_id: str, tenant_key: Any = None):
         """Get form process mapper."""
         mapper = FormProcessMapper.find_form_by_form_id(form_id=form_id)
         if mapper:
+            if tenant_key is not None and mapper.tenant != tenant_key:
+                raise PermissionError("Tenant authentication failed.")
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)
 
@@ -85,7 +90,7 @@ class FormProcessMapperService:
         return FormProcessMapper.create_from_dict(data)
 
     @staticmethod
-    def update_mapper(form_process_mapper_id, data):
+    def update_mapper(form_process_mapper_id, data, tenant_key: Any = None):
         """Update form process mapper."""
         mapper = FormProcessMapper.find_form_by_id(
             form_process_mapper_id=form_process_mapper_id
@@ -97,6 +102,8 @@ class FormProcessMapperService:
         if not data.get("comments"):
             data["comments"] = None
         if mapper:
+            if tenant_key is not None and mapper.tenant != tenant_key:
+                raise PermissionError("Tenant authentication failed.")
             mapper.update(data)
             return mapper
 
@@ -111,12 +118,16 @@ class FormProcessMapperService:
         )
 
     @staticmethod
-    def mark_inactive_and_delete(form_process_mapper_id):
+    def mark_inactive_and_delete(
+        form_process_mapper_id: int, tenant_key: Any = None
+    ) -> None:
         """Mark form process mapper as inactive and deleted."""
         application = FormProcessMapper.find_form_by_id(
             form_process_mapper_id=form_process_mapper_id
         )
         if application:
+            if tenant_key is not None and application.tenant != tenant_key:
+                raise PermissionError("Tenant authentication failed.")
             application.mark_inactive()
         else:
             raise BusinessException(
@@ -180,3 +191,9 @@ class FormProcessMapperService:
 
         except Exception as err:
             raise err
+
+    @staticmethod
+    def check_tenant_authentication(mapper_id: int, tenant_key: str) -> None:
+        mapper = FormProcessMapper.find_form_by_id(form_process_mapper_id=mapper_id)
+        if mapper is not None and mapper.tenant != tenant_key:
+            raise PermissionError("Tenant authentication failed.")

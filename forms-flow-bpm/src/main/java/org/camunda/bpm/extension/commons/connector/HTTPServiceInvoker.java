@@ -41,7 +41,7 @@ public class HTTPServiceInvoker {
             return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload);
     }
 
-    public ResponseEntity<? extends IResponse> execute(String url, HttpMethod method, IRequest payload,
+    public ResponseEntity<IResponse> execute(String url, HttpMethod method, IRequest payload,
                                           Class<? extends IResponse> responseClazz) {
         return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload, responseClazz);
     }

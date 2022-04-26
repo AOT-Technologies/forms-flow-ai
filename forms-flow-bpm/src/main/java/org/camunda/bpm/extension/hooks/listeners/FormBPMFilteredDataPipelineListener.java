@@ -22,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -57,7 +56,7 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
     }
 
     private void syncFormVariables(DelegateExecution execution) throws IOException {
-        ResponseEntity<? extends IResponse> response = httpServiceInvoker.execute(getApplicationUrl(execution), HttpMethod.GET,  null, FormProcessMappingData.class);
+        ResponseEntity<IResponse> response = httpServiceInvoker.execute(getApplicationUrl(execution), HttpMethod.GET,  null, FormProcessMappingData.class);
         if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
             throw new ApplicationServiceException("Unable to update application "+ ". Message Body: " +
                     response.getBody());

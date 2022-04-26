@@ -43,7 +43,7 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
     }
 
     @Override
-    public ResponseEntity<? extends IResponse> exchange(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz) {
+    public ResponseEntity<IResponse> exchange(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz) {
         return null;
     }
 

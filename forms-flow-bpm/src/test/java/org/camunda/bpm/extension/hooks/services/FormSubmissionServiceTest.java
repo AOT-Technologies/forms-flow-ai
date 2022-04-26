@@ -1,7 +1,10 @@
 package org.camunda.bpm.extension.hooks.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,8 +13,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +24,7 @@ import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -34,6 +40,18 @@ public class FormSubmissionServiceTest {
     private HTTPServiceInvoker httpServiceInvoker;
 
     private static final String formUrl = "http://localhost:3001/form/615d4097163a6c58ae2e7668/submission";
+
+    @BeforeEach
+    public void setup() {
+        try {
+            Field field = formSubmissionService.getClass().getDeclaredField("objectMapper");
+            field.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        ReflectionTestUtils.setField(this.formSubmissionService, "objectMapper", objectMapper);
+    }
 
     /**
      * This test case perform a positive test over read submission method

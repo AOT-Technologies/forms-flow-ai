@@ -1,15 +1,19 @@
 package org.camunda.bpm.extension.commons.connector.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.lang.reflect.Field;
 import java.util.function.Function;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -29,6 +33,18 @@ public class FormioContextProviderTest {
 
     @Mock
     private FormioConfiguration formioConfiguration;
+
+    @BeforeEach
+    public void setup() {
+        try {
+            Field field = formioContextProvider.getClass().getDeclaredField("objectMapper");
+            field.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        ReflectionTestUtils.setField(this.formioContextProvider, "objectMapper", objectMapper);
+    }
 
     @Test
     public void test_access_token_gen_when_null_context(){

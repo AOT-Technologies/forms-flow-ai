@@ -30,5 +30,5 @@ public interface IAccessHandler {
      * @param responseClazz
      * @return
      */
-    ResponseEntity<? extends IResponse> exchange(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz);
+    ResponseEntity<IResponse> exchange(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz);
 }

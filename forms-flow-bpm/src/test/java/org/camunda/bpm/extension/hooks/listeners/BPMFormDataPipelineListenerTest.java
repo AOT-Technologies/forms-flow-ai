@@ -1,5 +1,6 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.Expression;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +44,15 @@ public class BPMFormDataPipelineListenerTest {
     private Expression fields;
 
     @BeforeEach
-    public void init(){
+    public void setup() {
+        try {
+            Field field = bpmFormDataPipelineListener.getClass().getDeclaredField("objectMapper");
+            field.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        ReflectionTestUtils.setField(this.bpmFormDataPipelineListener, "objectMapper", objectMapper);
         this.fields = mock(Expression.class);
     }
 

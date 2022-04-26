@@ -1,5 +1,6 @@
 package org.camunda.bpm.extension.hooks.listeners.execution;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
@@ -17,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -44,9 +46,18 @@ public class ExternalSubmissionListenerTest {
     private Expression formName;
 
     @BeforeEach
-    public void init(){
+    public void setup() {
+        try {
+            Field field = externalSubmissionListener.getClass().getDeclaredField("objectMapper");
+            field.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        ReflectionTestUtils.setField(this.externalSubmissionListener, "objectMapper", objectMapper);
         formName = mock(Expression.class);
     }
+
 
     /**
      * This test case will evaluate ExternalSubmissionListener with a positive case

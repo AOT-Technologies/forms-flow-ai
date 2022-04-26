@@ -62,7 +62,7 @@ public class ApplicationAccessHandler implements IAccessHandler {
      * @param responseClazz
      * @return
      */
-    public ResponseEntity<? extends IResponse> exchange(String url, HttpMethod method, IRequest payload,
+    public ResponseEntity<IResponse> exchange(String url, HttpMethod method, IRequest payload,
                                                         Class<? extends IResponse> responseClazz) {
 
         ResponseEntity<? extends IResponse> response = webClient.method(method).uri(url)

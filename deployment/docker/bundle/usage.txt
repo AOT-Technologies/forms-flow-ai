@@ -1,0 +1,35 @@
+formsflow.ai Single click installation
+
+/install
+
+The following questionnaire will be asked during the formsflow.ai installation, it is mandatory to answer every question with the right data.
+Do you want analytics to include in the installation?-localhost:7000
+formsflow.ai leverages Redash to build interactive dashboards and gain insights. answer any of these options eg: y - Yes, n - No.
+Do you have an existing keycloak?
+The formsflow.ai framework is hooked up with Keycloak Identity Management Server. Answer any of these options eg: y - Yes, n - No.
+What is your [Keycloak] forms-flow-bpm client secret key?
+
+    Go to http://localhost:8080 in the browser
+    Login to KeyCloak Realm with admin privileges
+    Configure > Clients >
+        Click on Client ID = forms-flow-bpm
+        Got to Credentials Tab
+        Copy the secret value if present else click on the Regenerate secret button and copy the value
+
+What is your Keycloak URL?
+For existing keycloak users provide your keycloak URL, localhost is not supported please provide your IP / hostname
+What is your keycloak URL realm name?
+For existing keycloak users provide your keycloak realm.
+what is your keycloak admin user name?
+For existing keycloak users provide your keycloak admin username.
+what is your keycloak admin password?
+For existing keycloak users provide your keycloak admin password.
+
+In case of any failure please stop the install command and re-run it again.
+This file can be run multiple times, it will update the source if any new updates. 
+
+/uninstall
+
+This will remove the source directory, remove images and prune all the dangling images.
+
+Make sure that their is no any important docker container in the docker, since the uninstall command will remove all the containers in the docker.

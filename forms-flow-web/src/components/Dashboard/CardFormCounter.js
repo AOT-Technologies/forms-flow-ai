@@ -8,7 +8,7 @@ const CardFormCounter = React.memo((props) => {
     <Fragment>
       <div
         className=" card-counter form-card-counter "
-        onClick={() => {getStatusDetails(mapperId)}}
+        onClick={() => getStatusDetails(mapperId)}
       >
         <div
           className={`white-box analytics-info submission-counter ${

@@ -31,7 +31,7 @@ const CardFormCounter = React.memo((props) => {
             >
               <span>{formName}</span>
             </OverlayTrigger>
-            <div className="small-title"><Translation>{(t)=>t("Form name")}</Translation></div>
+            <div className="small-title"><Translation>{(t)=>t("Form Name")}</Translation></div>
           </div>
           <div className="count">
             <div className="counter ">{count}</div>

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Route, Redirect } from "react-router";
 import StatusChart from "./StatusChart";
 import Select from 'react-select';
+import Modal from "react-bootstrap/Modal"
 import {
   fetchMetricsSubmissionCount,
   fetchMetricsSubmissionStatusCount,
@@ -14,13 +15,14 @@ import LoadError from "../Error";
 
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import moment from "moment";
-import { Translation } from "react-i18next";
+import { Translation,useTranslation } from "react-i18next";
 
 const firsDay = moment().format("YYYY-MM-01");
 
 const lastDay = moment().endOf("month").format("YYYY-MM-DD");
 
 const Dashboard = React.memo(() => {
+  const{t} = useTranslation();
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrics.submissionsList);
   const submissionsStatusList = useSelector(
@@ -43,14 +45,16 @@ const Dashboard = React.memo(() => {
   );
   const searchOptions = [
     { value: 'created', label: <Translation>{(t)=>t("Created Date")}</Translation> },
-    { value: 'modified', label: <Translation>{(t)=>t("modified_date")}</Translation> },
+    { value: 'modified', label: <Translation>{(t)=>t("Modified Date")}</Translation> },
   ];
   const [searchBy, setSearchBy] = useState(searchOptions[0]);
   const [dateRange, setDateRange] = useState([
     moment(firsDay),
     moment(lastDay),
   ]);
-  const [showSubmissionData,setSHowSubmissionData]=useState(submissionsList[0]);
+  const [showSubmissionData,setSHowSubmissionData]=useState(submissionsList[0])
+  const [show ,setShow] =useState(true)
+ 
   const getFormattedDate = (date) => {
     return moment.utc(date).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B")
   };
@@ -77,6 +81,7 @@ const Dashboard = React.memo(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(fetchMetricsSubmissionStatusCount(id, fromDate, toDate, searchBy.value));
+    setShow(true)
   };
 
   const onSetDateRange = (date) => {
@@ -147,11 +152,26 @@ const Dashboard = React.memo(() => {
               {isMetricsStatusLoading ? (
                 <Loading />
               ) : (
-                   <StatusChart   submissionsStatusList={submissionsStatusList} submissionData={showSubmissionData} />
+                <Modal
+                  show={show}
+                  size="lg"
+                  onHide={() => setShow(false)}
+                  aria-labelledby="example-custom-modal-styling-title"
+                   >
+                 <Modal.Header closeButton>
+                       <Modal.Title id="example-custom-modal-styling-title">
+                          {t("Submission Status")}
+                       </Modal.Title>
+                 </Modal.Header>
+                 <Modal.Body>
+                    <StatusChart  submissionsStatusList={submissionsStatusList} submissionData={showSubmissionData} />
+                  </Modal.Body>
+                </Modal>
               )}
             </div>
           )}
         </div>
+        
       </div>
       </div>
       <Route path={"/metrics/:notAvailable"}> <Redirect exact to='/404'/></Route>

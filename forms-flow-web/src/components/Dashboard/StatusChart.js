@@ -31,15 +31,15 @@ const ChartForm = React.memo((props) => {
     <div className="row">
       <div className="col-12">
         <div className="card-counter">
-          <div className="white-box status-container d-flex">
-            <div className="col-lg-6  col-xs-12">
-              <h2>{t("Submission Status")} - {applicationName} <span>{t("Version")} :</span> {submissionData?.version}</h2>
-              <div className="chart text-center">
-                <PieChart width={600} height={400}>
+       <div className="d-flex align-items-center">
+       <span className="text-primary mr-2">{("Form Name")} : </span><h2>{applicationName}</h2>
+       </div>
+        <p><span className="text-primary">{t("Version")} :</span> {submissionData?.version}</p>
+          <div className="white-box status-container flex-row d-md-flex align-items-center">
+            <div className="chart text-center">
+                <PieChart width={400} height={400}>
                   <Pie
                     data={pieData}
-                    cx={200}
-                    cy={200}
                     labelLine={false}
                     outerRadius={90}
                     fill="#8884d8"
@@ -62,24 +62,23 @@ const ChartForm = React.memo((props) => {
                     ))}
                   </Pie>
                 </PieChart>
-                {/* </div>
-        </div> */}
               </div>
-            </div>
-            <div className="col-lg-6  col-xs-12 legent-container">
+            
+            <div className="d-flex border flex-wrap rounded p-4   ">
               {pieData.map((entry, index) => (
-                <div className="legent" key={index}>
+                <div className=" d-flex align-items-center m-3" key={index}>
                   <span
-                    className="legent-color"
-                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                    className="rounded-circle shadow bg-primary mr-2"
+                    style={{ backgroundColor: COLORS[index % COLORS.length] , width:"25px", height:"25px"}}
                   ></span>
                   <div className="legent-text">{entry.statusName}</div>
                 </div>
               ))}
             </div>
+            </div>
           </div>
         </div>
-      </div>
+       
     </div>
   );
 });

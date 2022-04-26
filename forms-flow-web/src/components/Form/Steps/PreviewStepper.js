@@ -83,7 +83,7 @@ const Preview = React.memo(
                   </div>
                   {processListData.anonymous && (
                     <div>
-                      <span>{t("Copy anonymous form URL")}</span>
+                      <span className="fontsize-16">{t("Copy anonymous form URL")}</span>
                       <div
                         data-toggle="tooltip"
                         data-placement="top"
@@ -98,7 +98,7 @@ const Preview = React.memo(
                     </div>
                   )}
                   <div>
-                    <label>
+                    <label> <label className="fontsize-16 mx-1">Publish this form for Client Users.</label>
                       <FormControlLabel
                         control={
                           <Checkbox
@@ -114,7 +114,6 @@ const Preview = React.memo(
                             color="primary"
                           />
                         }
-                        label={t("Publish this form for Client Users.")}
                       />
                     </label>
                   </div>

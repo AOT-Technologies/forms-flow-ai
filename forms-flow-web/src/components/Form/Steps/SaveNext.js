@@ -1,5 +1,4 @@
 import React,{useState} from "react";
-import Button  from "@material-ui/core/Button";
 import Buttons from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useSelector } from "react-redux";
@@ -27,16 +26,15 @@ const SaveNext = React.memo(({ handleNext, handleBack, activeStep, isLastStep, s
   
   return (
     <>
-      <Button disabled={activeStep === 0} onClick={handleBack}>
-        {t("Back")}
-      </Button>
-      <Button
-        variant="contained"
-        color="primary"
+      <Buttons className="mx-2" variant="outline-secondary" disabled={activeStep === 0} onClick={handleBack}>
+      {t("Back")}
+      </Buttons>
+      <Buttons
+        variant="primary"
         onClick={handleChanges}
       >
-        {isLastStep ? t("Save") : t("Next") }
-      </Button>
+        {isLastStep ? t("Save") : t("Next")}
+      </Buttons>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Confirmation</Modal.Title>

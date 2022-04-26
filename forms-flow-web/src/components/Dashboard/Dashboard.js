@@ -50,8 +50,7 @@ const Dashboard = React.memo(() => {
     moment(firsDay),
     moment(lastDay),
   ]);
-  const [showSubmissionData,setSHowSubmissionData]=useState(submissionsList[0])
-
+  const [showSubmissionData,setSHowSubmissionData]=useState(submissionsList[0]);
   const getFormattedDate = (date) => {
     return moment.utc(date).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B")
   };
@@ -105,9 +104,9 @@ const Dashboard = React.memo(() => {
             <hr className="line-hr"/>
             <div className="row ">
               <div className="col-12 col-lg-4 ">
-                <h3 className="application-title">
+                <h2 className="application-title">
                   <i className="fa fa-bars mr-1"/> <Translation>{(t)=>t("Submissions")}</Translation>
-                </h3>
+                </h2> 
               </div>
               <div className="col-12 col-lg-5" title="Search By">
               <div style={{width: '200px',float:"right"}} >
@@ -148,7 +147,7 @@ const Dashboard = React.memo(() => {
               {isMetricsStatusLoading ? (
                 <Loading />
               ) : (
-                <StatusChart  submissionsStatusList={submissionsStatusList} submissionData={showSubmissionData} />
+                   <StatusChart   submissionsStatusList={submissionsStatusList} submissionData={showSubmissionData} />
               )}
             </div>
           )}

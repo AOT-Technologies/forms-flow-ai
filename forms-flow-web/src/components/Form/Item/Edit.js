@@ -249,7 +249,7 @@ if(!form._id){
       <div className="row justify-content-end w-100">
        <div id="save-buttons" className=" mr-4 save-buttons pull-right">
           <div className="form-group pull-right">
-            <span className="btn btn-danger" onClick={() =>{ changeAnonymous(prviousData.anonymous); history.goBack();dispatch(clearFormError('form',formData.formName));} }>
+            <span className="btn btn-secondary" onClick={() =>{ changeAnonymous(prviousData.anonymous); history.goBack();dispatch(clearFormError('form',formData.formName));} }>
             <Translation>{(t)=>t("Cancel")}</Translation>
             </span>
           </div>
@@ -353,9 +353,10 @@ if(!form._id){
           </div>
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
-          <div id="form-group-anonymous" className="form-group" style={{marginTop:'30px'}}>
+          <div id="form-group-anonymous" className="form-group d-flex ml-5" style={{marginTop:"30px"}}>
+             <label htmlFor="anonymousLabel" className=" form-control control-label border-0 " style={{fontSize:"16px"}} >{t("Make this form public ?")}</label>
             <div className="input-group align-items-center">
-              <input
+              <input  
                className="m-0" style={{height:'20px', width:'20px'}}
                 type="checkbox"
                 id="anonymous"
@@ -364,7 +365,6 @@ if(!form._id){
                   changeAnonymous();
                 }}
               />
-              <label htmlFor="anonymousLabel" className="form-control control-label border-0" ><Translation>{(t)=>t("Make this form public ?")}</Translation></label>
             </div>
           </div>
         </div>

@@ -25,7 +25,7 @@ const CardFormCounter = React.memo((props) => {
               delay={{ show: 0, hide: 400 }}
               overlay={(propsData) => (
                 <Tooltip id="overlay-example" {...propsData}>
-                  {formName} <span>Version {version}</span>
+                  {formName} <span style={{fontSize:"16px"}}>Version {version}</span>
                 </Tooltip>
               )}
             >

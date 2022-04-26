@@ -58,16 +58,18 @@ const SelectFormForDownload = React.memo(({form,type}) => {
   }
 
 
-  if(type==="all")
-  {
-    
- return (
-       <Form.Check.Input style={{width:"15px",height:"15px"}}  label="Check" onChange={()=>addAllFormCheckList(!isAllFormChecked)} checked={isAllFormChecked} title={t("Select All")} />
+  if(type==="all"){
+    return (
+      <Form.Check>
+      <Form.Check.Input style={{width:"15px",height:"15px"}}  label="Check" onChange={()=>addAllFormCheckList(!isAllFormChecked)} checked={isAllFormChecked} title={t("Select All")} />
+    </Form.Check>
     )
     
   }
   return (
+   <Form.Check  > 
     <Form.Check.Input  style={{width:"15px",height:"15px"}} aria-label="option"  checked={isFormChecked} onChange={()=>updateFormCheckList(!isFormChecked)} title={t("Select")}/>
+   </Form.Check>
   )
 })
 export default SelectFormForDownload;

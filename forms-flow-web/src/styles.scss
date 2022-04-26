@@ -558,3 +558,12 @@ div[disabled] {
 .navbar-light .navbar-nav .nav-link {
   color: rgba(0,0,0,.9);
 }
+
+// overwriting default styles
+.MuiTab-wrapper{
+  font-size: 16px;
+}
+.formcomponents .formcomponent{
+  font-size: 1em;
+}
+

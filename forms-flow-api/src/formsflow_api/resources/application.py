@@ -2,7 +2,7 @@
 
 from http import HTTPStatus
 
-from flask import current_app, g, request
+from flask import current_app, request
 from flask_restx import Namespace, Resource
 from marshmallow.exceptions import ValidationError
 
@@ -83,7 +83,6 @@ class ApplicationsResource(Resource):
                     application_schema_dump,
                     application_count,
                 ) = ApplicationService.get_all_applications_by_user(
-                    user_id=g.token_info.get("preferred_username"),
                     page_no=page_no,
                     limit=limit,
                     order_by=order_by,
@@ -164,8 +163,7 @@ class ApplicationResourceById(Resource):
                     status,
                 )
             application, status = ApplicationService.get_application_by_user(
-                application_id=application_id,
-                user_id=g.token_info.get("preferred_username"),
+                application_id=application_id
             )
             return (ApplicationService.apply_custom_attributes(application), status)
         except BusinessException as err:
@@ -183,8 +181,6 @@ class ApplicationResourceById(Resource):
         try:
             application_schema = ApplicationUpdateSchema()
             dict_data = application_schema.load(application_json)
-            sub = g.token_info.get("preferred_username")
-            dict_data["modified_by"] = sub
             ApplicationService.update_application(
                 application_id=application_id, data=dict_data
             )
@@ -235,14 +231,13 @@ class ApplicationResourceByFormId(Resource):
             application_schema = ApplicationService.apply_custom_attributes(
                 ApplicationService.get_all_applications_form_id_user(
                     form_id=form_id,
-                    user_id=g.token_info.get("preferred_username"),
                     page_no=page_no,
                     limit=limit,
                 )
             )
             application_count = (
                 ApplicationService.get_all_applications_form_id_user_count(
-                    form_id=form_id, user_id=g.token_info.get("preferred_username")
+                    form_id=form_id
                 )
             )
 
@@ -289,8 +284,6 @@ class ApplicationResourcesByIds(Resource):
         try:
             application_schema = ApplicationSchema()
             dict_data = application_schema.load(application_json)
-            sub = g.token_info.get("preferred_username")
-            dict_data["created_by"] = sub
             application, status = ApplicationService.create_application(
                 data=dict_data, token=request.headers["Authorization"]
             )

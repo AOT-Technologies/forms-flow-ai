@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from http import HTTPStatus
 
-from flask import current_app, g
+from flask import current_app
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy import UniqueConstraint, and_, desc
 from sqlalchemy.dialects.postgresql import JSON
@@ -17,6 +17,7 @@ from formsflow_api.utils import (
     validate_sort_order_and_order_by,
 )
 from formsflow_api.utils.enums import FormProcessMapperStatus
+from formsflow_api.utils.user_context import UserContext, user_context
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
 from .db import db
@@ -133,11 +134,13 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         return query
 
     @classmethod
-    def access_filter(cls, query: BaseQuery):
+    @user_context
+    def access_filter(cls, query: BaseQuery, **kwargs):
         """Modifies the query to include active and tenant check."""
-        if type(query) is not BaseQuery:
+        if not isinstance(query, BaseQuery):
             raise TypeError("Query object must be of type BaseQuery")
-        tenant_key = g.token_info.get("tenantKey")
+        user: UserContext = kwargs["user"]
+        tenant_key: str = user.tenant_key
         active = query.filter(
             FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value)
         )

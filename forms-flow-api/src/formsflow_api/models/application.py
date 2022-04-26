@@ -4,13 +4,12 @@ from __future__ import annotations
 
 from datetime import datetime
 
-from flask import g
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy import and_, func, or_
 from sqlalchemy.sql.expression import text
 
 from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
-
+from formsflow_api.utils.user_context import UserContext, user_context
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
 from .db import db
@@ -219,14 +218,18 @@ class Application(
     @classmethod
     def find_by_form_id(cls, form_id, page_no: int, limit: int):
         """Fetch all application by form_id."""
+        result = (
+            cls.query.join(
+                FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+            )
+            .filter(Application.form_url.like("%" + form_id + "%"))
+            .order_by(Application.id.desc())
+        )
         if page_no == 0:
-            result = cls.query.filter(
-                Application.form_url.like("%" + form_id + "%")
-            ).order_by(Application.id.desc())
+            result = cls.tenant_authentication(query=result)
         else:
             result = (
-                cls.query.filter(Application.form_url.like("%" + form_id + "%"))
-                .order_by(Application.id.desc())
+                cls.tenant_authentication(query=result)
                 .paginate(page_no, limit, False)
                 .items
             )
@@ -342,21 +345,21 @@ class Application(
         )
 
     @classmethod
-    def find_by_form_id_user(cls, form_id, user_id: str, page_no: int, limit: int):
+    def find_by_form_id_user(cls, form_id: str, user_id: str, page_no: int, limit: int):
         """Fetch applications by form_id."""
-        if page_no == 0:
-            result = (
-                cls.query.filter(Application.form_url.like("%" + form_id + "%"))
-                .filter(Application.created_by == user_id)
-                .order_by(Application.id.desc())
+        result = (
+            cls.query.join(
+                FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
             )
+            .filter(Application.form_url.like("%" + form_id + "%"))
+            .filter(Application.created_by == user_id)
+            .order_by(Application.id.desc())
+        )
+        if page_no == 0:
+            result = cls.tenant_authentication(result)
         else:
             result = (
-                cls.query.filter(Application.form_url.like("%" + form_id + "%"))
-                .filter(Application.created_by == user_id)
-                .order_by(Application.id.desc())
-                .paginate(page_no, limit, False)
-                .items
+                cls.tenant_authentication(result).paginate(page_no, limit, False).items
             )
         return result
 
@@ -385,18 +388,24 @@ class Application(
         return result
 
     @classmethod
-    def find_all_by_form_id_count(cls, form_id):
+    def find_all_by_form_id_count(cls, form_id: str):
         """Fetch all application."""
-        return cls.query.filter(Application.form_url.like("%" + form_id + "%")).count()
+        query = cls.query.join(
+            FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+        ).filter(Application.form_url.like("%" + form_id + "%"))
+        return cls.tenant_authentication(query=query).count()
 
     @classmethod
     def find_all_by_form_id_user_count(cls, form_id, user_id: str):
         """Fetch all application."""
-        return (
-            cls.query.filter(Application.form_url.like("%" + form_id + "%"))
+        query = (
+            cls.query.join(
+                FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+            )
+            .filter(Application.form_url.like("%" + form_id + "%"))
             .filter(Application.created_by == user_id)
-            .count()
         )
+        return cls.tenant_authentication(query=query).count()
 
     @classmethod
     def find_aggregated_applications(cls, from_date: str, to_date: str):
@@ -545,12 +554,14 @@ class Application(
         return query
 
     @classmethod
-    def tenant_authentication(cls, query: BaseQuery):
+    @user_context
+    def tenant_authentication(cls, query: BaseQuery, **kwargs):
         """Modifies the query to include tenant check if needed."""
-        tenant_auth_query = query
-        if type(query) is not BaseQuery:
+        tenant_auth_query: BaseQuery = query
+        user: UserContext = kwargs["user"]
+        tenant_key: str = user.tenant_key
+        if not isinstance(query, BaseQuery):
             raise TypeError("Query object must be of type BaseQuery")
-        tenant_key = g.token_info.get("tenantKey")
         if tenant_key is not None:
             tenant_auth_query = tenant_auth_query.filter(
                 FormProcessMapper.tenant == tenant_key

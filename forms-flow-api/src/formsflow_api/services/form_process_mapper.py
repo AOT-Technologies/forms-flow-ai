@@ -1,12 +1,12 @@
 """This exposes form process mapper service."""
 
 from http import HTTPStatus
-from typing import Any
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import FormProcessMapper
 from formsflow_api.schemas import FormProcessMapperSchema
 from formsflow_api.utils.enums import FormProcessMapperStatus
+from formsflow_api.utils.user_context import UserContext, user_context
 
 
 class FormProcessMapperService:
@@ -45,8 +45,11 @@ class FormProcessMapperService:
         return FormProcessMapper.find_all_count()
 
     @staticmethod
-    def get_mapper(form_process_mapper_id: int, tenant_key: Any = None):
+    @user_context
+    def get_mapper(form_process_mapper_id: int, **kwargs):
         """Get form process mapper."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
         mapper = FormProcessMapper.find_form_by_id_active_status(
             form_process_mapper_id=form_process_mapper_id
         )
@@ -65,8 +68,11 @@ class FormProcessMapperService:
         )
 
     @staticmethod
-    def get_mapper_by_formid(form_id: str, tenant_key: Any = None):
+    @user_context
+    def get_mapper_by_formid(form_id: str, **kwargs):
         """Get form process mapper."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
         mapper = FormProcessMapper.find_form_by_form_id(form_id=form_id)
         if mapper:
             if tenant_key is not None and mapper.tenant != tenant_key:
@@ -85,13 +91,21 @@ class FormProcessMapperService:
         )
 
     @staticmethod
-    def create_mapper(data):
+    @user_context
+    def create_mapper(data, **kwargs):
         """Create new mapper between form and process."""
+        user: UserContext = kwargs["user"]
+        data["created_by"] = user.user_name
+        data["tenant"] = user.tenant_key
         return FormProcessMapper.create_from_dict(data)
 
     @staticmethod
-    def update_mapper(form_process_mapper_id, data, tenant_key: Any = None):
+    @user_context
+    def update_mapper(form_process_mapper_id, data, **kwargs):
         """Update form process mapper."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        data["modified_by"] = user.user_name
         mapper = FormProcessMapper.find_form_by_id(
             form_process_mapper_id=form_process_mapper_id
         )
@@ -118,10 +132,11 @@ class FormProcessMapperService:
         )
 
     @staticmethod
-    def mark_inactive_and_delete(
-        form_process_mapper_id: int, tenant_key: Any = None
-    ) -> None:
+    @user_context
+    def mark_inactive_and_delete(form_process_mapper_id: int, **kwargs) -> None:
         """Mark form process mapper as inactive and deleted."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
         application = FormProcessMapper.find_form_by_id(
             form_process_mapper_id=form_process_mapper_id
         )
@@ -193,7 +208,14 @@ class FormProcessMapperService:
             raise err
 
     @staticmethod
-    def check_tenant_authentication(mapper_id: int, tenant_key: str) -> None:
+    @user_context
+    def check_tenant_authentication(mapper_id: int, **kwargs) -> int:
+        """Check if tenant has permission to access the resource."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
+        if tenant_key is None:
+            return 0
         mapper = FormProcessMapper.find_form_by_id(form_process_mapper_id=mapper_id)
         if mapper is not None and mapper.tenant != tenant_key:
             raise PermissionError("Tenant authentication failed.")
+        return 0

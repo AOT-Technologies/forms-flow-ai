@@ -3,7 +3,7 @@
 import json
 from http import HTTPStatus
 
-from flask import current_app, g, request
+from flask import current_app, request
 from flask_restx import Namespace, Resource
 
 from formsflow_api.exceptions import BusinessException
@@ -105,14 +105,11 @@ class FormResourceList(Resource):
         """Post a form process mapper using the request body."""
         mapper_json = request.get_json()
         try:
-            sub: str = g.token_info.get("preferred_username")
             mapper_json["taskVariable"] = json.dumps(
                 mapper_json.get("taskVariable") or []
             )
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(mapper_json)
-            dict_data["created_by"] = sub
-            dict_data["tenant"] = g.token_info.get("tenantKey")
             mapper = FormProcessMapperService.create_mapper(dict_data)
             FormProcessMapperService.unpublish_previous_mapper(dict_data)
             response = mapper_schema.dump(mapper)
@@ -143,11 +140,8 @@ class FormResourceById(Resource):
         : mapper_id:- Get form process mapper by mapper_id
         """
         try:
-            tenant_key = g.token_info.get("tenantKey")
             return (
-                FormProcessMapperService.get_mapper(
-                    form_process_mapper_id=mapper_id, tenant_key=tenant_key
-                ),
+                FormProcessMapperService.get_mapper(form_process_mapper_id=mapper_id),
                 HTTPStatus.OK,
             )
         except PermissionError as err:
@@ -173,9 +167,8 @@ class FormResourceById(Resource):
         : mapper_id:- Delete form process mapper by mapper_id.
         """
         try:
-            tenant_key = g.token_info.get("tenantKey")
             FormProcessMapperService.mark_inactive_and_delete(
-                form_process_mapper_id=mapper_id, tenant_key=tenant_key
+                form_process_mapper_id=mapper_id
             )
             return "Deleted", HTTPStatus.OK
         except PermissionError as err:
@@ -208,17 +201,14 @@ class FormResourceById(Resource):
         application_json = request.get_json()
 
         try:
-            tenant_key = g.token_info.get("tenantKey")
             if "taskVariable" in application_json:
                 application_json["taskVariable"] = json.dumps(
                     application_json.get("taskVariable")
                 )
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(application_json)
-            sub: str = g.token_info.get("preferred_username")
-            dict_data["modified_by"] = sub
             FormProcessMapperService.update_mapper(
-                form_process_mapper_id=mapper_id, data=dict_data, tenant_key=tenant_key
+                form_process_mapper_id=mapper_id, data=dict_data
             )
 
             return (
@@ -260,10 +250,7 @@ class FormResourceByFormId(Resource):
         : form_id:- Get details of only form corresponding to a particular formId
         """
         try:
-            tenant_key = g.token_info.get("tenantKey")
-            response = FormProcessMapperService.get_mapper_by_formid(
-                form_id=form_id, tenant_key=tenant_key
-            )
+            response = FormProcessMapperService.get_mapper_by_formid(form_id=form_id)
             response["taskVariable"] = json.loads(response["taskVariable"])
             return (
                 response,
@@ -306,11 +293,7 @@ class FormResourceApplicationCount(Resource):
     def get(mapper_id: int):
         """The method retrieves the total application count for the given mapper id."""
         try:
-            tenant_key = g.token_info.get("tenantKey")
-            if tenant_key is not None:
-                FormProcessMapperService.check_tenant_authentication(
-                    mapper_id=mapper_id, tenant_key=tenant_key
-                )
+            FormProcessMapperService.check_tenant_authentication(mapper_id=mapper_id)
             (
                 response,
                 status,
@@ -341,18 +324,15 @@ class FormResourceTaskVariablesbyApplicationId(Resource):
     def get(application_id: int):
         """The method retrieves task variables based on application id."""
         try:
-            tenant_key = g.token_info.get("tenantKey")
             return (
-                ApplicationService.get_application_form_mapper_by_id(
-                    application_id, tenant_key=tenant_key
-                ),
+                ApplicationService.get_application_form_mapper_by_id(application_id),
                 HTTPStatus.OK,
             )
         except PermissionError as err:
             response, status = (
                 {
                     "type": "Permission Denied",
-                    "message": f"Access to Application - {application_id} is prohibited.",
+                    "message": f"Access to resource - {application_id} is prohibited.",
                 },
                 HTTPStatus.FORBIDDEN,
             )

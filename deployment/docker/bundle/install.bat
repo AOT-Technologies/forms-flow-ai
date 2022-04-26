@@ -156,7 +156,7 @@ EXIT /B %ERRORLEVEL%
 
 :forms-flow-web
 
-    docker-compose -f %~1\docker-compose up --build -d forms-flow-web
+    docker-compose -f %~1\docker-compose.yml up --build -d forms-flow-web
     EXIT /B 0
 
 

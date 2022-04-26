@@ -64,6 +64,7 @@ jobs:
       BPM_TOKEN_API: ${{ secrets.BPM_TOKEN_API }}
       TEST_REVIEWER_USERID: ${{ secrets.TEST_REVIEWER_USERID }}
       TEST_REVIEWER_PASSWORD: ${{ secrets.TEST_REVIEWER_PASSWORD }}
+      MODEL_ID: ${{ secrets.MODEL_ID }}
       SKIP_IN_CI: "True"
 
     runs-on: ubuntu-20.04
@@ -89,7 +90,7 @@ jobs:
       - name: Install dependencies
         run: |
           make setup
-      - name: Download NLTK Model
+      - name: Download Sentiment Analysis Model
         run: |
           make download-models
       - name: Test

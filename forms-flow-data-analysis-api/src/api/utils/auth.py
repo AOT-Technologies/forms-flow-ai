@@ -53,9 +53,9 @@ class Auth:
 
     @classmethod
     def has_role(cls, role):
+        """Checks the role."""
         return jwt.validate_roles(role)
 
 
-auth = (
-    Auth()
-)  # pylint: disable=invalid-name; lower case name as used by convention in most Flask apps
+# lower case name as used by convention in most Flask apps
+auth = Auth()  # pylint: disable=invalid-name

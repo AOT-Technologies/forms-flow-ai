@@ -33,7 +33,7 @@ import {setFormCheckList, setFormUploadList, updateFormUploadCounter} from "../.
 import FileModal from './FileUpload/fileUploadModal'
 import {addHiddenApplicationComponent} from "../../constants/applicationComponent";
 import LoadingOverlay from "react-loading-overlay";
-import { getFormProcesses,getApplicationCount } from "../../apiManager/services/processServices";
+import { getFormProcesses,getApplicationCount, resetFormProcessData } from "../../apiManager/services/processServices";
 import { unPublishForm } from "../../apiManager/services/processServices";
 import { setIsApplicationCountLoading } from "../../actions/processActions";
 import { setBpmFormSearch } from "../../actions/formActions";
@@ -124,6 +124,7 @@ const List = React.memo((props) => {
   }
 
   const uploadFileContents = async (fileContent) => {
+    try{
     if (fileContent.forms && Array.isArray(fileContent.forms)) {
       await Promise.all(
         fileContent.forms.map(async (formData) => {
@@ -171,6 +172,12 @@ const List = React.memo((props) => {
       setShowFormUploadModal(false);
       return (toast.error('Error in Json file structure'))
     }
+  }
+  catch(err)
+  {
+    setShowFormUploadModal(false);
+    return (toast.error('Error in Json file structure'))
+  }
   }
 
   const fileUploaded = async (evt) => {
@@ -234,9 +241,9 @@ const List = React.memo((props) => {
                 )}
                 {isDesigner && (
                   <>
-                    <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={downloadForms}
-                            disabled={formCheckList.length === 0} title="Select atleast one form">
-                      <i className="fa fa-download fa-lg" aria-hidden="true"/> Download Form</Button>
+                   <button className="btn btn-outline-primary pull-right btn-left " onClick={downloadForms}
+                            disabled={formCheckList.length === 0}>
+                      <i className="fa fa-download fa-lg" aria-hidden="true"/> Download Form</button>
                   </>
                 )}
               </div>
@@ -355,6 +362,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
           
           break;
         case "viewForm":
+          dispatch(resetFormProcessData())
           dispatch(setMaintainBPMFormPagination(true));
           dispatch(push(`/formflow/${form._id}/view-edit`));
           break;

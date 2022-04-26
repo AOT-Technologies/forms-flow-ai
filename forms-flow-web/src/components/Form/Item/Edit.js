@@ -19,7 +19,9 @@ import {
 } from "../../../actions/processActions";
 import { saveFormProcessMapper } from "../../../apiManager/services/processServices";
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal'
+import Modal from 'react-bootstrap/Modal';
+import { clearFormError } from "../../../actions/formActions";
+
 const reducer = (form, {type, value}) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -244,7 +246,7 @@ if(!form._id){
       <div className="row justify-content-end w-100">
        <div id="save-buttons" className=" mr-4 save-buttons pull-right">
           <div className="form-group pull-right">
-            <span className="btn btn-danger" onClick={() =>{ changeAnonymous(prviousData.anonymous); history.goBack()} }>
+            <span className="btn btn-danger" onClick={() =>{ changeAnonymous(prviousData.anonymous); history.goBack();dispatch(clearFormError('form',formData.formName));} }>
               Cancel
             </span>
           </div>

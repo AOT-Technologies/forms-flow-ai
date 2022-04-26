@@ -217,8 +217,8 @@ EXIT /B %ERRORLEVEL%
     echo REDASH_REFERRER_POLICY=%REDASH_REFERRER_POLICY%>>%~1\.env
     echo REDASH_CORS_ACCESS_CONTROL_ALLOW_HEADERS=%REDASH_CORS_ACCESS_CONTROL_ALLOW_HEADERS%>>%~1\.env
     ENDLOCAL
-    docker-compose -f %~1\docker-compose-windows.yml run --rm server create_db
-    docker-compose -f %~1\docker-compose-windows.yml up --build -d
+    docker-compose -f %~1\docker-compose.yml run --rm server create_db
+    docker-compose -f %~1\docker-compose.yml up --build -d
 	timeout 5
     EXIT /B 0
 

@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import {connect, useDispatch, useSelector} from 'react-redux'
 import { selectRoot, resetSubmissions, saveSubmission, Form, selectError, Errors } from 'react-formio';
 import { push } from 'connected-react-router';
-import { formio_translation } from "../../../../../translations/formiotranslation";
+import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
 import Loading from '../../../../../containers/Loading'
 
 import {setFormSubmissionError, setFormSubmissionLoading} from '../../../../../actions/formActions';
@@ -73,7 +73,7 @@ const Edit = React.memo((props) => {
           url={url}
           hideComponents={hideComponents}
           onSubmit={(submission)=>onSubmit(submission,applicationDetail,onFormSubmit,form._id)}
-          options={{ ...options,i18n: formio_translation,language: lang }}
+          options={{ ...options,i18n: formio_resourceBundles,language: lang }}
           onCustomEvent={onCustomEvent}
         />
           </div>

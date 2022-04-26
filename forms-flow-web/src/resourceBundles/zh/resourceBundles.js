@@ -1,4 +1,4 @@
-export const TRANSLATIONS_ZH = {
+export const RESOURCE_BUNDLES_ZH = {
 
   "Dashboards":"仪表板",
   "Form field":"表单域",

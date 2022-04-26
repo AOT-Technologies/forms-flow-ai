@@ -9,7 +9,7 @@ import "./styles.scss";
 import {CLIENT, STAFF_REVIEWER, APPLICATION_NAME, STAFF_DESIGNER} from "../constants/constants";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import {push} from "connected-react-router";
-import i18n from "../translations/i18n";
+import i18n from "../resourceBundles/i18n";
 import { setLanguage } from "../actions/languageSetAction";
 import {updateUserlang} from "../apiManager/services/userservices";
 

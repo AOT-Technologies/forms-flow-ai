@@ -1,4 +1,4 @@
-export const TRANSLATIONS_PT = {
+export const RESOURCE_BUNDLES_PT = {
 
   "Dashboards":"Painéis",
   "Form field":"Campo do formulário",

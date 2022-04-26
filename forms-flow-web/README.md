@@ -119,13 +119,13 @@ Variable name | Meaning | Possible values | Default value |
   * Default language 'English' can be changed to other languages according to the   user.
   * The languages currently provided are `Chinese,Portuguese,French and Bulgarian`.
   * User can add more languages by following the steps :
-   1. Create a folder at *forms-flow-web/src/translations* with folder name as the abbrevation of the required language.
-   2. Create a file named translations.js inside the folder.
+   1. Create a folder at *forms-flow-web/src/resourceBundles* with folder name as the abbrevation of the required language.
+   2. Create a file named resourceBundles.js inside the folder.
    3. Copy the key-value pairs from *translations.js* file inside *en* folder and paste it to the new file.
    4. Translate the value of the keys to the required language using google translator and paste the values to the same file
-   5. Import the same file to *forms-flow-web/src/translations/i18n.js* like rest of the languages.
+   5. Import the same file to *forms-flow-web/src/resourceBundles/i18n.js* like rest of the languages.
    6. You can add the button component at *forms-flow-web/src/containers/NavBar.jsx* by simply copying the dropdown menu and providing language abbrevation,name and language abbrevation to the array *langarr* inside the samw file. .
-   7. You should add content of new trnslation file to *forms-flow-web/src/translations/formiotranslation.js* also.
+   7. You should add content of new trnslation file to *forms-flow-web/src/resourceBundles/formio_resourceBundles.js* also.
    8. Login to **http://localhost:3000/** to check your updations.
   
 ## forms-flow-web Events

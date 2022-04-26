@@ -9,7 +9,7 @@ import PdfDownloadService from "../../../../../services/PdfDownloadService"
 import {setFormSubmissionLoading} from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
 import { useTranslation } from 'react-i18next';
-import { formio_translation } from "../../../../../translations/formiotranslation";
+import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
 const View = React.memo((props) => {
   const {t} = useTranslation();
   const {
@@ -43,7 +43,7 @@ const View = React.memo((props) => {
             url={url}
             hideComponents={hideComponents}
             onSubmit={onSubmit}
-            options={{...options,i18n: formio_translation}}
+            options={{...options,i18n: formio_resourceBundles}}
           />
         </div>
       </LoadingOverlay>

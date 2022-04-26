@@ -21,7 +21,7 @@ import { Translation,useTranslation } from "react-i18next";
 import { saveFormProcessMapper } from "../../../apiManager/services/processServices";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { formio_translation } from "../../../translations/formiotranslation";
+import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { clearFormError } from "../../../actions/formActions";
 const reducer = (form, {type, value}) => {
   const formCopy = _cloneDeep(form);
@@ -376,7 +376,7 @@ if(!form._id){
         onChange={formChange}
         options={{
           language: lang,
-          i18n: formio_translation
+          i18n: formio_resourceBundles
           }}
           
       />

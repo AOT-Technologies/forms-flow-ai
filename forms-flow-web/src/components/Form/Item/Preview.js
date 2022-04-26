@@ -5,7 +5,7 @@ import { push } from "connected-react-router";
 import { Button } from "react-bootstrap";
 import Loading from "../../../containers/Loading";
 import { Translation } from "react-i18next";
-import { formio_translation } from "../../../translations/formiotranslation";
+import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 
 const Preview = class extends PureComponent {
   constructor(props) {
@@ -60,7 +60,7 @@ const Preview = class extends PureComponent {
           hideComponents={hideComponents}
           onSubmit={onSubmit}
           options={{ ...options,
-            i18n: formio_translation}}
+            i18n: formio_resourceBundles}}
         />
       </div>
     );

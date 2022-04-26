@@ -1,4 +1,4 @@
-export const formio_translation = {
+export const formio_resourceBundles = {
 
    "en": {
 

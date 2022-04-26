@@ -14,7 +14,7 @@ import { Link, useParams } from "react-router-dom";
 import Loading from "../../../containers/Loading";
 import { useTranslation,Translation } from "react-i18next";
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
-import { formio_translation } from "../../../translations/formiotranslation";
+import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import {
   setFormFailureErrorData,
   setFormRequestData,
@@ -196,7 +196,7 @@ const View = React.memo((props) => {
             options={
               { ...options,
                 language: lang,
-                i18n: formio_translation
+                i18n: formio_resourceBundles
                 }}
             hideComponents={hideComponents}
             onSubmit={(data) => {

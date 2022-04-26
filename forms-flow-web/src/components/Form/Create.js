@@ -14,7 +14,7 @@ import { saveFormProcessMapper } from "../../apiManager/services/processServices
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useTranslation,Translation } from "react-i18next";
-import { formio_translation } from "../../translations/formiotranslation";
+import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
 import { clearFormError } from "../../actions/formActions";
 
 // reducer from react-formio code
@@ -244,7 +244,7 @@ const {t}=useTranslation();
       </div>
       <FormBuilder form={form} onChange={formChange} options={{
         language: lang,
-        i18n: formio_translation
+        i18n: formio_resourceBundles
         }}/>
     </div>
     </div>

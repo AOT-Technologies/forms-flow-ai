@@ -1,4 +1,4 @@
-export const TRANSLATIONS_BG = {
+export const RESOURCE_BUNDLES_BG = {
  
     "Dashboards":"Табла за управление",
     "Form field":"Поле за формуляр",

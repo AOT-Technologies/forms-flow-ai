@@ -1,4 +1,4 @@
-export const TRANSLATIONS_DE = {
+export const RESOURCE_BUNDLES_DE = {
 
   "Form field":"Formularfeld",
   "Enter Label":"Bezeichnung eingeben",

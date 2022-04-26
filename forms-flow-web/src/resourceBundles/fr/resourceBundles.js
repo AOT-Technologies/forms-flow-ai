@@ -1,4 +1,4 @@
-export const TRANSLATIONS_FR = {
+export const RESOURCE_BUNDLES_FR = {
 
   "Dashboards":"Tableaux de bord",
   "Form field":"Champ de formulaire",

@@ -14,12 +14,13 @@
       border: 1px solid $light-blue;
       padding: 25px;
       margin-bottom: 30px;
+      font-size: larger;
       cursor: pointer;
       &.active {
-        background-color: $green !important;
+        background-color: $dark-blue !important;
         color: $white;
         & .small-title {
-          font-size: 12px;
+          font-size: 16px;
           color: $white;
         }
       }
@@ -32,7 +33,7 @@
       & .two-part {
         display: flex;
         justify-content: space-between;
-        font-size: 13px;
+        font-size: 16px;
         font-weight: normal;
         & .counter {
           font-size: 38px;
@@ -135,7 +136,7 @@
       }
     }
     .small-title {
-      font-size: 12px;
+      font-size: 16px;
       color: #9eabc0;
     }
   }

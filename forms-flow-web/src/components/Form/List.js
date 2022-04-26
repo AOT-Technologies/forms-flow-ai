@@ -232,7 +232,7 @@ const List = React.memo((props) => {
                   <>
                     <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={uploadClick}
                             title={t("Upload json form only")}>
-                      <i className="fa fa-upload fa-lg" aria-hidden="true"/> {t("Upload Form")}</Button>
+                      <i className="fa fa-upload fa-lg" aria-hidden="true"/> {t("Upload Form")} </Button>
                     <input type="file" className="d-none"
                            multiple={false}
                            accept=".json,application/json"

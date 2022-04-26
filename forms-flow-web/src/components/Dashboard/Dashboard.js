@@ -107,9 +107,9 @@ const Dashboard = React.memo(() => {
             <hr className="line-hr"/>
             <div className="row ">
               <div className="col-12 col-lg-4 ">
-                <h3 className="application-title">
+                <h2 className="application-title">
                   <i className="fa fa-bars mr-1"/> Submissions
-                </h3>
+                </h2> 
               </div>
               <div className="col-12 col-lg-5" title="Search By">
               <div style={{width: '200px',float:"right"}} >

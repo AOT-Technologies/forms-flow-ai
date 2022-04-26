@@ -5,7 +5,7 @@
 
 MKFILE_PATH:=$(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_ABS_DIR:=$(patsubst %/,%,$(dir $(MKFILE_PATH)))
-
+MODEL_ID=Seethal/sentiment_analysis_generic_dataset
 PROJECT_NAME:=api
 
 #################################################################################
@@ -48,7 +48,7 @@ install-dev: ## Install local application
 	. venv/bin/activate && pip install -e .
 
 download-models: ## Download the models
-	. venv/bin/activate && python3 -m nltk.downloader punkt vader_lexicon subjectivity
+	. venv/bin/activate && python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='${MODEL_ID}', truncation=True)"
 
 #################################################################################
 # COMMANDS - CI                                                                 #

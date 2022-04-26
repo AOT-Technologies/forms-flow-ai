@@ -17,7 +17,6 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
   const [taskVariable,setTaskVariable]=useState([])
   const selectedFilter = useSelector((state)=>state.bpmTasks.selectedFilter)
   const [showCalander,setCalander] =useState(false)
-
  useEffect(()=>{
   if(selectedFilter){
     const taskVariable = selectedFilter?.properties?.variables || [];
@@ -158,15 +157,13 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
               {valueBoxIndex === index && filter.type !== Filter_Search_Types.DATE ?
                 <span className="btn-container second-box">
                 <span className="second-inner-box">
-              {/*{filter.type === Filter_Search_Types.VARIABLES ? <button className="btn">
-                <i className="fa fa-calendar" aria-hidden="true"/>
-              </button> : null}*/}
+              {filter.type === Filter_Search_Types.VARIABLES ? <button className="btn">
+                <i className="fa fa-calendar" aria-hidden="true" onClick={() => setCalander(true)}/>
+              </button> : null}
                   <button className="btn click-element" onClick={() => updateFilterValue(index)}>
                    <i className="fa fa-check" aria-hidden="true"/>
                  </button>
-                 <button className="btn click-element" onClick={() => setCalander(true)}>
-                 <i className="fa fa-calendar"></i>
-                 </button>
+                  
             <button className="btn click-element" onClick={() =>{ setShowValueBoxIndex(null);setCalander(false)}}>
               <i className="fa fa-times" aria-hidden="true"/>
             </button></span>
@@ -209,7 +206,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
                     />)
                 : <span title="Value" className="click-element"
                         onClick={() => handleValueInput(index, filter.value, filter.type)}>
-                  {filter.value!==(undefined||null||'') ? (filter.type !== Filter_Search_Types.DATE ? filter.value.toString() : getFormattedDateAndTime(filter.value)) : '??'}</span>}
+                  {filter.value!==(undefined||null||'') ? (filter.type !== Filter_Search_Types.DATE ?filter.value.toString() : getFormattedDateAndTime(filter.value)) : '??'}</span>}
                 </span> 
               </div>
              </span>

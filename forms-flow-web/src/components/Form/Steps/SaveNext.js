@@ -3,8 +3,10 @@ import Button  from "@material-ui/core/Button";
 import Buttons from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useSelector } from "react-redux";
+import {useTranslation} from 'react-i18next'
 const SaveNext = React.memo(({ handleNext, handleBack, activeStep, isLastStep, submitData,modified }) => {
   const applicationCount = useSelector((state) =>state.process.applicationCount)
+  const {t} = useTranslation();
   const handleChanges = ()=>{
    if( applicationCount > 0){
     if(modified){
@@ -26,14 +28,14 @@ const SaveNext = React.memo(({ handleNext, handleBack, activeStep, isLastStep, s
   return (
     <>
       <Button disabled={activeStep === 0} onClick={handleBack}>
-        Back
+        {t("Back")}
       </Button>
       <Button
         variant="contained"
         color="primary"
         onClick={handleChanges}
       >
-        {isLastStep ? "Save" : "Next"}
+        {isLastStep ? t("Save") : t("Next") }
       </Button>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

@@ -1,5 +1,4 @@
 """Common utils.
-
 CORS pre-flight decorator. A simple decorator to add the options method to a
 Request Class.
 """

@@ -7,7 +7,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import LoadingOverlay from "react-loading-overlay";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-
+import { Translation,useTranslation } from "react-i18next";
 import {
   fetchApplicationAuditHistoryList
 } from "../../apiManager/services/applicationAuditServices";
@@ -26,6 +26,7 @@ const HistoryList = React.memo((props) => {
   const isHistoryListLoading = useSelector(state => state.taskAppHistory.isHistoryListLoading);
   const appHistory = useSelector(state => state.taskAppHistory.appHistory);
   const applicationId = props.applicationId;
+  const {t}=useTranslation();
 
   useEffect(()=>{
     dispatch(setUpdateHistoryLoader(true));
@@ -38,7 +39,7 @@ const HistoryList = React.memo((props) => {
   }, [applicationId, isHistoryListLoading, dispatch]);
 
   if(!applicationId){
-    return <Nodata text={"No Application History found"} className={"div-no-application-list text-center"}/>
+    return <Nodata text={<Translation>{(t)=>t("No Application History found")}</Translation>} className={"div-no-application-list text-center"}/>
   }
   if (isHistoryListLoading) {
     return <Loading/>;
@@ -47,7 +48,7 @@ const HistoryList = React.memo((props) => {
   const getNoDataIndicationContent = () => {
     return (
       <div className="div-no-task">
-        <label className="lbl-no-task"> No History found </label>
+        <label className="lbl-no-task"> <Translation>{(t)=>t("No History Found")}</Translation> </label>
         <br/>
       </div>
     );
@@ -68,7 +69,7 @@ const HistoryList = React.memo((props) => {
             <div className="main-header">
               <h3 className="task-head">
               <i className="fa fa-list" aria-hidden="true"/>
-              &nbsp;Application History
+              &nbsp;<Translation>{(t)=>t("Application History")}</Translation>
               </h3>
             </div>
             <br/>
@@ -76,7 +77,7 @@ const HistoryList = React.memo((props) => {
               <LoadingOverlay
                 active={isHistoryListLoading}
                 spinner
-                text="Loading..."
+                text={t("Select a task in the list.")}
               >
                 <BootstrapTable
                   loading={isHistoryListLoading}
@@ -92,7 +93,7 @@ const HistoryList = React.memo((props) => {
         )}
       </ToolkitProvider>
     ) : (
-      <Nodata text={"No Application History found"} className={"div-no-application-list text-center"}/>
+      <Nodata text={<Translation>{(t)=>t("No Application History found")}</Translation>} className={"div-no-application-list text-center"}/>
     )
   );
 });

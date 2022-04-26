@@ -46,7 +46,11 @@ RUN chown -R $user:root $HOME \
     && chmod g+rw /etc/passwd \
     && chmod g-w $HOME/cron/crontab
 
+<<<<<<< HEAD
+RUN python -m nltk.downloader punkt vader_lexicon subjectivity
+=======
 RUN python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='$MODEL_ID', truncation=True)"
+>>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
 
 USER $user
 ENTRYPOINT ["bash", "docker-entrypoint.sh"]

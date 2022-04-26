@@ -8,10 +8,12 @@ import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 import { toast } from 'react-toastify';
-
+import Back from "./constants/Back.js";
 import Create from "./Create.js";
 import Preview from "./Item/Preview.js";
 import Edit from "./Item/Edit.js";
+import { Translation } from "react-i18next";
+import "../../resourceBundles/i18n";
 
 //TODO convert this code to functional component
 
@@ -31,9 +33,7 @@ import { SUBMISSION_ACCESS } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
-
 import "./stepper.scss";
-import {Link} from "react-router-dom";
 import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
 import { resetFormData } from "../../actions/formActions.js";
 
@@ -76,7 +76,7 @@ class StepperPage extends PureComponent {
   }
 
   componentDidMount() {
-    if(this.state && this.state.displayMode === "view"){
+    if(this.state && this.state.displayMode === "view") {
       this.setState({ disableWorkflowAssociation: true });
       this.setState({ disablePreview: true });
     }
@@ -89,12 +89,9 @@ class StepperPage extends PureComponent {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let stateData = null;
-
     if(nextProps.match.params.step !== undefined && !STEPPER_ROUTES.includes(nextProps.match.params.step)){
       nextProps.goToPageNotFound();
     }
-
-
     if (
       nextProps.match.params.formId &&
       nextProps.match.params.formId !== prevState.formId
@@ -201,9 +198,10 @@ class StepperPage extends PureComponent {
 
   getSteps() {
     return [
-      "Design Form",
-      "Associate this form with a workflow?",
-      "Preview and Confirm",
+      <Translation>{(t)=>t("Design Form")}</Translation>,
+      <Translation>{(t)=>t("Associate this form with a workflow?")}</Translation>,
+      <Translation>{(t)=>t("Preview and Confirm")}</Translation>,
+      
     ];
   }
 
@@ -365,9 +363,7 @@ class StepperPage extends PureComponent {
       <>
         <div>
           {this.props.isAuthenticated ?
-            <Link to="/form" title="Back to Form List">
-              <i className="fa fa-chevron-left fa-lg" />
-            </Link>
+            <Back/>
             :
             null
           }
@@ -397,7 +393,9 @@ class StepperPage extends PureComponent {
                   {this.state.activeStep === steps.length ? (
                     <div>
                       <Typography>
-                        All steps completed - you're finished
+                      
+                      
+                    <Translation>{(t)=>t("All steps completed - you're finished")}</Translation>
                       </Typography>
                       <Button onClick={handleReset}>Reset</Button>
                     </div>
@@ -417,7 +415,7 @@ class StepperPage extends PureComponent {
 const mapStateToProps = (state) => {
   return {
     form: selectRoot("form", state),
-    saveText: "Next",
+    saveText: <Translation>{(t)=>t("Next")}</Translation>,
     errors: selectError("form", state),
     processList: state.process.processList,
     formProcessList: state.process.formProcessList,
@@ -442,11 +440,11 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveFormProcessMapper(data, update, (err, res) => {
           if (!err) {
-            toast.success('Form Workflow Association Saved.');
+            toast.success(<Translation>{(t)=>t("Form Workflow Association Saved.")}</Translation>);
             dispatch(push(`/form`));
             dispatch(resetFormProcessData())
           }else{
-            toast.error('Form Workflow Association Failed.');
+            toast.error(<Translation>{(t)=>t("Form Workflow Association Failed.")}</Translation>);
           }
         })
       );
@@ -461,10 +459,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(
         saveForm("form", newForm, (err, form) => {
           if (!err) {
-            toast.success('Form Saved');
+            toast.success(<Translation>{(t)=>t("Form Saved")}</Translation>);
             dispatch(push(`/formflow/${form._id}/preview`));
           }else{
-            toast.error("Error while saving Form");
+            toast.error(<Translation>{(t)=>t("Error while Submission.")}</Translation>);
           }
         })
       );

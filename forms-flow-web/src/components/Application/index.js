@@ -6,6 +6,7 @@ import ViewApplication from './ViewApplication';
 import './Application.scss';
 import { setCurrentPage } from '../../actions/bpmActions';
 
+
 export default React.memo(() => {
   const showApplications= useSelector((state) => state.user.showApplications);
   const dispatch= useDispatch();

@@ -1,4 +1,3 @@
-
 import React, {useCallback, useEffect, useState} from 'react';
 import {useDispatch,useSelector} from "react-redux";
 
@@ -9,8 +8,9 @@ import {setProcessActivityData, setProcessDiagramLoading, setProcessDiagramXML} 
 import "./bpm.scss"
 import usePrevious from "./UsePrevious";
 import Nodata from "../Nodata";
-
+import { useTranslation } from "react-i18next";
 const ProcessDiagram = React.memo((props)=>{
+  const {t}=useTranslation();
   const process_key = props.process_key;
   const processInstanceId = props.processInstanceId;
   const dispatch= useDispatch();
@@ -85,7 +85,7 @@ const ProcessDiagram = React.memo((props)=>{
       }
    }
  },[diagramXML,bpmnViewer,markers,prevMarkers]);
-
+ 
  const zoom = () => {
   bpmnViewer.get('zoomScroll').stepZoom(1)
   }
@@ -105,11 +105,11 @@ const ProcessDiagram = React.memo((props)=>{
   if( diagramXML=== ""){
     return <div className="bpmn-viewer-container">
       <div className="bpm-container">
-        <Nodata text={"No Process Diagram found"} className={"div-no-application-list text-center"}/>
+        <Nodata text={t("No Process Diagram found")} className={"div-no-application-list text-center"}/>
       </div>
     </div>
   }
-
+  
   return (
     <>
     <div className="bpmn-viewer-container">
@@ -133,4 +133,3 @@ const ProcessDiagram = React.memo((props)=>{
 });
 
 export default ProcessDiagram;
-

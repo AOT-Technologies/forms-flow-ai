@@ -5,7 +5,7 @@ import OperatorFilterDropDown from "../../filter/OperatorFilterDropdown";
 import TaskFilterSearchType from "./TaskFilterSearchType";
 import {getFormattedDateAndTime, getISODateTime} from "../../../../apiManager/services/formatterService";
 import DatePicker from "react-datepicker";
-
+import { useTranslation } from "react-i18next";
 const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter, updateSearchFilterData, updateFilter}) => {
 
   const [valueBoxIndex, setShowValueBoxIndex] = useState(null);
@@ -14,6 +14,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
   const [selectedFilterInputName, setSelectedFilterInputName] = useState('');
   const [inputDate, setUpInputDate] = useState(null);
   const [filterTaskVariableArray,setFilterTaskVariableArray]=useState([])
+  const {t} = useTranslation();
   const [taskVariable,setTaskVariable]=useState([])
   const selectedFilter = useSelector((state)=>state.bpmTasks.selectedFilter)
 
@@ -99,7 +100,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
           <div className="filter-details" key={index}>
 
             <div className="close-container  click-element" onClick={() => deleteSearchFilter(filter, index)}>
-              <span className="close-btn" title={"Remove search"}>
+              <span className="close-btn" title={t("Remove search")}>
               <i className="fa fa-times" aria-hidden="true"/>
              </span>
             </div>
@@ -165,8 +166,8 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
               <i className="fa fa-times" aria-hidden="true"/>
             </button></span>
               </span> : null}
-            <div className="operator-box-container">
-            <span title="Operator" className="operator-container">
+                  <div className="operator-box-container">
+            <span title={t("Operator")} className="operator-container">
               <OperatorFilterDropDown compareOptions={FILTER_COMPARE_OPTIONS[filter.type]} operator={filter.operator}
                 changeOperator={(value) => updateOperator(index, value)}/>
             </span>
@@ -201,7 +202,7 @@ const TaskFilterSearch = React.memo(({filterSelections = [], deleteSearchFilter,
                       onChange={(e) => setSelectedFilterInputValue(e.target.value)}
                       onKeyDown={e => handleFilterValueChange(e, index)}
                     />)
-                : <span title="Value" className="click-element"
+                : <span title={t("value")} className="click-element"
                         onClick={() => handleValueInput(index, filter.value, filter.type)}>
                   {filter.value!==(undefined||null||'') ? (filter.type !== Filter_Search_Types.DATE ? filter.value.toString() : getFormattedDateAndTime(filter.value)) : '??'}</span>}
              </span>

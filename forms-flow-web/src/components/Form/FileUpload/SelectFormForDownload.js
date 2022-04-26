@@ -2,8 +2,8 @@ import React, {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {setFormCheckList} from "../../../actions/checkListActions";
 import {getFormattedForm} from "../constants/formListConstants";
+import { useTranslation } from "react-i18next";
 import Form from 'react-bootstrap/Form';
-
 const SelectFormForDownload = React.memo(({form,type}) => {
   const formCheckList = useSelector(state => state.formCheckList.formList);
   const forms= useSelector(state=>state.forms.forms);
@@ -11,7 +11,7 @@ const SelectFormForDownload = React.memo(({form,type}) => {
   const [isFormChecked,setIsFormChecked]=useState(false);
   const [isAllFormChecked,setIsAllFormChecked]=useState(false);
   const dispatch= useDispatch();
-
+  const {t}=useTranslation();
   useEffect(()=>{
     if(formObj && formCheckList.length){
       const isFormAdded = formCheckList.some(formData=>formData.path===formObj.path);
@@ -58,13 +58,16 @@ const SelectFormForDownload = React.memo(({form,type}) => {
   }
 
 
-  if(type==="all"){
-    return (
-       <Form.Check.Input style={{width:"15px",height:"15px"}}  label="Check" onChange={()=>addAllFormCheckList(!isAllFormChecked)} checked={isAllFormChecked} title="Select All" />
+  if(type==="all")
+  {
+    
+ return (
+       <Form.Check.Input style={{width:"15px",height:"15px"}}  label="Check" onChange={()=>addAllFormCheckList(!isAllFormChecked)} checked={isAllFormChecked} title={t("Select All")} />
     )
+    
   }
   return (
-    <Form.Check.Input  style={{width:"15px",height:"15px"}} aria-label="option"  checked={isFormChecked} onChange={()=>updateFormCheckList(!isFormChecked)} title="Select"/>
+    <Form.Check.Input  style={{width:"15px",height:"15px"}} aria-label="option"  checked={isFormChecked} onChange={()=>updateFormCheckList(!isFormChecked)} title={t("Select")}/>
   )
 })
 export default SelectFormForDownload;

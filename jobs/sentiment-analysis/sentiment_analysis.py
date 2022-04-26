@@ -38,6 +38,14 @@ class LoadModel:  # pylint: disable=too-few-public-methods
 
 # pylint:disable=no-member
 
+<<<<<<< HEAD
+def create_app(run_mode=os.getenv('FLASK_ENV', 'production')):
+    """Return a configured Flask App using the Factory method."""
+    app = Flask(__name__)
+    app.config.from_object(config.CONFIGURATION[run_mode])
+    app.logger.info('<<<< Starting Sentiment analysis job >>>>')
+    register_shellcontext(app)
+=======
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     """Return a configured Flask App using the Factory method."""
@@ -54,6 +62,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     preloading.join()
     log_info("Model loading complete.")
     app.classifier = LoadModel.classifier
+>>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
     return app
 
 
@@ -62,7 +71,13 @@ def register_shellcontext(app):
 
     def shell_context():
         """Shell context objects."""
+<<<<<<< HEAD
+        return {
+            'app': app
+        }  # pragma: no cover
+=======
         return {"app": app}  # pragma: no cover
+>>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
 
     app.shell_context_processor(shell_context)
 
@@ -71,9 +86,14 @@ def update_sentiment():
     """Update sentiment by querying the records."""
     conn = None
     try:
+<<<<<<< HEAD
+        # connect to the PostgreSQL server
+        conn = psycopg2.connect(**APP_CONFIG.DB_PG_CONFIG)
+=======
         log_info("Starting sentiment analysis.")
         # connect to the PostgreSQL server
         conn = client.connect(Databse[APP_CONFIG.DBMS].value, APP_CONFIG)
+>>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
 
         table_name = APP_CONFIG.DATABASE_TABLE_NAME
         input_col = APP_CONFIG.DATABASE_INPUT_COLUMN
@@ -81,6 +101,13 @@ def update_sentiment():
 
         # Find primary key for the table.
         primary_keys = _find_primary_keys(conn, table_name)
+<<<<<<< HEAD
+
+        # Query the rows from table.
+        cols_to_query = f'{primary_keys},{input_col}'
+        rows_query = f"select {cols_to_query} from {table_name} where coalesce({output_col}, '') = ''"
+
+=======
         log_info(f"found primary keys : {primary_keys}")
         # Query the rows from table.
         rows_query = client.get_row_query(
@@ -92,6 +119,7 @@ def update_sentiment():
             limit=100,
         )
         log_info("Query executed")
+>>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
         try:
             cur = conn.cursor()
             cur.execute(rows_query)
@@ -113,6 +141,18 @@ def update_sentiment():
 
 
 def _find_primary_keys(conn, table_name):
+<<<<<<< HEAD
+    pk_query = f'SELECT column_name FROM information_schema.table_constraints ' \
+               f'JOIN information_schema.key_column_usage ' \
+               f'USING (constraint_catalog, constraint_schema, constraint_name, table_catalog, table_schema, ' \
+               f"table_name) WHERE constraint_type = 'PRIMARY KEY'  " \
+               f"AND (table_name) = ( '{table_name}') ORDER BY ordinal_position;"
+
+    try:
+        cur = conn.cursor()
+        cur.execute(pk_query)
+        primary_keys = ','.join(cur.fetchall()[0])
+=======
     """Fetch the primary keys of rows that match the pf_query."""
     # Generalized query to support different databases.
     pk_query = (
@@ -129,6 +169,7 @@ def _find_primary_keys(conn, table_name):
         cur = conn.cursor()
         cur.execute(pk_query)
         primary_keys = ",".join(cur.fetchall()[0])
+>>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
     finally:
         cur.close()
     return primary_keys
@@ -143,9 +184,13 @@ def _perform_analysis(colnames, conn, results):
     query_results = [dict(zip(colnames, result)) for result in results]
     count: int = 0
     for result_dict in query_results:
+<<<<<<< HEAD
+        sentiment = overall_sentiment(result_dict.get(input_col))
+=======
         log_info(f"Finding sentiment for for {result_dict}")
         sentiment = overall_sentiment_transformers(result_dict.get(input_col))
         log_info(f"Sentiment {sentiment}")
+>>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
         update_qry = f"update {table_name} set {output_col}='{sentiment}' where 1=1 "
         for key, value in result_dict.items():
             if key != input_col:
@@ -158,7 +203,11 @@ def _perform_analysis(colnames, conn, results):
             cur.close()
 
         count += 1
+<<<<<<< HEAD
+    print(f'Updated {count} records')
+=======
     print(f"Updated {count} records")
+>>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
 
 
 def run():
@@ -168,5 +217,9 @@ def run():
     update_sentiment()
 
 
+<<<<<<< HEAD
+if __name__ == '__main__':
+=======
 if __name__ == "__main__":
+>>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
     run()

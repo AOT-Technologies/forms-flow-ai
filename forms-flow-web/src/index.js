@@ -8,6 +8,7 @@ import {AppConfig} from './config';
 
 import components from './customFormioComponents';
 import './styles.scss';
+import './resourceBundles/i18n.js';
 
 
 // disable react-dev-tools for this project

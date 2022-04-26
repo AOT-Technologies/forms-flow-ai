@@ -48,7 +48,11 @@ install-dev: ## Install local application
 	. venv/bin/activate && pip install -e .
 
 download-models: ## Download the models
+<<<<<<< HEAD
+	. venv/bin/activate && python3 -m nltk.downloader punkt vader_lexicon subjectivity
+=======
 	. venv/bin/activate && python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='${MODEL_ID}', truncation=True)"
+>>>>>>> c9267d23c54b00ca1b535c751293dea0953bd689
 
 #################################################################################
 # COMMANDS - CI                                                                 #

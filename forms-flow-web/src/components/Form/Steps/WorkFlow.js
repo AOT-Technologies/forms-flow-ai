@@ -21,6 +21,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { setFormProcessesData } from "../../../actions/processActions";
 import ViewAndEditTaskvariable  from "./ViewAndEditTaskvariable";
+import { useTranslation } from "react-i18next";
 const WorkFlow = React.memo(
   ({
     populateDropdown,
@@ -33,6 +34,7 @@ const WorkFlow = React.memo(
     workflow,
     disableWorkflowAssociation,
   }) => {
+    const {t}= useTranslation();
     const[modified,setModified] = useState(false)
     const [tabValue, setTabValue] = useState(0);
     const [showTaskVaribleCrete, setShowTaskVaribleCrete] = useState(false);
@@ -136,7 +138,7 @@ const WorkFlow = React.memo(
             className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
             onClick={handleEditAssociation}
           >
-            Edit
+            {t("Edit")}
           </button>
         </Grid>
         <Grid item xs={12} sm={8} spacing={3} />
@@ -158,8 +160,8 @@ const WorkFlow = React.memo(
           textColor="primary"
           onChange={handleChange}
         >
-          <Tab label="Workflow Associate" />
-          <Tab label="Task variable" />
+          <Tab label={t("Workflow Associate")} />
+          <Tab label={t("Task variable")} />
         </Tabs>
 
         <Grid
@@ -177,7 +179,7 @@ const WorkFlow = React.memo(
                 
                     <Grid item xs={12} sm={6} spacing={3}>
                       <h5>
-                        Please select from one of the following workflows.
+                        {t("Please select from one of the following workflows.")}
                       </h5>
                       <Select
                         options={populateDropdown()}
@@ -205,18 +207,18 @@ const WorkFlow = React.memo(
             <>
               <Card variant="outlined" className="card-overflow">
                 <CardContent>
-                  <p> Add form fields to display in task list </p>
+                  <p> {t("Add form fields to display in task list")} </p>
                   {selectedTaskVariable.length !== 0 ? (
                     <Grid item xs={12} md={12} className="mb-2">
                       <TableContainer component={Paper} style={{maxHeight:"250px"}}>
                         <Table stickyHeader aria-label="simple table">
                           <TableHead>
                             <TableRow >
-                              <TableCell className="font-weight-bold">Form field</TableCell>
-                              <TableCell className="font-weight-bold" align="left">Label</TableCell>
-                              <TableCell className="font-weight-bold"align="left">Show in list</TableCell>
+                              <TableCell className="font-weight-bold">{t("Form field")}</TableCell>
+                              <TableCell className="font-weight-bold" align="left">{t("Label")}</TableCell>
+                              <TableCell className="font-weight-bold"align="left">{t("Show in list")}</TableCell>
                               <TableCell className="font-weight-bold" align="right">
-                                Action
+                                t("Action")
                               </TableCell>
                              
                             </TableRow>
@@ -235,7 +237,7 @@ const WorkFlow = React.memo(
                     </Grid>
                   ) : (
                    <div className="border p-2 mb-2">
-                      <FormLabel>No Task variable selected</FormLabel>
+                      <FormLabel>{t("No Task variable selected")}</FormLabel>
                    </div>
                   )}
 
@@ -253,7 +255,7 @@ const WorkFlow = React.memo(
                       }
                       color={showTaskVaribleCrete ? "secondary" : "primary"}
                     >
-                      {showTaskVaribleCrete ? "cancel" : "Add"}
+                      {showTaskVaribleCrete ? t("Cancel") : t("Add")}
                     </Button>
                   )}
                 </CardContent>

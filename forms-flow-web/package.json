@@ -9,7 +9,6 @@
     "build": "react-scripts --max_old_space_size=6144 build",
     "eject": "react-scripts eject",
     "test": "react-scripts test --detectOpenHandles --silent",
-    "preinstall": "npx npm-force-resolutions",
     "coverage": "react-scripts test --coverage --watchAll=false"
   },
   "author": {
@@ -36,6 +35,8 @@
     "connected-react-router": "^6.9.1",
     "create-react-class": "^15.7.0",
     "crypto-js": "^4.0.0",
+    "i18next": "^21.6.6",
+    "i18next-browser-languagedetector": "^6.1.2",
     "formiojs": "^4.14.0",
     "jsonwebtoken": "^8.5.1",
     "keycloak-js": "^10.0.2",
@@ -55,6 +56,7 @@
     "react-dropdown-select": "^4.7.4",
     "react-formio": "^4.3.0",
     "react-helmet": "^6.1.0",
+    "react-i18next": "^11.15.3",
     "react-js-pagination": "^3.0.3",
     "react-loading-overlay": "^1.0.1",
     "react-redux": "^7.2.4",

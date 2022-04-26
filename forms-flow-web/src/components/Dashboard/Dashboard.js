@@ -14,6 +14,7 @@ import LoadError from "../Error";
 
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import moment from "moment";
+import { Translation } from "react-i18next";
 
 const firsDay = moment().format("YYYY-MM-01");
 
@@ -41,8 +42,8 @@ const Dashboard = React.memo(() => {
     (state) => state.metrics.metricsStatusLoadError
   );
   const searchOptions = [
-    { value: 'created', label: 'Created Date' },
-    { value: 'modified', label: 'Modified Date' },
+    { value: 'created', label: <Translation>{(t)=>t("Created Date")}</Translation> },
+    { value: 'modified', label: <Translation>{(t)=>t("modified_date")}</Translation> },
   ];
   const [searchBy, setSearchBy] = useState(searchOptions[0]);
   const [dateRange, setDateRange] = useState([
@@ -66,7 +67,7 @@ const Dashboard = React.memo(() => {
   
   const  onChangeInput =(option) => {
     setSearchBy(option);
-    
+
   }
 
   if (isMetricsLoading) {
@@ -80,10 +81,10 @@ const Dashboard = React.memo(() => {
   };
 
   const onSetDateRange = (date) => {
-    
+
     setDateRange(date);
   };
-  
+
   const noOfApplicationsAvailable = submissionsList?.length || 0;
   if (metricsLoadError) {
     return (
@@ -99,13 +100,13 @@ const Dashboard = React.memo(() => {
             <h1 className="dashboard-title">
             <i className="fa fa-pie-chart p-1" />
               {/* <i className="fa fa-pie-chart" aria-hidden="true"/> */}
-               Metrics
+              <Translation>{(t)=>t("Metrics")}</Translation>
             </h1>
             <hr className="line-hr"/>
             <div className="row ">
               <div className="col-12 col-lg-4 ">
                 <h3 className="application-title">
-                  <i className="fa fa-bars mr-1"/> Submissions
+                  <i className="fa fa-bars mr-1"/> <Translation>{(t)=>t("Submissions")}</Translation>
                 </h3>
               </div>
               <div className="col-12 col-lg-5" title="Search By">

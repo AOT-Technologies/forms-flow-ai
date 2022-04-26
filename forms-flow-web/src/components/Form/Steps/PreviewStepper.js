@@ -6,7 +6,7 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 import { useSelector } from "react-redux";
-
+import { useTranslation } from "react-i18next";
 import SaveNext from "./SaveNext";
 
 const Preview = React.memo(
@@ -21,6 +21,7 @@ const Preview = React.memo(
     formData,
     submitData
   }) => {
+    const {t}= useTranslation();
     const [copied, setCopied] = useState(false);
     const processListData = useSelector((state)=>state.process.formProcessList)
     //  taking the url and make the copy button
@@ -67,7 +68,7 @@ const Preview = React.memo(
               <CardContent>
                 <form noValidate autoComplete="off">
                   <div>
-                    <span className="font-weight-bolder">Form Name : </span>
+                    <span className="font-weight-bolder">{t("Form Name")} : </span>
                     <span>
                       {formData && formData.form && formData.form.title
                         ? formData.form.title
@@ -75,14 +76,14 @@ const Preview = React.memo(
                     </span>
                   </div>
                   <div>
-                    <span className="font-weight-bolder">Workflow Name : </span>
+                    <span className="font-weight-bolder">{t("Workflow Name")} : </span>
                     <span>
                       {workflow && workflow.label ? workflow.label : "-"}
                     </span>
                   </div>
                   {processListData.anonymous && (
                     <div>
-                      <span>Copy anonymous form URL</span>
+                      <span>{t("Copy anonymous form URL")}</span>
                       <div
                         data-toggle="tooltip"
                         data-placement="top"
@@ -113,14 +114,13 @@ const Preview = React.memo(
                             color="primary"
                           />
                         }
-                        label="Publish this form for Client Users."
+                        label={t("Publish this form for Client Users.")}
                       />
                     </label>
                   </div>
-                  <label className="text-label">Comments</label>
+                  <label className="text-label">{t("Comments")}</label>
                   <TextField
                     id="comments"
-                    // label="Multiline"
                     multiline
                     rows={4}
                     variant="outlined"

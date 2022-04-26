@@ -132,7 +132,7 @@ public class AdminControllerTest {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/engine-rest-ext/form"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"}]"));
+                .andExpect(content().string("[{\"formId\":\"foi\",\"formName\":\"Freedom Of Information\",\"processKey\":\"224233456456\"},{\"formId\":\"nbl\",\"formName\":\"New Business Licence\",\"processKey\":\"456456456\"}]"));
     }
 
     /**

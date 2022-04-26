@@ -12,7 +12,9 @@ import {
 import { push } from "connected-react-router";
 import { Link, useParams } from "react-router-dom";
 import Loading from "../../../containers/Loading";
+import { useTranslation,Translation } from "react-i18next";
 import { getProcessReq } from "../../../apiManager/services/bpmServices";
+import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import {
   setFormFailureErrorData,
   setFormRequestData,
@@ -38,6 +40,9 @@ import { setPublicStatusLoading } from "../../../actions/applicationActions";
 
 
 const View = React.memo((props) => {
+
+  const {t}= useTranslation();
+  const lang = useSelector((state) => state.user.lang);
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
@@ -137,8 +142,8 @@ const View = React.memo((props) => {
   if (isFormSubmitted) {
     return (
       <div className="text-center pt-5">
-        <h1>Thank you for your response.</h1>
-        <p>saved successfully</p>
+       <h1>{t("Thank you for your response.")}</h1>
+       <p>{t("saved successfully")}</p>
       </div>
     );
   }
@@ -164,9 +169,7 @@ const View = React.memo((props) => {
             <i className="fa fa-chevron-left fa-lg" />
           </Link>
         ) : null}
-        {/*   <span className="ml-3">
-            <img src="/form.svg" width="30" height="30" alt="form" />
-          </span>*/}
+        
         {form.title ? (
           <h3 className="ml-3">
             <span className="task-head-details">
@@ -190,7 +193,11 @@ const View = React.memo((props) => {
             form={form}
             submission={submission}
             url={url}
-            options={{ ...options }}
+            options={
+              { ...options,
+                language: lang,
+                i18n: formio_resourceBundles
+                }}
             hideComponents={hideComponents}
             onSubmit={(data) => {
               onSubmit(data, form._id);
@@ -219,12 +226,12 @@ const doProcessActions = (submission, ownProps) => {
         publicApplicationCreate(data, (err, res) => {
           if (!err) {
             dispatch(setFormSubmissionLoading(false));
-            toast.success("Submission Saved.");
+            toast.success(<Translation>{(t)=>t("submission_saved")}</Translation>)
             dispatch(setFormSubmitted(true));
           } else {
             //TO DO Update to show error message
             dispatch(setFormSubmissionLoading(false));
-            toast.error("Submission failed");
+            toast.error(<Translation>{(t)=>t("Submission Failed.")}</Translation>)
             // dispatch(setFormSubmitted())
             // dispatch(push(`/public/submitted`));
           }
@@ -238,7 +245,7 @@ const doProcessActions = (submission, ownProps) => {
               dispatch(setFormSubmissionLoading(false));
               dispatch(setMaintainBPMFormPagination(true));
               /*dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))*/
-              toast.success("Submission Saved.");
+              toast.success(<Translation>{(t)=>t("submission_saved")}</Translation>)
               dispatch(push(`/form`));
             } else {
               dispatch(setFormSubmissionLoading(false));
@@ -249,7 +256,7 @@ const doProcessActions = (submission, ownProps) => {
               dispatch(setFormSubmissionLoading(false));
               dispatch(setMaintainBPMFormPagination(true));
               //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
-              toast.success("Submission Saved.");
+              toast.success(<Translation>{(t)=>t("submission_saved")}</Translation>)
               dispatch(push(`/form`));
             } else {
               dispatch(setFormSubmissionLoading(false));
@@ -271,7 +278,7 @@ const mapStateToProps = (state) => {
       noAlerts: false,
       i18n: {
         en: {
-          error: "Please fix the errors before submitting again.",
+          error:<Translation>{(t)=>t("Message")}</Translation>
         },
       },
     },
@@ -290,9 +297,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           } else {
             const ErrorDetails = {
               modalOpen: true,
-              message: "Submission cannot be done",
+              message: (<Translation>{(t)=>t("Submission cannot be done.")}</Translation>),
             };
-            toast.error("Error while Submission.");
+            toast.error(<Translation>{(t)=>t("Error while Submission.")}</Translation>);
             dispatch(setFormSubmissionLoading(false));
             dispatch(setFormSubmissionError(ErrorDetails));
           }

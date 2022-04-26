@@ -20,7 +20,7 @@ $gray-800: #373a3c;
 $gray-900: #212529;
 $black: #000;
 
-$blue: #2780e3;
+$blue: #4D61FC;
 $indigo: #6610f2;
 $purple: #613d7c;
 $pink: #e83e8c;
@@ -63,7 +63,16 @@ $dark: $gray-800;
   overflow-y: auto;
   overflow-x: hidden;
 }
-
+.btn-primary{
+  background-color: $primary;
+  }
+.btn-outline-primary:not(:disabled){
+  border-color: $primary;
+  &:hover{
+    color: #ffff;
+    background-color: $primary;
+  }
+}
 .task-container{
   height: 100% !important;
 }
@@ -545,4 +554,7 @@ div[disabled] {
 }
 .classApplicationName{
   width: 20%;
+}
+.navbar-light .navbar-nav .nav-link {
+  color: rgba(0,0,0,.9);
 }

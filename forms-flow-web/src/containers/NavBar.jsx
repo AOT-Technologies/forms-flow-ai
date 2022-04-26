@@ -85,7 +85,11 @@ const NavBar = React.memo(() => {
               {(getUserRolePermission(userRoles, STAFF_DESIGNER)) ?
                 (<Nav.Link as={Link} to='/admin'  className={`main-nav nav-item ${
                   pathname.match(/^\/admin/) ? "active-tab" : ""
+
                 }`}> <i className="fa fa-list-alt fa-fw fa-lg " />{t("Admin")} </Nav.Link>)
+
+               
+
                 :null}
 
               {showApplications?(getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)) ?

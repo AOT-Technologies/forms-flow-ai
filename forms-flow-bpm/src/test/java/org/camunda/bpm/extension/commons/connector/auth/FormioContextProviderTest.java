@@ -37,13 +37,13 @@ public class FormioContextProviderTest {
     @BeforeEach
     public void setup() {
         try {
-            Field field = formioContextProvider.getClass().getDeclaredField("objectMapper");
+            Field field = formioContextProvider.getClass().getDeclaredField("bpmObjectMapper");
             field.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
         ObjectMapper objectMapper = new ObjectMapper();
-        ReflectionTestUtils.setField(this.formioContextProvider, "objectMapper", objectMapper);
+        ReflectionTestUtils.setField(this.formioContextProvider, "bpmObjectMapper", objectMapper);
     }
 
     @Test

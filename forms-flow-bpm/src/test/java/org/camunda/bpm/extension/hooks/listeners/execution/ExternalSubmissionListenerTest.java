@@ -48,13 +48,13 @@ public class ExternalSubmissionListenerTest {
     @BeforeEach
     public void setup() {
         try {
-            Field field = externalSubmissionListener.getClass().getDeclaredField("objectMapper");
+            Field field = externalSubmissionListener.getClass().getDeclaredField("bpmObjectMapper");
             field.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
         ObjectMapper objectMapper = new ObjectMapper();
-        ReflectionTestUtils.setField(this.externalSubmissionListener, "objectMapper", objectMapper);
+        ReflectionTestUtils.setField(this.externalSubmissionListener, "bpmObjectMapper", objectMapper);
         formName = mock(Expression.class);
     }
 

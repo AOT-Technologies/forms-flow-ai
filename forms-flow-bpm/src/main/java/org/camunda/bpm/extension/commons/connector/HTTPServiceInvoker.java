@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -26,13 +27,13 @@ public class HTTPServiceInvoker {
 
     @Autowired
     private AccessHandlerFactory accessHandlerFactory;
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     private Properties integrationCredentialProperties;
 
     public ResponseEntity<String> execute(String url, HttpMethod method, Object payload) throws IOException {
-        String dataJson = payload != null ? objectMapper.writeValueAsString(payload) : null;
+        String dataJson = payload != null ? bpmObjectMapper.writeValueAsString(payload) : null;
         return execute(url, method, dataJson);
 
     }

@@ -14,6 +14,7 @@ import org.camunda.bpm.extension.hooks.services.IMessageEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
@@ -34,9 +35,9 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
 
     private Expression emailGroups;
     private Expression groupsOnly;
-    
-    @Autowired
-    private ObjectMapper objectMapper;
+
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
 
     /**
      * This provides the necessary information to send message.
@@ -99,7 +100,7 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
         if(this.emailGroups != null &&
                 StringUtils.isNotBlank(String.valueOf(this.emailGroups.getValue(delegateExecution)))) {
             emailGroups = this.emailGroups != null && this.emailGroups.getValue(delegateExecution) != null ?
-                    objectMapper.readValue(String.valueOf(this.emailGroups.getValue(delegateExecution)), List.class) : null;
+                    bpmObjectMapper.readValue(String.valueOf(this.emailGroups.getValue(delegateExecution)), List.class) : null;
         }
         return  emailGroups;
     }

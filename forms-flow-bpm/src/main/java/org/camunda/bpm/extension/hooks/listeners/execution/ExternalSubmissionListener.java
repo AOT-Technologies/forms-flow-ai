@@ -18,6 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import javax.annotation.Resource;
 import javax.inject.Named;
 
 
@@ -36,8 +37,8 @@ public class ExternalSubmissionListener extends BaseListener implements Executio
 
     @Autowired
     private FormSubmissionService formSubmissionService;
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
@@ -80,9 +81,9 @@ public class ExternalSubmissionListener extends BaseListener implements Executio
         data.put("formId",StringUtils.substringBetween(formUrl, "/form/", "/submission/"));
         data.put("submissionId",StringUtils.substringAfter(formUrl, "/submission/"));
         data.put("processInstanceId",execution.getProcessInstanceId());
-        ResponseEntity<String> response = httpServiceInvoker.execute(httpServiceInvoker.getProperties().getProperty("api.url")+"/application/create", HttpMethod.POST, objectMapper.writeValueAsString(data));
+        ResponseEntity<String> response = httpServiceInvoker.execute(httpServiceInvoker.getProperties().getProperty("api.url")+"/application/create", HttpMethod.POST, bpmObjectMapper.writeValueAsString(data));
         if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
-            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+            JsonNode jsonNode = bpmObjectMapper.readTree(response.getBody());
             String applicationId = jsonNode.get("id").asText();
             execution.setVariable("applicationId", applicationId);
         } else {

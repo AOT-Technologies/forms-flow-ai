@@ -80,13 +80,13 @@ public class NotifyListenerTest {
 	@BeforeEach
 	public void setup() {
 		try {
-			Field field = notifyListener.getClass().getDeclaredField("objectMapper");
+			Field field = notifyListener.getClass().getDeclaredField("bpmObjectMapper");
 			field.setAccessible(true);
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace();
 		}
 		ObjectMapper objectMapper = new ObjectMapper();
-		ReflectionTestUtils.setField(this.notifyListener, "objectMapper", objectMapper);
+		ReflectionTestUtils.setField(this.notifyListener, "bpmObjectMapper", objectMapper);
 	}
 
 	/**

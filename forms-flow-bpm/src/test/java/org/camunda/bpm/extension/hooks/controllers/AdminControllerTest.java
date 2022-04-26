@@ -103,13 +103,13 @@ public class AdminControllerTest {
         ProcessEngines.registerProcessEngine(processEngine);
 
         try {
-            Field field = adminController.getClass().getDeclaredField("objectMapper");
+            Field field = adminController.getClass().getDeclaredField("bpmObjectMapper");
             field.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
         ObjectMapper objectMapper = new ObjectMapper();
-        ReflectionTestUtils.setField(this.adminController, "objectMapper", objectMapper);
+        ReflectionTestUtils.setField(this.adminController, "bpmObjectMapper", objectMapper);
     }
 
     /**

@@ -19,6 +19,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import javax.annotation.Resource;
 import javax.inject.Named;
 
 import java.io.IOException;
@@ -40,8 +41,8 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
 
     private Expression fields;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
@@ -84,7 +85,7 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
     private List<FormElement> getModifiedFormElements(DelegateExecution execution) throws IOException {
         List<FormElement> elements = new ArrayList<>();
         List<String> injectableFields =  this.fields != null && this.fields.getValue(execution) != null ?
-                objectMapper.readValue(String.valueOf(this.fields.getValue(execution)),List.class): null;
+                bpmObjectMapper.readValue(String.valueOf(this.fields.getValue(execution)),List.class): null;
         for(String entry: injectableFields) {
             elements.add(new FormElement(entry,String.valueOf(execution.getVariable(entry))));
         }

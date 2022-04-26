@@ -1,8 +1,6 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
@@ -21,7 +19,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -32,6 +32,8 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FormBPMFilteredDataPipelineListener.class);
 
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     private FormSubmissionService formSubmissionService;
     @Autowired
@@ -63,7 +65,9 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
         }
         FormProcessMappingData body = (FormProcessMappingData) response.getBody();
         if(body != null) {
-            List<FilterInfo> filterInfoList = body.getTaskVariable();
+            List<FilterInfo> filterInfoList = Arrays.asList(body.getTaskVariableList(bpmObjectMapper));
+            LOGGER.error(""+body.toString());
+            LOGGER.error(filterInfoList.toString());
             Map<String, FilterInfo> filterInfoMap = filterInfoList.stream()
                     .collect(Collectors.toMap(FilterInfo::getKey, Function.identity()));
 

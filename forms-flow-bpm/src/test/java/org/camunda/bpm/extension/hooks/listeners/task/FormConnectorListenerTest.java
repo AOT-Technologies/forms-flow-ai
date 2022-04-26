@@ -71,13 +71,13 @@ public class FormConnectorListenerTest {
 	@BeforeEach
 	public void setup() {
 		try {
-			Field field = formConnectorListener.getClass().getDeclaredField("objectMapper");
+			Field field = formConnectorListener.getClass().getDeclaredField("bpmObjectMapper");
 			field.setAccessible(true);
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace();
 		}
 		ObjectMapper objectMapper = new ObjectMapper();
-		ReflectionTestUtils.setField(this.formConnectorListener, "objectMapper", objectMapper);
+		ReflectionTestUtils.setField(this.formConnectorListener, "bpmObjectMapper", objectMapper);
 	}
 	
 	/**

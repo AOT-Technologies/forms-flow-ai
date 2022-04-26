@@ -46,13 +46,13 @@ public class BPMFormDataPipelineListenerTest {
     @BeforeEach
     public void setup() {
         try {
-            Field field = bpmFormDataPipelineListener.getClass().getDeclaredField("objectMapper");
+            Field field = bpmFormDataPipelineListener.getClass().getDeclaredField("bpmObjectMapper");
             field.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
         ObjectMapper objectMapper = new ObjectMapper();
-        ReflectionTestUtils.setField(this.bpmFormDataPipelineListener, "objectMapper", objectMapper);
+        ReflectionTestUtils.setField(this.bpmFormDataPipelineListener, "bpmObjectMapper", objectMapper);
         this.fields = mock(Expression.class);
     }
 

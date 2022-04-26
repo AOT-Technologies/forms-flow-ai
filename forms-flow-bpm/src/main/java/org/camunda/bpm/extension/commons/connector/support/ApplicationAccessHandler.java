@@ -74,7 +74,7 @@ public class ApplicationAccessHandler implements IAccessHandler {
                 .onStatus(HttpStatus::is4xxClientError, clientResponse -> Mono.error(new HttpClientErrorException(HttpStatus.BAD_REQUEST)))
                 .toEntity(responseClazz)
                 .block();
-
+        LOGGER.error(" = "+response.getBody().toString());
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 

@@ -42,13 +42,13 @@ public class FormTextAnalysisDelegateTest {
     @BeforeEach
     public void setup() {
         try {
-            Field field = formTextAnalysisDelegate.getClass().getDeclaredField("objectMapper");
+            Field field = formTextAnalysisDelegate.getClass().getDeclaredField("bpmObjectMapper");
             field.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
         ObjectMapper objectMapper = new ObjectMapper();
-        ReflectionTestUtils.setField(this.formTextAnalysisDelegate, "objectMapper", objectMapper);
+        ReflectionTestUtils.setField(this.formTextAnalysisDelegate, "bpmObjectMapper", objectMapper);
     }
 
     /**

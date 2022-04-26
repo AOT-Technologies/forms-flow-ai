@@ -17,6 +17,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 
@@ -38,8 +39,8 @@ public class CamundaEventListener {
 
     @Value("${websocket.messageEvents}")
     private String messageEvents;
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
 
 
     @EventListener
@@ -47,10 +48,10 @@ public class CamundaEventListener {
         try {
             if (isRegisteredEvent(taskDelegate.getEventName())) {
                 if (isAllowed("TASK_EVENT_DETAILS")) {
-                    this.template.convertAndSend("/topic/task-event-details", objectMapper.writeValueAsString(getTaskMessage(taskDelegate)));
+                    this.template.convertAndSend("/topic/task-event-details", bpmObjectMapper.writeValueAsString(getTaskMessage(taskDelegate)));
                 }
                 if (isAllowed("TASK_EVENT")) {
-                    this.template.convertAndSend("/topic/task-event", objectMapper.writeValueAsString(getTaskEventMessage(taskDelegate)));
+                    this.template.convertAndSend("/topic/task-event", bpmObjectMapper.writeValueAsString(getTaskEventMessage(taskDelegate)));
                 }
             }
             } catch(JsonProcessingException e){

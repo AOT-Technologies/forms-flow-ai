@@ -2,9 +2,11 @@ package org.camunda.bpm.extension.commons.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import javax.annotation.PostConstruct;
 
@@ -23,7 +25,8 @@ public class AppConfig {
     }
 
     @Bean
-    public ObjectMapper objectMapper(){
+    @Qualifier("bpmObjectMapper")
+    public ObjectMapper bpmObjectMapper(){
         return new ObjectMapper();
     }
 }

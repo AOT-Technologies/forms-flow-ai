@@ -44,14 +44,17 @@ public class FormBPMFilteredDataPipelineListenerTest {
     @BeforeEach
     public void setup() {
         try {
-            Field field = formSubmissionService.getClass().getDeclaredField("objectMapper");
+            Field field = formSubmissionService.getClass().getDeclaredField("bpmObjectMapper");
+            field.setAccessible(true);
+            field = formBPMFilteredDataPipelineListener.getClass().getDeclaredField("bpmObjectMapper");
             field.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
         ObjectMapper objectMapper = new ObjectMapper();
 
-        ReflectionTestUtils.setField(this.formSubmissionService, "objectMapper", objectMapper);
+        ReflectionTestUtils.setField(this.formSubmissionService, "bpmObjectMapper", objectMapper);
+        ReflectionTestUtils.setField(this.formBPMFilteredDataPipelineListener, "bpmObjectMapper", objectMapper);
     }
 
     @Test
@@ -73,9 +76,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
         FormProcessMappingData formProcessMappingData = new FormProcessMappingData();
         formProcessMappingData.setProcessKey("onestepapproval");
         formProcessMappingData.setProcessKey("onestepapproval");
-        List<FilterInfo> taskVariable = new ArrayList<>();
-        taskVariable.add(new FilterInfo("businessOwner","john","Business Owner"));
-        formProcessMappingData.setTaskVariable(taskVariable);
+        formProcessMappingData.setTaskVariable("[{\"key\" : \"businessOwner\", \"defaultLabel\" : \"Business Owner\", \"label\" : \"Business Owner\"}]");
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any()))
                 .thenReturn(ResponseEntity.ok(formProcessMappingData));
 
@@ -109,9 +110,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
         FormProcessMappingData formProcessMappingData = new FormProcessMappingData();
         formProcessMappingData.setProcessKey("onestepapproval");
         formProcessMappingData.setProcessKey("onestepapproval");
-        List<FilterInfo> taskVariable = new ArrayList<>();
-        taskVariable.add(new FilterInfo("businessOwner","john","Business Owner"));
-        formProcessMappingData.setTaskVariable(taskVariable);
+        formProcessMappingData.setTaskVariable("[{\"key\" : \"businessOwner\", \"defaultLabel\" : \"Business Owner\", \"label\" : \"Business Owner\"}]");
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any()))
                 .thenReturn(ResponseEntity.ok(formProcessMappingData));
 
@@ -149,45 +148,10 @@ public class FormBPMFilteredDataPipelineListenerTest {
         FormProcessMappingData formProcessMappingData = new FormProcessMappingData();
         formProcessMappingData.setProcessKey("onestepapproval");
         formProcessMappingData.setProcessKey("onestepapproval");
-        List<FilterInfo> taskVariable = new ArrayList<>();
-        formProcessMappingData.setTaskVariable(taskVariable);
+        formProcessMappingData.setTaskVariable("[{\"key\" : \"businessOwner\", \"value\" : \"john\", \"label\" : \"Business Owner\"}]");
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any()))
                 .thenReturn(ResponseEntity.ok(formProcessMappingData));
         formBPMFilteredDataPipelineListener.notify(delegateTask);
-    }
-
-    @Test
-    public void syncFormVariables_with_validapi_and_parseexception_test() throws Exception {
-        DelegateTask delegateTask = mock(DelegateTask.class);
-        DelegateExecution delegateExecution = mock(DelegateExecution.class);
-        when(delegateTask.getExecution())
-                .thenReturn(delegateExecution);
-
-        Properties properties = mock(Properties.class);
-        when(httpServiceInvoker.getProperties())
-                .thenReturn(properties);
-        when(properties.getProperty(anyString()))
-                .thenReturn("http://localhost:5000/api");
-        when(delegateExecution.getVariable("applicationId"))
-                .thenReturn(100);
-
-        String data = "{\"taskVariable\", " +
-                "\"processName\": \"onestepapproval\",\"processKey\": \"onestepapproval\"}";
-        when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any()))
-                .thenReturn(ResponseEntity.ok(data));
-
-        String actualFormUrl = "http://localhost:3001/form/id1";
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", actualFormUrl);
-        when(delegateExecution.getVariables())
-                .thenReturn(variables);
-        Map<String, Object> dataMap = new HashMap<>();
-        dataMap.put("businessOwner", "john");
-        when(formSubmissionService.retrieveFormValues(actualFormUrl))
-                .thenReturn(dataMap);
-        assertThrows(RuntimeException.class, () -> {
-            formBPMFilteredDataPipelineListener.notify(delegateTask);
-        });
     }
 
     @Test

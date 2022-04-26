@@ -44,13 +44,13 @@ public class FormSubmissionServiceTest {
     @BeforeEach
     public void setup() {
         try {
-            Field field = formSubmissionService.getClass().getDeclaredField("objectMapper");
+            Field field = formSubmissionService.getClass().getDeclaredField("bpmObjectMapper");
             field.setAccessible(true);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         }
         ObjectMapper objectMapper = new ObjectMapper();
-        ReflectionTestUtils.setField(this.formSubmissionService, "objectMapper", objectMapper);
+        ReflectionTestUtils.setField(this.formSubmissionService, "bpmObjectMapper", objectMapper);
     }
 
     /**

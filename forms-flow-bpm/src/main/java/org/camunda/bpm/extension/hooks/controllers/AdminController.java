@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 
 import org.apache.commons.lang.StringUtils;
@@ -67,8 +68,8 @@ public class AdminController {
     @Value("${plugin.identity.keycloak.administratorGroupName}")
     private String adminGroupName;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
@@ -107,7 +108,7 @@ public class AdminController {
         try {
             ResponseEntity<String> response = httpServiceInvoker.execute(formsflowApiUrl + "/form", HttpMethod.GET, null);
             if (response.getStatusCode().value() == HttpStatus.OK.value()) {
-                JsonNode jsonNode = objectMapper.readTree(response.getBody());
+                JsonNode jsonNode = bpmObjectMapper.readTree(response.getBody());
                 if (jsonNode.get("totalCount") != null && jsonNode.get("totalCount").asInt() > 0) {
                     JsonNode arrayNode = jsonNode.get("forms");
                     if (arrayNode.isArray()) {

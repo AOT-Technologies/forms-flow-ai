@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.Properties;
 
 
@@ -25,8 +26,8 @@ public class FormTokenAccessHandler {
 
     @Autowired
     private Properties integrationCredentialProperties;
-    @Autowired
-    private ObjectMapper objectMapper;
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     protected WebClient unauthenticatedWebClient;
 
@@ -39,7 +40,7 @@ public class FormTokenAccessHandler {
             String password = integrationCredentialProperties.getProperty("formio.security.password");
             String accessTokenUri = integrationCredentialProperties.getProperty("formio.security.accessTokenUri");
             FormioConfiguration formioConfiguration = new FormioConfiguration(email, password, accessTokenUri);
-            formioContextProvider = new FormioContextProvider(formioConfiguration, unauthenticatedWebClient, objectMapper);
+            formioContextProvider = new FormioContextProvider(formioConfiguration, unauthenticatedWebClient, bpmObjectMapper);
         }
     }
 

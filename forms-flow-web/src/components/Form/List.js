@@ -247,7 +247,7 @@ const List = React.memo((props) => {
                     
                    <button className="btn btn-outline-primary pull-right btn-left " onClick={downloadForms}
                             disabled={formCheckList.length === 0}>
-                      <i className="fa fa-download fa-lg" aria-hidden="true"/> {t("Download Form")</button>
+                      <i className="fa fa-download fa-lg" aria-hidden="true"/> {t("Download Form")} </button>
                   </>
                 )}
               </div>

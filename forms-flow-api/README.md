@@ -158,3 +158,4 @@ Things to note when writing tests:
 * [pytest](https://docs.pytest.org/en/latest/getting-started.html)
 * [Real Python Unit Testing with Pytest](https://realpython.com/pytest-python-testing/)
 * [More about similar test config we have used](http://alexmic.net/flask-sqlalchemy-pytest/)
+

@@ -4,7 +4,7 @@
     <bpmn:startEvent id="StartEvent_1" name="Default Flow Started">
       <bpmn:outgoing>Flow_09rbji4</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:task id="Audit_Task_Executed" name="Audit Task Executed">
+    <bpmn:task id="Audit_Task_Executed" name="Execute Audit Task">
       <bpmn:extensionElements>
         <camunda:executionListener event="start">
           <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'Completed');</camunda:script>
@@ -19,7 +19,14 @@
       <bpmn:incoming>Flow_09rbji4</bpmn:incoming>
       <bpmn:outgoing>Flow_0klorcg</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="Flow_09rbji4" sourceRef="StartEvent_1" targetRef="Audit_Task_Executed" />
+    <bpmn:sequenceFlow id="Flow_09rbji4" sourceRef="StartEvent_1" targetRef="Audit_Task_Executed">
+      <bpmn:extensionElements>
+        <camunda:executionListener event="take">
+          <camunda:script scriptFormat="javascript">execution.setVariable('applicationStatus', 'New');</camunda:script>
+        </camunda:executionListener>
+        <camunda:executionListener class="org.camunda.bpm.extension.hooks.listeners.ApplicationStateListener" event="take" />
+      </bpmn:extensionElements>
+    </bpmn:sequenceFlow>
     <bpmn:endEvent id="Event_1ws2h5w" name="Default Flow Ended">
       <bpmn:incoming>Flow_0klorcg</bpmn:incoming>
     </bpmn:endEvent>

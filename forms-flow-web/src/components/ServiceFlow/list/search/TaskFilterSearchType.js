@@ -1,12 +1,12 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Filter_Search_Types} from "../../constants/taskConstants";
 import TaskFilterDropdown from "./TaskFilterDropdown";
-
+import {  useTranslation } from "react-i18next";
 
 const TaskFilterSearchType = React.memo(({filter, index, handleFilterUpdate}) => {
   const createSearchNode = useRef();
   const [showFilterItems, setShowFilterItems]= useState(false);
-
+  const {t}=useTranslation();
   const handleClick = e => {
     if (createSearchNode?.current?.contains(e.target)) {
       return;
@@ -30,7 +30,7 @@ const TaskFilterSearchType = React.memo(({filter, index, handleFilterUpdate}) =>
   };
 
   return (
-    <span className="click-element mr-1 list-span" title="Type"  ref={createSearchNode}>
+    <span className="click-element mr-1 list-span" title={t("Type")} ref={createSearchNode}>
       <span onClick={()=>setShowFilterItems(true)}>{filter.label} {filter.type === Filter_Search_Types.VARIABLES?' :':null}</span>
       {showFilterItems?<TaskFilterDropdown onFilterSelect={handleFilterSelect}/>:null}
               </span>)

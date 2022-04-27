@@ -15,12 +15,14 @@ import LoadError from "../Error";
 
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import moment from "moment";
+import { Translation,useTranslation } from "react-i18next";
 
 const firsDay = moment().format("YYYY-MM-01");
 
 const lastDay = moment().endOf("month").format("YYYY-MM-DD");
 
 const Dashboard = React.memo(() => {
+  const{t} = useTranslation();
   const dispatch = useDispatch();
   const submissionsList = useSelector((state) => state.metrics.submissionsList);
   const submissionsStatusList = useSelector(
@@ -42,8 +44,8 @@ const Dashboard = React.memo(() => {
     (state) => state.metrics.metricsStatusLoadError
   );
   const searchOptions = [
-    { value: 'created', label: 'Created Date' },
-    { value: 'modified', label: 'Modified Date' },
+    { value: 'created', label: <Translation>{(t)=>t("Created Date")}</Translation> },
+    { value: 'modified', label: <Translation>{(t)=>t("Modified Date")}</Translation> },
   ];
   const [searchBy, setSearchBy] = useState(searchOptions[0]);
   const [dateRange, setDateRange] = useState([
@@ -68,7 +70,7 @@ const Dashboard = React.memo(() => {
   
   const  onChangeInput =(option) => {
     setSearchBy(option);
-    
+
   }
 
   if (isMetricsLoading) {
@@ -83,10 +85,10 @@ const Dashboard = React.memo(() => {
   };
 
   const onSetDateRange = (date) => {
-    
+
     setDateRange(date);
   };
-  
+
   const noOfApplicationsAvailable = submissionsList?.length || 0;
   if (metricsLoadError) {
     return (
@@ -102,13 +104,13 @@ const Dashboard = React.memo(() => {
             <h1 className="dashboard-title">
             <i className="fa fa-pie-chart p-1" />
               {/* <i className="fa fa-pie-chart" aria-hidden="true"/> */}
-               Metrics
+              <Translation>{(t)=>t("Metrics")}</Translation>
             </h1>
             <hr className="line-hr"/>
             <div className="row ">
               <div className="col-12 col-lg-4 ">
                 <h2 className="application-title">
-                  <i className="fa fa-bars mr-1"/> Submissions
+                  <i className="fa fa-bars mr-1"/> <Translation>{(t)=>t("Submissions")}</Translation>
                 </h2> 
               </div>
               <div className="col-12 col-lg-5" title="Search By">
@@ -158,7 +160,7 @@ const Dashboard = React.memo(() => {
                    >
                  <Modal.Header closeButton>
                        <Modal.Title id="example-custom-modal-styling-title">
-                          Submission Status
+                          {t("Submission Status")}
                        </Modal.Title>
                  </Modal.Header>
                  <Modal.Body>

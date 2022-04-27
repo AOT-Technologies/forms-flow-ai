@@ -2,8 +2,10 @@ import React,{useState} from "react";
 import Buttons from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useSelector } from "react-redux";
+import {useTranslation} from 'react-i18next'
 const SaveNext = React.memo(({ handleNext, handleBack, activeStep, isLastStep, submitData,modified }) => {
   const applicationCount = useSelector((state) =>state.process.applicationCount)
+  const {t} = useTranslation();
   const handleChanges = ()=>{
    if( applicationCount > 0){
     if(modified){
@@ -25,13 +27,13 @@ const SaveNext = React.memo(({ handleNext, handleBack, activeStep, isLastStep, s
   return (
     <>
       <Buttons className="mx-2" variant="outline-secondary" disabled={activeStep === 0} onClick={handleBack}>
-        Back
+      {t("Back")}
       </Buttons>
       <Buttons
         variant="primary"
         onClick={handleChanges}
       >
-        {isLastStep ? "Save" : "Next"}
+        {isLastStep ? t("Save") : t("Next")}
       </Buttons>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>

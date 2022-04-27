@@ -51,8 +51,6 @@ test('Render Detail Component with application prop passed', () => {
   useSelector.mockImplementation((callback) => callback(newState));
 
   rerender(<Details application={mockApplication2}/>)
-  expect(screen.getByText('Loading...'));
-  expect(screen.queryByText('Loading...')).not.toBeNull();
   expect(screen.getByTestId('application-id')).toHaveTextContent(mockApplication2.id);
 });
 

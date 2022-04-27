@@ -6,6 +6,7 @@ import { Provider } from 'react-redux'
 import { Router,Route } from 'react-router';
 import { createMemoryHistory } from "history";
 import configureStore from 'redux-mock-store';
+import * as redux from 'react-redux'
 
 let store;
 let mockStore = configureStore([]);
@@ -14,28 +15,35 @@ beforeEach(()=>{
     form:{
       error:""
     },
-    
+
   });
   store.dispatch = jest.fn();
 })
 
-function renderWithRouterMatch( ui,{ 
-    path = "/", 
-    route = "/", 
+function renderWithRouterMatch( ui,{
+    path = "/",
+    route = "/",
     history = createMemoryHistory({ initialEntries: [route] }),
-  } = {}) { 
-    return{ 
-    ...rtlRender(  
+  } = {}) {
+    return{
+    ...rtlRender(
         <Provider store={store}>
-            <Router history={history}> 
-                <Route path={path} component={ui}  /> 
+            <Router history={history}>
+                <Route path={path} component={ui}  />
             </Router>
           </Provider> )
       }
-    
+
   }
 
+
+
 it("should render the create component without braking",()=>{
+
+  const spy = jest.spyOn(redux,"useSelector");
+  spy.mockImplementation((callback) => callback(
+    {user:{lang:''},form:{error:""}}
+))
     renderWithRouterMatch(Create,{
         path:"/formflow/:formId",
         route:"/formflow/create",
@@ -46,6 +54,11 @@ it("should render the create component without braking",()=>{
 })
 
 it("should render the create  anonymous component without braking",()=>{
+
+  const spy = jest.spyOn(redux,"useSelector");
+  spy.mockImplementation((callback) => callback(
+    {user:{lang:''},form:{error:""}}
+))
   renderWithRouterMatch(Create,{
       path:"/formflow/:formId",
       route:"/formflow/create",

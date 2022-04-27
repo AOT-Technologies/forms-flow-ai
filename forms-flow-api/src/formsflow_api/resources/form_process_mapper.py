@@ -293,7 +293,7 @@ class FormResourceApplicationCount(Resource):
     def get(mapper_id: int):
         """The method retrieves the total application count for the given mapper id."""
         try:
-            FormProcessMapperService.check_tenant_authentication(mapper_id=mapper_id)
+            FormProcessMapperService.check_tenant_authorization(mapper_id=mapper_id)
             (
                 response,
                 status,

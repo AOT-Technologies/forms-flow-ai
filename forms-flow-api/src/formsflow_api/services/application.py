@@ -320,7 +320,7 @@ class ApplicationService:
         )
         if mapper:
             if mapper.mapper_id and tenant_key:
-                FormProcessMapperService.check_tenant_authentication(
+                FormProcessMapperService.check_tenant_authorization(
                     mapper_id=mapper.mapper_id, tenant_key=tenant_key
                 )
             mapper_schema = FormProcessMapperSchema()

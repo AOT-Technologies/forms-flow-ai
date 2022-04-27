@@ -10,7 +10,8 @@ export default class SentimentAnalytics extends Component {
   }
   updateCommentData = (event) => {
     const { type, sentimentAnalyticTopics } = this.props.component;
-    let overallSentiment = overallSentiment ? overallSentiment : '';
+    let { value } = this.state;
+    let overallSentiment = value?.overallSentiment || '';
     this.setState({ value: { text: event.target.value, type, topics: sentimentAnalyticTopics, overallSentiment } }, () => this.props.onChange(this.state.value));
   };
 

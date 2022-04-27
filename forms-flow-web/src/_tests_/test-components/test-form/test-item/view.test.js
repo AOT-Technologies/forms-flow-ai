@@ -43,7 +43,7 @@ function renderWithRouterMatch( ui,{
 it("should render the View component without breaking",async()=>{
   const spy = jest.spyOn(redux,"useSelector");
   spy.mockImplementation((callback) => callback(
-    {applications:{isPublicStatusLoading:false},form:{isActive: false},formDelete:{isFormSubmissionLoading:false}}
+    {applications:{isPublicStatusLoading:false},form:{isActive: false},formDelete:{isFormSubmissionLoading:false},user:{lang:''}}
 ))
     renderWithRouterMatch(View,{
         path:"/form/:formId",
@@ -57,7 +57,7 @@ it("should render the View component without breaking",async()=>{
 it("should render the public View component without breaking ",async()=>{
   const spy = jest.spyOn(redux,"useSelector");
   spy.mockImplementation((callback) => callback(
-    {applications:{isPublicStatusLoading:false},form:{isActive: false},formDelete:{isFormSubmissionLoading:false}}
+    {applications:{isPublicStatusLoading:false},form:{isActive: false},formDelete:{isFormSubmissionLoading:false},user:{lang:''}}
 ))
   //spy.mockReturnValue({applications:{isPublicStatusLoading:false},form:{isActive: false}})
   renderWithRouterMatch(View,{

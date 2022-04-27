@@ -1,8 +1,6 @@
-import React, {Component} from 'react';
-/**
- * An example React component this is simply a controlled input element.
- *
- */
+import React, { Component } from 'react';
+
+
 export default class SentimentAnalytics extends Component {
   constructor(props) {
     super(props);
@@ -10,18 +8,18 @@ export default class SentimentAnalytics extends Component {
       value: props.value
     }
   }
-
   updateCommentData = (event) => {
-    const {type, sentimentAnalyticTopics} = this.props.component;
-    this.setState({value: {text:event.target.value,type,topics:sentimentAnalyticTopics}}, () => this.props.onChange(this.state.value));
+    const { type, sentimentAnalyticTopics } = this.props.component;
+    let { value } = this.state;
+    let overallSentiment = value?.overallSentiment || '';
+    this.setState({ value: { text: event.target.value, type, topics: sentimentAnalyticTopics, overallSentiment } }, () => this.props.onChange(this.state.value));
   };
 
   render() {
-    const {disabled, name} = this.props;
+    const { disabled, name } = this.props;
     let { value } = this.state;
     const text = value?.text || '';
-    return  (
-      /*<input type="text" value={value} className={this.props.component.customClassName} onChange={this.setValue}></input>*/
+    return (
       <textarea
         name={name}
         rows="3"

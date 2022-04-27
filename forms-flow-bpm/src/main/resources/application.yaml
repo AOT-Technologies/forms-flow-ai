@@ -44,8 +44,8 @@ formsflow.ai:
       webclient:
         maxInMemorySize: ${DATA_BUFFER_SIZE:2}
         connectionTimeout: ${BPM_CLIENT_CONN_TIMEOUT:5000}
-
-
+  analysis:
+    url: ${DATA_ANALYSIS_URL}
 
 #  session:
 #    jdbc.initialize-schema: always

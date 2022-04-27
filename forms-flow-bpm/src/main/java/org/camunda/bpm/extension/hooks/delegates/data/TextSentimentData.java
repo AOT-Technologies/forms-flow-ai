@@ -13,4 +13,5 @@ public class TextSentimentData{
     private String elementId;
     private List<String> topics;
     private String text;
+   // private String overallSentiment;
 }

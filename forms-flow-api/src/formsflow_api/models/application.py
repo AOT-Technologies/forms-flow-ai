@@ -61,7 +61,7 @@ class Application(
     @classmethod
     def find_by_id(cls, application_id: int) -> Application:
         """Find application that matches the provided id."""
-        query =cls.query.join(
+        query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
         )
         query = query.filter(cls.id == application_id)

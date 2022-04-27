@@ -200,7 +200,7 @@ class ApplicationResourceById(Resource):
             response, status = (
                 {
                     "type": "Permission Denied",
-                    "message": f"Access to application - {application_id} is prohibited.",
+                    "message": f"Access to application-{application_id} is prohibited.",
                 },
                 HTTPStatus.FORBIDDEN,
             )
@@ -316,7 +316,7 @@ class ApplicationResourcesByIds(Resource):
             response, status = (
                 {
                     "type": "Permission Denied",
-                    "message": f"Access to form id - {dict_data['form_id']} is prohibited.",
+                    "message": f"Access to formId-{dict_data['form_id']} is prohibited",
                 },
                 HTTPStatus.FORBIDDEN,
             )

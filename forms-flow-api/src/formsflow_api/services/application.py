@@ -145,7 +145,7 @@ class ApplicationService:
     @user_context
     def get_auth_by_application_id(application_id: int, token: str, **kwargs):
         """Get authorized Application by id."""
-        user: UserContext = kwargs['user']
+        user: UserContext = kwargs["user"]
         auth_form_details = ApplicationService.get_authorised_form_list(token=token)
         current_app.logger.info(auth_form_details)
         auth_list = auth_form_details.get("authorizationList") or {}
@@ -157,7 +157,9 @@ class ApplicationService:
                 process_key=resource_list, application_id=application_id
             )
         if application is None and user.tenant_key is not None:
-            raise PermissionError(f"Access to application - {application_id} is denied.")
+            raise PermissionError(
+                f"Access to application - {application_id} is denied."
+            )
         return application_schema.dump(application), HTTPStatus.OK
 
     @staticmethod

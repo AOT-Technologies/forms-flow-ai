@@ -1,5 +1,4 @@
 """Generate account statements.
-
 This module will create statement records for each account.
 """
 
@@ -47,8 +46,11 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     app.logger.info("<<<< Starting Sentiment analysis job >>>>")
     register_shellcontext(app)
     preloading = threading.Thread(target=LoadModel.preload_models)
-    preloading.start()
     log_info("Model is loading...")
+    if LoadModel.model_id is None:
+        raise RuntimeError("Model id cannot be empty")
+    preloading.start()
+    log_info(f"Model id: {LoadModel.model_id}")
     preloading.join()
     log_info("Model loading complete.")
     app.classifier = LoadModel.classifier
@@ -81,10 +83,10 @@ def update_sentiment():
         primary_keys = _find_primary_keys(conn, table_name)
         log_info(f"found primary keys : {primary_keys}")
         # Query the rows from table.
-        cols_to_query = f"{primary_keys},{input_col}"
         rows_query = client.get_row_query(
             Databse[APP_CONFIG.DBMS].value,
-            cols_to_query,
+            primary_keys,
+            input_col,
             table_name,
             output_col,
             limit=100,
@@ -129,7 +131,6 @@ def _find_primary_keys(conn, table_name):
         primary_keys = ",".join(cur.fetchall()[0])
     finally:
         cur.close()
-
     return primary_keys
 
 

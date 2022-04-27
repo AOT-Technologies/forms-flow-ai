@@ -11,6 +11,7 @@ import {getUserRolePermission} from "../../../../../helper/user";
 import {CLIENT, STAFF_REVIEWER} from "../../../../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../../../../constants/applicationConstants";
 import Loading from '../../../../../containers/Loading';
+import { clearSubmissionError } from '../../../../../actions/formActions';
 
 const Item = React.memo((props) => {
   const {formId, submissionId} = useParams();
@@ -26,6 +27,7 @@ const Item = React.memo((props) => {
   const [editAllowed, setEditAllowed] = useState(false);
 
   useEffect(() => {
+    dispatch(clearSubmissionError('submission'))
     dispatch(getSubmission('submission', submissionId, formId))
   }, [submissionId, formId, dispatch]);
 

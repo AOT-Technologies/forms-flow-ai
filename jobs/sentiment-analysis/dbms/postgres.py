@@ -15,7 +15,11 @@ class PostgresConnect:  # pylint: disable=too-few-public-methods
             raise err
 
     @staticmethod
-    def get_row_query(cols_to_query, table_name, output_col, limit) -> str:
+    def get_row_query(primary_keys, input_col, table_name, output_col, limit) -> str:
         """Returns database specific query for retrieving rows."""
-        return f"select {cols_to_query} from {table_name} where " \
+        cols_to_query = f"{primary_keys},{input_col}"
+        return (
+            f"select {cols_to_query} from {table_name} where "
+            f"{input_col} is not null and "
             f"coalesce({output_col}, '') = '' limit {limit}"
+        )

@@ -177,6 +177,8 @@ plugin.identity.keycloak:
   maxResultSize: ${IDENTITY_PROVIDER_MAX_RESULT_SIZE:250}
   webClientId: ${KEYCLOAK_WEB_CLIENTID:}
   enableClientAuth: ${KEYCLOAK_ENABLE_CLIENT_AUTH:false}
+  enableMultiTenancy: ${MULTI_TENANCY_ENABLED:false}
+  formsFlowAdminUrl: ${FORMSFLOW_ADMIN_URL:}
 
 app.security.origin: ${APP_SECURITY_ORIGIN}
 

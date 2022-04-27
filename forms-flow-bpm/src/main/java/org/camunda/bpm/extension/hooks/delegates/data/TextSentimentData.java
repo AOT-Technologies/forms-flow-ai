@@ -10,8 +10,15 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TextSentimentData{
+
+    public TextSentimentData(String elementId, List<String> topics, String text) {
+        this.elementId = elementId;
+        this.topics = topics;
+        this.text = text;
+    }
+
     private String elementId;
     private List<String> topics;
     private String text;
-   // private String overallSentiment;
+    private String overallSentiment;
 }

@@ -258,7 +258,7 @@ const List = React.memo((props) => {
               <LoadingOverlay
                active={searchFormLoading || isApplicationCountLoading || bpmFormLoading }
                spinner
-               text="Loading..."
+               text={t("Loading...")}
               >
               {
               (searchFormLoading || paginatedForms.length) ?

@@ -98,7 +98,7 @@ const Preview = React.memo(
                     </div>
                   )}
                   <div>
-                    <label> <label className="fontsize-16 mx-1">Publish this form for Client Users.</label>
+                    <label> <label className="fontsize-16 mx-1">{t("Publish this form for Client Users.")}</label>
                       <FormControlLabel
                         control={
                           <Checkbox

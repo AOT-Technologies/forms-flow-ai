@@ -19,4 +19,10 @@ public class FormElement {
         this.path = "/data/" + elementId;
         this.value = value;
     }
+
+    public FormElement(String parentPath, String elementId, String value) {
+        this.op = "replace";
+        this.path = "/data/" + parentPath + "/" + elementId;
+        this.value = value;
+    }
 }

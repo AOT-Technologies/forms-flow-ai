@@ -1,5 +1,6 @@
 package org.camunda.bpm.extension.commons.connector.support;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.extension.commons.connector.auth.FormioConfiguration;
 import org.camunda.bpm.extension.commons.connector.auth.FormioContextProvider;
 import org.slf4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import java.util.Properties;
 
 
@@ -24,7 +26,8 @@ public class FormTokenAccessHandler {
 
     @Autowired
     private Properties integrationCredentialProperties;
-
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     protected WebClient unauthenticatedWebClient;
 
@@ -37,7 +40,7 @@ public class FormTokenAccessHandler {
             String password = integrationCredentialProperties.getProperty("formio.security.password");
             String accessTokenUri = integrationCredentialProperties.getProperty("formio.security.accessTokenUri");
             FormioConfiguration formioConfiguration = new FormioConfiguration(email, password, accessTokenUri);
-            formioContextProvider = new FormioContextProvider(formioConfiguration, unauthenticatedWebClient);
+            formioContextProvider = new FormioContextProvider(formioConfiguration, unauthenticatedWebClient, bpmObjectMapper);
         }
     }
 

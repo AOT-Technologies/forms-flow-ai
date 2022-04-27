@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import  com.fasterxml.jackson.core.JsonProcessingException;
 
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -36,7 +37,8 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
 
     @Autowired
     private FormSubmissionService formSubmissionService;
-
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
@@ -54,13 +56,13 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
         if(submission.isEmpty()) {
             throw new RuntimeException("Unable to retrieve submission");
         }
-        JsonNode dataNode = getObjectMapper().readTree(submission);
+        JsonNode dataNode = bpmObjectMapper.readTree(submission);
         Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
         while (dataElements.hasNext()) {
             Map.Entry<String, JsonNode> entry = dataElements.next();
             if(entry.getValue().has("type") && getSentimentCategory().equals(entry.getValue().get("type").asText())) {
                 txtRecords.add(CreateTextSentimentData(entry.getKey(),
-                        getObjectMapper().readValue(entry.getValue().get("topics").toString(), List.class), entry.getValue().get("text").asText()));
+                        bpmObjectMapper.readValue(entry.getValue().get("topics").toString(), List.class), entry.getValue().get("text").asText()));
             }
         }
         if(CollectionUtils.isNotEmpty(txtRecords)) {
@@ -68,10 +70,6 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
                     String.valueOf(execution.getVariable("formUrl")),txtRecords);
         }
         return null;
-    }
-
-    private ObjectMapper getObjectMapper(){
-        return new ObjectMapper();
     }
 
     public TextSentimentRequest CreateTextSentimentRequest(Integer applicationId, String formUrl, List<TextSentimentData> data) {

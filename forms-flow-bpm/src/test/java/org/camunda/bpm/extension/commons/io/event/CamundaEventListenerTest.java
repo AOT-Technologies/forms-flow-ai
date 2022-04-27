@@ -1,6 +1,8 @@
 package org.camunda.bpm.extension.commons.io.event;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.delegate.DelegateTask;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -10,6 +12,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,6 +30,18 @@ public class CamundaEventListenerTest {
 
 	@Mock
 	private SimpMessagingTemplate template;
+
+	@BeforeEach
+	public void setup() {
+		try {
+			Field field = camundaEventListener.getClass().getDeclaredField("bpmObjectMapper");
+			field.setAccessible(true);
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		ReflectionTestUtils.setField(this.camundaEventListener, "bpmObjectMapper", objectMapper);
+	}
 
 	/**
 	 * Test perform a positive test over onTaskEventListener

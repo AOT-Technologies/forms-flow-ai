@@ -23,6 +23,8 @@ public class FormioContextProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(FormioContextProvider.class);
 
+    private ObjectMapper bpmObjectMapper;
+
     private FormioContext context;
 
     private final WebClient webClient;
@@ -34,9 +36,10 @@ public class FormioContextProvider {
      * @param formioConfiguration the Formio configuration
      * @param webClient REST template
      */
-    public FormioContextProvider(FormioConfiguration formioConfiguration, WebClient webClient) {
+    public FormioContextProvider(FormioConfiguration formioConfiguration, WebClient webClient,ObjectMapper objectMapper) {
         this.formioConfiguration = formioConfiguration;
         this.webClient = webClient;
+        this.bpmObjectMapper = objectMapper;
     }
 
     /**
@@ -110,8 +113,7 @@ public class FormioContextProvider {
             String[] chunks = token.split("\\.");
             Base64.Decoder decoder = Base64.getUrlDecoder();
             String data = new String(decoder.decode(chunks[1]));
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode dataNode = objectMapper.readTree(data);
+            JsonNode dataNode = bpmObjectMapper.readTree(data);
             long exp = dataNode.get("exp").asLong();
             long iat = dataNode.get("iat").asLong();
             return (exp - iat) * 1000;

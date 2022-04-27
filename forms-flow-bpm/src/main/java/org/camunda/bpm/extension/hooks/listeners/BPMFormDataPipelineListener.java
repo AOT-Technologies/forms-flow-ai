@@ -13,13 +13,13 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.FormElement;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import javax.annotation.Resource;
 import javax.inject.Named;
 
 import java.io.IOException;
@@ -41,6 +41,8 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
 
     private Expression fields;
 
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
@@ -82,9 +84,8 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
 
     private List<FormElement> getModifiedFormElements(DelegateExecution execution) throws IOException {
         List<FormElement> elements = new ArrayList<>();
-        ObjectMapper objectMapper = new ObjectMapper();
         List<String> injectableFields =  this.fields != null && this.fields.getValue(execution) != null ?
-                objectMapper.readValue(String.valueOf(this.fields.getValue(execution)),List.class): null;
+                bpmObjectMapper.readValue(String.valueOf(this.fields.getValue(execution)),List.class): null;
         for(String entry: injectableFields) {
             elements.add(new FormElement(entry,String.valueOf(execution.getVariable(entry))));
         }

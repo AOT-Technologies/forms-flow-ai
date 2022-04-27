@@ -317,7 +317,7 @@ class StepperPage extends PureComponent {
       case 1:
         return (
           <WorkFlow
-             
+            
             populateDropdown={this.populateDropdown}
             associateToWorkFlow={this.associateToWorkFlow}
             handleNext={this.handleNext}

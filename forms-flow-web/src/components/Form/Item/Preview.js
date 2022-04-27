@@ -35,7 +35,7 @@ const Preview = class extends PureComponent {
         <div className="main-header">
           <h3 className="task-head"> <i className="fa fa-wpforms" aria-hidden="true"/> &nbsp; {form.title}</h3>
           <Button
-            className="btn btn-primary btn-sm form-btn pull-right btn-right"
+            className="btn btn-primary  form-btn pull-right btn-right"
             onClick={() => {
               dispatch(push(`/formflow/${form._id}/edit`));
             }}
@@ -46,7 +46,7 @@ const Preview = class extends PureComponent {
           <Button
             variant="contained"
             onClick={handleNext}
-            className="ml-3 btn btn-primary btn-sm form-btn"
+            className="ml-3 btn btn-primary  form-btn"
           >
             {(this.state.activeStep === 1, "Next")}
           </Button>

@@ -41,8 +41,11 @@ public class HTTPServiceInvoker {
     private String getServiceId(String url) {
         if(StringUtils.contains(url, getProperties().getProperty("api.url"))) {
             return "applicationAccessHandler";
+        }else if(StringUtils.contains(url, getProperties().getProperty("analysis.url"))) {
+            return "textAnalyzerAccessHandler";
+        } else {
+            return "formAccessHandler";
         }
-        return "formAccessHandler";
     }
 
     public Properties getProperties() {

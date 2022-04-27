@@ -31,7 +31,7 @@ EXIT /B %ERRORLEVEL%
     call:forms-flow-all configuration
     call:forms-flow-analytics configuration\forms-flow-analytics
     call:prune-docker
-    call:clear-dir source
+    call:clear-dir configuration
     EXIT /B 0
 	
 
@@ -73,9 +73,8 @@ EXIT /B %ERRORLEVEL%
 
 :clear-dir
     if exist %~1 (
-        rmdir /s /q %~1
-    )
-    EXIT /B 0
+        del /Q /S "config.js" ".env"
+   EXIT /B 0
 	
 :: #############################################################
 :: ############# clearing dangling images ######################

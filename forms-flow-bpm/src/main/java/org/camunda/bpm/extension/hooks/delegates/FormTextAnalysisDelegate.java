@@ -2,23 +2,18 @@ package org.camunda.bpm.extension.hooks.delegates;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.delegates.data.TextSentimentData;
 import org.camunda.bpm.extension.hooks.delegates.data.TextSentimentRequest;
 import org.camunda.bpm.extension.hooks.exceptions.AnalysisServiceException;
-import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.FormElement;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- * @author sumathi.thirumani@aot-technologies.com
- */
 @Component
 public class FormTextAnalysisDelegate implements JavaDelegate {
 
@@ -53,7 +44,7 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
         TextSentimentRequest textSentimentRequest = prepareAnalysisRequest(execution);
         if(textSentimentRequest != null) {
             ResponseEntity<String> response =  httpServiceInvoker.execute(getAnalysisUrl(), HttpMethod.POST,textSentimentRequest);
-            if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
+            if(response.getStatusCode().value() == HttpStatus.OK.value()) {
                 prepareAndPatchFormData(execution, response.getBody());
             } else {
                 throw new AnalysisServiceException("Unable to read submission for: "+ getAnalysisUrl()+ ". Message Body: " +
@@ -85,12 +76,12 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
     }
 
 
-    private void prepareAndPatchFormData(DelegateExecution execution, String data) throws IOException {
+    public void prepareAndPatchFormData(DelegateExecution execution, String data) throws IOException {
         TextSentimentRequest textSentimentRequest = getObjectMapper().readValue(data, TextSentimentRequest.class);
         List<FormElement> elements = new ArrayList<>();
         if(textSentimentRequest.getData() != null) {
             for (TextSentimentData textSentimentData : textSentimentRequest.getData()) {
-                elements.add(new FormElement(textSentimentData.getElementId(), textSentimentData.getElementId(),
+                elements.add(new FormElement(textSentimentData.getElementId(), "overallSentiment",
                         textSentimentData.getOverallSentiment()));
             }
         }

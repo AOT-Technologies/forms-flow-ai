@@ -15,6 +15,8 @@ import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.FormElement;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpMethod;
@@ -30,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  *
@@ -39,7 +40,7 @@ import java.util.logging.Logger;
 @Component
 public class FormTextAnalysisDelegate implements JavaDelegate {
 
-    private final Logger LOGGER = Logger.getLogger(FormTextAnalysisDelegate.class.getName());
+    private final Logger LOGGER = LoggerFactory.getLogger(FormTextAnalysisDelegate.class.getName());
 
     @Autowired
     private FormSubmissionService formSubmissionService;
@@ -52,7 +53,7 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
         TextSentimentRequest textSentimentRequest = prepareAnalysisRequest(execution);
         if(textSentimentRequest != null) {
             ResponseEntity<String> response =  httpServiceInvoker.execute(getAnalysisUrl(), HttpMethod.POST,textSentimentRequest);
-            if(response.getStatusCode().value() == HttpStatus.OK.value()) {
+            if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
                 prepareAndPatchFormData(execution, response.getBody());
             } else {
                 throw new AnalysisServiceException("Unable to read submission for: "+ getAnalysisUrl()+ ". Message Body: " +

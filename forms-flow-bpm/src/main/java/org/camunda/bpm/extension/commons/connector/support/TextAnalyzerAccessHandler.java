@@ -12,13 +12,14 @@ import reactor.core.publisher.Mono;
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
 @Service("textAnalyzerAccessHandler")
-public class TextAnalyzerAccessHandler {
+public class TextAnalyzerAccessHandler implements IAccessHandler{
 
     private final Logger LOGGER = LoggerFactory.getLogger(TextAnalyzerAccessHandler.class);
 
     @Autowired
     private WebClient webClient;
 
+    @Override
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
 
         payload = (payload == null) ? new JsonObject().toString() : payload;

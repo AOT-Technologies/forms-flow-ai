@@ -1,0 +1,51 @@
+# Author: Shibin Thomas
+version: "3.7"
+
+volumes:
+  postgres:
+  
+networks:
+  keycloak-server-network:
+    driver: 'bridge'
+
+services:
+  keycloak-db:
+    image: postgres:latest
+    restart: always
+    container_name: keycloak_db
+    volumes:
+      - ./postgres/keycloak:/data/postgres
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_JDBC_DB:-keycloak}
+      POSTGRES_USER: ${KEYCLOAK_JDBC_USER:-admin}
+      POSTGRES_PASSWORD: ${KEYCLOAK_JDBC_PASSWORD:-changeme}
+    ports:
+      - 5431:5431
+    networks:
+      - keycloak-server-network
+
+  keycloak:
+    image: jboss/keycloak:14.0.0
+    restart: unless-stopped
+    container_name: keycloak
+    volumes:
+      - ./imports:/opt/jboss/keycloak/imports
+      - ./themes/formsflow:/opt/jboss/keycloak/themes/formsflow
+      
+    command: 
+      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/formsflow-ai-realm.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
+    environment:
+      - DB_VENDOR=POSTGRES
+      - DB_ADDR=keycloak-db
+      - DB_DATABASE=${KEYCLOAK_JDBC_DB:-keycloak}
+      - DB_USER=${KEYCLOAK_JDBC_USER-admin}
+      - DB_PASSWORD=${KEYCLOAK_JDBC_PASSWORD:-changeme}
+      - KEYCLOAK_USER=${KEYCLOAK_ADMIN_USER:-admin}
+      - KEYCLOAK_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
+    ports:
+      - 8080:8080
+    depends_on:
+      - keycloak-db
+    networks:
+      - keycloak-server-network
+   

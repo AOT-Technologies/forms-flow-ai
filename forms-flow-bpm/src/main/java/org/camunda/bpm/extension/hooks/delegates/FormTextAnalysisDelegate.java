@@ -90,7 +90,8 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
         List<FormElement> elements = new ArrayList<>();
         if(textSentimentRequest.getData() != null) {
             for (TextSentimentData textSentimentData : textSentimentRequest.getData()) {
-                elements.add(new FormElement("overallSentiment", "overallSentiment", textSentimentData.getOverallSentiment()));
+                elements.add(new FormElement(textSentimentData.getElementId(), textSentimentData.getElementId(),
+                        textSentimentData.getOverallSentiment()));
             }
         }
         ResponseEntity<String> response = httpServiceInvoker.execute(getFormUrl(execution), HttpMethod.PATCH, elements);

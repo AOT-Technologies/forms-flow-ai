@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Route, Redirect } from "react-router";
 import StatusChart from "./StatusChart";
 import Select from 'react-select';
+import Modal from "react-bootstrap/Modal"
 import {
   fetchMetricsSubmissionCount,
   fetchMetricsSubmissionStatusCount,
@@ -50,7 +51,8 @@ const Dashboard = React.memo(() => {
     moment(lastDay),
   ]);
   const [showSubmissionData,setSHowSubmissionData]=useState(submissionsList[0])
-
+  const [show ,setShow] =useState(false)
+ 
   const getFormattedDate = (date) => {
     return moment.utc(date).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B")
   };
@@ -77,6 +79,7 @@ const Dashboard = React.memo(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(fetchMetricsSubmissionStatusCount(id, fromDate, toDate, searchBy.value));
+    setShow(true)
   };
 
   const onSetDateRange = (date) => {
@@ -104,9 +107,9 @@ const Dashboard = React.memo(() => {
             <hr className="line-hr"/>
             <div className="row ">
               <div className="col-12 col-lg-4 ">
-                <h3 className="application-title">
+                <h2 className="application-title">
                   <i className="fa fa-bars mr-1"/> Submissions
-                </h3>
+                </h2> 
               </div>
               <div className="col-12 col-lg-5" title="Search By">
               <div style={{width: '200px',float:"right"}} >
@@ -147,11 +150,26 @@ const Dashboard = React.memo(() => {
               {isMetricsStatusLoading ? (
                 <Loading />
               ) : (
-                <StatusChart  submissionsStatusList={submissionsStatusList} submissionData={showSubmissionData} />
+                <Modal
+                  show={show}
+                  size="lg"
+                  onHide={() => setShow(false)}
+                  aria-labelledby="example-custom-modal-styling-title"
+                   >
+                 <Modal.Header closeButton>
+                       <Modal.Title id="example-custom-modal-styling-title">
+                          Submission Status
+                       </Modal.Title>
+                 </Modal.Header>
+                 <Modal.Body>
+                    <StatusChart  submissionsStatusList={submissionsStatusList} submissionData={showSubmissionData} />
+                  </Modal.Body>
+                </Modal>
               )}
             </div>
           )}
         </div>
+        
       </div>
       </div>
       <Route path={"/metrics/:notAvailable"}> <Redirect exact to='/404'/></Route>

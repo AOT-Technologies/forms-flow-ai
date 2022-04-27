@@ -1,17 +1,31 @@
 package org.camunda.bpm.extension.hooks.controllers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.oauth2.sdk.util.CollectionUtils;
-import net.minidev.json.JSONArray;
-import org.apache.commons.lang.StringUtils;
-import org.camunda.bpm.engine.ProcessEngines;
+import static org.camunda.bpm.engine.authorization.Authorization.AUTH_TYPE_GRANT;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.servlet.ServletException;
+
+import org.apache.commons.lang.StringUtils;
+import org.camunda.bpm.engine.AuthorizationService;
+import org.camunda.bpm.engine.ProcessEngines;
+import org.camunda.bpm.engine.RepositoryService;
+import org.camunda.bpm.engine.authorization.Permissions;
+import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
+import org.camunda.bpm.engine.authorization.Resources;
+import org.camunda.bpm.engine.impl.persistence.entity.AuthorizationEntity;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizedAction;
+import org.camunda.bpm.extension.hooks.controllers.data.TenantAuthorizationDto;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,17 +38,21 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Controller;
-import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
-import org.camunda.bpm.engine.authorization.Resources;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletException;
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.oauth2.sdk.util.CollectionUtils;
+
+import net.minidev.json.JSONArray;
 
 /**
  * This class assist with admin operations of formsflow.ai: Giving all authorized form details
@@ -54,6 +72,13 @@ public class AdminController {
 
     @Value("${formsflow.ai.api.url}")
     private String formsflowApiUrl;
+    
+    @Autowired
+	private AuthorizationService authorizationService;
+
+	@Autowired
+	private RepositoryService repositoryService;
+	
 
     @GetMapping(value = "/engine-rest-ext/form/authorization", produces = MediaType.APPLICATION_JSON_VALUE)
     private @ResponseBody AuthorizationInfo getFormAuthorization() throws ServletException {
@@ -121,6 +146,95 @@ public class AdminController {
         }
         return filteredList;
     }
+    
+	/**
+	 * Create all authorizations needed for tenant.
+	 * 
+	 * @param dto
+	 * @throws ServletException
+	 */
+	@RequestMapping(value = "/engine-rest-ext/tenant/authorization", method = RequestMethod.POST, produces = "application/json")
+	private @ResponseBody void createTenant(@RequestBody TenantAuthorizationDto dto) throws ServletException {
+		LOGGER.info("Creating authorizations for tenant");
+		String tenantKey = dto.getTenantKey();
+		// Administrator gets access to the tasklist and cockpit.
+		for (String adminRole : dto.getAdminRoles()) {
+			createAuthorization(tenantKey, adminRole, Resources.APPLICATION, "tasklist");
+			createAuthorization(tenantKey, adminRole, Resources.APPLICATION, "cockpit");
+			createAuthorization(tenantKey, adminRole, Resources.PROCESS_DEFINITION, "*");
+			createAuthorization(tenantKey, adminRole, Resources.PROCESS_INSTANCE, "*");
+			createAuthorization(tenantKey, adminRole, Resources.TASK, "*");
+			createAuthorization(tenantKey, adminRole, Resources.TENANT, tenantKey);
+			createAuthorization(tenantKey, adminRole, Resources.DEPLOYMENT, "*");
+			createAuthorization(tenantKey, adminRole, Resources.FILTER, "*");
+		}
+
+		// Client authorizations
+		for (String clientRole : dto.getClientRoles()) {
+			createAuthorization(tenantKey, clientRole, Resources.PROCESS_DEFINITION, "*");
+			createAuthorization(tenantKey, clientRole, Resources.PROCESS_INSTANCE, "*");
+			createAuthorization(tenantKey, clientRole, Resources.TENANT, tenantKey);
+		}
+
+		// Designer authorizations
+		for (String designerRole : dto.getDesignerRoles()) {
+			createAuthorization(tenantKey, designerRole, Resources.PROCESS_DEFINITION, "*");
+			createAuthorization(tenantKey, designerRole, Resources.PROCESS_INSTANCE, "*");
+			createAuthorization(tenantKey, designerRole, Resources.TENANT, tenantKey);
+		}
+
+		// Reviewer authorizations
+		for (String reviewerRole : dto.getReviewerRoles()) {
+			createAuthorization(tenantKey, reviewerRole, Resources.PROCESS_DEFINITION, "*");
+			createAuthorization(tenantKey, reviewerRole, Resources.PROCESS_INSTANCE, "*");
+			createAuthorization(tenantKey, reviewerRole, Resources.TASK, "*");
+			createAuthorization(tenantKey, reviewerRole, Resources.TENANT, tenantKey);
+			createAuthorization(tenantKey, reviewerRole, Resources.FILTER, "*");
+		}
+		LOGGER.info("Finished creating authorizations for tenant");
+
+	}
+
+	/**
+	 * Create a deployment at the tenant level.
+	 * 
+	 * @param tenantKey
+	 * @param file
+	 * @throws ServletException
+	 */
+	@RequestMapping(value = "/engine-rest-ext/tenant/{tenantKey}/deployment", method = RequestMethod.POST, produces = "application/json", consumes = {
+			MediaType.MULTIPART_FORM_DATA_VALUE })
+	private @ResponseBody void createTenantDeployment(@PathVariable("tenantKey") String tenantKey,
+			@RequestParam("file") MultipartFile file) throws ServletException {
+		LOGGER.info("Deploying " + file.getOriginalFilename() + "; for Tenant " + tenantKey);
+		try {
+			this.repositoryService.createDeployment().tenantId(tenantKey)
+					.addInputStream(file.getOriginalFilename(), file.getInputStream()).deploy();
+		} catch (IOException e) {
+			LOGGER.severe("Error deploying definition " + e);
+			throw new ApplicationServiceException("Error while deploying process for tenant " + tenantKey);
+		}
+		LOGGER.info("Deployed " + file.getOriginalFilename() + "; for Tenant " + tenantKey);
+	}
+
+	/**
+	 * Create authorization entity.
+	 * 
+	 * @param tenantKey
+	 * @param role
+	 * @param resourceType
+	 * @param resourceId
+	 */
+	private void createAuthorization(String tenantKey, String role, Resources resourceType, String resourceId) {
+		AuthorizationEntity authEntity = new AuthorizationEntity();
+		authEntity.setAuthorizationType(AUTH_TYPE_GRANT);
+		authEntity.setGroupId(tenantKey + "-" + role);
+		authEntity.addPermission(Permissions.ALL);
+		authEntity.setResourceId(resourceId);
+		authEntity.setResourceType(resourceType.resourceType());
+		this.authorizationService.saveAuthorization(authEntity);
+	}
+
 
     /**
      * Utility method to avoid duplicate form entry in response.
@@ -153,17 +267,20 @@ public class AdminController {
         } else {
             throw new ServletException("Invalid authentication request token");
         }
-
+        String tenantKey = null;
+		if (claims != null && claims.containsKey("tenantKey")) {
+			tenantKey = claims.get("tenantKey").toString();
+		}
         List<String> groupIds = null;
         if(claims != null && claims.containsKey("groups")) {
-            groupIds = getKeyValues(claims, "groups");
+            groupIds = getKeyValues(claims, "groups", null);
         } else if (claims != null && claims.containsKey("roles")) {
-            groupIds = getKeyValues(claims, "roles");
+            groupIds = getKeyValues(claims, "roles", tenantKey);
         }
         return groupIds;
     }
 
-    private List<String> getKeyValues(Map<String, Object> claims, String claimName) {
+    private List<String> getKeyValues(Map<String, Object> claims, String claimName, String tenantKey) {
         List<String> groupIds = new ArrayList<String>();
         JSONArray groups = (JSONArray)claims.get(claimName);
         for (Object group1 : groups) {
@@ -171,6 +288,8 @@ public class AdminController {
             if(StringUtils.startsWith(groupName,"/")) {
                 groupIds.add(StringUtils.substring(groupName,1));
             } else {
+            	if (tenantKey != null)
+            		groupName = tenantKey + "-" + groupName;
                 groupIds.add(groupName);
             }
         }

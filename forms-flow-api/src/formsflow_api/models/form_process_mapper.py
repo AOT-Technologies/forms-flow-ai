@@ -9,7 +9,12 @@ from sqlalchemy import UniqueConstraint, and_, desc
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.sql.expression import text
 
-from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
+from formsflow_api.utils import (
+    DEFAULT_PROCESS_KEY,
+    DEFAULT_PROCESS_NAME,
+    FILTER_MAPS,
+    validate_sort_order_and_order_by,
+)
 from formsflow_api.utils.enums import FormProcessMapperStatus
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -23,8 +28,10 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     id = db.Column(db.Integer, primary_key=True)
     form_id = db.Column(db.String(50), nullable=False)
     form_name = db.Column(db.String(100), nullable=False)
-    process_key = db.Column(db.String(50), nullable=True)
-    process_name = db.Column(db.String(100), nullable=True)
+    process_key = db.Column(db.String(50), nullable=True, default=DEFAULT_PROCESS_KEY)
+    process_name = db.Column(
+        db.String(100), nullable=True, default=DEFAULT_PROCESS_NAME
+    )
     status = db.Column(db.String(10), nullable=True)
     comments = db.Column(db.String(300), nullable=True)
     tenant = db.Column(db.String(100), nullable=True)

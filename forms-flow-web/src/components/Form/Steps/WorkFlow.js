@@ -1,16 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import utils from 'formiojs/utils';
 import FormLabel from "@material-ui/core/FormLabel";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Select from "react-dropdown-select";
-import Button from "@material-ui/core/Button";
 import SaveNext from "./SaveNext";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
 import TaskvariableCreate from "./TaskvariableCreate";
@@ -24,10 +20,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { setFormProcessesData } from "../../../actions/processActions";
 import ViewAndEditTaskvariable  from "./ViewAndEditTaskvariable";
+import Button from 'react-bootstrap/Button';
 const WorkFlow = React.memo(
   ({
-    associateWorkFlow,
-    changeWorkFlowStatus,
     populateDropdown,
     associateToWorkFlow,
     handleNext,
@@ -63,8 +58,13 @@ const WorkFlow = React.memo(
     );
     const [keyOfVariable, setKeyOfVariable] = useState(componentLabel.filter(item=>!selectedTaskVariable.find(variable=>item.value===variable.key)));
   
-
-  
+   const defaultWorkflow = populateDropdown().filter(i=> i.value==="Defaultflow")
+    useEffect(()=>{
+      if(!workflow&&defaultWorkflow){
+        setModified(true)
+        associateToWorkFlow(defaultWorkflow)
+      }
+    },[workflow,associateToWorkFlow,defaultWorkflow] )
 
 
     const addTaskVariable = (data) => {
@@ -132,12 +132,12 @@ const WorkFlow = React.memo(
         {/* <FormControl component="fieldset"> */}
 
         <Grid item xs={12} sm={1} spacing={3}>
-          <button
-            className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
+          <Button
+           variant="primary"
             onClick={handleEditAssociation}
           >
             Edit
-          </button>
+          </Button>
         </Grid>
         <Grid item xs={12} sm={8} spacing={3} />
         <Grid item xs={12} sm={3} className="next-btn">
@@ -146,7 +146,6 @@ const WorkFlow = React.memo(
             handleNext={handleNext}
             activeStep={activeStep}
             steps={steps}
-            changeWorkFlowStatus={changeWorkFlowStatus}
             modified={modified} 
           />
         </Grid>
@@ -173,44 +172,15 @@ const WorkFlow = React.memo(
           {tabValue === 0 ? (
             <Card variant="outlined" className="card-overflow">
               <CardContent>
-                <Grid item xs={12} sm={12} spacing={3}>
-                  <FormLabel component="legend">
-                    Do you want to associate form with a workflow ?
-                  </FormLabel>
-                  <RadioGroup
-                    aria-label="associateWorkFlow"
-                    name="associateWorkFlow"
-                    value={associateWorkFlow}
-                    onChange={(e) => {
-                      changeWorkFlowStatus(e.target.value);
-                    }}
-                    row
-                  >
-                    <FormControlLabel
-                      value="yes"
-                      control={<Radio color="primary" />}
-                      label="Yes"
-                    />
-                    <FormControlLabel
-                      value="no"
-                      control={<Radio color="primary" />}
-                      onClick={(item)=>setModified(true)}
-                      label="No"
-                    />
-                  </RadioGroup>
-                </Grid>
-
-                {associateWorkFlow === "yes" && (
-                  <>
                     <Grid item xs={12} sm={6} spacing={3}>
-                      <h5>
+                      <span className="fontsize-16">
                         Please select from one of the following workflows.
-                      </h5>
+                      </span>
                       <Select
                         options={populateDropdown()}
                         onChange={(item) =>{setModified(true);
                         associateToWorkFlow(item)}}
-                        values={workflow && workflow.value ? [workflow] : []}
+                        values={workflow && workflow.value ? [workflow] :[]}
                         disabled={disableWorkflowAssociation}
                       />
                     </Grid>
@@ -223,8 +193,6 @@ const WorkFlow = React.memo(
                         />
                       </Grid>
                     )}
-                  </>
-                )}
                 {/* </FormControl> */}
               </CardContent>
             </Card>
@@ -274,11 +242,10 @@ const WorkFlow = React.memo(
                   )}
                   {keyOfVariable.length !== 0 && (
                     <Button
-                      variant="contained"
                       onClick={() =>
                         setShowTaskVaribleCrete(!showTaskVaribleCrete)
                       }
-                      color={showTaskVaribleCrete ? "secondary" : "primary"}
+                      variant={showTaskVaribleCrete ? "secondary" : "primary"}
                     >
                       {showTaskVaribleCrete ? "cancel" : "Add"}
                     </Button>

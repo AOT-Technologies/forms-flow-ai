@@ -166,6 +166,17 @@ class ApplicationResourceById(Resource):
                 application_id=application_id
             )
             return (ApplicationService.apply_custom_attributes(application), status)
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to form id - {application_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
         except BusinessException as err:
             return err.error, err.status_code
 
@@ -185,6 +196,18 @@ class ApplicationResourceById(Resource):
                 application_id=application_id, data=dict_data
             )
             return "Updated successfully", HTTPStatus.OK
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to application - {application_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
+
         except BaseException as submission_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad request error",
@@ -288,6 +311,25 @@ class ApplicationResourcesByIds(Resource):
                 data=dict_data, token=request.headers["Authorization"]
             )
             response = application_schema.dump(application)
+            return response, status
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to form id - {dict_data['form_id']} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
+        except KeyError as err:
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid application request passed",
+            }, HTTPStatus.BAD_REQUEST
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
         except BaseException as application_err:  # pylint: disable=broad-except
             response, status = {

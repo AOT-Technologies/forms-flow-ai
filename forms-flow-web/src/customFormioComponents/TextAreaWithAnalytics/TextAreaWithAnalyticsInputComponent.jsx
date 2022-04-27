@@ -8,10 +8,10 @@ export default class SentimentAnalytics extends Component {
       value: props.value
     }
   }
-
   updateCommentData = (event) => {
     const { type, sentimentAnalyticTopics } = this.props.component;
-    this.setState({ value: { text: event.target.value, type, topics: sentimentAnalyticTopics, overallSentiment: '' } }, () => this.props.onChange(this.state.value));
+    let overallSentiment = overallSentiment ? overallSentiment : '';
+    this.setState({ value: { text: event.target.value, type, topics: sentimentAnalyticTopics, overallSentiment } }, () => this.props.onChange(this.state.value));
   };
 
   render() {
@@ -19,16 +19,14 @@ export default class SentimentAnalytics extends Component {
     let { value } = this.state;
     const text = value?.text || '';
     return (
-      <>
-        <textarea
-          name={name}
-          rows="3"
-          value={text}
-          className="form-control"
-          onChange={this.updateCommentData}
-          disabled={disabled}
-        />
-      </>
+      <textarea
+        name={name}
+        rows="3"
+        value={text}
+        className="form-control"
+        onChange={this.updateCommentData}
+        disabled={disabled}
+      />
     );
   }
 };

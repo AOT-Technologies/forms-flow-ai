@@ -3,7 +3,7 @@ version: '3.7'
 
 services:
   forms-flow-data-analysis-db:
-    image: "postgres:14"
+    image: "postgres:13"
     environment:
       POSTGRES_USER: ${DATA_ANALYSIS_DB_USER}
       POSTGRES_PASSWORD: ${DATA_ANALYSIS_DB_PASSWORD}

@@ -72,8 +72,8 @@ EXIT /B %ERRORLEVEL%
 :: ##############################################################
 
 :clear-dir
-    if exist %~1 (
-        rmdir /s /q %~1
+     if exist %~1 (
+        del /Q /S "C:\latest updations for installation\deployment\docker\bundle\configuration\config.js" "C:\latest updations for installation\deployment\docker\bundle\configuration\.env"
     )
     EXIT /B 0
 	

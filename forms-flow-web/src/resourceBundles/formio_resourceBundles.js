@@ -2,6 +2,7 @@ export const formio_resourceBundles = {
 
    "en": {
 
+      "Click here to go back":"Click here to go back",
       "Error while saving Form":"Error while saving Form",
       "Confirmation":"Confirmation",
       "Submitted By":"Submitted By",
@@ -207,6 +208,7 @@ export const formio_resourceBundles = {
 
    "zh-CN": {
 
+      "Click here to go back":"点击此处回去",
       "Dashboards":"仪表板",
       "Error while saving Form":"保存表单时出错",
       "Confirmation":"确认",
@@ -911,6 +913,7 @@ export const formio_resourceBundles = {
 
    "bg": {
 
+      "Click here to go back":"Щракнете тук, за да се върнете",
       "Dashboards":"Табла за управление",
       "Tasks": "Задачи",
       "Error while saving Form":"Грешка при запазване на формуляра",
@@ -1615,6 +1618,7 @@ export const formio_resourceBundles = {
 
    "pt": {
       
+      "Click here to go back":"Clique aqui para voltar",
       "Dashboards":"Painéis",
       "Error while saving Form":"Erro ao salvar o formulário",
       "Confirmation":"Confirmação",
@@ -2320,6 +2324,7 @@ export const formio_resourceBundles = {
 
    "fr": {
 
+      "Click here to go back":"Cliquez ici pour revenir en arrière",
       "Dashboards":"Tableaux de bord",
       "Tasks":"Tâches",
       "Error while saving Form":"Erreur lors de l'enregistrement du formulaire",
@@ -3028,6 +3033,7 @@ export const formio_resourceBundles = {
 
    "de": {
 
+      "Click here to go back":"Klicke hier um zurück zu kommen",
       "Dashboards":"Dashboards",
       "Error while saving Form":"Fehler beim Speichern des Formulars",
       "Confirmation":"Bestätigung",

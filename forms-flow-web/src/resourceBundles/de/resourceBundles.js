@@ -196,7 +196,8 @@ export const RESOURCE_BUNDLES_DE = {
   "Submitted By":"Eingereicht von",
   "Confirmation":"Bestätigung",
   "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Das Ändern des Formulartitels wirkt sich nicht auf die bestehenden Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen.",
-  "Error while saving Form":"Fehler beim Speichern des Formulars"
+  "Error while saving Form":"Fehler beim Speichern des Formulars",
+  "Click here to go back":"Klicke hier um zurück zu kommen"
 
 
 

@@ -193,7 +193,8 @@ export const RESOURCE_BUNDLES_ZH = {
   "Submitted By":"由...所提交",
   "Confirmation":"确认",
   "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"更改表单标题不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
-  "Error while saving Form":"保存表单时出错"
+  "Error while saving Form":"保存表单时出错",
+  "Click here to go back":"点击此处回去"
 
 
 

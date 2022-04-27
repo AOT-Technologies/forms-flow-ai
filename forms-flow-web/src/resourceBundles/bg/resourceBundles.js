@@ -194,7 +194,8 @@ export const RESOURCE_BUNDLES_BG = {
     "Submitted By":"Изпратено от",
     "Confirmation":"Потвърждение",
     "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Промяната на заглавието на формуляра няма да засегне съществуващите приложения. Той ще се актуализира само в новосъздадените приложения. Натиснете Запазване на промените, за да продължите или отмените промените.",
-    "Error while saving Form":"Грешка при запазване на формуляра"
+    "Error while saving Form":"Грешка при запазване на формуляра",
+    "Click here to go back":"Щракнете тук, за да се върнете"
 
 
 

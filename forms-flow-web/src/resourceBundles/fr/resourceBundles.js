@@ -197,7 +197,8 @@ export const RESOURCE_BUNDLES_FR = {
   "Search...":"Recherche...",
   "Confirmation":"Confirmation",
   "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"La modification du titre du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
-  "Error while saving Form":"Erreur lors de l'enregistrement du formulaire"
+  "Error while saving Form":"Erreur lors de l'enregistrement du formulaire",
+  "Click here to go back":"Cliquez ici pour revenir en arrière"
 
 
 

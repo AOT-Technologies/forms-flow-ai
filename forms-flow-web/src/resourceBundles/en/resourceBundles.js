@@ -194,7 +194,8 @@ export const RESOURCE_BUNDLES_EN = {
   "Submitted By":"Submitted By",
   "Confirmation":"Confirmation",
   "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
-  "Error while saving Form":"Error while saving Form"
+  "Error while saving Form":"Error while saving Form",
+  "Click here to go back":"Click here to go back"
 
 
 };

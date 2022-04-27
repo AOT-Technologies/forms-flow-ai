@@ -172,4 +172,3 @@ In this example:
 We have build formsflow.ai form management platform leveraging [formio](https://github.com/formio/formio).
 We use the OSL-v3 license similar to formio to ensure appropriate attribution is
 provided to form.io. Please read the [license](./LICENSE.txt) for more information.
-

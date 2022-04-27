@@ -195,7 +195,8 @@ export const RESOURCE_BUNDLES_PT = {
   "Submitted By":"Enviado por",
   "Confirmation":"Confirmação",
   "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Alterar o título do formulário não afetará os aplicativos existentes. Ele só será atualizado nos aplicativos recém-criados. Pressione Salvar alterações para continuar ou cancelar as alterações.",
-  "Error while saving Form":"Erro ao salvar o formulário"
+  "Error while saving Form":"Erro ao salvar o formulário",
+  "Click here to go back":"Clique aqui para voltar"
 
 
 

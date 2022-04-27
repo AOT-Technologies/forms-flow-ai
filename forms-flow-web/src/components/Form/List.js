@@ -282,13 +282,13 @@ const List = React.memo((props) => {
                     flexDirection:"column",
                     alignItems:"center",
                     justifyContent:"center"}}> 
-                  <h3 >No forms found </h3> 
+                  <h3 >{t("No forms found")}</h3> 
                  <Button variant="outline-primary" size="sm"
                  style={{
                    cursor:"pointer"}}
                    onClick={resetForms}
                  >
-                 Click here to go back
+                 {t("Click here to go back")}
                 </Button>
                   </div>
                  

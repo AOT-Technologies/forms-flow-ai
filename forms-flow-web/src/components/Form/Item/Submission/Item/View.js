@@ -8,8 +8,10 @@ import Loading from '../../../../../containers/Loading'
 import PdfDownloadService from "../../../../../services/PdfDownloadService"
 import {setFormSubmissionLoading} from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
-
+import { useTranslation } from 'react-i18next';
+import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
 const View = React.memo((props) => {
+  const {t} = useTranslation();
   const {
     hideComponents,
     onSubmit, options,
@@ -29,7 +31,7 @@ const View = React.memo((props) => {
         <h3 className="task-head"> {form.title}</h3>
         {showPrintButton?<div className="btn-right">
           <Button className="btn btn-primary btn-sm form-btn pull-right btn-right" onClick={() => PdfDownloadService.getPdf(form, submission)}>
-          <i className="fa fa-print" aria-hidden="true"/> Print As PDF</Button></div>:null}
+          <i className="fa fa-print" aria-hidden="true"/>{t("Print As PDF")}</Button></div>:null}
       </div>
 
       <Errors errors={errors}/>
@@ -41,7 +43,7 @@ const View = React.memo((props) => {
             url={url}
             hideComponents={hideComponents}
             onSubmit={onSubmit}
-            options={{...options}}
+            options={{...options,i18n: formio_resourceBundles}}
           />
         </div>
       </LoadingOverlay>
@@ -59,6 +61,7 @@ const mapStateToProps = (state) => {
     submission: selectRoot('submission', state),
     options: {
       readOnly: true,
+      language: state.user.lang
     },
     errors: [
       selectError('submission', state),

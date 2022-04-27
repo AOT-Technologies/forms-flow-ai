@@ -7,11 +7,14 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 import {getSearchText} from "../../../apiManager/services/formatterService";
 import {Button} from "react-bootstrap";
+
 import { STAFF_DESIGNER } from '../../../constants/constants';
 import { setBPMFormListSort,setBpmFormSearch,setBpmFormLoading} from '../../../actions/formActions';
+import { useTranslation,Translation } from "react-i18next";
 
 const FormSearch = React.memo(() => {
   //Search query /form?type=form&title__regex=%2Fnew%2Fi  query Format title__regex= /^title/i
+  const {t}=useTranslation();
   const dispatch = useDispatch();
   const query = useSelector((state) => state.forms.query);
   const sort =  useSelector((state) => state.forms.sort)
@@ -66,7 +69,7 @@ const FormSearch = React.memo(() => {
     <>
       <div className="container main_div">
         <span className="" data-testid = "sample">
-          Form
+        <Translation>{(t)=>t("Form")}</Translation>
           <i
             onClick={updateSort}
             className="fa fa-long-arrow-up ml-2"
@@ -86,7 +89,7 @@ const FormSearch = React.memo(() => {
                 setSearchText(e.target.value)
               }}
               className="mr-1"
-              placeholder="Search.."
+              placeholder={t("Search...")}
               value={searchText}
               onKeyPress={(e) => e.key === 'Enter' && handleSearch(searchText)}
               style={{border:"none"}}
@@ -96,7 +99,7 @@ const FormSearch = React.memo(() => {
                     onClick={() => {
                       handleSearch('')
                     }}
-                    variant="outline-secondary" title="Click to clear"
+                    variant="outline-secondary" title={t("Click to clear")}
                     className='clear_button'
                     >
                   <i className="fa fa-times fa-lg" />
@@ -107,7 +110,7 @@ const FormSearch = React.memo(() => {
                   handleSearch(searchText)
                 }}
                 variant="outline-primary"
-                title="Press Enter key or click here to search"
+                title={t("Press Enter key or click here to search")}
                 >
               <i className="fa fa-search fa-lg"/>
             </Button>

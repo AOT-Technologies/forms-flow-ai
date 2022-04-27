@@ -13,7 +13,7 @@ import {
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import Form from 'react-bootstrap/Form';
-
+import { useTranslation } from "react-i18next";
 const UserSelectionDebounce = React.memo((props) => {
   const {onClose, currentUser, onChangeClaim} = props;
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ const UserSelectionDebounce = React.memo((props) => {
   const [selectedValue, changeSelectedValue] = useState({value: currentUser, label: currentUser});
   const [searchTypeOption,setSearchTypeOption] = useState(UserSearchFilterTypes[0]);
   const [isSearch, setIsSearch] = useState(false);
-
+  const {t} = useTranslation();
   const loadOptions = (inputValue = "", callback) => {
     dispatch(fetchUserListWithSearch({searchType: searchTypeOption.searchType, query: inputValue}, (err, res) => {
       if (!err) {
@@ -77,10 +77,10 @@ const UserSelectionDebounce = React.memo((props) => {
   return (<>
     <Row md={{span: 3, offset: 3}}>
       <Col xs={12} md={10}>
-        <button className="btn btn-pos" title="Update User" onClick={() => onChangeClaim(selectedValue?.value || null)}>
+      <button className="btn btn-pos" title={t("Update User")} onClick={() => onChangeClaim(selectedValue?.value || null)}>
         <i className="fa fa-check fa-lg mr-1" />
         </button>
-        <button className="btn btn-pos" onClick={onClose} title="Close">
+        <button className="btn btn-pos" onClick={onClose} title={t("Close")}>
         <i className="fa fa-times-circle fa-lg mr-1" />
         </button>
       </Col>

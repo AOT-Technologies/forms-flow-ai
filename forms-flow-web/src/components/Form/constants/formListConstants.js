@@ -2,6 +2,7 @@ import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import pick from "lodash/pick";
 import {CLIENT, OPERATIONS, STAFF_DESIGNER, STAFF_REVIEWER} from "../../../constants/constants";
 import FormSearch from "../FormSearch/FormSearch";
+import { Translation } from "react-i18next";
 
 
 export const designerColumns = [
@@ -13,7 +14,7 @@ export const designerColumns = [
   },
   {
     key: 'operations',
-    title: 'Operations',
+    title: <Translation>{(t)=>t("Operations")}</Translation>,
     width: 5,
   },
   {
@@ -33,7 +34,7 @@ export const userColumns = [
   },
   {
     key: 'operations',
-    title: 'Operations',
+    title: <Translation>{(t)=>t("Operations")}</Translation>,
     width: 4,
   }
 ];

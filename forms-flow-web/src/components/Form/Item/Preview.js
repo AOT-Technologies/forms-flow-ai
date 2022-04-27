@@ -4,6 +4,8 @@ import { selectRoot, Form, selectError, Errors } from "react-formio";
 import { push } from "connected-react-router";
 import { Button } from "react-bootstrap";
 import Loading from "../../../containers/Loading";
+import { Translation } from "react-i18next";
+import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 
 const Preview = class extends PureComponent {
   constructor(props) {
@@ -14,6 +16,7 @@ const Preview = class extends PureComponent {
       workflow: null,
       status: null,
     };
+     
   }
 
   render() {
@@ -29,7 +32,6 @@ const Preview = class extends PureComponent {
     if (isFormActive ) {
       return <Loading />;
     }
-
     return (
       <div className="container">
         <div className="main-header">
@@ -41,14 +43,14 @@ const Preview = class extends PureComponent {
             }}
           >
             <i className="fa fa-pencil" aria-hidden="true"/>
-            &nbsp;&nbsp;Edit Form
+            &nbsp;&nbsp;<Translation>{(t)=>t("Edit Form")}</Translation>
           </Button>
           <Button
             variant="contained"
             onClick={handleNext}
             className="ml-3 btn btn-primary  form-btn"
           >
-            {(this.state.activeStep === 1, "Next")}
+            {(this.state.activeStep === 1, <Translation>{(t)=>t("Next")}</Translation>)}
           </Button>
         </div>
 
@@ -57,7 +59,8 @@ const Preview = class extends PureComponent {
           form={form}
           hideComponents={hideComponents}
           onSubmit={onSubmit}
-          options={{ ...options }}
+          options={{ ...options,
+            i18n: formio_resourceBundles}}
         />
       </div>
     );
@@ -69,6 +72,7 @@ const mapStateToProps = (state) => {
     form: selectRoot("form", state),
     options: {
       readOnly: true,
+      language: state.user.lang,
     },
     errors: [selectError("form", state)],
   };

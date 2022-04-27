@@ -1,4 +1,5 @@
 import React from 'react';
+import { Translation } from "react-i18next";
 
 
 const NoData = React.memo(() => (
@@ -6,7 +7,7 @@ const NoData = React.memo(() => (
 <i className="fa fa-tachometer fa-lg"/>
 <br></br>
 <br></br>
-<label> No dashboard found </label>
+<label> <Translation>{(t)=>t("No dashboard found")}</Translation> </label>
     </div>
 ))
 

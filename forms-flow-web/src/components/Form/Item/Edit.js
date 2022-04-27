@@ -17,11 +17,12 @@ import {
   setFormProcessesData,
   setFormPreviosData,
 } from "../../../actions/processActions";
+import { Translation,useTranslation } from "react-i18next";
 import { saveFormProcessMapper } from "../../../apiManager/services/processServices";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { clearFormError } from "../../../actions/formActions";
-
 const reducer = (form, {type, value}) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -57,8 +58,10 @@ const Edit = React.memo(() => {
   const applicationCount = useSelector((state) =>state.process.applicationCount)
   const  formProcessList = useSelector((state)=>state.process.formProcessList)
   const formPreviousData = useSelector((state)=>state.process.formPreviousData)
-  const saveText = "Save Form";
+  const saveText = (<Translation>{(t)=>t("Save Form")}</Translation>);
+  const lang = useSelector((state) => state.user.lang);
   const history = useHistory();
+  const {t}=useTranslation();
   const [show, setShow] = useState(false);
   
   const handleClose = () => setShow(false);
@@ -109,7 +112,7 @@ const Edit = React.memo(() => {
             dispatch(setFormProcessesData(newData));
             dispatch(setFormPreviosData({...newData,isTitleChanged}));
           }
-          toast.success("Form Saved");
+          toast.success(t("Form Saved"));
           dispatch(push(`/formflow/${submittedData._id}/preview`));
           // ownProps.setPreviewMode(true);
         } else {
@@ -201,11 +204,11 @@ const Edit = React.memo(() => {
               dispatch(setFormProcessesData(newData));
               dispatch(setFormPreviosData({...newData,isTitleChanged}));
             }
-            toast.success("Form Saved");
+            toast.success(t("Form Saved"));
             dispatch(push(`/formflow/${submittedData._id}/preview`));
             // ownProps.setPreviewMode(true);
           } else {
-            toast.error("Error while saving Form");
+            toast.error(t("Error while saving Form"));
           }
         })
       );
@@ -226,7 +229,7 @@ const Edit = React.memo(() => {
 if(!form._id){
  return <div class="d-flex justify-content-center">
  <div class="spinner-grow" role="status">
-  <span class="sr-only">Loading...</span>
+  <span class="sr-only"><Translation>{(t)=>t("Loading...")}</Translation></span>
 </div>
 </div>
 }
@@ -247,7 +250,7 @@ if(!form._id){
        <div id="save-buttons" className=" mr-4 save-buttons pull-right">
           <div className="form-group pull-right">
             <span className="btn btn-secondary" onClick={() =>{ changeAnonymous(prviousData.anonymous); history.goBack();dispatch(clearFormError('form',formData.formName));} }>
-              Cancel
+            <Translation>{(t)=>t("Cancel")}</Translation>
             </span>
           </div>
         </div>
@@ -258,9 +261,9 @@ if(!form._id){
             </span>
             <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Confirmation</Modal.Title>
+          <Modal.Title>{t("Confirmation")}</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.</Modal.Body>
+        <Modal.Body>{t("Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.")}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
             Cancel
@@ -276,7 +279,7 @@ if(!form._id){
       <div className="row">
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-title" className="form-group">
-            <label htmlFor="title" className="control-label field-required">Title</label>
+            <label htmlFor="title" className="control-label field-required"><Translation>{(t)=>t("Title")}</Translation></label>
             <input
               type="text"
               className="form-control" id="title"
@@ -288,7 +291,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-name" className="form-group">
-            <label htmlFor="name" className="control-label field-required">Name</label>
+            <label htmlFor="name" className="control-label field-required"><Translation>{(t)=>t("Name")}</Translation></label>
             <input
               type="text"
               className="form-control"
@@ -301,7 +304,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-3 col-sm-3">
           <div id="form-group-display" className="form-group">
-            <label htmlFor="name" className="control-label">Display as</label>
+            <label htmlFor="name" className="control-label"><Translation>{(t)=>t("Display as")}</Translation></label>
             <div className="input-group">
               <select
                 className="form-control"
@@ -310,15 +313,15 @@ if(!form._id){
                 value={form.display || ''}
                 onChange={event => handleChange('display', event)}
               >
-                <option label="Form" value="form">Form</option>
-                <option label="Wizard" value="wizard">Wizard</option>
+                <option label="Form" value="form"><Translation>{(t)=>t("Form")}</Translation></option>
+                <option label="Wizard" value="wizard"><Translation>{(t)=>t("wizard")}</Translation></option>
               </select>
             </div>
           </div>
         </div>
         <div className="col-lg-4 col-md-3 col-sm-3">
           <div id="form-group-type" className="form-group">
-            <label htmlFor="form-type" className="control-label">Type</label>
+            <label htmlFor="form-type" className="control-label"><Translation>{(t)=>t("Type")}</Translation></label>
             <div className="input-group">
               <select
                 className="form-control"
@@ -327,7 +330,7 @@ if(!form._id){
                 value={form.type}
                 onChange={event => handleChange('type', event)}
               >
-                <option label="Form" value="form">Form</option>
+                <option label="Form" value="form"><Translation>{(t)=>t("form")}</Translation></option>
                 <option label="Resource" value="resource">Resource</option>
               </select>
             </div>
@@ -335,7 +338,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-path" className="form-group">
-            <label htmlFor="path" className="control-label field-required">Path</label>
+            <label htmlFor="path" className="control-label field-required"><Translation>{(t)=>t("Path")}</Translation></label>
             <div className="input-group">
               <input
                 type="text"
@@ -351,7 +354,7 @@ if(!form._id){
         </div>
         <div className="col-lg-4 col-md-4 col-sm-4">
           <div id="form-group-anonymous" className="form-group d-flex ml-5" style={{marginTop:"30px"}}>
-             <label htmlFor="anonymousLabel" className=" form-control control-label border-0 " style={{fontSize:"16px"}} >Make this form public ?</label>
+             <label htmlFor="anonymousLabel" className=" form-control control-label border-0 " style={{fontSize:"16px"}} >{t("Make this form public ?")}</label>
             <div className="input-group align-items-center">
               <input  
                className="m-0" style={{height:'20px', width:'20px'}}
@@ -371,6 +374,11 @@ if(!form._id){
         key={form._id}
         form={form}
         onChange={formChange}
+        options={{
+          language: lang,
+          i18n: formio_resourceBundles
+          }}
+          
       />
     </div>
     </div>

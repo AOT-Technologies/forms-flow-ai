@@ -41,4 +41,4 @@ def sentiment_analysis_pipeline_transformers(text: str) -> Dict:
             )
         returns {'overall_sentiment': 'POSITIVE'}
     """
-    return {"overall_sentiment": overall_sentiment_transformers(text)}
+    return {"overallSentiment": overall_sentiment_transformers(text)}

@@ -96,7 +96,6 @@ export const OPERATIONS = {
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-// view submission
     title: <Translation>{(t)=>t("View Submissions")}</Translation>,
   },
   edit: {

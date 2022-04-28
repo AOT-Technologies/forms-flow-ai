@@ -15,20 +15,20 @@ beforeEach(()=>{
      store = StoreService.configureStore();
 })
 
-function renderWithRouterMatch( ui,{ 
-    path = "/", 
-    route = "/", 
+function renderWithRouterMatch( ui,{
+    path = "/",
+    route = "/",
     history = createMemoryHistory({ initialEntries: [route] }),
-  } = {}) { 
-    return{ 
-    ...rtlRender(  
+  } = {}) {
+    return{
+    ...rtlRender(
         <Provider store={store}>
-            <Router history={history}> 
-                <Route path={path} component={ui}  /> 
+            <Router history={history}>
+                <Route path={path} component={ui}  />
             </Router>
           </Provider> )
       }
-    
+
   }
 
 it("should render the Form Index component without breaking",()=>{
@@ -53,7 +53,7 @@ it("should render the loading component without breaking when not authenticated"
 it("should render the Form list component without breaking",()=>{
     const spy = jest.spyOn(redux,"useSelector");
     spy.mockImplementation((callback) => callback({
-       
+
         bpmForms:{
             isActive:false,
             forms:[
@@ -95,9 +95,6 @@ it("should render the Form list component without breaking",()=>{
          route:"/form",
      }
      )
-    // expect(screen.getByTestId("sample")).toBeInTheDocument() 
-    // expect(screen.getByText("Operations")).toBeInTheDocument()
-    // expect(screen.getByText("Form")).toBeInTheDocument()
  })
 
  it("should render the Stepper component without breaking",()=>{
@@ -107,8 +104,8 @@ it("should render the Form list component without breaking",()=>{
             isAuthenticated:true,
             roles:   ["formsflow-designer"]
         },
-     
-    }))  
+
+    }))
      renderWithRouterMatch(Index,{
         path:"/formflow/:formId?/:step?",
          route:"/formflow/123/1",
@@ -127,8 +124,8 @@ it("should render the Form list component without breaking",()=>{
             isAuthenticated:true,
             roles:   []
         },
-     
-    }))  
+
+    }))
      renderWithRouterMatch(Index,{
         path:"/formflow/:formId?/:step?",
          route:"/formflow/123/1",
@@ -153,7 +150,7 @@ it("should render the Form list component without breaking",()=>{
             isPublicStatusLoading:true
         }
 
-    }))  
+    }))
      renderWithRouterMatch(Index,{
         path:"/form/:formId",
          route:"/form/123",
@@ -172,7 +169,7 @@ it("should render the Form list component without breaking",()=>{
         formDelete:{
             isFormSubmissionLoading:true
         }
-    }))  
+    }))
      renderWithRouterMatch(Index,{
         path:"/form/:formId",
          route:"/form/123",
@@ -180,4 +177,3 @@ it("should render the Form list component without breaking",()=>{
      )
     expect(screen.queryByTestId("Form-index")).not.toBeInTheDocument();
  })
- 

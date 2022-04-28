@@ -13,6 +13,7 @@ import History from "./ApplicationHistory";
 import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
 import NotFound from "../NotFound";
+import { Translation } from "react-i18next";
 
 const ViewApplication = React.memo(() => {
   const {applicationId} = useParams();
@@ -34,7 +35,6 @@ const ViewApplication = React.memo(() => {
           }
         }
       }));
-
       return ()=>{
         dispatch(setApplicationDetailLoader(true));
         dispatch(setApplicationDetailStatusCode(''));
@@ -56,22 +56,22 @@ const ViewApplication = React.memo(() => {
         <i className="fa fa-chevron-left fa-lg" />
         </Link>
         <h3 className="ml-3">
-          <span className="application-head-details"><i className="fa fa-list-alt" aria-hidden="true"/>&nbsp; Applications /</span>{" "}
+          <span className="application-head-details"><i className="fa fa-list-alt" aria-hidden="true"/>&nbsp; <Translation>{(t)=>t("Applications")}</Translation> /</span>{" "}
           {`${startCase(applicationDetail.applicationName)}`}
         </h3>
       </div>
       <br/>
       <Tabs id="application-details" defaultActiveKey="details" mountOnEnter>
-        <Tab eventKey="details" title="Details">
+        <Tab eventKey="details" title={<Translation>{(t)=>t("Details")}</Translation>}>
           <Details application={applicationDetail}/>
         </Tab>
-        <Tab eventKey="form" title="Form">
+        <Tab eventKey="form" title={<Translation>{(t)=>t("Form")}</Translation>}>
           <View page="application-detail"/>
         </Tab>
-        <Tab eventKey="history" title="History">
+        <Tab eventKey="history" title={<Translation>{(t)=>t("History")}</Translation>}>
             <History page="application-detail" applicationId={applicationId}/>
         </Tab>
-        <Tab eventKey="process-diagram" title="Process Diagram">
+        <Tab eventKey="process-diagram" title={<Translation>{(t)=>t("Process Diagram")}</Translation>}>
             <ProcessDiagram
               process_key={applicationProcess.processKey}
               processInstanceId={applicationDetail.processInstanceId}

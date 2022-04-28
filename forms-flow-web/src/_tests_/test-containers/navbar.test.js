@@ -47,6 +47,6 @@ function renderWithRouterMatch( ui,{
         route:"/task",
     })
     expect(screen.getByText("Forms")).toBeInTheDocument()
-    expect(screen.getByText("Dashboards")).toBeInTheDocument()
+    expect(screen.getByTestId("Dashboards")).toBeInTheDocument()
     
 })

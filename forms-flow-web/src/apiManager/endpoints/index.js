@@ -17,6 +17,7 @@ const API = {
   PROCESSES_XML:`${BPM_BASE_URL}/process-definition/key/<process_key>/xml`,
   PROCESS_ACTIVITIES: `${BPM_BASE_URL}/process-instance/<process_instance_id>/activity-instances`,
   FORM: `${WEB_BASE_URL}/form`,
+  LANG_UPDATE:`${WEB_BASE_URL}/user/locale`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
   APPLICATION_EVENT_UPDATE:`${BPM_BASE_URL}/message`,
   GET_BPM_TASKS:`${BPM_BASE_URL}/task`,

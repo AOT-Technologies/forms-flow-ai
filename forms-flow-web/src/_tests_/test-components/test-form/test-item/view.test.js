@@ -8,13 +8,13 @@ import { createMemoryHistory } from "history";
 import configureStore from 'redux-mock-store';
 import { mockstate } from './constatnts-edit';
 import thunk from 'redux-thunk'
-import * as redux from 'react-redux' 
+import * as redux from 'react-redux'
 
 jest.mock('react-formio', () => ({
   ...jest.requireActual('react-formio'),
 }));
 
-const middlewares = [thunk] 
+const middlewares = [thunk]
 let store;
 let mockStore = configureStore(middlewares);
 
@@ -24,26 +24,26 @@ beforeEach(()=>{
 })
 
 
-function renderWithRouterMatch( ui,{ 
-    path = "/", 
-    route = "/", 
+function renderWithRouterMatch( ui,{
+    path = "/",
+    route = "/",
     history = createMemoryHistory({ initialEntries: [route] }),
-  } = {}) { 
-    return{ 
-    ...rtlRender(  
+  } = {}) {
+    return{
+    ...rtlRender(
         <Provider store={store}>
-            <Router history={history}> 
-                <Route path={path} component={ui}  /> 
+            <Router history={history}>
+                <Route path={path} component={ui}  />
             </Router>
           </Provider> )
       }
-    
+
   }
 
 it("should render the View component without breaking",async()=>{
   const spy = jest.spyOn(redux,"useSelector");
   spy.mockImplementation((callback) => callback(
-    {applications:{isPublicStatusLoading:false},form:{isActive: false},formDelete:{isFormSubmissionLoading:false}}
+    {applications:{isPublicStatusLoading:false},form:{isActive: false},formDelete:{isFormSubmissionLoading:false},user:{lang:''}}
 ))
     renderWithRouterMatch(View,{
         path:"/form/:formId",
@@ -51,13 +51,13 @@ it("should render the View component without breaking",async()=>{
     }
     )
   expect(screen.getByText("the form title")).toBeInTheDocument();
-  expect(screen.getByText("Submit")).toBeInTheDocument();  
+  expect(screen.getByText("Submit")).toBeInTheDocument();
 })
 
 it("should render the public View component without breaking ",async()=>{
   const spy = jest.spyOn(redux,"useSelector");
   spy.mockImplementation((callback) => callback(
-    {applications:{isPublicStatusLoading:false},form:{isActive: false},formDelete:{isFormSubmissionLoading:false}}
+    {applications:{isPublicStatusLoading:false},form:{isActive: false},formDelete:{isFormSubmissionLoading:false},user:{lang:''}}
 ))
   //spy.mockReturnValue({applications:{isPublicStatusLoading:false},form:{isActive: false}})
   renderWithRouterMatch(View,{
@@ -66,5 +66,5 @@ it("should render the public View component without breaking ",async()=>{
   }
   )
 expect(screen.getByText("the form title")).toBeInTheDocument();
-expect(screen.getByText("Submit")).toBeInTheDocument();  
+expect(screen.getByText("Submit")).toBeInTheDocument();
 })

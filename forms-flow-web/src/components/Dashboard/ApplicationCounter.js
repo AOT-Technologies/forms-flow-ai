@@ -1,7 +1,9 @@
 import React, { Fragment } from "react";
 import CardFormCounter from "./CardFormCounter";
 import Nodata from "./../Nodata";
+import {useTranslation} from 'react-i18next';
 const ApplicationCounter = React.memo((props) => {
+  const {t}=useTranslation();
   const {
     application,
     getStatusDetails,
@@ -12,7 +14,7 @@ const ApplicationCounter = React.memo((props) => {
   if (noOfApplicationsAvailable === 0) {
     return (
       <Nodata
-        text="No submissions available for the selected date range"
+        text={t("No submissions available for the selected date range")}
         className="no-data-submission "
       >
         {" "}

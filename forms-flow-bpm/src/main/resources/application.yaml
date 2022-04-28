@@ -16,6 +16,8 @@ server:
 formsflow.ai:
   api:
     url: ${FORMSFLOW_API_URL}
+  analysis:
+    url: ${DATA_ANALYSIS_URL}
   formio:
     url: ${FORMIO_URL}
     security:
@@ -96,6 +98,8 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${keycloak.url}/auth/realms/${keycloak.url.realm}
+  main:
+    allow-bean-definition-overriding: true
 
 
 # Camunda Rest API

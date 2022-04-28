@@ -41,7 +41,7 @@ const WorkFlow = React.memo(
     const { form } = useSelector((state) => state.form);
 
     const componentLabel =[]
-    const ignoredTypes = ['button','columns','panel','well','container']
+    const ignoredTypes = ['button','columns','panel','well','container','htmlelement']
     const flattedComponent = Object.values(utils.flattenComponents(form.components,true))
     flattedComponent.forEach(component=>{
       if(!ignoredTypes.includes(component.type)){

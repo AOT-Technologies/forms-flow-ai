@@ -32,10 +32,9 @@ const NavBar = React.memo(() => {
   },[lang]);
 
 
-  const handleOnclick=(e)=>{
-   e.preventDefault();
-   dispatch(setLanguage(e.target.value))
-   dispatch(updateUserlang(e.target.value))
+  const handleOnclick=(selectedLang)=>{
+   dispatch(setLanguage(selectedLang))
+   dispatch(updateUserlang(selectedLang))
  }
   const logout = () => {
       dispatch(push(`/`));
@@ -132,23 +131,23 @@ const NavBar = React.memo(() => {
 
              <Nav className="ml-auto">
             <Dropdown alignRight>
-                    <Dropdown.Toggle id="dropdown-basic" as="div">
+                    <Dropdown.Toggle id="dropdown-basic" as="div" style={{cursor: "pointer"}}>
                     <i className="fa fa-globe fa-lg" aria-hidden="true"/> {lang?lang:'LANGUAGE'}
                     </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      <Dropdown.Item><button className="button_component" value='en' onClick={handleOnclick}>English</button>  </Dropdown.Item>
-                      <Dropdown.Item><button className="button_component" value='zh-CN' onClick={handleOnclick}>中国人</button> </Dropdown.Item>
-                      <Dropdown.Item><button className="button_component" value='pt' onClick={handleOnclick}>Português</button>  </Dropdown.Item>
-                      <Dropdown.Item><button className="button_component" value='fr' onClick={handleOnclick}>français</button> </Dropdown.Item>
-                      <Dropdown.Item><button className="button_component" value='bg' onClick={handleOnclick}>български</button> </Dropdown.Item>
-                      <Dropdown.Item><button className="button_component" value='de' onClick={handleOnclick}>Deutsch</button> </Dropdown.Item>
+                    <Dropdown.Menu >
+                      <Dropdown.Item onClick={()=>{handleOnclick('en')}}> English </Dropdown.Item>
+                      <Dropdown.Item onClick={()=>{handleOnclick('zh-CN')}}> 中国人</Dropdown.Item>
+                      <Dropdown.Item onClick={()=>{handleOnclick('pt')}}> Português </Dropdown.Item>
+                      <Dropdown.Item onClick={()=>{handleOnclick('fr')}}> français </Dropdown.Item>
+                      <Dropdown.Item onClick={()=>{handleOnclick('bg')}}> български </Dropdown.Item>
+                      <Dropdown.Item onClick={()=>{handleOnclick('de')}}> Deutsch</Dropdown.Item>
                     </Dropdown.Menu>
                   </Dropdown>
             </Nav>
 }
             <Nav className="ml-auto">
                   <Dropdown alignRight>
-                    <Dropdown.Toggle id="dropdown-basic" as="div">
+                    <Dropdown.Toggle id="dropdown-basic" as="div" style={{cursor: "pointer"}}>
                    <span className="mr-1">
                    <i className="fa fa-user fa-lg"/>
                     </span>

@@ -3,7 +3,7 @@
 import json
 from http import HTTPStatus
 
-from flask import current_app, g, request
+from flask import current_app, request
 from flask_restx import Namespace, Resource
 
 from formsflow_api.exceptions import BusinessException
@@ -105,13 +105,11 @@ class FormResourceList(Resource):
         """Post a form process mapper using the request body."""
         mapper_json = request.get_json()
         try:
-            sub: str = g.token_info.get("preferred_username")
             mapper_json["taskVariable"] = json.dumps(
                 mapper_json.get("taskVariable") or []
             )
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(mapper_json)
-            dict_data["created_by"] = sub
             mapper = FormProcessMapperService.create_mapper(dict_data)
             FormProcessMapperService.unpublish_previous_mapper(dict_data)
             response = mapper_schema.dump(mapper)
@@ -146,17 +144,19 @@ class FormResourceById(Resource):
                 FormProcessMapperService.get_mapper(form_process_mapper_id=mapper_id),
                 HTTPStatus.OK,
             )
-        except BusinessException:
+        except PermissionError as err:
             response, status = (
                 {
-                    "type": "Invalid response data",
-                    "message": f"Invalid form id - {mapper_id}",
+                    "type": "Permission Denied",
+                    "message": f"Access to form id - {mapper_id} is prohibited.",
                 },
-                HTTPStatus.BAD_REQUEST,
+                HTTPStatus.FORBIDDEN,
             )
-
-            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
 
     @staticmethod
     @auth.require
@@ -171,18 +171,19 @@ class FormResourceById(Resource):
                 form_process_mapper_id=mapper_id
             )
             return "Deleted", HTTPStatus.OK
-        except BusinessException as err:
+        except PermissionError as err:
             response, status = (
                 {
-                    "type": "Invalid response data",
-                    "message": f"Invalid form id - {mapper_id}",
+                    "type": "Permission Denied",
+                    "message": f"Access to form id - {mapper_id} is prohibited.",
                 },
-                HTTPStatus.BAD_REQUEST,
+                HTTPStatus.FORBIDDEN,
             )
-
-            current_app.logger.warning(response)
             current_app.logger.warning(err)
             return response, status
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
 
     @staticmethod
     @auth.require
@@ -206,8 +207,6 @@ class FormResourceById(Resource):
                 )
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(application_json)
-            sub: str = g.token_info.get("preferred_username")
-            dict_data["modified_by"] = sub
             FormProcessMapperService.update_mapper(
                 form_process_mapper_id=mapper_id, data=dict_data
             )
@@ -216,6 +215,16 @@ class FormResourceById(Resource):
                 f"Updated FormProcessMapper ID {mapper_id} successfully",
                 HTTPStatus.OK,
             )
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to form id - {mapper_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(err)
+            return response, status
         except BaseException as mapper_err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad Request Error",
@@ -247,6 +256,16 @@ class FormResourceByFormId(Resource):
                 response,
                 HTTPStatus.OK,
             )
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to form id - {form_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(err)
+            return response, status
         except BusinessException as err:
             response, status = (
                 {
@@ -272,14 +291,26 @@ class FormResourceApplicationCount(Resource):
     @auth.require
     @profiletime
     def get(mapper_id: int):
-        """The method retrieves the total application count for th egiven mapper id."""
-        (
-            response,
-            status,
-        ) = ApplicationService.get_total_application_corresponding_to_mapper_id(
-            mapper_id
-        )
-        return response, status
+        """The method retrieves the total application count for the given mapper id."""
+        try:
+            FormProcessMapperService.check_tenant_authorization(mapper_id=mapper_id)
+            (
+                response,
+                status,
+            ) = ApplicationService.get_total_application_corresponding_to_mapper_id(
+                mapper_id
+            )
+            return response, status
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to form id - {mapper_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(err)
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")
@@ -292,7 +323,21 @@ class FormResourceTaskVariablesbyApplicationId(Resource):
     @profiletime
     def get(application_id: int):
         """The method retrieves task variables based on application id."""
-        return (
-            ApplicationService.get_application_form_mapper_by_id(application_id),
-            HTTPStatus.OK,
-        )
+        try:
+            return (
+                ApplicationService.get_application_form_mapper_by_id(application_id),
+                HTTPStatus.OK,
+            )
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to resource - {application_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(err)
+            return response, status
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code

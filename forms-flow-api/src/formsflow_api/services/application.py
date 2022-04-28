@@ -3,6 +3,7 @@
 from datetime import datetime
 from functools import lru_cache
 from http import HTTPStatus
+from typing import Dict
 
 from flask import current_app
 
@@ -15,6 +16,8 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import NEW_APPLICATION_STATUS
+from formsflow_api.utils.user_context import UserContext, user_context
+from .form_process_mapper import FormProcessMapperService
 
 application_schema = ApplicationSchema()
 
@@ -23,13 +26,19 @@ class ApplicationService:
     """This class manages application service."""
 
     @staticmethod
-    def create_application(data, token):
+    @user_context
+    def create_application(data, token, **kwargs):
         """Create new application."""
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
+        data["created_by"] = user_id
         data["application_status"] = NEW_APPLICATION_STATUS
-
         mapper = FormProcessMapper.find_form_by_form_id(data["form_id"])
+        if mapper is None:
+            if user.tenant_key:
+                raise PermissionError(f"Permission denied, formId - {data['form_id']}.")
+            raise KeyError(f"Mapper does not exist with formId - {data['form_id']}.")
         data["form_process_mapper_id"] = mapper.id
-
         # Function to create application in DB
         application = Application.create_from_dict(data)
         # process_instance_id in request object is usually used in Scripts
@@ -133,8 +142,10 @@ class ApplicationService:
         )
 
     @staticmethod
-    def get_auth_by_application_id(application_id: int, token: str):
+    @user_context
+    def get_auth_by_application_id(application_id: int, token: str, **kwargs):
         """Get authorized Application by id."""
+        user: UserContext = kwargs["user"]
         auth_form_details = ApplicationService.get_authorised_form_list(token=token)
         current_app.logger.info(auth_form_details)
         auth_list = auth_form_details.get("authorizationList") or {}
@@ -145,11 +156,15 @@ class ApplicationService:
             application = Application.find_auth_application_by_process_key(
                 process_key=resource_list, application_id=application_id
             )
+        if application is None and user.tenant_key is not None:
+            raise PermissionError(
+                f"Access to application - {application_id} is denied."
+            )
         return application_schema.dump(application), HTTPStatus.OK
 
     @staticmethod
-    def get_all_applications_by_user(  # pylint: disable=too-many-arguments
-        user_id: str,
+    @user_context
+    def get_all_applications_by_user(  # pylint: disable=too-many-arguments,too-many-locals
         page_no: int,
         limit: int,
         order_by: str,
@@ -162,8 +177,11 @@ class ApplicationService:
         application_status: str,
         application_name: str,
         application_id: int,
+        **kwargs,
     ):
         """Get all applications based on user."""
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
         applications, get_all_applications_count = Application.find_all_by_user(
             user_id=user_id,
             page_no=page_no,
@@ -207,10 +225,13 @@ class ApplicationService:
         return application_schema.dump(applications, many=True)
 
     @staticmethod
+    @user_context
     def get_all_applications_form_id_user(
-        form_id: str, user_id: str, page_no: int, limit: int
+        form_id: str, page_no: int, limit: int, **kwargs
     ):
         """Get all applications."""
+        user: UserContext = kwargs["user"]
+        user_id = user.user_name
         if page_no:
             page_no = int(page_no)
         if limit:
@@ -222,20 +243,26 @@ class ApplicationService:
         return application_schema.dump(applications, many=True)
 
     @staticmethod
-    def get_all_applications_form_id_count(form_id):
+    def get_all_applications_form_id_count(form_id: str):
         """Get application count."""
         return Application.find_all_by_form_id_count(form_id=form_id)
 
     @staticmethod
-    def get_all_applications_form_id_user_count(form_id, user_id):
+    @user_context
+    def get_all_applications_form_id_user_count(form_id: str, **kwargs):
         """Get application count."""
+        user: UserContext = kwargs["user"]
+        user_id = user.user_name
         return Application.find_all_by_form_id_user_count(
             form_id=form_id, user_id=user_id
         )
 
     @staticmethod
-    def get_application_by_user(application_id: int, user_id: str):
+    @user_context
+    def get_application_by_user(application_id: int, **kwargs):
         """Get application by user id."""
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
         application = Application.find_id_by_user(
             application_id=application_id, user_id=user_id
         )
@@ -245,9 +272,14 @@ class ApplicationService:
         return ApplicationSchema().dump([]), HTTPStatus.FORBIDDEN
 
     @staticmethod
-    def update_application(application_id: int, data):
+    @user_context
+    def update_application(application_id: int, data: Dict, **kwargs):
         """Update application."""
+        user: UserContext = kwargs["user"]
+        data["modified_by"] = user.user_name
         application = Application.find_by_id(application_id=application_id)
+        if application is None and user.tenant_key is not None:
+            raise PermissionError(f"Access to application - {application_id} is denied")
         if application:
             application.update(data)
         else:
@@ -272,30 +304,51 @@ class ApplicationService:
         return schema.dump(applications, many=True)
 
     @staticmethod
-    def get_applications_status(mapper_id: int, from_date: datetime, to_date: datetime):
+    @user_context
+    def get_applications_status(
+        mapper_id: int, from_date: datetime, to_date: datetime, **kwargs
+    ):
         """Get aggregated application status."""
+        user: UserContext = kwargs["user"]
         application_status = Application.find_aggregated_application_status(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date
         )
         schema = AggregatedApplicationSchema(exclude=("form_process_mapper_id",))
-        return schema.dump(application_status, many=True)
+        result = schema.dump(application_status, many=True)
+        if user.tenant_key and len(result) == 0:
+            raise PermissionError(f"Access to resource-{mapper_id} is denied.")
+        return result
 
     @staticmethod
-    def get_applications_status_modified(mapper_id: int, from_date: str, to_date: str):
+    @user_context
+    def get_applications_status_modified(
+        mapper_id: int, from_date: str, to_date: str, **kwargs
+    ):
         """Get aggregated application status."""
+        user: UserContext = kwargs["user"]
         application_status = Application.find_aggregated_application_status_modified(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date
         )
         schema = AggregatedApplicationSchema(exclude=("form_process_mapper_id",))
-        return schema.dump(application_status, many=True)
+        result = schema.dump(application_status, many=True)
+        if user.tenant_key and len(result) == 0:
+            raise PermissionError(f"Access to resource-{mapper_id} is denied.")
+        return result
 
     @staticmethod
-    def get_application_form_mapper_by_id(application_id: int):
+    @user_context
+    def get_application_form_mapper_by_id(application_id: int, **kwargs):
         """Get form process mapper."""
+        user: UserContext = kwargs["user"]
+        tenant_key = user.tenant_key
         mapper = Application.get_form_mapper_by_application_id(
             application_id=application_id
         )
         if mapper:
+            if mapper.mapper_id and tenant_key:
+                FormProcessMapperService.check_tenant_authorization(
+                    mapper_id=mapper.mapper_id, tenant_key=tenant_key
+                )
             mapper_schema = FormProcessMapperSchema()
             return mapper_schema.dump(mapper)
 

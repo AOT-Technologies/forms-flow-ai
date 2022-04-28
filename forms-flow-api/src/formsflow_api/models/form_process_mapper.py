@@ -5,6 +5,7 @@ from __future__ import annotations
 from http import HTTPStatus
 
 from flask import current_app
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy import UniqueConstraint, and_, desc
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.sql.expression import text
@@ -16,7 +17,7 @@ from formsflow_api.utils import (
     validate_sort_order_and_order_by,
 )
 from formsflow_api.utils.enums import FormProcessMapperStatus
-
+from formsflow_api.utils.user_context import UserContext, user_context
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
 from .db import db
@@ -133,6 +134,21 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         return query
 
     @classmethod
+    @user_context
+    def access_filter(cls, query: BaseQuery, **kwargs):
+        """Modifies the query to include active and tenant check."""
+        if not isinstance(query, BaseQuery):
+            raise TypeError("Query object must be of type BaseQuery")
+        user: UserContext = kwargs["user"]
+        tenant_key: str = user.tenant_key
+        active = query.filter(
+            FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value)
+        )
+        if tenant_key is not None:
+            active = active.filter(FormProcessMapper.tenant == tenant_key)
+        return active
+
+    @classmethod
     def find_all_active(
         cls,
         page_number=None,
@@ -146,9 +162,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         query = cls.filter_conditions(**filters)
         if process_key is not None:
             query = query.filter(FormProcessMapper.process_key.in_(process_key))
-        query = query.filter(
-            FormProcessMapper.status == str(FormProcessMapperStatus.ACTIVE.value)
-        )
+        query = cls.access_filter(query=query)
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
         if sort_by and sort_order:
             query = query.order_by(text(f"form_process_mapper.{sort_by} {sort_order}"))

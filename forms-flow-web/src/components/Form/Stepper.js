@@ -6,7 +6,6 @@ import StepLabel from "@material-ui/core/StepLabel";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
 import { toast } from 'react-toastify';
 
 import Create from "./Create.js";
@@ -368,13 +367,13 @@ class StepperPage extends PureComponent {
       <>
         <div>
           {this.props.isAuthenticated ?
-            <Link to="/form" title="Back to Form List">
-              <i className="fa fa-chevron-left fa-lg" />
+            <Link to="/form" title="Back to Form List" >
+              <i className="fa fa-chevron-left fa-lg m-3" />
             </Link>
             :
             null
           }
-          <Paper elevation={3} className="paper-root">
+          <div  className="paper-root" >
             <Grid
               container
               direction="row"
@@ -412,7 +411,7 @@ class StepperPage extends PureComponent {
                 </div>
               </Grid>
             </Grid>
-          </Paper>
+          </div>
         </div>
       </>
     );

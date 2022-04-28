@@ -63,6 +63,13 @@ $dark: $gray-800;
   overflow-y: auto;
   overflow-x: hidden;
 }
+.text-primary{
+  color: $primary;
+  
+}
+.footer-text{
+  font-size: 18px;
+}
 .btn-primary{
   background-color: $primary;
   }

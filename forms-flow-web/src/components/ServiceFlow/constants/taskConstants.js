@@ -2,11 +2,19 @@ import { Translation } from "react-i18next";
 export const sortingList = [
   {sortBy:"created",label:<Translation>{(t)=>t("Created")}</Translation>, sortOrder:"asc"},
   {sortBy:"priority",label:<Translation>{(t)=>t("Priority")}</Translation>, sortOrder:"asc"},
-  {sortBy:"dueDate",label:<Translation>{(t)=>t("due_date")}</Translation>, sortOrder:"asc"},
+  {sortBy:"dueDate",label:<Translation>{(t)=>t("Due Date")}</Translation>, sortOrder:"asc"},
   {sortBy:"assignee",label:<Translation>{(t)=>t("Assignee")}</Translation>, sortOrder:"asc"},
-  {sortBy:"name",label:<Translation>{(t)=>t("task_name")}</Translation>, sortOrder:"asc"},
+  {sortBy:"name",label:<Translation>{(t)=>t("Task name")}</Translation>, sortOrder:"asc"},
   {sortBy:"followUpDate",label:<Translation>{(t)=>t("Follow up Date")}</Translation>, sortOrder:"asc"},
 ];
+// export const sortingList = [
+//   {sortBy:"created",label:"Created", sortOrder:"asc"},
+//   {sortBy:"priority",label:"Priority", sortOrder:"asc"},
+//   {sortBy:"dueDate",label:"Due date", sortOrder:"asc"},
+//   {sortBy:"assignee",label:"Assignee", sortOrder:"asc"},
+//   {sortBy:"name",label:"Task name", sortOrder:"asc"},
+//   {sortBy:"followUpDate",label:"Follow-up date", sortOrder:"asc"},
+// ];
 
 export const searchData = [
   {"label": <Translation>{(t)=>t("task_variable")}</Translation>, "compares": [">", ">=", "=","!=", "<", "<="]},

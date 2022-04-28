@@ -198,7 +198,14 @@ export const RESOURCE_BUNDLES_FR = {
   "Confirmation":"Confirmation",
   "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"La modification du titre du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
   "Error while saving Form":"Erreur lors de l'enregistrement du formulaire",
-  "Click here to go back":"Cliquez ici pour revenir en arrière"
+  "Click here to go back":"Cliquez ici pour revenir en arrière",
+  "Applications are submitted against":"Les candidatures sont déposées contre",
+  "Application is submitted against":"La candidature est déposée contre",
+  ". Are you sure want to delete ?":". Voulez-vous vraiment supprimer ?",
+  "Are you sure you wish to delete the form ":"Êtes-vous sûr de vouloir supprimer le formulaire",
+  "Save Changes":"Save Changes",
+  "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"La modification du flux de travail du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications."
+
 
 
 

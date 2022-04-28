@@ -35,7 +35,7 @@ const View = React.memo((props) => {
       </div>
 
       <Errors errors={errors}/>
-      <LoadingOverlay active={isFormSubmissionLoading} spinner text='Loading...' className="col-12">
+      <LoadingOverlay active={isFormSubmissionLoading} spinner text={t('Loading...')} className="col-12">
         <div className="sub-container">
           <Form
             form={form}

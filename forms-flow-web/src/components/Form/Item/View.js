@@ -185,7 +185,7 @@ const View = React.memo((props) => {
       <LoadingOverlay
         active={isFormSubmissionLoading }
         spinner
-        text="Loading..."
+        text= {<Translation>{(t)=>t("Loading...")}</Translation>}
         className="col-12"
       >
         <div className="ml-4 mr-4">
@@ -226,7 +226,7 @@ const doProcessActions = (submission, ownProps) => {
         publicApplicationCreate(data, (err, res) => {
           if (!err) {
             dispatch(setFormSubmissionLoading(false));
-            toast.success(<Translation>{(t)=>t("submission_saved")}</Translation>)
+            toast.success(<Translation>{(t)=>t("Submission Saved")}</Translation>)
             dispatch(setFormSubmitted(true));
           } else {
             //TO DO Update to show error message
@@ -245,7 +245,7 @@ const doProcessActions = (submission, ownProps) => {
               dispatch(setFormSubmissionLoading(false));
               dispatch(setMaintainBPMFormPagination(true));
               /*dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))*/
-              toast.success(<Translation>{(t)=>t("submission_saved")}</Translation>)
+              toast.success(<Translation>{(t)=>t("Submission Saved")}</Translation>)
               dispatch(push(`/form`));
             } else {
               dispatch(setFormSubmissionLoading(false));
@@ -256,7 +256,7 @@ const doProcessActions = (submission, ownProps) => {
               dispatch(setFormSubmissionLoading(false));
               dispatch(setMaintainBPMFormPagination(true));
               //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
-              toast.success(<Translation>{(t)=>t("submission_saved")}</Translation>)
+              toast.success(<Translation>{(t)=>t("Submission Saved")}</Translation>)
               dispatch(push(`/form`));
             } else {
               dispatch(setFormSubmissionLoading(false));

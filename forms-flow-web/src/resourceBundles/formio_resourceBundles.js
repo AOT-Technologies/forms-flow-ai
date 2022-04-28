@@ -2,6 +2,13 @@ export const formio_resourceBundles = {
 
    "en": {
 
+      "Loading...":"Loading...",
+      "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
+      "Save Changes":"Save Changes",
+      "Are you sure you wish to delete the form ":"Are you sure you wish to delete the form ",
+      "Applications are submitted against":"Applications are submitted against",
+      "Application is submitted against":"Application is submitted against",
+      ". Are you sure want to delete ?":". Are you sure want to delete ?",
       "Click here to go back":"Click here to go back",
       "Error while saving Form":"Error while saving Form",
       "Confirmation":"Confirmation",
@@ -207,7 +214,14 @@ export const formio_resourceBundles = {
    },
 
    "zh-CN": {
-
+       
+      "Loading...":"正在加载...",
+      "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"更改表单工作流程不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
+      "Save Changes":"保存更改",
+      "Applications are submitted against":"申请是针对",
+      "Application is submitted against":"申请是针对",
+      ". Are you sure want to delete ?":".确定要删除吗？",
+      "Are you sure you wish to delete the form ":"您确定要删除表格吗 ",
       "Click here to go back":"点击此处回去",
       "Dashboards":"仪表板",
       "Error while saving Form":"保存表单时出错",
@@ -913,6 +927,13 @@ export const formio_resourceBundles = {
 
    "bg": {
 
+      "Loading...":"Зареждане...",
+      "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Промяната на работния процес на формуляра няма да засегне съществуващите приложения. Той ще се актуализира само в новосъздадените приложения. Натиснете Запазване на промените, за да продължите или отмените промените.",
+      "Save Changes":"Запазите промените",
+      "Applications are submitted against":"Заявленията се подават срещу",
+      "Application is submitted against":"Заявлението се подава срещу",
+      ". Are you sure want to delete ?":". Наистина ли искате да изтриете?",
+      "Are you sure you wish to delete the form ":"Сигурни ли сте, че искате да изтриете формуляра",
       "Click here to go back":"Щракнете тук, за да се върнете",
       "Dashboards":"Табла за управление",
       "Tasks": "Задачи",
@@ -1617,7 +1638,13 @@ export const formio_resourceBundles = {
 
 
    "pt": {
-      
+      "Loading...":"Carregando...",
+      "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Alterar o fluxo de trabalho do formulário não afetará os aplicativos existentes. Ele só será atualizado nos aplicativos recém-criados. Pressione Salvar alterações para continuar ou cancelar as alterações.",
+      "Save Changes":"Salvar alterações",
+      "Are you sure you wish to delete the form ":"Tem certeza de que deseja excluir o formulário",
+      "Applications are submitted against":"As candidaturas são apresentadas contra",
+      "Application is submitted against":"As candidaturas são apresentadas contra",
+      ". Are you sure want to delete ?":". Tem certeza de que deseja excluir?",
       "Click here to go back":"Clique aqui para voltar",
       "Dashboards":"Painéis",
       "Error while saving Form":"Erro ao salvar o formulário",
@@ -2324,6 +2351,13 @@ export const formio_resourceBundles = {
 
    "fr": {
 
+      "Loading...":"Chargement...",
+      "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"La modification du flux de travail du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
+      "Save Changes":"Save Changes",
+      "Are you sure you wish to delete the form ":"Êtes-vous sûr de vouloir supprimer le formulaire",
+      "Applications are submitted against":"Les candidatures sont déposées contre",
+      "Application is submitted against":"La candidature est déposée contre",
+      ". Are you sure want to delete ?":". Voulez-vous vraiment supprimer ?",
       "Click here to go back":"Cliquez ici pour revenir en arrière",
       "Dashboards":"Tableaux de bord",
       "Tasks":"Tâches",
@@ -3033,6 +3067,13 @@ export const formio_resourceBundles = {
 
    "de": {
 
+      "Loading...":"Wird geladen...",
+      "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Das Ändern des Formular-Workflows wirkt sich nicht auf die vorhandenen Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen.",
+      "Save Changes":"Save Changes",
+      "Are you sure you wish to delete the form ":"Möchten Sie das Formular wirklich löschen? ",
+      "Applications are submitted against":"Anträge werden dagegen gestellt",
+      "Application is submitted against":"Antrag wird dagegen gestellt",
+      ". Are you sure want to delete ?":". Möchten Sie wirklich löschen?",
       "Click here to go back":"Klicke hier um zurück zu kommen",
       "Dashboards":"Dashboards",
       "Error while saving Form":"Fehler beim Speichern des Formulars",
@@ -3728,7 +3769,7 @@ export const formio_resourceBundles = {
       "Set the text of the Add Resource button.": "Legen Sie den Text für die Funktionsschaltfläche hinzufügen fest.",
       "Auto Expand": "automatisch erweitern",
       "Wizard":"Magier",
-      'Text Field':"Textfield",
+      'Text Field':"Textfeld",
      "Downloaded Successfully":"Erfolgreich heruntergeladen",
      "Error in JSON file structure":"Fehler in der JSON-Dateistruktur",
      "Please fix the errors before submitting again.":"Bitte beheben Sie die Fehler, bevor Sie sie erneut senden.",

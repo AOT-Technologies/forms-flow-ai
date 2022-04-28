@@ -195,7 +195,13 @@ export const RESOURCE_BUNDLES_EN = {
   "Confirmation":"Confirmation",
   "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
   "Error while saving Form":"Error while saving Form",
-  "Click here to go back":"Click here to go back"
+  "Click here to go back":"Click here to go back",
+  "Are you sure you wish to delete the form ":"Are you sure you wish to delete the form ",
+  "Applications are submitted against":"Applications are submitted against",
+  "Application is submitted against":"Application is submitted against",
+  ". Are you sure want to delete ?":". Are you sure want to delete ?",
+  "Save Changes":"Save Changes",
+  "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes."
 
 
 };

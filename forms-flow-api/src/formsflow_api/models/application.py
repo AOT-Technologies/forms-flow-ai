@@ -437,7 +437,7 @@ class Application(
                 FormProcessMapper.version,
             )
         )
-
+        result_proxy = cls.tenant_authorization(result_proxy)
         return [dict(row) for row in result_proxy]
 
     @classmethod
@@ -468,6 +468,7 @@ class Application(
                 FormProcessMapper.version,
             )
         )
+        result_proxy = cls.tenant_authorization(result_proxy)
 
         return [dict(row) for row in result_proxy]
 
@@ -495,6 +496,7 @@ class Application(
             )
             .group_by(Application.application_status, FormProcessMapper.form_name)
         )
+        result_proxy = cls.tenant_authorization(result_proxy)
         return result_proxy
 
     @classmethod
@@ -521,7 +523,7 @@ class Application(
             )
             .group_by(FormProcessMapper.form_name, Application.application_status)
         )
-
+        result_proxy = cls.tenant_authorization(result_proxy)
         return result_proxy
 
     @classmethod

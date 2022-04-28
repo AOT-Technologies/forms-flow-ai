@@ -304,22 +304,32 @@ class ApplicationService:
         return schema.dump(applications, many=True)
 
     @staticmethod
-    def get_applications_status(mapper_id: int, from_date: datetime, to_date: datetime):
+    @user_context
+    def get_applications_status(mapper_id: int, from_date: datetime, to_date: datetime, **kwargs):
         """Get aggregated application status."""
+        user: UserContext = kwargs['user']
         application_status = Application.find_aggregated_application_status(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date
         )
         schema = AggregatedApplicationSchema(exclude=("form_process_mapper_id",))
-        return schema.dump(application_status, many=True)
+        result = schema.dump(application_status, many=True)
+        if user.tenant_key and len(result) == 0:
+            raise PermissionError(f"Access to resource-{mapper_id} is denied.")
+        return result
 
     @staticmethod
-    def get_applications_status_modified(mapper_id: int, from_date: str, to_date: str):
+    @user_context
+    def get_applications_status_modified(mapper_id: int, from_date: str, to_date: str, **kwargs):
         """Get aggregated application status."""
+        user: UserContext = kwargs['user']
         application_status = Application.find_aggregated_application_status_modified(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date
         )
         schema = AggregatedApplicationSchema(exclude=("form_process_mapper_id",))
-        return schema.dump(application_status, many=True)
+        result = schema.dump(application_status, many=True)
+        if user.tenant_key and len(result) == 0:
+            raise PermissionError(f"Access to resource-{mapper_id} is denied.")
+        return result
 
     @staticmethod
     @user_context

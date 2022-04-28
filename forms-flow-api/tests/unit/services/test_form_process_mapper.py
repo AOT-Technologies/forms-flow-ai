@@ -29,23 +29,24 @@ def test_get_form_mapper_count(app, client, session):
 #     assert not rv
 #     assert type(rv) == dict
 
+# commenting out since duplicate test
 
-def test_create_form_mapper(app, client, session):
-    """Tests the create_mapper method with valid payload."""
-    rv = form_service.create_mapper(data=get_form_service_payload())
-    assert rv.form_id == "1234"
-    assert rv.form_name == "Sample form"
+# def test_create_form_mapper(app, client, session):
+#     """Tests the create_mapper method with valid payload."""
+#     rv = form_service.create_mapper(data=get_form_service_payload())
+#     assert rv.form_id == "1234"
+#     assert rv.form_name == "Sample form"
 
 
-def test_update_form_mapper(app, session, client):
-    """Tests the update_mapper method with valid payload."""
-    rv = form_service.create_mapper(data=get_form_service_payload())
-    assert rv.form_id == "1234"
-    assert rv.form_name == "Sample form"
-    form_id = rv.id
-    rv = form_service.update_mapper(form_id, data=get_form_service_payload())
-    assert rv.form_id == "1234"
-    assert rv.form_name == "Sample form"
+# def test_update_form_mapper(app, session, client):
+#     """Tests the update_mapper method with valid payload."""
+#     rv = form_service.create_mapper(data=get_form_service_payload())
+#     assert rv.form_id == "1234"
+#     assert rv.form_name == "Sample form"
+#     form_id = rv.id
+#     rv = form_service.update_mapper(form_id, data=get_form_service_payload())
+#     assert rv.form_id == "1234"
+#     assert rv.form_name == "Sample form"
 
 
 # def test_mark_inactive(session):

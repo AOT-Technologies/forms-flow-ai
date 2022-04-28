@@ -8,8 +8,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.Expression;
@@ -20,6 +22,7 @@ import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,6 +30,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 /**
  * Test class for FormConnectorListener
@@ -64,9 +68,17 @@ public class FormConnectorListenerTest {
 	@Mock
 	private CamundaProperty camundaProperty;
 
-	@Mock
-	private HTTPServiceInvoker httpServiceInvoker;
-
+	@BeforeEach
+	public void setup() {
+		try {
+			Field field = formConnectorListener.getClass().getDeclaredField("bpmObjectMapper");
+			field.setAccessible(true);
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		ReflectionTestUtils.setField(this.formConnectorListener, "bpmObjectMapper", objectMapper);
+	}
 	
 	/**
 	 * This test case perform a positive test over notify method in FormConnectorListener

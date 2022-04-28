@@ -1,10 +1,12 @@
 package org.camunda.bpm.extension.hooks.delegates;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.delegates.data.TextSentimentData;
 import org.camunda.bpm.extension.hooks.delegates.data.TextSentimentRequest;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -12,7 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.lang.reflect.Field;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,6 +38,18 @@ public class FormTextAnalysisDelegateTest {
 
     @Mock
     private HTTPServiceInvoker httpServiceInvoker;
+
+    @BeforeEach
+    public void setup() {
+        try {
+            Field field = formTextAnalysisDelegate.getClass().getDeclaredField("bpmObjectMapper");
+            field.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+        ObjectMapper objectMapper = new ObjectMapper();
+        ReflectionTestUtils.setField(this.formTextAnalysisDelegate, "bpmObjectMapper", objectMapper);
+    }
 
     /**
      * This test case perform a positive test over execute method in FormTextAnalysisDelegate

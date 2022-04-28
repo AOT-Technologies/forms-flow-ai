@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Level;
@@ -30,6 +31,8 @@ public class FormSubmissionService {
 
     private final Logger LOGGER = Logger.getLogger(FormSubmissionService.class.getName());
 
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     private FormTokenAccessHandler formTokenAccessHandler;
     @Autowired
@@ -51,10 +54,9 @@ public class FormSubmissionService {
             LOGGER.log(Level.SEVERE,"Unable to read submission for "+formUrl);
             return null;
         }
-        ObjectMapper objectMapper = new ObjectMapper();
         ResponseEntity<String> response =  httpServiceInvoker.execute(getSubmissionUrl(formUrl), HttpMethod.POST, submission);
         if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
-            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+            JsonNode jsonNode = bpmObjectMapper.readTree(response.getBody());
             String submissionId = jsonNode.get("_id").asText();
             return submissionId;
         } else {
@@ -64,10 +66,9 @@ public class FormSubmissionService {
     }
 
     public String createSubmission(String formUrl, String submission) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
         ResponseEntity<String> response =  httpServiceInvoker.execute(getSubmissionUrl(formUrl), HttpMethod.POST, submission);
         if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
-            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+            JsonNode jsonNode = bpmObjectMapper.readTree(response.getBody());
             String submissionId = jsonNode.get("_id").asText();
             return submissionId;
         } else {
@@ -77,10 +78,9 @@ public class FormSubmissionService {
     }
 
     public String getFormIdByName(String formUrl) throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
         ResponseEntity<String> response =  httpServiceInvoker.execute(formUrl, HttpMethod.GET, null);
         if(response.getStatusCode().value() == HttpStatus.OK.value()) {
-            JsonNode jsonNode = objectMapper.readTree(response.getBody());
+            JsonNode jsonNode = bpmObjectMapper.readTree(response.getBody());
             String formId = jsonNode.get("_id").asText();
             return formId;
         } else {
@@ -100,7 +100,7 @@ public class FormSubmissionService {
         Map<String,Object> fieldValues = new HashMap();
         String submission = readSubmission(formUrl);
         if(StringUtils.isNotEmpty(submission)) {
-            JsonNode dataNode = getObjectMapper().readTree(submission);
+            JsonNode dataNode = bpmObjectMapper.readTree(submission);
             Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
             while (dataElements.hasNext()) {
                 Map.Entry<String, JsonNode> entry = dataElements.next();
@@ -160,11 +160,7 @@ public class FormSubmissionService {
     public String createFormSubmissionData(Map<String,Object> bpmVariables) throws IOException {
         Map<String, Map<String,Object>> data = new HashMap<>();
         data.put("data",bpmVariables);
-        return getObjectMapper().writeValueAsString(data);
-    }
-
-    private ObjectMapper getObjectMapper(){
-        return new ObjectMapper();
+        return bpmObjectMapper.writeValueAsString(data);
     }
 
     @Deprecated

@@ -5,6 +5,7 @@ import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.ro.res.IResponse;
 import org.camunda.bpm.extension.hooks.delegates.data.TextSentimentData;
 import org.camunda.bpm.extension.hooks.delegates.data.TextSentimentRequest;
 import org.camunda.bpm.extension.hooks.exceptions.AnalysisServiceException;
@@ -22,6 +23,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import  com.fasterxml.jackson.core.JsonProcessingException;
 
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,7 +37,8 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
 
     @Autowired
     private FormSubmissionService formSubmissionService;
-
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
@@ -43,9 +46,9 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
     public void execute(DelegateExecution execution) throws Exception {
         TextSentimentRequest textSentimentRequest = prepareAnalysisRequest(execution);
         if(textSentimentRequest != null) {
-            ResponseEntity<String> response =  httpServiceInvoker.execute(getAnalysisUrl(), HttpMethod.POST,textSentimentRequest);
-            if(response.getStatusCode().value() == HttpStatus.OK.value()) {
-                prepareAndPatchFormData(execution, response.getBody());
+            ResponseEntity<IResponse> response =  httpServiceInvoker.execute(getAnalysisUrl(), HttpMethod.POST,textSentimentRequest, TextSentimentRequest.class);
+            if(response.getStatusCode().value() == HttpStatus.OK.value() && response.getBody() != null) {
+                prepareAndPatchFormData(execution, (TextSentimentRequest) response.getBody());
             } else {
                 throw new AnalysisServiceException("Unable to read submission for: "+ getAnalysisUrl()+ ". Message Body: " +
                         response.getBody());
@@ -59,13 +62,13 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
         if(submission.isEmpty()) {
             throw new RuntimeException("Unable to retrieve submission");
         }
-        JsonNode dataNode = getObjectMapper().readTree(submission);
+        JsonNode dataNode = bpmObjectMapper.readTree(submission);
         Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
         while (dataElements.hasNext()) {
             Map.Entry<String, JsonNode> entry = dataElements.next();
             if(entry.getValue().has("type") && getSentimentCategory().equals(entry.getValue().get("type").asText())) {
                 txtRecords.add(new TextSentimentData(entry.getKey(),
-                        getObjectMapper().readValue(entry.getValue().get("topics").toString(), List.class), entry.getValue().get("text").asText()));
+                        bpmObjectMapper.readValue(entry.getValue().get("topics").toString(), List.class), entry.getValue().get("text").asText()));
             }
         }
         if(CollectionUtils.isNotEmpty(txtRecords)) {
@@ -76,8 +79,7 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
     }
 
 
-    public void prepareAndPatchFormData(DelegateExecution execution, String data) throws IOException {
-        TextSentimentRequest textSentimentRequest = getObjectMapper().readValue(data, TextSentimentRequest.class);
+    public void prepareAndPatchFormData(DelegateExecution execution, TextSentimentRequest textSentimentRequest) throws IOException {
         List<FormElement> elements = new ArrayList<>();
         if(textSentimentRequest.getData() != null) {
             for (TextSentimentData textSentimentData : textSentimentRequest.getData()) {
@@ -90,10 +92,6 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
             throw new FormioServiceException("Unable to get patch values for: "+ getFormUrl(execution)+ ". Message Body: " +
                     response.getBody());
         }
-    }
-
-    private ObjectMapper getObjectMapper(){
-        return new ObjectMapper();
     }
 
     private String getAnalysisUrl(){

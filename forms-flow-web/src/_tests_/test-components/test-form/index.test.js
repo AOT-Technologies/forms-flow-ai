@@ -70,25 +70,22 @@ it("should render the Form list component without breaking",()=>{
             }
         },
         user:{
-            isAuthenticated:true
+            isAuthenticated:true,
+            roles:['']
         },
         formCheckList:{
-            formList:[]
+            formList:[],
+            formUploadFormList:[]
         },
         process:{
             isApplicationCountLoading:false,
             formProcessList:[]
         },
-        formCheckList:{
-            formUploadFormList:[]
-        },
         forms:{
            query: {type: 'form', tags: 'common', title__regex: ''},
            sort:"title"
         },
-        user:{
-            roles:['']
-        }
+        
     }));
      renderWithRouterMatch(Index,{
          path:"/form",

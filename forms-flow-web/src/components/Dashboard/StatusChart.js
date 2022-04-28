@@ -68,7 +68,7 @@ const ChartForm = React.memo((props) => {
               {pieData.map((entry, index) => (
                 <div className=" d-flex align-items-center m-3" key={index}>
                   <span
-                    className="rounded-circle shadow bg-primary mr-2"
+                    className="rounded-circle shadow  mr-2"
                     style={{ backgroundColor: COLORS[index % COLORS.length] , width:"25px", height:"25px"}}
                   ></span>
                   <div className="legent-text">{entry.statusName}</div>

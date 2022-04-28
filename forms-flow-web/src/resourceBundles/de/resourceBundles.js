@@ -177,7 +177,7 @@ export const RESOURCE_BUNDLES_DE = {
   "Enter the form machine name": "Geben Sie den Namen der Formularmaschine ein",
   "Enter the form title": "Geben Sie den Formulartitel ein",
   'Wizard':"Magier",
-  'Text Field':"Textfield",
+  'Text Field':"Textfeld",
   "example":"Beispiel",
   "Forms": "Formen",
   "Downloaded Successfully":"Erfolgreich heruntergeladen",
@@ -197,7 +197,14 @@ export const RESOURCE_BUNDLES_DE = {
   "Confirmation":"Bestätigung",
   "Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Das Ändern des Formulartitels wirkt sich nicht auf die bestehenden Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen.",
   "Error while saving Form":"Fehler beim Speichern des Formulars",
-  "Click here to go back":"Klicke hier um zurück zu kommen"
+  "Click here to go back":"Klicke hier um zurück zu kommen",
+  "Applications are submitted against":"Anträge werden dagegen gestellt",
+  "Application is submitted against":"Antrag wird dagegen gestellt",
+  ". Are you sure want to delete ?":". Möchten Sie wirklich löschen?",
+  "Are you sure you wish to delete the form ":"Möchten Sie das Formular wirklich löschen?",
+  "Save Changes":"Save Changes",
+  "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Das Ändern des Formular-Workflows wirkt sich nicht auf die vorhandenen Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen."
+
 
 
 

@@ -10,6 +10,7 @@ from . import config, models
 from .models import db, migrate
 from .resources import data_analysis_api
 from .utils.auth import jwt
+from .utils.enumerator import Service
 from .utils.logging import log_info, setup_logging
 
 setup_logging(
@@ -39,8 +40,9 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     app = Flask(__name__)
     app.config.from_object(config.CONFIGURATION[run_mode])
 
-    db.init_app(app)
-    migrate.init_app(app, db)
+    if API_CONFIG.DATABASE_SUPPORT == Service.ENABLED.value:
+        db.init_app(app)
+        migrate.init_app(app, db)
 
     data_analysis_api.init_app(app)
     setup_jwt_manager(app, jwt)

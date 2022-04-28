@@ -305,9 +305,11 @@ class ApplicationService:
 
     @staticmethod
     @user_context
-    def get_applications_status(mapper_id: int, from_date: datetime, to_date: datetime, **kwargs):
+    def get_applications_status(
+        mapper_id: int, from_date: datetime, to_date: datetime, **kwargs
+    ):
         """Get aggregated application status."""
-        user: UserContext = kwargs['user']
+        user: UserContext = kwargs["user"]
         application_status = Application.find_aggregated_application_status(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date
         )
@@ -319,9 +321,11 @@ class ApplicationService:
 
     @staticmethod
     @user_context
-    def get_applications_status_modified(mapper_id: int, from_date: str, to_date: str, **kwargs):
+    def get_applications_status_modified(
+        mapper_id: int, from_date: str, to_date: str, **kwargs
+    ):
         """Get aggregated application status."""
-        user: UserContext = kwargs['user']
+        user: UserContext = kwargs["user"]
         application_status = Application.find_aggregated_application_status_modified(
             mapper_id=mapper_id, from_date=from_date, to_date=to_date
         )

@@ -91,17 +91,16 @@ export const OPERATIONS = {
   },
   submission: {
     action: "submission",
-    buttonType: "primary",
+    buttonType: "outline-primary",
     icon: "list-alt",
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-
     title: <Translation>{(t)=>t("View Submissions")}</Translation>,
   },
   edit: {
     action: "edit",
-    buttonType: "primary",
+    buttonType: "secondary",
     icon: "edit",
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -111,8 +110,8 @@ export const OPERATIONS = {
   },
   viewForm: {
     action: "viewForm",
-    buttonType: "primary",
-    icon: "eye",
+    buttonType: "outline-primary",
+    icon: "pencil-square-o",
     permissionsResolver: function permissionsResolver() {
       return true;
     },
@@ -121,12 +120,11 @@ export const OPERATIONS = {
   },
   delete: {
     action: "delete",
-    buttonType: "primary",
+    buttonType: "danger",
     icon: "trash",
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    title: <Translation>{(t)=>t("Delete Form")}</Translation>,
   },
   view: {
     action: "viewSubmission",
@@ -140,7 +138,7 @@ export const OPERATIONS = {
   },
   editSubmission: {
     action: "edit",
-    buttonType: "primary",
+    buttonType: "secondary",
     icon: "edit",
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -150,11 +148,12 @@ export const OPERATIONS = {
   },
   deleteSubmission: {
     action: "delete",
-    buttonType: "primary",
+    buttonType: "danger",
     icon: "trash",
     permissionsResolver: function permissionsResolver() {
       return true;
     },
+
     title: <Translation>{(t)=>t("Delete")}</Translation>,
   },
 };

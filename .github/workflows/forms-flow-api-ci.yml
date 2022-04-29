@@ -96,7 +96,7 @@ jobs:
         image: quay.io/keycloak/keycloak:14.0.0
         ports:
           - "8080:8081"
-        environment:
+        env:
           - KEYCLOAK_USER=admin
           - KEYCLOAK_PASSWORD=admin
         command: -b 0.0.0.0 -Djboss.http.port=8081 -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/test -Dkeycloak.migration.strategy=OVERWRITE_EXISTING

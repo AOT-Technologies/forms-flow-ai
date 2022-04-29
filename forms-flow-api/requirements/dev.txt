@@ -15,4 +15,5 @@ pytest-it
 pyflakes
 pylint
 # docker
-lovely-pytest-docker
+pytest-docker
+cryptography==36.0.2

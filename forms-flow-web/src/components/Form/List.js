@@ -375,13 +375,14 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
     },
     onYes: (formId, forms,formData) => {
     if(formData.id){
-      dispatch(unPublishForm(formData.id)) 
+      dispatch(unPublishForm(formData.id))
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {
             const formDetails = {modalOpen: false, formId: "", formName: ""};
             dispatch(setFormDeleteStatus(formDetails));
             dispatch(indexForms("forms", 1, forms.query));
+            dispatch(setFormCheckList([]));
           }
         })
       )

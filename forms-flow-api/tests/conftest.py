@@ -126,3 +126,9 @@ def session(app, db):  # pylint: disable=redefined-outer-name, invalid-name
         # This instruction rollsback any commit that were executed in the tests.
         txn.rollback()
         conn.close()
+
+@pytest.fixture(scope='session', autouse=True)
+def auto(docker_services, app):
+    """Spin up a keycloak instance and initialize jwt."""
+    if app.config['USE_DOCKER_MOCK']:
+        docker_services.start('bpm')

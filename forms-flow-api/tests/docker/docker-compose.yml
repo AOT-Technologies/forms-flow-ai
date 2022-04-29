@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  
+  bpm:
+    image: stoplight/prism:3.3.0
+    command: >
+      mock -p 4010 --host 0.0.0.0
+      https://raw.githubusercontent.com/seethalelias-aot/forms-flow-ai/FWF-1355/forms-flow-bpm/api-spec/forms-flow-bpm-api-spec.yaml
+

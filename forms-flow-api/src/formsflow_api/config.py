@@ -106,6 +106,7 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
 
     # JWT_OIDC_TEST_MODE = True
     # USE_TEST_KEYCLOAK_DOCKER = os.getenv("USE_TEST_KEYCLOAK_DOCKER")
+    USE_DOCKER_MOCK = os.getenv('USE_DOCKER_MOCK', default=None)
 
     # JWT_OIDC Settings
     JWT_OIDC_TEST_AUDIENCE = os.getenv("JWT_OIDC_AUDIENCE")

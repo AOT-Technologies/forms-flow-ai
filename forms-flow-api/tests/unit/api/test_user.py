@@ -1,19 +1,15 @@
 """Test suite for keycloak user API endpoint."""
 
-# from tests import skip_in_ci
-from tests.utilities.base_test import (
-    factory_auth_header,
-    get_locale_update_valid_payload,
-)
+from tests.utilities.base_test import get_locale_update_valid_payload, get_token
 
 
 class TestKeycloakUserServiceResource:
     """Test suite for the keycloak user service APIs."""
 
     # @skip_in_ci
-    def test_successful_user_locale_update(self, app, client, session):
+    def test_successful_user_locale_update(self, app, client, session, jwt):
         """Assert that API /user when passed with valid payload returns 200 status code."""
-        token = factory_auth_header()
+        token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -23,9 +19,9 @@ class TestKeycloakUserServiceResource:
         )
         assert rv.status_code == 200
 
-    def test_unsuccessful_user_locale_update(self, app, client, session):
+    def test_unsuccessful_user_locale_update(self, app, client, session, jwt):
         """Assert that API/user when passed with invalid payload return 400 status code."""
-        token = factory_auth_header()
+        token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",

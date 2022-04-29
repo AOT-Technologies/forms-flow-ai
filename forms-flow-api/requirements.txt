@@ -11,7 +11,6 @@ SQLAlchemy==1.4.36
 Werkzeug==1.0.1
 alembic==1.7.7
 aniso8601==9.0.1
-attrs==21.4.0
 cachelib==0.6.0
 certifi==2021.10.8
 charset-normalizer==2.0.12
@@ -23,14 +22,13 @@ flask-restx==0.5.1
 gunicorn==20.1.0
 idna==3.3
 itsdangerous==1.1.0
-jsonschema==4.4.0
+jsonschema==2.5.1
 marshmallow-sqlalchemy==0.28.0
 marshmallow==3.15.0
 packaging==21.3
 psycopg2-binary==2.9.3
 pyasn1==0.4.8
 pyparsing==3.0.8
-pyrsistent==0.18.1
 python-dotenv==0.20.0
 python-jose==3.3.0
 pytz==2022.1

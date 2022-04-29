@@ -14,3 +14,4 @@ requests
 Werkzeug
 sqlalchemy_utils
 markupsafe==2.0.1
+jsonschema==2.5.1

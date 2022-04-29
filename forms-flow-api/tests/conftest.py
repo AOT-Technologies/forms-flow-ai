@@ -1,16 +1,13 @@
 """Common setup and fixtures for the pytest suite used by this service."""
-import time
-
 import pytest
 import requests
 from flask_migrate import Migrate, upgrade
 from sqlalchemy import event, text
 from sqlalchemy.schema import DropConstraint, MetaData
 
-from formsflow_api import create_app
+from formsflow_api import create_app, setup_jwt_manager
 from formsflow_api.models import db as _db
 from formsflow_api.utils import jwt as _jwt
-import subprocess
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -131,33 +128,16 @@ def session(app, db):  # pylint: disable=redefined-outer-name, invalid-name
         conn.close()
 
 
-# @pytest.fixture(scope="session", autouse=True)
-# def auto(docker_ip, docker_services, app, pytestconfig):
-#     """Spin up a keycloak instance and initialize jwt."""
-#     import os
-#
-#     docker_stop_command = f"docker-compose -f {os.path.join(str(pytestconfig.rootdir), 'tests/docker', 'docker-compose.yml')} down"
-#     docker_start_command = f"docker-compose -f {os.path.join(str(pytestconfig.rootdir), 'tests/docker', 'docker-compose.yml')} up"
-#     print('docker_command ', docker_start_command, docker_stop_command)
-#
-#     subprocess.call(docker_stop_command, shell=True, timeout=30)
-#     subprocess.call(docker_start_command, shell=True, timeout=30)
-#
-#     time_count = 0
-#     continue_wait = True
-#     while continue_wait:
-#         response = requests.get("http://localhost:1000/auth")
-#         if response.status_code == 200:
-#             continue_wait = False
-#         else:
-#             time_count += 1
-#             time.sleep(1)
-#         if time_count > 30:
-#             continue_wait = False
+@pytest.fixture(scope="session", autouse=True)
+def auto(docker_services, app):
+    """Spin up a keycloak instance and initialize jwt."""
+    docker_services.start('keycloak')
+    docker_services.wait_for_service('keycloak', 8081)
+    setup_jwt_manager(app, _jwt)
 
 
 @pytest.fixture(scope="session")
-def docker_compose_file(pytestconfig):
+def docker_compose_files(pytestconfig):
     """Get the docker-compose.yml absolute path."""
     import os
 

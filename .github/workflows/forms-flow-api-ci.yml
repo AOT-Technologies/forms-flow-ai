@@ -92,27 +92,6 @@ jobs:
           - 5432:5432
         # needed because the postgres container does not provide a healthcheck
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-      keycloak:
-        image: quay.io/keycloak/keycloak:14.0.0
-        ports:
-          - "8080:8081"
-        env:
-          - KEYCLOAK_USER=admin
-          - KEYCLOAK_PASSWORD=admin
-        command: -b 0.0.0.0 -Djboss.http.port=8081 -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/test -Dkeycloak.migration.strategy=OVERWRITE_EXISTING
-        healthcheck:
-          test:
-            [
-              "CMD",
-              "curl",
-              "--fail",
-              "http://localhost:8080/auth/realms/forms-flow-ai || exit 1",
-            ]
-        interval: 30s
-        timeout: 10s
-        retries: 10
-        volumes:
-          - ./realms:/tmp/keycloak/test/
 
     steps:
       - uses: actions/checkout@v2

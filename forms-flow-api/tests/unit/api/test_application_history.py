@@ -1,14 +1,14 @@
 """Test suite for application History API endpoint."""
 from tests.utilities.base_test import (
-    factory_auth_header,
     get_application_create_payload,
     get_form_request_payload,
+    get_token
 )
 
 
-def test_get_application_history(app, client, session):
+def test_get_application_history(app, client, session, jwt):
     """Get the json request for application /application/{application_id}/history."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     rv = client.post("/form", headers=headers, json=get_form_request_payload())
@@ -33,9 +33,9 @@ def test_get_application_history_unauthorized(app, client, session):
     assert rv.status_code == 401
 
 
-def test_post_application_history_create_method(app, client, session):
+def test_post_application_history_create_method(app, client, session, jwt):
     """Tests the application history create method."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     new_application = client.post(
         "/application/1/history",

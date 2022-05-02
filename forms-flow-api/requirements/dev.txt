@@ -14,3 +14,4 @@ pytest-cov
 pytest-it
 pyflakes
 pylint
+lovely-pytest-docker

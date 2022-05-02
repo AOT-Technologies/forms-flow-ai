@@ -1,23 +1,23 @@
 """Unit test for APIs of Keycloak Group."""
 from tests import skip_in_ci
 from tests.utilities.base_test import (
-    factory_auth_header,
     update_dashboard_payload,
+    get_token
 )
 
 
-def test_group_list(app, client, session):
+def test_group_list(app, client, session, jwt):
     """Passing case of Group List API."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.get("/groups", headers=headers)
     assert response.status_code == 200
 
 
-def test_group_list_wrongmethod(app, client, session):
+def test_group_list_wrongmethod(app, client, session, jwt):
     """Instead of Get Request, what if POST request comes."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.post("/groups", headers=headers)
@@ -38,9 +38,9 @@ def test_group_list_wrong_auth_header(app, client, session):
     }
 
 
-def test_group_details(app, client, session):
+def test_group_details(app, client, session, jwt):
     """Testing group details API."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.get("/groups", headers=headers)
@@ -53,9 +53,9 @@ def test_group_details(app, client, session):
 
 
 @skip_in_ci
-def test_groups_put_details(app, client, session):
+def test_groups_put_details(app, client, session, jwt):
     """Good cases."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.get("/groups", headers=headers)
@@ -68,9 +68,9 @@ def test_groups_put_details(app, client, session):
     assert response.status_code == 200
 
 
-def test_groups_put_wrong_details(app, client, session):
+def test_groups_put_wrong_details(app, client, session, jwt):
     """Wrong request object."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.get("/groups", headers=headers)

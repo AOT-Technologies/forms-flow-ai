@@ -2,9 +2,9 @@
 import pytest
 
 from tests.utilities.base_test import (
-    factory_auth_header,
     get_application_create_payload,
     get_form_request_payload,
+    get_token
 )
 
 
@@ -21,9 +21,9 @@ class TestApplicationResource:
             "Authorization or has expired.",
         }
 
-    def test_application_list(self, app, client, session):
+    def test_application_list(self, app, client, session, jwt):
         """Assert that API/application when passed with valid token returns 200 status code."""
-        token = factory_auth_header()
+        token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -33,9 +33,9 @@ class TestApplicationResource:
         assert response.status_code == 200
 
     @pytest.mark.parametrize(("pageNo", "limit"), ((1, 5), (1, 10), (1, 20)))
-    def test_application_paginated_list(self, app, client, session, pageNo, limit):
+    def test_application_paginated_list(self, app, client, session, jwt, pageNo, limit):
         """Tests the API/application endpoint with pageNo and limit query params."""
-        token = factory_auth_header()
+        token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -50,10 +50,10 @@ class TestApplicationResource:
         ((1, 5, "id", "asc"), (1, 10, "id", "desc"), (1, 20, "id", "desc")),
     )
     def test_application_paginated_sorted_list(
-        self, app, client, session, pageNo, limit, sortBy, sortOrder
+        self, app, client, session, jwt, pageNo, limit, sortBy, sortOrder
     ):
         """Tests the API/application endpoint with pageNo, limit, sortBy and SortOrder params."""
-        token = factory_auth_header()
+        token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -77,12 +77,13 @@ class TestApplicationResource:
         app,
         client,
         session,
+        jwt,
         pageNo,
         limit,
         filters,
     ):
         """Tests the API/application endpoint with filter params."""
-        token = factory_auth_header()
+        token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -117,9 +118,9 @@ class TestApplicationDetailView:
             "bearer token is passed for Authorization or has expired.",
         }
 
-    def test_application_detailed_view(self, app, client, session):
+    def test_application_detailed_view(self, app, client, session, jwt):
         """Tests the endpoint with valid token."""
-        token = factory_auth_header()
+        token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -142,9 +143,9 @@ class TestApplicationDetailView:
         assert response.json['processKey'] == 'oneStepApproval'
 
 
-def test_application_resource_by_form_id(app, client, session):
+def test_application_resource_by_form_id(app, client, session, jwt):
     """Tests the application by formid endpoint with valid token."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
@@ -164,9 +165,9 @@ def test_application_resource_by_form_id(app, client, session):
     assert response.status_code == 200
 
 
-def test_application_status_list(app, client, session):
+def test_application_status_list(app, client, session, jwt):
     """Tests the application status list endpoint with valid payload."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
@@ -187,9 +188,9 @@ def test_application_status_list(app, client, session):
     assert response.json["applicationStatus"]
 
 
-def test_application_create_method(app, client, session):
+def test_application_create_method(app, client, session, jwt):
     """Tests the application create method with valid payload."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
@@ -207,9 +208,9 @@ def test_application_create_method(app, client, session):
     assert rv.status_code == 201
 
 
-def test_application_payload(app, client, session):
+def test_application_payload(app, client, session, jwt):
     """Tests the application create endpoint with valid payload."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",
@@ -230,9 +231,9 @@ def test_application_payload(app, client, session):
     assert application_response["formUrl"] == f"http://sample.com/form/{form_id}/submission/1233432"
 
 
-def test_application_update_details_api(app, client, session):
+def test_application_update_details_api(app, client, session, jwt):
     """Tests the application update endpoint with valid payload."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",

@@ -2,11 +2,11 @@
 from pytest import mark
 
 from tests.utilities.base_test import (
-    factory_auth_header,
     get_application_create_payload,
     get_form_request_anonymous_payload,
     get_form_request_payload_private,
     get_form_request_payload_public_inactive,
+    get_token
 )
 
 
@@ -14,9 +14,9 @@ from tests.utilities.base_test import (
 class TestApplicationAnonymousResourcesByIds:
     """Test suite for anonymosu application endpoint."""
 
-    def test_application_valid_post(self, app, client, session):
+    def test_application_valid_post(self, app, client, session, jwt):
         """Assert that public API /application when passed with valid payload returns 201 status code."""
-        token = factory_auth_header()
+        token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -44,9 +44,9 @@ class TestApplicationAnonymousResourcesByIds:
             "message": "Invalid application request passed",
         }
 
-    def test_application_unauthorized_post(self, app, client, session):
+    def test_application_unauthorized_post(self, app, client, session, jwt):
         """Assert that public API /application when passed with valid payload returns 401 status code when the form is not anonymos."""
-        token = factory_auth_header()
+        token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -65,9 +65,9 @@ class TestApplicationAnonymousResourcesByIds:
             "message": "Permission denied",
         }
 
-    def test_application_inactive_post(self, app, client, session):
+    def test_application_inactive_post(self, app, client, session, jwt):
         """Assert that public API /application when passed with valid payload returns 401 status code when the form is anonymous but Inactive."""
-        token = factory_auth_header()
+        token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -90,9 +90,9 @@ class TestApplicationAnonymousResourcesByIds:
 class TestAnonymousFormById:
     """Class for unit test check form is Anonymous and published."""
 
-    def test_anonymous_active_form_by_form_id(self, client, session):
+    def test_anonymous_active_form_by_form_id(self, client, session, jwt):
         """Assert that public API when passed with valid payload returns 200 status code."""
-        token = factory_auth_header()
+        token = get_token(jwt)
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",

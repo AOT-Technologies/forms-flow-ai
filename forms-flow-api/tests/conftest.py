@@ -1,6 +1,5 @@
 """Common setup and fixtures for the pytest suite used by this service."""
 import pytest
-import requests
 from flask_migrate import Migrate, upgrade
 from sqlalchemy import event, text
 from sqlalchemy.schema import DropConstraint, MetaData

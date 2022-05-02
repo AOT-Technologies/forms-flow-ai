@@ -108,26 +108,19 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     # USE_TEST_KEYCLOAK_DOCKER = os.getenv("USE_TEST_KEYCLOAK_DOCKER")
 
     # JWT_OIDC Settings
-    JWT_OIDC_TEST_AUDIENCE = "forms-flow-web"  # os.getenv("JWT_OIDC_AUDIENCE")
-    JWT_OIDC_TEST_ISSUER = "http://localhost:8081/auth/realms/forms-flow-ai"  # os.getenv("JWT_OIDC_ISSUER")
-    JWT_OIDC_TEST_WELL_KNOWN_CONFIG = "http://localhost:8081/auth/realms/forms-flow-ai/.well-known/openid-configuration"
-    # os.getenv("JWT_OIDC_WELL_KNOWN_CONFIG")
-    JWT_OIDC_TEST_ALGORITHMS = "RS256"  # os.getenv("JWT_OIDC_ALGORITHMS", "RS256")
-    JWT_OIDC_TEST_JWKS_URI = (
-        "http://localhost:8081/auth/realms/forms-flow-ai/protocol/openid-connect/certs"
-    )
-    # os.getenv("JWT_OIDC_JWKS_URI")
+    JWT_OIDC_TEST_AUDIENCE = os.getenv("JWT_OIDC_AUDIENCE")
+    JWT_OIDC_TEST_ISSUER = os.getenv("JWT_OIDC_ISSUER")
+    JWT_OIDC_TEST_WELL_KNOWN_CONFIG = os.getenv("JWT_OIDC_WELL_KNOWN_CONFIG")
+    JWT_OIDC_TEST_ALGORITHMS = "RS256"
+    JWT_OIDC_TEST_JWKS_URI = os.getenv("JWT_OIDC_JWKS_URI")
     JWT_OIDC_TEST_JWKS_CACHE_TIMEOUT = 6000
 
     # Keycloak Service for BPM Camunda
-    BPM_TOKEN_API = (
-        "http://localhost:8081/auth/realms/forms-flow-ai/protocol/openid-connect/token"
-    )
-    BPM_CLIENT_ID = "forms-flow-bpm"
-    BPM_CLIENT_SECRET = "demo"
-    BPM_GRANT_TYPE = "client_credentials"
-    KEYCLOAK_URL_REALM = "forms-flow-ai"
-    KEYCLOAK_URL = "http://localhost:8081"
+    KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM", default="forms-flow-ai")
+    KEYCLOAK_URL = os.getenv("KEYCLOAK_URL", default="http://localhost:8081")
+
+    # Use docker to spin up mocks
+    USE_DOCKER_MOCK = os.getenv('USE_DOCKER_MOCK', 'False').lower() == 'true'
 
     JWT_OIDC_TEST_KEYS = {
         "keys": [

@@ -120,7 +120,7 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL", default="http://localhost:8081")
 
     # Use docker to spin up mocks
-    USE_DOCKER_MOCK = os.getenv('USE_DOCKER_MOCK', 'False').lower() == 'true'
+    USE_DOCKER_MOCK = os.getenv("USE_DOCKER_MOCK", "False").lower() == "true"
 
     JWT_OIDC_TEST_KEYS = {
         "keys": [

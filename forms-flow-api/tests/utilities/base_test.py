@@ -10,7 +10,11 @@ token_header = {"alg": "RS256", "typ": "JWT", "kid": "forms-flow-web"}
 
 
 def get_token(
-        jwt, role: str = "formsflow-client", username: str = "client", roles: list = [], tenant_key: str = None
+    jwt,
+    role: str = "formsflow-client",
+    username: str = "client",
+    roles: list = [],
+    tenant_key: str = None,
 ):
     """Return token json representation."""
     return jwt.create_jwt(
@@ -42,7 +46,7 @@ def get_token(
             "given_name": "John",
             "family_name": "Smith",
             "email": "john.smith@aot.com",
-            "tenantKey": tenant_key
+            "tenantKey": tenant_key,
         },
         token_header,
     )

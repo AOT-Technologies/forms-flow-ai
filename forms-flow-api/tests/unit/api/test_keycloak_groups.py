@@ -1,9 +1,6 @@
 """Unit test for APIs of Keycloak Group."""
 from tests import skip_in_ci
-from tests.utilities.base_test import (
-    update_dashboard_payload,
-    get_token
-)
+from tests.utilities.base_test import get_token, update_dashboard_payload
 
 
 def test_group_list(app, client, session, jwt):

@@ -2,7 +2,7 @@
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_form_request_payload,
-    get_token
+    get_token,
 )
 
 
@@ -44,7 +44,7 @@ def test_post_application_history_create_method(app, client, session, jwt):
             "applicationId": 1,
             "applicationStatus": "New",
             "formUrl": "http://testsample.com/form/23/submission/3423",
-            "submittedBy": "client"
+            "submittedBy": "client",
         },
     )
     assert new_application.status_code == 201

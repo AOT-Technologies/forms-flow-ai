@@ -1,10 +1,7 @@
 """Test suite for keycloak user API endpoint."""
 
 # from tests import skip_in_ci
-from tests.utilities.base_test import (
-    get_locale_update_valid_payload,
-    get_token
-)
+from tests.utilities.base_test import get_locale_update_valid_payload, get_token
 
 
 class TestKeycloakUserServiceResource:

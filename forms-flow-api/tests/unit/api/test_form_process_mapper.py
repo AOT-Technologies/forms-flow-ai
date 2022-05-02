@@ -1,10 +1,11 @@
 """Test suite for FormProcessMapper API endpoint."""
 import pytest
+
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_form_request_anonymous_payload,
     get_form_request_payload,
-    get_token
+    get_token,
 )
 
 
@@ -180,7 +181,9 @@ def test_anonymous_form_process_mapper_test_update(app, client, session, jwt):
     assert data == f"Updated FormProcessMapper ID {form_id} successfully"
 
 
-def test_get_application_count_based_on_form_process_mapper_id(app, client, session, jwt):
+def test_get_application_count_based_on_form_process_mapper_id(
+    app, client, session, jwt
+):
     """Testing the count API for applications corresponding to mapper id."""
     token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
@@ -198,10 +201,12 @@ def test_get_application_count_based_on_form_process_mapper_id(app, client, sess
 
     rv = client.get(f"/form/{form_id}/application/count", headers=headers)
     assert rv.status_code == 200
-    assert rv.json == {'message': 'No Applications found', 'value': 0}
+    assert rv.json == {"message": "No Applications found", "value": 0}
 
 
-def test_get_application_count_based_on_form_process_mapper_id1(app, client, session, jwt):
+def test_get_application_count_based_on_form_process_mapper_id1(
+    app, client, session, jwt
+):
     """Testing the count api."""
     token = get_token(jwt)
     headers = {

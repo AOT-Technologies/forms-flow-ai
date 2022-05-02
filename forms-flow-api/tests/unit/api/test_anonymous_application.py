@@ -6,7 +6,7 @@ from tests.utilities.base_test import (
     get_form_request_anonymous_payload,
     get_form_request_payload_private,
     get_form_request_payload_public_inactive,
-    get_token
+    get_token,
 )
 
 

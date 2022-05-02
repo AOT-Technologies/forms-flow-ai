@@ -6,7 +6,7 @@ import pytest
 from tests.utilities.base_test import (
     get_application_create_payload,
     get_form_request_payload,
-    get_token
+    get_token,
 )
 
 METRICS_ORDER_BY_VALUES = ["created", "modified"]

@@ -22,8 +22,8 @@ import org.camunda.bpm.extension.keycloak.util.KeycloakPluginLogger;
 import org.springframework.util.StringUtils;
 
 /**
- * @author aot
- *
+ * Keycloak Identity Provider Session.
+ * Class for Keycloack identity provider session.
  */
 public class KeycloakIdentityProviderSession
 		extends org.camunda.bpm.extension.keycloak.KeycloakIdentityProviderSession {

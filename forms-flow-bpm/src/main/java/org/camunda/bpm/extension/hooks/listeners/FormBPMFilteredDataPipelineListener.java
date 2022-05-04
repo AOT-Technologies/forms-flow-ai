@@ -27,6 +27,11 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Form BPM Filtered Data Pipeline Listener.
+ * This class copies specific data from form document data into CAM variables.
+ */
+
 @Component
 public class FormBPMFilteredDataPipelineListener   extends BaseListener implements TaskListener, ExecutionListener {
 

@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.hooks.delegates;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.ro.res.IResponse;
 import org.camunda.bpm.extension.hooks.delegates.data.TextSentimentData;
 import org.camunda.bpm.extension.hooks.delegates.data.TextSentimentRequest;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
@@ -12,7 +13,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -25,7 +29,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
- * Test class for FormTextAnalysisDelegate
+ * Form Text Analysis Delegate Test.
+ * Test class for FormTextAnalysisDelegate.
  */
 @ExtendWith(SpringExtension.class)
 public class FormTextAnalysisDelegateTest {
@@ -55,10 +60,12 @@ public class FormTextAnalysisDelegateTest {
      * This test case perform a positive test over execute method in FormTextAnalysisDelegate
      * This will verify the textSentimentRequest
      */
-   /* @Test
+    @Test
     public void formTextAnalysisDelegate_happyFlow() throws Exception {
         DelegateExecution execution = mock(DelegateExecution.class);
         Map<String, Object> variable = new HashMap<>();
+        String data = "{\"data\":{\"formId\":\"123\",\"formName\":\"New Business Licence\"," +
+                "\"description\":{\"type\":\"textAreaWithAnalytics\",\"topics\":[\"t1\",\"t2\"],\"text\":\"test\"}}}";
         variable.put("formUrl", "http://localhost:3001/submission/id1");
         variable.put("applicationId", 123);
         when(execution.getVariables())
@@ -68,11 +75,14 @@ public class FormTextAnalysisDelegateTest {
         when(execution.getVariable("applicationId"))
                 .thenReturn(variable.get("applicationId"));
         when(formSubmissionService.readSubmission(anyString()))
-                .thenReturn("{\"data\":{\"formId\":\"123\",\"formName\":\"New Business Licence\"," +
-                        "\"description\":{\"type\":\"textAreaWithAnalytics\",\"topics\":[\"t1\",\"t2\"],\"text\":\"test\"}}}");
+                .thenReturn(data);
         List<TextSentimentData> txtRecords = new ArrayList<>();
-        txtRecords.add(formTextAnalysisDelegate.CreateTextSentimentData("description",
-                new ArrayList<>(Arrays.asList("t1","t2")), "test"));
+
+        //txtRecords.add(formTextAnalysisDelegate .CreateTextSentimentData("description",
+        //        new ArrayList<>(Arrays.asList("t1","t2")), "test"));
+        //when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(), any()))
+        //        .thenReturn(ResponseEntity.ok());
+
         TextSentimentRequest textSentimentRequest = new TextSentimentRequest(123, "http://localhost:3001/submission/id1",txtRecords);
         ArgumentCaptor<TextSentimentRequest> captor = ArgumentCaptor.forClass(TextSentimentRequest.class);
 
@@ -86,10 +96,10 @@ public class FormTextAnalysisDelegateTest {
         assertEquals(textSentimentRequest, captor.getValue());
     }
 
-    *//**
+    /**
      * This test case perform a positive test over execute method in FormTextAnalysisDelegate
      * This will handle the runtime Exception
-     *//*
+     */
     @Test
     public void formTextAnalysisDelegate_with_nullSubmissionData() throws Exception {
         DelegateExecution execution = mock(DelegateExecution.class);
@@ -104,10 +114,10 @@ public class FormTextAnalysisDelegateTest {
         });
     }
 
-    *//**
+    /**
      * This test case perform a test over execute method with empty submission data
      * This will verify the TextSentimentRequest
-     *//*
+     */
     @Test
     public void formTextAnalysisDelegate_with_emptySubmissionData() throws Exception {
         DelegateExecution execution = mock(DelegateExecution.class);
@@ -119,5 +129,5 @@ public class FormTextAnalysisDelegateTest {
                 .thenReturn("{}");
         formTextAnalysisDelegate.execute(execution);
         verify(httpServiceInvoker, times(0)).execute(anyString(), any(HttpMethod.class),any(TextSentimentRequest.class));
-    }*/
+    }
 }

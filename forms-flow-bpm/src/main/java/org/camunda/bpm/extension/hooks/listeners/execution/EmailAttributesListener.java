@@ -12,9 +12,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
+ * Email Attributes Listener.
  * This class prepares and populates the variables of email within camunda context.
- *
- * @author  sumathi.thirumani@aot-technologies.com
  */
 public class EmailAttributesListener implements ExecutionListener, IUser {
 

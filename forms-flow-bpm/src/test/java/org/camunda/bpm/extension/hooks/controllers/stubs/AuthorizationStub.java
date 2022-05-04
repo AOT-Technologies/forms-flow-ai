@@ -9,6 +9,11 @@ import org.camunda.bpm.engine.authorization.Resource;
 
 import java.util.Date;
 
+/**
+ * Authorization Stub.
+ * Stub class for Authorization.
+ */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

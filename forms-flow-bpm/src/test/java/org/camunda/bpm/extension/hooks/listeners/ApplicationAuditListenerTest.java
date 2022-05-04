@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
+ * Application AuditListener Test.
  * Test class for ApplicationAuditListener
  */
 @ExtendWith(SpringExtension.class)

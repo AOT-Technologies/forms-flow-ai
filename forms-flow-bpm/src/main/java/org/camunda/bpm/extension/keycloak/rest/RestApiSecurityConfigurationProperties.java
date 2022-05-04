@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 /**
+ * RestApi Security Configuration Properties.
  * Complete Security Configuration Properties for Camunda REST Api.
  */
 @Data

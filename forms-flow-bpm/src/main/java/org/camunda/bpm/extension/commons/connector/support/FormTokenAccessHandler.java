@@ -15,9 +15,8 @@ import java.util.Properties;
 
 
 /**
+ * Form Token Access Handler.
  * This class abstracts  formio token generation logic with the intent to cached & refreshed accordingly.
- * @author sumathi.thirumani@aot-technologies.com
- * @author shibin.thoma@aot-technologies.com
  */
 @Service("formTokenAccessHandler")
 public class FormTokenAccessHandler {

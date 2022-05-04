@@ -16,7 +16,7 @@ import java.util.*;
 
 
 /**
- * Formio context provider.
+ * Formio Context Provider.
  * Manages access tokens for then Formio REST API.
  */
 public class FormioContextProvider {

@@ -29,9 +29,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
+ * Task Controller.
  * This class list all task from history tables of camunda.
- *
- * @author  sumathi.thirumani@aot-technologies.com
  */
 @Deprecated
 @Controller

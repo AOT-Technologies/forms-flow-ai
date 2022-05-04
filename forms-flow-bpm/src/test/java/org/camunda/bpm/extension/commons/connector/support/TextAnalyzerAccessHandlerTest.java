@@ -24,7 +24,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
 /**
- * Test class for TextAnalyzerAccessHandler
+ * Text Analyzer AccessHandler Test.
+ * Test class for TextAnalyzerAccessHandler.
  */
 @ExtendWith(SpringExtension.class)
 public class TextAnalyzerAccessHandlerTest {

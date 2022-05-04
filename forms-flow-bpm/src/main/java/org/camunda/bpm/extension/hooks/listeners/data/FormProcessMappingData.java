@@ -8,6 +8,10 @@ import org.camunda.bpm.extension.commons.ro.res.IResponse;
 
 import java.io.Serializable;
 
+/**
+ * Form Process Mapping Data.
+ * Class for holding and transferring form process mapping data.
+ */
 @Data
 @NoArgsConstructor
 public class FormProcessMappingData implements IResponse, Serializable {

@@ -90,6 +90,7 @@ def update_sentiment():
             table_name,
             output_col,
             limit=100,
+            app_config=APP_CONFIG,
         )
         log_info("Query executed")
         try:

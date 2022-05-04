@@ -204,7 +204,11 @@ export const RESOURCE_BUNDLES_FR = {
   ". Are you sure want to delete ?":". Voulez-vous vraiment supprimer ?",
   "Are you sure you wish to delete the form ":"Êtes-vous sûr de vouloir supprimer le formulaire",
   "Save Changes":"Save Changes",
-  "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"La modification du flux de travail du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications."
+  "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"La modification du flux de travail du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
+  "Form deleted successfully":"Form deleted successfully",
+  "Form process failed":"Le processus de formulaire a échoué",
+  "Form unpublishing Failed":"Échec de la dépublication du formulaire",
+  "All groups have access to the dashboard":"Tous les groupes ont accès au tableau de bord"
 
 
 

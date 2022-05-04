@@ -127,6 +127,7 @@ def session(app, db):  # pylint: disable=redefined-outer-name, invalid-name
         txn.rollback()
         conn.close()
 
+
 @pytest.fixture(scope='session', autouse=True)
 def auto(docker_services, app):
     """Spin up a keycloak instance and initialize jwt."""

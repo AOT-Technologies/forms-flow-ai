@@ -58,7 +58,7 @@ class BPMService(BaseBPMService):
         """Post process start based on tenant key."""
         url = (
             f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"
-            f"key/{process_key}/tenant/{tenantKey}/start"
+            f"key/{process_key}/tenant-id/{tenantKey}/start"
         )
         return cls.post_request(url, token, payload=payload)
 

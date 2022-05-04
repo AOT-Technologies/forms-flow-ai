@@ -17,6 +17,7 @@ from formsflow_api.schemas import (
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import NEW_APPLICATION_STATUS
 from formsflow_api.utils.user_context import UserContext, user_context
+
 from .form_process_mapper import FormProcessMapperService
 
 application_schema = ApplicationSchema()
@@ -63,7 +64,10 @@ class ApplicationService:
             try:
                 if tenant_key:
                     camunda_start_task = BPMService.post_process_start_tenant(
-                        process_key=mapper.process_key, payload=payload, token=token, tenantKey=tenant_key
+                        process_key=mapper.process_key,
+                        payload=payload,
+                        token=token,
+                        tenant_key=tenant_key,
                     )
                 else:
                     camunda_start_task = BPMService.post_process_start(

@@ -200,7 +200,12 @@ export const RESOURCE_BUNDLES_ZH = {
   ". Are you sure want to delete ?":".确定要删除吗？",
   "Are you sure you wish to delete the form ":"您确定要删除表格吗 ",
   "Save Changes":"保存更改",
-  "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"更改表单工作流程不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。"
+  "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"更改表单工作流程不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
+  "Form Workflow Association Saved.":"表单工作流关联已保存。",
+  "Form deleted successfully":"表格删除成功",
+  "Form process failed":"表单处理失败",
+  "Form unpublishing Failed":"表单取消发布失败",
+  "All groups have access to the dashboard":"所有组都可以访问仪表板"
 
 
 

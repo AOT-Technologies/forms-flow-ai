@@ -32,13 +32,17 @@ class ApplicationService:
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
         tenant_key = user.tenant_key
-        data["created_by"] = user_id
+        if token is not None:
+            # for anonymous form submission
+            data["created_by"] = user_id
         data["application_status"] = NEW_APPLICATION_STATUS
         mapper = FormProcessMapper.find_form_by_form_id(data["form_id"])
         if mapper is None:
             if tenant_key:
                 raise PermissionError(f"Permission denied, formId - {data['form_id']}.")
             raise KeyError(f"Mapper does not exist with formId - {data['form_id']}.")
+        if tenant_key is not None and mapper.tenant != tenant_key:
+            raise PermissionError("Tenant authentication failed.")
         data["form_process_mapper_id"] = mapper.id
         # Function to create application in DB
         application = Application.create_from_dict(data)

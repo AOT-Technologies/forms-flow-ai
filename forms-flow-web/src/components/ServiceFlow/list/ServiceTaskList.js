@@ -58,7 +58,7 @@ const ServiceFlowTaskList = React.memo(() => {
         <>
           {taskList.map((task, index) => (
             <div
-              className={`clickable  border  ${
+              className={`clickable shadow border  ${
                 task?.id === bpmTaskId && "selected"
               }`}
               key={index}

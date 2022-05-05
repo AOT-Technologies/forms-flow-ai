@@ -28,8 +28,10 @@ class SqlServerConnect:  # pylint: disable=too-few-public-methods
     ) -> str:
         """Returns database specific query for retrieving rows."""
         cols_to_query = f"{primary_keys},{input_col}"
+        if app_config.SCHEMA_NAME:
+            table_name = f"{app_config.SCHEMA_NAME}.{table_name}"
         return (
-            f"select top {limit} {cols_to_query} from {app_config.SCHEMA_NAME}.{table_name} where "
+            f"select top {limit} {cols_to_query} from {table_name} where "
             f"{input_col} is not null and "
             f"coalesce({output_col}, '') = ''"
         )

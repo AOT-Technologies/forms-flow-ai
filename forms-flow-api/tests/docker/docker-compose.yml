@@ -8,3 +8,30 @@ services:
       mock -p 4010 --host 0.0.0.0
       https://raw.githubusercontent.com/seethalelias-aot/forms-flow-ai/FWF-1355/forms-flow-bpm/api-spec/forms-flow-bpm-api-spec.yaml
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:14.0.0
+    ports:
+      - "8081:8081"
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+    command: -b 0.0.0.0 -Djboss.http.port=8081 -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.dir=/tmp/keycloak/test -Dkeycloak.migration.strategy=OVERWRITE_EXISTING
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "curl",
+          "--fail",
+          "http://localhost:8081/auth/realms/forms-flow-ai || exit 1",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    volumes:
+      - ./realms:/tmp/keycloak/test/
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: 'bridge'

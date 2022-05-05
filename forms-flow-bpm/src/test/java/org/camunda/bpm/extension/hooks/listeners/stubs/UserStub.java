@@ -5,6 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.camunda.bpm.engine.identity.User;
 
+/**
+ * User Stub.
+ * Stub class for User.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

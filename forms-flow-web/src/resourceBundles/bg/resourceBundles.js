@@ -201,7 +201,12 @@ export const RESOURCE_BUNDLES_BG = {
     ". Are you sure want to delete ?":". Наистина ли искате да изтриете?",
     "Are you sure you wish to delete the form ":"Сигурни ли сте, че искате да изтриете формуляра",
     "Save Changes":"Запазите промените",
-    "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Промяната на работния процес на формуляра няма да засегне съществуващите приложения. Той ще се актуализира само в новосъздадените приложения. Натиснете Запазване на промените, за да продължите или отмените промените."
+    "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Промяната на работния процес на формуляра няма да засегне съществуващите приложения. Той ще се актуализира само в новосъздадените приложения. Натиснете Запазване на промените, за да продължите или отмените промените.",
+    "Form Workflow Association Saved.":"Асоциацията на работния поток на формуляра е запазена.",
+    "Form deleted successfully":"Формулярът е изтрит успешно",
+    "Form process failed":"Обработката на формуляра не бе успешно",
+    "Form unpublishing Failed":"Прекратяването на публикуването на формуляра не бе успешно",
+    "All groups have access to the dashboard":"Всички групи имат достъп до таблото"
   
 
 

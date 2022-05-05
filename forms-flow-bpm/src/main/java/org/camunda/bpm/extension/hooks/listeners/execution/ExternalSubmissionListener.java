@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * External Submission Listener.
  * This class supports creation of submission for instances created from external system
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Named("ExternalSubmissionListener")
 public class ExternalSubmissionListener extends BaseListener implements ExecutionListener {

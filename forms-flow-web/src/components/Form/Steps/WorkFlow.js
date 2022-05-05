@@ -213,7 +213,7 @@ const WorkFlow = React.memo(
                               <TableCell className="font-weight-bold" align="left">{t("Label")}</TableCell>
                               <TableCell className="font-weight-bold"align="left">{t("Show in list")}</TableCell>
                               <TableCell className="font-weight-bold" align="right">
-                                t("Action")
+                                {t("Action")}
                               </TableCell>
                              
                             </TableRow>

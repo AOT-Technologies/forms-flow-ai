@@ -11,7 +11,7 @@ import { connect } from "react-redux";
 import { updateGroup } from "../../apiManager/services/dashboardsService";
 import Popover from '@material-ui/core/Popover';
 import { initiateUpdate, updateDashboardFromGroups } from "../../actions/dashboardActions";
-import { Translation } from "react-i18next";
+import { Translation,useTranslation } from "react-i18next";
 export const InsightDashboard = (props)=> {
 
   const {dashboardReducer} = props;
@@ -24,6 +24,7 @@ export const InsightDashboard = (props)=> {
   const isError =  dashboardReducer.iserror;
   const error = dashboardReducer.error;
   const updateError = dashboardReducer.updateError;
+  const{t}=useTranslation();
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -147,7 +148,7 @@ export const InsightDashboard = (props)=> {
                       remainingGroups.map((item,key)=><ListGroup.Item key={key} as="button" 
                       onClick={()=>AddDashboardToGroup(item)}>{item.name}</ListGroup.Item>)
                     :
-                      <ListGroup.Item>{`All groups have access to the dashboard`}</ListGroup.Item>
+                      <ListGroup.Item>{`${t("All groups have access to the dashboard")}`}</ListGroup.Item>
                     }
                   </ListGroup>
               </Popover>

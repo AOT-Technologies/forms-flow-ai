@@ -2,6 +2,11 @@ export const formio_resourceBundles = {
 
    "en": {
 
+      "All groups have access to the dashboard":"All groups have access to the dashboard",
+      "Form unpublishing Failed":"Form unpublishing Failed",
+      "Form process failed":"Form process failed",
+      "Form deleted successfully":"Form deleted successfully",
+      "Form Workflow Association Saved.":"Form Workflow Association Saved.",
       "Loading...":"Loading...",
       "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
       "Save Changes":"Save Changes",
@@ -215,6 +220,10 @@ export const formio_resourceBundles = {
 
    "zh-CN": {
        
+      "All groups have access to the dashboard":"所有组都可以访问仪表板",
+      "Form unpublishing Failed":"表单取消发布失败",
+      "Form process failed":"表单处理失败",
+      "Form deleted successfully":"表格删除成功",
       "Loading...":"正在加载...",
       "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"更改表单工作流程不会影响现有应用程序。它只会在新创建的应用程序中更新。按保存更改以继续或取消更改。",
       "Save Changes":"保存更改",
@@ -927,6 +936,11 @@ export const formio_resourceBundles = {
 
    "bg": {
 
+      "All groups have access to the dashboard":"Всички групи имат достъп до таблото",
+      "Form unpublishing Failed":"Прекратяването на публикуването на формуляра не бе успешно",
+      "Form process failed":"Обработката на формуляра не бе успешно",
+      "Form deleted successfully":"Формулярът е изтрит успешно",
+      "Form Workflow Association Saved.":"Асоциацията на работния поток на формуляра е запазена.",
       "Loading...":"Зареждане...",
       "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Промяната на работния процес на формуляра няма да засегне съществуващите приложения. Той ще се актуализира само в новосъздадените приложения. Натиснете Запазване на промените, за да продължите или отмените промените.",
       "Save Changes":"Запазите промените",
@@ -1638,6 +1652,12 @@ export const formio_resourceBundles = {
 
 
    "pt": {
+
+      "All groups have access to the dashboard":"Todos os grupos têm acesso ao painel",
+      "Form unpublishing Failed":"Falha ao cancelar a publicação do formulário",
+      "Form process failed":"Falha no processo do formulário",
+      "Form deleted successfully":"Formulário excluído com sucesso",
+      "Show in list":"Mostrar na lista",
       "Loading...":"Carregando...",
       "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Alterar o fluxo de trabalho do formulário não afetará os aplicativos existentes. Ele só será atualizado nos aplicativos recém-criados. Pressione Salvar alterações para continuar ou cancelar as alterações.",
       "Save Changes":"Salvar alterações",
@@ -2351,6 +2371,10 @@ export const formio_resourceBundles = {
 
    "fr": {
 
+      "All groups have access to the dashboard":"Tous les groupes ont accès au tableau de bord",
+      "Form unpublishing Failed":"Échec de la dépublication du formulaire",
+      "Form process failed":"Le processus de formulaire a échoué",
+      "Form deleted successfully":"Form deleted successfully",
       "Loading...":"Chargement...",
       "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"La modification du flux de travail du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
       "Save Changes":"Save Changes",
@@ -3067,6 +3091,11 @@ export const formio_resourceBundles = {
 
    "de": {
 
+      "All groups have access to the dashboard":"Alle Gruppen haben Zugriff auf das Dashboard",
+      "Form unpublishing Failed":"Das Aufheben der Veröffentlichung des Formulars ist fehlgeschlagen",
+      "Form process failed":"Formularprozess fehlgeschlagen",
+      "Form deleted successfully":"Form deleted successfully",
+      "Form Workflow Association Saved.":"Formular-Workflow-Zuordnung gespeichert.",
       "Loading...":"Wird geladen...",
       "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Das Ändern des Formular-Workflows wirkt sich nicht auf die vorhandenen Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen.",
       "Save Changes":"Save Changes",

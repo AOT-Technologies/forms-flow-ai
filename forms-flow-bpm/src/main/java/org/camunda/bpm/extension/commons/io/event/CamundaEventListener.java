@@ -22,9 +22,8 @@ import java.util.*;
 
 
 /**
+ * Camunda Event Listener.
  * This class intercepts all camunda task and push socket messages for web tier updates.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Component
 public class CamundaEventListener {

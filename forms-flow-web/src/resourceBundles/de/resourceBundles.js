@@ -203,7 +203,12 @@ export const RESOURCE_BUNDLES_DE = {
   ". Are you sure want to delete ?":". Möchten Sie wirklich löschen?",
   "Are you sure you wish to delete the form ":"Möchten Sie das Formular wirklich löschen?",
   "Save Changes":"Save Changes",
-  "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Das Ändern des Formular-Workflows wirkt sich nicht auf die vorhandenen Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen."
+  "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Das Ändern des Formular-Workflows wirkt sich nicht auf die vorhandenen Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen.",
+  "Form Workflow Association Saved.":"Formular-Workflow-Zuordnung gespeichert.",
+  "Form deleted successfully":"Form deleted successfully",
+  "Form process failed":"Formularprozess fehlgeschlagen",
+  "Form unpublishing Failed":"Das Aufheben der Veröffentlichung des Formulars ist fehlgeschlagen",
+  "All groups have access to the dashboard":"Alle Gruppen haben Zugriff auf das Dashboard"
 
 
 

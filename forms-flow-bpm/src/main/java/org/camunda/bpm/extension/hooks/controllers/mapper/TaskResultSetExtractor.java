@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Task Result Set Extractor.
+ * Class for extracting task result data.
+ */
 @Data
 @NoArgsConstructor
 public class TaskResultSetExtractor implements ResultSetExtractor<Task> {

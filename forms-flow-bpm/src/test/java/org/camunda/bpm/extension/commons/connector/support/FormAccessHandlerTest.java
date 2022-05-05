@@ -26,7 +26,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Test class for FormAccessHandler
+ * Form AccessHandler Test.
+ * Test class for FormAccessHandler.
  */
 @ExtendWith(SpringExtension.class)
 class FormAccessHandlerTest {

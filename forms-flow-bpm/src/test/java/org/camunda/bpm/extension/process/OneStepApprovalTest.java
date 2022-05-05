@@ -6,7 +6,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertThat;
 
 /**
- * Created by DELL on 13-10-2021.
+ * One Step Approval Test.
+ * Test class for OneStepApproval.
  */
 @ExtendWith(SpringExtension.class)
 public class OneStepApprovalTest /*extends ProcessEngineTestCase*/ {

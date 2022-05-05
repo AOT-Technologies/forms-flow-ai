@@ -8,6 +8,11 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Authorization Info.
+ * Class for holding authorization information data.
+ */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

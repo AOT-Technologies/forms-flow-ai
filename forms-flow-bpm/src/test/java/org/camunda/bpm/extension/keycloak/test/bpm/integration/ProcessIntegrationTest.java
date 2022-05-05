@@ -30,6 +30,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 
 /**
+ * Process Integration Test.
  * Test case starting an in-memory database-backed Process Engine running 
  * with the complete Spring Boot stack. The web front end is omitted.
  * <p>

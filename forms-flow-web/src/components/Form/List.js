@@ -390,7 +390,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {
-            toast.success( 'Form deleted successfully')
+            toast.success(<Translation>{(t)=>t("Form deleted successfully")}</Translation>);
             const formDetails = {modalOpen: false, formId: "", formName: ""};
             dispatch(setFormDeleteStatus(formDetails));
             dispatch(indexForms("forms", 1, forms.query));

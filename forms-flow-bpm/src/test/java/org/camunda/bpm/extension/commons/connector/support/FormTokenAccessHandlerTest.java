@@ -21,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
- * Test class for FormTokenAccessHandler
+ * Form Token AccessHandler Test.
+ * Test class for FormTokenAccessHandler.
  */
 @ExtendWith(SpringExtension.class)
 class FormTokenAccessHandlerTest {

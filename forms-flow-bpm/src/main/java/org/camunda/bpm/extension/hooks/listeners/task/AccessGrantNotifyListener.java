@@ -15,9 +15,8 @@ import java.util.*;
 import java.util.logging.Logger;
 
 /**
- * This component is aimed at sending notification to Access Groups
- *
- * @author  sumathi.thirumani@aot-technologies.com
+ * Access Grant Notify Listener.
+ * This component is aimed at sending notification to Access Groups.
  */
 @Component
 public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {

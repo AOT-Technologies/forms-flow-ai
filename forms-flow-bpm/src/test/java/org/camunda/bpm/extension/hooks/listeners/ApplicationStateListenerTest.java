@@ -22,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
+ * Application State Listener Test.
  * Test class for ApplicationStateListener
  */
 @ExtendWith(SpringExtension.class)

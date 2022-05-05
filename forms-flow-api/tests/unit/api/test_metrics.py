@@ -4,9 +4,9 @@ import datetime
 import pytest
 
 from tests.utilities.base_test import (
-    factory_auth_header,
     get_application_create_payload,
     get_form_request_payload,
+    get_token,
 )
 
 METRICS_ORDER_BY_VALUES = ["created", "modified"]
@@ -19,9 +19,9 @@ tomorrow = (
 
 
 @pytest.mark.parametrize("orderBy", METRICS_ORDER_BY_VALUES)
-def test_metrics_get_200(orderBy, app, client, session):
+def test_metrics_get_200(orderBy, app, client, session, jwt):
     """Tests the API/metrics endpoint with valid param."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
     rv = client.get(
         f"/metrics?from={today}&to={tomorrow}&orderBy={orderBy}", headers=headers
@@ -37,9 +37,9 @@ def test_metrics_get_401(orderBy, app, client, session):
 
 
 @pytest.mark.parametrize("orderBy", METRICS_ORDER_BY_VALUES)
-def test_metrics_list_view(orderBy, app, client, session):
+def test_metrics_list_view(orderBy, app, client, session, jwt):
     """Tests API/metrics endpoint with valid data."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     rv = client.post("/form", headers=headers, json=get_form_request_payload())
@@ -68,9 +68,9 @@ def test_metrics_detailed_get_401(orderBy, app, client, session):
 
 
 @pytest.mark.parametrize("orderBy", METRICS_ORDER_BY_VALUES)
-def test_metrics_detailed_view(orderBy, app, client, session):
+def test_metrics_detailed_view(orderBy, app, client, session, jwt):
     """Tests API/metrics/<mapper_id> endpoint with valid data."""
-    token = factory_auth_header()
+    token = get_token(jwt)
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     rv = client.post("/form", headers=headers, json=get_form_request_payload())

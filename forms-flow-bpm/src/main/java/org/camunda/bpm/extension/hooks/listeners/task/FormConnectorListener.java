@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+
 /**
  * Form Connector Listener.
  * This class associates form for user task.
@@ -46,7 +48,7 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
         try {
             String submissionId = createSubmission(getFormUrl(delegateTask),getNewFormSubmissionUrl(delegateTask), delegateTask);
             if(StringUtils.isNotBlank(submissionId)) {
-                delegateTask.getExecution().setVariable("formUrl", getModifiedFormUrl(delegateTask,submissionId));
+                delegateTask.getExecution().setVariable(FORM_URL, getModifiedFormUrl(delegateTask,submissionId));
             }
         } catch (IOException e) {
            handleException(delegateTask.getExecution(), ExceptionSource.TASK, e);
@@ -170,7 +172,7 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
      * @return
      */
     private String getFormUrl(DelegateTask delegateTask) {
-        return String.valueOf(delegateTask.getExecution().getVariables().get("formUrl"));
+        return String.valueOf(delegateTask.getExecution().getVariables().get(FORM_URL));
     }
 
     /**

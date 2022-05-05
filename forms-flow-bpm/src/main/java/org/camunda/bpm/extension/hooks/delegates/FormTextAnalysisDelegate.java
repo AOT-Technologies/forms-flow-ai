@@ -30,6 +30,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.ANALYTICS_TEXT_AREA;
+
 /**
  * Form Text Analysis Delegate.
  * This class copies specific data from text sentiment response data into CAM variables.
@@ -63,7 +67,7 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
 
     private TextSentimentRequest prepareAnalysisRequest(DelegateExecution execution) throws JsonProcessingException {
         List<TextSentimentData> txtRecords = new ArrayList<>();
-        String submission = formSubmissionService.readSubmission(String.valueOf(execution.getVariables().get("formUrl")));
+        String submission = formSubmissionService.readSubmission(String.valueOf(execution.getVariables().get(FORM_URL)));
         if(submission.isEmpty()) {
             throw new RuntimeException("Unable to retrieve submission");
         }
@@ -77,8 +81,8 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
             }
         }
         if(CollectionUtils.isNotEmpty(txtRecords)) {
-            return new TextSentimentRequest((Integer) execution.getVariable("applicationId"),
-                    String.valueOf(execution.getVariable("formUrl")),txtRecords);
+            return new TextSentimentRequest((Integer) execution.getVariable(APPLICATION_ID),
+                    String.valueOf(execution.getVariable(FORM_URL)),txtRecords);
         }
         return null;
     }
@@ -104,11 +108,11 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
     }
 
     private String getFormUrl(DelegateExecution execution){
-        return String.valueOf(execution.getVariables().get("formUrl"));
+        return String.valueOf(execution.getVariables().get(FORM_URL));
     }
 
     private String getSentimentCategory() {
-        return "textAreaWithAnalytics";
+        return ANALYTICS_TEXT_AREA;
     }
 
 }

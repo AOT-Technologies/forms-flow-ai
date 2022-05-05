@@ -21,6 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_STATUS;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+
 /**
  * Application State Listener Test.
  * Test class for ApplicationStateListener
@@ -50,16 +54,16 @@ public class ApplicationStateListenerTest {
         String submittedBy = "test-user";
         Properties properties = mock(Properties.class);
         Application application = mock(Application.class);
-        ReflectionTestUtils.setField(application, "formUrl", formUrl);
-        ReflectionTestUtils.setField(application, "applicationStatus", applicationStatus);
+        ReflectionTestUtils.setField(application, FORM_URL, formUrl);
+        ReflectionTestUtils.setField(application, APPLICATION_STATUS, applicationStatus);
         ReflectionTestUtils.setField(application, "submittedBy", submittedBy);
         when(httpServiceInvoker.getProperties())
                 .thenReturn(properties);
         when(properties.getProperty("api.url"))
                 .thenReturn(apiUrl);
-        when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-        when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-        when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
+        when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+        when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+        when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
         doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
@@ -85,16 +89,16 @@ public class ApplicationStateListenerTest {
         String submittedBy = "test-user";
         Properties properties = mock(Properties.class);
         Application application = mock(Application.class);
-        ReflectionTestUtils.setField(application, "formUrl", formUrl);
-        ReflectionTestUtils.setField(application, "applicationStatus", applicationStatus);
+        ReflectionTestUtils.setField(application, FORM_URL, formUrl);
+        ReflectionTestUtils.setField(application, APPLICATION_STATUS, applicationStatus);
         ReflectionTestUtils.setField(application, "submittedBy", submittedBy);
         when(httpServiceInvoker.getProperties())
                 .thenReturn(properties);
         when(properties.getProperty("api.url"))
                 .thenReturn(apiUrl);
-        when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-        when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-        when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
+        when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+        when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+        when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
@@ -120,16 +124,16 @@ public class ApplicationStateListenerTest {
         String submittedBy = "test-user";
         Properties properties = mock(Properties.class);
         Application application = mock(Application.class);
-        ReflectionTestUtils.setField(application, "formUrl", formUrl);
-        ReflectionTestUtils.setField(application, "applicationStatus", applicationStatus);
+        ReflectionTestUtils.setField(application, FORM_URL, formUrl);
+        ReflectionTestUtils.setField(application, APPLICATION_STATUS, applicationStatus);
         ReflectionTestUtils.setField(application, "submittedBy", submittedBy);
         when(httpServiceInvoker.getProperties())
                 .thenReturn(properties);
         when(properties.getProperty("api.url"))
                 .thenReturn(apiUrl);
-        when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-        when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-        when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
+        when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+        when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+        when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
         doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
         doThrow(new IOException("Unable to read submission for: " +formUrl)).
@@ -152,8 +156,8 @@ public class ApplicationStateListenerTest {
         String apiUrl = "http://localhost:5000";
         String applicationStatus = "Success";
         String submittedBy = "test-user";
-        ReflectionTestUtils.setField(application, "formUrl", formUrl);
-        ReflectionTestUtils.setField(application, "applicationStatus", applicationStatus);
+        ReflectionTestUtils.setField(application, FORM_URL, formUrl);
+        ReflectionTestUtils.setField(application, APPLICATION_STATUS, applicationStatus);
         ReflectionTestUtils.setField(application, "submittedBy", submittedBy);
         when(delegateTask.getExecution())
                 .thenReturn(delegateExecution);
@@ -162,9 +166,9 @@ public class ApplicationStateListenerTest {
                 .thenReturn(properties);
         when(properties.getProperty("api.url"))
                 .thenReturn(apiUrl);
-        when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-        when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-        when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
+        when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+        when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+        when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.OK);
         doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
@@ -193,16 +197,16 @@ public class ApplicationStateListenerTest {
                 .thenReturn(delegateExecution);
         Properties properties = mock(Properties.class);
         Application application = mock(Application.class);
-        ReflectionTestUtils.setField(application, "formUrl", formUrl);
-        ReflectionTestUtils.setField(application, "applicationStatus", applicationStatus);
+        ReflectionTestUtils.setField(application, FORM_URL, formUrl);
+        ReflectionTestUtils.setField(application, APPLICATION_STATUS, applicationStatus);
         ReflectionTestUtils.setField(application, "submittedBy", submittedBy);
         when(httpServiceInvoker.getProperties())
                 .thenReturn(properties);
         when(properties.getProperty("api.url"))
                 .thenReturn(apiUrl);
-        when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-        when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-        when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
+        when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+        when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+        when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);
@@ -231,16 +235,16 @@ public class ApplicationStateListenerTest {
                 .thenReturn(delegateExecution);
         Properties properties = mock(Properties.class);
         Application application = mock(Application.class);
-        ReflectionTestUtils.setField(application, "formUrl", formUrl);
-        ReflectionTestUtils.setField(application, "applicationStatus", applicationStatus);
+        ReflectionTestUtils.setField(application, FORM_URL, formUrl);
+        ReflectionTestUtils.setField(application, APPLICATION_STATUS, applicationStatus);
         ReflectionTestUtils.setField(application, "submittedBy", submittedBy);
         when(httpServiceInvoker.getProperties())
                 .thenReturn(properties);
         when(properties.getProperty("api.url"))
                 .thenReturn(apiUrl);
-        when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-        when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-        when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
+        when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+        when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+        when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
         when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
         ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         doReturn(application).when(applicationAuditListener).prepareApplicationAudit(delegateExecution);

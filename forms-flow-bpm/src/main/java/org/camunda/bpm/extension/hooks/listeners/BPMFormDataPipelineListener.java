@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 /**
  * BPM Form Data Pipeline Listener.
  * This class copies all the CAM variables into form document data.
@@ -64,9 +65,9 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
     }
 
     private void patchFormAttributes(DelegateExecution execution) throws IOException {
-        String  formUrl= MapUtils.getString(execution.getVariables(),"formUrl", null);
+        String  formUrl= MapUtils.getString(execution.getVariables(),FORM_URL, null);
         if(StringUtils.isBlank(formUrl)) {
-            LOGGER.log(Level.SEVERE,"Unable to read submission for "+execution.getVariables().get("formUrl"));
+            LOGGER.log(Level.SEVERE,"Unable to read submission for "+execution.getVariables().get(FORM_URL));
             return;
         }
         ResponseEntity<String> response = httpServiceInvoker.execute(getUrl(execution), HttpMethod.PATCH, getModifiedFormElements(execution));
@@ -78,7 +79,7 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
 
 
     private String getUrl(DelegateExecution execution){
-        return String.valueOf(execution.getVariables().get("formUrl"));
+        return String.valueOf(execution.getVariables().get(FORM_URL));
     }
 
     private List<FormElement> getModifiedFormElements(DelegateExecution execution) throws IOException {

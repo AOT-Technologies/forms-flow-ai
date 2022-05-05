@@ -21,6 +21,9 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import java.io.IOException;
 import java.util.*;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_STATUS;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
 
 /**
  * Application Audit Listener.
@@ -70,8 +73,8 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
      * @return
      */
     protected Application prepareApplicationAudit(DelegateExecution execution) {
-        String applicationStatus = String.valueOf(execution.getVariable("applicationStatus"));
-        String formUrl = String.valueOf(execution.getVariable("formUrl"));
+        String applicationStatus = String.valueOf(execution.getVariable(APPLICATION_STATUS));
+        String formUrl = String.valueOf(execution.getVariable(FORM_URL));
         String submitterName = String.valueOf(execution.getVariable("submitterName"));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String submittedBy = null;
@@ -91,7 +94,7 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
      * @return
      */
     private String getApplicationAuditUrl(DelegateExecution execution){
-        return httpServiceInvoker.getProperties().getProperty("api.url")+"/application/"+execution.getVariable("applicationId")+"/history";
+        return httpServiceInvoker.getProperties().getProperty("api.url")+"/application/"+execution.getVariable(APPLICATION_ID)+"/history";
     }
 
 }

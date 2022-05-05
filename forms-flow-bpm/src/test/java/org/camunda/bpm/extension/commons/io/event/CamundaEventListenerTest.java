@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
+ * Camunda EventListener Test.
  * Test class for CamundaEventListener
  */
 @ExtendWith(SpringExtension.class)

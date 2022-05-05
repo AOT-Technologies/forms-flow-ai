@@ -39,6 +39,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
+ * Notify Listener Test.
  * Test class for NotifyListener
  */
 @ExtendWith(SpringExtension.class)

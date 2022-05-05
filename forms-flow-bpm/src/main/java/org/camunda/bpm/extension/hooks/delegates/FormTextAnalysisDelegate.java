@@ -30,6 +30,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Form Text Analysis Delegate.
+ * This class copies specific data from text sentiment response data into CAM variables.
+ */
+
 @Component
 public class FormTextAnalysisDelegate implements JavaDelegate {
 

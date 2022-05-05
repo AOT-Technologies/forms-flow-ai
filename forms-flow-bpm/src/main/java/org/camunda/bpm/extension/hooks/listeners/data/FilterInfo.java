@@ -7,6 +7,10 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
+/**
+ * Filter Info.
+ * Holds Filter Info data.
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

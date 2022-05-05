@@ -28,9 +28,8 @@ import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Keycloak Authentication Filter Test - used for REST API Security.
- * 
- * @author Sneha Suresh
+ * Keycloak Authentication Filter Test.
+ * Test class for KeycloakAuthenticationFilter.
  */
 @ExtendWith(SpringExtension.class)
 public class KeycloakAuthenticationFilterTest {

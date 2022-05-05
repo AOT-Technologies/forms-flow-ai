@@ -9,10 +9,9 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * Interface containing method to send message to start a message event
+ * IMessage Event.
+ * Interface containing method to send message to start a message event.
  * Feature: Changes to pass the message ID and inject variables in light mode.
- *
- * @author yichun.zhao@aot-technologies.com, sumathi.thirumani@aot-technologies.com
  */
 public interface IMessageEvent extends IUser {
 

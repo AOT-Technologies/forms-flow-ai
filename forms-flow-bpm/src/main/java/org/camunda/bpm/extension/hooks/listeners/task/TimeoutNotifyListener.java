@@ -16,9 +16,8 @@ import org.joda.time.DateTime;
 import org.springframework.stereotype.Component;
 
 /**
+ * Timeout Notify Listener.
  * Timeout Task Listener to start a message event when the deadline is due
- *
- * @author yichun.zhao@aot-technologies.com, sumathi.thirumani@aot-technologies.com
  */
 @Component
 public class TimeoutNotifyListener  extends BaseListener implements TaskListener, IMessageEvent {

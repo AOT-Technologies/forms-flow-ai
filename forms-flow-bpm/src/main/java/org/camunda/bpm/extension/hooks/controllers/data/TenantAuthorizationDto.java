@@ -6,6 +6,10 @@ import java.util.List;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Tenant Authorization Dto.
+ * Data transfer object for Tenant Authorization.
+ */
 public class TenantAuthorizationDto {
 	
 	private String tenantKey;

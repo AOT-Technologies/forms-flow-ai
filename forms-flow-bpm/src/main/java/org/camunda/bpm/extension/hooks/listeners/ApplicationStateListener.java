@@ -16,10 +16,8 @@ import java.io.IOException;
 import java.util.*;
 
 /**
+ * Application State Listener.
  * This class updates the application state and also capture audit.
- *
- * @author sumathi.thirumani@aot-technologies.com
- * @author Shibin Thomas
  */
 @Component
 public class ApplicationStateListener extends BaseListener implements ExecutionListener, TaskListener {

@@ -10,6 +10,11 @@ import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertT
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.complete;
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.task;
 
+/**
+ * Sample Workflow Test.
+ * Test class for SampleWorkflow.
+ */
+
 public class SampleWorkflowTest  extends ProcessEngineTestCase {
 
     private static final String PROCESS_DEFINITION_KEY = "testworkflow";

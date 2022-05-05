@@ -20,10 +20,9 @@ import java.util.*;
 import java.util.logging.Logger;
 
 /**
+ * Notify Listener.
  * Assignment Task Listener to start a message event when a task is created
  * Extended to emails to additional groups of interest.
- *
- * @author yichun.zhao@aot-technologies.com, sumathi.thirumani@aot-technologies.com
  */
 @Component
 public class NotifyListener extends BaseListener implements TaskListener, IMessageEvent {

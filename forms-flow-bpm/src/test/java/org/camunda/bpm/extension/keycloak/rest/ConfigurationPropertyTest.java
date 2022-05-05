@@ -13,6 +13,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Configuration Property Test.
+ * Test class for ConfigurationProperty.
+ */
 @ExtendWith(SpringExtension.class)
 public class ConfigurationPropertyTest {
 

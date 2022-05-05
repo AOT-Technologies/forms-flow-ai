@@ -6,6 +6,7 @@ import org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests;
 import org.camunda.bpm.engine.test.assertions.bpmn.ProcessInstanceAssert;
 
 /**
+ * Process Test Assertions.
  * Assert methods for process tests.
  */
 public abstract class ProcessTestAssertions {

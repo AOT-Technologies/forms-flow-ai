@@ -33,7 +33,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 /**
- * Test class for FormConnectorListener
+ * Form Connector Listener Test.
+ * Test class for FormConnectorListener.
  */
 @ExtendWith(SpringExtension.class)
 public class FormConnectorListenerTest {

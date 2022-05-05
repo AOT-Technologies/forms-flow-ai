@@ -15,6 +15,12 @@ import reactor.core.publisher.Mono;
 
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
+/**
+ * Text Analyzer Access Handler.
+ * This class serves as gateway for all text analyzer service interactions.
+ */
+
+
 @Service("textAnalyzerAccessHandler")
 public class TextAnalyzerAccessHandler implements IAccessHandler{
 

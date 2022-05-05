@@ -17,10 +17,8 @@ import static org.springframework.security.oauth2.client.web.reactive.function.c
 
 
 /**
+ * Application Access Handler.
  * This class serves as gateway for all application service interactions.
- *
- * @author sumathi.thirumani@aot-technologies.com
- * @author Shibin Thomas
  */
 @Service("applicationAccessHandler")
 public class ApplicationAccessHandler implements IAccessHandler {

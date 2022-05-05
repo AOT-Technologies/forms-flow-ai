@@ -23,6 +23,7 @@ import java.util.Properties;
 
 
 /**
+ * Camunda Application.
  * The Camunda Showcase Spring Boot application.
  */
 @EnableConfigurationProperties

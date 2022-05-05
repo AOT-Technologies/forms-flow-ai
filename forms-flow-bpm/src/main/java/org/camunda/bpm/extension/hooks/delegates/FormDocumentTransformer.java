@@ -13,9 +13,8 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * This class transforms all the form document data into CAM variables
- *
- * @author sumathi.thirumani@aot-technologies.com
+ * Form Document Transformer.
+ * This class transforms all the form document data into CAM variables.
  */
 @Component
 public class FormDocumentTransformer  implements JavaDelegate {

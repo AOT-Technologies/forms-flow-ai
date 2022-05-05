@@ -56,9 +56,8 @@ import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import net.minidev.json.JSONArray;
 
 /**
+ * Admin Controller.
  * This class assist with admin operations of formsflow.ai: Giving all authorized form details
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Controller
 public class AdminController {

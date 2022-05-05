@@ -24,8 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
- * Keycloak group service test
- * 
+ * Keycloak Group Service Test.
+ * Test class for KeycloakGroupService.
  */
 @ExtendWith(SpringExtension.class)
 public class KeycloakGroupServiceTest {

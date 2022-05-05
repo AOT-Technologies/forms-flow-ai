@@ -27,9 +27,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
+ * Form Connector Listener.
  * This class associates form for user task.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Component
 public class FormConnectorListener extends BaseListener implements TaskListener {

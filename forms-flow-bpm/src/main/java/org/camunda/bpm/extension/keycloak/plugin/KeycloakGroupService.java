@@ -35,6 +35,10 @@ import org.springframework.web.client.RestClientException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+/**
+ * Keycloak Group Service.
+ * Custom class for Implementation of group queries against Keycloak's REST API.
+ */
 public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.KeycloakGroupService {
 
 	/** This class' logger. */

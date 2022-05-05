@@ -11,9 +11,8 @@ import org.springframework.web.socket.config.annotation.*;
 import java.util.logging.Logger;
 
 /**
+ * Web Socket Config.
  * This class serves the purpose of exposing socket connection for push notifications to & from camunda.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Configuration
 @EnableWebSocketMessageBroker

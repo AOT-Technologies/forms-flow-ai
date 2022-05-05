@@ -30,9 +30,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class transforms all the form document data into CAM variables
- *
- * @author sumathi.thirumani@aot-technologies.com
+ * BPM Form Data Pipeline Listener.
+ * This class copies all the CAM variables into form document data.
  */
 @Named("BPMFormDataPipelineListener")
 public class BPMFormDataPipelineListener extends BaseListener implements TaskListener, ExecutionListener {

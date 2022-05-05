@@ -44,8 +44,8 @@ RUN chown -R $user:root $HOME \
     && chmod -R ug+rw $HOME \
     && chmod ug+x $HOME/*.sh \
     && chmod g+rw /etc/passwd \
-    && chmod g-w $HOME/cron/crontab
-
+    && chmod g-w $HOME/cron/crontab \
+    && chmod g+rw $HOME/.cache/*
 RUN python3 -c "from transformers import pipeline; pipeline('sentiment-analysis', model='$MODEL_ID', truncation=True)"
 
 USER $user

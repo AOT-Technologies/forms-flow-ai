@@ -1067,6 +1067,112 @@ paths:
                   versionTag: '1'
                   historyTimeToLive: null
                   startableInTasklist: true
+  /engine-rest/process-definition/key/onestepapproval/start:
+    post:
+      tags:
+        - Process
+      summary: Start Process
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                variables:
+                  applicationId:
+                    ' value': 25
+                  ' formUrl':
+                    ' value': ' http://localhost:3000/form/626ba203004a95dd15f6b3ad/submission/6273a24051ae2f25bd45793c'
+                  ' formName':
+                    ' value': ' Freedom of Information and Protection of Privacy'
+                  ' submitterName':
+                    ' value': ' formsflow-reviewer'
+                  ' submissionDate':
+                    ' value': ' 2022-05-05 10:09:04.233032'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Date:
+              schema:
+                type: string
+                example: Thu, 05 May 2022 12:23:07 GMT
+            Content-Type:
+              schema:
+                type: string
+                example: text/html; charset=utf-8
+            Transfer-Encoding:
+              schema:
+                type: string
+                example: chunked
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Server:
+              schema:
+                type: string
+                example: nginx
+            x-srv-trace:
+              schema:
+                type: string
+                example: v=1;t=9a094e9be2d510fa
+            x-srv-span:
+              schema:
+                type: string
+                example: v=1;s=000eb79631ff2d70
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: '*'
+            X-RateLimit-Limit:
+              schema:
+                type: integer
+                example: '120'
+            X-RateLimit-Remaining:
+              schema:
+                type: integer
+                example: '119'
+            X-RateLimit-Reset:
+              schema:
+                type: integer
+                example: '1651753447'
+            ETag:
+              schema:
+                type: string
+                example: W/"1c8-z2kaCpOgaO3jWUJmPF8e+ddk7Uo"
+            Vary:
+              schema:
+                type: string
+                example: Accept-Encoding
+            Content-Encoding:
+              schema:
+                type: string
+                example: gzip
+          content:
+            text/plain:
+              schema:
+                type: string
+              example: >-
+                {
+                    "links": [
+                        {
+                            "method": "GET",
+                            "href": "
+                http:
+                //localhost:8000/camunda/engine-rest/process-instance/648c9e74-cc5b-11ec-8f27-0242ac180003",
+                "rel" : "self"
+                        }
+                    ],
+                    "id": "648c9e74-cc5b-11ec-8f27-0242ac180003",
+                    "definitionId": "onestepapproval:1:374f4f67-c79d-11ec-bea4-0242ac180008",
+                    "businessKey": None,
+                    "caseInstanceId": None,
+                    "ended":
+                False,
+                    "suspended": False,
+                    "tenantId": None
+                }
   /engine-rest/authorization/create:
     post:
       tags:
@@ -2075,4 +2181,3 @@ paths:
               example:
                 adminGroupEnabled: true
                 authorizationList: null
-

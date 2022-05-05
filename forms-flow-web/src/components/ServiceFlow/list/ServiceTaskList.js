@@ -96,7 +96,7 @@ const ServiceFlowTaskList = React.memo(() => {
                   {task.priority}
                 </div>
               </div>
-              <hr/>
+              
               {
                 task._embedded?.variable &&  <TaskVariable variables={task._embedded?.variable||[]}/>
               }

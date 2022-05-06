@@ -53,7 +53,8 @@ const List = React.memo((props) => {
     userRoles,
     formId,
     onNo,
-    onYes
+    onYes,
+    path
   } = props;
 
   const isBPMFormListLoading = useSelector(state => state.bpmForms.isActive);
@@ -210,7 +211,7 @@ const List = React.memo((props) => {
                    "?"
                  }
                  onNo={() => onNo()}
-                 onYes={() => {onYes(formId, forms,formProcessData)}}
+                 onYes={() => {onYes(formId, forms,formProcessData,path,formCheckList)}}
                />
             <div className="flex-container">
               {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
@@ -312,7 +313,8 @@ const mapStateToProps = (state) => {
     modalOpen: selectRoot("formDelete", state).formDelete.modalOpen,
     formId: selectRoot("formDelete", state).formDelete.formId,
     formName: selectRoot("formDelete", state).formDelete.formName,
-    isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved
+    isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved,
+    path:selectRoot("formDelete", state).formDelete.path,
   };
 };
 
@@ -351,6 +353,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
               modalOpen: true,
               formId: form._id,
               formName: form.title,
+              path:form.path
             };
             if(data){
               dispatch(getApplicationCount(data.id,(err,res)=>{
@@ -373,15 +376,17 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
         default:
       }
     },
-    onYes: (formId, forms,formData) => {
+    onYes: (formId, forms,formData,path,formCheckList) => {
     if(formData.id){
-      dispatch(unPublishForm(formData.id)) 
+      dispatch(unPublishForm(formData.id))
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {
             const formDetails = {modalOpen: false, formId: "", formName: ""};
             dispatch(setFormDeleteStatus(formDetails));
             dispatch(indexForms("forms", 1, forms.query));
+            const newFormCheckList = formCheckList.filter((i)=>i.path!==path);
+            dispatch(setFormCheckList(newFormCheckList));
           }
         })
       )

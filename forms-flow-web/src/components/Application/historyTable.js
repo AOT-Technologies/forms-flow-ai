@@ -14,7 +14,7 @@ const linkSubmision = (cell) => {
   const url = getFormUrl(formId,submissionId)
   return (
     <div title={url} onClick={()=> window.open(url, "_blank")}>
-        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"></i>&nbsp;</span><Translation>{(t)=>t("View Submissions")}</Translation></span>
+        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"></i>&nbsp;</span><Translation>{(t)=>t("View Submission")}</Translation></span>
     </div>
   );
 }

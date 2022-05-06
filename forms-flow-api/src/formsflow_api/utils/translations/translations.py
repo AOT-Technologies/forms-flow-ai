@@ -27,7 +27,7 @@ translations = {
         "Missing from_date or to_date. Invalid request object for application metrics endpoint": "From_date ou to_date manquant. Objet de requête non valide pour le point de terminaison des métriques d'application",
         "Error while getting application metrics": "Erreur lors de l'obtention des métriques d'application",
     },
-    "zh": {
+    "zh-CN": {
         "errors": "错误",
         "type": "类型",
         "message": "信息",
@@ -102,4 +102,31 @@ translations = {
         "Missing from_date or to_date. Invalid request object for application metrics endpoint": "Está faltando from_date ou to_date. Objeto de solicitação inválido para o endpoint de métricas do aplicativo",
         "Error while getting application metrics": "Erro ao obter as métricas do aplicativo",
     },
+
+    "de":{
+        "errors": "Fehler",
+        "type": "Typ",
+        "message": "Botschaft",
+        "Bad request error": "Ungültiger Anforderungsfehler",
+        "Invalid request data object": "Ungültiges Anforderungsdatenobjekt",
+        "Invalid Token Error": "Ungültiger Token-Fehler",
+        "Invalid Request Object": "Ungültiges Anforderungsobjekt",
+        "Required fields are not passed": "Erforderliche Felder werden nicht übergeben",
+        "Access to formsflow.ai API Denied. Check if the bearer token is passed for Authorization or has expired.": "Zugriff auf die Formsflow.ai-API verweigert. Überprüfen Sie, ob das Bearer-Token für die Autorisierung übergeben wurde oder abgelaufen ist.",
+        "Authorization error": "Autorisierungsfehlero",
+        "Permission denied": "Zugang verweigert",
+        "Invalid application request passed": "Ungültige Anwendungsanforderung bestanden",
+        "Invalid Request Object Passed": "Ungültiges Anforderungsobjekt übergeben",
+        "Welcome to formsflow.ai API": "Willkommen bei der Formsflow.ai-API",
+        "Dashboards not available": "Dashboards nicht verfügbar",
+        "Error": "Fehler",
+        "Dashboard not found": "Dashboard nicht gefunden",
+        "Invalid request object passed for FormProcessmapper POST API": "Ungültiges Anforderungsobjekt für FormProcessmapper POST API übergeben",
+        "Invalid response data": "Ungültige Antwortdaten",
+        "Invalid request passed": "Ungültige Anfrage bestanden",
+        "Invalid Request Object format": "Ungültiges Anforderungsobjektformat",
+        "Missing from_date or to_date. Invalid request object for application metrics endpoint": "From_date oder to_date fehlen. Ungültiges Anforderungsobjekt für Endpunkt der Anwendungsmetriken",
+        "Error while getting application metrics": "Fehler beim Abrufen von Anwendungsmetriken",
+
+    }
 }

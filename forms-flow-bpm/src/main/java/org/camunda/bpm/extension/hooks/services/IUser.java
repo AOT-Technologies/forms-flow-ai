@@ -13,9 +13,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
+ * IUser.
  * This class aimed at centralizing all user related information.
- *
- * @author sumathi.thirumani@aot-technologies.com, yichun.zhao@aot-technologies.com
  */
 public interface IUser {
 

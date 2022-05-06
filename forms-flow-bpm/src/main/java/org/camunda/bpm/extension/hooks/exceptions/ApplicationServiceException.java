@@ -4,9 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
+ * Application Service Exception.
  * Specialized exception class for application calls.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 public class ApplicationServiceException  extends RuntimeException {

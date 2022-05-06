@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.keycloak.plugin;
 import java.util.Objects;
 
 /**
+ * Cacheable Keycloak Tenant Query.
  * Immutable wrapper over KeycloakGroupQuery that can be used as a cache key.
  * Note: keep equals/hashcode in sync with the list of fields
  */

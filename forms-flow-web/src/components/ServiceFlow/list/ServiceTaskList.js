@@ -1,5 +1,5 @@
 import React, {useEffect } from "react";
-import { ListGroup, Row, Col } from "react-bootstrap";
+import { ListGroup, Row} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServices";
 import {
@@ -58,7 +58,7 @@ const ServiceFlowTaskList = React.memo(() => {
         <>
           {taskList.map((task, index) => (
             <div
-              className={`clickable ${
+              className={`clickable shadow border  ${
                 task?.id === bpmTaskId && "selected"
               }`}
               key={index}
@@ -69,45 +69,34 @@ const ServiceFlowTaskList = React.memo(() => {
                   <h5 className="font-weight-bold">{task.name}</h5>
                 </div>
               </Row>
-              <Row className="task-row-2">
-                <div className="col-6 pr-0">
-                  {getProcessDataFromList(
+              <div className="font-size-16 d-flex justify-content-between">
+                <div className=" pr-0" style={{maxWidth:'65%'}}>
+                  <span data-toggle="tooltip"  title="Form Name">{getProcessDataFromList(
                     processList,
                     task.processDefinitionId,
                     "name"
-                  )}
+                  )}</span>
                 </div>
-                <div data-title={t("Task assignee")} className="col-6 pr-0 text-right">
-                  {task.assignee}
+                <div data-toggle="tooltip"  title={t("Task assignee")} className="pr-0 text-right">
+                 <span> {task.assignee}</span>
                 </div>
-              </Row>
-              <Row className="task-row-3" style={{marginBottom:"-8px"}}>
-                <Col
-                  lg={8}
-                  xs={8}
-                  sm={8}
-                  md={8}
-                  xl={8}
-                  className="pr-0"
-                >
-                 <span className="tooltiptext" data-title={task.due?getFormattedDateAndTime(task.due):''}> {task.due ? `${t("Due")} ${moment(task.due).fromNow()}, ` : ""}{" "}</span>
-                 <span className="tooltiptext" data-title={task.followUp?getFormattedDateAndTime(task.followUp):''}> {task.followUp
+              </div>
+              <div className="d-flex justify-content-between text-muted" style={{marginBottom:"-8px",fontSize:"14px"}}>
+                <div style={{maxWidth:'70%'}} >
+                 <span className="tooltiptext"  title={task.due?getFormattedDateAndTime(task.due):''}> {task.due ? `${t("Due")} ${moment(task.due).fromNow()}, ` : ""}{" "}</span>
+                 <span className="tooltiptext"  title={task.followUp?getFormattedDateAndTime(task.followUp):''}> {task.followUp
                     ? `${t("Follow-up")} ${moment(task.followUp).fromNow()}, `
                     : ""} </span>
-                 <span className="tooltiptext" data-title={task.created?getFormattedDateAndTime(task.created):''}> {t("Created")} {moment(task.created).fromNow()}</span>
-                </Col>
-                <Col
-                  lg={4}
-                  xs={4}
-                  sm={4}
-                  md={4}
-                  xl={4}
+                 <span className="tooltiptext"  title={task.created?getFormattedDateAndTime(task.created):''}> {t("Created")} {moment(task.created).fromNow()}</span>
+                </div>
+                <div
                   className="pr-0 text-right tooltips"
-                  dat-title={t("Priority")}
+                  title={t("Priority")}
                 >
                   {task.priority}
-                </Col>
-              </Row>
+                </div>
+              </div>
+              
               {
                 task._embedded?.variable &&  <TaskVariable variables={task._embedded?.variable||[]}/>
               }

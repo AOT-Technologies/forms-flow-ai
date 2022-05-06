@@ -52,7 +52,7 @@ build: ## Build the project with basic python dependencies
 	. venv/bin/activate ;\
 	pip install --upgrade pip ;\
 	pip install -Ur requirements.txt ;\
-	pip install -Ur requirements_dev.txt ;\
+	pip install -Ur requirements/dev.txt ;\
 	pip install -e .
 
 #################################################################################

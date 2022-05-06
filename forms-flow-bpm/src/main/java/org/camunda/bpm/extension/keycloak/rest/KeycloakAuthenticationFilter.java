@@ -24,7 +24,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import net.minidev.json.JSONArray;
 
 /**
- * Keycloak Authentication Filter - used for REST API Security.
+ * Keycloak Authentication Filter
+ * Used for REST API Security.
  */
 public class KeycloakAuthenticationFilter implements Filter {
 

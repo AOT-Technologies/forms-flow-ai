@@ -54,6 +54,15 @@ class BPMService(BaseBPMService):
         return cls.post_request(url, token, payload=payload)
 
     @classmethod
+    def post_process_start_tenant(cls, process_key, payload, token, tenant_key):
+        """Post process start based on tenant key."""
+        url = (
+            f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"
+            f"key/{process_key}/tenant-id/{tenant_key}/start"
+        )
+        return cls.post_request(url, token, payload=payload)
+
+    @classmethod
     def get_auth_form_details(cls, token):
         """Get authorized form details."""
         url = cls._get_url_(BPMEndpointType.FORM_AUTH_DETAILS)

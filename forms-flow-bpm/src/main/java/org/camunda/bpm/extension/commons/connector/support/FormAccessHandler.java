@@ -17,9 +17,8 @@ import reactor.core.publisher.Mono;
 
 
 /**
+ * Form Access Handler.
  * This class serves as gateway for all formio interactions.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Service("formAccessHandler")
 public class FormAccessHandler extends FormTokenAccessHandler implements IAccessHandler {

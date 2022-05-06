@@ -9,6 +9,11 @@ import org.camunda.bpm.extension.commons.ro.res.IResponse;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * Text Sentiment Request.
+ * Class for holding Text Sentiment Request data.
+ */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

@@ -5,6 +5,10 @@ import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
+/**
+ * Authorized Action.
+ * Class for holding Authorized Action data.
+ */
 @NoArgsConstructor
 @Data
 public class AuthorizedAction {

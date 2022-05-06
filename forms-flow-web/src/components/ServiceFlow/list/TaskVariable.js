@@ -15,7 +15,7 @@ const TaskVariable = ({ variables }) => {
            {taskItem.label}
         </span>
         </div>
-        <div className="text-truncate">
+        <div className="text-truncate " style={{fontSize:"14px"}}>
           <span
            data-toggle="tooltip" data-placement="top" title={data.value.toString()}
           >
@@ -28,7 +28,7 @@ const TaskVariable = ({ variables }) => {
 
   return (
     <>
-      <Row className="task-row-3 mt-3 justify-content-between">
+      <Row className=" mt-3 justify-content-between">
 
         {
           taskvariable&&taskvariable.map((taskItem,index)=>{

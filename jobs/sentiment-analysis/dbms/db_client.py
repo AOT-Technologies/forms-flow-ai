@@ -1,4 +1,7 @@
 """This module provides the client to make the connection with the given database."""
+from typing import Dict
+from config import _Config
+from .sqlserver import SqlServerConnect
 
 
 class DatabaseClient:
@@ -26,6 +29,7 @@ class DatabaseClient:
         input_col: str,
         table_name: str,
         output_col: str,
+        app_config: _Config,
         limit: int = 100,
     ) -> str:
         """
@@ -46,6 +50,14 @@ class DatabaseClient:
         ):
             raise Exception("Missing parameters")
         database = self.__connector.get_database(database_value)
-        return database.get_row_query(
-            primary_keys, input_col, table_name, output_col, limit
-        )
+        args: Dict = {
+            "primary_keys": primary_keys,
+            "input_col": input_col,
+            "table_name": table_name,
+            "output_col": output_col,
+            "app_config": app_config,
+            "limit": limit,
+        }
+        if not isinstance(database, SqlServerConnect):
+            del args["app_config"]
+        return database.get_row_query(**args)

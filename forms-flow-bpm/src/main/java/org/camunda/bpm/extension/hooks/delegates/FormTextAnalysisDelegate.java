@@ -96,19 +96,15 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
                         textSentimentData.getOverallSentiment()));
             }
         }
-        ResponseEntity<String> response = httpServiceInvoker.execute(getFormUrl(execution), HttpMethod.PATCH, elements);
+        ResponseEntity<String> response = httpServiceInvoker.execute(FORM_URL, HttpMethod.PATCH, elements);
         if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
-            throw new FormioServiceException("Unable to get patch values for: "+ getFormUrl(execution)+ ". Message Body: " +
+            throw new FormioServiceException("Unable to get patch values for: "+ FORM_URL+ ". Message Body: " +
                     response.getBody());
         }
     }
 
     private String getAnalysisUrl(){
         return httpServiceInvoker.getProperties().getProperty("analysis.url")+"/sentiment";
-    }
-
-    private String getFormUrl(DelegateExecution execution){
-        return String.valueOf(execution.getVariables().get(FORM_URL));
     }
 
     private String getSentimentCategory() {

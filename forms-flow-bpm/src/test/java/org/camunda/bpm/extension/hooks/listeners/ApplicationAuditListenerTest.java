@@ -13,6 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -230,7 +231,7 @@ public class ApplicationAuditListenerTest {
 		when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
 		when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
 		when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
-		when(delegateExecution.getVariable("submitterName")).thenReturn(submitterName);
+		when(delegateExecution.getVariable(SUBMITTER_NAME)).thenReturn(submitterName);
 		assertEquals("Anonymous-user", submitterName);
 		assertEquals("New", applicationStatus);
 		when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
@@ -263,7 +264,7 @@ public class ApplicationAuditListenerTest {
 		when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
 		when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
 		when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
-		when(delegateExecution.getVariable("submitterName")).thenReturn(submitterName);
+		when(delegateExecution.getVariable(SUBMITTER_NAME)).thenReturn(submitterName);
 		assertEquals("Anonymous-user", submitterName);
 		assertEquals("New", applicationStatus);
 		when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);

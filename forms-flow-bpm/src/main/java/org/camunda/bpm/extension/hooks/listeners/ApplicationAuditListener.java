@@ -21,9 +21,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import java.io.IOException;
 import java.util.*;
 
-import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
-import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_STATUS;
-import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.*;
 
 /**
  * Application Audit Listener.
@@ -75,7 +73,7 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
     protected Application prepareApplicationAudit(DelegateExecution execution) {
         String applicationStatus = String.valueOf(execution.getVariable(APPLICATION_STATUS));
         String formUrl = String.valueOf(execution.getVariable(FORM_URL));
-        String submitterName = String.valueOf(execution.getVariable("submitterName"));
+        String submitterName = String.valueOf(execution.getVariable(SUBMITTER_NAME));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String submittedBy = null;
         if (authentication instanceof JwtAuthenticationToken) {

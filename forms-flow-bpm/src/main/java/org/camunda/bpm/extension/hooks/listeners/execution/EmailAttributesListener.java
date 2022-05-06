@@ -11,6 +11,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.*;
+
 /**
  * Email Attributes Listener.
  * This class prepares and populates the variables of email within camunda context.
@@ -24,7 +26,7 @@ public class EmailAttributesListener implements ExecutionListener, IUser {
        LOGGER.info("EmailAttributesListener input : "+execution.getVariables());
        Map<String,Object> dmnMap = getDMNTemplate(execution);
        String emailto = getAddressValue(execution,dmnMap,"to");
-       String groupName = String.valueOf(execution.getVariable("groupName"));
+       String groupName = String.valueOf(execution.getVariable(GROUP_NAME));
        List<String> emailgroup = getEmailsForGroup(execution,groupName);
        if(CollectionUtils.isNotEmpty(emailgroup)) {
            if(emailto.length() > 0) {
@@ -34,9 +36,9 @@ public class EmailAttributesListener implements ExecutionListener, IUser {
            }
        }
         tranformEmailContent(execution,dmnMap);
-        execution.setVariable("email_cc", getAddressValue(execution,dmnMap,"cc"));
+        execution.setVariable(EMAIL_CC, getAddressValue(execution,dmnMap,"cc"));
         if(StringUtils.isNotBlank(emailto)) {
-            execution.setVariable("email_to", emailto);
+            execution.setVariable(EMAIL_TO, emailto);
         }
     }
 
@@ -49,13 +51,13 @@ public class EmailAttributesListener implements ExecutionListener, IUser {
         String emailBody = getTextValue(dmnMap,"body");
         String emailSubject = getTextValue(dmnMap,"subject");
         for(Map.Entry<String,Object> entry : execution.getVariables().entrySet()) {
-            if(!"template".equals(entry.getKey())) {
+            if(!TEMPLATE.equals(entry.getKey())) {
                 emailBody = StringUtils.replace(emailBody,"@"+entry.getKey(), entry.getValue()+StringUtils.EMPTY);
                 emailSubject = StringUtils.replace(emailSubject,"@"+entry.getKey(), entry.getValue()+StringUtils.EMPTY);
             }
         }
-        execution.setVariable("email_body", Variables.stringValue(emailBody,true));
-        execution.setVariable("email_subject", emailSubject);
+        execution.setVariable(EMAIL_BODY, Variables.stringValue(emailBody,true));
+        execution.setVariable(EMAIL_SUBJECT, emailSubject);
     }
 
     /**
@@ -64,7 +66,7 @@ public class EmailAttributesListener implements ExecutionListener, IUser {
      * @return
      */
     private Map<String, Object> getDMNTemplate(DelegateExecution execution) {
-        return (Map<String, Object>) execution.getVariables().get("template");
+        return (Map<String, Object>) execution.getVariables().get(TEMPLATE);
     }
 
     /**

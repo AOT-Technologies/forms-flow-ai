@@ -8,6 +8,10 @@ import org.camunda.bpm.extension.hooks.controllers.data.Variable;
 
 import java.util.List;
 
+/**
+ * Task Stub.
+ * Stub class for Task.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

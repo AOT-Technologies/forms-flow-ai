@@ -20,7 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Test class for FormSubmissionListener
+ * Form Submission Listener Test.
+ * Test class for FormSubmissionListener.
  */
 @ExtendWith(SpringExtension.class)
 public class FormSubmissionListenerTest {

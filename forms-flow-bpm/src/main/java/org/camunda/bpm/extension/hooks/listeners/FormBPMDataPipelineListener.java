@@ -13,9 +13,8 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- * This class transforms all the form document data into CAM variables
- *
- * @author sumathi.thirumani@aot-technologies.com
+ * FormBPMDataPipelineListener.
+ * This class copies all the form document data into CAM variables.
  */
 @Named("FormBPMDataPipelineListener")
 public class FormBPMDataPipelineListener  extends BaseListener implements TaskListener, ExecutionListener {

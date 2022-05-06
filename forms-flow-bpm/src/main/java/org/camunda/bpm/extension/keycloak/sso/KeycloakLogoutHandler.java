@@ -19,6 +19,7 @@ import org.springframework.util.ObjectUtils;
 
 /**
  * Keycloak Logout Handler.
+ * Provides logout functionality for keycloak.
  */
 @Service
 public class KeycloakLogoutHandler implements LogoutSuccessHandler {

@@ -34,7 +34,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
- * Test class for TaskController
+ * Task Controller Test.
+ * Test class for TaskController.
  */
 @ExtendWith(SpringExtension.class)
 public class TaskControllerTest {

@@ -44,7 +44,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 /**
- * @author Sneha Suresh
+ * RestApi Security Config Test.
+ * Test class for RestApiSecurityConfig.
  */
 
 @ExtendWith(SpringExtension.class)

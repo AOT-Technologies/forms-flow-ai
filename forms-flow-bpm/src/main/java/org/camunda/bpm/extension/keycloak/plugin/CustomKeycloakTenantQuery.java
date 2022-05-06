@@ -8,11 +8,12 @@ import org.camunda.bpm.engine.impl.interceptor.CommandContext;
 import org.camunda.bpm.engine.impl.interceptor.CommandExecutor;
 import org.camunda.bpm.extension.keycloak.KeycloakTenantQuery;
 
+/**
+ * Custom Keycloak Tenant Query.
+ * Custom class for keycloak tenant query.
+ */
 public class CustomKeycloakTenantQuery extends KeycloakTenantQuery {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	public CustomKeycloakTenantQuery() {

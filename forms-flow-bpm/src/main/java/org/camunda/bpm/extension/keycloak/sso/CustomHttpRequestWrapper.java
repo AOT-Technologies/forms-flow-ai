@@ -7,9 +7,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import java.util.*;
 
 /**
+ * Custom Http Request Wrapper.
  * This class is intended to support adding authentication header to socket calls.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Component
 public class CustomHttpRequestWrapper extends HttpServletRequestWrapper {

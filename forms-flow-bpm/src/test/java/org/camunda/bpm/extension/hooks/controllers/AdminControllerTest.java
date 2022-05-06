@@ -43,7 +43,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Test class for AdminController
+ * AdminController Test.
+ * Test class for AdminController.
  */
 @ExtendWith(SpringExtension.class)
 public class AdminControllerTest {

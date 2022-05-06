@@ -1,5 +1,9 @@
 package org.camunda.bpm.extension.keycloak.plugin;
 
+/**
+ * Custom Config.
+ * Class for holding and transferring keycloak identity provider plugin data.
+ */
 public class CustomConfig {
 	
 	

@@ -24,7 +24,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
- * Test class for EmailAttributesListener
+ * Email Attributes Listener Test.
+ * Test class for EmailAttributesListener.
  */
 @ExtendWith(SpringExtension.class)
 public class EmailAttributesListenerTest {

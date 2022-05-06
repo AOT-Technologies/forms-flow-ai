@@ -47,7 +47,7 @@ const NavBar = React.memo(() => {
 
   return (
     <header>
-      <Navbar expand="lg" bg="white" className="topheading-border-bottom" fixed="top">
+      <Navbar expand="lg" bg="white"  className="topheading-border-bottom" fixed="top">
         <Container fluid>
           {/*<Nav className="d-lg-none">
             <div className="mt-1" onClick={menuToggle}>
@@ -76,27 +76,25 @@ const NavBar = React.memo(() => {
                   />
             </Link>
           </Navbar.Brand>*/}
-          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Toggle aria-controls="responsive-navbar-nav " />
           {isAuthenticated?
             <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
-            <Nav id="main-menu-nav" className="mr-auto active">
+            <Nav id="main-menu-nav" className="mr-auto active align-items-lg-center">
               <Nav.Link as={Link} to='/form'  className={`main-nav nav-item ${
                 pathname.match(/^\/form/) ? "active-tab" : ""
-              }`}>  <i className="fa fa-wpforms fa-fw fa-lg"/>{t("Forms")}</Nav.Link>
+              }`}><i className="fa fa-wpforms fa-fw fa-lg mr-2"/>{t("Forms")}</Nav.Link>
               {(getUserRolePermission(userRoles, STAFF_DESIGNER)) ?
                 (<Nav.Link as={Link} to='/admin'  className={`main-nav nav-item ${
                   pathname.match(/^\/admin/) ? "active-tab" : ""
 
-                }`}> <i className="fa fa-user-circle-o fa-lg " />{t("Admin")} </Nav.Link>)
+                }`}><i className="fa fa-user-circle-o fa-lg mr-2" />{t("Admin")}</Nav.Link>)
 
-
-
-                :null}
+              :null}
 
               {showApplications?(getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)) ?
                 (<Nav.Link as={Link} to='/application'  className={`main-nav nav-item ${
                   pathname.match(/^\/application/) ? "active-tab" : ""
-                }`}> <i className="fa fa-list-alt fa-fw fa-lg " /> {t("Applications")}</Nav.Link>)
+                }`}> <i className="fa fa-list-alt fa-fw fa-lg mr-2" />{t("Applications")}</Nav.Link>)
                 :null:
                 null}
 
@@ -108,12 +106,12 @@ const NavBar = React.memo(() => {
                 null}*/}
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <NavDropdown title={<><i className="fa fa-list fa-lg fa-fw" />{t("Tasks")} </>} id="task-dropdown"
+                <NavDropdown title={<><i className="fa fa-list fa-lg fa-fw mr-2" />{t("Tasks")} </>} id="task-dropdown"
                              className={`main-nav nav-item taskDropdown ${pathname.match(/^\/task/) ? "active-tab-dropdown" : ""}`} onClick={goToTask}>
                   <ServiceFlowFilterListDropDown/>
               </NavDropdown>:null}
 
-              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown data-testid = "Dashboards" title={<><i className="fa fa-tachometer fa-lg fa-fw"/>{t("Dashboards")}</>}
+              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?<NavDropdown data-testid = "Dashboards" title={<><i className="fa fa-tachometer fa-lg fa-fw mr-2"/>{t("Dashboards")}</>}
                                                                               id="dashboard-dropdown"
                                                                               className={`main-nav nav-item ${
                                                                                 pathname.match(/^\/metrics/) || pathname.match(/^\/insights/) ? "active-tab-dropdown" : ""
@@ -128,8 +126,9 @@ const NavBar = React.memo(() => {
             </Nav>
             {
               (langarr.length===1 && langarr[0]==="en") ? null :
-
-             <Nav className="ml-auto">
+            
+              
+             <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">
             <Dropdown alignRight>
                     <Dropdown.Toggle id="dropdown-basic" as="div" style={{cursor: "pointer"}}>
                     <i className="fa fa-globe fa-lg" aria-hidden="true"/> {lang?lang:'LANGUAGE'}
@@ -145,7 +144,7 @@ const NavBar = React.memo(() => {
                   </Dropdown>
             </Nav>
 }
-            <Nav className="ml-auto">
+            <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">
                   <Dropdown alignRight>
                     <Dropdown.Toggle id="dropdown-basic" as="div" style={{cursor: "pointer"}}>
                    <span className="mr-1">
@@ -164,6 +163,7 @@ const NavBar = React.memo(() => {
                     </Dropdown.Menu>
                   </Dropdown>
                 </Nav>
+             
           </Navbar.Collapse>:<Link to="/" className="btn btn-primary">Login</Link>}
         </Container>
       </Navbar>

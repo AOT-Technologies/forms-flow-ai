@@ -14,9 +14,8 @@ import java.io.IOException;
 import java.util.logging.Logger;
 
 /**
- * This class from the current submission creates a new submission.
- *
- * @author sumathi.thirumani@aot-technologies.com
+ * Form Submission Listener.
+ * This class creates a new submission from the current submission.
  */
 @Component
 public class FormSubmissionListener extends BaseListener implements ExecutionListener, TaskListener {

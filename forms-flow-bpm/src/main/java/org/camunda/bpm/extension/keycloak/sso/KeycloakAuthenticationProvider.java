@@ -20,6 +20,7 @@ import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import net.minidev.json.JSONArray;
 
 /**
+ * Keycloak Authentication Provider.
  * OAuth2 Authentication Provider for usage with Keycloak and
  * KeycloakIdentityProviderPlugin.
  */

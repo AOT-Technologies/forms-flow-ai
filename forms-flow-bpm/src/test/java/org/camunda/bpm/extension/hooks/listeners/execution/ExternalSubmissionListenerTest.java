@@ -29,7 +29,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
- * Test class for ExternalSubmissionListener
+ * External Submission Listener Test.
+ * Test class for ExternalSubmissionListener.
  */
 @ExtendWith(SpringExtension.class)
 public class ExternalSubmissionListenerTest {

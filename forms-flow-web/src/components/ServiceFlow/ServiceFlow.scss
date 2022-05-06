@@ -6,12 +6,12 @@
 }
 
 .service-task-list {
-  box-shadow: 0 0 10px 5px #d0d0d0;
+  // box-shadow: 0 0 10px 5px #d0d0d0;
   clip-path: inset(0px -15px 0px 0px);
   max-height: 80vh;
   min-height: 80vh;
   overflow-y: auto;
-  padding-right: 25px;
+  padding-right: 15px;
   border-right: 1px solid #d0d0d0;
 }
 .service-task-details {
@@ -26,7 +26,7 @@
   border-radius: 5px;
   width: 100%;
   padding: 0;
-  margin: 0 5px 10px 15px;
+  margin-bottom: 4px;
   .button {
     border: 1px solid #555;
     background-color: white;
@@ -139,18 +139,16 @@
   cursor: pointer;
   margin-bottom: 10px !important;
   padding: 10px;
-  border-left: 2px solid transparent;
+  // border-left: 2px solid transparent;
 }
-.clickable:hover {
-  border-left: 2px solid #155cb5;
+.clickable:hover:not(.selected) {
+  border-left: 2px solid #20519b !important ;
 }
 .selected {
   border-left: 3px solid #003366 !important;
 }
-.task-row-2 {
-  font-size: 16px;
-}
-.task-row-3 {
+
+.font-size-16{
   font-size: 16px;
 }
 

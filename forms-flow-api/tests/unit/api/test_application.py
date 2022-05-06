@@ -208,6 +208,26 @@ def test_application_create_method(app, client, session, jwt):
     assert rv.status_code == 201
 
 
+def test_application_create_method_tenant_based(app, client, session, jwt):
+    """Tests the tenant based application create method with valid payload."""
+    token = get_token(jwt, tenant_key="test-tenant")
+    headers = {
+        "Authorization": f"Bearer {token}",
+        "content-type": "application/json",
+    }
+    rv = client.post("/form", headers=headers, json=get_form_request_payload())
+    assert rv.status_code == 201
+
+    form_id = rv.json.get("formId")
+
+    rv = client.post(
+        "/application/create",
+        headers=headers,
+        json=get_application_create_payload(form_id),
+    )
+    assert rv.status_code == 201
+
+
 def test_application_payload(app, client, session, jwt):
     """Tests the application create endpoint with valid payload."""
     token = get_token(jwt)

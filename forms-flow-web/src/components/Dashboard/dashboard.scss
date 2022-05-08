@@ -16,8 +16,13 @@
       margin-bottom: 30px;
       font-size: larger;
       cursor: pointer;
+      &:hover{
+        border: .5rem solid $dark-blue;
+        border-color: $dark-blue !important;
+
+      }
       &.active {
-        background-color: $dark-blue !important;
+        background-color:  #155CB5 !important;
         color: $white;
         & .small-title {
           font-size: 16px;
@@ -40,6 +45,7 @@
         }
       }
     }
+    
   }
   & .progress {
     height: 12px;
@@ -137,10 +143,16 @@
     }
     .small-title {
       font-size: 16px;
-      color: #9eabc0;
+      color: black;
     }
   }
   .no-data-submission {
     margin-top: 5%;
   }
 }
+.form-select{
+  width:80px;
+  border-color:rgba(222,226,230);
+  color: #847592
+}  
+

@@ -9,6 +9,7 @@
   & .card-counter {
     width: 100%;
     margin: 25px 0px;
+    transition: 1s;
     & .white-box {
       background: $white;
       border: 1px solid $light-blue;
@@ -16,13 +17,9 @@
       margin-bottom: 30px;
       font-size: larger;
       cursor: pointer;
-      &:hover{
-        border: .5rem solid $dark-blue;
-        border-color: $dark-blue !important;
-
-      }
-      &.active {
-        background-color:  #155CB5 !important;
+     
+      &.active,&:hover:not(.active){
+        background-color:  $dark-blue !important;
         color: $white;
         & .small-title {
           font-size: 16px;
@@ -153,6 +150,6 @@
 .form-select{
   width:80px;
   border-color:rgba(222,226,230);
-  color: #847592
+  color: #0056B3
 }  
 

@@ -148,6 +148,7 @@ const Dashboard = React.memo(() => {
               <Select
                     options={searchOptions}
                     onChange={onChangeInput}
+                    
                     placeholder='Select Filter'
                     value={searchBy}
               />
@@ -156,6 +157,7 @@ const Dashboard = React.memo(() => {
               <div className="col-12 col-lg-3 d-flex align-items-end flex-lg-column mt-3 mt-lg-0" >
                 <DateRangePicker
                   onChange={onSetDateRange}
+                  title="date-picker"
                   value={dateRange}
                   format="MMM dd, y"
                   rangeDivider=" - "
@@ -188,13 +190,15 @@ const Dashboard = React.memo(() => {
               </div>
               {
                 searchSubmissionText!=="" && 
-                <button type="button" class="btn btn-primary ml-2"
+                <button type="button" class="btn btn-outline-primary ml-2"
                 onClick={()=> handleSearch('')}
               >
                <i class="fa fa-times"></i>
              </button>
               }
-             <button type="button" class="btn btn-primary ml-2"
+             <button type="button" class="btn btn-outline-primary ml-2"
+              name="search-button"
+              title="Click to search"
               onClick={()=> handleSearch(searchSubmissionText)}
               >
                <i class="fa fa-search"></i>

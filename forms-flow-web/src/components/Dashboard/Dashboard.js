@@ -59,7 +59,6 @@ const Dashboard = React.memo(() => {
     moment(firsDay),
     moment(lastDay),
   ]);
-  console.log("num pages",pageRange)
   const [showSubmissionData,setSHowSubmissionData]=useState(submissionsList[0]);
   const [show ,setShow] =useState(false);
   // State to set search text for submission data 
@@ -79,7 +78,7 @@ const Dashboard = React.memo(() => {
   }
   // Function to handle page limit change for submission data
   const handleLimitChange = (limit)=>{
-    dispatch(setMetricsSubmissionLimitChange(limit))
+    dispatch(setMetricsSubmissionLimitChange(Number(limit)))
   }
   // Function to handle pageination page change for submission data
   const handlePageChange = (pageNumber) =>{
@@ -174,17 +173,20 @@ const Dashboard = React.memo(() => {
             <i
             onClick={handleSort}
             className="fa fa-long-arrow-up fa-lg mt-2"
+            title="Sort by form name"
             style={{ cursor: 'pointer',opacity: `${isAscending?1:0.5}`}}
           />
           <i
             onClick={handleSort}
             className="fa fa-long-arrow-down fa-lg mt-2 ml-1"
+            title="Sort by form name"
             style={{ cursor: 'pointer',opacity: `${isAscending?0.5:1}`}}
           />
               <div class="form-outline ml-3">
                  <input type="search" id="form1" 
                  onChange={(e)=>setSearchSubmissionText(e.target.value)} 
                  value={searchSubmissionText}
+                 autoComplete="off"
                  class="form-control" placeholder="search..." 
                  />
               </div>
@@ -233,9 +235,9 @@ const Dashboard = React.memo(() => {
 
             <select onChange={(e)=>handleLimitChange(e.target.value)} className="form-select mx-5 mb-3">
               <option selected>6</option>
-              <option value="12">12</option>
-              <option value="30">30</option>
-              <option value="900">All</option>
+              <option value={12}>12</option>
+              <option value={30}>30</option>
+              <option value={900}>All</option>
             </select>
               </div>
             ):null

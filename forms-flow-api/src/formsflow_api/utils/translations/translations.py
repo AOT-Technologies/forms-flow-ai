@@ -103,7 +103,7 @@ translations = {
         "Error while getting application metrics": "Erro ao obter as métricas do aplicativo",
     },
 
-    "de":{
+    "de": {
         "errors": "Fehler",
         "type": "Typ",
         "message": "Botschaft",

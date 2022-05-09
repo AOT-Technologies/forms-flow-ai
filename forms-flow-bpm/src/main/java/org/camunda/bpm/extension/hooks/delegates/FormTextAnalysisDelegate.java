@@ -75,7 +75,7 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
         Iterator<Map.Entry<String, JsonNode>> dataElements = dataNode.findPath("data").fields();
         while (dataElements.hasNext()) {
             Map.Entry<String, JsonNode> entry = dataElements.next();
-            if(entry.getValue().has("type") && getSentimentCategory().equals(entry.getValue().get("type").asText())) {
+            if(entry.getValue().has("type") && ANALYTICS_TEXT_AREA.equals(entry.getValue().get("type").asText())) {
                 txtRecords.add(new TextSentimentData(entry.getKey(),
                         bpmObjectMapper.readValue(entry.getValue().get("topics").toString(), List.class), entry.getValue().get("text").asText()));
             }
@@ -98,7 +98,7 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
         }
         ResponseEntity<String> response = httpServiceInvoker.execute(FORM_URL, HttpMethod.PATCH, elements);
         if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
-            throw new FormioServiceException("Unable to get patch values for: "+ FORM_URL+ ". Message Body: " +
+            throw new FormioServiceException("Unable to get patch values for: "+ getFormUrl(execution) + ". Message Body: " +
                     response.getBody());
         }
     }
@@ -107,8 +107,9 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
         return httpServiceInvoker.getProperties().getProperty("analysis.url")+"/sentiment";
     }
 
-    private String getSentimentCategory() {
-        return ANALYTICS_TEXT_AREA;
+    private String getFormUrl(DelegateExecution execution){
+        return String.valueOf(execution.getVariables().get(FORM_URL));
+
     }
 
 }

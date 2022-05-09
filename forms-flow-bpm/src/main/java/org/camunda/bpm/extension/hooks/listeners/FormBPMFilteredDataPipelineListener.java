@@ -27,6 +27,9 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+
 /**
  * Form BPM Filtered Data Pipeline Listener.
  * This class copies specific data from form document data into CAM variables.
@@ -75,7 +78,7 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
                     .collect(Collectors.toMap(FilterInfo::getKey, Function.identity()));
 
             if (!filterInfoMap.isEmpty()) {
-                Map<String, Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
+                Map<String, Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get(FORM_URL)));
                 for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
                     if (filterInfoMap.containsKey(entry.getKey())) {
                         execution.setVariable(entry.getKey(), entry.getValue());
@@ -91,6 +94,6 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
      * @return
      */
     private String getApplicationUrl(DelegateExecution execution){
-        return httpServiceInvoker.getProperties().getProperty("api.url")+"/form/applicationid/"+execution.getVariable("applicationId");
+        return httpServiceInvoker.getProperties().getProperty("api.url")+"/form/applicationid/"+execution.getVariable(APPLICATION_ID);
     }
 }

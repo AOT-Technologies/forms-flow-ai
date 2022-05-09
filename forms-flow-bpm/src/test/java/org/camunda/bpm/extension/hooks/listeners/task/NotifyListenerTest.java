@@ -1,5 +1,6 @@
 package org.camunda.bpm.extension.hooks.listeners.task;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.EMAIL_TO;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -140,7 +141,7 @@ public class NotifyListenerTest {
 		verify(runtimeService).startProcessInstanceByMessage(messageIdCaptor.capture(),
 				messageVariableCaptor.capture());
 		Map<String, Object> eMessageVariables = new HashMap<>();
-		eMessageVariables.put("email_to", "john.honai@aot-technologies.com,peter.scots@aot-technologies.com");
+		eMessageVariables.put(EMAIL_TO, "john.honai@aot-technologies.com,peter.scots@aot-technologies.com");
 		eMessageVariables.put("name", "Team");
 		eMessageVariables.put("category", "test-category");
 		eMessageVariables.put("taskid", "taskId-1");
@@ -201,7 +202,7 @@ public class NotifyListenerTest {
 		verify(runtimeService).startProcessInstanceByMessage(messageIdCaptor.capture(),
 				messageVariableCaptor.capture());
 		Map<String, Object> eMessageVariables = new HashMap<>();
-		eMessageVariables.put("email_to", "john.honai@aot-technologies.com,peter.scots@aot-technologies.com");
+		eMessageVariables.put(EMAIL_TO, "john.honai@aot-technologies.com,peter.scots@aot-technologies.com");
 		eMessageVariables.put("name", "Team");
 		eMessageVariables.put("category", "test-category");
 		eMessageVariables.put("taskid", "taskId-1");
@@ -314,7 +315,7 @@ public class NotifyListenerTest {
 		verify(runtimeService).startProcessInstanceByMessage(messageIdCaptor.capture(),
 				messageVariableCaptor.capture());
 		Map<String, Object> eMessageVariables = new HashMap<>();
-		eMessageVariables.put("email_to", "john.honai@aot-technologies.com,peter.scots@aot-technologies.com");
+		eMessageVariables.put(EMAIL_TO, "john.honai@aot-technologies.com,peter.scots@aot-technologies.com");
 		eMessageVariables.put("name", "Team");
 		eMessageVariables.put("category", "test-category");
 		eMessageVariables.put("taskid", "taskId-1");

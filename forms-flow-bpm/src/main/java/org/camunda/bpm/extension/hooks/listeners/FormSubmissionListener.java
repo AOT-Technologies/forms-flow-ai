@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 /**
  * Form Submission Listener.
  * This class creates a new submission from the current submission.
@@ -44,11 +45,11 @@ public class FormSubmissionListener extends BaseListener implements ExecutionLis
     }
 
     private void createRevision(DelegateExecution execution) throws IOException {
-        String submissionId = formSubmissionService.createRevision(String.valueOf(execution.getVariables().get("formUrl")));
-        execution.setVariable("formUrl", getUrl(execution) + "/" + submissionId);
+        String submissionId = formSubmissionService.createRevision(String.valueOf(execution.getVariables().get(FORM_URL)));
+        execution.setVariable(FORM_URL, getUrl(execution) + "/" + submissionId);
     }
 
     private String getUrl(DelegateExecution execution){
-        return StringUtils.substringBeforeLast(String.valueOf(execution.getVariables().get("formUrl")),"/");
+        return StringUtils.substringBeforeLast(String.valueOf(execution.getVariables().get(FORM_URL)),"/");
     }
 }

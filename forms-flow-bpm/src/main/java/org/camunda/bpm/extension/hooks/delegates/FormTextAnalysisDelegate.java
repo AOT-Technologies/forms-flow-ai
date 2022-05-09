@@ -96,9 +96,9 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
                         textSentimentData.getOverallSentiment()));
             }
         }
-        ResponseEntity<String> response = httpServiceInvoker.execute(FORM_URL, HttpMethod.PATCH, elements);
+        ResponseEntity<String> response = httpServiceInvoker.execute(getFormUrl(execution), HttpMethod.PATCH, elements);
         if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
-            throw new FormioServiceException("Unable to get patch values for: "+ getFormUrl(execution) + ". Message Body: " +
+            throw new FormioServiceException("Unable to get patch values for: "+ getFormUrl(execution)+ ". Message Body: " +
                     response.getBody());
         }
     }

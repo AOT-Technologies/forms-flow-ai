@@ -46,7 +46,7 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
     @Override
     public void notify(DelegateTask delegateTask) {
         try {
-            String submissionId = createSubmission(FORM_URL,getNewFormSubmissionUrl(delegateTask), delegateTask);
+            String submissionId = createSubmission(getFormUrl(delegateTask),getNewFormSubmissionUrl(delegateTask), delegateTask);
             if(StringUtils.isNotBlank(submissionId)) {
                 delegateTask.getExecution().setVariable(FORM_URL, getModifiedFormUrl(delegateTask,submissionId));
             }
@@ -126,7 +126,7 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
 
         if(CollectionUtils.isNotEmpty(userTaskExtensionProperties)) {
             String formName = userTaskExtensionProperties.get(0).getCamundaValue();
-            return formSubmissionService.getFormIdByName(StringUtils.substringBefore(FORM_URL,"/form/")+"/"+formName);
+            return formSubmissionService.getFormIdByName(StringUtils.substringBefore(getFormUrl(delegateTask),"/form/")+"/"+formName);
         }
 
         return null;
@@ -161,8 +161,18 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
      * @return
      */
     private String getNewFormSubmissionUrl(DelegateTask delegateTask) throws IOException {
-        String formUrl = FORM_URL;
+        String formUrl = getFormUrl(delegateTask);
         return StringUtils.replace(formUrl, StringUtils.substringBetween(formUrl, "form/", "/submission"), getFormId(delegateTask));
+    }
+
+    /**
+     * Returns the formURl from execution context
+     *
+     * @param delegateTask
+     * @return
+     */
+    private String getFormUrl(DelegateTask delegateTask) {
+        return String.valueOf(delegateTask.getExecution().getVariables().get("formUrl"));
     }
 
     /**
@@ -173,7 +183,7 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
      * @return
      */
     private String getModifiedFormUrl(DelegateTask delegateTask, String submissionId) throws IOException {
-        String formUrl = StringUtils.substringBefore(FORM_URL,"/form/");
+        String formUrl = StringUtils.substringBefore(getFormUrl(delegateTask),"/form/");
         return formUrl+ "/form/" + getFormId(delegateTask) + "/submission/" + submissionId;
     }
 

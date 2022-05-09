@@ -187,7 +187,7 @@ const Dashboard = React.memo(() => {
                  onChange={(e)=>setSearchSubmissionText(e.target.value)} 
                  value={searchSubmissionText}
                  autoComplete="off"
-                 class="form-control" placeholder="search..." 
+                 class="form-control" placeholder={t("Search...")}
                  />
               </div>
               {

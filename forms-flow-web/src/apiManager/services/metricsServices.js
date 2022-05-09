@@ -81,3 +81,37 @@ export const fetchMetricsSubmissionStatusCount = (id, fromDate, toDate ,setSearc
       });
   };
 };
+
+const dynamicSort = (property) => {
+  let sortOrder = 1;
+  if(property[0] === "-") {
+    sortOrder = -1;
+    property = property.substr(1);
+    console.log("property",property)
+  }
+  return  (a,b)=> {
+    /* next line works with strings and numbers,
+     * and you may want to customize it to your needs
+     */
+    const result = (a[property].toUpperCase() < b[property].toUpperCase()) ? -1 : (a[property].toUpperCase() > b[property].toUpperCase()) ? 1 : 0;
+    return result * sortOrder;
+  }
+};
+
+export const getSearchResults = (submissionList,searchText) => {
+  let searchResult = [];
+  if(searchText === ""){
+    searchResult = submissionList;
+  }else {
+     searchResult = submissionList?.filter((e)=>{
+      const caseInSensitive = e.formName.toUpperCase()
+      return caseInSensitive.includes(searchText.toUpperCase());
+   })
+  }
+  return searchResult; 
+}
+
+export const getPaginatedForms = (data,page,limit,sort) => {
+  data.sort(dynamicSort(sort));
+  return  data.slice((page-1)*limit,((page-1)*limit)+limit);
+}

@@ -43,7 +43,7 @@ const linkSubmission = (cell,row) => {
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
   <div onClick={()=> window.open(url, "_blank")}>
-        <span className="btn btn-primary btn-sm form-btn"><span><i
+        <span style={{color:"blue",cursor:"pointer"}}><span><i
           className={icon}/>&nbsp;</span>{buttonText}</span>
   </div>
   );

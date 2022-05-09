@@ -3,8 +3,7 @@ import ApplicationCounter from "./ApplicationCounter";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Redirect } from "react-router";
 import StatusChart from "./StatusChart";
-import Select from 'react-select';
-import Modal from "react-bootstrap/Modal"
+import Modal from "react-bootstrap/Modal";
 import {
   fetchMetricsSubmissionCount,
   fetchMetricsSubmissionStatusCount,
@@ -50,11 +49,11 @@ const Dashboard = React.memo(() => {
   const sort = useSelector((state) => state.metrics.sort);
   // if ascending sort value is title else -title for this case
   const isAscending =  sort ==='-formName'? false : true;
-  const searchOptions = [
-    { value: 'created', label: <Translation>{(t)=>t("Created Date")}</Translation> },
-    { value: 'modified', label: <Translation>{(t)=>t("Modified Date")}</Translation> },
-  ];
-  const [searchBy, setSearchBy] = useState(searchOptions[0]);
+  // const searchOptions = [
+  //   { value: 'created', label: <Translation>{(t)=>t("Created Date")}</Translation> },
+  //   { value: 'modified', label: <Translation>{(t)=>t("Modified Date")}</Translation> },
+  // ];
+  const [searchBy, setSearchBy] = useState("created");
   const [dateRange, setDateRange] = useState([
     moment(firsDay),
     moment(lastDay),
@@ -90,8 +89,8 @@ const Dashboard = React.memo(() => {
   useEffect(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
-    dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy.value));
-  }, [dispatch,searchBy.value,dateRange]);
+    dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy));
+  }, [dispatch,searchBy,dateRange]);
 
   useEffect(()=>{
     setSHowSubmissionData(submissionsList[0]);
@@ -99,7 +98,6 @@ const Dashboard = React.memo(() => {
   
   const  onChangeInput =(option) => {
     setSearchBy(option);
-
   }
 
   if (isMetricsLoading) {
@@ -109,7 +107,7 @@ const Dashboard = React.memo(() => {
   const getStatusDetails = (id) => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
-    dispatch(fetchMetricsSubmissionStatusCount(id, fromDate, toDate, searchBy.value));
+    dispatch(fetchMetricsSubmissionStatusCount(id, fromDate, toDate, searchBy));
     setShow(true)
   };
 
@@ -142,15 +140,12 @@ const Dashboard = React.memo(() => {
                   <i className="fa fa-bars mr-1"/> <Translation>{(t)=>t("Submissions")}</Translation>
                 </h2> 
               </div>
-              <div className="col-12 col-lg-5" title="Search By">
+              <div className="col-12 col-lg-5">
               <div style={{width: '200px',float:"right"}} >
-              <Select
-                    options={searchOptions}
-                    onChange={onChangeInput}
-                    
-                    placeholder='Select Filter'
-                    value={searchBy}
-              />
+              <select onChange={(e)=>onChangeInput(e.target.value)} className="date-select mx-5 mb-3" title="choose any">
+                <option className="date-select" value='created'>{t("Created Date")}</option>
+                <option className="date-select" value='modified'>{t("Modified Date")}</option>
+              </select>
               </div>
               </div>
               <div className="col-12 col-lg-3 d-flex align-items-end flex-lg-column mt-3 mt-lg-0" >

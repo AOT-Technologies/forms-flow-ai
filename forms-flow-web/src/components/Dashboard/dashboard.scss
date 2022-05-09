@@ -17,8 +17,7 @@
       margin-bottom: 30px;
       font-size: larger;
       cursor: pointer;
-     
-      &.active,&:hover:not(.active){
+      &.active,&:hover{
         background-color:  $dark-blue !important;
         color: $white;
         & .small-title {
@@ -154,4 +153,8 @@
   border-color:rgba(222,226,230);
   color: #0056B3
 }  
-
+.date-select{
+  width:150px;
+  height: 45px;
+  cursor: pointer;
+}

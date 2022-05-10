@@ -123,8 +123,9 @@ export const ApplicationList = React.memo(() => {
         {(props) => (
             <div className="container">
               <div className="main-header">
+                
                 <h3 className="application-head">
-                <i className="fa fa-list" aria-hidden="true"/>
+                <i className="fa fa-list" style={{marginTop: '5px'}} aria-hidden="true"/>
               <span className="application-text"><Translation>{(t)=>t("Applications")}</Translation></span>
                   <div className="col-md-1 application-count">({applicationCount})</div>
                 </h3>

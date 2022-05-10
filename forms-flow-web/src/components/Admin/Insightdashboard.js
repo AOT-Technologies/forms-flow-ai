@@ -194,10 +194,10 @@ const handleSizeChange = (sizePerPage,page)=>{
   return (
      <>
         <div className="flex-container">
-          <div className="flex-item-left">
+          <div className=" d-flex flex-row">
           <h3 className="task-head">
-          <span><i className="fa fa-wpforms" aria-hidden="true"/></span>
-             <span className="forms-text"><Translation>{(t)=>t("Dashboard")}</Translation></span></h3>
+          <span><i className="fa fa-user-circle-o mt-3" aria-hidden="true"/></span>
+             <span className="forms-text "><Translation>{(t)=>t("Dashboard")}</Translation></span></h3>
           </div>
           {updateError && <div className="error-container error-custom"><Errors errors={error} /></div>}
         </div>

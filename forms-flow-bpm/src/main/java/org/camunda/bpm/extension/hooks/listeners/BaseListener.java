@@ -7,9 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Base Listener.
  * Base class to apply default behavior to listeners.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 public class BaseListener {
 

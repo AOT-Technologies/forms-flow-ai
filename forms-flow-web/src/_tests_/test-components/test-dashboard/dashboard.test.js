@@ -58,6 +58,8 @@ it("Should render the dashboard without breaking",()=>{
                     "applicationName": "New Business License Application"
                 },
             ],
+            pagination:[{"page":1}],
+            submissionsFullList:[{"length":0}],
             isMetricsLoading:false,
             isMetricsStatusLoading:false,
             selectedMetricsId:22,
@@ -83,9 +85,10 @@ it("Should not render the dashboard in case of error",()=>{
         metrics:{
             submissionsList:[
             ],
-            submissionsStatusList:[
-               
+            submissionsStatusList:[   
             ],
+            pagination:[],
+            submissionsFullList:[],
             isMetricsLoading:false,
             isMetricsStatusLoading:false,
             selectedMetricsId:22,

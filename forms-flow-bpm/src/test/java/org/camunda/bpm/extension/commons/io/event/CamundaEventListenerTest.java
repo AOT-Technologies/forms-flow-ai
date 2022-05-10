@@ -19,7 +19,12 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_STATUS;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+
 /**
+ * Camunda EventListener Test.
  * Test class for CamundaEventListener
  */
 @ExtendWith(SpringExtension.class)
@@ -56,9 +61,9 @@ public class CamundaEventListenerTest {
         ReflectionTestUtils.setField(camundaEventListener, "messageCategory", "TASK_EVENT_DETAILS,TASK_EVENT");
         ReflectionTestUtils.setField(camundaEventListener, "messageEvents", "ALL");
         Map<String, Object> variables = new HashMap<>();
-        variables.put("applicationId" , "id1");
-        variables.put("formUrl" , "http://localhost:3001");
-        variables.put("applicationStatus" , "New");
+        variables.put(APPLICATION_ID , "id1");
+        variables.put(FORM_URL , "http://localhost:3001");
+        variables.put(APPLICATION_STATUS , "New");
         when(delegateTask.getVariables())
                 .thenReturn(variables);
         camundaEventListener.onTaskEventListener(delegateTask);
@@ -82,9 +87,9 @@ public class CamundaEventListenerTest {
         ReflectionTestUtils.setField(camundaEventListener, "messageCategory", "TASK_EVENT_DETAILS,TASK_EVENT");
         ReflectionTestUtils.setField(camundaEventListener, "messageEvents", "DEFAULT");
         Map<String, Object> variables = new HashMap<>();
-        variables.put("applicationId" , "id1");
-        variables.put("formUrl" , "http://localhost:3001");
-        variables.put("applicationStatus" , "New");
+        variables.put(APPLICATION_ID , "id1");
+        variables.put(FORM_URL , "http://localhost:3001");
+        variables.put(APPLICATION_STATUS , "New");
         when(delegateTask.getVariables())
                 .thenReturn(variables);
         camundaEventListener.onTaskEventListener(delegateTask);
@@ -108,9 +113,9 @@ public class CamundaEventListenerTest {
 		ReflectionTestUtils.setField(camundaEventListener, "messageCategory", "TASK_EVENT_DETAILS,TASK_EVENT");
 		ReflectionTestUtils.setField(camundaEventListener, "messageEvents", "create");
 		Map<String, Object> variables = new HashMap<>();
-		variables.put("applicationId", "id1");
-		variables.put("formUrl", "http://localhost:3001");
-		variables.put("applicationStatus", "New");
+		variables.put(APPLICATION_ID, "id1");
+		variables.put(FORM_URL, "http://localhost:3001");
+		variables.put(APPLICATION_STATUS, "New");
 		when(delegateTask.getVariables())
 				.thenReturn(variables);
 		camundaEventListener.onTaskEventListener(delegateTask);

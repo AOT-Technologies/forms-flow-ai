@@ -46,3 +46,29 @@ export const setMetricsStatusLoadError = (data) => (dispatch) => {
     payload: data,
   });
 };
+export const setMetricsSubmissionSearch = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.METRICS_SUBMISSIONS_SEARCH,
+    payload: data,
+  });
+};
+
+export const setMetricsSubmissionSort = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.METRICS_SUBMISSIONS_SORT_CHANGE,
+    payload: data,
+  });
+};
+
+export const setMetricsSubmissionLimitChange = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.METRICS_SUBMISSIONS_LIST_LIMIT_CHANGE,
+    payload: data,
+  });
+};
+export const setMetricsSubmissionPageChange = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.METRICS_SUBMISSIONS_LIST_PAGE_CHANGE,
+    payload: data,
+  });
+};

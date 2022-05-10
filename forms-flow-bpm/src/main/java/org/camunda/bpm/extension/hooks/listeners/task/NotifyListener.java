@@ -19,11 +19,12 @@ import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.EMAIL_TO;
+
 /**
+ * Notify Listener.
  * Assignment Task Listener to start a message event when a task is created
  * Extended to emails to additional groups of interest.
- *
- * @author yichun.zhao@aot-technologies.com, sumathi.thirumani@aot-technologies.com
  */
 @Component
 public class NotifyListener extends BaseListener implements TaskListener, IMessageEvent {
@@ -73,7 +74,7 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
         String toAddress = CollectionUtils.isNotEmpty(toEmails) ? StringUtils.join(toEmails,",") : null;
         if(StringUtils.isNotEmpty(toAddress)) {
             Map<String, Object> emailAttributes = new HashMap<>();
-            emailAttributes.put("email_to", toAddress);
+            emailAttributes.put(EMAIL_TO, toAddress);
             emailAttributes.put("category", getCategory(delegateTask.getExecution()));
             emailAttributes.put("name",getDefaultAddresseName());
             emailAttributes.put("taskid",taskId);

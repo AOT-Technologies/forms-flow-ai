@@ -25,7 +25,7 @@ const createRootReducer = (history) =>
     bpmTasks,
     bpmForms,
     form: form({ name: "form" }),
-    forms: forms({ name: "forms", query: { type: "form", tags: "common", title__regex: "" }, sort: "title" }),
+    forms: forms({ name: "forms",limit:5, query: { type: "form", tags: "common", title__regex: "" }, sort: "title" }),
     submission: submission({ name: "submission" }),
     submissions: submissions({ name: "submissions" }),
     router: connectRouter(history),

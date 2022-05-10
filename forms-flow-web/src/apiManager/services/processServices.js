@@ -21,6 +21,7 @@
  import { replaceUrl } from "../../helper/helper";
  import UserService from "../../services/UserService";
  import { toast } from "react-toastify";
+ import {Translation} from "react-i18next";
  export const getProcessStatusList = (processId, taskId) => {
    return (dispatch) => {
      dispatch(setProcessStatusLoading(true));
@@ -152,7 +153,7 @@
        .catch((error) => {
          dispatch(getFormProcesses(data.formId));
          dispatch(setFormProcessesData([]));
-         toast.error("Form process failed");
+         toast.error(<Translation>{(t)=>t("Form process failed")}</Translation>);
          console.log("Error", error);
          dispatch(setFormProcessLoadError(true));
          done(error);
@@ -172,7 +173,7 @@
        })
        .catch((error) => {
          dispatch(getFormProcesses(data.formId));
-         toast.error("Form process failed");
+         toast.error(<Translation>{(t)=>t("Form process failed")}</Translation>);
          console.log("Error", error);
          dispatch(setFormProcessLoadError(true));
          done(error);
@@ -259,12 +260,12 @@
    const url = replaceUrl(API.UNPUBLISH_FORMS,"<mapper id>",mapperId)
    return(dispatch) =>{
      httpDELETERequest(url).then((res)=>{
-      toast.success(`Form deleted successfully`);
+      toast.success(<Translation>{(t)=>t("Form deleted successfully")}</Translation>);
       dispatch(resetFormProcessData());
       done(null,res.data);
      })
      .catch((error)=>{
-       toast.error("Form unpublishing Failed");
+      toast.error(<Translation>{(t)=>t("Form unpublishing Failed")}</Translation>);
        console.log("error",error)
        dispatch(setUnPublishApiError(true));
        done(error);

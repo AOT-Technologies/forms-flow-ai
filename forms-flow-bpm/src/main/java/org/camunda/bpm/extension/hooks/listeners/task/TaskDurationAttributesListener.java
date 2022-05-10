@@ -10,11 +10,10 @@ import org.camunda.bpm.extension.hooks.services.IUser;
 import org.joda.time.DateTime;
 
 /**
+ * Task Duration Attributes Listener.
  * This class is intended to set the due date in business days.
  * Currently, the system allows overriding of task due date from application UI.
  * NOTE: This class has made a assumption of applying SLA of 3 days by default. This could be overriden through the listener property.
- *
- * @author  sumathi.thirumani@aot-technologies.com
  */
 public class TaskDurationAttributesListener extends BaseListener implements TaskListener, IUser, IMessageEvent {
 

@@ -90,6 +90,7 @@ def update_sentiment():
             table_name,
             output_col,
             limit=100,
+            app_config=APP_CONFIG,
         )
         log_info("Query executed")
         try:
@@ -139,7 +140,8 @@ def _perform_analysis(colnames, conn, results):
     table_name = APP_CONFIG.DATABASE_TABLE_NAME
     input_col = APP_CONFIG.DATABASE_INPUT_COLUMN
     output_col = APP_CONFIG.DATABASE_OUTPUT_COLUMN
-
+    if APP_CONFIG.SCHEMA_NAME:
+        table_name = f"{APP_CONFIG.SCHEMA_NAME}.{table_name}"
     query_results = [dict(zip(colnames, result)) for result in results]
     count: int = 0
     for result_dict in query_results:

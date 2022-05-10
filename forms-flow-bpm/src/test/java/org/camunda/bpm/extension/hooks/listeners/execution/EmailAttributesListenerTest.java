@@ -18,13 +18,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.GROUP_NAME;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.TEMPLATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 /**
- * Test class for EmailAttributesListener
+ * Email Attributes Listener Test.
+ * Test class for EmailAttributesListener.
  */
 @ExtendWith(SpringExtension.class)
 public class EmailAttributesListenerTest {
@@ -52,12 +55,12 @@ public class EmailAttributesListenerTest {
         dmnMap.put("body", "Hi @receiverName, This is @senderName");
         dmnMap.put("subject", "Test Subject from @senderName");
         dmnMap.put("cc", "admin@aot-technologies.com");
-        variables.put("template", dmnMap);
+        variables.put(TEMPLATE, dmnMap);
 
         when(execution.getVariables())
                 .thenReturn(variables);
 
-        when(execution.getVariable("groupName"))
+        when(execution.getVariable(GROUP_NAME))
                 .thenReturn("camunda-admin");
 
         List<User> userList = new ArrayList<>();
@@ -112,14 +115,14 @@ public class EmailAttributesListenerTest {
         dmnMap.put("body", "Hi @receiverName, This is @senderName");
         dmnMap.put("subject", "Test Subject from @senderName");
         dmnMap.put("cc", "admin@aot-technologies.com");
-        variables.put("template", dmnMap);
+        variables.put(TEMPLATE, dmnMap);
 
         when(execution.getVariables())
                 .thenReturn(variables);
 
         when(execution.getVariable("to"))
                 .thenReturn("test@aot-technologies.com");
-        when(execution.getVariable("groupName"))
+        when(execution.getVariable(GROUP_NAME))
                 .thenReturn("camunda-admin");
 
         List<User> userList = new ArrayList<>();
@@ -173,11 +176,11 @@ public class EmailAttributesListenerTest {
         dmnMap.put("body", "Hi @receiverName, This is @senderName");
         dmnMap.put("subject", "Test Subject from @senderName");
         dmnMap.put("cc", "admin@aot-technologies.com");
-        variables.put("template", dmnMap);
+        variables.put(TEMPLATE, dmnMap);
 
         when(execution.getVariables())
                 .thenReturn(variables);
-        when(execution.getVariable("groupName"))
+        when(execution.getVariable(GROUP_NAME))
                 .thenReturn("camunda-admin");
 
         List<User> userList = new ArrayList<>();
@@ -225,11 +228,11 @@ public class EmailAttributesListenerTest {
 
         Map<String,Object> variables = new HashMap<>();
         Map<String, Object> dmnMap = new HashMap<>();
-        variables.put("template", dmnMap);
+        variables.put(TEMPLATE, dmnMap);
 
         when(execution.getVariables())
                 .thenReturn(variables);
-        when(execution.getVariable("groupName"))
+        when(execution.getVariable(GROUP_NAME))
                 .thenReturn("camunda-admin");
         List<User> userList = new ArrayList<>();
         ProcessEngine processEngine = mock(ProcessEngine.class);

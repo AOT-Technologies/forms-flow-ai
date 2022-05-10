@@ -45,7 +45,7 @@ def get_token(
             "preferred_username": username,
             "given_name": "John",
             "family_name": "Smith",
-            "email": "john.smith@aot.com",
+            "email": "formsflow-reviewer@example.com",
             "tenantKey": tenant_key,
         },
         token_header,

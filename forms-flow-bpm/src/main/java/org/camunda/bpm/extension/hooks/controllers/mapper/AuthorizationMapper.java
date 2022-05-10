@@ -7,6 +7,10 @@ import org.springframework.jdbc.core.RowMapper;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+/**
+ * Authorization Mapper.
+ * Class for mapping authorization result.
+ */
 public final class AuthorizationMapper implements RowMapper<Authorization> {
     public Authorization mapRow(ResultSet rs, int rowNum) throws SQLException {
         Authorization auth = new Authorization();

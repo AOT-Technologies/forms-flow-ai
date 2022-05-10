@@ -16,6 +16,7 @@ import {
 import Loading from "../../containers/Loading";
 import {
   FORM_ACCESS,
+  PageSizes,
   STAFF_DESIGNER, SUBMISSION_ACCESS,
 } from "../../constants/constants";
 import "../Form/List.scss";
@@ -53,7 +54,8 @@ const List = React.memo((props) => {
     userRoles,
     formId,
     onNo,
-    onYes
+    onYes,
+    path
   } = props;
 
   const isBPMFormListLoading = useSelector(state => state.bpmForms.isActive);
@@ -201,23 +203,25 @@ const List = React.memo((props) => {
                <Confirm
                  modalOpen={props.modalOpen}
                  message={
-                   (formProcessData.id  && applicationCount!==0) && applicationCount  ?  `${applicationCountResponse  ? applicationCount :  t("Are you sure you wish to delete the form ") +
-                   props.formName +
+                   (formProcessData.id  && applicationCount!==0) && applicationCount  ?  `${applicationCountResponse  ? applicationCount :  t("  Are you sure you wish to delete the form ") +
+                   `"${props.formName}"` +
                    "?"}`
-                   + `${applicationCount > 1 ? t( "Applications are submitted against") :t( "Application is submitted against")} ` + props.formName +t(". Are you sure want to delete ?"):
+                   + `${applicationCount > 1 ? t( "  Applications are submitted against") :t( "  Application is submitted against")} ` + `"${props.formName}"` +t(". Are you sure want to delete ?"):
                    t("Are you sure you wish to delete the form ") +
                    props.formName +
                    "?"
                  }
                  onNo={() => onNo()}
-                 onYes={() => {onYes(formId, forms,formProcessData)}}
+                 onYes={() => {onYes(formId, forms,formProcessData,path,formCheckList)}}
                />
             <div className="flex-container">
               {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
               <div className="flex-item-left">
-                <h3 className="task-head">
-                  <i className="fa fa-wpforms" aria-hidden="true"/>
-                  <span className="forms-text">{t("Forms")}</span></h3>
+               <div style={{display: "flex"}}>
+                <h3 className="task-head" style={{marginTop: '3px'}}>
+                  <i className="fa fa-wpforms"  aria-hidden="true"/></h3>
+                 <h3 className="task-head"> <span className="forms-text" style={{marginLeft: '1px'}}>{t("Forms")}</span></h3>
+                 </div>
               </div>
               <div className="flex-item-right">
                 {isDesigner && (
@@ -268,6 +272,7 @@ const List = React.memo((props) => {
                onAction={(form,action)=>{
                  onAction(form, action)
                }}
+               pageSizes={PageSizes}
                getForms={isDesigner ? getForms : getFormsList}
                operations={operations}
                onPageSizeChanged={onPageSizeChanged}
@@ -312,7 +317,8 @@ const mapStateToProps = (state) => {
     modalOpen: selectRoot("formDelete", state).formDelete.modalOpen,
     formId: selectRoot("formDelete", state).formDelete.formId,
     formName: selectRoot("formDelete", state).formDelete.formName,
-    isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved
+    isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved,
+    path:selectRoot("formDelete", state).formDelete.path,
   };
 };
 
@@ -351,6 +357,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
               modalOpen: true,
               formId: form._id,
               formName: form.title,
+              path:form.path
             };
             if(data){
               dispatch(getApplicationCount(data.id,(err,res)=>{
@@ -373,15 +380,17 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
         default:
       }
     },
-    onYes: (formId, forms,formData) => {
+    onYes: (formId, forms,formData,path,formCheckList) => {
     if(formData.id){
-      dispatch(unPublishForm(formData.id)) 
+      dispatch(unPublishForm(formData.id))
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {
             const formDetails = {modalOpen: false, formId: "", formName: ""};
             dispatch(setFormDeleteStatus(formDetails));
             dispatch(indexForms("forms", 1, forms.query));
+            const newFormCheckList = formCheckList.filter((i)=>i.path!==path);
+            dispatch(setFormCheckList(newFormCheckList));
           }
         })
       )
@@ -389,7 +398,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {
-            toast.success( 'Form deleted successfully')
+            toast.success(<Translation>{(t)=>t("Form deleted successfully")}</Translation>);
             const formDetails = {modalOpen: false, formId: "", formName: ""};
             dispatch(setFormDeleteStatus(formDetails));
             dispatch(indexForms("forms", 1, forms.query));

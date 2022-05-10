@@ -42,7 +42,7 @@ const TaskvariableCreate = ({ options ,addTaskVariable}) => {
     <>
       <Grid container spacing={2} style={{ alignItems: "center" }} className="my-4">
         <Grid item xs={12} md={3}>
-        <label>Form field</label>
+        <label>{t("Form field")}</label>
           <Select
             searchable
             options={options}
@@ -54,7 +54,7 @@ const TaskvariableCreate = ({ options ,addTaskVariable}) => {
           />
         </Grid>
         <Grid item xs={12} md={2}>
-        <label>Label</label>
+        <label>{t("Label")}</label>
          <input
             type="text"
             value={taskLabel}

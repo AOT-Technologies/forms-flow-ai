@@ -28,8 +28,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+
 /**
- * Test class for ExternalSubmissionListener
+ * External Submission Listener Test.
+ * Test class for ExternalSubmissionListener.
  */
 @ExtendWith(SpringExtension.class)
 public class ExternalSubmissionListenerTest {
@@ -86,7 +89,7 @@ public class ExternalSubmissionListenerTest {
                 .thenReturn("{data:{}}");
         when(formSubmissionService.createSubmission(anyString(), anyString()))
                 .thenReturn("id1");
-        when(execution.getVariable("formUrl"))
+        when(execution.getVariable(FORM_URL))
                 .thenReturn(formUrl);
         when(execution.getProcessInstanceId())
                 .thenReturn("instanceId-1");
@@ -154,7 +157,7 @@ public class ExternalSubmissionListenerTest {
                 .thenReturn("{data:{}}");
         when(formSubmissionService.createSubmission(anyString(), anyString()))
                 .thenReturn("id1");
-        when(execution.getVariable("formUrl"))
+        when(execution.getVariable(FORM_URL))
                 .thenReturn(formUrl);
         when(execution.getProcessInstanceId())
                 .thenReturn("instanceId-1");
@@ -194,7 +197,7 @@ public class ExternalSubmissionListenerTest {
                 .thenReturn("{data:{}}");
         when(formSubmissionService.createSubmission(anyString(), anyString()))
                 .thenReturn("id1");
-        when(execution.getVariable("formUrl"))
+        when(execution.getVariable(FORM_URL))
                 .thenReturn(formUrl);
         when(execution.getProcessInstanceId())
                 .thenReturn("instanceId-1");
@@ -236,7 +239,7 @@ public class ExternalSubmissionListenerTest {
                 .thenReturn("{data:{}}");
         when(formSubmissionService.createSubmission(anyString(), anyString()))
                 .thenReturn("id1");
-        when(execution.getVariable("formUrl"))
+        when(execution.getVariable(FORM_URL))
                 .thenReturn(formUrl);
         when(execution.getProcessInstanceId())
                 .thenReturn("instanceId-1");

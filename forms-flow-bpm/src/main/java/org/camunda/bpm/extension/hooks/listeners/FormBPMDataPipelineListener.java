@@ -12,10 +12,10 @@ import javax.inject.Named;
 import java.io.IOException;
 import java.util.Map;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 /**
- * This class transforms all the form document data into CAM variables
- *
- * @author sumathi.thirumani@aot-technologies.com
+ * FormBPMDataPipelineListener.
+ * This class copies all the form document data into CAM variables.
  */
 @Named("FormBPMDataPipelineListener")
 public class FormBPMDataPipelineListener  extends BaseListener implements TaskListener, ExecutionListener {
@@ -42,7 +42,7 @@ public class FormBPMDataPipelineListener  extends BaseListener implements TaskLi
     }
 
     private void syncFormVariables(DelegateExecution execution) throws IOException {
-        Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
+        Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get(FORM_URL)));
         for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
             execution.setVariable(entry.getKey(), entry.getValue());
         }

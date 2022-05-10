@@ -6,10 +6,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
 /**
+ * IAccess Handler.
  * This class defines the AccessHandler implementation.
- *
- * @author sumathi.thirumani@aot-technologies.com
- * @author Shibin Thomas
  */
 public interface IAccessHandler {
 

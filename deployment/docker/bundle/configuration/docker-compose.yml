@@ -110,7 +110,7 @@ services:
 
   forms-flow-web:
     container_name: forms-flow-web
-    image: formsflow/forms-flow-web-latest:v4.0.5
+    image: formsflow/forms-flow-web:v4.0.5
     volumes:
       - ./config.js:/usr/share/nginx/html/config/config.js
     ports:

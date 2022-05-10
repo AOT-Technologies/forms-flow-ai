@@ -19,7 +19,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+
 /**
+ * FormBPM Data Pipeline Listener Test.
  * Test class for FormBPMDataPipelineListener
  */
 @ExtendWith(SpringExtension.class)
@@ -42,8 +45,8 @@ public class FormBPMDataPipelineListenerTest {
         DelegateExecution delegateExecution = mock(DelegateExecution.class);
         String actualFormUrl = "http://localhost:3001/form/id1";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", actualFormUrl);
-        delegateExecution.setVariable("formUrl", actualFormUrl);
+        variables.put(FORM_URL, actualFormUrl);
+        delegateExecution.setVariable(FORM_URL, actualFormUrl);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
 
@@ -68,8 +71,8 @@ public class FormBPMDataPipelineListenerTest {
 		DelegateExecution delegateExecution = mock(DelegateExecution.class);
 		String actualFormUrl = "http://localhost:3001/form/id1";
 		Map<String, Object> variables = new HashMap<>();
-		variables.put("formUrl", actualFormUrl);
-		delegateTask.setVariable("formUrl", actualFormUrl);
+		variables.put(FORM_URL, actualFormUrl);
+		delegateTask.setVariable(FORM_URL, actualFormUrl);
 		when(delegateTask.getExecution())
 				.thenReturn(delegateExecution);
 		when(delegateExecution.getVariables())
@@ -94,8 +97,8 @@ public class FormBPMDataPipelineListenerTest {
 		DelegateExecution delegateExecution = mock(DelegateExecution.class);
 		String actualFormUrl = "http://localhost:3001/form/id1";
 		Map<String, Object> variables = new HashMap<>();
-		variables.put("formUrl", actualFormUrl);
-		delegateExecution.setVariable("formUrl", actualFormUrl);
+		variables.put(FORM_URL, actualFormUrl);
+		delegateExecution.setVariable(FORM_URL, actualFormUrl);
 		when(delegateExecution.getVariables())
 				.thenReturn(variables);
 		doThrow(new IOException("Unable to Sync Form Variables"))
@@ -116,8 +119,8 @@ public class FormBPMDataPipelineListenerTest {
          DelegateExecution delegateExecution = mock(DelegateExecution.class);
          String actualFormUrl = "http://localhost:3001/form/id1";
          Map<String, Object> variables = new HashMap<>();
-         variables.put("formUrl", actualFormUrl);
-         delegateTask.setVariable("formUrl", actualFormUrl);
+         variables.put(FORM_URL, actualFormUrl);
+         delegateTask.setVariable(FORM_URL, actualFormUrl);
          when(delegateTask.getExecution())
                  .thenReturn(delegateExecution);
          when(delegateExecution.getVariables())

@@ -6,7 +6,7 @@ import {getSubmissions, selectRoot, selectError, SubmissionGrid, Errors, deleteS
 import cloneDeep from 'lodash/cloneDeep';
 
 import Loading from '../../../../containers/Loading';
-import {OPERATIONS, CLIENT, STAFF_REVIEWER} from '../../../../constants/constants';
+import {OPERATIONS, CLIENT, STAFF_REVIEWER, MULTITENANCY_ENABLED} from '../../../../constants/constants';
 import Confirm from '../../../../containers/Confirm';
 import {setFormSubmissionDeleteStatus} from '../../../../actions/formActions'
 import {getAllApplicationsByFormId} from "../../../../apiManager/services/applicationServices";
@@ -39,6 +39,8 @@ const List = React.memo((props) => {
   const form = useSelector((state)=>state.form.form);
   const [formData, setFormData] = useState();
   const [submissionListData, setSubmissionListData] = useState(defaultSubmissionData);
+  const tenantKey = useSelector(state => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}` : '/';
 
   useEffect(() => {
     dispatch(setApplicationListLoader(true))
@@ -77,7 +79,7 @@ const List = React.memo((props) => {
       >
       </Confirm>
       <div className="main-header">
-        <Link className="back-icon" to="/form">
+        <Link className="back-icon" to={`${redirectUrl}form`}>
         <i className="fa fa-chevron-left fa-lg" />
         </Link>
 {/*        <span className="ml-3">
@@ -96,7 +98,7 @@ const List = React.memo((props) => {
         {formData && <SubmissionGrid
           submissions={submissionListData}
           form={formData}
-          onAction={onAction}
+          onAction={(submission, action)=>onAction(submission, action, redirectUrl)}
           getSubmissions={getSubmissions}
           operations={operations}
         />}
@@ -124,13 +126,13 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     getSubmissions: (page, query) => dispatch(getSubmissions('submissions', page, query, ownProps.match.params.formId)),
-    onAction: (submission, action) => {
+    onAction: (submission, action, redirectUrl) => {
       switch (action) {
         case 'viewSubmission':
-          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`));
+          dispatch(push(`${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}`));
           break;
         case 'edit':
-          dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`));
+          dispatch(push(`${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}/edit`));
           break;
         case 'delete':
           const submissionDetails = {

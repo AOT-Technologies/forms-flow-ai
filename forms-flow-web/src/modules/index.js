@@ -14,6 +14,7 @@ import bpmTasks from './bpmTaskReducer';
 import bpmForms from './bpmFormReducer';
 import formCheckList from './formCheckListReducer';
 import dashboardReducer from "./dashboardReducer";
+import tenantReducer from "./tenantReducer";
 
 const createRootReducer = (history) =>
   combineReducers({
@@ -33,7 +34,8 @@ const createRootReducer = (history) =>
     process,
     menu,
     formCheckList,
-    dashboardReducer
+    dashboardReducer,
+    tenants:tenantReducer
   });
 
 export default createRootReducer;

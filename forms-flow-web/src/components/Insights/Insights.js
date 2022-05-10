@@ -12,6 +12,7 @@ import { useTranslation , Translation} from "react-i18next";
 
 import { fetchdashboards } from "../../apiManager/services/dashboardsService";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
+import { BASE_ROUTE } from "../../constants/constants";
 
 const Insights = React.memo((props) => {
   const {getDashboardsList, getDashboardDetail, dashboards, activeDashboard, isInsightLoading, isDashboardLoading,getDashboards,dashboardsFromRedash} = props;
@@ -99,7 +100,7 @@ const NoPublicUrlMessage = ()=>(
         </div>
       </div>
       </div>
-      <Route path={"/insights/:notAvailable"}> <Redirect exact to='/404'/></Route>
+      <Route path={`${BASE_ROUTE}insights/:notAvailable`}> <Redirect exact to='/404'/></Route>
     </>
   );
 });

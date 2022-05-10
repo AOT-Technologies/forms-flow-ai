@@ -20,6 +20,14 @@ export const Keycloak_Client =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_CLIENT) ||
   process.env.REACT_APP_KEYCLOAK_CLIENT ||
   "forms-flow-web";
+
+export const MULTITENANCY_ENABLED = (window._env_ && window._env_.REACT_APP_MULTITENANCY_ENABLED) || 
+process.env.REACT_APP_MULTITENANCY_ENABLED || false
+
+export const BASE_ROUTE = MULTITENANCY_ENABLED ? "/tenant/:tenantId/" : "/"
+
+export const Keycloak_Tenant_Client = "forms-flow-web"
+
 export const KEYCLOAK_REALM =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_URL_REALM) ||
   process.env.REACT_APP_KEYCLOAK_URL_REALM ||

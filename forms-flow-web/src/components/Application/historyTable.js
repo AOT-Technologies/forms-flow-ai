@@ -9,9 +9,9 @@ export const defaultSortedBy = [
   },
 ];
 
-const linkSubmision = (cell) => {
+const linkSubmision = (cell, row, redirectUrl) => {
   const {formId,submissionId} = getFormIdSubmissionIdFromURL(cell);
-  const url = getFormUrl(formId,submissionId)
+  const url = getFormUrl(formId,submissionId, redirectUrl)
   return (
     <div title={url} onClick={()=> window.open(url, "_blank")}>
         <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"></i>&nbsp;</span><Translation>{(t)=>t("View Submission")}</Translation></span>
@@ -26,7 +26,8 @@ function timeFormatter(cell) {
 
 
 // History table columns
-export const columns_history = [
+export const columns_history = (redirectUrl)=>(
+  [
   {
     dataField: "applicationStatus",
     text: <Translation>{(t)=>t("Status")}</Translation>,
@@ -46,9 +47,10 @@ export const columns_history = [
   {
     dataField: "formUrl",
     text: <Translation>{(t)=>t("Submissions")}</Translation>,
-    formatter: linkSubmision,
+    formatter: (cell, row)=>linkSubmision(cell, row, redirectUrl),
   },
-];
+]
+)
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">
     <Translation>{(t)=>t("Showing")}</Translation> {from} <Translation>{(t)=>t("to")}</Translation> {to} <Translation>{(t)=>t("of")}</Translation> {size} Results

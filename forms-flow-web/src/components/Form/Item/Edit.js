@@ -9,6 +9,7 @@ import {
   SUBMISSION_ACCESS,
   ANONYMOUS_ID,
   FORM_ACCESS,
+  MULTITENANCY_ENABLED,
 } from "../../../constants/constants";
 import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
 import { toast } from "react-toastify";
@@ -58,6 +59,8 @@ const Edit = React.memo(() => {
   const applicationCount = useSelector((state) =>state.process.applicationCount)
   const  formProcessList = useSelector((state)=>state.process.formProcessList)
   const formPreviousData = useSelector((state)=>state.process.formPreviousData)
+  const tenantKey = useSelector(state => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/'
   const saveText = (<Translation>{(t)=>t("Save Form")}</Translation>);
   const lang = useSelector((state) => state.user.lang);
   const history = useHistory();
@@ -205,7 +208,7 @@ const Edit = React.memo(() => {
               dispatch(setFormPreviosData({...newData,isTitleChanged}));
             }
             toast.success(t("Form Saved"));
-            dispatch(push(`/formflow/${submittedData._id}/preview`));
+            dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
             // ownProps.setPreviewMode(true);
           } else {
             toast.error(t("Error while saving Form"));

@@ -76,8 +76,8 @@ export const getFormIdSubmissionIdFromURL = (formUrl) => {
   return {formId,submissionId};
 }
 
-export const getFormUrl = (formId, submissionId) => {
-  return `${window.location.origin}/form/${formId}/submission/${submissionId}`;
+export const getFormUrl = (formId, submissionId, redirectUrl) => {
+  return `${window.location.origin}${redirectUrl}form/${formId}/submission/${submissionId}`;
 }
 
 export const getISODateTime=(date)=>{

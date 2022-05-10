@@ -4,6 +4,7 @@ import {useSelector} from "react-redux";
 
 import PublicRoute from "./PublicRoute";
 import PrivateRoute from "./PrivateRoute";
+import { BASE_ROUTE } from "../constants/constants";
 
 /*import SideBar from "../containers/SideBar";*/
 import NavBar from "../containers/NavBar";
@@ -12,7 +13,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 
 const BaseRouting = React.memo(({store}) => {
-  const isAuth = useSelector((state) => state.user.isAuthenticated);
+const isAuth = useSelector((state) => state.user.isAuthenticated);
 
   return (
     <>
@@ -23,7 +24,7 @@ const BaseRouting = React.memo(({store}) => {
             <ToastContainer />
             <Switch>
               <Route path="/public"><PublicRoute store={store}/></Route>
-              <Route path="/">
+              <Route path={BASE_ROUTE}>
                 <PrivateRoute store={store} />
               </Route>
             </Switch>

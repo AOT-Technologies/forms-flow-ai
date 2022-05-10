@@ -2,7 +2,6 @@
 import {
   ROLES,
   USER_RESOURCE_FORM_ID,
-  Keycloak_Client,
   ANONYMOUS_USER,
   ANONYMOUS_ID,
   FORMIO_JWT_SECRET
@@ -16,10 +15,23 @@ import {BPM_BASE_URL} from "../apiManager/endpoints/config";
 import {AppConfig} from '../config';
 import {WEB_BASE_URL , WEB_BASE_CUSTOM_URL} from "../apiManager/endpoints/config";
 
-import {_kc} from "../constants/tenantConstant";
+// import {_kc} from "../constants/tenantConstant";
 import { setLanguage } from "../actions/languageSetAction";
+import Keycloak from "keycloak-js";
+import {getTenantKeycloakJson} from "../apiManager/services/tenantServices";
 
 const jwt = require("jsonwebtoken");
+let KeycloakData, doLogin, doLogout ;
+
+const setKeycloakJson = (tenantKey, ...rest)=>{
+  let kcJson;
+  const done = rest.length ? rest[0] :  ()=>{};
+  kcJson = getTenantKeycloakJson(tenantKey);
+  KeycloakData = new Keycloak(kcJson);
+  doLogin = KeycloakData?.login;
+  doLogout = KeycloakData?.logout;
+  done(null);
+}
 
 /**
  * Initializes Keycloak instance and calls the provided callback function if successfully authenticated.
@@ -30,7 +42,9 @@ const jwt = require("jsonwebtoken");
 
 
 const initKeycloak = (store, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const clientId = rest.length && rest[0]
+  const done = rest.length ? rest[1] : () => {};
+  // const clientId = `${tenantKey+"-"+Keycloak_Tenant_Client}`
   KeycloakData
     .init({
       onLoad: "check-sso",
@@ -42,8 +56,8 @@ const initKeycloak = (store, ...rest) => {
     })
     .then((authenticated) => {
       if (authenticated) {
-        if (KeycloakData.resourceAccess[Keycloak_Client]) {
-          const UserRoles = KeycloakData.resourceAccess[Keycloak_Client].roles;
+        if (KeycloakData.resourceAccess[clientId]) {
+          const UserRoles = KeycloakData.resourceAccess[clientId].roles;
           store.dispatch(setUserRole(UserRoles));
           store.dispatch(setUserToken(KeycloakData.token));
           store.dispatch(setLanguage(KeycloakData.tokenParsed.locale||'en'));
@@ -159,10 +173,10 @@ const authenticateFormio = (user, roles) => {
 };
 
 
-const KeycloakData= _kc;
+// const KeycloakData= _kc;
 
-const doLogin = KeycloakData.login;
-const doLogout = KeycloakData.logout;
+// const doLogin = KeycloakData.login;
+// const doLogout = KeycloakData.logout;
 const getToken = () => KeycloakData.token;
 
 const UserService ={
@@ -170,7 +184,8 @@ const UserService ={
   userLogout,
   getToken,
   getFormioToken,
-  authenticateAnonymousUser
+  authenticateAnonymousUser,
+  setKeycloakJson
 };
 
 export default UserService;

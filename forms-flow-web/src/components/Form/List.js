@@ -16,6 +16,7 @@ import {
 import Loading from "../../containers/Loading";
 import {
   FORM_ACCESS,
+  MULTITENANCY_ENABLED,
   STAFF_DESIGNER, SUBMISSION_ACCESS,
 } from "../../constants/constants";
 import "../Form/List.scss";
@@ -54,6 +55,7 @@ const List = React.memo((props) => {
     formId,
     onNo,
     onYes,
+    tenants,
     path
   } = props;
 
@@ -71,7 +73,8 @@ const List = React.memo((props) => {
   const formProcessData = useSelector(state=>state.process.formProcessList)
   const applicationCount = useSelector(state => state.process.applicationCount)
   const bpmFormLoading = useSelector(state => state.bpmForms.bpmFormLoading)
-
+  const tenantKey = tenants?.tenantId;
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/' 
   const getFormsList = (page, query) => {
     if (page) {
       dispatch(setBPMFormListPage(page));
@@ -223,7 +226,7 @@ const List = React.memo((props) => {
               <div className="flex-item-right">
                 {isDesigner && (
                   <Link
-                    to="/formflow/create"
+                    to={`${redirectUrl}formflow/create`}
                     className="btn btn-primary btn-left btn-sm"
                   >
                     <i className="fa fa-plus fa-lg"/> <Translation>{(t)=>t("Create Form")}</Translation>
@@ -267,7 +270,7 @@ const List = React.memo((props) => {
                columns={columns}
                forms={isDesigner ?(forms.forms.length? forms: previousForms) : bpmForms}
                onAction={(form,action)=>{
-                 onAction(form, action)
+                 onAction(form, action, redirectUrl)
                }}
                getForms={isDesigner ? getForms : getFormsList}
                operations={operations}
@@ -314,6 +317,7 @@ const mapStateToProps = (state) => {
     formId: selectRoot("formDelete", state).formDelete.formId,
     formName: selectRoot("formDelete", state).formDelete.formName,
     isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved,
+    tenants:selectRoot("tenants", state),
     path:selectRoot("formDelete", state).formDelete.path,
   };
 };
@@ -327,7 +331,7 @@ const getInitForms = (page = 1, query) => {
   }
 }
 
-const mapDispatchToProps = (dispatch,state, ownProps) => {
+const mapDispatchToProps = (dispatch,ownProps) => {
   return {
     getForms: (page, query) => {
       dispatch(indexForms("forms", page, query));
@@ -335,13 +339,13 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
     getFormsInit: (page, query) => {
       dispatch(getInitForms(page, query));
     },
-    onAction: async (form, action) => {
+    onAction: async (form, action,redirectUrl) => {
       switch (action) {
         case "insert":
-          dispatch(push(`/form/${form._id}`));
+          dispatch(push(`${redirectUrl}form/${form._id}`));
           break;
         case "submission":
-          dispatch(push(`/form/${form._id}/submission`));
+          dispatch(push(`${redirectUrl}form/${form._id}/submission`));
           break;
         // case "edit":
         //   dispatch(push(`/form/${form._id}/edit`));
@@ -371,7 +375,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
         case "viewForm":
           dispatch(resetFormProcessData())
           dispatch(setMaintainBPMFormPagination(true));
-          dispatch(push(`/formflow/${form._id}/view-edit`));
+          dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit`));
           break;
         default:
       }

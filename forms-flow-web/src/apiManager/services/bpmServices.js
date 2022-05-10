@@ -55,7 +55,7 @@ export const getSearchResults = (forms,searchText) => {
     searchResult = forms;
   }else {
      searchResult = forms?.filter((e)=>{
-      const caseInSensitive = e.title ? e.title.toUpperCase() : e.formName.toUpperCase()
+      const caseInSensitive =  e.title.toUpperCase()
       return caseInSensitive.includes(searchText.toUpperCase());
    })
   }

@@ -112,10 +112,6 @@ export const getSearchResults = (submissionList,searchText) => {
 }
 
 export const getPaginatedForms = (data,page,limit,sort) => {
-  console.log("length",data.length)
-  console.log("page",page)
-  console.log("limit",limit)
-  
   data.sort(dynamicSort(sort));
   return  data.slice((page-1)*limit,((page-1)*limit)+limit);
 }

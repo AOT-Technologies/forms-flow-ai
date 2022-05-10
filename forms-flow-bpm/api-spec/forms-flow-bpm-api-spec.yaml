@@ -1,0 +1,1666 @@
+openapi: 3.0.0
+info:
+  title: forms-flow-bpm API
+  description: The API for forms-flow-bpm.
+  version: 1.0.0
+servers:
+  - url: 'http://{{baseurl}}'
+  - url: 'http://{{baseurl}}/engine-rest'
+  - url: 'http://localhost:8000'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+security:
+  - bearerAuth: []
+tags:
+  - name: Filter
+    description: Filter
+  - name: Process
+    description: Process
+  - name: Permissions
+    description: Permissions
+  - name: Task
+    description: Task
+  - name: Update Log Level
+    description: Update Log Level
+  - name: Authorization check
+paths:
+  /engine-rest/filter/create:
+    post:
+      tags:
+        - Filter
+      summary: Create Filter
+      description: |-
+        Create a new filter.
+
+        POST /filter/create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                resourceType: Task
+                name: Sample Tasks
+                owner: john
+                query:
+                  candidateGroup: Sample
+                properties:
+                  color: '#3e4d2f'
+                  description: Tasks assigned to group Sample
+                  priority: 5
+            examples:
+              example-1:
+                value:
+                  resourceType: Task
+                  name: Sample Tasks
+                  owner: john
+                  query:
+                    candidateGroup: Sample
+                  properties:
+                    color: '#3e4d2f'
+                    description: Tasks assigned to group Sample
+                    priority: 5
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                id: a7b2d065-19ed-11ec-9f26-0242ac170003
+                resourceType: Task
+                name: Sample Tasks
+                owner: john
+                query:
+                  candidateGroup: Sample
+                  taskVariables: []
+                  processVariables: []
+                  caseInstanceVariables: []
+                  orQueries: []
+                properties:
+                  color: '#3e4d2f'
+                  description: Tasks assigned to group Sample
+                  priority: 5
+              examples:
+                example-1:
+                  value: {}
+  /engine-rest/filter:
+    get:
+      tags:
+        - Filter
+      summary: List all Filters
+      description: |-
+        Query for a list of filters using a list of parameters.
+        #### Method
+        GET /filter
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-1:
+                  value:
+                    - id: eecc83c5-9a0f-11ec-a757-0a580a8201b8
+                      resourceType: Task
+                      name: All tasks
+                      owner: null
+                      query:
+                        taskVariables: []
+                        processVariables: []
+                        caseInstanceVariables: []
+                        orQueries: []
+                      properties:
+                        variables: []
+                        color: '#555555'
+                        showUndefinedVariable: false
+                        refresh: false
+                        priority: 0
+                      itemCount: 68
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: resourceType
+        - schema:
+            type: string
+          in: query
+          name: itemCount
+  /engine-rest/filter/count:
+    get:
+      tags:
+        - Filter
+      summary: Get Filters Count
+      description: |-
+        Get the number of filters that fulfill a provided query. Corresponds to the size of the result set when using the get filters method.
+        #### Method
+        GET /filter/count
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                count: 2
+              examples:
+                example-1:
+                  value: {}
+  '/engine-rest/filter/{filter_id}':
+    delete:
+      tags:
+        - Filter
+      summary: Delete Filter
+      description: |-
+        Deletes a filter by id.
+        #### Method
+        DELETE /filter/{id}
+      parameters:
+        - name: filter_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /engine-rest/deployment/create:
+    post:
+      tags:
+        - Process
+      summary: Deploy process
+      description: |-
+        Create a deployment.
+        #### Method
+        POST /deployment/create
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                Filename:
+                  type: string
+                  format: binary
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Bearer $token
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: OK
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: ''
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+                example: 'POST, PUT, GET, OPTIONS'
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+                example: '*'
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+                example: '3600'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                links:
+                  - method: GET
+                    href: 'http://localhost:8000/camunda/engine-rest/deployment/16cee73b-19c6-11ec-9f26-0242ac170003'
+                    rel: self
+                id: 16cee73b-19c6-11ec-9f26-0242ac170003
+                name: Payment check
+                source: null
+                deploymentTime: '2021-09-20T03:51:51.852+0000'
+                tenantId: null
+                deployedProcessDefinitions:
+                  'PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003':
+                    id: 'PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003'
+                    key: PaymentProcess
+                    category: 'http://bpmn.io/schema/bpmn'
+                    description: null
+                    name: Payment
+                    version: 4
+                    resource: diagram_1.bpmn
+                    deploymentId: 16cee73b-19c6-11ec-9f26-0242ac170003
+                    diagram: null
+                    suspended: false
+                    tenantId: null
+                    versionTag: null
+                    historyTimeToLive: null
+                    startableInTasklist: true
+                deployedCaseDefinitions: null
+                deployedDecisionDefinitions: null
+                deployedDecisionRequirementsDefinitions: null
+  /engine-rest/process-instance:
+    get:
+      tags:
+        - Process
+      summary: Get all  Instances
+      description: |-
+        Query for process instances that fulfill given parameters. Parameters may be static as well as dynamic runtime properties of process instances.
+        #### Method
+        GET /process-instance
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: Bearer $token
+        - name: Accept
+          in: header
+          schema:
+            type: string
+          example: application/json
+      responses:
+        '200':
+          description: OK
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: ''
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+                example: 'POST, PUT, GET, OPTIONS'
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+                example: '*'
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+                example: '3600'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - links: []
+                  id: 01fb1b34-177c-11ec-9f26-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 052b16cb-16be-11ec-84c1-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 0de6952c-16cb-11ec-84c1-0242ac170003
+                  definitionId: 'Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 18e71d05-19e4-11ec-9f26-0242ac170003
+                  definitionId: 'PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 2ac6e631-16c1-11ec-84c1-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 42317928-194c-11ec-9f26-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 43d5c6ef-16c3-11ec-84c1-0242ac170003
+                  definitionId: 'PaymentProcess:2:7a60dc09-16c1-11ec-84c1-0242ac170003'
+                  businessKey: myBuissnessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 561f3127-16bc-11ec-84c1-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 6b1e9b85-16cc-11ec-84c1-0242ac170003
+                  definitionId: 'Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 702b4e52-16c4-11ec-84c1-0242ac170003
+                  definitionId: 'PaymentProcess:2:7a60dc09-16c1-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 77d81d9b-16bb-11ec-84c1-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 7f733ada-16c1-11ec-84c1-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 808a1bfd-16bc-11ec-84c1-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 8b771629-1535-11ec-912b-0242ac170003
+                  definitionId: 'two-step-approval:1:ccd7daee-152e-11ec-84df-0242ac170003'
+                  businessKey: null
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 8d58295f-1543-11ec-912b-0242ac170003
+                  definitionId: 'Task_A:1:2186cd42-1542-11ec-912b-0242ac170003'
+                  businessKey: '12'
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 90fece1d-16cc-11ec-84c1-0242ac170003
+                  definitionId: 'Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: 97b508cd-1702-11ec-84c1-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: a09ad6b1-16bb-11ec-84c1-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: a58ad11e-16c1-11ec-84c1-0242ac170003
+                  definitionId: 'PaymentProcess:2:7a60dc09-16c1-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: a6432300-19dc-11ec-9f26-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: b6cb7794-19dc-11ec-9f26-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: b7877498-19dc-11ec-9f26-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: b9301b8c-19dc-11ec-9f26-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: cf230dd0-177b-11ec-9f26-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: cffac5d5-152e-11ec-84df-0242ac170003
+                  definitionId: 'formio-access-token:1:ccd8290f-152e-11ec-84df-0242ac170003'
+                  businessKey: null
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: d5d8f8ac-177d-11ec-9f26-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: e0ae27e0-19d9-11ec-9f26-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: ed54b77f-16fa-11ec-84c1-0242ac170003
+                  definitionId: 'Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: eff6c64f-16bd-11ec-84c1-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: f9b4d2e5-16bd-11ec-84c1-0242ac170003
+                  definitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  businessKey: myBusinessKey
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+                - links: []
+                  id: ffeab5c9-1533-11ec-912b-0242ac170003
+                  definitionId: 'onestepapproval:1:ccd590fb-152e-11ec-84df-0242ac170003'
+                  businessKey: null
+                  caseInstanceId: null
+                  ended: false
+                  suspended: false
+                  tenantId: null
+  /engine-rest/process-definition:
+    get:
+      tags:
+        - Process
+      summary: Get all process
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: ''
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+                example: 'POST, PUT, GET, OPTIONS'
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+                example: 'access-control-allow-methods, access-control-allow-origin, authorization, Content-Type, Accept, X-Requested-With, Origin, Token, Auth-Token, Email, X-User-Token, X-User-Email'
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+                example: '3600'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: 8ae1e41e-c6db-11ec-9b48-0242ac120002
+                  key: onestepapprovalsentimentanalysis
+                  category: 'http://bpmn.io/schema/bpmn'
+                  description: null
+                  name: One Step Approval Sentiment Analysis
+                  version: 1
+                  resource: BOOT-INF/classes/processes/examples/approval-process/one-step-approval-sentiment-analysis.bpmn
+                  deploymentId: 71bfb7a5-c6db-11ec-9b48-0242ac120002
+                  diagram: null
+                  suspended: false
+                  tenantId: null
+                  versionTag: '1'
+                  historyTimeToLive: null
+                  startableInTasklist: true
+                - id: 'Defaultflow:1:8ae42e13-c6db-11ec-9b48-0242ac120002'
+                  key: Defaultflow
+                  category: 'http://bpmn.io/schema/bpmn'
+                  description: null
+                  name: Default Flow
+                  version: 1
+                  resource: BOOT-INF/classes/processes/examples/approval-process/Defaultflow.bpmn
+                  deploymentId: 71bfb7a5-c6db-11ec-9b48-0242ac120002
+                  diagram: null
+                  suspended: false
+                  tenantId: null
+                  versionTag: null
+                  historyTimeToLive: null
+                  startableInTasklist: true
+                - id: 'EmailNotification:1:8ae2323f-c6db-11ec-9b48-0242ac120002'
+                  key: EmailNotification
+                  category: 'http://bpmn.io/schema/bpmn'
+                  description: null
+                  name: Email Notification (Internal)
+                  version: 1
+                  resource: BOOT-INF/classes/processes/notification_email/notification_email.bpmn
+                  deploymentId: 71bfb7a5-c6db-11ec-9b48-0242ac120002
+                  diagram: null
+                  suspended: false
+                  tenantId: null
+                  versionTag: '1'
+                  historyTimeToLive: null
+                  startableInTasklist: true
+                - id: 'onestepapproval:1:8ae16eed-c6db-11ec-9b48-0242ac120002'
+                  key: onestepapproval
+                  category: 'http://bpmn.io/schema/bpmn'
+                  description: null
+                  name: One Step Approval
+                  version: 1
+                  resource: BOOT-INF/classes/processes/examples/approval-process/one-step-approval.bpmn
+                  deploymentId: 71bfb7a5-c6db-11ec-9b48-0242ac120002
+                  diagram: null
+                  suspended: false
+                  tenantId: null
+                  versionTag: '1'
+                  historyTimeToLive: null
+                  startableInTasklist: true
+                - id: 'onestepreview:1:8ae3b8e1-c6db-11ec-9b48-0242ac120002'
+                  key: onestepreview
+                  category: 'http://bpmn.io/schema/bpmn'
+                  description: null
+                  name: One Step Review
+                  version: 1
+                  resource: BOOT-INF/classes/processes/onestep-review/one_step_review.bpmn
+                  deploymentId: 71bfb7a5-c6db-11ec-9b48-0242ac120002
+                  diagram: null
+                  suspended: false
+                  tenantId: null
+                  versionTag: null
+                  historyTimeToLive: null
+                  startableInTasklist: true
+                - id: 'two-step-approval:1:8ae40702-c6db-11ec-9b48-0242ac120002'
+                  key: two-step-approval
+                  category: 'http://bpmn.io/schema/bpmn'
+                  description: null
+                  name: Two Step Approval
+                  version: 1
+                  resource: BOOT-INF/classes/processes/examples/approval-process/two-step-approval.bpmn
+                  deploymentId: 71bfb7a5-c6db-11ec-9b48-0242ac120002
+                  diagram: null
+                  suspended: false
+                  tenantId: null
+                  versionTag: '1'
+                  historyTimeToLive: null
+                  startableInTasklist: true
+              examples:
+                example-1:
+                  value:
+                    - id: 6230cbb9-ac87-11ec-89fd-0a580a820145
+                      key: onestepapprovalsentimentanalysis
+                      category: 'http://bpmn.io/schema/bpmn'
+                      description: null
+                      name: One Step Approval Sentiment Analysis
+                      version: 1
+                      resource: BOOT-INF/classes/processes/examples/approval-process/one-step-approval-sentiment-analysis.bpmn
+                      deploymentId: 60919aa1-ac87-11ec-89fd-0a580a820145
+                      diagram: null
+                      suspended: false
+                      tenantId: null
+                      versionTag: '1'
+                      historyTimeToLive: null
+                      startableInTasklist: true
+                    - id: 'EmailNotification:1:ccae8998-8a06-11ec-819a-0a580a82009e'
+                      key: EmailNotification
+                      category: 'http://bpmn.io/schema/bpmn'
+                      description: null
+                      name: Email Notification (Internal)
+                      version: 1
+                      resource: BOOT-INF/classes/processes/notification_email/notification_email.bpmn
+                      deploymentId: cb405391-8a06-11ec-819a-0a580a82009e
+                      diagram: null
+                      suspended: false
+                      tenantId: null
+                      versionTag: '1'
+                      historyTimeToLive: null
+                      startableInTasklist: true
+                    - id: 'EmailNotification:2:623140ea-ac87-11ec-89fd-0a580a820145'
+                      key: EmailNotification
+                      category: 'http://bpmn.io/schema/bpmn'
+                      description: null
+                      name: Email Notification (Internal)
+                      version: 2
+                      resource: BOOT-INF/classes/processes/notification_email/notification_email.bpmn
+                      deploymentId: 60919aa1-ac87-11ec-89fd-0a580a820145
+                      diagram: null
+                      suspended: false
+                      tenantId: null
+                      versionTag: '1'
+                      historyTimeToLive: null
+                      startableInTasklist: true
+  /engine-rest/process-definition/key/onestepapproval/start:
+    post:
+      tags:
+        - Process
+      summary: Start Process
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                variables:
+                  applicationId:
+                    ' value': 25
+                  ' formUrl':
+                    ' value': ' http://localhost:3000/form/626ba203004a95dd15f6b3ad/submission/6273a24051ae2f25bd45793c'
+                  ' formName':
+                    ' value': ' Freedom of Information and Protection of Privacy'
+                  ' submitterName':
+                    ' value': ' formsflow-reviewer'
+                  ' submissionDate':
+                    ' value': ' 2022-05-05 10:09:04.233032'
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: string
+              example: |-
+                {
+                    "links": [
+                        {
+                            "method": "GET",
+                            "href": "
+                http: //localhost:8000/camunda/engine-rest/process-instance/648c9e74-cc5b-11ec-8f27-0242ac180003", "rel" : "self"
+                        }
+                    ],
+                    "id": "648c9e74-cc5b-11ec-8f27-0242ac180003",
+                    "definitionId": "onestepapproval:1:374f4f67-c79d-11ec-bea4-0242ac180008",
+                    "businessKey": None,
+                    "caseInstanceId": None,
+                    "ended":
+                False,
+                    "suspended": False,
+                    "tenantId": None
+                }
+              examples:
+                example-1:
+                  value: {}
+    parameters: []
+  /engine-rest/process-definition/key/Defaultflow/start:
+    post:
+      tags:
+        - Process
+      summary: Start Process
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                variables:
+                  applicationId:
+                    ' value': 25
+                  ' formUrl':
+                    ' value': ' http://localhost:3000/form/626ba203004a95dd15f6b3ad/submission/6273a24051ae2f25bd45793c'
+                  ' formName':
+                    ' value': ' Freedom of Information and Protection of Privacy'
+                  ' submitterName':
+                    ' value': ' formsflow-reviewer'
+                  ' submissionDate':
+                    ' value': ' 2022-05-05 10:09:04.233032'
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+              example: |-
+                {
+                    "links": [
+                        {
+                            "method": "GET",
+                            "href": "
+                http: //localhost:8000/camunda/engine-rest/process-instance/648c9e74-cc5b-11ec-8f27-0242ac180003", "rel" : "self"
+                        }
+                    ],
+                    "id": "648c9e74-cc5b-11ec-8f27-0242ac180003",
+                    "definitionId": "onestepapproval:1:374f4f67-c79d-11ec-bea4-0242ac180008",
+                    "businessKey": None,
+                    "caseInstanceId": None,
+                    "ended":
+                False,
+                    "suspended": False,
+                    "tenantId": None
+                }
+              examples:
+                example-1:
+                  value:
+                    id: test
+    parameters: []
+  /engine-rest/authorization/create:
+    post:
+      tags:
+        - Permissions
+      summary: Create permission for deployment
+      description: |-
+        Add Permission for deployment resource.
+        #### Method
+        POST /authorization/create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                type: 1
+                permissions:
+                  - ALL
+                userId: service-account-forms-flow-bpm
+                groupId: null
+                resourceType: 9
+                resourceId: '*'
+      responses:
+        '200':
+          description: OK
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: ''
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+                example: 'POST, PUT, GET, OPTIONS'
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+                example: '*'
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+                example: '3600'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                id: f13725ac-19de-11ec-9f26-0242ac170003
+                type: 1
+                permissions:
+                  - ALL
+                userId: service-account-forms-flow-bpm
+                groupId: null
+                resourceType: 9
+                resourceId: '*'
+                removalTime: null
+                rootProcessInstanceId: null
+  /engine-rest/authorization:
+    get:
+      tags:
+        - Permissions
+      summary: Get Authorization By UserId
+      description: |-
+        Retrieves an authorization by id.
+        #### Method
+        GET /authorization/{id}
+      parameters:
+        - name: userIdIn
+          in: query
+          schema:
+            type: string
+          example: service-account-forms-flow-bpm
+      responses:
+        '200':
+          description: OK
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: ''
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+                example: 'POST, PUT, GET, OPTIONS'
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+                example: '*'
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+                example: '3600'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: 46d5f581-19d8-11ec-9f26-0242ac170003
+                  type: 1
+                  permissions:
+                    - ALL
+                  userId: service-account-forms-flow-bpm
+                  groupId: null
+                  resourceType: 1
+                  resourceId: '*'
+                  removalTime: null
+                  rootProcessInstanceId: null
+                - id: b58725ef-19de-11ec-9f26-0242ac170003
+                  type: 1
+                  permissions:
+                    - ALL
+                  userId: service-account-forms-flow-bpm
+                  groupId: null
+                  resourceType: 5
+                  resourceId: '*'
+                  removalTime: null
+                  rootProcessInstanceId: null
+                - id: bfa08e5c-19dd-11ec-9f26-0242ac170003
+                  type: 1
+                  permissions:
+                    - ALL
+                  userId: service-account-forms-flow-bpm
+                  groupId: null
+                  resourceType: 4
+                  resourceId: '*'
+                  removalTime: null
+                  rootProcessInstanceId: null
+                - id: f13725ac-19de-11ec-9f26-0242ac170003
+                  type: 1
+                  permissions:
+                    - ALL
+                  userId: service-account-forms-flow-bpm
+                  groupId: null
+                  resourceType: 9
+                  resourceId: '*'
+                  removalTime: null
+                  rootProcessInstanceId: null
+  '/engine-rest/authorization/{authorizationId}':
+    delete:
+      tags:
+        - Permissions
+      summary: Delete Authorization
+      description: |-
+        Deletes an authorization by id.
+        #### Method
+        DELETE /authorization/{id}
+      parameters:
+        - name: authorizationId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /engine-rest/task/create:
+    post:
+      tags:
+        - Task
+      summary: Create Task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                id: aTaskId
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /engine-rest/task:
+    get:
+      tags:
+        - Task
+      summary: List all Tasks
+      description: |-
+        Query for tasks that fulfill a given filter.
+        #### Method
+        GET /task
+      responses:
+        '200':
+          description: OK
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: ''
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+                example: 'POST, PUT, GET, OPTIONS'
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+                example: '*'
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+                example: '3600'
+            Cache-Control:
+              schema:
+                type: string
+                example: no-cache
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                - id: 00335792-1534-11ec-912b-0242ac170003
+                  name: Review Submission
+                  assignee: formsflow-designer
+                  created: '2021-09-14T08:16:02.749+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: ffeab5c9-1533-11ec-912b-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'onestepapproval:1:ccd590fb-152e-11ec-84df-0242ac170003'
+                  processInstanceId: ffeab5c9-1533-11ec-912b-0242ac170003
+                  taskDefinitionKey: reviewer
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 01fb4247-177c-11ec-9f26-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-17T05:56:31.827+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 01fb1b34-177c-11ec-9f26-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: 01fb1b34-177c-11ec-9f26-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 052b3de0-16be-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-16T07:16:32.795+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 052b16cb-16be-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: 052b16cb-16be-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 0de6952f-16cb-11ec-84c1-0242ac170003
+                  name: Approve
+                  assignee: null
+                  created: '2021-09-16T08:49:50.903+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 0de6952c-16cb-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003'
+                  processInstanceId: 0de6952c-16cb-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_088gi65
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 2ac70d44-16c1-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: formsflow-client
+                  created: '2021-09-16T07:39:04.383+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 2ac6e631-16c1-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: 2ac6e631-16c1-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 4231c74b-194c-11ec-9f26-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-19T13:19:46.041+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 42317928-194c-11ec-9f26-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: 42317928-194c-11ec-9f26-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 43d5ee02-16c3-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: formsflow-client
+                  created: '2021-09-16T07:54:05.417+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 43d5c6ef-16c3-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'PaymentProcess:2:7a60dc09-16c1-11ec-84c1-0242ac170003'
+                  processInstanceId: 43d5c6ef-16c3-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 561f7f4c-16bc-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-16T07:04:29.621+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 561f3127-16bc-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: 561f3127-16bc-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 6b1ec298-16cc-11ec-84c1-0242ac170003
+                  name: Approve
+                  assignee: null
+                  created: '2021-09-16T08:59:36.796+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 6b1e9b85-16cc-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003'
+                  processInstanceId: 6b1e9b85-16cc-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_088gi65
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 702b7565-16c4-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-16T08:02:29.294+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 702b4e52-16c4-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'PaymentProcess:2:7a60dc09-16c1-11ec-84c1-0242ac170003'
+                  processInstanceId: 702b4e52-16c4-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 77e2a4f0-16bb-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-16T06:58:16.768+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 77d81d9b-16bb-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: 77d81d9b-16bb-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 7f7361ed-16c1-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-16T07:41:26.441+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 7f733ada-16c1-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: 7f733ada-16c1-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 808a4212-16bc-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-16T07:05:40.784+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 808a1bfd-16bc-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: 808a1bfd-16bc-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 8d585074-1543-11ec-912b-0242ac170003
+                  name: Task A
+                  assignee: formsflow-designer
+                  created: '2021-09-14T10:07:22.001+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 8d582961-1543-11ec-912b-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Task_A:1:2186cd42-1542-11ec-912b-0242ac170003'
+                  processInstanceId: 8d58295f-1543-11ec-912b-0242ac170003
+                  taskDefinitionKey: Task_user
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 90fece20-16cc-11ec-84c1-0242ac170003
+                  name: Approve
+                  assignee: formsflow-client
+                  created: '2021-09-16T09:00:40.340+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 90fece1d-16cc-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003'
+                  processInstanceId: 90fece1d-16cc-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_088gi65
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: 97b508d0-1702-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-16T15:27:24.424+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 97b508cd-1702-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: 97b508cd-1702-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: a09afdc6-16bb-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-16T06:59:25.085+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: a09ad6b1-16bb-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: a09ad6b1-16bb-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: a58b1f41-16c1-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: formsflow-client
+                  created: '2021-09-16T07:42:30.350+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: a58ad11e-16c1-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'PaymentProcess:2:7a60dc09-16c1-11ec-84c1-0242ac170003'
+                  processInstanceId: a58ad11e-16c1-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: cf56a0f3-177b-11ec-9f26-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-17T05:55:06.861+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: cf230dd0-177b-11ec-9f26-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: cf230dd0-177b-11ec-9f26-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: d5d946cf-177d-11ec-9f26-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-17T06:09:36.778+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: d5d8f8ac-177d-11ec-9f26-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: d5d8f8ac-177d-11ec-9f26-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: dfe417ea-1535-11ec-912b-0242ac170003
+                  name: Approve/Reject Applications
+                  assignee: formsflow-reviewer
+                  created: '2021-09-14T08:29:27.536+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: 8b771629-1535-11ec-912b-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'two-step-approval:1:ccd7daee-152e-11ec-84df-0242ac170003'
+                  processInstanceId: 8b771629-1535-11ec-912b-0242ac170003
+                  taskDefinitionKey: Approver
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: ed54b782-16fa-11ec-84c1-0242ac170003
+                  name: Approve
+                  assignee: null
+                  created: '2021-09-16T14:32:32.103+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: ed54b77f-16fa-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_18scgtg:1:59c83005-16c6-11ec-84c1-0242ac170003'
+                  processInstanceId: ed54b77f-16fa-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_088gi65
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: eff71474-16bd-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-16T07:15:57.221+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: eff6c64f-16bd-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: eff6c64f-16bd-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+                - id: f9b4f9fa-16bd-11ec-84c1-0242ac170003
+                  name: Request payment
+                  assignee: null
+                  created: '2021-09-16T07:16:13.566+0000'
+                  due: null
+                  followUp: null
+                  delegationState: null
+                  description: null
+                  executionId: f9b4d2e5-16bd-11ec-84c1-0242ac170003
+                  owner: null
+                  parentTaskId: null
+                  priority: 50
+                  processDefinitionId: 'Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003'
+                  processInstanceId: f9b4d2e5-16bd-11ec-84c1-0242ac170003
+                  taskDefinitionKey: Activity_1fk5x9v
+                  caseExecutionId: null
+                  caseInstanceId: null
+                  caseDefinitionId: null
+                  suspended: false
+                  formKey: null
+                  tenantId: null
+  '/engine-rest/task/{id}':
+    get:
+      tags:
+        - Task
+      summary: Get task by id
+      description: |-
+        Retrieves a task by id.
+        #### Method
+        GET /task/{id}
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  '/engine-rest/task/{taskId}/claim':
+    post:
+      tags:
+        - Task
+      summary: Claim Task
+      description: |-
+        Claims a task for a specific user.
+        #### Method
+        POST /task/{id}/claim
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                userId: aUserId
+      parameters:
+        - name: taskId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  '/engine-rest/task/{taskId}/unclaim':
+    post:
+      tags:
+        - Task
+      summary: Unclaim Task
+      description: |-
+        Resets a task’s assignee. If successful, the task is not assigned to a user.
+        #### Method
+        POST /task/{id}/unclaim
+      requestBody:
+        content: {}
+      parameters:
+        - name: taskId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /camunda/manage/loggers/org.camunda.bpm:
+    post:
+      tags:
+        - Update Log Level
+      summary: Update log level
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                configuredLevel: TRACE
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /engine-rest-ext/form/authorization:
+    get:
+      tags:
+        - Authorization check
+      summary: Camunda admin authorization
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+                example: ''
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+                example: 'POST, PUT, GET, OPTIONS'
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+                example: 'access-control-allow-methods, access-control-allow-origin, authorization, Content-Type, Accept, X-Requested-With, Origin, Token, Auth-Token, Email, X-User-Token, X-User-Email'
+            Access-Control-Max-Age:
+              schema:
+                type: integer
+                example: '3600'
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                adminGroupEnabled: true
+                authorizationList: null
+              examples:
+                example-1:
+                  value:
+                    adminGroupEnabled: true
+                    authorizationList:
+                      - resourceId: ''
+    parameters: []

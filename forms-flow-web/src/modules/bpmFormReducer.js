@@ -7,7 +7,7 @@ const initialState = {
   formsFullList:[],
   forms: [],
   isActive: false,
-  limit:10,
+  limit:5,
   pagination: {
   numPages: 0,
     page: 1,

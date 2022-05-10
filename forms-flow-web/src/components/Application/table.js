@@ -147,6 +147,9 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
           }}
           value={lastModified}
           maxDate={new Date()}
+          dayPlaceholder="dd"
+          monthPlaceholder="mm"
+          yearPlaceholder="yyyy"
         />}
     }
   ];

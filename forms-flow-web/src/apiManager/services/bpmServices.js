@@ -55,13 +55,13 @@ export const getSearchResults = (forms,searchText) => {
     searchResult = forms;
   }else {
      searchResult = forms?.filter((e)=>{
-      const caseInSensitive = e.title.toUpperCase()
+      const caseInSensitive =  e.title.toUpperCase()
       return caseInSensitive.includes(searchText.toUpperCase());
    })
   }
   return searchResult; 
 }
-export const getPaginatedForms = (forms, limit, page, sort,search) => {
+export const getPaginatedForms = (forms, limit, page, sort) => {
       forms.sort(dynamicSort(sort));
       return  forms.slice((page-1)*limit,((page-1)*limit)+limit);
 }

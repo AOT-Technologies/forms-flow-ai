@@ -16,6 +16,7 @@ import {
 import Loading from "../../containers/Loading";
 import {
   FORM_ACCESS,
+  PageSizes,
   STAFF_DESIGNER, SUBMISSION_ACCESS,
 } from "../../constants/constants";
 import "../Form/List.scss";
@@ -202,10 +203,10 @@ const List = React.memo((props) => {
                <Confirm
                  modalOpen={props.modalOpen}
                  message={
-                   (formProcessData.id  && applicationCount!==0) && applicationCount  ?  `${applicationCountResponse  ? applicationCount :  t("Are you sure you wish to delete the form ") +
-                   props.formName +
+                   (formProcessData.id  && applicationCount!==0) && applicationCount  ?  `${applicationCountResponse  ? applicationCount :  t("  Are you sure you wish to delete the form ") +
+                   `"${props.formName}"` +
                    "?"}`
-                   + `${applicationCount > 1 ? t( "Applications are submitted against") :t( "Application is submitted against")} ` + props.formName +t(". Are you sure want to delete ?"):
+                   + `${applicationCount > 1 ? t( "  Applications are submitted against") :t( "  Application is submitted against")} ` + `"${props.formName}"` +t(". Are you sure want to delete ?"):
                    t("Are you sure you wish to delete the form ") +
                    props.formName +
                    "?"
@@ -216,9 +217,11 @@ const List = React.memo((props) => {
             <div className="flex-container">
               {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
               <div className="flex-item-left">
-                <h3 className="task-head">
-                  <i className="fa fa-wpforms" aria-hidden="true"/>
-                  <span className="forms-text">{t("Forms")}</span></h3>
+               <div style={{display: "flex"}}>
+                <h3 className="task-head" style={{marginTop: '3px'}}>
+                  <i className="fa fa-wpforms"  aria-hidden="true"/></h3>
+                 <h3 className="task-head"> <span className="forms-text" style={{marginLeft: '1px'}}>{t("Forms")}</span></h3>
+                 </div>
               </div>
               <div className="flex-item-right">
                 {isDesigner && (
@@ -269,6 +272,7 @@ const List = React.memo((props) => {
                onAction={(form,action)=>{
                  onAction(form, action)
                }}
+               pageSizes={PageSizes}
                getForms={isDesigner ? getForms : getFormsList}
                operations={operations}
                onPageSizeChanged={onPageSizeChanged}

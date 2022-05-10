@@ -30,14 +30,14 @@ const metrics = (state = initialState, action) => {
       return { ...state, isMetricsStatusLoading: action.payload };
     case ACTION_CONSTANTS.METRICS_SUBMISSIONS:
       const data = action.payload
-      return { ...state, submissionsList: getPaginatedForms(data,state.pagination.page,state.limit,state.sort),submissionsFullList:data, pagination: {
+      return { ...state, submissionsList: getPaginatedForms(data,1,state.limit,state.sort),submissionsFullList:data, pagination: {
         numPages: Math.ceil(action.payload.length/ state.limit),
         page: state.pagination.page,
         total: action.payload.length,
       }};
     case ACTION_CONSTANTS.METRICS_SUBMISSIONS_SEARCH:
       const searchResult = getSearchResults(state.submissionsFullList,action.payload)
-      return {...state,searchText:action.payload,submissionsList:getPaginatedForms(searchResult,state.pagination.page,state.limit,state.sort),submissionsSearchList:searchResult,submissionsFullList:state.submissionsFullList,pagination: {
+      return {...state,searchText:action.payload,submissionsList:getPaginatedForms(searchResult,1,state.limit,state.sort),submissionsSearchList:searchResult,submissionsFullList:state.submissionsFullList,pagination: {
         numPages: Math.ceil(searchResult.length/ state.limit),
         page: 1,
         total:searchResult.length,
@@ -46,7 +46,7 @@ const metrics = (state = initialState, action) => {
       return {...state,sort:action.payload,submissionsList:state.searchText?getPaginatedForms(state.submissionsSearchList,1,state.limit,action.payload):getPaginatedForms(state.submissionsFullList,1,state.limit,action.payload),pagination:{...state.pagination,page:1}}
     case ACTION_CONSTANTS.METRICS_SUBMISSIONS_LIST_LIMIT_CHANGE:
       const totalLength = state.searchText? state.submissionsSearchList.length:state.submissionsFullList.length
-      return {...state,limit:action.payload,submissionsList:state.searchText?getPaginatedForms(state.submissionsSearchList,state.pagination.page,action.payload,state.sort):getPaginatedForms(state.submissionsFullList,state.pagination.page,action.payload,state.sort),pagination: {
+      return {...state,limit:action.payload,submissionsList:state.searchText?getPaginatedForms(state.submissionsSearchList,1,action.payload,state.sort):getPaginatedForms(state.submissionsFullList,1,action.payload,state.sort),pagination: {
         numPages: Math.ceil(totalLength/ action.payload),
         page: 1,
         total: state.submissionsFullList.length,

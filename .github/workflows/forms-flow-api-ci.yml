@@ -67,13 +67,12 @@ jobs:
       JWT_OIDC_ISSUER: "http://localhost:8081/auth/realms/forms-flow-ai"
       JWT_OIDC_AUDIENCE: "forms-flow-web"
       JWT_OIDC_CACHING_ENABLED: "True"
-      BPM_API_BASE: ${{ secrets.BPM_API_BASE }}
+      BPM_API_BASE: http://localhost:8080/camunda
       BPM_CLIENT_SECRET: "demo"
       BPM_CLIENT_ID: "forms-flow-bpm"
       BPM_TOKEN_API: "http://localhost:8081/auth/realms/forms-flow-ai/protocol/openid-connect/token"
-      CAMUNDA_API_URL: ${{ secrets.CAMUNDA_API_URL }}
-      INSIGHT_API_URL: ${{ secrets.INSIGHT_API_URL }}
-      INSIGHT_API_KEY: ${{ secrets.INSIGHT_API_KEY }}
+      INSIGHT_API_URL: http://localhost:8080/analytics
+      INSIGHT_API_KEY: test
       SKIP_IN_CI: "True"
       USE_DOCKER_MOCK: "True"
 

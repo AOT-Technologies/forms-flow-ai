@@ -10,7 +10,7 @@ class TestKeycloakUserServiceResource:
     # @skip_in_ci
     def test_successful_user_locale_update(self, app, client, session, jwt):
         """Assert that API /user when passed with valid payload returns 200 status code."""
-        token = get_token(jwt)
+        token = get_token(jwt, username="formsflow-reviewer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",
@@ -22,7 +22,7 @@ class TestKeycloakUserServiceResource:
 
     def test_unsuccessful_user_locale_update(self, app, client, session, jwt):
         """Assert that API/user when passed with invalid payload return 400 status code."""
-        token = get_token(jwt)
+        token = get_token(jwt, username="formsflow-reviewer")
         headers = {
             "Authorization": f"Bearer {token}",
             "content-type": "application/json",

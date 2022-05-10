@@ -135,8 +135,10 @@ def auto(docker_services, app):
         docker_services.start("keycloak")
         docker_services.wait_for_service("keycloak", 8081)
         setup_jwt_manager(app, _jwt)
-    if app.config['USE_DOCKER_MOCK']:
+
         docker_services.start('bpm')
+        docker_services.start('analytics')
+        docker_services.start('proxy')
 
 
 @pytest.fixture(scope="session")

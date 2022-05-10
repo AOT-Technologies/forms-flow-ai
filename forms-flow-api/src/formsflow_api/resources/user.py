@@ -5,7 +5,7 @@ from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 from marshmallow import ValidationError
 
-from formsflow_api.schemas import UserlocaleReqSchema
+from formsflow_api.schemas import UserDetailsSchema, UserlocaleReqSchema
 from formsflow_api.services import KeycloakAdminAPIService
 from formsflow_api.utils import auth, cors_preflight, profiletime
 
@@ -99,4 +99,40 @@ class KeycloakUserService(Resource):
             current_app.logger.critical(response)
             current_app.logger.critical(err)
 
+            return response, status
+
+
+@cors_preflight("GET, OPTIONS")
+@API.route("/client-users", methods=["OPTIONS", "GET"])
+class KeycloakClientUsersService(Resource):
+    """Provides api interface for getting client specific users."""
+
+    def __init__(self, *args, **kwargs):
+        """Initializing client."""
+        super().__init__(*args, **kwargs)
+        self.client = KeycloakAdminAPIService()
+
+    @auth.require
+    @profiletime
+    def get(self):
+        """GET the username, firstname, lastname for specific client role."""
+        try:
+            client_name = g.token_info.get("azp")
+            role = g.token_info.get("roles")[0]
+            url_path = f"clients?clientId={client_name}"
+            response = self.client.get_request(url_path=url_path)
+            client_id = response[0]["id"]
+            url_path = f"clients/{client_id}/roles/{role}/users"
+            response = self.client.get_request(url_path=url_path)
+            schema = UserDetailsSchema()
+            response = schema.dump(response, many=True)
+            return response
+        except BaseException as err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data object",
+            }
+
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status

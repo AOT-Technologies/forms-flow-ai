@@ -21,7 +21,7 @@ class RedashAPIService:  # pylint: disable=too-few-public-methods
         if page_no is None:
             url = f"{base_url}/api/{url_path}"
         else:
-            url = f"{base_url}" f"/api/{url_path}?page={page_no}&page_size={limit}"
+            url = f"{base_url}/api/{url_path}?page={page_no}&page_size={limit}"
         analytics_admin_token = current_app.config.get("ANALYTICS_API_KEY")
         headers = {"Authorization": analytics_admin_token}
         response = requests.get(url, headers=headers)

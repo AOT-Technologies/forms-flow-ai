@@ -8,7 +8,7 @@ import Loading from '../../../../../containers/Loading'
 import {setFormSubmissionError, setFormSubmissionLoading} from '../../../../../actions/formActions';
 import SubmissionError from '../../../../../containers/SubmissionError';
 import {getUserRolePermission} from "../../../../../helper/user";
-import {CLIENT} from "../../../../../constants/constants";
+import {CLIENT, MULTITENANCY_ENABLED} from "../../../../../constants/constants";
 import {
   CLIENT_EDIT_STATUS,
   UPDATE_EVENT_STATUS,
@@ -42,6 +42,8 @@ const Edit = React.memo((props) => {
   });
   const applicationDetail = useSelector(state=>state.applications.applicationDetail);
   const isFormSubmissionLoading = useSelector(state=>state.formDelete.isFormSubmissionLoading);
+  const tenantKey = useSelector(state => state.tenants?.tenantId)
+  const redirectUrl  = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/'
   useEffect(() => {
     if (applicationStatus && !onFormSubmit) {
       if (getUserRolePermission(userRoles, CLIENT) && !CLIENT_EDIT_STATUS.includes(applicationStatus)) {
@@ -72,7 +74,7 @@ const Edit = React.memo((props) => {
           submission={submission}
           url={url}
           hideComponents={hideComponents}
-          onSubmit={(submission)=>onSubmit(submission,applicationDetail,onFormSubmit,form._id)}
+          onSubmit={(submission)=>onSubmit(submission,applicationDetail,onFormSubmit,form._id, redirectUrl)}
           options={{ ...options,i18n: formio_resourceBundles,language: lang }}
           onCustomEvent={onCustomEvent}
         />
@@ -110,7 +112,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onSubmit: (submission,applicationDetail, onFormSubmit, formId) => {
+    onSubmit: (submission,applicationDetail, onFormSubmit, formId, redirectUrl) => {
       dispatch(setFormSubmissionLoading(true));
       dispatch(saveSubmission('submission', submission, onFormSubmit?formId: ownProps.match.params.formId, (err, submission) => {
         if (!err) {
@@ -123,7 +125,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                 onFormSubmit();
               }else{
                 toast.success(<Translation>{(t)=>t("Submission Saved")}</Translation>);
-                dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}`))
+                dispatch(push(`${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}`))
               }
             }));
           }else{
@@ -133,7 +135,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
              onFormSubmit();
             }else{
               toast.success(<Translation>{(t)=>t("Submission Saved")}</Translation>);
-              dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
+              dispatch(push(`${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
             }
           }
         }

@@ -5,6 +5,7 @@ import {useDispatch} from "react-redux";
 import { fetchdashboards, fetchGroups } from "../../apiManager/services/dashboardsService";
 import ACTION_CONSTANTS from "../../actions/actionConstants";
 import './insightDashboard.scss'
+import { BASE_ROUTE } from "../../constants/constants";
 
 
 const AdminDashboard =  () => {
@@ -24,7 +25,7 @@ const AdminDashboard =  () => {
   return (
     <div className="container" id="main">
       <Switch>
-        <Route exact path="/admin" component={InsightDashboard} />
+        <Route exact path={`${BASE_ROUTE}admin`} component={InsightDashboard} />
         <Redirect from='*' to='/404'/>
       </Switch>
     </div>

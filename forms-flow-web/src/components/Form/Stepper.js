@@ -27,8 +27,8 @@ import {
   setFormProcessesData
 } from "../../actions/processActions";
 //import { saveFormProcessMapper } from "../../apiManager/services/formServices";
-import { selectRoot, saveForm, selectError, getForm } from "react-formio";
-import { SUBMISSION_ACCESS } from "../../constants/constants";
+import { selectRoot, selectError, getForm } from "react-formio";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
 import WorkFlow from "./Steps/WorkFlow";
 import PreviewStepper from "./Steps/PreviewStepper";
@@ -65,6 +65,8 @@ class StepperPage extends PureComponent {
       dataModified: false,
       disableWorkflowAssociation: false,
       disablePreview: false,
+      tenantKey : props.tenants?.tenantId,
+      redirectUrl: null
     };
     this.setPreviewMode = this.setPreviewMode.bind(this);
     this.handleNext = this.handleNext.bind(this);
@@ -74,6 +76,7 @@ class StepperPage extends PureComponent {
     this.handleBack = this.handleBack.bind(this);
     this.handleEditAssociation = this.handleEditAssociation.bind(this);
     this.handleEditPreview = this.handleEditPreview.bind(this);
+    this.setRedirectUrl = this.setRedirectUrl.bind(this)
   }
 
   componentDidMount() {
@@ -81,8 +84,8 @@ class StepperPage extends PureComponent {
       this.setState({ disableWorkflowAssociation: true });
       this.setState({ disablePreview: true });
     }
+    this.setRedirectUrl()
   }
-
   componentWillUnmount() {
     this.props.clearFormProcessData();
   }
@@ -90,7 +93,6 @@ class StepperPage extends PureComponent {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let stateData = null;
-
     if(nextProps.match.params.step !== undefined && !STEPPER_ROUTES.includes(nextProps.match.params.step)){
       nextProps.goToPageNotFound();
     }
@@ -190,6 +192,10 @@ class StepperPage extends PureComponent {
   handleEditPreview() {
     this.setState({ disablePreview: false });
   };
+  setRedirectUrl() {
+    this.setState({redirectUrl : MULTITENANCY_ENABLED ? `/tenant/${this.state?.tenantKey}/` : '/'
+  })
+  }
   // handleCheckboxChange = (event) =>
   //   this.setState({ checked: event.target.checked });
 
@@ -286,7 +292,7 @@ class StepperPage extends PureComponent {
   if(formProcessList && formProcessList.id ){
     data.id = formProcessList.id;
   }
-    onSaveFormProcessMapper(data, isUpdate);
+    onSaveFormProcessMapper(data, isUpdate, this.state.redirectUrl);
   };
 
   getStepContent(step) {
@@ -367,7 +373,7 @@ class StepperPage extends PureComponent {
       <>
         <div>
           {this.props.isAuthenticated ?
-            <Link to="/form" title="Back to Form List" >
+            <Link to={`${this.state.redirectUrl}form`} title="Back to Form List" >
               <i className="fa fa-chevron-left fa-lg m-3" />
             </Link>
             :
@@ -427,7 +433,8 @@ const mapStateToProps = (state) => {
     formProcessList: state.process.formProcessList,
     isAuthenticated: state.user.isAuthenticated,
     formPreviousData:state.process.formPreviousData,
-    applicationCount:state.process.applicationCount
+    applicationCount:state.process.applicationCount,
+    tenants:state.tenants
   };
 };
 
@@ -442,12 +449,12 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    onSaveFormProcessMapper: (data, update) => {
+    onSaveFormProcessMapper: (data, update, redirectUrl) => {
       dispatch(
         saveFormProcessMapper(data, update, (err, res) => {
           if (!err) {
             toast.success(<Translation>{(t)=>t("Form Workflow Association Saved.")}</Translation>);
-            dispatch(push(`/form`));
+            dispatch(push(`${redirectUrl}form`));
             dispatch(resetFormProcessData())
           }else{
             toast.error(<Translation>{(t)=>t("Form Workflow Association Failed.")}</Translation>);
@@ -455,24 +462,24 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-
-    saveForm: (form) => {
-      const newForm = {
-        ...form,
-        tags: ["common"],
-      };
-      newForm.submissionAccess = SUBMISSION_ACCESS;
-      dispatch(
-        saveForm("form", newForm, (err, form) => {
-          if (!err) {
-            toast.success(<Translation>{(t)=>t("Form Saved")}</Translation>);
-            dispatch(push(`/formflow/${form._id}/preview`));
-          }else{
-            toast.error(<Translation>{(t)=>t("Error while Submission.")}</Translation>);
-          }
-        })
-      );
-    },
+    // Commenting due to unused code
+    // saveForm: (form) => {
+    //   const newForm = {
+    //     ...form,
+    //     tags: ["common"],
+    //   };
+    //   newForm.submissionAccess = SUBMISSION_ACCESS;
+    //   dispatch(
+    //     saveForm("form", newForm, (err, form) => {
+    //       if (!err) {
+    //         toast.success(<Translation>{(t)=>t("Form Saved")}</Translation>);
+    //         dispatch(push(`/formflow/${form._id}/preview`));
+    //       }else{
+    //         toast.error(<Translation>{(t)=>t("Error while Submission.")}</Translation>);
+    //       }
+    //     })
+    //   );
+    // },
     getForm: (id) => {
       dispatch(resetFormData('form', id));
       dispatch(getForm("form", id))

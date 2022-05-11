@@ -5,6 +5,7 @@ import ApplicationList from './List';
 import ViewApplication from './ViewApplication';
 import './Application.scss';
 import { setCurrentPage } from '../../actions/bpmActions';
+import { BASE_ROUTE } from '../../constants/constants';
 
 export default React.memo(() => {
   const showApplications= useSelector((state) => state.user.showApplications);
@@ -18,9 +19,9 @@ export default React.memo(() => {
     <div className="container" id="main">
       <Switch>
         {showApplications?<>
-        <Route exact path="/application" component={ApplicationList} />
-        <Route path="/application/:applicationId"><ViewApplication/></Route>
-        <Route path="/application/:applicationId/:notavailable"><Redirect exact to='/404'/></Route>
+        <Route exact path={`${BASE_ROUTE}application`} component={ApplicationList} />
+        <Route path={`${BASE_ROUTE}application/:applicationId`}><ViewApplication/></Route>
+        <Route path={`${BASE_ROUTE}application/:applicationId/:notavailable`}><Redirect exact to='/404'/></Route>
         </>:null }
       </Switch>
     </div>

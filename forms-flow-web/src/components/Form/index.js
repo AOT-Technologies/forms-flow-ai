@@ -5,7 +5,7 @@ import {useSelector} from "react-redux";
 import List from "./List";
 import Stepper from "./Stepper";
 import Item from "./Item/index";
-import { STAFF_DESIGNER, STAFF_REVIEWER, CLIENT } from "../../constants/constants";
+import { STAFF_DESIGNER, STAFF_REVIEWER, CLIENT, BASE_ROUTE } from "../../constants/constants";
 import Loading from "../../containers/Loading";
 
 let user = "";
@@ -41,12 +41,12 @@ export default React.memo(() => {
   return (
     <div className="container" id="main" data-testid="Form-index">
       <Switch>
-        <Route exact path="/form" component={List} />
+        <Route exact path={`${BASE_ROUTE}form`} component={List} />
         <CreateFormRoute
-          path="/formflow/:formId?/:step?"
+          path={`${BASE_ROUTE}formflow/:formId?/:step?`}
           component={Stepper}
         />
-        <FormSubmissionRoute path="/form/:formId/" component={Item}/>
+        <FormSubmissionRoute path={`${BASE_ROUTE}form/:formId/`} component={Item}/>
       </Switch>
     </div>
   );

@@ -51,7 +51,7 @@ it("should render the stepper component without break",()=>{
     expect(screen.getByText("Preview and Confirm")).toBeInTheDocument()
     expect(screen.getByText("Drag and Drop a form component")).toBeInTheDocument()
     expect(screen.getByText("Create Form")).toBeInTheDocument()
-    const savebtn  = screen.getByText("Save & Preview");
+    // const savebtn  = screen.getByText("Save & Preview");
     const titleInput = screen.getByLabelText("Title");
     fireEvent.change(titleInput,{
         target:{value:"created by jest"}

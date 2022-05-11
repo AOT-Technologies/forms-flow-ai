@@ -202,7 +202,8 @@ const handleSizeChange = (sizePerPage,page)=>{
           {updateError && <div className="error-container error-custom"><Errors errors={error} /></div>}
         </div>
         <section  className="custom-grid grid-forms">
-          {isloading ?isError ? <Errors errors={error} />:<Loading /> :<BootstrapTable keyField='id' data={ dashboards } columns={ columns } pagination={pagination} />}
+          {isloading ?isError ? <Errors errors={error} />:<Loading /> :
+          (dashboards.length?<BootstrapTable keyField='id' data={ dashboards } columns={ columns } pagination={pagination} />:<h3 className="text-center">No Dashboards Found</h3>)}
         </section>
      </>
     );

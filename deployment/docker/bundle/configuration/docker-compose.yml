@@ -20,7 +20,7 @@ services:
 
   forms-flow-bpm:
     container_name: forms-flow-bpm
-    image: formsflow/forms-flow-bpm:v4.0.5
+    image: formsflow/forms-flow-bpm:latest
     restart: always
     links:
       - forms-flow-bpm-db
@@ -85,7 +85,7 @@ services:
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflow/forms-flow-forms:v4.0.5
+    image: formsflow/forms-flow-forms:latest
     # The app will restart until Mongo is listening
     restart: always
     links:
@@ -110,7 +110,7 @@ services:
 
   forms-flow-web:
     container_name: forms-flow-web
-    image: formsflow/forms-flow-web:v4.0.5
+    image: formsflow/forms-flow-web:latest
     volumes:
       - ./config.js:/usr/share/nginx/html/config/config.js
     ports:
@@ -137,7 +137,7 @@ services:
 
   forms-flow-webapi:
     container_name: forms-flow-webapi
-    image: formsflow/forms-flow-webapi:v4.0.5
+    image: formsflow/forms-flow-webapi:latest
     restart: always
     links:
       - forms-flow-webapi-db

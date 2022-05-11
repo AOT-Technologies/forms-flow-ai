@@ -14,6 +14,7 @@ import LoadError from "../Error";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import moment from "moment";
 import { Translation,useTranslation } from "react-i18next";
+import { BASE_ROUTE } from "../../constants/constants";
 import { setMetricsSubmissionLimitChange, setMetricsSubmissionPageChange, setMetricsSubmissionSearch, setMetricsSubmissionSort } from "../../actions/metricsActions";
 
 const firsDay = moment().format("YYYY-MM-01");
@@ -267,7 +268,7 @@ const Dashboard = React.memo(() => {
         
       </div>
       </div>
-      <Route path={"/metrics/:notAvailable"}> <Redirect exact to='/404'/></Route>
+      <Route path={`${BASE_ROUTE}metrics/:notAvailable`}> <Redirect exact to='/404'/></Route>
     </Fragment>
   );
 });

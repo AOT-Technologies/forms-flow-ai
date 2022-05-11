@@ -16,6 +16,7 @@ import {push} from "connected-react-router";
 import {MAX_RESULTS} from "../constants/taskConstants";
 import {getFirstResultIndex} from "../../../apiManager/services/taskSearchParamsFormatterService";
 import TaskVariable from "./TaskVariable";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 const ServiceFlowTaskList = React.memo(() => {
   const {t}= useTranslation();
   const taskList = useSelector((state) => state.bpmTasks.tasksList);
@@ -30,7 +31,8 @@ const ServiceFlowTaskList = React.memo(() => {
   const selectedFilter = useSelector((state) => state.bpmTasks.selectedFilter);
   const activePage = useSelector(state=>state.bpmTasks.activePage);
   const tasksPerPage = MAX_RESULTS;
-
+  const tenantKey = useSelector(state => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/'
   useEffect(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
@@ -41,7 +43,7 @@ const ServiceFlowTaskList = React.memo(() => {
 
   const getTaskDetails = (taskId) => {
     if(taskId!==bpmTaskId){
-      dispatch(push(`/task/${taskId}`));
+      dispatch(push(`${redirectUrl}task/${taskId}`));
     }
   };
 

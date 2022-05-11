@@ -45,7 +45,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     task_variable = db.Column(JSON, nullable=True)
     version = db.Column(db.Integer, nullable=False, default=1)
 
-    __table_args__ = (UniqueConstraint("form_id", "version", name="_form_version_uc"),)
+    __table_args__ = (UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),)
 
     @classmethod
     def create_from_dict(cls, mapper_info: dict) -> FormProcessMapper:
@@ -214,8 +214,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         )  # pylint: disable=no-member
 
     @classmethod
+    @user_context
     def find_mapper_by_form_id_and_version(
-        cls, form_id: int, version: int
+        cls, form_id: int, version: int, **kwargs
     ) -> FormProcessMapper:
         """
         Return the form process mapper with given form_id and version.
@@ -223,7 +224,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         : form_id : form_id corresponding to the mapper
         : version : version corresponding to the mapper
         """
+        user: UserContext = kwargs["user"]
+        tenant_key: str = user.tenant_key
         query = cls.query.filter(
-            and_(cls.form_id == form_id, cls.version == version)
+            and_(cls.form_id == form_id, cls.version == version, cls.tenant == tenant_key)
         ).first()
         return query

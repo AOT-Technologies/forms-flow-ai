@@ -203,13 +203,8 @@ const List = React.memo((props) => {
                <Confirm
                  modalOpen={props.modalOpen}
                  message={
-                   (formProcessData.id  && applicationCount!==0) && applicationCount  ?  `${applicationCountResponse  ? applicationCount :  t("  Are you sure you wish to delete the form ") +
-                   `"${props.formName}"` +
-                   "?"}`
-                   + `${applicationCount > 1 ? t( "  Applications are submitted against") :t( "  Application is submitted against")} ` + `"${props.formName}"` +t(". Are you sure want to delete ?"):
-                   t("Are you sure you wish to delete the form ") +
-                   props.formName +
-                   "?"
+                  (formProcessData.id && applicationCount) ? applicationCountResponse  ? `${applicationCount} ${applicationCount > 1 ? `${t( "  Applications are submitted against")}`:`${t( "  Application is submitted against")}`} "${props.formName}". ${t("Are you sure you wish to delete the form?")}` :  (`  ${t("Are you sure you wish to delete the form")} "${props.formName}"?`):
+                  `${t("Are you sure you wish to delete the form ")} "${props.formName}"?`
                  }
                  onNo={() => onNo()}
                  onYes={() => {onYes(formId, forms,formProcessData,path,formCheckList)}}

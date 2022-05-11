@@ -6,6 +6,7 @@ import { Button } from "react-bootstrap";
 import Loading from "../../../containers/Loading";
 import { Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 
 const Preview = class extends PureComponent {
   constructor(props) {
@@ -28,7 +29,9 @@ const Preview = class extends PureComponent {
       form: { form, isActive: isFormActive },
       dispatch,
       handleNext,
+      tenants
     } = this.props;
+    const tenantKey = tenants?.tenantId
     if (isFormActive ) {
       return <Loading />;
     }
@@ -39,7 +42,8 @@ const Preview = class extends PureComponent {
           <Button
             className="btn btn-primary  form-btn pull-right btn-right"
             onClick={() => {
-              dispatch(push(`/formflow/${form._id}/edit`));
+              const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/`: '/'
+              dispatch(push(`${redirecUrl}formflow/${form._id}/edit`));
             }}
           >
             <i className="fa fa-pencil" aria-hidden="true"/>
@@ -75,6 +79,7 @@ const mapStateToProps = (state) => {
       language: state.user.lang,
     },
     errors: [selectError("form", state)],
+    tenants: selectRoot("tenants", state)
   };
 };
 

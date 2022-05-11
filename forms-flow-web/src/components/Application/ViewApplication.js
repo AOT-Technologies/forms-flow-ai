@@ -14,6 +14,7 @@ import View from "../Form/Item/Submission/Item/View";
 import {getForm, getSubmission} from "react-formio";
 import NotFound from "../NotFound";
 import { Translation } from "react-i18next";
+import { MULTITENANCY_ENABLED } from '../../constants/constants';
 
 const ViewApplication = React.memo(() => {
   const {applicationId} = useParams();
@@ -21,8 +22,10 @@ const ViewApplication = React.memo(() => {
   const applicationDetailStatusCode = useSelector(state=>state.applications.applicationDetailStatusCode)
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
   const applicationProcess = useSelector(state => state.applications.applicationProcess);
+  const tenantKey = useSelector(state => state.tenants?.tenantId);
   const dispatch= useDispatch();
-
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';
+  
   useEffect(()=>{
       dispatch(setApplicationDetailLoader(true));
       dispatch(getApplicationById(applicationId,(err,res)=>{
@@ -52,7 +55,7 @@ const ViewApplication = React.memo(() => {
   return (
     <div className="container">
       <div className="main-header">
-        <Link to="/application">
+        <Link to={`${redirectUrl}application`}>
         <i className="fa fa-chevron-left fa-lg" />
         </Link>
         <h3 className="ml-3">

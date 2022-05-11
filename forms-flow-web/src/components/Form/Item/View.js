@@ -37,6 +37,7 @@ import {
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import {checkIsObjectId} from "../../../apiManager/services/formatterService";
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 
 
 const View = React.memo((props) => {
@@ -57,6 +58,8 @@ const View = React.memo((props) => {
     (state) => state.formDelete.publicFormStatus
   );
   const isPublic = window.location.href.includes("public"); //need to remove
+  const tenantKey = useSelector(state => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/'
   const { formId } = useParams();
   const [showPublicForm, setShowPublicForm] = useState('checking');
 
@@ -165,7 +168,7 @@ const View = React.memo((props) => {
           onConfirm={props.onConfirm}
         ></SubmissionError>
         {isAuthenticated ? (
-          <Link to="/form">
+          <Link to={`${redirectUrl}form`}>
             <i className="fa fa-chevron-left fa-lg" />
           </Link>
         ) : null}
@@ -202,7 +205,7 @@ const View = React.memo((props) => {
             onSubmit={(data) => {
               onSubmit(data, form._id);
             }}
-            onCustomEvent={onCustomEvent}
+            onCustomEvent={(evt)=>onCustomEvent(evt, redirectUrl)}
           />
         </div>
       </LoadingOverlay>
@@ -217,7 +220,8 @@ const doProcessActions = (submission, ownProps) => {
     let IsAuth = getState().user.isAuthenticated;
     dispatch(resetSubmissions("submission"));
     const data = getProcessReq(form, submission._id, "new", user);
-
+    const tenantKey = getState().tenants?.tenantId;
+    const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`
     const isPublic = window.location.href.includes("public");
 
     if (isPublic) {
@@ -246,7 +250,7 @@ const doProcessActions = (submission, ownProps) => {
               dispatch(setMaintainBPMFormPagination(true));
               /*dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))*/
               toast.success(<Translation>{(t)=>t("Submission Saved")}</Translation>)
-              dispatch(push(`/form`));
+              dispatch(push(`${redirectUrl}form`));
             } else {
               dispatch(setFormSubmissionLoading(false));
             }
@@ -257,7 +261,7 @@ const doProcessActions = (submission, ownProps) => {
               dispatch(setMaintainBPMFormPagination(true));
               //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
               toast.success(<Translation>{(t)=>t("Submission Saved")}</Translation>)
-              dispatch(push(`/form`));
+              dispatch(push(`${redirectUrl}form`));
             } else {
               dispatch(setFormSubmissionLoading(false));
             }
@@ -271,6 +275,7 @@ const doProcessActions = (submission, ownProps) => {
 const mapStateToProps = (state) => {
   return {
     user: state.user.userDetail,
+    tenant: state?.tenants?.tenantId,
     form: selectRoot("form", state),
     isAuthenticated: state.user.isAuthenticated,
     errors: [selectError("form", state), selectError("submission", state)],
@@ -306,14 +311,14 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         })
       );
     },
-    onCustomEvent: (customEvent) => {
+    onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {
         case CUSTOM_EVENT_TYPE.CUSTOM_SUBMIT_DONE:
           toast.success("Submission Saved.");
-          dispatch(push(`/form`));
+          dispatch(push(`${redirectUrl}form`));
           break;
         case CUSTOM_EVENT_TYPE.CANCEL_SUBMISSION:
-          dispatch(push(`/form`));
+          dispatch(push(`${redirectUrl}form`));
           break;
         default:
           return;

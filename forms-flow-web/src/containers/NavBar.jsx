@@ -12,6 +12,7 @@ import {push} from "connected-react-router";
 import i18n from "../resourceBundles/i18n";
 import { setLanguage } from "../actions/languageSetAction";
 import {updateUserlang} from "../apiManager/services/userservices";
+import { MULTITENANCY_ENABLED } from "../constants/constants";
 
 const NavBar = React.memo(() => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
@@ -21,6 +22,9 @@ const NavBar = React.memo(() => {
   const lang = useSelector((state) => state.user.lang);
   const userRoles = useSelector((state) => state.user.roles);
   const showApplications= useSelector((state) => state.user.showApplications);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId)
+  const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/"
+
   const dispatch = useDispatch();
   const logoPath = "/logo.svg";
   const appName = APPLICATION_NAME;
@@ -37,12 +41,12 @@ const NavBar = React.memo(() => {
    dispatch(updateUserlang(selectedLang))
  }
   const logout = () => {
-      dispatch(push(`/`));
+      dispatch(push(baseUrl));
       UserService.userLogout();
   }
 
   const goToTask = () => {
-    dispatch(push(`/task`));
+    dispatch(push(`${baseUrl}task`));
   }
 
   return (
@@ -55,7 +59,7 @@ const NavBar = React.memo(() => {
             </div>
           </Nav>*/}
           <Navbar.Brand className="d-flex" >
-            <Link to="/">
+            <Link to={`${baseUrl}`}>
               <img
                 className="img-fluid"
                 src={logoPath}
@@ -80,11 +84,11 @@ const NavBar = React.memo(() => {
           {isAuthenticated?
             <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
             <Nav id="main-menu-nav" className="mr-auto active align-items-lg-center">
-              <Nav.Link as={Link} to='/form'  className={`main-nav nav-item ${
+              <Nav.Link as={Link} to={`${baseUrl}form`}  className={`main-nav nav-item ${
                 pathname.match(/^\/form/) ? "active-tab" : ""
               }`}><i className="fa fa-wpforms fa-fw fa-lg mr-2"/>{t("Forms")}</Nav.Link>
               {(getUserRolePermission(userRoles, STAFF_DESIGNER)) ?
-                (<Nav.Link as={Link} to='/admin'  className={`main-nav nav-item ${
+                (<Nav.Link as={Link} to={`${baseUrl}admin`}  className={`main-nav nav-item ${
                   pathname.match(/^\/admin/) ? "active-tab" : ""
 
                 }`}><i className="fa fa-user-circle-o fa-lg mr-2" />{t("Admin")}</Nav.Link>)
@@ -92,7 +96,7 @@ const NavBar = React.memo(() => {
               :null}
 
               {showApplications?(getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)) ?
-                (<Nav.Link as={Link} to='/application'  className={`main-nav nav-item ${
+                (<Nav.Link as={Link} to={`${baseUrl}application`}  className={`main-nav nav-item ${
                   pathname.match(/^\/application/) ? "active-tab" : ""
                 }`}> <i className="fa fa-list-alt fa-fw fa-lg mr-2" />{t("Applications")}</Nav.Link>)
                 :null:
@@ -116,10 +120,10 @@ const NavBar = React.memo(() => {
                                                                               className={`main-nav nav-item ${
                                                                                 pathname.match(/^\/metrics/) || pathname.match(/^\/insights/) ? "active-tab-dropdown" : ""
                                                                               }`}>
-                <NavDropdown.Item as={Link} to='/metrics' className={`main-nav nav-item ${
+                <NavDropdown.Item as={Link} to={`${baseUrl}metrics`} className={`main-nav nav-item ${
                   pathname.match(/^\/metrics/) ? "active-tab" : ""
                 }`}><i className="fa fa-pie-chart fa-fw fa-lg"  />{t("Metrics")}</NavDropdown.Item>
-               {getUserInsightsPermission() && <NavDropdown.Item as={Link} to='/insights' className={`main-nav nav-item ${
+               {getUserInsightsPermission() && <NavDropdown.Item as={Link} to={`${baseUrl}insights`} className={`main-nav nav-item ${
                   pathname.match(/^\/insights/) ? "active-tab" : ""
                 }`}><i className="fa fa-lightbulb-o fa-fw fa-lg"/> {t("Insights")}</NavDropdown.Item>}
               </NavDropdown>:null}

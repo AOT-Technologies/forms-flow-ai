@@ -10,7 +10,8 @@
     "eject": "react-scripts eject",
     "test": "react-scripts test --detectOpenHandles --silent",
     "preinstall": "npx npm-force-resolutions",
-    "coverage": "react-scripts test --coverage --watchAll=false"
+    "coverage": "react-scripts test --coverage --watchAll=false",
+    "lint": "eslint src --no-fix --max-warnings 0"
   },
   "author": {
     "name": "Abhilash"

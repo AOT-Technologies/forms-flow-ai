@@ -43,9 +43,9 @@ jobs:
       - name: Install dependencies
         run: |
           npm ci
-      # - name: Linting
-      #   run: |
-      #     npm run lint
+      - name: Linting
+        run: |
+          npm run lint
   unit-tests:
     needs: setup-job
     runs-on: ubuntu-20.04

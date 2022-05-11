@@ -103,9 +103,6 @@ export const initialstate = {
                 "tenantId": null
             }
         ],
-        listReqParams:{
-            sorting:[{sortBy: 'created', sortOrder: 'desc', label: 'Created'}]
-        },
         filterListSearchParams:{},
         filterListSortParams:{
             sorting:[{sortBy: 'created', sortOrder: 'desc', label: 'Created'}]

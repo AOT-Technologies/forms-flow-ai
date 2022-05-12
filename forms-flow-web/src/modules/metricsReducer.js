@@ -20,6 +20,7 @@ const initialState = {
   sort:'formName',
   searchText:'',
   maintainPagination:false,
+  metricsDateRangeLoader:false
 };
 
 const metrics = (state = initialState, action) => {
@@ -62,6 +63,10 @@ const metrics = (state = initialState, action) => {
       return { ...state, metricsLoadError: action.payload };
     case ACTION_CONSTANTS.METRICS_STATUS_LOAD_ERROR:
       return { ...state, metricsStatusLoadError: action.payload };
+    case ACTION_CONSTANTS.METRICS_DATE_RANGE_LOADING:
+      return { ...state, metricsDateRangeLoader: action.payload }; 
+    case ACTION_CONSTANTS.METRICS_SUBMISSION_RESET:
+      return { ...state, metricsDateRangeLoader: action.payload };
     default:
       return state;
   }

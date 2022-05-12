@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.Application;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +93,7 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
      * @return
      */
     private String getApplicationAuditUrl(DelegateExecution execution){
-        return httpServiceInvoker.getProperties().getProperty("api.url")+"/application/"+execution.getVariable(APPLICATION_ID)+"/history";
+        return RestAPIBuilderUtil.getApplicationAuditUrl(String.valueOf(execution.getVariable(APPLICATION_ID)));
     }
 
 }

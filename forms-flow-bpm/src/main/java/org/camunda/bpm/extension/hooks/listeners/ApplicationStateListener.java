@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
@@ -71,6 +72,6 @@ public class ApplicationStateListener extends BaseListener implements ExecutionL
      * @return
      */
     private String getApplicationUrl(DelegateExecution execution){
-        return httpServiceInvoker.getProperties().getProperty("api.url")+"/application/"+execution.getVariable(APPLICATION_ID);
+        return RestAPIBuilderUtil.getApplicationUrl(String.valueOf(execution.getVariable(APPLICATION_ID)));
     }
 }

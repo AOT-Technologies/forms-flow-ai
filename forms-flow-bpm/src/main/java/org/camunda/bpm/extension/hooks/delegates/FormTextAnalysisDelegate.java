@@ -6,6 +6,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.commons.ro.res.IResponse;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.delegates.data.TextSentimentData;
 import org.camunda.bpm.extension.hooks.delegates.data.TextSentimentRequest;
 import org.camunda.bpm.extension.hooks.exceptions.AnalysisServiceException;
@@ -108,8 +109,7 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
     }
 
     private String getFormUrl(DelegateExecution execution){
-        return String.valueOf(execution.getVariables().get(FORM_URL));
-
+        return RestAPIBuilderUtil.getUrl(String.valueOf(execution.getVariables().get(FORM_URL)));
     }
 
 }

@@ -7,6 +7,7 @@ import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.commons.ro.res.IResponse;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.FilterInfo;
 import org.camunda.bpm.extension.hooks.listeners.data.FormProcessMappingData;
@@ -94,6 +95,6 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
      * @return
      */
     private String getApplicationUrl(DelegateExecution execution){
-        return httpServiceInvoker.getProperties().getProperty("api.url")+"/form/applicationid/"+execution.getVariable(APPLICATION_ID);
+        return RestAPIBuilderUtil.getApplicationUrl(String.valueOf(execution.getVariable(APPLICATION_ID)));
     }
 }

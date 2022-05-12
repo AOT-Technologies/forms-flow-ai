@@ -5,6 +5,7 @@ import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.services.FormSubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,6 +51,6 @@ public class FormSubmissionListener extends BaseListener implements ExecutionLis
     }
 
     private String getUrl(DelegateExecution execution){
-        return StringUtils.substringBeforeLast(String.valueOf(execution.getVariables().get(FORM_URL)),"/");
+        return RestAPIBuilderUtil.getUrl(String.valueOf(execution.getVariables().get(FORM_URL)),"/");
     }
 }

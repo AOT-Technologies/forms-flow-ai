@@ -11,6 +11,7 @@ import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 
+import org.camunda.bpm.extension.commons.utils.RestAPIBuilderUtil;
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.FormElement;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,9 +78,8 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
         }
     }
 
-
     private String getUrl(DelegateExecution execution){
-        return String.valueOf(execution.getVariables().get(FORM_URL));
+        return RestAPIBuilderUtil.getUrl(String.valueOf(execution.getVariables().get(FORM_URL)));
     }
 
     private List<FormElement> getModifiedFormElements(DelegateExecution execution) throws IOException {

@@ -1,5 +1,7 @@
 package org.camunda.bpm.extension.commons.utils;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.MessageFormat;
 
 /**
@@ -32,6 +34,14 @@ public class RestAPIBuilderUtil {
 
     public static String getFormBaseUrl() {
         return FORM_BASE_URL;
+    }
+
+    public static String getUrl(String url){
+        return getFormBaseUrl()+url;
+    }
+
+    public static String getUrl(String url, String str){
+        return StringUtils.substringBeforeLast(url,str);
     }
 
     public static String getApplicationAuditUrl(String applicationId){

@@ -72,3 +72,10 @@ export const setMetricsSubmissionPageChange = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setMetricsDateRangeLoading = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.METRICS_DATE_RANGE_LOADING,
+    payload: data,
+  });
+};

@@ -14,11 +14,6 @@ import LoadError from "../Error";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import moment from "moment";
 import { Translation,useTranslation } from "react-i18next";
-<<<<<<< Updated upstream
-import { BASE_ROUTE } from "../../constants/constants";
-import { setMetricsSubmissionLimitChange, setMetricsSubmissionPageChange, setMetricsSubmissionSearch, setMetricsSubmissionSort } from "../../actions/metricsActions";
-
-=======
 import { 
    setMetricsDateRangeLoading, setMetricsSubmissionLimitChange,
    setMetricsSubmissionPageChange, setMetricsSubmissionSearch,
@@ -26,7 +21,6 @@ import {
 } from "../../actions/metricsActions";
 import LoadingOverlay from "react-loading-overlay";
 import { Button } from "react-bootstrap";
->>>>>>> Stashed changes
 const firsDay = moment().format("YYYY-MM-01");
 
 const lastDay = moment().endOf("month").format("YYYY-MM-DD");

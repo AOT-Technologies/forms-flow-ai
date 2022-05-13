@@ -8,6 +8,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.stereotype.Component;
 
+/**
+ * Keycloak Identity Provider.
+ * Class for keycloak identity provider.
+ */
 @Component
 @ConfigurationProperties(prefix = "plugin.identity.keycloak")
 public class KeycloakIdentityProvider extends CustomKeycloakIdentityProviderPlugin {

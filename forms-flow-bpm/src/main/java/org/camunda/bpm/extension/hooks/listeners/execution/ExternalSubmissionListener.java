@@ -18,6 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import javax.annotation.Resource;
 import javax.inject.Named;
 
 
@@ -25,9 +26,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+
 /**
+ * External Submission Listener.
  * This class supports creation of submission for instances created from external system
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Named("ExternalSubmissionListener")
 public class ExternalSubmissionListener extends BaseListener implements ExecutionListener {
@@ -36,7 +40,8 @@ public class ExternalSubmissionListener extends BaseListener implements Executio
 
     @Autowired
     private FormSubmissionService formSubmissionService;
-
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
@@ -48,7 +53,7 @@ public class ExternalSubmissionListener extends BaseListener implements Executio
             String formUrl = getFormUrl(execution);
             String submissionId = formSubmissionService.createSubmission(formUrl, formSubmissionService.createFormSubmissionData(execution.getVariables()));
             if(StringUtils.isNotBlank(submissionId)){
-                execution.setVariable("formUrl", formUrl+"/"+submissionId);
+                execution.setVariable(FORM_URL, formUrl+"/"+submissionId);
                 createApplication(execution, true);
             }
         } catch(IOException | RuntimeException ex) {
@@ -74,16 +79,16 @@ public class ExternalSubmissionListener extends BaseListener implements Executio
      */
     private void createApplication(DelegateExecution execution, boolean retryOnce) throws JsonProcessingException {
         Map<String,Object> data = new HashMap<>();
-        String formUrl = String.valueOf(execution.getVariable("formUrl"));
-        data.put("formUrl",formUrl);
+        String formUrl = String.valueOf(execution.getVariable(FORM_URL));
+        data.put(FORM_URL,formUrl);
         data.put("formId",StringUtils.substringBetween(formUrl, "/form/", "/submission/"));
         data.put("submissionId",StringUtils.substringAfter(formUrl, "/submission/"));
         data.put("processInstanceId",execution.getProcessInstanceId());
-        ResponseEntity<String> response = httpServiceInvoker.execute(httpServiceInvoker.getProperties().getProperty("api.url")+"/application/create", HttpMethod.POST, getObjectMapper().writeValueAsString(data));
+        ResponseEntity<String> response = httpServiceInvoker.execute(httpServiceInvoker.getProperties().getProperty("api.url")+"/application/create", HttpMethod.POST, bpmObjectMapper.writeValueAsString(data));
         if(response.getStatusCode().value() == HttpStatus.CREATED.value()) {
-            JsonNode jsonNode = getObjectMapper().readTree(response.getBody());
+            JsonNode jsonNode = bpmObjectMapper.readTree(response.getBody());
             String applicationId = jsonNode.get("id").asText();
-            execution.setVariable("applicationId", applicationId);
+            execution.setVariable(APPLICATION_ID, applicationId);
         } else {
             if(retryOnce) {
                 LOGGER.warn("Retrying the application create once more due to previous failure");
@@ -94,9 +99,4 @@ public class ExternalSubmissionListener extends BaseListener implements Executio
             }
         }
     }
-
-    private ObjectMapper getObjectMapper(){
-        return new ObjectMapper();
-    }
-
 }

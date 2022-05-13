@@ -2,7 +2,6 @@
 import {
   ROLES,
   USER_RESOURCE_FORM_ID,
-  Keycloak_Client,
   ANONYMOUS_USER,
   ANONYMOUS_ID,
   FORMIO_JWT_SECRET
@@ -16,9 +15,23 @@ import {BPM_BASE_URL} from "../apiManager/endpoints/config";
 import {AppConfig} from '../config';
 import {WEB_BASE_URL , WEB_BASE_CUSTOM_URL} from "../apiManager/endpoints/config";
 
-import {_kc} from "../constants/tenantConstant";
+// import {_kc} from "../constants/tenantConstant";
+import { setLanguage } from "../actions/languageSetAction";
+import Keycloak from "keycloak-js";
+import {getTenantKeycloakJson} from "../apiManager/services/tenantServices";
 
 const jwt = require("jsonwebtoken");
+let KeycloakData, doLogin, doLogout ;
+
+const setKeycloakJson = (tenantKey=null, ...rest)=>{
+  let kcJson;
+  const done = rest.length ? rest[0] :  ()=>{};
+  kcJson = getTenantKeycloakJson(tenantKey);
+  KeycloakData = new Keycloak(kcJson);
+  doLogin = KeycloakData?.login;
+  doLogout = KeycloakData?.logout;
+  done(kcJson.clientId);
+}
 
 /**
  * Initializes Keycloak instance and calls the provided callback function if successfully authenticated.
@@ -29,7 +42,8 @@ const jwt = require("jsonwebtoken");
 
 
 const initKeycloak = (store, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const clientId = rest.length && rest[0]
+  const done = rest.length ? rest[1] : () => {};
   KeycloakData
     .init({
       onLoad: "check-sso",
@@ -41,10 +55,11 @@ const initKeycloak = (store, ...rest) => {
     })
     .then((authenticated) => {
       if (authenticated) {
-        if (KeycloakData.resourceAccess[Keycloak_Client]) {
-          const UserRoles = KeycloakData.resourceAccess[Keycloak_Client].roles;
+        if (KeycloakData.resourceAccess[clientId]) {
+          const UserRoles = KeycloakData.resourceAccess[clientId].roles;
           store.dispatch(setUserRole(UserRoles));
           store.dispatch(setUserToken(KeycloakData.token));
+          store.dispatch(setLanguage(KeycloakData.tokenParsed.locale||'en'));
           //Set Cammunda/Formio Base URL
           setApiBaseUrlToLocalStorage();
 
@@ -70,18 +85,33 @@ const initKeycloak = (store, ...rest) => {
       }
     });
 };
+
+const getTokenExpireTime =(keycloak)=>{
+  const {exp, iat} = keycloak.tokenParsed;
+  if(exp&&iat){
+    const toeknExpiretime =new Date(exp).getMilliseconds()-new Date(iat).getMilliseconds()
+    return toeknExpiretime*1000
+  }else{
+    return 60000
+  }
+}
+
+
 let refreshInterval;
 const refreshToken = (store) => {
+  const refreshTime = getTokenExpireTime(KeycloakData)
   refreshInterval = setInterval(() => {
     KeycloakData && KeycloakData.updateToken(5).then((refreshed)=> {
       if (refreshed) {
-        store.dispatch(setUserToken(KeycloakData.token));
+         clearInterval(refreshInterval)
+         store.dispatch(setUserToken(KeycloakData.token));
+         refreshToken(store)
       }
     }).catch( (error)=> {
       console.log(error);
       userLogout();
     });
-  }, 6000);
+  }, refreshTime);
 }
 
 
@@ -89,7 +119,9 @@ const refreshToken = (store) => {
  * Logout function
  */
 const userLogout = () => {
+  const language=localStorage.getItem("lang")
   localStorage.clear();
+  localStorage.setItem("lang",language)
   sessionStorage.clear();
   clearInterval(refreshInterval);
   doLogout();
@@ -140,18 +172,19 @@ const authenticateFormio = (user, roles) => {
 };
 
 
-const KeycloakData= _kc;
+// const KeycloakData= _kc;
 
-const doLogin = KeycloakData.login;
-const doLogout = KeycloakData.logout;
-const getToken = () => KeycloakData.token;
+// const doLogin = KeycloakData.login;
+// const doLogout = KeycloakData.logout;
+const getToken = () => KeycloakData?.token;
 
 const UserService ={
   initKeycloak,
   userLogout,
   getToken,
   getFormioToken,
-  authenticateAnonymousUser
+  authenticateAnonymousUser,
+  setKeycloakJson
 };
 
 export default UserService;

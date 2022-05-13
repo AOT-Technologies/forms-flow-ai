@@ -4,6 +4,7 @@ import startCase from "lodash/startCase";
 import { textFilter , selectFilter,customFilter,FILTER_TYPES  } from "react-bootstrap-table2-filter";
 import {getLocalDateTime} from "../../apiManager/services/formatterService";
 import {AWAITING_ACKNOWLEDGEMENT} from "../../constants/applicationConstants";
+import {Translation} from "react-i18next";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
@@ -27,22 +28,22 @@ const getApplicationStatusOptions = (rows) => {
   return selectOptions;
 }
 
-const linkApplication = (cell, row) => {
+const linkApplication = (cell, row, redirectUrl) => {
   return (
-    <Link to={`/application/${row.id}`} title={cell}>
+    <Link to={`${redirectUrl}application/${row.id}`} title={cell}>
       {cell}
     </Link>
   );
 }
 
 
-const linkSubmission = (cell,row) => {
-  const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
-  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':'Edit') : 'View'
+const linkSubmission = (cell,row,redirectUrl) => {
+  const url = row.isClientEdit ? `${redirectUrl}form/${row.formId}/submission/${row.submissionId}/edit`:`${redirectUrl}form/${row.formId}/submission/${row.submissionId}`;
+  const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':<Translation>{(t)=>t("Edit")}</Translation>) : <Translation>{(t)=>t("View")}</Translation>
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
   <div onClick={()=> window.open(url, "_blank")}>
-        <span className="btn btn-primary btn-sm form-btn"><span><i
+        <span style={{color:"blue",cursor:"pointer"}}><span><i
           className={icon}/>&nbsp;</span>{buttonText}</span>
   </div>
   );
@@ -61,45 +62,45 @@ const nameFormatter = (cell) => {
 const cutomStyle = { border: '1px solid #ced4da' , fontStyle:'normal'}
 export const columns_history = [
   {
-    dataField: "application_name",
-    text: "Application Name",
+    dataField: "applicationname",
+    text: <Translation>{(t)=>t("Application Name")}</Translation>,
     sort: true,
   },
   {
-    dataField: "application_status",
-    text: "Application Status",
+    dataField: "applicationstatus",
+    text: <Translation>{(t)=>t("Application Status")}</Translation>,
     sort: true,
   },
 ];
 
-export const columns  = (applicationStatus,lastModified,callback) => {
+export const columns  = (applicationStatus,lastModified,callback,t,redirectUrl) => {
   return [
     {
       dataField: "id",
-      text: "Application ID",
-      formatter: linkApplication,
+      text: <Translation>{(t)=>t("Application Id")}</Translation>,
+      formatter: (cell, row)=>linkApplication(cell, row, redirectUrl),
       headerClasses: 'classApplicationId',
       sort: true,
       filter: textFilter({
-        delay:800,
-        placeholder: "\uf002 Application ID", // custom the input placeholder
-        caseSensitive: false, // default is false, and true will only work when comparator is LIKE
-        className: "icon-search",
-        style:cutomStyle,
-        getFilter: (filter) => {
-        idFilter = filter;
-        },
+      delay:800,  
+      placeholder: `\uf002 ${t("Application Id")}` , // custom the input placeholder
+      caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+      className: "icon-search",
+      style:cutomStyle,
+      getFilter: (filter) => {
+      idFilter = filter;
+     },
       }),
     },
     {
       dataField: "applicationName",
-      text: "Application Name",
+      text: <Translation>{(t)=>t("Application Name")}</Translation>,
       sort: true,
       headerClasses: 'classApplicationName',
       formatter: nameFormatter,
       filter: textFilter({
-        delay:800,
-        placeholder: "\uf002 Application Name", // custom the input placeholder
+       delay:800,
+      placeholder: `\uf002 ${t("Application Name")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
         style:cutomStyle,
@@ -110,12 +111,12 @@ export const columns  = (applicationStatus,lastModified,callback) => {
     },
     {
       dataField: "applicationStatus",
-      text: "Application Status",
+      text: <Translation>{(t)=>t("Application Status")}</Translation>,
       sort: true,
       filter: applicationStatus?.length > 0 && selectFilter({
         options: getApplicationStatusOptions(applicationStatus),
         style:cutomStyle,
-        placeholder: "All",
+        placeholder: `${t("All")}`,
         defaultValue: 'All',
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         getFilter: (filter) => {
@@ -125,27 +126,30 @@ export const columns  = (applicationStatus,lastModified,callback) => {
     },
     {
       dataField: "formUrl",
-      text: "Link to Form Submission",
-      formatter: linkSubmission,
+      text: <Translation>{(t)=>t("Link To Form Submission")}</Translation>,
+      formatter:(cell,row)=>linkSubmission(cell,row,redirectUrl),
     },
-  
+
     {
       dataField: "modified",
-      text: "Last Modified",
+      text: <Translation>{(t)=>t("Last Modified")}</Translation>,
       formatter: timeFormatter,
       sort: true,
       filter: customFilter({
-        type: FILTER_TYPES.DATE,  
+        type: FILTER_TYPES.DATE,
       }),
-      filterRenderer: (onFilter, column) => 
-      { 
+      filterRenderer: (onFilter, column) =>
+      {
         return  <DateRangePicker
           onChange={(selectedRange)=>{
             callback(selectedRange)
             onFilter(selectedRange)
-          }} 
+          }}
           value={lastModified}
           maxDate={new Date()}
+          dayPlaceholder="dd"
+          monthPlaceholder="mm"
+          yearPlaceholder="yyyy"
         />}
     }
   ];
@@ -154,11 +158,11 @@ export const columns  = (applicationStatus,lastModified,callback) => {
 
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">
-    Showing {from} to {to} of {size} Results
+    <Translation>{(t)=>t("Showing")}</Translation> {from} <Translation>{(t)=>t("to")}</Translation> {to} <Translation>{(t)=>t("of")}</Translation> {size} <Translation>{(t)=>t("Results")}</Translation>
   </span>
 );
 const customDropUp = ({options,currSizePerPage,onSizePerPageChange})=>{
-  return <DropdownButton 
+  return <DropdownButton
     drop="up"
     variant="secondary"
     title={currSizePerPage}
@@ -166,7 +170,7 @@ const customDropUp = ({options,currSizePerPage,onSizePerPageChange})=>{
   >
   {
     options.map(option => (
-      <Dropdown.Item 
+      <Dropdown.Item
         key={ option.text }
         type="button"
         onClick={ () => onSizePerPageChange(option.page) }
@@ -178,8 +182,8 @@ const customDropUp = ({options,currSizePerPage,onSizePerPageChange})=>{
 </DropdownButton>
 }
 const getpageList = (count)=>{
-  
-  const list = [ 
+
+  const list = [
         {
         text: '5', value: 5
       },
@@ -217,7 +221,7 @@ export const getoptions = (count,page,countPerPage) => {
     page:page,
     totalSize:count,
     sizePerPageList:getpageList(count),
-    sizePerPageRenderer:customDropUp 
+    sizePerPageRenderer:customDropUp
   };
 };
 export const clearFilter = () => {

@@ -24,8 +24,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
- * Keycloak group service test
- * 
+ * Keycloak Group Service Test.
+ * Test class for KeycloakGroupService.
  */
 @ExtendWith(SpringExtension.class)
 public class KeycloakGroupServiceTest {
@@ -41,6 +41,7 @@ public class KeycloakGroupServiceTest {
 
 	@Mock
 	private CacheableKeycloakGroupQuery cacheableKeycloakGroupQuery;
+	
 
 	/**
 	 * Test to assert the groups are returned by keycloak group query by default
@@ -49,8 +50,9 @@ public class KeycloakGroupServiceTest {
 	public void requestGroupsByUserIdForAuthByGroup() throws IOException, ServletException {
 		String kcUrl = "http://localhost/";
 		String userId = "test-user";
+		CustomConfig customConfig = new CustomConfig(null, false, false, null);
 		KeycloakGroupService groupService = new KeycloakGroupService(configuration, restTemplate,
-				keycloakContextProvider, null, false);
+				keycloakContextProvider, customConfig);
 		when(cacheableKeycloakGroupQuery.getUserId()).thenReturn(userId);
 		when(configuration.getKeycloakAdminUrl()).thenReturn(kcUrl);
 
@@ -76,8 +78,9 @@ public class KeycloakGroupServiceTest {
 		String kcUrl = "http://localhost/";
 		String userId = "test-user";
 		String webClientId = "web-client";
+		CustomConfig customConfig = new CustomConfig(webClientId, true, false, null);
 		KeycloakGroupService groupService = new KeycloakGroupService(configuration, restTemplate,
-				keycloakContextProvider, webClientId, true);
+				keycloakContextProvider, customConfig);
 		when(cacheableKeycloakGroupQuery.getUserId()).thenReturn(userId);
 		when(configuration.getKeycloakAdminUrl()).thenReturn(kcUrl);
 

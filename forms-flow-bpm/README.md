@@ -81,7 +81,7 @@ To know more about Camunda, visit https://camunda.com/.
   `CAMUNDA_JOB_WAIT_TIME_MILLIS`|Job-Executor Configuration Properties||`5000`
   `CAMUNDA_JOB_MAX_WAIT`|Job-Executor Configuration Properties||`60000`
   `CAMUNDA_METRICS_FLAG`|Job-Executor Configuration Properties||`false`
-  
+
 #### Camunda formsflow.ai Integration Settings  
 ----------------------------------------------
  
@@ -94,7 +94,11 @@ To know more about Camunda, visit https://camunda.com/.
  `WEBSOCKET_SECURITY_ORIGIN` :triangular_flag_on_post:|Camunda task event streaming, for multiple origins you can separate them using a comma |eg:`host1, host2`| `http://{your-ip-address}:3000`
  `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
  `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
- 
+ `MULTI_TENANCY_ENABLED`|Multi tenancy enabled flag for the environment||`true|false`
+ `FORMSFLOW_ADMIN_URL`|Only needed if multi tenancy is enabled||`http://{your-ip-address}:5001/`
+ `DATA_ANALYSIS_URL`|sentiment analysis url||`http://{your-ip-address}:6000/analysis`
+  
+
  #### Mail Configuration
  * Modify the file **mail-config.properties** (under forms-flow-bpm/src/main/resources/). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
  

@@ -5,7 +5,9 @@ import Button from "@material-ui/core/Button";
 
 import Select from 'react-select'
 import Checkbox from "@material-ui/core/Checkbox";
+import {useTranslation} from 'react-i18next';
 const TaskvariableCreate = ({ options ,addTaskVariable}) => {
+  const {t} = useTranslation();
   const [selectedValue, setSelectedValue] = useState("");
   const [taskLabel,setTaskLable]=useState("")
   const [showInList,setShowInList]=useState(false)
@@ -40,7 +42,7 @@ const TaskvariableCreate = ({ options ,addTaskVariable}) => {
     <>
       <Grid container spacing={2} style={{ alignItems: "center" }} className="my-4">
         <Grid item xs={12} md={3}>
-        <label>Form field</label>
+        <label>{t("Form field")}</label>
           <Select
             searchable
             options={options}
@@ -48,17 +50,17 @@ const TaskvariableCreate = ({ options ,addTaskVariable}) => {
                 selectTaskVariable(item);
             }} 
             formatOptionLabel={fomatOptionLabel}
-            placeholder="Select form field"
+            placeholder={t("Select form field")}
           />
         </Grid>
         <Grid item xs={12} md={2}>
-        <label>Label</label>
+        <label>{t("Label")}</label>
          <input
             type="text"
             value={taskLabel}
             onChange={(e)=>{setTaskLable(e.target.value)}}
             className="form-control"
-            placeholder="Enter Label"
+            placeholder={t("Enter Label")}
           />
         </Grid>
         <Grid item xs={12} md={2}>
@@ -66,7 +68,7 @@ const TaskvariableCreate = ({ options ,addTaskVariable}) => {
             value="start"
             control={<Checkbox onChange={()=>{setShowInList(!showInList)}} color="primary" />}
             labelPlacement="start"
-            label="Show in list"
+            label={t("Show in list")}
             style={{marginTop:'30px'}}
           />
         </Grid>
@@ -79,7 +81,7 @@ const TaskvariableCreate = ({ options ,addTaskVariable}) => {
             size="small"
             onClick={()=>{addTask()}}
             startIcon={<i className="fa fa-check"></i>}
-          >Add</Button>
+          >{t("Add")}</Button>
         </Grid>
       </Grid>
     </>

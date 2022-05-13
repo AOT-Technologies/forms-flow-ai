@@ -7,7 +7,7 @@ const initialState = {
   formsFullList:[],
   forms: [],
   isActive: false,
-  limit:10,
+  limit:5,
   pagination: {
   numPages: 0,
     page: 1,
@@ -55,7 +55,6 @@ const bpmForms = (state = initialState, action)=> {
         },formsFullList:state.formsFullList};
     case ACTION_CONSTANTS.BPM_FORM_LOADING:
       return {...state, bpmFormLoading:action.payload};
-
     default:
       return state;
   }

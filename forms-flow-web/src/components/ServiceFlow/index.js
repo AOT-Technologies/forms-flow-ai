@@ -24,6 +24,7 @@ import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
 import {Route, Redirect} from "react-router-dom";
 import {push} from "connected-react-router";
+import { BASE_ROUTE, MULTITENANCY_ENABLED } from '../../constants/constants';
 
 export default React.memo(() => {
   const dispatch= useDispatch();
@@ -44,6 +45,8 @@ export default React.memo(() => {
   const reqDataRef=useRef(reqData);
   const firstResultsRef=useRef(firstResult);
   const taskListRef=useRef(taskList);
+  const tenantKey = useSelector(state => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';
 
   useEffect(()=>{
     selectedFilterIdRef.current=selectedFilterId;
@@ -91,7 +94,7 @@ export default React.memo(() => {
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current){
           dispatch(setBPMTaskDetailLoader(true));
           dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
-          dispatch(push(`/task/`));
+          dispatch(push(`${redirectUrl}task/`));
         }
       } else{
         if(selectedFilterIdRef.current){
@@ -115,7 +118,7 @@ export default React.memo(() => {
         }
       }
     }
-  ,[dispatch,currentUser]);
+  ,[dispatch,currentUser,redirectUrl]);
 
   useEffect(()=>{
     if(!SocketIOService.isConnected()){
@@ -133,7 +136,7 @@ export default React.memo(() => {
 
   return (
     <Container fluid id="main" className="pt-0">
-      <Row>
+      <Row className='p-2'>
         <Col lg={3} xs={12} sm={12} md={4} xl={3}>
           <section>
             <header className="task-section-top">
@@ -143,8 +146,8 @@ export default React.memo(() => {
           </section>
         </Col>
         <Col className="pl-0" lg={9} xs={12} sm={12} md={8} xl={9}>
-          <Route path={"/task/:taskId?"}><ServiceFlowTaskDetails/></Route>
-          <Route path={"/task/:taskId/:notAvailable"}> <Redirect exact to='/404'/></Route>
+          <Route path={`${BASE_ROUTE}task/:taskId?`}><ServiceFlowTaskDetails/></Route>
+          <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}> <Redirect exact to='/404'/></Route>
         </Col>
       </Row>
     </Container>

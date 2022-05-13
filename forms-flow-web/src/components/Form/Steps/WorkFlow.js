@@ -1,16 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import utils from 'formiojs/utils';
 import FormLabel from "@material-ui/core/FormLabel";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import RadioGroup from "@material-ui/core/RadioGroup";
-import Radio from "@material-ui/core/Radio";
 import Grid from "@material-ui/core/Grid";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Select from "react-dropdown-select";
-import Button from "@material-ui/core/Button";
 import SaveNext from "./SaveNext";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
 import TaskvariableCreate from "./TaskvariableCreate";
@@ -24,10 +20,10 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { setFormProcessesData } from "../../../actions/processActions";
 import ViewAndEditTaskvariable  from "./ViewAndEditTaskvariable";
+import Button from 'react-bootstrap/Button';
+import { useTranslation } from "react-i18next";
 const WorkFlow = React.memo(
   ({
-    associateWorkFlow,
-    changeWorkFlowStatus,
     populateDropdown,
     associateToWorkFlow,
     handleNext,
@@ -38,13 +34,14 @@ const WorkFlow = React.memo(
     workflow,
     disableWorkflowAssociation,
   }) => {
+    const {t}= useTranslation();
     const[modified,setModified] = useState(false)
     const [tabValue, setTabValue] = useState(0);
     const [showTaskVaribleCrete, setShowTaskVaribleCrete] = useState(false);
     const { form } = useSelector((state) => state.form);
 
     const componentLabel =[]
-    const ignoredTypes = ['button','columns','panel','well','container']
+    const ignoredTypes = ['button','columns','panel','well','container','htmlelement']
     const flattedComponent = Object.values(utils.flattenComponents(form.components,true))
     flattedComponent.forEach(component=>{
       if(!ignoredTypes.includes(component.type)){
@@ -63,8 +60,13 @@ const WorkFlow = React.memo(
     );
     const [keyOfVariable, setKeyOfVariable] = useState(componentLabel.filter(item=>!selectedTaskVariable.find(variable=>item.value===variable.key)));
   
-
-  
+   const defaultWorkflow = populateDropdown().filter(i=> i.value==="Defaultflow")
+    useEffect(()=>{
+      if(!workflow&&defaultWorkflow){
+        setModified(true)
+        associateToWorkFlow(defaultWorkflow)
+      }
+    },[workflow,associateToWorkFlow,defaultWorkflow] )
 
 
     const addTaskVariable = (data) => {
@@ -132,12 +134,12 @@ const WorkFlow = React.memo(
         {/* <FormControl component="fieldset"> */}
 
         <Grid item xs={12} sm={1} spacing={3}>
-          <button
-            className="MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary"
+          <Button
+           variant="primary"
             onClick={handleEditAssociation}
           >
-            Edit
-          </button>
+            {t("Edit")}
+          </Button>
         </Grid>
         <Grid item xs={12} sm={8} spacing={3} />
         <Grid item xs={12} sm={3} className="next-btn">
@@ -146,7 +148,6 @@ const WorkFlow = React.memo(
             handleNext={handleNext}
             activeStep={activeStep}
             steps={steps}
-            changeWorkFlowStatus={changeWorkFlowStatus}
             modified={modified} 
           />
         </Grid>
@@ -159,8 +160,8 @@ const WorkFlow = React.memo(
           textColor="primary"
           onChange={handleChange}
         >
-          <Tab label="Workflow Associate" />
-          <Tab label="Task variable" />
+          <Tab label={t("Workflow Associate")} />
+          <Tab label={t("Task variable")} />
         </Tabs>
 
         <Grid
@@ -173,44 +174,15 @@ const WorkFlow = React.memo(
           {tabValue === 0 ? (
             <Card variant="outlined" className="card-overflow">
               <CardContent>
-                <Grid item xs={12} sm={12} spacing={3}>
-                  <FormLabel component="legend">
-                    Do you want to associate form with a workflow ?
-                  </FormLabel>
-                  <RadioGroup
-                    aria-label="associateWorkFlow"
-                    name="associateWorkFlow"
-                    value={associateWorkFlow}
-                    onChange={(e) => {
-                      changeWorkFlowStatus(e.target.value);
-                    }}
-                    row
-                  >
-                    <FormControlLabel
-                      value="yes"
-                      control={<Radio color="primary" />}
-                      label="Yes"
-                    />
-                    <FormControlLabel
-                      value="no"
-                      control={<Radio color="primary" />}
-                      onClick={(item)=>setModified(true)}
-                      label="No"
-                    />
-                  </RadioGroup>
-                </Grid>
-
-                {associateWorkFlow === "yes" && (
-                  <>
                     <Grid item xs={12} sm={6} spacing={3}>
-                      <h5>
-                        Please select from one of the following workflows.
-                      </h5>
+                      <span className="fontsize-16">
+                        {t("Please select from one of the following workflows.")}
+                      </span>
                       <Select
                         options={populateDropdown()}
                         onChange={(item) =>{setModified(true);
                         associateToWorkFlow(item)}}
-                        values={workflow && workflow.value ? [workflow] : []}
+                        values={workflow && workflow.value ? [workflow] :[]}
                         disabled={disableWorkflowAssociation}
                       />
                     </Grid>
@@ -223,8 +195,6 @@ const WorkFlow = React.memo(
                         />
                       </Grid>
                     )}
-                  </>
-                )}
                 {/* </FormControl> */}
               </CardContent>
             </Card>
@@ -232,18 +202,18 @@ const WorkFlow = React.memo(
             <>
               <Card variant="outlined" className="card-overflow">
                 <CardContent>
-                  <p> Add form fields to display in task list </p>
+                  <p> {t("Add form fields to display in task list")} </p>
                   {selectedTaskVariable.length !== 0 ? (
                     <Grid item xs={12} md={12} className="mb-2">
                       <TableContainer component={Paper} style={{maxHeight:"250px"}}>
                         <Table stickyHeader aria-label="simple table">
                           <TableHead>
                             <TableRow >
-                              <TableCell className="font-weight-bold">Form field</TableCell>
-                              <TableCell className="font-weight-bold" align="left">Label</TableCell>
-                              <TableCell className="font-weight-bold"align="left">Show in list</TableCell>
+                              <TableCell className="font-weight-bold">{t("Form field")}</TableCell>
+                              <TableCell className="font-weight-bold" align="left">{t("Label")}</TableCell>
+                              <TableCell className="font-weight-bold"align="left">{t("Show in list")}</TableCell>
                               <TableCell className="font-weight-bold" align="right">
-                                Action
+                                {t("Action")}
                               </TableCell>
                              
                             </TableRow>
@@ -262,7 +232,7 @@ const WorkFlow = React.memo(
                     </Grid>
                   ) : (
                    <div className="border p-2 mb-2">
-                      <FormLabel>No Task variable selected</FormLabel>
+                      <FormLabel>{t("No Task variable selected")}</FormLabel>
                    </div>
                   )}
 
@@ -274,13 +244,12 @@ const WorkFlow = React.memo(
                   )}
                   {keyOfVariable.length !== 0 && (
                     <Button
-                      variant="contained"
                       onClick={() =>
                         setShowTaskVaribleCrete(!showTaskVaribleCrete)
                       }
-                      color={showTaskVaribleCrete ? "secondary" : "primary"}
+                      variant={showTaskVaribleCrete ? "secondary" : "primary"}
                     >
-                      {showTaskVaribleCrete ? "cancel" : "Add"}
+                      {showTaskVaribleCrete ? t("Cancel") : t("Add")}
                     </Button>
                   )}
                 </CardContent>

@@ -1,6 +1,6 @@
 import React from "react";
 import {getFormIdSubmissionIdFromURL, getFormUrl, getLocalDateTime} from "../../apiManager/services/formatterService";
-
+import { Translation } from "react-i18next";
 
 export const defaultSortedBy = [
   {
@@ -9,12 +9,12 @@ export const defaultSortedBy = [
   },
 ];
 
-const linkSubmision = (cell) => {
+const linkSubmision = (cell, row, redirectUrl) => {
   const {formId,submissionId} = getFormIdSubmissionIdFromURL(cell);
-  const url = getFormUrl(formId,submissionId)
+  const url = getFormUrl(formId,submissionId, redirectUrl)
   return (
     <div title={url} onClick={()=> window.open(url, "_blank")}>
-        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"/>&nbsp;</span>View Submission</span>
+        <span className="btn btn-primary btn-sm form-btn"><span><i className="fa fa-eye" aria-hidden="true"></i>&nbsp;</span><Translation>{(t)=>t("View Submission")}</Translation></span>
     </div>
   );
 }
@@ -26,32 +26,34 @@ function timeFormatter(cell) {
 
 
 // History table columns
-export const columns_history = [
+export const columns_history = (redirectUrl)=>(
+  [
   {
     dataField: "applicationStatus",
-    text: "Status",
+    text: <Translation>{(t)=>t("Status")}</Translation>,
     sort: true,
   },
   {
     dataField: "created",
-    text: "Created",
+    text: <Translation>{(t)=>t("Created")}</Translation>,
     sort: true,
     formatter: timeFormatter,
   },
   {
       dataField: "submittedBy",
-      text: "Submitted By",
+      text:  <Translation>{(t)=>t("Submitted By")}</Translation>,
       sort: true,
   },
   {
     dataField: "formUrl",
-    text: "Submissions",
-    formatter: linkSubmision,
+    text: <Translation>{(t)=>t("Submissions")}</Translation>,
+    formatter: (cell, row)=>linkSubmision(cell, row, redirectUrl),
   },
-];
+]
+)
 const customTotal = (from, to, size) => (
   <span className="react-bootstrap-table-pagination-total">
-    Showing {from} to {to} of {size} Results
+    <Translation>{(t)=>t("Showing")}</Translation> {from} <Translation>{(t)=>t("to")}</Translation> {to} <Translation>{(t)=>t("of")}</Translation> {size} Results
   </span>
 );
 

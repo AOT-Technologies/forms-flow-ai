@@ -9,8 +9,10 @@ import {setProcessActivityData, setProcessDiagramLoading, setProcessDiagramXML} 
 import "./bpm.scss"
 import usePrevious from "./UsePrevious";
 import Nodata from "../Nodata";
+import { useTranslation } from "react-i18next";
 
 const ProcessDiagram = React.memo((props)=>{
+  const {t}=useTranslation();
   const process_key = props.process_key;
   const processInstanceId = props.processInstanceId;
   const dispatch= useDispatch();
@@ -105,7 +107,7 @@ const ProcessDiagram = React.memo((props)=>{
   if( diagramXML=== ""){
     return <div className="bpmn-viewer-container">
       <div className="bpm-container">
-        <Nodata text={"No Process Diagram found"} className={"div-no-application-list text-center"}/>
+        <Nodata text={t("No Process Diagram found")} className={"div-no-application-list text-center"}/>
       </div>
     </div>
   }

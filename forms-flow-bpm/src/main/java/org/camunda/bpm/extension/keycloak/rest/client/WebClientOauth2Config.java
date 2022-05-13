@@ -23,7 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 
 /**
- * Created by shibin.thomas on 21-09-2021.
+ * Web ClientOauth2 Config.
+ * Configuration file for ClientOauth2.
  */
 @Configuration
 public class WebClientOauth2Config {

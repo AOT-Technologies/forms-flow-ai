@@ -3,12 +3,15 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import ProgressBar from 'react-bootstrap/ProgressBar'
 import {useSelector} from "react-redux";
-import Spinner from 'react-bootstrap/Spinner'
+import Spinner from 'react-bootstrap/Spinner';
+import {Translation,useTranslation} from "react-i18next";
+
 
 const FileModal= React.memo(({modalOpen=false, onClose,forms})=> {
     const formUploadList = useSelector(state => state.formCheckList.formUploadFormList);
     const formUploadCounter = useSelector(state => state.formCheckList.formUploadCounter);
     const [formsUploaded, setFormsUploaded] = useState(0);
+    const {t}=useTranslation();
 
     useEffect(()=>{
       if(formUploadList.length){
@@ -19,15 +22,15 @@ const FileModal= React.memo(({modalOpen=false, onClose,forms})=> {
       <>
           <Modal show={modalOpen} onHide={onClose}>
               <Modal.Header>
-                 <Modal.Title><b>Forms Upload Confirmation</b></Modal.Title>
+                 <Modal.Title><b><Translation>{(t)=>t("Files Upload Confirmation")}</Translation>)</b></Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                <div>{`${formUploadCounter}/${formUploadList.length} Forms  completed`} {(formUploadList.length!==formUploadCounter)?<Spinner animation="border" variant="primary" />:""}</div>
+                <div>{`${formUploadCounter}/${formUploadList.length} ${t("Forms Completed")}`} {(formUploadList.length!==formUploadCounter)?<Spinner animation="border" variant="primary" />:""}</div>
                 {formUploadList.length?<ProgressBar now={formsUploaded} label={`${formsUploaded}%`} />
-                  : <div>No forms found</div>}
+                  : <div><Translation>{(t)=>t("No forms found")}</Translation></div>}
               </Modal.Body>
               <Modal.Footer>
-              <Button type="button" className="btn btn-default" onClick={onClose}>Close</Button>
+              <Button type="button" className="btn btn-default" onClick={onClose}><Translation>{(t)=>t("Close")}</Translation></Button>
               </Modal.Footer>
           </Modal>
         </>

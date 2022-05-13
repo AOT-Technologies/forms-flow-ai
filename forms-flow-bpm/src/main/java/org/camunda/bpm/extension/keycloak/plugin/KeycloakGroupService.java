@@ -6,6 +6,7 @@ import static org.camunda.bpm.extension.keycloak.json.JsonUtil.getJsonObjectAtIn
 import static org.camunda.bpm.extension.keycloak.json.JsonUtil.getJsonString;
 import static org.camunda.bpm.extension.keycloak.json.JsonUtil.getJsonStringAtIndex;
 import static org.camunda.bpm.extension.keycloak.json.JsonUtil.parseAsJsonArray;
+import static org.camunda.bpm.extension.keycloak.json.JsonUtil.parseAsJsonObject;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.authorization.Groups;
 import org.camunda.bpm.engine.identity.Group;
+import org.camunda.bpm.engine.identity.Tenant;
 import org.camunda.bpm.engine.impl.identity.IdentityProviderException;
 import org.camunda.bpm.engine.impl.persistence.entity.GroupEntity;
 import org.camunda.bpm.extension.keycloak.CacheableKeycloakGroupQuery;
@@ -33,6 +35,10 @@ import org.springframework.web.client.RestClientException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
+/**
+ * Keycloak Group Service.
+ * Custom class for Implementation of group queries against Keycloak's REST API.
+ */
 public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.KeycloakGroupService {
 
 	/** This class' logger. */
@@ -40,12 +46,18 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 
 	private String webClientId;
 	private boolean enableClientAuth;
+	private boolean enableMultiTenancy;
+	private TenantService tenantService;
 
 	public KeycloakGroupService(KeycloakConfiguration keycloakConfiguration, KeycloakRestTemplate restTemplate,
-			KeycloakContextProvider keycloakContextProvider, String webClientId, boolean enableClientAuth) {
+			KeycloakContextProvider keycloakContextProvider, CustomConfig config) {
 		super(keycloakConfiguration, restTemplate, keycloakContextProvider);
-		this.webClientId = webClientId;
-		this.enableClientAuth = enableClientAuth;
+		this.webClientId = config.getWebClientId();
+		this.enableClientAuth = config.isEnableClientAuth();
+		this.enableMultiTenancy = config.isEnableMultiTenancy();
+		if (this.enableMultiTenancy) {
+			this.tenantService = new TenantService(restTemplate, keycloakContextProvider, config);
+		}
 	}
 
 	/**
@@ -55,7 +67,7 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 	 * @return list of matching groups
 	 */
 	public List<Group> requestGroupsByUserId(CacheableKeycloakGroupQuery query) {
-		LOG.debug("enableClientAuth value " + enableClientAuth);	
+		LOG.debug("requestGroupsByUserId >> enableClientAuth value " + enableClientAuth);
 		List<Group> userGroups = null;
 		if (enableClientAuth) {
 			userGroups = this.requestClientRolesByUserId(query);
@@ -64,6 +76,23 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 		}
 		return userGroups;
 	}
+	
+	
+	public List<Group> requestGroupsWithoutUserId(CacheableKeycloakGroupQuery query) {
+		LOG.debug("requestGroupsWithoutUserId >> enableClientAuth value " + enableClientAuth);
+		List<Group> roles = null;
+		if (enableClientAuth) {
+			if (enableMultiTenancy) {
+				roles = this.requestAllTenantRoles();
+			} else {
+				roles = this.requestClientRoles();
+			}
+		} else {
+			roles = super.requestGroupsWithoutUserId(query);
+		}
+		return roles;
+	}
+	
 
 	/**
 	 * Requests client roles of a specific user.
@@ -73,15 +102,28 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 	 */
 	public List<Group> requestClientRolesByUserId(CacheableKeycloakGroupQuery query) {
 		String userId = query.getUserId();
+		LOG.debug("requestClientRolesByUserId >>  " + userId);
 		List<Group> roleList = new ArrayList<>();
 
 		try {
 			// get Keycloak specific userID
 			String keyCloakID;
 			String keycloakClientID;
+			String clientId = webClientId;
+			String tenantKey = null;
+			if (this.enableMultiTenancy) {
+				//TODO for now only consider the first client's tenant when user is logging into camunda cockpit.
+				List<Tenant> tenants = this.tenantService.requestTenantsByUserId(userId);
+				if (tenants.size() > 0) {
+					LOG.debug("Found tenants for user " + userId);
+					tenantKey = tenants.get(0).getId();
+					clientId =  tenantKey +"-" + webClientId;
+					LOG.debug("Found clientId for user " + userId +" : " + clientId);
+				}
+			}
 			try {
 				keyCloakID = getKeycloakUserID(userId);
-				keycloakClientID = getKeycloakClientID(webClientId);
+				keycloakClientID = getKeycloakClientID(clientId);
 			} catch (KeycloakUserNotFoundException e) {
 				// user not found: empty search result
 				return Collections.emptyList();
@@ -99,7 +141,7 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 
 			JsonArray searchResult = parseAsJsonArray(response.getBody());
 			for (int i = 0; i < searchResult.size(); i++) {
-				roleList.add(transformRole(getJsonObjectAtIndex(searchResult, i)));
+				roleList.add(transformRole(getJsonObjectAtIndex(searchResult, i), tenantKey));
 			}
 
 		} catch (HttpClientErrorException hcee) {
@@ -110,6 +152,94 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 			throw hcee;
 		} catch (RestClientException | JsonException rce) {
 			throw new IdentityProviderException("Unable to query groups of user " + userId, rce);
+		}
+
+		return roleList;
+	}
+	
+	
+	
+	/**
+	 * Requests client roles for all tenants.
+	 * 
+	 * @param query the group query - including a userId criteria
+	 * @return list of matching groups
+	 */
+	public List<Group> requestAllTenantRoles() {
+		LOG.debug("requestAllTenantRoles >>  " );
+		List<Group> roleList = new ArrayList<>();
+
+		try {
+			ResponseEntity<String> response = this.tenantService.requestTenants(null);
+
+			JsonObject searchResult = parseAsJsonObject(response.getBody());
+			JsonArray tenantsArr = getJsonArray(searchResult, "tenants");
+			for (int i = 0; i < tenantsArr.size(); i++) {
+				JsonObject tenantObj = getJsonObjectAtIndex(tenantsArr, i);
+				JsonArray roles =  getJsonArray(getJsonObject(tenantObj, "details"), "roles");
+				String tenantKey = getJsonString(tenantObj, "key");
+				for (int j = 0 ; j < roles.size(); j++) {
+					roleList.add(transformRole(getJsonObjectAtIndex(roles, j), tenantKey));
+				}
+			}
+
+		} catch (HttpClientErrorException hcee) {
+			// if userID is unknown server answers with HTTP 404 not found
+			if (hcee.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+				return Collections.emptyList();
+			}
+			throw hcee;
+		} catch (RestClientException | JsonException rce) {
+			throw new IdentityProviderException("Unable to query roles for client " + webClientId, rce);
+		}
+
+		return roleList;
+	}
+	
+	
+	/**
+	 * Requests client roles of a specific user.
+	 * 
+	 * @param query the group query - including a userId criteria
+	 * @return list of matching groups
+	 */
+	public List<Group> requestClientRoles() {
+		LOG.debug("requestClientRoles >>  " );
+		List<Group> roleList = new ArrayList<>();
+
+		try {
+			// get Keycloak specific userID
+			String keycloakClientID;
+			try {
+				keycloakClientID = getKeycloakClientID(webClientId);
+			} catch (KeycloakUserNotFoundException e) {
+				// user not found: empty search result
+				return Collections.emptyList();
+			}
+
+			// get groups of this user
+			ResponseEntity<String> response = restTemplate.exchange(keycloakConfiguration.getKeycloakAdminUrl()
+					+ "/clients/" + keycloakClientID + "/roles", HttpMethod.GET,
+					String.class);
+			if (!response.getStatusCode().equals(HttpStatus.OK)) {
+				throw new IdentityProviderException(
+						"Unable to read user groups from " + keycloakConfiguration.getKeycloakAdminUrl()
+								+ ": HTTP status code " + response.getStatusCodeValue());
+			}
+
+			JsonArray searchResult = parseAsJsonArray(response.getBody());
+			for (int i = 0; i < searchResult.size(); i++) {
+				roleList.add(transformRole(getJsonObjectAtIndex(searchResult, i), null));
+			}
+
+		} catch (HttpClientErrorException hcee) {
+			// if userID is unknown server answers with HTTP 404 not found
+			if (hcee.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+				return Collections.emptyList();
+			}
+			throw hcee;
+		} catch (RestClientException | JsonException rce) {
+			throw new IdentityProviderException("Unable to query roles for client " + webClientId, rce);
 		}
 
 		return roleList;
@@ -173,9 +303,14 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 	 * @return the Group object
 	 * @throws JsonException in case of errors
 	 */
-	private GroupEntity transformRole(JsonObject result) throws JsonException {
+	private GroupEntity transformRole(JsonObject result, String prefix) throws JsonException {
 		GroupEntity group = new GroupEntity();
-		group.setName(getJsonString(result, "name"));
+		String name = getJsonString(result, "name");
+		if (StringUtils.isNotEmpty(prefix)) {
+			name = prefix + "-" + name;
+		}
+		group.setName(name);
+		group.setId(name);
 		if (isCamundAdmin(result)) {
 			group.setType(Groups.GROUP_TYPE_SYSTEM);
 		} else {

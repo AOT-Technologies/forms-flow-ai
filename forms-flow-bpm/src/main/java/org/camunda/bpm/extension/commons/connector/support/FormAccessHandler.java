@@ -2,6 +2,8 @@ package org.camunda.bpm.extension.commons.connector.support;
 
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
+import org.camunda.bpm.extension.commons.ro.req.IRequest;
+import org.camunda.bpm.extension.commons.ro.res.IResponse;
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +17,8 @@ import reactor.core.publisher.Mono;
 
 
 /**
+ * Form Access Handler.
  * This class serves as gateway for all formio interactions.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Service("formAccessHandler")
 public class FormAccessHandler extends FormTokenAccessHandler implements IAccessHandler {
@@ -38,6 +39,11 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
         }
         logger.info("Response code for service invocation: {}" , response.getStatusCode());
         return response;
+    }
+
+    @Override
+    public ResponseEntity<IResponse> exchange(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz) {
+        return null;
     }
 
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload, String accessToken) {

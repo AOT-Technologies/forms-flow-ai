@@ -135,6 +135,16 @@ class AggregatedApplicationStatusResource(Resource):
                     HTTPStatus.OK,
                 )
             return response, status
+        except PermissionError as err:
+            response, status = (
+                {
+                    "type": "Permission Denied",
+                    "message": f"Access to form id - {mapper_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.warning(err)
+            return response, status
         except ValidationError as metrics_err:
             response, status = {
                 "message": (

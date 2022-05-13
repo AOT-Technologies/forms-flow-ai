@@ -20,7 +20,7 @@ $gray-800: #373a3c;
 $gray-900: #212529;
 $black: #000;
 
-$blue: #2780e3;
+$blue: #4D61FC;
 $indigo: #6610f2;
 $purple: #613d7c;
 $pink: #e83e8c;
@@ -63,7 +63,23 @@ $dark: $gray-800;
   overflow-y: auto;
   overflow-x: hidden;
 }
-
+.text-primary{
+  color: $primary;
+  
+}
+.footer-text{
+  font-size: 18px;
+}
+.btn-primary{
+  background-color: $primary;
+  }
+.btn-outline-primary:not(:disabled){
+  border-color: $primary;
+  &:hover{
+    color: #ffff;
+    background-color: $primary;
+  }
+}
 .task-container{
   height: 100% !important;
 }
@@ -119,7 +135,7 @@ body {
   background-color: #f8f8f8bf;
 }
 .formio-component-panel {
-  border: 1px solid#eeeeee;
+  border: 1px solid #eeeeee;
 
   .panel-heading {
     background-color: #eeeeee;
@@ -545,4 +561,23 @@ div[disabled] {
 }
 .classApplicationName{
   width: 20%;
+}
+.navbar-light .navbar-nav .nav-link {
+  color: rgba(0,0,0,.9);
+}
+
+// overwriting default styles
+.MuiTab-wrapper{
+  font-size: 16px;
+}
+.formcomponents .formcomponent{
+  font-size: 1em;
+}
+.button_font{
+  font-size: 14px;
+  font-weight: bold;
+}
+.delete_button{
+  font-size: 20px;
+  color:red;
 }

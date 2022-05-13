@@ -5,8 +5,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.camunda.bpm.engine.test.assertions.bpmn.BpmnAwareTests.assertThat;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
 /**
- * Created by DELL on 13-10-2021.
+ * One Step Approval Test.
+ * Test class for OneStepApproval.
  */
 @ExtendWith(SpringExtension.class)
 public class OneStepApprovalTest /*extends ProcessEngineTestCase*/ {
@@ -46,7 +48,7 @@ public class OneStepApprovalTest /*extends ProcessEngineTestCase*/ {
     public void testHappyPath() {
 
         ProcessInstance processInstance = processEngine().getRuntimeService().startProcessInstanceByKey(PROCESS_DEFINITION_KEY
-        ,withVariables("applicationId", "id1"));
+        ,withVariables(APPLICATION_ID, "id1"));
         assertThat(processInstance).isStarted()
                 ;
         *//*complete(task(), withVariables("approved", true));

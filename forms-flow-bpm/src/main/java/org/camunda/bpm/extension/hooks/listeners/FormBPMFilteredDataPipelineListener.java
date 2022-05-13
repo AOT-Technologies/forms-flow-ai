@@ -1,13 +1,12 @@
 package org.camunda.bpm.extension.hooks.listeners;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.ExecutionListener;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.camunda.bpm.extension.commons.ro.res.IResponse;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.FilterInfo;
 import org.camunda.bpm.extension.hooks.listeners.data.FormProcessMappingData;
@@ -20,18 +19,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+
+/**
+ * Form BPM Filtered Data Pipeline Listener.
+ * This class copies specific data from form document data into CAM variables.
+ */
 
 @Component
 public class FormBPMFilteredDataPipelineListener   extends BaseListener implements TaskListener, ExecutionListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FormBPMFilteredDataPipelineListener.class);
 
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
     @Autowired
     private FormSubmissionService formSubmissionService;
     @Autowired
@@ -56,39 +66,26 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
     }
 
     private void syncFormVariables(DelegateExecution execution) throws IOException {
-        ResponseEntity<String> response = httpServiceInvoker.execute(getApplicationUrl(execution), HttpMethod.GET,  null);
+        ResponseEntity<IResponse> response = httpServiceInvoker.execute(getApplicationUrl(execution), HttpMethod.GET,  null, FormProcessMappingData.class);
         if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
             throw new ApplicationServiceException("Unable to update application "+ ". Message Body: " +
                     response.getBody());
         }
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        Map<String, FilterInfo> filterInfoMap = new HashMap<>();
-        try {
-            String responseBody = response.getBody();
-            if(responseBody != null) {
-                responseBody = responseBody.replace("\"[", "[")
-                        .replace("]\"", "]").replace("\\", "");
-            }
-            FormProcessMappingData body = mapper.readValue(responseBody, FormProcessMappingData.class);
-            List<FilterInfo> filterInfoList = body.getTaskVariable();
-            filterInfoMap = filterInfoList.stream()
+        FormProcessMappingData body = (FormProcessMappingData) response.getBody();
+        if(body != null) {
+            List<FilterInfo> filterInfoList = Arrays.asList(body.getTaskVariableList(bpmObjectMapper));
+            Map<String, FilterInfo> filterInfoMap = filterInfoList.stream()
                     .collect(Collectors.toMap(FilterInfo::getKey, Function.identity()));
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            throw new ApplicationServiceException(e.getMessage(), e);
-        }
 
-        if(!filterInfoMap.isEmpty()){
-            Map<String,Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get("formUrl")));
-            for (Map.Entry<String, Object> entry: dataMap.entrySet()) {
-                if(filterInfoMap.containsKey(entry.getKey())) {
-                    execution.setVariable(entry.getKey(), entry.getValue());
+            if (!filterInfoMap.isEmpty()) {
+                Map<String, Object> dataMap = formSubmissionService.retrieveFormValues(String.valueOf(execution.getVariables().get(FORM_URL)));
+                for (Map.Entry<String, Object> entry : dataMap.entrySet()) {
+                    if (filterInfoMap.containsKey(entry.getKey())) {
+                        execution.setVariable(entry.getKey(), entry.getValue());
+                    }
                 }
             }
         }
-
     }
 
     /**
@@ -97,6 +94,6 @@ public class FormBPMFilteredDataPipelineListener   extends BaseListener implemen
      * @return
      */
     private String getApplicationUrl(DelegateExecution execution){
-        return httpServiceInvoker.getProperties().getProperty("api.url")+"/form/applicationid/"+execution.getVariable("applicationId");
+        return httpServiceInvoker.getProperties().getProperty("api.url")+"/form/applicationid/"+execution.getVariable(APPLICATION_ID);
     }
 }

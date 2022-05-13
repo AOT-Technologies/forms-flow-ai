@@ -20,6 +20,7 @@ with your project by installing our [npm package](https://www.npmjs.com/package/
 3. [How to Create Your First Form](#how-to-create-your-first-form)
 4. [Logo change](#logo-change)
 5. [Code coverage](#code-coverage)
+6. [Internationalization](#internationalization)
 
 ## Prerequisites
 
@@ -61,6 +62,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  `WEB_BASE_CUSTOM_URL`|Clients can use WEB_BASE_CUSTOM_URL env variable to provide their custom URL |
  `USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
  |`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
+`MULTI_TENANCY_ENABLED`|Multi tenancy enabled flag for the environment|true/false | false
 
 * NOTE - While configuring USER_ACCESS_PERMISSIONS the accessAllowApplications will hide / show application tab, the same way accessAllowSubmissions does for viewSubmission button. To enable this feature you need to add access-allow-applications, access-allow-submissions with the respective user group in keycloak.
 
@@ -105,7 +107,8 @@ Variable name | Meaning | Possible values | Default value |
   * Default Logo can be changed to the users logo by replacing the logo.svg in public folder of forms-flow-web.
      The default width and height of the logo is 50 and 55 also the image format is svg
   * The icon can also be replaced to the users icon by replacing the favicon in the public folder of forms-flow-web
-
+   
+             
 ### Code coverage
   * Test cases for the files are provided at forms-flow-web using [testing-library/jest-dom](https://testing-library.com/docs/ecosystem-jest-dom/) , [testing-library/react](https://testing-library.com/docs/react-testing-library/intro/) , [msw](https://mswjs.io/) and [redux-mock-store](https://www.npmjs.com/package/redux-mock-store).
   * `cd {Your Directory}/forms-flow-ai/forms-flow-web`.
@@ -113,6 +116,20 @@ Variable name | Meaning | Possible values | Default value |
   * Run the command `npm run coverage` to get the total coverage and for individual files run `npm test --<test file name>`.
   * Total code coverage can obtain by opening `forms-flow-ai\forms-flow-web\coverage\lcov-report\index.html` with browser.
 
+### Internationalization
+  * Default language 'English' can be changed to other languages according to the   user.
+  * The languages currently provided are `Chinese,Portuguese,French and Bulgarian`.
+  * User can add more languages by following the steps :
+   1. Create a folder at *forms-flow-web/src/resourceBundles* with folder name as the abbrevation of the required language.
+   2. Create a file named resourceBundles.js inside the folder.
+   3. Copy the key-value pairs from *resourceBundles.js* file inside *en* folder and paste it to the new file.
+   4. Translate the value of the keys to the required language using google translator and paste the values to the same file
+   5. Import the same file to *forms-flow-web/src/resourceBundles/i18n.js* like rest of the languages.
+   6. You can add the button component at *forms-flow-web/src/containers/NavBar.jsx* by simply copying the dropdown menu and providing language abbrevation,name and language abbrevation to the array *langarr* inside the samw file. .
+   7. You should add content of new trnslation file to *forms-flow-web/src/resourceBundles/formio_resourceBundles.js* also.
+   8. Open forms-flow-api/src/formsflow_api/utils/translations/translations.py , copy any set of translations ,translate the values and paste it back to the file with required language key.
+   8. Login to **http://localhost:3000/** to check your updations.
+  
 ## forms-flow-web Events
  > This section elaborates events used in forms-flow-web.
  >  The Form.io renderer uses the [EventEmitter3](https://github.com/primus/eventemitter3) library to manage all of the event handling that occurs within the renderer.
@@ -125,5 +142,4 @@ Variable name | Meaning | Possible values | Default value |
 | `customSubmitDone` | <li>Used in the create form page</li><li>Triggered for button components</li><li>Similar to submit button to implement custom logic</li> |<li>type:The configured event type</li>|form.emit('customEvent', {type: "customSubmitDone"}); |
 | `actionComplete` | <li>Triggered for button components</li> |<li>type:The configured event type</li><li>component:The component json</li><li>actionType: Form submit action values</li> | form.emit('customEvent', { type: "actionComplete",    component: component, actionType: actionType }); |
 | `cancelSubmission` | <li>Used in the create form page</li><li>Triggered for button components</li><li>Used for Canceling current submission and goin back to Form List Page</li> |<li>type:The configured event type</li>|form.emit('customEvent', {type: "cancelSubmission"}); |
-
 

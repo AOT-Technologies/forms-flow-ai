@@ -4,8 +4,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author Sumathi Thirumani
- * @author Shibin Thomas
+ * Form Element.
+ * Holds Form Element data.
  */
 @Data
 @NoArgsConstructor
@@ -17,6 +17,12 @@ public class FormElement {
     public FormElement(String elementId, String value) {
         this.op = "replace";
         this.path = "/data/" + elementId;
+        this.value = value;
+    }
+
+    public FormElement(String parentPath, String elementId, String value) {
+        this.op = "replace";
+        this.path = "/data/" + parentPath + "/" + elementId;
         this.value = value;
     }
 }

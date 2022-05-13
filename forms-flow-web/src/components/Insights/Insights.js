@@ -7,13 +7,17 @@ import {fetchDashboardsList, fetchDashboardDetails} from "../../apiManager/servi
 import {setInsightDetailLoader, setInsightDashboardListLoader} from "../../actions/insightActions";
 import LoadingOverlay from "react-loading-overlay";
 import Loading from "../../containers/Loading";
+import { useTranslation , Translation} from "react-i18next";
+
+
 import { fetchdashboards } from "../../apiManager/services/dashboardsService";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
+import { BASE_ROUTE } from "../../constants/constants";
 
 const Insights = React.memo((props) => {
   const {getDashboardsList, getDashboardDetail, dashboards, activeDashboard, isInsightLoading, isDashboardLoading,getDashboards,dashboardsFromRedash} = props;
   const [dashboardSelected, setDashboardSelected] = useState(null);
-
+  const {t} = useTranslation();
   useEffect(() => {
       getDashboardsList(dashboardsFromRedash);
   }, [getDashboardsList,dashboardsFromRedash]);
@@ -38,7 +42,7 @@ const NoPublicUrlMessage = ()=>(
       <i className="fa fa-tachometer fa-lg"/>
       <br></br>
       <br></br>
-      <label> No Public url found </label>
+      <label> <Translation>{(t)=>t("No Public url found")}</Translation></label>
     </div>
 )
   if (isDashboardLoading) {
@@ -51,20 +55,20 @@ const NoPublicUrlMessage = ()=>(
         <div className="row ">
           <div className="col-12"  data-testid="Insight">
             <h1 className="insights-title">
-            <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> Insights
+            <i className="fa fa-lightbulb-o fa-lg" aria-hidden="true"/> <Translation>{(t)=>t("Insights")}</Translation>
             </h1>
             <hr className="line-hr"/>
             <div className="col-12">
-              <div className="app-title-container mt-3"  data-testid="Insight">
+              <div className="app-title-container mt-3" data-testid="Insight">
                 <h3 className="insight-title" data-testid="Dashboard">
-                  <i className="fa fa-bars mr-1"/> Dashboard
+                  <i className="fa fa-bars mr-1"/> <Translation>{(t)=>t("Dashboard")}</Translation>
                 </h3>
 
                 <div className="col-3 mb-2">
                   <Select
                     options={dashboards}
                     onChange={setDashboardSelected}
-                    placeholder='Select Dashboard'
+                    placeholder={t("Select Dashboard")}
                     value={dashboardSelected}
                   />
                 </div>
@@ -96,7 +100,7 @@ const NoPublicUrlMessage = ()=>(
         </div>
       </div>
       </div>
-      <Route path={"/insights/:notAvailable"}> <Redirect exact to='/404'/></Route>
+      <Route path={`${BASE_ROUTE}insights/:notAvailable`}> <Redirect exact to='/404'/></Route>
     </>
   );
 });
@@ -124,7 +128,7 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(fetchDashboardDetails(dashboardId))
     },
     getDashboards:()=>{
-      dispatch(setInsightDashboardListLoader(true)); 
+      dispatch(setInsightDashboardListLoader(true));
       dispatch(fetchdashboards())
     }
   }

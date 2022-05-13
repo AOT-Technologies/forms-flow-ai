@@ -16,6 +16,8 @@ import {
 import Loading from "../../containers/Loading";
 import {
   FORM_ACCESS,
+  MULTITENANCY_ENABLED,
+  PageSizes,
   STAFF_DESIGNER, SUBMISSION_ACCESS,
 } from "../../constants/constants";
 import "../Form/List.scss";
@@ -31,6 +33,7 @@ import {designerColumns, getOperations, userColumns} from "./constants/formListC
 import FileService from "../../services/FileService";
 import {setFormCheckList, setFormUploadList, updateFormUploadCounter} from "../../actions/checkListActions";
 import FileModal from './FileUpload/fileUploadModal'
+import { useTranslation,Translation } from "react-i18next";
 import {addHiddenApplicationComponent} from "../../constants/applicationComponent";
 import LoadingOverlay from "react-loading-overlay";
 import { getFormProcesses,getApplicationCount, resetFormProcessData } from "../../apiManager/services/processServices";
@@ -39,6 +42,7 @@ import { setIsApplicationCountLoading } from "../../actions/processActions";
 import { setBpmFormSearch } from "../../actions/formActions";
 
 const List = React.memo((props) => {
+  const {t}=useTranslation();
   const [showFormUploadModal, setShowFormUploadModal] = useState(false);
   const dispatch = useDispatch();
   const uploadFormNode = useRef();
@@ -51,7 +55,9 @@ const List = React.memo((props) => {
     userRoles,
     formId,
     onNo,
-    onYes
+    onYes,
+    tenants,
+    path
   } = props;
 
   const isBPMFormListLoading = useSelector(state => state.bpmForms.isActive);
@@ -68,7 +74,8 @@ const List = React.memo((props) => {
   const formProcessData = useSelector(state=>state.process.formProcessList)
   const applicationCount = useSelector(state => state.process.applicationCount)
   const bpmFormLoading = useSelector(state => state.bpmForms.bpmFormLoading)
-
+  const tenantKey = tenants?.tenantId;
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/' 
   const getFormsList = (page, query) => {
     if (page) {
       dispatch(setBPMFormListPage(page));
@@ -106,7 +113,7 @@ const List = React.memo((props) => {
 
   const downloadForms = () => {
     FileService.downloadFile({forms: formCheckList}, () => {
-      toast.success(`${formCheckList.length} ${formCheckList.length === 1 ? "Form" : "Forms"} Downloaded Successfully`)
+      toast.success(`${formCheckList.length} ${formCheckList.length === 1 ? (t("Form")) : (t("Forms"))} ${t("Downloaded Successfully")}`)
       dispatch(setFormCheckList([]));
     })
   }
@@ -124,6 +131,7 @@ const List = React.memo((props) => {
   }
 
   const uploadFileContents = async (fileContent) => {
+    try{
     if (fileContent.forms && Array.isArray(fileContent.forms)) {
       await Promise.all(
         fileContent.forms.map(async (formData) => {
@@ -169,8 +177,14 @@ const List = React.memo((props) => {
         }));
     } else {
       setShowFormUploadModal(false);
-      return (toast.error('Error in Json file structure'))
+      return (toast.error(t("Error in JSON file structure")))
     }
+  }
+  catch(err)
+  {
+    setShowFormUploadModal(false);
+    return (toast.error('Error in Json file structure'))
+  }
   }
 
   const fileUploaded = async (evt) => {
@@ -192,38 +206,35 @@ const List = React.memo((props) => {
                <Confirm
                  modalOpen={props.modalOpen}
                  message={
-                   (formProcessData.id  && applicationCount!==0) && applicationCount  ?  `${applicationCountResponse  ? applicationCount :  "Are you sure you wish to delete the form " +
-                   props.formName +
-                   "?"}`
-                   + `${applicationCount > 1 ? ' Applications are submitted against' :' Application is submitted against'} ` + props.formName +". Are you sure want to delete ?":
-                   "Are you sure you wish to delete the form " +
-                   props.formName +
-                   "?"
+                  (formProcessData.id && applicationCount) ? applicationCountResponse  ? `${applicationCount} ${applicationCount > 1 ? `${t( "  Applications are submitted against")}`:`${t( "  Application is submitted against")}`} "${props.formName}". ${t("Are you sure you wish to delete the form?")}` :  (`  ${t("Are you sure you wish to delete the form")} "${props.formName}"?`):
+                  `${t("Are you sure you wish to delete the form ")} "${props.formName}"?`
                  }
                  onNo={() => onNo()}
-                 onYes={() => {onYes(formId, forms,formProcessData)}}
+                 onYes={() => {onYes(formId, forms,formProcessData,path,formCheckList)}}
                />
             <div className="flex-container">
               {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
               <div className="flex-item-left">
-                <h3 className="task-head">
-                  <i className="fa fa-wpforms" aria-hidden="true"/>
-                  <span className="forms-text">Forms</span></h3>
+               <div style={{display: "flex"}}>
+                <h3 className="task-head" style={{marginTop: '3px'}}>
+                  <i className="fa fa-wpforms"  aria-hidden="true"/></h3>
+                 <h3 className="task-head"> <span className="forms-text" style={{marginLeft: '1px'}}>{t("Forms")}</span></h3>
+                 </div>
               </div>
               <div className="flex-item-right">
                 {isDesigner && (
                   <Link
-                    to="/formflow/create"
+                    to={`${redirectUrl}formflow/create`}
                     className="btn btn-primary btn-left btn-sm"
                   >
-                    <i className="fa fa-plus fa-lg"/> Create Form
+                    <i className="fa fa-plus fa-lg"/> <Translation>{(t)=>t("Create Form")}</Translation>
                   </Link>
                 )}
                 {isDesigner && (
                   <>
                     <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={uploadClick}
-                            title="Upload json form only">
-                      <i className="fa fa-upload fa-lg" aria-hidden="true"/> Upload Form</Button>
+                            title={t("Upload json form only")}>
+                      <i className="fa fa-upload fa-lg" aria-hidden="true"/> {t("Upload Form")} </Button>
                     <input type="file" className="d-none"
                            multiple={false}
                            accept=".json,application/json"
@@ -234,9 +245,11 @@ const List = React.memo((props) => {
                 )}
                 {isDesigner && (
                   <>
-                    <Button className="btn btn-primary btn-sm form-btn pull-right btn-left" onClick={downloadForms}
-                            disabled={formCheckList.length === 0} title="Select atleast one form">
-                      <i className="fa fa-download fa-lg" aria-hidden="true"/> Download Form</Button>
+
+                    
+                   <button className="btn btn-outline-primary pull-right btn-left " onClick={downloadForms}
+                            disabled={formCheckList.length === 0}>
+                      <i className="fa fa-download fa-lg" aria-hidden="true"/> {t("Download Form")} </button>
                   </>
                 )}
               </div>
@@ -247,7 +260,7 @@ const List = React.memo((props) => {
               <LoadingOverlay
                active={searchFormLoading || isApplicationCountLoading || bpmFormLoading }
                spinner
-               text="Loading..."
+               text={t("Loading...")}
               >
               {
               (searchFormLoading || paginatedForms.length) ?
@@ -255,8 +268,9 @@ const List = React.memo((props) => {
                columns={columns}
                forms={isDesigner ?(forms.forms.length? forms: previousForms) : bpmForms}
                onAction={(form,action)=>{
-                 onAction(form, action)
+                 onAction(form, action, redirectUrl)
                }}
+               pageSizes={PageSizes}
                getForms={isDesigner ? getForms : getFormsList}
                operations={operations}
                onPageSizeChanged={onPageSizeChanged}
@@ -271,13 +285,13 @@ const List = React.memo((props) => {
                     flexDirection:"column",
                     alignItems:"center",
                     justifyContent:"center"}}> 
-                  <h3 >No forms found </h3> 
+                  <h3 >{t("No forms found")}</h3> 
                  <Button variant="outline-primary" size="sm"
                  style={{
                    cursor:"pointer"}}
                    onClick={resetForms}
                  >
-                 Click here to go back
+                 {t("Click here to go back")}
                 </Button>
                   </div>
                  
@@ -301,7 +315,9 @@ const mapStateToProps = (state) => {
     modalOpen: selectRoot("formDelete", state).formDelete.modalOpen,
     formId: selectRoot("formDelete", state).formDelete.formId,
     formName: selectRoot("formDelete", state).formDelete.formName,
-    isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved
+    isFormWorkflowSaved: selectRoot("formDelete", state).isFormWorkflowSaved,
+    tenants:selectRoot("tenants", state),
+    path:selectRoot("formDelete", state).formDelete.path,
   };
 };
 
@@ -314,7 +330,7 @@ const getInitForms = (page = 1, query) => {
   }
 }
 
-const mapDispatchToProps = (dispatch,state, ownProps) => {
+const mapDispatchToProps = (dispatch,ownProps) => {
   return {
     getForms: (page, query) => {
       dispatch(indexForms("forms", page, query));
@@ -322,13 +338,13 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
     getFormsInit: (page, query) => {
       dispatch(getInitForms(page, query));
     },
-    onAction: async (form, action) => {
+    onAction: async (form, action,redirectUrl) => {
       switch (action) {
         case "insert":
-          dispatch(push(`/form/${form._id}`));
+          dispatch(push(`${redirectUrl}form/${form._id}`));
           break;
         case "submission":
-          dispatch(push(`/form/${form._id}/submission`));
+          dispatch(push(`${redirectUrl}form/${form._id}/submission`));
           break;
         // case "edit":
         //   dispatch(push(`/form/${form._id}/edit`));
@@ -340,6 +356,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
               modalOpen: true,
               formId: form._id,
               formName: form.title,
+              path:form.path
             };
             if(data){
               dispatch(getApplicationCount(data.id,(err,res)=>{
@@ -357,20 +374,22 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
         case "viewForm":
           dispatch(resetFormProcessData())
           dispatch(setMaintainBPMFormPagination(true));
-          dispatch(push(`/formflow/${form._id}/view-edit`));
+          dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit`));
           break;
         default:
       }
     },
-    onYes: (formId, forms,formData) => {
+    onYes: (formId, forms,formData,path,formCheckList) => {
     if(formData.id){
-      dispatch(unPublishForm(formData.id)) 
+      dispatch(unPublishForm(formData.id))
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {
             const formDetails = {modalOpen: false, formId: "", formName: ""};
             dispatch(setFormDeleteStatus(formDetails));
             dispatch(indexForms("forms", 1, forms.query));
+            const newFormCheckList = formCheckList.filter((i)=>i.path!==path);
+            dispatch(setFormCheckList(newFormCheckList));
           }
         })
       )
@@ -378,7 +397,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {
-            toast.success( 'Form deleted successfully')
+            toast.success(<Translation>{(t)=>t("Form deleted successfully")}</Translation>);
             const formDetails = {modalOpen: false, formId: "", formName: ""};
             dispatch(setFormDeleteStatus(formDetails));
             dispatch(indexForms("forms", 1, forms.query));

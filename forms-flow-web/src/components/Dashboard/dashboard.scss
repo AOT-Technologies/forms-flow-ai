@@ -9,17 +9,19 @@
   & .card-counter {
     width: 100%;
     margin: 25px 0px;
+    transition: 1s;
     & .white-box {
       background: $white;
       border: 1px solid $light-blue;
       padding: 25px;
       margin-bottom: 30px;
+      font-size: larger;
       cursor: pointer;
-      &.active {
-        background-color: $green !important;
+      &.active,&:hover{
+        background-color:  $dark-blue !important;
         color: $white;
         & .small-title {
-          font-size: 12px;
+          font-size: 16px;
           color: $white;
         }
       }
@@ -32,13 +34,14 @@
       & .two-part {
         display: flex;
         justify-content: space-between;
-        font-size: 13px;
+        font-size: 16px;
         font-weight: normal;
         & .counter {
           font-size: 38px;
         }
       }
     }
+    
   }
   & .progress {
     height: 12px;
@@ -135,11 +138,23 @@
       }
     }
     .small-title {
-      font-size: 12px;
-      color: #9eabc0;
+      font-size: 16px;
+      color: black;
     }
   }
   .no-data-submission {
     margin-top: 5%;
   }
+}
+.form-select{
+  width:80px;
+  height: 35px;
+  border-radius: 3px;
+  border-color:rgba(222,226,230);
+  color: #0056B3
+}  
+.date-select{
+  width:150px;
+  height: 45px;
+  cursor: pointer;
 }

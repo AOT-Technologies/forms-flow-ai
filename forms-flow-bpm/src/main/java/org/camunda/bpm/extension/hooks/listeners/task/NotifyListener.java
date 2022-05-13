@@ -11,17 +11,20 @@ import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.extension.hooks.listeners.BaseListener;
 import org.camunda.bpm.extension.hooks.services.IMessageEvent;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.EMAIL_TO;
+
 /**
+ * Notify Listener.
  * Assignment Task Listener to start a message event when a task is created
  * Extended to emails to additional groups of interest.
- *
- * @author yichun.zhao@aot-technologies.com, sumathi.thirumani@aot-technologies.com
  */
 @Component
 public class NotifyListener extends BaseListener implements TaskListener, IMessageEvent {
@@ -33,6 +36,9 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
 
     private Expression emailGroups;
     private Expression groupsOnly;
+
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
 
     /**
      * This provides the necessary information to send message.
@@ -68,7 +74,7 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
         String toAddress = CollectionUtils.isNotEmpty(toEmails) ? StringUtils.join(toEmails,",") : null;
         if(StringUtils.isNotEmpty(toAddress)) {
             Map<String, Object> emailAttributes = new HashMap<>();
-            emailAttributes.put("email_to", toAddress);
+            emailAttributes.put(EMAIL_TO, toAddress);
             emailAttributes.put("category", getCategory(delegateTask.getExecution()));
             emailAttributes.put("name",getDefaultAddresseName());
             emailAttributes.put("taskid",taskId);
@@ -95,7 +101,7 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
         if(this.emailGroups != null &&
                 StringUtils.isNotBlank(String.valueOf(this.emailGroups.getValue(delegateExecution)))) {
             emailGroups = this.emailGroups != null && this.emailGroups.getValue(delegateExecution) != null ?
-                    getObjectMapper().readValue(String.valueOf(this.emailGroups.getValue(delegateExecution)), List.class) : null;
+                    bpmObjectMapper.readValue(String.valueOf(this.emailGroups.getValue(delegateExecution)), List.class) : null;
         }
         return  emailGroups;
     }
@@ -108,14 +114,6 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
                     String.valueOf(this.groupsOnly.getValue(delegateExecution)) : null;
         }
         return  "N";
-    }
-
-    /**
-     * Returns Object Mapper Instance
-     * @return
-     */
-    private ObjectMapper getObjectMapper(){
-        return new ObjectMapper();
     }
 
 }

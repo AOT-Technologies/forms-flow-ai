@@ -9,19 +9,23 @@ import { setApplicationListActivePage,setCountPerpage,setApplicationListLoader }
 import {getAllApplications,FilterApplications, getAllApplicationStatus} from "../../apiManager/services/applicationServices";
 import Loading from "../../containers/Loading";
 import Nodata from "./nodata";
+import { useTranslation } from "react-i18next";
 import {
   columns,
   getoptions,
   defaultSortedBy,
 } from "./table";
 import {getUserRolePermission} from "../../helper/user";
-import {CLIENT, STAFF_REVIEWER} from "../../constants/constants";
+import {CLIENT, MULTITENANCY_ENABLED, STAFF_REVIEWER} from "../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../constants/applicationConstants";
 import Alert from 'react-bootstrap/Alert'
+import { Translation } from "react-i18next";
+
 import overlayFactory from 'react-bootstrap-table2-overlay';
 import { SpinnerSVG } from '../../containers/SpinnerSVG';
 
 export const ApplicationList = React.memo(() => {
+  const {t}=useTranslation();
   const applications = useSelector(state=>state.applications.applicationsList);
   const countPerPage = useSelector(state=>state.applications.countPerPage);
   const applicationStatus = useSelector(state=>state.applications.applicationStatus);
@@ -33,7 +37,8 @@ export const ApplicationList = React.memo(() => {
   const iserror = useSelector(state=>state.applications.iserror);
   const error = useSelector(state=>state.applications.error);
   const [filtermode,setfiltermode] = React.useState(false);
-
+  const tenantKey = useSelector(state => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';
   const [lastModified,setLastModified] = React.useState(null);
   const [isLoading,setIsLoading] = React.useState(false);
   useEffect(()=>{
@@ -73,11 +78,11 @@ export const ApplicationList = React.memo(() => {
   const getNoDataIndicationContent = () => {
     return (
       <div className="div-no-application">
-        <label className="lbl-no-application"> No applications found </label>
+        <label className="lbl-no-application"> <Translation>{(t)=>t("No applications found")}</Translation> </label>
         <br />
         <label className="lbl-no-application-desc">
           {" "}
-          Please change the selected filters to view applications{" "}
+          <Translation>{(t)=>t("Please change the selected filters to view applications")}</Translation>
         </label>
         <br />
       </div>
@@ -113,15 +118,16 @@ export const ApplicationList = React.memo(() => {
         bootstrap4
         keyField="id"
         data={listApplications(applications)}
-        columns={columns(applicationStatus,lastModified,setLastModified)}
+        columns={columns(applicationStatus,lastModified,setLastModified,t,redirectUrl)}
         search
       >
         {(props) => (
             <div className="container">
               <div className="main-header">
+                
                 <h3 className="application-head">
-                <i className="fa fa-list" aria-hidden="true"/>
-              <span className="application-text">Applications</span>
+                <i className="fa fa-list" style={{marginTop: '5px'}} aria-hidden="true"/>
+              <span className="application-text"><Translation>{(t)=>t("Applications")}</Translation></span>
                   <div className="col-md-1 application-count">({applicationCount})</div>
                 </h3>
               </div>

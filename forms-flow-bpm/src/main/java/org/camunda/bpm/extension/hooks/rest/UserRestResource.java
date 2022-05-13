@@ -10,10 +10,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 
-@RequestMapping(RestResource.BASE_PATH+TaskRestResource.PATH)
 public interface UserRestResource extends RestResource{
 
-    String PATH = "/v1/user";
+    String PATH = "/user";
 
     @GetMapping(produces = MediaType.APPLICATION_JSON)
     List<UserProfileDto> queryUsers(@Context UriInfo uriInfo,

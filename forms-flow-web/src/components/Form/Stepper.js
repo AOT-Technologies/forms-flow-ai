@@ -72,7 +72,6 @@ class StepperPage extends PureComponent {
     this.handleNext = this.handleNext.bind(this);
     // for edit
     this.setEditMode = this.setEditMode.bind(this);
-    this.populateDropdown = this.populateDropdown.bind(this);
     this.handleBack = this.handleBack.bind(this);
     this.handleEditAssociation = this.handleEditAssociation.bind(this);
     this.handleEditPreview = this.handleEditPreview.bind(this);
@@ -147,7 +146,7 @@ class StepperPage extends PureComponent {
         ...stateData,
         displayMode: "view",
       };
-
+    
       if (!prevState.dataModified && nextProps.formProcessList) {
         if (nextProps.formProcessList.processKey) {
           stateData = {
@@ -215,23 +214,7 @@ class StepperPage extends PureComponent {
     ];
   }
 
-  populateDropdown() {
-    const listProcess = (processes) => {
-      if (processes?.length > 0) {
-        const data = processes.map((process) => {
-          return {
-            label: process.name,
-            value: process.key,
-          };
-        });
-        return data;
-      } else {
-        return [];
-      }
-    };
-
-    return listProcess(this.props.processList);
-  }
+  
 
   associateToWorkFlow = (item) => {
     this.setState({ workflow: item[0], dataModified: true });
@@ -325,8 +308,6 @@ class StepperPage extends PureComponent {
       case 1:
         return (
           <WorkFlow
-
-            populateDropdown={this.populateDropdown}
             associateToWorkFlow={this.associateToWorkFlow}
             handleNext={this.handleNext}
             handleBack={this.handleBack}

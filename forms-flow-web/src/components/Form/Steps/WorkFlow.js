@@ -22,16 +22,16 @@ import { setFormProcessesData } from "../../../actions/processActions";
 import ViewAndEditTaskvariable  from "./ViewAndEditTaskvariable";
 import Button from 'react-bootstrap/Button';
 import { useTranslation } from "react-i18next";
+import {listProcess} from "../../../apiManager/services/formatterService";
+
 const WorkFlow = React.memo(
   ({
-    populateDropdown,
     associateToWorkFlow,
     handleNext,
     handleBack,
     handleEditAssociation,
     activeStep,
     steps,
-    workflow,
     disableWorkflowAssociation,
   }) => {
     const {t}= useTranslation();
@@ -39,10 +39,13 @@ const WorkFlow = React.memo(
     const [tabValue, setTabValue] = useState(0);
     const [showTaskVaribleCrete, setShowTaskVaribleCrete] = useState(false);
     const { form } = useSelector((state) => state.form);
-
+    const processList = useSelector((state) => {return listProcess(state.process.processList)});
+    const formProcessList = useSelector((state) => state.process.formProcessList);
     const componentLabel =[]
     const ignoredTypes = ['button','columns','panel','well','container','htmlelement']
     const flattedComponent = Object.values(utils.flattenComponents(form.components,true))
+    const defaultWorkflow = processList.filter(i=> i.value==="Defaultflow");
+    const [workflow,setWorkflow] = useState(null);
     flattedComponent.forEach(component=>{
       if(!ignoredTypes.includes(component.type)){
         componentLabel.push({ label: component.label, value: component.key })
@@ -50,23 +53,23 @@ const WorkFlow = React.memo(
     })
   
     const dispatch = useDispatch();
-    const formProcessList = useSelector(
-      (state) => state.process.formProcessList
-    );
-
-    
     const [selectedTaskVariable, setSelectedTaskVariable] = useState(
       formProcessList.taskVariable ? formProcessList.taskVariable : []
     );
     const [keyOfVariable, setKeyOfVariable] = useState(componentLabel.filter(item=>!selectedTaskVariable.find(variable=>item.value===variable.key)));
   
-   const defaultWorkflow = populateDropdown().filter(i=> i.value==="Defaultflow")
+    useEffect(()=>{
+      if(formProcessList.processKey){
+      setWorkflow({label:formProcessList.processKey,value:formProcessList.processName})
+      }
+    },[formProcessList.processKey,formProcessList.processName])
     useEffect(()=>{
       if(!workflow&&defaultWorkflow){
         setModified(true)
-        associateToWorkFlow(defaultWorkflow)
+        setWorkflow(defaultWorkflow)
+        //associateToWorkFlow(defaultWorkflow)
       }
-    },[workflow,associateToWorkFlow,defaultWorkflow] )
+    },[workflow,defaultWorkflow] )
 
 
     const addTaskVariable = (data) => {
@@ -123,6 +126,11 @@ const WorkFlow = React.memo(
     const handleChange = (event, newValue) => {
       setTabValue(newValue);
     };
+    const handleListChange = (item) =>{
+      setWorkflow(item);
+      setModified(true);
+      associateToWorkFlow(item)
+    }
 
     return (
       <Grid
@@ -179,9 +187,8 @@ const WorkFlow = React.memo(
                         {t("Please select from one of the following workflows.")}
                       </span>
                       <Select
-                        options={populateDropdown()}
-                        onChange={(item) =>{setModified(true);
-                        associateToWorkFlow(item)}}
+                        options={processList}
+                        onChange={handleListChange}
                         values={workflow && workflow.value ? [workflow] :[]}
                         disabled={disableWorkflowAssociation}
                       />

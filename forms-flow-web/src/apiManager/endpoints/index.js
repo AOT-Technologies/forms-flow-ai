@@ -15,6 +15,7 @@ const API = {
   GET_ALL_APPLICATIONS_STATUS: `${WEB_BASE_URL}/application/status/list`,
   PROCESSES: `${WEB_BASE_URL}/process`,
   PROCESSES_XML:`${BPM_BASE_URL}/process-definition/key/<process_key>/xml`,
+  PROCESSES_XML_PER_TENANT:`${BPM_BASE_URL}/process-definition/key/<process_key>/tenant-id/<tenant_key>/xml`,
   PROCESS_ACTIVITIES: `${BPM_BASE_URL}/process-instance/<process_instance_id>/activity-instances`,
   FORM: `${WEB_BASE_URL}/form`,
   LANG_UPDATE:`${WEB_BASE_URL}/user/locale`,

@@ -37,6 +37,7 @@ import "./stepper.scss";
 import {Link} from "react-router-dom";
 import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
 import { resetFormData } from "../../actions/formActions.js";
+import { getTenantinfo } from "../../helper/helper.js";
 
 /*const statusList = [
   { label: "Active", value: "active" },
@@ -155,6 +156,7 @@ class StepperPage extends PureComponent {
             workflow: {
               label: nextProps.formProcessList.processName,
               value: nextProps.formProcessList.processKey,
+              tenant:getTenantinfo(nextProps.formProcessList.processKey, nextProps.processList)
             },
           };
         }
@@ -222,6 +224,7 @@ class StepperPage extends PureComponent {
           return {
             label: process.name,
             value: process.key,
+            tenant:process.tenantKey
           };
         });
         return data;

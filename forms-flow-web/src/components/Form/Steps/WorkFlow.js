@@ -192,6 +192,7 @@ const WorkFlow = React.memo(
                       <Grid item xs={12} spacing={3}>
                         <ProcessDiagram
                           process_key={workflow && workflow.value}
+                          tenant={workflow && workflow.tenant}
                         />
                       </Grid>
                     )}

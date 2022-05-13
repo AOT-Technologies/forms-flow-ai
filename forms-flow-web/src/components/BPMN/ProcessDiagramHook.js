@@ -15,6 +15,7 @@ const ProcessDiagram = React.memo((props)=>{
   const {t}=useTranslation();
   const process_key = props.process_key;
   const processInstanceId = props.processInstanceId;
+  const tenant = props.tenant;
   const dispatch= useDispatch();
   const isProcessDiagramLoading = useSelector(state=>state.process.isProcessDiagramLoading);
   const diagramXML = useSelector(state => state.process.processDiagramXML);
@@ -48,7 +49,7 @@ const ProcessDiagram = React.memo((props)=>{
   useEffect(()=>{
     if(process_key){
       dispatch(setProcessDiagramLoading(true));
-      dispatch(fetchDiagram(process_key));
+      dispatch(fetchDiagram(process_key, tenant));
     }
     else
     {
@@ -58,7 +59,7 @@ const ProcessDiagram = React.memo((props)=>{
       dispatch(setProcessDiagramLoading(true));
       dispatch(setProcessDiagramXML(""));
     }
-  },[process_key,dispatch])
+  },[process_key,tenant, dispatch])
 
   useEffect(()=>{
     if(processInstanceId){

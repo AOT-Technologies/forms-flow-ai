@@ -15,6 +15,8 @@ import {getForm, getSubmission} from "react-formio";
 import NotFound from "../NotFound";
 import { Translation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from '../../constants/constants';
+import { fetchAllBpmProcesses } from '../../apiManager/services/processServices';
+import { getTenantinfo } from '../../helper/helper';
 
 const ViewApplication = React.memo(() => {
   const {applicationId} = useParams();
@@ -22,6 +24,7 @@ const ViewApplication = React.memo(() => {
   const applicationDetailStatusCode = useSelector(state=>state.applications.applicationDetailStatusCode)
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
   const applicationProcess = useSelector(state => state.applications.applicationProcess);
+  const processList = useSelector(state => state.process.processList);
   const tenantKey = useSelector(state => state.tenants?.tenantId);
   const dispatch= useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';
@@ -43,6 +46,12 @@ const ViewApplication = React.memo(() => {
         dispatch(setApplicationDetailStatusCode(''));
       }
   },[applicationId, dispatch]);
+
+  useEffect(()=>{
+    if(tenantKey){
+      dispatch(fetchAllBpmProcesses())
+    }
+  },[dispatch, tenantKey])
 
   if (isApplicationDetailLoading) {
     return <Loading/>;
@@ -78,6 +87,7 @@ const ViewApplication = React.memo(() => {
             <ProcessDiagram
               process_key={applicationProcess.processKey}
               processInstanceId={applicationDetail.processInstanceId}
+              tenant={getTenantinfo(applicationProcess.processKey, processList)}
             />
         </Tab>
       </Tabs>

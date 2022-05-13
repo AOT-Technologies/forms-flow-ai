@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useRef, useState } from "react";
 import ApplicationCounter from "./ApplicationCounter";
 import { useDispatch, useSelector } from "react-redux";
 import { Route, Redirect } from "react-router";
@@ -14,9 +14,13 @@ import LoadError from "../Error";
 import DateRangePicker from "@wojtekmaj/react-daterange-picker";
 import moment from "moment";
 import { Translation,useTranslation } from "react-i18next";
-import { BASE_ROUTE } from "../../constants/constants";
-import { setMetricsSubmissionLimitChange, setMetricsSubmissionPageChange, setMetricsSubmissionSearch, setMetricsSubmissionSort } from "../../actions/metricsActions";
-
+import { 
+   setMetricsDateRangeLoading, setMetricsSubmissionLimitChange,
+   setMetricsSubmissionPageChange, setMetricsSubmissionSearch,
+   setMetricsSubmissionSort
+} from "../../actions/metricsActions";
+import LoadingOverlay from "react-loading-overlay";
+import { Button } from "react-bootstrap";
 const firsDay = moment().format("YYYY-MM-01");
 
 const lastDay = moment().endOf("month").format("YYYY-MM-DD");
@@ -48,6 +52,10 @@ const Dashboard = React.memo(() => {
   const totalItems = useSelector((state) => state.metrics.submissionsFullList.length)
   const pageRange = useSelector((state) => state.metrics.pagination.numPages)
   const sort = useSelector((state) => state.metrics.sort);
+  const metricsDateRangeLoader = useSelector((state) => state.metrics.metricsDateRangeLoader)
+
+  let numberofSubmissionListFrom = (activePage===1)? 1 : (activePage*limit)-limit+1 
+  let numberofSubmissionListTo = (activePage===1)? limit : limit*activePage
   // if ascending sort value is title else -title for this case
   const isAscending =  sort ==='-formName'? false : true;
   // const searchOptions = [
@@ -62,12 +70,15 @@ const Dashboard = React.memo(() => {
   const [showSubmissionData,setSHowSubmissionData]=useState(submissionsList[0]);
   const [show ,setShow] =useState(false);
   // State to set search text for submission data 
-  const [searchSubmissionText,setSearchSubmissionText] = useState('');
+  const[showClearButton,setShowClearButton] = useState('')
+  const searchInputBox = useRef("")
   // Function to handle search text
-  const handleSearch = (searchText)=>{
-    const searchTitle = searchText ? searchText : ''
-    setSearchSubmissionText(searchTitle)
-    dispatch(setMetricsSubmissionSearch(searchTitle));
+  const handleSearch = ()=>{
+    dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
+  }
+  const onClear = ()=>{
+    searchInputBox.current.value = ""
+    handleSearch()
   }
   // Function to handle sort for submission data
   const handleSort = ()=>{
@@ -90,8 +101,13 @@ const Dashboard = React.memo(() => {
   useEffect(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
-    dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy));
-  }, [dispatch,searchBy,dateRange]);
+    dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy,(err,data)=>{
+      dispatch(setMetricsDateRangeLoading(false))
+      if(searchInputBox.current.value){
+      dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
+      }
+    }));
+  }, [dispatch,searchBy,dateRange,searchInputBox]);
 
   useEffect(()=>{
     setSHowSubmissionData(submissionsList[0]);
@@ -109,14 +125,18 @@ const Dashboard = React.memo(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(fetchMetricsSubmissionStatusCount(id, fromDate, toDate, searchBy));
-    setShow(true)
+    setShow(true);
   };
 
   const onSetDateRange = (date) => {
-
+    dispatch(setMetricsDateRangeLoading(true))
     setDateRange(date);
   };
+  const resetSubmission = ()=>{
+    dispatch(setMetricsSubmissionSearch(""));
 
+  }
+  
   const noOfApplicationsAvailable = submissionsList?.length || 0;
   if (metricsLoadError) {
     return (
@@ -125,7 +145,14 @@ const Dashboard = React.memo(() => {
   }
   return (
     <Fragment>
-      <div className="container mb-4" id="main">
+      <LoadingOverlay
+          active={metricsDateRangeLoader}
+          spinner
+          text={t("Loading...")}
+          >
+            {
+              submissionsList.length? (
+                <div className="container mb-4" id="main">
       <div className="dashboard mb-2">
         <div className="row ">
           <div className="col-12">
@@ -180,16 +207,17 @@ const Dashboard = React.memo(() => {
           />
               <div class="form-outline ml-3">
                  <input type="search" id="form1" 
-                 onChange={(e)=>setSearchSubmissionText(e.target.value)} 
-                 value={searchSubmissionText}
+                 ref={searchInputBox}
+                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                 onChange={(e)=>setShowClearButton(e.target.value)} 
                  autoComplete="off"
                  class="form-control" placeholder="search..." 
                  />
               </div>
               {
-                searchSubmissionText!=="" && 
+                showClearButton && 
                 <button type="button" class="btn btn-outline-primary ml-2"
-                onClick={()=> handleSearch('')}
+                onClick={()=> onClear()}
               >
                <i class="fa fa-times"></i>
              </button>
@@ -197,7 +225,7 @@ const Dashboard = React.memo(() => {
              <button type="button" class="btn btn-outline-primary ml-2"
               name="search-button"
               title="Click to search"
-              onClick={()=> handleSearch(searchSubmissionText)}
+              onClick={()=> handleSearch()}
               >
                <i class="fa fa-search"></i>
              </button>
@@ -205,7 +233,7 @@ const Dashboard = React.memo(() => {
           </div>
         </div>
           </div>
-          <div className="col-12">
+                <div className="col-12">
             <ApplicationCounter
               className="dashboard-card"
               application={submissionsList}
@@ -215,6 +243,7 @@ const Dashboard = React.memo(() => {
               setSHowSubmissionData={setSHowSubmissionData}
             />
           </div>
+
           {
             submissionsList.length ? (
               <div className=" w-100 p-3 d-flex align-items-center">
@@ -233,9 +262,12 @@ const Dashboard = React.memo(() => {
               <option selected>6</option>
               <option value={12}>12</option>
               <option value={30}>30</option>
-              <option value={900}>All</option>
+              <option value={9000}>All</option>
             </select>
+
+              <span>showing {numberofSubmissionListFrom} to {(numberofSubmissionListTo>totalItems)?totalItems:numberofSubmissionListTo} of {totalItems}</span>
               </div>
+              
             ):null
           }
           {metricsStatusLoadError && <LoadError />}
@@ -268,7 +300,40 @@ const Dashboard = React.memo(() => {
         
       </div>
       </div>
-      <Route path={`${BASE_ROUTE}metrics/:notAvailable`}> <Redirect exact to='/404'/></Route>
+              ) : (
+                <span>
+                  <LoadingOverlay
+                  active={metricsDateRangeLoader}
+                  spinner
+                  text={t("Loading...")}
+                  >
+                  <div 
+                    className="container"
+                    style={{
+                    maxWidth:"900px",
+                    margin:"auto",
+                    height:"60vh",
+                    display:"flex",
+                    flexDirection:"column",
+                    alignItems:"center",
+                    justifyContent:"center"}}> 
+                  <h3 >{t("No submissions found")}</h3> 
+                 <Button variant="outline-primary" size="sm"
+                 style={{
+                   cursor:"pointer"}}
+                   onClick={()=> resetSubmission()}
+                 >
+                 {t("Click here to go back")}
+                </Button>
+                  </div>
+                  </LoadingOverlay>
+                  </span>
+              )
+            }
+      
+      
+      <Route path={"/metrics/:notAvailable"}> <Redirect exact to='/404'/></Route>
+      </LoadingOverlay>
     </Fragment>
   );
 });

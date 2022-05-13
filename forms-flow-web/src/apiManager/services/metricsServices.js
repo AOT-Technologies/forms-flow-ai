@@ -12,6 +12,7 @@ import {
 } from "../../actions/metricsActions";
 
 export const fetchMetricsSubmissionCount = (fromDate, toDate, setSearchBy,...rest) => {
+  const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     dispatch(setMetricsLoadError(false));
     httpGETRequest(`${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}&orderBy=${setSearchBy}`)
@@ -32,12 +33,14 @@ export const fetchMetricsSubmissionCount = (fromDate, toDate, setSearchBy,...res
             dispatch(setMetricsSubmissionStatusCount([]));
             dispatch(setMetricsStatusLoader(false));
           }
+          done(null,res.data)
         } else {
           // TODO error handling
           console.log("Error", res);
           dispatch(setMetricsStatusLoader(false));
           dispatch(setMetricsLoadError(true));
           // dispatch(setMetricsLoader(false));
+          done(null,[])
         }
       })
       .catch((error) => {

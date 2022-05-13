@@ -37,6 +37,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     status = db.Column(db.String(10), nullable=True)
     comments = db.Column(db.String(300), nullable=True)
     tenant = db.Column(db.String(100), nullable=True)
+    process_tenant = db.Column(db.String(), nullable=True,
+                               comment="Tenant ID Mapped to process definition. "
+                                        "This will be null for shared process definition.")
     application = db.relationship(
         "Application", backref="form_process_mapper", lazy=True
     )
@@ -61,6 +64,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.comments = mapper_info.get("comments")
                 mapper.created_by = mapper_info["created_by"]
                 mapper.tenant = mapper_info.get("tenant")
+                mapper.process_tenant = mapper_info.get("process_tenant")
                 mapper.is_anonymous = mapper_info.get("is_anonymous")
                 mapper.task_variable = mapper_info.get("task_variable")
                 mapper.version = mapper_info.get("version")
@@ -88,6 +92,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "modified_by",
                 "is_anonymous",
                 "task_variable",
+                "process_tenant"
             ],
             mapper_info,
         )

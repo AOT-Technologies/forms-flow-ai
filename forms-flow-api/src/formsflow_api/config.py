@@ -86,6 +86,10 @@ class _Config:  # pylint: disable=too-few-public-methods
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
     KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM")
 
+    # Keycloak client authorization enabled flag
+    KEYCLOAK_ENABLE_CLIENT_AUTH = str(os.getenv("KEYCLOAK_ENABLE_CLIENT_AUTH", default='false')).lower() == "true"
+    MULTI_TENANCY_ENABLED = str(os.getenv("MULTI_TENANCY_ENABLED", default='false')).lower() == "true"
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""

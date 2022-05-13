@@ -14,7 +14,7 @@ defaults:
     
 jobs:
   build-and-push-image-to-dockerhub:
-    if: github.event_name == 'push' && github.repository == 'AOT-Technologies/forms-flow-ai'
+    # if: github.event_name == 'push' && github.repository == 'AOT-Technologies/forms-flow-ai'
     runs-on: ubuntu-latest
     strategy:
       matrix:

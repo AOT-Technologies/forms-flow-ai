@@ -3,7 +3,7 @@
 import functools
 from typing import Dict
 
-from flask import g
+from flask import g, request
 
 
 def _get_context():
@@ -19,6 +19,7 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
         token_info: Dict = _get_token_info()
         self._tenant_key = token_info.get("tenantKey", None)
         self._user_name = token_info.get("preferred_username", None)
+        self._bearer_token: str = _get_token()
 
     @property
     def tenant_key(self) -> str:
@@ -29,6 +30,11 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
     def user_name(self) -> str:
         """Return the user name."""
         return self._user_name
+
+    @property
+    def bearer_token(self) -> str:
+        """Return the bearer_token."""
+        return self._bearer_token
 
 
 def user_context(function):
@@ -45,3 +51,8 @@ def user_context(function):
 
 def _get_token_info() -> Dict:
     return g.jwt_oidc_token_info if g and "jwt_oidc_token_info" in g else {}
+
+
+def _get_token() -> str:
+    token: str = request.headers['Authorization'] if request and 'Authorization' in request.headers else None
+    return token

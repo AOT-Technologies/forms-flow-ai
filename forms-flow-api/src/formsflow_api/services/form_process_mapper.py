@@ -1,12 +1,14 @@
 """This exposes form process mapper service."""
 
 from http import HTTPStatus
+from flask import current_app
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import FormProcessMapper
 from formsflow_api.schemas import FormProcessMapperSchema
 from formsflow_api.utils.enums import FormProcessMapperStatus
 from formsflow_api.utils.user_context import UserContext, user_context
+from formsflow_api.services.external.bpm import BPMService
 
 
 class FormProcessMapperService:
@@ -97,7 +99,18 @@ class FormProcessMapperService:
         user: UserContext = kwargs["user"]
         data["created_by"] = user.user_name
         data["tenant"] = user.tenant_key
+        FormProcessMapperService._update_process_tenant(data, user)
         return FormProcessMapper.create_from_dict(data)
+
+    @staticmethod
+    def _update_process_tenant(data, user):
+        # For multi tenant environment find if the process is deployed for a tenant.
+        if current_app.config.get('MULTI_TENANCY_ENABLED') and (process_key := data.get('process_key', None)):
+            current_app.logger.info("Finding Tenant ID for process %s ", process_key)
+            current_app.logger.info(BPMService.get_process_details_by_key(process_key, user.bearer_token))
+            data["process_tenant"] = BPMService.get_process_details_by_key(
+                process_key, user.bearer_token
+            ).get("tenantId", None)
 
     @staticmethod
     @user_context
@@ -118,6 +131,7 @@ class FormProcessMapperService:
         if mapper:
             if tenant_key is not None and mapper.tenant != tenant_key:
                 raise PermissionError("Tenant authentication failed.")
+            FormProcessMapperService._update_process_tenant(data, user)
             mapper.update(data)
             return mapper
 

@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping(RestResource.BASE_PATH+TaskRestResource.PATH)
 public interface UserRestResource extends RestResource{
 
-    String PATH = "/user";
+    String PATH = "/v1/user";
 
     @GetMapping(produces = MediaType.APPLICATION_JSON)
     List<UserProfileDto> queryUsers(@Context UriInfo uriInfo,

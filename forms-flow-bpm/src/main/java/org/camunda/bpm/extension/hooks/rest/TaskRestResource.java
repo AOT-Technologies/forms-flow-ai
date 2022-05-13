@@ -11,7 +11,7 @@ import javax.ws.rs.core.UriInfo;
 @RequestMapping(RestResource.BASE_PATH+TaskRestResource.PATH)
 public interface TaskRestResource extends RestResource {
 
-    String PATH = "/task";
+    String PATH = "/v1/task";
 
     @GetMapping(value = "/count", produces = MediaType.APPLICATION_JSON)
     CountResultDto getTasksCount(@Context UriInfo uriInfo);

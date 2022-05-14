@@ -18,21 +18,20 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { setFormProcessesData } from "../../../actions/processActions";
+import {setFormProcessesData, setWorkflowAssociation} from "../../../actions/processActions";
 import ViewAndEditTaskvariable  from "./ViewAndEditTaskvariable";
 import Button from 'react-bootstrap/Button';
 import { useTranslation } from "react-i18next";
 import {listProcess} from "../../../apiManager/services/formatterService";
+import {DEFAULT_WORKFLOW} from "../../../constants/taskConstants";
 
 const WorkFlow = React.memo(
   ({
-    associateToWorkFlow,
     handleNext,
     handleBack,
     handleEditAssociation,
     activeStep,
     steps,
-    workflow,
     disableWorkflowAssociation,
   }) => {
     const {t}= useTranslation();
@@ -42,11 +41,11 @@ const WorkFlow = React.memo(
     const { form } = useSelector((state) => state.form);
     const processList = useSelector((state) => {return listProcess(state.process.processList)});
     const formProcessList = useSelector((state) => state.process.formProcessList);
+    const workflow = useSelector((state) => state.process.workflowAssociated)
     const componentLabel =[]
     const ignoredTypes = ['button','columns','panel','well','container','htmlelement']
     const flattedComponent = Object.values(utils.flattenComponents(form.components,true))
-    const defaultWorkflow = processList.filter(i=> i.value==="Defaultflow");
-    //const [workflow,setWorkflow] = useState(null);
+
     flattedComponent.forEach(component=>{
       if(!ignoredTypes.includes(component.type)){
         componentLabel.push({ label: component.label, value: component.key })
@@ -60,24 +59,11 @@ const WorkFlow = React.memo(
     const [keyOfVariable, setKeyOfVariable] = useState(componentLabel.filter(item=>!selectedTaskVariable.find(variable=>item.value===variable.key)));
 
     useEffect(()=>{
-      if(!workflow&&defaultWorkflow){
-        setModified(true)
-        associateToWorkFlow(defaultWorkflow)
+      if(!workflow){
+        setModified(true);
+        dispatch(setWorkflowAssociation(DEFAULT_WORKFLOW));
       }
-    },[workflow,associateToWorkFlow,defaultWorkflow] )
-
-    // useEffect(()=>{
-    //   if(formProcessList.processKey){
-    //   setWorkflow({label:formProcessList.processKey,value:formProcessList.processName})
-    //   }
-    // },[formProcessList.processKey,formProcessList.processName])
-    // useEffect(()=>{
-    //   if(!workflow&&defaultWorkflow){
-    //     setModified(true)
-    //     setWorkflow(defaultWorkflow)
-    //     //associateToWorkFlow(defaultWorkflow)
-    //   }
-    // },[workflow,defaultWorkflow] )
+    },[workflow, dispatch] );
 
 
     const addTaskVariable = (data) => {
@@ -124,7 +110,6 @@ const WorkFlow = React.memo(
       setSelectedTaskVariable((prev)=>{
         return prev.map(item=>item.key===data.key?{...data}:item)
       })
-      console.log("12");
       dispatch(
         setFormProcessesData({
           ...formProcessList,
@@ -136,9 +121,8 @@ const WorkFlow = React.memo(
       setTabValue(newValue);
     };
     const handleListChange = (item) =>{
-      //setWorkflow(item);
       setModified(true);
-      associateToWorkFlow(item)
+      dispatch(setWorkflowAssociation(item[0]));
     }
 
     return (
@@ -198,19 +182,19 @@ const WorkFlow = React.memo(
                       <Select
                         options={processList}
                         onChange={handleListChange}
-                        values={workflow && workflow.value ? [workflow] :[]}
+                        values={processList.length && workflow?.value ? [workflow] :[]}
                         disabled={disableWorkflowAssociation}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6} spacing={3} />
                     <br />
-                    {workflow && workflow.value && (
+                    {processList.length && workflow?.value ? (
                       <Grid item xs={12} spacing={3}>
                         <ProcessDiagram
-                          process_key={workflow && workflow.value}
+                          processKey={workflow?.value}
                         />
                       </Grid>
-                    )}
+                    ):null}
                 {/* </FormControl> */}
               </CardContent>
             </Card>

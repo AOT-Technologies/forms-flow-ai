@@ -41,8 +41,6 @@ class StepperPage extends PureComponent {
     this.state = {
       // checked: false,
       activeStep: 0,
-      workflow: null,
-      status: null,
       previewMode: false,
       editMode: false,
       processData: { status: "inactive", comments: "" },
@@ -130,16 +128,6 @@ class StepperPage extends PureComponent {
       };
 
       if (!prevState.dataModified && nextProps.formProcessList) {
-        if (nextProps.formProcessList.processKey) {
-          stateData = {
-            ...stateData,
-            workflow: {
-              label: nextProps.formProcessList.processName,
-              value: nextProps.formProcessList.processKey,
-            },
-          };
-        }
-
         stateData = {
           ...stateData,
           processData: {
@@ -196,12 +184,6 @@ class StepperPage extends PureComponent {
     ];
   }
 
-
-
-  associateToWorkFlow = (item) => {
-    this.setState({ workflow: item[0], dataModified: true });
-  };
-
   handleEdit() {
     this.setState((editState) => ({
       activeStep: editState.activeStep + 1,
@@ -212,23 +194,20 @@ class StepperPage extends PureComponent {
       activeStep: prevState.activeStep + 1,
     }));
   }
-  setSelectedStatus(item) {
-    this.setState({ status: item[0] });
-    //code to link form to a workflow
-  }
+
   handleBack() {
     this.setActiveStep(this.state.activeStep - 1);
   }
 
   submitData = () => {
-    const { form, onSaveFormProcessMapper, formProcessList, formPreviousData ,applicationCount} = this.props;
-    const { workflow, processData} = this.state;
+    const { form, onSaveFormProcessMapper, formProcessList, formPreviousData ,applicationCount, workflow} = this.props;
+    const {processData} = this.state;
     const data = {
       formId: form.id,
       formName: form.form && form.form.title,
       status: processData.status? processData.status:"inactive",
-      taskVariable:formProcessList.taskVariable?formProcessList.taskVariable:[],
-      anonymous:formProcessList.anonymous?true:false
+      taskVariable: formProcessList.taskVariable?formProcessList.taskVariable:[],
+      anonymous: formProcessList.anonymous?true:false
     };
     if ( workflow) {
       data["processKey"]= workflow && workflow.value;
@@ -245,7 +224,7 @@ class StepperPage extends PureComponent {
       data["comments"] = processData.comments;
     }
 
-    let isUpdate = formProcessList && formProcessList.id ? true : false;
+    let isUpdate = formProcessList && formProcessList.id? true : false;
     if(applicationCount > 0){
       if(formPreviousData.isTitleChanged || processKeyChecking || processNameChecking ){
       isUpdate=false;
@@ -265,11 +244,10 @@ class StepperPage extends PureComponent {
       previewMode,
       editMode,
       processData,
-      activeStep,
-      workflow,
+      activeStep
     } = this.state;
     // const { editMode } = this.state;
-    const { form, formProcessList } = this.props;
+    const { form, formProcessList, workflow } = this.props;
 
     switch (step) {
       case 0:
@@ -290,13 +268,11 @@ class StepperPage extends PureComponent {
       case 1:
         return (
           <WorkFlow
-            associateToWorkFlow={this.associateToWorkFlow}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
             handleEditAssociation={this.handleEditAssociation}
             activeStep={activeStep}
             steps={this.getSteps().length}
-            workflow={this.state.workflow}
             formProcessList={formProcessList}
             disableWorkflowAssociation={this.state.disableWorkflowAssociation}
           />
@@ -304,7 +280,6 @@ class StepperPage extends PureComponent {
       case 2:
         return (
           <PreviewStepper
-            setSelectedStatus={this.setSelectedStatus}
             handleNext={this.handleNext}
             handleBack={this.handleBack}
             handleEditPreview={this.handleEditPreview}
@@ -397,7 +372,8 @@ const mapStateToProps = (state) => {
     isAuthenticated: state.user.isAuthenticated,
     formPreviousData:state.process.formPreviousData,
     applicationCount:state.process.applicationCount,
-    tenants:state.tenants
+    tenants:state.tenants,
+    workflow:state.process.workflowAssociated
   };
 };
 

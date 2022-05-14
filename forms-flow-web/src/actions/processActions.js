@@ -51,6 +51,14 @@ export const setFormProcessesData = (data) => (dispatch) => {
   });
 };
 
+export const setWorkflowAssociation = (data) => (dispatch) => {
+   dispatch({
+     type: ACTION_CONSTANTS.WORKFLOW_ASSOCIATION_CHANGED,
+     payload: data,
+   });
+ };
+
+
 export const setProcessActivityData = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.PROCESS_ACTIVITIES,

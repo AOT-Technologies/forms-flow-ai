@@ -23,10 +23,6 @@ import {
   resetFormProcessData,
   saveFormProcessMapper
 } from "../../apiManager/services/processServices";
-import {
-  setFormProcessesData
-} from "../../actions/processActions";
-//import { saveFormProcessMapper } from "../../apiManager/services/formServices";
 import { selectRoot, selectError, getForm } from "react-formio";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { push } from "connected-react-router";
@@ -38,15 +34,7 @@ import {Link} from "react-router-dom";
 import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
 import { resetFormData } from "../../actions/formActions.js";
 
-/*const statusList = [
-  { label: "Active", value: "active" },
-  { label: "Inactive", value: "inactive" },
-];*/
-
 class StepperPage extends PureComponent {
-  // UNSAFE_componentWillMount() {
-  //   this.props.getAllProcesses();
-  // }
 
   constructor(props) {
     super(props);
@@ -85,18 +73,12 @@ class StepperPage extends PureComponent {
     }
     this.setRedirectUrl()
   }
-  componentWillUnmount() {
-    this.props.clearFormProcessData();
-  }
-
 
   static getDerivedStateFromProps(nextProps, prevState) {
     let stateData = null;
     if(nextProps.match.params.step !== undefined && !STEPPER_ROUTES.includes(nextProps.match.params.step)){
       nextProps.goToPageNotFound();
     }
-
-
     if (
       nextProps.match.params.formId &&
       nextProps.match.params.formId !== prevState.formId
@@ -146,7 +128,7 @@ class StepperPage extends PureComponent {
         ...stateData,
         displayMode: "view",
       };
-    
+
       if (!prevState.dataModified && nextProps.formProcessList) {
         if (nextProps.formProcessList.processKey) {
           stateData = {
@@ -214,7 +196,7 @@ class StepperPage extends PureComponent {
     ];
   }
 
-  
+
 
   associateToWorkFlow = (item) => {
     this.setState({ workflow: item[0], dataModified: true });
@@ -474,7 +456,6 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    clearFormProcessData: () => dispatch(setFormProcessesData([])),
     goToPageNotFound:()=>dispatch(push(`/404`))
   };
 };

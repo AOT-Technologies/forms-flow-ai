@@ -32,6 +32,7 @@ const WorkFlow = React.memo(
     handleEditAssociation,
     activeStep,
     steps,
+    workflow,
     disableWorkflowAssociation,
   }) => {
     const {t}= useTranslation();
@@ -45,31 +46,38 @@ const WorkFlow = React.memo(
     const ignoredTypes = ['button','columns','panel','well','container','htmlelement']
     const flattedComponent = Object.values(utils.flattenComponents(form.components,true))
     const defaultWorkflow = processList.filter(i=> i.value==="Defaultflow");
-    const [workflow,setWorkflow] = useState(null);
+    //const [workflow,setWorkflow] = useState(null);
     flattedComponent.forEach(component=>{
       if(!ignoredTypes.includes(component.type)){
         componentLabel.push({ label: component.label, value: component.key })
       }
     })
-  
+
     const dispatch = useDispatch();
     const [selectedTaskVariable, setSelectedTaskVariable] = useState(
       formProcessList.taskVariable ? formProcessList.taskVariable : []
     );
     const [keyOfVariable, setKeyOfVariable] = useState(componentLabel.filter(item=>!selectedTaskVariable.find(variable=>item.value===variable.key)));
-  
-    useEffect(()=>{
-      if(formProcessList.processKey){
-      setWorkflow({label:formProcessList.processKey,value:formProcessList.processName})
-      }
-    },[formProcessList.processKey,formProcessList.processName])
+
     useEffect(()=>{
       if(!workflow&&defaultWorkflow){
         setModified(true)
-        setWorkflow(defaultWorkflow)
-        //associateToWorkFlow(defaultWorkflow)
+        associateToWorkFlow(defaultWorkflow)
       }
-    },[workflow,defaultWorkflow] )
+    },[workflow,associateToWorkFlow,defaultWorkflow] )
+
+    // useEffect(()=>{
+    //   if(formProcessList.processKey){
+    //   setWorkflow({label:formProcessList.processKey,value:formProcessList.processName})
+    //   }
+    // },[formProcessList.processKey,formProcessList.processName])
+    // useEffect(()=>{
+    //   if(!workflow&&defaultWorkflow){
+    //     setModified(true)
+    //     setWorkflow(defaultWorkflow)
+    //     //associateToWorkFlow(defaultWorkflow)
+    //   }
+    // },[workflow,defaultWorkflow] )
 
 
     const addTaskVariable = (data) => {
@@ -116,6 +124,7 @@ const WorkFlow = React.memo(
       setSelectedTaskVariable((prev)=>{
         return prev.map(item=>item.key===data.key?{...data}:item)
       })
+      console.log("12");
       dispatch(
         setFormProcessesData({
           ...formProcessList,
@@ -127,7 +136,7 @@ const WorkFlow = React.memo(
       setTabValue(newValue);
     };
     const handleListChange = (item) =>{
-      setWorkflow(item);
+      //setWorkflow(item);
       setModified(true);
       associateToWorkFlow(item)
     }
@@ -156,7 +165,7 @@ const WorkFlow = React.memo(
             handleNext={handleNext}
             activeStep={activeStep}
             steps={steps}
-            modified={modified} 
+            modified={modified}
           />
         </Grid>
         <Grid item xs={12} sm={12} spacing={3}>
@@ -222,12 +231,12 @@ const WorkFlow = React.memo(
                               <TableCell className="font-weight-bold" align="right">
                                 {t("Action")}
                               </TableCell>
-                             
+
                             </TableRow>
                           </TableHead>
                           <TableBody>
                             {selectedTaskVariable.map((item,index) => (
-                              <ViewAndEditTaskvariable key={index}  
+                              <ViewAndEditTaskvariable key={index}
                               item={item}
                               deleteTaskVariable={deleteTaskVariable}
                               editTaskVariable={editTaskVariable}

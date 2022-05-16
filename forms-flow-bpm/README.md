@@ -125,7 +125,7 @@ To know more about Camunda, visit https://camunda.com/.
 *NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose up --build -d`*
 
 #### To stop the application
-* Run `docker-compose  stop` to start.
+* Run `docker-compose  stop` to stop.
       
       
 ### Health Check

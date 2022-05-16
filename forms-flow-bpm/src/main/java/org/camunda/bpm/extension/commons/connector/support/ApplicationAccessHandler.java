@@ -23,7 +23,7 @@ import static org.springframework.security.oauth2.client.web.reactive.function.c
  * This class serves as gateway for all application service interactions.
  */
 @Service("applicationAccessHandler")
-public class ApplicationAccessHandler implements IAccessHandler {
+public class ApplicationAccessHandler extends AbstractAccessHandler {
 
     private final Logger LOGGER = LoggerFactory.getLogger(ApplicationAccessHandler.class);
 
@@ -76,10 +76,4 @@ public class ApplicationAccessHandler implements IAccessHandler {
                 .block();
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
-
-    @Override
-    public ResponseEntity<String> exchange(String url, HttpMethod method, Map<String, Object> queryParams) {
-        return null;
-    }
-
 }

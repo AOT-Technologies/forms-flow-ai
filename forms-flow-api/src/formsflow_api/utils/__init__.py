@@ -11,14 +11,14 @@ from .constants import (
     DESIGNER_GROUP,
     FILTER_MAPS,
     FORMSFLOW_API_CORS_ORIGINS,
+    FORMSFLOW_ROLES,
     KEYCLOAK_DASHBOARD_BASE_GROUP,
     NEW_APPLICATION_STATUS,
     REVIEWER_GROUP,
-    FORMSFLOW_ROLES,
 )
 from .enums import ApplicationSortingParameters
 from .format import CustomFormatter
 from .logging import setup_logging
 from .profiler import profiletime
+from .user_context import UserContext, user_context
 from .util import cors_preflight, translate, validate_sort_order_and_order_by
-from .user_context import user_context, UserContext

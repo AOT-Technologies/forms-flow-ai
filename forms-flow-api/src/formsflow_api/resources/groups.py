@@ -2,7 +2,7 @@
 from http import HTTPStatus
 from pprint import pprint
 
-from flask import request, current_app
+from flask import current_app, request
 from flask_restx import Namespace, Resource
 from marshmallow import ValidationError
 
@@ -11,11 +11,7 @@ from formsflow_api.schemas import (
     KeycloakDashboardGroupSchema,
 )
 from formsflow_api.services import KeycloakAdminAPIService
-from formsflow_api.utils import (
-    auth,
-    cors_preflight,
-    profiletime,
-)
+from formsflow_api.utils import auth, cors_preflight, profiletime
 
 API = Namespace("groups", description="Keycloak wrapper APIs")
 
@@ -43,14 +39,14 @@ class KeycloakDashboardGroupList(Resource):
             page_no = 0
             limit = 0
         # If keycloak client level authorization is enabled; search roles under the client.
-        if current_app.config.get('KEYCLOAK_ENABLE_CLIENT_AUTH'):
+        if current_app.config.get("KEYCLOAK_ENABLE_CLIENT_AUTH"):
             dashboard_group_list = client.get_analytics_roles(page_no, limit)
         else:
             dashboard_group_list = client.get_analytics_groups(page_no, limit)
         if not dashboard_group_list:
             return {
-                       "message": "No Dashboard authorized Group found"
-                   }, HTTPStatus.NOT_FOUND
+                "message": "No Dashboard authorized Group found"
+            }, HTTPStatus.NOT_FOUND
 
         return dashboard_group_list, HTTPStatus.OK
 

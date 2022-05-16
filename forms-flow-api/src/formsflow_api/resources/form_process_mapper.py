@@ -110,7 +110,6 @@ class FormResourceList(Resource):
             )
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(mapper_json)
-            print('FormProcessMapperService.create_mapper ', dict_data)
             mapper = FormProcessMapperService.create_mapper(dict_data)
             FormProcessMapperService.unpublish_previous_mapper(dict_data)
             response = mapper_schema.dump(mapper)

@@ -37,9 +37,12 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     status = db.Column(db.String(10), nullable=True)
     comments = db.Column(db.String(300), nullable=True)
     tenant = db.Column(db.String(100), nullable=True)
-    process_tenant = db.Column(db.String(), nullable=True,
-                               comment="Tenant ID Mapped to process definition. "
-                                        "This will be null for shared process definition.")
+    process_tenant = db.Column(
+        db.String(),
+        nullable=True,
+        comment="Tenant ID Mapped to process definition. "
+        "This will be null for shared process definition.",
+    )
     application = db.relationship(
         "Application", backref="form_process_mapper", lazy=True
     )
@@ -48,7 +51,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     task_variable = db.Column(JSON, nullable=True)
     version = db.Column(db.Integer, nullable=False, default=1)
 
-    __table_args__ = (UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),)
+    __table_args__ = (
+        UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),
+    )
 
     @classmethod
     def create_from_dict(cls, mapper_info: dict) -> FormProcessMapper:
@@ -92,7 +97,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "modified_by",
                 "is_anonymous",
                 "task_variable",
-                "process_tenant"
+                "process_tenant",
             ],
             mapper_info,
         )
@@ -232,6 +237,8 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         user: UserContext = kwargs["user"]
         tenant_key: str = user.tenant_key
         query = cls.query.filter(
-            and_(cls.form_id == form_id, cls.version == version, cls.tenant == tenant_key)
+            and_(
+                cls.form_id == form_id, cls.version == version, cls.tenant == tenant_key
+            )
         ).first()
         return query

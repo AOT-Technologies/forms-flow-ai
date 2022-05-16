@@ -54,5 +54,9 @@ def _get_token_info() -> Dict:
 
 
 def _get_token() -> str:
-    token: str = request.headers['Authorization'] if request and 'Authorization' in request.headers else None
+    token: str = (
+        request.headers["Authorization"]
+        if request and "Authorization" in request.headers
+        else None
+    )
     return token

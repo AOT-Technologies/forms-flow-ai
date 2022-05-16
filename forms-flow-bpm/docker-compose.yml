@@ -16,8 +16,6 @@ services:
       - forms-flow-bpm-network
 
   forms-flow-bpm:
-    extra_hosts:
-      - dockerhost:172.17.0.1
     build:
       context: ./
       dockerfile: Dockerfile

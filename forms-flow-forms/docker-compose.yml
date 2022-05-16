@@ -36,7 +36,7 @@ services:
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflow/formio
+    image: formsflow/forms-flow-forms
     # The app will restart until Mongo is listening
     restart: always
     links:

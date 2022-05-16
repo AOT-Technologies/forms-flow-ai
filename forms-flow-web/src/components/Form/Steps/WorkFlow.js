@@ -18,20 +18,20 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
-import { setFormProcessesData } from "../../../actions/processActions";
+import {setFormProcessesData, setWorkflowAssociation} from "../../../actions/processActions";
 import ViewAndEditTaskvariable  from "./ViewAndEditTaskvariable";
 import Button from 'react-bootstrap/Button';
 import { useTranslation } from "react-i18next";
+import {listProcess} from "../../../apiManager/services/formatterService";
+import {DEFAULT_WORKFLOW} from "../../../constants/taskConstants";
+
 const WorkFlow = React.memo(
   ({
-    populateDropdown,
-    associateToWorkFlow,
     handleNext,
     handleBack,
     handleEditAssociation,
     activeStep,
     steps,
-    workflow,
     disableWorkflowAssociation,
   }) => {
     const {t}= useTranslation();
@@ -39,34 +39,31 @@ const WorkFlow = React.memo(
     const [tabValue, setTabValue] = useState(0);
     const [showTaskVaribleCrete, setShowTaskVaribleCrete] = useState(false);
     const { form } = useSelector((state) => state.form);
-
+    const processList = useSelector((state) => {return listProcess(state.process.processList)});
+    const formProcessList = useSelector((state) => state.process.formProcessList);
+    const workflow = useSelector((state) => state.process.workflowAssociated)
     const componentLabel =[]
     const ignoredTypes = ['button','columns','panel','well','container','htmlelement']
     const flattedComponent = Object.values(utils.flattenComponents(form.components,true))
+
     flattedComponent.forEach(component=>{
       if(!ignoredTypes.includes(component.type)){
         componentLabel.push({ label: component.label, value: component.key })
       }
     })
-  
-    const dispatch = useDispatch();
-    const formProcessList = useSelector(
-      (state) => state.process.formProcessList
-    );
 
-    
+    const dispatch = useDispatch();
     const [selectedTaskVariable, setSelectedTaskVariable] = useState(
       formProcessList.taskVariable ? formProcessList.taskVariable : []
     );
     const [keyOfVariable, setKeyOfVariable] = useState(componentLabel.filter(item=>!selectedTaskVariable.find(variable=>item.value===variable.key)));
-  
-   const defaultWorkflow = populateDropdown().filter(i=> i.value==="Defaultflow")
+
     useEffect(()=>{
-      if(!workflow&&defaultWorkflow){
-        setModified(true)
-        associateToWorkFlow(defaultWorkflow)
+      if(!workflow){
+        setModified(true);
+        dispatch(setWorkflowAssociation(DEFAULT_WORKFLOW));
       }
-    },[workflow,associateToWorkFlow,defaultWorkflow] )
+    },[workflow, dispatch] );
 
 
     const addTaskVariable = (data) => {
@@ -123,6 +120,10 @@ const WorkFlow = React.memo(
     const handleChange = (event, newValue) => {
       setTabValue(newValue);
     };
+    const handleListChange = (item) =>{
+      setModified(true);
+      dispatch(setWorkflowAssociation(item[0]));
+    }
 
     return (
       <Grid
@@ -148,7 +149,7 @@ const WorkFlow = React.memo(
             handleNext={handleNext}
             activeStep={activeStep}
             steps={steps}
-            modified={modified} 
+            modified={modified}
           />
         </Grid>
         <Grid item xs={12} sm={12} spacing={3}>
@@ -179,22 +180,21 @@ const WorkFlow = React.memo(
                         {t("Please select from one of the following workflows.")}
                       </span>
                       <Select
-                        options={populateDropdown()}
-                        onChange={(item) =>{setModified(true);
-                        associateToWorkFlow(item)}}
-                        values={workflow && workflow.value ? [workflow] :[]}
+                        options={processList}
+                        onChange={handleListChange}
+                        values={processList.length && workflow?.value ? [workflow] :[]}
                         disabled={disableWorkflowAssociation}
                       />
                     </Grid>
                     <Grid item xs={12} sm={6} spacing={3} />
                     <br />
-                    {workflow && workflow.value && (
+                    {processList.length && workflow?.value ? (
                       <Grid item xs={12} spacing={3}>
                         <ProcessDiagram
-                          process_key={workflow && workflow.value}
+                          processKey={workflow?.value}
                         />
                       </Grid>
-                    )}
+                    ):null}
                 {/* </FormControl> */}
               </CardContent>
             </Card>
@@ -215,12 +215,12 @@ const WorkFlow = React.memo(
                               <TableCell className="font-weight-bold" align="right">
                                 {t("Action")}
                               </TableCell>
-                             
+
                             </TableRow>
                           </TableHead>
                           <TableBody>
                             {selectedTaskVariable.map((item,index) => (
-                              <ViewAndEditTaskvariable key={index}  
+                              <ViewAndEditTaskvariable key={index}
                               item={item}
                               deleteTaskVariable={deleteTaskVariable}
                               editTaskVariable={editTaskVariable}

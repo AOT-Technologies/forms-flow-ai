@@ -211,6 +211,7 @@ class FormResourceById(Resource):
                 form_process_mapper_id=mapper_id, data=dict_data
             )
             response = mapper_schema.dump(mapper)
+            response["taskVariable"] = json.loads(response["taskVariable"])
             return (
                 response,
                 HTTPStatus.OK,

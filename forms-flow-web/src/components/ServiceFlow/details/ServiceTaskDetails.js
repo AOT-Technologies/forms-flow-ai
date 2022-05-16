@@ -186,7 +186,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
          <Tab eventKey="diagram" title={t("Diagram")}>
            <div>
              <ProcessDiagram
-               process_key={processKey}
+               processKey={processKey}
                processInstanceId={processInstanceId}
                // markers={processActivityList}
              />

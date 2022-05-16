@@ -237,11 +237,12 @@ const {t}=useTranslation();
                className="m-0" style={{height:'20px', width:'20px'}}
                 type="checkbox"
                 id="anonymous"
+                title="Make this form public"
                 data-testid="anonymous"
                 checked={anonymous}
                 onChange={(e) =>{setAnonymous(!anonymous)}}
               />
-              <label htmlFor="anonymousLabel" className="form-control border-0"><Translation>{(t)=>t("Make this form public ?")}</Translation></label>
+                <label htmlFor="anonymousLabel" className="form-control border-0"><Translation>{(t)=>t("Make this form public ?")}</Translation></label>
             </div>
           </div>
         </div>

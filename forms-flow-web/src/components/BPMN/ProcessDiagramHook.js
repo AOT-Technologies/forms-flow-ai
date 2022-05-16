@@ -11,11 +11,8 @@ import usePrevious from "./UsePrevious";
 import Nodata from "../Nodata";
 import { useTranslation } from "react-i18next";
 
-const ProcessDiagram = React.memo((props)=>{
+const ProcessDiagram = React.memo(({processKey,processInstanceId, tenant})=>{
   const {t}=useTranslation();
-  const process_key = props.process_key;
-  const processInstanceId = props.processInstanceId;
-  const tenant = props.tenant;
   const dispatch= useDispatch();
   const isProcessDiagramLoading = useSelector(state=>state.process.isProcessDiagramLoading);
   const diagramXML = useSelector(state => state.process.processDiagramXML);
@@ -47,19 +44,18 @@ const ProcessDiagram = React.memo((props)=>{
 
 
   useEffect(()=>{
-    if(process_key){
+    if(processKey){
       dispatch(setProcessDiagramLoading(true));
-      dispatch(fetchDiagram(process_key, tenant));
+      dispatch(fetchDiagram(processKey, tenant));
     }
-    else
-    {
+    else{
       dispatch(setProcessDiagramLoading(false));
     }
     return ()=>{
       dispatch(setProcessDiagramLoading(true));
       dispatch(setProcessDiagramXML(""));
     }
-  },[process_key,tenant, dispatch])
+  },[processKey,tenant, dispatch])
 
   useEffect(()=>{
     if(processInstanceId){

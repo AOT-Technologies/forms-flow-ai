@@ -15,8 +15,7 @@ import { addHiddenApplicationComponent } from "../../../constants/applicationCom
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  setFormProcessesData,
-  setFormPreviosData,
+  setFormProcessesData
 } from "../../../actions/processActions";
 import { Translation,useTranslation } from "react-i18next";
 import { saveFormProcessMapper } from "../../../apiManager/services/processServices";
@@ -57,8 +56,6 @@ const Edit = React.memo(() => {
   const errors = useSelector((state) => state.form.error);
   const prviousData = useSelector((state) => state.process.formPreviousData);
   const applicationCount = useSelector((state) =>state.process.applicationCount)
-  const  formProcessList = useSelector((state)=>state.process.formProcessList)
-  const formPreviousData = useSelector((state)=>state.process.formPreviousData)
   const tenantKey = useSelector(state => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/'
   const saveText = (<Translation>{(t)=>t("Save Form")}</Translation>);
@@ -66,69 +63,16 @@ const Edit = React.memo(() => {
   const history = useHistory();
   const {t}=useTranslation();
   const [show, setShow] = useState(false);
-  
+
   const handleClose = () => setShow(false);
 
   const handleShow = () => setShow(true);
   const handleSave=()=>{
-    setShow(false)
-    const newFormData = addHiddenApplicationComponent(form);
-    newFormData.submissionAccess = SUBMISSION_ACCESS;
-    newFormData.access = FORM_ACCESS;
-
-    dispatch(
-      saveForm("form", newFormData, (err, submittedData) => {
-        if (!err) {
-          // checking any changes
-          if (
-            prviousData.formName !== submittedData.title ||
-            prviousData.anonymous !== processListData.anonymous ||
-            processListData.anonymous === null
-          ) {
-            let isTitleChanged= prviousData.formName !== submittedData.title
-            let anonymousUpdate =
-              processListData.anonymous === null
-                ? false
-                : processListData.anonymous;
-            const data = {
-              anonymous: anonymousUpdate,
-              formName: submittedData.title,
-              id: processListData.id,
-              formId: submittedData._id,
-            };
-            let updated = true
-            if(isTitleChanged){
-              updated= false
-              data.processKey = formPreviousData.processKey
-              data.processName = formPreviousData.processName
-              data.status= formPreviousData.status
-              let version = +formProcessList.version+1
-              data.version = `${version}`
-            }else if( processListData && processListData.id){
-              updated = true
-            }
-            dispatch(saveFormProcessMapper(data, updated));
-            let newData = {
-              ...processListData,
-              formName: submittedData.title,
-            };
-            dispatch(setFormProcessesData(newData));
-            dispatch(setFormPreviosData({...newData,isTitleChanged}));
-          }
-          toast.success(t("Form Saved"));
-          dispatch(push(`/formflow/${submittedData._id}/preview`));
-          // ownProps.setPreviewMode(true);
-        } else {
-          toast.error("Error while saving Form");
-        }
-      })
-    );
-
-    
-
+    setShow(false);
+    saveFormData();
   }
 
-  // setting the form data 
+  // setting the form data
   useEffect(() => {
     const newForm= formData;
     if (newForm && (form._id !== newForm._id || form.modified !== newForm.modified)) {
@@ -168,16 +112,20 @@ const Edit = React.memo(() => {
       }
     });
   }, [processListData]);
-// save form data to submit
-  const saveFormData = () => {
-    const newFormData = addHiddenApplicationComponent(form);
-    if(prviousData.formName !== newFormData.title && applicationCount >0){
+
+  const saveFormWithDataChangeCheck = ()=>{
+    if(prviousData.formName !== form.title && applicationCount >0){
       handleShow()
     }else{
-      newFormData.submissionAccess = SUBMISSION_ACCESS;
-      newFormData.access = FORM_ACCESS;
-  
-      dispatch(
+      saveFormData();
+    }
+  }
+  // save form data to submit
+  const saveFormData = () => {
+    const newFormData = addHiddenApplicationComponent(form);
+    newFormData.submissionAccess = SUBMISSION_ACCESS;
+    newFormData.access = FORM_ACCESS;
+    dispatch(
         saveForm("form", newFormData, (err, submittedData) => {
           if (!err) {
             // checking any changes
@@ -186,37 +134,23 @@ const Edit = React.memo(() => {
               prviousData.anonymous !== processListData.anonymous ||
               processListData.anonymous === null
             ) {
-              let isTitleChanged= prviousData.formName !== submittedData.title
-              let anonymousUpdate =
-                processListData.anonymous === null
-                  ? false
-                  : processListData.anonymous;
+              let anonymousUpdate = processListData.anonymous === null? false : processListData.anonymous;
               const data = {
                 anonymous: anonymousUpdate,
                 formName: submittedData.title,
                 id: processListData.id,
                 formId: submittedData._id,
               };
-              const updated =
-                processListData && processListData.id ? true : false;
+              const updated = processListData && processListData.id ? true : false;
               dispatch(saveFormProcessMapper(data, updated));
-              let newData = {
-                ...processListData,
-                formName: submittedData.title,
-              };
-              dispatch(setFormProcessesData(newData));
-              dispatch(setFormPreviosData({...newData,isTitleChanged}));
             }
             toast.success(t("Form Saved"));
             dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
-            // ownProps.setPreviewMode(true);
           } else {
             toast.error(t("Error while saving Form"));
           }
         })
       );
-    }
-    
   };
 
 // setting the main option details to the formdata
@@ -259,7 +193,7 @@ if(!form._id){
         </div>
         <div id="save-buttons" className=" save-buttons pull-right">
           <div className="form-group pull-right">
-            <span className="btn btn-primary" onClick={()=>saveFormData()}>
+            <span className="btn btn-primary" onClick={()=>saveFormWithDataChangeCheck()}>
               {saveText}
             </span>
             <Modal show={show} onHide={handleClose}>
@@ -359,10 +293,11 @@ if(!form._id){
           <div id="form-group-anonymous" className="form-group d-flex ml-5" style={{marginTop:"30px"}}>
              <label htmlFor="anonymousLabel" className=" form-control control-label border-0 " style={{fontSize:"16px"}} >{t("Make this form public ?")}</label>
             <div className="input-group align-items-center">
-              <input  
+              <input
                className="m-0" style={{height:'20px', width:'20px'}}
                 type="checkbox"
                 id="anonymous"
+                title="Check Anonymous"
                 checked={processListData.anonymous || false}
                 onChange={(e) => {
                   changeAnonymous();
@@ -371,7 +306,7 @@ if(!form._id){
             </div>
           </div>
         </div>
-     
+
       </div>
       <FormBuilder
         key={form._id}
@@ -381,7 +316,7 @@ if(!form._id){
           language: lang,
           i18n: formio_resourceBundles
           }}
-          
+
       />
     </div>
     </div>

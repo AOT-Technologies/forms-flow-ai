@@ -28,7 +28,7 @@ const ViewApplication = React.memo(() => {
   const tenantKey = useSelector(state => state.tenants?.tenantId);
   const dispatch= useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';
-  
+
   useEffect(()=>{
       dispatch(setApplicationDetailLoader(true));
       dispatch(getApplicationById(applicationId,(err,res)=>{
@@ -85,7 +85,7 @@ const ViewApplication = React.memo(() => {
         </Tab>
         <Tab eventKey="process-diagram" title={<Translation>{(t)=>t("Process Diagram")}</Translation>}>
             <ProcessDiagram
-              process_key={applicationProcess.processKey}
+              processKey={applicationProcess.processKey}
               processInstanceId={applicationDetail.processInstanceId}
               tenant={getTenantinfo(applicationProcess.processKey, processList)}
             />

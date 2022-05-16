@@ -155,7 +155,6 @@ def test_form_process_mapper_test_update(app, client, session, jwt):
         f"/form/{form_id}", headers=headers, json=get_form_request_payload()
     )
     assert rv.status_code == 200
-    assert rv.json == f"Updated FormProcessMapper ID {form_id} successfully"
 
 
 def test_anonymous_form_process_mapper_test_update(app, client, session, jwt):
@@ -177,8 +176,6 @@ def test_anonymous_form_process_mapper_test_update(app, client, session, jwt):
         f"/form/{form_id}", headers=headers, json=get_form_request_anonymous_payload()
     )
     assert rv.status_code == 200
-    data = rv.json
-    assert data == f"Updated FormProcessMapper ID {form_id} successfully"
 
 
 def test_get_application_count_based_on_form_process_mapper_id(

@@ -2,7 +2,7 @@
 
 # Maven build
 FROM maven:3.6.1-jdk-11-slim AS MAVEN_TOOL_CHAIN
-COPY pom-docker.xml /tmp/pom.xml
+COPY pom.xml /tmp/pom.xml
 COPY settings-docker.xml /usr/share/maven/ref/
 WORKDIR /tmp/
 # This allows Docker to cache most of the maven dependencies

@@ -126,5 +126,5 @@ translations = {
         "Invalid Request Object format": "Ungültiges Anforderungsobjektformat",
         "Missing from_date or to_date. Invalid request object for application metrics endpoint": "From_date oder to_date fehlen. Ungültiges Anforderungsobjekt für Endpunkt der Anwendungsmetriken",
         "Error while getting application metrics": "Fehler beim Abrufen von Anwendungsmetriken",
-    }
+    },
 }

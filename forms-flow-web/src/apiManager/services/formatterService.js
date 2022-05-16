@@ -117,3 +117,18 @@ export const checkIsObjectId = (data) => {
   // Condition to check if the data is a mongoDb object Id or not 
   return data.length === 24 && !isNaN(Number('0x' + data));
 }
+
+export const listProcess = (processes) => {
+  if (processes?.length > 0) {
+    const data = processes.map((process) => {
+      return {
+        label: process.name,
+        value: process.key,
+        tenant:process.tenantKey
+      };
+    });
+    return data;
+  } else {
+    return [];
+  }
+};

@@ -1,12 +1,13 @@
 package org.camunda.bpm.extension.hooks.rest;
 
-import org.camunda.bpm.engine.rest.dto.identity.UserProfileDto;
+import org.camunda.bpm.extension.hooks.rest.dto.UserProfileDto;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import javax.ws.rs.core.UriInfo;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(RestResource.BASE_PATH+"/v1"+TaskRestResource.PATH)
@@ -19,7 +20,9 @@ public class UserRestResourceImpl implements UserRestResource{
     }
 
     @Override
-    public List<UserProfileDto> queryUsers(UriInfo uriInfo, Integer firstResult, Integer maxResults) {
-        return null;
+    public List<UserProfileDto> queryUsers(Map<String, Object> parameters) {
+
+
+        return new ArrayList<>();
     }
 }

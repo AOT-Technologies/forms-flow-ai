@@ -16,20 +16,10 @@ import java.util.Map;
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
 @Service("bpmAccessHandler")
-public class BPMAccessHandler implements IAccessHandler{
+public class BPMAccessHandler extends AbstractAccessHandler{
 
     @Autowired
     private WebClient webClient;
-
-    @Override
-    public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
-        return null;
-    }
-
-    @Override
-    public ResponseEntity<IResponse> exchange(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz) {
-        return null;
-    }
 
     @Override
     public ResponseEntity<String> exchange(String url, HttpMethod method, Map<String, Object> queryParams) {
@@ -51,7 +41,7 @@ public class BPMAccessHandler implements IAccessHandler{
         builder = builder.path(url);
 
         for(Map.Entry<String, Object> entry : queryParams.entrySet()){
-            builder.queryParam(entry.getKey(), entry.getValue());
+            builder = builder.queryParam(entry.getKey(), entry.getValue());
         }
         return builder.build();
     }

@@ -1,4 +1,4 @@
-package org.camunda.bpm.extension.commons.connector.support;
+package org.camunda.bpm.extension.commons.connector;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.extension.commons.connector.auth.FormioConfiguration;
@@ -18,17 +18,17 @@ import java.util.Properties;
  * Form Token Access Handler.
  * This class abstracts  formio token generation logic with the intent to cached & refreshed accordingly.
  */
-@Service("formTokenAccessHandler")
-public class FormTokenAccessHandler {
+@Service("formioTokenServiceProvider")
+public class FormioTokenServiceProvider {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(FormTokenAccessHandler.class);
+    private final Logger LOGGER = LoggerFactory.getLogger(FormioTokenServiceProvider.class);
 
     @Autowired
     private Properties integrationCredentialProperties;
     @Resource(name = "bpmObjectMapper")
     private ObjectMapper bpmObjectMapper;
     @Autowired
-    protected WebClient unauthenticatedWebClient;
+    private WebClient unauthenticatedWebClient;
 
     private static FormioContextProvider formioContextProvider;
 
@@ -46,10 +46,6 @@ public class FormTokenAccessHandler {
     public String getAccessToken(){
         LOGGER.info("Getting access token from the formio context");
         return formioContextProvider.createFormioRequestAccessToken();
-    }
-
-    protected Properties getIntegrationCredentialProperties() {
-        return integrationCredentialProperties;
     }
 }
 

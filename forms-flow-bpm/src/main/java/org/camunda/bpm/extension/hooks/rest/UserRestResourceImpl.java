@@ -18,7 +18,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(RestResource.BASE_PATH+"/v1"+TaskRestResource.PATH)
+@RequestMapping(RestResource.BASE_PATH+"/v1"+UserRestResource.PATH)
 public class UserRestResourceImpl implements UserRestResource{
 
     private HTTPServiceInvoker httpServiceInvoker;
@@ -35,7 +35,7 @@ public class UserRestResourceImpl implements UserRestResource{
 
         List<UserProfileDto> response = null;
         String url = integrationCredentialProperties.getProperty("bpm.url")+"/camunda/engine-rest/user";
-        ResponseEntity<String> data = httpServiceInvoker.execute(url, HttpMethod.GET, parameters);
+        ResponseEntity<String> data = httpServiceInvoker.executeWithParams(url, HttpMethod.GET, parameters);
 
         return EntityModel.of(data.getBody(),
                 linkTo(methodOn(UserRestResourceImpl.class).queryUsers(parameters)).withSelfRel());

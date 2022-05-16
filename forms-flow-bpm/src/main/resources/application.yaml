@@ -15,7 +15,7 @@ server:
 
 formsflow.ai:
   bpm:
-    url: ${FORMSFLOW_BPM_URL}
+    url: ${BPM_BASE_URL}
     client: camunda
   api:
     url: ${FORMSFLOW_API_URL}

@@ -13,6 +13,8 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
 /**
@@ -59,5 +61,10 @@ public class TextAnalyzerAccessHandler implements IAccessHandler{
                 .toEntity(responseClazz)
                 .block();
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
+    }
+
+    @Override
+    public ResponseEntity<String> exchange(String url, HttpMethod method, Map<String, Object> queryParams) {
+        return null;
     }
 }

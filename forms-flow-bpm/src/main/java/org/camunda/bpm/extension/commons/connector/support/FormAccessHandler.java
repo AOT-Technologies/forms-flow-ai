@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 
 /**
  * Form Access Handler.
@@ -43,6 +45,11 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
 
     @Override
     public ResponseEntity<IResponse> exchange(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz) {
+        return null;
+    }
+
+    @Override
+    public ResponseEntity<String> exchange(String url, HttpMethod method, Map<String, Object> queryParams) {
         return null;
     }
 

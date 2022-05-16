@@ -63,6 +63,7 @@ services:
       - KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       - BPM_CLIENT_CONN_TIMEOUT=${BPM_CLIENT_CONN_TIMEOUT:-5000}
       - DATA_ANALYSIS_URL=${DATA_ANALYSIS_URL}
+      - FORMSFLOW_BPM_URL=${FORMSFLOW_BPM_URL}
     networks:
       - forms-flow-bpm-network
     

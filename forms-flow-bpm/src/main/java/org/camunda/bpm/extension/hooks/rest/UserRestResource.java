@@ -14,5 +14,5 @@ public interface UserRestResource extends RestResource{
     String PATH = "/user";
 
     @GetMapping(produces = MediaType.APPLICATION_JSON)
-    EntityModel<List<UserProfileDto>> queryUsers(@RequestParam Map<String, Object> parameters);
+    EntityModel<String> queryUsers(@RequestParam Map<String, Object> parameters);
 }

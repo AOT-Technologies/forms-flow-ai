@@ -85,11 +85,13 @@ Variable name | Meaning | Possible values | Default value |
 
    * forms-flow-web service uses port 5000, make sure the port is available.
    * `cd {Your Directory}/forms-flow-ai/forms-flow-web`
+
    * Run `docker-compose up -d` to start.
 
-*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose up --build -d`*
+   *NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose up --build -d`*
 
 #### To stop the application
+
    * Run `docker-compose stop` to stop.
 
 ### Health Check

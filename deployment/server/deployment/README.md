@@ -133,9 +133,9 @@ Start the **analytics server** by following the instructions given [here](../../
 
 *  Follow the below steps for mapping the role IDs.   
    - Start the forms-flow-forms service.
-       - Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.    
+       - Run `docker-compose up -d forms-flow-forms` to start.    
                    
-*NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose -f docker-compose-linux.yml up --build -d`*
+*NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose up --build -d`*
 
 For new Users go to the corresponding folder **/deployment/docker** and open **Sample.env** file.
 
@@ -206,17 +206,17 @@ Variable name | Meaning | Possible values | Default value |
     
 ##### Running the application
 ```
- Run `docker-compose -f docker-compose-linux.yml up -d` to start.
+ Run `docker-compose up -d` to start.
 ```
 
 ##### To build the application
 ```
- Run `docker-compose -f docker-compose-linux.yml up --build -d`
+ Run `docker-compose up --build -d`
  ```
 
 ##### To stop the application
 ```
-   Run `docker-compose -f docker-compose-linux.yml stop` to stop.
+   Run `docker-compose stop` to stop.
 ```
 
 * To make sure the working is going properly you can navigate to https://github.com/AOT-Technologies/forms-flow-ai-dev
@@ -247,7 +247,7 @@ git status
 ```
 ##### 4. Stop all containers running in the docker.
 ```
-docker-compose -f docker-compose-linux.yml stop
+docker-compose stop
 ```
 
 ##### 5.	Pull the master files.
@@ -272,7 +272,7 @@ docker ps
 
 ##### 9. To restart all docker images that are currently available on docker.
 ```
-docker-compose -f docker-compose-linux.yml up –build -d
+docker-compose up –build -d
 ```
 
 * To make sure the working is going properly you can navigate to https://github.com/AOT-Technologies/forms-flow-ai-dev

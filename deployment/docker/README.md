@@ -83,10 +83,7 @@ Start the **analytics server** by following the instructions given [here](../../
 
 *  Follow the below steps for mapping the role IDs.   
    - Start the forms-flow-forms service.
-     - For Linux
-       - Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
-     - For Windows  
-       - Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
+     - Run `docker-compose up -d forms-flow-forms` to start.  
        
 ##### Health Check
 ------------------
@@ -228,19 +225,15 @@ Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resou
  `BPM_CLIENT_CONN_TIMEOUT`|Webclient Connection timeout in milli seconds||`5000`
 
 ### Running the application
-* For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
-* For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+
+* Run `docker-compose up -d` to start.
    
-*NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+*NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose up --build -d`*
 
 #### To stop the application
-* For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml stop` to stop.
-* For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
-  
+
+* Run `docker-compose stop` to stop.
+
 ### Health Check
 * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/
 * Business Process Engine should be up and available for use at port defaulted to 8000 i.e. http://localhost:8000/camunda/

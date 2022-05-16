@@ -120,14 +120,15 @@ To know more about Camunda, visit https://camunda.com/.
 
 * forms-flow-bpm service uses port 8000, make sure the port is available.
 * `cd {Your Directory}/forms-flow-ai/forms-flow-bpm`
+
 * Run `docker-compose  up -d` to start.
 
 *NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose up --build -d`*
 
 #### To stop the application
+
 * Run `docker-compose  stop` to stop.
-      
-      
+       
 ### Health Check
 
    The application should be up and available for use at port defaulted to 8000 in http://localhost:8000/camunda/

@@ -7,12 +7,10 @@ import org.camunda.bpm.extension.hooks.rest.dto.UserProfileDto;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.ws.rs.core.MediaType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;

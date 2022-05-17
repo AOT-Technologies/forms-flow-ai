@@ -36,7 +36,6 @@ public class UserRestResourceImpl implements UserRestResource{
     }
 
     @Override
-    @GetMapping(produces = MediaType.APPLICATION_JSON)
     public CollectionModel<UserProfileDto> queryUsers(Map<String, Object> parameters) throws JsonProcessingException {
 
         List<UserProfileDto> response = null;

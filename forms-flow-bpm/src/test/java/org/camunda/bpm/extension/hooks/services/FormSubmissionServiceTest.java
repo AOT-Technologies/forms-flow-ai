@@ -27,6 +27,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_STATUS;
+
 /**
  * Form SubmissionService Test.
  * Test class for FormSubmissionService.
@@ -223,7 +225,7 @@ public class FormSubmissionServiceTest {
     public void createFormSubmissionData_happyFlow() throws IOException {
         Map<String,Object> bpmVariables = new HashMap<>();
         String expected = "{\"data\":{\"applicationStatus\":\"New\"}}";
-        bpmVariables.put("applicationStatus", "New");
+        bpmVariables.put(APPLICATION_STATUS, "New");
         String actual = formSubmissionService.createFormSubmissionData(bpmVariables);
         assertEquals(expected, actual);
     }

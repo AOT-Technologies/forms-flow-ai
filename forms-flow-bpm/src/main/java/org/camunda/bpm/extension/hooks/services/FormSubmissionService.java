@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.camunda.bpm.engine.variable.Variables;
 import org.camunda.bpm.engine.variable.value.FileValue;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
-import org.camunda.bpm.extension.commons.connector.support.FormTokenAccessHandler;
+import org.camunda.bpm.extension.commons.connector.FormioTokenServiceProvider;
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,7 +38,7 @@ public class FormSubmissionService {
     @Resource(name = "bpmObjectMapper")
     private ObjectMapper bpmObjectMapper;
     @Autowired
-    private FormTokenAccessHandler formTokenAccessHandler;
+    private FormioTokenServiceProvider formioTokenServiceProvider;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
 
@@ -169,7 +169,7 @@ public class FormSubmissionService {
 
     @Deprecated
     public String getAccessToken() {
-        return formTokenAccessHandler.getAccessToken();
+        return formioTokenServiceProvider.getAccessToken();
     }
 
 }

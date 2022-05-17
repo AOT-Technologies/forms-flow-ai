@@ -26,6 +26,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
+
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+
 /**
  * FormBPM FilteredData Pipeline Listener Test.
  * Test class for FormBPMFilteredDataPipelineListener
@@ -71,7 +75,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
                 .thenReturn(properties);
         when(properties.getProperty(anyString()))
                 .thenReturn("http://localhost:5000/api");
-        when(delegateExecution.getVariable("applicationId"))
+        when(delegateExecution.getVariable(APPLICATION_ID))
                 .thenReturn(100);
 
         FormProcessMappingData formProcessMappingData = new FormProcessMappingData();
@@ -83,7 +87,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
 
         String actualFormUrl = "http://localhost:3001/form/id1";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", actualFormUrl);
+        variables.put(FORM_URL, actualFormUrl);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
         Map<String, Object> dataMap = new HashMap<>();
@@ -105,7 +109,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
                 .thenReturn(properties);
         when(properties.getProperty(anyString()))
                 .thenReturn("http://localhost:5000/api");
-        when(delegateExecution.getVariable("applicationId"))
+        when(delegateExecution.getVariable(APPLICATION_ID))
                 .thenReturn(100);
 
         FormProcessMappingData formProcessMappingData = new FormProcessMappingData();
@@ -117,7 +121,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
 
         String actualFormUrl = "http://localhost:3001/form/id1";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", actualFormUrl);
+        variables.put(FORM_URL, actualFormUrl);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
         Map<String, Object> dataMap = new HashMap<>();
@@ -143,7 +147,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
                 .thenReturn(properties);
         when(properties.getProperty(anyString()))
                 .thenReturn("http://localhost:5000/api");
-        when(delegateExecution.getVariable("applicationId"))
+        when(delegateExecution.getVariable(APPLICATION_ID))
                 .thenReturn(100);
 
         FormProcessMappingData formProcessMappingData = new FormProcessMappingData();
@@ -165,7 +169,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
                 .thenReturn(properties);
         when(properties.getProperty(anyString()))
                 .thenReturn("http://localhost:5000/api");
-        when(delegateExecution.getVariable("applicationId"))
+        when(delegateExecution.getVariable(APPLICATION_ID))
                 .thenReturn(100);
 
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any()))
@@ -189,7 +193,7 @@ public class FormBPMFilteredDataPipelineListenerTest {
                 .thenReturn(properties);
         when(properties.getProperty(anyString()))
                 .thenReturn("http://localhost:5000/api");
-        when(delegateExecution.getVariable("applicationId"))
+        when(delegateExecution.getVariable(APPLICATION_ID))
                 .thenReturn(100);
 
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any()))

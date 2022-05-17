@@ -76,8 +76,8 @@ export const getFormIdSubmissionIdFromURL = (formUrl) => {
   return {formId,submissionId};
 }
 
-export const getFormUrl = (formId, submissionId) => {
-  return `${window.location.origin}/form/${formId}/submission/${submissionId}`;
+export const getFormUrl = (formId, submissionId, redirectUrl) => {
+  return `${window.location.origin}${redirectUrl}form/${formId}/submission/${submissionId}`;
 }
 
 export const getISODateTime=(date)=>{
@@ -117,3 +117,17 @@ export const checkIsObjectId = (data) => {
   // Condition to check if the data is a mongoDb object Id or not 
   return data.length === 24 && !isNaN(Number('0x' + data));
 }
+
+export const listProcess = (processes) => {
+  if (processes?.length > 0) {
+    const data = processes.map((process) => {
+      return {
+        label: process.name,
+        value: process.key,
+      };
+    });
+    return data;
+  } else {
+    return [];
+  }
+};

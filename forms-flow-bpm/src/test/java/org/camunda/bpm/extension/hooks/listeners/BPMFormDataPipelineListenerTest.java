@@ -29,6 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_STATUS;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+
 /**
  * BPMForm Data Pipeline Listener Test.
  * Test class for BPMFormDataPipelineListener
@@ -65,7 +69,7 @@ public class BPMFormDataPipelineListenerTest {
         DelegateExecution delegateExecution = mock(DelegateExecution.class);
         String formUrl = "http://localhost:3001/form/id1";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", formUrl);
+        variables.put(FORM_URL, formUrl);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(List.class)))
@@ -74,9 +78,9 @@ public class BPMFormDataPipelineListenerTest {
         ReflectionTestUtils.setField(bpmFormDataPipelineListener, "fields", this.fields);
         when(this.fields.getValue(delegateExecution))
                 .thenReturn(payload);
-        when(delegateExecution.getVariable("applicationStatus"))
+        when(delegateExecution.getVariable(APPLICATION_STATUS))
                 .thenReturn("New");
-        when(delegateExecution.getVariable("applicationId"))
+        when(delegateExecution.getVariable(APPLICATION_ID))
                 .thenReturn(1);
         bpmFormDataPipelineListener.notify(delegateExecution);
     }
@@ -92,7 +96,7 @@ public class BPMFormDataPipelineListenerTest {
         DelegateExecution delegateExecution = mock(DelegateExecution.class);
         String formUrl = "http://localhost:3001/form/id1";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", formUrl);
+        variables.put(FORM_URL, formUrl);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(List.class)))
@@ -101,9 +105,9 @@ public class BPMFormDataPipelineListenerTest {
         ReflectionTestUtils.setField(bpmFormDataPipelineListener, "fields", this.fields);
         when(this.fields.getValue(delegateExecution))
                 .thenReturn(payload);
-        when(delegateExecution.getVariable("applicationStatus"))
+        when(delegateExecution.getVariable(APPLICATION_STATUS))
                 .thenReturn("New");
-        when(delegateExecution.getVariable("applicationId"))
+        when(delegateExecution.getVariable(APPLICATION_ID))
                 .thenReturn(1);
         assertThrows(RuntimeException.class, () -> {
             bpmFormDataPipelineListener.notify(delegateExecution);
@@ -121,7 +125,7 @@ public class BPMFormDataPipelineListenerTest {
         DelegateExecution delegateExecution = mock(DelegateExecution.class);
         String formUrl = "http://localhost:3001/form/id1";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", formUrl);
+        variables.put(FORM_URL, formUrl);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(List.class)))
@@ -130,9 +134,9 @@ public class BPMFormDataPipelineListenerTest {
         ReflectionTestUtils.setField(bpmFormDataPipelineListener, "fields", this.fields);
         when(this.fields.getValue(delegateExecution))
                 .thenReturn(payload);
-        when(delegateExecution.getVariable("applicationStatus"))
+        when(delegateExecution.getVariable(APPLICATION_STATUS))
                 .thenReturn("New");
-        when(delegateExecution.getVariable("applicationId"))
+        when(delegateExecution.getVariable(APPLICATION_ID))
                 .thenReturn(1);
         assertThrows(RuntimeException.class, () -> {
             bpmFormDataPipelineListener.notify(delegateExecution);
@@ -148,7 +152,7 @@ public class BPMFormDataPipelineListenerTest {
         DelegateExecution delegateExecution = mock(DelegateExecution.class);
         String formUrl = "http://localhost:3001/form/id1";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", formUrl);
+        variables.put(FORM_URL, formUrl);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
         doThrow(new IOException("Test Failure")).when(httpServiceInvoker)
@@ -157,9 +161,9 @@ public class BPMFormDataPipelineListenerTest {
         ReflectionTestUtils.setField(bpmFormDataPipelineListener, "fields", this.fields);
         when(this.fields.getValue(delegateExecution))
                 .thenReturn(payload);
-        when(delegateExecution.getVariable("applicationStatus"))
+        when(delegateExecution.getVariable(APPLICATION_STATUS))
                 .thenReturn("New");
-        when(delegateExecution.getVariable("applicationId"))
+        when(delegateExecution.getVariable(APPLICATION_ID))
                 .thenReturn(1);
         assertThrows(RuntimeException.class, () -> {
             bpmFormDataPipelineListener.notify(delegateExecution);
@@ -198,7 +202,7 @@ public class BPMFormDataPipelineListenerTest {
                 .thenReturn(delegateExecution);
         String formUrl = "http://localhost:3001/form/id1";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", formUrl);
+        variables.put(FORM_URL, formUrl);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(List.class)))
@@ -207,9 +211,9 @@ public class BPMFormDataPipelineListenerTest {
         ReflectionTestUtils.setField(bpmFormDataPipelineListener, "fields", this.fields);
         when(this.fields.getValue(delegateExecution))
                 .thenReturn(payload);
-        when(delegateExecution.getVariable("applicationStatus"))
+        when(delegateExecution.getVariable(APPLICATION_STATUS))
                 .thenReturn("New");
-        when(delegateExecution.getVariable("applicationId"))
+        when(delegateExecution.getVariable(APPLICATION_ID))
                 .thenReturn(1);
         assertThrows(RuntimeException.class, () -> {
             bpmFormDataPipelineListener.notify(delegateTask);
@@ -230,7 +234,7 @@ public class BPMFormDataPipelineListenerTest {
                 .thenReturn(delegateExecution);
         String formUrl = "http://localhost:3001/form/id1";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", formUrl);
+        variables.put(FORM_URL, formUrl);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
         when(httpServiceInvoker.execute(anyString(), any(HttpMethod.class), any(List.class)))
@@ -239,9 +243,9 @@ public class BPMFormDataPipelineListenerTest {
         ReflectionTestUtils.setField(bpmFormDataPipelineListener, "fields", this.fields);
         when(this.fields.getValue(delegateExecution))
                 .thenReturn(payload);
-        when(delegateExecution.getVariable("applicationStatus"))
+        when(delegateExecution.getVariable(APPLICATION_STATUS))
                 .thenReturn("New");
-        when(delegateExecution.getVariable("applicationId"))
+        when(delegateExecution.getVariable(APPLICATION_ID))
                 .thenReturn(1);
         assertThrows(RuntimeException.class, () -> {
             bpmFormDataPipelineListener.notify(delegateTask);
@@ -260,7 +264,7 @@ public class BPMFormDataPipelineListenerTest {
                 .thenReturn(delegateExecution);
         String formUrl = "http://localhost:3001/form/id1";
         Map<String, Object> variables = new HashMap<>();
-        variables.put("formUrl", formUrl);
+        variables.put(FORM_URL, formUrl);
         when(delegateExecution.getVariables())
                 .thenReturn(variables);
         doThrow(new IOException("Test Failure")).when(httpServiceInvoker)
@@ -269,9 +273,9 @@ public class BPMFormDataPipelineListenerTest {
         ReflectionTestUtils.setField(bpmFormDataPipelineListener, "fields", this.fields);
         when(this.fields.getValue(delegateExecution))
                 .thenReturn(payload);
-        when(delegateExecution.getVariable("applicationStatus"))
+        when(delegateExecution.getVariable(APPLICATION_STATUS))
                 .thenReturn("New");
-        when(delegateExecution.getVariable("applicationId"))
+        when(delegateExecution.getVariable(APPLICATION_ID))
                 .thenReturn(1);
         assertThrows(RuntimeException.class, () -> {
             bpmFormDataPipelineListener.notify(delegateTask);

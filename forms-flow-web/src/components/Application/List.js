@@ -16,7 +16,7 @@ import {
   defaultSortedBy,
 } from "./table";
 import {getUserRolePermission} from "../../helper/user";
-import {CLIENT, STAFF_REVIEWER} from "../../constants/constants";
+import {CLIENT, MULTITENANCY_ENABLED, STAFF_REVIEWER} from "../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../constants/applicationConstants";
 import Alert from 'react-bootstrap/Alert'
 import { Translation } from "react-i18next";
@@ -37,7 +37,8 @@ export const ApplicationList = React.memo(() => {
   const iserror = useSelector(state=>state.applications.iserror);
   const error = useSelector(state=>state.applications.error);
   const [filtermode,setfiltermode] = React.useState(false);
-
+  const tenantKey = useSelector(state => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';
   const [lastModified,setLastModified] = React.useState(null);
   const [isLoading,setIsLoading] = React.useState(false);
   useEffect(()=>{
@@ -117,14 +118,15 @@ export const ApplicationList = React.memo(() => {
         bootstrap4
         keyField="id"
         data={listApplications(applications)}
-        columns={columns(applicationStatus,lastModified,setLastModified,t)}
+        columns={columns(applicationStatus,lastModified,setLastModified,t,redirectUrl)}
         search
       >
         {(props) => (
             <div className="container">
               <div className="main-header">
+                
                 <h3 className="application-head">
-                <i className="fa fa-list" aria-hidden="true"/>
+                <i className="fa fa-list" style={{marginTop: '5px'}} aria-hidden="true"/>
               <span className="application-text"><Translation>{(t)=>t("Applications")}</Translation></span>
                   <div className="col-md-1 application-count">({applicationCount})</div>
                 </h3>

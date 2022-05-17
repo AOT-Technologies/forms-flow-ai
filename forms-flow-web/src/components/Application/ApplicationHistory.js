@@ -19,6 +19,7 @@ import {
 import Loading from "../../containers/Loading";
 import Nodata from '../../components/Nodata';
 import {setUpdateHistoryLoader} from "../../actions/taskApplicationHistoryActions";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
 
 
 const HistoryList = React.memo((props) => {
@@ -26,6 +27,8 @@ const HistoryList = React.memo((props) => {
   const isHistoryListLoading = useSelector(state => state.taskAppHistory.isHistoryListLoading);
   const appHistory = useSelector(state => state.taskAppHistory.appHistory);
   const applicationId = props.applicationId;
+  const tenantKey = useSelector(state => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';
   const {t}=useTranslation();
 
   useEffect(()=>{
@@ -61,7 +64,7 @@ const HistoryList = React.memo((props) => {
       <ToolkitProvider
         keyField="created"
         data={appHistory}
-        columns={columns_history}
+        columns={columns_history(redirectUrl)}
         search
       >
         {(props) => (

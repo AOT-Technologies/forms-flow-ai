@@ -17,6 +17,7 @@ from formsflow_api.schemas import (
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import NEW_APPLICATION_STATUS
 from formsflow_api.utils.user_context import UserContext, user_context
+
 from .form_process_mapper import FormProcessMapperService
 
 application_schema = ApplicationSchema()
@@ -38,7 +39,7 @@ class ApplicationService:
         data["application_status"] = NEW_APPLICATION_STATUS
         mapper = FormProcessMapper.find_form_by_form_id(data["form_id"])
         if mapper is None:
-            if user.tenant_key:
+            if tenant_key:
                 raise PermissionError(f"Permission denied, formId - {data['form_id']}.")
             raise KeyError(f"Mapper does not exist with formId - {data['form_id']}.")
         if tenant_key is not None and mapper.tenant != tenant_key:
@@ -61,9 +62,17 @@ class ApplicationService:
                 }
             }
             try:
-                camunda_start_task = BPMService.post_process_start(
-                    process_key=mapper.process_key, payload=payload, token=token
-                )
+                if tenant_key:
+                    camunda_start_task = BPMService.post_process_start_tenant(
+                        process_key=mapper.process_key,
+                        payload=payload,
+                        token=token,
+                        tenant_key=tenant_key,
+                    )
+                else:
+                    camunda_start_task = BPMService.post_process_start(
+                        process_key=mapper.process_key, payload=payload, token=token
+                    )
                 application.update({"process_instance_id": camunda_start_task["id"]})
             except TypeError as camunda_error:
                 response = {

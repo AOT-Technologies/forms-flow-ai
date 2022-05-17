@@ -23,6 +23,7 @@ import {useParams} from "react-router-dom";
 import {push} from "connected-react-router";
 import {setFormSubmissionLoading} from "../../../actions/formActions";
 import { useTranslation } from "react-i18next";
+import { MULTITENANCY_ENABLED } from "../../../constants/constants";
 
 const ServiceFlowTaskDetails = React.memo(() => {
   const {t} = useTranslation();
@@ -40,7 +41,8 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const firstResult = useSelector(state=> state.bpmTasks.firstResult);
   const [processKey, setProcessKey]= useState('');
   const [processInstanceId, setProcessInstanceId]=useState('');
-
+  const tenantKey = useSelector(state => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';
 
  useEffect(()=>{
     if(taskId){
@@ -100,7 +102,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
     dispatch(setBPMTaskDetailLoader(true));
     dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
     dispatch(fetchServiceTaskList(selectedFilter.id, firstResult, reqData)); //Refreshes the Tasks
-    dispatch(push(`/task/`));
+    dispatch(push(`${redirectUrl}task/`));
   }
 
   const reloadCurrentTask = () => {
@@ -184,7 +186,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
          <Tab eventKey="diagram" title={t("Diagram")}>
            <div>
              <ProcessDiagram
-               process_key={processKey}
+               processKey={processKey}
                processInstanceId={processInstanceId}
                // markers={processActivityList}
              />

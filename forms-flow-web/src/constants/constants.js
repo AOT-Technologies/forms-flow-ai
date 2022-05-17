@@ -20,6 +20,16 @@ export const Keycloak_Client =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_CLIENT) ||
   process.env.REACT_APP_KEYCLOAK_CLIENT ||
   "forms-flow-web";
+
+const MULTITENANCY_ENABLED_VARIABLE = (window._env_ && window._env_.REACT_APP_MULTI_TENANCY_ENABLED) || 
+process.env.REACT_APP_MULTI_TENANCY_ENABLED || false
+
+export const MULTITENANCY_ENABLED = (MULTITENANCY_ENABLED_VARIABLE === "true" || MULTITENANCY_ENABLED_VARIABLE === true ) ? true : false
+
+export const BASE_ROUTE = MULTITENANCY_ENABLED ? "/tenant/:tenantId/" : "/"
+
+export const Keycloak_Tenant_Client = "forms-flow-web"
+
 export const KEYCLOAK_REALM =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_URL_REALM) ||
   process.env.REACT_APP_KEYCLOAK_URL_REALM ||
@@ -82,7 +92,7 @@ export const FORM_ACCESS =[{
 export const OPERATIONS = {
   insert: {
     action: "insert",
-    buttonType: "primary",
+    buttonType: "primary button_font",
     icon: "pencil",
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -91,7 +101,7 @@ export const OPERATIONS = {
   },
   submission: {
     action: "submission",
-    buttonType: "outline-primary",
+    buttonType: "outline-primary button_font",
     icon: "list-alt",
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -100,7 +110,7 @@ export const OPERATIONS = {
   },
   edit: {
     action: "edit",
-    buttonType: "secondary",
+    buttonType: "secondary button_font",
     icon: "edit",
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -110,7 +120,7 @@ export const OPERATIONS = {
   },
   viewForm: {
     action: "viewForm",
-    buttonType: "outline-primary",
+    buttonType: "outline-primary button_font",
     icon: "pencil-square-o",
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -120,7 +130,7 @@ export const OPERATIONS = {
   },
   delete: {
     action: "delete",
-    buttonType: "danger",
+    buttonType: " delete_button",
     icon: "trash",
     permissionsResolver: function permissionsResolver() {
       return true;
@@ -157,6 +167,8 @@ export const OPERATIONS = {
     title: <Translation>{(t)=>t("Delete")}</Translation>,
   },
 };
+  
+export const PageSizes=[5,10,25,50,100,"all"]
 
 export const SUBMISSION_ACCESS = [
   {

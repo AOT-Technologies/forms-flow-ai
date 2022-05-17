@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.GROUP_NAME;
+
 /**
  * Task Result Set Extractor.
  * Class for extracting task result data.
@@ -37,7 +39,7 @@ public class TaskResultSetExtractor implements ResultSetExtractor<Task> {
             task.setProcessInstanceId(rs.getString("pid"));
             task.setProcessDefinitionKey(rs.getString("processdefkey"));
             task.setTaskDefinitionKey(rs.getString("taskDefinitionKey"));
-            task.setGroupName(rs.getString("groupname"));
+            task.setGroupName(rs.getString(GROUP_NAME));
             List<Variable> variables = new ArrayList<>();
             task.setVariables(variables);
         } else {

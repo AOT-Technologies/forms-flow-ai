@@ -31,9 +31,9 @@
        "<process_key>",
        processId
      );
- 
+
      const apiURLWithtaskId = replaceUrl(apiUrlProcessId, "<task_key>", taskId);
- 
+
      httpGETRequest(apiURLWithtaskId)
        .then((res) => {
          if (res.data) {
@@ -52,7 +52,7 @@
        });
    };
  };
- 
+
  /**
   *
   * @param  {...any} rest
@@ -76,7 +76,7 @@
        });
    };
  };
- 
+
  /**
   *
   * @param  {...any} rest
@@ -111,7 +111,7 @@
        });
    };
  };
- 
+
  export const getApplicationCount = (mapperId,...rest)=>{
   const done = rest.length ? rest[0] : () => {};
    return async(dispatch) => {
@@ -134,21 +134,22 @@
       });
    }
  }
- 
+
  export const saveFormProcessMapper = (data, update = false, ...rest) => {
    const done = rest.length ? rest[0] : () => {};
    return  async (dispatch) => {
      if (update) {
        httpPUTRequest(`${API.FORM}/${data.id}`, data).then(async(res) => {
          if(res.data){
-        // dispatch(setFormProcessesData(res.data));
-         done(null, res.data);
+           dispatch(setFormPreviosData(res.data));
+           dispatch(setFormProcessesData(res.data));
+           done(null, res.data);
          }
          else{
           dispatch(setFormProcessesData([]));
+          dispatch(setFormPreviosData([]));
           done(null, []);
          }
-         // dispatch(setFormProcessesData([]));
        })
        .catch((error) => {
          dispatch(getFormProcesses(data.formId));
@@ -161,13 +162,15 @@
      } else {
         httpPOSTRequest(`${API.FORM}`, data).then(async(res) => {
 
-         if(res.data){  
+         if(res.data){
            dispatch(getApplicationCount(res.data.id));
            dispatch(setFormProcessesData(res.data));
+           dispatch(setFormPreviosData(res.data));
            done(null, res.data);
          }
          else{
           dispatch(setFormProcessesData([]));
+          dispatch(setFormPreviosData([]));
           done(null, []);
          }
        })
@@ -179,11 +182,11 @@
          done(error);
        });
      }
-     
- 
+
+
    };
  };
- 
+
  /**
   *
   * @param  {...any} rest
@@ -219,7 +222,7 @@
        });
    };
  };
- 
+
  export const fetchDiagram = (process_key, ...rest) => {
    const url =replaceUrl(API.PROCESSES_XML,"<process_key>",process_key)
    const done = rest.length ? rest[0] : () => {};
@@ -253,8 +256,8 @@
     dispatch(setResetProcess())
   }
  }
- 
- 
+
+
  export const unPublishForm = (mapperId, ...rest) =>{
    const done = rest.length ? rest[0] : () => {};
    const url = replaceUrl(API.UNPUBLISH_FORMS,"<mapper id>",mapperId)

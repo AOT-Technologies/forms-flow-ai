@@ -28,22 +28,22 @@ const getApplicationStatusOptions = (rows) => {
   return selectOptions;
 }
 
-const linkApplication = (cell, row) => {
+const linkApplication = (cell, row, redirectUrl) => {
   return (
-    <Link to={`/application/${row.id}`} title={cell}>
+    <Link to={`${redirectUrl}application/${row.id}`} title={cell}>
       {cell}
     </Link>
   );
 }
 
 
-const linkSubmission = (cell,row) => {
-  const url = row.isClientEdit ? `/form/${row.formId}/submission/${row.submissionId}/edit`:`/form/${row.formId}/submission/${row.submissionId}`;
+const linkSubmission = (cell,row,redirectUrl) => {
+  const url = row.isClientEdit ? `${redirectUrl}form/${row.formId}/submission/${row.submissionId}/edit`:`${redirectUrl}form/${row.formId}/submission/${row.submissionId}`;
   const buttonText = row.isClientEdit ? (row.applicationStatus===AWAITING_ACKNOWLEDGEMENT?'Acknowledge':<Translation>{(t)=>t("Edit")}</Translation>) : <Translation>{(t)=>t("View")}</Translation>
   const icon=row.isClientEdit? 'fa fa-edit' : 'fa fa-eye';
   return (
   <div onClick={()=> window.open(url, "_blank")}>
-        <span className="btn btn-primary btn-sm form-btn"><span><i
+        <span style={{color:"blue",cursor:"pointer"}}><span><i
           className={icon}/>&nbsp;</span>{buttonText}</span>
   </div>
   );
@@ -73,12 +73,12 @@ export const columns_history = [
   },
 ];
 
-export const columns  = (applicationStatus,lastModified,callback,t) => {
+export const columns  = (applicationStatus,lastModified,callback,t,redirectUrl) => {
   return [
     {
       dataField: "id",
       text: <Translation>{(t)=>t("Application Id")}</Translation>,
-      formatter: linkApplication,
+      formatter: (cell, row)=>linkApplication(cell, row, redirectUrl),
       headerClasses: 'classApplicationId',
       sort: true,
       filter: textFilter({
@@ -127,7 +127,7 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
     {
       dataField: "formUrl",
       text: <Translation>{(t)=>t("Link To Form Submission")}</Translation>,
-      formatter: linkSubmission,
+      formatter:(cell,row)=>linkSubmission(cell,row,redirectUrl),
     },
 
     {
@@ -147,6 +147,9 @@ export const columns  = (applicationStatus,lastModified,callback,t) => {
           }}
           value={lastModified}
           maxDate={new Date()}
+          dayPlaceholder="dd"
+          monthPlaceholder="mm"
+          yearPlaceholder="yyyy"
         />}
     }
   ];

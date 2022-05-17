@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -34,7 +35,6 @@ public class HTTPServiceInvoker {
     public ResponseEntity<String> execute(String url, HttpMethod method, Object payload) throws IOException {
         String dataJson = payload != null ? bpmObjectMapper.writeValueAsString(payload) : null;
         return execute(url, method, dataJson);
-
     }
 
     public ResponseEntity<String> execute(String url, HttpMethod method, String payload) {
@@ -46,10 +46,17 @@ public class HTTPServiceInvoker {
         return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload, responseClazz);
     }
 
+    public ResponseEntity<String> executeWithParams(String url, HttpMethod method, Map<String, Object> requestParams) {
+        return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, requestParams);
+    }
+
     private String getServiceId(String url) {
+
         if(StringUtils.contains(url, getProperties().getProperty("api.url"))) {
             return "applicationAccessHandler";
-        }else if(StringUtils.contains(url, getProperties().getProperty("analysis.url"))) {
+        } else if(StringUtils.contains(url, getProperties().getProperty("bpm.url"))) {
+            return "bpmAccessHandler";
+        } else if(StringUtils.contains(url, getProperties().getProperty("analysis.url"))) {
             return "textAnalyzerAccessHandler";
         } else {
             return "formAccessHandler";

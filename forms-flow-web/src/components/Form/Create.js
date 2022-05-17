@@ -8,6 +8,7 @@ import {
   SUBMISSION_ACCESS,
   ANONYMOUS_ID,
   FORM_ACCESS,
+  MULTITENANCY_ENABLED,
 } from "../../constants/constants";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import { saveFormProcessMapper } from "../../apiManager/services/processServices";
@@ -51,6 +52,9 @@ const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
 const saveText = <Translation>{(t)=>t("Save & Preview")}</Translation>;
 const errors = useSelector((state)=>state.form.error)
 const lang = useSelector((state) => state.user.lang); 
+const tenantKey = useSelector(state => state.tenants?.tenantId);
+const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/'
+
 const {t}=useTranslation();
 
   useEffect(() => {
@@ -114,7 +118,7 @@ const {t}=useTranslation();
             saveFormProcessMapper(data, update, (err, res) => {
               if (!err) {
                 toast.success(t("Form Saved"));
-                dispatch(push(`/formflow/${form._id}/view-edit/`));
+                dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
               } else {
                 toast.error("Error in creating form process mapper");
               }
@@ -233,11 +237,12 @@ const {t}=useTranslation();
                className="m-0" style={{height:'20px', width:'20px'}}
                 type="checkbox"
                 id="anonymous"
+                title="Make this form public"
                 data-testid="anonymous"
                 checked={anonymous}
                 onChange={(e) =>{setAnonymous(!anonymous)}}
               />
-              <label htmlFor="anonymousLabel" className="form-control border-0"><Translation>{(t)=>t("Make this form public ?")}</Translation></label>
+                <label htmlFor="anonymousLabel" className="form-control border-0"><Translation>{(t)=>t("Make this form public ?")}</Translation></label>
             </div>
           </div>
         </div>

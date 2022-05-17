@@ -29,8 +29,8 @@ class SentimentAnalysisTransformerResource(Resource):
         try:
             input_json = request.get_json()
             response_json = dict(
-                application_id=input_json["applicationId"],
-                form_url=input_json["formUrl"],
+                applicationId=input_json["applicationId"],
+                formUrl=input_json["formUrl"],
                 data=[],
             )
             for data in input_json["data"]:
@@ -44,7 +44,7 @@ class SentimentAnalysisTransformerResource(Resource):
                 if APP_CONFIG.DATABASE_SUPPORT == Service.ENABLED.value:
                     save_sentiment_result(
                         input_text=text,
-                        overall_sentiment=response["overall_sentiment"],
+                        overall_sentiment=response["overallSentiment"],
                         output_response=response,
                     )
                     return jsonify(response_json), HTTPStatus.CREATED

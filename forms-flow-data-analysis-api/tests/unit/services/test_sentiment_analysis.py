@@ -13,6 +13,5 @@ def sentiment_analysis_pipeline_transformers():
         "Staff was very helpful."
     )
     assert response is not None
-    assert response["overall_sentiment"] == "POSITIVE"
-    assert isinstance(response["overall_sentiment"], str)
-
+    assert response["overallSentiment"] == "POSITIVE"
+    assert isinstance(response["overallSentiment"], str)

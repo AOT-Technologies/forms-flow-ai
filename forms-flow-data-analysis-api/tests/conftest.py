@@ -3,11 +3,9 @@ import pytest
 from flask_migrate import Migrate, upgrade
 from sqlalchemy import event, text
 from sqlalchemy.schema import DropConstraint, MetaData
-from api.utils.enumerator import Service
-from api import create_app, setup_jwt_manager
+from api import create_app
 from api.models import db as _db
 
-from api.utils.auth import jwt as _jwt
 
 @pytest.fixture(scope="session")
 def app():
@@ -39,10 +37,6 @@ def app_request():
 
     return _app
 
-@pytest.fixture(scope="session")
-def jwt(app):
-    """Return session-wide jwt manager."""
-    return _jwt
 
 @pytest.fixture(scope="session")
 def client(app):  # pylint: disable=redefined-outer-name

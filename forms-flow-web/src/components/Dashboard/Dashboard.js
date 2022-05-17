@@ -152,7 +152,7 @@ const Dashboard = React.memo(() => {
           >
             {
               submissionsList.length? (
-                <div className="container mb-4" id="main">
+    <div className="container mb-4" id="main" style={{overflowY:"scroll",maxHeight:"100px"}}>
       <div className="dashboard mb-2">
         <div className="row ">
           <div className="col-12">

@@ -90,7 +90,6 @@ const dynamicSort = (property) => {
   if(property[0] === "-") {
     sortOrder = -1;
     property = property.substr(1);
-    console.log("property",property)
   }
   return  (a,b)=> {
     /* next line works with strings and numbers,

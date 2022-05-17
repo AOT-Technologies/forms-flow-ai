@@ -62,12 +62,12 @@ class ApplicationService:
                 }
             }
             try:
-                if tenant_key:
+                if mapper.process_tenant:
                     camunda_start_task = BPMService.post_process_start_tenant(
                         process_key=mapper.process_key,
                         payload=payload,
                         token=token,
-                        tenant_key=tenant_key,
+                        tenant_key=mapper.process_tenant,
                     )
                 else:
                     camunda_start_task = BPMService.post_process_start(

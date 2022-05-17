@@ -37,6 +37,12 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     status = db.Column(db.String(10), nullable=True)
     comments = db.Column(db.String(300), nullable=True)
     tenant = db.Column(db.String(100), nullable=True)
+    process_tenant = db.Column(
+        db.String(),
+        nullable=True,
+        comment="Tenant ID Mapped to process definition. "
+        "This will be null for shared process definition.",
+    )
     application = db.relationship(
         "Application", backref="form_process_mapper", lazy=True
     )
@@ -45,7 +51,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
     task_variable = db.Column(JSON, nullable=True)
     version = db.Column(db.Integer, nullable=False, default=1)
 
-    __table_args__ = (UniqueConstraint("form_id", "version", name="_form_version_uc"),)
+    __table_args__ = (
+        UniqueConstraint("form_id", "version", "tenant", name="_form_version_uc"),
+    )
 
     @classmethod
     def create_from_dict(cls, mapper_info: dict) -> FormProcessMapper:
@@ -61,6 +69,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 mapper.comments = mapper_info.get("comments")
                 mapper.created_by = mapper_info["created_by"]
                 mapper.tenant = mapper_info.get("tenant")
+                mapper.process_tenant = mapper_info.get("process_tenant")
                 mapper.is_anonymous = mapper_info.get("is_anonymous")
                 mapper.task_variable = mapper_info.get("task_variable")
                 mapper.version = mapper_info.get("version")
@@ -88,6 +97,7 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
                 "modified_by",
                 "is_anonymous",
                 "task_variable",
+                "process_tenant",
             ],
             mapper_info,
         )
@@ -214,8 +224,9 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         )  # pylint: disable=no-member
 
     @classmethod
+    @user_context
     def find_mapper_by_form_id_and_version(
-        cls, form_id: int, version: int
+        cls, form_id: int, version: int, **kwargs
     ) -> FormProcessMapper:
         """
         Return the form process mapper with given form_id and version.
@@ -223,7 +234,11 @@ class FormProcessMapper(AuditDateTimeMixin, AuditUserMixin, BaseModel, db.Model)
         : form_id : form_id corresponding to the mapper
         : version : version corresponding to the mapper
         """
+        user: UserContext = kwargs["user"]
+        tenant_key: str = user.tenant_key
         query = cls.query.filter(
-            and_(cls.form_id == form_id, cls.version == version)
+            and_(
+                cls.form_id == form_id, cls.version == version, cls.tenant == tenant_key
+            )
         ).first()
         return query

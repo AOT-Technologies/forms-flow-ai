@@ -1,6 +1,6 @@
 #!/bin/bash
 # flask db init&&flask db migrate 
-if [ "$DATABASE_SUPPORT" == "ENABLED" ]
+if [ "$DATABASE_SUPPORT" = "ENABLED" ]
 then
     flask db upgrade
 fi

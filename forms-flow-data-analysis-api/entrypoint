@@ -1,4 +1,7 @@
 #!/bin/bash
 # flask db init&&flask db migrate 
-# flask db upgrade && 
+if [ "$DATABASE_SUPPORT" = "ENABLED" ]
+then
+    flask db upgrade
+fi
 gunicorn -b :5000 'api:create_app()' --timeout 120 --worker-class=gthread --workers=5 --threads=10

@@ -43,7 +43,7 @@ class StepperPage extends PureComponent {
       activeStep: 0,
       previewMode: false,
       editMode: false,
-      processData: { status: "inactive", comments: "" },
+      processData: { status: props.formProcessList.status, comments:props.formProcessList.comments },
       formId: "",
       processList: [],
       processListLoaded: false,

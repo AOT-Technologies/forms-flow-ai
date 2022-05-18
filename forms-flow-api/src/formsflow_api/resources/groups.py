@@ -2,7 +2,7 @@
 from http import HTTPStatus
 from pprint import pprint
 
-from flask import request
+from flask import current_app, request
 from flask_restx import Namespace, Resource
 from marshmallow import ValidationError
 
@@ -11,12 +11,7 @@ from formsflow_api.schemas import (
     KeycloakDashboardGroupSchema,
 )
 from formsflow_api.services import KeycloakAdminAPIService
-from formsflow_api.utils import (
-    KEYCLOAK_DASHBOARD_BASE_GROUP,
-    auth,
-    cors_preflight,
-    profiletime,
-)
+from formsflow_api.utils import auth, cors_preflight, profiletime
 
 API = Namespace("groups", description="Keycloak wrapper APIs")
 
@@ -43,30 +38,17 @@ class KeycloakDashboardGroupList(Resource):
         else:
             page_no = 0
             limit = 0
-
-        if page_no == 0 and limit == 0:
-            group_list_response = client.get_request(url_path="groups")
+        # If keycloak client level authorization is enabled; search roles under the client.
+        if current_app.config.get("KEYCLOAK_ENABLE_CLIENT_AUTH"):
+            dashboard_group_list = client.get_analytics_roles(page_no, limit)
         else:
-            group_list_response = client.get_paginated_request(
-                url_path="groups", first=page_no, max_results=limit
-            )
+            dashboard_group_list = client.get_analytics_groups(page_no, limit)
+        if not dashboard_group_list:
+            return {
+                "message": "No Dashboard authorized Group found"
+            }, HTTPStatus.NOT_FOUND
 
-        for group in group_list_response:
-            if group["name"] == KEYCLOAK_DASHBOARD_BASE_GROUP:
-                dashboard_group_list = list(group["subGroups"])
-                if not dashboard_group_list:
-                    return {
-                        "message": "No Dashboard authorized Group found"
-                    }, HTTPStatus.NOT_FOUND
-
-                for dashboard_group in dashboard_group_list:
-                    dashboard_group["dashboards"] = (
-                        client.get_request(url_path=f"groups/{dashboard_group['id']}")
-                        .get("attributes")
-                        .get("dashboards")
-                    )
-                return dashboard_group_list, HTTPStatus.OK
-        return None, HTTPStatus.NOT_FOUND
+        return dashboard_group_list, HTTPStatus.OK
 
 
 @cors_preflight("GET,PUT,OPTIONS")

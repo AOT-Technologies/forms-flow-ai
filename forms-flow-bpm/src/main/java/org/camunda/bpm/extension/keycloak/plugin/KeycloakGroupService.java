@@ -171,13 +171,16 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 
 		try {
 			ResponseEntity<String> response = this.tenantService.requestTenants(null);
-
+			LOG.info("response.getBody() " + response.getBody());
 			JsonObject searchResult = parseAsJsonObject(response.getBody());
 			JsonArray tenantsArr = getJsonArray(searchResult, "tenants");
 			for (int i = 0; i < tenantsArr.size(); i++) {
 				JsonObject tenantObj = getJsonObjectAtIndex(tenantsArr, i);
+				LOG.info("tenantObj " + tenantObj);
 				JsonArray roles =  getJsonArray(getJsonObject(tenantObj, "details"), "roles");
+				LOG.info("roles " + roles);
 				String tenantKey = getJsonString(tenantObj, "key");
+				LOG.info("tenantKey " + tenantKey);
 				for (int j = 0 ; j < roles.size(); j++) {
 					roleList.add(transformRole(getJsonObjectAtIndex(roles, j), tenantKey));
 				}
@@ -190,7 +193,7 @@ public class KeycloakGroupService extends org.camunda.bpm.extension.keycloak.Key
 			}
 			throw hcee;
 		} catch (RestClientException | JsonException rce) {
-			throw new IdentityProviderException("Unable to query roles for client " + webClientId, rce);
+			throw new IdentityProviderException("Unable to get all tenant roles ", rce);
 		}
 
 		return roleList;

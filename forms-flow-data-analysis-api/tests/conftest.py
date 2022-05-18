@@ -3,8 +3,9 @@ import pytest
 from flask_migrate import Migrate, upgrade
 from sqlalchemy import event, text
 from sqlalchemy.schema import DropConstraint, MetaData
-from api import create_app
+from api import create_app, setup_jwt_manager
 from api.models import db as _db
+from api.utils import jwt as _jwt
 
 
 @pytest.fixture(scope="session")
@@ -137,3 +138,21 @@ def session(app, db):  # pylint: disable=redefined-outer-name, invalid-name
         else:
             yield app
 
+
+@pytest.fixture(scope="session", autouse=True)
+def auto(docker_services, app):
+    """Spin up a keycloak instance and initialize jwt."""
+    if app.config.get("USE_DOCKER_MOCK"):
+        docker_services.start("keycloak")
+        docker_services.wait_for_service("keycloak", 8081)
+        setup_jwt_manager(app, _jwt)
+
+
+@pytest.fixture(scope="session")
+def docker_compose_files(pytestconfig):
+    """Get the docker-compose.yml absolute path."""
+    import os
+
+    return [
+        os.path.join(str(pytestconfig.rootdir), "tests/docker", "docker-compose.yml")
+    ]

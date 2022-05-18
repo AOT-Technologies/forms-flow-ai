@@ -16,7 +16,6 @@ import NotFound from "../NotFound";
 import { Translation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from '../../constants/constants';
 import { fetchAllBpmProcesses } from '../../apiManager/services/processServices';
-import { getTenantinfo } from '../../helper/helper';
 
 const ViewApplication = React.memo(() => {
   const {applicationId} = useParams();
@@ -87,7 +86,7 @@ const ViewApplication = React.memo(() => {
             <ProcessDiagram
               processKey={applicationProcess.processKey}
               processInstanceId={applicationDetail.processInstanceId}
-              tenant={getTenantinfo(applicationProcess.processKey, processList)}
+              tenant={applicationDetail.processTenant}
             />
         </Tab>
       </Tabs>

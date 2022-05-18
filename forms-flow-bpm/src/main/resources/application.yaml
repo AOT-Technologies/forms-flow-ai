@@ -131,7 +131,7 @@ plugin.identity.keycloak:
   webClientId: ${KEYCLOAK_WEB_CLIENTID:}
   enableClientAuth: ${KEYCLOAK_ENABLE_CLIENT_AUTH:false}
   enableMultiTenancy: ${MULTI_TENANCY_ENABLED:false}
-  formsFlowAdminUrl: ${keycloak.url}/auth/realms/${keycloak.url.realm}
+  formsFlowAdminUrl: ${FORMSFLOW_ADMIN_URL:}
 
 app.security.origin: ${APP_SECURITY_ORIGIN}
 

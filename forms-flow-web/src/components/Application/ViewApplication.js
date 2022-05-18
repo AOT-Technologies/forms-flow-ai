@@ -23,7 +23,6 @@ const ViewApplication = React.memo(() => {
   const applicationDetailStatusCode = useSelector(state=>state.applications.applicationDetailStatusCode)
   const isApplicationDetailLoading = useSelector(state=>state.applications.isApplicationDetailLoading);
   const applicationProcess = useSelector(state => state.applications.applicationProcess);
-  const processList = useSelector(state => state.process.processList);
   const tenantKey = useSelector(state => state.tenants?.tenantId);
   const dispatch= useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';

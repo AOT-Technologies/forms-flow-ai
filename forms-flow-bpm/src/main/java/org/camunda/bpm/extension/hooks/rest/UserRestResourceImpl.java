@@ -1,15 +1,17 @@
 package org.camunda.bpm.extension.hooks.rest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.rest.dto.UserProfileDto;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.reactive.function.client.WebClient;
 
+import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -18,26 +20,30 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(RestResource.BASE_PATH+"/v1"+TaskRestResource.PATH)
+@RequestMapping(RestResource.BASE_PATH+"/v1"+UserRestResource.PATH)
 public class UserRestResourceImpl implements UserRestResource{
 
-    private HTTPServiceInvoker httpServiceInvoker;
+    private final HTTPServiceInvoker httpServiceInvoker;
+    private final Properties properties;
+    @Resource(name = "bpmObjectMapper")
+    private ObjectMapper bpmObjectMapper;
 
-    @Autowired
-    private Properties integrationCredentialProperties;
-
-    public UserRestResourceImpl(HTTPServiceInvoker httpServiceInvoker){
+    public UserRestResourceImpl(HTTPServiceInvoker httpServiceInvoker, Properties integrationCredentialProperties){
         this.httpServiceInvoker = httpServiceInvoker;
+        this.properties = integrationCredentialProperties;
     }
 
     @Override
-    public EntityModel<String> queryUsers(Map<String, Object> parameters) {
+    public CollectionModel<UserProfileDto> queryUsers(Map<String, Object> parameters) throws JsonProcessingException {
 
         List<UserProfileDto> response = null;
-        String url = integrationCredentialProperties.getProperty("bpm.url")+"/camunda/engine-rest/user";
-        ResponseEntity<String> data = httpServiceInvoker.execute(url, HttpMethod.GET, parameters);
-
-        return EntityModel.of(data.getBody(),
+        String url = properties.getProperty("bpm.url")+"/camunda/engine-rest/user";
+        ResponseEntity<String> data = httpServiceInvoker.executeWithParams(url, HttpMethod.GET, parameters);
+        if(data.getStatusCode().is2xxSuccessful()) {
+            UserProfileDto[] userProfileDtos = bpmObjectMapper.readValue(data.getBody(), UserProfileDto[].class);
+            response = Arrays.asList(userProfileDtos);
+        }
+        return CollectionModel.of(response,
                 linkTo(methodOn(UserRestResourceImpl.class).queryUsers(parameters)).withSelfRel());
     }
 }

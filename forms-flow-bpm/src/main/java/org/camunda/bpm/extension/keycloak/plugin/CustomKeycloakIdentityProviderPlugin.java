@@ -44,6 +44,7 @@ public class CustomKeycloakIdentityProviderPlugin extends KeycloakIdentityProvid
 		CustomConfig config = new CustomConfig(webClientId, enableClientAuth, enableMultiTenancy, formsFlowAdminUrl);
 		keycloakIdentityProviderFactory = new KeycloakIdentityProviderFactory(this, customHttpRequestInterceptors, config);
 		processEngineConfiguration.setIdentityProviderSessionFactory(keycloakIdentityProviderFactory);
+		processEngineConfiguration.setTenantIdProvider(new TenantProvider());
 	}
 
 	/**

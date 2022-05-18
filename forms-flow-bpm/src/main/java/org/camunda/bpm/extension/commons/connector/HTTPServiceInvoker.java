@@ -1,7 +1,6 @@
 package org.camunda.bpm.extension.commons.connector;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.extension.commons.ro.req.IRequest;
@@ -46,7 +45,7 @@ public class HTTPServiceInvoker {
         return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload, responseClazz);
     }
 
-    public ResponseEntity<String> execute(String url, HttpMethod method, Map<String, Object> requestParams) {
+    public ResponseEntity<String> executeWithParams(String url, HttpMethod method, Map<String, Object> requestParams) {
         return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, requestParams);
     }
 

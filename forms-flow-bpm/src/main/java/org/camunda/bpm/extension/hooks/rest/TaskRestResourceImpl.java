@@ -1,6 +1,6 @@
 package org.camunda.bpm.extension.hooks.rest;
 
-import org.camunda.bpm.engine.rest.dto.CountResultDto;
+import org.camunda.bpm.extension.hooks.rest.dto.CountResultDto;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -24,7 +24,7 @@ import static org.springframework.security.oauth2.client.web.reactive.function.c
 
 
 @Service("textAnalyzerAccessHandler")
-public class TextAnalyzerAccessHandler implements IAccessHandler{
+public class TextAnalyzerAccessHandler extends AbstractAccessHandler{
 
     private final Logger LOGGER = LoggerFactory.getLogger(TextAnalyzerAccessHandler.class);
 
@@ -63,8 +63,4 @@ public class TextAnalyzerAccessHandler implements IAccessHandler{
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
 
-    @Override
-    public ResponseEntity<String> exchange(String url, HttpMethod method, Map<String, Object> queryParams) {
-        return null;
-    }
 }

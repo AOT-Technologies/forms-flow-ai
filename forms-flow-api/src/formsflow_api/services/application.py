@@ -59,6 +59,7 @@ class ApplicationService:
                     "formName": {"value": mapper.form_name},
                     "submitterName": {"value": application.created_by},
                     "submissionDate": {"value": application.created.__str__()},
+                    "tenantKey": {"value": mapper.tenant},
                 }
             }
             try:

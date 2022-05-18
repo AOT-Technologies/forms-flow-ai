@@ -50,12 +50,11 @@ const Dashboard = React.memo(() => {
   const activePage = useSelector((state) => state.metrics.pagination.page);
   const limit = useSelector((state) => state.metrics.limit);
   const totalItems = useSelector((state) => state.metrics.submissionsFullList.length)
-  const pageRange = useSelector((state) => state.metrics.pagination.numPages)
+  const pageRange = useSelector((state) => state.metrics.pagination.numPages);
   const sort = useSelector((state) => state.metrics.sort);
-  const metricsDateRangeLoader = useSelector((state) => state.metrics.metricsDateRangeLoader)
-
-  let numberofSubmissionListFrom = (activePage===1)? 1 : (activePage*limit)-limit+1 
-  let numberofSubmissionListTo = (activePage===1)? limit : limit*activePage
+  const metricsDateRangeLoader = useSelector((state) => state.metrics.metricsDateRangeLoader);
+  let numberofSubmissionListFrom = (activePage===1)? 1 : (activePage*limit)-limit+1 ;
+  let numberofSubmissionListTo = (activePage===1)? limit : limit*activePage;
   // if ascending sort value is title else -title for this case
   const isAscending =  sort ==='-formName'? false : true;
   // const searchOptions = [
@@ -70,15 +69,16 @@ const Dashboard = React.memo(() => {
   const [showSubmissionData,setSHowSubmissionData]=useState(submissionsList[0]);
   const [show ,setShow] =useState(false);
   // State to set search text for submission data 
-  const[showClearButton,setShowClearButton] = useState('')
-  const searchInputBox = useRef("")
+  const[showClearButton,setShowClearButton] = useState('');
+  const searchInputBox = useRef("");
   // Function to handle search text
   const handleSearch = ()=>{
     dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
   }
   const onClear = ()=>{
-    searchInputBox.current.value = ""
-    handleSearch()
+    searchInputBox.current.value = "";
+    setShowClearButton(false);
+    handleSearch();
   }
   // Function to handle sort for submission data
   const handleSort = ()=>{
@@ -89,11 +89,11 @@ const Dashboard = React.memo(() => {
   }
   // Function to handle page limit change for submission data
   const handleLimitChange = (limit)=>{
-    dispatch(setMetricsSubmissionLimitChange(Number(limit)))
+    dispatch(setMetricsSubmissionLimitChange(Number(limit)));
   }
   // Function to handle pageination page change for submission data
   const handlePageChange = (pageNumber) =>{
-    dispatch(setMetricsSubmissionPageChange(pageNumber))
+    dispatch(setMetricsSubmissionPageChange(pageNumber));
   }
   const getFormattedDate = (date) => {
     return moment.utc(date).format("YYYY-MM-DDTHH:mm:ssZ").replace("+","%2B");
@@ -102,7 +102,7 @@ const Dashboard = React.memo(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy,(err,data)=>{
-      dispatch(setMetricsDateRangeLoading(false))
+      dispatch(setMetricsDateRangeLoading(false));
       if(searchInputBox.current){  
       dispatch(setMetricsSubmissionSearch(searchInputBox.current.value || ''));
       }
@@ -129,17 +129,24 @@ const Dashboard = React.memo(() => {
   };
 
   const onSetDateRange = (date) => {
-    dispatch(setMetricsDateRangeLoading(true))
+    dispatch(setMetricsDateRangeLoading(true));
     setDateRange(date);
   };
   const resetSubmission = ()=>{
-    dispatch(setMetricsSubmissionSearch(""));
-    if(!searchInputBox.current){
-      setDateRange([moment(firsDay),moment(lastDay)])
+    const checkFirstDay = moment(dateRange[0]).format("YYYY-MM-01");
+    const checkLastDay = moment(dateRange[1]).format("YYYY-MM-DD");
+    if(checkFirstDay===firsDay && checkLastDay===lastDay){
+      dispatch(setMetricsSubmissionSearch(""));
+      searchInputBox.current.value = "";
+      setShowClearButton(false);
+    }else if(searchInputBox.current.value){
+      setDateRange([
+    moment(firsDay),
+    moment(lastDay)
+  ]);
     }
-
   }
-  
+  const noDefaultApplicationAvailable = (!searchInputBox.current.value && !submissionsList.length) ? true : false;
   const noOfApplicationsAvailable = submissionsList?.length || 0;
   if (metricsLoadError) {
     return (
@@ -153,9 +160,8 @@ const Dashboard = React.memo(() => {
           spinner
           text={t("Loading...")}
           >
-            {
-              submissionsList.length? (
-                <div className="container mb-4" id="main">
+            
+    <div className="container mb-4" id="main" style={{overflowY:"scroll",maxHeight:"100px"}}>
       <div className="dashboard mb-2">
         <div className="row ">
           <div className="col-12">
@@ -211,8 +217,8 @@ const Dashboard = React.memo(() => {
               <div class="form-outline ml-3">
                  <input type="search" id="form1" 
                  ref={searchInputBox}
-                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-                 onChange={(e)=>setShowClearButton(e.target.value)} 
+                 onKeyPress={(e) => e.key === 'Enter'  && handleSearch()}
+                 onChange={(e)=>{setShowClearButton(e.target.value); e.target.value === ''  && handleSearch()}} 
                  autoComplete="off"
                  class="form-control" placeholder="search..." 
                  />
@@ -236,6 +242,8 @@ const Dashboard = React.memo(() => {
           </div>
         </div>
           </div>
+          {
+              submissionsList.length? (
                 <div className="col-12">
             <ApplicationCounter
               className="dashboard-card"
@@ -245,7 +253,31 @@ const Dashboard = React.memo(() => {
               noOfApplicationsAvailable={noOfApplicationsAvailable}
               setSHowSubmissionData={setSHowSubmissionData}
             />
-          </div>
+          </div> ) : (noDefaultApplicationAvailable && !showClearButton) ? 
+          
+              <div className="col-12 col-sm-6 col-md-6 no_submission_main">
+                <span className="col-12 col-sm-6 col-md-6 no_sumbsmission">
+                  <h3>No submission avaliable in the selected date. Please select another date range</h3>
+                </span>
+              </div>
+          
+              : (
+                <div className="col-12 col-sm-6 col-md-6 no_submission_main">
+                  
+                <div className="col-12 col-sm-6 col-md-6 no_sumbsmission"> 
+                  <h3 >{t("No submissions found")}</h3> 
+                 <Button variant="outline-primary" size="sm"
+                   style={{
+                   cursor:"pointer"}}
+                   onClick={()=> resetSubmission()}
+                 >
+                 {t("Click here to go back")}
+                 </Button>
+                </div>
+                  
+                  </div>
+              )
+            }
 
           {
             submissionsList.length  ? (
@@ -303,36 +335,7 @@ const Dashboard = React.memo(() => {
         
       </div>
       </div>
-              ) : (
-                <span>
-                  <LoadingOverlay
-                  active={metricsDateRangeLoader}
-                  spinner
-                  text={t("Loading...")}
-                  >
-                  <div 
-                    className="container"
-                    style={{
-                    maxWidth:"900px",
-                    margin:"auto",
-                    height:"60vh",
-                    display:"flex",
-                    flexDirection:"column",
-                    alignItems:"center",
-                    justifyContent:"center"}}> 
-                  <h3 >{t("No submissions found")}</h3> 
-                 <Button variant="outline-primary" size="sm"
-                 style={{
-                   cursor:"pointer"}}
-                   onClick={()=> resetSubmission()}
-                 >
-                 {t("Click here to go back")}
-                </Button>
-                  </div>
-                  </LoadingOverlay>
-                  </span>
-              )
-            }
+              
       
       
       <Route path={"/metrics/:notAvailable"}> <Redirect exact to='/404'/></Route>

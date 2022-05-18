@@ -24,7 +24,6 @@ import Button from 'react-bootstrap/Button';
 import { useTranslation } from "react-i18next";
 import {listProcess} from "../../../apiManager/services/formatterService";
 import {DEFAULT_WORKFLOW} from "../../../constants/taskConstants";
-import { getTenantinfo } from "../../../helper/helper";
 
 const WorkFlow = React.memo(
   ({
@@ -64,13 +63,8 @@ const WorkFlow = React.memo(
       if(!workflow){
         setModified(true);
         dispatch(setWorkflowAssociation(DEFAULT_WORKFLOW));
-      }else if(workflow.hasOwnProperty("tenant") && !workflow.tenant){
-        let tenant = getTenantinfo(workflow.value, process)
-        if(tenant){
-          dispatch(setWorkflowAssociation({...workflow, tenant:tenant}));
-        }
       }
-    },[workflow, process, dispatch] );
+    },[workflow, dispatch] );
 
 
     const addTaskVariable = (data) => {

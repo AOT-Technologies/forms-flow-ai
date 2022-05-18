@@ -35,7 +35,7 @@ const process = (state = initialState, action) => {
     case ACTION_CONSTANTS.IS_FORM_PROCESS_STATUS_LOAD_ERROR:
       return { ...state, formProcessError: action.payload };
     case ACTION_CONSTANTS.FORM_PROCESS_LIST:
-      return { ...state, formProcessList: action.payload, workflowAssociated:action.payload?.processKey?{label:action.payload?.processName,value:action.payload?.processKey, tenant: action.payload?.tenantKey}:null};
+      return { ...state, formProcessList: action.payload, workflowAssociated:action.payload?.processKey?{label:action.payload?.processName,value:action.payload?.processKey, tenant: action.payload?.processTenant}:null};
     case ACTION_CONSTANTS.PROCESS_ACTIVITIES:
       return { ...state, processActivityList: action.payload };
     case ACTION_CONSTANTS.PROCESS_DIAGRAM_XML:

@@ -94,41 +94,50 @@ class KeycloakAdminAPIService:
                     )
         return dashboard_group_list
 
-    @user_context
-    def get_analytics_roles(self, page_no: int, limit: int, **kwargs):
+    def get_analytics_roles(self, page_no: int, limit: int):
         """Return roles for analytics users."""
+        current_app.logger.debug("Getting analytics roles")
         dashboard_roles_list: list = []
+        client_id = self.get_client_id()
+        # Look for exact match
+        if page_no == 0 and limit == 0:
+            roles = self.get_request(f"clients/{client_id}/roles")
+        else:
+            roles = self.get_paginated_request(
+                url_path=f"clients/{client_id}/roles",
+                first=page_no,
+                max_results=limit,
+            )
+        current_app.logger.debug("Client roles %s", roles)
+        for client_role in roles:
+            if client_role["name"] not in FORMSFLOW_ROLES:
+                client_role["dashboards"] = (
+                    self.get_request(
+                        url_path=f"roles-by-id/{client_role['id']}?client={client_id}"
+                    )
+                    .get("attributes")
+                    .get("dashboards")
+                )
+                dashboard_roles_list.append(client_role)
+        current_app.logger.debug("dashboard_roles_list %s", dashboard_roles_list)
+        return dashboard_roles_list
+
+    @user_context
+    def get_client_id(self, **kwargs):
+        """Get client id."""
         user: UserContext = kwargs["user"]
         client_name = current_app.config.get("JWT_OIDC_AUDIENCE")
         if current_app.config.get("MULTI_TENANCY_ENABLED"):
             client_name = f"{user.tenant_key}-{client_name}"
+        current_app.logger.debug("Client name %s", client_name)
         # Find client id from keycloak using client name
         url_path = f"clients?clientId={client_name}&search=true"
         clients_response = self.get_request(url_path)
         # Look for exact match
         for client in clients_response:
             if client.get("clientId") == client_name:
-                client_id = client.get("id")
-                if page_no == 0 and limit == 0:
-                    roles = self.get_request(f"clients/{client_id}/roles")
-                else:
-                    roles = self.get_paginated_request(
-                        url_path=f"clients/{client_id}/roles",
-                        first=page_no,
-                        max_results=limit,
-                    )
-
-                for client_role in roles:
-                    if client_role not in FORMSFLOW_ROLES:
-                        client_role["dashboards"] = (
-                            self.get_request(
-                                url_path=f"roles-by-id/{client_role['id']}?client={client_id}"
-                            )
-                            .get("attributes")
-                            .get("dashboards")
-                        )
-                        dashboard_roles_list.append(client_role)
-        return dashboard_roles_list
+                return client.get("id")
+        return None
 
     @profiletime
     def update_request(  # pylint: disable=inconsistent-return-statements

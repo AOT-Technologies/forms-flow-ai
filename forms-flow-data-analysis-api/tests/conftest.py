@@ -6,6 +6,7 @@ from sqlalchemy.schema import DropConstraint, MetaData
 from api import create_app, setup_jwt_manager
 from api.models import db as _db
 from api.utils import jwt as _jwt
+from api.utils.enumerator import Service
 
 
 @pytest.fixture(scope="session")
@@ -58,7 +59,7 @@ def db(app):  # pylint: disable=redefined-outer-name, invalid-name
 
     Drops all existing tables - Meta follows Postgres FKs
     """
-    if app.config['DATABASE_SUPPORT'] == Service.ENABLED.value:
+    if app.config["DATABASE_SUPPORT"] == Service.ENABLED.value:
         with app.app_context():
             # Clear out any existing tables
             metadata = MetaData(_db.engine)
@@ -102,7 +103,7 @@ def db(app):  # pylint: disable=redefined-outer-name, invalid-name
 def session(app, db):  # pylint: disable=redefined-outer-name, invalid-name
     """Return a function-scoped session."""
     with app.app_context():
-        if app.config['DATABASE_SUPPORT'] == Service.ENABLED.value:
+        if app.config["DATABASE_SUPPORT"] == Service.ENABLED.value:
             conn = db.engine.connect()
             txn = conn.begin()
 

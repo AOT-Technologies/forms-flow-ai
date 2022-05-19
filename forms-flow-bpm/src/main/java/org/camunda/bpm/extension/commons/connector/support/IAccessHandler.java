@@ -33,5 +33,5 @@ public interface IAccessHandler {
     ResponseEntity<IResponse> exchange(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz);
 
 
-    ResponseEntity<String> exchange(String url, HttpMethod method, Map<String, Object> queryParams);
+    ResponseEntity<String> exchange(String url, HttpMethod method, Map<String, Object> queryParams, IRequest payload);
 }

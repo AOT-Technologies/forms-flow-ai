@@ -5,6 +5,7 @@ import org.camunda.bpm.extension.hooks.rest.UserRestResource;
 import org.camunda.bpm.extension.hooks.rest.dto.UserProfileDto;
 import org.camunda.bpm.extension.hooks.rest.service.UserRestService;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,8 +28,8 @@ public class UserRestResourceImpl implements UserRestResource{
     @Override
     public CollectionModel<UserProfileDto> queryUsers(Map<String, Object> parameters) {
 
-        List<UserProfileDto> response = userRestService.queryUsers(parameters);
-        return CollectionModel.of(response,
+        ResponseEntity<List<UserProfileDto>> response = userRestService.queryUsers(parameters);
+        return CollectionModel.of(response.getBody(),
                 linkTo(methodOn(UserRestResourceImpl.class).queryUsers(parameters)).withSelfRel());
     }
 }

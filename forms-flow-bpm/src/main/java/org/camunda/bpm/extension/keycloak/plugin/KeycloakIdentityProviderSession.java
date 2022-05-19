@@ -11,11 +11,7 @@ import org.camunda.bpm.engine.identity.Tenant;
 import org.camunda.bpm.engine.identity.TenantQuery;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.interceptor.CommandContext;
-import org.camunda.bpm.extension.keycloak.CacheableKeycloakGroupQuery;
-import org.camunda.bpm.extension.keycloak.CacheableKeycloakUserQuery;
-import org.camunda.bpm.extension.keycloak.KeycloakConfiguration;
-import org.camunda.bpm.extension.keycloak.KeycloakContextProvider;
-import org.camunda.bpm.extension.keycloak.KeycloakGroupQuery;
+import org.camunda.bpm.extension.keycloak.*;
 import org.camunda.bpm.extension.keycloak.cache.QueryCache;
 import org.camunda.bpm.extension.keycloak.rest.KeycloakRestTemplate;
 import org.camunda.bpm.extension.keycloak.util.KeycloakPluginLogger;
@@ -40,6 +36,8 @@ public class KeycloakIdentityProviderSession
 		super(keycloakConfiguration, restTemplate, keycloakContextProvider, userQueryCache, groupQueryCache);
 		this.config = config;
 		this.groupService = new KeycloakGroupService(keycloakConfiguration, restTemplate, keycloakContextProvider,
+				config);
+		this.userService = new KeycloakUserService(keycloakConfiguration, restTemplate, keycloakContextProvider,
 				config);
 		this.tenantService = new TenantService(restTemplate, keycloakContextProvider, config);
 		this.tenantQueryCache = tenantQueryCache;

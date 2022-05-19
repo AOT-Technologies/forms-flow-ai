@@ -20,7 +20,8 @@ const initialState = {
   sort:'formName',
   searchText:'',
   maintainPagination:false,
-  metricsDateRangeLoader:false
+  metricsDateRangeLoader:false,
+  submissionStatusCountLoader:false
 };
 
 const metrics = (state = initialState, action) => {
@@ -67,6 +68,8 @@ const metrics = (state = initialState, action) => {
       return { ...state, metricsDateRangeLoader: action.payload }; 
     case ACTION_CONSTANTS.METRICS_SUBMISSION_RESET:
       return { ...state, metricsDateRangeLoader: action.payload };
+    case ACTION_CONSTANTS.METRICS_SUBMISSION_STATUS_COUNT_LOADER:
+      return { ...state, submissionStatusCountLoader: action.payload };
     default:
       return state;
   }

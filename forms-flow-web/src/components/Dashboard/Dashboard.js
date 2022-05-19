@@ -17,7 +17,8 @@ import { Translation,useTranslation } from "react-i18next";
 import { 
    setMetricsDateRangeLoading, setMetricsSubmissionLimitChange,
    setMetricsSubmissionPageChange, setMetricsSubmissionSearch,
-   setMetricsSubmissionSort
+   setMetricsSubmissionSort,
+   SetSubmissionStatusCountLoader
 } from "../../actions/metricsActions";
 import LoadingOverlay from "react-loading-overlay";
 import { Button } from "react-bootstrap";
@@ -52,6 +53,7 @@ const Dashboard = React.memo(() => {
   const totalItems = useSelector((state) => state.metrics.submissionsFullList.length)
   const pageRange = useSelector((state) => state.metrics.pagination.numPages);
   const sort = useSelector((state) => state.metrics.sort);
+  const submissionStatusCountLoader = useSelector((state) =>state.metrics.submissionStatusCountLoader)
   const metricsDateRangeLoader = useSelector((state) => state.metrics.metricsDateRangeLoader);
   let numberofSubmissionListFrom = (activePage===1)? 1 : (activePage*limit)-limit+1 ;
   let numberofSubmissionListTo = (activePage===1)? limit : limit*activePage;
@@ -124,8 +126,11 @@ const Dashboard = React.memo(() => {
   const getStatusDetails = (id) => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
-    dispatch(fetchMetricsSubmissionStatusCount(id, fromDate, toDate, searchBy));
+    dispatch(SetSubmissionStatusCountLoader(true))
+    dispatch(fetchMetricsSubmissionStatusCount(id, fromDate, toDate, searchBy,(err,data)=>{
+    dispatch(SetSubmissionStatusCountLoader(false))
     setShow(true);
+    }));
   };
 
   const onSetDateRange = (date) => {
@@ -156,12 +161,12 @@ const Dashboard = React.memo(() => {
   return (
     <Fragment>
       <LoadingOverlay
-          active={metricsDateRangeLoader}
+          active={metricsDateRangeLoader || submissionStatusCountLoader}
           spinner
           text={t("Loading...")}
           >
             
-    <div className="container mb-4" id="main" style={{overflowY:"scroll",maxHeight:"100px"}}>
+    <div className="container  mb-4" id="main" style={{overflowY:"scroll",maxHeight:"100px"}}>
       <div className="dashboard mb-2">
         <div className="row ">
           <div className="col-12">

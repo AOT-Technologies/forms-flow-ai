@@ -65,7 +65,7 @@ const Dashboard = React.memo(() => {
   const [searchBy, setSearchBy] = useState("created");
   const [dateRange, setDateRange] = useState([
     moment(firsDay),
-    moment(lastDay),
+    moment(lastDay)
   ]);
   const [showSubmissionData,setSHowSubmissionData]=useState(submissionsList[0]);
   const [show ,setShow] =useState(false);
@@ -103,8 +103,8 @@ const Dashboard = React.memo(() => {
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy,(err,data)=>{
       dispatch(setMetricsDateRangeLoading(false))
-      if(searchInputBox.current.value){
-      dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
+      if(searchInputBox.current){  
+      dispatch(setMetricsSubmissionSearch(searchInputBox.current.value || ''));
       }
     }));
   }, [dispatch,searchBy,dateRange,searchInputBox]);
@@ -134,6 +134,9 @@ const Dashboard = React.memo(() => {
   };
   const resetSubmission = ()=>{
     dispatch(setMetricsSubmissionSearch(""));
+    if(!searchInputBox.current){
+      setDateRange([moment(firsDay),moment(lastDay)])
+    }
 
   }
   
@@ -245,7 +248,7 @@ const Dashboard = React.memo(() => {
           </div>
 
           {
-            submissionsList.length ? (
+            submissionsList.length  ? (
               <div className=" w-100 p-3 d-flex align-items-center">
                 
               <Pagination

@@ -59,15 +59,16 @@ class ApplicationService:
                     "formName": {"value": mapper.form_name},
                     "submitterName": {"value": application.created_by},
                     "submissionDate": {"value": application.created.__str__()},
+                    "tenantKey": {"value": mapper.tenant},
                 }
             }
             try:
-                if tenant_key:
+                if mapper.process_tenant:
                     camunda_start_task = BPMService.post_process_start_tenant(
                         process_key=mapper.process_key,
                         payload=payload,
                         token=token,
-                        tenant_key=tenant_key,
+                        tenant_key=mapper.process_tenant,
                     )
                 else:
                     camunda_start_task = BPMService.post_process_start(

@@ -40,13 +40,12 @@ public class HTTPServiceInvoker {
             return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload);
     }
 
-    public ResponseEntity<IResponse> execute(String url, HttpMethod method, IRequest payload,
-                                          Class<? extends IResponse> responseClazz) {
+    public ResponseEntity<IResponse> execute(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz) {
         return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload, responseClazz);
     }
 
-    public ResponseEntity<String> executeWithParams(String url, HttpMethod method, Map<String, Object> requestParams) {
-        return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, requestParams);
+    public ResponseEntity<String> executeWithParamsAndPayload(String url, HttpMethod method, Map<String, Object> requestParams, IRequest payload) {
+        return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, requestParams, payload);
     }
 
     private String getServiceId(String url) {

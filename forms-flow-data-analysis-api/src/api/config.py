@@ -101,6 +101,7 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
     DEBUG = True
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL_TEST")
+    JWT_OIDC_TEST_MODE = True
     USE_DOCKER_MOCK = os.getenv("USE_DOCKER_MOCK", default=None)
 
     # JWT_OIDC Settings
@@ -125,10 +126,8 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
                 "kty": "RSA",
                 "alg": "RS256",
                 "use": "sig",
-                "n": "AN-fWcpCyE5KPzHDjigLaSUVZI0uYrcGcc40InVtl-rQ-"
-                "RDmAh-C2W8H4_Hxhr5VLc6crsJ2LiJTV_E72S03pzpOOaaYV6-"
-                "TzAjCou2GYJIXev7f6Hh512PuG5wyxda_TlBSsI-gvphRTPsK-"
-                "CnPutrbiukCYrnPuWxX5_cES9eStR",
+                "n": "AN-fWcpCyE5KPzHDjigLaSUVZI0uYrcGcc40InVtl-rQRDmAh-C2W8H4_Hxhr5VLc6crsJ2LiJTV_E72S03pzpOOaaYV6-"
+                "TzAjCou2GYJIXev7f6Hh512PuG5wyxda_TlBSsI-gvphRTPsKCnPutrbiukCYrnPuWxX5_cES9eStR",
                 "e": "AQAB",
             }
         ]
@@ -141,25 +140,17 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
                 "kty": "RSA",
                 "alg": "RS256",
                 "use": "sig",
-                "n": "AN-fWcpCyE5KPzHDjigLaSUVZI0uYrcGcc40InVtl-rQR-"
-                "DmAh-C2W8H4_Hxhr5VLc6crsJ2LiJTV_E72S03pzpOOaaYV6-"
-                "TzAjCou2GYJIXev7f6Hh512PuG5wyxda_TlBSsI-gvphRTPsK-"
-                "CnPutrbiukCYrnPuWxX5_cES9eStR",
+                "n": "AN-fWcpCyE5KPzHDjigLaSUVZI0uYrcGcc40InVtl-rQRDmAh-C2W8H4_Hxhr5VLc6crsJ2LiJTV_E72S03pzpOOaaYV6-"
+                "TzAjCou2GYJIXev7f6Hh512PuG5wyxda_TlBSsI-gvphRTPsKCnPutrbiukCYrnPuWxX5_cES9eStR",
                 "e": "AQAB",
-                "d": "C0G3QGI6OQ6tvbCNYGCqq043YI_8MiBl7C5dqbGZmx1ewdJBh-"
-                "MNJPStuckhskURaDwk4-"
+                "d": "C0G3QGI6OQ6tvbCNYGCqq043YI_8MiBl7C5dqbGZmx1ewdJBhMNJPStuckhskURaDwk4-"
                 "8VBW9SlvcfSJJrnZhgFMjOYSSsBtPGBIMIdM5eSKbenCCjO8Tg0BUh_"
                 "xa3CHST1W4RQ5rFXadZ9AeNtaGcWj2acmXNO3DVETXAX3x0",
-                "p": "APXcusFMQNHjh6KVD_hOUIw87lvK13WkDEeeuqAyda-"
-                "i9Ig9JKEAAfV94W6Aftka7tGgE7ulg1vo3eJoLWJ1zvKM",
-                "q": "AOjX3OnPJnk0ZFUQBwhduCweRi37I6DAdLTnhDvc-"
-                "PTrrNWuKPg9uGwHjzFCJgKd8KBaDQ0X1rZTZLTqi3peT43s",
-                "dp": "AN9kBoA5o6_Rl9zeqdsIdWFmv4DB5lEqlEnC7HlAP-3o-"
-                "o3jWFO9KQqArQL1V8w2D4aCd0uJULiC9pCP7aTHvBhc",
-                "dq": "ANtbSY6njfpPploQsF9sU26U0s7MsuLljM1E8uml8bVJE1-"
-                "mNsiu9MgpUvg39jEu9BtM2tDD7Y51AAIEmIQex1nM",
-                "qi": "XLE5O360x-MhsdFXx8Vwz4304-MJg-oGSJXCK_ZWYOB_FG-"
-                "XFRTfebxCsSYi0YwJo-oNu96bvZCuMplzRI1liZw",
+                "p": "APXcusFMQNHjh6KVD_hOUIw87lvK13WkDEeeuqAydai9Ig9JKEAAfV94W6Aftka7tGgE7ulg1vo3eJoLWJ1zvKM",
+                "q": "AOjX3OnPJnk0ZFUQBwhduCweRi37I6DAdLTnhDvcPTrrNWuKPg9uGwHjzFCJgKd8KBaDQ0X1rZTZLTqi3peT43s",
+                "dp": "AN9kBoA5o6_Rl9zeqdsIdWFmv4DB5lEqlEnC7HlAP-3oo3jWFO9KQqArQL1V8w2D4aCd0uJULiC9pCP7aTHvBhc",
+                "dq": "ANtbSY6njfpPploQsF9sU26U0s7MsuLljM1E8uml8bVJE1mNsiu9MgpUvg39jEu9BtM2tDD7Y51AAIEmIQex1nM",
+                "qi": "XLE5O360x-MhsdFXx8Vwz4304-MJg-oGSJXCK_ZWYOB_FGXFRTfebxCsSYi0YwJo-oNu96bvZCuMplzRI1liZw",
             }
         ]
     }

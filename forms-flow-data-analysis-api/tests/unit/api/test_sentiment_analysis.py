@@ -1,6 +1,6 @@
 from tests.utilities.base_test import (
-    factory_auth_header,
     get_sentiment_analysis_api_payload,
+    get_token
 )
 
 
@@ -10,8 +10,8 @@ def test_sentiment_analysis_api_without_bearer_token(client):
     assert response.json == {"message": "Access Denied"}
 
 
-def test_sentiment_analysis_api(app, session, client):
-    token = factory_auth_header()
+def test_sentiment_analysis_api(app, session, client, jwt):
+    token = get_token(jwt)
     headers = {
         "Authorization": f"Bearer {token}",
         "content-type": "application/json",

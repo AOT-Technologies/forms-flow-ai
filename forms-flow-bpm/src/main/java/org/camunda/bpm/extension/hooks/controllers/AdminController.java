@@ -60,7 +60,7 @@ import net.minidev.json.JSONArray;
  * This class assist with admin operations of formsflow.ai: Giving all authorized form details
  */
 @Controller
-@Deprecated
+@Deprecated // Refer AdminRestResource
 public class AdminController {
 
     private static final Logger LOGGER = Logger.getLogger(AdminController.class.getName());

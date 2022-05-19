@@ -53,8 +53,8 @@ export const fetchMetricsSubmissionCount = (fromDate, toDate, setSearchBy,...res
   };
 };
 
-export const fetchMetricsSubmissionStatusCount = (id, fromDate, toDate ,setSearchBy) => {
-  // const done = rest.length ? rest[0] : () => {};
+export const fetchMetricsSubmissionStatusCount = (id, fromDate, toDate ,setSearchBy,...rest) => {
+  const done = rest.length ? rest[0] : () => {};
   // const fdate = moment.utc(fromDate).format("yyyy-MM-DDTHH:mm:ssZ").replace("+","%2B");
   // const ldate = moment.utc(toDate).format("yyyy-MM-DDTHH:mm:ssZ").replace("+","%2B");
 
@@ -66,7 +66,7 @@ export const fetchMetricsSubmissionStatusCount = (id, fromDate, toDate ,setSearc
         if (res.data) {
           dispatch(setMetricsSubmissionStatusCount(res.data.applications));
           dispatch(setMetricsStatusLoader(false));
-          // done(null, res.data);
+          done(null, res.data);
         } else {
           dispatch(setMetricsSubmissionStatusCount([]));
           // TODO error handling
@@ -80,7 +80,7 @@ export const fetchMetricsSubmissionStatusCount = (id, fromDate, toDate ,setSearc
         console.log("Error", error);
         // dispatch(serviceActionError(error));
         dispatch(setMetricsStatusLoader(false));
-        // done(error);
+        done(error);
       });
   };
 };

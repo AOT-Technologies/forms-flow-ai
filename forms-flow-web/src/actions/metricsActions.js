@@ -79,3 +79,10 @@ export const setMetricsDateRangeLoading = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const SetSubmissionStatusCountLoader = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.METRICS_SUBMISSION_STATUS_COUNT_LOADER,
+    payload: data,
+  });
+};

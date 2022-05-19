@@ -39,7 +39,8 @@ const WorkFlow = React.memo(
     const [tabValue, setTabValue] = useState(0);
     const [showTaskVaribleCrete, setShowTaskVaribleCrete] = useState(false);
     const { form } = useSelector((state) => state.form);
-    const processList = useSelector((state) => {return listProcess(state.process.processList)});
+    const process = useSelector((state) => state.process.processList)
+    const processList = listProcess(process)
     const formProcessList = useSelector((state) => state.process.formProcessList);
     const workflow = useSelector((state) => state.process.workflowAssociated)
     const componentLabel =[]
@@ -192,6 +193,7 @@ const WorkFlow = React.memo(
                       <Grid item xs={12} spacing={3}>
                         <ProcessDiagram
                           processKey={workflow?.value}
+                          tenant={workflow?.tenant}
                         />
                       </Grid>
                     ):null}

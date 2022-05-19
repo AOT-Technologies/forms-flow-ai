@@ -169,3 +169,7 @@
   align-items:center;
   justify-content:center;
 }
+.dashboard_container{
+  overflow-y: scroll;
+  max-height: 100px;
+}

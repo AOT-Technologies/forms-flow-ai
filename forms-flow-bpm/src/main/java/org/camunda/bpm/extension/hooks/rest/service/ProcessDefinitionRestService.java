@@ -7,5 +7,5 @@ import org.springframework.http.ResponseEntity;
 import java.util.Map;
 
 public interface ProcessDefinitionRestService {
-    ResponseEntity<ProcessInstanceDto> startProcessInstance(Map<String, Object> parameters, StartProcessInstanceDto dto, String id);
+    ResponseEntity<ProcessInstanceDto> startProcessInstanceByKey(Map<String, Object> parameters, StartProcessInstanceDto dto, String key);
 }

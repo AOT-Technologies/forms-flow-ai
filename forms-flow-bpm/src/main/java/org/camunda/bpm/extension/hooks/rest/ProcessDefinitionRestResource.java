@@ -13,10 +13,10 @@ import java.util.Map;
 
 public interface ProcessDefinitionRestResource extends RestResource{
 
-    String PATH = "/process-definition/{id}";
+    String PATH = "/process-definition/key/{key}";
 
     @PostMapping(value = "/start", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
-    EntityModel<ProcessInstanceDto> startProcessInstance(
+    EntityModel<ProcessInstanceDto> startProcessInstanceByKey(
             @RequestParam Map<String, Object> parameters, @RequestBody StartProcessInstanceDto dto,
-            @PathVariable("id") String id);
+            @PathVariable("key") String key);
 }

@@ -30,11 +30,11 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
     }
 
     @Override
-    public EntityModel<ProcessInstanceDto> startProcessInstance(Map<String, Object> parameters, StartProcessInstanceDto dto, String id){
+    public EntityModel<ProcessInstanceDto> startProcessInstanceByKey(Map<String, Object> parameters, StartProcessInstanceDto dto, String key){
 
-        ResponseEntity<ProcessInstanceDto> processInstanceDto = restService.startProcessInstance(parameters, dto, id);
+        ResponseEntity<ProcessInstanceDto> processInstanceDto = restService.startProcessInstanceByKey(parameters, dto, key);
 
         return EntityModel.of(processInstanceDto.getBody(),
-                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).startProcessInstance(parameters, dto, id)).withSelfRel());
+                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).startProcessInstanceByKey(parameters, dto, key)).withSelfRel());
     }
 }

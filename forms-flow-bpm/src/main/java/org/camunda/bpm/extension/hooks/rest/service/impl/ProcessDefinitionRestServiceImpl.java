@@ -23,12 +23,12 @@ public class ProcessDefinitionRestServiceImpl extends AbstractRestService implem
     }
 
     @Override
-    public ResponseEntity<ProcessInstanceDto> startProcessInstance(Map<String, Object> parameters, StartProcessInstanceDto dto, String id) {
+    public ResponseEntity<ProcessInstanceDto> startProcessInstanceByKey(Map<String, Object> parameters, StartProcessInstanceDto dto, String key) {
 
         ProcessInstanceDto response = null;
         if(BpmClient.CAMUNDA.getName().equals(bpmClient)) {
-            String url = bpmUrl + "/camunda/engine-rest//process-definition/{0}/start";
-            url = MessageFormat.format(url, id);
+            String url = bpmUrl + "/camunda/engine-rest/process-definition/key/{0}/start";
+            url = MessageFormat.format(url, key);
             ResponseEntity<String> data = httpServiceInvoker.executeWithParamsAndPayload(url, HttpMethod.POST, parameters, dto);
             if (data.getStatusCode().is2xxSuccessful()) {
                 try {

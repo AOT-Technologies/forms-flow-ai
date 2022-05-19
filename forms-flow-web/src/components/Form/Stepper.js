@@ -33,7 +33,6 @@ import "./stepper.scss";
 import {Link} from "react-router-dom";
 import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
 import { resetFormData } from "../../actions/formActions.js";
-
 class StepperPage extends PureComponent {
 
   constructor(props) {

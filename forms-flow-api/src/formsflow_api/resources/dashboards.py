@@ -65,7 +65,7 @@ class DashboardDetail(Resource):
             available_dashboards = re.findall(
                 r"\d+", str(g.token_info.get("dashboards"))
             )
-            
+
             available_dashboards.index(str(dashboard_id))
         except ValueError:
             return {

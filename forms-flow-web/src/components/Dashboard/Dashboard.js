@@ -155,7 +155,7 @@ const Dashboard = React.memo(() => {
           >
             {
               submissionsList.length? (
-                <div className="container mb-4" id="main">
+    <div className="container dashboard_container mb-4" id="main">
       <div className="dashboard mb-2">
         <div className="row ">
           <div className="col-12">

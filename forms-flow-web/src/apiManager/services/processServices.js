@@ -222,9 +222,16 @@
        });
    };
  };
+ 
+ export const fetchDiagram = (process_key,tenant_key=null, ...rest) => {
+  
+  let url =replaceUrl(API.PROCESSES_XML,"<process_key>",process_key)
 
- export const fetchDiagram = (process_key, ...rest) => {
-   const url =replaceUrl(API.PROCESSES_XML,"<process_key>",process_key)
+  if(tenant_key){
+    url = replaceUrl(API.PROCESSES_XML_PER_TENANT,"<process_key>",process_key)
+    url = replaceUrl(url, "<tenant_key>", tenant_key)
+   }
+
    const done = rest.length ? rest[0] : () => {};
    return (dispatch) => {
      httpGETRequest(

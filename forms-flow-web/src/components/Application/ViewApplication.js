@@ -15,6 +15,7 @@ import {getForm, getSubmission} from "react-formio";
 import NotFound from "../NotFound";
 import { Translation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from '../../constants/constants';
+import { fetchAllBpmProcesses } from '../../apiManager/services/processServices';
 
 const ViewApplication = React.memo(() => {
   const {applicationId} = useParams();
@@ -43,6 +44,12 @@ const ViewApplication = React.memo(() => {
         dispatch(setApplicationDetailStatusCode(''));
       }
   },[applicationId, dispatch]);
+
+  useEffect(()=>{
+    if(tenantKey){
+      dispatch(fetchAllBpmProcesses())
+    }
+  },[dispatch, tenantKey])
 
   if (isApplicationDetailLoading) {
     return <Loading/>;
@@ -78,6 +85,7 @@ const ViewApplication = React.memo(() => {
             <ProcessDiagram
               processKey={applicationProcess.processKey}
               processInstanceId={applicationDetail.processInstanceId}
+              tenant={applicationDetail.processTenant}
             />
         </Tab>
       </Tabs>

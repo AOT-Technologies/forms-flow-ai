@@ -40,7 +40,7 @@ const List = React.memo((props) => {
   const [formData, setFormData] = useState();
   const [submissionListData, setSubmissionListData] = useState(defaultSubmissionData);
   const tenantKey = useSelector(state => state.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}` : '/';
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';
 
   useEffect(() => {
     dispatch(setApplicationListLoader(true))

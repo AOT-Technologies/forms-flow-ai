@@ -33,7 +33,6 @@ import "./stepper.scss";
 import {Link} from "react-router-dom";
 import {FORM_CREATE_ROUTE, STEPPER_ROUTES} from "./constants/stepperConstants";
 import { resetFormData } from "../../actions/formActions.js";
-
 class StepperPage extends PureComponent {
 
   constructor(props) {
@@ -43,7 +42,7 @@ class StepperPage extends PureComponent {
       activeStep: 0,
       previewMode: false,
       editMode: false,
-      processData: { status: "inactive", comments: "" },
+      processData: { status: props.formProcessList.status, comments:props.formProcessList.comments },
       formId: "",
       processList: [],
       processListLoaded: false,

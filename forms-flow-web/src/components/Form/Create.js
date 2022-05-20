@@ -11,7 +11,7 @@ import {
   MULTITENANCY_ENABLED,
 } from "../../constants/constants";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
-import { saveFormProcessMapper } from "../../apiManager/services/processServices";
+import { saveFormProcessMapperPost } from "../../apiManager/services/processServices";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useTranslation,Translation } from "react-i18next";
@@ -113,9 +113,8 @@ const {t}=useTranslation();
             formRevisionNumber: "V1", // to do
             anonymous: FORM_ACCESS[0].roles.includes(ANONYMOUS_ID),
           };
-          const update = false;
           dispatch(
-            saveFormProcessMapper(data, update, (err, res) => {
+            saveFormProcessMapperPost(data, (err, res) => {
               if (!err) {
                 toast.success(t("Form Saved"));
                 dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));

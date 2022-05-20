@@ -18,7 +18,7 @@ import {
   setFormProcessesData
 } from "../../../actions/processActions";
 import { Translation,useTranslation } from "react-i18next";
-import { saveFormProcessMapper } from "../../../apiManager/services/processServices";
+import { saveFormProcessMapperPost, saveFormProcessMapperPut } from "../../../apiManager/services/processServices";
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
@@ -120,6 +120,14 @@ const Edit = React.memo(() => {
       saveFormData();
     }
   }
+
+  const isMapperSaveNeeded = (submittedData)=>{
+    // checks if the updates need to save to form_process_mapper too
+    return (prviousData.formName !== submittedData.title ||
+    prviousData.anonymous !== processListData.anonymous ||
+    processListData.anonymous === null)
+  }
+
   // save form data to submit
   const saveFormData = () => {
     const newFormData = addHiddenApplicationComponent(form);
@@ -129,25 +137,38 @@ const Edit = React.memo(() => {
         saveForm("form", newFormData, (err, submittedData) => {
           if (!err) {
             // checking any changes
-            if (
-              prviousData.formName !== submittedData.title ||
-              prviousData.anonymous !== processListData.anonymous ||
-              processListData.anonymous === null
-            ) {
-              let anonymousUpdate = processListData.anonymous === null? false : processListData.anonymous;
+            if (isMapperSaveNeeded(submittedData)){
+
               const data = {
-                anonymous: anonymousUpdate,
+                anonymous: processListData.anonymous === null? false : processListData.anonymous,
                 formName: submittedData.title,
                 id: processListData.id,
                 formId: submittedData._id,
               };
-              const updated = processListData && processListData.id ? true : false;
-              dispatch(saveFormProcessMapper(data, updated));
+
+              // PUT request : when application count is zero.
+              // POST request with updated version : when application count is positive.
+
+              if(applicationCount > 0){
+
+                data["version"] = String(+prviousData.version+1)
+                data["processKey"] = prviousData.processKey
+                data["processName"] = prviousData.processName
+                dispatch(saveFormProcessMapperPost(data))
+
+              }else{
+
+                dispatch(saveFormProcessMapperPut(data));
+              }
             }
+
             toast.success(t("Form Saved"));
             dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
-          } else {
+
+          }else{
+
             toast.error(t("Error while saving Form"));
+
           }
         })
       );

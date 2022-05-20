@@ -140,6 +140,12 @@ def session(app, db):  # pylint: disable=redefined-outer-name, invalid-name
             yield app
 
 
+@pytest.fixture(scope="session")
+def jwt(app):
+    """Return session-wide jwt manager."""
+    return _jwt
+
+
 @pytest.fixture(scope="session", autouse=True)
 def auto(docker_services, app):
     """Spin up a keycloak instance and initialize jwt."""

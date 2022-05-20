@@ -121,9 +121,9 @@ const Edit = React.memo(() => {
     }
   }
 
-  const isMapperSaveNeeded = (submittedData)=>{
+  const isMapperSaveNeeded = (newData)=>{
     // checks if the updates need to save to form_process_mapper too
-    return (prviousData.formName !== submittedData.title ||
+    return (prviousData.formName !== newData.title ||
     prviousData.anonymous !== processListData.anonymous ||
     processListData.anonymous === null)
   }

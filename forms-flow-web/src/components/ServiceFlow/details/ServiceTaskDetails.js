@@ -11,7 +11,7 @@ import {
 import {useDispatch, useSelector} from "react-redux";
 import Loading from "../../../containers/Loading";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
-import {getFormIdSubmissionIdFromURL, getProcessDataFromList} from "../../../apiManager/services/formatterService";
+import {getFormIdSubmissionIdFromURL, getProcessDataObjectFromList} from "../../../apiManager/services/formatterService";
 import History from "../../Application/ApplicationHistory";
 import FormEdit from "../../Form/Item/Submission/Item/Edit";
 import FormView from "../../Form/Item/Submission/Item/View";
@@ -40,6 +40,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const selectedFilter=useSelector(state=>state.bpmTasks.selectedFilter);
   const firstResult = useSelector(state=> state.bpmTasks.firstResult);
   const [processKey, setProcessKey]= useState('');
+  const [processTenant, setProcessTenant] = useState(null)
   const [processInstanceId, setProcessInstanceId]=useState('');
   const tenantKey = useSelector(state => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';
@@ -63,8 +64,9 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
   useEffect(()=>{
     if(processList.length && task?.processDefinitionId){
-      const pKey=getProcessDataFromList(processList, task?.processDefinitionId,'key');
-      setProcessKey(pKey);
+      const pKey=getProcessDataObjectFromList(processList, task?.processDefinitionId);
+      setProcessKey(pKey['key']);
+      setProcessTenant(pKey['tenantId'])
     }
   },[processList,task?.processDefinitionId]);
 
@@ -188,6 +190,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
              <ProcessDiagram
                processKey={processKey}
                processInstanceId={processInstanceId}
+               tenant={processTenant}
                // markers={processActivityList}
              />
            </div>

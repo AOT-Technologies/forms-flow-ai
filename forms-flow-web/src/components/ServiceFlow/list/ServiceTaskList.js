@@ -9,7 +9,7 @@ import {
 import Loading from "../../../containers/Loading";
 import { useTranslation} from "react-i18next";
 import moment from "moment";
-import { getProcessDataFromList,getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
+import { getProcessDataObjectFromList, getFormattedDateAndTime } from "../../../apiManager/services/formatterService";
 import TaskFilterComponent from "./search/TaskFilterComponent";
 import Pagination from "react-js-pagination";
 import {push} from "connected-react-router";
@@ -73,11 +73,10 @@ const ServiceFlowTaskList = React.memo(() => {
               </Row>
               <div className="font-size-16 d-flex justify-content-between">
                 <div className=" pr-0" style={{maxWidth:'65%'}}>
-                  <span data-toggle="tooltip"  title="Form Name">{getProcessDataFromList(
+                  <span data-toggle="tooltip"  title="Form Name">{getProcessDataObjectFromList(
                     processList,
-                    task.processDefinitionId,
-                    "name"
-                  )}</span>
+                    task.processDefinitionId
+                  )?.name}</span>
                 </div>
                 <div data-toggle="tooltip"  title={t("Task assignee")} className="pr-0 text-right">
                  <span> {task.assignee}</span>

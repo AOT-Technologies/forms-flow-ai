@@ -26,7 +26,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
-import javax.servlet.ServletException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

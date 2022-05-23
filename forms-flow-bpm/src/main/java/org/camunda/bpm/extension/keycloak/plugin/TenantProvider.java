@@ -35,7 +35,7 @@ public class TenantProvider implements TenantIdProvider {
 		if (currentAuthentication != null) {
 
 			List<String> tenantIds = currentAuthentication.getTenantIds();
-			if (tenantIds.size() == 1) {
+			if (tenantIds != null && tenantIds.size() == 1) {
 				return tenantIds.get(0);
 
 			}

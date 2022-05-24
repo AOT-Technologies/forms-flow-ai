@@ -135,57 +135,59 @@
    }
  }
 
- export const saveFormProcessMapper = (data, update = false, ...rest) => {
-   const done = rest.length ? rest[0] : () => {};
-   return  async (dispatch) => {
-     if (update) {
-       httpPUTRequest(`${API.FORM}/${data.id}`, data).then(async(res) => {
-         if(res.data){
-           dispatch(setFormPreviosData(res.data));
-           dispatch(setFormProcessesData(res.data));
-           done(null, res.data);
-         }
-         else{
-          dispatch(setFormProcessesData([]));
-          dispatch(setFormPreviosData([]));
-          done(null, []);
-         }
-       })
-       .catch((error) => {
-         dispatch(getFormProcesses(data.formId));
+
+
+ export const saveFormProcessMapperPost = (data, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  return  async (dispatch) => {
+       httpPOSTRequest(`${API.FORM}`, data).then(async(res) => {
+        if(res.data){
+          dispatch(getApplicationCount(res.data.id));
+          dispatch(setFormProcessesData(res.data));
+          dispatch(setFormPreviosData(res.data));
+          done(null, res.data);
+        }
+        else{
          dispatch(setFormProcessesData([]));
-         toast.error(<Translation>{(t)=>t("Form process failed")}</Translation>);
-         console.log("Error", error);
-         dispatch(setFormProcessLoadError(true));
-         done(error);
-       });
-     } else {
-        httpPOSTRequest(`${API.FORM}`, data).then(async(res) => {
+         dispatch(setFormPreviosData([]));
+         done(null, []);
+        }
+      })
+      .catch((error) => {
+        dispatch(getFormProcesses(data.formId));
+        toast.error(<Translation>{(t)=>t("Form process failed")}</Translation>);
+        console.log("Error", error);
+        dispatch(setFormProcessLoadError(true));
+        done(error);
+      });
+  };
+ }
 
-         if(res.data){
-           dispatch(getApplicationCount(res.data.id));
-           dispatch(setFormProcessesData(res.data));
-           dispatch(setFormPreviosData(res.data));
-           done(null, res.data);
-         }
-         else{
-          dispatch(setFormProcessesData([]));
-          dispatch(setFormPreviosData([]));
-          done(null, []);
-         }
-       })
-       .catch((error) => {
-         dispatch(getFormProcesses(data.formId));
-         toast.error(<Translation>{(t)=>t("Form process failed")}</Translation>);
-         console.log("Error", error);
-         dispatch(setFormProcessLoadError(true));
-         done(error);
-       });
-     }
-
-
-   };
- };
+ export const saveFormProcessMapperPut = (data, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  return  async (dispatch) => {
+      httpPUTRequest(`${API.FORM}/${data.id}`, data).then(async(res) => {
+        if(res.data){
+          dispatch(setFormPreviosData(res.data));
+          dispatch(setFormProcessesData(res.data));
+          done(null, res.data);
+        }
+        else{
+         dispatch(setFormProcessesData([]));
+         dispatch(setFormPreviosData([]));
+         done(null, []);
+        }
+      })
+      .catch((error) => {
+        dispatch(getFormProcesses(data.formId));
+        dispatch(setFormProcessesData([]));
+        toast.error(<Translation>{(t)=>t("Form process failed")}</Translation>);
+        console.log("Error", error);
+        dispatch(setFormProcessLoadError(true));
+        done(error);
+      });
+  };
+};
 
  /**
   *

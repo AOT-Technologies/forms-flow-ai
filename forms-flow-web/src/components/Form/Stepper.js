@@ -21,7 +21,8 @@ import {
   fetchAllBpmProcesses,
   getFormProcesses,
   resetFormProcessData,
-  saveFormProcessMapper
+  saveFormProcessMapperPost,
+  saveFormProcessMapperPut
 } from "../../apiManager/services/processServices";
 import { selectRoot, selectError, getForm } from "react-formio";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
@@ -201,6 +202,17 @@ class StepperPage extends PureComponent {
   submitData = () => {
     const { form, onSaveFormProcessMapper, formProcessList, formPreviousData ,applicationCount, workflow} = this.props;
     const {processData} = this.state;
+
+    let saveMethod = saveFormProcessMapperPut;
+
+    const isNewVersionNeeded = ()=>{
+      // New mapper version is needed if the form metadata is updated and applications exist with old data.
+      return (
+        data.processName!==formPreviousData.processName ||
+        data.processKey!==formPreviousData.processKey ||
+        formPreviousData.isTitleChanged
+      ) && applicationCount > 0
+    }
     const data = {
       formId: form.id,
       formName: form.form && form.form.title,
@@ -208,6 +220,7 @@ class StepperPage extends PureComponent {
       taskVariable: formProcessList.taskVariable?formProcessList.taskVariable:[],
       anonymous: formProcessList.anonymous?true:false
     };
+
     if ( workflow) {
       data["processKey"]= workflow && workflow.value;
       data["processName"]= workflow && workflow.label;
@@ -216,26 +229,26 @@ class StepperPage extends PureComponent {
       data["processName"]= "";
     }
 
-    const processNameChecking= data.processName!==formPreviousData.processName;
-    const processKeyChecking= data.processKey!==formPreviousData.processKey;
-
     if(processData.comments){
       data["comments"] = processData.comments;
     }
 
-    let isUpdate = formProcessList && formProcessList.id? true : false;
-    if(applicationCount > 0){
-      if(formPreviousData.isTitleChanged || processKeyChecking || processNameChecking ){
-      isUpdate=false;
-      let version = +formProcessList.version+1
-      data.version = `${version}`
+    if(formProcessList && formProcessList.id ){
+      data.id = formProcessList.id;
     }
-  }
 
-  if(formProcessList && formProcessList.id ){
-    data.id = formProcessList.id;
-  }
-    onSaveFormProcessMapper(data, isUpdate, this.state.redirectUrl);
+    if(isNewVersionNeeded()){
+      // POST request for creating new mapper version of the current form.
+
+      data["version"] = String(+formProcessList.version+1);
+      saveMethod = saveFormProcessMapperPost
+    }else{
+      // PUT request to modify the existing mapper.
+
+      saveMethod = saveFormProcessMapperPut;
+    }
+
+    onSaveFormProcessMapper(data, saveMethod, this.state.redirectUrl);
   };
 
   getStepContent(step) {
@@ -387,9 +400,9 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    onSaveFormProcessMapper: (data, update, redirectUrl) => {
+    onSaveFormProcessMapper: (data, saveMethod, redirectUrl) => {
       dispatch(
-        saveFormProcessMapper(data, update, (err, res) => {
+        saveMethod(data, (err, res) => {
           if (!err) {
             toast.success(<Translation>{(t)=>t("Form Workflow Association Saved.")}</Translation>);
             dispatch(push(`${redirectUrl}form`));
@@ -400,24 +413,7 @@ const mapDispatchToProps = (dispatch) => {
         })
       );
     },
-    // Commenting due to unused code
-    // saveForm: (form) => {
-    //   const newForm = {
-    //     ...form,
-    //     tags: ["common"],
-    //   };
-    //   newForm.submissionAccess = SUBMISSION_ACCESS;
-    //   dispatch(
-    //     saveForm("form", newForm, (err, form) => {
-    //       if (!err) {
-    //         toast.success(<Translation>{(t)=>t("Form Saved")}</Translation>);
-    //         dispatch(push(`/formflow/${form._id}/preview`));
-    //       }else{
-    //         toast.error(<Translation>{(t)=>t("Error while Submission.")}</Translation>);
-    //       }
-    //     })
-    //   );
-    // },
+
     getForm: (id) => {
       dispatch(resetFormData('form', id));
       dispatch(getForm("form", id))

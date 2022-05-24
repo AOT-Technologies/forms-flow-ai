@@ -156,9 +156,17 @@ const Edit = React.memo(() => {
                 data["processName"] = prviousData.processName
                 dispatch(saveFormProcessMapperPost(data))
 
-              }else{
+              } else {
+                // For hadling uploaded forms case.
 
-                dispatch(saveFormProcessMapperPut(data));
+                if(processListData && processListData.id){
+
+                  dispatch(saveFormProcessMapperPut(data));
+                } else {
+                  // For uploaded forms we have to create new mapper.
+
+                  dispatch(saveFormProcessMapperPost(data))
+                }
               }
             }
 

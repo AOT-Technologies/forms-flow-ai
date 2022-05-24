@@ -242,10 +242,17 @@ class StepperPage extends PureComponent {
 
       data["version"] = String(+formProcessList.version+1);
       saveMethod = saveFormProcessMapperPost
-    }else{
-      // PUT request to modify the existing mapper.
+    } else {
+      if(formProcessList && formProcessList.id){
+      // PUT request to modify the existing mapper if there is one.
 
-      saveMethod = saveFormProcessMapperPut;
+        saveMethod = saveFormProcessMapperPut;
+      } else {
+        // For hadling uploaded forms case
+        // There won't be any mapper in case of uploaded forms
+
+        saveMethod = saveFormProcessMapperPost
+      }
     }
 
     onSaveFormProcessMapper(data, saveMethod, this.state.redirectUrl);

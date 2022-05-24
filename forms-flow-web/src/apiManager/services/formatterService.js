@@ -53,9 +53,9 @@ export const getLocalDateTime = (date) => {
   return date?new Date(date.replace(' ','T')+'Z').toLocaleString(): "-";
 }
 
-export const getProcessDataFromList = (processList,processId,dataKey) => {
+export const getProcessDataObjectFromList = (processList,processId) => {
   const process = processList.find(process=>process.id===processId);
-  return process && process[dataKey] ;
+  return process;
 }
 
 export const getUserNamefromList = (userList,userId) => {

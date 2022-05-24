@@ -2,8 +2,8 @@ import React, {useEffect, useState} from "react";
 import { Row, Col } from "react-bootstrap";
 import {
   getISODateTime,
-  getProcessDataFromList,
-  getFormattedDateAndTime
+  getFormattedDateAndTime,
+  getProcessDataObjectFromList
 } from "../../../apiManager/services/formatterService";
 import {useDispatch, useSelector} from "react-redux";
 import DatePicker from "react-datepicker";
@@ -160,7 +160,7 @@ const TaskHeader = React.memo(() => {
     <AddGroupModal modalOpen={showModal} onClose={()=>setModal(false)} groups={taskGroups}/>
       <Row className="ml-0 task-header">{task?.name}</Row>
       <Row className="ml-0 task-name" >
-      <span className="application-id" dat-title={t("Process Name")}> {getProcessDataFromList(processList, task?.processDefinitionId, "name")}</span>
+      <span className="application-id" dat-title={t("Process Name")}> {getProcessDataObjectFromList(processList, task?.processDefinitionId)?.name}</span>
       </Row>
       <Row className="ml-0" >
       <span data-title={t("Application ID")} className="application-id">{t("Application ID")}# {task?.applicationId}</span>

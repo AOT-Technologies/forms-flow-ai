@@ -2,6 +2,9 @@ export const formio_resourceBundles = {
 
    "en": {
 
+      "Click to search":"Click to search",
+      "No submissions found":"No submissions found",
+      "No submission avaliable in the selected date. Please select another date range":"No submission avaliable in the selected date. Please select another date range",
       "All groups have access to the dashboard":"All groups have access to the dashboard",
       "Form unpublishing Failed":"Form unpublishing Failed",
       "Form process failed":"Form process failed",
@@ -219,7 +222,10 @@ export const formio_resourceBundles = {
    },
 
    "zh-CN": {
-       
+
+      "Click to search":"点击搜索",
+      "No submissions found":"未找到任何提交",
+      "No submission avaliable in the selected date. Please select another date range":"在所选日期内没有可用的提交。请选择其他日期范围",
       "All groups have access to the dashboard":"所有组都可以访问仪表板",
       "Form unpublishing Failed":"表单取消发布失败",
       "Form process failed":"表单处理失败",
@@ -936,6 +942,9 @@ export const formio_resourceBundles = {
 
    "bg": {
 
+      "Click to search":"Щракнете за търсене",
+      "No submissions found":"Няма намерени заявки",
+      "No submission avaliable in the selected date. Please select another date range":"Няма налично подаване на избраната дата. Моля, изберете друг период от време",
       "All groups have access to the dashboard":"Всички групи имат достъп до таблото",
       "Form unpublishing Failed":"Прекратяването на публикуването на формуляра не бе успешно",
       "Form process failed":"Обработката на формуляра не бе успешно",
@@ -1653,6 +1662,9 @@ export const formio_resourceBundles = {
 
    "pt": {
 
+      "Click to search":"Clique para pesquisar",
+      "No submissions found":"Nenhum envio encontrado",
+      "No submission avaliable in the selected date. Please select another date range":"Nenhuma submissão disponível na data selecionada. Selecione outro intervalo de datas",
       "All groups have access to the dashboard":"Todos os grupos têm acesso ao painel",
       "Form unpublishing Failed":"Falha ao cancelar a publicação do formulário",
       "Form process failed":"Falha no processo do formulário",
@@ -2371,6 +2383,9 @@ export const formio_resourceBundles = {
 
    "fr": {
 
+      "Click to search":"Cliquez pour rechercher",
+      "No submissions found":"Aucune soumission trouvée",
+      "No submission avaliable in the selected date. Please select another date range":"Aucune soumission disponible à la date sélectionnée. Veuillez sélectionner une autre plage de dates",
       "All groups have access to the dashboard":"Tous les groupes ont accès au tableau de bord",
       "Form unpublishing Failed":"Échec de la dépublication du formulaire",
       "Form process failed":"Le processus de formulaire a échoué",
@@ -3091,6 +3106,9 @@ export const formio_resourceBundles = {
 
    "de": {
 
+      "Click to search":"Klicken Sie, um zu suchen",
+      "No submissions found":"Keine Einreichungen gefunden",
+      "No submission avaliable in the selected date. Please select another date range":"Für das ausgewählte Datum ist keine Einreichung verfügbar. Bitte wählen Sie einen anderen Zeitraum aus",
       "All groups have access to the dashboard":"Alle Gruppen haben Zugriff auf das Dashboard",
       "Form unpublishing Failed":"Das Aufheben der Veröffentlichung des Formulars ist fehlgeschlagen",
       "Form process failed":"Formularprozess fehlgeschlagen",

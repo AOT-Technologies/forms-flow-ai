@@ -13,8 +13,10 @@ import i18n from "../resourceBundles/i18n";
 import { setLanguage } from "../actions/languageSetAction";
 import {updateUserlang} from "../apiManager/services/userservices";
 import { MULTITENANCY_ENABLED } from "../constants/constants";
+import {selectLang} from "./configLang";
 
 const NavBar = React.memo(() => {
+
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   const location = useLocation();
   const { pathname } = location;
@@ -29,8 +31,6 @@ const NavBar = React.memo(() => {
   const logoPath = "/logo.svg";
   const appName = APPLICATION_NAME;
   const {t} = useTranslation();
-  const langarr=["en","bg","pt","fr","zh-CN","de"];
-
   useEffect(()=>{
     i18n.changeLanguage(lang);
   },[lang]);
@@ -53,11 +53,6 @@ const NavBar = React.memo(() => {
     <header>
       <Navbar expand="lg" bg="white"  className="topheading-border-bottom" fixed="top">
         <Container fluid>
-          {/*<Nav className="d-lg-none">
-            <div className="mt-1" onClick={menuToggle}>
-              <i className="fa fa-bars fa-lg"/>
-            </div>
-          </Nav>*/}
           <Navbar.Brand className="d-flex" >
             <Link to={`${baseUrl}`}>
               <img
@@ -70,16 +65,6 @@ const NavBar = React.memo(() => {
             </Link>
             <div className="custom-app-name">{appName}</div>
           </Navbar.Brand>
-         {/*
-           <Navbar.Brand className="d-flex">
-            <Link to="/">
-                  <img
-                    className="img-xs rounded-circle"
-                    src="/assets/Images/user.svg"
-                    alt="profile"
-                  />
-            </Link>
-          </Navbar.Brand>*/}
           <Navbar.Toggle aria-controls="responsive-navbar-nav " />
           {isAuthenticated?
             <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
@@ -102,12 +87,6 @@ const NavBar = React.memo(() => {
                 :null:
                 null}
 
-{/*              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <Nav.Link as={Link} to='/task'  className={`main-nav nav-item ${
-                  pathname.match(/^\/task/) ? "active-tab" : ""
-                }`}><i className="fa fa-list"/> Tasks</Nav.Link>
-                :
-                null}*/}
 
               {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
                 <NavDropdown title={<><i className="fa fa-list fa-lg fa-fw mr-2" />{t("Tasks")} </>} id="task-dropdown"
@@ -129,7 +108,7 @@ const NavBar = React.memo(() => {
               </NavDropdown>:null}
             </Nav>
             {
-              (langarr.length===1 && langarr[0]==="en") ? null :
+              
             
               
              <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">
@@ -138,12 +117,12 @@ const NavBar = React.memo(() => {
                     <i className="fa fa-globe fa-lg" aria-hidden="true"/> {lang?lang:'LANGUAGE'}
                     </Dropdown.Toggle>
                     <Dropdown.Menu >
-                      <Dropdown.Item onClick={()=>{handleOnclick('en')}}> English </Dropdown.Item>
-                      <Dropdown.Item onClick={()=>{handleOnclick('zh-CN')}}> 中国人</Dropdown.Item>
-                      <Dropdown.Item onClick={()=>{handleOnclick('pt')}}> Português </Dropdown.Item>
-                      <Dropdown.Item onClick={()=>{handleOnclick('fr')}}> français </Dropdown.Item>
-                      <Dropdown.Item onClick={()=>{handleOnclick('bg')}}> български </Dropdown.Item>
-                      <Dropdown.Item onClick={()=>{handleOnclick('de')}}> Deutsch</Dropdown.Item>
+                      {
+                        selectLang.language.map((e)=>{
+                          return <Dropdown.Item onClick={()=>{handleOnclick(e.name)}}> {e.value} </Dropdown.Item>
+                        })
+                      }
+                      
                     </Dropdown.Menu>
                   </Dropdown>
             </Nav>

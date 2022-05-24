@@ -70,19 +70,14 @@ Variable name | Meaning | Possible values | Default value |
 * forms-flow-data-analysis-api service uses port 5001, make sure the port is available.
 * `cd {Your Directory}/forms-flow-ai/forms-flow-data-analysis-api`
 
-* For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
-* For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+* Run `docker-compose up -d` to start.
 
-*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+
+*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose up --build -d`*
 
 #### To Stop the Application
 
-* For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml stop` to stop.
-* For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
+* Run `docker-compose stop` to stop.
 
 ### Verify the Application Status
 

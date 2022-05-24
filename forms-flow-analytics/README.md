@@ -63,21 +63,14 @@ Variable name | Meaning | Possible values | Default value |
 
 > The forked version of redash is being used to overcome the limited cors support in redash. The forked repo fixes the cors issues. But if the environment is setup in such a way that redash resides in the same url origin as forms web application , redash can be built from any redash images.
 
-* For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml run --rm server create_db` to setup database and to create tables.
-  * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
-* For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml run --rm server create_db` to setup database and to create tables.
-  * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+* Run `docker-compose run --rm server create_db` to setup database and to create tables.
+* Run `docker-compose up -d` to start.
 
-*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose up --build -d`*
 
 #### To stop the application
 
-* For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml stop` to stop.
-* For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
+* Run `docker-compose stop` to stop.
 
 ### Health Check
 

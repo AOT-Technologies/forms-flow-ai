@@ -1,5 +1,8 @@
 export const RESOURCE_BUNDLES_BG = {
  
+    "Click to search":"Щракнете за търсене",
+    "No submissions found":"Няма намерени заявки",
+    "No submission avaliable in the selected date. Please select another date range":"Няма налично подаване на избраната дата. Моля, изберете друг период от време",
     "Dashboards":"Табла за управление",
     "Form field":"Поле за формуляр",
     "Enter Label":"Въведете етикет",

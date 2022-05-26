@@ -1,5 +1,8 @@
 export const RESOURCE_BUNDLES_EN = {
  
+  "Click to search":"Click to search",
+  "No submissions found":"No submissions found",
+  "No submission avaliable in the selected date. Please select another date range":"No submission avaliable in the selected date. Please select another date range",
   "Form field":"Form field",
   "Enter Label":"Enter Label",
   "Select form field":"Select form field",

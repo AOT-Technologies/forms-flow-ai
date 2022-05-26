@@ -1,5 +1,8 @@
 export const RESOURCE_BUNDLES_FR = {
 
+  "Click to search":"Cliquez pour rechercher",
+  "No submissions found":"Aucune soumission trouvée",
+  "No submission avaliable in the selected date. Please select another date range":"Aucune soumission disponible à la date sélectionnée. Veuillez sélectionner une autre plage de dates",
   "Dashboards":"Tableaux de bord",
   "Form field":"Champ de formulaire",
   "Enter Label":"Entrez l'étiquette",

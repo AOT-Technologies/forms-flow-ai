@@ -299,18 +299,6 @@
 			<version>5.3.4</version>
 		</dependency>
 
-		<!-- <dependency>
-			<groupId>org.graalvm.js</groupId>
-			<artifactId>js</artifactId>
-			<version>22.1.0.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.graalvm.js</groupId>
-			<artifactId>js-scriptengine</artifactId>
-			<version>22.1.0.1</version>
-		</dependency>
- -->
 	</dependencies>
 
 	<repositories>

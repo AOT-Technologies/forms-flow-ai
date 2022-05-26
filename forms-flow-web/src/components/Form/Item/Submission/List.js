@@ -126,7 +126,7 @@ const mapStateToProps = (state) => {
 };
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    getSubmissions: (page, query) => dispatch(getSubmissions('submissions', page, query, ownProps.match.params.formId)),
+    getSubmissions: (page, query={'data.applicationId__regex':/^\d+$/}) => dispatch(getSubmissions('submissions', page, query, ownProps.match.params.formId)),
     onAction: (submission, action, redirectUrl) => {
       switch (action) {
         case 'viewSubmission':

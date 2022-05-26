@@ -225,7 +225,7 @@ const Dashboard = React.memo(() => {
                  onKeyPress={(e) => e.key === 'Enter'  && handleSearch()}
                  onChange={(e)=>{setShowClearButton(e.target.value); e.target.value === ''  && handleSearch()}} 
                  autoComplete="off"
-                 class="form-control" placeholder="search..." 
+                 class="form-control" placeholder={t("Search..." )}
                  />
               </div>
               {
@@ -238,7 +238,7 @@ const Dashboard = React.memo(() => {
               }
              <button type="button" class="btn btn-outline-primary ml-2"
               name="search-button"
-              title="Click to search"
+              title={t("Click to search")}
               onClick={()=> handleSearch()}
               >
                <i class="fa fa-search"></i>
@@ -262,7 +262,7 @@ const Dashboard = React.memo(() => {
           
               <div className="col-12 col-sm-6 col-md-6 no_submission_main">
                 <span className="col-12 col-sm-6 col-md-6 no_sumbsmission">
-                  <h3>No submission avaliable in the selected date. Please select another date range</h3>
+                <h3>{t("No submission avaliable in the selected date. Please select another date range")}</h3>
                 </span>
               </div>
           

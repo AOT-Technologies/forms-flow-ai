@@ -113,8 +113,12 @@ const Edit = React.memo(() => {
     });
   }, [processListData]);
 
+  const isNewMapperNeeded = ()=>{
+    return prviousData.formName !== form.title && applicationCount > 0
+  }
+
   const saveFormWithDataChangeCheck = ()=>{
-    if(prviousData.formName !== form.title && applicationCount >0){
+    if(isNewMapperNeeded()){
       handleShow()
     }else{
       saveFormData();
@@ -149,7 +153,7 @@ const Edit = React.memo(() => {
               // PUT request : when application count is zero.
               // POST request with updated version : when application count is positive.
 
-              if(applicationCount > 0){
+              if(isNewMapperNeeded()){
 
                 data["version"] = String(+prviousData.version+1)
                 data["processKey"] = prviousData.processKey
@@ -160,6 +164,7 @@ const Edit = React.memo(() => {
                 // For hadling uploaded forms case.
 
                 if(processListData && processListData.id){
+                  // For created forms we would be having a mapper
 
                   dispatch(saveFormProcessMapperPut(data));
                 } else {

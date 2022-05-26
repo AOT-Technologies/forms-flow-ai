@@ -2,6 +2,52 @@
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
 
+## 5.0.0 - 2022-05-26
+
+`Added`
+
+**forms-flow-web**
+
+* Added pagination,search and sort for metrics page.
+* Added default workflow for designer.
+* Added Internationalization.
+* Added multi-tenancy support.
+* Added modal for submission details on metrics page.
+
+**forms-flow-forms**
+
+* Added new Repository , for more details checkout [here](https://github.com/AOT-Technologies/formio).
+
+**forms-flow-api**
+
+* Added multi-tenancy support.
+* Added support for default workflow with form.
+
+**forms-flow-bpm**
+
+* Added BPM_BASE_URL as the base url for camunda without /camunda- New property included with multitenancy.
+* Added default workflow.
+
+
+`Modified`
+
+**forms-flow-web**
+
+* Metrics page UI modified.
+* Form page UI modified.
+* Accessibility enhancement.
+
+
+**forms-flow-forms**
+
+* Modified Docker-compose to point to create image from the [new Repository](https://github.com/AOT-Technologies/formio).
+
+
+`Generic Changes`
+
+* Docker-compose files changed to a single one.
+* Added CD pipeline.
+
 ## 4.0.5 - 2022-04-19
 
 `Added`
@@ -113,7 +159,7 @@ Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` ar
 
 `Generic Changes`
 
-* Added docker based automated installation.For installation guide, check out [here](./deployment/docker/bundle).
+* Added docker based automated installation. For installation guide, check out [here](./deployment/docker/bundle).
 * Existing users should build forms-flow-bpm,forms-flow-webapi and forms-flow-web together.
 
 ## 4.0.4 - 2021-12-27

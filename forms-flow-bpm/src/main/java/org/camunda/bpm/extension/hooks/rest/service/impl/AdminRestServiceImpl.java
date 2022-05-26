@@ -1,7 +1,7 @@
 package org.camunda.bpm.extension.hooks.rest.service.impl;
 
+import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
-import net.minidev.json.JSONArray;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.engine.AuthorizationService;
 import org.camunda.bpm.engine.ProcessEngines;

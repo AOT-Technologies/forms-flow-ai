@@ -19,7 +19,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import net.minidev.json.JSONArray;
+
+import com.nimbusds.jose.shaded.json.JSONArray;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;

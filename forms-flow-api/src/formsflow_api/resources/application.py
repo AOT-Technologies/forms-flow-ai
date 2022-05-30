@@ -233,58 +233,72 @@ class ApplicationResourceByFormId(Resource):
 
         : form_id:- Retrieve application list based on formid
         """
-        if request.args:
-            dict_data = ApplicationListReqSchema().load(request.args)
-            page_no = dict_data["page_no"]
-            limit = dict_data["limit"]
-        else:
-            page_no = 0
-            limit = 0
+        try:
+            if request.args:
+                dict_data = ApplicationListReqSchema().load(request.args)
+                page_no = dict_data["page_no"]
+                limit = dict_data["limit"]
+            else:
+                page_no = 0
+                limit = 0
 
-        if auth.has_role(["formsflow-reviewer"]):
-            application_schema = ApplicationService.apply_custom_attributes(
-                ApplicationService.get_all_applications_form_id(
-                    form_id=form_id, page_no=page_no, limit=limit
+            if auth.has_role(["formsflow-reviewer"]):
+                application_schema = ApplicationService.apply_custom_attributes(
+                    ApplicationService.get_all_applications_form_id(
+                        form_id=form_id, page_no=page_no, limit=limit
+                    )
                 )
-            )
-            application_count = ApplicationService.get_all_applications_form_id_count(
-                form_id=form_id
-            )
-        else:
-            application_schema = ApplicationService.apply_custom_attributes(
-                ApplicationService.get_all_applications_form_id_user(
-                    form_id=form_id,
-                    page_no=page_no,
-                    limit=limit,
-                )
-            )
-            application_count = (
-                ApplicationService.get_all_applications_form_id_user_count(
+                application_count = ApplicationService.get_all_applications_form_id_count(
                     form_id=form_id
                 )
-            )
+            else:
+                application_schema = ApplicationService.apply_custom_attributes(
+                    ApplicationService.get_all_applications_form_id_user(
+                        form_id=form_id,
+                        page_no=page_no,
+                        limit=limit,
+                    )
+                )
+                application_count = (
+                    ApplicationService.get_all_applications_form_id_user_count(
+                        form_id=form_id
+                    )
+                )
 
-        if page_no == 0:
+            if page_no == 0:
+                return (
+                    (
+                        {
+                            "applications": application_schema,
+                            "totalCount": application_count,
+                        }
+                    ),
+                    HTTPStatus.OK,
+                )
             return (
                 (
                     {
                         "applications": application_schema,
                         "totalCount": application_count,
+                        "limit": limit,
+                        "pageNo": page_no,
                     }
                 ),
                 HTTPStatus.OK,
             )
-        return (
-            (
+        except KeyError as err:
+            response, status = (
                 {
-                    "applications": application_schema,
-                    "totalCount": application_count,
-                    "limit": limit,
-                    "pageNo": page_no,
-                }
-            ),
-            HTTPStatus.OK,
-        )
+                    "type": "Permission Denied",
+                    "message": f"Access to form id - {form_id} is prohibited.",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
+            current_app.logger.critical(response)
+            current_app.logger.critical(err)
+            return response, status
+        except BusinessException as err:
+            return err.error, err.status_code
 
 
 @cors_preflight("POST,OPTIONS")

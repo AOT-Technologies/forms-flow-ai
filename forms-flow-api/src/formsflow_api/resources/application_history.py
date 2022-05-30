@@ -26,16 +26,27 @@ class ApplicationHistoryResource(Resource):
 
         : application_id:- Getting application history by providing application_id
         """
-        return (
-            (
-                {
-                    "applications": ApplicationHistoryService.get_application_history(
-                        application_id=application_id
-                    )
-                }
-            ),
-            HTTPStatus.OK,
-        )
+        try:
+            return (
+                (
+                    {
+                        "applications": ApplicationHistoryService.get_application_history(
+                            application_id=application_id
+                        )
+                    }
+                ),
+                HTTPStatus.OK,
+            )
+        except BaseException as application_err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Not Found",
+                "message": "No Application History found ",
+                "errors": application_err,
+            }, HTTPStatus.NOT_FOUND
+
+            current_app.logger.warning(response)
+            current_app.logger.warning(application_err)
+            return response, status 
 
     @staticmethod
     @auth.require

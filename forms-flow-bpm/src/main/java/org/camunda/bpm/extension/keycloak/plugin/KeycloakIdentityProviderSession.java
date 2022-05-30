@@ -32,8 +32,9 @@ public class KeycloakIdentityProviderSession
 			KeycloakRestTemplate restTemplate, KeycloakContextProvider keycloakContextProvider,
 			QueryCache<CacheableKeycloakUserQuery, List<User>> userQueryCache,
 			QueryCache<CacheableKeycloakGroupQuery, List<Group>> groupQueryCache,
-			QueryCache<CacheableKeycloakTenantQuery, List<Tenant>> tenantQueryCache, CustomConfig config) {
-		super(keycloakConfiguration, restTemplate, keycloakContextProvider, userQueryCache, groupQueryCache);
+			QueryCache<CacheableKeycloakTenantQuery, List<Tenant>> tenantQueryCache, 
+			QueryCache<CacheableKeycloakCheckPasswordCall, Boolean> checkPasswordCache, CustomConfig config) {
+		super(keycloakConfiguration, restTemplate, keycloakContextProvider, userQueryCache, groupQueryCache, checkPasswordCache);
 		this.config = config;
 		this.groupService = new KeycloakGroupService(keycloakConfiguration, restTemplate, keycloakContextProvider,
 				config);

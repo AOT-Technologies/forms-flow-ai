@@ -51,9 +51,10 @@ import org.springframework.web.multipart.MultipartFile;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 
-import net.minidev.json.JSONArray;
+
 
 /**
  * Admin Controller.

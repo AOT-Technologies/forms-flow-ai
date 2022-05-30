@@ -248,8 +248,10 @@ class ApplicationResourceByFormId(Resource):
                         form_id=form_id, page_no=page_no, limit=limit
                     )
                 )
-                application_count = ApplicationService.get_all_applications_form_id_count(
-                    form_id=form_id
+                application_count = (
+                    ApplicationService.get_all_applications_form_id_count(
+                        form_id=form_id
+                    )
                 )
             else:
                 application_schema = ApplicationService.apply_custom_attributes(

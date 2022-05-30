@@ -37,16 +37,13 @@ class ApplicationHistoryResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except BaseException as application_err:  # pylint: disable=broad-except
+        except:
             response, status = {
-                "type": "Not Found",
-                "message": "No Application History found ",
-                "errors": application_err,
-            }, HTTPStatus.NOT_FOUND
-
+                "type": "Bad Request",
+                "message": "Invalid Application Request Passed ",
+            }, HTTPStatus.BAD_REQUEST
             current_app.logger.warning(response)
-            current_app.logger.warning(application_err)
-            return response, status 
+            return response, status
 
     @staticmethod
     @auth.require

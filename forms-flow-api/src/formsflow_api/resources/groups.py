@@ -69,11 +69,16 @@ class KeycloakDashboardGroupDetail(Resource):
         try:
             response = KeycloakFactory.get_instance().get_group(group_id)
             if response is None:
-                return {"message": f"Group - {group_id} not found"}, HTTPStatus.NOT_FOUND
+                return {
+                    "message": f"Group - {group_id} not found"
+                }, HTTPStatus.NOT_FOUND
             return response
-        except ValidationError as err:
-            pprint(err.messages)
-            return {"message": "Invalid Request Object format"}, HTTPStatus.BAD_REQUEST
+        except:
+            response, status = {
+                "type": "Not Found",
+                "message": f"Invalid {group_id} not found ",
+            }, HTTPStatus.NOT_FOUND
+            return response, status
 
     @staticmethod
     @auth.require

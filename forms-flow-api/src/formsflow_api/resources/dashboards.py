@@ -2,7 +2,7 @@
 import re
 from http import HTTPStatus
 
-from flask import g, request, current_app
+from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 
 from formsflow_api.schemas import ApplicationListReqSchema
@@ -28,7 +28,6 @@ class DashboardList(Resource):
     @profiletime
     def get():
         """List all dashboards."""
-        
         if request.args:
             dict_data = ApplicationListReqSchema().load(request.args)
             page_no = dict_data["page_no"]
@@ -47,12 +46,11 @@ class DashboardList(Resource):
 
             assert response is not None
             return response, HTTPStatus.OK
-        except:  # pylint: disable=broad-except
+        except:
             response, status = {
                 "type": "Connection Refused",
                 "message": "Failed to establish new connection",
             }, HTTPStatus.SERVICE_UNAVAILABLE
-
             current_app.logger.warning(response)
             return response, status
 

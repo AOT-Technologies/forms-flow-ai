@@ -105,6 +105,7 @@ public class AdminRestServiceImpl extends AbstractRestService implements AdminRe
             createAuthorization(tenantKey, reviewerRole, Resources.TASK, "*");
             createAuthorization(tenantKey, reviewerRole, Resources.TENANT, tenantKey);
             createAuthorization(tenantKey, reviewerRole, Resources.FILTER, "*");
+            createAuthorization(tenantKey, reviewerRole, Resources.USER, Permissions.READ,  "*");
         }
         LOGGER.info("Finished creating authorizations for tenant");
     }
@@ -203,6 +204,24 @@ public class AdminRestServiceImpl extends AbstractRestService implements AdminRe
         authEntity.setAuthorizationType(AUTH_TYPE_GRANT);
         authEntity.setGroupId(tenantKey + "-" + role);
         authEntity.addPermission(Permissions.ALL);
+        authEntity.setResourceId(resourceId);
+        authEntity.setResourceType(resourceType.resourceType());
+        this.authService.saveAuthorization(authEntity);
+    }
+
+    /**
+     * Create authorization entity.
+     *
+     * @param tenantKey
+     * @param role
+     * @param resourceType
+     * @param resourceId
+     */
+    private void createAuthorization(String tenantKey, String role, Resources resourceType, Permissions permissions, String resourceId) {
+        AuthorizationEntity authEntity = new AuthorizationEntity();
+        authEntity.setAuthorizationType(AUTH_TYPE_GRANT);
+        authEntity.setGroupId(tenantKey + "-" + role);
+        authEntity.addPermission(permissions);
         authEntity.setResourceId(resourceId);
         authEntity.setResourceType(resourceType.resourceType());
         this.authService.saveAuthorization(authEntity);

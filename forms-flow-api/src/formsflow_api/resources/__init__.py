@@ -9,6 +9,7 @@ from flask_restx import Api
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.resources.anonymous_application import API as PUBLIC_API
 from formsflow_api.resources.application import API as APPLICATION_API
+from formsflow_api.resources.cmis_connector import API as CMIS_API
 from formsflow_api.resources.application_history import (
     API as APPLICATION_HISTORY_API,
 )
@@ -69,3 +70,5 @@ API.add_namespace(KEYCLOAK_GROUPS_API, path="/groups")
 API.add_namespace(PROCESS_API, path="/process")
 API.add_namespace(PUBLIC_API, path="/public")
 API.add_namespace(KEYCLOAK_USER_API, path="/user")
+API.add_namespace(CMIS_API, path="/cmis")
+

@@ -46,7 +46,7 @@ export default React.memo(() => {
   const firstResultsRef=useRef(firstResult);
   const taskListRef=useRef(taskList);
   const tenantKey = useSelector(state => state.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';
+  const redirectUrl = useRef(MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/');
 
   useEffect(()=>{
     selectedFilterIdRef.current=selectedFilterId;
@@ -54,6 +54,7 @@ export default React.memo(() => {
     reqDataRef.current=reqData;
     firstResultsRef.current=firstResult;
     taskListRef.current=taskList;
+    redirectUrl.current=MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/';
   });
 
   useEffect(()=>{
@@ -89,12 +90,14 @@ export default React.memo(() => {
     return list.some(task=>task.id===id);
   }
   const SocketIOCallback = useCallback((refreshedTaskId, forceReload, isUpdateEvent) => {
+    alert("socket call abck")
       if(forceReload){
         dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current,refreshedTaskId)); //Refreshes the Tasks
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current){
+          alert("sock call back")
           dispatch(setBPMTaskDetailLoader(true));
           dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
-          dispatch(push(`${redirectUrl}task/`));
+          dispatch(push(`${redirectUrl.current}task/`));
         }
       } else{
         if(selectedFilterIdRef.current){
@@ -118,7 +121,7 @@ export default React.memo(() => {
         }
       }
     }
-  ,[dispatch,currentUser,redirectUrl]);
+  ,[dispatch,currentUser]);
 
   useEffect(()=>{
     if(!SocketIOService.isConnected()){

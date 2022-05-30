@@ -62,10 +62,16 @@ const List = React.memo((props) => {
 
   const isBPMFormListLoading = useSelector(state => state.bpmForms.isActive);
   const bpmForms = useSelector(state => state.bpmForms);
-  const showViewSubmissions = useSelector((state) => state.user.showViewSubmissions);
+
+  // View submissions feature will be deprecated in the future releases.
+  
+  // const showViewSubmissions = useSelector((state) => state.user.showViewSubmissions);
+  //const operations = getOperations(userRoles, showViewSubmissions);
+  
+  const operations = getOperations(userRoles, false);
+
   const formCheckList = useSelector(state => state.formCheckList.formList);
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
-  const operations = getOperations(userRoles, showViewSubmissions);
   const columns = isDesigner ? designerColumns : userColumns;
   const paginatedForms = isDesigner? forms.forms : bpmForms.forms;
   const searchFormLoading = useSelector(state=> state.formCheckList.searchFormLoading);

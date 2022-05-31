@@ -1,6 +1,5 @@
 package org.camunda.bpm.extension.hooks.controllers;
 
-import net.minidev.json.JSONArray;
 import org.camunda.bpm.extension.hooks.controllers.data.Task;
 import org.camunda.bpm.extension.hooks.controllers.data.Variable;
 import org.camunda.bpm.extension.hooks.controllers.stubs.TaskStub;
@@ -20,6 +19,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import com.nimbusds.jose.shaded.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.HashMap;

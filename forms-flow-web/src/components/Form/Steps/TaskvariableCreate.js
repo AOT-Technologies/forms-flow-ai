@@ -36,7 +36,9 @@ const TaskvariableCreate = ({ options ,addTaskVariable}) => {
         defaultLabel:selectedValue.label,
         label:taskLabel,
         showInList:showInList}
-        addTaskVariable(data)
+        if(selectedValue.value&& taskLabel && selectedValue.label ){
+          addTaskVariable(data)
+        }
   }
   return (
     <>

@@ -60,9 +60,9 @@ export default React.memo(() => {
   useEffect(()=>{
     const reqParamData={...{sorting:[...sortParams.sorting]},...searchParams};
     if(!isEqual(reqParamData,listReqParams)){
-      dispatch(setFilterListParams(cloneDeep(reqParamData)))
+      dispatch(setFilterListParams(cloneDeep(reqParamData)));
     }
-  },[searchParams,sortParams,dispatch,listReqParams])
+  },[searchParams,sortParams,dispatch,listReqParams]);
 
   useEffect(()=>{
     dispatch(setBPMFilterLoader(true));

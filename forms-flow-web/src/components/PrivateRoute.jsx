@@ -16,34 +16,34 @@ const ServiceFlow = lazy(() => import('./ServiceFlow'));
 const DashboardPage = lazy(() => import("./Dashboard"));
 const InsightsPage = lazy(() => import("./Insights"));
 const Application = lazy(() => import("./Application"));
-const Admin = lazy(() => import("./Admin"))
+const Admin = lazy(() => import("./Admin"));
 
 const PrivateRoute = React.memo((props) => {
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.user.isAuthenticated);
   const userRoles = useSelector((state) => state.user.roles || []);
-  const {tenantId} = useParams()
-  const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`
+  const {tenantId} = useParams();
+  const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
 
   useEffect(()=>{  
     if(tenantId && props.store){
-        sessionStorage.setItem("tenantKey", tenantId)
+        sessionStorage.setItem("tenantKey", tenantId);
         dispatch(setTenantFromId(tenantId))
           UserService.setKeycloakJson(tenantId,(clientId)=>{
             UserService.initKeycloak(props.store, clientId, (err, res) => {
               dispatch(setUserAuth(res.authenticated));
             });
-          })
+          });
     }else{
       if (props.store) {
             UserService.setKeycloakJson(null, (clientId)=>{
               UserService.initKeycloak(props.store, clientId, (err, res) => {
                 dispatch(setUserAuth(res.authenticated));
               });
-            })
+            });
       }
     }
-  },[props.store,tenantId, dispatch])
+  },[props.store,tenantId, dispatch]);
 
 // useMemo prevents unneccessary rerendering caused by the route update.
 
@@ -58,7 +58,7 @@ const PrivateRoute = React.memo((props) => {
         )
       }
     />
-  ),[userRoles])
+  ),[userRoles]);
 
 
   const ReviewerRoute = useMemo(()=>({component: Component, ...rest}) => (
@@ -72,7 +72,7 @@ const PrivateRoute = React.memo((props) => {
         )
       }
     />
-  ),[userRoles])
+  ),[userRoles]);
 
   const ClientReviewerRoute = useMemo(()=>({component: Component, ...rest}) => (
     <Route
@@ -85,7 +85,7 @@ const PrivateRoute = React.memo((props) => {
         )
       }
     />
-  ),[userRoles])
+  ),[userRoles]);
 
   return (
     <>

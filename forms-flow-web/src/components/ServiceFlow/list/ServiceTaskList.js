@@ -1,4 +1,4 @@
-import React, {useEffect } from "react";
+import React, {useEffect, useRef } from "react";
 import { ListGroup, Row} from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchServiceTaskList } from "../../../apiManager/services/bpmTaskServices";
@@ -32,7 +32,8 @@ const ServiceFlowTaskList = React.memo(() => {
   const activePage = useSelector(state=>state.bpmTasks.activePage);
   const tasksPerPage = MAX_RESULTS;
   const tenantKey = useSelector(state => state.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/'
+  const redirectUrl = useRef(MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/');
+
   useEffect(() => {
     if (selectedFilter) {
       dispatch(setBPMTaskLoader(true));
@@ -43,7 +44,7 @@ const ServiceFlowTaskList = React.memo(() => {
 
   const getTaskDetails = (taskId) => {
     if(taskId!==bpmTaskId){
-      dispatch(push(`${redirectUrl}task/${taskId}`));
+      dispatch(push(`${redirectUrl.current}task/${taskId}`));
     }
   };
 

@@ -1,4 +1,4 @@
-import React, {useEffect, Suspense, lazy} from "react";
+import React, {useEffect, Suspense, lazy, useMemo} from "react";
 import {Route, Switch, Redirect, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../constants/constants";
@@ -16,36 +16,38 @@ const ServiceFlow = lazy(() => import('./ServiceFlow'));
 const DashboardPage = lazy(() => import("./Dashboard"));
 const InsightsPage = lazy(() => import("./Insights"));
 const Application = lazy(() => import("./Application"));
-const Admin = lazy(() => import("./Admin"))
+const Admin = lazy(() => import("./Admin"));
 
 const PrivateRoute = React.memo((props) => {
   const dispatch = useDispatch();
   const isAuth = useSelector((state) => state.user.isAuthenticated);
   const userRoles = useSelector((state) => state.user.roles || []);
-  const {tenantId} = useParams()
-  const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`
+  const {tenantId} = useParams();
+  const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
 
   useEffect(()=>{  
     if(tenantId && props.store){
-        sessionStorage.setItem("tenantKey", tenantId)
+        sessionStorage.setItem("tenantKey", tenantId);
         dispatch(setTenantFromId(tenantId))
           UserService.setKeycloakJson(tenantId,(clientId)=>{
             UserService.initKeycloak(props.store, clientId, (err, res) => {
               dispatch(setUserAuth(res.authenticated));
             });
-          })
+          });
     }else{
       if (props.store) {
             UserService.setKeycloakJson(null, (clientId)=>{
               UserService.initKeycloak(props.store, clientId, (err, res) => {
                 dispatch(setUserAuth(res.authenticated));
               });
-            })
+            });
       }
     }
-  },[props.store,tenantId, dispatch])
+  },[props.store,tenantId, dispatch]);
 
-  const DesignerRoute = ({component: Component, ...rest}) => (
+// useMemo prevents unneccessary rerendering caused by the route update.
+
+  const DesignerRoute = useMemo(()=>({component: Component, ...rest}) => (
     <Route
       {...rest}
       render={(props) =>
@@ -56,10 +58,10 @@ const PrivateRoute = React.memo((props) => {
         )
       }
     />
-  );
+  ),[userRoles]);
 
 
-  const ReviewerRoute = ({component: Component, ...rest}) => (
+  const ReviewerRoute = useMemo(()=>({component: Component, ...rest}) => (
     <Route
       {...rest}
       render={(props) =>
@@ -70,9 +72,9 @@ const PrivateRoute = React.memo((props) => {
         )
       }
     />
-  );
+  ),[userRoles]);
 
-  const ClientReviewerRoute = ({component: Component, ...rest}) => (
+  const ClientReviewerRoute = useMemo(()=>({component: Component, ...rest}) => (
     <Route
       {...rest}
       render={(props) =>
@@ -83,7 +85,7 @@ const PrivateRoute = React.memo((props) => {
         )
       }
     />
-  );
+  ),[userRoles]);
 
   return (
     <>

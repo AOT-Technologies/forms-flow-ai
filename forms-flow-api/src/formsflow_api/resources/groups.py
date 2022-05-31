@@ -2,7 +2,7 @@
 from http import HTTPStatus
 from pprint import pprint
 
-from flask import request
+from flask import current_app, request
 from flask_restx import Namespace, Resource
 from marshmallow import ValidationError
 
@@ -30,23 +30,27 @@ class KeycloakDashboardGroupList(Resource):
         :params int pageNo: page number (optional)
         :params int limit: number of items per page (optional)
         """
-        if request.args:
-            dict_data = ApplicationListReqSchema().load(request.args)
-            page_no = dict_data["page_no"]
-            limit = dict_data["limit"]
-        else:
-            page_no = 0
-            limit = 0
-        dashboard_group_list = KeycloakFactory.get_instance().get_analytics_groups(
-            page_no, limit
-        )
+        try:
+            if request.args:
+                dict_data = ApplicationListReqSchema().load(request.args)
+                page_no = dict_data["page_no"]
+                limit = dict_data["limit"]
+            else:
+                page_no = 0
+                limit = 0
+            dashboard_group_list = KeycloakFactory.get_instance().get_analytics_groups(
+                page_no, limit
+            )
 
-        if not dashboard_group_list:
-            return {
-                "message": "No Dashboard authorized Group found"
-            }, HTTPStatus.NOT_FOUND
+            if not dashboard_group_list:
+                return {
+                    "message": "No Dashboard authorized Group found"
+                }, HTTPStatus.NOT_FOUND
 
-        return dashboard_group_list, HTTPStatus.OK
+            return dashboard_group_list, HTTPStatus.OK
+        except ValidationError as err:
+            pprint(err.messages)
+            return {"message": "Invalid Request Object format"}, HTTPStatus.BAD_REQUEST
 
 
 @cors_preflight("GET,PUT,OPTIONS")
@@ -62,10 +66,21 @@ class KeycloakDashboardGroupDetail(Resource):
 
         :params str id: group-id of Keycloak Dashboard Authorized groups
         """
-        response = KeycloakFactory.get_instance().get_group(group_id)
-        if response is None:
-            return {"message": f"Group - {group_id} not found"}, HTTPStatus.NOT_FOUND
-        return response
+        try:
+            response = KeycloakFactory.get_instance().get_group(group_id)
+            if response is None:
+                return {
+                    "message": f"Group - {group_id} not found"
+                }, HTTPStatus.NOT_FOUND
+            return response
+        except Exception as err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Bad Request",
+                "message": f"Invalid groupid {group_id}",
+            }, HTTPStatus.BAD_REQUEST
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
 
     @staticmethod
     @auth.require

@@ -26,16 +26,25 @@ class ApplicationHistoryResource(Resource):
 
         : application_id:- Getting application history by providing application_id
         """
-        return (
-            (
-                {
-                    "applications": ApplicationHistoryService.get_application_history(
-                        application_id=application_id
-                    )
-                }
-            ),
-            HTTPStatus.OK,
-        )
+        try:
+            return (
+                (
+                    {
+                        "applications": ApplicationHistoryService.get_application_history(
+                            application_id=application_id
+                        )
+                    }
+                ),
+                HTTPStatus.OK,
+            )
+        except Exception as err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Bad Request",
+                "message": "Invalid Application Request Passed ",
+            }, HTTPStatus.BAD_REQUEST
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
 
     @staticmethod
     @auth.require

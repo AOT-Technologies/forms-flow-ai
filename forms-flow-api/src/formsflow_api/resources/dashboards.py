@@ -46,7 +46,7 @@ class DashboardList(Resource):
 
             assert response is not None
             return response, HTTPStatus.OK
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Connection Refused",
                 "message": "Failed to establish connection with analytics",

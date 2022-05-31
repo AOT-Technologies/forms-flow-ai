@@ -37,7 +37,7 @@ class ApplicationHistoryResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad Request",
                 "message": "Invalid Application Request Passed ",

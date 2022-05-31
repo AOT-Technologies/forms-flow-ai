@@ -73,7 +73,7 @@ class KeycloakDashboardGroupDetail(Resource):
                     "message": f"Group - {group_id} not found"
                 }, HTTPStatus.NOT_FOUND
             return response
-        except Exception as err:
+        except Exception as err:  # pylint: disable=broad-except
             response, status = {
                 "type": "Bad Request",
                 "message": f"Invalid groupid {group_id}",

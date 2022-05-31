@@ -33,7 +33,8 @@
     "no-tabs": ["error", {"allowIndentationTabs": true}],
     "semi":"error",
     "semi-style": ["error", "last"],
-    "space-infix-ops": ["error", { "int32Hint": false }]
+    "space-infix-ops": ["error", { "int32Hint": false }],
+    "no-useless-concat":"error"
 
   }
 }

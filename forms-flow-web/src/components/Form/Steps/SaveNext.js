@@ -52,9 +52,9 @@ const SaveNext = React.memo(
           </Modal.Header>
           <Modal.Body>
             {t(
-              "Changing the form workflow will not affect the existing applications. \
-              It will only update in the newly created applications. \
-              Press Save Changes to continue or cancel the changes."
+              "Changing the form workflow will not affect the existing applications. "
+              + "It will only update in the newly created applications. "
+              + "Press Save Changes to continue or cancel the changes."
             )}
           </Modal.Body>
           <Modal.Footer>

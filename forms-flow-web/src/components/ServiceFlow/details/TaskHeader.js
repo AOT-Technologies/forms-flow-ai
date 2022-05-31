@@ -55,6 +55,7 @@ const TaskHeader = React.memo(() => {
   const onClaim = () => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
+      // eslint-disable-next-line no-unused-vars
       claimBPMTask(taskId, username, (err, response) => {
         if (!err) {
           if (!SocketIOService.isConnected()) {
@@ -78,6 +79,7 @@ const TaskHeader = React.memo(() => {
     if (userId && userId !== task.assignee) {
       dispatch(setBPMTaskDetailUpdating(true));
       dispatch(
+        // eslint-disable-next-line no-unused-vars
         updateAssigneeBPMTask(taskId, userId, (err, response) => {
           if (!err) {
             if (!SocketIOService.isConnected()) {
@@ -99,6 +101,7 @@ const TaskHeader = React.memo(() => {
   const onUnClaimTask = () => {
     dispatch(setBPMTaskDetailUpdating(true));
     dispatch(
+      // eslint-disable-next-line no-unused-vars
       unClaimBPMTask(taskId, (err, response) => {
         if (!err) {
           if (!SocketIOService.isConnected()) {
@@ -124,6 +127,7 @@ const TaskHeader = React.memo(() => {
       ...{ followUp: followUpDate ? getISODateTime(followUpDate) : null },
     };
     dispatch(
+      // eslint-disable-next-line no-unused-vars
       updateBPMTask(taskId, updatedTask, (err, response) => {
         if (!err) {
           if (!SocketIOService.isConnected()) {
@@ -147,6 +151,7 @@ const TaskHeader = React.memo(() => {
       ...{ due: dueDate ? getISODateTime(dueDate) : null },
     };
     dispatch(
+      // eslint-disable-next-line no-unused-vars
       updateBPMTask(taskId, updatedTask, (err, response) => {
         if (!err) {
           if (!SocketIOService.isConnected()) {
@@ -162,6 +167,7 @@ const TaskHeader = React.memo(() => {
     );
   };
 
+  // eslint-disable-next-line no-unused-vars
   const FollowUpDateInput = React.forwardRef(({ value, onClick }, ref) => {
     return (
       <div onClick={onClick} ref={ref}>
@@ -175,6 +181,7 @@ const TaskHeader = React.memo(() => {
     );
   });
 
+  // eslint-disable-next-line no-unused-vars
   const DueDateInput = React.forwardRef(({ value, onClick }, ref) => {
     return (
       <div onClick={onClick} ref={ref}>

@@ -25,7 +25,7 @@
   "rules": {
     "react/react-in-jsx-scope":"off",
     "no-alert":"warn",
-    "no-console":"warn",
+    "no-console":"off",
     "react/display-name":"off",
     "react/prop-types":"off",
     "max-len": ["error", {"code": 110, "ignoreUrls": true}],

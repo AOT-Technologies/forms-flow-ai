@@ -1,4 +1,4 @@
-import {Link, Redirect, Route, Switch, useParams} from 'react-router-dom'
+import {Redirect, Route, Switch, useParams} from 'react-router-dom'
 import React, {useEffect, useState} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {getSubmission, selectRoot} from "react-formio";
@@ -8,7 +8,7 @@ import {getApplicationById} from "../../../../../apiManager/services/application
 import {setApplicationDetailLoader} from "../../../../../actions/applicationActions";
 import NotFound from '../../../../NotFound';
 import {getUserRolePermission} from "../../../../../helper/user";
-import {BASE_ROUTE, CLIENT, MULTITENANCY_ENABLED, STAFF_REVIEWER} from "../../../../../constants/constants";
+import {BASE_ROUTE, CLIENT, STAFF_REVIEWER} from "../../../../../constants/constants";
 import {CLIENT_EDIT_STATUS} from "../../../../../constants/applicationConstants";
 import Loading from '../../../../../containers/Loading';
 import { clearSubmissionError } from '../../../../../actions/formActions';
@@ -16,7 +16,7 @@ import { clearSubmissionError } from '../../../../../actions/formActions';
 const Item = React.memo((props) => {
   const {formId, submissionId} = useParams();
   const dispatch = useDispatch();
-  const showViewSubmissions= useSelector((state) => state.user.showViewSubmissions);
+  // const showViewSubmissions= useSelector((state) => state.user.showViewSubmissions);
   //const path = props.location.pathname;
   const applicationId = useSelector((state) => selectRoot('submission', state)?.submission?.data?.applicationId || null);
   const userRoles = useSelector((state) => {
@@ -25,9 +25,9 @@ const Item = React.memo((props) => {
   const applicationStatus = useSelector(state => state.applications.applicationDetail?.applicationStatus || '');
   const [showSubmissionLoading, setShowSubmissionLoading] = useState(true);
   const [editAllowed, setEditAllowed] = useState(false);
-  const tenantKey = useSelector((state) => state.tenants?.tenantId)
+  // const tenantKey = useSelector((state) => state.tenants?.tenantId)
 
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`
+  // const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`
 
   useEffect(() => {
     dispatch(clearSubmissionError('submission'))
@@ -60,11 +60,11 @@ const Item = React.memo((props) => {
   return (
     <div>
       <ul className="nav nav-tabs">
-        {showViewSubmissions && getUserRolePermission(userRoles, STAFF_REVIEWER) ?<li className="nav-item">
+        {/* {showViewSubmissions && getUserRolePermission(userRoles, STAFF_REVIEWER) ?<li className="nav-item">
           <Link className="nav-link" to={`${redirectUrl}form/${formId}/submission`}>
             <i className="fa fa-chevron-left fa-lg" />
           </Link>
-        </li>:null}
+        </li>:null} */}
         {/*{(path.indexOf("edit") > 0) ?
           <li className="nav-item">
             <Link className="nav-link" to={`/form/${formId}/submission/${submissionId}`}>

@@ -39,7 +39,7 @@ public class KeycloakIdentityProviderFactory
 	@Override
 	public Session openSession() {
 		return new KeycloakIdentityProviderSession(keycloakConfiguration, restTemplate, keycloakContextProvider,
-				userQueryCache, groupQueryCache, tenantQueryCache, this.config);
+				userQueryCache, groupQueryCache, tenantQueryCache, checkPasswordCache, this.config);
 	}
 
 	public QueryCache<CacheableKeycloakTenantQuery, List<Tenant>> getTenantQueryCache() {

@@ -2,7 +2,7 @@
 import re
 from http import HTTPStatus
 
-from flask import g, request
+from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 
 from formsflow_api.schemas import ApplicationListReqSchema
@@ -35,16 +35,25 @@ class DashboardList(Resource):
         else:
             page_no = None
             limit = None
-        response = analytics_service.get_request(
-            url_path="dashboards", page_no=page_no, limit=limit
-        )
-        if response == "unauthorized":
-            return {"message": "Dashboard not found"}, HTTPStatus.NOT_FOUND
-        if response is None:
-            return {"message": "Error"}, HTTPStatus.SERVICE_UNAVAILABLE
+        try:
+            response = analytics_service.get_request(
+                url_path="dashboards", page_no=page_no, limit=limit
+            )
+            if response == "unauthorized":
+                return {"message": "Dashboard not found"}, HTTPStatus.NOT_FOUND
+            if response is None:
+                return {"message": "Error"}, HTTPStatus.SERVICE_UNAVAILABLE
 
-        assert response is not None
-        return response, HTTPStatus.OK
+            assert response is not None
+            return response, HTTPStatus.OK
+        except Exception as err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Connection Refused",
+                "message": "Failed to establish connection with analytics",
+            }, HTTPStatus.BAD_GATEWAY
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
+            return response, status
 
 
 @cors_preflight("GET,OPTIONS")

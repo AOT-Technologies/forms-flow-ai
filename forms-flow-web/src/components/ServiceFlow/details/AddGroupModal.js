@@ -64,8 +64,8 @@ const AddGroupModal = React.memo((props) => {
             <div className="modal-text">
               <i className="fa fa-info-circle mr-2" />
               {t(
-                "You can add a group by typing a group ID into the input field and afterwards \
-                clicking the button with the plus sign."
+                "You can add a group by typing a group ID into the input field and afterwards "
+                + "clicking the button with the plus sign."
               )}
             </div>
             <Row className="mt-2 mb-1">

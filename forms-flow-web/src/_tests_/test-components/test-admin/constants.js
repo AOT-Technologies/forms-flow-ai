@@ -93,8 +93,8 @@ export const updatedState = {
 };
 
 export const dashboardToclean = [
-  "[{'5': 'Hello'}, {'4': 'testathira'}, {'6': 'New Business License Application'},\
-   {'8': 'Sentiment Analysis'}, {'7': 'Freedom Of Information Form'}, {'3': 'test'}, {'12': 'dashboard4'}]",
+  "[{'5': 'Hello'}, {'4': 'testathira'}, {'6': 'New Business License Application'},"
+  + " {'8': 'Sentiment Analysis'}, {'7': 'Freedom Of Information Form'}, {'3': 'test'}, {'12': 'dashboard4'}]"
 ];
 export const cleanedDashboards = [
   { 5: "Hello" },

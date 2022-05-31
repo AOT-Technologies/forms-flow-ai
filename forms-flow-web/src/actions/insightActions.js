@@ -15,7 +15,7 @@ export const getDashboardDetail = (data) => (dispatch) => {
   });
 };
 
-export const setInsigFtDetailLoader = (data) => (dispatch) => {
+export const setInsightDetailLoader = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_INSIGHT_DETAIL_LOADING,
     payload: data,

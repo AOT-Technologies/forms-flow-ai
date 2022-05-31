@@ -34,8 +34,8 @@ it("Should render the tasklist component without breaking", () => {
   expect(screen.getByText("Manage Groups")).toBeInTheDocument();
   expect(
     screen.getByText(
-      "You can add a group by typing a group ID into the input\
-       field and afterwards clicking the button with the plus sign."
+      "You can add a group by typing a group ID into the input " 
+       + "field and afterwards clicking the button with the plus sign."
     )
   ).toBeInTheDocument();
   expect(screen.getByText("Close")).toBeInTheDocument();

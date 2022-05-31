@@ -181,7 +181,7 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
     protected String getKeycloakClientID(String clientId) throws KeycloakUserNotFoundException, RestClientException {
         try {
             ResponseEntity<String> response = restTemplate.exchange(
-                    keycloakConfiguration.getKeycloakAdminUrl() + "/clients", HttpMethod.GET,
+                    keycloakConfiguration.getKeycloakAdminUrl() + "/clients?clientId=" + clientId, HttpMethod.GET,
                     String.class);
             JsonArray resultList = parseAsJsonArray(response.getBody());
             JsonObject result = resultList.get(0).getAsJsonObject();

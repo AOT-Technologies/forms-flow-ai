@@ -1,5 +1,10 @@
- /* istanbul ignore file */
-import {httpGETRequest, httpPOSTRequest, httpPUTRequest, httpPOSTRequestWithHAL } from "../httpRequestHandler";
+/* istanbul ignore file */
+import {
+  httpGETRequest,
+  httpPOSTRequest,
+  httpPUTRequest,
+  httpPOSTRequestWithHAL,
+} from "../httpRequestHandler";
 import API from "../endpoints";
 import UserService from "../../services/UserService";
 import {
@@ -11,15 +16,25 @@ import {
   setBPMProcessList,
   setBPMUserList,
   setBPMTaskDetailUpdating,
-  setBPMFilterList, setBPMFilterLoader, updateBPMTaskGroups, setBPMTaskGroupsLoading, setBPMTaskCount
+  setBPMFilterList,
+  setBPMFilterLoader,
+  updateBPMTaskGroups,
+  setBPMTaskGroupsLoading,
+  setBPMTaskCount,
 } from "../../actions/bpmTaskActions";
-import {replaceUrl} from "../../helper/helper";
+import { replaceUrl } from "../../helper/helper";
 import axios from "axios";
-import {taskDetailVariableDataFormatter} from "./formatterService";
-import {REVIEWER_GROUP} from "../../constants/userContants";
-import {MAX_RESULTS} from "../../components/ServiceFlow/constants/taskConstants";
+import { taskDetailVariableDataFormatter } from "./formatterService";
+import { REVIEWER_GROUP } from "../../constants/userContants";
+import { MAX_RESULTS } from "../../components/ServiceFlow/constants/taskConstants";
 
-export const fetchServiceTaskList = (filterId,firstResult,reqData,taskIdToRemove,...rest) => {
+export const fetchServiceTaskList = (
+  filterId,
+  firstResult,
+  reqData,
+  taskIdToRemove,
+  ...rest
+) => {
   const done = rest.length ? rest[0] : () => {};
   let apiUrlgetTaskList = replaceUrl(
     API.GET_BPM_TASK_LIST_WITH_FILTER,
@@ -27,15 +42,15 @@ export const fetchServiceTaskList = (filterId,firstResult,reqData,taskIdToRemove
     filterId
   );
 
-  apiUrlgetTaskList=`${apiUrlgetTaskList}?firstResult=${firstResult}&maxResults=${MAX_RESULTS}`
+  apiUrlgetTaskList = `${apiUrlgetTaskList}?firstResult=${firstResult}&maxResults=${MAX_RESULTS}`;
 
   return (dispatch) => {
     httpPOSTRequestWithHAL(apiUrlgetTaskList, reqData, UserService.getToken())
       .then((res) => {
         if (res.data) {
           let responseData = res.data;
-          const _embedded = responseData['_embedded']; // data._embedded.task is where the task list is.
-          if (!_embedded || !_embedded['task'] || !responseData['count']) {
+          const _embedded = responseData["_embedded"]; // data._embedded.task is where the task list is.
+          if (!_embedded || !_embedded["task"] || !responseData["count"]) {
             // Display error if the necessary values are unavailable.
             // console.log("Error", res);
             dispatch(setBPMTaskList([]));
@@ -43,17 +58,21 @@ export const fetchServiceTaskList = (filterId,firstResult,reqData,taskIdToRemove
             dispatch(serviceActionError(res));
             dispatch(setBPMTaskLoader(false));
           } else {
-            const taskListFromResponse = _embedded['task']; // Gets the task array
+            const taskListFromResponse = _embedded["task"]; // Gets the task array
             const taskCount = {
-              count: responseData['count']
+              count: responseData["count"],
             };
             let taskData = taskListFromResponse;
-            if(taskIdToRemove){
+            if (taskIdToRemove) {
               // console.log("task----",taskIdToRemove);
               //if the list has the task with taskIdToRemove remove that task and decrement
-              if(taskListFromResponse.find((task)=>task.id===taskIdToRemove)){
-                taskData=taskListFromResponse.filter( (task)=>task.id!==taskIdToRemove);
-                taskCount['count']--; // Count has to be decreased since one task id is removed.
+              if (
+                taskListFromResponse.find((task) => task.id === taskIdToRemove)
+              ) {
+                taskData = taskListFromResponse.filter(
+                  (task) => task.id !== taskIdToRemove
+                );
+                taskCount["count"]--; // Count has to be decreased since one task id is removed.
               }
             }
             dispatch(setBPMTaskCount(taskCount));
@@ -130,14 +149,14 @@ export const fetchUserList = (...rest) => {
   };
 };
 
-export const fetchUserListWithSearch = ({searchType,query},...rest) => {
+export const fetchUserListWithSearch = ({ searchType, query }, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const paramData={memberOfGroup:REVIEWER_GROUP};
+  const paramData = { memberOfGroup: REVIEWER_GROUP };
   /*TODO search with query /user?lastNameLike=%${lastName}%&memberOfGroup=${group}*/
   //let getReviewerUserListApi = `${API.GET_BPM_USER_LIST}?memberOfGroup=${REVIEWER_GROUP}`;
-  if(searchType && query){
+  if (searchType && query) {
     //getReviewerUserListApi = `${getReviewerUserListApi}&${searchType}=%${query||""}%`
-    paramData[searchType]=`%${query}%`;
+    paramData[searchType] = `%${query}%`;
   }
 
   return (dispatch) => {
@@ -164,7 +183,7 @@ export const fetchUserListWithSearch = ({searchType,query},...rest) => {
 
 export const fetchFilterList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const getTaskFiltersAPI = `${API.GET_BPM_FILTERS}?resourceType=Task&itemCount=true`
+  const getTaskFiltersAPI = `${API.GET_BPM_FILTERS}?resourceType=Task&itemCount=true`;
   return (dispatch) => {
     httpGETRequest(getTaskFiltersAPI, {}, UserService.getToken())
       .then((res) => {
@@ -204,58 +223,57 @@ export const getBPMTaskDetail = (taskId, ...rest) => {
     taskId
   );
 
-  const taskDetailReq =   httpGETRequest(apiUrlgetTaskDetail);
-  const taskDetailsWithVariableReq =   httpGETRequest(apiUrlgetTaskVariables);
+  const taskDetailReq = httpGETRequest(apiUrlgetTaskDetail);
+  const taskDetailsWithVariableReq = httpGETRequest(apiUrlgetTaskVariables);
 
   return (dispatch) => {
-    axios.all([taskDetailReq,taskDetailsWithVariableReq])
-      .then(axios.spread(
-        (...responses) => {
-        if (responses[0]?.data) {
-          let taskDetail=responses[0].data;
-          if(responses[1]?.data){
-            let taskDetailUpdates = responses[1]?.data;
-            taskDetail = {...taskDetail,...taskDetailVariableDataFormatter(taskDetailUpdates)};
-          }
+    axios
+      .all([taskDetailReq, taskDetailsWithVariableReq])
+      .then(
+        axios.spread((...responses) => {
+          if (responses[0]?.data) {
+            let taskDetail = responses[0].data;
+            if (responses[1]?.data) {
+              let taskDetailUpdates = responses[1]?.data;
+              taskDetail = {
+                ...taskDetail,
+                ...taskDetailVariableDataFormatter(taskDetailUpdates),
+              };
+            }
 
-          dispatch(setBPMTaskDetail(taskDetail));
-          dispatch(setBPMTaskDetailLoader(false));
-          dispatch(setBPMTaskDetailUpdating(false));
-          done(null, taskDetail);
-        }
-      }))
+            dispatch(setBPMTaskDetail(taskDetail));
+            dispatch(setBPMTaskDetailLoader(false));
+            dispatch(setBPMTaskDetailUpdating(false));
+            done(null, taskDetail);
+          }
+        })
+      )
       .catch((error) => {
-         dispatch(serviceActionError(error));
-         dispatch(setBPMTaskDetailLoader(false));
+        dispatch(serviceActionError(error));
+        dispatch(setBPMTaskDetailLoader(false));
         dispatch(setBPMTaskDetailUpdating(false));
         done(error);
       });
   };
 };
 
-
 export const getBPMGroups = (taskId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
 
-  const apiUrlgetGroups = replaceUrl(
-    API.BPM_GROUP,
-    "<task_id>",
-    taskId
-  );
+  const apiUrlgetGroups = replaceUrl(API.BPM_GROUP, "<task_id>", taskId);
 
   return (dispatch) => {
     httpGETRequest(`${apiUrlgetGroups}?type=candidate`)
-      .then(responses => {
-            if (responses?.data){
-              const groups = responses.data;
-              dispatch(updateBPMTaskGroups(groups));
-              done(null, groups);
-            }else{
-              dispatch(setBPMTaskGroupsLoading(false));
-              done(null,[]);
-            }
-          }
-        )
+      .then((responses) => {
+        if (responses?.data) {
+          const groups = responses.data;
+          dispatch(updateBPMTaskGroups(groups));
+          done(null, groups);
+        } else {
+          dispatch(setBPMTaskGroupsLoading(false));
+          done(null, []);
+        }
+      })
       .catch((error) => {
         dispatch(serviceActionError(error));
         dispatch(setBPMTaskGroupsLoading(false));
@@ -275,18 +293,17 @@ export const removeBPMGroup = (taskId, group, ...rest) => {
 
   return (dispatch) => {
     httpPOSTRequest(apiUrlDeleteGroup, group)
-      .then(responses => {
-          if (responses?.data){
-            dispatch(setBPMTaskDetailLoader(false));
-            dispatch(setBPMTaskDetailUpdating(false));
-            done(null, responses?.data);
-          }else{
-            dispatch(setBPMTaskDetailLoader(false));
-            dispatch(setBPMTaskDetailUpdating(false));
-            done(null,[]);
-          }
+      .then((responses) => {
+        if (responses?.data) {
+          dispatch(setBPMTaskDetailLoader(false));
+          dispatch(setBPMTaskDetailUpdating(false));
+          done(null, responses?.data);
+        } else {
+          dispatch(setBPMTaskDetailLoader(false));
+          dispatch(setBPMTaskDetailUpdating(false));
+          done(null, []);
         }
-      )
+      })
       .catch((error) => {
         dispatch(serviceActionError(error));
         dispatch(setBPMTaskDetailLoader(false));
@@ -299,26 +316,21 @@ export const removeBPMGroup = (taskId, group, ...rest) => {
 export const addBPMGroup = (taskId, group, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
 
-  const apiUrlAddGroup = replaceUrl(
-    API.BPM_GROUP,
-    "<task_id>",
-    taskId
-  );
+  const apiUrlAddGroup = replaceUrl(API.BPM_GROUP, "<task_id>", taskId);
 
   return (dispatch) => {
     httpPOSTRequest(apiUrlAddGroup, group)
-      .then(responses => {
-          if (responses?.data){
-            dispatch(setBPMTaskDetailLoader(false));
-            dispatch(setBPMTaskDetailUpdating(false));
-            done(null, responses?.data);
-          }else{
-            dispatch(setBPMTaskDetailLoader(false));
-            dispatch(setBPMTaskDetailUpdating(false));
-            done(null,[]);
-          }
+      .then((responses) => {
+        if (responses?.data) {
+          dispatch(setBPMTaskDetailLoader(false));
+          dispatch(setBPMTaskDetailUpdating(false));
+          done(null, responses?.data);
+        } else {
+          dispatch(setBPMTaskDetailLoader(false));
+          dispatch(setBPMTaskDetailUpdating(false));
+          done(null, []);
         }
-      )
+      })
       .catch((error) => {
         dispatch(serviceActionError(error));
         dispatch(setBPMTaskDetailLoader(false));
@@ -330,11 +342,7 @@ export const addBPMGroup = (taskId, group, ...rest) => {
 
 export const claimBPMTask = (taskId, user, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const apiUrlClaimTask = replaceUrl(
-    API.CLAIM_BPM_TASK,
-    "<task_id>",
-    taskId
-  );
+  const apiUrlClaimTask = replaceUrl(API.CLAIM_BPM_TASK, "<task_id>", taskId);
   return (dispatch) => {
     httpPOSTRequest(apiUrlClaimTask, { userId: user })
       .then((res) => {
@@ -370,7 +378,6 @@ export const updateAssigneeBPMTask = (taskId, user, ...rest) => {
   };
 };
 
-
 export const updateBPMTask = (taskId, task, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   const taskDetailAPI = replaceUrl(
@@ -393,7 +400,6 @@ export const updateBPMTask = (taskId, task, ...rest) => {
       });
   };
 };
-
 
 export const unClaimBPMTask = (taskId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -426,7 +432,7 @@ export const onBPMTaskFormSubmit = (taskId, formReq, ...rest) => {
     taskId
   );
   return (dispatch) => {
-    httpPOSTRequest(apiUrlOnFormSubmit,formReq)
+    httpPOSTRequest(apiUrlOnFormSubmit, formReq)
       .then((res) => {
         // if (res.status === 204) {
         //TODO REMOVE

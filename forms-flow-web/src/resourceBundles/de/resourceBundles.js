@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export const RESOURCE_BUNDLES_DE = {
 
   "Click to search":"Klicken Sie, um zu suchen",
@@ -219,4 +220,4 @@ export const RESOURCE_BUNDLES_DE = {
 
 
 
-}
+};

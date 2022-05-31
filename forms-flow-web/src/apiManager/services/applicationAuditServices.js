@@ -3,11 +3,10 @@ import API from "../endpoints";
 import {
   setApplicationHistoryList,
   serviceActionError,
-  setUpdateHistoryLoader
+  setUpdateHistoryLoader,
 } from "../../actions/taskApplicationHistoryActions";
 import UserService from "../../services/UserService";
 import { replaceUrl } from "../../helper/helper";
-
 
 export const fetchApplicationAuditHistoryList = (applicationId, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -18,24 +17,24 @@ export const fetchApplicationAuditHistoryList = (applicationId, ...rest) => {
       applicationId
     );
 
-     httpGETRequest(apiUrlAppHistory, {}, UserService.getToken(),true)
+    httpGETRequest(apiUrlAppHistory, {}, UserService.getToken(), true)
       .then((res) => {
         if (res.data) {
-        const applications = res.data.applications;
-        let data = applications.map((app) => {
-          return { ...app};
-        });
-        dispatch(setApplicationHistoryList(data));
-        dispatch(setUpdateHistoryLoader(false))
-        done(null, res.data);
-      } else {
-        dispatch(serviceActionError(res));
-        dispatch(setUpdateHistoryLoader(false));
-      }
+          const applications = res.data.applications;
+          let data = applications.map((app) => {
+            return { ...app };
+          });
+          dispatch(setApplicationHistoryList(data));
+          dispatch(setUpdateHistoryLoader(false));
+          done(null, res.data);
+        } else {
+          dispatch(serviceActionError(res));
+          dispatch(setUpdateHistoryLoader(false));
+        }
       })
       .catch((error) => {
         dispatch(serviceActionError(error));
-        dispatch(setUpdateHistoryLoader(false))
+        dispatch(setUpdateHistoryLoader(false));
         done(error);
       });
   };

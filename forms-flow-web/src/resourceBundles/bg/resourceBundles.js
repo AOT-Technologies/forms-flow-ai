@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
  
     "Click to search":"Щракнете за търсене",
@@ -214,7 +215,7 @@ export const RESOURCE_BUNDLES_BG = {
 
 
 
-}
+};
 
 
 

@@ -67,7 +67,7 @@ import Button from "@material-ui/core/Button";
                 className="mr-3 btn btn-danger btn fa fa-times"
               ></i>
  
-              <i role="button" onClick={()=>{setEnableEditTaskVariable(false)}} class=" btn btn-primary fa fa-edit"></i>
+              <i role="button" onClick={()=>{setEnableEditTaskVariable(false)}} className=" btn btn-primary fa fa-edit"></i>
             </div>
           )}
         </TableCell>

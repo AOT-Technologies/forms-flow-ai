@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export const RESOURCE_BUNDLES_FR = {
 
   "Click to search":"Cliquez pour rechercher",

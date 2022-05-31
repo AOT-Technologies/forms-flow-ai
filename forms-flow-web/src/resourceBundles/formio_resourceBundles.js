@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export const formio_resourceBundles = {
 
    "en": {
@@ -575,7 +576,7 @@ export const formio_resourceBundles = {
       "Custom Default Value": "自定义默认值",
       "The complete form JSON object": "完整的表单 JSON 对象",
       "submission": "提交",
-      "	The complete submission object.": "完整的提交对象。",
+      "The complete submission object.": "完整的提交对象。",
       "data": "数据",
       "The complete submission data object.": "完整的提交数据对象。",
       "row": "排",
@@ -1294,7 +1295,7 @@ export const formio_resourceBundles = {
       "Custom Default Value": "персонализирано подразбиране",
       "The complete form JSON object": "Пълен JSON обект",
       "submission": "Изпращане",
-      "	The complete submission object.": "Пълният обект за извършване.",
+      "The complete submission object.": "Пълният обект за извършване.",
       "data": "данни",
       "The complete submission data object.": "Пълният обект с данни за подаване.",
       "row": "Ред",
@@ -3836,4 +3837,4 @@ export const formio_resourceBundles = {
 
 
    }
-}
+};

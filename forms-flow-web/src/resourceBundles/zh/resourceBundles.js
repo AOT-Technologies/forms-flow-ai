@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
 
   "Click to search":"点击搜索",
@@ -219,5 +220,5 @@ export const RESOURCE_BUNDLES_ZH = {
 
 
 
-}
+};
 

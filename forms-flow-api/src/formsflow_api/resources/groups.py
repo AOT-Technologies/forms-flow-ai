@@ -2,7 +2,7 @@
 from http import HTTPStatus
 from pprint import pprint
 
-from flask import request
+from flask import current_app, request
 from flask_restx import Namespace, Resource
 from marshmallow import ValidationError
 
@@ -73,11 +73,13 @@ class KeycloakDashboardGroupDetail(Resource):
                     "message": f"Group - {group_id} not found"
                 }, HTTPStatus.NOT_FOUND
             return response
-        except:
+        except Exception as err:
             response, status = {
-                "type": "Not Found",
-                "message": f"Invalid {group_id} not found ",
-            }, HTTPStatus.NOT_FOUND
+                "type": "Bad Request",
+                "message": f"Invalid groupid {group_id}",
+            }, HTTPStatus.BAD_REQUEST
+            current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
     @staticmethod

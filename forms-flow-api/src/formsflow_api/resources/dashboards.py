@@ -46,12 +46,13 @@ class DashboardList(Resource):
 
             assert response is not None
             return response, HTTPStatus.OK
-        except:
+        except Exception as err:
             response, status = {
                 "type": "Connection Refused",
-                "message": "Failed to establish new connection",
-            }, HTTPStatus.SERVICE_UNAVAILABLE
+                "message": "Failed to establish connection with analytics",
+            }, HTTPStatus.BAD_GATEWAY
             current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
 

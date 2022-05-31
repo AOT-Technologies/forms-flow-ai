@@ -37,12 +37,13 @@ class ApplicationHistoryResource(Resource):
                 ),
                 HTTPStatus.OK,
             )
-        except:
+        except Exception as err:
             response, status = {
                 "type": "Bad Request",
                 "message": "Invalid Application Request Passed ",
             }, HTTPStatus.BAD_REQUEST
             current_app.logger.warning(response)
+            current_app.logger.warning(err)
             return response, status
 
     @staticmethod

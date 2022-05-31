@@ -5,6 +5,7 @@ import {
   ANONYMOUS_USER,
   ANONYMOUS_ID,
   FORMIO_JWT_SECRET,
+  MULTITENANCY_ENABLED,
 } from "../constants/constants";
 import {
   setUserRole,
@@ -74,7 +75,7 @@ const initKeycloak = (store, ...rest) => {
           store.dispatch(setUserDetails(res))
         );
         const email = KeycloakData.tokenParsed.email || "external";
-        authenticateFormio(email, roles);
+        authenticateFormio(email, roles, KeycloakData.tokenParsed?.tenantKey);
         // onAuthenticatedCallback();
         done(null, KeycloakData);
         refreshToken(store);
@@ -154,7 +155,11 @@ const authenticateAnonymousUser = (store) => {
   authenticateFormio(user, roles);
 };
 
-const authenticateFormio = (user, roles) => {
+const authenticateFormio = (user, roles, tenantKey) => {
+  let tenantData = {};
+  if (tenantKey && MULTITENANCY_ENABLED) {
+    tenantData = { tenantKey };
+  }
   const FORMIO_TOKEN = jwt.sign(
     {
       external: true,
@@ -165,6 +170,7 @@ const authenticateFormio = (user, roles) => {
         _id: user, // keep it like that
         roles: roles,
       },
+      ...tenantData,
     },
     FORMIO_JWT_SECRET
   ); // TODO Move JWT secret key to COME From ENV

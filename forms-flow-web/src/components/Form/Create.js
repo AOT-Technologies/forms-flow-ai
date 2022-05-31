@@ -105,6 +105,9 @@ const Create = React.memo(() => {
     };
     newForm.submissionAccess = SUBMISSION_ACCESS;
     newForm.access = FORM_ACCESS;
+    if(MULTITENANCY_ENABLED && tenantKey){
+      newForm.tenantKey = tenantKey;
+    }
     dispatch(
       saveForm("form", newForm, (err, form) => {
         if (!err) {

@@ -1,4 +1,4 @@
-import React, {useEffect, Suspense, lazy} from "react";
+import React, {useEffect, Suspense, lazy, useMemo} from "react";
 import {Route, Switch, Redirect, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../constants/constants";
@@ -45,7 +45,9 @@ const PrivateRoute = React.memo((props) => {
     }
   },[props.store,tenantId, dispatch])
 
-  const DesignerRoute = ({component: Component, ...rest}) => (
+// useMemo prevents unneccessary rerendering caused by the route update.
+
+  const DesignerRoute = useMemo(()=>({component: Component, ...rest}) => (
     <Route
       {...rest}
       render={(props) =>
@@ -56,10 +58,10 @@ const PrivateRoute = React.memo((props) => {
         )
       }
     />
-  );
+  ),[userRoles])
 
 
-  const ReviewerRoute = ({component: Component, ...rest}) => (
+  const ReviewerRoute = useMemo(()=>({component: Component, ...rest}) => (
     <Route
       {...rest}
       render={(props) =>
@@ -70,9 +72,9 @@ const PrivateRoute = React.memo((props) => {
         )
       }
     />
-  );
+  ),[userRoles])
 
-  const ClientReviewerRoute = ({component: Component, ...rest}) => (
+  const ClientReviewerRoute = useMemo(()=>({component: Component, ...rest}) => (
     <Route
       {...rest}
       render={(props) =>
@@ -83,7 +85,7 @@ const PrivateRoute = React.memo((props) => {
         )
       }
     />
-  );
+  ),[userRoles])
 
   return (
     <>

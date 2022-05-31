@@ -22,7 +22,7 @@ import TaskSortSelectedList from "./list/sort/TaskSortSelectedList";
 import SocketIOService from "../../services/SocketIOService";
 import isEqual from 'lodash/isEqual';
 import cloneDeep from 'lodash/cloneDeep';
-import {Route, Redirect} from "react-router-dom";
+import {Route, Redirect, Switch} from "react-router-dom";
 import {push} from "connected-react-router";
 import { BASE_ROUTE, MULTITENANCY_ENABLED } from '../../constants/constants';
 
@@ -90,11 +90,9 @@ export default React.memo(() => {
     return list.some(task=>task.id===id);
   }
   const SocketIOCallback = useCallback((refreshedTaskId, forceReload, isUpdateEvent) => {
-    alert("socket call abck")
       if(forceReload){
         dispatch(fetchServiceTaskList(selectedFilterIdRef.current, firstResultsRef.current, reqDataRef.current,refreshedTaskId)); //Refreshes the Tasks
         if(bpmTaskIdRef.current && refreshedTaskId===bpmTaskIdRef.current){
-          alert("sock call back")
           dispatch(setBPMTaskDetailLoader(true));
           dispatch(setSelectedTaskID(null)); // unSelect the Task Selected
           dispatch(push(`${redirectUrl.current}task/`));
@@ -149,8 +147,10 @@ export default React.memo(() => {
           </section>
         </Col>
         <Col className="pl-0" lg={9} xs={12} sm={12} md={8} xl={9}>
-          <Route path={`${BASE_ROUTE}task/:taskId?`}><ServiceFlowTaskDetails/></Route>
-          <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}> <Redirect exact to='/404'/></Route>
+          <Switch>
+            <Route path={`${BASE_ROUTE}task/:taskId?`} component={ServiceFlowTaskDetails}></Route>
+            <Route path={`${BASE_ROUTE}task/:taskId/:notAvailable`}> <Redirect exact to='/404'/></Route>
+          </Switch>
         </Col>
       </Row>
     </Container>

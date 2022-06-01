@@ -3,10 +3,8 @@ package org.camunda.bpm.extension.keycloak.plugin;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.engine.authorization.Groups;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.identity.IdentityProviderException;
-import org.camunda.bpm.engine.impl.persistence.entity.GroupEntity;
 import org.camunda.bpm.engine.impl.persistence.entity.UserEntity;
 import org.camunda.bpm.extension.keycloak.CacheableKeycloakUserQuery;
 import org.camunda.bpm.extension.keycloak.KeycloakConfiguration;
@@ -74,6 +72,22 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
         return users;
     }
 
+
+    @Override
+    public List<User> requestUsersWithoutGroupId(CacheableKeycloakUserQuery query) {
+        List<User> users;
+        if (enableClientAuth) {
+            if (enableMultiTenancy) {
+                users = this.requestUsersByClientRoleAndTenantId();
+            } else {
+                users = this.requestUsersByClientRole();
+            }
+        } else {
+            users = super.requestUsersWithoutGroupId(query);
+        }
+        return users;
+    }
+
     /**
      * requestUsersByClientRole
      * @return
@@ -117,6 +131,8 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
 
         return userList;
     }
+
+
 
     protected List<User> requestUsersByClientRoleAndTenantId(){
         List<User> userList = new ArrayList<>();
@@ -181,7 +197,7 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
     protected String getKeycloakClientID(String clientId) throws KeycloakUserNotFoundException, RestClientException {
         try {
             ResponseEntity<String> response = restTemplate.exchange(
-                    keycloakConfiguration.getKeycloakAdminUrl() + "/clients", HttpMethod.GET,
+                    keycloakConfiguration.getKeycloakAdminUrl() + "/clients?clientId="+clientId, HttpMethod.GET,
                     String.class);
             JsonArray resultList = parseAsJsonArray(response.getBody());
             JsonObject result = resultList.get(0).getAsJsonObject();

@@ -73,7 +73,7 @@ public class KeycloakIdentityProviderSession
 
 		List<User> allMatchingUsers = userQueryCache.getOrCompute(CacheableKeycloakUserQuery.of(userQuery),
 				this::doFindUserByQueryCriteria);
-		List<User> processedUsers = this.userService.postProcessResults(userQuery, allMatchingUsers, resultLogger);
+		List<User> processedUsers = userService.postProcessResults(userQuery, allMatchingUsers, resultLogger);
 		if (KeycloakPluginLogger.INSTANCE.isDebugEnabled()) {
 			resultLogger.append("]");
 			KeycloakPluginLogger.INSTANCE.groupQueryResult(resultLogger.toString());

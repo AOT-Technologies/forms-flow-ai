@@ -170,7 +170,8 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
 
             JsonArray searchResult = parseAsJsonArray(response.getBody());
             for (int i = 0; i < searchResult.size(); i++) {
-                userList.add(transformUser(getJsonObjectAtIndex(searchResult, i), tenantKey));
+                User user = transformUser(getJsonObjectAtIndex(searchResult, i),tenantKey);
+                userList.add(user);
             }
 
         } catch (HttpClientErrorException hcee) {
@@ -213,11 +214,11 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
     private UserEntity transformUser(JsonObject result, String prefix) throws JsonException {
         UserEntity user = new UserEntity();
         String username = getJsonString(result, "username");
-        if(prefix != null){
+/*        if(prefix != null){
             if(username.contains(prefix)){
                 username = StringUtils.substringAfter(username, prefix+"-");
             }
-        }
+        }*/
         String email = getJsonString(result, "email");
         String firstName = getJsonString(result, "firstName");
         String lastName = getJsonString(result, "lastName");

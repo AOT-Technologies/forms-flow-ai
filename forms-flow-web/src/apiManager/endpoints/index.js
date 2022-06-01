@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { WEB_BASE_URL, BPM_BASE_URL } from "./config";
 import { AppConfig } from "../../config";
 

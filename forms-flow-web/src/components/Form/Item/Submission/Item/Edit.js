@@ -196,6 +196,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                       );
                       dispatch(
                         push(
+                          // eslint-disable-next-line max-len
                           `${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}`
                         )
                       );
@@ -213,6 +214,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
                   );
                   dispatch(
                     push(
+                      // eslint-disable-next-line max-len
                       `${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}/edit`
                     )
                   );

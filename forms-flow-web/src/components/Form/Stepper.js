@@ -361,14 +361,12 @@ class StepperPage extends PureComponent {
               justify="flex-start"
               alignItems="baseline"
             >
-              {" "}
               <Grid item xs={12} spacing={3}>
                 <Stepper
                   alternativeLabel
                   nonLinear
                   activeStep={this.state.activeStep}
                 >
-                 
                   {steps.map((label, index) => {
                     return (
                       <Step key={index}>

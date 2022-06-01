@@ -28,15 +28,15 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms }) => {
         <Modal.Header>
           <Modal.Title>
             <b>
-              <Translation>{(t) => t("Files Upload Confirmation")}</Translation>
+              <Translation>{(t) => t("File Upload Status")}</Translation>
             </b>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div>
             {`${formUploadCounter}/${formUploadList.length} ${t(
-              "Forms Completed"
-            )}`}{" "}
+              formUploadList.length > 1  ? "Forms Completed" : "Form Completed"
+            )}`}
             {formUploadList.length !== formUploadCounter ? (
               <Spinner animation="border" variant="primary" />
             ) : (

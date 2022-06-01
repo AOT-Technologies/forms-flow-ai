@@ -155,7 +155,7 @@ export const RESOURCE_BUNDLES_BG = {
     "Select All": "Избери всички",
     "Created Date": "Дата на създаване",
     "Modified Date": "Дата на промяна",
-    "Files Upload Confirmation": "Потвърждение за качване на файлове",
+    "File Upload Status": "Състояние на качване на файл",
     "Forms Completed": "Формулярите са попълнени",
     "No forms found": "Няма намерени формуляри",
     "Powered by": "Задвижвани от",

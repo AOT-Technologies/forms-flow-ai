@@ -157,7 +157,7 @@ export const RESOURCE_BUNDLES_FR = {
   "Select All":"Tout sélectionner",
   "Created Date":"Date de création",
  "Modified Date":"Date modifiée",
-  "Files Upload Confirmation":"Confirmation du téléchargement des arquivosn",
+  "File Upload Status":"État du téléchargement du fichier",
   "Forms Completed":"Formulaires remplis",
   " No forms found":"Aucun formulaire trouvé",
   "Powered by":"Alimenté par",

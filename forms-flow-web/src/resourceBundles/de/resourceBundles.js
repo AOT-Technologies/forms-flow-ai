@@ -160,7 +160,7 @@ export const RESOURCE_BUNDLES_DE = {
   "Select All": "Wählen Sie Alle",
   "Created Date": "Erstellungsdatum",
   "Modified Date": "Geändertes Datum",
-  "Files Upload Confirmation": "Bestätigung zum Hochladen von Dateien",
+  "File Upload Status": "Datei-Upload-Status",
   "Forms Completed": "Formulare ausgefüllt",
   "No forms found": "Keine Formulare gefunden",
   "Powered by": "Bereitgestellt von",

@@ -153,7 +153,7 @@ export const RESOURCE_BUNDLES_ZH = {
   "Select All": "全选",
   "Created Date": "创建日期",
  "Modified Date": "修改日期",
-  "Files Upload Confirmation": "文件上传确认",
+  "File Upload Status": "文件上传状态",
   "Forms Completed": "完成的表格",
   "No forms found": "没有找到表格",
   "Powered by": "供电",

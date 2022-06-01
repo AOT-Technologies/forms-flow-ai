@@ -163,7 +163,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Select All": "Select All",
   "Created Date": "Created Date",
   "Modified Date": "Modified Date",
-  "Files Upload Confirmation": "Files Upload Confirmation",
+  "File Upload Status": "File Upload Status",
   "Forms Completed": "Forms Completed",
   "No forms found": "No forms found",
   "Powered by": "Powered by",

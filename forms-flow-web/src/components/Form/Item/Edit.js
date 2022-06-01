@@ -29,8 +29,7 @@ const reducer = (form, { type, value }) => {
   switch (type) {
     case "formChange":
       for (let prop in value) {
-        // eslint-disable-next-line no-prototype-builtins
-        if (value.hasOwnProperty(prop)) {
+        if (Object.prototype.hasOwnProperty.call(value, prop)) {
           form[prop] = value[prop];
         }
       }

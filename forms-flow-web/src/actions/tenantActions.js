@@ -1,43 +1,44 @@
 import ACTION_CONSTANTS from "./actionConstants";
 
-export const resetTenant = (tenantId) => dispatch => {
+export const resetTenant = (tenantId) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.RESET_TENANT,
-    payload: tenantId
-  })
-}
+    payload: tenantId,
+  });
+};
 
-export const setTenantID = (tenantID) => dispatch => {
+export const setTenantID = (tenantID) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.SET_TENANT_ID,
-    payload: tenantID
-  })
-}
+    payload: tenantID,
+  });
+};
 
-export const setTenantDetails = (tenantDetails) => dispatch => {
+export const setTenantDetails = (tenantDetails) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.SET_TENANT_DETAILS,
-    payload: tenantDetails
-  })
-}
+    payload: tenantDetails,
+  });
+};
 
-export const setTenantListLoading = (isLoading) => dispatch => {
+export const setTenantListLoading = (isLoading) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_TENANT_LIST_LOADING,
-    payload: isLoading
-  })
-}
+    payload: isLoading,
+  });
+};
 
-export const setTenantDetailLoading = (isLoading) => dispatch => {
+export const setTenantDetailLoading = (isLoading) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_TENANT_DETAIL_LOADING,
-    payload: isLoading
-  })
-}
+    payload: isLoading,
+  });
+};
 
-export const serviceActionError = (data) => dispatch => {
+// eslint-disable-next-line no-unused-vars
+export const serviceActionError = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.ERROR,
-    payload: 'Error Handling Message'
-  })
-}
+    payload: "Error Handling Message",
+  });
+};

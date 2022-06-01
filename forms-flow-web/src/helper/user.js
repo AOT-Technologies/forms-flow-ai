@@ -1,20 +1,27 @@
 import { STAFF_REVIEWER, STAFF_DESIGNER } from "../constants/constants";
-import {GROUPS} from "../constants/groupConstants";
-
+import { GROUPS } from "../constants/groupConstants";
 
 /****
- * Default value of REACT_APP_USER_ACCESS_PERMISSIONS is {accessAllowApplications:false, accessAllowSubmissions:false}
+ * Default value of REACT_APP_USER_ACCESS_PERMISSIONS is
+ *  {accessAllowApplications:false, accessAllowSubmissions:false}
  * This is to check if the view Submissions/view Application is to be shown with respect to group info or not
  *
- * Currently added groups for the purpose are applicationsAccess:["/formsflow/formsflow-reviewer/access-allow-applications","/formsflow/formsflow-client/access-allow-applications"],
+ * Currently added groups for the purpose are applicationsAccess:
+ * ["/formsflow/formsflow-reviewer/access-allow-applications",
+ * "/formsflow/formsflow-client/access-allow-applications"],
  viewSubmissionsAccess:["/formsflow/formsflow-reviewer/access-allow-submissions"]
  *  ****/
-export const defaultUserAccessGroupCheck={accessAllowApplications:false,accessAllowSubmissions:false};
-let userAccessGroupCheck = (window._env_ && window._env_.REACT_APP_USER_ACCESS_PERMISSIONS) ||
-process.env.REACT_APP_USER_ACCESS_PERMISSIONS || defaultUserAccessGroupCheck;
+export const defaultUserAccessGroupCheck = {
+  accessAllowApplications: false,
+  accessAllowSubmissions: false,
+};
+let userAccessGroupCheck =
+  (window._env_ && window._env_.REACT_APP_USER_ACCESS_PERMISSIONS) ||
+  process.env.REACT_APP_USER_ACCESS_PERMISSIONS ||
+  defaultUserAccessGroupCheck;
 
-if(typeof(userAccessGroupCheck)==="string"){
-  userAccessGroupCheck=JSON.parse(userAccessGroupCheck);
+if (typeof userAccessGroupCheck === "string") {
+  userAccessGroupCheck = JSON.parse(userAccessGroupCheck);
 }
 
 const getUserRoleName = (userRoles) => {
@@ -29,44 +36,56 @@ const getUserRoleName = (userRoles) => {
   return role;
 };
 
-const getNameFromEmail = (email) => email?email.substring(0, email.lastIndexOf("@")) : "" ;
+const getNameFromEmail = (email) =>
+  email ? email.substring(0, email.lastIndexOf("@")) : "";
 
 const getUserRolePermission = (userRoles, role) => {
   return userRoles && userRoles.includes(role);
 };
 
-const setShowApplications = (userGroups)=>{
-  if(!userAccessGroupCheck.accessAllowApplications){
+const setShowApplications = (userGroups) => {
+  if (!userAccessGroupCheck.accessAllowApplications) {
     return true;
-  }else if(userGroups?.length){
-    const applicationAccess = GROUPS.applicationsAccess.some((group)=> userGroups.includes(group));
+  } else if (userGroups?.length) {
+    const applicationAccess = GROUPS.applicationsAccess.some((group) =>
+      userGroups.includes(group)
+    );
     return applicationAccess;
-  }else{
+  } else {
     return false;
   }
-}
+};
 
-const setShowViewSubmissions = (userGroups)=>{
-  if(!userAccessGroupCheck.accessAllowSubmissions){
+const setShowViewSubmissions = (userGroups) => {
+  if (!userAccessGroupCheck.accessAllowSubmissions) {
     return true;
-  }else if(userGroups?.length){
-    const viewSubmissionAccess = GROUPS.viewSubmissionsAccess.some((group)=> userGroups.includes(group));
+  } else if (userGroups?.length) {
+    const viewSubmissionAccess = GROUPS.viewSubmissionsAccess.some((group) =>
+      userGroups.includes(group)
+    );
     return viewSubmissionAccess;
-  }else{
+  } else {
     return false;
   }
-}
+};
 
-const getUserInsightsPermission = ()=>{
+const getUserInsightsPermission = () => {
   let user = localStorage.getItem("UserDetails");
-  if(!user){
-    return false
+  if (!user) {
+    return false;
   }
   user = JSON.parse(user);
-  if(!user?.dashboards){
-    return false
+  if (!user?.dashboards) {
+    return false;
   }
-  return true
-}
+  return true;
+};
 
-export { getUserRoleName, getUserRolePermission, getNameFromEmail, setShowApplications, setShowViewSubmissions, getUserInsightsPermission };
+export {
+  getUserRoleName,
+  getUserRolePermission,
+  getNameFromEmail,
+  setShowApplications,
+  setShowViewSubmissions,
+  getUserInsightsPermission,
+};

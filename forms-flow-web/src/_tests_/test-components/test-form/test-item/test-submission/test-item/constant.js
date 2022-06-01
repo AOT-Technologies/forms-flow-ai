@@ -1,5 +1,5 @@
- /* istanbul ignore file */
- export const mockForm1 = {};
+/* istanbul ignore file */
+export const mockForm1 = {};
 //   error: "",
 //   form:"",
 //   access: [{…}],
@@ -23,5 +23,4 @@
 // url: "https://forms2.aot-technologies.com/form/6180c59a9006028298bc7e50"
 // }
 
-
- export const mockSubmission1 = {};
+export const mockSubmission1 = {};

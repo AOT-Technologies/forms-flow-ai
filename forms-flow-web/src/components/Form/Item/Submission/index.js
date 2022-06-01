@@ -1,10 +1,9 @@
-import { Route, Switch, Redirect} from 'react-router-dom'
-import React from 'react'
+import { Route, Switch, Redirect } from "react-router-dom";
+import React from "react";
 
 // import List from './List'
-import Item from './Item/index'
-import {BASE_ROUTE} from "../../../../constants/constants";
-
+import Item from "./Item/index";
+import { BASE_ROUTE } from "../../../../constants/constants";
 
 const Form = React.memo(() => {
   // const userRoles= useSelector((state) => state.user.roles || []);
@@ -18,13 +17,22 @@ const Form = React.memo(() => {
   //       : <Redirect exact to={redirectUrl} />
   //   )} />
   // );
-   return (<div>
+  return (
+    <div>
       <Switch>
-        {/* {showViewSubmissions?<ViewSubmissionRoute exact path={`${BASE_ROUTE}form/:formId/submission`} component={List} />:null} */}
-        {<Route exact path={`${BASE_ROUTE}form/:formId/submission`}><Redirect exact to="/404"/></Route>}
-        <Route path={`${BASE_ROUTE}form/:formId/submission/:submissionId`} component={Item} />
+        {/* {showViewSubmissions?
+          <ViewSubmissionRoute exact path={`${BASE_ROUTE}form/:formId/submission`} component={List} />:null}
+         */}
+        <Route exact path={`${BASE_ROUTE}form/:formId/submission`}>
+          <Redirect exact to="/404" />
+        </Route>
+        <Route
+          path={`${BASE_ROUTE}form/:formId/submission/:submissionId`}
+          component={Item}
+        />
       </Switch>
-    </div>)
+    </div>
+  );
 });
 
 export default Form;

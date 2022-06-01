@@ -1,40 +1,51 @@
-import React, {useEffect, useRef, useState} from "react";
-import {Filter_Search_Types} from "../../constants/taskConstants";
+import React, { useEffect, useRef, useState } from "react";
+import { Filter_Search_Types } from "../../constants/taskConstants";
 import TaskFilterDropdown from "./TaskFilterDropdown";
-import {  useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
-const TaskFilterSearchType = React.memo(({filter, index, handleFilterUpdate}) => {
-  const createSearchNode = useRef();
-  const [showFilterItems, setShowFilterItems]= useState(false);
-  const {t}=useTranslation();
-  const handleClick = e => {
-    if (createSearchNode?.current?.contains(e.target)) {
-      return;
-    }
-    // outside click
-    setShowFilterItems(false);
-  };
-
-  useEffect(() => {
-    // add when mounted
-    document.addEventListener("mousedown", handleClick);
-    // return function to be called when unmounted
-    return () => {
-      document.removeEventListener("mousedown", handleClick);
+const TaskFilterSearchType = React.memo(
+  ({ filter, index, handleFilterUpdate }) => {
+    const createSearchNode = useRef();
+    const [showFilterItems, setShowFilterItems] = useState(false);
+    const { t } = useTranslation();
+    const handleClick = (e) => {
+      if (createSearchNode?.current?.contains(e.target)) {
+        return;
+      }
+      // outside click
+      setShowFilterItems(false);
     };
-  }, []);
 
-  const handleFilterSelect = (filterToUpdate) => {
-    handleFilterUpdate(filterToUpdate,index);
-    setShowFilterItems(false);
-  };
+    useEffect(() => {
+      // add when mounted
+      document.addEventListener("mousedown", handleClick);
+      // return function to be called when unmounted
+      return () => {
+        document.removeEventListener("mousedown", handleClick);
+      };
+    }, []);
 
-  return (
-    <span className="click-element mr-1 list-span" title={t("Type")} ref={createSearchNode}>
-      <span onClick={()=>setShowFilterItems(true)}>{filter.label} {filter.type === Filter_Search_Types.VARIABLES?' :':null}</span>
-      {showFilterItems?<TaskFilterDropdown onFilterSelect={handleFilterSelect}/>:null}
-              </span>)
+    const handleFilterSelect = (filterToUpdate) => {
+      handleFilterUpdate(filterToUpdate, index);
+      setShowFilterItems(false);
+    };
 
-})
+    return (
+      <span
+        className="click-element mr-1 list-span"
+        title={t("Type")}
+        ref={createSearchNode}
+      >
+        <span onClick={() => setShowFilterItems(true)}>
+          {filter.label}{" "}
+          {filter.type === Filter_Search_Types.VARIABLES ? " :" : null}
+        </span>
+        {showFilterItems ? (
+          <TaskFilterDropdown onFilterSelect={handleFilterSelect} />
+        ) : null}
+      </span>
+    );
+  }
+);
 
 export default TaskFilterSearchType;

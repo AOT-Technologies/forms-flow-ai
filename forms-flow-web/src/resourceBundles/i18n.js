@@ -11,34 +11,28 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    
-    fallbackLng: 'en',
+    fallbackLng: "en",
     resources: {
-      fallbackLng: 'en',
-      "en": {
-        translation: RESOURCE_BUNDLES_EN
+      fallbackLng: "en",
+      en: {
+        translation: RESOURCE_BUNDLES_EN,
       },
       "zh-CN": {
-        translation: RESOURCE_BUNDLES_ZH
+        translation: RESOURCE_BUNDLES_ZH,
       },
-      "pt": {
-        translation: RESOURCE_BUNDLES_PT
+      pt: {
+        translation: RESOURCE_BUNDLES_PT,
       },
-      "fr": {
-        translation: RESOURCE_BUNDLES_FR
+      fr: {
+        translation: RESOURCE_BUNDLES_FR,
       },
-      "bg":
-      {
-        translation: RESOURCE_BUNDLES_BG
+      bg: {
+        translation: RESOURCE_BUNDLES_BG,
       },
-      "de":
-      {
-        translation: RESOURCE_BUNDLES_DE
-      }
-
-    }
+      de: {
+        translation: RESOURCE_BUNDLES_DE,
+      },
+    },
   });
-  
 
-  export default i18n;
-  
+export default i18n;

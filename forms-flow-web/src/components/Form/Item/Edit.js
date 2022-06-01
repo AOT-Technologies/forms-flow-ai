@@ -1,10 +1,10 @@
-import React, {useState, useEffect, useReducer } from "react";
-import { saveForm, Errors,FormBuilder } from "react-formio";
+import React, { useState, useEffect, useReducer } from "react";
+import { saveForm, Errors, FormBuilder } from "react-formio";
 import { push } from "connected-react-router";
 import { useHistory } from "react-router-dom";
-import _set from 'lodash/set';
-import _cloneDeep from 'lodash/cloneDeep';
-import _camelCase from 'lodash/camelCase';
+import _set from "lodash/set";
+import _cloneDeep from "lodash/cloneDeep";
+import _camelCase from "lodash/camelCase";
 import {
   SUBMISSION_ACCESS,
   ANONYMOUS_ID,
@@ -14,29 +14,30 @@ import {
 import { addHiddenApplicationComponent } from "../../../constants/applicationComponent";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
+import { setFormProcessesData } from "../../../actions/processActions";
+import { Translation, useTranslation } from "react-i18next";
 import {
-  setFormProcessesData
-} from "../../../actions/processActions";
-import { Translation,useTranslation } from "react-i18next";
-import { saveFormProcessMapperPost, saveFormProcessMapperPut } from "../../../apiManager/services/processServices";
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+  saveFormProcessMapperPost,
+  saveFormProcessMapperPut,
+} from "../../../apiManager/services/processServices";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { clearFormError } from "../../../actions/formActions";
-const reducer = (form, {type, value}) => {
+const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
-    case 'formChange':
+    case "formChange":
       for (let prop in value) {
-        if (value.hasOwnProperty(prop)) {
+        if (Object.prototype.hasOwnProperty.call(value, prop)) {
           form[prop] = value[prop];
         }
       }
       return form;
-    case 'replaceForm':
+    case "replaceForm":
       return _cloneDeep(value);
-    case 'title':
-      if (type === 'title' && !form._id) {
+    case "title":
+      if (type === "title" && !form._id) {
         formCopy.name = _camelCase(value);
         formCopy.path = _camelCase(value).toLowerCase();
       }
@@ -55,34 +56,39 @@ const Edit = React.memo(() => {
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
   const errors = useSelector((state) => state.form.error);
   const prviousData = useSelector((state) => state.process.formPreviousData);
-  const applicationCount = useSelector((state) =>state.process.applicationCount)
-  const tenantKey = useSelector(state => state.tenants?.tenantId);
-  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : '/'
-  const saveText = (<Translation>{(t)=>t("Save Form")}</Translation>);
+  const applicationCount = useSelector(
+    (state) => state.process.applicationCount
+  );
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  const saveText = <Translation>{(t) => t("Save Form")}</Translation>;
   const lang = useSelector((state) => state.user.lang);
   const history = useHistory();
-  const {t}=useTranslation();
+  const { t } = useTranslation();
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
 
   const handleShow = () => setShow(true);
-  const handleSave=()=>{
+  const handleSave = () => {
     setShow(false);
     saveFormData();
-  }
+  };
 
   // setting the form data
   useEffect(() => {
-    const newForm= formData;
-    if (newForm && (form._id !== newForm._id || form.modified !== newForm.modified)) {
-      dispatchFormAction({type: 'replaceForm', value: newForm});
+    const newForm = formData;
+    if (
+      newForm &&
+      (form._id !== newForm._id || form.modified !== newForm.modified)
+    ) {
+      dispatchFormAction({ type: "replaceForm", value: newForm });
     }
-  }, [formData,form]);
+  }, [formData, form]);
 
-// set the anonymous value
+  // set the anonymous value
   const changeAnonymous = (setvalue) => {
-    let latestValue = setvalue||!processListData.anonymous;
+    let latestValue = setvalue || !processListData.anonymous;
     let newData = {
       ...processListData,
       anonymous: latestValue,
@@ -90,7 +96,7 @@ const Edit = React.memo(() => {
     dispatch(setFormProcessesData(newData));
   };
 
-//  chaning the form access
+  //  chaning the form access
   useEffect(() => {
     FORM_ACCESS.forEach((role) => {
       if (processListData.anonymous) {
@@ -113,24 +119,26 @@ const Edit = React.memo(() => {
     });
   }, [processListData]);
 
-  const isNewMapperNeeded = ()=>{
-    return prviousData.formName !== form.title && applicationCount > 0
-  }
+  const isNewMapperNeeded = () => {
+    return prviousData.formName !== form.title && applicationCount > 0;
+  };
 
-  const saveFormWithDataChangeCheck = ()=>{
-    if(isNewMapperNeeded()){
-      handleShow()
-    }else{
+  const saveFormWithDataChangeCheck = () => {
+    if (isNewMapperNeeded()) {
+      handleShow();
+    } else {
       saveFormData();
     }
-  }
+  };
 
-  const isMapperSaveNeeded = (newData)=>{
+  const isMapperSaveNeeded = (newData) => {
     // checks if the updates need to save to form_process_mapper too
-    return (prviousData.formName !== newData.title ||
-    prviousData.anonymous !== processListData.anonymous ||
-    processListData.anonymous === null)
-  }
+    return (
+      prviousData.formName !== newData.title ||
+      prviousData.anonymous !== processListData.anonymous ||
+      processListData.anonymous === null
+    );
+  };
 
   // save form data to submit
   const saveFormData = () => {
@@ -138,72 +146,74 @@ const Edit = React.memo(() => {
     newFormData.submissionAccess = SUBMISSION_ACCESS;
     newFormData.access = FORM_ACCESS;
     dispatch(
-        saveForm("form", newFormData, (err, submittedData) => {
-          if (!err) {
-            // checking any changes
-            if (isMapperSaveNeeded(submittedData)){
+      saveForm("form", newFormData, (err, submittedData) => {
+        if (!err) {
+          // checking any changes
+          if (isMapperSaveNeeded(submittedData)) {
+            const data = {
+              anonymous:
+                processListData.anonymous === null
+                  ? false
+                  : processListData.anonymous,
+              formName: submittedData.title,
+              id: processListData.id,
+              formId: submittedData._id,
+            };
 
-              const data = {
-                anonymous: processListData.anonymous === null? false : processListData.anonymous,
-                formName: submittedData.title,
-                id: processListData.id,
-                formId: submittedData._id,
-              };
+            // PUT request : when application count is zero.
+            // POST request with updated version : when application count is positive.
 
-              // PUT request : when application count is zero.
-              // POST request with updated version : when application count is positive.
+            if (isNewMapperNeeded()) {
+              data["version"] = String(+prviousData.version + 1);
+              data["processKey"] = prviousData.processKey;
+              data["processName"] = prviousData.processName;
+              dispatch(saveFormProcessMapperPost(data));
+            } else {
+              // For hadling uploaded forms case.
 
-              if(isNewMapperNeeded()){
+              if (processListData && processListData.id) {
+                // For created forms we would be having a mapper
 
-                data["version"] = String(+prviousData.version+1)
-                data["processKey"] = prviousData.processKey
-                data["processName"] = prviousData.processName
-                dispatch(saveFormProcessMapperPost(data))
-
+                dispatch(saveFormProcessMapperPut(data));
               } else {
-                // For hadling uploaded forms case.
+                // For uploaded forms we have to create new mapper.
 
-                if(processListData && processListData.id){
-                  // For created forms we would be having a mapper
-
-                  dispatch(saveFormProcessMapperPut(data));
-                } else {
-                  // For uploaded forms we have to create new mapper.
-
-                  dispatch(saveFormProcessMapperPost(data))
-                }
+                dispatch(saveFormProcessMapperPost(data));
               }
             }
-
-            toast.success(t("Form Saved"));
-            dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
-
-          }else{
-
-            toast.error(t("Error while saving Form"));
-
           }
-        })
-      );
+
+          toast.success(t("Form Saved"));
+          dispatch(push(`${redirectUrl}formflow/${submittedData._id}/preview`));
+        } else {
+          toast.error(t("Error while saving Form"));
+        }
+      })
+    );
   };
 
-// setting the main option details to the formdata
+  // setting the main option details to the formdata
   const handleChange = (path, event) => {
-    const {target} = event;
-    const value = target.type === 'checkbox' ? target.checked : target.value;
-    dispatchFormAction({type: path, value});
+    const { target } = event;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+    dispatchFormAction({ type: path, value });
   };
 
-  const formChange = (newForm) => dispatchFormAction({type: 'formChange', value: newForm});
+  const formChange = (newForm) =>
+    dispatchFormAction({ type: "formChange", value: newForm });
 
-// loading up to set the data to the form variable
-if(!form._id){
- return <div class="d-flex justify-content-center">
- <div class="spinner-grow" role="status">
-  <span class="sr-only"><Translation>{(t)=>t("Loading...")}</Translation></span>
-</div>
-</div>
-}
+  // loading up to set the data to the form variable
+  if (!form._id) {
+    return (
+      <div className="d-flex justify-content-center">
+        <div className="spinner-grow" role="status">
+          <span className="sr-only">
+            <Translation>{(t) => t("Loading...")}</Translation>
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container">
@@ -217,142 +227,186 @@ if(!form._id){
       <hr />
       <Errors errors={errors} />
       <div>
-      <div className="row justify-content-end w-100">
-       <div id="save-buttons" className=" mr-4 save-buttons pull-right">
-          <div className="form-group pull-right">
-            <span className="btn btn-secondary" onClick={() =>{ changeAnonymous(prviousData.anonymous); history.goBack();dispatch(clearFormError('form',formData.formName));} }>
-            <Translation>{(t)=>t("Cancel")}</Translation>
-            </span>
-          </div>
-        </div>
-        <div id="save-buttons" className=" save-buttons pull-right">
-          <div className="form-group pull-right">
-            <span className="btn btn-primary" onClick={()=>saveFormWithDataChangeCheck()}>
-              {saveText}
-            </span>
-            <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{t("Confirmation")}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>{t("Changing the form title will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.")}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            {t("Cancel")}
-          </Button>
-          <Button variant="primary" onClick={()=>handleSave()}>
-            {t("Save Changes")}
-          </Button>
-        </Modal.Footer>
-      </Modal>
-          </div>
-        </div>
-       </div>
-      <div className="row">
-        <div className="col-lg-4 col-md-4 col-sm-4">
-          <div id="form-group-title" className="form-group">
-            <label htmlFor="title" className="control-label field-required"><Translation>{(t)=>t("Title")}</Translation></label>
-            <input
-              type="text"
-              className="form-control" id="title"
-              placeholder="Enter the form title"
-              value={form.title || ''}
-              onChange={event => handleChange('title', event)}
-            />
-          </div>
-        </div>
-        <div className="col-lg-4 col-md-4 col-sm-4">
-          <div id="form-group-name" className="form-group">
-            <label htmlFor="name" className="control-label field-required"><Translation>{(t)=>t("Name")}</Translation></label>
-            <input
-              type="text"
-              className="form-control"
-              id="name"
-              placeholder="Enter the form machine name"
-              value={form.name || ''}
-              onChange={event => handleChange('name', event)}
-            />
-          </div>
-        </div>
-        <div className="col-lg-4 col-md-3 col-sm-3">
-          <div id="form-group-display" className="form-group">
-            <label htmlFor="name" className="control-label"><Translation>{(t)=>t("Display as")}</Translation></label>
-            <div className="input-group">
-              <select
-                className="form-control"
-                name="form-display"
-                id="form-display"
-                value={form.display || ''}
-                onChange={event => handleChange('display', event)}
+        <div className="row justify-content-end w-100">
+          <div id="save-buttons" className=" mr-4 save-buttons pull-right">
+            <div className="form-group pull-right">
+              <span
+                className="btn btn-secondary"
+                onClick={() => {
+                  changeAnonymous(prviousData.anonymous);
+                  history.goBack();
+                  dispatch(clearFormError("form", formData.formName));
+                }}
               >
-                <option label="Form" value="form"><Translation>{(t)=>t("Form")}</Translation></option>
-                <option label="Wizard" value="wizard"><Translation>{(t)=>t("wizard")}</Translation></option>
-              </select>
+                <Translation>{(t) => t("Cancel")}</Translation>
+              </span>
+            </div>
+          </div>
+          <div id="save-buttons" className=" save-buttons pull-right">
+            <div className="form-group pull-right">
+              <span
+                className="btn btn-primary"
+                onClick={() => saveFormWithDataChangeCheck()}
+              >
+                {saveText}
+              </span>
+              <Modal show={show} onHide={handleClose}>
+                <Modal.Header closeButton>
+                  <Modal.Title>{t("Confirmation")}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {t(
+                    "Changing the form title will not affect the existing applications. " +
+                      "It will only update in the newly created applications. Press Save " +
+                      "Changes to continue or cancel the changes."
+                  )}
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="secondary" onClick={handleClose}>
+                    {t("Cancel")}
+                  </Button>
+                  <Button variant="primary" onClick={() => handleSave()}>
+                    {t("Save Changes")}
+                  </Button>
+                </Modal.Footer>
+              </Modal>
             </div>
           </div>
         </div>
-        <div className="col-lg-4 col-md-3 col-sm-3">
-          <div id="form-group-type" className="form-group">
-            <label htmlFor="form-type" className="control-label"><Translation>{(t)=>t("Type")}</Translation></label>
-            <div className="input-group">
-              <select
-                className="form-control"
-                name="form-type"
-                id="form-type"
-                value={form.type}
-                onChange={event => handleChange('type', event)}
-              >
-                <option label="Form" value="form"><Translation>{(t)=>t("form")}</Translation></option>
-                <option label="Resource" value="resource">Resource</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <div className="col-lg-4 col-md-4 col-sm-4">
-          <div id="form-group-path" className="form-group">
-            <label htmlFor="path" className="control-label field-required"><Translation>{(t)=>t("Path")}</Translation></label>
-            <div className="input-group">
+        <div className="row">
+          <div className="col-lg-4 col-md-4 col-sm-4">
+            <div id="form-group-title" className="form-group">
+              <label htmlFor="title" className="control-label field-required">
+                <Translation>{(t) => t("Title")}</Translation>
+              </label>
               <input
                 type="text"
                 className="form-control"
-                id="path"
-                placeholder="example"
-                style={{'textTransform': 'lowercase', width:'120px'}}
-                value={form.path || ''}
-                onChange={event => handleChange('path', event)}
+                id="title"
+                placeholder="Enter the form title"
+                value={form.title || ""}
+                onChange={(event) => handleChange("title", event)}
               />
             </div>
           </div>
-        </div>
-        <div className="col-lg-4 col-md-4 col-sm-4">
-          <div id="form-group-anonymous" className="form-group d-flex ml-5" style={{marginTop:"30px"}}>
-             <label htmlFor="anonymousLabel" className=" form-control control-label border-0 " style={{fontSize:"16px"}} >{t("Make this form public ?")}</label>
-            <div className="input-group align-items-center">
+          <div className="col-lg-4 col-md-4 col-sm-4">
+            <div id="form-group-name" className="form-group">
+              <label htmlFor="name" className="control-label field-required">
+                <Translation>{(t) => t("Name")}</Translation>
+              </label>
               <input
-               className="m-0" style={{height:'20px', width:'20px'}}
-                type="checkbox"
-                id="anonymous"
-                title="Check Anonymous"
-                checked={processListData.anonymous || false}
-                onChange={(e) => {
-                  changeAnonymous();
-                }}
+                type="text"
+                className="form-control"
+                id="name"
+                placeholder="Enter the form machine name"
+                value={form.name || ""}
+                onChange={(event) => handleChange("name", event)}
               />
             </div>
           </div>
+          <div className="col-lg-4 col-md-3 col-sm-3">
+            <div id="form-group-display" className="form-group">
+              <label htmlFor="name" className="control-label">
+                <Translation>{(t) => t("Display as")}</Translation>
+              </label>
+              <div className="input-group">
+                <select
+                  className="form-control"
+                  name="form-display"
+                  id="form-display"
+                  value={form.display || ""}
+                  onChange={(event) => handleChange("display", event)}
+                >
+                  <option label="Form" value="form">
+                    <Translation>{(t) => t("Form")}</Translation>
+                  </option>
+                  <option label="Wizard" value="wizard">
+                    <Translation>{(t) => t("wizard")}</Translation>
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-4 col-md-3 col-sm-3">
+            <div id="form-group-type" className="form-group">
+              <label htmlFor="form-type" className="control-label">
+                <Translation>{(t) => t("Type")}</Translation>
+              </label>
+              <div className="input-group">
+                <select
+                  className="form-control"
+                  name="form-type"
+                  id="form-type"
+                  value={form.type}
+                  onChange={(event) => handleChange("type", event)}
+                >
+                  <option label="Form" value="form">
+                    <Translation>{(t) => t("form")}</Translation>
+                  </option>
+                  <option label="Resource" value="resource">
+                    Resource
+                  </option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-4 col-md-4 col-sm-4">
+            <div id="form-group-path" className="form-group">
+              <label htmlFor="path" className="control-label field-required">
+                <Translation>{(t) => t("Path")}</Translation>
+              </label>
+              <div className="input-group">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="path"
+                  placeholder="example"
+                  style={{ textTransform: "lowercase", width: "120px" }}
+                  value={form.path || ""}
+                  onChange={(event) => handleChange("path", event)}
+                />
+              </div>
+            </div>
+          </div>
+          <div className="col-lg-4 col-md-4 col-sm-4">
+            <div
+              id="form-group-anonymous"
+              className="form-group d-flex ml-5"
+              style={{ marginTop: "30px" }}
+            >
+              <label
+                htmlFor="anonymousLabel"
+                className=" form-control control-label border-0 "
+                style={{ fontSize: "16px" }}
+              >
+                {t("Make this form public ?")}
+              </label>
+              <div className="input-group align-items-center">
+                <input
+                  className="m-0"
+                  style={{ height: "20px", width: "20px" }}
+                  type="checkbox"
+                  id="anonymous"
+                  title="Check Anonymous"
+                  checked={processListData.anonymous || false}
+                  onChange={() => {
+                    changeAnonymous();
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         </div>
-
-      </div>
-      <FormBuilder
-        key={form._id}
-        form={form}
-        onChange={formChange}
-        options={{
-          language: lang,
-          i18n: formio_resourceBundles
+        <FormBuilder
+          key={form._id}
+          form={form}
+          onChange={formChange}
+          options={{
+            language: lang,
+            i18n: formio_resourceBundles,
           }}
-
-      />
-    </div>
+        />
+      </div>
     </div>
   );
 });

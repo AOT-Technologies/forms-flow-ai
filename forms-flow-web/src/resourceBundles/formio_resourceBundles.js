@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 export const formio_resourceBundles = {
 
    "en": {
@@ -202,7 +203,7 @@ export const formio_resourceBundles = {
       "Select All": "Select All",
       "Created Date": "Created Date",
      "Modified Date": "Modified Date",
-      "Files Upload Confirmation": "Files Upload Confirmation",
+      "File Upload Status": "File Upload Status",
       "Forms Completed": "Forms Completed",
       "No forms found": "No forms found",
       "Press Enter key or click here to search": "Press Enter key or click here to search",
@@ -405,7 +406,7 @@ export const formio_resourceBundles = {
       "Select All": "全选",
       "Created Date": "创建日期",
      "Modified Date": "修改日期",
-      "Files Upload Confirmation": "文件上传确认",
+      "File Upload Status": "文件上传状态",
       "Forms Completed": "完成的表格",
       "No forms found": "没有找到表格",
       "Powered by": "供电",
@@ -575,7 +576,7 @@ export const formio_resourceBundles = {
       "Custom Default Value": "自定义默认值",
       "The complete form JSON object": "完整的表单 JSON 对象",
       "submission": "提交",
-      "	The complete submission object.": "完整的提交对象。",
+      "The complete submission object.": "完整的提交对象。",
       "data": "数据",
       "The complete submission data object.": "完整的提交数据对象。",
       "row": "排",
@@ -1122,7 +1123,7 @@ export const formio_resourceBundles = {
       "Select All": "Избери всички",
       "Created Date": "Дата на създаване",
      "Modified Date": "Дата на промяна",
-      "Files Upload Confirmation": "Потвърждение за качване на файлове",
+      "File Upload Status": "Състояние на качване на файл",
       "Forms Completed": "Формулярите са попълнени",
       "No forms found": "Няма намерени формуляри",
       "Powered by": "Задвижвани от",
@@ -1294,7 +1295,7 @@ export const formio_resourceBundles = {
       "Custom Default Value": "персонализирано подразбиране",
       "The complete form JSON object": "Пълен JSON обект",
       "submission": "Изпращане",
-      "	The complete submission object.": "Пълният обект за извършване.",
+      "The complete submission object.": "Пълният обект за извършване.",
       "data": "данни",
       "The complete submission data object.": "Пълният обект с данни за подаване.",
       "row": "Ред",
@@ -2367,7 +2368,7 @@ export const formio_resourceBundles = {
       "Select All": "Selecionar tudo",
       "Created Date": "Data de criação",
      "Modified Date": "Data modificada",
-      "Files Upload Confirmation": "Confirmação de upload de arquivos",
+      "File Upload Status": "Status de upload de arquivo",
       "Forms Completed": "Formulários preenchidos",
       "No forms found": "Nenhum formulário encontrado",
       "No Process Diagram found": "Nenhum diagrama de processo encontrado",
@@ -3090,7 +3091,7 @@ export const formio_resourceBundles = {
       "Select All": "Tout sélectionner",
       "Created Date":"Date de création",
       "Modified Date": "Date modifiée",
-      "Files Upload Confirmation": "Confirmation du téléchargement des arquivosn",
+      "File Upload Status": "État du téléchargement du fichier",
       "Forms Completed": "Formulaires remplis",
       "No applications found": "No applications found",
       "Successfully Updated": "Mise à jour réussie",
@@ -3299,7 +3300,7 @@ export const formio_resourceBundles = {
       "Select All": "Wählen Sie Alle",
       "Created Date": "Erstellungsdatum",
      "Modified Date": "Geändertes Datum",
-      "Files Upload Confirmation": "Bestätigung zum Hochladen von Dateien",
+      "File Upload Status": "Datei-Upload-Status",
       "Forms Completed": "Formulare ausgefüllt",
       "No forms found": "Keine Formulare gefunden",
       "Press Enter key or click here to search": "Drücken Sie die Eingabetaste oder klicken Sie hier, um zu suchen",
@@ -3836,4 +3837,4 @@ export const formio_resourceBundles = {
 
 
    }
-}
+};

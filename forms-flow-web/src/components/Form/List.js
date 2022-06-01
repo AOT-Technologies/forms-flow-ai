@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
@@ -182,6 +181,7 @@ const List = React.memo((props) => {
               const newFormData = {
                 ...formData,
                 tags: ["common"],
+                tenantKey: tenantKey,
               };
               newFormData.access = FORM_ACCESS;
               newFormData.submissionAccess = SUBMISSION_ACCESS;
@@ -202,6 +202,7 @@ const List = React.memo((props) => {
                               formObj.submissionAccess;
                             // newFormData.tags = formObj.tags;
                             dispatch(
+                              // eslint-disable-next-line no-unused-vars
                               saveForm("form", newFormData, (err, form) => {
                                 if (!err) {
                                   dispatch(updateFormUploadCounter());
@@ -436,6 +437,7 @@ const getInitForms = (page = 1, query) => {
   };
 };
 
+// eslint-disable-next-line no-unused-vars
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     getForms: (page, query) => {
@@ -467,6 +469,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
               };
               if (data) {
                 dispatch(
+                  // eslint-disable-next-line no-unused-vars
                   getApplicationCount(data.id, (err, res) => {
                     dispatch(setIsApplicationCountLoading(false));
                     dispatch(setFormDeleteStatus(formDetails));

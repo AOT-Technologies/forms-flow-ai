@@ -145,7 +145,8 @@ const List = React.memo((props) => {
             formData = addHiddenApplicationComponent(formData);
             const newFormData = {
               ...formData,
-              tags: ["common"]
+              tags: ["common"],
+              tenantKey: tenantKey
             };
             newFormData.access = FORM_ACCESS;
             newFormData.submissionAccess = SUBMISSION_ACCESS;

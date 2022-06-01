@@ -136,3 +136,61 @@ paths:
         name: dashboardId
         in: path
         required: true
+  /api/organization:
+    post:
+      summary: ''
+      operationId: Create Org
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                example-1:
+                  value: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+            examples:
+              example-1:
+                value:
+                  slug: test1
+                  name: Test Tenant
+                  samlDescriptor: 'http://localhost:8081/auth/realms/forms-flow-ai/protocol/saml/descriptor'
+                  userName: test1-admin
+                  email: admin@test1
+                  password: formsflow
+                  userApiKey: test
+    parameters: []
+    get:
+      summary: ''
+      operationId: get-api-organization
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    Organization:
+      title: Organization
+      type: object
+      properties:
+        slug:
+          type: string
+        name:
+          type: string
+        samlDescriptor:
+          type: string
+        userName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        userApiKey:
+          type: string
+      x-examples: {}

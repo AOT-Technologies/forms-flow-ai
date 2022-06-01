@@ -63,6 +63,7 @@ services:
       - DATA_BUFFER_SIZE=${DATA_BUFFER_SIZE:-2}
       - IDENTITY_PROVIDER_MAX_RESULT_SIZE=${IDENTITY_PROVIDER_MAX_RESULT_SIZE:-250}
       - DATA_ANALYSIS_URL=${DATA_ANALYSIS_URL}
+      - BPM_BASE_URL=${BPM_BASE_URL:-http://192.168.0.105:8000}
     networks:
       - forms-flow-network
  

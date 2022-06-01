@@ -105,6 +105,7 @@ const {t}=useTranslation();
     newForm.access = FORM_ACCESS;
     if(MULTITENANCY_ENABLED && tenantKey){
       newForm.tenantKey = tenantKey;
+      newForm.path=`${tenantKey}-${newForm.path}`
     }
     dispatch(
       saveForm("form", newForm, (err, form) => {

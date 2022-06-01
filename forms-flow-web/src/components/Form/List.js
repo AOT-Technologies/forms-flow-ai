@@ -143,10 +143,14 @@ const List = React.memo((props) => {
         fileContent.forms.map(async (formData) => {
           return new Promise((resolve, reject) => {
             formData = addHiddenApplicationComponent(formData);
+            let tenantDetails ={}
+            if(MULTITENANCY_ENABLED && tenantKey){
+              tenantDetails={tenantKey}
+            }
             const newFormData = {
               ...formData,
               tags: ["common"],
-              tenantKey: tenantKey
+              ...tenantDetails
             };
             newFormData.access = FORM_ACCESS;
             newFormData.submissionAccess = SUBMISSION_ACCESS;
@@ -158,6 +162,13 @@ const List = React.memo((props) => {
                     newFormData._id = formObj._id;
                     newFormData.access = formObj.access;
                     newFormData.submissionAccess = formObj.submissionAccess;
+                    if(MULTITENANCY_ENABLED && tenantKey){
+                      let newPathName=`${tenantKey}-${newFormData.path}`
+                      if(newPathName!==newFormData.path){
+                        newFormData.path=newPathName
+                      }
+
+                    }
                     // newFormData.tags = formObj.tags;
                     dispatch(saveForm("form", newFormData, (err, form) => {
                       if (!err) {

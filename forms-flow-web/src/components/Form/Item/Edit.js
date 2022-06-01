@@ -72,6 +72,14 @@ const Edit = React.memo(() => {
     saveFormData();
   }
 
+  //remove tenatkey form path name
+  const removeTenantKey =(value)=>{
+    if(MULTITENANCY_ENABLED && tenantKey){
+      return value= value.replace(`${tenantKey}-`,'')
+    }else{
+      return value
+    }
+  }
   // setting the form data
   useEffect(() => {
     const newForm= formData;
@@ -137,6 +145,9 @@ const Edit = React.memo(() => {
     const newFormData = addHiddenApplicationComponent(form);
     newFormData.submissionAccess = SUBMISSION_ACCESS;
     newFormData.access = FORM_ACCESS;
+    if(MULTITENANCY_ENABLED && tenantKey){
+      newFormData.path=`${tenantKey}-${newFormData.path}`
+    }
     dispatch(
         saveForm("form", newFormData, (err, submittedData) => {
           if (!err) {
@@ -186,6 +197,8 @@ const Edit = React.memo(() => {
         })
       );
   };
+
+  
 
 // setting the main option details to the formdata
   const handleChange = (path, event) => {
@@ -317,7 +330,7 @@ if(!form._id){
                 id="path"
                 placeholder="example"
                 style={{'textTransform': 'lowercase', width:'120px'}}
-                value={form.path || ''}
+                value={removeTenantKey(form.path) || ''}
                 onChange={event => handleChange('path', event)}
               />
             </div>

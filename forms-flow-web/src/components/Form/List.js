@@ -172,49 +172,58 @@ const List = React.memo((props) => {
   };
 
   const uploadFileContents = async (fileContent) => {
-    try{
-    if (fileContent.forms && Array.isArray(fileContent.forms)) {
-      await Promise.all(
-        fileContent.forms.map(async (formData) => {
-          return new Promise((resolve, reject) => {
-            formData = addHiddenApplicationComponent(formData);
-            let tenantDetails ={}
-            if(MULTITENANCY_ENABLED && tenantKey){
-              tenantDetails={tenantKey}
-            }
-            const newFormData = {
-              ...formData,
-              tags: ["common"],
-              ...tenantDetails
-            };
-            newFormData.access = FORM_ACCESS;
-            newFormData.submissionAccess = SUBMISSION_ACCESS;
-            dispatch(saveForm("form", newFormData, async (err, form) => { // TODO add Default SubmissionAccess to formData
-              if (err) {
-                // get the form Id of the form if exists already in the server
-                dispatch(fetchFormByAlias(newFormData.path, async (err, formObj) => {
-                  if (!err) {
-                    newFormData._id = formObj._id;
-                    newFormData.access = formObj.access;
-                    newFormData.submissionAccess = formObj.submissionAccess;
-                    if(MULTITENANCY_ENABLED && tenantKey){
-                      let newPathName=`${tenantKey}-${newFormData.path}`
-                      if(newPathName!==newFormData.path){
-                        newFormData.path=newPathName
-                      }
-
-                    }
-                    // newFormData.tags = formObj.tags;
-                    dispatch(saveForm("form", newFormData, (err, form) => {
-                      if (!err) {
-                        dispatch(updateFormUploadCounter())
-                        resolve();
-                      } else {
-                        toast.error('Error in Json file structure');
-                        setShowFormUploadModal(false);
-                        reject();
-                      }
-                    }));
+    try {
+      if (fileContent.forms && Array.isArray(fileContent.forms)) {
+        await Promise.all(
+          fileContent.forms.map(async (formData) => {
+            return new Promise((resolve, reject) => {
+              formData = addHiddenApplicationComponent(formData);
+              let tenantDetails = {};
+              if (MULTITENANCY_ENABLED && tenantKey) {
+                tenantDetails = { tenantKey };
+              }
+              const newFormData = {
+                ...formData,
+                tags: ["common"],
+                ...tenantDetails,
+              };
+              newFormData.access = FORM_ACCESS;
+              newFormData.submissionAccess = SUBMISSION_ACCESS;
+              dispatch(
+                saveForm("form", newFormData, async (err) => {
+                  // TODO add Default SubmissionAccess to formData
+                  if (err) {
+                    // get the form Id of the form if exists already in the server
+                    dispatch(
+                      fetchFormByAlias(
+                        newFormData.path,
+                        async (err, formObj) => {
+                          if (!err) {
+                            newFormData._id = formObj._id;
+                            newFormData.access = formObj.access;
+                            newFormData.submissionAccess =
+                              formObj.submissionAccess;
+                            // newFormData.tags = formObj.tags;
+                            dispatch(
+                              saveForm("form", newFormData, (err) => {
+                                if (!err) {
+                                  dispatch(updateFormUploadCounter());
+                                  resolve();
+                                } else {
+                                  toast.error("Error in Json file structure");
+                                  setShowFormUploadModal(false);
+                                  reject();
+                                }
+                              })
+                            );
+                          } else {
+                            toast.error("Error in Json file structure");
+                            setShowFormUploadModal(false);
+                            reject();
+                          }
+                        }
+                      )
+                    );
                   } else {
                     dispatch(updateFormUploadCounter());
                     resolve();

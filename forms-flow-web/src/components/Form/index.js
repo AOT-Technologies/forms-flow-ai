@@ -1,11 +1,16 @@
 import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
-import {useSelector} from "react-redux";
+import { useSelector } from "react-redux";
 
 import List from "./List";
 import Stepper from "./Stepper";
 import Item from "./Item/index";
-import { STAFF_DESIGNER, STAFF_REVIEWER, CLIENT, BASE_ROUTE } from "../../constants/constants";
+import {
+  STAFF_DESIGNER,
+  STAFF_REVIEWER,
+  CLIENT,
+  BASE_ROUTE,
+} from "../../constants/constants";
 import Loading from "../../containers/Loading";
 
 let user = "";
@@ -14,27 +19,30 @@ const CreateFormRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) => {
-      if(user.includes(STAFF_DESIGNER)){
+      if (user.includes(STAFF_DESIGNER)) {
         return <Component {...props} />;
-      } else{
-        return <Redirect exact to="/" />
+      } else {
+        return <Redirect exact to="/" />;
       }
-    }
-    }
+    }}
   />
 );
 const FormSubmissionRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (
-    user.includes(STAFF_REVIEWER) || user.includes(CLIENT)
-      ? <Component {...props} />
-      : <Redirect exact to='/' />
-  )} />
+  <Route
+    {...rest}
+    render={(props) =>
+      user.includes(STAFF_REVIEWER) || user.includes(CLIENT) ? (
+        <Component {...props} />
+      ) : (
+        <Redirect exact to="/" />
+      )
+    }
+  />
 );
 
-
 export default React.memo(() => {
-  user = useSelector(state=>state.user.roles || []);
-  const isAuthenticated = useSelector(state=>state.user.isAuthenticated);
+  user = useSelector((state) => state.user.roles || []);
+  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
   if (!isAuthenticated) {
     return <Loading />;
   }
@@ -46,7 +54,10 @@ export default React.memo(() => {
           path={`${BASE_ROUTE}formflow/:formId?/:step?`}
           component={Stepper}
         />
-        <FormSubmissionRoute path={`${BASE_ROUTE}form/:formId/`} component={Item}/>
+        <FormSubmissionRoute
+          path={`${BASE_ROUTE}form/:formId/`}
+          component={Item}
+        />
       </Switch>
     </div>
   );

@@ -61,6 +61,39 @@ public class KeycloakIdentityProviderSession
 	}
 
 	/**
+	 *
+	 * @param userQuery
+	 * @return
+	 */
+	protected List<User> findUserByQueryCriteria(KeycloakUserQuery userQuery) {
+		StringBuilder resultLogger = new StringBuilder();
+		if (KeycloakPluginLogger.INSTANCE.isDebugEnabled()) {
+			resultLogger.append("Keycloak group query results: [");
+		}
+
+		List<User> allMatchingUsers = userQueryCache.getOrCompute(CacheableKeycloakUserQuery.of(userQuery),
+				this::doFindUserByQueryCriteria);
+		List<User> processedUsers = userService.postProcessResults(userQuery, allMatchingUsers, resultLogger);
+		if (KeycloakPluginLogger.INSTANCE.isDebugEnabled()) {
+			resultLogger.append("]");
+			KeycloakPluginLogger.INSTANCE.groupQueryResult(resultLogger.toString());
+		}
+
+		return processedUsers;
+	}
+
+	/**
+	 *
+	 * @param userQuery
+	 * @return
+	 */
+	private List<User> doFindUserByQueryCriteria(CacheableKeycloakUserQuery userQuery) {
+		return StringUtils.hasLength(userQuery.getGroupId()) ?
+				this.userService.requestUsersByGroupId(userQuery) :
+				this.userService.requestUsersWithoutGroupId(userQuery);
+	}
+
+	/**
 	 * find groups meeting given group query criteria (with cache lookup and post
 	 * processing).
 	 * 

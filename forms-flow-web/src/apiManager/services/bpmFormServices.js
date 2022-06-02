@@ -1,13 +1,14 @@
- /* istanbul ignore file */
-import {httpGETRequest} from "../httpRequestHandler";
+/* istanbul ignore file */
+import { httpGETRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import UserService from "../../services/UserService";
-import {
-  serviceActionError,
-} from "../../actions/bpmTaskActions";
+import { serviceActionError } from "../../actions/bpmTaskActions";
 
-import {setBPMFormList, setBPMFormListLoading} from "../../actions/formActions";
-import {replaceUrl} from "../../helper/helper";
+import {
+  setBPMFormList,
+  setBPMFormListLoading,
+} from "../../actions/formActions";
+import { replaceUrl } from "../../helper/helper";
 
 export const fetchBPMFormList = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -36,8 +37,7 @@ export const fetchBPMFormList = (...rest) => {
   };
 };
 
-
-export const fetchFormByAlias = (path,...rest) => {
+export const fetchFormByAlias = (path, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
 
   const apiUrlGetFormByAlias = replaceUrl(
@@ -47,7 +47,9 @@ export const fetchFormByAlias = (path,...rest) => {
   );
 
   return (dispatch) => {
-    httpGETRequest(apiUrlGetFormByAlias, {}, '',false,{'x-jwt-token':UserService.getFormioToken()} )
+    httpGETRequest(apiUrlGetFormByAlias, {}, "", false, {
+      "x-jwt-token": UserService.getFormioToken(),
+    })
       .then((res) => {
         //console.log("formData",res);
         if (res.data) {

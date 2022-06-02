@@ -1,31 +1,25 @@
 import { httpPUTRequest } from "../httpRequestHandler";
-import API from '../endpoints/index'
+import API from "../endpoints/index";
 import UserService from "../../services/UserService";
 import { toast } from "react-toastify";
 import { Translation } from "react-i18next";
 
+export const updateUserlang = (data) => {
+  const apiUpdatelang = API.LANG_UPDATE;
 
-export const updateUserlang = (data)=>{
-  const apiUpdatelang = API.LANG_UPDATE
-    
-    
-
+  // eslint-disable-next-line no-unused-vars
   return (dispatch) => {
-    httpPUTRequest(apiUpdatelang,{"locale":data},UserService.getToken())
-    .then((res)=>{
-      if(res.data){
+    httpPUTRequest(apiUpdatelang, { locale: data }, UserService.getToken())
+      .then((res) => {
+        if (res.data) {
           //toast.success(<Translation>{(t)=>t(""Successfully Updated"")}</Translation>);
-        
-      }else{
+        } else {
           //toast.error(<Translation>{(t)=>t("Failed")}</Translation>);
-        
         }
-      }
-    )
-    .catch((error)=>{
+      })
+      .catch((error) => {
         console.log(error);
-      toast.error(<Translation>{(t)=>t("Failed")}</Translation>);
-    })
-    
-  }
-}
+        toast.error(<Translation>{(t) => t("Failed")}</Translation>);
+      });
+  };
+};

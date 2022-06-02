@@ -45,7 +45,7 @@ People *love* thorough bug reports.
     - `count + 1 instead of count+1`
   - Use spaces after commas (unless separated by newlines)
   - Limit code length to 100 chars per line 
-    - `Exception : comments, string sand urls`
+    - `Exception : comments, strings and urls`
   - Consistent use of `semicolons`
   - Avoid un-neccessary console logs [Not strict]
   - Avoid un-neccessary alerts

@@ -195,6 +195,7 @@ public class AdminController {
 			createAuthorization(tenantKey, reviewerRole, Resources.TASK, "*");
 			createAuthorization(tenantKey, reviewerRole, Resources.TENANT, tenantKey);
 			createAuthorization(tenantKey, reviewerRole, Resources.FILTER, "*");
+			createAuthorization(tenantKey, reviewerRole, Resources.USER, "*");
 		}
 		LOGGER.info("Finished creating authorizations for tenant");
 

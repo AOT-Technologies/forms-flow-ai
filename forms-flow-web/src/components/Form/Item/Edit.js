@@ -24,6 +24,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { clearFormError } from "../../../actions/formActions";
+import { addTenankeyToPath } from "../../../helper/helper";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -76,13 +77,17 @@ const Edit = React.memo(() => {
   };
 
   //remove tenatkey form path name
-  const removeTenantKey = (value) => {
-    if (MULTITENANCY_ENABLED && tenantKey) {
-      return (value = value.replace(`${tenantKey}-`, ""));
-    } else {
-      return value;
+  useEffect(()=>{
+    if(form.path && MULTITENANCY_ENABLED){
+      let newFormPath = form.path.split('-');
+      let tenantId = newFormPath.shift();
+      if(tenantId === tenantKey){
+        newFormPath = newFormPath.join("-");
+        dispatchFormAction({type:'path',value:newFormPath});
+      }
     }
-  };
+  },[form.path]);
+
   // setting the form data
   useEffect(() => {
     const newForm = formData;
@@ -154,7 +159,7 @@ const Edit = React.memo(() => {
     newFormData.submissionAccess = SUBMISSION_ACCESS;
     newFormData.access = FORM_ACCESS;
     if (MULTITENANCY_ENABLED && tenantKey) {
-      newFormData.path = `${tenantKey}-${newFormData.path}`;
+      newFormData.path = addTenankeyToPath(newFormData.path,tenantKey);
     }
     dispatch(
       saveForm("form", newFormData, (err, submittedData) => {
@@ -207,7 +212,9 @@ const Edit = React.memo(() => {
   const handleChange = (path, event) => {
     const { target } = event;
     const value = target.type === "checkbox" ? target.checked : target.value;
-    dispatchFormAction({ type: path, value });
+
+      dispatchFormAction({ type: path, value });
+    
   };
 
   const formChange = (newForm) =>
@@ -373,7 +380,7 @@ const Edit = React.memo(() => {
                   id="path"
                   placeholder="example"
                   style={{ textTransform: "lowercase", width: "120px" }}
-                  value={removeTenantKey(form.path) || ""}
+                  value={ form.path || ""}
                   onChange={(event) => handleChange("path", event)}
                 />
               </div>

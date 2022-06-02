@@ -2,4 +2,8 @@ const replaceUrl = (URL, key, value) => {
   return URL.replace(key, value);
 };
 
-export { replaceUrl };
+const addTenankeyToPath = (path,tenankey)=>{
+      return `${tenankey}-${path}`;
+};
+
+export { replaceUrl, addTenankeyToPath};

@@ -178,16 +178,19 @@ const List = React.memo((props) => {
           fileContent.forms.map(async (formData) => {
             return new Promise((resolve, reject) => {
               formData = addHiddenApplicationComponent(formData);
+              let tenantDetails = {};
+              if (MULTITENANCY_ENABLED && tenantKey) {
+                tenantDetails = { tenantKey };
+              }
               const newFormData = {
                 ...formData,
                 tags: ["common"],
-                tenantKey: tenantKey,
+                ...tenantDetails,
               };
               newFormData.access = FORM_ACCESS;
               newFormData.submissionAccess = SUBMISSION_ACCESS;
               dispatch(
-                // eslint-disable-next-line no-unused-vars
-                saveForm("form", newFormData, async (err, form) => {
+                saveForm("form", newFormData, async (err) => {
                   // TODO add Default SubmissionAccess to formData
                   if (err) {
                     // get the form Id of the form if exists already in the server
@@ -202,8 +205,7 @@ const List = React.memo((props) => {
                               formObj.submissionAccess;
                             // newFormData.tags = formObj.tags;
                             dispatch(
-                              // eslint-disable-next-line no-unused-vars
-                              saveForm("form", newFormData, (err, form) => {
+                              saveForm("form", newFormData, (err) => {
                                 if (!err) {
                                   dispatch(updateFormUploadCounter());
                                   resolve();

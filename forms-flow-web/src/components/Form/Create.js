@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import { useTranslation, Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
 import { clearFormError } from "../../actions/formActions";
+import { addTenankeyToPath } from "../../helper/helper";
 
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
@@ -105,6 +106,7 @@ const Create = React.memo(() => {
     newForm.access = FORM_ACCESS;
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
+      newForm.path = addTenankeyToPath(newForm.path,tenantKey);
     }
     dispatch(
       saveForm("form", newForm, (err, form) => {

@@ -37,5 +37,19 @@ Write bug reports with enough details for collaborators and maintainers to under
 
 People *love* thorough bug reports. 
 
+
+## JavaScript Styleguide
+
+### All javascript code is linted with [Prettier](https://prettier.io/).
+  - Use spaces around operators : 
+    - `count + 1 instead of count+1`
+  - Use spaces after commas (unless separated by newlines)
+  - Limit code length to 100 chars per line 
+    - `Exception : comments, string sand urls`
+  - Consistent use of `semicolons`
+  - Avoid un-neccessary console logs [Not strict]
+  - Avoid un-neccessary alerts
+  - Avoid unused variable declarations
+
 ## References
 This document was adapted from the open-source contribution guidelines for [Facebook's Draft](https://github.com/facebook/draft-js/blob/main/CONTRIBUTING.md)

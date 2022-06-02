@@ -1,7 +1,6 @@
 package org.camunda.bpm.extension.commons.connector;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.commons.lang3.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.extension.commons.ro.req.IRequest;
@@ -12,13 +11,13 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
- * This class prepares the payload and invokes the respective access handler based on the service ID.
- *
- * @author  sumathi.thirumani@aot-technologies.com
+ *  Http Service Invoker.
+ *  This class prepares the payload and invokes the respective access handler based on the service ID.
  */
 @Component("httpServiceInvoker")
 public class HTTPServiceInvoker {
@@ -35,22 +34,27 @@ public class HTTPServiceInvoker {
     public ResponseEntity<String> execute(String url, HttpMethod method, Object payload) throws IOException {
         String dataJson = payload != null ? bpmObjectMapper.writeValueAsString(payload) : null;
         return execute(url, method, dataJson);
-
     }
 
     public ResponseEntity<String> execute(String url, HttpMethod method, String payload) {
             return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload);
     }
 
-    public ResponseEntity<IResponse> execute(String url, HttpMethod method, IRequest payload,
-                                          Class<? extends IResponse> responseClazz) {
+    public ResponseEntity<IResponse> execute(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz) {
         return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, payload, responseClazz);
     }
 
+    public ResponseEntity<String> executeWithParamsAndPayload(String url, HttpMethod method, Map<String, Object> requestParams, IRequest payload) {
+        return accessHandlerFactory.getService(getServiceId(url)).exchange(url, method, requestParams, payload);
+    }
+
     private String getServiceId(String url) {
+
         if(StringUtils.contains(url, getProperties().getProperty("api.url"))) {
             return "applicationAccessHandler";
-        }else if(StringUtils.contains(url, getProperties().getProperty("analysis.url"))) {
+        } else if(StringUtils.contains(url, getProperties().getProperty("bpm.url"))) {
+            return "bpmAccessHandler";
+        } else if(StringUtils.contains(url, getProperties().getProperty("analysis.url"))) {
             return "textAnalyzerAccessHandler";
         } else {
             return "formAccessHandler";

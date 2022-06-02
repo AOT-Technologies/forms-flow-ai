@@ -7,7 +7,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.minidev.json.JSONArray;
+import com.nimbusds.jose.shaded.json.JSONArray;
+
 import org.camunda.bpm.engine.AuthorizationService;
 import org.camunda.bpm.engine.ProcessEngines;
 import org.camunda.bpm.engine.authorization.AuthorizationQuery;
@@ -43,7 +44,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Test class for AdminController
+ * AdminController Test.
+ * Test class for AdminController.
  */
 @ExtendWith(SpringExtension.class)
 public class AdminControllerTest {

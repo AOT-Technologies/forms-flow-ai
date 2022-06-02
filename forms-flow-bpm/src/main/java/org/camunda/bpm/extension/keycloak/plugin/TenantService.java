@@ -28,6 +28,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 /**
+ * Tenant Service.
  * Implementation of tenants queries against Admin Rest API.
  */
 public class TenantService {

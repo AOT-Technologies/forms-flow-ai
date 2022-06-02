@@ -1,15 +1,15 @@
 import React from "react";
 
 import { Link } from "react-router-dom";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectRoot } from "react-formio";
 import { useLocation } from "react-router-dom";
 
-import {CLIENT, STAFF_REVIEWER } from "../constants/constants";
+import { CLIENT, STAFF_REVIEWER } from "../constants/constants";
 import { getUserRolePermission } from "../helper/user";
 
 import "./styles.scss";
-import {toggleMenu} from "../actions/menuActions";
+import { toggleMenu } from "../actions/menuActions";
 
 const SideBar = React.memo(() => {
   const location = useLocation();
@@ -21,31 +21,43 @@ const SideBar = React.memo(() => {
   });
   const isMenuOpen = useSelector((state) => state.menu.isMenuOpen);
 
-  const menuToggle = ()=>{
-    dispatch(toggleMenu(false))
+  const menuToggle = () => {
+    dispatch(toggleMenu(false));
   };
 
   return (
-    <div className={isMenuOpen?'open-menu':''}>
-      <nav id="sidebar" className={isMenuOpen?'sidebar-container ml-0':'sidebar-container'}>
-        {isMenuOpen && <div className="close-menu d-lg-none" onClick={menuToggle}>
-          <i className="fa fa-times"/>
-        </div>}
+    <div className={isMenuOpen ? "open-menu" : ""}>
+      <nav
+        id="sidebar"
+        className={isMenuOpen ? "sidebar-container ml-0" : "sidebar-container"}
+      >
+        {isMenuOpen && (
+          <div className="close-menu d-lg-none" onClick={menuToggle}>
+            <i className="fa fa-times" />
+          </div>
+        )}
         <ul className="list-unstyled components">
-          <li className={`${pathname.match(/^\/form/) ? "active" : ""}`} onClick={menuToggle}>
+          <li
+            className={`${pathname.match(/^\/form/) ? "active" : ""}`}
+            onClick={menuToggle}
+          >
             <Link
               to="/form"
               className={`main-nav nav-link ${
                 pathname.match(/^\/form/) ? "active-tab" : ""
               }`}
             >
-               {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
-               <i className="fa fa-wpforms" />
+              {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
+              <i className="fa fa-wpforms" />
               Forms
             </Link>
           </li>
-          <li className={`${pathname.match(/^\/application/) ? "active" : ""}`} onClick={menuToggle}>
-            {getUserRolePermission(userRoles, STAFF_REVIEWER) ||  getUserRolePermission(userRoles, CLIENT)? (
+          <li
+            className={`${pathname.match(/^\/application/) ? "active" : ""}`}
+            onClick={menuToggle}
+          >
+            {getUserRolePermission(userRoles, STAFF_REVIEWER) ||
+            getUserRolePermission(userRoles, CLIENT) ? (
               <Link
                 to="/application"
                 className={`main-nav nav-link ${
@@ -70,7 +82,10 @@ const SideBar = React.memo(() => {
               </Link>
             ) : null}
           </li>*/}
-          <li className={`${pathname.match(/^\/task/) ? "active" : ""}`} onClick={menuToggle}>
+          <li
+            className={`${pathname.match(/^\/task/) ? "active" : ""}`}
+            onClick={menuToggle}
+          >
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
                 to="/task"
@@ -103,7 +118,10 @@ const SideBar = React.memo(() => {
               </Link>
             ) : null}
           </li>
-          <li className={`${pathname.match(/^\/insights/) ? "active" : ""}`} onClick={menuToggle}>
+          <li
+            className={`${pathname.match(/^\/insights/) ? "active" : ""}`}
+            onClick={menuToggle}
+          >
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
                 to="/insights"
@@ -111,7 +129,7 @@ const SideBar = React.memo(() => {
                   pathname.match(/^\/insights/) ? "active-tab" : ""
                 }`}
               >
-                <i className="fa fa-lightbulb-o"/>
+                <i className="fa fa-lightbulb-o" />
                 Insights
               </Link>
             ) : null}

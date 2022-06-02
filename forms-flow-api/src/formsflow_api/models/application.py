@@ -10,6 +10,7 @@ from sqlalchemy.sql.expression import text
 
 from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
 from formsflow_api.utils.user_context import UserContext, user_context
+
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
 from .db import db
@@ -83,6 +84,7 @@ class Application(
                 cls.modified_by,
                 FormProcessMapper.process_key,
                 FormProcessMapper.process_name,
+                FormProcessMapper.process_tenant,
                 FormProcessMapper.form_name.label("application_name"),
             )
             .join(cls, FormProcessMapper.id == cls.form_process_mapper_id)
@@ -160,6 +162,7 @@ class Application(
             FormProcessMapper.form_name.label("application_name"),
             FormProcessMapper.process_key.label("process_key"),
             FormProcessMapper.process_name.label("process_name"),
+            FormProcessMapper.process_tenant.label("process_tenant"),
         )
         query = query.filter(*filter_conditions) if filter_conditions else query
         return query
@@ -209,6 +212,7 @@ class Application(
                 FormProcessMapper.form_name.label("application_name"),
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
+                FormProcessMapper.process_tenant.label("process_tenant"),
             )
         )
         result = cls.tenant_authorization(query=result)
@@ -313,6 +317,7 @@ class Application(
                 FormProcessMapper.form_name.label("application_name"),
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
+                FormProcessMapper.process_tenant.label("process_tenant"),
             )
         )
         query = cls.tenant_authorization(query=query)
@@ -344,6 +349,7 @@ class Application(
                 FormProcessMapper.form_name.label("application_name"),
                 FormProcessMapper.process_key.label("process_key"),
                 FormProcessMapper.process_name.label("process_name"),
+                FormProcessMapper.process_tenant.label("process_tenant"),
             )
             .one_or_none()
         )
@@ -549,6 +555,7 @@ class Application(
             FormProcessMapper.query.with_entities(
                 FormProcessMapper.process_key,
                 FormProcessMapper.process_name,
+                FormProcessMapper.process_tenant,
                 FormProcessMapper.task_variable,
                 FormProcessMapper.id.label("mapper_id"),
             )

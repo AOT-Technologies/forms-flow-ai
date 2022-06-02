@@ -845,6 +845,57 @@ paths:
                   value:
                     id: test
     parameters: []
+  /engine-rest/process-definition/key/onestepapproval/tenant-id/test-tenant/start:
+    post:
+      tags:
+        - Process
+      summary: Start Process - Tenant based
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                variables:
+                  applicationId:
+                    ' value': 25
+                  ' formUrl':
+                    ' value': ' http://localhost:3000/form/626ba203004a95dd15f6b3ad/submission/6273a24051ae2f25bd45793c'
+                  ' formName':
+                    ' value': ' Freedom of Information and Protection of Privacy'
+                  ' submitterName':
+                    ' value': ' formsflow-reviewer'
+                  ' submissionDate':
+                    ' value': ' 2022-05-05 10:09:04.233032'
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: string
+              example: |-
+                {
+                    "links": [
+                        {
+                            "method": "GET",
+                            "href": "
+                http: //localhost:8000/camunda/engine-rest/process-instance/648c9e74-cc5b-11ec-8f27-0242ac180003", "rel" : "self"
+                        }
+                    ],
+                    "id": "648c9e74-cc5b-11ec-8f27-0242ac180003",
+                    "definitionId": "onestepapproval:1:374f4f67-c79d-11ec-bea4-0242ac180008",
+                    "businessKey": None,
+                    "caseInstanceId": None,
+                    "ended": False,
+                    "suspended": False,
+                    "tenantId": "test-tenant"
+                }
+              examples:
+                example-1:
+                  value: {}
+    parameters: []
   /engine-rest/authorization/create:
     post:
       tags:

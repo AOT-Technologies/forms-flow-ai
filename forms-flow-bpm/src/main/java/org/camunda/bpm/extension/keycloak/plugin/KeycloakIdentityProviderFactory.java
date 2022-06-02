@@ -14,8 +14,8 @@ import org.camunda.bpm.extension.keycloak.cache.QueryCache;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 
 /**
- * @author aot
- *
+ * Keycloak Identity Provider Factory.
+ * Custom Keycloak Identity Provider Session Factory.
  */
 public class KeycloakIdentityProviderFactory
 		extends org.camunda.bpm.extension.keycloak.KeycloakIdentityProviderFactory {
@@ -39,7 +39,7 @@ public class KeycloakIdentityProviderFactory
 	@Override
 	public Session openSession() {
 		return new KeycloakIdentityProviderSession(keycloakConfiguration, restTemplate, keycloakContextProvider,
-				userQueryCache, groupQueryCache, tenantQueryCache, this.config);
+				userQueryCache, groupQueryCache, tenantQueryCache, checkPasswordCache, this.config);
 	}
 
 	public QueryCache<CacheableKeycloakTenantQuery, List<Tenant>> getTenantQueryCache() {

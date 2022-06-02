@@ -39,7 +39,7 @@ class ApplicationService:
         data["application_status"] = NEW_APPLICATION_STATUS
         mapper = FormProcessMapper.find_form_by_form_id(data["form_id"])
         if mapper is None:
-            if user.tenant_key:
+            if tenant_key:
                 raise PermissionError(f"Permission denied, formId - {data['form_id']}.")
             raise KeyError(f"Mapper does not exist with formId - {data['form_id']}.")
         if tenant_key is not None and mapper.tenant != tenant_key:
@@ -59,12 +59,21 @@ class ApplicationService:
                     "formName": {"value": mapper.form_name},
                     "submitterName": {"value": application.created_by},
                     "submissionDate": {"value": str(application.created)},
+                    "tenantKey": {"value": mapper.tenant},
                 }
             }
             try:
-                camunda_start_task = BPMService.post_process_start(
-                    process_key=mapper.process_key, payload=payload, token=token
-                )
+                if mapper.process_tenant:
+                    camunda_start_task = BPMService.post_process_start_tenant(
+                        process_key=mapper.process_key,
+                        payload=payload,
+                        token=token,
+                        tenant_key=mapper.process_tenant,
+                    )
+                else:
+                    camunda_start_task = BPMService.post_process_start(
+                        process_key=mapper.process_key, payload=payload, token=token
+                    )
                 application.update({"process_instance_id": camunda_start_task["id"]})
             except TypeError as camunda_error:
                 response = {

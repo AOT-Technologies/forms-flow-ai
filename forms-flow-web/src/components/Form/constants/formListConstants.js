@@ -1,42 +1,46 @@
 import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import pick from "lodash/pick";
-import {CLIENT, OPERATIONS, STAFF_DESIGNER, STAFF_REVIEWER} from "../../../constants/constants";
+import {
+  CLIENT,
+  OPERATIONS,
+  STAFF_DESIGNER,
+  STAFF_REVIEWER,
+} from "../../../constants/constants";
 import FormSearch from "../FormSearch/FormSearch";
 import { Translation } from "react-i18next";
 
-
 export const designerColumns = [
   {
-    key: 'title',
+    key: "title",
     sort: false,
-    title: <FormSearch/>,
+    title: <FormSearch />,
     width: 6,
   },
   {
-    key: 'operations',
-    title: <Translation>{(t)=>t("Operations")}</Translation>,
+    key: "operations",
+    title: <Translation>{(t) => t("Operations")}</Translation>,
     width: 5,
   },
   {
-    key: 'id',
-    title: <SelectFormForDownload type="all"/>,
+    key: "id",
+    title: <SelectFormForDownload type="all" />,
     width: 1,
-    value: (form) => <SelectFormForDownload form={form}/>
+    value: (form) => <SelectFormForDownload form={form} />,
   },
-]
+];
 
 export const userColumns = [
   {
-    key: 'title',
+    key: "title",
     sort: false,
-    title: <FormSearch/>,
+    title: <FormSearch />,
     width: 8,
   },
   {
-    key: 'operations',
-    title: <Translation>{(t)=>t("Operations")}</Translation>,
+    key: "operations",
+    title: <Translation>{(t) => t("Operations")}</Translation>,
     width: 4,
-  }
+  },
 ];
 
 const columnsToPick = [
@@ -46,11 +50,12 @@ const columnsToPick = [
   "name",
   "path",
   "tags",
-  "components"];
+  "components",
+];
 
-export const getFormattedForm = (form)=>{
-  return pick(form,columnsToPick);
-}
+export const getFormattedForm = (form) => {
+  return pick(form, columnsToPick);
+};
 
 export const getOperations = (userRoles, showViewSubmissions) => {
   let operations = [];
@@ -64,4 +69,4 @@ export const getOperations = (userRoles, showViewSubmissions) => {
     operations.push(OPERATIONS.viewForm, OPERATIONS.delete); //  OPERATIONS.edit,
   }
   return operations;
-}
+};

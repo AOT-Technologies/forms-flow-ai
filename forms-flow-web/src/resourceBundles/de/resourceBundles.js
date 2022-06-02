@@ -1,5 +1,9 @@
+/* eslint-disable max-len */
 export const RESOURCE_BUNDLES_DE = {
 
+  "Click to search":"Klicken Sie, um zu suchen",
+  "No submissions found":"Keine Einreichungen gefunden",
+  "No submission avaliable in the selected date. Please select another date range":"Für das ausgewählte Datum ist keine Einreichung verfügbar. Bitte wählen Sie einen anderen Zeitraum aus",
   "Form field":"Formularfeld",
   "Enter Label":"Bezeichnung eingeben",
   "Select form field":"Formularfeld auswählen",
@@ -156,7 +160,7 @@ export const RESOURCE_BUNDLES_DE = {
   "Select All": "Wählen Sie Alle",
   "Created Date": "Erstellungsdatum",
   "Modified Date": "Geändertes Datum",
-  "Files Upload Confirmation": "Bestätigung zum Hochladen von Dateien",
+  "File Upload Status": "Datei-Upload-Status",
   "Forms Completed": "Formulare ausgefüllt",
   "No forms found": "Keine Formulare gefunden",
   "Powered by": "Bereitgestellt von",
@@ -216,4 +220,4 @@ export const RESOURCE_BUNDLES_DE = {
 
 
 
-}
+};

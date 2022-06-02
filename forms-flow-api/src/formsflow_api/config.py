@@ -86,6 +86,14 @@ class _Config:  # pylint: disable=too-few-public-methods
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
     KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM")
 
+    # Keycloak client authorization enabled flag
+    KEYCLOAK_ENABLE_CLIENT_AUTH = (
+        str(os.getenv("KEYCLOAK_ENABLE_CLIENT_AUTH", default="false")).lower() == "true"
+    )
+    MULTI_TENANCY_ENABLED = (
+        str(os.getenv("MULTI_TENANCY_ENABLED", default="false")).lower() == "true"
+    )
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""
@@ -106,7 +114,7 @@ class TestConfig(_Config):  # pylint: disable=too-few-public-methods
 
     JWT_OIDC_TEST_MODE = True
     # USE_TEST_KEYCLOAK_DOCKER = os.getenv("USE_TEST_KEYCLOAK_DOCKER")
-    USE_DOCKER_MOCK = os.getenv('USE_DOCKER_MOCK', default=None)
+    USE_DOCKER_MOCK = os.getenv("USE_DOCKER_MOCK", default=None)
 
     # JWT_OIDC Settings
     JWT_OIDC_TEST_AUDIENCE = os.getenv("JWT_OIDC_AUDIENCE")

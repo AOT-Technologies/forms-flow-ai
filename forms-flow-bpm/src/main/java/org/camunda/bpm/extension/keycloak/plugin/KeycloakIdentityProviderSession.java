@@ -11,19 +11,15 @@ import org.camunda.bpm.engine.identity.Tenant;
 import org.camunda.bpm.engine.identity.TenantQuery;
 import org.camunda.bpm.engine.identity.User;
 import org.camunda.bpm.engine.impl.interceptor.CommandContext;
-import org.camunda.bpm.extension.keycloak.CacheableKeycloakGroupQuery;
-import org.camunda.bpm.extension.keycloak.CacheableKeycloakUserQuery;
-import org.camunda.bpm.extension.keycloak.KeycloakConfiguration;
-import org.camunda.bpm.extension.keycloak.KeycloakContextProvider;
-import org.camunda.bpm.extension.keycloak.KeycloakGroupQuery;
+import org.camunda.bpm.extension.keycloak.*;
 import org.camunda.bpm.extension.keycloak.cache.QueryCache;
 import org.camunda.bpm.extension.keycloak.rest.KeycloakRestTemplate;
 import org.camunda.bpm.extension.keycloak.util.KeycloakPluginLogger;
 import org.springframework.util.StringUtils;
 
 /**
- * @author aot
- *
+ * Keycloak Identity Provider Session.
+ * Class for Keycloack identity provider session.
  */
 public class KeycloakIdentityProviderSession
 		extends org.camunda.bpm.extension.keycloak.KeycloakIdentityProviderSession {
@@ -36,10 +32,13 @@ public class KeycloakIdentityProviderSession
 			KeycloakRestTemplate restTemplate, KeycloakContextProvider keycloakContextProvider,
 			QueryCache<CacheableKeycloakUserQuery, List<User>> userQueryCache,
 			QueryCache<CacheableKeycloakGroupQuery, List<Group>> groupQueryCache,
-			QueryCache<CacheableKeycloakTenantQuery, List<Tenant>> tenantQueryCache, CustomConfig config) {
-		super(keycloakConfiguration, restTemplate, keycloakContextProvider, userQueryCache, groupQueryCache);
+			QueryCache<CacheableKeycloakTenantQuery, List<Tenant>> tenantQueryCache, 
+			QueryCache<CacheableKeycloakCheckPasswordCall, Boolean> checkPasswordCache, CustomConfig config) {
+		super(keycloakConfiguration, restTemplate, keycloakContextProvider, userQueryCache, groupQueryCache, checkPasswordCache);
 		this.config = config;
 		this.groupService = new KeycloakGroupService(keycloakConfiguration, restTemplate, keycloakContextProvider,
+				config);
+		this.userService = new KeycloakUserService(keycloakConfiguration, restTemplate, keycloakContextProvider,
 				config);
 		this.tenantService = new TenantService(restTemplate, keycloakContextProvider, config);
 		this.tenantQueryCache = tenantQueryCache;
@@ -59,6 +58,39 @@ public class KeycloakIdentityProviderSession
 	 */
 	public String getKeycloakAdminGroupId(String configuredAdminGroupName) {
 		return groupService.getKeycloakAdminGroupId(configuredAdminGroupName);
+	}
+
+	/**
+	 *
+	 * @param userQuery
+	 * @return
+	 */
+	protected List<User> findUserByQueryCriteria(KeycloakUserQuery userQuery) {
+		StringBuilder resultLogger = new StringBuilder();
+		if (KeycloakPluginLogger.INSTANCE.isDebugEnabled()) {
+			resultLogger.append("Keycloak group query results: [");
+		}
+
+		List<User> allMatchingUsers = userQueryCache.getOrCompute(CacheableKeycloakUserQuery.of(userQuery),
+				this::doFindUserByQueryCriteria);
+		List<User> processedUsers = userService.postProcessResults(userQuery, allMatchingUsers, resultLogger);
+		if (KeycloakPluginLogger.INSTANCE.isDebugEnabled()) {
+			resultLogger.append("]");
+			KeycloakPluginLogger.INSTANCE.groupQueryResult(resultLogger.toString());
+		}
+
+		return processedUsers;
+	}
+
+	/**
+	 *
+	 * @param userQuery
+	 * @return
+	 */
+	private List<User> doFindUserByQueryCriteria(CacheableKeycloakUserQuery userQuery) {
+		return StringUtils.hasLength(userQuery.getGroupId()) ?
+				this.userService.requestUsersByGroupId(userQuery) :
+				this.userService.requestUsersWithoutGroupId(userQuery);
 	}
 
 	/**

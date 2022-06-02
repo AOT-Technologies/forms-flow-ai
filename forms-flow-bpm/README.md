@@ -112,6 +112,7 @@ To know more about Camunda, visit https://camunda.com/.
  `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`2  (In MB)`
  `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
  `BPM_CLIENT_CONN_TIMEOUT`|Webclient Connection timeout in milli seconds||`5000`
+ `BPM_BASE_URL`:triangular_flag_on_post:|BPM Client URL||`http://{your-ip-address}:8000`
    
  **Additionally, you may want to change these**  
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)
@@ -120,19 +121,12 @@ To know more about Camunda, visit https://camunda.com/.
 
 * forms-flow-bpm service uses port 8000, make sure the port is available.
 * `cd {Your Directory}/forms-flow-ai/forms-flow-bpm`
+* Run `docker-compose  up -d` to start.
 
-* For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
-* For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
-
-*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose up --build -d`*
 
 #### To stop the application
-* For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml stop` to stop.
-* For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
+* Run `docker-compose  stop` to stop.
       
       
 ### Health Check

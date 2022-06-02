@@ -62,6 +62,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
  `WEB_BASE_CUSTOM_URL`|Clients can use WEB_BASE_CUSTOM_URL env variable to provide their custom URL |
  `USER_ACCESS_PERMISSIONS`| JSON formatted permissions to enable / disable few access on user login.|| `{"accessAllowApplications":false,"accessAllowSubmissions":false}`
  |`FORMIO_JWT_SECRET`|forms-flow-forms jwt secret| |`--- change me now ---`
+`MULTI_TENANCY_ENABLED`|Multi tenancy enabled flag for the environment|true/false | false
 
 * NOTE - While configuring USER_ACCESS_PERMISSIONS the accessAllowApplications will hide / show application tab, the same way accessAllowSubmissions does for viewSubmission button. To enable this feature you need to add access-allow-applications, access-allow-submissions with the respective user group in keycloak.
 
@@ -121,11 +122,12 @@ Variable name | Meaning | Possible values | Default value |
   * User can add more languages by following the steps :
    1. Create a folder at *forms-flow-web/src/resourceBundles* with folder name as the abbrevation of the required language.
    2. Create a file named resourceBundles.js inside the folder.
-   3. Copy the key-value pairs from *translations.js* file inside *en* folder and paste it to the new file.
+   3. Copy the key-value pairs from *resourceBundles.js* file inside *en* folder and paste it to the new file.
    4. Translate the value of the keys to the required language using google translator and paste the values to the same file
    5. Import the same file to *forms-flow-web/src/resourceBundles/i18n.js* like rest of the languages.
    6. You can add the button component at *forms-flow-web/src/containers/NavBar.jsx* by simply copying the dropdown menu and providing language abbrevation,name and language abbrevation to the array *langarr* inside the samw file. .
    7. You should add content of new trnslation file to *forms-flow-web/src/resourceBundles/formio_resourceBundles.js* also.
+   8. Open forms-flow-api/src/formsflow_api/utils/translations/translations.py , copy any set of translations ,translate the values and paste it back to the file with required language key.
    8. Login to **http://localhost:3000/** to check your updations.
   
 ## forms-flow-web Events

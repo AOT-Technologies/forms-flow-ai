@@ -1,7 +1,11 @@
+/* eslint-disable max-len */
 export const formio_resourceBundles = {
 
    "en": {
 
+      "Click to search":"Click to search",
+  "No submissions found":"No submissions found",
+  "No submission avaliable in the selected date. Please select another date range":"No submission avaliable in the selected date. Please select another date range",
       "All groups have access to the dashboard":"All groups have access to the dashboard",
       "Form unpublishing Failed":"Form unpublishing Failed",
       "Form process failed":"Form process failed",
@@ -199,7 +203,7 @@ export const formio_resourceBundles = {
       "Select All": "Select All",
       "Created Date": "Created Date",
      "Modified Date": "Modified Date",
-      "Files Upload Confirmation": "Files Upload Confirmation",
+      "File Upload Status": "File Upload Status",
       "Forms Completed": "Forms Completed",
       "No forms found": "No forms found",
       "Press Enter key or click here to search": "Press Enter key or click here to search",
@@ -220,6 +224,9 @@ export const formio_resourceBundles = {
 
    "zh-CN": {
        
+      "Click to search":"点击搜索",
+      "No submissions found":"未找到任何提交",
+      "No submission avaliable in the selected date. Please select another date range":"在所选日期内没有可用的提交。请选择其他日期范围",
       "All groups have access to the dashboard":"所有组都可以访问仪表板",
       "Form unpublishing Failed":"表单取消发布失败",
       "Form process failed":"表单处理失败",
@@ -399,7 +406,7 @@ export const formio_resourceBundles = {
       "Select All": "全选",
       "Created Date": "创建日期",
      "Modified Date": "修改日期",
-      "Files Upload Confirmation": "文件上传确认",
+      "File Upload Status": "文件上传状态",
       "Forms Completed": "完成的表格",
       "No forms found": "没有找到表格",
       "Powered by": "供电",
@@ -569,7 +576,7 @@ export const formio_resourceBundles = {
       "Custom Default Value": "自定义默认值",
       "The complete form JSON object": "完整的表单 JSON 对象",
       "submission": "提交",
-      "	The complete submission object.": "完整的提交对象。",
+      "The complete submission object.": "完整的提交对象。",
       "data": "数据",
       "The complete submission data object.": "完整的提交数据对象。",
       "row": "排",
@@ -936,6 +943,9 @@ export const formio_resourceBundles = {
 
    "bg": {
 
+      "Click to search":"Щракнете за търсене",
+    "No submissions found":"Няма намерени заявки",
+    "No submission avaliable in the selected date. Please select another date range":"Няма налично подаване на избраната дата. Моля, изберете друг период от време",
       "All groups have access to the dashboard":"Всички групи имат достъп до таблото",
       "Form unpublishing Failed":"Прекратяването на публикуването на формуляра не бе успешно",
       "Form process failed":"Обработката на формуляра не бе успешно",
@@ -1113,7 +1123,7 @@ export const formio_resourceBundles = {
       "Select All": "Избери всички",
       "Created Date": "Дата на създаване",
      "Modified Date": "Дата на промяна",
-      "Files Upload Confirmation": "Потвърждение за качване на файлове",
+      "File Upload Status": "Състояние на качване на файл",
       "Forms Completed": "Формулярите са попълнени",
       "No forms found": "Няма намерени формуляри",
       "Powered by": "Задвижвани от",
@@ -1285,7 +1295,7 @@ export const formio_resourceBundles = {
       "Custom Default Value": "персонализирано подразбиране",
       "The complete form JSON object": "Пълен JSON обект",
       "submission": "Изпращане",
-      "	The complete submission object.": "Пълният обект за извършване.",
+      "The complete submission object.": "Пълният обект за извършване.",
       "data": "данни",
       "The complete submission data object.": "Пълният обект с данни за подаване.",
       "row": "Ред",
@@ -1653,6 +1663,9 @@ export const formio_resourceBundles = {
 
    "pt": {
 
+      "Click to search":"Clique para pesquisar",
+  "No submissions found":"Nenhum envio encontrado",
+  "No submission avaliable in the selected date. Please select another date range":"Nenhuma submissão disponível na data selecionada. Selecione outro intervalo de datas",
       "All groups have access to the dashboard":"Todos os grupos têm acesso ao painel",
       "Form unpublishing Failed":"Falha ao cancelar a publicação do formulário",
       "Form process failed":"Falha no processo do formulário",
@@ -2355,7 +2368,7 @@ export const formio_resourceBundles = {
       "Select All": "Selecionar tudo",
       "Created Date": "Data de criação",
      "Modified Date": "Data modificada",
-      "Files Upload Confirmation": "Confirmação de upload de arquivos",
+      "File Upload Status": "Status de upload de arquivo",
       "Forms Completed": "Formulários preenchidos",
       "No forms found": "Nenhum formulário encontrado",
       "No Process Diagram found": "Nenhum diagrama de processo encontrado",
@@ -2371,6 +2384,9 @@ export const formio_resourceBundles = {
 
    "fr": {
 
+      "Click to search":"Cliquez pour rechercher",
+      "No submissions found":"Aucune soumission trouvée",
+      "No submission avaliable in the selected date. Please select another date range":"Aucune soumission disponible à la date sélectionnée. Veuillez sélectionner une autre plage de dates",
       "All groups have access to the dashboard":"Tous les groupes ont accès au tableau de bord",
       "Form unpublishing Failed":"Échec de la dépublication du formulaire",
       "Form process failed":"Le processus de formulaire a échoué",
@@ -3075,7 +3091,7 @@ export const formio_resourceBundles = {
       "Select All": "Tout sélectionner",
       "Created Date":"Date de création",
       "Modified Date": "Date modifiée",
-      "Files Upload Confirmation": "Confirmation du téléchargement des arquivosn",
+      "File Upload Status": "État du téléchargement du fichier",
       "Forms Completed": "Formulaires remplis",
       "No applications found": "No applications found",
       "Successfully Updated": "Mise à jour réussie",
@@ -3091,6 +3107,9 @@ export const formio_resourceBundles = {
 
    "de": {
 
+      "Click to search":"Klicken Sie, um zu suchen",
+      "No submissions found":"Keine Einreichungen gefunden",
+      "No submission avaliable in the selected date. Please select another date range":"Für das ausgewählte Datum ist keine Einreichung verfügbar. Bitte wählen Sie einen anderen Zeitraum aus",
       "All groups have access to the dashboard":"Alle Gruppen haben Zugriff auf das Dashboard",
       "Form unpublishing Failed":"Das Aufheben der Veröffentlichung des Formulars ist fehlgeschlagen",
       "Form process failed":"Formularprozess fehlgeschlagen",
@@ -3281,7 +3300,7 @@ export const formio_resourceBundles = {
       "Select All": "Wählen Sie Alle",
       "Created Date": "Erstellungsdatum",
      "Modified Date": "Geändertes Datum",
-      "Files Upload Confirmation": "Bestätigung zum Hochladen von Dateien",
+      "File Upload Status": "Datei-Upload-Status",
       "Forms Completed": "Formulare ausgefüllt",
       "No forms found": "Keine Formulare gefunden",
       "Press Enter key or click here to search": "Drücken Sie die Eingabetaste oder klicken Sie hier, um zu suchen",
@@ -3818,4 +3837,4 @@ export const formio_resourceBundles = {
 
 
    }
-}
+};

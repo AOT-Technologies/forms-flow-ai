@@ -135,7 +135,7 @@ body {
   background-color: #f8f8f8bf;
 }
 .formio-component-panel {
-  border: 1px solid#eeeeee;
+  border: 1px solid #eeeeee;
 
   .panel-heading {
     background-color: #eeeeee;
@@ -573,4 +573,11 @@ div[disabled] {
 .formcomponents .formcomponent{
   font-size: 1em;
 }
-
+.button_font{
+  font-size: 14px;
+  font-weight: bold;
+}
+.delete_button{
+  font-size: 20px;
+  color:red;
+}

@@ -20,11 +20,13 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.*;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_STATUS;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
 
 /**
+ * Camunda Event Listener.
  * This class intercepts all camunda task and push socket messages for web tier updates.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Component
 public class CamundaEventListener {
@@ -103,7 +105,7 @@ public class CamundaEventListener {
     }
 
     private List<String> getElements() {
-        return new ArrayList<>(Arrays. asList("applicationId", "formUrl", "applicationStatus"));
+        return new ArrayList<>(Arrays. asList(APPLICATION_ID, FORM_URL, APPLICATION_STATUS));
     }
 
     private List<String> getDefaultRegisteredEvents() {

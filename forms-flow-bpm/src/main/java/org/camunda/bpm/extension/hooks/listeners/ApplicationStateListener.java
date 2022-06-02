@@ -15,11 +15,11 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.*;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+
 /**
+ * Application State Listener.
  * This class updates the application state and also capture audit.
- *
- * @author sumathi.thirumani@aot-technologies.com
- * @author Shibin Thomas
  */
 @Component
 public class ApplicationStateListener extends BaseListener implements ExecutionListener, TaskListener {
@@ -71,6 +71,6 @@ public class ApplicationStateListener extends BaseListener implements ExecutionL
      * @return
      */
     private String getApplicationUrl(DelegateExecution execution){
-        return httpServiceInvoker.getProperties().getProperty("api.url")+"/application/"+execution.getVariable("applicationId");
+        return httpServiceInvoker.getProperties().getProperty("api.url")+"/application/"+execution.getVariable(APPLICATION_ID);
     }
 }

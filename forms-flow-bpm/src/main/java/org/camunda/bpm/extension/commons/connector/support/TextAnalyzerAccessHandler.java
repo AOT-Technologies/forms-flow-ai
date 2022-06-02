@@ -13,10 +13,18 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
+
 import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
+/**
+ * Text Analyzer Access Handler.
+ * This class serves as gateway for all text analyzer service interactions.
+ */
+
+
 @Service("textAnalyzerAccessHandler")
-public class TextAnalyzerAccessHandler implements IAccessHandler{
+public class TextAnalyzerAccessHandler extends AbstractAccessHandler{
 
     private final Logger LOGGER = LoggerFactory.getLogger(TextAnalyzerAccessHandler.class);
 
@@ -54,4 +62,5 @@ public class TextAnalyzerAccessHandler implements IAccessHandler{
                 .block();
         return new ResponseEntity<>(response.getBody(), response.getStatusCode());
     }
+
 }

@@ -13,10 +13,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * AES Utils.
  * Utility class to decrypt socket access token.
  * This class can be leveraged to secure query string.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Component
 public class AESUtils {

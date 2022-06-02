@@ -70,19 +70,14 @@ Variable name | Meaning | Possible values | Default value |
 * forms-flow-data-analysis-api service uses port 5001, make sure the port is available.
 * `cd {Your Directory}/forms-flow-ai/forms-flow-data-analysis-api`
 
-* For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
-* For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+* Run `docker-compose up -d` to start.
 
-*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+
+*NOTE: Use --build command with the start command to reflect any future **.env** changes eg : `docker-compose up --build -d`*
 
 #### To Stop the Application
 
-* For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml stop` to stop.
-* For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
+* Run `docker-compose stop` to stop.
 
 ### Verify the Application Status
 
@@ -148,6 +143,9 @@ One of the unique features of the formsflow.ai framework is Sentiment Analysis. 
 
 * A form designer can drag and drop **Text Area with Analytics component** and in section **Data** add key topics for Sentiment Analysis like facility, service, etc. This activates sentiment analysis component.
 * Based on the input responses of the user formsflow.ai process sentiment associated with each user's responses and the response will be patched to mongo by Camunda listener.
+* Workflow associated with sentiment analysis, you need to add the java class in listeners as `org.camunda.bpm.extension.hooks.delegates.FormTextAnalysisDelegate`. Refer the sample shown below:
+![image (13)](https://user-images.githubusercontent.com/83584866/170023331-f5c6b5d0-e7ca-44a7-891d-7d06bbea5095.png)
+
 * You can take data stored in mongodb and create **meaningful visualization** based on the  output of sentiment API in Redash dashboards. This information can be found in the **Insights section** for staff user formsflow.ai.
 
 A potential architectural conflict, which can happen is the choosing of postgres database and mongodb database. What database should we use, for which arhchitecure.

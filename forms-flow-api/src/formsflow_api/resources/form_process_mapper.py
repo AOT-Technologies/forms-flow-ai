@@ -207,12 +207,13 @@ class FormResourceById(Resource):
                 )
             mapper_schema = FormProcessMapperSchema()
             dict_data = mapper_schema.load(application_json)
-            FormProcessMapperService.update_mapper(
+            mapper = FormProcessMapperService.update_mapper(
                 form_process_mapper_id=mapper_id, data=dict_data
             )
-
+            response = mapper_schema.dump(mapper)
+            response["taskVariable"] = json.loads(response["taskVariable"])
             return (
-                f"Updated FormProcessMapper ID {mapper_id} successfully",
+                response,
                 HTTPStatus.OK,
             )
         except PermissionError as err:

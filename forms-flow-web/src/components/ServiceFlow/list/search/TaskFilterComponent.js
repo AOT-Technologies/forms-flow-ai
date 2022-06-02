@@ -1,31 +1,34 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import TaskFilterDropdown from "./TaskFilterDropdown";
 import TaskFilterSearch from "./TaskFilterSearch";
-import {QUERY_TYPES} from "../../constants/taskConstants";
+import { QUERY_TYPES } from "../../constants/taskConstants";
 import {
   setFilterListSearchParams,
-  setSearchQueryType
+  setSearchQueryType,
 } from "../../../../actions/bpmTaskActions";
-import {useDispatch, useSelector} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TaskIgnoreCaseComponent from "./TaskIgnoreCaseComponent";
 import { useTranslation } from "react-i18next";
-const TaskFilterComponent = React.memo(({totalTasks}) => {
+const TaskFilterComponent = React.memo(({ totalTasks }) => {
   const createSearchNode = useRef();
-  const filterSearchSelections = useSelector(state => state.bpmTasks.filterSearchSelections);
-  const queryType = useSelector(state => state.bpmTasks.searchQueryType);
-  const [filterSelections, setFilterSelections] = useState(filterSearchSelections);
+  const filterSearchSelections = useSelector(
+    (state) => state.bpmTasks.filterSearchSelections
+  );
+  const queryType = useSelector((state) => state.bpmTasks.searchQueryType);
+  const [filterSelections, setFilterSelections] = useState(
+    filterSearchSelections
+  );
   const [showFilterItems, setShowFilterItems] = useState(false);
-  const dispatch= useDispatch();
-  const {t}= useTranslation();
+  const dispatch = useDispatch();
+  const { t } = useTranslation();
 
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (createSearchNode?.current?.contains(e.target)) {
       return;
     }
     // outside click
     setShowFilterItems(null);
   };
-
 
   useEffect(() => {
     // add when mounted
@@ -36,87 +39,92 @@ const TaskFilterComponent = React.memo(({totalTasks}) => {
     };
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     dispatch(setFilterListSearchParams(filterSelections));
-  },[filterSelections, dispatch]);
-
+  }, [filterSelections, dispatch]);
 
   const setFilter = (filter) => {
-    const updatedSelectionsArray = [...filterSelections, {...filter}];
+    const updatedSelectionsArray = [...filterSelections, { ...filter }];
     setFilterSelections(updatedSelectionsArray);
     setShowFilterItems(false);
   };
 
-  const deleteSearchFilter = (filter,index)=>{
+  const deleteSearchFilter = (filter, index) => {
     let updatedSelectionsArray = [...filterSelections];
-    updatedSelectionsArray.splice(index,1);
-    setFilterSelections(updatedSelectionsArray)
-  }
+    updatedSelectionsArray.splice(index, 1);
+    setFilterSelections(updatedSelectionsArray);
+  };
 
-  const updateSearchFilterData = (index, key, value)=>{
+  const updateSearchFilterData = (index, key, value) => {
     let updatedSelectionsArray = [...filterSelections];
-    let newValue ;
-    if(value==='false'){
-      newValue = false
-    }else if (value==='true'){
-      newValue=true
-    }else if(isNaN(value)){
-      newValue=value
-    }else{
-      newValue= Number(value)
+    let newValue;
+    if (value === "false") {
+      newValue = false;
+    } else if (value === "true") {
+      newValue = true;
+    } else if (isNaN(value)) {
+      newValue = value;
+    } else {
+      newValue = Number(value);
     }
 
-    updatedSelectionsArray[index][key]=newValue;
+    updatedSelectionsArray[index][key] = newValue;
     setFilterSelections(updatedSelectionsArray);
-  }
+  };
 
-  const updateFilter = (filter,index)=>{
+  const updateFilter = (filter, index) => {
     let updatedSelectionsArray = [...filterSelections];
-    updatedSelectionsArray[index].label=filter.label;
-    updatedSelectionsArray[index].type=filter.type;
-    updatedSelectionsArray[index].operator=filter.operator;
-    updatedSelectionsArray[index].key=filter.key;
+    updatedSelectionsArray[index].label = filter.label;
+    updatedSelectionsArray[index].type = filter.type;
+    updatedSelectionsArray[index].operator = filter.operator;
+    updatedSelectionsArray[index].key = filter.key;
     setFilterSelections(updatedSelectionsArray);
-  }
+  };
 
-  const setQueryType=(type)=>{
+  const setQueryType = (type) => {
     dispatch(setSearchQueryType(type));
-  }
+  };
 
-  const changeQueryType= () => {
-    queryType===QUERY_TYPES.ALL? setQueryType(QUERY_TYPES.ANY):setQueryType(QUERY_TYPES.ALL);
+  const changeQueryType = () => {
+    queryType === QUERY_TYPES.ALL
+      ? setQueryType(QUERY_TYPES.ANY)
+      : setQueryType(QUERY_TYPES.ALL);
   };
 
   return (
     <>
       <div className="filter-container">
         <div>
-          {filterSelections.length ?
+          {filterSelections.length ? (
             <div>
-              <span className="button click-element" onClick={changeQueryType}>{queryType}</span>
+              <span className="button click-element" onClick={changeQueryType}>
+                {queryType}
+              </span>
               <span> {t("of the criteria are met.")}</span>
-            </div> : null}
+            </div>
+          ) : null}
 
-          <TaskFilterSearch updateSearchFilterData={updateSearchFilterData}
-                            filterSelections={filterSelections}
-                            deleteSearchFilter={deleteSearchFilter}
-                            updateFilter={updateFilter}/>
+          <TaskFilterSearch
+            updateSearchFilterData={updateSearchFilterData}
+            filterSelections={filterSelections}
+            deleteSearchFilter={deleteSearchFilter}
+            updateFilter={updateFilter}
+          />
           <div ref={createSearchNode}>
             <input
               type="text"
               className="filter"
               placeholder={t("Filter Tasks")}
-              onClick={() => {
-              }}
+              onClick={() => {}}
               onFocus={() => setShowFilterItems(true)}
             />
             {showFilterItems ? (
-              <TaskFilterDropdown onFilterSelect={setFilter}/>
+              <TaskFilterDropdown onFilterSelect={setFilter} />
             ) : null}
             <span dat-title={t("Total number of results")}>{totalTasks}</span>
           </div>
         </div>
-        <TaskIgnoreCaseComponent/>
+        <TaskIgnoreCaseComponent />
       </div>
     </>
   );

@@ -30,6 +30,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /**
+ * Process Local Test.
  * Sample process unit test covering exactly the process itself with absolutely everything else mocked.
  * <p>
  * With this type of test you can identify errors in the BPM process itself early and before 

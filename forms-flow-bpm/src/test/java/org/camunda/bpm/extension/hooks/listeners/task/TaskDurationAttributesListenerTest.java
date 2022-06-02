@@ -20,6 +20,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
+ * Task Duration Attributes Listener Test.
  * Test class for TaskDurationAttributesListener
  */
 @ExtendWith(SpringExtension.class)

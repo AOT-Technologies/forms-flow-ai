@@ -5,11 +5,11 @@ import org.camunda.bpm.extension.commons.ro.res.IResponse;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
+
 /**
+ * IAccess Handler.
  * This class defines the AccessHandler implementation.
- *
- * @author sumathi.thirumani@aot-technologies.com
- * @author Shibin Thomas
  */
 public interface IAccessHandler {
 
@@ -31,4 +31,7 @@ public interface IAccessHandler {
      * @return
      */
     ResponseEntity<IResponse> exchange(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz);
+
+
+    ResponseEntity<String> exchange(String url, HttpMethod method, Map<String, Object> queryParams, IRequest payload);
 }

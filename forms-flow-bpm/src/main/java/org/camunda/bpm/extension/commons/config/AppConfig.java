@@ -10,6 +10,11 @@ import org.springframework.context.annotation.Primary;
 
 import javax.annotation.PostConstruct;
 
+/**
+ * AppConfig
+ * Configuration data for API.
+ */
+
 @Configuration
 public class AppConfig {
 

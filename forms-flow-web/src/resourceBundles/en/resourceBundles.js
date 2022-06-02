@@ -1,5 +1,9 @@
+/* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
  
+  "Click to search":"Click to search",
+  "No submissions found":"No submissions found",
+  "No submission avaliable in the selected date. Please select another date range":"No submission avaliable in the selected date. Please select another date range",
   "Form field":"Form field",
   "Enter Label":"Enter Label",
   "Select form field":"Select form field",
@@ -159,7 +163,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Select All": "Select All",
   "Created Date": "Created Date",
   "Modified Date": "Modified Date",
-  "Files Upload Confirmation": "Files Upload Confirmation",
+  "File Upload Status": "File Upload Status",
   "Forms Completed": "Forms Completed",
   "No forms found": "No forms found",
   "Powered by": "Powered by",

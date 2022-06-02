@@ -2,49 +2,53 @@ package org.camunda.bpm.extension.commons.connector.support;
 
 import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
-import org.camunda.bpm.extension.commons.ro.req.IRequest;
-import org.camunda.bpm.extension.commons.ro.res.IResponse;
+import org.camunda.bpm.extension.commons.connector.FormioTokenServiceProvider;
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
+
+import java.util.Properties;
 
 
 /**
+ * Form Access Handler.
  * This class serves as gateway for all formio interactions.
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Service("formAccessHandler")
-public class FormAccessHandler extends FormTokenAccessHandler implements IAccessHandler {
+public class FormAccessHandler extends AbstractAccessHandler implements IAccessHandler {
 
     private final Logger logger = LoggerFactory.getLogger(FormAccessHandler.class.getName());
 
     static final int TOKEN_EXPIRY_CODE = 404;
 
+    @Autowired
+    private Properties integrationCredentialProperties;
+    @Autowired
+    private WebClient unauthenticatedWebClient;
+    @Autowired
+    private FormioTokenServiceProvider formioTokenServiceProvider;
+
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
-        String accessToken = super.getAccessToken();
+        String accessToken = formioTokenServiceProvider.getAccessToken();
         if(StringUtils.isBlank(accessToken)) {
             logger.info("Access token is blank. Cannot invoke service:{}", url);
             return null;
         }
         ResponseEntity<String> response = exchange(url,method,payload,accessToken);
         if(response.getStatusCodeValue() == TOKEN_EXPIRY_CODE) {
-            exchange(url,method,payload,getAccessToken());
+            exchange(url,method,payload, formioTokenServiceProvider.getAccessToken());
         }
         logger.info("Response code for service invocation: {}" , response.getStatusCode());
         return response;
-    }
-
-    @Override
-    public ResponseEntity<IResponse> exchange(String url, HttpMethod method, IRequest payload, Class<? extends IResponse> responseClazz) {
-        return null;
     }
 
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload, String accessToken) {
@@ -86,8 +90,8 @@ public class FormAccessHandler extends FormTokenAccessHandler implements IAccess
 
     private String getDecoratedServerUrl(String url) {
         if(StringUtils.contains(url,"/form/")) {
-            return getIntegrationCredentialProperties().getProperty("formio.url") + "/form/" + StringUtils.substringAfter(url, "/form/");
+            return integrationCredentialProperties.getProperty("formio.url") + "/form/" + StringUtils.substringAfter(url, "/form/");
         }
-        return getIntegrationCredentialProperties().getProperty("formio.url") +"/"+ StringUtils.substringAfterLast(url, "/");
+        return integrationCredentialProperties.getProperty("formio.url") +"/"+ StringUtils.substringAfterLast(url, "/");
     }
 }

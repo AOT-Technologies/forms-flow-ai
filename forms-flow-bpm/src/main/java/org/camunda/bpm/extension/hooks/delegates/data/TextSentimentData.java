@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
+/**
+ * Text Sentiment Data.
+ * Class for holding Text Sentiment Data.
+ */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

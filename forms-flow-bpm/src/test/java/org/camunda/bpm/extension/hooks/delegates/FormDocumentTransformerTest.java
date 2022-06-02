@@ -16,8 +16,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_STATUS;
+
 /**
- * Test class for FormDocumentTransformer
+ * FormDocument Transformer Test.
+ * Test class for FormDocumentTransformer.
  */
 @ExtendWith(SpringExtension.class)
 public class FormDocumentTransformerTest {
@@ -36,9 +40,9 @@ public class FormDocumentTransformerTest {
 	@Test
     public void testFormDocumentTransformer_happyFlow() throws Exception {
         Map<String,Object> variables = new HashMap<>();
-        variables.put("formUrl", "http://localhost:3001");
+        variables.put(FORM_URL, "http://localhost:3001");
         Map<String,Object> dataMap = new HashMap<>();
-        dataMap.put("applicationStatus", "New");
+        dataMap.put(APPLICATION_STATUS, "New");
         DelegateExecution execution = mock(DelegateExecution.class);
         when(execution.getVariables())
         		.thenReturn(variables);

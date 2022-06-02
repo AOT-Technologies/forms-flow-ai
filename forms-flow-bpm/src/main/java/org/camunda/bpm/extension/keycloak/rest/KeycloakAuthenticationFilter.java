@@ -21,10 +21,13 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
-import net.minidev.json.JSONArray;
+import com.nimbusds.jose.shaded.json.JSONArray;
+
+
 
 /**
- * Keycloak Authentication Filter - used for REST API Security.
+ * Keycloak Authentication Filter
+ * Used for REST API Security.
  */
 public class KeycloakAuthenticationFilter implements Filter {
 

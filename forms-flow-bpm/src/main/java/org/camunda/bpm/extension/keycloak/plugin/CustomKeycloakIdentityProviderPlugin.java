@@ -6,6 +6,10 @@ import java.util.List;
 import org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 
+/**
+ * Custom Keycloak Identity Provider Plugin.
+ * Custom class for providing Keycloak Identity Provider support
+ */
 public class CustomKeycloakIdentityProviderPlugin extends KeycloakIdentityProviderPlugin {
 
 	/** custom interceptors to modify behaviour of default KeycloakRestTemplate */
@@ -40,6 +44,7 @@ public class CustomKeycloakIdentityProviderPlugin extends KeycloakIdentityProvid
 		CustomConfig config = new CustomConfig(webClientId, enableClientAuth, enableMultiTenancy, formsFlowAdminUrl);
 		keycloakIdentityProviderFactory = new KeycloakIdentityProviderFactory(this, customHttpRequestInterceptors, config);
 		processEngineConfiguration.setIdentityProviderSessionFactory(keycloakIdentityProviderFactory);
+		processEngineConfiguration.setTenantIdProvider(new TenantProvider());
 	}
 
 	/**

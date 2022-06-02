@@ -3,8 +3,9 @@ import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
 import Checkbox from "@material-ui/core/Checkbox";
 import Button from "@material-ui/core/Button";
- const ViewAndEditTaskvariable = ({
+const ViewAndEditTaskvariable = ({
   item,
+  // eslint-disable-next-line no-unused-vars
   index,
   deleteTaskVariable,
   editTaskVariable,
@@ -13,20 +14,27 @@ import Button from "@material-ui/core/Button";
   const [showInList, setShowInList] = useState(item.showInList);
   const [enableEditTaskVariable, setEnableEditTaskVariable] = useState(true);
 
-  const saveData =(taskVariable)=>{
-    setEnableEditTaskVariable(true)
-   const data = {key:taskVariable.key,  defaultLabel:taskVariable.defaultLabel,label:taskLabel,showInList}
-   editTaskVariable(data);
-  }
+  const saveData = (taskVariable) => {
+    setEnableEditTaskVariable(true);
+    const data = {
+      key: taskVariable.key,
+      defaultLabel: taskVariable.defaultLabel,
+      label: taskLabel,
+      showInList,
+    };
+    editTaskVariable(data);
+  };
   return (
     <>
       <TableRow>
-        <TableCell scope="row"><input
+        <TableCell scope="row">
+          <input
             type="text"
             disabled
             value={item.key}
             className="form-control"
-          /></TableCell>
+          />
+        </TableCell>
         <TableCell align="left">
           <input
             type="text"
@@ -50,13 +58,17 @@ import Button from "@material-ui/core/Button";
         </TableCell>
         <TableCell align="right">
           {!enableEditTaskVariable ? (
-           <Button
-            variant="outlined"
-            color="primary"
-            size="small"
-            onClick={()=>{saveData(item)}}
-            startIcon={<i className="fa fa-check"></i>}
-          >Save</Button>
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              onClick={() => {
+                saveData(item);
+              }}
+              startIcon={<i className="fa fa-check"></i>}
+            >
+              Save
+            </Button>
           ) : (
             <div>
               <i
@@ -66,8 +78,14 @@ import Button from "@material-ui/core/Button";
                 }}
                 className="mr-3 btn btn-danger btn fa fa-times"
               ></i>
- 
-              <i role="button" onClick={()=>{setEnableEditTaskVariable(false)}} class=" btn btn-primary fa fa-edit"></i>
+
+              <i
+                role="button"
+                onClick={() => {
+                  setEnableEditTaskVariable(false);
+                }}
+                className=" btn btn-primary fa fa-edit"
+              ></i>
             </div>
           )}
         </TableCell>

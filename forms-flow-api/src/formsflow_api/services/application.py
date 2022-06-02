@@ -17,6 +17,7 @@ from formsflow_api.schemas import (
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import NEW_APPLICATION_STATUS
 from formsflow_api.utils.user_context import UserContext, user_context
+
 from .form_process_mapper import FormProcessMapperService
 
 application_schema = ApplicationSchema()
@@ -57,7 +58,7 @@ class ApplicationService:
                     "formUrl": {"value": application.form_url},
                     "formName": {"value": mapper.form_name},
                     "submitterName": {"value": application.created_by},
-                    "submissionDate": {"value": application.created.__str__()},
+                    "submissionDate": {"value": str(application.created)},
                 }
             }
             try:

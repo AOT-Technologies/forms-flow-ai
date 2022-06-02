@@ -58,7 +58,7 @@ class ApplicationService:
                     "formUrl": {"value": application.form_url},
                     "formName": {"value": mapper.form_name},
                     "submitterName": {"value": application.created_by},
-                    "submissionDate": {"value": application.created.__str__()},
+                    "submissionDate": {"value": str(application.created)},
                     "tenantKey": {"value": mapper.tenant},
                 }
             }

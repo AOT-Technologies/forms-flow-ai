@@ -24,7 +24,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { clearFormError } from "../../../actions/formActions";
-import { addTenankeyToPath } from "../../../helper/helper";
+import { addTenankey, removeTenantKey } from "../../../helper/helper";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -79,14 +79,21 @@ const Edit = React.memo(() => {
   //remove tenatkey form path name
   useEffect(()=>{
     if(form.path && MULTITENANCY_ENABLED){
-      let newFormPath = form.path.split('-');
-      let tenantId = newFormPath.shift();
-      if(tenantId === tenantKey){
-        newFormPath = newFormPath.join("-");
-        dispatchFormAction({type:'path',value:newFormPath});
+       const checkIfExist = removeTenantKey(form.path,tenantKey);
+      if(checkIfExist.valueWithTenantKey){
+        dispatchFormAction({type:'path',value:checkIfExist.newValue});
       }
     }
   },[form.path]);
+  // remove tenant key from form name
+  useEffect(()=>{
+    if(form.name && MULTITENANCY_ENABLED){
+      const checkIfExist = removeTenantKey(form.name,tenantKey);
+      if(checkIfExist.valueWithTenantKey){
+        dispatchFormAction({type:'name',value:checkIfExist.newValue});
+      }
+    }
+  },[form.name]);
 
   // setting the form data
   useEffect(() => {
@@ -159,7 +166,8 @@ const Edit = React.memo(() => {
     newFormData.submissionAccess = SUBMISSION_ACCESS;
     newFormData.access = FORM_ACCESS;
     if (MULTITENANCY_ENABLED && tenantKey) {
-      newFormData.path = addTenankeyToPath(newFormData.path,tenantKey);
+      newFormData.path = addTenankey(newFormData.path,tenantKey);
+      newFormData.name = addTenankey(newFormData.name,tenantKey);
     }
     dispatch(
       saveForm("form", newFormData, (err, submittedData) => {

@@ -58,6 +58,7 @@ import {
 import { unPublishForm } from "../../apiManager/services/processServices";
 import { setIsApplicationCountLoading } from "../../actions/processActions";
 import { setBpmFormSearch } from "../../actions/formActions";
+import { checkAndAddTenantKey } from "../../helper/helper";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -181,6 +182,8 @@ const List = React.memo((props) => {
               let tenantDetails = {};
               if (MULTITENANCY_ENABLED && tenantKey) {
                 tenantDetails = { tenantKey };
+                formData.path = checkAndAddTenantKey(formData.path, tenantKey);
+                formData.name = checkAndAddTenantKey(formData.name, tenantKey);
               }
               const newFormData = {
                 ...formData,

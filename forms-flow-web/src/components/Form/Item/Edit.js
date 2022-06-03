@@ -120,9 +120,13 @@ const Edit = React.memo(() => {
   useEffect(() => {
     FORM_ACCESS.forEach((role) => {
       if (processListData.anonymous) {
-        role.roles.push(ANONYMOUS_ID);
+        if (role.type === "read_all") {
+          role.roles.push(ANONYMOUS_ID);
+        }
       } else {
-        role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+        if (role.type === "read_all") {
+          role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+        }
       }
     });
 
@@ -221,8 +225,7 @@ const Edit = React.memo(() => {
     const { target } = event;
     const value = target.type === "checkbox" ? target.checked : target.value;
 
-      dispatchFormAction({ type: path, value });
-    
+    dispatchFormAction({ type: path, value });
   };
 
   const formChange = (newForm) =>
@@ -388,7 +391,7 @@ const Edit = React.memo(() => {
                   id="path"
                   placeholder="example"
                   style={{ textTransform: "lowercase", width: "120px" }}
-                  value={ form.path || ""}
+                  value={form.path || ""}
                   onChange={(event) => handleChange("path", event)}
                 />
               </div>

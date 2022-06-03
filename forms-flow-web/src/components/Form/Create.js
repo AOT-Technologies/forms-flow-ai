@@ -66,9 +66,13 @@ const Create = React.memo(() => {
   useEffect(() => {
     FORM_ACCESS.forEach((role) => {
       if (anonymous) {
-        role.roles.push(ANONYMOUS_ID);
+        if (role.type === "read_all") {
+          role.roles.push(ANONYMOUS_ID);
+        }
       } else {
-        role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+        if (role.type === "read_all") {
+          role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+        }
       }
     });
     SUBMISSION_ACCESS.forEach((access) => {

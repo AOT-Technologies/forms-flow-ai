@@ -83,7 +83,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     ANALYTICS_API_KEY = os.getenv("INSIGHT_API_KEY")
 
     # CMS repo info for CMIS connector
-    CMS_REPO_URL = os.getenv("CMS_REPO_URL", default="")
+    CMS_REPO_URL = os.getenv("CMS_REPO_URL", default=None)
     CMS_REPO_USERNAME = os.getenv("CMS_REPO_USERNAME", default="admin")
     CMS_REPO_PASSWORD = os.getenv("CMS_REPO_PASSWORD", default="admin")
 

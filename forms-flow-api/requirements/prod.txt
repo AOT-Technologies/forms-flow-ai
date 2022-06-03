@@ -14,3 +14,4 @@ requests
 Werkzeug
 sqlalchemy_utils
 markupsafe==2.0.1
+cmislib3==1.0.8

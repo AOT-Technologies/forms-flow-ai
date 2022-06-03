@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Navbar, Dropdown, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -15,13 +15,13 @@ import {
   STAFF_REVIEWER,
   APPLICATION_NAME,
   STAFF_DESIGNER,
+  MULTITENANCY_ENABLED,
 } from "../constants/constants";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import { push } from "connected-react-router";
 import i18n from "../resourceBundles/i18n";
 import { setLanguage } from "../actions/languageSetAction";
 import { updateUserlang } from "../apiManager/services/userservices";
-import { MULTITENANCY_ENABLED } from "../constants/constants";
 
 const NavBar = React.memo(() => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
@@ -32,11 +32,22 @@ const NavBar = React.memo(() => {
   const userRoles = useSelector((state) => state.user.roles);
   const showApplications = useSelector((state) => state.user.showApplications);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const applicationTitle = useSelector(
+    (state) => state.tenants?.tenantData?.details?.applicationTitle
+  );
   const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
   const dispatch = useDispatch();
   const logoPath = "/logo.svg";
-  const appName = APPLICATION_NAME;
+  const getAppName = useMemo(
+    () => () => {
+      if (!MULTITENANCY_ENABLED) {
+        return APPLICATION_NAME;
+      }
+      return applicationTitle || APPLICATION_NAME;
+    },
+    [MULTITENANCY_ENABLED, applicationTitle]
+  );
+  const appName = getAppName();
   const { t } = useTranslation();
   const langarr = ["en", "bg", "pt", "fr", "zh-CN", "de"];
 

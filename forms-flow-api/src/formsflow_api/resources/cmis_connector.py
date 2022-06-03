@@ -99,4 +99,3 @@ class CMISConnectorDownloadResource(Resource):
             ]
         except AssertionError:
             return {"message": "No file data found"}, HTTPStatus.INTERNAL_SERVER_ERROR
-

@@ -71,4 +71,3 @@ API.add_namespace(PROCESS_API, path="/process")
 API.add_namespace(PUBLIC_API, path="/public")
 API.add_namespace(KEYCLOAK_USER_API, path="/user")
 API.add_namespace(CMIS_API, path="/cmis")
-

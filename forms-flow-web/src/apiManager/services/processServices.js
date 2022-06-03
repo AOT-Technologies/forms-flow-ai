@@ -277,7 +277,7 @@ export const unPublishForm = (mapperId, ...rest) => {
     httpDELETERequest(url)
       .then((res) => {
         toast.success(
-          <Translation>{(t) => t("Form deleted successfully")}</Translation>
+          <Translation>{(t) => t("Form unpblished successfully")}</Translation>
         );
         dispatch(resetFormProcessData());
         done(null, res.data);

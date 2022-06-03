@@ -66,9 +66,13 @@ const Create = React.memo(() => {
   useEffect(() => {
     FORM_ACCESS.forEach((role) => {
       if (anonymous) {
-        role.roles.push(ANONYMOUS_ID);
+        if (role.type === "read_all") {
+          role.roles.push(ANONYMOUS_ID);
+        }
       } else {
-        role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+        if (role.type === "read_all") {
+          role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+        }
       }
     });
     SUBMISSION_ACCESS.forEach((access) => {
@@ -106,7 +110,7 @@ const Create = React.memo(() => {
     newForm.access = FORM_ACCESS;
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
-      newForm.path = addTenankeyToPath(newForm.path,tenantKey);
+      newForm.path = addTenankeyToPath(newForm.path, tenantKey);
     }
     dispatch(
       saveForm("form", newForm, (err, form) => {

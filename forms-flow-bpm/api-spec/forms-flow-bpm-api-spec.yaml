@@ -12,6 +12,30 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
+  schemas:
+    TenantAuthorization:
+      title: TenantAuthorization
+      type: object
+      properties:
+        tenantKey:
+          type: string
+        adminRoles:
+          type: array
+          items:
+            type: string
+        designerRoles:
+          type: array
+          items:
+            type: string
+        clientRoles:
+          type: array
+          items:
+            type: string
+        reviewerRoles:
+          type: array
+          items:
+            type: string
+      description: Tenant authorization model
 security:
   - bearerAuth: []
 tags:
@@ -1715,3 +1739,32 @@ paths:
                     authorizationList:
                       - resourceId: ''
     parameters: []
+  /engine-rest-ext/tenant/authorization:
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: get-engine-rest-ext-tenant-authorization
+    post:
+      summary: ''
+      operationId: post-engine-rest-ext-tenant-authorization
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TenantAuthorization'
+            examples:
+              example-1:
+                value:
+                  tenantKey: string
+                  adminRoles:
+                    - camunda-admin
+                  designerRoles:
+                    - formsflow-designer
+                  clientRoles:
+                    - formsflow-client
+                  reviewerRoles:
+                    - formsflow-reviewer

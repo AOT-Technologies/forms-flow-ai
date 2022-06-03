@@ -19,26 +19,30 @@ const Preview = React.memo(
     setProcessData,
     workflow,
     formData,
-    submitData
+    submitData,
   }) => {
-    const {t}= useTranslation();
+    const { t } = useTranslation();
     const [copied, setCopied] = useState(false);
-    const processListData = useSelector((state)=>state.process.formProcessList)
+    const processListData = useSelector(
+      (state) => state.process.formProcessList
+    );
     //  taking the url and make the copy button
     const copyPublicUrl = () => {
       const hostName = window.location.host;
       const url = `${hostName}/public/form/${formData.form.path}`;
-      navigator.clipboard?.writeText(url).then(()=>{
-        setCopied(()=>{
-          setTimeout(()=>{
-            setCopied(false)
-          },3000)
-          return true
+      navigator.clipboard
+        ?.writeText(url)
+        .then(() => {
+          setCopied(() => {
+            setTimeout(() => {
+              setCopied(false);
+            }, 3000);
+            return true;
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      }).catch((err)=>{
-        console.log(err)
-      })
-
     };
 
     return (
@@ -50,8 +54,7 @@ const Preview = React.memo(
           alignItems="baseline"
           spacing={3}
         >
-          <Grid item xs={12} sm={1} spacing={3}>
-          </Grid>
+          <Grid item xs={12} sm={1} spacing={3}></Grid>
           <Grid item xs={12} sm={8} spacing={3} />
           <Grid item xs={12} sm={3} className="next-btn">
             <SaveNext
@@ -68,7 +71,9 @@ const Preview = React.memo(
               <CardContent>
                 <form noValidate autoComplete="off">
                   <div>
-                    <span className="font-weight-bolder">{t("Form Name")} : </span>
+                    <span className="font-weight-bolder">
+                      {t("Form Name")} :{" "}
+                    </span>
                     <span>
                       {formData && formData.form && formData.form.title
                         ? formData.form.title
@@ -76,29 +81,41 @@ const Preview = React.memo(
                     </span>
                   </div>
                   <div>
-                    <span className="font-weight-bolder">{t("Workflow Name")} : </span>
+                    <span className="font-weight-bolder">
+                      {t("Workflow Name")} :{" "}
+                    </span>
                     <span>
                       {workflow && workflow.label ? workflow.label : "-"}
                     </span>
                   </div>
                   {processListData.anonymous && (
                     <div>
-                      <span className="fontsize-16">{t("Copy anonymous form URL")}</span>
+                      <span className="fontsize-16">
+                        {t("Copy anonymous form URL")}
+                      </span>
                       <div
                         data-toggle="tooltip"
                         data-placement="top"
                         title={copied ? "URL copied" : "Click Here to Copy"}
-                        className={`coursor-pointer btn ${copied?'text-success':'text-primary'}`}
+                        className={`coursor-pointer btn ${
+                          copied ? "text-success" : "text-primary"
+                        }`}
                         onClick={() => {
                           copyPublicUrl();
                         }}
                       >
-                        <i className={`${copied?'fa fa-check':'fa fa-copy'}`}/>
+                        <i
+                          className={`${copied ? "fa fa-check" : "fa fa-copy"}`}
+                        />
                       </div>
                     </div>
                   )}
                   <div>
-                    <label> <label className="fontsize-16 mx-1">{t("Publish this form for Client Users.")}</label>
+                    <label>
+                      {" "}
+                      <label className="fontsize-16 mx-1">
+                        {t("Publish this form for Client Users.")}
+                      </label>
                       <FormControlLabel
                         control={
                           <Checkbox

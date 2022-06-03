@@ -1,3 +1,39 @@
 {
-  "extends": "react-app"
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true,
+    "jest": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended"
+  ],
+  "plugins": ["react"],
+  "settings": {
+    "react": {
+      "pragma": "React",
+      "version": "detect"
+    }
+  },
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "sourceType": "module",
+    "allowImportExportEverywhere": true
+  },
+  "rules": {
+    "react/react-in-jsx-scope":"off",
+    "no-alert":"warn",
+    "no-console":"off",
+    "react/display-name":"off",
+    "react/prop-types":"off",
+    "max-len": ["error", {"code": 100, "ignoreUrls": true, "ignoreStrings": true, "ignoreComments": true}],
+    "no-mixed-operators": "error",
+    "no-tabs": ["error", {"allowIndentationTabs": true}],
+    "semi":"error",
+    "semi-style": ["error", "last"],
+    "space-infix-ops": ["error", { "int32Hint": false }],
+    "no-useless-concat":"error"
+
+  }
 }

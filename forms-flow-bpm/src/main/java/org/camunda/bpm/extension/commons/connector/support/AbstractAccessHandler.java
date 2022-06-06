@@ -11,6 +11,18 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import java.util.Map;
 
 public abstract class AbstractAccessHandler implements IAccessHandler{
+
+    String getUserBasedAccessToken() {
+
+        String token = null;
+        Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication instanceof JwtAuthenticationToken) {
+            token = ((JwtAuthenticationToken)authentication).getToken().getTokenValue();
+        }
+        return token;
+    }
+
     @Override
     public ResponseEntity<String> exchange(String url, HttpMethod method, String payload) {
         return null;
@@ -24,16 +36,5 @@ public abstract class AbstractAccessHandler implements IAccessHandler{
     @Override
     public ResponseEntity<String> exchange(String url, HttpMethod method, Map<String, Object> queryParams, IRequest payload) {
         return null;
-    }
-
-    public String getUserBasedAccessToken() {
-
-        String token = null;
-        Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication instanceof JwtAuthenticationToken) {
-            token = ((JwtAuthenticationToken)authentication).getToken().getTokenValue();
-        }
-        return token;
     }
 }

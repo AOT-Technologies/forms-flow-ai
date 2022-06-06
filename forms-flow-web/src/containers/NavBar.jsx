@@ -43,7 +43,8 @@ const NavBar = React.memo(() => {
       if (!MULTITENANCY_ENABLED) {
         return APPLICATION_NAME;
       }
-      return applicationTitle || APPLICATION_NAME;
+      // TODO: Need a propper fallback component prefered a skeleton.
+      return applicationTitle || "";
     },
     [MULTITENANCY_ENABLED, applicationTitle]
   );

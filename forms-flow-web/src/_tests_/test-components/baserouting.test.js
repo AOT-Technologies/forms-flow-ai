@@ -45,10 +45,9 @@ it("should render the Baserouting component without breaking",async()=>{
     renderWithRouterMatch(BaseRouting,{
         path:"/",
         route:"/",
-    }
-    )
-  expect(screen.getByText("Forms")).toBeInTheDocument()
-})
+    });
+  expect(screen.getByText("Forms")).toBeInTheDocument();
+});
 
 it("should not render the Baserouting component without authenticating breaking", async () => {
   store = mockStore({

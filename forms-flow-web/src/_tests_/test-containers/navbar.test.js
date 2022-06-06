@@ -41,14 +41,14 @@ function renderWithRouterMatch(
             roles:["formsflow-reviewer"],
             "selectLanguages": [],
           }
-      }
+      };
       const spy = jest.spyOn(redux,"useSelector");
-      spy.mockImplementation((callback) => callback(mockstate)) 
+      spy.mockImplementation((callback) => callback(mockstate));
         renderWithRouterMatch(Navbar,{
         path:"/task",
         route:"/task",
-    })
-    expect(screen.getByText("Forms")).toBeInTheDocument()
-    expect(screen.getByTestId("Dashboards")).toBeInTheDocument()
+    });
+    expect(screen.getByText("Forms")).toBeInTheDocument();
+    expect(screen.getByTestId("Dashboards")).toBeInTheDocument();
     
-})
+});

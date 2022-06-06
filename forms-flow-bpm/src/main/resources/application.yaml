@@ -161,9 +161,9 @@ info:
   app:
     name: "Camunda"
     description: "formsflow.ai Engine"
-    version: "7.15"
+    version: "7.17"
   java:
-    version: "11"
+    version: "17"
 
 
 logging:

@@ -1,7 +1,7 @@
 # Workflow Engine
 
 [![FormsFlow BPM CI](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions/workflows/forms-flow-api-ci.yml/badge.svg?branch=develop)](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions)
-![Camunda](https://img.shields.io/badge/Camunda-7.15.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.4.8.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
+![Camunda](https://img.shields.io/badge/Camunda-7.17.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.6.4.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
 **formsflow.ai** leverages Camunda for workflow and decision automation.
 
 To know more about Camunda, visit https://camunda.com/.

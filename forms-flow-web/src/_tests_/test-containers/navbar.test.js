@@ -34,19 +34,21 @@ function renderWithRouterMatch(
   };
 }
 
-it("should render Navbar without breaking", () => {
-  const mockstate = {
-    user: {
-      isAuthenticated: true,
-      roles: ["formsflow-reviewer"],
-    },
-  };
-  const spy = jest.spyOn(redux, "useSelector");
-  spy.mockImplementation((callback) => callback(mockstate));
-  renderWithRouterMatch(Navbar, {
-    path: "/task",
-    route: "/task",
-  });
-  expect(screen.getByText("Forms")).toBeInTheDocument();
-  expect(screen.getByTestId("Dashboards")).toBeInTheDocument();
-});
+  it("should render Navbar without breaking",()=>{
+      const mockstate = {
+          user:{
+            isAuthenticated:true,
+            roles:["formsflow-reviewer"],
+            "selectLanguages": [],
+          }
+      }
+      const spy = jest.spyOn(redux,"useSelector");
+      spy.mockImplementation((callback) => callback(mockstate)) 
+        renderWithRouterMatch(Navbar,{
+        path:"/task",
+        route:"/task",
+    })
+    expect(screen.getByText("Forms")).toBeInTheDocument()
+    expect(screen.getByTestId("Dashboards")).toBeInTheDocument()
+    
+})

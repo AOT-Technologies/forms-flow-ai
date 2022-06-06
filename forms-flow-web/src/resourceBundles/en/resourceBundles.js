@@ -166,7 +166,7 @@ export const RESOURCE_BUNDLES_EN = {
   "File Upload Status": "File Upload Status",
   "Forms Completed": "Forms Completed",
   "No forms found": "No forms found",
-  "Powered by": "Powered by",
+  "Powered by ": "Powered by ",
   "Press Enter key or click here to search": "Press Enter key or click here to search",
   "Click to clear": "Click to clear",
   "No applications found": "No applications found",

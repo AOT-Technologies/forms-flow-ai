@@ -31,6 +31,7 @@ services:
         - REACT_APP_FORMIO_JWT_SECRET=${FORMIO_JWT_SECRET:---- change me now ---}
         - REACT_APP_MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
         - REACT_APP_MT_ADMIN_BASE_URL=${MT_ADMIN_BASE_URL}
+        - REACT_APP_MT_ADMIN_BASE_URL_VERSION=${MT_ADMIN_BASE_URL_VERSION}
     ports:
       - "3000:8080"
     tty: true

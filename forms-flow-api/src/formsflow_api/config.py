@@ -82,6 +82,11 @@ class _Config:  # pylint: disable=too-few-public-methods
     ANALYTICS_API_URL = os.getenv("INSIGHT_API_URL")
     ANALYTICS_API_KEY = os.getenv("INSIGHT_API_KEY")
 
+    # CMS repo info for CMIS connector
+    CMS_REPO_URL = os.getenv("CMS_REPO_URL", default=None)
+    CMS_REPO_USERNAME = os.getenv("CMS_REPO_USERNAME", default="admin")
+    CMS_REPO_PASSWORD = os.getenv("CMS_REPO_PASSWORD", default="admin")
+
     # Keycloak Admin Service
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
     KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM")

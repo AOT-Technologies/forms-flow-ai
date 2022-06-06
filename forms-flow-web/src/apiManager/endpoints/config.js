@@ -30,8 +30,7 @@ export const MT_ADMIN_BASE_URL = `${
   process.env.REACT_APP_MT_ADMIN_BASE_URL
 }`;
 
-
-export const MT_ADMIN_BASE_URL_VERSION = `${ 
+export const MT_ADMIN_BASE_URL_VERSION = `${
   (window._env_ && window._env_.REACT_APP_MT_ADMIN_BASE_URL_VERSION) ||
   process.env.REACT_APP_MT_ADMIN_BASE_URL_VERSION ||
   "v1"

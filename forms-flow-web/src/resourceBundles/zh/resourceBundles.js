@@ -156,7 +156,7 @@ export const RESOURCE_BUNDLES_ZH = {
   "File Upload Status": "文件上传状态",
   "Forms Completed": "完成的表格",
   "No forms found": "没有找到表格",
-  "Powered by": "供电",
+  "Powered by ": "供电 ",
   "No Process Diagram found": "未找到流程图",
   "No applications found": "未找到任何应​​用程序",
   "Successfully Updated": "成功更新",

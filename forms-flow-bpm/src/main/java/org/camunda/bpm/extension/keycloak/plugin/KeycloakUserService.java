@@ -147,7 +147,10 @@ public class KeycloakUserService  extends org.camunda.bpm.extension.keycloak.Key
         if (claims != null && claims.containsKey("tenantKey")) {
             tenantKey = claims.get("tenantKey").toString();
         }
-
+        // IF tenantKey is null, it means user is logging into camunda cockpit. Return empty list.
+        if (tenantKey == null)
+        	return userList;
+        
         try {
             // get Keycloak specific userID
             String keycloakClientID;

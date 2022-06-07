@@ -194,6 +194,9 @@ services:
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
+      CMS_REPO_USERNAME: ${CMS_REPO_USERNAME:-admin}
+      CMS_REPO_PASSWORD: ${CMS_REPO_PASSWORD:-admin}
+      CMS_REPO_URL: ${CMS_REPO_URL}
     stdin_open: true # -i
     tty: true # -t
     networks:

@@ -1,6 +1,5 @@
-import axios from 'axios';
-
 import React, { Component } from 'react';
+import cmisService from '../../apiManager/services/cmisService';
 
 export default class UploadFile extends Component {
 
@@ -19,22 +18,15 @@ export default class UploadFile extends Component {
 
 
     onFileUpload = () => {
-
         var timestamp = new Date().getTime();
         var fileName = timestamp + "-" + this.state.selectedFile.name;
-        console.log(fileName);
         var formData = new FormData();
         formData.append("name", fileName);
-        formData.append("File", this.state.selectedFile);
+        formData.append("upload", this.state.selectedFile);
+        console.log(fileName);
         console.log("formData---} ", ...formData);
-    
-        axios.post("https://localhost:5000/upload", formData)
-            .then(res => {
-                console.log(res);
-            })
-            .catch(error => {
-                console.log(error);
-            });
+        console.log("upload", ...formData);
+        cmisService (formData);
     };
 
     fileData = () => {

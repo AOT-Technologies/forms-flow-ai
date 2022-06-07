@@ -140,6 +140,8 @@ services:
         - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL:-}
         - REACT_APP_FORMIO_JWT_SECRET=${FORMIO_JWT_SECRET:---- change me now ---}
         - REACT_APP_MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
+        - REACT_APP_MT_ADMIN_BASE_URL=${MT_ADMIN_BASE_URL}
+        - REACT_APP_MT_ADMIN_BASE_URL_VERSION=${MT_ADMIN_BASE_URL_VERSION}
     ports:
       - '3000:8080'
     tty: true
@@ -193,10 +195,8 @@ services:
       JWT_OIDC_JWKS_CACHE_TIMEOUT: 300
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
-      WEB_API_BASE_URL: ${FORMSFLOW_API_URL}\
-      CMS_REPO_USERNAME: ${CMS_REPO_USERNAME:-admin}
-      CMS_REPO_PASSWORD: ${CMS_REPO_PASSWORD:-admin}
-      CMS_REPO_URL: ${CMS_REPO_URL}
+      WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
+
     stdin_open: true # -i
     tty: true # -t
     networks:

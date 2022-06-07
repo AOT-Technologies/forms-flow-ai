@@ -1,13 +1,11 @@
-import { httpPOSTRequestWithoutToken } from "../httpRequestHandler";
+import { httpPOSTRequest } from "../httpRequestHandler";
+import UserService from "../../services/UserService";
 import API from "../endpoints/index";
 
 const FileUPload = (data, ...rest) => {
     const done = rest.length ? rest[0] : () => {};
     const URL = API.CMIS_UPLOAD_FILE;
-    console.log("DATA: ", ...data);
-    console.log("SERVER ENDPOINT : ", URL);
-
-    httpPOSTRequestWithoutToken(URL, data)
+     httpPOSTRequest(URL, data, UserService.getToken())
     .then((res) => {
       if (res.data) {
         done(null, res.data);

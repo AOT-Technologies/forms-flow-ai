@@ -23,9 +23,6 @@ export default class UploadFile extends Component {
             var formData = new FormData();
             formData.append("name", fileName);
             formData.append("upload", this.state.selectedFile);
-            console.log(fileName);
-            console.log("formData---} ", ...formData);
-            console.log("upload", ...formData);
             cmisService(formData);
         }
 

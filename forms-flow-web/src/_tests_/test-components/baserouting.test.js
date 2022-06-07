@@ -29,23 +29,19 @@ function renderWithRouterMatch(
   };
 }
 
-it("should render the Baserouting component without breaking",async()=>{
-    store = mockStore({
-        user:{
-            isAuthenticated:true,
-            roles:[
-                "formsflow-client"
-            ],
-            selectLanguages: [
-              {name: 'en', 
-              value: 'English'}],
-        }
-      });
-      store.dispatch = jest.fn();
-    renderWithRouterMatch(BaseRouting,{
-        path:"/",
-        route:"/",
-    });
+it("should render the Baserouting component without breaking", async () => {
+  store = mockStore({
+    user: {
+      isAuthenticated: true,
+      roles: ["formsflow-client"],
+      selectLanguages: [{ name: "en", value: "English" }],
+    },
+  });
+  store.dispatch = jest.fn();
+  renderWithRouterMatch(BaseRouting, {
+    path: "/",
+    route: "/",
+  });
   expect(screen.getByText("Forms")).toBeInTheDocument();
 });
 

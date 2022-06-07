@@ -201,7 +201,7 @@ const NavBar = React.memo(() => {
                     {lang ? lang : "LANGUAGE"}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
-                    {selectLanguages.map((e,index) => (
+                    {selectLanguages.map((e, index) => (
                       <Dropdown.Item
                         key={index}
                         onClick={() => {

@@ -5,7 +5,7 @@ export const mockstate = {
     userDetail: {
       email_verified: false,
       role: ["formsflow-client", "formsflow-reviewer", "formsflow-designer"],
-      "selectLanguages": [],
+      selectLanguages: [],
       name: "John Honai",
       preferred_username: "sample name",
       given_name: "name 1",

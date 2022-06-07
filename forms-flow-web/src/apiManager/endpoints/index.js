@@ -42,6 +42,7 @@ const API = {
   UPDATE_GROUPS: `${WEB_BASE_URL}/groups/<groupId>`,
   GET_FORM_COUNT: `${WEB_BASE_URL}/form/<mapper id>/application/count`,
   UNPUBLISH_FORMS: `${WEB_BASE_URL}/form/<mapper id>`,
+  CMIS_UPLOAD_FILE: `${WEB_BASE_URL}/cmis/upload`,
 };
 
 export default API;

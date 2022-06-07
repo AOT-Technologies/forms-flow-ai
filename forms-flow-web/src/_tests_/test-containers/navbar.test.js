@@ -41,6 +41,7 @@ it("should render Navbar without breaking", () => {
     user: {
       isAuthenticated: true,
       roles: ["formsflow-reviewer"],
+      selectLanguages: [],
     },
   };
   const spy = jest.spyOn(redux, "useSelector");
@@ -59,6 +60,7 @@ it("should render the application title in multitenant environment", async () =>
     user: {
       isAuthenticated: true,
       roles: ["formsflow-reviewer"],
+      selectLanguages: [],
     },
     tenants: {
       tenantId: "test-tenant",
@@ -95,6 +97,7 @@ it("Should render application name from the config", async () => {
     user: {
       isAuthenticated: true,
       roles: ["formsflow-reviewer"],
+      selectLanguages: [],
     },
   };
   const spy = jest.spyOn(redux, "useSelector");

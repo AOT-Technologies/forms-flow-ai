@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { Navbar, Dropdown, Container, Nav, NavDropdown } from "react-bootstrap";
+import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import UserService from "../services/UserService";
@@ -205,58 +205,49 @@ const NavBar = React.memo(() => {
               </Nav>
 
               <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">
-                <Dropdown alignRight>
-                  <Dropdown.Toggle
-                    id="dropdown-basic"
-                    as="div"
-                    style={{ cursor: "pointer" }}
-                  >
-                    <i className="fa fa-globe fa-lg" aria-hidden="true" />{" "}
-                    {lang ? lang : "LANGUAGE"}
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    {selectLanguages.map((e, index) => (
-                      <Dropdown.Item
+                <NavDropdown 
+                    title={
+                      <>
+                        <i className="fa fa-globe fa-lg mr-2" />
+                        {lang ? lang : "LANGUAGE"}
+                      </>
+                    }
+                  id="basic-nav-dropdown">
+                     {selectLanguages.map((e, index) => (
+                      <NavDropdown.Item
                         key={index}
                         onClick={() => {
                           handleOnclick(e.name);
                         }}
                       >
                         {e.value}{" "}
-                      </Dropdown.Item>
+                      </NavDropdown.Item>
                     ))}
-                  </Dropdown.Menu>
-                </Dropdown>
+                </NavDropdown>
               </Nav>
 
               <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">
-                <Dropdown alignRight>
-                  <Dropdown.Toggle
-                    id="dropdown-basic"
-                    as="div"
-                    style={{ cursor: "pointer" }}
-                  >
-                    <span className="mr-1">
-                      <i className="fa fa-user fa-lg" />
-                    </span>
-                    <span className="d-none d-lg-inline-block">
-                      {user?.name || user?.preferred_username || ""}
-                    </span>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item>
-                      {" "}
+              <NavDropdown 
+                  title={
+                    <>
+                       <i className="fa fa-user fa-lg mr-1" />
+                       {user?.name || user?.preferred_username || ""}
+                    </>
+                  }
+                >
+
+                  <NavDropdown.Item>
+                  {" "}
                       {user?.name || user?.preferred_username}
                       <br />
                       <i className="fa fa-users fa-lg fa-fw" />
                       <b>{getUserRoleName(userRoles)}</b>
-                    </Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item onClick={logout}>
-                      <i className="fa fa-sign-out fa-fw" /> {t("Logout")}{" "}
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item onClick={logout}>
+                  <i className="fa fa-sign-out fa-fw" /> {t("Logout")}{" "}
+                  </NavDropdown.Item>
+                </NavDropdown>
               </Nav>
             </Navbar.Collapse>
           ) : (

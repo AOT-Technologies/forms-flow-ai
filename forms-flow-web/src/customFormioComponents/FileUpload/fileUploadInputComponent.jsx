@@ -19,14 +19,7 @@ export default class UploadFile extends Component {
         console.log("base64  : ", base64);
         this.setState({ base64Image: base64 });
         this.fileData();
-        window.removeEventListener('focus', this.handleFocusBack);
-
-    };
-    handleFocusBack() {
-        console.log('focus-back');
-        window.removeEventListener('focus', this.handleFocusBack);
-    }
-
+        };
     convertBase64 = (file) => {
         return new Promise(resolve => {
             let fileInfo;
@@ -40,12 +33,10 @@ export default class UploadFile extends Component {
             // on reader load somthing...
             reader.onload = () => {
                 // Make a fileInfo Object
-                console.log("Called", reader);
                 baseURL = reader.result;
-                console.log(baseURL);
                 resolve(baseURL);
             };
-            console.log(fileInfo);
+            
         });
 
     }

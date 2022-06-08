@@ -6,30 +6,58 @@ export default class UploadFile extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            selectedFile: ''
+            selectedFile: '',
+            base64Image: ''
         };
     }
-    onFileChange = (event) => {
+    onFileChange = async (event) => {
         let file = event.target.files[0];
         console.log(file);
         this.setState({ selectedFile: file });
-    };
+
+        const base64 = await this.convertBase64(file);
+        console.log("base64  : ", base64);
+        this.setState({ base64Image: base64 });
+        this.fileData();
+        };
+    convertBase64 = (file) => {
+        return new Promise(resolve => {
+            let fileInfo;
+            let baseURL = "";
+            // Make new FileReader
+            let reader = new FileReader();
+
+            // Convert the file to base64 text
+            reader.readAsDataURL(file);
+
+            // on reader load somthing...
+            reader.onload = () => {
+                // Make a fileInfo Object
+                baseURL = reader.result;
+                resolve(baseURL);
+            };
+            
+        });
+
+    }
 
 
-    onFileUpload = () => {
+    onFileUpload = async () => {
         if (this.state.selectedFile) {
             var timestamp = new Date().getTime();
             var fileName = timestamp + "-" + this.state.selectedFile.name;
             var formData = new FormData();
             formData.append("name", fileName);
             formData.append("upload", this.state.selectedFile);
+            // this.sendFileData(formData);
             cmisService(formData);
         }
 
     };
-    canelUpload = (event) => {
-        event.preventDefault();
+    canelUpload = () => {
         this.setState({ selectedFile: '', });
+        location.reload();
+
     }
 
     fileData = () => {
@@ -50,7 +78,6 @@ export default class UploadFile extends Component {
                         <div className="column">
                             <div style={{ marginTop: "76%" }}>
                                 <button
-                                    //className={this.state.selectedFile ? "btn-primary" : "btn-inactive"}
                                     className='btn-primary'
                                     style={{ borderRadius: "5px", marginLeft: "10px" }}
                                     onClick={this.onFileUpload}>
@@ -63,8 +90,11 @@ export default class UploadFile extends Component {
                                 </button>
                             </div>
                         </div>
+                        <br></br>
+                        <input type="image" style={{ marginLeft: "62px" }} src={this.state.base64Image} className="display-image" height="200px" alt="oops!" />
                     </div>
                 </div>
+
 
             );
         } else {
@@ -78,16 +108,12 @@ export default class UploadFile extends Component {
     };
 
     render() {
-
         return (
             <div>
-
                 <div>
                     <input type="file" onChange={this.onFileChange} />
-
                 </div>
                 {this.fileData()}
-
             </div>
         );
     }

@@ -587,5 +587,15 @@ div[disabled] {
   width: 34%;
   margin-top: 10px;
   border-radius: 6px;
-  border-color: #cbcbd8;
+  border-color: #232879;
+  border-width: 1px;
+}
+.display-image {
+    
+    width: "fit-content";
+    max-width: 96%;
+    padding: 2px;
+    border: solid;
+    border-color: #dadada;
+    border-radius: 10px;
 }

@@ -1,15 +1,17 @@
 """API endpoints for managing cms repo."""
 
+import mimetypes
 from http import HTTPStatus
 
-from cmislib.model import CmisClient
 from cmislib.exceptions import UpdateConflictException
-
+from cmislib.model import CmisClient
 from flask import current_app, request
 from flask_restx import Namespace, Resource
 
+from formsflow_api.services.external.cmislib.atompub.binding import (
+    AtomPubBinding,
+)
 from formsflow_api.utils import auth, cors_preflight, profiletime
-from formsflow_api.services.external.cmislib.atompub.binding import AtomPubBinding
 
 # keeping the base path same for cmis operations (upload / download) as cmis/
 
@@ -49,9 +51,12 @@ class CMISConnectorUploadResource(Resource):
 
         contentfile = request.files["upload"]
         filename = contentfile.filename
+        content_type = mimetypes.guess_type("filename")[0]
         if filename != "":
             try:
-                document = uploads.createDocument(filename, contentFile=contentfile)
+                document = uploads.createDocument(
+                    filename, contentFile=contentfile, contentType=content_type
+                )
                 return (
                     (
                         {

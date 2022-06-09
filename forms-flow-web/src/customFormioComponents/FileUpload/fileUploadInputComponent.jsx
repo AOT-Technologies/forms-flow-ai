@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import cmisService from '../../apiManager/services/cmisService';
+//import cmisService from '../../apiManager/services/cmisService';
+import { fetchCMISfile, FileUPload } from '../../apiManager/services/cmisService';
 
 export default class UploadFile extends Component {
 
@@ -19,10 +20,9 @@ export default class UploadFile extends Component {
         console.log("base64  : ", base64);
         this.setState({ base64Image: base64 });
         this.fileData();
-        };
+    };
     convertBase64 = (file) => {
         return new Promise(resolve => {
-            let fileInfo;
             let baseURL = "";
             // Make new FileReader
             let reader = new FileReader();
@@ -36,7 +36,7 @@ export default class UploadFile extends Component {
                 baseURL = reader.result;
                 resolve(baseURL);
             };
-            
+
         });
 
     }
@@ -49,19 +49,24 @@ export default class UploadFile extends Component {
             var formData = new FormData();
             formData.append("name", fileName);
             formData.append("upload", this.state.selectedFile);
-            // this.sendFileData(formData);
-            cmisService(formData);
-        }
+            const res = FileUPload(formData);
+            console.log("response Value: ", res);
 
+            //let TheName = 'formsflow logo.png';
+            // this.DownloadFile(TheName);
+        }
     };
+    DownloadFile = (TheName) => {
+        let updateRes = fetchCMISfile(TheName);
+        console.log("updateResponse :", updateRes);
+    };
+
     canelUpload = () => {
         this.setState({ selectedFile: '', });
         location.reload();
-
     }
 
     fileData = () => {
-
         if (this.state.selectedFile) {
             return (
                 <div className='file-details'>
@@ -90,12 +95,11 @@ export default class UploadFile extends Component {
                                 </button>
                             </div>
                         </div>
-                        <br></br>
-                        <input type="image" style={{ marginLeft: "62px" }} src={this.state.base64Image} className="display-image" height="200px" alt="oops!" />
+
                     </div>
+                    <br></br>
+                    <input type="image" style={{ marginLeft: "62px" }} src={this.state.base64Image} className="display-image" height="200px" alt="oops!" />
                 </div>
-
-
             );
         } else {
             return (
@@ -106,12 +110,12 @@ export default class UploadFile extends Component {
             );
         }
     };
-
     render() {
         return (
             <div>
                 <div>
-                    <input type="file" onChange={this.onFileChange} />
+                    <input id='fileInput' type="file" onChange={this.onFileChange} />
+
                 </div>
                 {this.fileData()}
             </div>

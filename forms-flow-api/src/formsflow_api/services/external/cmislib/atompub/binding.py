@@ -3,47 +3,44 @@
 Module containing the Atom Pub binding-specific objects used to work with a CMIS
 provider.
 """
+import base64
+import datetime
 import io
 import logging
 import mimetypes
-
 import re
 from urllib.parse import urlparse, urlunparse
 from xml.dom import minidom
 
-from pyexpat import ExpatError
-
-import datetime
-
-import base64
 from cmislib import messages
 from cmislib.cmis_services import Binding, RepositoryServiceIfc
 from cmislib.domain import (
-    CmisObject,
-    CmisId,
+    ACE,
     ACL,
-    ResultSet,
+    ChangeEntry,
+    CmisId,
+    CmisObject,
     ObjectType,
     Property,
-    ACE,
-    ChangeEntry,
     Rendition,
+    ResultSet,
 )
 from cmislib.exceptions import (
     CmisException,
-    ObjectNotFoundException,
-    NotSupportedException,
     InvalidArgumentException,
+    NotSupportedException,
+    ObjectNotFoundException,
 )
 from cmislib.net import RESTService as Rest
 from cmislib.util import (
-    toCMISValue,
     multiple_replace,
     parseBoolValue,
+    parseDateTimeValue,
     parsePropValue,
     safe_quote,
-    parseDateTimeValue,
+    toCMISValue,
 )
+from pyexpat import ExpatError
 
 moduleLogger = logging.getLogger("cmislib.atompub.binding")
 

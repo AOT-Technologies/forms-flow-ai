@@ -51,7 +51,7 @@ class CMISConnectorUploadResource(Resource):
 
         contentfile = request.files["upload"]
         filename = contentfile.filename
-        content_type = mimetypes.guess_type("filename")[0]
+        content_type = mimetypes.guess_type(filename)[0]
         if filename != "":
             try:
                 document = uploads.createDocument(

@@ -43,6 +43,7 @@ const API = {
   GET_FORM_COUNT: `${WEB_BASE_URL}/form/<mapper id>/application/count`,
   UNPUBLISH_FORMS: `${WEB_BASE_URL}/form/<mapper id>`,
   CMIS_UPLOAD_FILE: `${WEB_BASE_URL}/cmis/upload`,
+  CMIS_DOWNLOAD_FILE: `${WEB_BASE_URL}/cmis/download?name=`
 };
 
 export default API;

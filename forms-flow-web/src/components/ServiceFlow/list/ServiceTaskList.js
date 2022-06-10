@@ -170,8 +170,8 @@ const ServiceFlowTaskList = React.memo(() => {
 
   return (
     <>
-      <ListGroup as="ul" className="service-task-list">
-        <TaskFilterComponent totalTasks={isTaskListLoading ? 0 : tasksCount} />
+      <ListGroup className="service-task-list">
+        <TaskFilterComponent  totalTasks={isTaskListLoading ? 0 : tasksCount} />
         {isTaskListLoading ? <Loading /> : renderTaskList()}
       </ListGroup>
     </>

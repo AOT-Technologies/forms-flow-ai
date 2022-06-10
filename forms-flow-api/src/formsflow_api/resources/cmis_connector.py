@@ -106,7 +106,11 @@ class CMISConnectorDownloadResource(Resource):
                     "message": "No file data found"
                 }, HTTPStatus.INTERNAL_SERVER_ERROR
             result = results[0]
-            return [{"name": result.name, "data": result.getContentStream().read()}]
+            data = result.getContentStream().read()
+            binary_data = "".join(
+                format(i, "08b") for i in bytearray(data, encoding="utf-8")
+            )
+            return [{"name": result.name, "data": binary_data}]
         except AssertionError:
             return {"message": "No file data found"}, HTTPStatus.INTERNAL_SERVER_ERROR
         except BaseException as exc:  # pylint: disable=broad-except

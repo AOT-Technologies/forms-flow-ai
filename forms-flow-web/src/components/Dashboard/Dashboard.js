@@ -204,6 +204,7 @@ const Dashboard = React.memo(() => {
                         onChange={(e) => onChangeInput(e.target.value)}
                         className="date-select mx-5 mb-3"
                         title="choose any"
+                        aria-label="Select date type"
                       >
                         <option className="date-select" value="created">
                           {t("Created Date")}
@@ -341,9 +342,10 @@ const Dashboard = React.memo(() => {
                   />
 
                   <select
-                    title="Choose limit per page"
+                    title="Choose page limit"
                     onChange={(e) => handleLimitChange(e.target.value)}
                     className="form-select mx-5 mb-3"
+                    aria-label="Choose page limit"
                   >
                     <option selected>6</option>
                     <option value={12}>12</option>

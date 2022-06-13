@@ -1,12 +1,15 @@
 """API endpoints for managing cms repo."""
 
+import base64
 import mimetypes
 from http import HTTPStatus
 
+import requests
 from cmislib.exceptions import UpdateConflictException
 from cmislib.model import CmisClient
 from flask import current_app, request
 from flask_restx import Namespace, Resource
+from requests.auth import HTTPBasicAuth
 
 from formsflow_api.services.external.cmislib.atompub.binding import (
     AtomPubBinding,
@@ -109,11 +112,14 @@ class CMISConnectorDownloadResource(Resource):
                     "message": "No file data found"
                 }, HTTPStatus.INTERNAL_SERVER_ERROR
             result = results[0]
-            data = result.getContentStream().read()
-            binary_data = "".join(
-                format(i, "08b") for i in bytearray(data, encoding="utf-8")
+            url = f"{cms_repo_url}/content/{result.name}?id={result.id}"
+            base64_bytes = base64.b64encode(
+                requests.get(
+                    url, auth=HTTPBasicAuth(cms_repo_username, cms_repo_password)
+                ).content
             )
-            return [{"name": result.name, "data": binary_data}]
+            base64_string = base64_bytes.decode("utf-8")
+            return [{"name": result.name, "data": base64_string}]
         except AssertionError:
             return {"message": "No file data found"}, HTTPStatus.INTERNAL_SERVER_ERROR
         except BaseException as exc:  # pylint: disable=broad-except

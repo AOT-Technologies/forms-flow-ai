@@ -225,7 +225,7 @@ const Create = React.memo(() => {
                   <option label={t("Form")} value="form">
                     <Translation>{(t) => t("Form")}</Translation>
                   </option>
-                  <option label={t("Wizard")} value="Wizard">
+                  <option label={t("Wizard")} value="wizard">
                     <Translation>{(t) => t("Wizard")}</Translation>
                   </option>
                 </select>

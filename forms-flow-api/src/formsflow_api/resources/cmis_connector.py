@@ -58,7 +58,7 @@ class CMISConnectorUploadResource(Resource):
                     filename, contentFile=contentfile, contentType=content_type
                 )
                 api_base_url = current_app.config.get("FORMSFLOW_API_URL")
-                url = f"{api_base_url}/download/?name={document.name}"
+                url = f"{api_base_url}/cmis/download?name={document.name}"
                 return (
                     (
                         {

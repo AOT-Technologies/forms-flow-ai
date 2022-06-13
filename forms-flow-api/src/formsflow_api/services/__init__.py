@@ -3,6 +3,7 @@
 from formsflow_api.services.application import ApplicationService
 from formsflow_api.services.application_history import ApplicationHistoryService
 from formsflow_api.services.external.analytics_api import RedashAPIService
+from formsflow_api.services.external.formio import FormioService
 from formsflow_api.services.external.keycloak import KeycloakAdminAPIService
 from formsflow_api.services.form_process_mapper import FormProcessMapperService
 from formsflow_api.services.process import ProcessService
@@ -14,4 +15,5 @@ __all__ = [
     "KeycloakAdminAPIService",
     "RedashAPIService",
     "ProcessService",
+    "FormioService",
 ]

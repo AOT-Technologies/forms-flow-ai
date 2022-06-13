@@ -11,7 +11,11 @@ from formsflow_api.schemas import (
     FormProcessMapperListRequestSchema,
     FormProcessMapperSchema,
 )
-from formsflow_api.services import ApplicationService, FormProcessMapperService
+from formsflow_api.services import (
+    ApplicationService,
+    FormioService,
+    FormProcessMapperService,
+)
 from formsflow_api.utils import auth, cors_preflight, profiletime
 
 API = Namespace("Form", description="Form")
@@ -342,3 +346,17 @@ class FormResourceTaskVariablesbyApplicationId(Resource):
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/form-creation", methods=["POST", "OPTIONS"])
+class FormioFormResource(Resource):
+    """Resource to create form in formio."""
+
+    @staticmethod
+    # @auth.require
+    @profiletime
+    def post():
+        """Formio form creation."""
+        access_token = FormioService.post_request()
+        return access_token

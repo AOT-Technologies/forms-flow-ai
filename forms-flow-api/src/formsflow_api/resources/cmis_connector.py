@@ -57,11 +57,14 @@ class CMISConnectorUploadResource(Resource):
                 document = uploads.createDocument(
                     filename, contentFile=contentfile, contentType=content_type
                 )
+                api_base_url = current_app.config.get("FORMSFLOW_API_URL")
+                url = f"{api_base_url}/download/?name={document.name}"
                 return (
                     (
                         {
                             "objectId": document.getObjectId(),
                             "name": document.name,
+                            "url": url,
                         }
                     ),
                     HTTPStatus.OK,

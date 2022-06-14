@@ -162,7 +162,7 @@ export const RESOURCE_BUNDLES_PT = {
   "File Upload Status": "Status de upload de arquivo",
   "Forms Completed": "Formulários preenchidos",
   "No forms found": "Nenhum formulário encontrado",
-  "Powered by": "Distribuído por",
+  "Powered by ": "Distribuído por ",
   "No Process Diagram found": "Nenhum diagrama de processo encontrado",
   "No applications found": "Nenhum aplicativo encontrado",
   "Successfully Updated": "Atualizado com sucesso",

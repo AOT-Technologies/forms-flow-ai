@@ -163,7 +163,7 @@ export const RESOURCE_BUNDLES_DE = {
   "File Upload Status": "Datei-Upload-Status",
   "Forms Completed": "Formulare ausgefüllt",
   "No forms found": "Keine Formulare gefunden",
-  "Powered by": "Bereitgestellt von",
+  "Powered by ": "Bereitgestellt von ",
   "Press Enter key or click here to search": "Drücken Sie die Eingabetaste oder klicken Sie hier, um zu suchen",
   "Click to clear": "Zum Löschen klicken",
   "Search...": "Suche...",

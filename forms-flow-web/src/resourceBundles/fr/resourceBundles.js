@@ -160,7 +160,7 @@ export const RESOURCE_BUNDLES_FR = {
   "File Upload Status":"État du téléchargement du fichier",
   "Forms Completed":"Formulaires remplis",
   " No forms found":"Aucun formulaire trouvé",
-  "Powered by":"Alimenté par",
+  "Powered by ":"Alimenté par ",
   "No applications found":"No applications found",
   "Successfully Updated":"Mise à jour réussie",
   "Failed":"Manquée",

@@ -211,7 +211,7 @@ export const taskFilters = [
   },
   {
     label: <Translation>{(t) => t("Created")}</Translation>,
-    key: "Created",
+    key: "created",
     operator: FILTER_OPERATOR_TYPES.BEFORE,
     type: Filter_Search_Types.DATE,
     value: "",

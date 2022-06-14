@@ -68,10 +68,6 @@ const Dashboard = React.memo(() => {
   let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
   // if ascending sort value is title else -title for this case
   const isAscending = sort === "-formName" ? false : true;
-  // const searchOptions = [
-  //   { value: 'created', label: <Translation>{(t)=>t("Created Date")}</Translation> },
-  //   { value: 'modified', label: <Translation>{(t)=>t("Modified Date")}</Translation> },
-  // ];
   const [searchBy, setSearchBy] = useState("created");
   const [dateRange, setDateRange] = useState([
     moment(firsDay),
@@ -192,7 +188,6 @@ const Dashboard = React.memo(() => {
               <div className="col-12">
                 <h1 className="dashboard-title">
                   <i className="fa fa-pie-chart p-1" />
-                  {/* <i className="fa fa-pie-chart" aria-hidden="true"/> */}
                   <Translation>{(t) => t("Metrics")}</Translation>
                 </h1>
                 <hr className="line-hr" />
@@ -209,6 +204,7 @@ const Dashboard = React.memo(() => {
                         onChange={(e) => onChangeInput(e.target.value)}
                         className="date-select mx-5 mb-3"
                         title="choose any"
+                        aria-label="Select date type"
                       >
                         <option className="date-select" value="created">
                           {t("Created Date")}
@@ -222,12 +218,13 @@ const Dashboard = React.memo(() => {
                   <div className="col-12 col-lg-3 d-flex align-items-end flex-lg-column mt-3 mt-lg-0">
                     <DateRangePicker
                       onChange={onSetDateRange}
-                      title="date-picker"
                       value={dateRange}
-                      format="MMM dd, y"
-                      rangeDivider=" - "
-                      clearIcon={null}
-                      calendarIcon={<i className="fa fa-calendar" />}
+                      dayPlaceholder="dd"
+                      monthPlaceholder="mm"
+                      yearPlaceholder="yyyy"
+                      calendarAriaLabel="Select the date"
+                      dayAriaLabel="Select the day"
+                      clearAriaLabel="Click to clear"
                     />
                   </div>
                 </div>
@@ -340,11 +337,15 @@ const Dashboard = React.memo(() => {
                     itemClass="page-item"
                     linkClass="page-link"
                     onChange={handlePageChange}
+
+
                   />
 
                   <select
+                    title="Choose page limit"
                     onChange={(e) => handleLimitChange(e.target.value)}
                     className="form-select mx-5 mb-3"
+                    aria-label="Choose page limit"
                   >
                     <option selected>6</option>
                     <option value={12}>12</option>

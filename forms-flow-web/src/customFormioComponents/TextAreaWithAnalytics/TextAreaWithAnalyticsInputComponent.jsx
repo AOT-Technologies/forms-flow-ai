@@ -27,7 +27,7 @@ export default class SentimentAnalytics extends Component {
   render() {
     const { disabled, name } = this.props;
     let { value } = this.state;
-    const text = value?.text || "";
+    const text = value?.text || "";   
     return (
       <textarea
         name={name}

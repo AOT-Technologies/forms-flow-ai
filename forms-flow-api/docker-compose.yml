@@ -43,6 +43,9 @@ services:
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
+      FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
+      FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
+      FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
     stdin_open: true # -i
     tty: true # -t
     networks:

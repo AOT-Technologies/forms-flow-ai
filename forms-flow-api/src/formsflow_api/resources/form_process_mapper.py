@@ -16,7 +16,7 @@ from formsflow_api.services import (
     FormioService,
     FormProcessMapperService,
 )
-from formsflow_api.utils import auth, cors_preflight, profiletime
+from formsflow_api.utils import auth, cache, cors_preflight, profiletime
 
 API = Namespace("Form", description="Form")
 
@@ -354,9 +354,17 @@ class FormioFormResource(Resource):
     """Resource to create form in formio."""
 
     @staticmethod
-    # @auth.require
+    @auth.require
     @profiletime
     def post():
         """Formio form creation."""
-        access_token = FormioService.post_request()
-        return access_token
+        try:
+            access_token = cache.get("access_token")
+            if access_token is None:
+                current_app.logger.info("Get access token from formio")
+                access_token = FormioService.get_access_token()
+                # Call formio form creation API
+            return {"message": "Form created"}, HTTPStatus.CREATED
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code

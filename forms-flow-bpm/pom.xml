@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.camunda.bpm</groupId>
-	<artifactId>extension</artifactId>
+	<groupId>org.camunda.bpm.extension</groupId>
+	<artifactId>formsflow-bpm</artifactId>
 	<version>2.0.0</version>
+	<packaging>pom</packaging>
 
 	<name>Forms flow BPM Extension</name>
 	<description>Forms flow BPM Extension</description>
@@ -321,12 +322,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
+				<version>3.0.0-M7</version>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.7</version>
+				<version>0.8.8</version>
 				<configuration>
 					<outputDirectory>target/jacoco-ut</outputDirectory>
 					<excludes>
@@ -361,6 +362,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${version.springBoot}</version>
 				<configuration>
+					<mainClass>org.camunda.bpm.extension.CamundaApplication</mainClass>
 					<layout>ZIP</layout>
 				</configuration>
 				<executions>
@@ -385,6 +387,9 @@
 	<profiles>
 		<profile>
 			<id>default</id>
+			<modules>
+				<module>pom-default.xml</module>
+			</modules>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
@@ -392,30 +397,9 @@
 			</dependencies>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>3.0.0-M5</version>
-					</plugin>
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.7</version>
-						<configuration>
-							<outputDirectory>target/jacoco-ut</outputDirectory>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>prepare-agent</goal>
-									<goal>report</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
 		</profile>
-
 	</profiles>
+
 </project>

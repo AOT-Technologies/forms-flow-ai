@@ -393,12 +393,6 @@
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<dependencies>
-			</dependencies>
-			<build>
-				<plugins>
-				</plugins>
-			</build>
 		</profile>
 	</profiles>
 

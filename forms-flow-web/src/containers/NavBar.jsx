@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Navbar, Dropdown, Container, Nav, NavDropdown } from "react-bootstrap";
+import React, { useEffect, useMemo } from "react";
+import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import UserService from "../services/UserService";
@@ -15,13 +15,15 @@ import {
   STAFF_REVIEWER,
   APPLICATION_NAME,
   STAFF_DESIGNER,
+  MULTITENANCY_ENABLED,
 } from "../constants/constants";
 import ServiceFlowFilterListDropDown from "../components/ServiceFlow/filter/ServiceTaskFilterListDropDown";
 import { push } from "connected-react-router";
 import i18n from "../resourceBundles/i18n";
 import { setLanguage } from "../actions/languageSetAction";
 import { updateUserlang } from "../apiManager/services/userservices";
-import { MULTITENANCY_ENABLED } from "../constants/constants";
+
+import { fetchSelectLanguages } from "../apiManager/services/languageServices";
 
 const NavBar = React.memo(() => {
   const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
@@ -32,13 +34,29 @@ const NavBar = React.memo(() => {
   const userRoles = useSelector((state) => state.user.roles);
   const showApplications = useSelector((state) => state.user.showApplications);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const applicationTitle = useSelector(
+    (state) => state.tenants?.tenantData?.details?.applicationTitle
+  );
   const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-
+  const selectLanguages = useSelector((state) => state.user.selectLanguages);
   const dispatch = useDispatch();
   const logoPath = "/logo.svg";
-  const appName = APPLICATION_NAME;
+  const getAppName = useMemo(
+    () => () => {
+      if (!MULTITENANCY_ENABLED) {
+        return APPLICATION_NAME;
+      }
+      // TODO: Need a propper fallback component prefered a skeleton.
+      return applicationTitle || "";
+    },
+    [MULTITENANCY_ENABLED, applicationTitle]
+  );
+  const appName = getAppName();
   const { t } = useTranslation();
-  const langarr = ["en", "bg", "pt", "fr", "zh-CN", "de"];
+
+  useEffect(() => {
+    dispatch(fetchSelectLanguages());
+  }, [dispatch]);
 
   useEffect(() => {
     i18n.changeLanguage(lang);
@@ -66,11 +84,6 @@ const NavBar = React.memo(() => {
         fixed="top"
       >
         <Container fluid>
-          {/*<Nav className="d-lg-none">
-            <div className="mt-1" onClick={menuToggle}>
-              <i className="fa fa-bars fa-lg"/>
-            </div>
-          </Nav>*/}
           <Navbar.Brand className="d-flex">
             <Link to={`${baseUrl}`}>
               <img
@@ -83,16 +96,6 @@ const NavBar = React.memo(() => {
             </Link>
             <div className="custom-app-name">{appName}</div>
           </Navbar.Brand>
-          {/*
-           <Navbar.Brand className="d-flex">
-            <Link to="/">
-                  <img
-                    className="img-xs rounded-circle"
-                    src="/assets/Images/user.svg"
-                    alt="profile"
-                  />
-            </Link>
-          </Navbar.Brand>*/}
           <Navbar.Toggle aria-controls="responsive-navbar-nav " />
           {isAuthenticated ? (
             <Navbar.Collapse id="responsive-navbar-nav" className="navbar-nav">
@@ -139,13 +142,6 @@ const NavBar = React.memo(() => {
                     </Nav.Link>
                   ) : null
                 ) : null}
-
-                {/*              {getUserRolePermission(userRoles, STAFF_REVIEWER) ?
-                <Nav.Link as={Link} to='/task'  className={`main-nav nav-item ${
-                  pathname.match(/^\/task/) ? "active-tab" : ""
-                }`}><i className="fa fa-list"/> Tasks</Nav.Link>
-                :
-                null}*/}
 
                 {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
                   <NavDropdown
@@ -207,98 +203,51 @@ const NavBar = React.memo(() => {
                   </NavDropdown>
                 ) : null}
               </Nav>
-              {langarr.length === 1 && langarr[0] === "en" ? null : (
-                <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">
-                  <Dropdown alignRight>
-                    <Dropdown.Toggle
-                      id="dropdown-basic"
-                      as="div"
-                      style={{ cursor: "pointer" }}
-                    >
-                      <i className="fa fa-globe fa-lg" aria-hidden="true" />{" "}
-                      {lang ? lang : "LANGUAGE"}
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                      <Dropdown.Item
-                        onClick={() => {
-                          handleOnclick("en");
-                        }}
-                      >
-                        {" "}
-                        English{" "}
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => {
-                          handleOnclick("zh-CN");
-                        }}
-                      >
-                        {" "}
-                        中国人
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => {
-                          handleOnclick("pt");
-                        }}
-                      >
-                        {" "}
-                        Português{" "}
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => {
-                          handleOnclick("fr");
-                        }}
-                      >
-                        {" "}
-                        français{" "}
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => {
-                          handleOnclick("bg");
-                        }}
-                      >
-                        {" "}
-                        български{" "}
-                      </Dropdown.Item>
-                      <Dropdown.Item
-                        onClick={() => {
-                          handleOnclick("de");
-                        }}
-                      >
-                        {" "}
-                        Deutsch
-                      </Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
-                </Nav>
-              )}
+
               <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">
-                <Dropdown alignRight>
-                  <Dropdown.Toggle
-                    id="dropdown-basic"
-                    as="div"
-                    style={{ cursor: "pointer" }}
-                  >
-                    <span className="mr-1">
-                      <i className="fa fa-user fa-lg" />
-                    </span>
-                    <span className="d-none d-lg-inline-block">
-                      {user?.name || user?.preferred_username || ""}
-                    </span>
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu>
-                    <Dropdown.Item>
-                      {" "}
+                <NavDropdown 
+                    title={
+                      <>
+                        <i className="fa fa-globe fa-lg mr-2" />
+                        {lang ? lang : "LANGUAGE"}
+                      </>
+                    }
+                  id="basic-nav-dropdown">
+                     {selectLanguages.map((e, index) => (
+                      <NavDropdown.Item
+                        key={index}
+                        onClick={() => {
+                          handleOnclick(e.name);
+                        }}
+                      >
+                        {e.value}{" "}
+                      </NavDropdown.Item>
+                    ))}
+                </NavDropdown>
+              </Nav>
+
+              <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">
+              <NavDropdown 
+                  title={
+                    <>
+                       <i className="fa fa-user fa-lg mr-1" />
+                       {user?.name || user?.preferred_username || ""}
+                    </>
+                  }
+                >
+
+                  <NavDropdown.Item>
+                  {" "}
                       {user?.name || user?.preferred_username}
                       <br />
                       <i className="fa fa-users fa-lg fa-fw" />
                       <b>{getUserRoleName(userRoles)}</b>
-                    </Dropdown.Item>
-                    <Dropdown.Divider />
-                    <Dropdown.Item onClick={logout}>
-                      <i className="fa fa-sign-out fa-fw" /> {t("Logout")}{" "}
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item onClick={logout}>
+                  <i className="fa fa-sign-out fa-fw" /> {t("Logout")}{" "}
+                  </NavDropdown.Item>
+                </NavDropdown>
               </Nav>
             </Navbar.Collapse>
           ) : (

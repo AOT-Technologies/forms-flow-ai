@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { WEB_BASE_URL, BPM_BASE_URL } from "./config";
+import { WEB_BASE_URL, BPM_BASE_URL, MT_ADMIN_BASE_URL, MT_ADMIN_BASE_URL_VERSION } from "./config";
 import { AppConfig } from "../../config";
 
 const API = {
@@ -42,8 +42,12 @@ const API = {
   UPDATE_GROUPS: `${WEB_BASE_URL}/groups/<groupId>`,
   GET_FORM_COUNT: `${WEB_BASE_URL}/form/<mapper id>/application/count`,
   UNPUBLISH_FORMS: `${WEB_BASE_URL}/form/<mapper id>`,
+
   CMIS_UPLOAD_FILE: `${WEB_BASE_URL}/cmis/upload`,
-  CMIS_DOWNLOAD_FILE: `${WEB_BASE_URL}/cmis/download?name=`
+  CMIS_DOWNLOAD_FILE: `${WEB_BASE_URL}/cmis/download?name=`,
+
+  GET_TENANT_DATA: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenant`,
+
 };
 
 export default API;

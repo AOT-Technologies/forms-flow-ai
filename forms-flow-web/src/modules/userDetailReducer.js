@@ -10,6 +10,7 @@ const initialState = {
   showApplications: false,
   showViewSubmissions: false,
   lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : LANGUAGE,
+  selectLanguages: [],
 };
 
 const user = (state = initialState, action) => {
@@ -35,6 +36,8 @@ const user = (state = initialState, action) => {
     case ACTION_CONSTANTS.SET_LANGUAGE:
       localStorage.setItem("lang", action.payload);
       return { ...state, lang: action.payload };
+    case ACTION_CONSTANTS.SET_SELECT_LANGUAGES:
+      return { ...state, selectLanguages: action.payload };
     default:
       return state;
   }

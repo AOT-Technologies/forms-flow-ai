@@ -32,7 +32,7 @@ const getApplicationStatusOptions = (rows) => {
 
 const linkApplication = (cell, row, redirectUrl) => {
   return (
-    <Link to={`${redirectUrl}application/${row.id}`} title={cell}>
+    <Link className="custom_primary_color" to={`${redirectUrl}application/${row.id}`} title={cell}>
       {cell}
     </Link>
   );
@@ -78,7 +78,7 @@ const nameFormatter = (cell) => {
     </label>
   );
 };
-const cutomStyle = { border: "1px solid #ced4da", fontStyle: "normal" };
+const customStyle = { border: "1px solid #ced4da", fontStyle: "normal"};
 export const columns_history = [
   {
     dataField: "applicationname",
@@ -111,7 +111,7 @@ export const columns = (
         placeholder: `\uf002 ${t("Application Id")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
-        style: cutomStyle,
+        style: customStyle,
         getFilter: (filter) => {
           idFilter = filter;
         },
@@ -128,7 +128,7 @@ export const columns = (
         placeholder: `\uf002 ${t("Application Name")}`, // custom the input placeholder
         caseSensitive: false, // default is false, and true will only work when comparator is LIKE
         className: "icon-search",
-        style: cutomStyle,
+        style: customStyle,
         getFilter: (filter) => {
           nameFilter = filter;
         },
@@ -142,7 +142,7 @@ export const columns = (
         applicationStatus?.length > 0 &&
         selectFilter({
           options: getApplicationStatusOptions(applicationStatus),
-          style: cutomStyle,
+          style: customStyle,
           placeholder: `${t("All")}`,
           defaultValue: "All",
           caseSensitive: false, // default is false, and true will only work when comparator is LIKE
@@ -178,6 +178,9 @@ export const columns = (
             dayPlaceholder="dd"
             monthPlaceholder="mm"
             yearPlaceholder="yyyy"
+            calendarAriaLabel="Select the date"
+            dayAriaLabel="Select the day"
+            clearAriaLabel="Click to clear"
           />
         );
       },

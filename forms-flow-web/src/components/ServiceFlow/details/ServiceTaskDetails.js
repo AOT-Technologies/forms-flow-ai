@@ -187,7 +187,7 @@ const ServiceFlowTaskDetails = React.memo(() => {
 
   if (!bpmTaskId) {
     return (
-      <Row className="not-selected mt-2 ml-1">
+      <Row className="not-selected mt-2 ml-1 " style={{color: "#757575"}}>
         <i className="fa fa-info-circle mr-2 mt-1" />
         {t("Select a task in the list.")}
       </Row>

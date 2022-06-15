@@ -108,7 +108,7 @@ const Edit = React.memo(() => {
 
   // set the anonymous value
   const changeAnonymous = (setvalue) => {
-    let latestValue = setvalue || !processListData.anonymous;
+    let latestValue = setvalue !== undefined ? setvalue : !processListData.anonymous;
     let newData = {
       ...processListData,
       anonymous: latestValue,

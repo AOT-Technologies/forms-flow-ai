@@ -583,22 +583,22 @@ div[disabled] {
 }
 
 .file-details {
+  width: fit-content;
   padding: 10px;
   border: solid;
-  width: 34%;
   margin-top: 10px;
   border-radius: 6px;
-  border-color: #232879;
-  border-width: 1px;
+  border-color: #141c9f33;
+  border-width: 3px;
 }
 .display-image {
     
     width: "fit-content";
     max-width: 96%;
-    padding: 2px;
+    padding: 10px;
     border: solid;
     border-color: #dadada;
-    border-radius: 10px;
+    
 }
 
 
@@ -609,4 +609,52 @@ div[disabled] {
 .tooltiptext{
   color: #757575;
 }
+
+.lds-ripple {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ripple div {
+  position: absolute;
+  border: 4px solid rgb(7, 2, 27);
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes lds-ripple {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  4.9% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  5% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
+}
+
 

@@ -16,7 +16,13 @@ from formsflow_api.services import (
     FormioService,
     FormProcessMapperService,
 )
-from formsflow_api.utils import auth, cache, cors_preflight, profiletime
+from formsflow_api.utils import (
+    DESIGNER_GROUP,
+    auth,
+    cache,
+    cors_preflight,
+    profiletime,
+)
 
 API = Namespace("Form", description="Form")
 
@@ -349,22 +355,34 @@ class FormResourceTaskVariablesbyApplicationId(Resource):
 
 
 @cors_preflight("POST,OPTIONS")
-@API.route("/form-creation", methods=["POST", "OPTIONS"])
+@API.route("/form-create", methods=["POST", "OPTIONS"])
 class FormioFormResource(Resource):
-    """Resource to create form in formio."""
+    """Resource for formio form creation."""
 
     @staticmethod
     @auth.require
     @profiletime
     def post():
-        """Formio form creation."""
+        """Formio form creation method."""
         try:
             access_token = cache.get("access_token")
             if access_token is None:
                 current_app.logger.info("Get access token from formio")
                 access_token = FormioService.get_access_token()
-                # Call formio form creation API
-            return {"message": "Form created"}, HTTPStatus.CREATED
+            data = request.get_json()
+            if auth.has_role([DESIGNER_GROUP]):
+                response, status = (
+                    FormioService.create_form(data, access_token),
+                    HTTPStatus.CREATED,
+                )
+            else:
+                response, status = (
+                    {
+                        "message": "Permission Denied",
+                    },
+                    HTTPStatus.FORBIDDEN,
+                )
+            return response, status
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code

@@ -49,7 +49,8 @@ export default class UploadFile extends ReactComponent {
    */
   attachReact (element) {
     let instance;
-     ReactDOM.render(
+    ReactDOM.render(
+    
       <FileUpload
         ref={(refer) => {instance = refer;}}
         component={this.component} // These are the component settings if you want to use them to render the component.
@@ -60,6 +61,7 @@ export default class UploadFile extends ReactComponent {
         disabled={this.disabled}
         // The onChange event to call when the value changes.
       />,
+     
       element,() => (this.reactInstance = instance)
     );
   }

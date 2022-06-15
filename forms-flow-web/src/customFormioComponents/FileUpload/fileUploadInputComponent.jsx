@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { httpGETRequest, httpPOSTRequest } from "../../apiManager/httpRequestHandler";
 import UserService from "../../services/UserService";
 import API from "../../apiManager/endpoints/index";
+//import { Conjunctions } from 'formiojs';
 
 //, FileUPload 
 export default class UploadFile extends Component {
@@ -14,17 +15,32 @@ export default class UploadFile extends Component {
             base64Image: '',
             UploadResponseData: '',
             DownloadResponseData: '',
-            imgUrl: ''
+            fileName: '',
         };
     }
     onFileChange = async (event) => {
         let file = event.target.files[0];
         console.log(file);
         this.setState({ selectedFile: file });
-
+        console.log("selected file:", this.state.selectedFile);
+        let filesName = file.name;
+        this.setState({ fileName: filesName });
         const base64 = await this.convertBase64(file);
         console.log("base64  : ", base64);
         this.setState({ base64Image: base64 });
+
+        const { type } = this.props.component;
+        this.setState(
+            {
+                value: {
+                    name: event.target.files[0].name,
+                    type
+                },
+            },
+            () => this.props.onChange(this.state.value)
+        );
+
+
         this.fileData();
     };
     convertBase64 = (file) => {
@@ -51,14 +67,15 @@ export default class UploadFile extends Component {
     onFileUpload = async () => {
         if (this.state.selectedFile) {
             var timestamp = new Date().getTime();
-            var fileName = timestamp + "-" + this.state.selectedFile.name;
+            var filesName = timestamp + "-" + this.state.selectedFile.name;
+
             var formData = new FormData();
-            formData.append("name",fileName);
+            formData.append("name", filesName);
             formData.append("upload", this.state.selectedFile);
-            // this.FileUPload(formData);
-            console.log("form Data befor send",...formData);
-            let TheName = 'libreryRoomOne.jpg';
-            this.fetchCMISfile(TheName);
+            this.FileUPload(formData);
+            // console.log("form Data befor send", ...formData);
+            // let TheName = 'libreryRoomOne.jpg';
+            // this.fetchCMISfile(TheName);
         }
 
 
@@ -70,106 +87,61 @@ export default class UploadFile extends Component {
         const done = rest.length ? rest[0] : () => { };
         const URL = API.CMIS_UPLOAD_FILE;
         httpPOSTRequest(URL, data, UserService.getToken())
-          .then((res) => {
-            if (res.data) {
-              done(null, res.data);
-              this.setState({UploadResponseData: res.data, selectedFile: '' });
-              this.fileData();  
-              console.log("UploadResponse :",this.state.UploadResponseData);
-              console.log("selectedFile clear :",this.state.selectedFile);
-                   
-            } else {
-              // dispatch(serviceActionError(res));
-              done("Error Posting data");
-            }
-          })
-          .catch((error) => {
-            //   dispatch(serviceActionError(error));
-            
-            done(error);
-          });
-          
-      
-      };
-      download = async() => {
-        const originalImage = "https://cdn1.iconfinder.com/data/icons/ninja-things-1/1772/ninja-simple-512.png";
-        const image = await fetch(originalImage);
-       
-        //Split image name
-        const nameSplit = originalImage.split("/");
-        const  duplicateName = nameSplit.pop();
-       
-        const imageBlog = await image.blob();
-        const imageURL = URL.createObjectURL(imageBlog);
-        const link = document.createElement('a');
-        link.href = imageURL;
-        link.download = "" + duplicateName + "";
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);  
-       };
-    fetchCMISfile = (name, ...rest) => {
+            .then((res) => {
+                if (res.data) {
+                    done(null, res.data);
+                    this.setState({ UploadResponseData: res.data, selectedFile: '' });
+                    this.fileData();
+                    console.log("UploadResponse :", this.state.UploadResponseData);
+                    console.log("selectedFile clear :", this.state.selectedFile);
+                    console.log("props value: ", this.props.data.myFileUploads.name);
+                } else {
+                    // dispatch(serviceActionError(res));
+                    done("Error Posting data");
+                }
+            })
+            .catch((error) => {
+                //   dispatch(serviceActionError(error));
+
+                done(error);
+            });
+
+
+    };
+
+    fetchCMISfile = (e, ...rest) => {
+        const fielName = this.state.value?.name || "images.jpg";
+        console.log("download clicked");
         const done = rest.length ? rest[0] : () => { };
-        const downloadURL = API.CMIS_DOWNLOAD_FILE + name;
+        const downloadURL = API.CMIS_DOWNLOAD_FILE + fielName;
         console.log("apiURL   :", API.CMIS_DOWNLOAD_FILE);
         console.log("download URL  :", downloadURL);
         httpGETRequest(downloadURL, {}, UserService.getToken())
-            .then((res) =>{
-                // const imageBlob = res.blob();
-                console.log("imageBlob", res.data);
-            //    return imageBlob;
-            })
-               
             .then((res) => {
-                
-                const imageObjectURL = URL.createObjectURL(res);
-                this.setState({ imgUrl: imageObjectURL });
-                console.log("imgUrl: ", this.state.imgUrl);
+                let { data } = res.data[0];
+                let base64Data = "data:image/jpeg;base64," + data;
+                console.log("res Data :", base64Data);
+                this.setState({ base64Image: base64Data });
 
                 
-                // console.log("resData: ",res.data);
-                // var reader = new FileReader();
-                // reader.readAsDataURL(res.data);
-                // reader.onload = function() {                         
-                //     var b64 = reader.result;
-                //     console.log("This is base64", b64);
-                //     this.setState({ base64Image: b64 });
-                //     this.fileData();
-                // };
-                
+                const downloadLink = document.createElement("a");
+                downloadLink.href = base64Data;
+                downloadLink.download = this.state.fileName;
+                downloadLink.click();
+               
+                //window.location.href = 'data:application/octet-stream;base64,' + base64Data;
 
 
+                // const imageObjectURL = URL.createObjectURL(res);
+                // this.setState({ imgUrl: imageObjectURL });
+                // console.log("imgUrl: ", this.state.imgUrl);
+            })
 
+            .catch((error) => {
+                done(error);
+            });
 
-            // if (res.data) {
-            //   done(null, res.data);
-            //   this.setState({DownloadResponseData: res.data[0].data });
-            //   //console.log("Download Response: ", this.state.DownloadResponseData);
-            // const base64 = done( this.convertBase64(res.data[0].data));
-            //         console.log("base64  : ", base64);
-            // }
-          })
-          .catch((error) => {
-            done(error);
-          });
-      
-      };
-    convertToBase64 = (data) => {
-       // console.log(data);
-        var reader = new FileReader();
-        reader.onload = function() {                         
-            var b64 = reader.result;
-            console.log("This is base64", b64);
-           
-        };
-        reader.readAsDataURL(data);
-
-
-    }
-    // DownloadFile = async (TheName) => {
-    //     let updateRes = await fetchCMISfile(TheName);
-    //     console.log("updateResponse :", updateRes);
-    // };
+    };
 
     canelUpload = () => {
         this.setState({ selectedFile: '', });
@@ -177,6 +149,7 @@ export default class UploadFile extends Component {
     }
 
     fileData = () => {
+        var { disabled } = this.props;
         if (this.state.selectedFile) {
             return (
                 <div className='file-details'>
@@ -215,41 +188,70 @@ export default class UploadFile extends Component {
             return (
                 <div>
                     <br />
-                    <h6 style={{ color: '#ed6c6c' }}  >Choose a file..!</h6>
+                    {!disabled && <h6 style={{ color: '#ed6c6c' }}  >Choose a file..!</h6>}
                 </div>
             );
         }
     };
-    updateCommentData = () => {
-        const { type } = this.props.component;
-        let { value } = this.state;
-        let Filename = value?.UploadResponseData || "";
-        this.setState(
-          {
-            value: {
-              name: Filename,
-              type
-            },
-          },
-          () => this.props.onChange(this.state.value)
-        );
-      };
-    render() {
-        const { disabled, name } = this.props;
-        let {data} = this.state.UploadResponseData; 
-        return (
-            <div disabled={disabled}
-                 name={name}
-                 value={data}
-                 onChange={this.updateCommentData}  
-            >
-                <div>
-                    <input id='fileInput' type="file" onChange={this.onFileChange} />
+    updateCommentData = (event) => {
+        const { type, } = this.props.component;
+        //   let { value } = this.state;
 
-                </div>
-                {this.fileData()}
-            </div>
+        this.setState(
+            {
+                value: {
+                    name: event.target.files[0].name,
+                    type
+                },
+            },
+            () => this.props.onChange(this.state.value)
         );
+        this.onFileChange(event);
+    };
+    render() {
+        console.log("rendering...:", this.state.value);
+        var { disabled, name } = this.props;
+        let { value } = this.state;
+        let testValue = 'display';
+        let img = this.state.base64Image;
+        let Name = value?.name || 'sample file.jpg';
+        return (
+            <div>
+
+                {!disabled && <div>
+                    <input
+                        disabled={disabled}
+                        name={name}
+                        onChange={this.updateCommentData}
+                        id='fileInput' type="file" />
+                    {/* onChange={this.onFileChange} */}
+                </div>}
+                {this.fileData()}
+                {testValue == 'display' && disabled && <div>
+                    <span>{Name}</span>
+                    <button type='button'
+                        style={{ borderRadius: "5px", marginLeft: "10px" }}
+                        onClick={this.fetchCMISfile}>
+                        Download
+                    </button>
+
+                    {img && <div id='downloadImage' style={{ marginTop: "10px" }}>
+                        <h5>Downloaded Image: </h5>
+                        <input type="image" src={this.state.base64Image} className="display-image" height="200px" alt="oops!" />
+
+                        {/* <a download={Name} href = {this.state.base64Image}>Download</a> */}
+                        {/* style={{ marginLeft: "62px" }} */}
+                    </div>}
+                </div>}
+
+            </div>
+
+        );
+
     }
+    dwnld = (eve) => {
+        console.log("clicked me", eve);
+    }
+
 }
 

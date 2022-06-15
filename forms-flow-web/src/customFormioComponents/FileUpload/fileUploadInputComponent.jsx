@@ -25,14 +25,11 @@ export default class UploadFile extends Component {
         if (event.target.files[0]) {
             this.setState({ base64Image: '' });
             let file = event.target.files[0];
-            console.log(file);
             this.setState({ selectedFile: file });
             let filesName = file.name;
             this.setState({ fileName: filesName });
             const base64 = await this.convertBase64(file);
-            console.log("base64  : ", base64);
             this.splitFileName(filesName);
-            console.log(this.state.fileType);
             let ftype = this.state.fileType;
             if (ftype == "jpg" || ftype == "png") {
                 this.setState({ base64Image: base64 });
@@ -110,8 +107,6 @@ export default class UploadFile extends Component {
         this.splitFileName(fileName);
         const done = rest.length ? rest[0] : () => { };
         const downloadURL = API.CMIS_DOWNLOAD_FILE + fileName;
-        console.log("apiURL   :", API.CMIS_DOWNLOAD_FILE);
-        console.log("download URL  :", downloadURL);
         httpGETRequest(downloadURL, {}, UserService.getToken())
             .then((res) => {
                 this.setState({ loading: false });
@@ -135,7 +130,6 @@ export default class UploadFile extends Component {
         let type = this.state.fileType;
         if (type == "jpg" || type == "png") {
             let data = "data:image/" + type + ";base64," + this.state.base64Data;
-            console.log(type);
             this.setState({ base64Image: data });
         }
         let data = "data:image/" + type + ";base64," + this.state.base64Data;

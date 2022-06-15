@@ -2,13 +2,13 @@
 
 # Maven build
 FROM maven:3.6.1-jdk-11-slim AS MAVEN_TOOL_CHAIN
-COPY pom.xml /tmp/pom.xml
+COPY pom*.xml /tmp/
 COPY settings-docker.xml /usr/share/maven/ref/
 WORKDIR /tmp/
 # This allows Docker to cache most of the maven dependencies
 RUN mvn -s /usr/share/maven/ref/settings-docker.xml dependency:resolve-plugins dependency:resolve dependency:go-offline -B
 COPY src /tmp/src/
-RUN mvn -s /usr/share/maven/ref/settings-docker.xml package
+RUN mvn -s /usr/share/maven/ref/settings-docker.xml package -P default
 
 # Final custom slim java image (for apk command see jdk-11.0.3_7-alpine-slim)
 FROM adoptopenjdk/openjdk11:jdk-11.0.3_7-alpine

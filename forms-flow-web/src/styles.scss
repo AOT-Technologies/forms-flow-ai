@@ -656,5 +656,18 @@ div[disabled] {
     opacity: 0;
   }
 }
+.btn-download {
+  background-color: DodgerBlue;
+  border: none;
+  color: white;
+  padding: 6px 15px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+/* Darker background on mouse-over */
+.btn-download:hover {
+  background-color: RoyalBlue;
+}
 
 

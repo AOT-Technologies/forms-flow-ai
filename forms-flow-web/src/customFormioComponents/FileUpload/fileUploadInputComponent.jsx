@@ -195,9 +195,10 @@ export default class UploadFile extends Component {
         let { value } = this.state;
         let Name = value?.name || 'sample file.jpg';
         let img = this.state.base64Image;
+       
         return (
             <div>
-                {this.state.uploadSuccess && <h5 >{Name}</h5>}
+                {this.state.uploadSuccess && <span style={{fontWeight: "bold"}}><i className='fa fa-file-zip-o' style = {{fontSize:'22px', color:'red', paddingRight: '6px'}}></i>{Name}</span>}
                 {!disabled && this.state.selectedFile == '' && !this.state.uploadSuccess && <div>
                     <input
                         disabled={disabled}
@@ -207,10 +208,13 @@ export default class UploadFile extends Component {
                 </div>}
                 {this.fileData()}
                 {disabled && <div>
-                    <span>{Name}</span>
-                    <button type='button'
+                    <span style={{fontWeight: "bold"}}><i className='fa fa-file-zip-o' style = {{fontSize:'22px', color:'red', paddingRight: '6px'}}></i>{Name}</span>
+                    <button
+                        type='button'
+                        className='btn-download'
                         style={{ borderRadius: "5px", marginLeft: "10px" }}
                         onClick={this.fetchCMISfile}>
+                        <i style={{marginRight: '10px'}} className="fa fa-download"></i>
                         Download
                     </button>
                     <br></br>

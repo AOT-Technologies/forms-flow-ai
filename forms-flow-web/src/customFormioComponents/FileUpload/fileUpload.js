@@ -47,13 +47,17 @@ export default class UploadFile extends ReactComponent {
    * @param DOMElement
    * #returns ReactInstance
    */
-  attachReact (element) {
+   attachReact(element) {
     let instance;
-    ReactDOM.render(
-    
+    // eslint-disable-next-line react/no-render-return-value
+    return ReactDOM.render(
+      
       <FileUpload
-        ref={(refer) => {instance = refer;}}
-        component={this.component} // These are the component settings if you want to use them to render the component.
+        ref={(refer) => {
+          instance = refer;
+        }}
+        component={this.component} // These are the component settings
+        //if you want to use them to render the component.
         value={this.dataValue} // The starting value of the component.
         data={this.data}
         name={this.name}
@@ -61,10 +65,11 @@ export default class UploadFile extends ReactComponent {
         disabled={this.disabled}
         // The onChange event to call when the value changes.
       />,
-     
-      element,() => (this.reactInstance = instance)
+      element,
+      () => (this.reactInstance = instance)
     );
   }
+  
 
   /**
    * Automatically detach any react components.

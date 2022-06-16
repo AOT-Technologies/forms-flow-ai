@@ -225,7 +225,7 @@ export default class UploadFile extends Component {
                         {/* Loader */}
                     </div> : this.state.loading && <div className="lds-ripple"><div></div><div></div></div>
                     }
-                </div> : disabled && <span style={{fontWeight: "bold"}}>File name.type</span>}
+                </div> : disabled && <input type='file' disabled/>}
             </div>
         );
     }

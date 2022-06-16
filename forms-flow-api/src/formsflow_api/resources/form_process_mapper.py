@@ -19,7 +19,6 @@ from formsflow_api.services import (
 from formsflow_api.utils import (
     DESIGNER_GROUP,
     auth,
-    cache,
     cors_preflight,
     profiletime,
 )
@@ -365,14 +364,12 @@ class FormioFormResource(Resource):
     def post():
         """Formio form creation method."""
         try:
-            access_token = cache.get("access_token")
-            if access_token is None:
-                current_app.logger.info("Get access token from formio")
-                access_token = FormioService.get_access_token()
             data = request.get_json()
             if auth.has_role([DESIGNER_GROUP]):
+                formio_service = FormioService()
+                form_io_token = formio_service.get_formio_access_token()
                 response, status = (
-                    FormioService.create_form(data, access_token),
+                    formio_service.create_form(data, form_io_token),
                     HTTPStatus.CREATED,
                 )
             else:

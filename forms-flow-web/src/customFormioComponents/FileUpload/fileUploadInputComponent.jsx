@@ -193,7 +193,7 @@ export default class UploadFile extends Component {
     render() {
         var { disabled, name } = this.props;
         let { value } = this.state;
-        let Name = value?.name || 'sample file.jpg';
+        let Name = value?.name ;
         let img = this.state.base64Image;
        
         return (
@@ -207,7 +207,7 @@ export default class UploadFile extends Component {
                         type="file" />
                 </div>}
                 {this.fileData()}
-                {disabled && <div>
+                {disabled && Name ? Name &&  <div>
                     <span style={{fontWeight: "bold"}}><i className='fa fa-file-zip-o' style = {{fontSize:'22px', color:'red', paddingRight: '6px'}}></i>{Name}</span>
                     <button
                         type='button'
@@ -225,7 +225,7 @@ export default class UploadFile extends Component {
                         {/* Loader */}
                     </div> : this.state.loading && <div className="lds-ripple"><div></div><div></div></div>
                     }
-                </div>}
+                </div> : disabled && <span style={{fontWeight: "bold"}}>File name.type</span>}
             </div>
         );
     }

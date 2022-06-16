@@ -13,7 +13,7 @@ export default class UploadFile extends ReactComponent {
    */
   static get builderInfo() {
     return {
-      title: 'File Upload',
+      title: 'CMIS File Upload',
       icon: 'upload',
       group: 'basic',
       documentation: '', //TODO

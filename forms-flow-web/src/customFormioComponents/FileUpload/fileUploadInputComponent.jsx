@@ -178,7 +178,7 @@ export default class UploadFile extends Component {
                         <br></br>
                         {this.state.base64Image && <input type="image" src={this.state.base64Image} className="display-image" height="200px" alt="oops!" />}
                     </div>
-                    {this.state.base64Image && <h6 style={{ color: '#ed6c6c', paddingTop: '3px' }}  >Kindly upload the file...!</h6>}
+                    {this.state.fileName && <h6 style={{ color: '#ed6c6c', paddingTop: '3px' }}  >Kindly upload the file...!</h6>}
                 </div>
             );
         } else {

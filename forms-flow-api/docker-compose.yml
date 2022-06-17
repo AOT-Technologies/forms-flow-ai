@@ -46,6 +46,9 @@ services:
       CMS_REPO_USERNAME: ${CMS_REPO_USERNAME:-admin}
       CMS_REPO_PASSWORD: ${CMS_REPO_PASSWORD:-admin}
       CMS_REPO_URL: ${CMS_REPO_URL}
+      FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
+      FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
+      FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
     stdin_open: true # -i
     tty: true # -t
     networks:

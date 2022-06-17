@@ -37,3 +37,4 @@ rsa==4.8
 six==1.16.0
 urllib3==1.26.8
 cmislib3==1.0.8
+PyJWT==2.4.0

@@ -91,6 +91,11 @@ class _Config:  # pylint: disable=too-few-public-methods
     KEYCLOAK_URL = os.getenv("KEYCLOAK_URL")
     KEYCLOAK_URL_REALM = os.getenv("KEYCLOAK_URL_REALM")
 
+    # Formio url
+    FORMIO_URL = os.getenv("FORMIO_DEFAULT_PROJECT_URL")
+    FORMIO_USERNAME = os.getenv("FORMIO_ROOT_EMAIL")
+    FORMIO_PASSWORD = os.getenv("FORMIO_ROOT_PASSWORD")
+
     # Keycloak client authorization enabled flag
     KEYCLOAK_ENABLE_CLIENT_AUTH = (
         str(os.getenv("KEYCLOAK_ENABLE_CLIENT_AUTH", default="false")).lower() == "true"

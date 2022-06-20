@@ -127,8 +127,12 @@ const Create = React.memo(() => {
     newForm.access = FORM_ACCESS;
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
-      newForm.path = addTenankey(newForm.path, tenantKey);
-      newForm.name = addTenankey(newForm.name, tenantKey);
+      if(newForm.path){
+        newForm.path = addTenankey(newForm.path, tenantKey);
+      }
+      if(newForm.name){
+        newForm.name = addTenankey(newForm.name, tenantKey);
+      }
     }
     formCreate(newForm,(err,form)=>{
       if (!err) {
@@ -154,30 +158,6 @@ const Create = React.memo(() => {
          dispatch(failForm('form', err));
       }
     });
-    // dispatch(
-    //   saveForm("form", newForm, (err, form) => {
-    //     if (!err) {
-    //       // ownProps.setPreviewMode(true);
-    //       const data = {
-    //         formId: form._id,
-    //         formName: form.title,
-    //         formRevisionNumber: "V1", // to do
-    //         anonymous: FORM_ACCESS[0].roles.includes(ANONYMOUS_ID),
-    //       };
-    //       dispatch(
-    //         // eslint-disable-next-line no-unused-vars
-    //         saveFormProcessMapperPost(data, (err, res) => {
-    //           if (!err) {
-    //             toast.success(t("Form Saved"));
-    //             dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
-    //           } else {
-    //             toast.error("Error in creating form process mapper");
-    //           }
-    //         })
-    //       );
-    //     }
-    //   })
-    // );
   };
 
   // setting the main option details to the formdata

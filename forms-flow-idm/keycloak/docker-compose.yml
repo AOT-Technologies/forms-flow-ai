@@ -25,15 +25,14 @@ services:
       - keycloak-server-network
 
   keycloak:
-    image: jboss/keycloak:14.0.0
+    image: formsflow/keycloak:latest
     restart: unless-stopped
     container_name: keycloak
     volumes:
-      - ./imports:/opt/jboss/keycloak/imports
       - ./themes/formsflow:/opt/jboss/keycloak/themes/formsflow
       
     command: 
-      - "-b 0.0.0.0 -Dkeycloak.import=/opt/jboss/keycloak/imports/formsflow-ai-realm.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
+      - "-b 0.0.0.0 -Dkeycloak.import=/opt/keycloak/formsflow-ai-realm.json -Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
     environment:
       - DB_VENDOR=POSTGRES
       - DB_ADDR=keycloak-db

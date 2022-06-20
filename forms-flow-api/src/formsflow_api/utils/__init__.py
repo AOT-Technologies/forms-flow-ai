@@ -1,6 +1,7 @@
 """This module holds general utility functions and helpers for the main package."""
 
 from .auth import auth, jwt
+from .caching import cache
 from .constants import (
     ALLOW_ALL_APPLICATIONS,
     ALLOW_ALL_ORIGINS,

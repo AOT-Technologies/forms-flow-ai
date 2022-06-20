@@ -19,6 +19,7 @@ from formsflow_api.utils import (
     CORS_ORIGINS,
     FORMSFLOW_API_CORS_ORIGINS,
     CustomFormatter,
+    cache,
     jwt,
     setup_logging,
     translate,
@@ -52,6 +53,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     app.logger.info("Welcome to formsflow-API server...!")
     db.init_app(app)
     ma.init_app(app)
+    cache.init_app(app)
 
     API.init_app(app)
     setup_jwt_manager(app, jwt)

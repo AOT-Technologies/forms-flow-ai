@@ -19,7 +19,7 @@ const API = {
   PROCESSES_XML_PER_TENANT: `${BPM_BASE_URL}/process-definition/key/<process_key>/tenant-id/<tenant_key>/xml`,
   PROCESS_ACTIVITIES: `${BPM_BASE_URL}/process-instance/<process_instance_id>/activity-instances`,
   FORM: `${WEB_BASE_URL}/form`,
-  FORM_CREATION: `${WEB_BASE_URL}/form-create`,
+  FORM_CREATION: `${WEB_BASE_URL}/form/form-create`,
   LANG_UPDATE: `${WEB_BASE_URL}/user/locale`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
   APPLICATION_EVENT_UPDATE: `${BPM_BASE_URL}/message`,

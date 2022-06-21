@@ -1,11 +1,11 @@
 name: Push Forms flow API to registry
 
 on:
+  workflow_dispatch:
   push:
     branches: [ master, develop ]
     paths:
       - "forms-flow-api/**"
-  workflow_dispatch:
 
 defaults:
   run:

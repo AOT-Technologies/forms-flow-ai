@@ -1,11 +1,11 @@
 name: Push Forms flow Analysis API to registry
 
 on:
+  workflow_dispatch:
   push:
     branches: [ master, develop ]
     paths:
       - "forms-flow-data-analysis-api/**"
-  workflow_dispatch:
 
 defaults:
   run:

@@ -170,8 +170,12 @@ const Edit = React.memo(() => {
     newFormData.submissionAccess = SUBMISSION_ACCESS;
     newFormData.access = FORM_ACCESS;
     if (MULTITENANCY_ENABLED && tenantKey) {
-      newFormData.path = addTenankey(newFormData.path, tenantKey);
-      newFormData.name = addTenankey(newFormData.name, tenantKey);
+      if(newFormData.path){
+        newFormData.path = addTenankey(newFormData.path, tenantKey);
+      }
+      if(newFormData.name){
+        newFormData.name = addTenankey(newFormData.name, tenantKey);
+      }
     }
     dispatch(
       saveForm("form", newFormData, (err, submittedData) => {

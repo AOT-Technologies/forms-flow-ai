@@ -11,7 +11,6 @@ import {
   Errors,
   FormGrid,
   deleteForm,
-  saveForm,
 } from "react-formio";
 import Loading from "../../containers/Loading";
 import {
@@ -23,6 +22,7 @@ import {
 } from "../../constants/constants";
 import "../Form/List.scss";
 import {
+  failForm,
   setBPMFormLimit,
   setBPMFormListLoading,
   setBPMFormListPage,
@@ -59,6 +59,7 @@ import { unPublishForm } from "../../apiManager/services/processServices";
 import { setIsApplicationCountLoading } from "../../actions/processActions";
 import { setBpmFormSearch } from "../../actions/formActions";
 import { checkAndAddTenantKey } from "../../helper/helper";
+import { formCreate } from "../../apiManager/services/FormServices";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -192,47 +193,43 @@ const List = React.memo((props) => {
               };
               newFormData.access = FORM_ACCESS;
               newFormData.submissionAccess = SUBMISSION_ACCESS;
-              dispatch(
-                saveForm("form", newFormData, async (err) => {
-                  // TODO add Default SubmissionAccess to formData
-                  if (err) {
-                    // get the form Id of the form if exists already in the server
-                    dispatch(
-                      fetchFormByAlias(
-                        newFormData.path,
-                        async (err, formObj) => {
-                          if (!err) {
-                            newFormData._id = formObj._id;
-                            newFormData.access = formObj.access;
-                            newFormData.submissionAccess =
-                              formObj.submissionAccess;
-                            // newFormData.tags = formObj.tags;
-                            dispatch(
-                              saveForm("form", newFormData, (err) => {
-                                if (!err) {
-                                  dispatch(updateFormUploadCounter());
-                                  resolve();
-                                } else {
-                                  toast.error("Error in Json file structure");
-                                  setShowFormUploadModal(false);
-                                  reject();
-                                }
-                              })
-                            );
-                          } else {
-                            toast.error("Error in Json file structure");
-                            setShowFormUploadModal(false);
-                            reject();
-                          }
+              formCreate(newFormData,(err)=>{
+                if (err) {
+                  // get the form Id of the form if exists already in the server
+                  dispatch(
+                    fetchFormByAlias(
+                      newFormData.path,
+                      async (err, formObj) => {
+                        if (!err) {
+                          newFormData._id = formObj._id;
+                          newFormData.access = formObj.access;
+                          newFormData.submissionAccess =
+                            formObj.submissionAccess;
+                          // newFormData.tags = formObj.tags;
+                          formCreate(newFormData,(err)=>{
+                            if (!err) {
+                              dispatch(updateFormUploadCounter());
+                              resolve();
+                            } else {
+                              dispatch(failForm("form",err));
+                              toast.error("Error in Json file structure");
+                              setShowFormUploadModal(false);
+                              reject();
+                            }
+                          });
+                        } else {
+                          toast.error("Error in Json file structure");
+                          setShowFormUploadModal(false);
+                          reject();
                         }
-                      )
-                    );
-                  } else {
-                    dispatch(updateFormUploadCounter());
-                    resolve();
-                  }
-                })
-              );
+                      }
+                    )
+                  );
+                } else {
+                  dispatch(updateFormUploadCounter());
+                  resolve();
+                }
+              });
             });
           })
         );

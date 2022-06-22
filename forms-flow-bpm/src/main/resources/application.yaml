@@ -8,10 +8,13 @@ keycloak.clientSecret: ${KEYCLOAK_CLIENTSECRET}
 
 server:
   port: 8080
-  servlet.context-path: /camunda
-  session:
-    cookie:
-      secure: true
+  servlet:
+    context-path: /camunda
+    session:
+      cookie:
+        secure: true
+        http-only: true
+        max-age: 1800
 
 formsflow.ai:
   bpm:

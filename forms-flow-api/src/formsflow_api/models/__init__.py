@@ -5,6 +5,7 @@ from .application_history import ApplicationHistory
 from .base_model import BaseModel
 from .db import db, ma
 from .form_process_mapper import FormProcessMapper
+from .nrs_demo import NRSFormDataMapper, NRSSelectDataMapper
 
 __all__ = [
     "db",
@@ -13,4 +14,6 @@ __all__ = [
     "ApplicationHistory",
     "BaseModel",
     "FormProcessMapper",
+    "NRSSelectDataMapper",
+    "NRSFormDataMapper",
 ]

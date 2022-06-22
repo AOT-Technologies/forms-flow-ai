@@ -17,6 +17,10 @@ from formsflow_api.schemas.form_process_mapper import (
     FormProcessMapperSchema,
 )
 from formsflow_api.schemas.keycloak_groups import KeycloakDashboardGroupSchema
+from formsflow_api.schemas.nrs_demo import (
+    NRSFormDataMapperSchema,
+    NRSSelectDataMapperSchema,
+)
 from formsflow_api.schemas.user import UserlocaleReqSchema
 
 from .process import ProcessListSchema

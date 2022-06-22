@@ -15,18 +15,18 @@ class Auth:
     """Extending JwtManager to include additional functionalities."""
 
     @classmethod
-    def require(cls, f):
+    def require(cls, func):
         """Validate the Bearer Token."""
 
         @jwt.requires_auth
-        @wraps(f)
+        @wraps(func)
         def decorated(*args, **kwargs):
             g.authorization_header = (  # pylint: disable=assigning-non-slot
                 request.headers.get("Authorization", None)
             )
             g.token_info = g.jwt_oidc_token_info  # pylint: disable=assigning-non-slot
 
-            return f(*args, **kwargs)
+            return func(*args, **kwargs)
 
         return decorated
 
@@ -38,12 +38,12 @@ class Auth:
             roles [str,]: Comma separated list of valid roles
         """
 
-        def decorated(f):
+        def decorated(func):
             @Auth.require
-            @wraps(f)
+            @wraps(func)
             def wrapper(*args, **kwargs):
                 if jwt.contains_role(roles):
-                    return f(*args, **kwargs)
+                    return func(*args, **kwargs)
 
                 raise BusinessException("Access Denied", HTTPStatus.UNAUTHORIZED)
 

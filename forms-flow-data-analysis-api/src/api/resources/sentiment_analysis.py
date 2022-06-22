@@ -46,7 +46,7 @@ class SentimentAnalysisTransformerResource(Resource):
                     )
                     return jsonify(response_json), HTTPStatus.CREATED
 
-                except Exception as err: # pylint: disable=broad-except
+                except Exception as err:  # pylint: disable=broad-except
                     # Better to add a notification system here
                     # Raising the exception would affect the workflow propagation
                     logging.error("Failed to update the database")

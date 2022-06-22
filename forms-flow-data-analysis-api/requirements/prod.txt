@@ -11,5 +11,4 @@ Werkzeug
 sqlalchemy_utils
 sqlalchemy
 spacy<3
-nltk
 Flask-Migrate

@@ -13,6 +13,7 @@ import {
   setBPMFormListSort,
   setBpmFormSearch,
   setBpmFormLoading,
+  setBPMFormListPage,
 } from "../../../actions/formActions";
 import { useTranslation, Translation } from "react-i18next";
 
@@ -22,20 +23,22 @@ const FormSearch = React.memo(() => {
   const dispatch = useDispatch();
   const query = useSelector((state) => state.forms.query);
   const sort = useSelector((state) => state.forms.sort);
+  const searchKey = useSelector(state => state.bpmForms.searchText);
   const [searchText, setSearchText] = useState(
-    getSearchText(query?.title__regex || "")
+    getSearchText(query?.title__regex || searchKey || "")
   );
-  const bpmSort = useSelector((state) => state.bpmForms.sort);
   const userRoles = useSelector((state) => state.user.roles);
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
+  let sortOrder =  useSelector(state => state.bpmForms.sortOrder);
+
 
   // if ascending sort value is title else -title for this case
   // const isAscending = !sort.match(/^-/g);
   const isAscending = isDesigner
-    ? !sort.match(/^-/g)
-    : bpmSort === "-title"
-    ? false
-    : true;
+    ? !sort.match(/^-/g) : (sortOrder === 'asc') ? true : false;
+
+    console.log("isacsending",isAscending);
+    console.log("sort order",sortOrder);
   //function for sorting  order
   let updatedQuery = {};
   const updateSort = () => {
@@ -50,12 +53,16 @@ const FormSearch = React.memo(() => {
         })
       );
     } else {
-      dispatch(setBpmFormLoading(true));
-      updatedQuery = {
-        sort: `${isAscending ? "-" : ""}title`,
-      };
-      dispatch(setBPMFormListSort(updatedQuery.sort || ""));
+      let updatedSort;
       dispatch(setBpmFormLoading(false));
+      if(sortOrder === 'asc'){
+        updatedSort = "desc";
+        dispatch(setBPMFormListSort(updatedSort));
+      }else{
+        updatedSort = "asc";
+        dispatch(setBPMFormListSort(updatedSort));
+      }
+      dispatch(setBPMFormListPage(1));
     }
   };
 
@@ -78,12 +85,13 @@ const FormSearch = React.memo(() => {
       );
     } else {
       dispatch(setBpmFormLoading(true));
-      searchTitle = searchForm ? searchText : "";
-      dispatch(setBpmFormSearch(searchTitle));
-      setSearchText(searchTitle);
+      dispatch(setBPMFormListPage(1));
+      dispatch(setBpmFormSearch(searchForm));
+      setSearchText(searchForm);
       dispatch(setBpmFormLoading(false));
     }
   };
+
   return (
     <>
       <div className="container main_div">
@@ -97,7 +105,7 @@ const FormSearch = React.memo(() => {
           <i
             onClick={updateSort}
             className="fa fa-long-arrow-down ml-1"
-            style={{ cursor: "pointer", opacity: `${isAscending ? 0.5 : 1}` }}
+            style={{ cursor: "pointer", opacity: `${!isAscending ? 1 : 0.5}`}}
           />
         </span>
 
@@ -109,11 +117,11 @@ const FormSearch = React.memo(() => {
               }}
               className="mr-1"
               placeholder={t("Search...")}
-              value={searchText}
+              value={searchKey.length ? searchKey : searchText}
               onKeyPress={(e) => e.key === "Enter" && handleSearch(searchText)}
               style={{ border: "none" }}
             />
-            {searchText !== "" && (
+            {(searchText || searchKey.length) !== "" && (
               <Button
                 onClick={() => {
                   handleSearch("");

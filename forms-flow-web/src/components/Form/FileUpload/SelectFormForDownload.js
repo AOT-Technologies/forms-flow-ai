@@ -67,7 +67,9 @@ const SelectFormForDownload = React.memo(({ form, type }) => {
 
   if (type === "all") {
     return (
-      <Form.Check>
+      <Form.Check 
+        style={{marginBottom:"20px"}}
+      >
         <Form.Check.Input
           style={{ width: "15px", height: "15px" }}
           label="Check"

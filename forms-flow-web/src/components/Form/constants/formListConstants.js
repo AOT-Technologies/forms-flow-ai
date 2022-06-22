@@ -1,4 +1,3 @@
-import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import pick from "lodash/pick";
 import {
   CLIENT,
@@ -6,42 +5,7 @@ import {
   STAFF_DESIGNER,
   STAFF_REVIEWER,
 } from "../../../constants/constants";
-import FormSearch from "../FormSearch/FormSearch";
-import { Translation } from "react-i18next";
 
-export const designerColumns = [
-  {
-    key: "title",
-    sort: false,
-    title: <FormSearch />,
-    width: 6,
-  },
-  {
-    key: "operations",
-    title: <Translation>{(t) => t("Operations")}</Translation>,
-    width: 5,
-  },
-  {
-    key: "id",
-    title: <SelectFormForDownload type="all" />,
-    width: 1,
-    value: (form) => <SelectFormForDownload form={form} />,
-  },
-];
-
-export const userColumns = [
-  {
-    key: "title",
-    sort: false,
-    title: <FormSearch />,
-    width: 8,
-  },
-  {
-    key: "operations",
-    title: <Translation>{(t) => t("Operations")}</Translation>,
-    width: 4,
-  },
-];
 
 const columnsToPick = [
   "title",

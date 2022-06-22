@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
-import { push } from "connected-react-router";
+import BootstrapTable from "react-bootstrap-table-next";
+import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import { Link } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { toast } from "react-toastify";
@@ -9,14 +10,12 @@ import {
   selectRoot,
   selectError,
   Errors,
-  FormGrid,
   deleteForm,
 } from "react-formio";
 import Loading from "../../containers/Loading";
 import {
   FORM_ACCESS,
   MULTITENANCY_ENABLED,
-  PageSizes,
   STAFF_DESIGNER,
   SUBMISSION_ACCESS,
 } from "../../constants/constants";
@@ -26,20 +25,13 @@ import {
   setBPMFormLimit,
   setBPMFormListLoading,
   setBPMFormListPage,
-  setBPMFormListSort,
   setFormDeleteStatus,
-  setMaintainBPMFormPagination,
 } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
 import {
   fetchBPMFormList,
   fetchFormByAlias,
 } from "../../apiManager/services/bpmFormServices";
-import {
-  designerColumns,
-  getOperations,
-  userColumns,
-} from "./constants/formListConstants";
 import FileService from "../../services/FileService";
 import {
   setFormCheckList,
@@ -50,16 +42,12 @@ import FileModal from "./FileUpload/fileUploadModal";
 import { useTranslation, Translation } from "react-i18next";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
 import LoadingOverlay from "react-loading-overlay";
-import {
-  getFormProcesses,
-  getApplicationCount,
-  resetFormProcessData,
-} from "../../apiManager/services/processServices";
 import { unPublishForm } from "../../apiManager/services/processServices";
-import { setIsApplicationCountLoading } from "../../actions/processActions";
 import { setBpmFormSearch } from "../../actions/formActions";
 import { checkAndAddTenantKey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
+import { designerColums, getoptions, userColumns } from "./constants/table";
+import paginationFactory from "react-bootstrap-table2-paginator";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -68,8 +56,6 @@ const List = React.memo((props) => {
   const uploadFormNode = useRef();
   const {
     forms,
-    onAction,
-    getForms,
     getFormsInit,
     errors,
     userRoles,
@@ -82,18 +68,24 @@ const List = React.memo((props) => {
 
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
   const bpmForms = useSelector((state) => state.bpmForms);
-
   // View submissions feature will be deprecated in the future releases.
 
   // const showViewSubmissions = useSelector((state) => state.user.showViewSubmissions);
   //const operations = getOperations(userRoles, showViewSubmissions);
-
-  const operations = getOperations(userRoles, false);
-
-  const formCheckList = useSelector((state) => state.formCheckList.formList);
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
-  const columns = isDesigner ? designerColumns : userColumns;
+  const searchText = useSelector((state) => state.bpmForms.searchText);
+  const pageNo = useSelector((state) => state.bpmForms.page);
+  const limit = useSelector((state) => state.bpmForms.limit);
+  const totalForms = useSelector((state) => state.bpmForms.totalForms);
+  const sortBy = useSelector((state) => state.bpmForms.sortBy);
+  const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
+  const formCheckList = useSelector((state) => state.formCheckList.formList);
+  const columns = isDesigner ? designerColums() : userColumns();
   const paginatedForms = isDesigner ? forms.forms : bpmForms.forms;
+  const designerPage = forms.pagination.page;
+  const designerLimit = forms.limit;
+  const designTotalForms = forms.pagination.total;
+
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
   );
@@ -110,27 +102,13 @@ const List = React.memo((props) => {
   const bpmFormLoading = useSelector((state) => state.bpmForms.bpmFormLoading);
   const tenantKey = tenants?.tenantId;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  const getFormsList = (page, query) => {
-    if (page) {
-      dispatch(setBPMFormListPage(page));
-    }
-    if (query) {
-      dispatch(setBPMFormListSort(query.sort || ""));
-    }
-  };
-  const [previousForms, setPreviousForms] = useState({});
-  const onPageSizeChanged = (pageSize) => {
-    if (isDesigner) {
-      dispatch(indexForms("forms", 1, { limit: pageSize }));
-    } else {
-      dispatch(setBPMFormLimit(pageSize));
-    }
-  };
-  useEffect(() => {
-    if (forms.forms.length > 0) {
-      setPreviousForms(forms);
-    }
-  }, [forms]);
+  // const [previousForms, setPreviousForms] = useState({});
+
+  // useEffect(() => {
+  //   if (forms.forms.length > 0) {
+  //     setPreviousForms(forms);
+  //   }
+  // }, [forms]);
 
   useEffect(() => {
     dispatch(setFormCheckList([]));
@@ -141,9 +119,18 @@ const List = React.memo((props) => {
       getFormsInit(1);
     } else {
       dispatch(setBPMFormListLoading(true));
-      dispatch(fetchBPMFormList());
+      dispatch(fetchBPMFormList(pageNo, limit, sortBy, sortOrder, searchText));
     }
-  }, [getFormsInit, dispatch, isDesigner]);
+  }, [
+    getFormsInit,
+    dispatch,
+    isDesigner,
+    pageNo,
+    limit,
+    sortBy,
+    sortOrder,
+    searchText,
+  ]);
 
   const downloadForms = () => {
     FileService.downloadFile({ forms: formCheckList }, () => {
@@ -161,6 +148,17 @@ const List = React.memo((props) => {
     e.preventDefault();
     uploadFormNode.current?.click();
     return false;
+  };
+
+  const handlePageChange = (type, newState) => {
+    if (isDesigner) {
+      dispatch(
+        indexForms("forms", newState.page, { limit: newState.sizePerPage })
+      );
+    } else {
+      dispatch(setBPMFormLimit(newState.sizePerPage));
+      dispatch(setBPMFormListPage(newState.page));
+    }
   };
 
   const resetForms = () => {
@@ -193,37 +191,33 @@ const List = React.memo((props) => {
               };
               newFormData.access = FORM_ACCESS;
               newFormData.submissionAccess = SUBMISSION_ACCESS;
-              formCreate(newFormData,(err)=>{
+              formCreate(newFormData, (err) => {
                 if (err) {
                   // get the form Id of the form if exists already in the server
                   dispatch(
-                    fetchFormByAlias(
-                      newFormData.path,
-                      async (err, formObj) => {
-                        if (!err) {
-                          newFormData._id = formObj._id;
-                          newFormData.access = formObj.access;
-                          newFormData.submissionAccess =
-                            formObj.submissionAccess;
-                          // newFormData.tags = formObj.tags;
-                          formCreate(newFormData,(err)=>{
-                            if (!err) {
-                              dispatch(updateFormUploadCounter());
-                              resolve();
-                            } else {
-                              dispatch(failForm("form",err));
-                              toast.error("Error in Json file structure");
-                              setShowFormUploadModal(false);
-                              reject();
-                            }
-                          });
-                        } else {
-                          toast.error("Error in Json file structure");
-                          setShowFormUploadModal(false);
-                          reject();
-                        }
+                    fetchFormByAlias(newFormData.path, async (err, formObj) => {
+                      if (!err) {
+                        newFormData._id = formObj._id;
+                        newFormData.access = formObj.access;
+                        newFormData.submissionAccess = formObj.submissionAccess;
+                        // newFormData.tags = formObj.tags;
+                        formCreate(newFormData, (err) => {
+                          if (!err) {
+                            dispatch(updateFormUploadCounter());
+                            resolve();
+                          } else {
+                            dispatch(failForm("form", err));
+                            toast.error("Error in Json file structure");
+                            setShowFormUploadModal(false);
+                            reject();
+                          }
+                        });
+                      } else {
+                        toast.error("Error in Json file structure");
+                        setShowFormUploadModal(false);
+                        reject();
                       }
-                    )
+                    })
                   );
                 } else {
                   dispatch(updateFormUploadCounter());
@@ -360,23 +354,34 @@ const List = React.memo((props) => {
                 text={t("Loading...")}
               >
                 {searchFormLoading || paginatedForms.length ? (
-                  <FormGrid
+                  <ToolkitProvider
+                    keyField="title"
+                    data={isDesigner ? forms.forms : bpmForms.forms}
                     columns={columns}
-                    forms={
-                      isDesigner
-                        ? forms.forms.length
-                          ? forms
-                          : previousForms
-                        : bpmForms
-                    }
-                    onAction={(form, action) => {
-                      onAction(form, action, redirectUrl);
+                  >
+                    {(props) => {
+                      return (
+                        <div>
+                          <BootstrapTable
+                            remote={{
+                              pagination: true,
+                              filter: false,
+                              sort: false,
+                            }}
+                            pagination={paginationFactory(
+                              getoptions(
+                                isDesigner ? designerPage : pageNo,
+                                isDesigner ? designerLimit : limit,
+                                isDesigner ? designTotalForms : totalForms
+                              )
+                            )}
+                            onTableChange={handlePageChange}
+                            {...props.baseProps}
+                          />
+                        </div>
+                      );
                     }}
-                    pageSizes={PageSizes}
-                    getForms={isDesigner ? getForms : getFormsList}
-                    operations={operations}
-                    onPageSizeChanged={onPageSizeChanged}
-                  />
+                  </ToolkitProvider>
                 ) : (
                   <span>
                     <div
@@ -448,51 +453,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     getFormsInit: (page, query) => {
       dispatch(getInitForms(page, query));
     },
-    onAction: async (form, action, redirectUrl) => {
-      switch (action) {
-        case "insert":
-          dispatch(push(`${redirectUrl}form/${form._id}`));
-          break;
-        case "submission":
-          dispatch(push(`${redirectUrl}form/${form._id}/submission`));
-          break;
-        // case "edit":
-        //   dispatch(push(`/form/${form._id}/edit`));
-        //   break;
-        case "delete":
-          dispatch(setIsApplicationCountLoading(true));
-          dispatch(
-            getFormProcesses(form._id, (err, data) => {
-              const formDetails = {
-                modalOpen: true,
-                formId: form._id,
-                formName: form.title,
-                path: form.path,
-              };
-              if (data) {
-                dispatch(
-                  // eslint-disable-next-line no-unused-vars
-                  getApplicationCount(data.id, (err, res) => {
-                    dispatch(setIsApplicationCountLoading(false));
-                    dispatch(setFormDeleteStatus(formDetails));
-                  })
-                );
-              } else {
-                dispatch(setIsApplicationCountLoading(false));
-                dispatch(setFormDeleteStatus(formDetails));
-              }
-            })
-          );
 
-          break;
-        case "viewForm":
-          dispatch(resetFormProcessData());
-          dispatch(setMaintainBPMFormPagination(true));
-          dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit`));
-          break;
-        default:
-      }
-    },
     onYes: (formId, forms, formData, path, formCheckList) => {
       dispatch(
         deleteForm("form", formId, (err) => {
@@ -510,9 +471,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             }
           } else {
             toast.error(
-              <Translation>
-                {(t) => t("Form delete unsuccessfull")}
-              </Translation>
+              <Translation>{(t) => t("Form delete unsuccessfull")}</Translation>
             );
           }
           const formDetails = {

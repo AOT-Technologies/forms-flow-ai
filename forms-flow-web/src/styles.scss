@@ -578,8 +578,9 @@ div[disabled] {
   font-weight: bold;
 }
 .delete_button{
-  font-size: 20px;
+  font-size: 30px;
   color:red;
+  cursor: pointer;
 }
 
 .custom_primary_color{
@@ -588,4 +589,7 @@ div[disabled] {
 
 .tooltiptext{
   color: #757575;
+}
+.operation_buttons{
+  font-weight: bold;
 }

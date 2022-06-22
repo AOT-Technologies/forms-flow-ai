@@ -23,9 +23,7 @@ export default class LocationSearchModal extends React.Component {
     }
     componentDidMount() {
         if (navigator.geolocation) {
-            //TODO set the position of the map with value here
             navigator.geolocation.getCurrentPosition(position => {
-                console.log("current Position", position);
                 Geocode.fromLatLng(position.coords.latitude, position.coords.longitude).then(
                     response => {
                         const address = response.results[0].formatted_address;
@@ -112,7 +110,6 @@ export default class LocationSearchModal extends React.Component {
                 lng: 0
             }
         };
-        console.log("coordinates", coordinates, "placeName", placeName);
         const AsyncMap = withScriptjs(
             withGoogleMap(
                 () => (
@@ -134,7 +131,7 @@ export default class LocationSearchModal extends React.Component {
                             onPlaceSelected={this.onPlaceSelected}
                             types={['(regions)']}
                         />
-                         <Marker
+                        <Marker
                             google={this.props.google}
                             name={'Dolores park'}
                             draggable={true}
@@ -143,8 +140,10 @@ export default class LocationSearchModal extends React.Component {
                         />
                         <InfoWindow
                             onClose={this.onInfoWindowClose}
-                            position={{ lat: ((coordinates?.lat 
-                                || 0) + 0.0150), lng: coordinates?.lng || 0 }}
+                            position={{
+                                lat: ((coordinates?.lat
+                                    || 0) + 0.0150), lng: coordinates?.lng || 0
+                            }}
                         >
                             <div>
                                 <span style={{ padding: 0, margin: 0 }}>{placeName}</span>
@@ -159,20 +158,20 @@ export default class LocationSearchModal extends React.Component {
 
         return (
             <div>
-            {this.state.value && <div className='google-map'>
-                <AsyncMap
-                    googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_GOOGLE_MAP_URL}`}
-                    loadingElement={
-                        <div style={{ height: `100%` }} />
-                    }
-                    containerElement={
-                        <div style={{ height: this.state.height }} />
-                    }
-                    mapElement={
-                        <div style={{ height: `100%` }} />
-                    }
-                />
-            </div>}
+                {this.state.value && <div className='google-map'>
+                    <AsyncMap
+                        googleMapURL={`https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places&key=${process.env.REACT_APP_GOOGLE_MAP_URL}`}
+                        loadingElement={
+                            <div style={{ height: `100%` }} />
+                        }
+                        containerElement={
+                            <div style={{ height: this.state.height }} />
+                        }
+                        mapElement={
+                            <div style={{ height: `100%` }} />
+                        }
+                    />
+                </div>}
             </div>
         );
     }

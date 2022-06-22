@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useTranslation, Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
-import { clearFormError, failForm } from "../../actions/formActions";
+import { clearFormError, setFormFailureErrorData } from "../../actions/formActions";
 import { addTenankey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
 
@@ -155,7 +155,7 @@ const Create = React.memo(() => {
           })
         );
       }else{
-         dispatch(failForm('form', err));
+         dispatch(setFormFailureErrorData('form', err));
       }
     });
   };

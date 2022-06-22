@@ -22,7 +22,7 @@ import {
 } from "../../constants/constants";
 import "../Form/List.scss";
 import {
-  failForm,
+  setFormFailureErrorData,
   setBPMFormLimit,
   setBPMFormListLoading,
   setBPMFormListPage,
@@ -211,7 +211,7 @@ const List = React.memo((props) => {
                               dispatch(updateFormUploadCounter());
                               resolve();
                             } else {
-                              dispatch(failForm("form",err));
+                              dispatch(setFormFailureErrorData("form",err));
                               toast.error("Error in Json file structure");
                               setShowFormUploadModal(false);
                               reject();

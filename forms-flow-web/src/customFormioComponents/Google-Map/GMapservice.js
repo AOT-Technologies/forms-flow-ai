@@ -46,20 +46,20 @@ export default class GoogleMaps extends ReactComponent {
    * @param DOMElement
    * #returns ReactInstance
    */
-  attachReact (element) {
+  attachReact(element) {
     let instance;
     ReactDOM.render(
       <Gmap
-        ref={(refer) => {instance = refer;}}
+        ref={(refer) => { instance = refer; }}
         component={this.component} // These are the component settings if you want to use them to render the component.
         value={this.dataValue} // The starting value of the component.
         data={this.data}
         name={this.name}
         onChange={this.updateValue}
         disabled={this.disabled}
-        // The onChange event to call when the value changes.
+      // The onChange event to call when the value changes.
       />,
-      element,() => (this.reactInstance = instance)
+      element, () => (this.reactInstance = instance)
     );
   }
 

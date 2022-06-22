@@ -96,6 +96,7 @@ public class AdminRestServiceImpl extends AbstractRestService implements AdminRe
             createAuthorization(tenantKey, designerRole, Resources.PROCESS_DEFINITION, "*");
             createAuthorization(tenantKey, designerRole, Resources.PROCESS_INSTANCE, "*");
             createAuthorization(tenantKey, designerRole, Resources.TENANT, tenantKey);
+            createAuthorization(tenantKey, designerRole, Resources.DEPLOYMENT, "*");
         }
 
         // Reviewer authorizations

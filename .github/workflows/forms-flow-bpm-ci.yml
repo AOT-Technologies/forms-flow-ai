@@ -11,7 +11,7 @@ on:
       - develop
       - master
     paths:
-      - "forms-flow-api/**"
+      - "forms-flow-bpm/**"
 
 defaults:
   run:

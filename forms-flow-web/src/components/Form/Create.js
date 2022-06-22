@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { saveForm, FormBuilder, Errors } from "react-formio";
+import { FormBuilder, Errors } from "react-formio";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
@@ -16,8 +16,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useTranslation, Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
-import { clearFormError } from "../../actions/formActions";
+import { clearFormError, failForm } from "../../actions/formActions";
 import { addTenankey } from "../../helper/helper";
+import { formCreate } from "../../apiManager/services/FormServices";
 
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
@@ -126,33 +127,37 @@ const Create = React.memo(() => {
     newForm.access = FORM_ACCESS;
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
-      newForm.path = addTenankey(newForm.path, tenantKey);
-      newForm.name = addTenankey(newForm.name, tenantKey);
+      if(newForm.path){
+        newForm.path = addTenankey(newForm.path, tenantKey);
+      }
+      if(newForm.name){
+        newForm.name = addTenankey(newForm.name, tenantKey);
+      }
     }
-    dispatch(
-      saveForm("form", newForm, (err, form) => {
-        if (!err) {
-          // ownProps.setPreviewMode(true);
-          const data = {
-            formId: form._id,
-            formName: form.title,
-            formRevisionNumber: "V1", // to do
-            anonymous: FORM_ACCESS[0].roles.includes(ANONYMOUS_ID),
-          };
-          dispatch(
-            // eslint-disable-next-line no-unused-vars
-            saveFormProcessMapperPost(data, (err, res) => {
-              if (!err) {
-                toast.success(t("Form Saved"));
-                dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
-              } else {
-                toast.error("Error in creating form process mapper");
-              }
-            })
-          );
-        }
-      })
-    );
+    formCreate(newForm,(err,form)=>{
+      if (!err) {
+        // ownProps.setPreviewMode(true);
+        const data = {
+          formId: form._id,
+          formName: form.title,
+          formRevisionNumber: "V1", // to do
+          anonymous: FORM_ACCESS[0].roles.includes(ANONYMOUS_ID),
+        };
+        dispatch(
+          // eslint-disable-next-line no-unused-vars
+          saveFormProcessMapperPost(data, (err, res) => {
+            if (!err) {
+              toast.success(t("Form Saved"));
+              dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
+            } else {
+              toast.error("Error in creating form process mapper");
+            }
+          })
+        );
+      }else{
+         dispatch(failForm('form', err));
+      }
+    });
   };
 
   // setting the main option details to the formdata

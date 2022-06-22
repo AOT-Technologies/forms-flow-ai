@@ -1,11 +1,11 @@
 name: Push Forms flow Analysis API to registry
 
 on:
+  workflow_dispatch:
   push:
     branches: [ master, develop ]
     paths:
       - "forms-flow-data-analysis-api/**"
-  workflow_dispatch:
 
 defaults:
   run:
@@ -70,6 +70,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: forms-flow-data-analysis-api
+          build-args:
+            - MODEL_ID=Seethal/sentiment_analysis_generic_dataset
           # builder: ${{ steps.buildx.outputs.name }}
           push: true
           # file: ${{ matrix.dockerfile }}

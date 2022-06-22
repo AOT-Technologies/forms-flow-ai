@@ -19,9 +19,9 @@ def overall_sentiment_transformers(string_data: str):
     prediction = current_app.classifier(data)
     sentiment = None
 
-    if not len(prediction):
+    if len(prediction) == 0:
         return None
-    
+
     prediction = prediction[0]
 
     if prediction["label"] == "LABEL_1":

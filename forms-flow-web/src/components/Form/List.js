@@ -195,7 +195,7 @@ const List = React.memo((props) => {
               newFormData.access = FORM_ACCESS;
               newFormData.submissionAccess = SUBMISSION_ACCESS;
               formCreate(newFormData,(err)=>{
-                Formio.cache = {};
+                Formio.cache = {}; //removing cache
                 if (err) {
                   // get the form Id of the form if exists already in the server
                   dispatch(

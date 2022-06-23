@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { FormBuilder, Errors } from "react-formio";
+import { FormBuilder, Errors, Formio } from "react-formio";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
@@ -16,10 +16,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useTranslation, Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
-import { clearFormError, setFormFailureErrorData } from "../../actions/formActions";
+import { clearFormError, setFormFailureErrorData, setFormSuccessData } from "../../actions/formActions";
 import { addTenankey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
-
+// import {sets} from 'first'
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
@@ -143,6 +143,8 @@ const Create = React.memo(() => {
           formRevisionNumber: "V1", // to do
           anonymous: FORM_ACCESS[0].roles.includes(ANONYMOUS_ID),
         };
+        dispatch(setFormSuccessData("form",form));
+        Formio.cache = {}; //removing formio cache
         dispatch(
           // eslint-disable-next-line no-unused-vars
           saveFormProcessMapperPost(data, (err, res) => {

@@ -55,7 +55,9 @@ const View = React.memo((props) => {
   const publicFormStatus = useSelector(
     (state) => state.formDelete.publicFormStatus
   );
-  const isPublic = window.location.href.includes("public"); //need to remove
+
+  const isPublic = !props.isAuthenticated; 
+  
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const { formId } = useParams();

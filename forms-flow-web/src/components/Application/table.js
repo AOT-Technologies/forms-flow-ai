@@ -168,6 +168,7 @@ export const columns = (
       // eslint-disable-next-line no-unused-vars
       filterRenderer: (onFilter, column) => {
         return (
+          
           <DateRangePicker
             onChange={(selectedRange) => {
               callback(selectedRange);
@@ -182,6 +183,7 @@ export const columns = (
             dayAriaLabel="Select the day"
             clearAriaLabel="Click to clear"
           />
+          
         );
       },
     },

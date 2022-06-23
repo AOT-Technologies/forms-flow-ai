@@ -19,7 +19,7 @@ import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBun
 import { clearFormError, setFormFailureErrorData, setFormSuccessData } from "../../actions/formActions";
 import { addTenankey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
-// import {sets} from 'first'
+
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);

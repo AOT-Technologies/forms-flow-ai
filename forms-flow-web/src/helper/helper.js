@@ -29,7 +29,7 @@ const checkAndAddTenantKey = (value,tenankey)=>{
   if(tenankey.toLowerCase() === tenantId.toLowerCase()){
     return value;
   }else{
-      return `${tenankey.toLowerCase()}-${value}`;
+      return `${tenankey.toLowerCase()}-${value.toLowerCase()}`;
   }
 };
 

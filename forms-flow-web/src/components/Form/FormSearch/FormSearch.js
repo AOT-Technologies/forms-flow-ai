@@ -23,22 +23,24 @@ const FormSearch = React.memo(() => {
   const dispatch = useDispatch();
   const query = useSelector((state) => state.forms.query);
   const sort = useSelector((state) => state.forms.sort);
-  const searchKey = useSelector(state => state.bpmForms.searchText);
+  const searchKey = useSelector((state) => state.bpmForms.searchText);
   const [searchText, setSearchText] = useState(
     getSearchText(query?.title__regex || searchKey || "")
   );
   const userRoles = useSelector((state) => state.user.roles);
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
-  let sortOrder =  useSelector(state => state.bpmForms.sortOrder);
-
+  let sortOrder = useSelector((state) => state.bpmForms.sortOrder);
 
   // if ascending sort value is title else -title for this case
   // const isAscending = !sort.match(/^-/g);
   const isAscending = isDesigner
-    ? !sort.match(/^-/g) : (sortOrder === 'asc') ? true : false;
+    ? !sort.match(/^-/g)
+    : sortOrder === "asc"
+    ? true
+    : false;
 
-    console.log("isacsending",isAscending);
-    console.log("sort order",sortOrder);
+  console.log("isacsending", isAscending);
+  console.log("sort order", sortOrder);
   //function for sorting  order
   let updatedQuery = {};
   const updateSort = () => {
@@ -55,10 +57,10 @@ const FormSearch = React.memo(() => {
     } else {
       let updatedSort;
       dispatch(setBpmFormLoading(false));
-      if(sortOrder === 'asc'){
+      if (sortOrder === "asc") {
         updatedSort = "desc";
         dispatch(setBPMFormListSort(updatedSort));
-      }else{
+      } else {
         updatedSort = "asc";
         dispatch(setBPMFormListSort(updatedSort));
       }
@@ -105,7 +107,7 @@ const FormSearch = React.memo(() => {
           <i
             onClick={updateSort}
             className="fa fa-long-arrow-down ml-1"
-            style={{ cursor: "pointer", opacity: `${!isAscending ? 1 : 0.5}`}}
+            style={{ cursor: "pointer", opacity: `${!isAscending ? 1 : 0.5}` }}
           />
         </span>
 

@@ -11,14 +11,21 @@ import {
 } from "../../actions/formActions";
 import { replaceUrl } from "../../helper/helper";
 
-export const fetchBPMFormList = (pageNo,limit,sortBy,sortOrder,formName,...rest) => {
+export const fetchBPMFormList = (
+  pageNo,
+  limit,
+  sortBy,
+  sortOrder,
+  formName,
+  ...rest
+) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
     let url = `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`;
-    if(formName){
+    if (formName) {
       url += `&formName=${formName}`;
     }
-    httpGETRequest(url,{},UserService.getToken())
+    httpGETRequest(url, {}, UserService.getToken())
       .then((res) => {
         if (res.data) {
           dispatch(setBPMFormList(res.data));

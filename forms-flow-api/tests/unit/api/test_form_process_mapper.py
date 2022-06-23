@@ -254,7 +254,7 @@ def test_get_task_variable_based_on_form_process_mapper_id(app, client, session,
 
 def test_formio_form_creation(app, client, session, jwt):
     """Testing formio form create API."""
-    token = get_token(jwt)
+    token = get_token(jwt, role="formsflow-designer", username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.post("/form", headers=headers, json=get_formio_form_request_payload())
+    response = client.post("/form/form-create", headers=headers, json=get_formio_form_request_payload())
     assert response.status_code == 201

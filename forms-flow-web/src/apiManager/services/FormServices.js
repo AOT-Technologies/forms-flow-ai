@@ -1,15 +1,13 @@
-import { httpPUTRequest } from "../httpRequestHandler";
+import { httpPOSTRequest,} from "../httpRequestHandler";
 import API from "../endpoints";
 import UserService from "../../services/UserService";
 
 export const formCreate = (formData, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
- 
-  httpPUTRequest(API.FORM_CREATION,formData,UserService.getToken()).then(res=>{
+  httpPOSTRequest(API.FORM_CREATION,formData,UserService.getToken()).then(res=>{
     if(res.data){
      done(null,res.data);
     }
- 
    }).catch((err)=>{
     if(err.response?.data){
       done(err.response.data);
@@ -17,4 +15,6 @@ export const formCreate = (formData, ...rest) => {
       done(err.message);
     } 
    });
+ 
+ 
 };

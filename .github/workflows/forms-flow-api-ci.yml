@@ -75,6 +75,10 @@ jobs:
       INSIGHT_API_KEY: test
       SKIP_IN_CI: "True"
       USE_DOCKER_MOCK: "True"
+      FORMIO_URL: http://localhost:3001
+      FORMIO_ROOT_EMAIL: admin@example.com
+      FORMIO_PASSWORD: changeme
+
 
     runs-on: ubuntu-20.04
 

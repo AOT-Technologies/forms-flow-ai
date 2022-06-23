@@ -19,7 +19,7 @@ export  const designerColums = ()=> [
     {
         dataField:'id',
         text: <SelectFormForDownload type="all" />,
-        formatter:(row)=> <SelectFormForDownload form={row} />
+        formatter:(cell,row)=> <SelectFormForDownload form={row} />
     }
 ];  
 

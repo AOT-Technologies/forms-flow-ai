@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Mono;
 
 import javax.servlet.ServletException;
 
@@ -29,9 +30,9 @@ public class AdminRestResourceImpl implements AdminRestResource {
     @Override
     public EntityModel<AuthorizationInfo> getFormAuthorization() throws ServletException {
 
-        ResponseEntity<AuthorizationInfo> response = restService.getFormAuthorization();
+        Mono<ResponseEntity<AuthorizationInfo>> response = restService.getFormAuthorization();
 
-        return EntityModel.of(response.getBody(),
+        return EntityModel.of(response.block().getBody(),
                 linkTo(methodOn(AdminRestResourceImpl.class).getFormAuthorization()).withSelfRel());
     }
 

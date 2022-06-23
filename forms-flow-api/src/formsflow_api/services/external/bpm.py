@@ -134,7 +134,7 @@ class BPMService(BaseBPMService):
             if endpoint_type == BPMEndpointType.PROCESS_DEFINITION:
                 url = f"{bpm_api_base}/engine-rest/process-definition"
             elif endpoint_type == BPMEndpointType.FORM_AUTH_DETAILS:
-                url = f"{bpm_api_base}/engine-rest-ext/form/authorization"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/form/authorization"
             elif endpoint_type == BPMEndpointType.HISTORY:
                 url = f"{bpm_api_base}/engine-rest-ext/task/"
             elif endpoint_type == BPMEndpointType.TASK:

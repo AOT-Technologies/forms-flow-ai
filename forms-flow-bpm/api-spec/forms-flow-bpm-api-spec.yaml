@@ -1698,7 +1698,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /engine-rest-ext/form/authorization:
+  /engine-rest-ext/v1/form/authorization:
     get:
       tags:
         - Authorization check

@@ -195,7 +195,6 @@ const List = React.memo((props) => {
               newFormData.access = FORM_ACCESS;
               newFormData.submissionAccess = SUBMISSION_ACCESS;
               formCreate(newFormData,(err)=>{
-                console.log("called");
                 Formio.cache = {}; //removing cache
                 if (err) {
                   // get the form Id of the form if exists already in the server
@@ -204,15 +203,11 @@ const List = React.memo((props) => {
                       newFormData.path,
                       async (err, formObj) => {
                         if (!err) {
-                          console.log("reached");
                           newFormData._id = formObj._id;
                           newFormData.access = formObj.access;
-                          newFormData.submissionAccess =
-                            formObj.submissionAccess;
+                          newFormData.submissionAccess = formObj.submissionAccess;
                           // newFormData.tags = formObj.tags;
                           formUpdate(newFormData,(err)=>{
-                console.log("called2");
-
                             if (!err) {
                               dispatch(updateFormUploadCounter());
                               resolve();

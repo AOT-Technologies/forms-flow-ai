@@ -40,7 +40,7 @@ public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
         String excludeGroupValue = this.excludeGroup != null && this.excludeGroup.getValue(delegateTask.getExecution()) != null ?
                 String.valueOf(this.excludeGroup.getValue(delegateTask.getExecution())) : null;
         List<String> exclusionGroupList = new ArrayList<>();
-        if(StringUtils.isNotBlank(excludeGroupValue)) {exclusionGroupList.add(excludeGroupValue.trim());}
+        if(StringUtils.isNotBlank(excludeGroupValue)) {exclusionGroupList.add(excludeGroupValue.strip());}
         if(delegateTask.getExecution().getVariables().containsKey(getTrackVariable(delegateTask))) {
             String tmpData = String.valueOf(delegateTask.getExecution().getVariable(getTrackVariable(delegateTask)));
             if(StringUtils.isNotBlank(tmpData)) {
@@ -94,9 +94,9 @@ public class AccessGrantNotifyListener implements TaskListener, IMessageEvent {
         List<String> newGroupsAdded = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(identityLinks)) {
             for (IdentityLink entry : identityLinks) {
-                String grpId = entry.getGroupId().trim();
+                String grpId = entry.getGroupId().strip();
                 if (!exclusionGroup.contains(grpId)) {
-                    newGroupsAdded.add(entry.getGroupId().trim());
+                    newGroupsAdded.add(entry.getGroupId().strip());
                 }
             }
         }

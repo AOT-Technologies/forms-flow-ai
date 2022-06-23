@@ -68,14 +68,12 @@ export const fetchAllBpmProcesses = (...rest) => {
   return (dispatch) => {
     httpGETRequest(API.GET_BPM_PROCESS_LIST + "?latestVersion=true&excludeInternal=true", {}, UserService.getToken(), true)
       .then((res) => {
-        if (res.data) {
-          if(res.data._embedded.processDefinitionDtoList) {
-            dispatch(setAllProcessList(res.data._embedded.processDefinitionDtoList));
-          }
+        if(res?.data?._embedded?.processDefinitionDtoList) {
+          dispatch(setAllProcessList(res.data._embedded.processDefinitionDtoList));
           done(null, res.data);
         } else {
           dispatch(setAllProcessList([]));
-          dispatch(setProcessLoadError(true));
+          //dispatch(setProcessLoadError(true));
         }
       })
       // eslint-disable-next-line no-unused-vars

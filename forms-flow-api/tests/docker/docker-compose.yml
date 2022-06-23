@@ -12,6 +12,11 @@ services:
     command: >
       mock -p 4010 --host 0.0.0.0
       https://raw.githubusercontent.com/sumesh-aot/forms-flow-ai/bpm-mock/forms-flow-analytics/api-spec/forms-flow-analytics-api-spec.yaml
+  formio:
+    image: stoplight/prism:3.3.0
+    command: >
+      mock -p 4010 --host 0.0.0.0
+      https://raw.githubusercontent.com/auslin-aot/forms-flow-ai/formio-form-creation/forms-flow-forms/api-spec/forms-flow-forms-api-spec.yaml
   proxy:
     image: nginx:alpine
     volumes:

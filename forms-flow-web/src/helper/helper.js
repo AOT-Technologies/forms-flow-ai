@@ -10,9 +10,9 @@ const removeTenantKey = (value,tenankey)=>{
   let newValue = value.split('-');
   let tenantId = newValue.shift();
   if(tenankey.toLowerCase() === tenantId.toLowerCase()){
-    return {valueWithTenantKey:true, newValue:newValue.join("-")};
+    return newValue.join("-");
   }else{
-    return {valueWithTenantKey:false, newValue:value};
+    return false;
   }
 };
 

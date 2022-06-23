@@ -1,25 +1,34 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
-  isDashboardLoading:true,
-  dashboardsList:[],
+  isDashboardLoading: true,
+  dashboardsList: [],
   dashboardDetail: {},
-  isInsightLoading:true,
-}
+  isInsightLoading: true,
+};
 
-const insights = (state = initialState, action)=> {
+const insights = (state = initialState, action) => {
   switch (action.type) {
     case ACTION_CONSTANTS.IS_DASHBOARD_LOADING:
-      return {...state, isDashboardLoading: action.payload};
+      return { ...state, isDashboardLoading: action.payload };
     case ACTION_CONSTANTS.LIST_DASHBOARDS:
-      return {...state, dashboardsList: action.payload, isDashboardLoading: false, isInsightLoading: false};
+      return {
+        ...state,
+        dashboardsList: action.payload,
+        isDashboardLoading: false,
+        isInsightLoading: false,
+      };
     case ACTION_CONSTANTS.DASHBOARD_DETAIL:
-      return {...state, dashboardDetail: action.payload, isInsightLoading: false};
+      return {
+        ...state,
+        dashboardDetail: action.payload,
+        isInsightLoading: false,
+      };
     case ACTION_CONSTANTS.IS_INSIGHT_DETAIL_LOADING:
-      return {...state, isInsightLoading: action.payload};
+      return { ...state, isInsightLoading: action.payload };
     default:
       return state;
   }
-}
+};
 
 export default insights;

@@ -1,9 +1,9 @@
- /* istanbul ignore file */
+/* istanbul ignore file */
 import ACTION_CONSTANTS from "./actionConstants";
 
-export const toggleMenu = (data) => dispatch =>{
+export const toggleMenu = (data) => (dispatch) => {
   dispatch({
-    type:ACTION_CONSTANTS.TOGGLE_MENU,
-    payload:data
-  })
-}
+    type: ACTION_CONSTANTS.TOGGLE_MENU,
+    payload: data,
+  });
+};

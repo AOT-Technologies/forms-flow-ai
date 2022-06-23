@@ -5,10 +5,7 @@
   border-color: #99befa;
 }
 
-.btn-primary{
-  background-color: #014283;
-  border-color: #00152a;
-}
+
 
 .btn-primary.hover, .btn-primary:hover, .btn-primary.disabled:hover, .btn-primary[disabled]:hover,
 fieldset[disabled] .btn-primary:hover, .btn-primary.disabled.hover, .btn-primary[disabled].hover,

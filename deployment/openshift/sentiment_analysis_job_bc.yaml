@@ -37,6 +37,9 @@ objects:
             value: ${FORMIO_SOURCE_REPO_URL}
           - name: FORMIO_SOURCE_REPO_BRANCH
             value: ${FORMIO_SOURCE_REPO_BRANCH}
+        buildArgs:
+          - name: "MODEL_ID"
+            value: ${MODEL_ID}
         dockerfilePath: "${DOCKER_FILE_PATH}"
     output:
       to:
@@ -97,3 +100,7 @@ parameters:
   description: Repo Branch name
   required: false
   value: feature/sentiment-integration
+- name: MODEL_ID
+  displayName: Model ID for sentiment analysis
+  description: Model ID for sentiment analysis
+  required: true

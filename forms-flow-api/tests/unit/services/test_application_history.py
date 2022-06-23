@@ -9,7 +9,7 @@ def test_create_application_history(app, client, session):
     payload = {
         "application_status": "Pending",
         "form_url": "http://sample.com/form/23232/submission/2342",
-        "submitted_by": "client"
+        "submitted_by": "client",
     }
     payload["application_id"] = 1222  # sample value
     application_history = application_history_service.create_application_history(

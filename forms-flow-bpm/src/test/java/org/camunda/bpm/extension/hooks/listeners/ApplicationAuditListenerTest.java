@@ -13,6 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,7 +22,12 @@ import static org.mockito.Mockito.*;
 import java.io.IOException;
 import java.util.Properties;
 
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_STATUS;
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
+
 /**
+ * Application AuditListener Test.
  * Test class for ApplicationAuditListener
  */
 @ExtendWith(SpringExtension.class)
@@ -49,9 +55,9 @@ public class ApplicationAuditListenerTest {
 				.thenReturn(properties);
 		when(properties.getProperty("api.url"))
 				.thenReturn(apiUrl);
-		when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-		when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-		when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
+		when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+		when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+		when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
 		when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
 		ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
 		when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(Application.class)))
@@ -75,9 +81,9 @@ public class ApplicationAuditListenerTest {
 				.thenReturn(properties);
 		when(properties.getProperty("api.url"))
 				.thenReturn(apiUrl);
-		when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-		when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-		when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
+		when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+		when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+		when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
 		when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
 		ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(Application.class)))
@@ -103,9 +109,9 @@ public class ApplicationAuditListenerTest {
 				.thenReturn(properties);
 		when(properties.getProperty("api.url"))
 				.thenReturn(apiUrl);
-		when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-		when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-		when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
+		when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+		when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+		when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
 		when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
 		doThrow(new IOException("Unable to read submission for: " +formUrl)).
 				when(httpServiceInvoker).execute(any(), any(HttpMethod.class), any(Application.class));
@@ -133,9 +139,9 @@ public class ApplicationAuditListenerTest {
 				.thenReturn(properties);
 		when(properties.getProperty("api.url"))
 				.thenReturn(apiUrl);
-		when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-		when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-		when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
+		when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+		when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+		when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
 		when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
 		ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
 		when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(Application.class)))
@@ -162,9 +168,9 @@ public class ApplicationAuditListenerTest {
 				.thenReturn(properties);
 		when(properties.getProperty("api.url"))
 				.thenReturn(apiUrl);
-		when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-		when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-		when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
+		when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+		when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+		when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
 		when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
 		ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		when(httpServiceInvoker.execute(any(), any(HttpMethod.class), any(Application.class)))
@@ -193,9 +199,9 @@ public class ApplicationAuditListenerTest {
 				.thenReturn(properties);
 		when(properties.getProperty("api.url"))
 				.thenReturn(apiUrl);
-		when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-		when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-		when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
+		when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+		when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+		when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
 		when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
 		ResponseEntity<String> responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		doThrow(new IOException("Unable to read submission for: " +formUrl)).
@@ -222,10 +228,10 @@ public class ApplicationAuditListenerTest {
 				.thenReturn(properties);
 		when(properties.getProperty("api.url"))
 				.thenReturn(apiUrl);
-		when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-		when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-		when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
-		when(delegateExecution.getVariable("submitterName")).thenReturn(submitterName);
+		when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+		when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+		when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
+		when(delegateExecution.getVariable(SUBMITTER_NAME)).thenReturn(submitterName);
 		assertEquals("Anonymous-user", submitterName);
 		assertEquals("New", applicationStatus);
 		when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);
@@ -255,10 +261,10 @@ public class ApplicationAuditListenerTest {
 				.thenReturn(properties);
 		when(properties.getProperty("api.url"))
 				.thenReturn(apiUrl);
-		when(delegateExecution.getVariable("formUrl")).thenReturn(formUrl);
-		when(delegateExecution.getVariable("applicationStatus")).thenReturn(applicationStatus);
-		when(delegateExecution.getVariable("applicationId")).thenReturn("id1");
-		when(delegateExecution.getVariable("submitterName")).thenReturn(submitterName);
+		when(delegateExecution.getVariable(FORM_URL)).thenReturn(formUrl);
+		when(delegateExecution.getVariable(APPLICATION_STATUS)).thenReturn(applicationStatus);
+		when(delegateExecution.getVariable(APPLICATION_ID)).thenReturn("id1");
+		when(delegateExecution.getVariable(SUBMITTER_NAME)).thenReturn(submitterName);
 		assertEquals("Anonymous-user", submitterName);
 		assertEquals("New", applicationStatus);
 		when(delegateExecution.getVariable("submittedBy")).thenReturn(submittedBy);

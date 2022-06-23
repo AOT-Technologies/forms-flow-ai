@@ -244,7 +244,8 @@ Create a realm **forms-flow-ai**
 				a. manage-users
 				b. query-groups  
 				c. query-users  
-				d. view-users  			
+				d. view-users  
+                e. manage-clients				
 * Configure > Client Scopes > Create
 	* Name = camunda-rest-api
 	* Click Save

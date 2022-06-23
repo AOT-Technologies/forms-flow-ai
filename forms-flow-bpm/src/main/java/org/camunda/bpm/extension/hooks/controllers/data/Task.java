@@ -5,6 +5,10 @@ import org.camunda.bpm.engine.rest.dto.task.TaskDto;
 
 import java.util.List;
 
+/**
+ * Task.
+ * Class for holding Task data.
+ */
 @Data
 public class Task  extends TaskDto {
     private String processInstanceId;

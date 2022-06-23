@@ -33,6 +33,7 @@ import org.springframework.web.filter.ForwardedHeaderFilter;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 /**
+ * OAuth2 Login Security Config.
  * Camunda Web application SSO configuration for usage with
  * Auth0IdentityProviderPlugin.
  */

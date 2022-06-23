@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Variable.
+ * Class for holding variable data.
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

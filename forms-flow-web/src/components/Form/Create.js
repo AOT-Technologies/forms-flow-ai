@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { saveForm, FormBuilder, Errors } from "react-formio";
+import { FormBuilder, Errors } from "react-formio";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
@@ -8,11 +8,17 @@ import {
   SUBMISSION_ACCESS,
   ANONYMOUS_ID,
   FORM_ACCESS,
+  MULTITENANCY_ENABLED,
 } from "../../constants/constants";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
-import { saveFormProcessMapper } from "../../apiManager/services/processServices";
+import { saveFormProcessMapperPost } from "../../apiManager/services/processServices";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { useTranslation, Translation } from "react-i18next";
+import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
+import { clearFormError, failForm } from "../../actions/formActions";
+import { addTenankey } from "../../helper/helper";
+import { formCreate } from "../../apiManager/services/FormServices";
 
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
@@ -20,7 +26,7 @@ const reducer = (form, { type, value }) => {
   switch (type) {
     case "formChange":
       for (let prop in value) {
-        if (value.hasOwnProperty(prop)) {
+        if (Object.prototype.hasOwnProperty.call(value, prop)) {
           form[prop] = value[prop];
         }
       }
@@ -40,21 +46,34 @@ const reducer = (form, { type, value }) => {
   return formCopy;
 };
 
-const Create = React.memo((props) => {
+const Create = React.memo(() => {
   const dispatch = useDispatch();
   const [anonymous, setAnonymous] = useState(false);
   const formData = { display: "form" };
   const [form, dispatchFormAction] = useReducer(reducer, _cloneDeep(formData));
-  const saveText = "Save & Preview";
+  const saveText = <Translation>{(t) => t("Save & Preview")}</Translation>;
   const errors = useSelector((state) => state.form.error);
+  const lang = useSelector((state) => state.user.lang);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    dispatch(clearFormError("form"));
+  }, [dispatch]);
 
   // for update form access and submission access
   useEffect(() => {
     FORM_ACCESS.forEach((role) => {
       if (anonymous) {
-        role.roles.push(ANONYMOUS_ID);
+        if (role.type === "read_all") {
+          role.roles.push(ANONYMOUS_ID);
+        }
       } else {
-        role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+        if (role.type === "read_all") {
+          role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+        }
       }
     });
     SUBMISSION_ACCESS.forEach((access) => {
@@ -69,6 +88,22 @@ const Create = React.memo((props) => {
       }
     });
   }, [anonymous]);
+
+  // information about tenant key adding
+
+  const addingTenantKeyInformation = (type) => {
+    if (MULTITENANCY_ENABLED) {
+      return (
+        <span className="ml-1">
+          <i
+            className="fa fa-info-circle text-primary cursor-pointer"
+            data-toggle="tooltip"
+            title={`By default, the tenant key would be prefixed to form ${type}`}
+          ></i>
+        </span>
+      );
+    }
+  };
 
   // setting the form data
   useEffect(() => {
@@ -90,30 +125,39 @@ const Create = React.memo((props) => {
     };
     newForm.submissionAccess = SUBMISSION_ACCESS;
     newForm.access = FORM_ACCESS;
-    dispatch(
-      saveForm("form", newForm, (err, form) => {
-        if (!err) {
-          // ownProps.setPreviewMode(true);
-          const data = {
-            formId: form._id,
-            formName: form.title,
-            formRevisionNumber: "V1", // to do
-            anonymous: FORM_ACCESS[0].roles.includes(ANONYMOUS_ID),
-          };
-          const update = false;
-          dispatch(
-            saveFormProcessMapper(data, update, (err, res) => {
-              if (!err) {
-                toast.success("Form Saved");
-                dispatch(push(`/formflow/${form._id}/view-edit/`));
-              } else {
-                toast.error("Error in creating form process mapper");
-              }
-            })
-          );
-        }
-      })
-    );
+    if (MULTITENANCY_ENABLED && tenantKey) {
+      newForm.tenantKey = tenantKey;
+      if(newForm.path){
+        newForm.path = addTenankey(newForm.path, tenantKey);
+      }
+      if(newForm.name){
+        newForm.name = addTenankey(newForm.name, tenantKey);
+      }
+    }
+    formCreate(newForm,(err,form)=>{
+      if (!err) {
+        // ownProps.setPreviewMode(true);
+        const data = {
+          formId: form._id,
+          formName: form.title,
+          formRevisionNumber: "V1", // to do
+          anonymous: FORM_ACCESS[0].roles.includes(ANONYMOUS_ID),
+        };
+        dispatch(
+          // eslint-disable-next-line no-unused-vars
+          saveFormProcessMapperPost(data, (err, res) => {
+            if (!err) {
+              toast.success(t("Form Saved"));
+              dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
+            } else {
+              toast.error("Error in creating form process mapper");
+            }
+          })
+        );
+      }else{
+         dispatch(failForm('form', err));
+      }
+    });
   };
 
   // setting the main option details to the formdata
@@ -128,7 +172,9 @@ const Create = React.memo((props) => {
 
   return (
     <div>
-      <h2>Create Form</h2>
+      <h2>
+        <Translation>{(t) => t("Create Form")}</Translation>
+      </h2>
       <hr />
       <Errors errors={errors} />
       <div>
@@ -145,13 +191,14 @@ const Create = React.memo((props) => {
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-title" className="form-group">
               <label htmlFor="title" className="control-label field-required">
-                Title
+                {" "}
+                <Translation>{(t) => t("Title")}</Translation>
               </label>
               <input
                 type="text"
                 className="form-control"
                 id="title"
-                placeholder="Enter the form title"
+                placeholder={t("Enter the form title")}
                 value={form.title || ""}
                 onChange={(event) => handleChange("title", event)}
               />
@@ -160,13 +207,14 @@ const Create = React.memo((props) => {
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-name" className="form-group">
               <label htmlFor="name" className="control-label field-required">
-                Name
+                <Translation>{(t) => t("Name")}</Translation>
+                {addingTenantKeyInformation("name")}
               </label>
               <input
                 type="text"
                 className="form-control"
                 id="name"
-                placeholder="Enter the form machine name"
+                placeholder={t("Enter the form machine name")}
                 value={form.name || ""}
                 onChange={(event) => handleChange("name", event)}
               />
@@ -175,7 +223,7 @@ const Create = React.memo((props) => {
           <div className="col-lg-4 col-md-3 col-sm-3">
             <div id="form-group-display" className="form-group">
               <label htmlFor="name" className="control-label">
-                Display as
+                <Translation>{(t) => t("Display as")}</Translation>
               </label>
               <div className="input-group">
                 <select
@@ -185,11 +233,11 @@ const Create = React.memo((props) => {
                   value={form.display || ""}
                   onChange={(event) => handleChange("display", event)}
                 >
-                  <option label="Form" value="form">
-                    Form
+                  <option label={t("Form")} value="form">
+                    <Translation>{(t) => t("Form")}</Translation>
                   </option>
-                  <option label="Wizard" value="wizard">
-                    Wizard
+                  <option label={t("Wizard")} value="wizard">
+                    <Translation>{(t) => t("Wizard")}</Translation>
                   </option>
                 </select>
               </div>
@@ -198,7 +246,7 @@ const Create = React.memo((props) => {
           <div className="col-lg-4 col-md-3 col-sm-3">
             <div id="form-group-type" className="form-group">
               <label htmlFor="form-type" className="control-label">
-                Type
+                <Translation>{(t) => t("Type")}</Translation>
               </label>
               <div className="input-group">
                 <select
@@ -208,11 +256,11 @@ const Create = React.memo((props) => {
                   value={form.type}
                   onChange={(event) => handleChange("type", event)}
                 >
-                  <option label="Form" value="form">
-                    Form
+                  <option label={t("Form")} value="form">
+                    {t("Form")}
                   </option>
-                  <option label="Resource" value="resource">
-                    Resource
+                  <option label={t("Resource")} value="resource">
+                    {t("Resource")}
                   </option>
                 </select>
               </div>
@@ -221,14 +269,15 @@ const Create = React.memo((props) => {
           <div className="col-lg-4 col-md-4 col-sm-4">
             <div id="form-group-path" className="form-group">
               <label htmlFor="path" className="control-label field-required">
-                Path
+                <Translation>{(t) => t("Path")}</Translation>
+                {addingTenantKeyInformation("path")}
               </label>
               <div className="input-group">
                 <input
                   type="text"
                   className="form-control"
                   id="path"
-                  placeholder="Enter pathname"
+                  placeholder={t("Enter pathname")}
                   style={{ textTransform: "lowercase", width: "120px" }}
                   value={form.path || ""}
                   onChange={(event) => handleChange("path", event)}
@@ -248,9 +297,10 @@ const Create = React.memo((props) => {
                   style={{ height: "20px", width: "20px" }}
                   type="checkbox"
                   id="anonymous"
+                  title="Make this form public"
                   data-testid="anonymous"
                   checked={anonymous}
-                  onChange={(e) => {
+                  onChange={() => {
                     setAnonymous(!anonymous);
                   }}
                 />
@@ -258,13 +308,22 @@ const Create = React.memo((props) => {
                   htmlFor="anonymousLabel"
                   className="form-control border-0"
                 >
-                  Make this form public ?
+                  <Translation>
+                    {(t) => t("Make this form public ?")}
+                  </Translation>
                 </label>
               </div>
             </div>
           </div>
         </div>
-        <FormBuilder form={form} onChange={formChange} />
+        <FormBuilder
+          form={form}
+          onChange={formChange}
+          options={{
+            language: lang,
+            i18n: formio_resourceBundles,
+          }}
+        />
       </div>
     </div>
   );

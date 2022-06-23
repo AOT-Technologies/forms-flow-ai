@@ -8,8 +8,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.Expression;
@@ -20,6 +22,7 @@ import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
 import org.camunda.bpm.model.bpmn.instance.FlowElement;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperties;
 import org.camunda.bpm.model.bpmn.instance.camunda.CamundaProperty;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,9 +30,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+
+import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 
 /**
- * Test class for FormConnectorListener
+ * Form Connector Listener Test.
+ * Test class for FormConnectorListener.
  */
 @ExtendWith(SpringExtension.class)
 public class FormConnectorListenerTest {
@@ -64,9 +71,17 @@ public class FormConnectorListenerTest {
 	@Mock
 	private CamundaProperty camundaProperty;
 
-	@Mock
-	private HTTPServiceInvoker httpServiceInvoker;
-
+	@BeforeEach
+	public void setup() {
+		try {
+			Field field = formConnectorListener.getClass().getDeclaredField("bpmObjectMapper");
+			field.setAccessible(true);
+		} catch (NoSuchFieldException e) {
+			e.printStackTrace();
+		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		ReflectionTestUtils.setField(this.formConnectorListener, "bpmObjectMapper", objectMapper);
+	}
 	
 	/**
 	 * This test case perform a positive test over notify method in FormConnectorListener
@@ -80,7 +95,7 @@ public class FormConnectorListenerTest {
 		String applicationId2 = "7267864574";
 		String json = "[\"applicationId1\",\"applicationId2\"]";
 		Map<String, Object> variables = new HashMap<>();
-		variables.put("formUrl", formUrl);
+		variables.put(FORM_URL, formUrl);
 		variables.put("applicationId1", applicationId1);
 		variables.put("applicationId2", applicationId2);
 		when(delegateTask.getExecution()).thenReturn(delegateExecution);
@@ -107,7 +122,7 @@ public class FormConnectorListenerTest {
 				.thenReturn(camundaPropertyList);
 		when(formSubmissionService.getFormIdByName(anyString()))
 				.thenReturn("id2");
-		when(delegateExecution.getVariables().get("formUrl"))
+		when(delegateExecution.getVariables().get(FORM_URL))
 				.thenReturn(variables);
 		when(fields.getValue(delegateTask))
 				.thenReturn(json);
@@ -136,7 +151,7 @@ public class FormConnectorListenerTest {
 		String applicationId2 = "7267864574";
 		String json = "[\"applicationId1\",\"applicationId2\"]";
 		Map<String, Object> variables = new HashMap<>();
-		variables.put("formUrl", formUrl);
+		variables.put(FORM_URL, formUrl);
 		variables.put("applicationId1", applicationId1);
 		variables.put("applicationId2", applicationId2);
 		when(delegateTask.getExecution())
@@ -164,7 +179,7 @@ public class FormConnectorListenerTest {
 				.thenReturn(camundaPropertyList);
 		when(formSubmissionService.getFormIdByName(anyString()))
 				.thenReturn("id2");
-		when(delegateExecution.getVariables().get("formUrl"))
+		when(delegateExecution.getVariables().get(FORM_URL))
 				.thenReturn(variables);
 		when(fields.getValue(delegateTask)).thenReturn(json);
 		when(copyDataIndicator.getValue(delegateTask))
@@ -193,7 +208,7 @@ public class FormConnectorListenerTest {
 		String applicationId2 = "7267864574";
 		String json = "[\"applicationId1\",\"applicationId2\"]";
 		Map<String, Object> variables = new HashMap<>();
-		variables.put("formUrl", formUrl);
+		variables.put(FORM_URL, formUrl);
 		variables.put("applicationId1", applicationId1);
 		variables.put("applicationId2", applicationId2);
 		when(delegateTask.getExecution())
@@ -220,7 +235,7 @@ public class FormConnectorListenerTest {
 				.thenReturn(camundaPropertyList);
 		when(formSubmissionService.getFormIdByName(anyString()))
 				.thenReturn("id2");
-		when(delegateExecution.getVariables().get("formUrl"))
+		when(delegateExecution.getVariables().get(FORM_URL))
 				.thenReturn(variables);
 		when(fields.getValue(delegateTask))
 				.thenReturn(json);

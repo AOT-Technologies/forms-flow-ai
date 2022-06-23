@@ -24,6 +24,7 @@ import java.util.Properties;
 
 
 /**
+ * RestApi Security Config.
  * Optional Security Configuration for Camunda REST Api.
  */
 @Configuration

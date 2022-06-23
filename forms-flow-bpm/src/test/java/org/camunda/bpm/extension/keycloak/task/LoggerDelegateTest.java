@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 /**
+ * Logger Delegate Test.
  * Test class for LoggerDelegate
  */
 @ExtendWith(SpringExtension.class)

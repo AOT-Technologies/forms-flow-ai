@@ -19,6 +19,7 @@ from formsflow_api.utils import (
     CORS_ORIGINS,
     FORMSFLOW_API_CORS_ORIGINS,
     CustomFormatter,
+    cache,
     jwt,
     setup_logging,
     translate,
@@ -52,6 +53,7 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
     app.logger.info("Welcome to formsflow-API server...!")
     db.init_app(app)
     ma.init_app(app)
+    cache.init_app(app)
 
     API.init_app(app)
     setup_jwt_manager(app, jwt)
@@ -110,7 +112,8 @@ def setup_jwt_manager(app, jwt_manager):
     """Use flask app to configure the JWTManager to work for a particular Realm."""
 
     def get_roles(a_dict):
-        return a_dict["resource_access"][app.config["JWT_OIDC_AUDIENCE"]]["roles"]
+        resource = a_dict["resource_access"].get(app.config["JWT_OIDC_AUDIENCE"])
+        return resource["roles"] if resource else a_dict["roles"]
 
     app.config["JWT_ROLE_CALLBACK"] = get_roles
     jwt_manager.init_app(app)

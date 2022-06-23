@@ -13,6 +13,8 @@ if FORMSFLOW_API_CORS_ORIGINS != "*":
     CORS_ORIGINS = FORMSFLOW_API_CORS_ORIGINS.split(",")
 DESIGNER_GROUP = "formsflow-designer"
 REVIEWER_GROUP = "formsflow-reviewer"
+CLIENT_GROUP = "formsflow-client"
+FORMSFLOW_ROLES = [DESIGNER_GROUP, REVIEWER_GROUP, CLIENT_GROUP]
 ALLOW_ALL_APPLICATIONS = "/formsflow/formsflow-reviewer/access-allow-applications"
 
 NEW_APPLICATION_STATUS = "New"
@@ -30,3 +32,6 @@ FILTER_MAPS = {
     "created_to": {"field": "created", "operator": "le"},
     "form_name": {"field": "form_name", "operator": "ilike"},
 }
+
+DEFAULT_PROCESS_KEY = "Defaultflow"
+DEFAULT_PROCESS_NAME = "Default Flow"

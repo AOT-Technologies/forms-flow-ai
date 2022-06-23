@@ -82,11 +82,8 @@ Start the **analytics server** by following the instructions given [here](../../
 
 
 *  Follow the below steps for mapping the role IDs.   
-   - Start the forms-flow-forms service.
-     - For Linux
-       - Run `docker-compose -f docker-compose-linux.yml up -d forms-flow-forms` to start.  
-     - For Windows  
-       - Run `docker-compose -f docker-compose-windows.yml up -d forms-flow-forms` to start.  
+   - Start the forms-flow-forms service. 
+       - Run `docker-compose up -d forms-flow-forms` to start.  
        
 ##### Health Check
 ------------------
@@ -97,7 +94,7 @@ Start the **analytics server** by following the instructions given [here](../../
            User Name / Email : admin@example.com
            Password  : changeme   
                    
-*NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+*NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose up --build -d`*
 
 #### forms-flow-web, forms-flow-bpm & forms-flow-api Setup
 -----------------------------------
@@ -210,6 +207,7 @@ Variable name | Meaning | Possible values | Default value |
 `WEBSOCKET_SECURITY_ORIGIN` :triangular_flag_on_post:|Camunda task event streaming. Origin setting, for multiple origins you can separate host address using a comma |eg:`host1, host2`|`http://{your-ip-address}:3000`
 `WEBSOCKET_MESSAGE_TYPE`|Camunda task event streaming. Message type ||`TASK_EVENT`
 `WEBSOCKET_ENCRYPT_KEY`|Camunda task event streaming. AES encryption of token||`giert989jkwrgb@DR55`
+`DATA_ANALYSIS_URL`|sentiment analysis url||`http://{your-ip-address}:6000/analysis`
  
 ```
 Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resources/`). The default settings provided are for the Gmail server, and you need to change the credentials at the bottom of the file. Note that you want to configure your own Gmail setting to allow unsecure apps first. 
@@ -227,18 +225,14 @@ Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resou
  `BPM_CLIENT_CONN_TIMEOUT`|Webclient Connection timeout in milli seconds||`5000`
 
 ### Running the application
-* For Linux,
-   * Run `docker-compose -f docker-compose-linux.yml up -d` to start.
-* For Windows,
-   * Run `docker-compose -f docker-compose-windows.yml up -d` to start.
+
+* Run `docker-compose up -d` to start.
    
-*NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose -f docker-compose-windows.yml up --build -d`*
+*NOTE: Use --build command with the start command to reflect any future **.env** / code changes eg : `docker-compose up --build -d`*
 
 #### To stop the application
-* For Linux,
-  * Run `docker-compose -f docker-compose-linux.yml stop` to stop.
-* For Windows,
-  * Run `docker-compose -f docker-compose-windows.yml stop` to stop.
+
+* Run `docker-compose stop` to stop.
   
 ### Health Check
 * Analytics should be up and available for use at port defaulted to 7000 i.e. http://localhost:7000/

@@ -1,5 +1,5 @@
 export const initialstate = {
-    process:{
-        isProcessDiagramLoading:false
-    }
-}
+  process: {
+    isProcessDiagramLoading: false,
+  },
+};

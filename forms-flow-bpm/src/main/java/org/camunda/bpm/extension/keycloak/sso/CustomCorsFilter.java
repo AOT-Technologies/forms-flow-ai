@@ -24,9 +24,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
+ * Custom Cors Filter.
  * This class is support CORS for Camunda application
- *
- * @author sumathi.thirumani@aot-technologies.com
  */
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)

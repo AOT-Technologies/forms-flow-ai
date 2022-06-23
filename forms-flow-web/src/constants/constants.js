@@ -1,46 +1,77 @@
 //import Keycloak from "keycloak-js";
-
+import { Translation } from "react-i18next";
 //application details
 export const APPLICATION_NAME =
   (window._env_ && window._env_.REACT_APP_APPLICATION_NAME) ||
   process.env.REACT_APP_APPLICATION_NAME ||
   "formsflow.ai";
+//language details
+export const LANGUAGE =
+  (window._env_ && window._env_.REACT_APP_LANGUAGE) ||
+  process.env.REACT_APP_LANGUAGE ||
+  "en";
 //custom url
 export const WEB_BASE_CUSTOM_URL =
   (window._env_ && window._env_.REACT_APP_WEB_BASE_CUSTOM_URL) ||
-  process.env.REACT_APP_WEB_BASE_CUSTOM_URL||"";
+  process.env.REACT_APP_WEB_BASE_CUSTOM_URL ||
+  "";
 
 //keycloak
 export const Keycloak_Client =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_CLIENT) ||
   process.env.REACT_APP_KEYCLOAK_CLIENT ||
   "forms-flow-web";
+
+const MULTITENANCY_ENABLED_VARIABLE =
+  (window._env_ && window._env_.REACT_APP_MULTI_TENANCY_ENABLED) ||
+  process.env.REACT_APP_MULTI_TENANCY_ENABLED ||
+  false;
+
+export const MULTITENANCY_ENABLED =
+  MULTITENANCY_ENABLED_VARIABLE === "true" ||
+  MULTITENANCY_ENABLED_VARIABLE === true
+    ? true
+    : false;
+
+export const BASE_ROUTE = MULTITENANCY_ENABLED ? "/tenant/:tenantId/" : "/";
+
+export const Keycloak_Tenant_Client = "forms-flow-web";
+
 export const KEYCLOAK_REALM =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_URL_REALM) ||
   process.env.REACT_APP_KEYCLOAK_URL_REALM ||
   "forms-flow-ai";
-export const KEYCLOAK_URL =(window._env_ && window._env_.REACT_APP_KEYCLOAK_URL) || process.env.REACT_APP_KEYCLOAK_URL;
+export const KEYCLOAK_URL =
+  (window._env_ && window._env_.REACT_APP_KEYCLOAK_URL) ||
+  process.env.REACT_APP_KEYCLOAK_URL;
 export const KEYCLOAK_AUTH_URL = `${KEYCLOAK_URL}/auth`;
 
 export const CLIENT =
-  (window._env_ && window._env_.REACT_APP_CLIENT_ROLE) || process.env.REACT_APP_CLIENT_ROLE || "formsflow-client";
+  (window._env_ && window._env_.REACT_APP_CLIENT_ROLE) ||
+  process.env.REACT_APP_CLIENT_ROLE ||
+  "formsflow-client";
 export const STAFF_DESIGNER =
   (window._env_ && window._env_.REACT_APP_STAFF_DESIGNER_ROLE) ||
-  process.env?.REACT_APP_STAFF_DESIGNER_ROLE || "formsflow-designer";
+  process.env?.REACT_APP_STAFF_DESIGNER_ROLE ||
+  "formsflow-designer";
 export const STAFF_REVIEWER =
   (window._env_ && window._env_.REACT_APP_STAFF_REVIEWER_ROLE) ||
-  process.env.REACT_APP_STAFF_REVIEWER_ROLE || "formsflow-reviewer";
+  process.env.REACT_APP_STAFF_REVIEWER_ROLE ||
+  "formsflow-reviewer";
 export const ANONYMOUS_USER = "anonymous";
 
 export const FORMIO_JWT_SECRET =
-  (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) || process.env.REACT_APP_FORMIO_JWT_SECRET || "--- change me now ---";
+  (window._env_ && window._env_.REACT_APP_FORMIO_JWT_SECRET) ||
+  process.env.REACT_APP_FORMIO_JWT_SECRET ||
+  "--- change me now ---";
 
 export const USER_RESOURCE_FORM_ID =
   (window._env_ && window._env_.REACT_APP_USER_RESOURCE_FORM_ID) ||
   process.env.REACT_APP_USER_RESOURCE_FORM_ID;
 
 const CLIENT_ID =
-  (window._env_ && window._env_.REACT_APP_CLIENT_ID) || process.env.REACT_APP_CLIENT_ID;
+  (window._env_ && window._env_.REACT_APP_CLIENT_ID) ||
+  process.env.REACT_APP_CLIENT_ID;
 const STAFF_REVIEWER_ID =
   (window._env_ && window._env_.REACT_APP_STAFF_REVIEWER_ID) ||
   process.env.REACT_APP_STAFF_REVIEWER_ID;
@@ -48,7 +79,8 @@ const STAFF_DESIGNER_ID =
   (window._env_ && window._env_.REACT_APP_STAFF_DESIGNER_ID) ||
   process.env.REACT_APP_STAFF_DESIGNER_ID;
 export const ANONYMOUS_ID =
-  (window._env_ && window._env_.REACT_APP_ANONYMOUS_ID) || process.env.REACT_APP_ANONYMOUS_ID;
+  (window._env_ && window._env_.REACT_APP_ANONYMOUS_ID) ||
+  process.env.REACT_APP_ANONYMOUS_ID;
 
 export const ROLES = [
   {
@@ -65,63 +97,59 @@ export const ROLES = [
   },
 ];
 
-
-export const FORM_ACCESS =[{
-  type: "read_all",
-  roles:  [CLIENT_ID,
-    STAFF_REVIEWER_ID,
-    STAFF_DESIGNER_ID
-      ]
-  }]
+export const FORM_ACCESS = [
+  {
+    type: "read_all",
+    roles: [CLIENT_ID, STAFF_REVIEWER_ID, STAFF_DESIGNER_ID],
+  },
+];
 
 export const OPERATIONS = {
   insert: {
     action: "insert",
-    buttonType: "primary",
+    buttonType: "primary button_font",
     icon: "pencil",
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    title: "Submit New",
+    title: <Translation>{(t) => t("Submit New")}</Translation>,
   },
   submission: {
     action: "submission",
-    buttonType: "primary",
+    buttonType: "outline-primary button_font",
     icon: "list-alt",
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-
-    title: "View Submissions",
+    title: <Translation>{(t) => t("View Submissions")}</Translation>,
   },
   edit: {
     action: "edit",
-    buttonType: "primary",
+    buttonType: "secondary button_font",
     icon: "edit",
     permissionsResolver: function permissionsResolver() {
       return true;
     },
 
-    title: "Edit Form",
+    title: <Translation>{(t) => t("Edit Form")}</Translation>,
   },
   viewForm: {
     action: "viewForm",
-    buttonType: "primary",
-    icon: "eye",
+    buttonType: "outline-primary button_font",
+    icon: "pencil-square-o",
     permissionsResolver: function permissionsResolver() {
       return true;
     },
 
-    title: "View/Edit Form",
+    title: <Translation>{(t) => t("View/Edit Form")}</Translation>,
   },
   delete: {
     action: "delete",
-    buttonType: "primary",
+    buttonType: " delete_button",
     icon: "trash",
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    title: "Delete Form",
   },
   view: {
     action: "viewSubmission",
@@ -131,28 +159,31 @@ export const OPERATIONS = {
       return true;
     },
 
-    title: "View",
+    title: <Translation>{(t) => t("View")}</Translation>,
   },
   editSubmission: {
     action: "edit",
-    buttonType: "primary",
+    buttonType: "secondary",
     icon: "edit",
     permissionsResolver: function permissionsResolver() {
       return true;
     },
 
-    title: "Edit",
+    title: <Translation>{(t) => t("Edit")}</Translation>,
   },
   deleteSubmission: {
     action: "delete",
-    buttonType: "primary",
+    buttonType: "danger",
     icon: "trash",
     permissionsResolver: function permissionsResolver() {
       return true;
     },
-    title: "Delete",
+
+    title: <Translation>{(t) => t("Delete")}</Translation>,
   },
 };
+
+export const PageSizes = [5, 10, 25, 50, 100, "all"];
 
 export const SUBMISSION_ACCESS = [
   {
@@ -172,11 +203,15 @@ export const SUBMISSION_ACCESS = [
     type: "delete_all",
   },
   {
-    roles:[CLIENT_ID],
-    type:"create_own"
+    roles: [CLIENT_ID],
+    type: "create_own",
   },
+  // {
+  //   roles: [CLIENT_ID],
+  //   type: "create_own",
+  // },
   {
-    roles: [CLIENT_ID,],
+    roles: [CLIENT_ID],
     type: "read_own",
   },
   {
@@ -188,4 +223,3 @@ export const SUBMISSION_ACCESS = [
     type: "delete_own",
   },
 ];
-

@@ -25,3 +25,35 @@
     width: 30%;
 }
 
+.chip-element{
+    border-radius: 100rem;
+	box-shadow: 0 0 0 2px rgb(217, 217, 217);
+
+    .chip-label{
+        padding: 3px 6px 3px 10px;
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+    }
+    .chip-close{
+        margin-left: 5px;
+        border-radius: 50%;
+        background-color: #d4d4d4;
+        width: 20px;
+        height: 20px;
+        color: #393939;
+        font-weight: 100;
+        cursor: pointer;
+        display: inline-flex;
+        text-align: center;
+        align-items: center;
+        justify-content: center;
+        
+        &:hover{
+            background-color: #fc4f4f;
+            color: #fff;
+        }
+    }
+}
+
+ 

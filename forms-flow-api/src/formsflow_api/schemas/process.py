@@ -13,6 +13,7 @@ class ProcessListSchema(Schema):
 
     key = fields.Str()
     name = fields.Str()
+    tenantId = fields.Str(data_key="tenantKey")
 
 
 # class ProcessDefinitionXMLSchema(Schema):

@@ -1,0 +1,196 @@
+openapi: 3.0.0
+info:
+  title: forms-flow-analytics API
+  description: The API for forms-flow-analytics.
+  version: 1.0.0
+servers:
+  - url: 'http://{{baseurl}}'
+  - url: 'http://localhost:8080'
+tags:
+  - name: Filter
+    description: Filter
+  - name: Process
+    description: Process
+  - name: Permissions
+    description: Permissions
+  - name: Task
+    description: Task
+  - name: Update Log Level
+    description: Update Log Level
+  - name: Authorization check
+paths:
+  /api/dashboards:
+    get:
+      tags:
+        - Filter
+      summary: Get Dashboards
+      description: Get all dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                resourceType: Task
+                name: Sample Tasks
+                owner: john
+                query:
+                  candidateGroup: Sample
+                properties:
+                  color: '#3e4d2f'
+                  description: Tasks assigned to group Sample
+                  priority: 5
+            examples:
+              example-1:
+                value:
+                  - id: 1
+                    name: Test Dashboard
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                id: a7b2d065-19ed-11ec-9f26-0242ac170003
+                resourceType: Task
+                name: Sample Tasks
+                owner: john
+                query:
+                  candidateGroup: Sample
+                  taskVariables: []
+                  processVariables: []
+                  caseInstanceVariables: []
+                  orQueries: []
+                properties:
+                  color: '#3e4d2f'
+                  description: Tasks assigned to group Sample
+                  priority: 5
+              examples:
+                example-1:
+                  value:
+                    results:
+                      - id: 1
+                        name: Test Dashboard
+    parameters: []
+  '/api/dashboards/{dashboardId}':
+    get:
+      tags:
+        - Filter
+      summary: Get Dashboards
+      description: Get all dashboards
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                resourceType: Task
+                name: Sample Tasks
+                owner: john
+                query:
+                  candidateGroup: Sample
+                properties:
+                  color: '#3e4d2f'
+                  description: Tasks assigned to group Sample
+                  priority: 5
+            examples:
+              example-1:
+                value:
+                  id: 1
+                  name: Test Dashboard
+      responses:
+        '200':
+          description: OK
+          headers: {}
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                id: a7b2d065-19ed-11ec-9f26-0242ac170003
+                resourceType: Task
+                name: Sample Tasks
+                owner: john
+                query:
+                  candidateGroup: Sample
+                  taskVariables: []
+                  processVariables: []
+                  caseInstanceVariables: []
+                  orQueries: []
+                properties:
+                  color: '#3e4d2f'
+                  description: Tasks assigned to group Sample
+                  priority: 5
+              examples:
+                example-1:
+                  value:
+                    results:
+                      - id: 1
+                        name: Test Dashboard
+    parameters:
+      - schema:
+          type: string
+        name: dashboardId
+        in: path
+        required: true
+  /api/organization:
+    post:
+      summary: ''
+      operationId: Create Org
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                example-1:
+                  value: {}
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Organization'
+            examples:
+              example-1:
+                value:
+                  slug: test1
+                  name: Test Tenant
+                  samlDescriptor: 'http://localhost:8081/auth/realms/forms-flow-ai/protocol/saml/descriptor'
+                  userName: test1-admin
+                  email: admin@test1
+                  password: formsflow
+                  userApiKey: test
+    parameters: []
+    get:
+      summary: ''
+      operationId: get-api-organization
+      responses:
+        '200':
+          description: OK
+components:
+  schemas:
+    Organization:
+      title: Organization
+      type: object
+      properties:
+        slug:
+          type: string
+        name:
+          type: string
+        samlDescriptor:
+          type: string
+        userName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        userApiKey:
+          type: string
+      x-examples: {}

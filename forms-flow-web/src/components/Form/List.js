@@ -60,7 +60,7 @@ import { unPublishForm } from "../../apiManager/services/processServices";
 import { setIsApplicationCountLoading } from "../../actions/processActions";
 import { setBpmFormSearch } from "../../actions/formActions";
 import { checkAndAddTenantKey } from "../../helper/helper";
-import { formCreate } from "../../apiManager/services/FormServices";
+import { formCreate, formUpdate } from "../../apiManager/services/FormServices";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -195,6 +195,7 @@ const List = React.memo((props) => {
               newFormData.access = FORM_ACCESS;
               newFormData.submissionAccess = SUBMISSION_ACCESS;
               formCreate(newFormData,(err)=>{
+                console.log("called");
                 Formio.cache = {}; //removing cache
                 if (err) {
                   // get the form Id of the form if exists already in the server
@@ -203,12 +204,15 @@ const List = React.memo((props) => {
                       newFormData.path,
                       async (err, formObj) => {
                         if (!err) {
+                          console.log("reached");
                           newFormData._id = formObj._id;
                           newFormData.access = formObj.access;
                           newFormData.submissionAccess =
                             formObj.submissionAccess;
                           // newFormData.tags = formObj.tags;
-                          formCreate(newFormData,(err)=>{
+                          formUpdate(newFormData,(err)=>{
+                console.log("called2");
+
                             if (!err) {
                               dispatch(updateFormUploadCounter());
                               resolve();

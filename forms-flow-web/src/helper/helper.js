@@ -6,9 +6,9 @@ const addTenankey = (value,tenankey)=>{
   let newValue = value.split('-');
   let tenantId = newValue.shift();
   if(tenankey.toLowerCase() === tenantId.toLowerCase()){
-    return value;
+    return value.toLowerCase();
   }else{
-    return `${tenankey}-${value}`;
+    return `${tenankey.toLowerCase()}-${value.toLowerCase()}`;
   }
       
 };
@@ -29,7 +29,7 @@ const checkAndAddTenantKey = (value,tenankey)=>{
   if(tenankey.toLowerCase() === tenantId.toLowerCase()){
     return value;
   }else{
-      return `${tenankey}-${value}`;
+      return `${tenankey.toLowerCase()}-${value}`;
   }
 };
 

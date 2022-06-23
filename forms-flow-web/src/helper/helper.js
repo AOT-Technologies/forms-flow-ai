@@ -27,9 +27,9 @@ const checkAndAddTenantKey = (value,tenankey)=>{
   let newValue = value.split('-');
   let tenantId = newValue.shift();
   if(tenankey.toLowerCase() === tenantId.toLowerCase()){
-    return value.toLowerCase();
+    return value;
   }else{
-      return `${tenankey.toLowerCase()}-${value}`;
+      return `${tenankey}-${value}`;
   }
 };
 

@@ -12,6 +12,7 @@ import {
   FormGrid,
   deleteForm,
   Formio,
+  saveForm
 } from "react-formio";
 import Loading from "../../containers/Loading";
 import {
@@ -60,7 +61,7 @@ import { unPublishForm } from "../../apiManager/services/processServices";
 import { setIsApplicationCountLoading } from "../../actions/processActions";
 import { setBpmFormSearch } from "../../actions/formActions";
 import { checkAndAddTenantKey } from "../../helper/helper";
-import { formCreate, formUpdate } from "../../apiManager/services/FormServices";
+import { formCreate } from "../../apiManager/services/FormServices";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -207,7 +208,7 @@ const List = React.memo((props) => {
                           newFormData.access = formObj.access;
                           newFormData.submissionAccess = formObj.submissionAccess;
                           // newFormData.tags = formObj.tags;
-                          formUpdate(newFormData,(err)=>{
+                          dispatch(saveForm("form",newFormData,(newFormData,(err)=>{
                             if (!err) {
                               dispatch(updateFormUploadCounter());
                               resolve();
@@ -217,7 +218,7 @@ const List = React.memo((props) => {
                               setShowFormUploadModal(false);
                               reject();
                             }
-                          });
+                          })));
                         } else {
                           toast.error("Error in Json file structure");
                           setShowFormUploadModal(false);

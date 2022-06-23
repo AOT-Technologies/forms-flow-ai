@@ -593,3 +593,18 @@ div[disabled] {
 .operation_buttons{
   font-weight: bold;
 }
+.select_download{
+  display: flex;
+  flex-direction: row;
+  margin-top: 15px;
+}
+.select_text{
+  font-weight: bold;
+}
+.select_input{
+  width: 15px; 
+  height: 15px;
+}
+.form_check{
+  margin-bottom: 20px;
+}

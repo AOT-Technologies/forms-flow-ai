@@ -18,15 +18,23 @@ def overall_sentiment_transformers(string_data: str):
     data = preprocess_incoming(string_data)
     prediction = current_app.classifier(data)
     sentiment = None
-    if prediction[0]["label"] == "LABEL_1":
+
+    if len(prediction) == 0:
+        return None
+
+    prediction = prediction[0]
+
+    if prediction["label"] == "LABEL_1":
         sentiment = "NEUTRAL"
-    if prediction[0]["label"] == "LABEL_0":
+    if prediction["label"] == "LABEL_0":
         sentiment = "NEGATIVE"
-    if prediction[0]["label"] == "LABEL_2":
+    if prediction["label"] == "LABEL_2":
         sentiment = "POSITIVE"
     if sentiment is None:
         raise Exception("Failed to identify the sentiment.")
-    return sentiment
+    prediction["label"] = sentiment
+
+    return prediction
 
 
 def sentiment_analysis_pipeline_transformers(text: str) -> Dict:
@@ -39,6 +47,6 @@ def sentiment_analysis_pipeline_transformers(text: str) -> Dict:
         >> sentiment_analysis_pipeline_transformers(
             "awesome location and great staff. Staff provided excellent service."
             )
-        returns {'overall_sentiment': 'POSITIVE'}
+        returns {'overall_sentiment': {"label" :'POSITIVE', "score": "0.9773"}}
     """
     return {"overallSentiment": overall_sentiment_transformers(text)}

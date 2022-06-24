@@ -28,32 +28,35 @@ class SentimentAnalysisTransformerResource(Resource):
         """POST API definition for sentiment analysis API."""
         try:
             input_json = request.get_json()
-            response_json = dict(
-                applicationId=input_json["applicationId"],
-                formUrl=input_json["formUrl"],
-                data=[],
-            )
-            for data in input_json["data"]:
-                text = data["text"]
-                response = sentiment_analysis_pipeline_transformers(text)
-                response["elementId"] = data["elementId"]
-                response["applicationId"] = input_json["applicationId"]
-                response["formUrl"] = input_json["formUrl"]
-                response_json["data"].append(dict(response))
-                # function used to store entries to database
-                if APP_CONFIG.DATABASE_SUPPORT == Service.ENABLED.value:
+            response_json = dict(data={})
+            data = input_json["data"]
+            text = data["text"]
+            response = sentiment_analysis_pipeline_transformers(text)
+            response["elementId"] = data["elementId"]
+            response["applicationId"] = input_json["applicationId"]
+            response["formUrl"] = input_json["formUrl"]
+            response_json["data"] = dict(response)
+            # function used to store entries to database
+            if APP_CONFIG.DATABASE_SUPPORT == Service.ENABLED.value:
+                try:
                     save_sentiment_result(
                         input_text=text,
-                        overall_sentiment=response["overallSentiment"],
+                        overall_sentiment=response["overallSentiment"]["label"],
                         output_response=response,
                     )
                     return jsonify(response_json), HTTPStatus.CREATED
-                return jsonify(response_json), HTTPStatus.OK
+
+                except Exception as err:  # pylint: disable=broad-except
+                    # Better to add a notification system here
+                    # Raising the exception would affect the workflow propagation
+                    logging.error("Failed to update the database")
+                    logging.error(err)
+            return jsonify(response_json), HTTPStatus.OK
 
         except BaseException as err:  # pylint: disable=broad-except # noqa: B902
             response, status = {
                 "type": "Bad Request Error",
-                "message": "Invalid request object passed passed",
+                "message": "Invalid request object passed",
             }, HTTPStatus.BAD_REQUEST
             logging.info(response)
             logging.info(err)

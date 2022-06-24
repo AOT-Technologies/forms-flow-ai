@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """All of the configuration for the api is captured here.
 
 All items are loaded, or have Constants defined here that

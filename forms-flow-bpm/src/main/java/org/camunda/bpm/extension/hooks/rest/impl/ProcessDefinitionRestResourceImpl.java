@@ -6,6 +6,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import java.util.List;
 import java.util.Map;
 
+import org.camunda.bpm.extension.hooks.rest.dto.ProcessDefinitionDiagramDto;
 import org.camunda.bpm.extension.hooks.rest.dto.ProcessDefinitionDto;
 import org.camunda.bpm.extension.hooks.rest.dto.ProcessInstanceDto;
 import org.camunda.bpm.extension.hooks.rest.dto.StartProcessInstanceDto;
@@ -18,6 +19,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -39,6 +41,16 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
 
         return CollectionModel.of(processDefinition.getBody(),
                 linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinition(parameters)).withSelfRel(),
+                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).startProcessInstanceByKey(parameters, null, "defaultflow")).withSelfRel());
+    }
+
+    @Override
+    public EntityModel<ProcessDefinitionDiagramDto> getProcessDefinitionBpmn20Xml(@RequestParam Map<String, Object> parameters, String key){
+
+        ResponseEntity<ProcessDefinitionDiagramDto> processDefinition = restService.getProcessDefinitionBpmn20Xml(parameters, key);
+
+        return EntityModel.of(processDefinition.getBody(),
+                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinitionBpmn20Xml(parameters, key)).withSelfRel(),
                 linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).startProcessInstanceByKey(parameters, null, "defaultflow")).withSelfRel());
     }
 

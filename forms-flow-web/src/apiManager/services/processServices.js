@@ -240,7 +240,7 @@ export const fetchDiagram = (process_key, tenant_key = null, ...rest) => {
       "<process_key>",
       process_key
     );
-    url = "${url}?tenantId=${tenant_key}";
+    url = url + "?tenantId=" + tenant_key;
   }
 
   const done = rest.length ? rest[0] : () => {};

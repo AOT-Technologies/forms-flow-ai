@@ -236,11 +236,11 @@ export const fetchDiagram = (process_key, tenant_key = null, ...rest) => {
 
   if (tenant_key) {
     url = replaceUrl(
-      API.PROCESSES_XML_PER_TENANT,
+      API.PROCESSES_XML,
       "<process_key>",
       process_key
     );
-    url = replaceUrl(url, "<tenant_key>", tenant_key);
+    url = "${url}?tenantId=${tenant_key}";
   }
 
   const done = rest.length ? rest[0] : () => {};

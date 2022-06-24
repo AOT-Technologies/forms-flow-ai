@@ -6,13 +6,13 @@ services:
     image: stoplight/prism:3.3.0
     command: >
       mock -p 4010 --host 0.0.0.0
-      https://raw.githubusercontent.com/sumesh-aot/forms-flow-ai/bpm-mock/forms-flow-bpm/api-spec/forms-flow-bpm-api-spec.yaml
+      https://raw.githubusercontent.com/AOT-Technologies/forms-flow-ai/develop/forms-flow-bpm/api-spec/forms-flow-bpm-api-spec.yaml
   analytics:
     image: stoplight/prism:3.3.0
     command: >
       mock -p 4010 --host 0.0.0.0
-      https://raw.githubusercontent.com/sumesh-aot/forms-flow-ai/bpm-mock/forms-flow-analytics/api-spec/forms-flow-analytics-api-spec.yaml
-  formio:
+      https://raw.githubusercontent.com/AOT-Technologies/forms-flow-ai/develop/forms-flow-analytics/api-spec/forms-flow-analytics-api-spec.yaml
+  forms:
     image: stoplight/prism:3.3.0
     command: >
       mock -p 4010 --host 0.0.0.0

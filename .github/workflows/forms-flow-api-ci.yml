@@ -73,11 +73,11 @@ jobs:
       BPM_TOKEN_API: "http://localhost:8081/auth/realms/forms-flow-ai/protocol/openid-connect/token"
       INSIGHT_API_URL: http://localhost:8080/analytics
       INSIGHT_API_KEY: test
+      FORMIO_URL: http://localhost:8080/forms
+      FORMIO_ROOT_EMAIL: test@test.com
+      FORMIO_ROOT_PASSWORD: test
       SKIP_IN_CI: "True"
       USE_DOCKER_MOCK: "True"
-      FORMIO_URL: http://localhost:3001
-      FORMIO_ROOT_EMAIL: admin@example.com
-      FORMIO_PASSWORD: changeme
 
 
     runs-on: ubuntu-20.04

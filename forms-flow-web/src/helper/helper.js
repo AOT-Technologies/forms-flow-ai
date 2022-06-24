@@ -3,26 +3,33 @@ const replaceUrl = (URL, key, value) => {
 };
 
 const addTenankey = (value,tenankey)=>{
-      return `${tenankey}-${value}`;
+  let newValue = value.split('-');
+  let tenantId = newValue.shift();
+  if(tenankey.toLowerCase() === tenantId.toLowerCase()){
+    return value.toLowerCase();
+  }else{
+    return `${tenankey.toLowerCase()}-${value.toLowerCase()}`;
+  }
+      
 };
 
 const removeTenantKey = (value,tenankey)=>{
   let newValue = value.split('-');
   let tenantId = newValue.shift();
-  if(tenankey === tenantId){
-    return {valueWithTenantKey:true, newValue:newValue.join("-")};
+  if(tenankey.toLowerCase() === tenantId.toLowerCase()){
+    return newValue.join("-");
   }else{
-    return {valueWithTenantKey:false, newValue:value};
+    return false;
   }
 };
 
 const checkAndAddTenantKey = (value,tenankey)=>{
   let newValue = value.split('-');
   let tenantId = newValue.shift();
-  if(tenankey === tenantId){
+  if(tenankey.toLowerCase() === tenantId.toLowerCase()){
     return value;
   }else{
-      return `${tenankey}-${value}`;
+      return `${tenankey.toLowerCase()}-${value.toLowerCase()}`;
   }
 };
 

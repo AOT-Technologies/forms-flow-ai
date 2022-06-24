@@ -154,8 +154,3 @@ export const clearSubmissionError = (name) => (dispatch) => {
   });
 };
 
-export const failForm = (name, err) => ({
-  type: ACTION_CONSTANTS.FORM_FAILURE,
-  error: err,
-  name,
-});

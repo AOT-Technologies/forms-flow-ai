@@ -63,6 +63,7 @@ class _Config(object):  # pylint: disable=too-few-public-methods
     DATABASE_TABLE_NAME = os.getenv('DATABASE_TABLE_NAME')
     DATABASE_INPUT_COLUMN = os.getenv('DATABASE_INPUT_COLUMN')
     DATABASE_OUTPUT_COLUMN = os.getenv('DATABASE_OUTPUT_COLUMN')
+    DATABASE_OUTPUT_COLUMN_CONFIDENCE = os.getenv('DATABASE_OUTPUT_COLUMN_CONFIDENCE')
     MODEL_ID = os.getenv('MODEL_ID')
     SCHEMA_NAME = os.getenv('SCHEMA_NAME',None)
     TESTING = False

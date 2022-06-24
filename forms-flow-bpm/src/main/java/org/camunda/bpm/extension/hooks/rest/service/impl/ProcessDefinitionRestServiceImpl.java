@@ -46,7 +46,8 @@ public class ProcessDefinitionRestServiceImpl extends AbstractRestService implem
         if(parameters != null && parameters.containsKey("excludeInternal")){
             if(Boolean.parseBoolean(parameters.get("excludeInternal").toString())){
                 response = response.stream()
-                        .filter(processDefinitionDto -> !processDefinitionDto.getName().strip().endsWith("(Internal)"))
+                        .filter(processDefinitionDto -> processDefinitionDto.getName() != null
+                                && !processDefinitionDto.getName().strip().endsWith("(Internal)"))
                         .collect(Collectors.toList());
             }
         }
@@ -58,8 +59,14 @@ public class ProcessDefinitionRestServiceImpl extends AbstractRestService implem
 
         ProcessInstanceDto response = null;
         if(BpmClient.CAMUNDA.getName().equals(bpmClient)) {
-            String url = bpmUrl + "/camunda/engine-rest/process-definition/key/{0}/start";
-            url = MessageFormat.format(url, key);
+            String url = null;
+            if(parameters.containsKey("tenantId")){
+                url = bpmUrl + "/camunda/engine-rest/process-definition/key/{0}/tenant-id/{1}/start";
+                url = MessageFormat.format(url, key, parameters.get("tenantId"));
+            } else {
+                url = bpmUrl + "/camunda/engine-rest/process-definition/key/{0}/start";
+                url = MessageFormat.format(url, key);
+            }
             ResponseEntity<String> data = httpServiceInvoker.executeWithParamsAndPayload(url, HttpMethod.POST, parameters, dto);
             if (data.getStatusCode().is2xxSuccessful()) {
                 try {

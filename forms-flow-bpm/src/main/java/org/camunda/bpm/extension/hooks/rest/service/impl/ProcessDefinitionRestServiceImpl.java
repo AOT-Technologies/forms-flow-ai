@@ -8,6 +8,8 @@ import org.camunda.bpm.extension.hooks.rest.dto.ProcessInstanceDto;
 import org.camunda.bpm.extension.hooks.rest.dto.StartProcessInstanceDto;
 import org.camunda.bpm.extension.hooks.rest.service.AbstractRestService;
 import org.camunda.bpm.extension.hooks.rest.service.ProcessDefinitionRestService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProcessDefinitionRestServiceImpl extends AbstractRestService implements ProcessDefinitionRestService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ProcessDefinitionRestServiceImpl.class);
+
     public ProcessDefinitionRestServiceImpl(HTTPServiceInvoker httpServiceInvoker, Properties integrationCredentialProperties){
         super(httpServiceInvoker, integrationCredentialProperties);
     }
@@ -63,6 +68,7 @@ public class ProcessDefinitionRestServiceImpl extends AbstractRestService implem
             if(parameters.containsKey("tenantId")){
                 url = bpmUrl + "/camunda/engine-rest/process-definition/key/{0}/tenant-id/{1}/start";
                 url = MessageFormat.format(url, key, parameters.get("tenantId"));
+                parameters.remove("tenantId");
             } else {
                 url = bpmUrl + "/camunda/engine-rest/process-definition/key/{0}/start";
                 url = MessageFormat.format(url, key);

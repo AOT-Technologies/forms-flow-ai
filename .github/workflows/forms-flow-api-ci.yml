@@ -79,7 +79,6 @@ jobs:
       SKIP_IN_CI: "True"
       USE_DOCKER_MOCK: "True"
 
-
     runs-on: ubuntu-20.04
 
     services:

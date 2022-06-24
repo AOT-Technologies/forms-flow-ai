@@ -26,6 +26,7 @@ services:
     depends_on:
       - bpm
       - analytics
+      - forms
 
   keycloak:
     image: quay.io/keycloak/keycloak:14.0.0

@@ -140,6 +140,7 @@ def _perform_analysis(colnames, conn, results):
     table_name = APP_CONFIG.DATABASE_TABLE_NAME
     input_col = APP_CONFIG.DATABASE_INPUT_COLUMN
     output_col = APP_CONFIG.DATABASE_OUTPUT_COLUMN
+    output_score_col = APP_CONFIG.DATABASE_OUTPUT_COLUMN_CONFIDENCE
     if APP_CONFIG.SCHEMA_NAME:
         table_name = f"{APP_CONFIG.SCHEMA_NAME}.{table_name}"
     query_results = [dict(zip(colnames, result)) for result in results]
@@ -147,8 +148,11 @@ def _perform_analysis(colnames, conn, results):
     for result_dict in query_results:
         log_info(f"Finding sentiment for for {result_dict}")
         sentiment = overall_sentiment_transformers(result_dict.get(input_col))
+        overall_sentiment = sentiment["label"]
+        sentiment_score = sentiment["score"]
         log_info(f"Sentiment {sentiment}")
-        update_qry = f"update {table_name} set {output_col}='{sentiment}' where 1=1 "
+        update_qry = f"update {table_name} set {output_col}='{overall_sentiment}',\
+                    {output_score_col}='{sentiment_score}' where 1=1 "
         for key, value in result_dict.items():
             if key != input_col:
                 update_qry += f" AND {key}='{value}' "

@@ -3,6 +3,7 @@ package org.camunda.bpm.extension.hooks.rest.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.rest.constant.BpmClient;
+import org.camunda.bpm.extension.hooks.rest.dto.ProcessDefinitionDiagramDto;
 import org.camunda.bpm.extension.hooks.rest.dto.ProcessDefinitionDto;
 import org.camunda.bpm.extension.hooks.rest.dto.ProcessInstanceDto;
 import org.camunda.bpm.extension.hooks.rest.dto.StartProcessInstanceDto;
@@ -59,6 +60,33 @@ public class ProcessDefinitionRestServiceImpl extends AbstractRestService implem
 
         return ResponseEntity.ok(response);
     }
+
+    @Override
+    public ResponseEntity<ProcessDefinitionDiagramDto> getProcessDefinitionBpmn20Xml(Map<String, Object> parameters, String key) {
+
+        ProcessDefinitionDiagramDto response = null;
+        if(BpmClient.CAMUNDA.getName().equals(bpmClient)) {
+            String url = null;
+            if(parameters.containsKey("tenantId")){
+                url = bpmUrl + "/camunda/engine-rest/process-definition/key/{0}/tenant-id/{1}/xml";
+                url = MessageFormat.format(url, key, parameters.get("tenantId"));
+                parameters.remove("tenantId");
+            } else {
+                url = bpmUrl + "/camunda/engine-rest/process-definition/key/{0}/xml";
+                url = MessageFormat.format(url, key);
+            }
+            ResponseEntity<String> data = httpServiceInvoker.executeWithParamsAndPayload(url, HttpMethod.GET, parameters, null);
+            if (data.getStatusCode().is2xxSuccessful()) {
+                try {
+                    response = bpmObjectMapper.readValue(data.getBody(), ProcessDefinitionDiagramDto.class);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return ResponseEntity.ok(response);
+    }
+
     @Override
     public ResponseEntity<ProcessInstanceDto> startProcessInstanceByKey(Map<String, Object> parameters, StartProcessInstanceDto dto, String key) {
 

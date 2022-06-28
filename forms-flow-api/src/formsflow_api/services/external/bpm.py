@@ -64,7 +64,7 @@ class BPMService(BaseBPMService):
         """Post process start based on tenant key."""
         url = (
             f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"
-            f"key/{process_key}/tenant-id/{tenant_key}/start"
+            f"key/{process_key}/start?tenantId=" + tenant_key
         )
         return cls.post_request(url, token, payload=payload)
 
@@ -132,7 +132,7 @@ class BPMService(BaseBPMService):
         bpm_api_base = current_app.config.get("BPM_API_BASE")
         try:
             if endpoint_type == BPMEndpointType.PROCESS_DEFINITION:
-                url = f"{bpm_api_base}/engine-rest/process-definition"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/process-definition"
             elif endpoint_type == BPMEndpointType.FORM_AUTH_DETAILS:
                 url = f"{bpm_api_base}/engine-rest-ext/v1/form/authorization"
             elif endpoint_type == BPMEndpointType.HISTORY:

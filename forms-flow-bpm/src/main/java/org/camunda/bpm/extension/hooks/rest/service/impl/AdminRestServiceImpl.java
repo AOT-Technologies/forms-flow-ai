@@ -1,5 +1,17 @@
 package org.camunda.bpm.extension.hooks.rest.service.impl;
 
+import static org.camunda.bpm.engine.authorization.Authorization.AUTH_TYPE_GRANT;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.ArrayList;
+
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+
 import com.nimbusds.jose.shaded.json.JSONArray;
 import com.nimbusds.oauth2.sdk.util.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -10,7 +22,6 @@ import org.camunda.bpm.engine.authorization.Permissions;
 import org.camunda.bpm.engine.authorization.ProcessDefinitionPermissions;
 import org.camunda.bpm.engine.authorization.Resources;
 import org.camunda.bpm.engine.impl.persistence.entity.AuthorizationEntity;
-import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.TenantAuthorizationDto;
@@ -28,12 +39,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
-
-import javax.servlet.ServletException;
-import java.io.IOException;
-import java.util.*;
-
-import static org.camunda.bpm.engine.authorization.Authorization.AUTH_TYPE_GRANT;
 
 @Service
 public class AdminRestServiceImpl extends AbstractRestService implements AdminRestService {

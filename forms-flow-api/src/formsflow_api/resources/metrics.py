@@ -36,31 +36,39 @@ class AggregatedApplicationsResource(Resource):
             from_date = dict_data["from_date"]
             to_date = dict_data["to_date"]
             order_by = dict_data.get("order_by")
-
+            page_no = dict_data.get("page_no")
+            limit = dict_data.get("limit")
+            form_name = dict_data.get("form_name")
+            sort_by = dict_data.get("sort_by")
+            sort_order = dict_data.get("sort_order")
             if order_by == MetricsState.MODIFIED.value:
-                response, status = (
-                    (
-                        {
-                            "applications": AS.get_aggregated_applications_modified(
-                                from_date=from_date, to_date=to_date
-                            )
-                        }
-                    ),
-                    HTTPStatus.OK,
+                metrics_schema, metrics_count = AS.get_aggregated_applications_modified(
+                    from_date=from_date,
+                    to_date=to_date,
+                    page_no=page_no,
+                    limit=limit,
+                    form_name=form_name,
+                    sort_by=sort_by,
+                    sort_order=sort_order,
                 )
-
             else:
-                response, status = (
-                    (
-                        {
-                            "applications": AS.get_aggregated_applications(
-                                from_date=from_date, to_date=to_date
-                            )
-                        }
-                    ),
-                    HTTPStatus.OK,
+                metrics_schema, metrics_count = AS.get_aggregated_applications(
+                    from_date=from_date,
+                    to_date=to_date,
+                    page_no=page_no,
+                    limit=limit,
+                    form_name=form_name,
+                    sort_by=sort_by,
+                    sort_order=sort_order,
                 )
-            return response, status
+            return (
+                {
+                    "applications": metrics_schema,
+                    "totalCount": metrics_count,
+                    "pageNo": page_no,
+                    "limit": limit,
+                }
+            ), HTTPStatus.OK
         except ValidationError as metrics_err:
             response = {
                 "message": (

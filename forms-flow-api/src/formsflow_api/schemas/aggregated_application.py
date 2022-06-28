@@ -18,6 +18,11 @@ class ApplicationMetricsRequestSchema(Schema):
         format="%Y-%m-%dT%H:%M:%S+00:00", data_key="to", required=True
     )
     order_by = fields.Str(data_key="orderBy", required=False)
+    page_no = fields.Int(data_key="pageNo", required=False, allow_none=True)
+    limit = fields.Int(data_key="limit", required=False, allow_none=True)
+    form_name = fields.Str(data_key="formName", required=False)
+    sort_by = fields.Str(data_key="sortBy", required=False)
+    sort_order = fields.Str(data_key="sortOrder", required=False)
 
 
 class AggregatedApplicationSchema(Schema):

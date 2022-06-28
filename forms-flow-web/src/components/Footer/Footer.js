@@ -8,12 +8,12 @@ const Footer = React.memo(() => {
   //const today = new Date();
   return (
     <div className="row footer">
-      <div className="col-12 text-center text-align footer-text">
+      <div className="col-12 text-center text-align footer-text" role="main">
         <Translation>{(t) => t("Powered by ")}</Translation>
         <a
           href="https://formsflow.ai"
           target="_blank"
-          style={{ color: "#155CB5" }}
+          style={{ color: "#0000FF" }}
           rel="noreferrer"
         >
            formsflow.ai 

@@ -237,7 +237,7 @@ export const InsightDashboard = (props) => {
             <span>
               <i className="fa fa-user-circle-o mt-3" aria-hidden="true" />
             </span>
-            <span className="forms-text ">
+            <span className="forms-text" role="contentinfo" >
               <Translation>{(t) => t("Dashboard")}</Translation>
             </span>
           </h3>

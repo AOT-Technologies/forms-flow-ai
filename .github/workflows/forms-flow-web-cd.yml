@@ -36,9 +36,17 @@ jobs:
         with:
           install: true
       - name: Set version
+        if: ${{ github.ref == 'refs/heads/develop' }}
         working-directory: .
         run: |
           VER=$(cat VERSION)
+          echo "VERSION=$VER" >> $GITHUB_ENV
+      - name: Set version
+        if: ${{ github.ref == 'refs/heads/master' }}
+        working-directory: .
+        run: |
+          VER=$(cat VERSION)
+          VER=${VER/-alpha/''}
           echo "VERSION=$VER" >> $GITHUB_ENV
       
       - run: echo ${{ env.VERSION }}
@@ -66,17 +74,18 @@ jobs:
             ${{ runner.os }}-buildx-${{ matrix.name }}
 
       - name: Build and push Docker image
+        if: ${{ github.ref == 'refs/heads/develop' }}
         uses: docker/build-push-action@v2
         with:
           context: forms-flow-web
-          # builder: ${{ steps.buildx.outputs.name }}
           push: true
-#           file: ${{ matrix.dockerfile }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # cache-from: type=local,src=/tmp/.buildx-cache
-          # cache-to: type=local,dest=/tmp/.buildx-cache-new
-      # - name: Move cache
-      #  run: |
-      #    rm -rf /tmp/.buildx-cache
-      #    mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+      - name: Build and push Docker image
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: docker/build-push-action@v2
+        with:
+          context: forms-flow-web
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}, formsflow/forms-flow-web:latest
+          labels: ${{ steps.meta.outputs.labels }}

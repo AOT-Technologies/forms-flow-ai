@@ -301,22 +301,59 @@ class ApplicationService:
             raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
-    def get_aggregated_applications(from_date: str, to_date: str):
+    def get_aggregated_applications(   # pylint: disable=too-many-arguments
+        from_date: str,
+        to_date: str,
+        page_no: int,
+        limit: int,
+        form_name: str,
+        sort_by: str,
+        sort_order: str,
+    ):
         """Get aggregated applications."""
-        applications = Application.find_aggregated_applications(
-            from_date=from_date, to_date=to_date
+        applications, get_all_metrics_count = Application.find_aggregated_applications(
+            from_date=from_date,
+            to_date=to_date,
+            page_no=page_no,
+            limit=limit,
+            form_name=form_name,
+            sort_by=sort_by,
+            sort_order=sort_order,
         )
         schema = AggregatedApplicationSchema(exclude=("application_status",))
-        return schema.dump(applications, many=True)
+        return (
+            schema.dump(applications, many=True),
+            get_all_metrics_count,
+        )
 
     @staticmethod
-    def get_aggregated_applications_modified(from_date: datetime, to_date: datetime):
+    def get_aggregated_applications_modified(   # pylint: disable=too-many-arguments
+        from_date: datetime,
+        to_date: datetime,
+        page_no: int,
+        limit: int,
+        form_name: str,
+        sort_by: str,
+        sort_order: str,
+    ):
         """Get aggregated applications."""
-        applications = Application.find_aggregated_applications_modified(
-            from_date=from_date, to_date=to_date
+        (
+            applications,
+            get_all_metrics_count,
+        ) = Application.find_aggregated_applications_modified(
+            from_date=from_date,
+            to_date=to_date,
+            page_no=page_no,
+            limit=limit,
+            form_name=form_name,
+            sort_by=sort_by,
+            sort_order=sort_order,
         )
         schema = AggregatedApplicationSchema(exclude=("application_status",))
-        return schema.dump(applications, many=True)
+        return (
+            schema.dump(applications, many=True),
+            get_all_metrics_count,
+        )
 
     @staticmethod
     @user_context

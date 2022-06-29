@@ -31,8 +31,8 @@ public abstract class AbstractAccessHandler implements IAccessHandler{
         String token = null;
         Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication instanceof JwtAuthenticationToken) {
-            token = ((JwtAuthenticationToken)authentication).getToken().getTokenValue();
+        if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
+            token = jwtAuthenticationToken.getToken().getTokenValue();
         }
         return token;
     }

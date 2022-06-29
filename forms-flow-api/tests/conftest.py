@@ -138,6 +138,7 @@ def auto(docker_services, app):
 
         docker_services.start('bpm')
         docker_services.start('analytics')
+        docker_services.start('forms')
         docker_services.start('proxy')
 
 

@@ -1,7 +1,10 @@
 package org.camunda.bpm.extension.commons.connector.support;
 
+import com.google.gson.JsonObject;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.extension.commons.ro.req.IRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -18,9 +21,12 @@ import java.net.URI;
 import java.util.Map;
 import java.util.Properties;
 
+import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
+
 @Service("bpmAccessHandler")
 public class BPMAccessHandler extends AbstractAccessHandler{
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(BPMAccessHandler.class);
     private final Properties properties;
     private final WebClient webClient;
 
@@ -33,8 +39,7 @@ public class BPMAccessHandler extends AbstractAccessHandler{
     @Override
     public ResponseEntity<String> exchange(String url, HttpMethod method, Map<String, Object> queryParams, IRequest payload) {
 
-        String host = properties.getProperty("bpm.url");
-
+        String host = getBpmHostAddress();
 
         ResponseEntity<String> response = webClient
                 .method(method)
@@ -60,5 +65,10 @@ public class BPMAccessHandler extends AbstractAccessHandler{
             builder = builder.queryParam(entry.getKey(), entry.getValue());
         }
         return builder.build();
+    }
+
+    private String getBpmHostAddress(){
+        String host = properties.getProperty("bpm.url");
+        return StringUtils.substringBefore(host, "/engine-bpm");
     }
 }

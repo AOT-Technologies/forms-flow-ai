@@ -25,7 +25,7 @@ const AdminDashboard = () => {
   }, [dispatch]);
 
   return (
-    <div className="container" id="main">
+    <div className="container" id="main" tabIndex="0">
       <Switch>
         <Route exact path={`${BASE_ROUTE}admin`} component={InsightDashboard} />
         <Redirect from="*" to="/404" />

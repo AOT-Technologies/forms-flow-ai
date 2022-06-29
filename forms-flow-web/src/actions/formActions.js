@@ -14,6 +14,7 @@ export const setFormSubmissionError = (data) => (dispatch) => {
   });
 };
 
+
 export const setFormSubmissionLoading = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.IS_FORM_SUBMISSION_LOADING,
@@ -152,3 +153,4 @@ export const clearSubmissionError = (name) => (dispatch) => {
     name,
   });
 };
+

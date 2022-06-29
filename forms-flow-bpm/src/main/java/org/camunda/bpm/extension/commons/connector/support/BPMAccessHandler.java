@@ -1,5 +1,6 @@
 package org.camunda.bpm.extension.commons.connector.support;
 
+import com.google.gson.JsonObject;
 import org.apache.commons.lang.StringUtils;
 import org.camunda.bpm.extension.commons.ro.req.IRequest;
 import org.slf4j.Logger;
@@ -19,6 +20,8 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 import java.util.Map;
 import java.util.Properties;
+
+import static org.springframework.security.oauth2.client.web.reactive.function.client.ServerOAuth2AuthorizedClientExchangeFilterFunction.clientRegistrationId;
 
 @Service("bpmAccessHandler")
 public class BPMAccessHandler extends AbstractAccessHandler{

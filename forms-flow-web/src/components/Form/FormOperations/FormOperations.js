@@ -16,6 +16,7 @@ import {
   getFormProcesses,
   resetFormProcessData,
 } from "../../../apiManager/services/processServices";
+import { Translation } from "react-i18next";
 
 const FormOperations = React.memo(({ formData }) => {
   const redirectUrl = "/";
@@ -61,7 +62,7 @@ const FormOperations = React.memo(({ formData }) => {
       onClick={() => submitNewForm(formData._id)}
     >
       <i className="fa fa-pencil mr-1" />
-      Submit New
+      <Translation>{(t) => t("Submit New")}</Translation>
     </button>
   );
   const viewOrEdit = (
@@ -70,7 +71,7 @@ const FormOperations = React.memo(({ formData }) => {
       onClick={() => viewOrEditForm(formData._id)}
     >
       <i className="fa fa-pencil-square-o mr-1" />
-      View/Edit Form
+      <Translation>{(t) => t("View/Edit Form")}</Translation>
     </button>
   );
   const deleteForm = (

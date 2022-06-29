@@ -99,7 +99,7 @@ const List = React.memo((props) => {
   const sortBy = useSelector((state) => state.bpmForms.sortBy);
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
-  const columns = isDesigner ? designerColums() : userColumns();
+  const columns = isDesigner ? designerColums(t) : userColumns(t);
   const designerPage = forms.pagination.page;
   const designerLimit = forms.limit;
   const designTotalForms = forms.pagination.total;

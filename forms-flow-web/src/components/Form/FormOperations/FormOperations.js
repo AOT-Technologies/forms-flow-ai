@@ -32,7 +32,7 @@ const FormOperations = React.memo(({ formData }) => {
   const deleteForms = (formData) => {
     dispatch(setIsApplicationCountLoading(true));
     dispatch(
-      getFormProcesses(formData, (err, data) => {
+      getFormProcesses(formData._id, (err, data) => {
         const formDetails = {
           modalOpen: true,
           formId: formData._id,

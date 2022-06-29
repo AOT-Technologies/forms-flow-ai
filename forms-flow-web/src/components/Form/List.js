@@ -27,6 +27,7 @@ import {
   setBPMFormLimit,
   setBPMFormListLoading,
   setBPMFormListPage,
+  setBPMFormListSort,
   setFormDeleteStatus,
 } from "../../actions/formActions";
 import Confirm from "../../containers/Confirm";
@@ -37,6 +38,8 @@ import {
 import FileService from "../../services/FileService";
 import {
   setFormCheckList,
+  setFormLoading,
+  setFormSearchLoading,
   setFormUploadList,
   updateFormUploadCounter,
 } from "../../actions/checkListActions";
@@ -48,8 +51,15 @@ import { unPublishForm } from "../../apiManager/services/processServices";
 import { setBpmFormSearch } from "../../actions/formActions";
 import { checkAndAddTenantKey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
-import { designerColums, getoptions, userColumns } from "./constants/table";
+import {
+  designerColums,
+  getoptions,
+  userColumns,
+} from "./constants/table";
 import paginationFactory from "react-bootstrap-table2-paginator";
+import filterFactory from "react-bootstrap-table2-filter";
+import overlayFactory from "react-bootstrap-table2-overlay";
+import { SpinnerSVG } from "../../containers/SpinnerSVG";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -69,11 +79,18 @@ const List = React.memo((props) => {
   } = props;
 
   const isBPMFormListLoading = useSelector((state) => state.bpmForms.isActive);
+  const designerFormLoading = useSelector(
+    (state) => state.formCheckList.designerFormLoading
+  );
+  const seachFormLoading = useSelector(
+    (state) => state.formCheckList.searchFormLoading
+  );
   const bpmForms = useSelector((state) => state.bpmForms);
+  const [previousForms, setPreviousForms] = useState({});
   // View submissions feature will be deprecated in the future releases.
 
   // const showViewSubmissions = useSelector((state) => state.user.showViewSubmissions);
-  //const operations = getOperations(userRoles, showViewSubmissions);
+  const query = useSelector((state) => state.forms.query);
   const isDesigner = userRoles.includes(STAFF_DESIGNER);
   const searchText = useSelector((state) => state.bpmForms.searchText);
   const pageNo = useSelector((state) => state.bpmForms.page);
@@ -83,16 +100,12 @@ const List = React.memo((props) => {
   const sortOrder = useSelector((state) => state.bpmForms.sortOrder);
   const formCheckList = useSelector((state) => state.formCheckList.formList);
   const columns = isDesigner ? designerColums() : userColumns();
-  const paginatedForms = isDesigner ? forms.forms : bpmForms.forms;
   const designerPage = forms.pagination.page;
   const designerLimit = forms.limit;
   const designTotalForms = forms.pagination.total;
 
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
-  );
-  const isApplicationCountLoading = useSelector(
-    (state) => state.process.isApplicationCountLoading
   );
   const applicationCountResponse = useSelector(
     (state) => state.process.applicationCountResponse
@@ -101,26 +114,35 @@ const List = React.memo((props) => {
   const applicationCount = useSelector(
     (state) => state.process.applicationCount
   );
-  const bpmFormLoading = useSelector((state) => state.bpmForms.bpmFormLoading);
+  const sort = useSelector((state) => state.forms.sort);
+
+  const isAscending = isDesigner ? !sort.match(/^-/g) : null;
   const tenantKey = tenants?.tenantId;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
-  // const [previousForms, setPreviousForms] = useState({});
-
-  // useEffect(() => {
-  //   if (forms.forms.length > 0) {
-  //     setPreviousForms(forms);
-  //   }
-  // }, [forms]);
-
+  const [isLoading, setIsLoading] = React.useState(false);
   useEffect(() => {
     dispatch(setFormCheckList([]));
   }, [dispatch]);
 
   useEffect(() => {
+    if (forms.forms.length > 0) {
+      setPreviousForms(forms);
+    }
+  }, [forms]);
+
+  useEffect(() => {
+    setIsLoading(false);
+    if (isDesigner) {
+      dispatch(setFormLoading(true));
+    } else {
+      dispatch(setBPMFormListLoading(true));
+    }
+  }, []);
+
+  useEffect(() => {
     if (isDesigner) {
       getFormsInit(1);
     } else {
-      dispatch(setBPMFormListLoading(true));
       dispatch(fetchBPMFormList(pageNo, limit, sortBy, sortOrder, searchText));
     }
   }, [
@@ -151,11 +173,43 @@ const List = React.memo((props) => {
     uploadFormNode.current?.click();
     return false;
   };
-
   const handlePageChange = (type, newState) => {
+    dispatch(setFormSearchLoading(true));
+    let updatedQuery = {query:{...query}};
+    if (type === "sort") {
+      if (isDesigner) {
+        updatedQuery.sort = `${isAscending ? "-" : ""}title`;
+      }else{
+        let updatedSort;
+      if (sortOrder === "asc") {
+        updatedSort = "desc";
+        dispatch(setBPMFormListSort(updatedSort));
+      } else {
+        updatedSort = "asc";
+        dispatch(setBPMFormListSort(updatedSort));
+      }
+      }
+    }else if (type === "filter") {
+      let searchTitle = Object.keys(newState.filters).length
+        ? newState.filters.title.filterVal
+        : "";
+      if (isDesigner) {
+        updatedQuery.query.title__regex = searchTitle;
+      } else {
+        dispatch(setBpmFormSearch(searchTitle));
+      }
+    }
+
     if (isDesigner) {
       dispatch(
-        indexForms("forms", newState.page, { limit: newState.sizePerPage })
+        indexForms(
+          "forms",
+          newState.page,
+          { limit: newState.sizePerPage ,...updatedQuery},
+          () => {
+            dispatch(setFormSearchLoading(false));
+          }
+        )
       );
     } else {
       dispatch(setBPMFormLimit(newState.sizePerPage));
@@ -256,13 +310,53 @@ const List = React.memo((props) => {
     });
   };
 
+  const noDataFound = () => {
+    return (
+      <span>
+        <div
+          className="container"
+          style={{
+            maxWidth: "900px",
+            margin: "auto",
+            height: "60vh",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <h3>{t("No forms found")}</h3>
+          <Button
+            variant="outline-primary"
+            size="sm"
+            style={{
+              cursor: "pointer",
+            }}
+            onClick={resetForms}
+          >
+            {t("Click here to go back")}
+          </Button>
+        </div>
+      </span>
+    );
+  };
+
+  const formData =
+    (() =>
+      isDesigner
+        ? forms.forms.length || !searchFormLoading
+          ? forms.forms
+          : previousForms.forms
+        : bpmForms.forms)() || [];
+
   return (
     <>
       <FileModal
         modalOpen={showFormUploadModal}
         onClose={() => setShowFormUploadModal(false)}
       />
-      {(forms.isActive || isBPMFormListLoading) && !searchFormLoading ? (
+      {(forms.isActive || designerFormLoading || isBPMFormListLoading) &&
+      !searchFormLoading ? (
         <div data-testid="Form-list-component-loader">
           <Loading />
         </div>
@@ -353,75 +447,65 @@ const List = React.memo((props) => {
           </div>
           <section className="custom-grid grid-forms">
             <Errors errors={errors} />
-            {
-              <LoadingOverlay
-                active={
-                  searchFormLoading ||
-                  isApplicationCountLoading ||
-                  bpmFormLoading
-                }
-                spinner
-                text={t("Loading...")}
-              >
-                {searchFormLoading || paginatedForms.length ? (
-                  <ToolkitProvider
-                    keyField="title"
-                    data={isDesigner ? forms.forms : bpmForms.forms}
-                    columns={columns}
-                  >
-                    {(props) => {
-                      return (
-                        <div>
-                          <BootstrapTable
-                            remote={{
-                              pagination: true,
-                              filter: false,
-                              sort: false,
-                            }}
-                            pagination={paginationFactory(
-                              getoptions(
-                                isDesigner ? designerPage : pageNo,
-                                isDesigner ? designerLimit : limit,
-                                isDesigner ? designTotalForms : totalForms
-                              )
-                            )}
-                            onTableChange={handlePageChange}
-                            {...props.baseProps}
-                          />
-                        </div>
-                      );
-                    }}
-                  </ToolkitProvider>
-                ) : (
-                  <span>
-                    <div
-                      className="container"
-                      style={{
-                        maxWidth: "900px",
-                        margin: "auto",
-                        height: "60vh",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
+
+            <ToolkitProvider
+              bootstrap4
+              keyField="id"
+              data={formData}
+              columns={columns}
+              search
+            >
+              {(props) => {
+                return (
+                  <div>
+                    <LoadingOverlay
+                      active={seachFormLoading}
+                      spinner
+                      text="Loading..."
                     >
-                      <h3>{t("No forms found")}</h3>
-                      <Button
-                        variant="outline-primary"
-                        size="sm"
-                        style={{
-                          cursor: "pointer",
+                      <BootstrapTable
+                        remote={{
+                          pagination: true,
+                          filter: true,
+                          sort: true,
                         }}
-                        onClick={resetForms}
-                      >
-                        {t("Click here to go back")}
-                      </Button>
-                    </div>
-                  </span>
-                )}
-              </LoadingOverlay>
-            }
+                      
+                        Loading={isLoading}
+                        filter={filterFactory()}
+                        filterPosition={"top"}
+                        pagination={paginationFactory(
+                          getoptions(
+                            isDesigner ? designerPage : pageNo,
+                            isDesigner ? designerLimit : limit,
+                            isDesigner ? designTotalForms : totalForms
+                          )
+                        )}
+                        onTableChange={handlePageChange}
+                        {...props.baseProps}
+                        noDataIndication={() => noDataFound()}
+                        overlay={overlayFactory({
+                          spinner: <SpinnerSVG />,
+                          styles: {
+                            overlay: (base) => ({
+                              ...base,
+                              background: "rgba(255, 255, 255)",
+                              height: `${
+                                isDesigner
+                                  ? designerLimit
+                                  : limit > 5
+                                  ? "100% !important"
+                                  : "350px !important"
+                              }`,
+                              top: "65px",
+                            }),
+                          },
+                        })}
+                      />
+                    </LoadingOverlay>
+                  </div>
+                );
+              }}
+            </ToolkitProvider>
           </section>
         </div>
       )}
@@ -449,7 +533,14 @@ const getInitForms = (page = 1, query) => {
     const currentPage = state.forms.pagination.page;
     const maintainPagination = state.bpmForms.maintainPagination;
     dispatch(
-      indexForms("forms", maintainPagination ? currentPage : page, query)
+      indexForms(
+        "forms",
+        maintainPagination ? currentPage : page,
+        query,
+        () => {
+          dispatch(setFormLoading(false));
+        }
+      )
     );
   };
 };

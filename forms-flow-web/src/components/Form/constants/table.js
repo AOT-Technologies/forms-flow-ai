@@ -1,22 +1,36 @@
 import { Dropdown, DropdownButton } from "react-bootstrap";
+import { textFilter } from "react-bootstrap-table2-filter";
 import SelectFormForDownload from "../FileUpload/SelectFormForDownload";
 import FormOperations from "../FormOperations/FormOperations";
-import FormSearch from "../FormSearch/FormSearch";
+export const defaultSorted = [{
+  dataField: 'title',
+  order: 'desc'
+}];
 
 export const designerColums = () => [
   {
     dataField: "title",
-    text: <FormSearch />,
+    text: "Forms",
+    sort:true,
+    headerClasses: "form_title",
+    filter: textFilter({
+        delay: 800,
+        placeholder: `Search by form name`, // custom the input placeholder
+        caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+        className: "icon-search",
+      }),
   },
   {
     dataField: "operations",
     text: "Operations",
+    headerClasses: "form_operation",
     formatter: (cell, row) => {
       return <FormOperations formData={row} />;
     },
   },
   {
     dataField: "id",
+    headerClasses: "form_select",
     text: <SelectFormForDownload type="all" />,
     formatter: (cell, row) => <SelectFormForDownload form={row} />,
   },
@@ -25,7 +39,15 @@ export const designerColums = () => [
 export const userColumns = () => [
   {
     dataField: "title",
-    text: <FormSearch />,
+    text: "Forms",
+    sort:true,
+    headerClasses: "form_title",
+    filter: textFilter({
+        delay: 800,
+        placeholder: `Search by form name`, // custom the input placeholder
+        caseSensitive: false, // default is false, and true will only work when comparator is LIKE
+        className: "icon-search"
+      }),
   },
   {
     dataField: "operations",

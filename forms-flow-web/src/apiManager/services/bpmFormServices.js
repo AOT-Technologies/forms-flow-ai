@@ -10,6 +10,7 @@ import {
   setBpmFormLoading,
 } from "../../actions/formActions";
 import { replaceUrl } from "../../helper/helper";
+import { setFormSearchLoading } from "../../actions/checkListActions";
 
 export const fetchBPMFormList = (
   pageNo,
@@ -32,12 +33,14 @@ export const fetchBPMFormList = (
           dispatch(setBPMFormListLoading(false));
           //dispatch(setBPMLoader(false));
           dispatch(setBpmFormLoading(false));
+          dispatch(setFormSearchLoading(false));
 
           done(null, res.data);
         } else {
           dispatch(setBPMFormListLoading(false));
           //console.log("Error", res);
           dispatch(serviceActionError(res));
+          dispatch(setFormSearchLoading(false));
           //dispatch(setBPMTaskLoader(false));
         }
       })

@@ -46,7 +46,6 @@ it("should render the list component without breaking", () => {
   expect(screen.getByText("Create Form")).toBeInTheDocument();
   expect(screen.getByText("Upload Form")).toBeInTheDocument();
   expect(screen.getByText("Download Form")).toBeInTheDocument();
-  expect(screen.getByText("items per page")).toBeInTheDocument();
 });
 
 it("Should dispatch the file upload hanlder with an empty list when clicking upload button", async () => {

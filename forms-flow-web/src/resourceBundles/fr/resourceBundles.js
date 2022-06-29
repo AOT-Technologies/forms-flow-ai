@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_FR = {
-
+  "Search by form name":"Rechercher par nom de formulaire",
   "Click to search":"Cliquez pour rechercher",
   "No submissions found":"Aucune soumission trouvée",
   "No submission avaliable in the selected date. Please select another date range":"Aucune soumission disponible à la date sélectionnée. Veuillez sélectionner une autre plage de dates",

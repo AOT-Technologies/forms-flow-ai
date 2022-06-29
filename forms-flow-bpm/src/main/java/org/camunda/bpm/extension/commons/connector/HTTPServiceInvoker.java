@@ -50,15 +50,18 @@ public class HTTPServiceInvoker {
 
     private String getServiceId(String url) {
 
-        if(StringUtils.contains(url, getProperties().getProperty("api.url"))) {
-            return "applicationAccessHandler";
-        } else if(StringUtils.contains(url, getProperties().getProperty("bpm.url"))) {
-            return "bpmAccessHandler";
-        } else if(StringUtils.contains(url, getProperties().getProperty("analysis.url"))) {
-            return "textAnalyzerAccessHandler";
-        } else {
-            return "formAccessHandler";
-        }
+    	if (StringUtils.isNotBlank(getProperties().getProperty("api.url"))
+				&& StringUtils.contains(url, getProperties().getProperty("api.url"))) {
+			return "applicationAccessHandler";
+		} else if (StringUtils.isNotBlank(getProperties().getProperty("bpm.url"))
+				&& StringUtils.contains(url, getProperties().getProperty("bpm.url"))) {
+			return "bpmAccessHandler";
+		} else if (StringUtils.isNotBlank(getProperties().getProperty("analysis.url"))
+				&& StringUtils.contains(url, getProperties().getProperty("analysis.url"))) {
+			return "textAnalyzerAccessHandler";
+		} else {
+			return "formAccessHandler";
+		}
     }
 
     public Properties getProperties() {

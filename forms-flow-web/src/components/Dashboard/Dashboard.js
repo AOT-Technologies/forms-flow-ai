@@ -182,10 +182,10 @@ const Dashboard = React.memo(() => {
         spinner
         text={t("Loading...")}
       >
-        <div className="container dashboard_container mb-4" id="main">
-          <div className="dashboard mb-2">
+        <div className="container dashboard_container mb-4" id="main" role="complementary" >
+          <div className="dashboard mb-2" >
             <div className="row ">
-              <div className="col-12">
+              <div className="col-12" >
                 <h1 className="dashboard-title">
                   <i className="fa fa-pie-chart p-1" />
                   <Translation>{(t) => t("Metrics")}</Translation>

@@ -79,18 +79,18 @@ const Edit = React.memo(() => {
   //remove tenatkey form path name
   useEffect(() => {
     if (form.path && MULTITENANCY_ENABLED) {
-      const checkIfExist = removeTenantKey(form.path, tenantKey);
-      if (checkIfExist.valueWithTenantKey) {
-        dispatchFormAction({ type: "path", value: checkIfExist.newValue });
+      const newPath = removeTenantKey(form.path, tenantKey);
+      if (newPath) {
+        dispatchFormAction({ type: "path", value: newPath});
       }
     }
   }, [form.path]);
   // remove tenant key from form name
   useEffect(() => {
     if (form.name && MULTITENANCY_ENABLED) {
-      const checkIfExist = removeTenantKey(form.name, tenantKey);
-      if (checkIfExist.valueWithTenantKey) {
-        dispatchFormAction({ type: "name", value: checkIfExist.newValue });
+      const newName = removeTenantKey(form.name, tenantKey);
+      if (newName) {
+        dispatchFormAction({ type: "name", value: newName });
       }
     }
   }, [form.name]);

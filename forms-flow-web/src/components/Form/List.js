@@ -11,6 +11,8 @@ import {
   selectError,
   Errors,
   deleteForm,
+  Formio,
+  saveForm,
 } from "react-formio";
 import Loading from "../../containers/Loading";
 import {
@@ -21,7 +23,7 @@ import {
 } from "../../constants/constants";
 import "../Form/List.scss";
 import {
-  failForm,
+  setFormFailureErrorData,
   setBPMFormLimit,
   setBPMFormListLoading,
   setBPMFormListPage,
@@ -192,6 +194,7 @@ const List = React.memo((props) => {
               newFormData.access = FORM_ACCESS;
               newFormData.submissionAccess = SUBMISSION_ACCESS;
               formCreate(newFormData, (err) => {
+                Formio.cache = {}; //removing cache
                 if (err) {
                   // get the form Id of the form if exists already in the server
                   dispatch(
@@ -201,17 +204,24 @@ const List = React.memo((props) => {
                         newFormData.access = formObj.access;
                         newFormData.submissionAccess = formObj.submissionAccess;
                         // newFormData.tags = formObj.tags;
-                        formCreate(newFormData, (err) => {
-                          if (!err) {
-                            dispatch(updateFormUploadCounter());
-                            resolve();
-                          } else {
-                            dispatch(failForm("form", err));
-                            toast.error("Error in Json file structure");
-                            setShowFormUploadModal(false);
-                            reject();
-                          }
-                        });
+                        dispatch(
+                          saveForm(
+                            "form",
+                            newFormData,
+                            (newFormData,
+                            (err) => {
+                              if (!err) {
+                                dispatch(updateFormUploadCounter());
+                                resolve();
+                              } else {
+                                dispatch(setFormFailureErrorData("form", err));
+                                toast.error("Error in Json file structure");
+                                setShowFormUploadModal(false);
+                                reject();
+                              }
+                            })
+                          )
+                        );
                       } else {
                         toast.error("Error in Json file structure");
                         setShowFormUploadModal(false);

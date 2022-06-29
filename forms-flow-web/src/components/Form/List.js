@@ -461,7 +461,7 @@ const List = React.memo((props) => {
                     <LoadingOverlay
                       active={seachFormLoading}
                       spinner
-                      text="Loading..."
+                      text={t("Loading...")}
                     >
                       <BootstrapTable
                         remote={{

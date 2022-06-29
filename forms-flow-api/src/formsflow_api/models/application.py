@@ -418,7 +418,7 @@ class Application(
         return cls.tenant_authorization(query=query).count()
 
     @classmethod
-    def find_aggregated_applications(   # pylint: disable=too-many-arguments
+    def find_aggregated_applications(  # pylint: disable=too-many-arguments
         cls,
         from_date: str,
         to_date: str,
@@ -470,7 +470,7 @@ class Application(
         return pagination.items, total_count
 
     @classmethod
-    def find_aggregated_applications_modified(   # pylint: disable=too-many-arguments
+    def find_aggregated_applications_modified(  # pylint: disable=too-many-arguments
         cls,
         from_date: datetime,
         to_date: datetime,

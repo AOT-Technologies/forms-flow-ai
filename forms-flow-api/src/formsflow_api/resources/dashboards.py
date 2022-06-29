@@ -2,7 +2,7 @@
 import re
 from http import HTTPStatus
 
-from flask import g, request, current_app
+from flask import current_app, g, request
 from flask_restx import Namespace, Resource
 
 from formsflow_api.schemas import ApplicationListReqSchema

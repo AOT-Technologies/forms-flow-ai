@@ -12,11 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping(RestResource.BASE_PATH+"/v1"+ ProcessDefinitionRestResource.PATH)
+@RequestMapping(RestResource.BASE_PATH+"/v1"+ ProcessInstanceRestResource.PATH)
 public class ProcessInstanceRestResourceImpl  implements ProcessInstanceRestResource {
 
     private static final Logger LOG = LoggerFactory.getLogger(ProcessInstanceRestResourceImpl.class);
@@ -28,10 +29,10 @@ public class ProcessInstanceRestResourceImpl  implements ProcessInstanceRestReso
     }
 
     @Override
-    public EntityModel<ActivityInstanceDto> getActivityInstanceTree() {
+    public EntityModel<ActivityInstanceDto> getActivityInstanceTree(String id) {
 
-        ResponseEntity<ActivityInstanceDto> responseEntity = restService.getActivityInstanceTree();
+        ResponseEntity<ActivityInstanceDto> responseEntity = restService.getActivityInstanceTree(id);
         return EntityModel.of(responseEntity.getBody(),
-                linkTo(methodOn(ProcessInstanceRestResourceImpl.class).getActivityInstanceTree()).withSelfRel());
+                linkTo(methodOn(ProcessInstanceRestResourceImpl.class).getActivityInstanceTree(id)).withSelfRel());
     }
 }

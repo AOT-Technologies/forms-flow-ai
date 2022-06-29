@@ -40,7 +40,7 @@ class DashboardList(Resource):
                 url_path="dashboards", page_no=page_no, limit=limit
             )
             if response == "unauthorized":
-                return {"message": "Dashboard not found"}, HTTPStatus.NOT_FOUND
+                return {"message": "Permission Denied"}, HTTPStatus.UNAUTHORIZED
             if response is None:
                 return {"message": "Error"}, HTTPStatus.SERVICE_UNAVAILABLE
 
@@ -86,7 +86,7 @@ class DashboardDetail(Resource):
                 url_path=f"dashboards/{dashboard_id}"
             )
             if response == "unauthorized":
-                return {"message": "Dashboard not found"}, HTTPStatus.NOT_FOUND
+                return {"message": "Permission Denied"}, HTTPStatus.UNAUTHORIZED
             if response is None:
                 return {"message": "Error"}, HTTPStatus.SERVICE_UNAVAILABLE
 

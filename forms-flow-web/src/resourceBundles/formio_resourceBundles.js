@@ -2,7 +2,7 @@
 export const formio_resourceBundles = {
 
    "en": {
-
+      "Search by form name":"Search by form name",
       "Click to search":"Click to search",
   "No submissions found":"No submissions found",
   "No submission avaliable in the selected date. Please select another date range":"No submission avaliable in the selected date. Please select another date range",
@@ -223,7 +223,7 @@ export const formio_resourceBundles = {
    },
 
    "zh-CN": {
-       
+       "Search by form name":"按表格名称搜索",
       "Click to search":"点击搜索",
       "No submissions found":"未找到任何提交",
       "No submission avaliable in the selected date. Please select another date range":"在所选日期内没有可用的提交。请选择其他日期范围",
@@ -942,7 +942,7 @@ export const formio_resourceBundles = {
 
 
    "bg": {
-
+      "Search by form name":"Tŭrsene po ime na formulyara",
       "Click to search":"Щракнете за търсене",
     "No submissions found":"Няма намерени заявки",
     "No submission avaliable in the selected date. Please select another date range":"Няма налично подаване на избраната дата. Моля, изберете друг период от време",
@@ -1662,7 +1662,7 @@ export const formio_resourceBundles = {
 
 
    "pt": {
-
+      "Search by form name":"Pesquisar pelo nome do formulário",
       "Click to search":"Clique para pesquisar",
   "No submissions found":"Nenhum envio encontrado",
   "No submission avaliable in the selected date. Please select another date range":"Nenhuma submissão disponível na data selecionada. Selecione outro intervalo de datas",
@@ -2383,7 +2383,7 @@ export const formio_resourceBundles = {
 },
 
    "fr": {
-
+      "Search by form name":"Rechercher par nom de formulaire",
       "Click to search":"Cliquez pour rechercher",
       "No submissions found":"Aucune soumission trouvée",
       "No submission avaliable in the selected date. Please select another date range":"Aucune soumission disponible à la date sélectionnée. Veuillez sélectionner une autre plage de dates",
@@ -3106,7 +3106,7 @@ export const formio_resourceBundles = {
    },
 
    "de": {
-
+      "Search by form name":"Suche nach Formularnamen",
       "Click to search":"Klicken Sie, um zu suchen",
       "No submissions found":"Keine Einreichungen gefunden",
       "No submission avaliable in the selected date. Please select another date range":"Für das ausgewählte Datum ist keine Einreichung verfügbar. Bitte wählen Sie einen anderen Zeitraum aus",

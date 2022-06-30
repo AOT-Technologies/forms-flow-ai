@@ -13,6 +13,8 @@ import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
 
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.FormElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 
@@ -26,9 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 /**
  * BPM Form Data Pipeline Listener.
@@ -37,7 +36,7 @@ import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL
 @Named("BPMFormDataPipelineListener")
 public class BPMFormDataPipelineListener extends BaseListener implements TaskListener, ExecutionListener {
 
-    private Logger LOGGER = Logger.getLogger(BPMFormDataPipelineListener.class.getName());
+    private Logger LOGGER = LoggerFactory.getLogger(BPMFormDataPipelineListener.class);
 
     private Expression fields;
 
@@ -67,13 +66,13 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
     private void patchFormAttributes(DelegateExecution execution) throws IOException {
         String  formUrl= MapUtils.getString(execution.getVariables(),FORM_URL, null);
         if(StringUtils.isBlank(formUrl)) {
-            LOGGER.log(Level.SEVERE,"Unable to read submission for "+execution.getVariables().get(FORM_URL));
-            return;
-        }
-        ResponseEntity<String> response = httpServiceInvoker.execute(getUrl(execution), HttpMethod.PATCH, getModifiedFormElements(execution));
-        if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
-            throw new FormioServiceException("Unable to get patch values for: "+ formUrl+ ". Message Body: " +
-                    response.getBody());
+            LOGGER.error("Unable to read submission for Empty Url string");
+        } else {
+            ResponseEntity<String> response = httpServiceInvoker.execute(getUrl(execution), HttpMethod.PATCH, getModifiedFormElements(execution));
+            if (response.getStatusCodeValue() != HttpStatus.OK.value()) {
+                throw new FormioServiceException("Unable to get patch values for: " + formUrl + ". Message Body: " +
+                        response.getBody());
+            }
         }
     }
 

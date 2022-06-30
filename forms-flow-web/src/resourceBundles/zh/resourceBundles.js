@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
-
+  "Search by form name":"按表格名称搜索",
   "Click to search":"点击搜索",
   "No submissions found":"未找到任何提交",
   "No submission avaliable in the selected date. Please select another date range":"在所选日期内没有可用的提交。请选择其他日期范围",

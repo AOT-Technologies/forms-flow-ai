@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
- 
+    "Search by form name":"Tŭrsene po ime na formulyara",
     "Click to search":"Щракнете за търсене",
     "No submissions found":"Няма намерени заявки",
     "No submission avaliable in the selected date. Please select another date range":"Няма налично подаване на избраната дата. Моля, изберете друг период от време",

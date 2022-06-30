@@ -1,4 +1,6 @@
 openapi: 3.0.0
+x-stoplight:
+  id: e3xsbb4b5h78y
 info:
   title: forms-flow-forms API
   description: The API for forms-flow-forms.
@@ -6,86 +8,111 @@ info:
 servers:
   - url: 'http://{{baseurl}}'
   - url: 'http://localhost:3001'
+components:
+  securitySchemes:
+    x-jwt-token:
+      type: http
+      scheme: bearer
+  schemas:
+    Role:
+      title: Role
+      type: object
+      description: Role model
+      x-examples:
+        example-1:
+          tenantKey: string
+          title: string
+          description: string
+          designer: true
+      properties:
+        tenantKey:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        designer:
+          type: boolean
+        _id:
+          type: string
+      required:
+        - tenantKey
+        - title
+        - description
+security:
+  - bearerAuth: []
 paths:
+  /role:
+    post:
+      summary: ''
+      operationId: post-role
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+              examples:
+                example-1:
+                  value:
+                    tenantKey: string
+                    title: string
+                    description: string
+                    designer: true
+                    _id: test123
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+            examples:
+              example-1:
+                value:
+                  tenantKey: string
+                  title: string
+                  description: string
+                  designer: true
+                  _id: '123'
   /user/login:
     post:
-      tags:
-        - default
-      summary: Login to Form.io
+      summary: Admin Login
+      operationId: post-admin-login
+      responses:
+        '200':
+          description: OK
+          headers:
+            x-jwt-token:
+              schema:
+                type: string
+              description: test
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                example-1:
+                  value: {}
       requestBody:
         content:
           application/json:
             schema:
               type: object
-              examples:
-                example-1:
-                  value:
-                    data:
-                      email: test@test.com
-                      password: test
-      responses:
-        '200':
-          description: OK
-          headers:
-            X-Powered-By:
-              schema:
-                type: string
-                example: Express
-            Vary:
-              schema:
-                type: string
-                example: Origin
-            Access-Control-Allow-Origin:
-              schema:
-                type: string
-                example: '*'
-            Access-Control-Expose-Headers:
-              schema:
-                type: string
-                example: x-jwt-token
-            x-jwt-token:
-              schema:
-                type: string
-                example: >-
-                  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYyOGYwZWUyMTljZWJiOWNlYTRmMTJiMiJ9LCJmb3JtIjp7Il9pZCI6IjYyOGYwZWUwMTljZWJiOWNlYTRmMTIzZiJ9LCJpYXQiOjE2NTU4OTAyMTUsImV4cCI6MTY1NTkwNDYxNX0.4IEK2N7j9et_VyN2kTDrgb_IUz5ByY9LQgB_Twvs8vE
-            Content-Type:
-              schema:
-                type: string
-                example: application/json; charset=utf-8
-            ETag:
-              schema:
-                type: string
-                example: W/"119-cdOJti4LERpIYeSk+tU22e8fJ6Y"
-            Date:
-              schema:
-                type: string
-                example: Wed, 22 Jun 2022 09:30:15 GMT
-            Connection:
-              schema:
-                type: string
-                example: keep-alive
-            Keep-Alive:
-              schema:
-                type: string
-                example: timeout=5
-          content:
-            application/json:
-              schema:
-                type: object
-              examples:
-                example-1:
-                  value:
-                    _id: 628f0ee219cebb9cea4f12b2
-                    form: 628f0ee019cebb9cea4f123f
-                    owner: 628f0ee219cebb9cea4f12b2
-                    roles:
-                      - 628f0edf19cebb9cea4f1226
-                    data:
-                      email: test@test.com
-                    access: []
-                    externalIds: []
-                    created: '2022-05-26T05:23:46.195Z'
-                    modified: '2022-05-26T05:23:46.197Z'
+              properties:
+                data:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                    password:
+                      type: string
+            examples:
+              example-1:
+                value:
+                  data:
+                    email: string
+                    password: string
   /form:
     post:
       tags:

@@ -60,6 +60,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
+import { ASCENDING,DESCENDING } from "./constants/formListConstants";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -181,11 +182,11 @@ const List = React.memo((props) => {
         updatedQuery.sort = `${isAscending ? "-" : ""}title`;
       }else{
         let updatedSort;
-      if (sortOrder === "asc") {
-        updatedSort = "desc";
+      if (sortOrder === ASCENDING) {
+        updatedSort = DESCENDING;
         dispatch(setBPMFormListSort(updatedSort));
       } else {
-        updatedSort = "asc";
+        updatedSort = ASCENDING;
         dispatch(setBPMFormListSort(updatedSort));
       }
       }

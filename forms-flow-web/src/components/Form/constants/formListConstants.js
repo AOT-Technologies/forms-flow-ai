@@ -21,6 +21,8 @@ export const getFormattedForm = (form) => {
   return pick(form, columnsToPick);
 };
 
+export const ASCENDING = 'asc';
+export const DESCENDING = 'desc';
 export const getOperations = (userRoles, showViewSubmissions) => {
   let operations = [];
   if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {

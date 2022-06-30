@@ -301,7 +301,7 @@ class ApplicationService:
             raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
-    def get_aggregated_applications(   # pylint: disable=too-many-arguments
+    def get_aggregated_applications(  # pylint: disable=too-many-arguments
         from_date: str,
         to_date: str,
         page_no: int,
@@ -327,7 +327,7 @@ class ApplicationService:
         )
 
     @staticmethod
-    def get_aggregated_applications_modified(   # pylint: disable=too-many-arguments
+    def get_aggregated_applications_modified(  # pylint: disable=too-many-arguments
         from_date: datetime,
         to_date: datetime,
         page_no: int,

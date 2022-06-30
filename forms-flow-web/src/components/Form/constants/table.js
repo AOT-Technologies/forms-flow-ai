@@ -125,7 +125,7 @@ export const getoptions = (pageNo, limit, totalForms) => {
     sizePerPage: limit,
     page: pageNo,
     totalSize: totalForms,
-    sizePerPageList: getpageList(limit),
+    sizePerPageList: getpageList(totalForms),
     sizePerPageRenderer: customDropUp,
   };
 };

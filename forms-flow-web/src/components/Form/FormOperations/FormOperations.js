@@ -55,7 +55,7 @@ const FormOperations = React.memo(({ formData }) => {
       })
     );
   };
-  let roles = { CLIENT, STAFF_DESIGNER, STAFF_REVIEWER };
+  // let roles = { CLIENT, STAFF_DESIGNER, STAFF_REVIEWER };
   const submitNew = (
     <button
       className="btn  btn-primary operation_buttons"
@@ -71,7 +71,7 @@ const FormOperations = React.memo(({ formData }) => {
       onClick={() => viewOrEditForm(formData._id)}
     >
       <i className="fa fa-pencil-square-o mr-1" />
-      <Translation>{(t) => t("View/Edit Form")}</Translation>
+      <Translation>{(t) => t("View/Edit Form")}</Translation>{" "}
     </button>
   );
   const deleteForm = (
@@ -82,22 +82,17 @@ const FormOperations = React.memo(({ formData }) => {
   );
 
   let buttons = {
-    CLIENT: [submitNew],
+    CLIENT_OR_REVIEWER: [submitNew],
     STAFF_DESIGNER: [viewOrEdit, deleteForm],
-    STAFF_REVIEWER: [submitNew],
   };
-
   const formButtonOperations = () => {
-    let rolesKeys = Object.keys(roles);
-    let rolesValues = Object.values(roles);
     let operationButtons = [];
-    rolesValues.forEach((e, i) => {
-      if (userRoles.includes(e)) {
-        operationButtons.push(
-          ...buttons[rolesKeys[i]].filter((e) => !operationButtons.includes(e))
-        );
-      }
-    });
+    if (userRoles.includes(CLIENT) || userRoles.includes(STAFF_REVIEWER)) {
+      operationButtons.push(buttons.CLIENT_OR_REVIEWER);
+    }
+    if (userRoles.includes(STAFF_DESIGNER)) {
+      operationButtons.push(buttons.STAFF_DESIGNER); //  OPERATIONS.edit,
+    }
     return operationButtons;
   };
   return (

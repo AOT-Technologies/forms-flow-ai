@@ -232,9 +232,8 @@ const doProcessActions = (submission, ownProps) => {
     const data = getProcessReq(form, submission._id, "new", user);
     const tenantKey = getState().tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
-    const isPublic = window.location.href.includes("public");
-
-    if (isPublic) {
+    
+    if (!IsAuth) {
       // this is for anonymous
       dispatch(
         // eslint-disable-next-line no-unused-vars

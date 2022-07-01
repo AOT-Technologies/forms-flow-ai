@@ -37,3 +37,11 @@ export const formatForms = (forms) => {
     };
   });
 }; 
+
+export const getDraftReqFormat = (form, data)=>{
+  return {
+      formId: form._id,
+      applicationStatus: "Draft",
+      data: data
+  };
+};

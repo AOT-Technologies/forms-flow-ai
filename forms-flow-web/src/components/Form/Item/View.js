@@ -14,7 +14,10 @@ import { push } from "connected-react-router";
 import { Link, useParams } from "react-router-dom";
 import Loading from "../../../containers/Loading";
 import { useTranslation, Translation } from "react-i18next";
-import { getProcessReq } from "../../../apiManager/services/bpmServices";
+import {
+  getProcessReq,
+  getDraftReqFormat,
+} from "../../../apiManager/services/bpmServices";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import {
   setFormFailureErrorData,
@@ -38,6 +41,7 @@ import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
 import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import useInterval from "../../../customHooks/useInterval";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -55,10 +59,15 @@ const View = React.memo((props) => {
   const publicFormStatus = useSelector(
     (state) => state.formDelete.publicFormStatus
   );
-  
-  const isPublic = !props.isAuthenticated; 
+
+  const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  /**
+   * `draftData` is used for keeping the uptodate form entry,
+   * this will get updated on every change the form is having.
+   */
+  const [draftData, setDraftData] = useState({});
 
   const { formId } = useParams();
   const [showPublicForm, setShowPublicForm] = useState("checking");
@@ -121,7 +130,10 @@ const View = React.memo((props) => {
       );
     }
   }, [formId, dispatch, getPublicForm]);
-
+  /**
+   * Will create a draft application when the form is selected for entry.
+   */
+  useEffect(() => {console.log("**Initial draft");}, []);
   useEffect(() => {
     if (isPublic) {
       getFormData();
@@ -142,6 +154,15 @@ const View = React.memo((props) => {
       }
     }
   }, [publicFormStatus]);
+
+  /**
+   * We will repeatedly update the current state to draft table
+   * on purticular interval
+   */
+  useInterval(() => {
+    let payload = getDraftReqFormat(form, draftData?.data);
+    console.log("Interval running.. current state -> ", payload);
+  }, 15000);
 
   if (isActive || isPublicStatusLoading) {
     return (
@@ -211,6 +232,7 @@ const View = React.memo((props) => {
               i18n: formio_resourceBundles,
             }}
             hideComponents={hideComponents}
+            onChange={(data) => setDraftData(data)}
             onSubmit={(data) => {
               onSubmit(data, form._id);
             }}

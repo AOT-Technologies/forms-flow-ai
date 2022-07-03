@@ -14,6 +14,7 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from formsflow_api import config, models
 from formsflow_api.models import db, ma
 from formsflow_api.resources import API
+from formsflow_api.services.external import FormioService
 from formsflow_api.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
@@ -104,7 +105,12 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
             return response
 
     register_shellcontext(app)
-
+    with app.app_context():
+        service = FormioService()
+        app.logger.info("Establishing new connection to formio...")
+        role_ids = service.get_role_ids()
+        if role_ids:
+            app.logger.info("Connection with formio closed successfully.")
     return app
 
 

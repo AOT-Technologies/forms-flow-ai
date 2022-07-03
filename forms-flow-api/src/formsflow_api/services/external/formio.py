@@ -51,6 +51,7 @@ class FormioService:
         if response.ok:
             form_io_token = response.headers["x-jwt-token"]
             return form_io_token
+        current_app.logger.error("Unable to get access token form Formio server!")
         raise BusinessException(
             "Unable to get access token from formio server", HTTPStatus.BAD_REQUEST
         )
@@ -62,4 +63,19 @@ class FormioService:
         response = requests.post(url, headers=headers, data=json.dumps(data))
         if response.ok:
             return response.json()
+        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+
+    def get_role_ids(self):
+        """Get request to forio API to retrieve role ids."""
+        url = f"{self.base_url}/role"
+        headers = {
+            "x-jwt-token": self.get_formio_access_token()
+        }
+        current_app.logger.info("Role id fetching started...")
+
+        response = requests.get(url, headers=headers)
+        if response.ok:
+            current_app.logger.info("Role ids collected successfully...")
+            return response.json()
+        current_app.logger.error("Failed to fetch role ids !!!")
         raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)

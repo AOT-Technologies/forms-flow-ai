@@ -15,6 +15,8 @@ from formsflow_api import config, models
 from formsflow_api.models import db, ma
 from formsflow_api.resources import API
 from formsflow_api.services.external import FormioService
+from formsflow_api.schemas import FormioRoleSchema
+from formsflow_api.utils.enums import FormioRoles
 from formsflow_api.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
@@ -106,11 +108,24 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
 
     register_shellcontext(app)
     with app.app_context():
-        service = FormioService()
-        app.logger.info("Establishing new connection to formio...")
-        role_ids = service.get_role_ids()
-        if role_ids:
-            app.logger.info("Connection with formio closed successfully.")
+        try:
+            service = FormioService()
+            app.logger.info("Establishing new connection to formio...")
+            role_ids = FormioRoleSchema().load(service.get_role_ids(), many=True)
+            roles_enum = [item.value for item in FormioRoles]
+            role_ids_filtered = list(
+                filter(lambda item: item["role"] in roles_enum, role_ids)
+            )
+            # Cache will be having infinite expiry
+            if role_ids:
+                cache.set(
+                    "formio_role_ids",
+                    role_ids_filtered,
+                    timeout=0,
+                )
+                app.logger.info("Role ids saved to cache successfully.")
+        except Exception as err:
+            app.logger.error(err)
     return app
 
 

@@ -17,7 +17,9 @@ class BaseBPMService:
         headers = cls._get_headers_(token)
         response = requests.get(url, headers=headers)
         data = None
-        current_app.logger.debug("GET URL : %s, Response Code : %s", url, response.status_code)
+        current_app.logger.debug(
+            "GET URL : %s, Response Code : %s", url, response.status_code
+        )
         if response.ok:
             data = json.loads(response.text)
         else:
@@ -36,7 +38,9 @@ class BaseBPMService:
         headers = cls._get_headers_(token)
         payload = json.dumps(payload)
         response = requests.post(url, data=payload, headers=headers, timeout=120)
-        current_app.logger.debug("POST URL : %s, Response Code : %s", url, response.status_code)
+        current_app.logger.debug(
+            "POST URL : %s, Response Code : %s", url, response.status_code
+        )
         data = None
         if response.ok:
             if response.text:

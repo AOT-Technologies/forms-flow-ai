@@ -20,6 +20,7 @@ from formsflow_api.resources.metrics import API as APPLICATION_METRICS_API
 from formsflow_api.resources.process import API as PROCESS_API
 from formsflow_api.resources.user import API as KEYCLOAK_USER_API
 from formsflow_api.utils.constants import ALLOW_ALL_ORIGINS
+from formsflow_api.resources.formio import API as FORMIO_API
 
 # This will add the Authorize button to the swagger docs
 # oauth2 & openid may not yet be supported by restplus
@@ -69,3 +70,4 @@ API.add_namespace(KEYCLOAK_GROUPS_API, path="/groups")
 API.add_namespace(PROCESS_API, path="/process")
 API.add_namespace(PUBLIC_API, path="/public")
 API.add_namespace(KEYCLOAK_USER_API, path="/user")
+API.add_namespace(FORMIO_API, path="/formio")

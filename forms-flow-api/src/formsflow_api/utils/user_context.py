@@ -20,6 +20,7 @@ class UserContext:  # pylint: disable=too-many-instance-attributes
         self._tenant_key = token_info.get("tenantKey", None)
         self._user_name = token_info.get("preferred_username", None)
         self._bearer_token: str = _get_token()
+        self.token_info = token_info
 
     @property
     def tenant_key(self) -> str:

@@ -1,5 +1,5 @@
 """Enum User Definition."""
-from enum import Enum
+from enum import Enum, unique
 
 
 class FormProcessMapperStatus(Enum):
@@ -25,3 +25,13 @@ class ApplicationSortingParameters:  # pylint: disable=too-few-public-methods
     Status = "applicationStatus"
     Modified = "modified"
     FormName = "formName"
+
+
+@unique
+class FormioRoles(Enum):
+    """Roles and corresponding machine names."""
+
+    CLIENT = "formsflowClient"
+    REVIEWER = "formsflowReviewer"
+    DESIGNER = "administrator"
+    ANONYMOUS = "anonymous"

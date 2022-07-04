@@ -12,6 +12,13 @@ import re
 from .constants import ALLOW_ALL_ORIGINS
 from .enums import ApplicationSortingParameters
 from .translations.translations import translations
+from .constants import (
+    DESIGNER_GROUP,
+    REVIEWER_GROUP,
+    CLIENT_GROUP,
+)
+
+from .enums import FormioRoles
 
 
 def cors_preflight(methods: str = "GET"):
@@ -86,3 +93,20 @@ def translate(to_lang: str, data: dict) -> dict:
         raise err
     except Exception as err:
         raise err
+
+
+def get_role_ids_from_user_groups(role_ids, user_role):
+    """Filters out formio role ids specific to user groups."""
+
+    if DESIGNER_GROUP in user_role:
+        return role_ids
+    if REVIEWER_GROUP in user_role:
+        return filter_list_by_user_role(FormioRoles.REVIEWER.value, role_ids)
+    if CLIENT_GROUP in user_role:
+        return filter_list_by_user_role(FormioRoles.CLIENT.value, role_ids)
+    return filter_list_by_user_role(FormioRoles.ANONYMOUS.value, role_ids)
+
+
+def filter_list_by_user_role(formio_role, role_ids):
+    """Iterate over role_ids and return entries with matching formio role."""
+    return list(filter(lambda item: item["role"] == formio_role, role_ids))

@@ -18,5 +18,5 @@ from formsflow_api.schemas.form_process_mapper import (
 )
 from formsflow_api.schemas.keycloak_groups import KeycloakDashboardGroupSchema
 from formsflow_api.schemas.user import UserlocaleReqSchema
-
+from formsflow_api.schemas.formio_roles import FormioRoleSchema
 from .process import ProcessListSchema

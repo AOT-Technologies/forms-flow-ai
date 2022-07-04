@@ -1,3 +1,4 @@
+"""This manages draft Response Schema."""
 from marshmallow import EXCLUDE, Schema, fields
 
 
@@ -10,7 +11,10 @@ class DraftSchema(Schema):
         unknown = EXCLUDE
 
     _id = fields.Str(data_key="_id")
+    id = fields.Int(data_key="id")
     application_id = fields.Int(data_key="applicationId")
     data = fields.Dict(data_key="data", required=True)
     created = fields.Str()
     modified = fields.Str()
+    status = fields.Str(data_key="status")  # active/inactive
+

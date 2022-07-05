@@ -9,16 +9,14 @@ translate - Translate the response to provided language
 """
 import re
 
-from .constants import ALLOW_ALL_ORIGINS
-from .enums import ApplicationSortingParameters
-from .translations.translations import translations
 from .constants import (
+    ALLOW_ALL_ORIGINS,
+    CLIENT_GROUP,
     DESIGNER_GROUP,
     REVIEWER_GROUP,
-    CLIENT_GROUP,
 )
-
-from .enums import FormioRoles
+from .enums import ApplicationSortingParameters, FormioRoles
+from .translations.translations import translations
 
 
 def cors_preflight(methods: str = "GET"):
@@ -97,6 +95,8 @@ def translate(to_lang: str, data: dict) -> dict:
 
 def get_role_ids_from_user_groups(role_ids, user_role):
     """Filters out formio role ids specific to user groups."""
+    if user_role is None or user_role is None:
+        raise ValueError("Inavlid arguments passed")
 
     if DESIGNER_GROUP in user_role:
         return role_ids
@@ -104,7 +104,7 @@ def get_role_ids_from_user_groups(role_ids, user_role):
         return filter_list_by_user_role(FormioRoles.REVIEWER.value, role_ids)
     if CLIENT_GROUP in user_role:
         return filter_list_by_user_role(FormioRoles.CLIENT.value, role_ids)
-    return filter_list_by_user_role(FormioRoles.ANONYMOUS.value, role_ids)
+    return None
 
 
 def filter_list_by_user_role(formio_role, role_ids):

@@ -2,16 +2,17 @@
 
 from http import HTTPStatus
 
+from flask import current_app
 from flask_restx import Namespace, Resource
-from formsflow_api.utils.user_context import UserContext, user_context
-from formsflow_api.utils import get_role_ids_from_user_groups
 
 from formsflow_api.utils import (
     auth,
     cache,
     cors_preflight,
+    get_role_ids_from_user_groups,
     profiletime,
 )
+from formsflow_api.utils.user_context import UserContext, user_context
 
 API = Namespace("Formio", description="formio")
 
@@ -29,6 +30,7 @@ class FormioResource(Resource):
         """Get role ids from cache."""
         try:
             user: UserContext = kwargs["user"]
+            assert user.token_info is not None
             user_role = user.token_info["role"]
             role_ids = cache.get("formio_role_ids")
             result = get_role_ids_from_user_groups(role_ids, user_role)
@@ -38,7 +40,13 @@ class FormioResource(Resource):
 
             return (
                 {"message": "Role ids not available on server"},
-                HTTPStatus.NOT_FOUND,
+                HTTPStatus.SERVICE_UNAVAILABLE,
+            )
+        except ValueError as err:
+            current_app.logger.warning(err)
+            return (
+                {"message": "Role ids not available on server"},
+                HTTPStatus.SERVICE_UNAVAILABLE,
             )
 
         except Exception as err:

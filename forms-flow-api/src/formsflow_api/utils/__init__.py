@@ -6,6 +6,7 @@ from .constants import (
     ALLOW_ALL_APPLICATIONS,
     ALLOW_ALL_ORIGINS,
     ANONYMOUS_USER,
+    CLIENT_GROUP,
     CORS_ORIGINS,
     DEFAULT_PROCESS_KEY,
     DEFAULT_PROCESS_NAME,
@@ -16,7 +17,6 @@ from .constants import (
     KEYCLOAK_DASHBOARD_BASE_GROUP,
     NEW_APPLICATION_STATUS,
     REVIEWER_GROUP,
-    CLIENT_GROUP,
 )
 from .enums import ApplicationSortingParameters
 from .format import CustomFormatter
@@ -25,7 +25,7 @@ from .profiler import profiletime
 from .user_context import UserContext, user_context
 from .util import (
     cors_preflight,
+    get_role_ids_from_user_groups,
     translate,
     validate_sort_order_and_order_by,
-    get_role_ids_from_user_groups,
 )

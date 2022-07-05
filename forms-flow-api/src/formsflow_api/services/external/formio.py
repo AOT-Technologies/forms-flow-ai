@@ -51,9 +51,9 @@ class FormioService:
         if response.ok:
             form_io_token = response.headers["x-jwt-token"]
             return form_io_token
-        current_app.logger.error("Unable to get access token form Formio server!")
         raise BusinessException(
-            "Unable to get access token from formio server", HTTPStatus.BAD_REQUEST
+            "Unable to get access token from formio server",
+            HTTPStatus.SERVICE_UNAVAILABLE,
         )
 
     def create_form(self, data, formio_token):

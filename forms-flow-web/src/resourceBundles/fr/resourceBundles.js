@@ -160,6 +160,7 @@ export const RESOURCE_BUNDLES_FR = {
  "Modified Date":"Date modifiée",
   "File Upload Status":"État du téléchargement du fichier",
   "Forms Completed":"Formulaires remplis",
+  "Form Completed" : "Formulaire complété",
   " No forms found":"Aucun formulaire trouvé",
   "Powered by ":"Alimenté par ",
   "No applications found":"No applications found",

@@ -157,6 +157,7 @@ export const RESOURCE_BUNDLES_BG = {
     "Modified Date": "Дата на промяна",
     "File Upload Status": "Състояние на качване на файл",
     "Forms Completed": "Формулярите са попълнени",
+    "Form Completed" : "Формулярът е попълнен",
     "No forms found": "Няма намерени формуляри",
     "Powered by ": "Задвижвани от ",
     "No Process Diagram found": "Не е намерена диаграма на процеса",

@@ -166,6 +166,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Modified Date": "Modified Date",
   "File Upload Status": "File Upload Status",
   "Forms Completed": "Forms Completed",
+  "Form Completed": "Form Completed",
   "No forms found": "No forms found",
   "Powered by ": "Powered by ",
   "Press Enter key or click here to search": "Press Enter key or click here to search",

@@ -156,6 +156,7 @@ export const RESOURCE_BUNDLES_ZH = {
  "Modified Date": "修改日期",
   "File Upload Status": "文件上传状态",
   "Forms Completed": "完成的表格",
+  "Form Completed" : "表格完成",
   "No forms found": "没有找到表格",
   "Powered by ": "供电 ",
   "No Process Diagram found": "未找到流程图",

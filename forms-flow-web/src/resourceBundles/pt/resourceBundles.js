@@ -162,6 +162,7 @@ export const RESOURCE_BUNDLES_PT = {
  "Modified Date": "Data modificada",
   "File Upload Status": "Status de upload de arquivo",
   "Forms Completed": "Formulários preenchidos",
+  "Form Completed" : "Formulário preenchido",
   "No forms found": "Nenhum formulário encontrado",
   "Powered by ": "Distribuído por ",
   "No Process Diagram found": "Nenhum diagrama de processo encontrado",

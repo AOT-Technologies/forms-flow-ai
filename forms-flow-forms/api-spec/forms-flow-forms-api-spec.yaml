@@ -74,6 +74,21 @@ paths:
                   description: string
                   designer: true
                   _id: '123'
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-1:
+                  value:
+                    results:
+                      - _id: 1
+                        machineName: formsflowReviewer
   /user/login:
     post:
       summary: Admin Login

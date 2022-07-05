@@ -58,7 +58,7 @@ const FormOperations = React.memo(({ formData }) => {
   
   const submitNew = (
     <button
-      className="btn  btn-primary operation_buttons"
+      className="btn  btn-primary"
       onClick={() => submitNewForm(formData._id)}
     >
       <i className="fa fa-pencil mr-1" />
@@ -67,7 +67,7 @@ const FormOperations = React.memo(({ formData }) => {
   );
   const viewOrEdit = (
     <button
-      className="btn  btn-primary operation_buttons"
+      className="btn  btn-outline-secondary"
       onClick={() => viewOrEditForm(formData._id)}
     >
       <i className="fa fa-pencil-square-o mr-1" />

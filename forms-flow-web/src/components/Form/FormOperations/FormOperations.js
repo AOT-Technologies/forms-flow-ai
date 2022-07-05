@@ -67,7 +67,7 @@ const FormOperations = React.memo(({ formData }) => {
   );
   const viewOrEdit = (
     <button
-      className="btn  btn-outline-secondary"
+      className="btn  btn-outline-primary"
       onClick={() => viewOrEditForm(formData._id)}
     >
       <i className="fa fa-pencil-square-o mr-1" />

@@ -2,6 +2,7 @@
 
 from http import HTTPStatus
 
+from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import Draft, FormProcessMapper
 from formsflow_api.utils import DRAFT_APPLICATION_STATUS
 from formsflow_api.utils.user_context import UserContext, user_context
@@ -37,3 +38,12 @@ class DraftService:
         # Function to create application in DB
         application = Draft.create_from_dict(data)
         return application, HTTPStatus.CREATED
+
+    @staticmethod
+    def update_submission(draft_id: int, data):
+        """Update submission."""
+        draft = Draft.find_by_id(draft_id=draft_id)
+        if draft:
+            draft.update(data)
+        else:
+            raise BusinessException("Invalid draft", HTTPStatus.BAD_REQUEST)

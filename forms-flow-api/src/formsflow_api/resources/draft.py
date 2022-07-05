@@ -45,3 +45,34 @@ class DraftResource(Resource):
             current_app.logger.warning(response)
             current_app.logger.warning(draft_err)
             return response, status
+
+
+@cors_preflight("PUT,OPTIONS")
+@API.route("/<int:draft_id>", methods=["PUT", "OPTIONS"])
+class DraftResourceById(Resource):
+    """Resource for managing draft by id."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def put(draft_id: int):
+        """Update draft details."""
+        draft_json = request.get_json()
+        try:
+            draft_schema = DraftSchema()
+            dict_data = draft_schema.load(draft_json)
+            DraftService.update_submission(draft_id=draft_id, data=dict_data)
+            return (
+                f"Updated {draft_id} successfully",
+                HTTPStatus.OK,
+            )
+        except BaseException as submission_err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data",
+            }, HTTPStatus.BAD_REQUEST
+
+            current_app.logger.warning(response)
+            current_app.logger.warning(submission_err)
+
+            return response, status

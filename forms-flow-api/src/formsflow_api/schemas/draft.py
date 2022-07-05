@@ -16,5 +16,4 @@ class DraftSchema(Schema):
     data = fields.Dict(data_key="data", required=True)
     created = fields.Str()
     modified = fields.Str()
-    status = fields.Str(data_key="status")  # active/inactive
-
+    status = fields.Int(data_key="status")  # active/inactive

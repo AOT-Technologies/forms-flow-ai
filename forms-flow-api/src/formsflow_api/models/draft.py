@@ -51,3 +51,18 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
             draft.save()
             return draft
         return None
+
+    def update(self, draft_info: dict):
+        """Update draft."""
+        self.update_from_dict(
+            [
+                "data",
+            ],
+            draft_info,
+        )
+        self.commit()
+
+    @classmethod
+    def find_by_id(cls, draft_id: int) -> Draft:
+        """Find draft that matches the provided id."""
+        return cls.query.filter_by(id=draft_id).first()

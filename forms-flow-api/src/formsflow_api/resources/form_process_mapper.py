@@ -2,9 +2,12 @@
 
 import json
 from http import HTTPStatus
+import string
+from urllib.parse import urlparse
 
 from flask import current_app, request
 from flask_restx import Namespace, Resource
+from flask import render_template, make_response
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.schemas import (
@@ -18,10 +21,14 @@ from formsflow_api.services import (
 )
 from formsflow_api.utils import (
     DESIGNER_GROUP,
+    REVIEWER_GROUP,
     auth,
     cors_preflight,
     profiletime,
 )
+from formsflow_api.utils.pdf import get_pdf_from_html, pdf_response
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 API = Namespace("Form", description="Form")
 
@@ -380,6 +387,54 @@ class FormioFormResource(Resource):
                     HTTPStatus.FORBIDDEN,
                 )
             return response, status
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
+
+@API.route("/<string:form_id>/submission/<string:submission_id>/render", doc=False)
+class FormResourceRenderFormPdf(Resource):
+    """Resource to render form and submission details as html for FormResourceExportFormPdf function """
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def get(form_id: string, submission_id: string):
+        formio_service = FormioService()
+        form_io_token = formio_service.get_formio_access_token()
+        req_data = {'form_id' : form_id, 'sub_id': submission_id }
+
+        form_data = formio_service.get_form(req_data, form_io_token)
+        submission_data = formio_service.get_submission(req_data, form_io_token)
+        form_info = {'form_data': form_data, 'submission_data' : submission_data}
+        headers = {'Content-Type': 'text/html'}
+        return make_response(render_template("index.html", form = form_info), 200, headers)
+
+@cors_preflight("GET,OPTIONS")
+@API.route("/<string:form_id>/submission/<string:submission_id>/export/pdf/", methods=["GET", "OPTIONS"])
+class FormResourceExportFormPdf(Resource):
+    """Resource to export form and submission details as pdf"""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def get(form_id: string, submission_id: string):
+        try:
+            if auth.has_role([REVIEWER_GROUP]):
+                host = urlparse(request.base_url)
+                token = request.headers.get('Authorization')
+                url = host.scheme + '://' + host.netloc + '/form/'+ form_id +'/submission/'+ submission_id +'/render'
+                fileName = 'Application_' + form_id +'_' + submission_id + '_export.pdf'
+                result = get_pdf_from_html(
+                    url, chromedriver=ChromeDriverManager().install(), wait='completed', auth_token = token)
+                return pdf_response(result, fileName)
+            else:
+                response, status = (
+                    {
+                        "message": "Permission Denied",
+                    },
+                    HTTPStatus.FORBIDDEN,
+                )
+                return response, status
         except BusinessException as err:
             current_app.logger.warning(err.error)
             return err.error, err.status_code

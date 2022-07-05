@@ -1,0 +1,28 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
+    <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+    <script type="text/javascript">
+      window.onload = function() {
+
+        form_info = {{ form|tojson }}
+
+        Formio.createForm(document.getElementById('formio'), form_info.form_data, { readOnly: true}).then(function(form) {
+          // Defaults are provided as follows.
+          form.submission = {
+            data: form_info.submission_data.data
+          };
+          document.getElementById('formio').classList.add("completed")
+          
+        });
+        
+      };
+    </script>
+  </head>
+  <body>
+    <div id="formio"></div>
+  </body>
+</html>

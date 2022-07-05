@@ -63,3 +63,21 @@ class FormioService:
         if response.ok:
             return response.json()
         raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+
+    def get_form(self, data, formio_token):
+        """Get request to formio API to get form details."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = f"{self.base_url}/form/"+ data['form_id']
+        response = requests.get(url, headers=headers)
+        if response.ok:
+            return response.json()
+        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)
+
+    def get_submission(self, data, formio_token):
+        """Get request to formio API to get submission details."""
+        headers = {"Content-Type": "application/json", "x-jwt-token": formio_token}
+        url = f"{self.base_url}/form/"+ data['form_id'] +"/submission/"+ data['sub_id']
+        response = requests.get(url, headers=headers, data=json.dumps(data))
+        if response.ok:
+            return response.json()
+        raise BusinessException(response.json(), HTTPStatus.BAD_REQUEST)

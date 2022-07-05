@@ -89,6 +89,12 @@ paths:
                     results:
                       - _id: 1
                         machineName: formsflowReviewer
+                      - _id: 2
+                        machineName: administrator
+                      - _id: 3
+                        machineName: formsflowClient
+                      - _id: 4
+                        machineName: anonymous
   /user/login:
     post:
       summary: Admin Login

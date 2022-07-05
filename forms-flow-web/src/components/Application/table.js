@@ -144,7 +144,7 @@ export const columns = (
           options: getApplicationStatusOptions(applicationStatus),
           style: customStyle,
           placeholder: `${t("All")}`,
-          defaultValue: "All",
+          defaultValue: `${t("All")}`,
           caseSensitive: false, // default is false, and true will only work when comparator is LIKE
           getFilter: (filter) => {
             statusFilter = filter;

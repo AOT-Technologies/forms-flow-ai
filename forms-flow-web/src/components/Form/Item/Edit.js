@@ -81,7 +81,7 @@ const Edit = React.memo(() => {
     if (form.path && MULTITENANCY_ENABLED) {
       const newPath = removeTenantKey(form.path, tenantKey);
       if (newPath) {
-        dispatchFormAction({ type: "path", value: newPath});
+        dispatchFormAction({ type: "path", value: newPath });
       }
     }
   }, [form.path]);
@@ -108,7 +108,8 @@ const Edit = React.memo(() => {
 
   // set the anonymous value
   const changeAnonymous = (setvalue) => {
-    let latestValue = setvalue !== undefined ? setvalue : !processListData.anonymous;
+    let latestValue =
+      setvalue !== undefined ? setvalue : !processListData.anonymous;
     let newData = {
       ...processListData,
       anonymous: latestValue,
@@ -170,10 +171,10 @@ const Edit = React.memo(() => {
     newFormData.submissionAccess = SUBMISSION_ACCESS;
     newFormData.access = FORM_ACCESS;
     if (MULTITENANCY_ENABLED && tenantKey) {
-      if(newFormData.path){
+      if (newFormData.path) {
         newFormData.path = addTenankey(newFormData.path, tenantKey);
       }
-      if(newFormData.name){
+      if (newFormData.name) {
         newFormData.name = addTenankey(newFormData.name, tenantKey);
       }
     }
@@ -345,22 +346,26 @@ const Edit = React.memo(() => {
                 {addingTenantKeyInformation("name")}
               </label>
               <div className="input-group mb-2">
-                <div className="input-group-prepend">
-                  <div
-                    className="input-group-text"
-                    style={{ maxWidth: "150px" }}
-                  >
-                    <span className="text-truncate">{tenantKey}</span>
+                {MULTITENANCY_ENABLED && tenantKey ? (
+                  <div className="input-group-prepend">
+                    <div
+                      className="input-group-text"
+                      style={{ maxWidth: "150px" }}
+                    >
+                      <span className="text-truncate">{tenantKey}</span>
+                    </div>
                   </div>
-                </div>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                placeholder="Enter the form machine name"
-                value={form.name || ""}
-                onChange={(event) => handleChange("name", event)}
-              />
+                ) : (
+                  ""
+                )}
+                <input
+                  type="text"
+                  className="form-control"
+                  id="name"
+                  placeholder="Enter the form machine name"
+                  value={form.name || ""}
+                  onChange={(event) => handleChange("name", event)}
+                />
               </div>
             </div>
           </div>
@@ -417,14 +422,18 @@ const Edit = React.memo(() => {
                 {addingTenantKeyInformation("path")}
               </label>
               <div className="input-group mb-2">
-                <div className="input-group-prepend">
-                  <div
-                    className="input-group-text"
-                    style={{ maxWidth: "150px" }}
-                  >
-                    <span className="text-truncate">{tenantKey}</span>
+                {MULTITENANCY_ENABLED && tenantKey ? (
+                  <div className="input-group-prepend">
+                    <div
+                      className="input-group-text"
+                      style={{ maxWidth: "150px" }}
+                    >
+                      <span className="text-truncate">{tenantKey}</span>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  ""
+                )}
                 <input
                   type="text"
                   className="form-control"
@@ -434,7 +443,7 @@ const Edit = React.memo(() => {
                   value={form.path || ""}
                   onChange={(event) => handleChange("path", event)}
                 />
-               </div>
+              </div>
             </div>
           </div>
           <div className="col-lg-4 col-md-4 col-sm-4">

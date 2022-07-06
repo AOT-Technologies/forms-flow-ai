@@ -217,14 +217,16 @@ const Create = React.memo(() => {
                 {addingTenantKeyInformation("name")}
               </label>
               <div className="input-group mb-2">
-                <div className="input-group-prepend">
+              {
+                  MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
                   <div
                     className="input-group-text"
                     style={{ maxWidth: "150px" }}
                   >
                     <span className="text-truncate">{tenantKey}</span>
                   </div>
-                </div>
+                </div> : ""
+                }
                 <input
                   type="text"
                   className="form-control"
@@ -289,14 +291,16 @@ const Create = React.memo(() => {
                 {addingTenantKeyInformation("path")}
               </label>
               <div className="input-group mb-2">
-                <div className="input-group-prepend">
+              {
+                  MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
                   <div
                     className="input-group-text"
                     style={{ maxWidth: "150px" }}
                   >
                     <span className="text-truncate">{tenantKey}</span>
                   </div>
-                </div>
+                </div> : ""
+                }
                 <input
                   type="text"
                   className="form-control"

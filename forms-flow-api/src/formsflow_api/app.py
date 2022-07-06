@@ -108,8 +108,10 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
             return response
 
     register_shellcontext(app)
-    with app.app_context():
-        collect_role_ids(app)
+    if not app.config["MULTI_TENANCY_ENABLED"]:
+        with app.app_context():
+            collect_role_ids(app)
+            collect_user_resource_ids(app)
     return app
 
 
@@ -135,7 +137,7 @@ def register_shellcontext(app):
 
 
 def collect_role_ids(app):
-    """Collect role ids from Formio."""
+    """Collect role ids from Form.io."""
     try:
         service = FormioService()
         app.logger.info("Establishing new connection to formio...")
@@ -154,5 +156,22 @@ def collect_role_ids(app):
             app.logger.info("Role ids saved to cache successfully.")
     except BusinessException as err:
         app.logger.error(err.error)
+    except Exception as err:  # pylint: disable=broad-except
+        app.logger.error(err)
+
+
+def collect_user_resource_ids(app):
+    """Collects user resource ids from Form.io."""
+    try:
+        service = FormioService()
+        user_resource = service.get_user_resource_ids()
+        user_resource_id = user_resource["_id"]
+        if user_resource:
+            cache.set(
+                "user_resource_id",
+                user_resource_id,
+                timeout=0,
+            )
+            app.logger.info("User resource ids saved to cache successfully.")
     except Exception as err:  # pylint: disable=broad-except
         app.logger.error(err)

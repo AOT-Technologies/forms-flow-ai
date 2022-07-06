@@ -17,4 +17,4 @@ def test_formio_roles(app, client, session, jwt):
     response = client.get("/formio/roles", headers=headers)
     assert response.status_code == 200
     assert response.json is not None
-    assert response.json[0]["id"] == 1
+    assert response.json["roles"][0]["id"] == 1

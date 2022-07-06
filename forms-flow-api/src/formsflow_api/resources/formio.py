@@ -33,9 +33,9 @@ class FormioResource(Resource):
             assert user.token_info is not None
             user_role = user.token_info["role"]
             role_ids = cache.get("formio_role_ids")
-            result = get_role_ids_from_user_groups(role_ids, user_role)
-
-            if result is not None:
+            roles = get_role_ids_from_user_groups(role_ids, user_role)
+            if roles is not None:
+                result = {"roles": roles, "resource_id": cache.get("user_resource_id")}
                 return (result, HTTPStatus.OK)
 
             return (

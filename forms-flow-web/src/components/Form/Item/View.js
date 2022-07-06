@@ -177,7 +177,7 @@ const View = React.memo((props) => {
           onConfirm={props.onConfirm}
         ></SubmissionError>
         {isAuthenticated ? (
-          <Link to={`${redirectUrl}form`}>
+          <Link title="go back" to={`${redirectUrl}form`}>
             <i className="fa fa-chevron-left fa-lg" />
           </Link>
         ) : null}

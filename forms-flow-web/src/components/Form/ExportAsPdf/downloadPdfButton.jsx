@@ -28,20 +28,20 @@ export const DownloadPDFButton = React.memo(({form_id,
         return title + '_submission_' + form_id + ".pdf";
     };
 
-    let apiUrExportPdf = replaceUrl(
+    let apiUrlExportPdf = replaceUrl(
         API.EXPORT_FORM_PDF,
         "<form_id>",
         form_id
     );
-    apiUrExportPdf = replaceUrl(
-        apiUrExportPdf,
+    apiUrlExportPdf = replaceUrl(
+        apiUrlExportPdf,
         "<submission_id>",
         submission_id
     );
 
     const downloadSamplePdfFile = () => {
 
-        return httpGETBlobRequest(apiUrExportPdf);
+        return httpGETBlobRequest(apiUrlExportPdf);
       };
 
     const { ref, url, download, name } = useDownloadFile({

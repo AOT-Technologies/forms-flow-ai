@@ -23,6 +23,26 @@ export const httpGETRequest = (
   });
 };
 
+export const httpGETBlobRequest = (
+  url,
+  data,
+  token,
+  isBearer = true,
+  headers = null
+) => {
+  return axios.get(url, {
+    params: data,
+    responseType: "blob",
+    headers: !headers
+      ? {
+          Authorization: isBearer
+            ? `Bearer ${token || UserService.getToken()}`
+            : token,
+        }
+      : headers,
+  });
+};
+
 export const httpPOSTRequest = (url, data, token, isBearer = true) => {
   return axios.post(url, data, {
     headers: {

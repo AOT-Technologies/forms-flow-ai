@@ -9,14 +9,16 @@ import {
   Errors,
 } from "react-formio";
 import { push } from "connected-react-router";
-import { Button } from "react-bootstrap";
+// import { Button } from "react-bootstrap";
 
 import Loading from "../../../../../containers/Loading";
-import PdfDownloadService from "../../../../../services/PdfDownloadService";
+// import PdfDownloadService from "../../../../../services/PdfDownloadService";
 import { setFormSubmissionLoading } from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
 import { useTranslation } from "react-i18next";
 import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
+import { DownloadPDFButton } from '../../../ExportAsPdf/downloadPdfButton';
+
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const {
@@ -40,14 +42,18 @@ const View = React.memo((props) => {
       <div className="main-header">
         <h3 className="task-head"> {form.title}</h3>
         {showPrintButton ? (
-          <div className="btn-right">
-            <Button
+          <div className="btn-right d-flex flex-row">
+            {/* <Button
               className="btn btn-primary btn-sm form-btn pull-right btn-right"
               onClick={() => PdfDownloadService.getPdf(form, submission)}
             >
               <i className="fa fa-print" aria-hidden="true" />
               {t("Print As PDF")}
-            </Button>
+            </Button> */}
+            <DownloadPDFButton 
+            form_id={form._id} 
+            submission_id={submission._id} 
+            title={form.title}/>
           </div>
         ) : null}
       </div>

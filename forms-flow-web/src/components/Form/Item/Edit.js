@@ -344,6 +344,15 @@ const Edit = React.memo(() => {
                 <Translation>{(t) => t("Name")}</Translation>
                 {addingTenantKeyInformation("name")}
               </label>
+              <div className="input-group mb-2">
+                <div className="input-group-prepend">
+                  <div
+                    className="input-group-text"
+                    style={{ maxWidth: "150px" }}
+                  >
+                    <span className="text-truncate">{tenantKey}</span>
+                  </div>
+                </div>
               <input
                 type="text"
                 className="form-control"
@@ -352,6 +361,7 @@ const Edit = React.memo(() => {
                 value={form.name || ""}
                 onChange={(event) => handleChange("name", event)}
               />
+              </div>
             </div>
           </div>
           <div className="col-lg-4 col-md-3 col-sm-3">
@@ -406,7 +416,15 @@ const Edit = React.memo(() => {
                 <Translation>{(t) => t("Path")}</Translation>
                 {addingTenantKeyInformation("path")}
               </label>
-              <div className="input-group">
+              <div className="input-group mb-2">
+                <div className="input-group-prepend">
+                  <div
+                    className="input-group-text"
+                    style={{ maxWidth: "150px" }}
+                  >
+                    <span className="text-truncate">{tenantKey}</span>
+                  </div>
+                </div>
                 <input
                   type="text"
                   className="form-control"
@@ -416,7 +434,7 @@ const Edit = React.memo(() => {
                   value={form.path || ""}
                   onChange={(event) => handleChange("path", event)}
                 />
-              </div>
+               </div>
             </div>
           </div>
           <div className="col-lg-4 col-md-4 col-sm-4">

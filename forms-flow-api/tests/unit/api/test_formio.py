@@ -1,6 +1,6 @@
 """Test suit for formio role id cached endpoint."""
-from tests.utilities.base_test import get_token, get_formio_roles
 from formsflow_api.utils import cache
+from tests.utilities.base_test import get_formio_roles, get_token
 
 
 def test_formio_roles(app, client, session, jwt):
@@ -11,11 +11,10 @@ def test_formio_roles(app, client, session, jwt):
         role_ids_filtered,
         timeout=0,
     )
-    token = get_token(jwt,role="formsflow-client" )
+    token = get_token(jwt, role="formsflow-client")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
 
     response = client.get("/formio/roles", headers=headers)
     assert response.status_code == 200
     assert response.json is not None
     assert response.json[0]["id"] == 1
-

@@ -6,20 +6,24 @@
     <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
     <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
     <script type="text/javascript">
-      window.onload = function() {
-
+      function renderForm() {
         form_info = {{ form|tojson }}
 
-        Formio.createForm(document.getElementById('formio'), form_info.form_data, { readOnly: true}).then(function(form) {
-          // Defaults are provided as follows.
-          form.submission = {
-            data: form_info.submission_data.data
-          };
-          document.getElementById('formio').classList.add("completed")
-          
-        });
-        
-      };
+        Formio.setBaseUrl(form_info.base_url);
+        Formio.setProjectUrl(form_info.project_url);
+        Formio.setToken(form_info.token)
+        Formio.createForm(
+            document.getElementById('formio'),
+            form_info.form_url
+          ).then((form) => {
+            document.getElementById('formio').classList.add("completed")
+
+          });
+      }
+      
+      document.addEventListener("DOMContentLoaded", function(){
+        renderForm();
+      });
     </script>
   </head>
   <body>

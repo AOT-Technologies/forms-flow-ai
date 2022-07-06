@@ -4,27 +4,10 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
-    <script src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+    <script defer src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
+    <script defer src="{{ url_for('static', filename='js/from_io_render.js') }}"></script>
     <script type="text/javascript">
-      function renderForm() {
-        form_info = {{ form|tojson }}
-
-        Formio.setBaseUrl(form_info.base_url);
-        Formio.setProjectUrl(form_info.project_url);
-        Formio.setToken(form_info.token)
-        Formio.createForm(
-            document.getElementById('formio'),
-            form_info.form_url,
-            {readOnly : true}
-          ).then((form) => {
-            document.getElementById('formio').classList.add("completed")
-
-          });
-      }
-      
-      document.addEventListener("DOMContentLoaded", function(){
-        renderForm();
-      });
+     form_info = {{ form|tojson }}
     </script>
   </head>
   <body>

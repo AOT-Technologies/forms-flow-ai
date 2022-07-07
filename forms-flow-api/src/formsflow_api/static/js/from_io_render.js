@@ -5,9 +5,10 @@ function renderForm() {
     Formio.createForm(
         document.getElementById('formio'),
         form_info.form_url,
-        {readOnly : true}
+        {readOnly : true, renderMode: 'flat'}
       ).then((form) => {
         document.getElementById('formio').classList.add("completed")
+        // document.getElementById("title").innerHTML = form._form.title;
       });
   }
   

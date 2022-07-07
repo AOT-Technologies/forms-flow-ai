@@ -317,7 +317,7 @@ const List = React.memo((props) => {
           }}
         >
           <h3>{t("No forms found")}</h3>
-         <p>Please change the selected filters to view Forms</p>
+         <p>{t("Please change the selected filters to view Forms")}</p>
         </div>
       </span>
     );

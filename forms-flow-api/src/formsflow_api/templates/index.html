@@ -8,12 +8,12 @@
     <script defer src="{{ url_for('static', filename='js/from_io_render.js') }}"></script>
     <script defer type="text/javascript">
      form_info = {{ form|tojson }}
-     document.addEventListener("DOMContentLoaded", function() {
-        renderForm();
-      });
+    //  document.addEventListener("DOMContentLoaded", function() {
+    //     renderForm();
+    //   });
     </script>
   </head>
-  <body>
+  <body onload="renderForm()">
     <div id="formio"></div>
   </body>
 </html>

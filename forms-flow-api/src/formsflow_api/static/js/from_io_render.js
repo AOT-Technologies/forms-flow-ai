@@ -8,10 +8,7 @@ function renderForm() {
         {readOnly : true}
       ).then((form) => {
         document.getElementById('formio').classList.add("completed")
-
       });
   }
   
-  document.addEventListener("DOMContentLoaded", function(){
-    renderForm();
-  });
+ 

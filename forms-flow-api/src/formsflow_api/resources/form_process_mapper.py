@@ -389,12 +389,12 @@ class FormioFormResource(Resource):
             return err.error, err.status_code
 
 
-@API.route("/<string:form_id>/submission/<string:submission_id>/render", doc=False)
+@API.route("/<string:form_id>/submission/<string:submission_id>/render")
 class FormResourceRenderFormPdf(Resource):
     """Resource to render form and submission details as html."""
 
     @staticmethod
-    @auth.require
+    #@auth.require
     @profiletime
     def get(form_id: string, submission_id: string):
         """Form rendering method."""
@@ -429,9 +429,8 @@ class FormResourceExportFormPdf(Resource):
         """PDF generation and rendering method."""
         try:
             if auth.has_role([REVIEWER_GROUP]):
-                host = urlparse(request.base_url)
                 token = request.headers.get("Authorization")
-                host_name = host.scheme + "://" + host.netloc
+                host_name = current_app.config.get("FORMSFLOW_API_URL")
                 url = (
                     host_name
                     + "/form/"
@@ -443,6 +442,7 @@ class FormResourceExportFormPdf(Resource):
                 file_name = (
                     "Application_" + form_id + "_" + submission_id + "_export.pdf"
                 )
+                current_app.logger.info('connecting to ' + url )
                 result = get_pdf_from_html(url, wait="completed", auth_token=token)
                 return pdf_response(result, file_name)
 

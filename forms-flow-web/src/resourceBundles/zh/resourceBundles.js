@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
+  "Please change the selected filters to view Forms":"请更改所选过滤器以查看表格",
   "Search by form name":"按表格名称搜索",
   "Click to search":"点击搜索",
   "No submissions found":"未找到任何提交",

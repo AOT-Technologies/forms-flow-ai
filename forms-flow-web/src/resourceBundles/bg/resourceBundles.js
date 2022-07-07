@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
+    "Please change the selected filters to view Forms":"Моля, променете избраните филтри, за да видите формуляри",
     "Search by form name":"Tŭrsene po ime na formulyara",
     "Click to search":"Щракнете за търсене",
     "No submissions found":"Няма намерени заявки",

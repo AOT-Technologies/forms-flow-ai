@@ -40,7 +40,7 @@ def get_token(
                 },
             },
             "scope": "camunda-rest-api email profile",
-            "roles": [role, *roles],
+            "role": [role, *roles],
             "name": "John Smith",
             "preferred_username": username,
             "given_name": "John",
@@ -529,3 +529,13 @@ def get_formio_form_request_payload():
             }
         ]
     }
+
+
+def get_formio_roles():
+    """Return formio role id representation."""
+    return [
+        {
+            "id": 1,
+            "role": "formsflowClient"
+        }
+    ]

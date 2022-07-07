@@ -6,8 +6,11 @@
     <link rel="stylesheet" href="https://cdn.form.io/formiojs/formio.full.min.css">
     <script defer src="https://cdn.form.io/formiojs/formio.full.min.js"></script>
     <script defer src="{{ url_for('static', filename='js/from_io_render.js') }}"></script>
-    <script type="text/javascript">
+    <script defer type="text/javascript">
      form_info = {{ form|tojson }}
+     document.addEventListener("DOMContentLoaded", function() {
+        renderForm();
+      });
     </script>
   </head>
   <body>

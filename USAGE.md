@@ -91,7 +91,7 @@ In the following document, we’ll describe the step by step instructions to set
 * click on the deploy button in the Camunda Modeler, then give it the Deployment Name "One Step Approval” and url for an Endpoint Configuration and click the Deploy button.
  ![image](https://user-images.githubusercontent.com/86649870/177705220-d9e8e464-bdc3-4ce2-8642-7dd738041e89.png)
  
- ![image](https://user-images.githubusercontent.com/86649870/177705410-003f1449-68c2-4e06-a026-ef0f66b382c9.png)
+![image](https://user-images.githubusercontent.com/86649870/177724335-ce85f7b8-d821-4a0f-84f1-a4aac33d7e43.png)
 
 
 * After  associating the workflow, click on the **Next Button** to Preview and Confirm.
@@ -161,15 +161,14 @@ In the following document, we’ll describe the step by step instructions to set
 
 * Reviewer action is completed.
 
-## Create New Business License Application
+## New Business License Application
 
-> The following instructions are using an example form from the form.io - `Create New Business License Application`.
+> The following instructions are using an example form from the form.io - `New Business License Application`.
 
 ### Designer   Steps
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for the designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
 * After the Log in is successful you will be redirected to http://localhost:3000/form where you can `Create / Upload /Download/ View / Edit / Delete` a form.
 
-![image](https://user-images.githubusercontent.com/83489861/124479964-69020280-ddc4-11eb-9739-18c44a770f76.png)
 
 * Go to https://github.com/AOT-Technologies/forms-flow-ai-examples/tree/main/forms-examples/formio and download NewBusinessLicenseApplication.json and upload the file.
 ![image](https://user-images.githubusercontent.com/86649870/177706393-dd50e2d9-ad37-45d7-932d-05fd4c0f93a7.png)
@@ -187,7 +186,8 @@ In the following document, we’ll describe the step by step instructions to set
 ![image](https://user-images.githubusercontent.com/86649870/177706741-08594338-c223-4fe4-9fac-7a13ddd4c0bb.png)
 
  * click on the deploy button in the Camunda Modeler, then give it the Deployment Name "Two Step Approval” and url for an Endpoint Configuration and click the Deploy button.
- ![image](https://user-images.githubusercontent.com/86649870/177706932-2c69909a-c0ef-4ba7-85f9-9303d43176a5.png)
+![image](https://user-images.githubusercontent.com/86649870/177724553-b63e2522-14de-4729-8383-190f68ea0d13.png)
+
 
 * After the associate workflow is completed click on the **Next Button** to Preview and Confirm.
 ![image](https://user-images.githubusercontent.com/86649870/177707044-daa83e44-5ec4-46fc-b5a9-6b0330927840.png)

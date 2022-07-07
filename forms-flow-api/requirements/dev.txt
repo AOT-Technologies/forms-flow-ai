@@ -19,4 +19,3 @@ pylint
 lovely-pytest-docker
 selenium==3.141.0
 selenium-wire==3.0.0
-webdriver-manager==3.8.0

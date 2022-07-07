@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
+from formsflow_api.utils import CHROME_DRIVER_PATH
 
 
 def send_devtools(driver, cmd, params=None):
@@ -28,7 +28,7 @@ def send_devtools(driver, cmd, params=None):
 
 def driver_path():
     """Return chrome webreiver path."""
-    return ChromeDriverManager().install()
+    return CHROME_DRIVER_PATH
 
 
 # pylint: disable=R1710

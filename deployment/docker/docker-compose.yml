@@ -199,7 +199,8 @@ services:
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
       FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
       FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
-      FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
+      FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme},
+      CHROME_DRIVER_PATH: ${CHROME_DRIVER_PATH}
 
     stdin_open: true # -i
     tty: true # -t

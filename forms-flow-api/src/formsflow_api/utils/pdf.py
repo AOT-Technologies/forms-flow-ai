@@ -9,7 +9,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from seleniumwire import webdriver
+from selenium import webdriver
 from formsflow_api.utils import CHROME_DRIVER_PATH
 
 
@@ -38,9 +38,9 @@ def get_pdf_from_html(
     path, chromedriver=driver_path(), p_options=None, wait=None, auth_token=None
 ):
     """Load url in chrome web driver and print as pdf."""
-
-    def interceptor(request):
-        request.headers["Authorization"] = auth_token
+    # Require if we use seleniumwire
+    # def interceptor(request):
+    #     request.headers["Authorization"] = auth_token
 
     webdriver_options = Options()
     webdriver_options.add_argument("--headless")
@@ -53,8 +53,9 @@ def get_pdf_from_html(
     driver = webdriver.Chrome(chromedriver, options=webdriver_options)
     driver.set_window_size(1920, 1080)
 
-    if auth_token is not None:
-        driver.request_interceptor = interceptor
+    # Require if we use seleniumwire
+    # if auth_token is not None:
+    #     driver.request_interceptor = interceptor
     driver.get(path)
 
     try:

@@ -8,7 +8,6 @@ function renderForm() {
         {readOnly : true, renderMode: 'flat'}
       ).then((form) => {
         document.getElementById('formio').classList.add("completed")
-        // document.getElementById("title").innerHTML = form._form.title;
       });
   }
   

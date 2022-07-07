@@ -393,7 +393,7 @@ class FormResourceRenderFormPdf(Resource):
     """Resource to render form and submission details as html."""
 
     @staticmethod
-    # @auth.require
+    @auth.require
     @profiletime
     def get(form_id: string, submission_id: string):
         """Form rendering method."""
@@ -441,7 +441,6 @@ class FormResourceExportFormPdf(Resource):
                 file_name = (
                     "Application_" + form_id + "_" + submission_id + "_export.pdf"
                 )
-                current_app.logger.info("connecting to " + url)
                 result = get_pdf_from_html(url, wait="completed", auth_token=token)
                 return pdf_response(result, file_name)
 

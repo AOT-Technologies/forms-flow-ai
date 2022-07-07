@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import {
   CLIENT,
+  MULTITENANCY_ENABLED,
   STAFF_DESIGNER,
   STAFF_REVIEWER,
 } from "../../../constants/constants";
@@ -19,7 +20,8 @@ import {
 import { Translation } from "react-i18next";
 
 const FormOperations = React.memo(({ formData }) => {
-  const redirectUrl = "/";
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const dispatch = useDispatch();
   const userRoles = useSelector((state) => state.user.roles);
   const submitNewForm = (formId) => {

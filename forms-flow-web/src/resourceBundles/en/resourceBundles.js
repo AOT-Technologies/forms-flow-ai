@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "Please change the selected filters to view Forms":"Please change the selected filters to view Forms",
   "Search by form name":"Search by form name",
   "Click to search":"Click to search",
   "No submissions found":"No submissions found",

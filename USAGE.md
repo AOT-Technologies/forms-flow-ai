@@ -68,20 +68,35 @@ In the following document, we’ll describe the step by step instructions to set
 
 ### Designer  Steps
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for the designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-* After the log in is successful you will be redirected to http://localhost:3000/form where you can `Create / View / Edit / Delete` a form.
+* After the log in is successful you will be redirected to http://localhost:3000/form where you can `Create / Upload / Download / View / Edit / Delete` a form.
 
-![image](https://user-images.githubusercontent.com/83489861/124453516-1107d380-dda5-11eb-9dba-2742cabc8582.png)
+![image](https://user-images.githubusercontent.com/86649870/177703980-7296a71d-b7f1-4429-8a74-9e02768832f4.png)
 
-* Select the `Freedom of Information and Protection of Privacy` form by clicking on it.
+
+* Go to https://github.com/AOT-Technologies/forms-flow-ai-examples/tree/main/forms-examples/formio and download FreedomOfInformationAndProtectionOfPrivacy.json and upload the file.
+ ![image](https://user-images.githubusercontent.com/86649870/177704043-c817381d-0abd-4772-adfc-d0c3a71e8972.png)
+
 * You can modify the form by clicking on the **View/Edit Form** button or continue by clicking the **Next** button.
 
-![image](https://user-images.githubusercontent.com/83489861/124475627-8d0f1500-ddbf-11eb-8ca1-5898bcc7d499.png)
+![image](https://user-images.githubusercontent.com/86649870/177704119-54cd00b6-b097-4e90-aaf5-346b49f96b16.png)
 
-* At this stage form designing is completed, you can click on the **EDIT Button** and associate a workflow - One Step Approval. 
 
-![image](https://user-images.githubusercontent.com/83489861/124475762-b6c83c00-ddbf-11eb-9911-41e55e2a9b9d.png)
+* At this stage form designing is completed, you can click on the **EDIT Button** and you can associate a default workflow if you want.
+![image](https://user-images.githubusercontent.com/86649870/177704722-3058ef03-8a86-4386-9d67-53df01147e6e.png)
 
-* After the associate workflow is completed click on the **Next Button** to Preview and Confirm.
+
+* In order to deploy any other workflow , Goto https://github.com/AOT-Technologies/forms-flow-ai-examples/tree/main/bpm-examples/camunda/approval-process and download any sample workflow (eg:one-step-approval.bpmn)
+![image](https://user-images.githubusercontent.com/86649870/177704370-92ae070e-e9a3-4ad7-9b65-0b9e89071ff3.png)
+
+* click on the deploy button in the Camunda Modeler, then give it the Deployment Name "One Step Approval” and url for an Endpoint Configuration and click the Deploy button.
+ ![image](https://user-images.githubusercontent.com/86649870/177705220-d9e8e464-bdc3-4ce2-8642-7dd738041e89.png)
+ 
+ ![image](https://user-images.githubusercontent.com/86649870/177705410-003f1449-68c2-4e06-a026-ef0f66b382c9.png)
+
+
+* After  associating the workflow, click on the **Next Button** to Preview and Confirm.
+![image](https://user-images.githubusercontent.com/86649870/177705517-42e8a841-adc1-48ac-b0ab-8983029d07b0.png)
+
 * You can click on the **EDIT Button** and publish the form for clients.
 
 ![image](https://user-images.githubusercontent.com/83489861/124475827-cba4cf80-ddbf-11eb-8b07-f8c2b23c25eb.png)
@@ -152,20 +167,31 @@ In the following document, we’ll describe the step by step instructions to set
 
 ### Designer   Steps
 * Log in to http://localhost:3000 (forms-flow-web) with valid [user credentials for the designer](./forms-flow-idm/keycloak/README.md#formsflow-ai-user-credentials).
-* After the Log in is successful you will be redirected to http://localhost:3000/form where you can `Create / View / Edit / Delete` a form.
+* After the Log in is successful you will be redirected to http://localhost:3000/form where you can `Create / Upload /Download/ View / Edit / Delete` a form.
 
 ![image](https://user-images.githubusercontent.com/83489861/124479964-69020280-ddc4-11eb-9739-18c44a770f76.png)
 
-* Select the `New Business License Application` form by clicking on it.
+* Go to https://github.com/AOT-Technologies/forms-flow-ai-examples/tree/main/forms-examples/formio and download NewBusinessLicenseApplication.json and upload the file.
+![image](https://user-images.githubusercontent.com/86649870/177706393-dd50e2d9-ad37-45d7-932d-05fd4c0f93a7.png)
+
 * You can modify the form by clicking on the **View/Edit Form** button or continue by clicking the **Next** button.
 
-![image](https://user-images.githubusercontent.com/83489861/124480017-76b78800-ddc4-11eb-9b31-e0b2df759656.png)
+![image](https://user-images.githubusercontent.com/86649870/177706309-bb47d63b-b1e4-4e22-ba57-5bb92b65a798.png)
 
-* At this stage form designing is completed, you can click on the **EDIT Button** and associate a workflow - Two-Step Approval. 
 
-![image](https://user-images.githubusercontent.com/83489861/124480123-9058cf80-ddc4-11eb-802c-b69bfc796685.png)
+* At this stage form designing is completed, you can click on the **EDIT Button** and associate a default workflow if you want.
+![image](https://user-images.githubusercontent.com/86649870/177706530-ec5a1eef-40f1-4728-8a78-9ae7637fb8d6.png)
+
+* In order to deploy any other workflow , Goto https://github.com/AOT-Technologies/forms-flow-ai-examples/tree/main/bpm-examples/camunda/approval-process and download any sample workflow (eg:two-step-approval.bpmn)
+
+![image](https://user-images.githubusercontent.com/86649870/177706741-08594338-c223-4fe4-9fac-7a13ddd4c0bb.png)
+
+ * click on the deploy button in the Camunda Modeler, then give it the Deployment Name "Two Step Approval” and url for an Endpoint Configuration and click the Deploy button.
+ ![image](https://user-images.githubusercontent.com/86649870/177706932-2c69909a-c0ef-4ba7-85f9-9303d43176a5.png)
 
 * After the associate workflow is completed click on the **Next Button** to Preview and Confirm.
+![image](https://user-images.githubusercontent.com/86649870/177707044-daa83e44-5ec4-46fc-b5a9-6b0330927840.png)
+
 * You can click on the **EDIT Button** and publish the form for clients.
 
 ![image](https://user-images.githubusercontent.com/83489861/124480173-9ea6eb80-ddc4-11eb-9b51-cf7c1ebbdb90.png)

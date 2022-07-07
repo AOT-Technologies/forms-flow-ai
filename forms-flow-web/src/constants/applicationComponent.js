@@ -1,3 +1,4 @@
+import utils from "formiojs/utils";
 const applicationIDHiddenComponent = {
   label: "applicationId",
   customClass: "",
@@ -142,17 +143,20 @@ const APPLICATION_ID_KEY = "applicationId";
 const APPLICATION_STATUS_KEY = "applicationStatus";
 
 export const addHiddenApplicationComponent = (form) => {
-  const applicationIdComponent = form.components.find(
-    (component) => component.key === APPLICATION_ID_KEY
-  );
-  const applicationStatusComponent = form.components.find(
-    (component) => component.key === APPLICATION_STATUS_KEY
-  );
-  if (!applicationIdComponent) {
-    form.components.push(applicationIDHiddenComponent);
+  const flatternComponent = utils.flattenComponents(form.components, true);
+  if (!flatternComponent[APPLICATION_ID_KEY]) {
+    if (form.display === "wizard") {
+      form.components[0].components.push(applicationIDHiddenComponent);
+    } else {
+      form.components.push(applicationIDHiddenComponent);
+    }
   }
-  if (!applicationStatusComponent) {
-    form.components.push(applicationStatusHiddenComponent);
+  if (!flatternComponent[APPLICATION_STATUS_KEY]) {
+    if (form.display === "wizard") {
+      form.components[0].components.push(applicationStatusHiddenComponent);
+    } else {
+      form.components.push(applicationStatusHiddenComponent);
+    }
   }
   return form;
 };

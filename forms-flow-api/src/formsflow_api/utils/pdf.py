@@ -42,15 +42,20 @@ def get_pdf_from_html(
     def interceptor(request):
         request.headers["Authorization"] = auth_token
 
-    webdriver_options = Options()
-    webdriver_options.add_argument("--headless")
-    webdriver_options.add_argument("window-size=1920x1080")
-    webdriver_options.add_argument("--disable-gpu")
-    webdriver_options.add_argument("--no-sandbox")
-    webdriver_options.add_argument("--disable-dev-shm-usage")
-    webdriver_options.add_argument("--run-all-compositor-stages-before-draw")
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--disable-gpu")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--run-all-compositor-stages-before-draw")
+    options.add_argument("--disable-logging")
+    options.add_argument("--log-level=3")
+    sel_options = {"request_storage_base_dir": "/tmp"}
 
-    driver = webdriver.Chrome(chromedriver, options=webdriver_options)
+    # pylint: disable=E1123
+    driver = webdriver.Chrome(
+        chromedriver, options=options, seleniumwire_options=sel_options
+    )
     driver.set_window_size(1920, 1080)
 
     if auth_token is not None:

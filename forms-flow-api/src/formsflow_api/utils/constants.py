@@ -36,3 +36,5 @@ FILTER_MAPS = {
 
 DEFAULT_PROCESS_KEY = "Defaultflow"
 DEFAULT_PROCESS_NAME = "Default Flow"
+
+CHROME_DRIVER_PATH = os.getenv("CHROME_DRIVER_PATH", "/usr/local/bin/chromedriver")

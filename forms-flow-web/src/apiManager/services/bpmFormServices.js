@@ -7,23 +7,40 @@ import { serviceActionError } from "../../actions/bpmTaskActions";
 import {
   setBPMFormList,
   setBPMFormListLoading,
+  setBpmFormLoading,
 } from "../../actions/formActions";
 import { replaceUrl } from "../../helper/helper";
+import { setFormSearchLoading } from "../../actions/checkListActions";
 
-export const fetchBPMFormList = (...rest) => {
+export const fetchBPMFormList = (
+  pageNo,
+  limit,
+  sortBy,
+  sortOrder,
+  formName,
+  ...rest
+) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpGETRequest(API.GET_BPM_FORM_LIST, {}, UserService.getToken())
+    let url = `${API.FORM}?pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`;
+    if (formName) {
+      url += `&formName=${formName}`;
+    }
+    httpGETRequest(url, {}, UserService.getToken())
       .then((res) => {
         if (res.data) {
           dispatch(setBPMFormList(res.data));
           dispatch(setBPMFormListLoading(false));
           //dispatch(setBPMLoader(false));
+          dispatch(setBpmFormLoading(false));
+          dispatch(setFormSearchLoading(false));
+
           done(null, res.data);
         } else {
           dispatch(setBPMFormListLoading(false));
           //console.log("Error", res);
           dispatch(serviceActionError(res));
+          dispatch(setFormSearchLoading(false));
           //dispatch(setBPMTaskLoader(false));
         }
       })
@@ -51,7 +68,6 @@ export const fetchFormByAlias = (path, ...rest) => {
       "x-jwt-token": UserService.getFormioToken(),
     })
       .then((res) => {
-        //console.log("formData",res);
         if (res.data) {
           done(null, res.data);
         } else {

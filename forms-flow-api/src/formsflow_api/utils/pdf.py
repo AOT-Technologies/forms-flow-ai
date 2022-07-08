@@ -50,12 +50,12 @@ def get_pdf_from_html(
     options.add_argument("--run-all-compositor-stages-before-draw")
     options.add_argument("--disable-logging")
     options.add_argument("--log-level=3")
-    sel_options = {
-    'request_storage_base_dir': '/tmp'
-    }
+    sel_options = {"request_storage_base_dir": "/tmp"}
 
     # pylint: disable=E1123
-    driver = webdriver.Chrome(chromedriver, options=options, seleniumwire_options=sel_options)
+    driver = webdriver.Chrome(
+        chromedriver, options=options, seleniumwire_options=sel_options
+    )
     driver.set_window_size(1920, 1080)
 
     if auth_token is not None:

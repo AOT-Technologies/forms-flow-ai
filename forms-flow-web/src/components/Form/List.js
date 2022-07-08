@@ -218,16 +218,6 @@ const List = React.memo((props) => {
     }
   };
 
-  const resetForms = () => {
-    isDesigner
-      ? dispatch(
-          indexForms("forms", 1, {
-            query: { ...forms.query, title__regex: "" },
-          })
-        )
-      : dispatch(setBpmFormSearch(""));
-  };
-
   const uploadFileContents = async (fileContent) => {
     try {
       if (fileContent.forms && Array.isArray(fileContent.forms)) {
@@ -319,7 +309,7 @@ const List = React.memo((props) => {
           style={{
             maxWidth: "900px",
             margin: "auto",
-            height: "60vh",
+            height: "50vh",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -327,16 +317,7 @@ const List = React.memo((props) => {
           }}
         >
           <h3>{t("No forms found")}</h3>
-          <Button
-            variant="outline-primary"
-            size="sm"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={resetForms}
-          >
-            {t("Click here to go back")}
-          </Button>
+         <p>{t("Please change the selected filters to view Forms")}</p>
         </div>
       </span>
     );
@@ -370,12 +351,12 @@ const List = React.memo((props) => {
                 ? applicationCountResponse
                   ? `${applicationCount} ${
                       applicationCount > 1
-                        ? `${t("  Applications are submitted against")}`
-                        : `${t("  Application is submitted against")}`
+                        ? `${t("Applications are submitted against")}`
+                        : `${t("Application is submitted against")}`
                     } "${props.formName}". ${t(
                       "Are you sure you wish to delete the form?"
                     )}`
-                  : `  ${t("Are you sure you wish to delete the form")} "${
+                  : `${t("Are you sure you wish to delete the form ")} "${
                       props.formName
                     }"?`
                 : `${t("Are you sure you wish to delete the form ")} "${

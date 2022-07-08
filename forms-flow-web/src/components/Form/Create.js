@@ -16,7 +16,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useTranslation, Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
-import { clearFormError, setFormFailureErrorData, setFormSuccessData } from "../../actions/formActions";
+import {
+  clearFormError,
+  setFormFailureErrorData,
+  setFormSuccessData,
+} from "../../actions/formActions";
 import { addTenankey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
 
@@ -127,14 +131,14 @@ const Create = React.memo(() => {
     newForm.access = FORM_ACCESS;
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
-      if(newForm.path){
+      if (newForm.path) {
         newForm.path = addTenankey(newForm.path, tenantKey);
       }
-      if(newForm.name){
+      if (newForm.name) {
         newForm.name = addTenankey(newForm.name, tenantKey);
       }
     }
-    formCreate(newForm,(err,form)=>{
+    formCreate(newForm, (err, form) => {
       if (!err) {
         // ownProps.setPreviewMode(true);
         const data = {
@@ -143,7 +147,7 @@ const Create = React.memo(() => {
           formRevisionNumber: "V1", // to do
           anonymous: FORM_ACCESS[0].roles.includes(ANONYMOUS_ID),
         };
-        dispatch(setFormSuccessData("form",form));
+        dispatch(setFormSuccessData("form", form));
         Formio.cache = {}; //removing formio cache
         dispatch(
           // eslint-disable-next-line no-unused-vars
@@ -156,8 +160,8 @@ const Create = React.memo(() => {
             }
           })
         );
-      }else{
-         dispatch(setFormFailureErrorData('form', err));
+      } else {
+        dispatch(setFormFailureErrorData("form", err));
       }
     });
   };
@@ -212,14 +216,26 @@ const Create = React.memo(() => {
                 <Translation>{(t) => t("Name")}</Translation>
                 {addingTenantKeyInformation("name")}
               </label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                placeholder={t("Enter the form machine name")}
-                value={form.name || ""}
-                onChange={(event) => handleChange("name", event)}
-              />
+              <div className="input-group mb-2">
+              {
+                  MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
+                  <div
+                    className="input-group-text"
+                    style={{ maxWidth: "150px" }}
+                  >
+                    <span className="text-truncate">{tenantKey}</span>
+                  </div>
+                </div> : ""
+                }
+                <input
+                  type="text"
+                  className="form-control"
+                  id="name"
+                  placeholder={t("Enter the form machine name")}
+                  value={form.name || ""}
+                  onChange={(event) => handleChange("name", event)}
+                />
+              </div>
             </div>
           </div>
           <div className="col-lg-4 col-md-3 col-sm-3">
@@ -274,7 +290,17 @@ const Create = React.memo(() => {
                 <Translation>{(t) => t("Path")}</Translation>
                 {addingTenantKeyInformation("path")}
               </label>
-              <div className="input-group">
+              <div className="input-group mb-2">
+              {
+                  MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
+                  <div
+                    className="input-group-text"
+                    style={{ maxWidth: "150px" }}
+                  >
+                    <span className="text-truncate">{tenantKey}</span>
+                  </div>
+                </div> : ""
+                }
                 <input
                   type="text"
                   className="form-control"

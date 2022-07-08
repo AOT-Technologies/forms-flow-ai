@@ -42,6 +42,7 @@ const API = {
   GET_FORM_COUNT: `${WEB_BASE_URL}/form/<mapper id>/application/count`,
   UNPUBLISH_FORMS: `${WEB_BASE_URL}/form/<mapper id>`,
   GET_TENANT_DATA: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenant`,
+  EXPORT_FORM_PDF: `${WEB_BASE_URL}/form/<form_id>/submission/<submission_id>/export/pdf`,
 };
 
 export default API;

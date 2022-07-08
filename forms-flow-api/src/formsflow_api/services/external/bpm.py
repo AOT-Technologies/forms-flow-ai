@@ -35,10 +35,13 @@ class BPMService(BaseBPMService):
         current_app.logger.debug(
             "Getting process details. Process Key : %s", process_key
         )
-        for process_definition in cls.get_all_process(token)['_embedded']['processDefinitionDtoList']:
+        for process_definition in cls.get_all_process(token)["_embedded"][
+            "processDefinitionDtoList"
+        ]:
             if process_definition.get("key") == process_key:
                 current_app.logger.debug(
-                    "Found Process Definition. process_definition : %s", process_definition
+                    "Found Process Definition. process_definition : %s",
+                    process_definition,
                 )
                 return process_definition
         return None

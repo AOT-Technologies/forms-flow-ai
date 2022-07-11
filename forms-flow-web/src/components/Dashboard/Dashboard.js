@@ -26,7 +26,6 @@ import {
 } from "../../actions/metricsActions";
 import LoadingOverlay from "react-loading-overlay";
 import { Button } from "react-bootstrap";
-import { sortBy } from "lodash";
 const firsDay = moment().format("YYYY-MM-01");
 
 const lastDay = moment().endOf("month").format("YYYY-MM-DD");

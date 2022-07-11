@@ -27,8 +27,6 @@ export const fetchMetricsList = (
   const done = rest.length ? rest[0] : () => { };
 
   return (dispatch) => {
-    //dispatch(setMetricsLoadError(false));
-    /*eslint max-len: ["error", { "code": 200 }]*/
 
     let url = `${API.METRICS_SUBMISSIONS}?from=${fromDate}&to=${toDate}&orderBy=${setSearchBy}&pageNo=${pageNo}&limit=${limit}&sortBy=${sortBy}&sortOrder=${sortOrder}`;
     if (searchText) {
@@ -66,7 +64,6 @@ export const fetchMetricsList = (
       .catch((error) => {
         // TODO error handling
         console.log("Error", error);
-        // dispatch(serviceActionError(error));
         dispatch(setMetricsLoader(false));
         dispatch(setMetricsLoadError(true));
       });
@@ -139,9 +136,6 @@ export const fetchMetricsSubmissionStatusCount = (
   ...rest
 ) => {
   const done = rest.length ? rest[0] : () => { };
-  // const fdate = moment.utc(fromDate).format("yyyy-MM-DDTHH:mm:ssZ").replace("+","%2B");
-  // const ldate = moment.utc(toDate).format("yyyy-MM-DDTHH:mm:ssZ").replace("+","%2B");
-
   return (dispatch) => {
     dispatch(setSelectedMetricsId(id));
 
@@ -172,40 +166,4 @@ export const fetchMetricsSubmissionStatusCount = (
   };
 };
 
-// const dynamicSort = (property) => {
-//   let sortOrder = 1;
-//   if (property[0] === "-") {
-//     sortOrder = -1;
-//     property = property.substr(1);
-//   }
-//   return (a, b) => {
-//     /* next line works with strings and numbers,
-//      * and you may want to customize it to your needs
-//      */
-//     const result =
-//       a[property].toUpperCase() < b[property].toUpperCase()
-//         ? -1
-//         : a[property].toUpperCase() > b[property].toUpperCase()
-//         ? 1
-//         : 0;
-//     return result * sortOrder;
-//   };
-// };
 
-// export const getSearchResults = (submissionList, searchText) => {
-//   let searchResult = [];
-//   if (searchText === "") {
-//     searchResult = submissionList;
-//   } else {
-//     searchResult = submissionList?.filter((e) => {
-//       const caseInSensitive = e.formName.toUpperCase();
-//       return caseInSensitive.includes(searchText.toUpperCase());
-//     });
-//   }
-//   return searchResult;
-// };
-
-// export const getPaginatedForms = (data, page, limit, sort) => {
-//   data.sort(dynamicSort(sort));
-//   return data.slice((page - 1) * limit, ((page - 1) * limit) + limit);
-// };

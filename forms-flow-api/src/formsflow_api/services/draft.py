@@ -4,6 +4,7 @@ from http import HTTPStatus
 
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import Draft, FormProcessMapper
+from formsflow_api.schemas import DraftSchema
 from formsflow_api.utils import DRAFT_APPLICATION_STATUS
 from formsflow_api.utils.user_context import UserContext, user_context
 
@@ -40,10 +41,27 @@ class DraftService:
         return application, HTTPStatus.CREATED
 
     @staticmethod
-    def update_submission(draft_id: int, data):
-        """Update submission."""
+    def get_draft(draft_id: int):
+        """Get submission."""
+        draft = Draft.find_by_id(draft_id=draft_id)
+        if draft:
+            draft_schema = DraftSchema()
+            return draft_schema.dump(draft)
+
+        raise BusinessException("Invalid submission", HTTPStatus.BAD_REQUEST)
+
+    @staticmethod
+    def update_draft(draft_id: int, data):
+        """Update draft."""
         draft = Draft.find_by_id(draft_id=draft_id)
         if draft:
             draft.update(data)
         else:
             raise BusinessException("Invalid draft", HTTPStatus.BAD_REQUEST)
+
+    @staticmethod
+    def get_all_drafts():
+        """Get all drafts."""
+        draft = Draft.find_all()
+        draft_schema = DraftSchema()
+        return draft_schema.dump(draft, many=True)

@@ -66,3 +66,8 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
     def find_by_id(cls, draft_id: int) -> Draft:
         """Find draft that matches the provided id."""
         return cls.query.filter_by(id=draft_id).first()
+
+    @classmethod
+    def find_all(cls):
+        """Fetch all submission."""
+        return cls.query.order_by(Draft.id.desc()).all()

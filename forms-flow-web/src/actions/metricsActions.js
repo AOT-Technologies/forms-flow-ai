@@ -7,6 +7,12 @@ export const setMetricsSubmissionCount = (data) => (dispatch) => {
     payload: data,
   });
 };
+export const setMetricsTotalItems = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.METRICS_SUBMISSIONS_COUNT,
+    payload: data,
+  });
+};
 
 export const setMetricsLoader = (data) => (dispatch) => {
   dispatch({

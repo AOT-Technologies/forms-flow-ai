@@ -8,6 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import {
   fetchMetricsSubmissionCount,
   fetchMetricsSubmissionStatusCount,
+  fetchMetricsList,
 } from "./../../apiManager/services/metricsServices";
 import Pagination from "react-js-pagination";
 import Loading from "../../containers/Loading";
@@ -50,11 +51,13 @@ const Dashboard = React.memo(() => {
   const metricsStatusLoadError = useSelector(
     (state) => state.metrics.metricsStatusLoadError
   );
-  const activePage = useSelector((state) => state.metrics.pagination.page);
+  const sortOrder = useSelector((state) => state.metrics.sortOrder);
+  const searchText = useSelector((state) => state.metrics.searchText);
+
+
+  const activePage = useSelector((state) => state.metrics.pageno);
   const limit = useSelector((state) => state.metrics.limit);
-  const totalItems = useSelector(
-    (state) => state.metrics.submissionsFullList.length
-  );
+  const totalItems = useSelector((state) => state.metrics.totalItems);
   const pageRange = useSelector((state) => state.metrics.pagination.numPages);
   const sort = useSelector((state) => state.metrics.sort);
   const submissionStatusCountLoader = useSelector(
@@ -67,8 +70,12 @@ const Dashboard = React.memo(() => {
     activePage === 1 ? 1 : (activePage * limit) - limit + 1;
   let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
   // if ascending sort value is title else -title for this case
-  const isAscending = sort === "-formName" ? false : true;
+
+  // const isAscending = sort === "-formName" ? false : true;
+  //var isAscending = true;
+  const [isAscending, setIsAscending] = useState(false);
   const [searchBy, setSearchBy] = useState("created");
+  const [sortsBy, setSortsBy] = useState("formName");
   const [dateRange, setDateRange] = useState([
     moment(firsDay),
     moment(lastDay),
@@ -82,7 +89,9 @@ const Dashboard = React.memo(() => {
   const searchInputBox = useRef("");
   // Function to handle search text
   const handleSearch = () => {
+
     dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
+
   };
   const onClear = () => {
     searchInputBox.current.value = "";
@@ -91,10 +100,12 @@ const Dashboard = React.memo(() => {
   };
   // Function to handle sort for submission data
   const handleSort = () => {
+    //setOpacity(1);
+    setIsAscending(!isAscending);
     const updatedQuery = {
-      sort: `${isAscending ? "-" : ""}formName`,
+      sort: isAscending ? 'asc' : "desc",
     };
-    dispatch(setMetricsSubmissionSort(updatedQuery.sort || ""));
+    dispatch(setMetricsSubmissionSort(updatedQuery.sort || "asc"));
   };
   // Function to handle page limit change for submission data
   const handleLimitChange = (limit) => {
@@ -111,7 +122,8 @@ const Dashboard = React.memo(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(
-      fetchMetricsSubmissionCount(fromDate, toDate, searchBy, (err, data) => {
+      /*eslint max-len: ["error", { "code": 170 }]*/
+      fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, (err, data) => {
         dispatch(setMetricsDateRangeLoading(false));
         if (searchInputBox.current) {
           dispatch(
@@ -120,8 +132,22 @@ const Dashboard = React.memo(() => {
         }
       })
     );
-  }, [dispatch, searchBy, dateRange, searchInputBox]);
+  }, [dispatch, searchBy, dateRange, searchInputBox,]);
 
+
+  useEffect(() => {
+    const fromDate = getFormattedDate(dateRange[0]);
+    const toDate = getFormattedDate(dateRange[1]);
+    dispatch(fetchMetricsList(fromDate, toDate, searchBy, activePage, limit, searchText, sortsBy, sortOrder));
+  }, [
+    dispatch,
+    activePage,
+    totalItems,
+    limit,
+    searchText,
+    sortsBy,
+    sortOrder
+  ]);
   useEffect(() => {
     setSHowSubmissionData(submissionsList[0]);
   }, [submissionsList]);
@@ -129,11 +155,9 @@ const Dashboard = React.memo(() => {
   const onChangeInput = (option) => {
     setSearchBy(option);
   };
-
   if (isMetricsLoading) {
     return <Loading />;
   }
-
   const getStatusDetails = (id) => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
@@ -231,24 +255,31 @@ const Dashboard = React.memo(() => {
                 <div className="row mt-2 mx-2">
                   <div className="col">
                     <div className="input-group">
-                      <i
-                        onClick={handleSort}
-                        className="fa fa-long-arrow-up fa-lg mt-2"
-                        title="Sort by form name"
+                      <span
+                        //onClick={handleSort}
                         style={{
                           cursor: "pointer",
-                          opacity: `${isAscending ? 1 : 0.5}`,
-                        }}
-                      />
-                      <i
-                        onClick={handleSort}
-                        className="fa fa-long-arrow-down fa-lg mt-2 ml-1"
-                        title="Sort by form name"
-                        style={{
-                          cursor: "pointer",
-                          opacity: `${isAscending ? 0.5 : 1}`,
-                        }}
-                      />
+                        }}>
+                        <i
+                          onClick={handleSort}
+                          className="fa fa-long-arrow-up fa-lg mt-2"
+                          title="Sort by form name"
+                          style={{
+                            cursor: "pointer",
+                            opacity: `${!isAscending ? 1 : 0.5}`,
+                          }}
+                        />
+                        <i
+                          onClick={handleSort}
+                          className="fa fa-long-arrow-down fa-lg mt-2 ml-1"
+                          title="Sort by form name"
+                          style={{
+                            cursor: "pointer",
+                            opacity: `${isAscending ? 1 : 0.5}`,
+                          }}
+                        //: `${!isAscending ? 0.5 : 1}`
+                        />
+                      </span>
                       <div className="form-outline ml-3">
                         <input
                           type="search"

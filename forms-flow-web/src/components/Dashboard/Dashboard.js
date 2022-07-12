@@ -357,11 +357,11 @@ const Dashboard = React.memo(() => {
                     className="form-select mx-5 mb-3"
                     aria-label="Choose page limit"
                   >
-                    <option value={limit}>{limit}</option>
+                    <option value={limit}>{limit == totalItems ? "all" : limit}</option>
                     {limit != 6 && <option value={6}>6</option>}
                     {limit != 12 && <option value={12}>12</option>}
                     {limit != 30 && <option value={30}>30</option>}
-                    {limit != 9000 && <option value={9000}>All</option>}
+                    {limit != totalItems && <option value={totalItems}>All</option>}
                   </select>
 
                   <span>

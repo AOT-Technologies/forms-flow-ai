@@ -8,8 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import {
   fetchMetricsSubmissionCount,
   fetchMetricsSubmissionStatusCount,
-  fetchMetricsList,
-} from "./../../apiManager/services/metricsServices";
+  } from "./../../apiManager/services/metricsServices";
 import Pagination from "react-js-pagination";
 import Loading from "../../containers/Loading";
 import LoadError from "../Error";
@@ -109,7 +108,7 @@ const Dashboard = React.memo(() => {
   };
   // Function to handle page limit change for submission data
   const handleLimitChange = (limit) => {
-    dispatch(setMetricsSubmissionLimitChange(Number(limit)));
+    dispatch(setMetricsSubmissionLimitChange(limit));
   };
   // Function to handle pageination page change for submission data
   const handlePageChange = (pageNumber) => {
@@ -123,31 +122,11 @@ const Dashboard = React.memo(() => {
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(
       /*eslint max-len: ["error", { "code": 170 }]*/
-      fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, (err, data) => {
+      fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => {
         dispatch(setMetricsDateRangeLoading(false));
-        if (searchInputBox.current) {
-          dispatch(
-            setMetricsSubmissionSearch(searchInputBox.current.value || "")
-          );
-        }
       })
     );
-  }, [dispatch, searchBy, dateRange, searchInputBox,]);
-
-
-  useEffect(() => {
-    const fromDate = getFormattedDate(dateRange[0]);
-    const toDate = getFormattedDate(dateRange[1]);
-    dispatch(fetchMetricsList(fromDate, toDate, searchBy, activePage, limit, searchText, sortsBy, sortOrder));
-  }, [
-    dispatch,
-    activePage,
-    totalItems,
-    limit,
-    searchText,
-    sortsBy,
-    sortOrder
-  ]);
+  }, [dispatch, searchBy, dateRange, searchInputBox, searchText, activePage, limit, sortsBy, sortOrder]);
   useEffect(() => {
     setSHowSubmissionData(submissionsList[0]);
   }, [submissionsList]);
@@ -378,10 +357,11 @@ const Dashboard = React.memo(() => {
                     className="form-select mx-5 mb-3"
                     aria-label="Choose page limit"
                   >
-                    <option selected>6</option>
-                    <option value={12}>12</option>
-                    <option value={30}>30</option>
-                    <option value={9000}>All</option>
+                    <option value={limit}>{limit}</option>
+                    {limit != 6 && <option value={6}>6</option>}
+                    {limit != 12 && <option value={12}>12</option>}
+                    {limit != 30 && <option value={30}>30</option>}
+                    {limit != 9000 && <option value={9000}>All</option>}
                   </select>
 
                   <span>

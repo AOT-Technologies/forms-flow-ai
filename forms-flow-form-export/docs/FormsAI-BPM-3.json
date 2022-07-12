@@ -1,0 +1,819 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Forms-AI BPM API",
+    "version": "1.0.0",
+    "contact": {
+      "email": "sumathi.thirumani@aot-technologies.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://forms-flow-services.aot-technologies.com"
+    }
+  ],
+  "paths": {
+    "/camunda-engine/process-definition/tenant-id/{tenant-id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "tenant-id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "List all process definitions that matches the tenant ID.",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "Request Successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProcessDefinition"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tentant with given id does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionMessage"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "get-process-definition-tenant-id-tenant-id"
+      }
+    },
+    "/camunda-engine/process-definition/tenant-id/{tenant-id}/state": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "tenant-id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "List all available state for the process definition that matches the tenant ID.",
+        "tags": [],
+        "operationId": "get-process-definition-tenant-id-tenant-id-state",
+        "responses": {
+          "200": {
+            "description": "Request Successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProcessState"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Tentant with given id does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/camunda-engine/process-definition/key/{key}/tenant-id/{tenant-id}/start": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "key",
+          "in": "path",
+          "required": true
+        },
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "tenant-id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Instantiates a given process definition.",
+        "tags": [],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProcessInstance"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "The instance could not be created due to an invalid variable value, for example if the value could not be parsed to an Integer value or the passed variable type is not supported.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionMessage"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The instance could not be created due to a non existing process definition key.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.The instance could not be created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionMessage"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "post-process-definition-tenant-id-tenant-id-start"
+      }
+    },
+    "/camunda-engine/task": {
+      "post": {
+        "summary": "Queries for tasks that fulfill a given filter.",
+        "operationId": "post-task",
+        "responses": {
+          "200": {
+            "description": "Request Successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaskDefinition"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request.Task with given id does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tenantIdIn": {
+                    "type": "string",
+                    "description": "Restrict to tasks that belong to one of the given tenant ids. The ids need to be in a comma-separated list."
+                  },
+                  "assignee": {
+                    "type": "string",
+                    "description": "Restrict to tasks that the given user is assigned to."
+                  },
+                  "assigneeIn": {
+                    "type": "string",
+                    "description": "Only include tasks which are assigned to one of the user ids passed in the array"
+                  },
+                  "assigned": {
+                    "type": "boolean",
+                    "description": "If set to true, restricts the query to all tasks that are assigned."
+                  },
+                  "unassigned": {
+                    "type": "boolean",
+                    "description": "If set to true, restricts the query to all tasks that are unassigned."
+                  },
+                  "dueDate": {
+                    "type": "string",
+                    "description": "Restrict to tasks that are due on the given date. By default*, the date must have the format yyyy-MM-dd'T'HH:mm:ss.SSSZ, e.g., 2013-01-23T14:42:45.234+0200."
+                  },
+                  "dueAfter": {
+                    "type": "string",
+                    "description": "Restrict to tasks that are due after the given date. By default*, the date must have the format yyyy-MM-dd'T'HH:mm:ss.SSSZ, e.g., 2013-01-23T14:42:45.453+0200."
+                  },
+                  "dueBefore": {
+                    "type": "string",
+                    "description": "Restrict to tasks that are due before the given date. By default*, the date must have the format yyyy-MM-dd'T'HH:mm:ss.SSSZ, e.g., 2013-01-23T14:42:45.667+0200."
+                  },
+                  "followUpDate": {
+                    "type": "string",
+                    "description": "Restrict to tasks that have a followUp date on the given date. By defalut*, the date must have the format yyyy-MM-dd'T'HH:mm:ss.SSSZ, e.g., 2013-01-23T14:42:45.384+0200."
+                  },
+                  "followUpAfter": {
+                    "type": "string",
+                    "description": "Restrict to tasks that have a followUp date after the given date. By default*, the date must have the format yyyy-MM-dd'T'HH:mm:ss.SSSZ, e.g., 2013-01-23T14:42:45.343+0200."
+                  },
+                  "followUpBefore": {
+                    "type": "string",
+                    "description": "Restrict to tasks that have a followUp date before the given date. By default*, the date must have the format yyyy-MM-dd'T'HH:mm:ss.SSSZ, e.g., 2013-01-23T14:42:45.736+0200."
+                  },
+                  "createdOn": {
+                    "type": "string",
+                    "description": "Restrict to tasks that were created on the given date. By default*, the date must have the format yyyy-MM-dd'T'HH:mm:ss.SSSZ, e.g., 2013-01-23T14:42:45.038+0200. "
+                  },
+                  "createdAfter": {
+                    "type": "string",
+                    "description": "Restrict to tasks that were created after the given date. By default*, the date must have the format yyyy-MM-dd'T'HH:mm:ss.SSSZ, e.g., 2013-01-23T14:42:45.654+0200."
+                  },
+                  "createdBefore": {
+                    "type": "string",
+                    "description": "Restrict to tasks that were created before the given date. The date must have the format yyyy-MM-dd'T'HH:mm:ss.SSSZ, e.g., 2013-01-23T14:42:45.324+0200."
+                  },
+                  "candidateGroups": {
+                    "type": "string",
+                    "description": "Restrict to tasks that are offered to any of the given candidate groups. Takes a JSON array of group names, so for example [\"developers\", \"support\", \"sales\"]."
+                  },
+                  "active": {
+                    "type": "string",
+                    "description": "Only include active tasks. Value may only be true, as false is the default behavior."
+                  },
+                  "suspended": {
+                    "type": "string",
+                    "description": "Only include suspended tasks. Value may only be true, as false is the default behavior."
+                  },
+                  "taskVariables": {
+                    "type": "string",
+                    "description": "A JSON array to only include tasks that have variables with certain values.\nThe array consists of JSON objects with three properties name, operator and value. name is the variable name, operator is the comparison operator to be used and value the variable value.\nvalue may be of type String, Number or Boolean.\n\nValid operator values are: eq - equal to; neq - not equal to; gt - greater than; gteq - greater than or equal to; lt - lower than; lteq - lower than or equal to; like."
+                  },
+                  "processVariables": {
+                    "type": "string",
+                    "description": "A JSON array to only include tasks that belong to a process instance with variables with certain values.\nThe array consists of JSON objects with three properties name, operator and value. name is the variable name, operator is the comparison operator to be used and value the variable value.\nvalue may be of type String, Number or Boolean.\n\nValid operator values are: eq - equal to; neq - not equal to; gt - greater than; gteq - greater than or equal to; lt - lower than; lteq - lower than or equal to; like."
+                  },
+                  "variableNamesIgnoreCase": {
+                    "type": "boolean",
+                    "description": "Match all variable names in this query case-insensitively. If set to true variableName and variablename are treated as equal."
+                  },
+                  "variableValuesIgnoreCase": {
+                    "type": "boolean",
+                    "description": "Match all variable values in this query case-insensitively. If set to true variableValue and variablevalue are treated as equal."
+                  },
+                  "sorting": {
+                    "type": "array",
+                    "description": "A JSON array of criteria to sort the result by. Each element of the array is a JSON object that specifies one ordering. The position in the array identifies the rank of an ordering, i.e., whether it is primary, secondary, etc. The ordering objects have the following properties: ",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "sortBy": {
+                          "type": "string",
+                          "description": "Mandatory. Sort the results lexicographically by a given criterion. Valid values are instanceId, caseInstanceId, dueDate, executionId, caseExecutionId,assignee, created, description, id, name, nameCaseInsensitive, priority, processVariable, executionVariable, taskVariable, caseExecutionVariable, and caseInstanceVariable."
+                        },
+                        "sortOrder": {
+                          "type": "string",
+                          "description": "Mandatory. Sort the results in a given order. Values may be asc for ascending order or desc for descending order. "
+                        },
+                        "parameters": {
+                          "type": "string",
+                          "description": "Mandatory when sortBy is either processVariable, executionVariable, taskVariable, caseExecutionVariable, or caseInstanceVariable. Must be a JSON object with the properties variable and type where variable is a variable name and type is the name of a variable value type."
+                        }
+                      }
+                    }
+                  },
+                  "processInstanceId": {
+                    "type": "string",
+                    "description": "Restrict to tasks that belong to process instances with the given id."
+                  },
+                  "processInstanceIdIn": {
+                    "type": "string",
+                    "description": "Restrict to tasks that belong to process instances with the given ids."
+                  },
+                  "processDefinitionId": {
+                    "type": "string",
+                    "description": "Restrict to tasks that belong to a process definition with the given id."
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        }
+      }
+    },
+    "/camunda-engine/task/{id}": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "description": "The id of the task to be retrieved.",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "get": {
+        "summary": "Retrieves a task by id",
+        "description": "Retrieves a task by id",
+        "operationId": "get-task-id",
+        "responses": {
+          "200": {
+            "description": "Request Successful.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Task"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task with given id does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionMessage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/camunda-engine/task/{id}/claim": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "description": "The id of the task to claim.",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Claims a task for a specific user.",
+        "description": "Claims a task for a specific user.",
+        "operationId": "post-task-id-claim",
+        "responses": {
+          "204": {
+            "description": "Request successful."
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionMessage"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userid": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "description": ""
+        }
+      }
+    },
+    "/camunda-engine/task/{id}/unclaim": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "description": "The id of the task to unclaim.",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Resets a task’s assignee.",
+        "description": "Resets a task’s assignee. If successful, the task is not assigned to a user.",
+        "operationId": "post-task-id-unclaim",
+        "responses": {
+          "204": {
+            "description": "Request successful."
+          },
+          "400": {
+            "description": "Bad Request.Task with given id does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/camunda-engine/task/{id}/complete": {
+      "parameters": [
+        {
+          "schema": {
+            "type": "string"
+          },
+          "name": "id",
+          "in": "path",
+          "required": true
+        }
+      ],
+      "post": {
+        "summary": "Completes a task and updates process variables.",
+        "operationId": "post-task-id-complete",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/variable"
+                  }
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "description": "Request successful. The response contains no variables."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Task with given id does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionMessage"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExceptionMessage"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/variable"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "variable": {
+        "title": "variable",
+        "type": "object",
+        "description": "A JSON object of variables key-value pairs. Each key is a variable name and each value a variable value object that has the following properties",
+        "properties": {
+          "value": {
+            "type": "string",
+            "description": "The variable's value. Value differs depending on the variable's type and on the deserializeValues parameter."
+          },
+          "type": {
+            "type": "string",
+            "description": "The value type of the variable."
+          }
+        }
+      },
+      "ProcessState": {
+        "title": "ProcessState",
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The key of the state."
+          },
+          "value": {
+            "type": "string",
+            "description": "The value of the state."
+          }
+        }
+      },
+      "ProcessDefinition": {
+        "title": "ProcessDefinition",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the process definition."
+          },
+          "key": {
+            "type": "string",
+            "description": "The key of the process definition, i.e., the id of the BPMN 2.0 XML process definition."
+          },
+          "category": {
+            "type": "string",
+            "description": "The category of the process definition."
+          },
+          "description": {
+            "type": "string",
+            "description": "The description of the process definition."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the process definition."
+          },
+          "version": {
+            "type": "number",
+            "description": "The version of the process definition that the engine assigned to it."
+          },
+          "deploymentId": {
+            "type": "string",
+            "description": "The deployment id of the process definition."
+          },
+          "suspended": {
+            "type": "boolean",
+            "description": "A flag indicating whether the definition is suspended or not."
+          },
+          "tenantId": {
+            "type": "string",
+            "description": "The tenant id of the process definition."
+          }
+        }
+      },
+      "ProcessInstance": {
+        "title": "ProcessInstance",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the process definition."
+          },
+          "definitionId": {
+            "type": "string",
+            "description": "The id of the process definition."
+          },
+          "businessKey": {
+            "type": "string",
+            "description": "The business key of the process instance."
+          },
+          "caseInstanceId": {
+            "type": "string",
+            "description": "The case instance id of the process instance."
+          },
+          "tenantId": {
+            "type": "string",
+            "description": "The tenant id of the process instance."
+          },
+          "ended": {
+            "type": "boolean",
+            "description": "A flag indicating whether the instance is still running or not."
+          },
+          "suspended": {
+            "type": "boolean",
+            "description": "A flag indicating whether the instance is suspended or not."
+          },
+          "links": {
+            "type": "object",
+            "description": "A JSON array containing links to interact with the instance."
+          },
+          "variables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/variable"
+            }
+          }
+        }
+      },
+      "TaskDefinition": {
+        "title": "TaskDefinition",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the task."
+          },
+          "name": {
+            "type": "string",
+            "description": "The tasks name."
+          },
+          "assignee": {
+            "type": "string",
+            "description": "The user assigned to this task."
+          },
+          "created": {
+            "type": "string",
+            "description": "The time the task was created. Default format* yyyy-MM-dd'T'HH:mm:ss.SSSZ."
+          },
+          "due": {
+            "type": "string",
+            "description": "The due date for the task. Default format* yyyy-MM-dd'T'HH:mm:ss.SSSZ."
+          },
+          "followUp": {
+            "type": "string",
+            "description": "The follow-up date for the task. Default format* yyyy-MM-dd'T'HH:mm:ss.SSSZ."
+          },
+          "description": {
+            "type": "string",
+            "description": "The task description."
+          },
+          "executionId": {
+            "type": "string",
+            "description": "The id of the execution the task belongs to."
+          },
+          "parentTaskId": {
+            "type": "string",
+            "description": "The id of the parent task, if this task is a subtask."
+          },
+          "processDefinitionId": {
+            "type": "string",
+            "description": "The id of the process definition this task belongs to."
+          },
+          "processInstanceId": {
+            "type": "string",
+            "description": "The id of the process instance this task belongs to."
+          },
+          "taskDefinitionKey": {
+            "type": "string",
+            "description": "The task definition key."
+          },
+          "suspended": {
+            "type": "boolean",
+            "description": "Whether the task belongs to a process instance that is suspended."
+          },
+          "tenantId": {
+            "type": "string",
+            "description": "If not null, the tenantId for the task."
+          }
+        }
+      },
+      "Task": {
+        "title": "Task",
+        "type": "object",
+        "description": "",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The id of the task."
+          },
+          "name": {
+            "type": "string",
+            "description": "The tasks name."
+          },
+          "assignee": {
+            "type": "string",
+            "description": "The user assigned to this task."
+          },
+          "created": {
+            "type": "string",
+            "description": "The time the task was created. Default format* yyyy-MM-dd'T'HH:mm:ss.SSSZ."
+          },
+          "due": {
+            "type": "string",
+            "description": "The due date for the task. Default format* yyyy-MM-dd'T'HH:mm:ss.SSSZ."
+          },
+          "followUp": {
+            "type": "string",
+            "description": "The follow-up date for the task. Default format* yyyy-MM-dd'T'HH:mm:ss.SSSZ."
+          },
+          "description": {
+            "type": "string",
+            "description": "The task description."
+          },
+          "executionId": {
+            "type": "string",
+            "description": "The id of the execution the task belongs to."
+          },
+          "parentTaskId": {
+            "type": "string",
+            "description": "The id of the parent task, if this task is a subtask."
+          },
+          "processDefinitionId": {
+            "type": "string",
+            "description": "The id of the process definition this task belongs to."
+          },
+          "processInstanceId": {
+            "type": "string",
+            "description": "The id of the process instance this task belongs to."
+          },
+          "taskDefinitionKey": {
+            "type": "string",
+            "description": "The task definition key."
+          },
+          "suspended": {
+            "type": "boolean",
+            "description": "Whether the task belongs to a process instance that is suspended."
+          },
+          "tenantId": {
+            "type": "string",
+            "description": "If not null, the tenantId for the task."
+          },
+          "variables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/variable"
+            }
+          }
+        }
+      },
+      "ExceptionMessage": {
+        "title": "ExceptionMessage",
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "SomeExceptionClass"
+          },
+          "message": {
+            "type": "string",
+            "description": "a detailed message"
+          }
+        }
+      }
+    }
+  }
+}

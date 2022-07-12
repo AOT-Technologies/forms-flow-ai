@@ -1,0 +1,17 @@
+gunicorn
+Flask<2
+Flask-Caching
+Flask-Migrate==2.5.2
+Flask-Script<3
+Flask-SQLAlchemy
+flask-restx
+flask-marshmallow
+flask-jwt-oidc
+python-dotenv
+psycopg2-binary
+marshmallow-sqlalchemy
+requests
+Werkzeug
+sqlalchemy_utils
+markupsafe==2.0.1
+PyJWT==2.4.0

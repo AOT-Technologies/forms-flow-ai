@@ -8,7 +8,6 @@ import Modal from "react-bootstrap/Modal";
 import {
   fetchMetricsSubmissionCount,
   fetchMetricsSubmissionStatusCount,
-  fetchMetricsList,
 } from "./../../apiManager/services/metricsServices";
 import Pagination from "react-js-pagination";
 import Loading from "../../containers/Loading";
@@ -69,10 +68,7 @@ const Dashboard = React.memo(() => {
   let numberofSubmissionListFrom =
     activePage === 1 ? 1 : (activePage * limit) - limit + 1;
   let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
-  // if ascending sort value is title else -title for this case
 
-  // const isAscending = sort === "-formName" ? false : true;
-  //var isAscending = true;
   const [isAscending, setIsAscending] = useState(false);
   const [searchBy, setSearchBy] = useState("created");
   const [sortsBy, setSortsBy] = useState("formName");
@@ -87,6 +83,13 @@ const Dashboard = React.memo(() => {
   // State to set search text for submission data
   const [showClearButton, setShowClearButton] = useState("");
   const searchInputBox = useRef("");
+  //Array for pagination dropdown
+  const options = [
+    { value: '6', label: '6' },
+    { value: '12', label: '12' },
+    { value: '30', label: '30' },
+    { value: '', label: 'All' }
+  ];
   // Function to handle search text
   const handleSearch = () => {
 
@@ -109,7 +112,7 @@ const Dashboard = React.memo(() => {
   };
   // Function to handle page limit change for submission data
   const handleLimitChange = (limit) => {
-    dispatch(setMetricsSubmissionLimitChange(Number(limit)));
+    dispatch(setMetricsSubmissionLimitChange(limit));
   };
   // Function to handle pageination page change for submission data
   const handlePageChange = (pageNumber) => {
@@ -123,31 +126,11 @@ const Dashboard = React.memo(() => {
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(
       /*eslint max-len: ["error", { "code": 170 }]*/
-      fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, (err, data) => {
+      fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => {
         dispatch(setMetricsDateRangeLoading(false));
-        if (searchInputBox.current) {
-          dispatch(
-            setMetricsSubmissionSearch(searchInputBox.current.value || "")
-          );
-        }
       })
     );
-  }, [dispatch, searchBy, dateRange, searchInputBox,]);
-
-
-  useEffect(() => {
-    const fromDate = getFormattedDate(dateRange[0]);
-    const toDate = getFormattedDate(dateRange[1]);
-    dispatch(fetchMetricsList(fromDate, toDate, searchBy, activePage, limit, searchText, sortsBy, sortOrder));
-  }, [
-    dispatch,
-    activePage,
-    totalItems,
-    limit,
-    searchText,
-    sortsBy,
-    sortOrder
-  ]);
+  }, [dispatch, searchBy, dateRange, searchInputBox, searchText, activePage, limit, sortsBy, sortOrder]);
   useEffect(() => {
     setSHowSubmissionData(submissionsList[0]);
   }, [submissionsList]);
@@ -368,20 +351,14 @@ const Dashboard = React.memo(() => {
                     itemClass="page-item"
                     linkClass="page-link"
                     onChange={handlePageChange}
-
-
                   />
-
                   <select
                     title="Choose page limit"
                     onChange={(e) => handleLimitChange(e.target.value)}
                     className="form-select mx-5 mb-3"
                     aria-label="Choose page limit"
                   >
-                    <option selected>6</option>
-                    <option value={12}>12</option>
-                    <option value={30}>30</option>
-                    <option value={9000}>All</option>
+                    {options.map(({ value, label }, index) => <option value={value == '' ? totalItems : value} key={index} >{label}</option>)}
                   </select>
 
                   <span>

@@ -1,5 +1,6 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 const initialState = {
+  sortOrder: 'asc',
   totalItems: 0,
   isMetricsLoading: true,
   submissionsList: [],

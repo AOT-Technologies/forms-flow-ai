@@ -248,10 +248,7 @@ def test_application_payload(app, client, session, jwt):
     assert rv.status_code == 201
     application_response = rv.json
     assert application_response["applicationStatus"] == "New"
-    assert (
-        application_response["formUrl"]
-        == f"http://sample.com/form/{form_id}/submission/1233432"
-    )
+    assert application_response["submissionId"] == "1233432"
 
 
 def test_application_update_details_api(app, client, session, jwt):

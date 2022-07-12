@@ -96,13 +96,10 @@ class ApplicationsResource(Resource):
                     application_name=application_name,
                     application_status=application_status,
                 )
-            application_schema = ApplicationService.apply_custom_attributes(
-                application_schema_dump=application_schema_dump
-            )
             return (
                 (
                     {
-                        "applications": application_schema,
+                        "applications": application_schema_dump,
                         "totalCount": application_count,
                         "limit": limit,
                         "pageNo": page_no,
@@ -159,13 +156,13 @@ class ApplicationResourceById(Resource):
                     token=request.headers["Authorization"],
                 )
                 return (
-                    ApplicationService.apply_custom_attributes(application_schema_dump),
+                    application_schema_dump,
                     status,
                 )
             application, status = ApplicationService.get_application_by_user(
                 application_id=application_id
             )
-            return (ApplicationService.apply_custom_attributes(application), status)
+            return (application, status)
         except PermissionError as err:
             response, status = (
                 {
@@ -242,21 +239,17 @@ class ApplicationResourceByFormId(Resource):
             limit = 0
 
         if auth.has_role(["formsflow-reviewer"]):
-            application_schema = ApplicationService.apply_custom_attributes(
-                ApplicationService.get_all_applications_form_id(
-                    form_id=form_id, page_no=page_no, limit=limit
-                )
+            application_schema = ApplicationService.get_all_applications_form_id(
+                form_id=form_id, page_no=page_no, limit=limit
             )
             application_count = ApplicationService.get_all_applications_form_id_count(
                 form_id=form_id
             )
         else:
-            application_schema = ApplicationService.apply_custom_attributes(
-                ApplicationService.get_all_applications_form_id_user(
-                    form_id=form_id,
-                    page_no=page_no,
-                    limit=limit,
-                )
+            application_schema = ApplicationService.get_all_applications_form_id_user(
+                form_id=form_id,
+                page_no=page_no,
+                limit=limit,
             )
             application_count = (
                 ApplicationService.get_all_applications_form_id_user_count(
@@ -300,7 +293,6 @@ class ApplicationResourcesByIds(Resource):
 
         : formId:- Unique Id for the corresponding form
         : submissionId:- Unique Id for the submitted form
-        : formUrl:- Unique URL for the submitted application
         """
         application_json = request.get_json()
 

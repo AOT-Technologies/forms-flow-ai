@@ -8,7 +8,7 @@ import Modal from "react-bootstrap/Modal";
 import {
   fetchMetricsSubmissionCount,
   fetchMetricsSubmissionStatusCount,
-  } from "./../../apiManager/services/metricsServices";
+} from "./../../apiManager/services/metricsServices";
 import Pagination from "react-js-pagination";
 import Loading from "../../containers/Loading";
 import LoadError from "../Error";
@@ -68,10 +68,7 @@ const Dashboard = React.memo(() => {
   let numberofSubmissionListFrom =
     activePage === 1 ? 1 : (activePage * limit) - limit + 1;
   let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
-  // if ascending sort value is title else -title for this case
 
-  // const isAscending = sort === "-formName" ? false : true;
-  //var isAscending = true;
   const [isAscending, setIsAscending] = useState(false);
   const [searchBy, setSearchBy] = useState("created");
   const [sortsBy, setSortsBy] = useState("formName");
@@ -86,6 +83,13 @@ const Dashboard = React.memo(() => {
   // State to set search text for submission data
   const [showClearButton, setShowClearButton] = useState("");
   const searchInputBox = useRef("");
+  //Array for pagination dropdown
+  const options = [
+    { value: '6', label: '6' },
+    { value: '12', label: '12' },
+    { value: '30', label: '30' },
+    { value: '', label: 'All' }
+  ];
   // Function to handle search text
   const handleSearch = () => {
 
@@ -347,21 +351,14 @@ const Dashboard = React.memo(() => {
                     itemClass="page-item"
                     linkClass="page-link"
                     onChange={handlePageChange}
-
-
                   />
-
                   <select
                     title="Choose page limit"
                     onChange={(e) => handleLimitChange(e.target.value)}
                     className="form-select mx-5 mb-3"
                     aria-label="Choose page limit"
                   >
-                    <option value={limit}>{limit == totalItems ? "all" : limit}</option>
-                    {limit != 6 && <option value={6}>6</option>}
-                    {limit != 12 && <option value={12}>12</option>}
-                    {limit != 30 && <option value={30}>30</option>}
-                    {limit != totalItems && <option value={totalItems}>All</option>}
+                    {options.map(({ value, label }, index) => <option value={value == '' ? totalItems : value} key={index} >{label}</option>)}
                   </select>
 
                   <span>

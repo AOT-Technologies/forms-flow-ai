@@ -441,12 +441,16 @@ class ApplicationSchemaWrapper:  # pylint: disable=too-few-public-methods
         """
         try:
             formurl = application["formUrl"]
-            application["formId"] = formurl[
-                formurl.find("/form/") + 6 : formurl.find("/submission/")
-            ]
-            application["submissionId"] = formurl[
-                formurl.find("/submission/") + 12 : len(formurl)
-            ]
+            if formurl == None:
+                application["formId"] = None
+                application["submissionId"] = None
+            else:
+                application["formId"] = formurl[
+                    formurl.find("/form/") + 6 : formurl.find("/submission/")
+                ]
+                application["submissionId"] = formurl[
+                    formurl.find("/submission/") + 12 : len(formurl)
+                ]
             return application
         except KeyError:
             return (

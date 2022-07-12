@@ -7,7 +7,9 @@ function renderForm() {
         form_info.form_url,
         {readOnly : true, renderMode: 'flat'}
       ).then((form) => {
-        document.getElementById('formio').classList.add("completed")
+        form.ready.then(() => {
+          document.getElementById('formio').classList.add("completed")
+      });
       });
   }
   

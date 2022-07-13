@@ -41,3 +41,4 @@ jobs/sentiment-analysis/tests/__pycache__
 #Database
 postgres/
 mongodb/
+pg-db-data/

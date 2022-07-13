@@ -1,0 +1,52 @@
+[
+    {
+        "_id": "62cdaa1f107130b6c1fc8aff",
+        "title": "Administrator",
+        "description": "A role for Administrative Users.",
+        "default": false,
+        "admin": true,
+        "machineName": "administrator",
+        "created": "2022-07-12T17:06:39.988Z",
+        "modified": "2022-07-12T17:46:07.132Z"
+    },
+    {
+        "_id": "62cdaa20107130b6c1fc8b07",
+        "title": "Anonymous",
+        "description": "A role for Anonymous Users.",
+        "default": true,
+        "admin": false,
+        "machineName": "anonymous",
+        "created": "2022-07-12T17:06:40.059Z",
+        "modified": "2022-07-12T17:46:07.162Z"
+    },
+    {
+        "_id": "62cdaa20107130b6c1fc8b03",
+        "title": "Authenticated",
+        "description": "A role for Authenticated Users.",
+        "default": false,
+        "admin": false,
+        "machineName": "authenticated",
+        "created": "2022-07-12T17:06:40.043Z",
+        "modified": "2022-07-12T17:46:07.151Z"
+    },
+    {
+        "_id": "62cdaa20107130b6c1fc8b0f",
+        "title": "formsflow Client",
+        "description": "A person who can do form submission.",
+        "default": false,
+        "admin": false,
+        "machineName": "formsflowClient",
+        "created": "2022-07-12T17:06:40.089Z",
+        "modified": "2022-07-12T17:46:07.181Z"
+    },
+    {
+        "_id": "62cdaa20107130b6c1fc8b0b",
+        "title": "formsflow Reviewer",
+        "description": "A person who can view all form submissions.",
+        "default": false,
+        "admin": false,
+        "machineName": "formsflowReviewer",
+        "created": "2022-07-12T17:06:40.069Z",
+        "modified": "2022-07-12T17:46:07.171Z"
+    }
+]

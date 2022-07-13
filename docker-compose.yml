@@ -45,7 +45,7 @@ services:
     # The app will restart until Mongo is listening
     restart: unless-stopped
     ports:
-      - '8081:3001'
+      - '3001:3001'
       # - '8080:8080'
     # volumes:
     #   - .formio-data/:/app:rw
@@ -55,7 +55,7 @@ services:
       ROOT_EMAIL: admin@example.com
       ROOT_PASSWORD: admin
       FORMIO_DOMAIN: http://forms:8081
-      FORMIO_JWT_SECRET: thisismysecret
+      FORMIO_JWT_SECRET: thisisthesecret
       FORMIO_JWT_EXPIRE: 240
     stdin_open: true # -i
     tty: true # -t
@@ -94,7 +94,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - '8082:8080'
+      - '8000:8000'
     depends_on:
       - postgres
       - keycloak
@@ -132,7 +132,7 @@ services:
       - FORMIO_ROOT_EMAIL=${FORMIO_ROOT_EMAIL:-admin@example.com}
       - FORMIO_ROOT_PASSWORD=${FORMIO_ROOT_PASSWORD:-admin}
       - APP_SECURITY_ORIGIN=${BPM_APP_ORIGIN:-*}
-      - WEBSOCKET_SECURITY_ORIGIN=${WEBSOCKET_SECURITY_ORIGIN}
+      - WEBSOCKET_SECURITY_ORIGIN=${BPM_WEBSOCKET_SECURITY_ORIGIN}
       - WEBSOCKET_MESSAGE_TYPE=${WEBSOCKET_MESSAGE_TYPE:-TASK_EVENT}
       - WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
       - DATA_BUFFER_SIZE=${DATA_BUFFER_SIZE:-2}
@@ -150,7 +150,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - '8000:80'
+      - '80:80'
     volumes:
       - ./:/app:rw
     environment:
@@ -192,7 +192,7 @@ services:
     command: server
     env_file: .env
     ports:
-      - '8050:5000'
+      - '5000:5000'
     environment:
       REDASH_WEB_WORKERS: 4
     networks:

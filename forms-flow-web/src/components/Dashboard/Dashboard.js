@@ -88,7 +88,7 @@ const Dashboard = React.memo(() => {
     { value: '6', label: '6' },
     { value: '12', label: '12' },
     { value: '30', label: '30' },
-    { value: '', label: 'All' }
+    { value: totalItems, label: totalItems }
   ];
   // Function to handle search text
   const handleSearch = () => {
@@ -100,6 +100,9 @@ const Dashboard = React.memo(() => {
     searchInputBox.current.value = "";
     setShowClearButton(false);
     handleSearch();
+  };
+  const clearDate = () => {
+    console.log("clear date");
   };
   // Function to handle sort for submission data
   const handleSort = () => {
@@ -163,17 +166,6 @@ const Dashboard = React.memo(() => {
     dispatch(setMetricsDateRangeLoading(true));
     setDateRange(date);
   };
-  const resetSubmission = () => {
-    const checkFirstDay = moment(dateRange[0]).format("YYYY-MM-01");
-    const checkLastDay = moment(dateRange[1]).format("YYYY-MM-DD");
-    if (checkFirstDay === firsDay && checkLastDay === lastDay) {
-      dispatch(setMetricsSubmissionSearch(""));
-      searchInputBox.current.value = "";
-      setShowClearButton(false);
-    } else if (searchInputBox.current.value) {
-      setDateRange([moment(firsDay), moment(lastDay)]);
-    }
-  };
   const noDefaultApplicationAvailable =
     !searchInputBox.current.value && !submissionsList.length ? true : false;
   const noOfApplicationsAvailable = submissionsList?.length || 0;
@@ -231,7 +223,8 @@ const Dashboard = React.memo(() => {
                       yearPlaceholder="yyyy"
                       calendarAriaLabel="Select the date"
                       dayAriaLabel="Select the day"
-                      clearAriaLabel="Click to clear"
+                      clearAriaLabel="Clear value"
+                      clearIcon= {null}
                     />
                   </div>
                 </div>
@@ -239,7 +232,6 @@ const Dashboard = React.memo(() => {
                   <div className="col">
                     <div className="input-group">
                       <span
-                        //onClick={handleSort}
                         style={{
                           cursor: "pointer",
                         }}>
@@ -313,34 +305,13 @@ const Dashboard = React.memo(() => {
                     setSHowSubmissionData={setSHowSubmissionData}
                   />
                 </div>
-              ) : noDefaultApplicationAvailable && !showClearButton ? (
-                <div className="col-12 col-sm-6 col-md-6 no_submission_main">
-                  <span className="col-12 col-sm-6 col-md-6 no_sumbsmission">
-                    <h3>
-                      {t(
-                        "No submission avaliable in the selected date. Please select another date range"
-                      )}
-                    </h3>
-                  </span>
-                </div>
               ) : (
                 <div className="col-12 col-sm-6 col-md-6 no_submission_main">
                   <div className="col-12 col-sm-6 col-md-6 no_sumbsmission">
                     <h3>{t("No submissions found")}</h3>
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      style={{
-                        cursor: "pointer",
-                      }}
-                      onClick={() => resetSubmission()}
-                    >
-                      {t("Click here to go back")}
-                    </Button>
                   </div>
                 </div>
               )}
-
               {submissionsList.length ? (
                 <div className=" w-100 p-3 d-flex align-items-center">
                   <Pagination
@@ -358,7 +329,9 @@ const Dashboard = React.memo(() => {
                     className="form-select mx-5 mb-3"
                     aria-label="Choose page limit"
                   >
-                    {options.map(({ value, label }, index) => <option value={value == '' ? totalItems : value} key={index} >{label}</option>)}
+                    <option selected >{limit == totalItems ? 'All' : limit}</option>
+                    {/* eslint max-len: ["error", { "code": 500 }] */}
+                    {options.map(({ value, label }, index) => label != limit && <option value={value == '' ? totalItems : value} key={index} >{label == totalItems ? "All" : label}</option>)}
                   </select>
 
                   <span>

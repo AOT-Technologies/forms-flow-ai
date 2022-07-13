@@ -217,6 +217,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.camunda.bpm.assert</groupId>
@@ -358,6 +364,18 @@
 						<exclude>org/camunda/bpm/extension/commons/connector/auth/FormioContext.class</exclude>
 						<exclude>org/camunda/bpm/extension/commons/connector/*.class</exclude>
 						<exclude>org/camunda/bpm/extension/CamundaApplication.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/exceptions</exclude>
+						<exclude>org/camunda/bpm/extension/commons/utils/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/exceptions/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/listeners/execution/FormAccessTokenCacheListener.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/rest/exception/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/config/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/rest/constant/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/services/IMessageEvent.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/rest/dto/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/rest/impl/*.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>
@@ -392,6 +410,48 @@
 				<configuration>
 					<mainClass>org.camunda.bpm.extension.CamundaApplication</mainClass>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.8</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<!-- attached to Maven test phase -->
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>jacoco-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>PACKAGE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.9</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

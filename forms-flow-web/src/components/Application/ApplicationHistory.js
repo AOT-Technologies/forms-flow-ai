@@ -25,7 +25,6 @@ const HistoryList = React.memo((props) => {
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const { t } = useTranslation();
-
   useEffect(() => {
     dispatch(setUpdateHistoryLoader(true));
   }, [dispatch]);

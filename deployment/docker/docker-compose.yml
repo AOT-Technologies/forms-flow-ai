@@ -118,8 +118,7 @@ services:
       context: ./../../forms-flow-web/
       dockerfile: Dockerfile
       args:
-        - NODE_ENV=${NODE_ENV:-development}
-        - GENERATE_SOURCEMAP=false
+        - NODE_ENV=${NODE_ENV:-production}
         - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE:-formsflow-client}
         - REACT_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE:-formsflow-reviewer}
         - REACT_APP_STAFF_DESIGNER_ROLE=${DESIGNER_ROLE:-formsflow-designer}
@@ -200,6 +199,7 @@ services:
       FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
       FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
       FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
+      CHROME_DRIVER_PATH: ${CHROME_DRIVER_PATH}
 
     stdin_open: true # -i
     tty: true # -t

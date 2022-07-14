@@ -37,3 +37,5 @@ rsa==4.8
 six==1.16.0
 urllib3==1.26.8
 PyJWT==2.4.0
+selenium==3.141.0
+selenium-wire==3.0.0

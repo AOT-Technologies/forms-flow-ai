@@ -217,7 +217,7 @@ export const FilterApplications = (params, ...rest) => {
     if (id && id !== "") {
       url += `&Id=${id.filterVal}`;
     }
-
+    
     if (applicationStatus && applicationStatus !== "") {
       url += `&applicationStatus=${applicationStatus?.filterVal}`;
     }

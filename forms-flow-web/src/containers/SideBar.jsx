@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { selectRoot } from "react-formio";
 import { useLocation } from "react-router-dom";
-
+import createURLPathMatchExp from "../helper/regExp/pathMatch";
+import { MULTITENANCY_ENABLED } from "../constants/constants";
 import { CLIENT, STAFF_REVIEWER } from "../constants/constants";
 import { getUserRolePermission } from "../helper/user";
 
@@ -20,6 +21,8 @@ const SideBar = React.memo(() => {
     return selectRoot("user", state).roles;
   });
   const isMenuOpen = useSelector((state) => state.menu.isMenuOpen);
+  const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const baseUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   const menuToggle = () => {
     dispatch(toggleMenu(false));
@@ -38,13 +41,19 @@ const SideBar = React.memo(() => {
         )}
         <ul className="list-unstyled components">
           <li
-            className={`${pathname.match(/^\/form/) ? "active" : ""}`}
+            className={`${
+              pathname.match(createURLPathMatchExp("form", baseUrl))
+                ? "active"
+                : ""
+            }`}
             onClick={menuToggle}
           >
             <Link
               to="/form"
               className={`main-nav nav-link ${
-                pathname.match(/^\/form/) ? "active-tab" : ""
+                pathname.match(createURLPathMatchExp("form", baseUrl))
+                  ? "active-tab"
+                  : ""
               }`}
             >
               {/*<img src="/form.svg" width="30" height="30" alt="form" />*/}
@@ -53,7 +62,11 @@ const SideBar = React.memo(() => {
             </Link>
           </li>
           <li
-            className={`${pathname.match(/^\/application/) ? "active" : ""}`}
+            className={`${
+              pathname.match(createURLPathMatchExp("application", baseUrl))
+                ? "active"
+                : ""
+            }`}
             onClick={menuToggle}
           >
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ||
@@ -61,7 +74,9 @@ const SideBar = React.memo(() => {
               <Link
                 to="/application"
                 className={`main-nav nav-link ${
-                  pathname.match(/^\/application/) ? "active-tab" : ""
+                  pathname.match(createURLPathMatchExp("application", baseUrl))
+                    ? "active-tab"
+                    : ""
                 }`}
               >
                 <i className="fa fa-list-alt" />
@@ -83,14 +98,20 @@ const SideBar = React.memo(() => {
             ) : null}
           </li>*/}
           <li
-            className={`${pathname.match(/^\/task/) ? "active" : ""}`}
+            className={`${
+              pathname.match(createURLPathMatchExp("task", baseUrl))
+                ? "active"
+                : ""
+            }`}
             onClick={menuToggle}
           >
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
                 to="/task"
                 className={`main-nav nav-link ${
-                  pathname.match(/^\/task/) ? "active-tab" : ""
+                  pathname.match(createURLPathMatchExp("task", baseUrl))
+                    ? "active-tab"
+                    : ""
                 }`}
               >
                 <i className="fa fa-list" />
@@ -100,7 +121,10 @@ const SideBar = React.memo(() => {
           </li>
           <li
             className={` ${
-              pathname && pathname.match(/^\/metrics/) ? "active" : ""
+              pathname &&
+              pathname.match(createURLPathMatchExp("metrics", baseUrl))
+                ? "active"
+                : ""
             }`}
             onClick={menuToggle}
           >
@@ -110,7 +134,9 @@ const SideBar = React.memo(() => {
                 aria-expanded="false"
                 to="/metrics"
                 className={`main-nav nav-link ${
-                  pathname.match(/^\/metrics/) ? "active-tab" : ""
+                  pathname.match(createURLPathMatchExp("metrics", baseUrl))
+                    ? "active-tab"
+                    : ""
                 }`}
               >
                 <i className="fa fa-pie-chart" aria-hidden="true" />
@@ -119,14 +145,20 @@ const SideBar = React.memo(() => {
             ) : null}
           </li>
           <li
-            className={`${pathname.match(/^\/insights/) ? "active" : ""}`}
+            className={`${
+              pathname.match(createURLPathMatchExp("insights", baseUrl))
+                ? "active"
+                : ""
+            }`}
             onClick={menuToggle}
           >
             {getUserRolePermission(userRoles, STAFF_REVIEWER) ? (
               <Link
                 to="/insights"
                 className={`main-nav nav-link ${
-                  pathname.match(/^\/insights/) ? "active-tab" : ""
+                  pathname.match(createURLPathMatchExp("insights", baseUrl))
+                    ? "active-tab"
+                    : ""
                 }`}
               >
                 <i className="fa fa-lightbulb-o" />

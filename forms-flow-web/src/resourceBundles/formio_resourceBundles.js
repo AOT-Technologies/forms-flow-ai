@@ -2,7 +2,7 @@
 export const formio_resourceBundles = {
 
    "en": {
-
+      "Search by form name":"Search by form name",
       "Click to search":"Click to search",
   "No submissions found":"No submissions found",
   "No submission avaliable in the selected date. Please select another date range":"No submission avaliable in the selected date. Please select another date range",
@@ -15,6 +15,7 @@ export const formio_resourceBundles = {
       "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.",
       "Save Changes":"Save Changes",
       "Are you sure you wish to delete the form ":"Are you sure you wish to delete the form ",
+      "Are you sure you wish to delete the form?":"Are you sure you wish to delete the form?",
       "Applications are submitted against":"Applications are submitted against",
       "Application is submitted against":"Application is submitted against",
       ". Are you sure want to delete ?":". Are you sure want to delete ?",
@@ -53,6 +54,7 @@ export const formio_resourceBundles = {
       "No submissions available for the selected date range":"No submissions available for the selected date range",
       "Save Form":"Save Form",
       "Cancel":"Cancel",
+      "Confirm":"Confirm",
       "wizard":"Wizard",
       "Please fix the errors before submitting again.":"Please fix the errors before submitting again.",
        "Error in JSON file structure":"Error in JSON file structure",
@@ -205,6 +207,7 @@ export const formio_resourceBundles = {
      "Modified Date": "Modified Date",
       "File Upload Status": "File Upload Status",
       "Forms Completed": "Forms Completed",
+      "Form Completed" : "Form Completed",
       "No forms found": "No forms found",
       "Press Enter key or click here to search": "Press Enter key or click here to search",
       "Click to clear": "Click to clear",
@@ -223,7 +226,7 @@ export const formio_resourceBundles = {
    },
 
    "zh-CN": {
-       
+       "Search by form name":"按表格名称搜索",
       "Click to search":"点击搜索",
       "No submissions found":"未找到任何提交",
       "No submission avaliable in the selected date. Please select another date range":"在所选日期内没有可用的提交。请选择其他日期范围",
@@ -238,6 +241,7 @@ export const formio_resourceBundles = {
       "Application is submitted against":"申请是针对",
       ". Are you sure want to delete ?":".确定要删除吗？",
       "Are you sure you wish to delete the form ":"您确定要删除表格吗 ",
+      "Are you sure you wish to delete the form?":"您确定要删除表格吗?",
       "Click here to go back":"点击此处回去",
       "Dashboards":"仪表板",
       "Error while saving Form":"保存表单时出错",
@@ -270,7 +274,8 @@ export const formio_resourceBundles = {
       "Ok":"好的",
       "No submissions available for the selected date range":"所选日期范围内没有可用的提交",
       "Save Form":"保存表格",
-     "Cancel":"取消",
+      "Confirm":"确认",
+      "Cancel":"取消",
       "Wizard":"向导", 
       "Please fix the errors before submitting again.":"请在重新提交之前修复错误。",
       "Error in JSON file structure":"JSON文件结构错误",
@@ -408,6 +413,7 @@ export const formio_resourceBundles = {
      "Modified Date": "修改日期",
       "File Upload Status": "文件上传状态",
       "Forms Completed": "完成的表格",
+      "Form Completed" : "表格完成",
       "No forms found": "没有找到表格",
       "Powered by ": "供电 ",
       "No Process Diagram found": "未找到流程图",
@@ -942,7 +948,7 @@ export const formio_resourceBundles = {
 
 
    "bg": {
-
+      "Search by form name":"Tŭrsene po ime na formulyara",
       "Click to search":"Щракнете за търсене",
     "No submissions found":"Няма намерени заявки",
     "No submission avaliable in the selected date. Please select another date range":"Няма налично подаване на избраната дата. Моля, изберете друг период от време",
@@ -958,6 +964,7 @@ export const formio_resourceBundles = {
       "Application is submitted against":"Заявлението се подава срещу",
       ". Are you sure want to delete ?":". Наистина ли искате да изтриете?",
       "Are you sure you wish to delete the form ":"Сигурни ли сте, че искате да изтриете формуляра",
+      "Are you sure you wish to delete the form?":"Сигурни ли сте, че искате да изтриете формуляра?",
       "Click here to go back":"Щракнете тук, за да се върнете",
       "Dashboards":"Табла за управление",
       "Tasks": "Задачи",
@@ -989,6 +996,7 @@ export const formio_resourceBundles = {
       "Ok":"Добре",
       "No submissions available for the selected date range":"Няма налични заявки за избрания период от време",  
       "Save Form":"Запазване на формуляр",
+      "Confirm":"Потвърдете",
       "Cancel":"Отмяна",
       "Wizard":"Магьосник",
       "Please fix the errors before submitting again.":"Моля, поправете грешките, преди да изпратите отново.",
@@ -1125,6 +1133,7 @@ export const formio_resourceBundles = {
      "Modified Date": "Дата на промяна",
       "File Upload Status": "Състояние на качване на файл",
       "Forms Completed": "Формулярите са попълнени",
+      "Form Completed" : "Формулярът е попълнен",
       "No forms found": "Няма намерени формуляри",
       "Powered by ": "Задвижвани от ",
       "No Process Diagram found": "Не е намерена диаграма на процеса",
@@ -1662,7 +1671,7 @@ export const formio_resourceBundles = {
 
 
    "pt": {
-
+      "Search by form name":"Pesquisar pelo nome do formulário",
       "Click to search":"Clique para pesquisar",
   "No submissions found":"Nenhum envio encontrado",
   "No submission avaliable in the selected date. Please select another date range":"Nenhuma submissão disponível na data selecionada. Selecione outro intervalo de datas",
@@ -1675,6 +1684,7 @@ export const formio_resourceBundles = {
       "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Alterar o fluxo de trabalho do formulário não afetará os aplicativos existentes. Ele só será atualizado nos aplicativos recém-criados. Pressione Salvar alterações para continuar ou cancelar as alterações.",
       "Save Changes":"Salvar alterações",
       "Are you sure you wish to delete the form ":"Tem certeza de que deseja excluir o formulário",
+      "Are you sure you wish to delete the form?":"Tem certeza de que deseja excluir o formulário?",
       "Applications are submitted against":"As candidaturas são apresentadas contra",
       "Application is submitted against":"As candidaturas são apresentadas contra",
       ". Are you sure want to delete ?":". Tem certeza de que deseja excluir?",
@@ -1708,7 +1718,8 @@ export const formio_resourceBundles = {
       "Ok":"OK",
       "No submissions available for the selected date range":"Nenhum envio disponível para o período selecionado",
        "Save Form":"Salvar formulário",
-      "Cancel":"Cancelar",   
+       "Confirm":"confirme",
+       "Cancel":"Cancelar",   
       "Wizard":"Mago",
       "Error in JSON file structure":"Erro na estrutura do arquivo JSON",
       "Downloaded Successfully":"Baixado com sucesso",
@@ -2370,6 +2381,7 @@ export const formio_resourceBundles = {
      "Modified Date": "Data modificada",
       "File Upload Status": "Status de upload de arquivo",
       "Forms Completed": "Formulários preenchidos",
+      "Form Completed" : "Formulário preenchido",
       "No forms found": "Nenhum formulário encontrado",
       "No Process Diagram found": "Nenhum diagrama de processo encontrado",
       "No applications found": "Nenhum aplicativo encontrado",
@@ -2383,7 +2395,7 @@ export const formio_resourceBundles = {
 },
 
    "fr": {
-
+      "Search by form name":"Rechercher par nom de formulaire",
       "Click to search":"Cliquez pour rechercher",
       "No submissions found":"Aucune soumission trouvée",
       "No submission avaliable in the selected date. Please select another date range":"Aucune soumission disponible à la date sélectionnée. Veuillez sélectionner une autre plage de dates",
@@ -2395,6 +2407,7 @@ export const formio_resourceBundles = {
       "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"La modification du flux de travail du formulaire n'affectera pas les applications existantes. Il ne sera mis à jour que dans les applications nouvellement créées. Appuyez sur Enregistrer les modifications pour continuer ou annuler les modifications.",
       "Save Changes":"Save Changes",
       "Are you sure you wish to delete the form ":"Êtes-vous sûr de vouloir supprimer le formulaire",
+      "Are you sure you wish to delete the form?":"Êtes-vous sûr de vouloir supprimer le formulaire?",
       "Applications are submitted against":"Les candidatures sont déposées contre",
       "Application is submitted against":"La candidature est déposée contre",
       ". Are you sure want to delete ?":". Voulez-vous vraiment supprimer ?",
@@ -2431,6 +2444,7 @@ export const formio_resourceBundles = {
       "Ok":"D'accord",
       "No submissions available for the selected date range":"Aucune soumission disponible pour la plage de dates sélectionnée",
       "Save Form":"Enregistrer le formulaire",
+      "Confirm":"Confirmer",
       "Cancel":"Annuler",
       "Wizard":"Magier",
       "Please fix the errors before submitting again.":"Veuillez corriger les erreurs avant de soumettre à nouveau.",
@@ -3093,6 +3107,7 @@ export const formio_resourceBundles = {
       "Modified Date": "Date modifiée",
       "File Upload Status": "État du téléchargement du fichier",
       "Forms Completed": "Formulaires remplis",
+      "Form Completed" : "Formulaire complété",
       "No applications found": "No applications found",
       "Successfully Updated": "Mise à jour réussie",
       "Failed": "Manquée",
@@ -3106,7 +3121,7 @@ export const formio_resourceBundles = {
    },
 
    "de": {
-
+      "Search by form name":"Suche nach Formularnamen",
       "Click to search":"Klicken Sie, um zu suchen",
       "No submissions found":"Keine Einreichungen gefunden",
       "No submission avaliable in the selected date. Please select another date range":"Für das ausgewählte Datum ist keine Einreichung verfügbar. Bitte wählen Sie einen anderen Zeitraum aus",
@@ -3118,7 +3133,9 @@ export const formio_resourceBundles = {
       "Loading...":"Wird geladen...",
       "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Das Ändern des Formular-Workflows wirkt sich nicht auf die vorhandenen Anwendungen aus. Es wird nur in den neu erstellten Anwendungen aktualisiert. Drücken Sie Änderungen speichern, um fortzufahren oder die Änderungen abzubrechen.",
       "Save Changes":"Save Changes",
-      "Are you sure you wish to delete the form ":"Möchten Sie das Formular wirklich löschen? ",
+      "Are you sure you wish to delete the form ":"Möchten Sie das Formular wirklich löschen ",
+      "Are you sure you wish to delete the form?":"Möchten Sie das Formular wirklich löschen? ",
+
       "Applications are submitted against":"Anträge werden dagegen gestellt",
       "Application is submitted against":"Antrag wird dagegen gestellt",
       ". Are you sure want to delete ?":". Möchten Sie wirklich löschen?",
@@ -3151,6 +3168,7 @@ export const formio_resourceBundles = {
       "Thank you for your response.":"Danke für Ihre Antwort.",
       "Form not available": "Formular nicht verfügbar",
       "Save Form":"Formular speichern",
+      "Confirm":"Bestätigen",
       "Cancel":"Stornieren",
       "Metrics": "Metriken",
       "Dashboard": "Armaturenbrett",
@@ -3302,6 +3320,7 @@ export const formio_resourceBundles = {
      "Modified Date": "Geändertes Datum",
       "File Upload Status": "Datei-Upload-Status",
       "Forms Completed": "Formulare ausgefüllt",
+      "Form Completed" : "Formular ausgefüllt",
       "No forms found": "Keine Formulare gefunden",
       "Press Enter key or click here to search": "Drücken Sie die Eingabetaste oder klicken Sie hier, um zu suchen",
       "Click to clear": "Zum Löschen klicken",

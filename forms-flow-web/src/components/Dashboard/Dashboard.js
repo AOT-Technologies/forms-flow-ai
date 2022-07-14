@@ -90,9 +90,9 @@ const Dashboard = React.memo(() => {
     { value: '30', label: '30' },
     { value: totalItems, label: totalItems }
   ];
+
   // Function to handle search text
   const handleSearch = () => {
-
     dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
 
   };
@@ -127,10 +127,11 @@ const Dashboard = React.memo(() => {
   useEffect(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
+   // dispatch(setMetricsDateRangeLoading(true));
+    setShowClearButton(searchText);
     dispatch(
       /*eslint max-len: ["error", { "code": 170 }]*/
       fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => {
-        dispatch(setMetricsDateRangeLoading(false));
       })
     );
   }, [dispatch, searchBy, dateRange, searchInputBox, searchText, activePage, limit, sortsBy, sortOrder]);
@@ -224,7 +225,7 @@ const Dashboard = React.memo(() => {
                       calendarAriaLabel="Select the date"
                       dayAriaLabel="Select the day"
                       clearAriaLabel="Clear value"
-                      clearIcon= {null}
+                      clearIcon={null}
                     />
                   </div>
                 </div>
@@ -269,7 +270,7 @@ const Dashboard = React.memo(() => {
                           }}
                           autoComplete="off"
                           className="form-control"
-                          placeholder={t("Search...")}
+                          placeholder={t(searchText ? searchText : "Search...")}
                         />
                       </div>
                       {showClearButton && (
@@ -296,20 +297,20 @@ const Dashboard = React.memo(() => {
               </div>
               {submissionsList.length ? (
                 <div className="col-12">
-                  <ApplicationCounter
+                  {!metricsDateRangeLoader && <ApplicationCounter
                     className="dashboard-card"
                     application={submissionsList}
                     getStatusDetails={getStatusDetails}
                     selectedMetricsId={selectedMetricsId}
                     noOfApplicationsAvailable={noOfApplicationsAvailable}
                     setSHowSubmissionData={setSHowSubmissionData}
-                  />
+                  />}
                 </div>
               ) : (
                 <div className="col-12 col-sm-6 col-md-6 no_submission_main">
-                  <div className="col-12 col-sm-6 col-md-6 no_sumbsmission">
+                  {!metricsDateRangeLoader && <div className="col-12 col-sm-6 col-md-6 no_sumbsmission">
                     <h3>{t("No submissions found")}</h3>
-                  </div>
+                  </div>}
                 </div>
               )}
               {submissionsList.length ? (
@@ -329,7 +330,7 @@ const Dashboard = React.memo(() => {
                     className="form-select mx-5 mb-3"
                     aria-label="Choose page limit"
                   >
-                    <option selected >{limit == totalItems ? 'All' : limit}</option>
+                    <option selected >{limit == totalItems ? 'All' : limit > 30 ? "All" : limit}</option>
                     {/* eslint max-len: ["error", { "code": 500 }] */}
                     {options.map(({ value, label }, index) => label != limit && <option value={value == '' ? totalItems : value} key={index} >{label == totalItems ? "All" : label}</option>)}
                   </select>

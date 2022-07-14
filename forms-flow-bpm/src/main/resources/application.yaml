@@ -102,7 +102,7 @@ camunda.bpm:
 #  metrics:
 #    enabled: ${CAMUNDA_METRICS_FLAG:true}
 server:
-  port: 8000
+  port: 8080
   servlet.context-path: /camunda
   session:
     cookie:

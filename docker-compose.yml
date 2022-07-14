@@ -15,14 +15,15 @@ services:
     ports:
       - 5432:5432
     networks:
-      - forms-flow
-
+      forms-flow:
+          aliases:
+            - postgres.${DOMAIN}
   mongo:
     image: mongo:5.0
     restart: unless-stopped
     hostname: forms-flow-forms-db
     ports:
-      - '${MONGO_PORT}:27017'
+      - ${MONGO_PORT}:${MONGO_PORT}
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USER}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
@@ -33,7 +34,9 @@ services:
       - ./mongodb/data/log/:/var/log/mongodb/
       - ./mongodb/mongod.conf:/etc/mongod.conf
     networks:
-      - forms-flow
+      forms-flow:
+          aliases:
+            - mongo.${DOMAIN}
   
   forms:
     image: forms-flow-forms:latest
@@ -45,7 +48,7 @@ services:
     # The app will restart until Mongo is listening
     restart: unless-stopped
     ports:
-      - '3001:3001'
+      - ${FORMIO_PORT}:${FORMIO_PORT}
       # - '8080:8080'
     # volumes:
     #   - .formio-data/:/app:rw
@@ -54,13 +57,15 @@ services:
       NODE_CONFIG: "{\"mongo\":\"mongodb://admin:admin@mongo:27017/formio?authSource=admin\"}"
       ROOT_EMAIL: admin@example.com
       ROOT_PASSWORD: admin
-      FORMIO_DOMAIN: http://forms:8081
-      FORMIO_JWT_SECRET: thisisthesecret
-      FORMIO_JWT_EXPIRE: 240
+      FORMIO_DOMAIN: ${FORMIO_URL}
+      FORMIO_JWT_SECRET: ${FORMIO_JWT_SECRET}
+      FORMIO_JWT_EXPIRE: 600
     stdin_open: true # -i
     tty: true # -t
     networks:
-      - forms-flow
+      forms-flow:
+          aliases:
+            - forms.${DOMAIN}
 
   
   keycloak:
@@ -82,11 +87,13 @@ services:
       - KEYCLOAK_USER=${KEYCLOAK_ADMIN_USER:-admin}
       - KEYCLOAK_PASSWORD=${KEYCLOAK_ADMIN_PASS:-admin}
     ports:
-      - 8080:8080
+      - ${KEYCLOAK_PORT}:${KEYCLOAK_PORT}
     depends_on:
       - postgres
     networks:
-      - forms-flow
+      forms-flow:
+          aliases:
+            - keycloak.${DOMAIN}
 
   bpm:
     build:
@@ -94,7 +101,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - '8000:8000'
+      - ${BPM_PORT}:${BPM_PORT}
     depends_on:
       - postgres
       - keycloak
@@ -126,7 +133,7 @@ services:
 #      - CAMUNDA_JOB_WAIT_TIME_MILLIS=${CAMUNDA_JOB_WAIT_TIME_MILLIS}
 #      - CAMUNDA_JOB_MAX_WAIT=${CAMUNDA_JOB_MAX_WAIT}
 #      - CAMUNDA_METRICS_FLAG=${CAMUNDA_METRICS_FLAG}
-      - CAMUNDA_APP_ROOT_LOG_FLAG=${CAMUNDA_APP_ROOT_LOG_FLAG:-error}
+      - CAMUNDA_APP_ROOT_LOG_FLAG=${BPM_LOGGING}
       - FORMSFLOW_API_URL=${API_URL}
       - FORMIO_URL=${FORMIO_URL}
       - FORMIO_ROOT_EMAIL=${FORMIO_ROOT_EMAIL:-admin@example.com}
@@ -141,8 +148,10 @@ services:
       - KEYCLOAK_ENABLE_CLIENT_AUTH=${KEYCLOAK_ENABLE_CLIENT_AUTH:-false}
       - BPM_CLIENT_CONN_TIMEOUT=${BPM_CLIENT_CONN_TIMEOUT:-5000}
     networks:
-      - forms-flow
-  
+      forms-flow:
+          aliases:
+            - bpm.${DOMAIN}
+ 
   api:
     image: forms-flow-api:latest
     build:
@@ -150,7 +159,7 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - '80:80'
+      - ${API_PORT}:${API_PORT}
     volumes:
       - ./:/app:rw
     environment:
@@ -169,19 +178,23 @@ services:
       JWT_OIDC_CACHING_ENABLED: 'True'
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
+      KEYCLOAK_ADMIN_USERNAME: 'admin'
+      KEYCLOAK_ADMIN_PASSWORD: 'admin'
       WEB_API_BASE_URL: ${API_URL}
     stdin_open: true # -i
     tty: true # -t
     depends_on:
       - postgres
     networks:
-      - forms-flow
+      forms-flow:
+          aliases:
+            - api.${DOMAIN}
 
   redis:
     image: redis:6-alpine
     restart: always
     networks:
-      - forms-flow
+      forms-flow:
 
   redash:
     image: redash/redash:10.1.0.b50633
@@ -192,11 +205,11 @@ services:
     command: server
     env_file: .env
     ports:
-      - '5000:5000'
+      - ${REDASH_PORT}:${REDASH_PORT}
     environment:
       REDASH_WEB_WORKERS: 4
     networks:
-      - forms-flow
+      forms-flow:
 #   
 #   web:
 #     container_name: forms-flow-web
@@ -230,7 +243,7 @@ services:
 #       - "3000:80"
 #     tty: true
 #     networks:
-#       - forms-flow
+#       forms-flow:
   
 
 networks:

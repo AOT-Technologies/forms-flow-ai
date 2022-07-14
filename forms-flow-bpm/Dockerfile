@@ -17,7 +17,7 @@ ENV JAVA_VERSION jdk-11.0.3+7
 ENV JAVA_HOME=/opt/java/openjdk \
     PATH="/opt/java/openjdk/bin:$PATH"
 
-EXPOSE 8000
+EXPOSE 8080
 # OpenShift has /app in the image, but it's missing when doing local development - Create it when missing
 RUN test ! -d /app && mkdir /app || :
 # Add spring boot application

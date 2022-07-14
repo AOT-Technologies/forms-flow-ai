@@ -82,7 +82,7 @@ camunda.bpm:
   webapp:
     application-path: /
     csrf:
-      enable-secure-cookie: true
+      enable-secure-cookie: false
     header-security:
       content-security-policy-disabled: false
       content-security-policy-value:  base-uri 'self';
@@ -102,15 +102,15 @@ camunda.bpm:
 #  metrics:
 #    enabled: ${CAMUNDA_METRICS_FLAG:true}
 server:
-  port: 8080
+  port: 8000
   servlet.context-path: /camunda
   session:
     cookie:
-      secure: true
+      secure: false
 
 # Camunda Rest API
 rest.security:
-  enabled: true
+  enabled: false
   provider: keycloak
   required-audience: camunda-rest-api
 

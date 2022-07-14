@@ -96,7 +96,7 @@ public class NotifyListener extends BaseListener implements TaskListener, IMessa
         return String.valueOf(this.messageId.getValue(delegateExecution));
     }
 
-    private List<String> getEmailGroups(DelegateExecution delegateExecution) throws JsonProcessingException {
+    private List<String> getEmailGroups(DelegateExecution delegateExecution) throws IOException {
         List<String> emailGroups = new ArrayList<>();
         if(this.emailGroups != null &&
                 StringUtils.isNotBlank(String.valueOf(this.emailGroups.getValue(delegateExecution)))) {

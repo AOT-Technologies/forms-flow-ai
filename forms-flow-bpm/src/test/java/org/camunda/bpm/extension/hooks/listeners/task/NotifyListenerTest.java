@@ -1,20 +1,21 @@
 package org.camunda.bpm.extension.hooks.listeners.task;
 
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.EMAIL_TO;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.ProcessEngine;
@@ -28,9 +29,7 @@ import org.camunda.bpm.engine.identity.UserQuery;
 import org.camunda.bpm.engine.task.IdentityLink;
 import org.camunda.bpm.extension.hooks.listeners.stubs.IdentityStub;
 import org.camunda.bpm.extension.hooks.listeners.stubs.UserStub;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -370,4 +369,72 @@ public class NotifyListenerTest {
 		verify(runtimeService, times(0)).startProcessInstanceByMessage(anyString(), any(Map.class));
 	}
 
+	@Test
+	public void invoke_notify_with_IOException() throws JsonProcessingException {
+
+		ObjectMapper bpmObjectMapper = mock(ObjectMapper.class);
+
+		when(bpmObjectMapper.readValue(anyString(), (Class<List>) any()))
+				.thenThrow(IOException.class);
+
+		when(delegateTask.getExecution())
+				.thenReturn(delegateExecution);
+		when(groupsOnly.getValue(delegateExecution))
+				.thenReturn("Y");
+		when(emailGroups.getValue(delegateExecution))
+				.thenReturn("[\"forms-flow-designer\",\"forms-flow-clerk\"]");
+						//.thenThrow(Exception.class);
+
+		when(category.getValue(delegateExecution))
+				.thenReturn("test-category");
+		when(delegateTask.getId())
+				.thenReturn("taskId-1");
+
+		List<User> userList = new ArrayList<>();
+		userList.add(new UserStub("1", "John", "Honai", "john.honai@aot-technologies.com", "password"));
+		userList.add(new UserStub("2", "Peter", "Scots", "peter.scots@aot-technologies.com", "password"));
+		when(delegateExecution.getProcessEngine())
+				.thenReturn(processEngine);
+		when(processEngine.getIdentityService())
+				.thenReturn(identityService);
+		UserQuery userQuery = mock(UserQuery.class);
+		UserQuery userQuery1 = mock(UserQuery.class);
+		when(identityService.createUserQuery())
+				.thenReturn(userQuery);
+		when(userQuery.memberOfGroup(anyString()))
+				.thenReturn(userQuery1);
+		when(userQuery1.list())
+				.thenReturn(userList);
+
+		when(delegateExecution.getProcessEngineServices())
+				.thenReturn(processEngineServices);
+		when(delegateExecution.getProcessEngineServices().getRuntimeService())
+				.thenReturn(runtimeService);
+		Map<String, Object> variables = new HashMap<>();
+		variables.put("_file", new Object());
+		when(delegateExecution.getVariables())
+				.thenReturn(variables);
+		when(messageId.getValue(delegateExecution))
+				.thenReturn("id1");
+		//notifyListener.notify(delegateTask);
+
+
+		/*
+		ArgumentCaptor<String> messageIdCaptor = ArgumentCaptor.forClass(String.class);
+		ArgumentCaptor<Map> messageVariableCaptor = ArgumentCaptor.forClass(Map.class);
+		verify(runtimeService).startProcessInstanceByMessage(messageIdCaptor.capture(),
+				messageVariableCaptor.capture());
+		Map<String, Object> eMessageVariables = new HashMap<>();
+		eMessageVariables.put(EMAIL_TO, "john.honai@aot-technologies.com,peter.scots@aot-technologies.com");
+		eMessageVariables.put("name", "Team");
+		eMessageVariables.put("category", "test-category");
+		eMessageVariables.put("taskid", "taskId-1");
+		assertEquals("id1", messageIdCaptor.getValue());
+		assertEquals(eMessageVariables, messageVariableCaptor.getValue());
+		*/
+
+		assertThrows(RuntimeException.class, () -> {
+			notifyListener.notify(delegateTask);
+		});
+	}
 }

@@ -55,8 +55,7 @@ class ApplicationService:
             payload = {
                 "variables": {
                     "applicationId": {"value": application.id},
-                    "submissionId": {"value": application.submission_id},
-                    "formId": {"value": mapper.form_id},
+                    "formUrl": {"value": data["form_url"]},
                     "formName": {"value": mapper.form_name},
                     "submitterName": {"value": application.created_by},
                     "submissionDate": {"value": str(application.created)},

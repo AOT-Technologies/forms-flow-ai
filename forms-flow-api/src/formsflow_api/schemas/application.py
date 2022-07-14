@@ -58,8 +58,10 @@ class ApplicationSchema(Schema):
     created = fields.Str()
     modified_by = fields.Str(data_key="modifiedBy")
     modified = fields.Str()
-    form_id = fields.Str(data_key="formId")
+    form_id = fields.Str(data_key="formId", load_only=True)
+    latest_form_id = fields.Str(data_key="formId", dump_only=True)
     submission_id = fields.Str(data_key="submissionId")
+    form_url = fields.Str(data_key="formUrl", load_only=True)
 
 
 class ApplicationUpdateSchema(Schema):
@@ -71,4 +73,4 @@ class ApplicationUpdateSchema(Schema):
         unknown = EXCLUDE
 
     application_status = fields.Str(data_key="applicationStatus", required=True)
-    submission_id = fields.Str(data_key="submissionId", required=False)
+    form_url = fields.Str(data_key="formUrl", required=False)

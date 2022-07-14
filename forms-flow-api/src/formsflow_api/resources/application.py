@@ -19,6 +19,7 @@ from formsflow_api.utils import (
     auth,
     cors_preflight,
     profiletime,
+    get_form_and_submission_id_from_form_url,
 )
 
 API = Namespace("Application", description="Application")
@@ -189,6 +190,14 @@ class ApplicationResourceById(Resource):
         try:
             application_schema = ApplicationUpdateSchema()
             dict_data = application_schema.load(application_json)
+            form_url = dict_data.get("form_url", None)
+            if form_url:
+                (
+                    latest_form_id,
+                    submission_id,
+                ) = get_form_and_submission_id_from_form_url(form_url)
+                dict_data["latest_form_id"] = latest_form_id
+                dict_data["submission_id"] = submission_id
             ApplicationService.update_application(
                 application_id=application_id, data=dict_data
             )

@@ -275,7 +275,12 @@ def test_application_update_details_api(app, client, session, jwt):
     rv = client.get(f"/application/{application_id}", headers=headers)
     payload = rv.json
     payload["applicationStatus"] = "New"
+    payload["formUrl"] = "https://sample.com/form/980/submission/1234"
 
     rv = client.put(f"/application/{application_id}", headers=headers, json=payload)
     assert rv.status_code == 200
     assert rv.json == "Updated successfully"
+    application = client.get(f"/application/{application_id}", headers=headers)
+    assert application.status_code == 200
+    assert application.json.get("formId") == "980"
+    assert application.json.get("submissionId") == "1234"

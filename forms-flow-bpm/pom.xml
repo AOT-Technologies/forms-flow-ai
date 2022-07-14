@@ -358,6 +358,18 @@
 						<exclude>org/camunda/bpm/extension/commons/connector/auth/FormioContext.class</exclude>
 						<exclude>org/camunda/bpm/extension/commons/connector/*.class</exclude>
 						<exclude>org/camunda/bpm/extension/CamundaApplication.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/utils/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/exceptions/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/listeners/execution/FormAccessTokenCacheListener.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/rest/exception/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/config/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/rest/constant/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/services/IMessageEvent.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/rest/dto/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/rest/impl/*.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>

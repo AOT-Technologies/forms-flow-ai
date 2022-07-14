@@ -42,6 +42,13 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Modified Docker-compose to point to create image from the [new Repository](https://github.com/AOT-Technologies/formio).
 
+**forms-flow-bpm**
+
+* Camunda upgraded to 7.15 to 7.17.
+
+`Removed`
+
+* Removed View submissions button from reviewer form list and view submissions route.
 
 `Generic Changes`
 

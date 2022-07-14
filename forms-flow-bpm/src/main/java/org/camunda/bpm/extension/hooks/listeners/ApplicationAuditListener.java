@@ -28,7 +28,7 @@ import static org.camunda.bpm.extension.commons.utils.VariableConstants.*;
  * This class creates / updates an audit entry in formsflow.ai system.
  */
 @Component
-public class ApplicationAuditListener extends BaseListener implements ExecutionListener, TaskListener {
+public class    ApplicationAuditListener extends BaseListener implements ExecutionListener, TaskListener {
 
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;

@@ -229,4 +229,5 @@ public class FormSubmissionServiceTest {
         String actual = formSubmissionService.createFormSubmissionData(bpmVariables);
         assertEquals(expected, actual);
     }
+
 }

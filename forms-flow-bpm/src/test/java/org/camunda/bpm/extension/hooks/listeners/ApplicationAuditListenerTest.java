@@ -4,6 +4,9 @@ import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.extension.hooks.listeners.data.Application;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
@@ -273,4 +276,6 @@ public class ApplicationAuditListenerTest {
 				.thenReturn(responseEntity);
 		applicationAuditListener.notify(delegateTask);
 	}
+
+
 }

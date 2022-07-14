@@ -27,3 +27,9 @@ export const setFormLoading = (data) => (dispatch) => {
     payload: data,
   });
 };
+export const setFormSearchLoading = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.IS_FORM_SEARCH_LOADING,
+    payload: data,
+  });
+};

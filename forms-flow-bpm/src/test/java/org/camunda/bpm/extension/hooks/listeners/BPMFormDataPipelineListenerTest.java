@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.slf4j.Logger;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,6 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -184,8 +183,8 @@ public class BPMFormDataPipelineListenerTest {
         ReflectionTestUtils.setField(bpmFormDataPipelineListener, "LOGGER", LOGGER);
         bpmFormDataPipelineListener.notify(delegateExecution);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(LOGGER).log(any(Level.class), captor.capture());
-        assertEquals("Unable to read submission for null", captor.getValue());
+        verify(LOGGER).error(captor.capture());
+        assertEquals("Unable to read submission for Empty Url string", captor.getValue());
     }
     
     /**
@@ -298,7 +297,7 @@ public class BPMFormDataPipelineListenerTest {
         ReflectionTestUtils.setField(bpmFormDataPipelineListener, "LOGGER", LOGGER);
         bpmFormDataPipelineListener.notify(delegateTask);
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
-        verify(LOGGER).log(any(Level.class), captor.capture());
-        assertEquals("Unable to read submission for null", captor.getValue());
+        verify(LOGGER).error(captor.capture());
+        assertEquals("Unable to read submission for Empty Url string", captor.getValue());
     }
 }

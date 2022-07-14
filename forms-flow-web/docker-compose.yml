@@ -7,8 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - NODE_ENV=${NODE_ENV:-development}
-        - GENERATE_SOURCEMAP=false
+        - NODE_ENV=${NODE_ENV:-production}
         - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE:-formsflow-client}
         - REACT_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE:-formsflow-reviewer}
         - REACT_APP_STAFF_DESIGNER_ROLE=${DESIGNER_ROLE:-formsflow-designer}

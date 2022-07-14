@@ -150,7 +150,7 @@ export const ApplicationList = React.memo(() => {
       search
     >
       {(props) => (
-        <div className="container">
+        <div className="container" role="definition">
           <div className="main-header">
             <h3 className="application-head">
               <i
@@ -161,7 +161,7 @@ export const ApplicationList = React.memo(() => {
               <span className="application-text">
                 <Translation>{(t) => t("Applications")}</Translation>
               </span>
-              <div className="col-md-1 application-count">
+              <div className="col-md-1 application-count" role="contentinfo">
                 ({applicationCount})
               </div>
             </h3>

@@ -4,7 +4,8 @@ const initialState = {
   formList: [],
   formUploadFormList: [],
   formUploadCounter: 0,
-  searchFormLoading: false,
+  designerFormLoading: false,
+  searchFormLoading:false
 };
 
 const formCheckList = (state = initialState, action) => {
@@ -20,6 +21,8 @@ const formCheckList = (state = initialState, action) => {
     case ACTION_CONSTANTS.FORM_UPLOAD_COUNTER:
       return { ...state, formUploadCounter: state.formUploadCounter + 1 };
     case ACTION_CONSTANTS.IS_FORM_LOADING:
+      return { ...state, designerFormLoading: action.payload };
+    case ACTION_CONSTANTS.IS_FORM_SEARCH_LOADING:
       return { ...state, searchFormLoading: action.payload };
     default:
       return state;

@@ -418,7 +418,16 @@ class Application(
         return cls.tenant_authorization(query=query).count()
 
     @classmethod
-    def find_aggregated_applications(cls, from_date: str, to_date: str):
+    def find_aggregated_applications(  # pylint: disable=too-many-arguments
+        cls,
+        from_date: str,
+        to_date: str,
+        page_no: int,
+        limit: int,
+        form_name: str,
+        sort_by: str,
+        sort_order: str,
+    ):
         """Fetch aggregated applications ordered by created date."""
         result_proxy = (
             db.session.query(
@@ -443,12 +452,33 @@ class Application(
                 FormProcessMapper.version,
             )
         )
+        if form_name:
+            result_proxy = result_proxy.filter(
+                FormProcessMapper.form_name.ilike(f"%{form_name}%")
+            )
+        sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
+        if sort_by and sort_order:
+            table_name = "application"
+            if sort_by == "form_name":
+                table_name = "form_process_mapper"
+            result_proxy = result_proxy.order_by(
+                text(f"{table_name}.{sort_by} {sort_order}")
+            )
+        pagination = result_proxy.paginate(page_no, limit)
+        total_count = result_proxy.count()
         result_proxy = cls.tenant_authorization(result_proxy)
-        return [dict(row) for row in result_proxy]
+        return pagination.items, total_count
 
     @classmethod
-    def find_aggregated_applications_modified(
-        cls, from_date: datetime, to_date: datetime
+    def find_aggregated_applications_modified(  # pylint: disable=too-many-arguments
+        cls,
+        from_date: datetime,
+        to_date: datetime,
+        page_no: int,
+        limit: int,
+        form_name: str,
+        sort_by: str,
+        sort_order: str,
     ):
         """Fetch aggregated applications ordered by created date."""
         result_proxy = (
@@ -474,9 +504,22 @@ class Application(
                 FormProcessMapper.version,
             )
         )
+        if form_name:
+            result_proxy = result_proxy.filter(
+                FormProcessMapper.form_name.ilike(f"%{form_name}%")
+            )
+        sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
+        if sort_by and sort_order:
+            table_name = "application"
+            if sort_by == "form_name":
+                table_name = "form_process_mapper"
+            result_proxy = result_proxy.order_by(
+                text(f"{table_name}.{sort_by} {sort_order}")
+            )
+        pagination = result_proxy.paginate(page_no, limit)
+        total_count = result_proxy.count()
         result_proxy = cls.tenant_authorization(result_proxy)
-
-        return [dict(row) for row in result_proxy]
+        return pagination.items, total_count
 
     @classmethod
     def find_aggregated_application_status(

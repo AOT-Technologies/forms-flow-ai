@@ -34,9 +34,9 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms }) => {
         </Modal.Header>
         <Modal.Body>
           <div>
-            {`${formUploadCounter}/${formUploadList.length} ${t(
-              formUploadList.length > 1  ? "Forms Completed" : "Form Completed"
-            )}`}
+            {`${formUploadCounter}/${formUploadList.length} ${
+              formUploadList.length > 1 ? t("Forms Completed") : t("Form Completed") }
+            `}
             {formUploadList.length !== formUploadCounter ? (
               <Spinner animation="border" variant="primary" />
             ) : (

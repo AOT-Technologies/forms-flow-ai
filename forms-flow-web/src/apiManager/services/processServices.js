@@ -276,16 +276,10 @@ export const unPublishForm = (mapperId, ...rest) => {
   return (dispatch) => {
     httpDELETERequest(url)
       .then((res) => {
-        toast.success(
-          <Translation>{(t) => t("Form unpblished successfully")}</Translation>
-        );
         dispatch(resetFormProcessData());
         done(null, res.data);
       })
       .catch((error) => {
-        toast.error(
-          <Translation>{(t) => t("Form unpublishing Failed")}</Translation>
-        );
         console.log("error", error);
         dispatch(setUnPublishApiError(true));
         done(error);

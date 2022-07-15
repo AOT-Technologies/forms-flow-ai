@@ -896,3 +896,20 @@ paths:
                     created: '2022-06-22T09:40:23.095Z'
                     modified: '2022-06-22T09:40:23.103Z'
                     machineName: testcreateform
+  /user:
+    get:
+      summary: GET user endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+              examples:
+                example-1:
+                  value:
+                    _id: 62cc9223b5cad9348f5880a9
+      operationId: get-user

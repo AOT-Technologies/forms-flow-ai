@@ -13,6 +13,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added Internationalization.
 * Added multi-tenancy support.
 * Added modal for submission details on metrics page.
+* Added support for wizard forms.
 
 **forms-flow-forms**
 

@@ -82,6 +82,9 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
                 submittedBy = "Anonymous-user";
             }
         }
+        else {
+            submittedBy = "service-account-forms-flow-bpm";
+        }
         return new Application(applicationStatus, formUrl, submittedBy);
     }
 

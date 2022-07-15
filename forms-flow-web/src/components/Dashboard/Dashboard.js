@@ -127,17 +127,30 @@ const Dashboard = React.memo(() => {
   useEffect(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
-   // dispatch(setMetricsDateRangeLoading(true));
-    setShowClearButton(searchText);
+    dispatch(setMetricsDateRangeLoading(true));
     dispatch(
       /*eslint max-len: ["error", { "code": 170 }]*/
       fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => {
       })
     );
-  }, [dispatch, searchBy, dateRange, searchInputBox, searchText, activePage, limit, sortsBy, sortOrder]);
+  }, [dispatch, activePage, limit, sortsBy, sortOrder]);
   useEffect(() => {
+
     setSHowSubmissionData(submissionsList[0]);
   }, [submissionsList]);
+
+  useEffect(() => {
+    const fromDate = getFormattedDate(dateRange[0]);
+    const toDate = getFormattedDate(dateRange[1]);
+    dispatch(setMetricsDateRangeLoading(true));
+    setShowClearButton(searchText);
+    dispatch(setMetricsSubmissionLimitChange(6));
+    dispatch(
+      /*eslint max-len: ["error", { "code": 170 }]*/
+    fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => {
+    })
+    );
+  }, [dateRange, searchText, searchBy]);
 
   const onChangeInput = (option) => {
     setSearchBy(option);
@@ -330,7 +343,7 @@ const Dashboard = React.memo(() => {
                     className="form-select mx-5 mb-3"
                     aria-label="Choose page limit"
                   >
-                    <option selected >{limit == totalItems ? 'All' : limit > 30 ? "All" : limit}</option>
+                   <option selected >{limit == totalItems ? 'All' : limit > 30 ? "All" : limit}</option>
                     {/* eslint max-len: ["error", { "code": 500 }] */}
                     {options.map(({ value, label }, index) => label != limit && <option value={value == '' ? totalItems : value} key={index} >{label == totalItems ? "All" : label}</option>)}
                   </select>

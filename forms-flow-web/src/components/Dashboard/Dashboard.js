@@ -23,11 +23,8 @@ import {
   setMetricsSubmissionSort,
   SetSubmissionStatusCountLoader,
 } from "../../actions/metricsActions";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "@ronchalant/react-loading-overlay";
 import { Button } from "react-bootstrap";
-const firsDay = moment().format("YYYY-MM-01");
-
-const lastDay = moment().endOf("month").format("YYYY-MM-DD");
 const Dashboard = React.memo(() => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -72,10 +69,11 @@ const Dashboard = React.memo(() => {
   const [isAscending, setIsAscending] = useState(false);
   const [searchBy, setSearchBy] = useState("created");
   const [sortsBy, setSortsBy] = useState("formName");
-  const [dateRange, setDateRange] = useState([
-    moment(firsDay),
-    moment(lastDay),
-  ]);
+
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const [dateRange, setDateRange] = useState([firstDay, lastDay]);
   const [showSubmissionData, setSHowSubmissionData] = useState(
     submissionsList[0]
   );
@@ -132,12 +130,8 @@ const Dashboard = React.memo(() => {
     setShowClearButton(searchText);
     /*eslint max-len: ["error", { "code": 170 }]*/
     dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => { }));
-
-
-
   }, [dispatch, activePage, limit, sortsBy, sortOrder, dateRange, searchText, searchBy]);
   useEffect(() => {
-
     setSHowSubmissionData(submissionsList[0]);
   }, [submissionsList]);
 
@@ -222,7 +216,7 @@ const Dashboard = React.memo(() => {
                   <div className="col-12 col-lg-3 d-flex align-items-end flex-lg-column mt-3 mt-lg-0">
                     <DateRangePicker
                       onChange={onSetDateRange}
-                      defaultValue={dateRange}
+                      value={dateRange}
                       dayPlaceholder="dd"
                       monthPlaceholder="mm"
                       yearPlaceholder="yyyy"

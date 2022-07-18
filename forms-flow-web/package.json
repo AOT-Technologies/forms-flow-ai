@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
+    "@ronchalant/react-loading-overlay": "^1.1.0",
     "@wojtekmaj/react-daterange-picker": "^3.1.0",
     "aot-formio-export": "file:forms-flow-util",
     "axios": "^0.21.4",
@@ -38,9 +39,9 @@
     "connected-react-router": "^6.9.1",
     "create-react-class": "^15.7.0",
     "crypto-js": "^4.0.0",
+    "formiojs": "^4.14.0",
     "i18next": "^21.6.6",
     "i18next-browser-languagedetector": "^6.1.2",
-    "formiojs": "^4.14.0",
     "jsonwebtoken": "^8.5.1",
     "keycloak-js": "^10.0.2",
     "lodash": "^4.17.21",

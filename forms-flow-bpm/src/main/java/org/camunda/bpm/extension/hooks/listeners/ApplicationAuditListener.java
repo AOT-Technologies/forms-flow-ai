@@ -79,11 +79,11 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
         if (authentication instanceof JwtAuthenticationToken) {
             submittedBy = ((JwtAuthenticationToken) authentication).getToken().getClaimAsString("preferred_username");
             if(submittedBy.startsWith("service-account")){
-                submittedBy = "Anonymous-user";
+                submittedBy = ANONYMOUS_USER;
             }
         }
         else {
-            submittedBy = "service-account-forms-flow-bpm";
+            submittedBy = SERVICE_ACCOUNT;
         }
         return new Application(applicationStatus, formUrl, submittedBy);
     }

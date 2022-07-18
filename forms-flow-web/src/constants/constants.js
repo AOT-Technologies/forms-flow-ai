@@ -10,6 +10,10 @@ export const WEB_BASE_CUSTOM_URL =
   (window._env_ && window._env_.REACT_APP_WEB_BASE_CUSTOM_URL) ||
   process.env.REACT_APP_WEB_BASE_CUSTOM_URL||"";
 
+// export const TEST_ENV =
+//   (window._env_ && window._env_.REACT_APP_TEST_ENV) ||
+//   process.env.REACT_APP_TEST_ENV||"";
+
 //keycloak
 export const Keycloak_Client =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_CLIENT) ||

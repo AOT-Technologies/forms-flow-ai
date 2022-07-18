@@ -16,7 +16,6 @@ if (typeof window.__REACT_DEVTOOLS_GLOBAL_HOOK__ === "object") {
     window.__REACT_DEVTOOLS_GLOBAL_HOOK__[key] = typeof value == "function" ? ()=>{} : null;
   }
 }
-
 const store = StoreService.configureStore();
 const history = StoreService.history;
 

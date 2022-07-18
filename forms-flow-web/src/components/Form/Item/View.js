@@ -212,9 +212,7 @@ const doProcessActions = (submission, ownProps) => {
     dispatch(resetSubmissions("submission"));
     const data = getProcessReq(form, submission._id, "new", user);
 
-    const isPublic = window.location.href.includes("public");
-
-    if (isPublic) {
+    if (!IsAuth) {
       // this is for anonymous
       dispatch(
         publicApplicationCreate(data, (err, res) => {

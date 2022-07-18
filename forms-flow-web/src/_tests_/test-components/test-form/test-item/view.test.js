@@ -1,5 +1,5 @@
 import React from 'react'
-import { render as rtlRender,screen } from '@testing-library/react'
+import { render as rtlRender,screen,fireEvent } from '@testing-library/react'
 import View from '../../../../components/Form/Item/View'
 import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux'
@@ -9,6 +9,7 @@ import configureStore from 'redux-mock-store';
 import { mockstate } from './constatnts-edit';
 import thunk from 'redux-thunk'
 import * as redux from 'react-redux' 
+import { publicApplicationCreate } from "../../../../apiManager/services/applicationServices";
 
 jest.mock('react-formio', () => ({
   ...jest.requireActual('react-formio'),
@@ -59,6 +60,9 @@ it("should render the public View component without breaking ",async()=>{
   spy.mockImplementation((callback) => callback(
     {applications:{isPublicStatusLoading:false},form:{isActive: false},formDelete:{isFormSubmissionLoading:false}}
 ))
+
+const applicationCreate = jest.fn();
+applicationCreate(publicApplicationCreate);
   //spy.mockReturnValue({applications:{isPublicStatusLoading:false},form:{isActive: false}})
   renderWithRouterMatch(View,{
       path:"/public/form/:formId",
@@ -66,5 +70,7 @@ it("should render the public View component without breaking ",async()=>{
   }
   )
 expect(screen.getByText("the form title")).toBeInTheDocument();
-expect(screen.getByText("Submit")).toBeInTheDocument();  
+expect(screen.getByText("Submit")).toBeInTheDocument();
+fireEvent.click(screen.getByText("Submit"));
+expect(applicationCreate).toHaveBeenCalled();  
 })

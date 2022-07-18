@@ -130,18 +130,18 @@ const Dashboard = React.memo(() => {
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(setMetricsDateRangeLoading(true));
     setShowClearButton(searchText);
-    dispatch(
-      /*eslint max-len: ["error", { "code": 170 }]*/
-      fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => {
-      })
-    );
-  }, [dispatch, activePage, limit, sortsBy, sortOrder,dateRange, searchText , searchBy]);
+    /*eslint max-len: ["error", { "code": 170 }]*/
+    dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => { }));
+
+
+
+  }, [dispatch, activePage, limit, sortsBy, sortOrder, dateRange, searchText, searchBy]);
   useEffect(() => {
 
     setSHowSubmissionData(submissionsList[0]);
   }, [submissionsList]);
 
- const onChangeInput = (option) => {
+  const onChangeInput = (option) => {
     dispatch(setMetricsSubmissionLimitChange(6));
     setSearchBy(option);
   };
@@ -185,7 +185,7 @@ const Dashboard = React.memo(() => {
         active={metricsDateRangeLoader || submissionStatusCountLoader}
         spinner
         text={t("Loading...")}
-      >
+       >
         <div className="container dashboard_container mb-4" id="main" role="complementary" >
           <div className="dashboard mb-2" >
             <div className="row ">
@@ -222,7 +222,7 @@ const Dashboard = React.memo(() => {
                   <div className="col-12 col-lg-3 d-flex align-items-end flex-lg-column mt-3 mt-lg-0">
                     <DateRangePicker
                       onChange={onSetDateRange}
-                      value={dateRange}
+                      defaultValue={dateRange}
                       dayPlaceholder="dd"
                       monthPlaceholder="mm"
                       yearPlaceholder="yyyy"
@@ -334,7 +334,7 @@ const Dashboard = React.memo(() => {
                     className="form-select mx-5 mb-3"
                     aria-label="Choose page limit"
                   >
-                   <option selected >{limit == totalItems ? 'All' : limit > 30 ? "All" : limit}</option>
+                    <option >{limit == totalItems ? 'All' : limit > 30 ? "All" : limit}</option>
                     {/* eslint max-len: ["error", { "code": 500 }] */}
                     {options.map(({ value, label }, index) => label != limit && <option value={value == '' ? totalItems : value} key={index} >{label == totalItems ? "All" : label}</option>)}
                   </select>
@@ -384,7 +384,7 @@ const Dashboard = React.memo(() => {
           <Redirect exact to="/404" />
         </Route>
       </LoadingOverlay>
-    </Fragment>
+    </Fragment >
   );
 });
 

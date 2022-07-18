@@ -93,6 +93,7 @@ const Dashboard = React.memo(() => {
 
   // Function to handle search text
   const handleSearch = () => {
+    dispatch(setMetricsSubmissionLimitChange(6));
     dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
 
   };
@@ -128,31 +129,20 @@ const Dashboard = React.memo(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(setMetricsDateRangeLoading(true));
+    setShowClearButton(searchText);
     dispatch(
       /*eslint max-len: ["error", { "code": 170 }]*/
       fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => {
       })
     );
-  }, [dispatch, activePage, limit, sortsBy, sortOrder]);
+  }, [dispatch, activePage, limit, sortsBy, sortOrder,dateRange, searchText , searchBy]);
   useEffect(() => {
 
     setSHowSubmissionData(submissionsList[0]);
   }, [submissionsList]);
 
-  useEffect(() => {
-    const fromDate = getFormattedDate(dateRange[0]);
-    const toDate = getFormattedDate(dateRange[1]);
-    dispatch(setMetricsDateRangeLoading(true));
-    setShowClearButton(searchText);
+ const onChangeInput = (option) => {
     dispatch(setMetricsSubmissionLimitChange(6));
-    dispatch(
-      /*eslint max-len: ["error", { "code": 170 }]*/
-    fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => {
-    })
-    );
-  }, [dateRange, searchText, searchBy]);
-
-  const onChangeInput = (option) => {
     setSearchBy(option);
   };
   if (isMetricsLoading) {
@@ -177,6 +167,7 @@ const Dashboard = React.memo(() => {
   };
 
   const onSetDateRange = (date) => {
+    dispatch(setMetricsSubmissionLimitChange(6));
     dispatch(setMetricsDateRangeLoading(true));
     setDateRange(date);
   };

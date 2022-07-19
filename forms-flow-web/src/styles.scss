@@ -418,6 +418,13 @@ i.fa.fa-question-circle.text-muted {
   height: 30px;
   width: 100%;
 }
+@media (max-width: 768px) {
+  .main-header{
+    height: 70px;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
 .back-icon{
   display: flex;
 }
@@ -587,7 +594,7 @@ div[disabled] {
   font-weight: bold;
 }
 .delete_button{
-  font-size: 30px;
+  font-size: 25px;
   color:red;
   cursor: pointer;
 }
@@ -599,13 +606,10 @@ div[disabled] {
 .tooltiptext{
   color: #757575;
 }
-.operation_buttons{
-  font-weight: bold;
-}
+
 .select_download{
   display: flex;
   flex-direction: row;
-  margin-top: 15px;
 }
 .select_text{
   font-weight: bold;
@@ -616,4 +620,7 @@ div[disabled] {
 }
 .form_check{
   margin-bottom: 20px;
+}
+a{
+  color: #0000FF;
 }

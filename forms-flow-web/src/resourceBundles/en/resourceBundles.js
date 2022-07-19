@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "Please change the selected filters to view Forms":"Please change the selected filters to view Forms",
   "Search by form name":"Search by form name",
   "Click to search":"Click to search",
   "No submissions found":"No submissions found",
@@ -166,6 +167,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Modified Date": "Modified Date",
   "File Upload Status": "File Upload Status",
   "Forms Completed": "Forms Completed",
+  "Form Completed": "Form Completed",
   "No forms found": "No forms found",
   "Powered by ": "Powered by ",
   "Press Enter key or click here to search": "Press Enter key or click here to search",

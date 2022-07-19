@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_FR = {
+  "Please change the selected filters to view Forms":"Veuillez modifier les filtres sélectionnés pour afficher les formulaires",
   "Search by form name":"Rechercher par nom de formulaire",
   "Click to search":"Cliquez pour rechercher",
   "No submissions found":"Aucune soumission trouvée",
@@ -160,6 +161,7 @@ export const RESOURCE_BUNDLES_FR = {
  "Modified Date":"Date modifiée",
   "File Upload Status":"État du téléchargement du fichier",
   "Forms Completed":"Formulaires remplis",
+  "Form Completed" : "Formulaire complété",
   " No forms found":"Aucun formulaire trouvé",
   "Powered by ":"Alimenté par ",
   "No applications found":"No applications found",

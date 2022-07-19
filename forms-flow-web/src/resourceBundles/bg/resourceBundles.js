@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
+    "Please change the selected filters to view Forms":"Моля, променете избраните филтри, за да видите формуляри",
     "Search by form name":"Tŭrsene po ime na formulyara",
     "Click to search":"Щракнете за търсене",
     "No submissions found":"Няма намерени заявки",
@@ -157,6 +158,7 @@ export const RESOURCE_BUNDLES_BG = {
     "Modified Date": "Дата на промяна",
     "File Upload Status": "Състояние на качване на файл",
     "Forms Completed": "Формулярите са попълнени",
+    "Form Completed" : "Формулярът е попълнен",
     "No forms found": "Няма намерени формуляри",
     "Powered by ": "Задвижвани от ",
     "No Process Diagram found": "Не е намерена диаграма на процеса",

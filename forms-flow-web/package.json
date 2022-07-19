@@ -6,7 +6,8 @@
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
-    "build": "react-scripts --max_old_space_size=6144 build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts --max_old_space_size=6144 build",
+    "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "eject": "react-scripts eject",
     "test": "react-scripts test --detectOpenHandles --silent",
     "preinstall": "npx npm-force-resolutions",

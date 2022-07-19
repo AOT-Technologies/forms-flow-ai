@@ -50,7 +50,7 @@ is mentioned on the [link](../forms-flow-idm/keycloak/README.md#create-forms-flo
 
  Variable name | Meaning | Possible values | Default value |
  --- | --- | --- | ---
- `NODE_ENV`| Define project level configuration | `development, test, production` | `development`
+ `NODE_ENV`| Define project level configuration | `development, test, production` | `production`
  `FORMIO_DEFAULT_PROJECT_URL`:triangular_flag_on_post:|The URL of the form.io server||`http://{your-ip-address}:3001`
  `FORMSFLOW_API_URL`:triangular_flag_on_post:|formsflow Rest API URL||`http://{your-ip-address}:5000/api`
  `CAMUNDA_API_URL`:triangular_flag_on_post:|Camunda Rest API URL||`http://{your-ip-address}:8000/camunda`

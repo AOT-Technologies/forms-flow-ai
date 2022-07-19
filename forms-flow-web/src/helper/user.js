@@ -81,6 +81,14 @@ const getUserInsightsPermission = () => {
   return true;
 };
 
+const setUserRolesToObject = (response)=>{
+  let roleObject = {};
+  response.forEach(i => {
+    roleObject[i.type] = i.roleId;
+  });
+  return roleObject;
+};
+
 export {
   getUserRoleName,
   getUserRolePermission,
@@ -88,4 +96,5 @@ export {
   setShowApplications,
   setShowViewSubmissions,
   getUserInsightsPermission,
+  setUserRolesToObject
 };

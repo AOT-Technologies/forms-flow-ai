@@ -1,9 +1,16 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
-import { setShowApplications, setShowViewSubmissions } from "../helper/user";
+import { setShowApplications, setShowViewSubmissions, setUserRolesToObject } from "../helper/user";
 import { LANGUAGE } from "../constants/constants";
+import { setFormAndSubmissionAccess } from "../helper/access";
 const initialState = {
   bearerToken: "",
   roles: "",
+  roleIds: localStorage.getItem("roleIds") ? 
+  setUserRolesToObject(JSON.parse(localStorage.getItem("roleIds"))) : {},
+  formAccess: localStorage.getItem("roleIds") ? 
+  setFormAndSubmissionAccess("formAccess",JSON.parse(localStorage.getItem("roleIds"))) : [],
+  submissionAccess: localStorage.getItem("roleIds") ? 
+  setFormAndSubmissionAccess("submissionAccess",JSON.parse(localStorage.getItem("roleIds"))) : [],
   userDetail: null,
   isAuthenticated: false,
   currentPage: "",
@@ -38,6 +45,11 @@ const user = (state = initialState, action) => {
       return { ...state, lang: action.payload };
     case ACTION_CONSTANTS.SET_SELECT_LANGUAGES:
       return { ...state, selectLanguages: action.payload };
+    case ACTION_CONSTANTS.ROLE_IDS:
+      return { ...state, roleIds: setUserRolesToObject(action.payload)};
+    case ACTION_CONSTANTS.ACCESS_ADDING:
+        return { ...state, formAccess: setFormAndSubmissionAccess("formAccess",action.payload), 
+        submissionAccess:setFormAndSubmissionAccess("submissionAccess",action.payload)};
     default:
       return state;
   }

@@ -5,9 +5,6 @@ import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
 import { push } from "connected-react-router";
 import {
-  SUBMISSION_ACCESS,
-  ANONYMOUS_ID,
-  FORM_ACCESS,
   MULTITENANCY_ENABLED,
 } from "../../constants/constants";
 import { addHiddenApplicationComponent } from "../../constants/applicationComponent";
@@ -59,6 +56,10 @@ const Create = React.memo(() => {
   const errors = useSelector((state) => state.form.error);
   const lang = useSelector((state) => state.user.lang);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const formAccess = useSelector((state) => state.user?.formAccess);
+  const roleIds = useSelector((state) => state.user?.roleIds);
+
+  const submissionAccess = useSelector((state) => state.user?.submissionAccess);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   const { t } = useTranslation();
@@ -69,25 +70,25 @@ const Create = React.memo(() => {
 
   // for update form access and submission access
   useEffect(() => {
-    FORM_ACCESS.forEach((role) => {
+    formAccess.forEach((role) => {
       if (anonymous) {
         if (role.type === "read_all") {
-          role.roles.push(ANONYMOUS_ID);
+          role.roles.push(roleIds.ANONYMOUS);
         }
       } else {
         if (role.type === "read_all") {
-          role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+          role.roles = role.roles.filter((id) => id !== roleIds.ANONYMOUS);
         }
       }
     });
-    SUBMISSION_ACCESS.forEach((access) => {
+    submissionAccess.forEach((access) => {
       if (anonymous) {
         if (access.type === "create_own") {
-          access.roles.push(ANONYMOUS_ID);
+          access.roles.push(roleIds.ANONYMOUS);
         }
       } else {
         if (access.type === "create_own") {
-          access.roles = access.roles.filter((id) => id !== ANONYMOUS_ID);
+          access.roles = access.roles.filter((id) => id !== roleIds.ANONYMOUS);
         }
       }
     });
@@ -127,8 +128,8 @@ const Create = React.memo(() => {
       ...newFormData,
       tags: ["common"],
     };
-    newForm.submissionAccess = SUBMISSION_ACCESS;
-    newForm.access = FORM_ACCESS;
+    newForm.submissionAccess = submissionAccess;
+    newForm.access = formAccess;
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
       if (newForm.path) {
@@ -145,7 +146,7 @@ const Create = React.memo(() => {
           formId: form._id,
           formName: form.title,
           formRevisionNumber: "V1", // to do
-          anonymous: FORM_ACCESS[0].roles.includes(ANONYMOUS_ID),
+          anonymous: formAccess[0]?.roles.includes(roleIds.ANONYMOUS),
         };
         dispatch(setFormSuccessData("form", form));
         Formio.cache = {}; //removing formio cache

@@ -364,8 +364,8 @@ const List = React.memo((props) => {
                   }"?`
             }
             onNo={() => onNo()}
-            onYes={() => {
-              onYes(formId, forms, formProcessData, path, formCheckList);
+            onYes={(e) => {
+              onYes(e,formId, forms, formProcessData, path, formCheckList);
             }}
           />
           <div className="flex-container">
@@ -537,7 +537,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(getInitForms(page, query));
     },
 
-    onYes: (formId, forms, formData, path, formCheckList) => {
+    onYes: (e,formId, forms, formData, path, formCheckList) => {
+      e.currentTarget.disabled = true;
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {

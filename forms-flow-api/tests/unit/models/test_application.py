@@ -22,7 +22,7 @@ def test_application_model_can_create_application(app, client, session):
         process_instance_id="213123",
         form_process_mapper_id=1,
         created_by="test-user",
-        latest_form_id=12324
+        latest_form_id=12324,
     )
 
     assert application1.application_status == "Approved"

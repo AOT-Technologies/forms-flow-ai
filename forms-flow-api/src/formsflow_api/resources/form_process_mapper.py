@@ -20,6 +20,7 @@ from formsflow_api.services import (
 from formsflow_api.utils import (
     DESIGNER_GROUP,
     REVIEWER_GROUP,
+    CLIENT_GROUP,
     auth,
     cors_preflight,
     profiletime,
@@ -427,7 +428,7 @@ class FormResourceExportFormPdf(Resource):
     def get(form_id: string, submission_id: string):
         """PDF generation and rendering method."""
         try:
-            if auth.has_role([REVIEWER_GROUP]):
+            if auth.has_one_of_roles([REVIEWER_GROUP, CLIENT_GROUP]):
                 token = request.headers.get("Authorization")
                 host_name = current_app.config.get("FORMSFLOW_API_URL")
                 url = (

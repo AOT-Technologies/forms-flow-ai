@@ -23,11 +23,8 @@ import {
   setMetricsSubmissionSort,
   SetSubmissionStatusCountLoader,
 } from "../../actions/metricsActions";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "@ronchalant/react-loading-overlay";
 import { Button } from "react-bootstrap";
-const firsDay = moment().format("YYYY-MM-01");
-
-const lastDay = moment().endOf("month").format("YYYY-MM-DD");
 const Dashboard = React.memo(() => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -72,10 +69,11 @@ const Dashboard = React.memo(() => {
   const [isAscending, setIsAscending] = useState(false);
   const [searchBy, setSearchBy] = useState("created");
   const [sortsBy, setSortsBy] = useState("formName");
-  const [dateRange, setDateRange] = useState([
-    moment(firsDay),
-    moment(lastDay),
-  ]);
+
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const [dateRange, setDateRange] = useState([firstDay, lastDay]);
   const [showSubmissionData, setSHowSubmissionData] = useState(
     submissionsList[0]
   );
@@ -93,6 +91,7 @@ const Dashboard = React.memo(() => {
 
   // Function to handle search text
   const handleSearch = () => {
+    dispatch(setMetricsSubmissionLimitChange(6));
     dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
 
   };
@@ -127,19 +126,17 @@ const Dashboard = React.memo(() => {
   useEffect(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
-   // dispatch(setMetricsDateRangeLoading(true));
+    dispatch(setMetricsDateRangeLoading(true));
     setShowClearButton(searchText);
-    dispatch(
-      /*eslint max-len: ["error", { "code": 170 }]*/
-      fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => {
-      })
-    );
-  }, [dispatch, searchBy, dateRange, searchInputBox, searchText, activePage, limit, sortsBy, sortOrder]);
+    /*eslint max-len: ["error", { "code": 170 }]*/
+    dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => { }));
+  }, [dispatch, activePage, limit, sortsBy, sortOrder, dateRange, searchText, searchBy]);
   useEffect(() => {
     setSHowSubmissionData(submissionsList[0]);
   }, [submissionsList]);
 
   const onChangeInput = (option) => {
+    dispatch(setMetricsSubmissionLimitChange(6));
     setSearchBy(option);
   };
   if (isMetricsLoading) {
@@ -164,6 +161,7 @@ const Dashboard = React.memo(() => {
   };
 
   const onSetDateRange = (date) => {
+    dispatch(setMetricsSubmissionLimitChange(6));
     dispatch(setMetricsDateRangeLoading(true));
     setDateRange(date);
   };
@@ -181,7 +179,7 @@ const Dashboard = React.memo(() => {
         active={metricsDateRangeLoader || submissionStatusCountLoader}
         spinner
         text={t("Loading...")}
-      >
+       >
         <div className="container dashboard_container mb-4" id="main" role="complementary" >
           <div className="dashboard mb-2" >
             <div className="row ">
@@ -330,7 +328,7 @@ const Dashboard = React.memo(() => {
                     className="form-select mx-5 mb-3"
                     aria-label="Choose page limit"
                   >
-                    <option selected >{limit == totalItems ? 'All' : limit > 30 ? "All" : limit}</option>
+                    <option >{limit == totalItems ? 'All' : limit > 30 ? "All" : limit}</option>
                     {/* eslint max-len: ["error", { "code": 500 }] */}
                     {options.map(({ value, label }, index) => label != limit && <option value={value == '' ? totalItems : value} key={index} >{label == totalItems ? "All" : label}</option>)}
                   </select>
@@ -380,7 +378,7 @@ const Dashboard = React.memo(() => {
           <Redirect exact to="/404" />
         </Route>
       </LoadingOverlay>
-    </Fragment>
+    </Fragment >
   );
 });
 

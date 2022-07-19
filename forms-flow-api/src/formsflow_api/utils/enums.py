@@ -35,3 +35,11 @@ class FormioRoles(Enum):
     REVIEWER = "formsflowReviewer"
     DESIGNER = "administrator"
     ANONYMOUS = "anonymous"
+
+
+@unique
+class DraftStatus(Enum):
+    """Draft status and corresponding values."""
+
+    ACTIVE = 1
+    INACTIVE = 0

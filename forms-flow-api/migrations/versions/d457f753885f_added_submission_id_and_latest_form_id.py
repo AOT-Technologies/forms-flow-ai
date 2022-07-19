@@ -25,7 +25,7 @@ def upgrade():
     if(form_url_exists):
         op.execute("update application set submission_id = substring(application.form_url, position('/submission/' in application.form_url)+12) where application.submission_id is null and application.application_status != 'Draft'")
         op.execute("update application set latest_form_id = substring(application.form_url,position('/form/' in application.form_url)+6 ,24) where application.latest_form_id is null")
-    # op.alter_column('application', 'latest_form_id', nullable=False)
+    op.alter_column('application', 'latest_form_id', nullable=False)
 
     # Dropping 'form_url' should be done after stable release 
     # op.drop_column('application', 'form_url')

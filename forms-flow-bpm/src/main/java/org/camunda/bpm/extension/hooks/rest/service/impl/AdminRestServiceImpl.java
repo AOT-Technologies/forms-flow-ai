@@ -26,7 +26,6 @@ import org.camunda.bpm.extension.hooks.controllers.data.Authorization;
 import org.camunda.bpm.extension.hooks.controllers.data.AuthorizationInfo;
 import org.camunda.bpm.extension.hooks.controllers.data.TenantAuthorizationDto;
 import org.camunda.bpm.extension.hooks.exceptions.ApplicationServiceException;
-import org.camunda.bpm.extension.hooks.rest.service.AbstractRestService;
 import org.camunda.bpm.extension.hooks.rest.service.AdminRestService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,12 +35,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Mono;
 
-@Service
-public class AdminRestServiceImpl extends AbstractRestService implements AdminRestService {
+public class AdminRestServiceImpl implements AdminRestService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AdminRestServiceImpl.class);
 
@@ -49,10 +46,9 @@ public class AdminRestServiceImpl extends AbstractRestService implements AdminRe
     private final AuthorizationService authService;
     private final RepositoryService repoService;
 
-    public AdminRestServiceImpl(@Value("${plugin.identity.keycloak.administratorGroupName}") String adminGroupName,
-                                AuthorizationService authorizationService, RepositoryService repositoryService){
-        super(null, null);
-
+    public AdminRestServiceImpl(
+            String adminGroupName, AuthorizationService authorizationService, RepositoryService repositoryService
+    ){
         this.adminGroupName = adminGroupName;
         this.authService = authorizationService;
         this.repoService = repositoryService;
@@ -62,6 +58,7 @@ public class AdminRestServiceImpl extends AbstractRestService implements AdminRe
     public Mono<ResponseEntity<AuthorizationInfo>> getFormAuthorization() throws ServletException {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        LOGGER.error("authentication"+authentication);
         List<String> groups = getGroups(authentication);
         AuthorizationInfo authorizationInfo = null;
 

@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.extension.keycloak.rest.RestApiSecurityConfigurationProperties;
 import org.camunda.bpm.webapp.impl.security.auth.ContainerBasedAuthenticationFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -42,7 +43,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 10)
 public class OAuth2LoginSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Inject
+	@Autowired
 	private KeycloakLogoutHandler keycloakLogoutHandler;
 
 	@Override

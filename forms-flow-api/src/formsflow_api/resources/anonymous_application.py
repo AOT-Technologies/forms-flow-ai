@@ -25,6 +25,7 @@ class ApplicationAnonymousResourcesByIds(Resource):
 
         : formId:- Unique Id for the corresponding form
         : submissionId:- Unique Id for the submitted form
+        : formUrl:- Unique URL for the submitted application
         """
         application_json = request.get_json()
         try:

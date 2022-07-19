@@ -26,9 +26,17 @@ def upgrade():
         op.execute("update application set submission_id = substring(application.form_url, position('/submission/' in application.form_url)+12) where application.submission_id is null and application.application_status != 'Draft'")
         op.execute("update application set latest_form_id = substring(application.form_url,position('/form/' in application.form_url)+6 ,24) where application.latest_form_id is null")
     op.alter_column('application', 'latest_form_id', nullable=False)
+    
+    op.add_column('application_audit', sa.Column('form_id', sa.String(length=100), nullable=True))
+    op.add_column('application_audit', sa.Column('submission_id', sa.String(length=100), nullable=True))
+    op.execute("update application_audit set submission_id = substring(application_audit.form_url, position('/submission/' in application_audit.form_url)+12) where application_audit.submission_id is null")
+    op.execute("update application_audit set form_id = substring(application_audit.form_url,position('/form/' in application_audit.form_url)+6 ,24) where application_audit.form_id is null")
+    op.alter_column('application_audit', 'form_id', nullable=False)
+    op.alter_column('application_audit', 'submission_id', nullable=False)
 
     # Dropping 'form_url' should be done after stable release 
     # op.drop_column('application', 'form_url')
+    # op.drop_column('application_audit', 'form_url')
     # ### end Alembic commands ###
 
 

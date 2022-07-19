@@ -24,12 +24,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/filter/create",
+							"raw": "{{baseUrl}}/engine-rest-ext/filter/create",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"filter",
 								"create"
 							]
@@ -52,13 +52,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/camunda/engine-rest/filter/create",
+									"raw": "{{baseUrl}}/camunda/engine-rest-ext/filter/create",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"camunda",
-										"engine-rest",
+										"engine-rest-ext",
 										"filter",
 										"create"
 									]
@@ -140,12 +140,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/filter",
+							"raw": "{{baseUrl}}/engine-rest-ext/filter",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"filter"
 							]
 						},
@@ -158,13 +158,13 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/camunda/engine-rest/filter",
+									"raw": "{{baseUrl}}/camunda/engine-rest-ext/filter",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"camunda",
-										"engine-rest",
+										"engine-rest-ext",
 										"filter"
 									]
 								}
@@ -237,12 +237,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/filter/count",
+							"raw": "{{baseUrl}}/engine-rest-ext/filter/count",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"filter",
 								"count"
 							]
@@ -256,13 +256,13 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/camunda/engine-rest/filter/count",
+									"raw": "{{baseUrl}}/camunda/engine-rest-ext/filter/count",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"camunda",
-										"engine-rest",
+										"engine-rest-ext",
 										"filter",
 										"count"
 									]
@@ -336,12 +336,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/filter/:filter_id",
+							"raw": "{{baseUrl}}/engine-rest-ext/filter/:filter_id",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"filter",
 								":filter_id"
 							],
@@ -398,12 +398,12 @@
 							]
 						},
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/deployment/create",
+							"raw": "{{baseUrl}}/engine-rest-ext/deployment/create",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"deployment",
 								"create"
 							]
@@ -441,13 +441,13 @@
 									]
 								},
 								"url": {
-									"raw": "{{baseUrl}}/camunda/engine-rest/deployment/create",
+									"raw": "{{baseUrl}}/camunda/engine-rest-ext/deployment/create",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"camunda",
-										"engine-rest",
+										"engine-rest-ext",
 										"deployment",
 										"create"
 									]
@@ -519,7 +519,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"links\": [\n        {\n            \"method\": \"GET\",\n            \"href\": \"http://localhost:8000/camunda/engine-rest/deployment/16cee73b-19c6-11ec-9f26-0242ac170003\",\n            \"rel\": \"self\"\n        }\n    ],\n    \"id\": \"16cee73b-19c6-11ec-9f26-0242ac170003\",\n    \"name\": \"Payment check\",\n    \"source\": null,\n    \"deploymentTime\": \"2021-09-20T03:51:51.852+0000\",\n    \"tenantId\": null,\n    \"deployedProcessDefinitions\": {\n        \"PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003\": {\n            \"id\": \"PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003\",\n            \"key\": \"PaymentProcess\",\n            \"category\": \"http://bpmn.io/schema/bpmn\",\n            \"description\": null,\n            \"name\": \"Payment\",\n            \"version\": 4,\n            \"resource\": \"diagram_1.bpmn\",\n            \"deploymentId\": \"16cee73b-19c6-11ec-9f26-0242ac170003\",\n            \"diagram\": null,\n            \"suspended\": false,\n            \"tenantId\": null,\n            \"versionTag\": null,\n            \"historyTimeToLive\": null,\n            \"startableInTasklist\": true\n        }\n    },\n    \"deployedCaseDefinitions\": null,\n    \"deployedDecisionDefinitions\": null,\n    \"deployedDecisionRequirementsDefinitions\": null\n}"
+							"body": "{\n    \"links\": [\n        {\n            \"method\": \"GET\",\n            \"href\": \"http://localhost:8000/camunda/engine-rest-ext/deployment/16cee73b-19c6-11ec-9f26-0242ac170003\",\n            \"rel\": \"self\"\n        }\n    ],\n    \"id\": \"16cee73b-19c6-11ec-9f26-0242ac170003\",\n    \"name\": \"Payment check\",\n    \"source\": null,\n    \"deploymentTime\": \"2021-09-20T03:51:51.852+0000\",\n    \"tenantId\": null,\n    \"deployedProcessDefinitions\": {\n        \"PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003\": {\n            \"id\": \"PaymentProcess:4:16daa70e-19c6-11ec-9f26-0242ac170003\",\n            \"key\": \"PaymentProcess\",\n            \"category\": \"http://bpmn.io/schema/bpmn\",\n            \"description\": null,\n            \"name\": \"Payment\",\n            \"version\": 4,\n            \"resource\": \"diagram_1.bpmn\",\n            \"deploymentId\": \"16cee73b-19c6-11ec-9f26-0242ac170003\",\n            \"diagram\": null,\n            \"suspended\": false,\n            \"tenantId\": null,\n            \"versionTag\": null,\n            \"historyTimeToLive\": null,\n            \"startableInTasklist\": true\n        }\n    },\n    \"deployedCaseDefinitions\": null,\n    \"deployedDecisionDefinitions\": null,\n    \"deployedDecisionRequirementsDefinitions\": null\n}"
 						}
 					]
 				},
@@ -584,13 +584,13 @@
 									}
 								},
 								"url": {
-									"raw": "{{baseUrl}}/camunda/engine-rest/process-definition/{{processDefinitionId}}/start",
+									"raw": "{{baseUrl}}/camunda/engine-rest-ext/process-definition/{{processDefinitionId}}/start",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"camunda",
-										"engine-rest",
+										"engine-rest-ext",
 										"process-definition",
 										"{{processDefinitionId}}",
 										"start"
@@ -663,7 +663,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n    \"links\": [\n        {\n            \"method\": \"GET\",\n            \"href\": \"http://localhost:8000/camunda/engine-rest/process-instance/42317928-194c-11ec-9f26-0242ac170003\",\n            \"rel\": \"self\"\n        }\n    ],\n    \"id\": \"42317928-194c-11ec-9f26-0242ac170003\",\n    \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n    \"businessKey\": \"myBusinessKey\",\n    \"caseInstanceId\": null,\n    \"ended\": false,\n    \"suspended\": false,\n    \"tenantId\": null\n}"
+							"body": "{\n    \"links\": [\n        {\n            \"method\": \"GET\",\n            \"href\": \"http://localhost:8000/camunda/engine-rest-ext/process-instance/42317928-194c-11ec-9f26-0242ac170003\",\n            \"rel\": \"self\"\n        }\n    ],\n    \"id\": \"42317928-194c-11ec-9f26-0242ac170003\",\n    \"definitionId\": \"Process_0jrcvnh:5:185ce8a9-16bb-11ec-84c1-0242ac170003\",\n    \"businessKey\": \"myBusinessKey\",\n    \"caseInstanceId\": null,\n    \"ended\": false,\n    \"suspended\": false,\n    \"tenantId\": null\n}"
 						}
 					]
 				},
@@ -704,12 +704,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/process-instance",
+							"raw": "{{baseUrl}}/engine-rest-ext/process-instance",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"process-instance"
 							]
 						},
@@ -731,13 +731,13 @@
 									}
 								],
 								"url": {
-									"raw": "{{baseUrl}}/camunda/engine-rest/process-instance",
+									"raw": "{{baseUrl}}/camunda/engine-rest-ext/process-instance",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"camunda",
-										"engine-rest",
+										"engine-rest-ext",
 										"process-instance"
 									]
 								}
@@ -825,12 +825,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/authorization/create",
+							"raw": "{{baseUrl}}/engine-rest-ext/authorization/create",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"authorization",
 								"create"
 							]
@@ -853,7 +853,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8000/camunda/engine-rest/authorization/create",
+									"raw": "http://localhost:8000/camunda/engine-rest-ext/authorization/create",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -861,7 +861,7 @@
 									"port": "8000",
 									"path": [
 										"camunda",
-										"engine-rest",
+										"engine-rest-ext",
 										"authorization",
 										"create"
 									]
@@ -952,12 +952,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/authorization/create",
+							"raw": "{{baseUrl}}/engine-rest-ext/authorization/create",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"authorization",
 								"create"
 							]
@@ -980,7 +980,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8000/camunda/engine-rest/authorization/create",
+									"raw": "http://localhost:8000/camunda/engine-rest-ext/authorization/create",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -988,7 +988,7 @@
 									"port": "8000",
 									"path": [
 										"camunda",
-										"engine-rest",
+										"engine-rest-ext",
 										"authorization",
 										"create"
 									]
@@ -1079,12 +1079,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/authorization/create",
+							"raw": "{{baseUrl}}/engine-rest-ext/authorization/create",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"authorization",
 								"create"
 							]
@@ -1107,7 +1107,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://localhost:8000/camunda/engine-rest/authorization/create",
+									"raw": "http://localhost:8000/camunda/engine-rest-ext/authorization/create",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -1115,7 +1115,7 @@
 									"port": "8000",
 									"path": [
 										"camunda",
-										"engine-rest",
+										"engine-rest-ext",
 										"authorization",
 										"create"
 									]
@@ -1197,12 +1197,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/authorization?userIdIn=service-account-forms-flow-bpm",
+							"raw": "{{baseUrl}}/engine-rest-ext/authorization?userIdIn=service-account-forms-flow-bpm",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"authorization"
 							],
 							"query": [
@@ -1221,13 +1221,13 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/camunda/engine-rest/authorization?userIdIn=service-account-forms-flow-bpm",
+									"raw": "{{baseUrl}}/camunda/engine-rest-ext/authorization?userIdIn=service-account-forms-flow-bpm",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"camunda",
-										"engine-rest",
+										"engine-rest-ext",
 										"authorization"
 									],
 									"query": [
@@ -1310,12 +1310,12 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/authorization/{authorizationId}",
+							"raw": "{{baseUrl}}/engine-rest-ext/authorization/{authorizationId}",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"authorization",
 								"{authorizationId}"
 							]
@@ -1345,12 +1345,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/task/create",
+							"raw": "{{baseUrl}}/engine-rest-ext/task/create",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"task",
 								"create"
 							]
@@ -1376,12 +1376,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/task",
+							"raw": "{{baseUrl}}/engine-rest-ext/task",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"task"
 							]
 						},
@@ -1394,13 +1394,13 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{baseUrl}}/camunda/engine-rest/task",
+									"raw": "{{baseUrl}}/camunda/engine-rest-ext/task",
 									"host": [
 										"{{baseUrl}}"
 									],
 									"path": [
 										"camunda",
-										"engine-rest",
+										"engine-rest-ext",
 										"task"
 									]
 								}
@@ -1477,12 +1477,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/task/:id",
+							"raw": "{{baseUrl}}/engine-rest-ext/task/:id",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"task",
 								":id"
 							],
@@ -1512,12 +1512,12 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/task/{taskId}/claim",
+							"raw": "{{baseUrl}}/engine-rest-ext/task/{taskId}/claim",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"task",
 								"{taskId}",
 								"claim"
@@ -1533,12 +1533,12 @@
 						"method": "POST",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/engine-rest/task/{taskId}/unclaim",
+							"raw": "{{baseUrl}}/engine-rest-ext/task/{taskId}/unclaim",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
-								"engine-rest",
+								"engine-rest-ext",
 								"task",
 								"{taskId}",
 								"unclaim"

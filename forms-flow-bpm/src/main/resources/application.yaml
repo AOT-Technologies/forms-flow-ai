@@ -17,9 +17,6 @@ server:
         max-age: 1800
 
 formsflow.ai:
-  bpm:
-    url: ${BPM_BASE_URL}
-    client: camunda
   api:
     url: ${FORMSFLOW_API_URL}
   analysis:

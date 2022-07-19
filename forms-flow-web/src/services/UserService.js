@@ -1,6 +1,5 @@
 /* istanbul ignore file */
 import {
-  ROLES,
   USER_RESOURCE_FORM_ID,
   ANONYMOUS_USER,
   ANONYMOUS_ID,
@@ -23,6 +22,7 @@ import {
 import { setLanguage } from "../actions/languageSetAction";
 import Keycloak from "keycloak-js";
 import { getTenantKeycloakJson } from "../apiManager/services/tenantServices";
+import { getFormioRoleIds } from "../apiManager/services/userservices";
 
 const jwt = require("jsonwebtoken");
 let KeycloakData, doLogin, doLogout;
@@ -63,19 +63,23 @@ const initKeycloak = (store, ...rest) => {
         store.dispatch(setLanguage(KeycloakData.tokenParsed.locale || "en"));
         //Set Cammunda/Formio Base URL
         setApiBaseUrlToLocalStorage();
-
-        let roles = [];
-        for (let i = 0; i < UserRoles.length; i++) {
-          const roleData = ROLES.find((x) => x.title === UserRoles[i]);
-          if (roleData) {
-            roles = roles.concat(roleData.id);
+        
+        store.dispatch(getFormioRoleIds((err,data)=>{
+          if(err){
+            console.error(err);
+          }else{
+             // filter the role based on keyclok role
+             let roles =  data.filter((i)=> UserRoles.includes(i.type.toLowerCase()));
+                 roles = Object.values(roles);
+                 const email = KeycloakData.tokenParsed.email || "external";
+                 authenticateFormio(email, roles, KeycloakData.tokenParsed?.tenantKey);
           }
-        }
+        }));
+   
         KeycloakData.loadUserInfo().then((res) =>
           store.dispatch(setUserDetails(res))
         );
-        const email = KeycloakData.tokenParsed.email || "external";
-        authenticateFormio(email, roles, KeycloakData.tokenParsed?.tenantKey);
+        
         // onAuthenticatedCallback();
         done(null, KeycloakData);
         refreshToken(store);

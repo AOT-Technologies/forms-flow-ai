@@ -53,7 +53,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 `Generic Changes`
 
-* Docker-compose files changed to a single one.
+* Docker-compose files changed to single one.
 * Added CD pipeline.
 
 ## 4.0.5 - 2022-04-19

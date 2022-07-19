@@ -1,6 +1,20 @@
 # Changelog for formsflow.ai
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
+## 4.0.6 - 2022-07-19
+
+`Fixed`
+
+**forms-flow-web**
+* Fixed public form authentication check.
+
+`Modified`
+
+**forms-flow-data-analysis-api**
+
+* Modified DataAnalysis API and Sentiment-analysis Jobs.
+
+
 
 ## 4.0.5 - 2022-04-19
 

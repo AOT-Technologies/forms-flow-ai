@@ -1,6 +1,7 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
 import { setShowApplications, setShowViewSubmissions } from "../helper/user";
 import { LANGUAGE } from "../constants/constants";
+const getLanguages = localStorage.getItem("languages");
 const initialState = {
   bearerToken: "",
   roles: "",
@@ -10,7 +11,7 @@ const initialState = {
   showApplications: false,
   showViewSubmissions: false,
   lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : LANGUAGE,
-  selectLanguages: [],
+  selectLanguages:getLanguages ? JSON.parse(getLanguages) : [],
 };
 
 const user = (state = initialState, action) => {
@@ -37,7 +38,8 @@ const user = (state = initialState, action) => {
       localStorage.setItem("lang", action.payload);
       return { ...state, lang: action.payload };
     case ACTION_CONSTANTS.SET_SELECT_LANGUAGES:
-      return { ...state, selectLanguages: action.payload };
+      localStorage.setItem("languages", JSON.stringify(action.payload));
+       return { ...state, selectLanguages: action.payload };
     default:
       return state;
   }

@@ -28,21 +28,6 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         db.Integer, db.ForeignKey("application.id"), nullable=False
     )
 
-    # @classmethod
-    # def create_from_dict(cls, application_info: dict) -> Application:
-    #     """Create new application."""
-    #     if application_info:
-    #         application = Application()
-    #         application.created_by = application_info["created_by"]
-    #         application.application_status = application_info["application_status"]
-    #         application.form_process_mapper_id = application_info[
-    #             "form_process_mapper_id"
-    #         ]
-    #         application.latest_form_id = application_info["form_id"]
-    #         application.save()
-    #         return application
-    #     return None
-
     @classmethod
     def create_draft_from_dict(cls, draft_info: dict) -> Draft:
         """Create new application."""

@@ -8,7 +8,11 @@ from flask_sqlalchemy import BaseQuery
 from sqlalchemy import and_, func, or_
 from sqlalchemy.sql.expression import text
 
-from formsflow_api.utils import FILTER_MAPS,DRAFT_APPLICATION_STATUS, validate_sort_order_and_order_by
+from formsflow_api.utils import (
+    FILTER_MAPS,
+    DRAFT_APPLICATION_STATUS,
+    validate_sort_order_and_order_by,
+)
 from formsflow_api.utils.user_context import UserContext, user_context
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin

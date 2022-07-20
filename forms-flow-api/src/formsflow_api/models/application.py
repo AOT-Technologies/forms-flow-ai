@@ -455,6 +455,7 @@ class Application(
                 FormProcessMapper.version,
             )
         )
+        result_proxy = cls.tenant_authorization(result_proxy)
         if form_name:
             result_proxy = result_proxy.filter(
                 FormProcessMapper.form_name.ilike(f"%{form_name}%")
@@ -469,7 +470,6 @@ class Application(
             )
         pagination = result_proxy.paginate(page_no, limit)
         total_count = result_proxy.count()
-        result_proxy = cls.tenant_authorization(result_proxy)
         return pagination.items, total_count
 
     @classmethod
@@ -507,6 +507,7 @@ class Application(
                 FormProcessMapper.version,
             )
         )
+        result_proxy = cls.tenant_authorization(result_proxy)
         if form_name:
             result_proxy = result_proxy.filter(
                 FormProcessMapper.form_name.ilike(f"%{form_name}%")
@@ -521,7 +522,6 @@ class Application(
             )
         pagination = result_proxy.paginate(page_no, limit)
         total_count = result_proxy.count()
-        result_proxy = cls.tenant_authorization(result_proxy)
         return pagination.items, total_count
 
     @classmethod

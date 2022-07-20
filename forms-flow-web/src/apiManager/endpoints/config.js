@@ -36,7 +36,3 @@ export const MT_ADMIN_BASE_URL_VERSION = `${
   process.env.REACT_APP_MT_ADMIN_BASE_URL_VERSION ||
   "v1"
 }`;
-
-export const FORMIO_PROJECT_URL =
-  (window._env_ && window._env_.REACT_APP_API_PROJECT_URL) ||
-  process.env.REACT_APP_API_PROJECT_URL;

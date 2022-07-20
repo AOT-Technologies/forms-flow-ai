@@ -1,12 +1,12 @@
 /* istanbul ignore file */
 // eslint-disable-next-line no-unused-vars
-import { FORMIO_PROJECT_URL } from "../endpoints/config";
+import { AppConfig } from "../../config";
 
 export const getProcessReq = (form, submissionId ) => {
   const requestFormat = {
     formId: form._id,
     submissionId: submissionId,
-    formUrl: `${FORMIO_PROJECT_URL}/form/${form._id}/submission/${submissionId}`,
+    formUrl: `${AppConfig.projectUrl}/form/${form._id}/submission/${submissionId}`,
   };
   return requestFormat;
 };

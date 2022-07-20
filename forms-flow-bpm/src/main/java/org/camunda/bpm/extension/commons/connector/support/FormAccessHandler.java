@@ -58,7 +58,7 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
         if(HttpMethod.PATCH.name().equals(method.name())) {
             logger.info("payload="+payload);
             Mono<ResponseEntity<String>> entityMono = unauthenticatedWebClient.patch()
-                    .uri(getDecoratedServerUrl(url))
+                    .uri(url)
                     .bodyValue(payload)
                     .header("x-jwt-token", accessToken)
                     .accept(MediaType.APPLICATION_JSON)
@@ -75,7 +75,7 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
             return response;
         } else {
             return unauthenticatedWebClient.method(method)
-                    .uri(getDecoratedServerUrl(url))
+                    .uri(url)
                     .accept(MediaType.APPLICATION_JSON)
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                     .header("x-jwt-token", accessToken)
@@ -86,12 +86,5 @@ public class FormAccessHandler extends AbstractAccessHandler implements IAccessH
                     .toEntity(String.class)
                     .block();
         }
-    }
-
-    private String getDecoratedServerUrl(String url) {
-        if(StringUtils.contains(url,"/form/")) {
-            return integrationCredentialProperties.getProperty("formio.url") + "/form/" + StringUtils.substringAfter(url, "/form/");
-        }
-        return integrationCredentialProperties.getProperty("formio.url") +"/"+ StringUtils.substringAfterLast(url, "/");
     }
 }

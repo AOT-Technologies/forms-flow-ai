@@ -64,14 +64,14 @@ export const fetchFormByAlias = (path, ...rest) => {
   );
 
   return (dispatch) => {
+    let token = UserService.getFormioToken() ? {"x-jwt-token": UserService.getFormioToken()} : {};
     httpGETRequest(apiUrlGetFormByAlias, {}, "", false, {
-      "x-jwt-token": UserService.getFormioToken(),
+      ...token
     })
       .then((res) => {
         if (res.data) {
           done(null, res.data);
         } else {
-          //console.log("Error", res);
           dispatch(serviceActionError(res));
           //dispatch(setBPMTaskLoader(false));
         }

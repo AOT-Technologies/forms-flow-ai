@@ -13,7 +13,7 @@ export const defaultSortedBy = [
   },
 ];
 
-const linkSubmision = (cell, row, redirectUrl) => {
+const linkSubmision = ( row, redirectUrl) => {
   const { formId, submissionId } = row;
   const url = getFormUrl(formId, submissionId, redirectUrl);
   return (
@@ -52,9 +52,9 @@ export const columns_history = (redirectUrl) => [
     sort: true,
   },
   {
-    dataField: "formUrl",
+    dataField: "formId",
     text: <Translation>{(t) => t("Submissions")}</Translation>,
-    formatter: (cell, row) => linkSubmision(cell, row, redirectUrl),
+    formatter: ( cell, row ) => linkSubmision( row, redirectUrl),
   },
 ];
 const customTotal = (from, to, size) => (

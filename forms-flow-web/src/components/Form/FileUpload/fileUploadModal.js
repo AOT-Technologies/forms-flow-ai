@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import ProgressBar from "react-bootstrap/ProgressBar";
 import { useSelector } from "react-redux";
 import Spinner from "react-bootstrap/Spinner";
 import { Translation, useTranslation } from "react-i18next";
@@ -35,7 +34,10 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms }) => {
         <Modal.Body>
           <div>
             {`${formUploadCounter}/${formUploadList.length} ${
-              formUploadList.length > 1 ? t("Forms Completed") : t("Form Completed") }
+              formUploadList.length > 1
+                ? t("Forms Completed")
+                : t("Form Completed")
+            }
             `}
             {formUploadList.length !== formUploadCounter ? (
               <Spinner animation="border" variant="primary" />
@@ -44,7 +46,16 @@ const FileModal = React.memo(({ modalOpen = false, onClose, forms }) => {
             )}
           </div>
           {formUploadList.length ? (
-            <ProgressBar now={formsUploaded} label={`${formsUploaded}%`} />
+            <div className="progress">
+              <div
+                className="progress-bar"
+                role="progressbar"
+                aria-valuenow={formsUploaded}
+                aria-label="upload-status"
+                aria-valuemax={`${formsUploaded}`}
+                style={{ width: `${formsUploaded ? "100%" : "0%"}` }}
+              ></div>
+            </div>
           ) : (
             <div>
               <Translation>{(t) => t("No forms found")}</Translation>

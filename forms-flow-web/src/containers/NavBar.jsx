@@ -75,7 +75,6 @@ const NavBar = React.memo(() => {
   const goToTask = () => {
     dispatch(push(`${baseUrl}task`));
   };
-
   return (
     <header>
       <Navbar
@@ -226,26 +225,37 @@ const NavBar = React.memo(() => {
               </Nav>
 
               <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">
-                <NavDropdown
-                  title={
-                    <>
-                      <i className="fa fa-globe fa-lg mr-2" />
-                      {lang ? lang : "LANGUAGE"}
-                    </>
-                  }
-                  id="basic-nav-dropdown"
-                >
-                  {selectLanguages.map((e, index) => (
-                    <NavDropdown.Item
-                      key={index}
-                      onClick={() => {
-                        handleOnclick(e.name);
-                      }}
-                    >
-                      {e.value}{" "}
-                    </NavDropdown.Item>
-                  ))}
-                </NavDropdown>
+                {
+                   selectLanguages.length === 1 ? 
+                   selectLanguages.map((e,i) => {
+                     return(
+                       <> 
+                        <i className="fa fa-globe fa-lg mr-1 mt-1" />
+                        <h4 key={i}>{e.name}</h4>
+                       </>
+                     );
+                   }) :
+                   <NavDropdown
+                   title={
+                     <>
+                       <i className="fa fa-globe fa-lg mr-2" />
+                       {lang ? lang : "LANGUAGE"}
+                     </>
+                   }
+                   id="basic-nav-dropdown"
+                 >
+                   {selectLanguages.map((e, index) => (
+                     <NavDropdown.Item
+                       key={index}
+                       onClick={() => {
+                         handleOnclick(e.name);
+                       }}
+                     >
+                       {e.value}{" "}
+                     </NavDropdown.Item>
+                   ))}
+                 </NavDropdown>
+                 }
               </Nav>
 
               <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">

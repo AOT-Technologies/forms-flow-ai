@@ -2,7 +2,6 @@ import { httpGETRequest } from "../httpRequestHandler";
 import API from "../endpoints";
 import {
   setMetricsDateRangeLoading,
-  setMetricsSubmissionLimitChange,
   setMetricsTotalItems,
   setMetricsSubmissionCount,
   setMetricsLoader,
@@ -36,6 +35,7 @@ export const fetchMetricsSubmissionCount = (
     httpGETRequest(url, {})
       .then((res) => {
         if (res.data) {
+          dispatch(setMetricsDateRangeLoading(false));
           dispatch(setMetricsLoader(false));
           dispatch(setMetricsSubmissionCount(res.data.applications));
           dispatch(setMetricsTotalItems(res.data.totalCount));
@@ -51,15 +51,11 @@ export const fetchMetricsSubmissionCount = (
           } else {
             dispatch(setMetricsSubmissionStatusCount([]));
             dispatch(setMetricsStatusLoader(false));
-          }
-          if (res.data.limit > 30) {
-            dispatch(setMetricsSubmissionLimitChange(res.data.totalCount));
-          }
-          else {
-            dispatch(setMetricsSubmissionLimitChange(res.data.limit));
+            dispatch(setMetricsDateRangeLoading(false));
           }
           done(null, res.data);
         } else {
+          dispatch(setMetricsDateRangeLoading(false));
           // TODO error handling
           dispatch(setMetricsStatusLoader(false));
           dispatch(setMetricsLoadError(true));

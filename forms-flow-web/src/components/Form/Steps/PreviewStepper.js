@@ -119,6 +119,7 @@ const Preview = React.memo(
                       <FormControlLabel
                         control={
                           <Checkbox
+                            aria-label="Publish"
                             checked={processData.status === "active"}
                             onChange={(e) =>
                               setProcessData({
@@ -136,6 +137,7 @@ const Preview = React.memo(
                   </div>
                   <label className="text-label">{t("Comments")}</label>
                   <TextField
+                    label="Comments"
                     id="comments"
                     multiline
                     rows={4}

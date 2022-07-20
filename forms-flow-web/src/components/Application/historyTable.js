@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  getFormIdSubmissionIdFromURL,
+  //getFormIdSubmissionIdFromURL,
   getFormUrl,
   getLocalDateTime,
 } from "../../apiManager/services/formatterService";
@@ -14,7 +14,7 @@ export const defaultSortedBy = [
 ];
 
 const linkSubmision = (cell, row, redirectUrl) => {
-  const { formId, submissionId } = getFormIdSubmissionIdFromURL(cell);
+  const { formId, submissionId } = row;
   const url = getFormUrl(formId, submissionId, redirectUrl);
   return (
     <div title={url} onClick={() => window.open(url, "_blank")}>

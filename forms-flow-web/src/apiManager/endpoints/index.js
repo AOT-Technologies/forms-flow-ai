@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import {WEB_BASE_URL, BPM_BASE_URL, MT_ADMIN_BASE_URL, MT_ADMIN_BASE_URL_VERSION, BPM_BASE_URL_EXT} from "./config";
+import {WEB_BASE_URL, BPM_BASE_URL, MT_ADMIN_BASE_URL, MT_ADMIN_BASE_URL_VERSION, BPM_BASE_URL_EXT, CUSTOM_SUBMISSION_URL} from "./config";
 import { AppConfig } from "../../config";
 
 const API = {
@@ -43,6 +43,8 @@ const API = {
   UNPUBLISH_FORMS: `${WEB_BASE_URL}/form/<mapper id>`,
   GET_TENANT_DATA: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenant`,
   EXPORT_FORM_PDF: `${WEB_BASE_URL}/form/<form_id>/submission/<submission_id>/export/pdf`,
+  CUSTOM_SUBMISSION: `${CUSTOM_SUBMISSION_URL}/form/<form_id>/submission`,
+  PUBLIC_CUSTOM_SUBMISSION: `${CUSTOM_SUBMISSION_URL}/public/form/<form_id>/submission`
 };
 
 export default API;

@@ -21,14 +21,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import  com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.beans.factory.annotation.Value;
 
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
@@ -50,6 +48,8 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
     private ObjectMapper bpmObjectMapper;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
+    @Value("${formsflow.ai.enableCustomSubmission}")
+    private boolean enableCustomSubmission;
 
     @Override
     public void execute(DelegateExecution execution) throws Exception {
@@ -57,7 +57,11 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
         if(textSentimentRequest != null) {
             ResponseEntity<IResponse> response =  httpServiceInvoker.execute(getAnalysisUrl(), HttpMethod.POST,textSentimentRequest, TextSentimentRequest.class);
             if(response.getStatusCode().value() == HttpStatus.OK.value() && response.getBody() != null) {
-                prepareAndPatchFormData(execution, (TextSentimentRequest) response.getBody());
+                if (enableCustomSubmission) {
+                    prepareAndPatchFormDataCustomSubmission(execution, (TextSentimentRequest) response.getBody());
+                }else{
+                    prepareAndPatchFormData(execution, (TextSentimentRequest) response.getBody());
+                }
             } else {
                 throw new AnalysisServiceException("Unable to read submission for: "+ getAnalysisUrl()+ ". Message Body: " +
                         response.getBody());
@@ -97,6 +101,25 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
             }
         }
         ResponseEntity<String> response = httpServiceInvoker.execute(getFormUrl(execution), HttpMethod.PATCH, elements);
+        if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
+            throw new FormioServiceException("Unable to get patch values for: "+ getFormUrl(execution)+ ". Message Body: " +
+                    response.getBody());
+        }
+    }
+
+    public void prepareAndPatchFormDataCustomSubmission(DelegateExecution execution, TextSentimentRequest textSentimentRequest) throws IOException {
+        Map<String, Map<String,String>> dataMap = new HashMap<>();
+        Map<String, Map<String, Map<String, String>>> payload = new HashMap<>();
+        if(textSentimentRequest.getData() != null) {
+            for (TextSentimentData textSentimentData : textSentimentRequest.getData()) {
+                Map<String,String> sentiment_data = new HashMap<>();
+                sentiment_data.put("overallSentiment",
+                        textSentimentData.getOverallSentiment());
+                dataMap.put(String.valueOf(textSentimentData.getElementId()), sentiment_data);
+            }
+            payload.put("data", dataMap);
+        }
+        ResponseEntity<String> response = httpServiceInvoker.execute(getFormUrl(execution), HttpMethod.PATCH, payload);
         if(response.getStatusCodeValue() != HttpStatus.OK.value()) {
             throw new FormioServiceException("Unable to get patch values for: "+ getFormUrl(execution)+ ". Message Body: " +
                     response.getBody());

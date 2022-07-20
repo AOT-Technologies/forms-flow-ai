@@ -17,6 +17,7 @@ import { AppConfig } from "../config";
 import {
   WEB_BASE_URL,
   WEB_BASE_CUSTOM_URL,
+  CUSTOM_SUBMISSION_URL
 } from "../apiManager/endpoints/config";
 
 // import {_kc} from "../constants/tenantConstant";
@@ -138,6 +139,7 @@ const setApiBaseUrlToLocalStorage = () => {
   localStorage.setItem("formsflow.ai.url", window.location.origin);
   localStorage.setItem("formsflow.ai.api.url", WEB_BASE_URL);
   localStorage.setItem("customApiUrl", WEB_BASE_CUSTOM_URL);
+  localStorage.setItem("customSubmissionUrl", CUSTOM_SUBMISSION_URL);
 };
 
 const getFormioToken = () => localStorage.getItem("formioToken");

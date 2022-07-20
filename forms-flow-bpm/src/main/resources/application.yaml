@@ -17,6 +17,9 @@ server:
         max-age: 1800
 
 formsflow.ai:
+  enableCustomSubmission: ${CUSTOM_SUBMISSION_ENABLED}
+  custom_submission:
+    url: ${CUSTOM_SUBMISSION_URL}
   bpm:
     url: ${BPM_BASE_URL}
     client: camunda

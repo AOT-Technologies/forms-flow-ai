@@ -68,6 +68,7 @@ public class HTTPServiceInvoker {
 		} else if (isUrlValid(url, fetchUrlFromProperty(FORMIO_URL))) {
 			return FORM_ACCESS_HANDLER;
 		}
+ 		return "";
     }
 	
 	private String fetchUrlFromProperty(String key) {

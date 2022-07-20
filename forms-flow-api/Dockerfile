@@ -3,9 +3,8 @@ FROM python:3.9-slim-buster
 
 WORKDIR /forms-flow-api/app
 
-# install wget and gnupg2
+# install curl, gnupg2 and unzip
 RUN  apt-get update \
-  && apt-get install -y wget \
   && apt-get install -y gnupg2 \
   && apt-get install -y curl \
   && apt-get install -y unzip \

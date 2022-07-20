@@ -1,3 +1,7 @@
+import { BPM_BASE_URL } from "../endpoints/config";
+import axios from "axios";
+import UserService from "../../services/UserService";
+
 /* istanbul ignore file */
 // eslint-disable-next-line no-unused-vars
 export const getProcessReq = (form, submissionId, action, user) => {
@@ -72,4 +76,19 @@ export const getSearchResults = (forms, searchText) => {
 export const getPaginatedForms = (forms, limit, page, sort) => {
   forms.sort(dynamicSort(sort));
   return forms.slice((page - 1) * limit, ((page - 1) * limit) + limit);
+};
+
+export const deployBpmnDiagram = (data, token, isBearer = true) => {
+
+  const url = BPM_BASE_URL + "/deployment/create";
+  
+  return axios.post(url, data, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: isBearer
+        ? `Bearer ${token || UserService.getToken()}`
+        : token,
+    },
+  });
+
 };

@@ -12,8 +12,11 @@ from flask.logging import default_handler
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from formsflow_api import config, models
+from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import db, ma
 from formsflow_api.resources import API
+from formsflow_api.schemas import FormioRoleSchema
+from formsflow_api.services.external import FormioService
 from formsflow_api.utils import (
     ALLOW_ALL_ORIGINS,
     CORS_ORIGINS,
@@ -24,6 +27,7 @@ from formsflow_api.utils import (
     setup_logging,
     translate,
 )
+from formsflow_api.utils.enums import FormioRoles
 
 
 def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
@@ -104,7 +108,10 @@ def create_app(run_mode=os.getenv("FLASK_ENV", "production")):
             return response
 
     register_shellcontext(app)
-
+    if not app.config["MULTI_TENANCY_ENABLED"]:
+        with app.app_context():
+            collect_role_ids(app)
+            collect_user_resource_ids(app)
     return app
 
 
@@ -127,3 +134,44 @@ def register_shellcontext(app):
         return {"app": app, "jwt": jwt, "db": db, "models": models}  # pragma: no cover
 
     app.shell_context_processor(shell_context)
+
+
+def collect_role_ids(app):
+    """Collect role ids from Form.io."""
+    try:
+        service = FormioService()
+        app.logger.info("Establishing new connection to formio...")
+        role_ids = FormioRoleSchema().load(service.get_role_ids(), many=True)
+        roles_enum = [item.value for item in FormioRoles]
+        role_ids_filtered = list(
+            filter(lambda item: item["role"] in roles_enum, role_ids)
+        )
+        # Cache will be having infinite expiry
+        if role_ids:
+            cache.set(
+                "formio_role_ids",
+                role_ids_filtered,
+                timeout=0,
+            )
+            app.logger.info("Role ids saved to cache successfully.")
+    except BusinessException as err:
+        app.logger.error(err.error)
+    except Exception as err:  # pylint: disable=broad-except
+        app.logger.error(err)
+
+
+def collect_user_resource_ids(app):
+    """Collects user resource ids from Form.io."""
+    try:
+        service = FormioService()
+        user_resource = service.get_user_resource_ids()
+        user_resource_id = user_resource["_id"]
+        if user_resource:
+            cache.set(
+                "user_resource_id",
+                user_resource_id,
+                timeout=0,
+            )
+            app.logger.info("User resource ids saved to cache successfully.")
+    except Exception as err:  # pylint: disable=broad-except
+        app.logger.error(err)

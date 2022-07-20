@@ -5,7 +5,8 @@ import App from "./components/App";
 import StoreService from "./services/StoreService";
 import { Formio, Components } from "react-formio";
 import { AppConfig } from "./config";
-
+import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
+import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import components from "./customFormioComponents";
 import "./styles.scss";
 import "./resourceBundles/i18n.js";

@@ -8,9 +8,15 @@ if sort order and sort order by is correct.
 translate - Translate the response to provided language
 """
 import re
+from typing import Tuple
 
-from .constants import ALLOW_ALL_ORIGINS
-from .enums import ApplicationSortingParameters
+from .constants import (
+    ALLOW_ALL_ORIGINS,
+    CLIENT_GROUP,
+    DESIGNER_GROUP,
+    REVIEWER_GROUP,
+)
+from .enums import ApplicationSortingParameters, FormioRoles
 from .translations.translations import translations
 
 
@@ -86,3 +92,29 @@ def translate(to_lang: str, data: dict) -> dict:
         raise err
     except Exception as err:
         raise err
+
+
+def get_role_ids_from_user_groups(role_ids, user_role):
+    """Filters out formio role ids specific to user groups."""
+    if user_role is None or user_role is None:
+        raise ValueError("Inavlid arguments passed")
+
+    if DESIGNER_GROUP in user_role:
+        return role_ids
+    if REVIEWER_GROUP in user_role:
+        return filter_list_by_user_role(FormioRoles.REVIEWER.value, role_ids)
+    if CLIENT_GROUP in user_role:
+        return filter_list_by_user_role(FormioRoles.CLIENT.value, role_ids)
+    return None
+
+
+def filter_list_by_user_role(formio_role, role_ids):
+    """Iterate over role_ids and return entries with matching formio role."""
+    return list(filter(lambda item: item["role"] == formio_role, role_ids))
+
+
+def get_form_and_submission_id_from_form_url(form_url: str) -> Tuple:
+    """Retrieves the formid and submission id from the url parameters."""
+    form_id = form_url[form_url.find("/form/") + 6 : form_url.find("/submission/")]
+    submission_id = form_url[form_url.find("/submission/") + 12 : len(form_url)]
+    return (form_id, submission_id)

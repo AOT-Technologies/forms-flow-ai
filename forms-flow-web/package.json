@@ -1,12 +1,13 @@
 {
   "name": "formsflow-ai-react",
   "description": "React web app for formsflow.ai project",
-  "version": "4.0.6",
+  "version": "5.0.0",
   "main": "index.js",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "start": "react-scripts start",
-    "build": "react-scripts --max_old_space_size=6144 build",
+    "build": "GENERATE_SOURCEMAP=false react-scripts --max_old_space_size=6144 build",
+    "winBuild": "set \"GENERATE_SOURCEMAP=false\" && react-scripts build",
     "eject": "react-scripts eject",
     "test": "react-scripts test --detectOpenHandles --silent",
     "preinstall": "npx npm-force-resolutions",
@@ -29,6 +30,7 @@
   },
   "dependencies": {
     "@material-ui/core": "^4.11.4",
+    "@ronchalant/react-loading-overlay": "^1.1.0",
     "@wojtekmaj/react-daterange-picker": "^3.1.0",
     "aot-formio-export": "file:forms-flow-util",
     "axios": "^0.21.4",

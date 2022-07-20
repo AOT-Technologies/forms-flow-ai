@@ -1,4 +1,6 @@
 openapi: 3.0.0
+x-stoplight:
+  id: e3xsbb4b5h78y
 info:
   title: forms-flow-forms API
   description: The API for forms-flow-forms.
@@ -6,7 +8,93 @@ info:
 servers:
   - url: 'http://{{baseurl}}'
   - url: 'http://localhost:3001'
+components:
+  securitySchemes:
+    x-jwt-token:
+      type: http
+      scheme: bearer
+  schemas:
+    Role:
+      title: Role
+      type: object
+      description: Role model
+      x-examples:
+        example-1:
+          tenantKey: string
+          title: string
+          description: string
+          designer: true
+      properties:
+        tenantKey:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        designer:
+          type: boolean
+        _id:
+          type: string
+      required:
+        - tenantKey
+        - title
+        - description
+security:
+  - bearerAuth: []
 paths:
+  /role:
+    post:
+      summary: ''
+      operationId: post-role
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+              examples:
+                example-1:
+                  value:
+                    tenantKey: string
+                    title: string
+                    description: string
+                    designer: true
+                    _id: test123
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Role'
+            examples:
+              example-1:
+                value:
+                  tenantKey: string
+                  title: string
+                  description: string
+                  designer: true
+                  _id: '123'
+    get:
+      summary: ''
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                example-1:
+                  value:
+                    results:
+                      - _id: 1
+                        machineName: formsflowReviewer
+                      - _id: 2
+                        machineName: administrator
+                      - _id: 3
+                        machineName: formsflowClient
+                      - _id: 4
+                        machineName: anonymous
   /user/login:
     post:
       tags:

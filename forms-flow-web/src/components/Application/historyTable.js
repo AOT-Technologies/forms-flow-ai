@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  //getFormIdSubmissionIdFromURL,
   getFormUrl,
   getLocalDateTime,
 } from "../../apiManager/services/formatterService";
@@ -13,7 +12,7 @@ export const defaultSortedBy = [
   },
 ];
 
-const linkSubmision = ( row, redirectUrl) => {
+const linkSubmision = (row, redirectUrl) => {
   const { formId, submissionId } = row;
   const url = getFormUrl(formId, submissionId, redirectUrl);
   return (
@@ -54,7 +53,7 @@ export const columns_history = (redirectUrl) => [
   {
     dataField: "formId",
     text: <Translation>{(t) => t("Submissions")}</Translation>,
-    formatter: ( cell, row ) => linkSubmision( row, redirectUrl),
+    formatter: (cell, row) => linkSubmision(row, redirectUrl),
   },
 ];
 const customTotal = (from, to, size) => (

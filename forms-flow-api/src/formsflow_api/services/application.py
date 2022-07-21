@@ -93,7 +93,7 @@ class ApplicationService:
             application.update({"process_instance_id": data["process_instance_id"]})
         # In normal cases, it's through this else case task is being created
         else:
-            form_url = data["formUrl"]
+            form_url = data["form_url"]
             payload = ApplicationService.get_start_task_payload(
                 application, mapper, form_url
             )

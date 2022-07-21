@@ -1,10 +1,10 @@
 """Test suite for draft API endpoint."""
 
-from tests.utilities.base_test import ( 
-    get_token, 
-    get_application_create_payload, 
+from tests.utilities.base_test import (
+    get_application_create_payload,
+    get_draft_create_payload,
     get_form_request_payload,
-    get_draft_create_payload
+    get_token,
 )
 
 
@@ -15,6 +15,7 @@ def test_draft_list(app, client, session, jwt):
     response = client.get("/draft", headers=headers)
     assert response.status_code == 200
     assert response.json is not None
+
 
 def test_draft_create_method(app, client, session, jwt):
     """Tests the draft create method with valid payload."""
@@ -31,10 +32,12 @@ def test_draft_create_method(app, client, session, jwt):
         json=get_application_create_payload(form_id),
     )
     assert rv.status_code == 201
-    response = client.post("/draft", headers=headers, json=get_draft_create_payload(form_id))
-    print(response.json)
+    response = client.post(
+        "/draft", headers=headers, json=get_draft_create_payload(form_id)
+    )
     assert response.status_code == 201
     assert response.json.get("id") is not None
+
 
 def test_draft_detail_view(app, client, session, jwt):
     """Testing draft details endpoint."""
@@ -51,12 +54,15 @@ def test_draft_detail_view(app, client, session, jwt):
         json=get_application_create_payload(form_id),
     )
     assert rv.status_code == 201
-    response = client.post("/draft", headers=headers, json=get_draft_create_payload(form_id))
+    response = client.post(
+        "/draft", headers=headers, json=get_draft_create_payload(form_id)
+    )
     assert response.status_code == 201
     draft_id = response.json.get("id")
     rv = client.get(f"/draft/{draft_id}", headers=headers)
     assert rv.status_code == 200
     assert rv.json.get("id") == draft_id
+
 
 def test_draft_update_details_api(app, client, session, jwt):
     """Tests the draft update endpoint with valid payload."""
@@ -76,7 +82,9 @@ def test_draft_update_details_api(app, client, session, jwt):
         json=get_application_create_payload(form_id),
     )
     assert rv.status_code == 201
-    response = client.post("/draft", headers=headers, json=get_draft_create_payload(form_id))
+    response = client.post(
+        "/draft", headers=headers, json=get_draft_create_payload(form_id)
+    )
     assert response.status_code == 201
     draft_id = response.json.get("id")
     rv = client.get(f"/draft/{draft_id}", headers=headers)

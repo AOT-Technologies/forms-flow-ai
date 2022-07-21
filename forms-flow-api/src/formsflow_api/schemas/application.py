@@ -74,3 +74,15 @@ class ApplicationUpdateSchema(Schema):
 
     application_status = fields.Str(data_key="applicationStatus", required=True)
     form_url = fields.Str(data_key="formUrl", required=False)
+
+
+class ApplicationSubmissionSchema(Schema):
+    """This class provides the schema for application submission data."""
+
+    class Meta:  # pylint: disable=too-few-public-methods
+        """Exclude unknown fields in the deserialized output."""
+
+        unknown = EXCLUDE
+
+    form_url = fields.Str(data_key="formUrl", required=True)
+    submission_id = fields.Str(data_key="submissionId", required=True)

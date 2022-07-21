@@ -8,7 +8,11 @@ from flask_sqlalchemy import BaseQuery
 from sqlalchemy import and_, func, or_
 from sqlalchemy.sql.expression import text
 
-from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
+from formsflow_api.utils import (
+    FILTER_MAPS,
+    DRAFT_APPLICATION_STATUS,
+    validate_sort_order_and_order_by,
+)
 from formsflow_api.utils.user_context import UserContext, user_context
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
@@ -590,6 +594,7 @@ class Application(
                 FormProcessMapper.id == Application.form_process_mapper_id,
             )
             .filter(FormProcessMapper.id == form_process_mapper_id)
+            .filter(Application.application_status != DRAFT_APPLICATION_STATUS)
         )
         # returns a list of one element with count of applications
         return [dict(row) for row in result_proxy][0]["count"]

@@ -12,6 +12,7 @@ from formsflow_api.utils import (
     get_role_ids_from_user_groups,
     profiletime,
 )
+from formsflow_api.utils.enums import FormioRoles
 from formsflow_api.utils.user_context import UserContext, user_context
 
 API = Namespace("Formio", description="formio")
@@ -35,7 +36,13 @@ class FormioResource(Resource):
             role_ids = cache.get("formio_role_ids")
             roles = get_role_ids_from_user_groups(role_ids, user_role)
             if roles is not None:
-                result = {"roles": roles, "resource_id": cache.get("user_resource_id")}
+                roles.append(
+                    {
+                        "roleId": cache.get("user_resource_id"),
+                        "type": FormioRoles.RESOURCE_ID.value,
+                    }
+                )
+                result = {"form": roles}
                 return (result, HTTPStatus.OK)
 
             return (

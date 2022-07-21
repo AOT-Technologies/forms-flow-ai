@@ -311,7 +311,7 @@ const Dashboard = React.memo(() => {
                   </div>}
                 </div>
               )}
-              {submissionsList.length ? (
+              {submissionsList.length && !metricsDateRangeLoader ? (
                 <div className=" w-100 p-3 d-flex align-items-center">
                   <Pagination
                     activePage={activePage}

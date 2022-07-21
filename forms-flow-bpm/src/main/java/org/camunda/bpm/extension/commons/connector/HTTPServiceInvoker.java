@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 @Component("httpServiceInvoker")
 public class HTTPServiceInvoker {
 	
+	private static final String FORMIO_URL = "formio.url";
 	private static final String API_URL = "api.url";
 	private static final String BPM_URL = "bpm.url";
 	private static final String ANALYSIS_URL = "analysis.url";
@@ -40,8 +41,6 @@ public class HTTPServiceInvoker {
     private ObjectMapper bpmObjectMapper;
     @Autowired
     private Properties integrationCredentialProperties;
-    @Value("${formsflow.ai.enableCustomSubmission}")
-    private boolean enableCustomSubmission;
 
     public ResponseEntity<String> execute(String url, HttpMethod method, Object payload) throws IOException {
         String dataJson = payload != null ? bpmObjectMapper.writeValueAsString(payload) : null;
@@ -62,19 +61,19 @@ public class HTTPServiceInvoker {
 
     private String getServiceId(String url) {
 
+        Boolean enableCustomSubmission = Boolean.valueOf(integrationCredentialProperties.getProperty("forms.enableCustomSubmission"));
  		if (isUrlValid(url, fetchUrlFromProperty(API_URL))) {
 			return APPLICATION_ACCESS_HANDLER;
 		} else if (isUrlValid(url, fetchUrlFromProperty(BPM_URL))) {
 			return BPM_ACCESS_HANDLER;
 		} else if (isUrlValid(url, fetchUrlFromProperty(ANALYSIS_URL))) {
 			return TEXT_ANALYZER_ACCESS_HANDLER;
-		} else {
-			if (enableCustomSubmission) {
-			    return CUSTOM_SUBMISSION_ACCESS_HANDLER;
-            } else {
-                return FORM_ACCESS_HANDLER;
-            }
-		}
+		} else if (enableCustomSubmission) {
+			return CUSTOM_SUBMISSION_ACCESS_HANDLER;
+		} else if (isUrlValid(url, fetchUrlFromProperty(FORMIO_URL))) {
+			return FORM_ACCESS_HANDLER;
+        } 
+ 		return "";
     }
 	
 	private String fetchUrlFromProperty(String key) {

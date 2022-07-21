@@ -26,10 +26,7 @@ import javax.annotation.Resource;
 import javax.inject.Named;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 /**
@@ -47,8 +44,8 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
     private ObjectMapper bpmObjectMapper;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
-    @Value("${formsflow.ai.enableCustomSubmission}")
-    private boolean enableCustomSubmission;
+    @Autowired
+    private Properties integrationCredentialProperties;
 
     @Override
     public void notify(DelegateExecution execution) {
@@ -71,6 +68,8 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
     private void patchFormAttributes(DelegateExecution execution) throws IOException {
         String  formUrl= MapUtils.getString(execution.getVariables(),FORM_URL, null);
         ResponseEntity<String> response = null;
+        Boolean enableCustomSubmission = Boolean.valueOf(integrationCredentialProperties.getProperty("forms.enableCustomSubmission"));
+
         if(StringUtils.isBlank(formUrl)) {
             LOGGER.error("Unable to read submission for Empty Url string");
         } else {

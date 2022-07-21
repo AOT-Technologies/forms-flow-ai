@@ -48,14 +48,15 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
     private ObjectMapper bpmObjectMapper;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
-    @Value("${formsflow.ai.enableCustomSubmission}")
-    private boolean enableCustomSubmission;
+    @Autowired
+    private Properties integrationCredentialProperties;
 
     @Override
     public void execute(DelegateExecution execution) throws Exception {
         TextSentimentRequest textSentimentRequest = prepareAnalysisRequest(execution);
         if(textSentimentRequest != null) {
             ResponseEntity<IResponse> response =  httpServiceInvoker.execute(getAnalysisUrl(), HttpMethod.POST,textSentimentRequest, TextSentimentRequest.class);
+            Boolean enableCustomSubmission = Boolean.valueOf(integrationCredentialProperties.getProperty("forms.enableCustomSubmission"));
             if(response.getStatusCode().value() == HttpStatus.OK.value() && response.getBody() != null) {
                 if (enableCustomSubmission) {
                     prepareAndPatchFormDataCustomSubmission(execution, (TextSentimentRequest) response.getBody());

@@ -15,6 +15,8 @@ class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     application_status = db.Column(db.String(100), nullable=False)
     form_url = db.Column(db.String(500), nullable=False)
     submitted_by = db.Column(db.String(300), nullable=True)
+    form_id = db.Column(db.String(100), nullable=False)
+    submission_id = db.Column(db.String(100), nullable=False)
 
     @classmethod
     def create_from_dict(cls, application_audit_info: dict) -> ApplicationHistory:
@@ -27,6 +29,8 @@ class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
             ]
             application_audit.form_url = application_audit_info["form_url"]
             application_audit.submitted_by = application_audit_info["submitted_by"]
+            application_audit.form_id = application_audit_info["form_id"]
+            application_audit.submission_id = application_audit_info["submission_id"]
             application_audit.save()
             return application_audit
         return None
@@ -34,27 +38,15 @@ class ApplicationHistory(ApplicationAuditDateTimeMixin, BaseModel, db.Model):
     @classmethod
     def get_application_history(cls, application_id: int):
         """Fetch application history."""
-        where_condition = ""
-        where_condition += f""" audit.application_id = {str(application_id)} """
-
-        result_proxy = db.session.execute(
-            f"""SELECT
-                audit.application_status,
-                audit.form_url,
-                audit.created,
-                audit.submitted_by,
-                count(audit.application_status) as count
-            FROM "application_audit" audit
-            WHERE
-                {where_condition}
-            GROUP BY (application_status,form_url,created,submitted_by)
-            ORDER BY created
-            """
+        return (
+            cls.query.filter(cls.application_id == application_id)
+            .order_by(cls.created)
+            .group_by(
+                cls.id,
+                cls.application_status,
+                cls.form_id,
+                cls.submission_id,
+                cls.created,
+                cls.submitted_by,
+            )
         )
-
-        result = []
-        for row in result_proxy:
-            info = dict(row)
-            result.append(info)
-
-        return result

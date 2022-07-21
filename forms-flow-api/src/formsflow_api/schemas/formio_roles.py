@@ -10,5 +10,5 @@ class FormioRoleSchema(Schema):
 
         unknown = EXCLUDE
 
-    id = fields.Str(data_key="_id", required=True)
-    role = fields.Str(data_key="machineName", required=True)
+    roleId = fields.Str(data_key="_id", required=True)
+    type = fields.Str(data_key="machineName", required=True)

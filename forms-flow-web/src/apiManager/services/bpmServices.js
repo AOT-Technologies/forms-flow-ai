@@ -1,10 +1,12 @@
 /* istanbul ignore file */
 // eslint-disable-next-line no-unused-vars
-export const getProcessReq = (form, submissionId, action, user) => {
+import { AppConfig } from "../../config";
+
+export const getProcessReq = (form, submissionId ) => {
   const requestFormat = {
     formId: form._id,
     submissionId: submissionId,
-    formUrl: `${window.location.origin}/form/${form._id}/submission/${submissionId}`,
+    formUrl: `${AppConfig.projectUrl}/form/${form._id}/submission/${submissionId}`,
   };
   return requestFormat;
 };

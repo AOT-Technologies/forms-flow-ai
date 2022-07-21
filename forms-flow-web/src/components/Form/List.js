@@ -218,16 +218,6 @@ const List = React.memo((props) => {
     }
   };
 
-  const resetForms = () => {
-    isDesigner
-      ? dispatch(
-          indexForms("forms", 1, {
-            query: { ...forms.query, title__regex: "" },
-          })
-        )
-      : dispatch(setBpmFormSearch(""));
-  };
-
   const uploadFileContents = async (fileContent) => {
     try {
       if (fileContent.forms && Array.isArray(fileContent.forms)) {
@@ -319,7 +309,7 @@ const List = React.memo((props) => {
           style={{
             maxWidth: "900px",
             margin: "auto",
-            height: "60vh",
+            height: "50vh",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -327,16 +317,7 @@ const List = React.memo((props) => {
           }}
         >
           <h3>{t("No forms found")}</h3>
-          <Button
-            variant="outline-primary"
-            size="sm"
-            style={{
-              cursor: "pointer",
-            }}
-            onClick={resetForms}
-          >
-            {t("Click here to go back")}
-          </Button>
+         <p>{t("Please change the selected filters to view Forms")}</p>
         </div>
       </span>
     );
@@ -370,12 +351,12 @@ const List = React.memo((props) => {
                 ? applicationCountResponse
                   ? `${applicationCount} ${
                       applicationCount > 1
-                        ? `${t("  Applications are submitted against")}`
-                        : `${t("  Application is submitted against")}`
+                        ? `${t("Applications are submitted against")}`
+                        : `${t("Application is submitted against")}`
                     } "${props.formName}". ${t(
                       "Are you sure you wish to delete the form?"
                     )}`
-                  : `  ${t("Are you sure you wish to delete the form")} "${
+                  : `${t("Are you sure you wish to delete the form ")} "${
                       props.formName
                     }"?`
                 : `${t("Are you sure you wish to delete the form ")} "${
@@ -383,8 +364,8 @@ const List = React.memo((props) => {
                   }"?`
             }
             onNo={() => onNo()}
-            onYes={() => {
-              onYes(formId, forms, formProcessData, path, formCheckList);
+            onYes={(e) => {
+              onYes(e,formId, forms, formProcessData, path, formCheckList);
             }}
           />
           <div className="flex-container">
@@ -556,7 +537,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(getInitForms(page, query));
     },
 
-    onYes: (formId, forms, formData, path, formCheckList) => {
+    onYes: (e,formId, forms, formData, path, formCheckList) => {
+      e.currentTarget.disabled = true;
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {

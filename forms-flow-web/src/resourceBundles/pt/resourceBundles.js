@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_PT = {
+  "Please change the selected filters to view Forms":"Por favor, altere os filtros selecionados para visualizar os formulários",
   "Search by form name":"Pesquisar pelo nome do formulário",
   "Click to search":"Clique para pesquisar",
   "No submissions found":"Nenhum envio encontrado",
@@ -30,6 +31,7 @@ export const RESOURCE_BUNDLES_PT = {
   "Form Saved": "Formulário salvo.",
   "Error while saving Form.": "Erro ao salvar o formulário.",
   "Are you sure you wish to delete the form": "Tem certeza que deseja deletar o formulário",
+  "Are you sure you wish to delete the form?":"Tem certeza de que deseja excluir o formulário?",
   "Forms": "Formulários",
   "Edit": "Editar",
  "Text Field": "Campo de texto",
@@ -161,6 +163,7 @@ export const RESOURCE_BUNDLES_PT = {
  "Modified Date": "Data modificada",
   "File Upload Status": "Status de upload de arquivo",
   "Forms Completed": "Formulários preenchidos",
+  "Form Completed" : "Formulário preenchido",
   "No forms found": "Nenhum formulário encontrado",
   "Powered by ": "Distribuído por ",
   "No Process Diagram found": "Nenhum diagrama de processo encontrado",
@@ -188,6 +191,7 @@ export const RESOURCE_BUNDLES_PT = {
   "Loading...":"Carregando...",
   "Wizard":"Mago",
   "Save Form":"Salvar formulário",
+  "Confirm":"confirme",
   "Cancel":"Cancelar",
   "Please change the selected filters to view applications":"Por favor, altere os filtros selecionados para visualizar os aplicativos",
   "No submissions available for the selected date range":"Nenhum envio disponível para o período selecionado",

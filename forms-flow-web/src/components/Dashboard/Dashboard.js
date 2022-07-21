@@ -23,11 +23,8 @@ import {
   setMetricsSubmissionSort,
   SetSubmissionStatusCountLoader,
 } from "../../actions/metricsActions";
-import LoadingOverlay from "react-loading-overlay";
+import LoadingOverlay from "@ronchalant/react-loading-overlay";
 import { Button } from "react-bootstrap";
-const firsDay = moment().format("YYYY-MM-01");
-
-const lastDay = moment().endOf("month").format("YYYY-MM-DD");
 const Dashboard = React.memo(() => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -50,11 +47,13 @@ const Dashboard = React.memo(() => {
   const metricsStatusLoadError = useSelector(
     (state) => state.metrics.metricsStatusLoadError
   );
-  const activePage = useSelector((state) => state.metrics.pagination.page);
+  const sortOrder = useSelector((state) => state.metrics.sortOrder);
+  const searchText = useSelector((state) => state.metrics.searchText);
+
+
+  const activePage = useSelector((state) => state.metrics.pageno);
   const limit = useSelector((state) => state.metrics.limit);
-  const totalItems = useSelector(
-    (state) => state.metrics.submissionsFullList.length
-  );
+  const totalItems = useSelector((state) => state.metrics.totalItems);
   const pageRange = useSelector((state) => state.metrics.pagination.numPages);
   const sort = useSelector((state) => state.metrics.sort);
   const submissionStatusCountLoader = useSelector(
@@ -66,13 +65,15 @@ const Dashboard = React.memo(() => {
   let numberofSubmissionListFrom =
     activePage === 1 ? 1 : (activePage * limit) - limit + 1;
   let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
-  // if ascending sort value is title else -title for this case
-  const isAscending = sort === "-formName" ? false : true;
+
+  const [isAscending, setIsAscending] = useState(false);
   const [searchBy, setSearchBy] = useState("created");
-  const [dateRange, setDateRange] = useState([
-    moment(firsDay),
-    moment(lastDay),
-  ]);
+  const [sortsBy, setSortsBy] = useState("formName");
+
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const [dateRange, setDateRange] = useState([firstDay, lastDay]);
   const [showSubmissionData, setSHowSubmissionData] = useState(
     submissionsList[0]
   );
@@ -80,25 +81,40 @@ const Dashboard = React.memo(() => {
   // State to set search text for submission data
   const [showClearButton, setShowClearButton] = useState("");
   const searchInputBox = useRef("");
+  //Array for pagination dropdown
+  const options = [
+    { value: '6', label: '6' },
+    { value: '12', label: '12' },
+    { value: '30', label: '30' },
+    { value: totalItems, label: totalItems }
+  ];
+
   // Function to handle search text
   const handleSearch = () => {
+    dispatch(setMetricsSubmissionLimitChange(6));
     dispatch(setMetricsSubmissionSearch(searchInputBox.current.value));
+
   };
   const onClear = () => {
     searchInputBox.current.value = "";
     setShowClearButton(false);
     handleSearch();
   };
+  const clearDate = () => {
+    console.log("clear date");
+  };
   // Function to handle sort for submission data
   const handleSort = () => {
+    //setOpacity(1);
+    setIsAscending(!isAscending);
     const updatedQuery = {
-      sort: `${isAscending ? "-" : ""}formName`,
+      sort: isAscending ? 'asc' : "desc",
     };
-    dispatch(setMetricsSubmissionSort(updatedQuery.sort || ""));
+    dispatch(setMetricsSubmissionSort(updatedQuery.sort || "asc"));
   };
   // Function to handle page limit change for submission data
   const handleLimitChange = (limit) => {
-    dispatch(setMetricsSubmissionLimitChange(Number(limit)));
+    dispatch(setMetricsSubmissionLimitChange(limit));
   };
   // Function to handle pageination page change for submission data
   const handlePageChange = (pageNumber) => {
@@ -110,30 +126,22 @@ const Dashboard = React.memo(() => {
   useEffect(() => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
-    dispatch(
-      fetchMetricsSubmissionCount(fromDate, toDate, searchBy, (err, data) => {
-        dispatch(setMetricsDateRangeLoading(false));
-        if (searchInputBox.current) {
-          dispatch(
-            setMetricsSubmissionSearch(searchInputBox.current.value || "")
-          );
-        }
-      })
-    );
-  }, [dispatch, searchBy, dateRange, searchInputBox]);
-
+    dispatch(setMetricsDateRangeLoading(true));
+    setShowClearButton(searchText);
+    /*eslint max-len: ["error", { "code": 170 }]*/
+    dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => { }));
+  }, [dispatch, activePage, limit, sortsBy, sortOrder, dateRange, searchText, searchBy]);
   useEffect(() => {
     setSHowSubmissionData(submissionsList[0]);
   }, [submissionsList]);
 
   const onChangeInput = (option) => {
+    dispatch(setMetricsSubmissionLimitChange(6));
     setSearchBy(option);
   };
-
   if (isMetricsLoading) {
     return <Loading />;
   }
-
   const getStatusDetails = (id) => {
     const fromDate = getFormattedDate(dateRange[0]);
     const toDate = getFormattedDate(dateRange[1]);
@@ -153,19 +161,9 @@ const Dashboard = React.memo(() => {
   };
 
   const onSetDateRange = (date) => {
+    dispatch(setMetricsSubmissionLimitChange(6));
     dispatch(setMetricsDateRangeLoading(true));
     setDateRange(date);
-  };
-  const resetSubmission = () => {
-    const checkFirstDay = moment(dateRange[0]).format("YYYY-MM-01");
-    const checkLastDay = moment(dateRange[1]).format("YYYY-MM-DD");
-    if (checkFirstDay === firsDay && checkLastDay === lastDay) {
-      dispatch(setMetricsSubmissionSearch(""));
-      searchInputBox.current.value = "";
-      setShowClearButton(false);
-    } else if (searchInputBox.current.value) {
-      setDateRange([moment(firsDay), moment(lastDay)]);
-    }
   };
   const noDefaultApplicationAvailable =
     !searchInputBox.current.value && !submissionsList.length ? true : false;
@@ -181,7 +179,7 @@ const Dashboard = React.memo(() => {
         active={metricsDateRangeLoader || submissionStatusCountLoader}
         spinner
         text={t("Loading...")}
-      >
+       >
         <div className="container dashboard_container mb-4" id="main" role="complementary" >
           <div className="dashboard mb-2" >
             <div className="row ">
@@ -224,31 +222,38 @@ const Dashboard = React.memo(() => {
                       yearPlaceholder="yyyy"
                       calendarAriaLabel="Select the date"
                       dayAriaLabel="Select the day"
-                      clearAriaLabel="Click to clear"
+                      clearAriaLabel="Clear value"
+                      clearIcon={null}
                     />
                   </div>
                 </div>
                 <div className="row mt-2 mx-2">
                   <div className="col">
                     <div className="input-group">
-                      <i
-                        onClick={handleSort}
-                        className="fa fa-long-arrow-up fa-lg mt-2"
-                        title="Sort by form name"
+                      <span
                         style={{
                           cursor: "pointer",
-                          opacity: `${isAscending ? 1 : 0.5}`,
-                        }}
-                      />
-                      <i
-                        onClick={handleSort}
-                        className="fa fa-long-arrow-down fa-lg mt-2 ml-1"
-                        title="Sort by form name"
-                        style={{
-                          cursor: "pointer",
-                          opacity: `${isAscending ? 0.5 : 1}`,
-                        }}
-                      />
+                        }}>
+                        <i
+                          onClick={handleSort}
+                          className="fa fa-long-arrow-up fa-lg mt-2"
+                          title="Sort by form name"
+                          style={{
+                            cursor: "pointer",
+                            opacity: `${!isAscending ? 1 : 0.5}`,
+                          }}
+                        />
+                        <i
+                          onClick={handleSort}
+                          className="fa fa-long-arrow-down fa-lg mt-2 ml-1"
+                          title="Sort by form name"
+                          style={{
+                            cursor: "pointer",
+                            opacity: `${isAscending ? 1 : 0.5}`,
+                          }}
+                        //: `${!isAscending ? 0.5 : 1}`
+                        />
+                      </span>
                       <div className="form-outline ml-3">
                         <input
                           type="search"
@@ -263,7 +268,7 @@ const Dashboard = React.memo(() => {
                           }}
                           autoComplete="off"
                           className="form-control"
-                          placeholder={t("Search...")}
+                          placeholder={t(searchText ? searchText : "Search...")}
                         />
                       </div>
                       {showClearButton && (
@@ -290,43 +295,22 @@ const Dashboard = React.memo(() => {
               </div>
               {submissionsList.length ? (
                 <div className="col-12">
-                  <ApplicationCounter
+                  {!metricsDateRangeLoader && <ApplicationCounter
                     className="dashboard-card"
                     application={submissionsList}
                     getStatusDetails={getStatusDetails}
                     selectedMetricsId={selectedMetricsId}
                     noOfApplicationsAvailable={noOfApplicationsAvailable}
                     setSHowSubmissionData={setSHowSubmissionData}
-                  />
-                </div>
-              ) : noDefaultApplicationAvailable && !showClearButton ? (
-                <div className="col-12 col-sm-6 col-md-6 no_submission_main">
-                  <span className="col-12 col-sm-6 col-md-6 no_sumbsmission">
-                    <h3>
-                      {t(
-                        "No submission avaliable in the selected date. Please select another date range"
-                      )}
-                    </h3>
-                  </span>
+                  />}
                 </div>
               ) : (
                 <div className="col-12 col-sm-6 col-md-6 no_submission_main">
-                  <div className="col-12 col-sm-6 col-md-6 no_sumbsmission">
+                  {!metricsDateRangeLoader && <div className="col-12 col-sm-6 col-md-6 no_sumbsmission">
                     <h3>{t("No submissions found")}</h3>
-                    <Button
-                      variant="outline-primary"
-                      size="sm"
-                      style={{
-                        cursor: "pointer",
-                      }}
-                      onClick={() => resetSubmission()}
-                    >
-                      {t("Click here to go back")}
-                    </Button>
-                  </div>
+                  </div>}
                 </div>
               )}
-
               {submissionsList.length ? (
                 <div className=" w-100 p-3 d-flex align-items-center">
                   <Pagination
@@ -337,20 +321,16 @@ const Dashboard = React.memo(() => {
                     itemClass="page-item"
                     linkClass="page-link"
                     onChange={handlePageChange}
-
-
                   />
-
                   <select
                     title="Choose page limit"
                     onChange={(e) => handleLimitChange(e.target.value)}
                     className="form-select mx-5 mb-3"
                     aria-label="Choose page limit"
                   >
-                    <option selected>6</option>
-                    <option value={12}>12</option>
-                    <option value={30}>30</option>
-                    <option value={9000}>All</option>
+                    <option >{limit == totalItems ? 'All' : limit > 30 ? "All" : limit}</option>
+                    {/* eslint max-len: ["error", { "code": 500 }] */}
+                    {options.map(({ value, label }, index) => label != limit && <option value={value == '' ? totalItems : value} key={index} >{label == totalItems ? "All" : label}</option>)}
                   </select>
 
                   <span>
@@ -398,7 +378,7 @@ const Dashboard = React.memo(() => {
           <Redirect exact to="/404" />
         </Route>
       </LoadingOverlay>
-    </Fragment>
+    </Fragment >
   );
 });
 

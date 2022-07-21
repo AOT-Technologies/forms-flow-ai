@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_FR = {
+  "Please change the selected filters to view Forms":"Veuillez modifier les filtres sélectionnés pour afficher les formulaires",
   "Search by form name":"Rechercher par nom de formulaire",
   "Click to search":"Cliquez pour rechercher",
   "No submissions found":"Aucune soumission trouvée",
@@ -32,6 +33,7 @@ export const RESOURCE_BUNDLES_FR = {
   "No forms found":"Aucun formulaire trouvé",
   "All steps completed - you're finished":"Toutes les étapes terminées - vous avez terminé",
   "Are you sure you wish to delete the form":"Êtes-vous sûr de vouloir supprimer le formulaire",
+  "Are you sure you wish to delete the form?":"Êtes-vous sûr de vouloir supprimer le formulaire?",
   "Edit":"Éditer",
  'Text Field': 'champ de texte',
   "Do you want to associate form with a workflow ?":"Vous souhaitez associer un formulaire à un workflow ?",
@@ -159,6 +161,7 @@ export const RESOURCE_BUNDLES_FR = {
  "Modified Date":"Date modifiée",
   "File Upload Status":"État du téléchargement du fichier",
   "Forms Completed":"Formulaires remplis",
+  "Form Completed" : "Formulaire complété",
   " No forms found":"Aucun formulaire trouvé",
   "Powered by ":"Alimenté par ",
   "No applications found":"No applications found",
@@ -189,6 +192,7 @@ export const RESOURCE_BUNDLES_FR = {
   "Loading...":"Chargement...",
   "Wizard":"sorcier",
   "Save Form":"Enregistrer le formulaire",
+  "Confirm":"Confirmer",
   "Cancel":"Annuler",
   "Please change the selected filters to view applications":"Veuillez modifier les filtres sélectionnés pour afficher les candidatures",
   "No submissions available for the selected date range":"Aucune soumission disponible pour la plage de dates sélectionnée",

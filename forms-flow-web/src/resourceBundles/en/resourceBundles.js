@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_EN = {
+  "Please change the selected filters to view Forms":"Please change the selected filters to view Forms",
   "Search by form name":"Search by form name",
   "Click to search":"Click to search",
   "No submissions found":"No submissions found",
@@ -32,6 +33,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Submission cannot be done.": "Submission cannot be done.",
   "No Process Diagram found": "No Process Diagram found",
   "Are you sure you wish to delete the form": "Are you sure you wish to delete the form",
+  "Are you sure you wish to delete the form?":"Are you sure you wish to delete the form?",
   'Forms': "Forms",
   'Form':"Form",
   "Downloaded Successfully":"Downloaded Successfully",
@@ -165,6 +167,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Modified Date": "Modified Date",
   "File Upload Status": "File Upload Status",
   "Forms Completed": "Forms Completed",
+  "Form Completed": "Form Completed",
   "No forms found": "No forms found",
   "Powered by ": "Powered by ",
   "Press Enter key or click here to search": "Press Enter key or click here to search",
@@ -187,6 +190,7 @@ export const RESOURCE_BUNDLES_EN = {
   "Please fix the errors before submitting again.":"Please fix the errors before submitting again.",
   "Wizard":"Wizard",
   "Save Form":"Save Form",
+  "Confirm":"Confirm",
   "Cancel":"Cancel",
   "Please change the selected filters to view applications":"Please change the selected filters to view applications",
   "No submissions available for the selected date range":"No submissions available for the selected date range",

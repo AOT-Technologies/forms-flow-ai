@@ -8,6 +8,7 @@ import {
   getUserRolePermission,
   getUserInsightsPermission,
 } from "../helper/user";
+import createURLPathMatchExp from "../helper/regExp/pathMatch";
 import { useTranslation } from "react-i18next";
 import "./styles.scss";
 import {
@@ -74,7 +75,6 @@ const NavBar = React.memo(() => {
   const goToTask = () => {
     dispatch(push(`${baseUrl}task`));
   };
-
   return (
     <header>
       <Navbar
@@ -107,7 +107,9 @@ const NavBar = React.memo(() => {
                   as={Link}
                   to={`${baseUrl}form`}
                   className={`main-nav nav-item ${
-                    pathname.match(/^\/form/) ? "active-tab" : ""
+                    pathname.match(createURLPathMatchExp("form", baseUrl))
+                      ? "active-tab"
+                      : ""
                   }`}
                 >
                   <i className="fa fa-wpforms fa-fw fa-lg mr-2" />
@@ -118,7 +120,9 @@ const NavBar = React.memo(() => {
                     as={Link}
                     to={`${baseUrl}admin`}
                     className={`main-nav nav-item ${
-                      pathname.match(/^\/admin/) ? "active-tab" : ""
+                      pathname.match(createURLPathMatchExp("admin", baseUrl))
+                        ? "active-tab"
+                        : ""
                     }`}
                   >
                     <i className="fa fa-user-circle-o fa-lg mr-2" />
@@ -133,7 +137,11 @@ const NavBar = React.memo(() => {
                       as={Link}
                       to={`${baseUrl}application`}
                       className={`main-nav nav-item ${
-                        pathname.match(/^\/application/) ? "active-tab" : ""
+                        pathname.match(
+                          createURLPathMatchExp("application", baseUrl)
+                        )
+                          ? "active-tab"
+                          : ""
                       }`}
                     >
                       {" "}
@@ -153,7 +161,9 @@ const NavBar = React.memo(() => {
                     }
                     id="task-dropdown"
                     className={`main-nav nav-item taskDropdown ${
-                      pathname.match(/^\/task/) ? "active-tab-dropdown" : ""
+                      pathname.match(createURLPathMatchExp("task", baseUrl))
+                        ? "active-tab-dropdown"
+                        : ""
                     }`}
                     onClick={goToTask}
                   >
@@ -172,8 +182,10 @@ const NavBar = React.memo(() => {
                     }
                     id="dashboard-dropdown"
                     className={`main-nav nav-item ${
-                      pathname.match(/^\/metrics/) ||
-                      pathname.match(/^\/insights/)
+                      pathname.match(
+                        createURLPathMatchExp("metrics", baseUrl)
+                      ) ||
+                      pathname.match(createURLPathMatchExp("insights", baseUrl))
                         ? "active-tab-dropdown"
                         : ""
                     }`}
@@ -182,7 +194,11 @@ const NavBar = React.memo(() => {
                       as={Link}
                       to={`${baseUrl}metrics`}
                       className={`main-nav nav-item ${
-                        pathname.match(/^\/metrics/) ? "active-tab" : ""
+                        pathname.match(
+                          createURLPathMatchExp("metrics", baseUrl)
+                        )
+                          ? "active-tab"
+                          : ""
                       }`}
                     >
                       <i className="fa fa-pie-chart fa-fw fa-lg" />
@@ -193,7 +209,11 @@ const NavBar = React.memo(() => {
                         as={Link}
                         to={`${baseUrl}insights`}
                         className={`main-nav nav-item ${
-                          pathname.match(/^\/insights/) ? "active-tab" : ""
+                          pathname.match(
+                            createURLPathMatchExp("insights", baseUrl)
+                          )
+                            ? "active-tab"
+                            : ""
                         }`}
                       >
                         <i className="fa fa-lightbulb-o fa-fw fa-lg" />{" "}
@@ -205,47 +225,58 @@ const NavBar = React.memo(() => {
               </Nav>
 
               <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">
-                <NavDropdown 
-                    title={
-                      <>
-                        <i className="fa fa-globe fa-lg mr-2" />
-                        {lang ? lang : "LANGUAGE"}
-                      </>
-                    }
-                  id="basic-nav-dropdown">
-                     {selectLanguages.map((e, index) => (
-                      <NavDropdown.Item
-                        key={index}
-                        onClick={() => {
-                          handleOnclick(e.name);
-                        }}
-                      >
-                        {e.value}{" "}
-                      </NavDropdown.Item>
-                    ))}
-                </NavDropdown>
+                {
+                   selectLanguages.length === 1 ? 
+                   selectLanguages.map((e,i) => {
+                     return(
+                       <> 
+                        <i className="fa fa-globe fa-lg mr-1 mt-1" />
+                        <h4 key={i}>{e.name}</h4>
+                       </>
+                     );
+                   }) :
+                   <NavDropdown
+                   title={
+                     <>
+                       <i className="fa fa-globe fa-lg mr-2" />
+                       {lang ? lang : "LANGUAGE"}
+                     </>
+                   }
+                   id="basic-nav-dropdown"
+                 >
+                   {selectLanguages.map((e, index) => (
+                     <NavDropdown.Item
+                       key={index}
+                       onClick={() => {
+                         handleOnclick(e.name);
+                       }}
+                     >
+                       {e.value}{" "}
+                     </NavDropdown.Item>
+                   ))}
+                 </NavDropdown>
+                 }
               </Nav>
 
               <Nav className="ml-lg-auto mr-auto px-lg-0 px-3">
-              <NavDropdown 
+                <NavDropdown
                   title={
                     <>
-                       <i className="fa fa-user fa-lg mr-1" />
-                       {user?.name || user?.preferred_username || ""}
+                      <i className="fa fa-user fa-lg mr-1" />
+                      {user?.name || user?.preferred_username || ""}
                     </>
                   }
                 >
-
                   <NavDropdown.Item>
-                  {" "}
-                      {user?.name || user?.preferred_username}
-                      <br />
-                      <i className="fa fa-users fa-lg fa-fw" />
-                      <b>{getUserRoleName(userRoles)}</b>
+                    {" "}
+                    {user?.name || user?.preferred_username}
+                    <br />
+                    <i className="fa fa-users fa-lg fa-fw" />
+                    <b>{getUserRoleName(userRoles)}</b>
                   </NavDropdown.Item>
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={logout}>
-                  <i className="fa fa-sign-out fa-fw" /> {t("Logout")}{" "}
+                    <i className="fa fa-sign-out fa-fw" /> {t("Logout")}{" "}
                   </NavDropdown.Item>
                 </NavDropdown>
               </Nav>

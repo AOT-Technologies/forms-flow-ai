@@ -5,8 +5,8 @@ from tests.utilities.base_test import (
     get_application_create_payload,
     get_form_request_anonymous_payload,
     get_form_request_payload,
-    get_token,
     get_formio_form_request_payload,
+    get_token,
 )
 
 
@@ -256,5 +256,7 @@ def test_formio_form_creation(app, client, session, jwt):
     """Testing formio form create API."""
     token = get_token(jwt, role="formsflow-designer", username="designer")
     headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
-    response = client.post("/form/form-create", headers=headers, json=get_formio_form_request_payload())
+    response = client.post(
+        "/form/form-create", headers=headers, json=get_formio_form_request_payload()
+    )
     assert response.status_code == 201

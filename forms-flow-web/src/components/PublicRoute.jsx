@@ -1,17 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Route } from "react-router-dom";
 import { connect } from "react-redux";
 import { getForm } from "react-formio";
-
-import UserService from "../services/UserService";
 import View from "../components/Form/Item/View";
 import NavBar from "../containers/NavBar";
 import NotFound from "./NotFound";
 
-const PublicRoute = ({ store }) => {
-  useEffect(() => {
-    UserService.authenticateAnonymousUser(store);
-  }, [store]);
+const PublicRoute = () => {
   return (
     <div className="container">
       <NavBar />

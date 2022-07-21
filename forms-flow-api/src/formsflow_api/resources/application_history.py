@@ -14,7 +14,7 @@ API = Namespace("Application", description="Application")
 
 
 @cors_preflight("GET,OPTIONS")
-@API.route("/<string:application_id>/history", methods=["GET", "POST", "OPTIONS"])
+@API.route("/<int:application_id>/history", methods=["GET", "POST", "OPTIONS"])
 class ApplicationHistoryResource(Resource):
     """Resource for managing state."""
 
@@ -41,7 +41,7 @@ class ApplicationHistoryResource(Resource):
     @auth.require
     @profiletime
     def post(application_id):
-        """Post a new application using the request body."""
+        """Post a new history entry using the request body."""
         application_history_json = request.get_json()
 
         try:

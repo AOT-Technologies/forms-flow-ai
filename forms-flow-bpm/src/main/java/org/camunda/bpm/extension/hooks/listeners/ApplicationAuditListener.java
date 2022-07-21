@@ -76,11 +76,16 @@ public class ApplicationAuditListener extends BaseListener implements ExecutionL
         String submitterName = String.valueOf(execution.getVariable(SUBMITTER_NAME));
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String submittedBy = null;
-        if (authentication instanceof JwtAuthenticationToken) {
-            submittedBy = ((JwtAuthenticationToken) authentication).getToken().getClaimAsString("preferred_username");
-            if(submittedBy.startsWith("service-account")){
-                submittedBy = "Anonymous-user";
+        if (authentication != null) {
+            if (authentication instanceof JwtAuthenticationToken authToken) {
+                submittedBy = authToken.getToken().getClaimAsString("preferred_username");
+                if(submittedBy.startsWith("service-account")){
+                    submittedBy = ANONYMOUS_USER;
+                }
             }
+        }
+        else {
+            submittedBy = SERVICE_ACCOUNT;
         }
         return new Application(applicationStatus, formUrl, submittedBy);
     }

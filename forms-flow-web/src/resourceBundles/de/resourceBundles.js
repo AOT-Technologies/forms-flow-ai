@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_DE = {
+  "Please change the selected filters to view Forms":"Bitte ändern Sie die ausgewählten Filter, um Formulare anzuzeigen",
   "Search by form name":"Suche nach Formularnamen",
   "Click to search":"Klicken Sie, um zu suchen",
   "No submissions found":"Keine Einreichungen gefunden",
@@ -31,7 +32,8 @@ export const RESOURCE_BUNDLES_DE = {
   "Message": "Bitte beheben Sie die Fehler, bevor Sie sie erneut senden.",
   "Submission cannot be done.": "Eine Abgabe ist nicht möglich.",
   "No Process Diagram found": "Kein Prozessdiagramm gefunden",
-  "Are you sure you wish to delete the form": "Möchten Sie das Formular wirklich löschen?",
+  "Are you sure you wish to delete the form": "Möchten Sie das Formular wirklich löschen",
+  "Are you sure you wish to delete the form?":"Möchten Sie das Formular wirklich löschen? ",
   "Edit": "Bearbeiten",
   "Do you want to associate form with a workflow ?": "Möchten Sie ein Formular mit einem Workflow verknüpfen?",
   "Yes": "Jawohl",
@@ -162,6 +164,7 @@ export const RESOURCE_BUNDLES_DE = {
   "Modified Date": "Geändertes Datum",
   "File Upload Status": "Datei-Upload-Status",
   "Forms Completed": "Formulare ausgefüllt",
+  "Form Completed" : "Formular ausgefüllt",
   "No forms found": "Keine Formulare gefunden",
   "Powered by ": "Bereitgestellt von ",
   "Press Enter key or click here to search": "Drücken Sie die Eingabetaste oder klicken Sie hier, um zu suchen",
@@ -189,6 +192,7 @@ export const RESOURCE_BUNDLES_DE = {
   "Please fix the errors before submitting again.":"Bitte beheben Sie die Fehler, bevor Sie sie erneut senden.",
   "Loading...":"Wird geladen...",
   "Save Form":"Formular speichern",
+  "Confirm":"Bestätigen",
   "Cancel":"Stornieren",
   "Please change the selected filters to view applications":"Wijzig de geselecteerde filters om applicaties te bekijken",
   "No submissions available for the selected date range":"Für den ausgewählten Zeitraum sind keine Einreichungen verfügbar",

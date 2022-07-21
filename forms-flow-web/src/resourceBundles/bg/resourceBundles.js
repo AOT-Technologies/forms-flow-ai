@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_BG = {
+    "Please change the selected filters to view Forms":"Моля, променете избраните филтри, за да видите формуляри",
     "Search by form name":"Tŭrsene po ime na formulyara",
     "Click to search":"Щракнете за търсене",
     "No submissions found":"Няма намерени заявки",
@@ -157,6 +158,7 @@ export const RESOURCE_BUNDLES_BG = {
     "Modified Date": "Дата на промяна",
     "File Upload Status": "Състояние на качване на файл",
     "Forms Completed": "Формулярите са попълнени",
+    "Form Completed" : "Формулярът е попълнен",
     "No forms found": "Няма намерени формуляри",
     "Powered by ": "Задвижвани от ",
     "No Process Diagram found": "Не е намерена диаграма на процеса",
@@ -187,6 +189,7 @@ export const RESOURCE_BUNDLES_BG = {
     "Loading...":"Зареждане...",
     "Wizard":"Магьосник",
     "Save Form":"Запазване на формуляр",
+    "Confirm":"Потвърдете",
     "Cancel":"Отмяна",
     "Please change the selected filters to view applications":"Моля, променете избраните филтри, за да видите приложения",
     "No submissions available for the selected date range":"Няма налични заявки за избрания период от време",
@@ -204,6 +207,7 @@ export const RESOURCE_BUNDLES_BG = {
     "Application is submitted against":"Заявлението се подава срещу",
     ". Are you sure want to delete ?":". Наистина ли искате да изтриете?",
     "Are you sure you wish to delete the form ":"Сигурни ли сте, че искате да изтриете формуляра",
+    "Are you sure you wish to delete the form?":"Сигурни ли сте, че искате да изтриете формуляра?",
     "Save Changes":"Запазите промените",
     "Changing the form workflow will not affect the existing applications. It will only update in the newly created applications. Press Save Changes to continue or cancel the changes.":"Промяната на работния процес на формуляра няма да засегне съществуващите приложения. Той ще се актуализира само в новосъздадените приложения. Натиснете Запазване на промените, за да продължите или отмените промените.",
     "Form Workflow Association Saved.":"Асоциацията на работния поток на формуляра е запазена.",

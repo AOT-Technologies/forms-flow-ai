@@ -1,6 +1,6 @@
-import { BPM_BASE_URL } from "../endpoints/config";
-import axios from "axios";
 import UserService from "../../services/UserService";
+import API from "../endpoints";
+import { httpPOSTRequest } from "../httpRequestHandler";
 
 /* istanbul ignore file */
 // eslint-disable-next-line no-unused-vars
@@ -80,15 +80,13 @@ export const getPaginatedForms = (forms, limit, page, sort) => {
 
 export const deployBpmnDiagram = (data, token, isBearer = true) => {
 
-  const url = BPM_BASE_URL + "/deployment/create";
+  const headers = {
+    'Content-Type': 'multipart/form-data',
+    Authorization: isBearer
+      ? `Bearer ${token || UserService.getToken()}`
+      : token,
+  };
   
-  return axios.post(url, data, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-      Authorization: isBearer
-        ? `Bearer ${token || UserService.getToken()}`
-        : token,
-    },
-  });
+  return httpPOSTRequest(API.DEPLOY_BPM, data, token, isBearer, headers);
 
 };

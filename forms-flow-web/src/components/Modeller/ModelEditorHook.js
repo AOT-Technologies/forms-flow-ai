@@ -177,7 +177,6 @@ const EditModel = React.memo(
       // bpmn:Collaboration -> businessObject -> participants -> [0] -> processRef -> name & id
       // For bpmn:Collaboration type
       if (rootElement.length == 0){
-        console.log('rootElement', rootElement);
         const collaborationElement = elementRegistry.filter(function (element) {
           return is(element, 'bpmn:Collaboration');
         });
@@ -217,7 +216,6 @@ const EditModel = React.memo(
       deployBpmnDiagram(form)
       .then((res) => {
         if (res?.data) {
-          console.log('res', res);
           toast.success(t(SUCCESS_MSG));
           // Reload the dropdown menu
           updateBpmProcesses();

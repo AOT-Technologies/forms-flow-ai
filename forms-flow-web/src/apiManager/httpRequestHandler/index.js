@@ -23,16 +23,8 @@ export const httpGETRequest = (
   });
 };
 
-export const httpGETBlobRequest = (
-  url,
-  data,
-  token,
-  isBearer = true,
-  headers = null
-) => {
-  return axios.get(url, {
-    params: data,
-    responseType: "blob",
+export const httpPOSTRequest = (url, data, token, isBearer = true, headers = null) => {
+  return axios.post(url, data, {
     headers: !headers
       ? {
           Authorization: isBearer
@@ -40,16 +32,6 @@ export const httpGETBlobRequest = (
             : token,
         }
       : headers,
-  });
-};
-
-export const httpPOSTRequest = (url, data, token, isBearer = true) => {
-  return axios.post(url, data, {
-    headers: {
-      Authorization: isBearer
-        ? `Bearer ${token || UserService.getToken()}`
-        : token,
-    },
   });
 };
 

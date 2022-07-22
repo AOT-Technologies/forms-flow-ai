@@ -1,8 +1,6 @@
 /* istanbul ignore file */
 import {
   USER_RESOURCE_FORM_ID,
-  ANONYMOUS_USER,
-  ANONYMOUS_ID,
   FORMIO_JWT_SECRET,
   MULTITENANCY_ENABLED,
 } from "../constants/constants";
@@ -152,12 +150,6 @@ const getFormioToken = () => localStorage.getItem("formioToken");
   return KeycloakData.updateToken(5).then(successCallback).catch(doLogin);
 };*/
 
-const authenticateAnonymousUser = (store) => {
-  const user = ANONYMOUS_USER;
-  const roles = [ANONYMOUS_ID];
-  store.dispatch(setUserRole([user]));
-  authenticateFormio(user, roles);
-};
 
 const authenticateFormio = (user, roles, tenantKey) => {
   let tenantData = {};
@@ -193,7 +185,6 @@ const UserService = {
   userLogout,
   getToken,
   getFormioToken,
-  authenticateAnonymousUser,
   setKeycloakJson,
 };
 

@@ -18,14 +18,13 @@ def test_application_model_can_create_application(app, client, session):
     form.save()
     application1 = Application(
         application_status="Approved",
-        form_url="https://testsample.com/api/form/123/submission/2313",
+        submission_id="2313",
         process_instance_id="213123",
         form_process_mapper_id=1,
         created_by="test-user",
+        latest_form_id=12324,
     )
 
     assert application1.application_status == "Approved"
-    assert (
-        application1.form_url == "https://testsample.com/api/form/123/submission/2313"
-    )
+    assert application1.submission_id == "2313"
     application1.save()

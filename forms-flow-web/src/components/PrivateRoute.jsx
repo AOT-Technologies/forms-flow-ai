@@ -19,6 +19,7 @@ const DashboardPage = lazy(() => import("./Dashboard"));
 const InsightsPage = lazy(() => import("./Insights"));
 const Application = lazy(() => import("./Application"));
 const Admin = lazy(() => import("./Admin"));
+const Modeller = lazy(() => import("./Modeller"));  //BPMN Modeller
 
 const PrivateRoute = React.memo((props) => {
   const dispatch = useDispatch();
@@ -112,6 +113,7 @@ const PrivateRoute = React.memo((props) => {
             <Route path={`${BASE_ROUTE}form`} component={Form} />
             <DesignerRoute path={`${BASE_ROUTE}admin`} component={Admin} />
             <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
+            <DesignerRoute path={`${BASE_ROUTE}processes`} component={Modeller} />
             <ClientReviewerRoute
               path={`${BASE_ROUTE}application`}
               component={Application}

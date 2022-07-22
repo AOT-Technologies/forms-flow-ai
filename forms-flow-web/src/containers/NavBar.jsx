@@ -123,6 +123,21 @@ const NavBar = React.memo(() => {
                   </Nav.Link>
                 ) : null}
 
+
+                {getUserRolePermission(userRoles, STAFF_DESIGNER) ? (
+                  <Nav.Link
+                    as={Link}
+                    to={`${baseUrl}processes`}
+                    className={`main-nav nav-item ${
+                      pathname.match(/^\/processes/) ? "active-tab" : ""
+                    }`}
+                    >
+                      <i className="fa fa-cogs fa-lg fa-fw mr-2" />
+                      {t("Processes")}
+                  </Nav.Link>
+                ) : null}
+
+
                 {showApplications ? (
                   getUserRolePermission(userRoles, STAFF_REVIEWER) ||
                   getUserRolePermission(userRoles, CLIENT) ? (

@@ -42,6 +42,7 @@ const API = {
   UPDATE_GROUPS: `${WEB_BASE_URL}/groups/<groupId>`,
   GET_FORM_COUNT: `${WEB_BASE_URL}/form/<mapper id>/application/count`,
   UNPUBLISH_FORMS: `${WEB_BASE_URL}/form/<mapper id>`,
+  DEPLOY_BPM: `${BPM_BASE_URL}/deployment/create`,
 };
 
 export default API;

@@ -63,6 +63,7 @@ services:
       - DATA_BUFFER_SIZE=${DATA_BUFFER_SIZE:-2}
       - IDENTITY_PROVIDER_MAX_RESULT_SIZE=${IDENTITY_PROVIDER_MAX_RESULT_SIZE:-250}
       - DATA_ANALYSIS_URL=${DATA_ANALYSIS_URL}
+      - BPM_BASE_URL=${BPM_BASE_URL}
     networks:
       - forms-flow-network
  
@@ -87,7 +88,7 @@ services:
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflow/forms-flow-forms:v4.0.6-alpha
+    image: formsflow/forms-flow-forms:v5.0.0-alpha
 
     # The app will restart until Mongo is listening
     restart: always
@@ -117,8 +118,7 @@ services:
       context: ./../../forms-flow-web/
       dockerfile: Dockerfile
       args:
-        - NODE_ENV=${NODE_ENV:-development}
-        - GENERATE_SOURCEMAP=false
+        - NODE_ENV=${NODE_ENV:-production}
         - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE:-formsflow-client}
         - REACT_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE:-formsflow-reviewer}
         - REACT_APP_STAFF_DESIGNER_ROLE=${DESIGNER_ROLE:-formsflow-designer}
@@ -140,6 +140,8 @@ services:
         - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL:-}
         - REACT_APP_FORMIO_JWT_SECRET=${FORMIO_JWT_SECRET:---- change me now ---}
         - REACT_APP_MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
+        - REACT_APP_MT_ADMIN_BASE_URL=${MT_ADMIN_BASE_URL}
+        - REACT_APP_MT_ADMIN_BASE_URL_VERSION=${MT_ADMIN_BASE_URL_VERSION}
     ports:
       - '3000:8080'
     tty: true
@@ -194,6 +196,11 @@ services:
       KEYCLOAK_URL: ${KEYCLOAK_URL}
       KEYCLOAK_URL_REALM: ${KEYCLOAK_URL_REALM:-forms-flow-ai}
       WEB_API_BASE_URL: ${FORMSFLOW_API_URL}
+      FORMIO_URL: ${FORMIO_DEFAULT_PROJECT_URL}
+      FORMIO_ROOT_EMAIL: ${FORMIO_ROOT_EMAIL:-admin@example.com}
+      FORMIO_ROOT_PASSWORD: ${FORMIO_ROOT_PASSWORD:-changeme}
+      CHROME_DRIVER_PATH: ${CHROME_DRIVER_PATH}
+
     stdin_open: true # -i
     tty: true # -t
     networks:

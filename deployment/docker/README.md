@@ -223,6 +223,7 @@ Modify the file **mail-config.properties** (under `forms-flow-bpm/src/main/resou
  `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`2 (In MB)`
  `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
  `BPM_CLIENT_CONN_TIMEOUT`|Webclient Connection timeout in milli seconds||`5000`
+ `BPM_BASE_URL`:triangular_flag_on_post:|BPM Client URL||`http://{your-ip-address}:8000/engine-bpm`
 
 ### Running the application
 

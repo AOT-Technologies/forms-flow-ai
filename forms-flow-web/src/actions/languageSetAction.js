@@ -6,3 +6,10 @@ export const setLanguage = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setSelectLanguages = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.SET_SELECT_LANGUAGES,
+    payload: data,
+  });
+};

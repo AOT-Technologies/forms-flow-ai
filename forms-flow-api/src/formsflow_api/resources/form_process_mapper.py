@@ -1,9 +1,10 @@
 """API endpoints for managing form resource."""
 
 import json
+import string
 from http import HTTPStatus
 
-from flask import current_app, request
+from flask import current_app, make_response, render_template, request
 from flask_restx import Namespace, Resource
 
 from formsflow_api.exceptions import BusinessException
@@ -11,8 +12,20 @@ from formsflow_api.schemas import (
     FormProcessMapperListRequestSchema,
     FormProcessMapperSchema,
 )
-from formsflow_api.services import ApplicationService, FormProcessMapperService
-from formsflow_api.utils import auth, cors_preflight, profiletime
+from formsflow_api.services import (
+    ApplicationService,
+    FormioService,
+    FormProcessMapperService,
+)
+from formsflow_api.utils import (
+    CLIENT_GROUP,
+    DESIGNER_GROUP,
+    REVIEWER_GROUP,
+    auth,
+    cors_preflight,
+    profiletime,
+)
+from formsflow_api.utils.pdf import get_pdf_from_html, pdf_response
 
 API = Namespace("Form", description="Form")
 
@@ -338,6 +351,106 @@ class FormResourceTaskVariablesbyApplicationId(Resource):
                 HTTPStatus.FORBIDDEN,
             )
             current_app.logger.warning(err)
+            return response, status
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
+
+
+@cors_preflight("POST,OPTIONS")
+@API.route("/form-create", methods=["POST", "OPTIONS"])
+class FormioFormResource(Resource):
+    """Resource for formio form creation."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def post():
+        """Formio form creation method."""
+        try:
+            data = request.get_json()
+            if auth.has_role([DESIGNER_GROUP]):
+                formio_service = FormioService()
+                form_io_token = formio_service.get_formio_access_token()
+                response, status = (
+                    formio_service.create_form(data, form_io_token),
+                    HTTPStatus.CREATED,
+                )
+            else:
+                response, status = (
+                    {
+                        "message": "Permission Denied",
+                    },
+                    HTTPStatus.FORBIDDEN,
+                )
+            return response, status
+        except BusinessException as err:
+            current_app.logger.warning(err.error)
+            return err.error, err.status_code
+
+
+@API.route("/<string:form_id>/submission/<string:submission_id>/render")
+class FormResourceRenderFormPdf(Resource):
+    """Resource to render form and submission details as html."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def get(form_id: string, submission_id: string):
+        """Form rendering method."""
+        formio_service = FormioService()
+        form_io_url = current_app.config.get("FORMIO_URL")
+        form_io_token = formio_service.get_formio_access_token()
+        form_url = form_io_url + "/form/" + form_id + "/submission/" + submission_id
+        form_info = {
+            "base_url": form_io_url,
+            "project_url": form_io_url,
+            "form_url": form_url,
+            "token": form_io_token,
+        }
+        headers = {"Content-Type": "text/html"}
+        return make_response(
+            render_template("index.html", form=form_info), 200, headers
+        )
+
+
+@cors_preflight("GET,OPTIONS")
+@API.route(
+    "/<string:form_id>/submission/<string:submission_id>/export/pdf",
+    methods=["GET", "OPTIONS"],
+)
+class FormResourceExportFormPdf(Resource):
+    """Resource to export form and submission details as pdf."""
+
+    @staticmethod
+    @auth.require
+    @profiletime
+    def get(form_id: string, submission_id: string):
+        """PDF generation and rendering method."""
+        try:
+            if auth.has_one_of_roles([REVIEWER_GROUP, CLIENT_GROUP]):
+                token = request.headers.get("Authorization")
+                host_name = current_app.config.get("FORMSFLOW_API_URL")
+                url = (
+                    host_name
+                    + "/form/"
+                    + form_id
+                    + "/submission/"
+                    + submission_id
+                    + "/render"
+                )
+                file_name = (
+                    "Application_" + form_id + "_" + submission_id + "_export.pdf"
+                )
+                result = get_pdf_from_html(url, wait="completed", auth_token=token)
+                return pdf_response(result, file_name)
+
+            response, status = (
+                {
+                    "message": "Permission Denied",
+                },
+                HTTPStatus.FORBIDDEN,
+            )
             return response, status
         except BusinessException as err:
             current_app.logger.warning(err.error)

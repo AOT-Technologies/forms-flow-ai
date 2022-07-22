@@ -66,14 +66,14 @@ export const getProcessStatusList = (processId, taskId) => {
 export const fetchAllBpmProcesses = (...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpGETRequest(API.PROCESSES, {}, UserService.getToken(), true)
+    httpGETRequest(API.GET_BPM_PROCESS_LIST + "?latestVersion=true&excludeInternal=true", {}, UserService.getToken(), true)
       .then((res) => {
-        if (res.data) {
-          dispatch(setAllProcessList(res.data.process));
+        if(res?.data?._embedded?.processDefinitionDtoList) {
+          dispatch(setAllProcessList(res.data._embedded.processDefinitionDtoList));
           done(null, res.data);
         } else {
           dispatch(setAllProcessList([]));
-          dispatch(setProcessLoadError(true));
+          //dispatch(setProcessLoadError(true));
         }
       })
       // eslint-disable-next-line no-unused-vars
@@ -236,11 +236,11 @@ export const fetchDiagram = (process_key, tenant_key = null, ...rest) => {
 
   if (tenant_key) {
     url = replaceUrl(
-      API.PROCESSES_XML_PER_TENANT,
+      API.PROCESSES_XML,
       "<process_key>",
       process_key
     );
-    url = replaceUrl(url, "<tenant_key>", tenant_key);
+    url = url + "?tenantId=" + tenant_key;
   }
 
   const done = rest.length ? rest[0] : () => {};
@@ -276,16 +276,10 @@ export const unPublishForm = (mapperId, ...rest) => {
   return (dispatch) => {
     httpDELETERequest(url)
       .then((res) => {
-        toast.success(
-          <Translation>{(t) => t("Form deleted successfully")}</Translation>
-        );
         dispatch(resetFormProcessData());
         done(null, res.data);
       })
       .catch((error) => {
-        toast.error(
-          <Translation>{(t) => t("Form unpublishing Failed")}</Translation>
-        );
         console.log("error", error);
         dispatch(setUnPublishApiError(true));
         done(error);

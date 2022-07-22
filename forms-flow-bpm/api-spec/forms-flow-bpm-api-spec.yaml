@@ -740,7 +740,7 @@ paths:
                       versionTag: '1'
                       historyTimeToLive: null
                       startableInTasklist: true
-  /engine-rest/process-definition/key/onestepapproval/start:
+  /engine-rest-ext/v1/process-definition/key/onestepapproval/start:
     post:
       tags:
         - Process
@@ -792,7 +792,7 @@ paths:
                 example-1:
                   value: {}
     parameters: []
-  /engine-rest/process-definition/key/Defaultflow/start:
+  /engine-rest-ext/v1/process-definition/key/Defaultflow/start:
     post:
       tags:
         - Process
@@ -845,7 +845,7 @@ paths:
                   value:
                     id: test
     parameters: []
-  /engine-rest/process-definition/key/onestepapproval/tenant-id/test-tenant/start:
+  /engine-rest-ext/v1/process-definition/key/onestepapproval/start?tenantId=test-tenant:
     post:
       tags:
         - Process
@@ -1698,7 +1698,7 @@ paths:
           description: Successful response
           content:
             application/json: {}
-  /engine-rest-ext/form/authorization:
+  /engine-rest-ext/v1/form/authorization:
     get:
       tags:
         - Authorization check

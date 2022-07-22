@@ -55,7 +55,7 @@ class ApplicationService:
             payload = {
                 "variables": {
                     "applicationId": {"value": application.id},
-                    "formUrl": {"value": application.form_url},
+                    "formUrl": {"value": data["form_url"]},
                     "formName": {"value": mapper.form_name},
                     "submitterName": {"value": application.created_by},
                     "submissionDate": {"value": str(application.created)},
@@ -301,22 +301,59 @@ class ApplicationService:
             raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
-    def get_aggregated_applications(from_date: str, to_date: str):
+    def get_aggregated_applications(  # pylint: disable=too-many-arguments
+        from_date: str,
+        to_date: str,
+        page_no: int,
+        limit: int,
+        form_name: str,
+        sort_by: str,
+        sort_order: str,
+    ):
         """Get aggregated applications."""
-        applications = Application.find_aggregated_applications(
-            from_date=from_date, to_date=to_date
+        applications, get_all_metrics_count = Application.find_aggregated_applications(
+            from_date=from_date,
+            to_date=to_date,
+            page_no=page_no,
+            limit=limit,
+            form_name=form_name,
+            sort_by=sort_by,
+            sort_order=sort_order,
         )
         schema = AggregatedApplicationSchema(exclude=("application_status",))
-        return schema.dump(applications, many=True)
+        return (
+            schema.dump(applications, many=True),
+            get_all_metrics_count,
+        )
 
     @staticmethod
-    def get_aggregated_applications_modified(from_date: datetime, to_date: datetime):
+    def get_aggregated_applications_modified(  # pylint: disable=too-many-arguments
+        from_date: datetime,
+        to_date: datetime,
+        page_no: int,
+        limit: int,
+        form_name: str,
+        sort_by: str,
+        sort_order: str,
+    ):
         """Get aggregated applications."""
-        applications = Application.find_aggregated_applications_modified(
-            from_date=from_date, to_date=to_date
+        (
+            applications,
+            get_all_metrics_count,
+        ) = Application.find_aggregated_applications_modified(
+            from_date=from_date,
+            to_date=to_date,
+            page_no=page_no,
+            limit=limit,
+            form_name=form_name,
+            sort_by=sort_by,
+            sort_order=sort_order,
         )
         schema = AggregatedApplicationSchema(exclude=("application_status",))
-        return schema.dump(applications, many=True)
+        return (
+            schema.dump(applications, many=True),
+            get_all_metrics_count,
+        )
 
     @staticmethod
     @user_context
@@ -370,16 +407,6 @@ class ApplicationService:
         raise BusinessException("Invalid application", HTTPStatus.BAD_REQUEST)
 
     @staticmethod
-    def apply_custom_attributes(application_schema_dump):
-        """Wrapper function to call Application Schema Wrapper."""
-        if isinstance(application_schema_dump, list):
-            for entry in application_schema_dump:
-                ApplicationSchemaWrapper.apply_attributes(entry)
-        else:
-            ApplicationSchemaWrapper.apply_attributes(application_schema_dump)
-        return application_schema_dump
-
-    @staticmethod
     def get_total_application_corresponding_to_mapper_id(mapper_id: int):
         """Retrieves application count related to a mapper_id."""
         count = Application.get_total_application_corresponding_to_mapper_id(mapper_id)
@@ -390,29 +417,3 @@ class ApplicationService:
             {"message": f"Total Applications found are: {count}", "value": count},
             HTTPStatus.OK,
         )
-
-
-class ApplicationSchemaWrapper:  # pylint: disable=too-few-public-methods
-    """ApplicationSchemaWrapper Class."""
-
-    @staticmethod
-    def apply_attributes(application):
-        """
-        Wrapper function to call Application Schema Wrapper class.
-
-        finds formid, submissionId from passed formUrl.
-        """
-        try:
-            formurl = application["formUrl"]
-            application["formId"] = formurl[
-                formurl.find("/form/") + 6 : formurl.find("/submission/")
-            ]
-            application["submissionId"] = formurl[
-                formurl.find("/submission/") + 12 : len(formurl)
-            ]
-            return application
-        except KeyError:
-            return (
-                "The required fields of Input request are not passed",
-                HTTPStatus.BAD_REQUEST,
-            )

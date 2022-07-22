@@ -37,7 +37,7 @@ class ProcessResource(Resource):
             response, status = {
                 "type": "Bad request error",
                 "message": "Invalid request data object",
-            }
+            }, HTTPStatus.BAD_REQUEST
 
             current_app.logger.warning(response)
             current_app.logger.warning(err)

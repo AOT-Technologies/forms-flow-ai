@@ -55,9 +55,11 @@ const View = React.memo((props) => {
   const publicFormStatus = useSelector(
     (state) => state.formDelete.publicFormStatus
   );
-  const isPublic = window.location.href.includes("public"); //need to remove
+
+  const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+
   const { formId } = useParams();
   const [showPublicForm, setShowPublicForm] = useState("checking");
 
@@ -175,7 +177,7 @@ const View = React.memo((props) => {
           onConfirm={props.onConfirm}
         ></SubmissionError>
         {isAuthenticated ? (
-          <Link to={`${redirectUrl}form`}>
+          <Link title="go back" to={`${redirectUrl}form`}>
             <i className="fa fa-chevron-left fa-lg" />
           </Link>
         ) : null}
@@ -230,9 +232,8 @@ const doProcessActions = (submission, ownProps) => {
     const data = getProcessReq(form, submission._id, "new", user);
     const tenantKey = getState().tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
-    const isPublic = window.location.href.includes("public");
 
-    if (isPublic) {
+    if (!IsAuth) {
       // this is for anonymous
       dispatch(
         // eslint-disable-next-line no-unused-vars

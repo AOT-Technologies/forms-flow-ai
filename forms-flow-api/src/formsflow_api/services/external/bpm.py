@@ -32,9 +32,17 @@ class BPMService(BaseBPMService):
     @classmethod
     def get_process_details_by_key(cls, process_key, token):
         """Get process details."""
-        current_app.logger.debug("Getting process details. Process Key : %s", process_key)
-        for process_definition in cls.get_all_process(token):
-            if process_definition.get('key') == process_key:
+        current_app.logger.debug(
+            "Getting process details. Process Key : %s", process_key
+        )
+        for process_definition in cls.get_all_process(token)["_embedded"][
+            "processDefinitionDtoList"
+        ]:
+            if process_definition.get("key") == process_key:
+                current_app.logger.debug(
+                    "Found Process Definition. process_definition : %s",
+                    process_definition,
+                )
                 return process_definition
         return None
 
@@ -62,7 +70,7 @@ class BPMService(BaseBPMService):
         """Post process start based on tenant key."""
         url = (
             f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"
-            f"key/{process_key}/tenant-id/{tenant_key}/start"
+            f"key/{process_key}/start?tenantId=" + tenant_key
         )
         return cls.post_request(url, token, payload=payload)
 
@@ -130,9 +138,9 @@ class BPMService(BaseBPMService):
         bpm_api_base = current_app.config.get("BPM_API_BASE")
         try:
             if endpoint_type == BPMEndpointType.PROCESS_DEFINITION:
-                url = f"{bpm_api_base}/engine-rest/process-definition"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/process-definition"
             elif endpoint_type == BPMEndpointType.FORM_AUTH_DETAILS:
-                url = f"{bpm_api_base}/engine-rest-ext/form/authorization"
+                url = f"{bpm_api_base}/engine-rest-ext/v1/form/authorization"
             elif endpoint_type == BPMEndpointType.HISTORY:
                 url = f"{bpm_api_base}/engine-rest-ext/task/"
             elif endpoint_type == BPMEndpointType.TASK:

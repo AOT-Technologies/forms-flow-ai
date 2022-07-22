@@ -1,14 +1,16 @@
 import UserService from "../../services/UserService";
 import API from "../endpoints";
 import { httpPOSTRequest } from "../httpRequestHandler";
+import { AppConfig } from "../../config";
 
 /* istanbul ignore file */
 // eslint-disable-next-line no-unused-vars
-export const getProcessReq = (form, submissionId, action, user) => {
+
+export const getProcessReq = (form, submissionId ) => {
   const requestFormat = {
     formId: form._id,
     submissionId: submissionId,
-    formUrl: `${window.location.origin}/form/${form._id}/submission/${submissionId}`,
+    formUrl: `${AppConfig.projectUrl}/form/${form._id}/submission/${submissionId}`,
   };
   return requestFormat;
 };
@@ -86,7 +88,7 @@ export const deployBpmnDiagram = (data, token, isBearer = true) => {
       ? `Bearer ${token || UserService.getToken()}`
       : token,
   };
-  
+
   return httpPOSTRequest(API.DEPLOY_BPM, data, token, isBearer, headers);
 
 };

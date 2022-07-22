@@ -66,6 +66,7 @@ public class KeycloakLogoutHandler implements LogoutSuccessHandler {
 				response.addCookie(cookie);
 			}
 			LOG.debug("-------context path---------->"+request.getContextPath());
+
 			//To remove JSESSIONID
 			Cookie cookieWithSlash = new Cookie("JSESSIONID", null);
 			//Tomcat adds extra slash at the end of context path (e.g. "/foo/")

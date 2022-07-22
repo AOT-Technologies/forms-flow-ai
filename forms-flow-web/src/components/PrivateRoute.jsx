@@ -8,7 +8,10 @@ import { CLIENT, STAFF_REVIEWER, STAFF_DESIGNER } from "../constants/constants";
 
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
-import { setTenantFromId } from "../apiManager/services/tenantServices";
+import {
+  getTenantData,
+  setTenantFromId,
+} from "../apiManager/services/tenantServices";
 
 const Form = lazy(() => import("./Form"));
 const ServiceFlow = lazy(() => import("./ServiceFlow"));
@@ -24,7 +27,6 @@ const PrivateRoute = React.memo((props) => {
   const userRoles = useSelector((state) => state.user.roles || []);
   const { tenantId } = useParams();
   const redirecUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantId}/` : `/`;
-
   useEffect(() => {
     if (tenantId && props.store) {
       sessionStorage.setItem("tenantKey", tenantId);
@@ -32,6 +34,7 @@ const PrivateRoute = React.memo((props) => {
       UserService.setKeycloakJson(tenantId, (clientId) => {
         UserService.initKeycloak(props.store, clientId, (err, res) => {
           dispatch(setUserAuth(res.authenticated));
+          dispatch(getTenantData());
         });
       });
     } else {

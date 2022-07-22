@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { saveForm, FormBuilder, Errors } from "react-formio";
+import { FormBuilder, Errors, Formio } from "react-formio";
 import _set from "lodash/set";
 import _cloneDeep from "lodash/cloneDeep";
 import _camelCase from "lodash/camelCase";
@@ -16,8 +16,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { useTranslation, Translation } from "react-i18next";
 import { formio_resourceBundles } from "../../resourceBundles/formio_resourceBundles";
-import { clearFormError } from "../../actions/formActions";
-import { addTenankeyToPath } from "../../helper/helper";
+import {
+  clearFormError,
+  setFormFailureErrorData,
+  setFormSuccessData,
+} from "../../actions/formActions";
+import { addTenankey } from "../../helper/helper";
+import { formCreate } from "../../apiManager/services/FormServices";
 
 // reducer from react-formio code
 const reducer = (form, { type, value }) => {
@@ -66,9 +71,13 @@ const Create = React.memo(() => {
   useEffect(() => {
     FORM_ACCESS.forEach((role) => {
       if (anonymous) {
-        role.roles.push(ANONYMOUS_ID);
+        if (role.type === "read_all") {
+          role.roles.push(ANONYMOUS_ID);
+        }
       } else {
-        role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+        if (role.type === "read_all") {
+          role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+        }
       }
     });
     SUBMISSION_ACCESS.forEach((access) => {
@@ -83,6 +92,22 @@ const Create = React.memo(() => {
       }
     });
   }, [anonymous]);
+
+  // information about tenant key adding
+
+  const addingTenantKeyInformation = (type) => {
+    if (MULTITENANCY_ENABLED) {
+      return (
+        <span className="ml-1">
+          <i
+            className="fa fa-info-circle text-primary cursor-pointer"
+            data-toggle="tooltip"
+            title={`By default, the tenant key would be prefixed to form ${type}`}
+          ></i>
+        </span>
+      );
+    }
+  };
 
   // setting the form data
   useEffect(() => {
@@ -106,32 +131,39 @@ const Create = React.memo(() => {
     newForm.access = FORM_ACCESS;
     if (MULTITENANCY_ENABLED && tenantKey) {
       newForm.tenantKey = tenantKey;
-      newForm.path = addTenankeyToPath(newForm.path,tenantKey);
+      if (newForm.path) {
+        newForm.path = addTenankey(newForm.path, tenantKey);
+      }
+      if (newForm.name) {
+        newForm.name = addTenankey(newForm.name, tenantKey);
+      }
     }
-    dispatch(
-      saveForm("form", newForm, (err, form) => {
-        if (!err) {
-          // ownProps.setPreviewMode(true);
-          const data = {
-            formId: form._id,
-            formName: form.title,
-            formRevisionNumber: "V1", // to do
-            anonymous: FORM_ACCESS[0].roles.includes(ANONYMOUS_ID),
-          };
-          dispatch(
-            // eslint-disable-next-line no-unused-vars
-            saveFormProcessMapperPost(data, (err, res) => {
-              if (!err) {
-                toast.success(t("Form Saved"));
-                dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
-              } else {
-                toast.error("Error in creating form process mapper");
-              }
-            })
-          );
-        }
-      })
-    );
+    formCreate(newForm, (err, form) => {
+      if (!err) {
+        // ownProps.setPreviewMode(true);
+        const data = {
+          formId: form._id,
+          formName: form.title,
+          formRevisionNumber: "V1", // to do
+          anonymous: FORM_ACCESS[0].roles.includes(ANONYMOUS_ID),
+        };
+        dispatch(setFormSuccessData("form", form));
+        Formio.cache = {}; //removing formio cache
+        dispatch(
+          // eslint-disable-next-line no-unused-vars
+          saveFormProcessMapperPost(data, (err, res) => {
+            if (!err) {
+              toast.success(t("Form Saved"));
+              dispatch(push(`${redirectUrl}formflow/${form._id}/view-edit/`));
+            } else {
+              toast.error("Error in creating form process mapper");
+            }
+          })
+        );
+      } else {
+        dispatch(setFormFailureErrorData("form", err));
+      }
+    });
   };
 
   // setting the main option details to the formdata
@@ -182,15 +214,28 @@ const Create = React.memo(() => {
             <div id="form-group-name" className="form-group">
               <label htmlFor="name" className="control-label field-required">
                 <Translation>{(t) => t("Name")}</Translation>
+                {addingTenantKeyInformation("name")}
               </label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                placeholder={t("Enter the form machine name")}
-                value={form.name || ""}
-                onChange={(event) => handleChange("name", event)}
-              />
+              <div className="input-group mb-2">
+              {
+                  MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
+                  <div
+                    className="input-group-text"
+                    style={{ maxWidth: "150px" }}
+                  >
+                    <span className="text-truncate">{tenantKey}</span>
+                  </div>
+                </div> : ""
+                }
+                <input
+                  type="text"
+                  className="form-control"
+                  id="name"
+                  placeholder={t("Enter the form machine name")}
+                  value={form.name || ""}
+                  onChange={(event) => handleChange("name", event)}
+                />
+              </div>
             </div>
           </div>
           <div className="col-lg-4 col-md-3 col-sm-3">
@@ -209,7 +254,7 @@ const Create = React.memo(() => {
                   <option label={t("Form")} value="form">
                     <Translation>{(t) => t("Form")}</Translation>
                   </option>
-                  <option label={t("Wizard")} value="Wizard">
+                  <option label={t("Wizard")} value="wizard">
                     <Translation>{(t) => t("Wizard")}</Translation>
                   </option>
                 </select>
@@ -243,8 +288,19 @@ const Create = React.memo(() => {
             <div id="form-group-path" className="form-group">
               <label htmlFor="path" className="control-label field-required">
                 <Translation>{(t) => t("Path")}</Translation>
+                {addingTenantKeyInformation("path")}
               </label>
-              <div className="input-group">
+              <div className="input-group mb-2">
+              {
+                  MULTITENANCY_ENABLED && tenantKey ? <div className="input-group-prepend">
+                  <div
+                    className="input-group-text"
+                    style={{ maxWidth: "150px" }}
+                  >
+                    <span className="text-truncate">{tenantKey}</span>
+                  </div>
+                </div> : ""
+                }
                 <input
                   type="text"
                   className="form-control"

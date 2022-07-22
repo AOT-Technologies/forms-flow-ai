@@ -2,7 +2,7 @@ import { setSelectLanguages } from "../../actions/languageSetAction";
 
 export const fetchSelectLanguages = () => {
   return (dispatch) => {
-    fetch("./../../config/languageData.json", {
+    fetch("./../../languageConfig/languageData.json", {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",

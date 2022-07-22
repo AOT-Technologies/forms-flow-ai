@@ -179,7 +179,7 @@ const Dashboard = React.memo(() => {
         active={metricsDateRangeLoader || submissionStatusCountLoader}
         spinner
         text={t("Loading...")}
-       >
+      >
         <div className="container dashboard_container mb-4" id="main" role="complementary" >
           <div className="dashboard mb-2" >
             <div className="row ">
@@ -240,7 +240,7 @@ const Dashboard = React.memo(() => {
                           title="Sort by form name"
                           style={{
                             cursor: "pointer",
-                            opacity: `${!isAscending ? 1 : 0.5}`,
+                            opacity: `${sortOrder == "asc" ? 1 : 0.5}`,
                           }}
                         />
                         <i
@@ -249,7 +249,7 @@ const Dashboard = React.memo(() => {
                           title="Sort by form name"
                           style={{
                             cursor: "pointer",
-                            opacity: `${isAscending ? 1 : 0.5}`,
+                            opacity: `${sortOrder == "desc" ? 1 : 0.5}`,
                           }}
                         //: `${!isAscending ? 0.5 : 1}`
                         />

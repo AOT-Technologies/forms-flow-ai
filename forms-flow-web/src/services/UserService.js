@@ -1,6 +1,5 @@
 /* istanbul ignore file */
 import {
-  USER_RESOURCE_FORM_ID,
   FORMIO_JWT_SECRET,
   MULTITENANCY_ENABLED,
 } from "../constants/constants";
@@ -67,10 +66,16 @@ const initKeycloak = (store, ...rest) => {
             console.error(err);
           }else{
              // filter the role based on keyclok role
-             let roles =  data.filter((i)=> UserRoles.includes(i.type.toLowerCase()));
-                 roles = Object.values(roles);
+             let roles = [];
+               data.forEach((i)=>{
+                if(UserRoles.some(role=> role.includes(i.type.toLowerCase()))){
+                  roles.push(i.roleId);
+                }
+               });
                  const email = KeycloakData.tokenParsed.email || "external";
-                 authenticateFormio(email, roles, KeycloakData.tokenParsed?.tenantKey);
+                 const resourceDetails = data.find(i=> i.type === "RESOURCE_ID");
+                 authenticateFormio(email, roles, resourceDetails?.roleId, 
+                  KeycloakData.tokenParsed?.tenantKey);
           }
         }));
    
@@ -151,7 +156,7 @@ const getFormioToken = () => localStorage.getItem("formioToken");
 };*/
 
 
-const authenticateFormio = (user, roles, tenantKey) => {
+const authenticateFormio = (user, roles,resourceId, tenantKey) => {
   let tenantData = {};
   if (tenantKey && MULTITENANCY_ENABLED) {
     tenantData = { tenantKey };
@@ -160,7 +165,7 @@ const authenticateFormio = (user, roles, tenantKey) => {
     {
       external: true,
       form: {
-        _id: USER_RESOURCE_FORM_ID, // form.io form Id of user resource
+        _id: resourceId, // form.io form Id of user resource
       },
       user: {
         _id: user, // keep it like that

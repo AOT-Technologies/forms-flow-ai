@@ -1,12 +1,12 @@
 /* istanbul ignore file */
 // eslint-disable-next-line no-unused-vars
-import { AppConfig } from "../../config";
+import {getFormUrlWithFormIdSubmissionId} from "./formatterService";
 
 export const getProcessReq = (form, submissionId ) => {
   const requestFormat = {
     formId: form._id,
     submissionId: submissionId,
-    formUrl: `${AppConfig.projectUrl}/form/${form._id}/submission/${submissionId}`,
+    formUrl: getFormUrlWithFormIdSubmissionId(form._id, submissionId)
   };
   return requestFormat;
 };
@@ -38,4 +38,4 @@ export const formatForms = (forms) => {
       processKey: form.processKey,
     };
   });
-}; 
+};

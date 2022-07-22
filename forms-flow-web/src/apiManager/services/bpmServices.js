@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 import { AppConfig } from "../../config";
 
-export const getProcessReq = (form, submissionId ) => {
+export const getProcessReq = (form, submissionId) => {
   const requestFormat = {
     formId: form._id,
     submissionId: submissionId,
@@ -38,12 +38,11 @@ export const formatForms = (forms) => {
       processKey: form.processKey,
     };
   });
-}; 
+};
 
-export const getDraftReqFormat = (form, data)=>{
+export const getDraftReqFormat = (form_id, data = {}) => {
   return {
-      formId: form._id,
-      applicationStatus: "Draft",
-      data: data
+    formId: form_id,
+    data: data,
   };
 };

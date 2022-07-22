@@ -43,6 +43,9 @@ const API = {
   UNPUBLISH_FORMS: `${WEB_BASE_URL}/form/<mapper id>`,
   GET_TENANT_DATA: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenant`,
   EXPORT_FORM_PDF: `${WEB_BASE_URL}/form/<form_id>/submission/<submission_id>/export/pdf`,
+  DRAFT_BASE:`${WEB_BASE_URL}/draft`,
+  DRAFT_UPDATE:`${WEB_BASE_URL}/draft/<draft_id>`,
+  DRAFT_APPLICATION_CREATE: `${WEB_BASE_URL}/draft/<draft_id>/submit`
 };
 
 export default API;

@@ -50,6 +50,7 @@
     "lodash": "^4.17.21",
     "moment": "^2.29.2",
     "querystring": "^0.2.1",
+    "querystringify": "^2.2.0",
     "react": "^17.0.2",
     "react-bootstrap": "^1.6.0",
     "react-bootstrap-table-next": "^4.0.1",

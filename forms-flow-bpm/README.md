@@ -1,7 +1,7 @@
 # Workflow Engine
 
 [![FormsFlow BPM CI](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions/workflows/forms-flow-api-ci.yml/badge.svg?branch=develop)](https://github.com/AOT-Technologies/forms-flow-ai-dev/actions)
-![Camunda](https://img.shields.io/badge/Camunda-7.15.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.4.8.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
+![Camunda](https://img.shields.io/badge/Camunda-7.17.0-blue)  ![Spring Boot](https://img.shields.io/badge/Spring_Boot-2.6.4.RELEASE-blue)  ![postgres](https://img.shields.io/badge/postgres-latest-blue)  
 **formsflow.ai** leverages Camunda for workflow and decision automation.
 
 To know more about Camunda, visit https://camunda.com/.
@@ -112,7 +112,7 @@ To know more about Camunda, visit https://camunda.com/.
  `DATA_BUFFER_SIZE`|Configure a limit on the number of bytes that can be buffered for webclient||`2  (In MB)`
  `IDENTITY_PROVIDER_MAX_RESULT_SIZE`|Maximum result size for Keycloak user queries||`250`
  `BPM_CLIENT_CONN_TIMEOUT`|Webclient Connection timeout in milli seconds||`5000`
- `BPM_BASE_URL`:triangular_flag_on_post:|BPM Client URL||`http://{your-ip-address}:8000`
+ `BPM_BASE_URL`:triangular_flag_on_post:|BPM Client URL||`http://{your-ip-address}:8000/engine-bpm`
    
  **Additionally, you may want to change these**  
 *   The value of Datastore credentials (especially if this instance is not just for testing purposes)

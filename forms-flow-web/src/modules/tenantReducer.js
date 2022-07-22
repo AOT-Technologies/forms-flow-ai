@@ -6,6 +6,8 @@ const initialState = {
     ? JSON.parse(sessionStorage.getItem("tenant"))
     : null,
   isTenantDetailLoading: false,
+  tenantData: {},
+  isTenantDataLoading: true,
 };
 
 const tenants = (state = initialState, action) => {
@@ -30,6 +32,13 @@ const tenants = (state = initialState, action) => {
         tenantId: action.payload,
         tenantDetail: null,
         tenantName: "",
+      };
+    case ACTION_CONSTANTS.SET_TENANT_DATA:
+      localStorage.setItem("tenantData", JSON.stringify(action.payload));
+      return {
+        ...state,
+        tenantData: action.payload,
+        isTenantDataLoading: false,
       };
     default:
       return state;

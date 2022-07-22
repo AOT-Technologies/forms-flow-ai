@@ -7,8 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile
       args:
-        - NODE_ENV=${NODE_ENV:-development}
-        - GENERATE_SOURCEMAP=false
+        - NODE_ENV=${NODE_ENV:-production}
         - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE:-formsflow-client}
         - REACT_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE:-formsflow-reviewer}
         - REACT_APP_STAFF_DESIGNER_ROLE=${DESIGNER_ROLE:-formsflow-designer}
@@ -30,6 +29,8 @@ services:
         - REACT_APP_WEB_BASE_CUSTOM_URL=${WEB_BASE_CUSTOM_URL}
         - REACT_APP_FORMIO_JWT_SECRET=${FORMIO_JWT_SECRET:---- change me now ---}
         - REACT_APP_MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
+        - REACT_APP_MT_ADMIN_BASE_URL=${MT_ADMIN_BASE_URL}
+        - REACT_APP_MT_ADMIN_BASE_URL_VERSION=${MT_ADMIN_BASE_URL_VERSION}
     ports:
       - "3000:8080"
     tty: true

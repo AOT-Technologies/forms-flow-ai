@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.camunda.bpm</groupId>
-	<artifactId>extension</artifactId>
-	<version>2.0.0</version>
+	<groupId>org.camunda.bpm.extension</groupId>
+	<artifactId>formsflow-bpm</artifactId>
+	<version>5.0.0</version>
+	<packaging>pom</packaging>
 
 	<name>Forms flow BPM Extension</name>
 	<description>Forms flow BPM Extension</description>
 
 	<properties>
-		<version.java>11</version.java>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
+		<version.java>17</version.java>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
 		<encoding>UTF-8</encoding>
 		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
 		<project.build.resourceEncoding>${encoding}</project.build.resourceEncoding>
@@ -25,9 +26,9 @@
 		<version.camunda>7.17.0</version.camunda><!-- 7.15.0 - 7.17.0 -->
 		<version.camundaConnect>1.5.0</version.camundaConnect><!-- 1.5.0 -->
 		<version.camundaMail>1.3.0</version.camundaMail><!-- 1.3.0 -->
-		<version.springBoot>2.6.4</version.springBoot><!-- 2.4.2 - 2.4.8 -->
+		<version.springBoot>2.6.4</version.springBoot><!-- 2.4.8 - 2.6.4 -->
 		<version.springSecurityOauth2>2.6.4</version.springSecurityOauth2><!-- 
-			2.4.2 - 2.4.8 -->
+			2.4.8 - 2.6.4 -->
 		<version.jackson>2.13.2</version.jackson>
 	</properties>
 
@@ -299,6 +300,18 @@
 			<version>5.3.4</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js-scriptengine</artifactId>
+			<version>22.1.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js</artifactId>
+			<version>22.1.0.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<repositories>
@@ -321,12 +334,12 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
+				<version>3.0.0-M7</version>
 			</plugin>
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.7</version>
+				<version>0.8.8</version>
 				<configuration>
 					<outputDirectory>target/jacoco-ut</outputDirectory>
 					<excludes>
@@ -345,6 +358,18 @@
 						<exclude>org/camunda/bpm/extension/commons/connector/auth/FormioContext.class</exclude>
 						<exclude>org/camunda/bpm/extension/commons/connector/*.class</exclude>
 						<exclude>org/camunda/bpm/extension/CamundaApplication.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/utils/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/controllers/mapper/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/exceptions/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/listeners/execution/FormAccessTokenCacheListener.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/rest/exception/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/exceptions/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/commons/config/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/rest/constant/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/services/IMessageEvent.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/rest/dto/*.class</exclude>
+						<exclude>org/camunda/bpm/extension/hooks/rest/impl/*.class</exclude>
 					</excludes>
 				</configuration>
 				<executions>
@@ -361,6 +386,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>${version.springBoot}</version>
 				<configuration>
+					<mainClass>org.camunda.bpm.extension.CamundaApplication</mainClass>
 					<layout>ZIP</layout>
 				</configuration>
 				<executions>
@@ -385,37 +411,13 @@
 	<profiles>
 		<profile>
 			<id>default</id>
+			<modules>
+				<module>pom-default.xml</module>
+			</modules>
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
-			<dependencies>
-			</dependencies>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<version>3.0.0-M5</version>
-					</plugin>
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>0.8.7</version>
-						<configuration>
-							<outputDirectory>target/jacoco-ut</outputDirectory>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>prepare-agent</goal>
-									<goal>report</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
-
 	</profiles>
+
 </project>

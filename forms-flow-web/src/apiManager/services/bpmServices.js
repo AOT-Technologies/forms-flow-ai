@@ -4,11 +4,13 @@ import { httpPOSTRequest } from "../httpRequestHandler";
 
 /* istanbul ignore file */
 // eslint-disable-next-line no-unused-vars
-export const getProcessReq = (form, submissionId, action, user) => {
+import {getFormUrlWithFormIdSubmissionId} from "./formatterService";
+
+export const getProcessReq = (form, submissionId ) => {
   const requestFormat = {
     formId: form._id,
     submissionId: submissionId,
-    formUrl: `${window.location.origin}/form/${form._id}/submission/${submissionId}`,
+    formUrl: getFormUrlWithFormIdSubmissionId(form._id, submissionId)
   };
   return requestFormat;
 };
@@ -41,6 +43,7 @@ export const formatForms = (forms) => {
     };
   });
 };
+
 const dynamicSort = (property) => {
   let sortOrder = 1;
   if (property[0] === "-") {
@@ -86,7 +89,7 @@ export const deployBpmnDiagram = (data, token, isBearer = true) => {
       ? `Bearer ${token || UserService.getToken()}`
       : token,
   };
-  
+
   return httpPOSTRequest(API.DEPLOY_BPM, data, token, isBearer, headers);
 
 };

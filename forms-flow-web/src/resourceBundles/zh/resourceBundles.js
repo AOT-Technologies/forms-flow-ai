@@ -1,6 +1,7 @@
 /* eslint-disable max-len */
 export const RESOURCE_BUNDLES_ZH = {
-
+  "Please change the selected filters to view Forms":"请更改所选过滤器以查看表格",
+  "Search by form name":"按表格名称搜索",
   "Click to search":"点击搜索",
   "No submissions found":"未找到任何提交",
   "No submission avaliable in the selected date. Please select another date range":"在所选日期内没有可用的提交。请选择其他日期范围",
@@ -27,6 +28,7 @@ export const RESOURCE_BUNDLES_ZH = {
   "Error while Submission.": "提交时出错。",
   "Submission cannot be done.": "无法提交。 ",
   "Are you sure you wish to delete the form": "您确定要删除表格吗",
+  "Are you sure you wish to delete the form?":"您确定要删除表格吗?",
   "Forms": "表格  ",
   "Edit": "编辑",
 "Text Field": "文本域",
@@ -155,8 +157,9 @@ export const RESOURCE_BUNDLES_ZH = {
  "Modified Date": "修改日期",
   "File Upload Status": "文件上传状态",
   "Forms Completed": "完成的表格",
+  "Form Completed" : "表格完成",
   "No forms found": "没有找到表格",
-  "Powered by": "供电",
+  "Powered by ": "供电 ",
   "No Process Diagram found": "未找到流程图",
   "No applications found": "未找到任何应​​用程序",
   "Successfully Updated": "成功更新",
@@ -186,6 +189,7 @@ export const RESOURCE_BUNDLES_ZH = {
   "Loading...":"正在加载...",
   "Wizard":"向导",
   "Save Form":"保存表格",
+  "Confirm":"确认",
   "Cancel":"取消",
   "Please change the selected filters to view applications":"请更改所选过滤器以查看应用程序",
   "No submissions available for the selected date range":"所选日期范围内没有可用的提交",

@@ -76,7 +76,7 @@ const Insights = React.memo((props) => {
               </h1>
               <hr className="line-hr" />
               <div className="col-12">
-                <div className="app-title-container mt-3" data-testid="Insight">
+                <div className="app-title-container mt-3" data-testid="Insight" role="main">
                   <h3 className="insight-title" data-testid="Dashboard">
                     <i className="fa fa-bars mr-1" />{" "}
                     <Translation>{(t) => t("Dashboard")}</Translation>
@@ -84,6 +84,7 @@ const Insights = React.memo((props) => {
 
                   <div className="col-3 mb-2">
                     <Select
+                      aria-label="Select Dashboard"
                       options={dashboards}
                       onChange={setDashboardSelected}
                       placeholder={t("Select Dashboard")}

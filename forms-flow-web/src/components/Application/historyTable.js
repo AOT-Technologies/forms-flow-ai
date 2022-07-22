@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  getFormIdSubmissionIdFromURL,
   getFormUrl,
   getLocalDateTime,
 } from "../../apiManager/services/formatterService";
@@ -13,8 +12,8 @@ export const defaultSortedBy = [
   },
 ];
 
-const linkSubmision = (cell, row, redirectUrl) => {
-  const { formId, submissionId } = getFormIdSubmissionIdFromURL(cell);
+const linkSubmision = (row, redirectUrl) => {
+  const { formId, submissionId } = row;
   const url = getFormUrl(formId, submissionId, redirectUrl);
   return (
     <div title={url} onClick={() => window.open(url, "_blank")}>
@@ -52,16 +51,16 @@ export const columns_history = (redirectUrl) => [
     sort: true,
   },
   {
-    dataField: "formUrl",
+    dataField: "formId",
     text: <Translation>{(t) => t("Submissions")}</Translation>,
-    formatter: (cell, row) => linkSubmision(cell, row, redirectUrl),
+    formatter: (cell, row) => linkSubmision(row, redirectUrl),
   },
 ];
 const customTotal = (from, to, size) => (
-  <span className="react-bootstrap-table-pagination-total">
+  <span className="react-bootstrap-table-pagination-total" role="main">
     <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
     <Translation>{(t) => t("to")}</Translation> {to}{" "}
-    <Translation>{(t) => t("of")}</Translation> {size} Results
+    <Translation>{(t) => t("of")}</Translation> {size} <Translation>{(t) => t("Results")}</Translation>
   </span>
 );
 

@@ -23,6 +23,26 @@ export const httpGETRequest = (
   });
 };
 
+export const httpGETBlobRequest = (
+  url,
+  data,
+  token,
+  isBearer = true,
+  headers = null
+) => {
+  return axios.get(url, {
+    params: data,
+    responseType: "blob",
+    headers: !headers
+      ? {
+          Authorization: isBearer
+            ? `Bearer ${token || UserService.getToken()}`
+            : token,
+        }
+      : headers,
+  });
+};
+
 export const httpPOSTRequest = (url, data, token, isBearer = true, headers = null) => {
   return axios.post(url, data, {
     headers: !headers
@@ -81,7 +101,7 @@ export const httpDELETERequest = (url, token, isBearer = true) => {
 };
 
 /*export const httpPUTRequest = (url, data, token, isBearer=true) => {
-  return axios.put(url, data, 
+  return axios.put(url, data,
     { headers: { Authorization: isBearer ?`Bearer ${ token || UserService.getToken()}`: token } });
 };*/
 

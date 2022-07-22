@@ -34,6 +34,7 @@ it("should render the Baserouting component without breaking", async () => {
     user: {
       isAuthenticated: true,
       roles: ["formsflow-client"],
+      selectLanguages: [{ name: "en", value: "English" }],
     },
   });
   store.dispatch = jest.fn();

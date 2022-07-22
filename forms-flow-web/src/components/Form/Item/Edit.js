@@ -24,7 +24,7 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import { clearFormError } from "../../../actions/formActions";
-import { addTenankeyToPath } from "../../../helper/helper";
+import { addTenankey, removeTenantKey } from "../../../helper/helper";
 const reducer = (form, { type, value }) => {
   const formCopy = _cloneDeep(form);
   switch (type) {
@@ -77,16 +77,23 @@ const Edit = React.memo(() => {
   };
 
   //remove tenatkey form path name
-  useEffect(()=>{
-    if(form.path && MULTITENANCY_ENABLED){
-      let newFormPath = form.path.split('-');
-      let tenantId = newFormPath.shift();
-      if(tenantId === tenantKey){
-        newFormPath = newFormPath.join("-");
-        dispatchFormAction({type:'path',value:newFormPath});
+  useEffect(() => {
+    if (form.path && MULTITENANCY_ENABLED) {
+      const newPath = removeTenantKey(form.path, tenantKey);
+      if (newPath) {
+        dispatchFormAction({ type: "path", value: newPath });
       }
     }
-  },[form.path]);
+  }, [form.path]);
+  // remove tenant key from form name
+  useEffect(() => {
+    if (form.name && MULTITENANCY_ENABLED) {
+      const newName = removeTenantKey(form.name, tenantKey);
+      if (newName) {
+        dispatchFormAction({ type: "name", value: newName });
+      }
+    }
+  }, [form.name]);
 
   // setting the form data
   useEffect(() => {
@@ -101,7 +108,8 @@ const Edit = React.memo(() => {
 
   // set the anonymous value
   const changeAnonymous = (setvalue) => {
-    let latestValue = setvalue || !processListData.anonymous;
+    let latestValue =
+      setvalue !== undefined ? setvalue : !processListData.anonymous;
     let newData = {
       ...processListData,
       anonymous: latestValue,
@@ -113,9 +121,13 @@ const Edit = React.memo(() => {
   useEffect(() => {
     FORM_ACCESS.forEach((role) => {
       if (processListData.anonymous) {
-        role.roles.push(ANONYMOUS_ID);
+        if (role.type === "read_all") {
+          role.roles.push(ANONYMOUS_ID);
+        }
       } else {
-        role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+        if (role.type === "read_all") {
+          role.roles = role.roles.filter((id) => id !== ANONYMOUS_ID);
+        }
       }
     });
 
@@ -159,7 +171,12 @@ const Edit = React.memo(() => {
     newFormData.submissionAccess = SUBMISSION_ACCESS;
     newFormData.access = FORM_ACCESS;
     if (MULTITENANCY_ENABLED && tenantKey) {
-      newFormData.path = addTenankeyToPath(newFormData.path,tenantKey);
+      if (newFormData.path) {
+        newFormData.path = addTenankey(newFormData.path, tenantKey);
+      }
+      if (newFormData.name) {
+        newFormData.name = addTenankey(newFormData.name, tenantKey);
+      }
     }
     dispatch(
       saveForm("form", newFormData, (err, submittedData) => {
@@ -208,13 +225,28 @@ const Edit = React.memo(() => {
     );
   };
 
+  // information about tenant key adding
+
+  const addingTenantKeyInformation = (type) => {
+    if (MULTITENANCY_ENABLED) {
+      return (
+        <span className="ml-1">
+          <i
+            className="fa fa-info-circle text-primary cursor-pointer"
+            data-toggle="tooltip"
+            title={`By default, the tenant key would be prefixed to form ${type}`}
+          ></i>
+        </span>
+      );
+    }
+  };
+
   // setting the main option details to the formdata
   const handleChange = (path, event) => {
     const { target } = event;
     const value = target.type === "checkbox" ? target.checked : target.value;
 
-      dispatchFormAction({ type: path, value });
-    
+    dispatchFormAction({ type: path, value });
   };
 
   const formChange = (newForm) =>
@@ -311,15 +343,30 @@ const Edit = React.memo(() => {
             <div id="form-group-name" className="form-group">
               <label htmlFor="name" className="control-label field-required">
                 <Translation>{(t) => t("Name")}</Translation>
+                {addingTenantKeyInformation("name")}
               </label>
-              <input
-                type="text"
-                className="form-control"
-                id="name"
-                placeholder="Enter the form machine name"
-                value={form.name || ""}
-                onChange={(event) => handleChange("name", event)}
-              />
+              <div className="input-group mb-2">
+                {MULTITENANCY_ENABLED && tenantKey ? (
+                  <div className="input-group-prepend">
+                    <div
+                      className="input-group-text"
+                      style={{ maxWidth: "150px" }}
+                    >
+                      <span className="text-truncate">{tenantKey}</span>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
+                <input
+                  type="text"
+                  className="form-control"
+                  id="name"
+                  placeholder="Enter the form machine name"
+                  value={form.name || ""}
+                  onChange={(event) => handleChange("name", event)}
+                />
+              </div>
             </div>
           </div>
           <div className="col-lg-4 col-md-3 col-sm-3">
@@ -372,15 +419,28 @@ const Edit = React.memo(() => {
             <div id="form-group-path" className="form-group">
               <label htmlFor="path" className="control-label field-required">
                 <Translation>{(t) => t("Path")}</Translation>
+                {addingTenantKeyInformation("path")}
               </label>
-              <div className="input-group">
+              <div className="input-group mb-2">
+                {MULTITENANCY_ENABLED && tenantKey ? (
+                  <div className="input-group-prepend">
+                    <div
+                      className="input-group-text"
+                      style={{ maxWidth: "150px" }}
+                    >
+                      <span className="text-truncate">{tenantKey}</span>
+                    </div>
+                  </div>
+                ) : (
+                  ""
+                )}
                 <input
                   type="text"
                   className="form-control"
                   id="path"
                   placeholder="example"
                   style={{ textTransform: "lowercase", width: "120px" }}
-                  value={ form.path || ""}
+                  value={form.path || ""}
                   onChange={(event) => handleChange("path", event)}
                 />
               </div>

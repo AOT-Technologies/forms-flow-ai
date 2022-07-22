@@ -1,5 +1,5 @@
 /* eslint-disable max-len */
-import { WEB_BASE_URL, BPM_BASE_URL } from "./config";
+import {WEB_BASE_URL, BPM_BASE_URL, MT_ADMIN_BASE_URL, MT_ADMIN_BASE_URL_VERSION, BPM_BASE_URL_EXT} from "./config";
 import { AppConfig } from "../../config";
 
 const API = {
@@ -14,11 +14,10 @@ const API = {
   GET_ALL_APPLICATIONS_FROM_FORM_ID: `${WEB_BASE_URL}/application/formid`,
   GET_ALL_APPLICATIONS: `${WEB_BASE_URL}/application`,
   GET_ALL_APPLICATIONS_STATUS: `${WEB_BASE_URL}/application/status/list`,
-  PROCESSES: `${WEB_BASE_URL}/process`,
-  PROCESSES_XML: `${BPM_BASE_URL}/process-definition/key/<process_key>/xml`,
-  PROCESSES_XML_PER_TENANT: `${BPM_BASE_URL}/process-definition/key/<process_key>/tenant-id/<tenant_key>/xml`,
-  PROCESS_ACTIVITIES: `${BPM_BASE_URL}/process-instance/<process_instance_id>/activity-instances`,
+  PROCESSES_XML: `${BPM_BASE_URL_EXT}/v1/process-definition/key/<process_key>/xml`,
+  PROCESS_ACTIVITIES: `${BPM_BASE_URL_EXT}/v1/process-instance/<process_instance_id>/activity-instances`,
   FORM: `${WEB_BASE_URL}/form`,
+  FORM_CREATION: `${WEB_BASE_URL}/form/form-create`,
   LANG_UPDATE: `${WEB_BASE_URL}/user/locale`,
   FORM_PROCESSES: `${WEB_BASE_URL}/form/formid`,
   APPLICATION_EVENT_UPDATE: `${BPM_BASE_URL}/message`,
@@ -27,7 +26,7 @@ const API = {
   GET_BPM_TASK_VARIABLES: `${BPM_BASE_URL}/task/<task_id>/variables`,
   CLAIM_BPM_TASK: `${BPM_BASE_URL}/task/<task_id>/claim`,
   UNCLAIM_BPM_TASK: `${BPM_BASE_URL}/task/<task_id>/unclaim`,
-  GET_BPM_PROCESS_LIST: `${BPM_BASE_URL}/process-definition`,
+  GET_BPM_PROCESS_LIST: `${BPM_BASE_URL_EXT}/v1/process-definition`,
   GET_BPM_USER_LIST: `${BPM_BASE_URL}/user`,
   GET_BPM_FILTERS: `${BPM_BASE_URL}/filter`,
   GET_BPM_TASK_LIST_WITH_FILTER: `${BPM_BASE_URL}/filter/<filter_id>/list`,
@@ -43,6 +42,8 @@ const API = {
   GET_FORM_COUNT: `${WEB_BASE_URL}/form/<mapper id>/application/count`,
   UNPUBLISH_FORMS: `${WEB_BASE_URL}/form/<mapper id>`,
   DEPLOY_BPM: `${BPM_BASE_URL}/deployment/create`,
+  GET_TENANT_DATA: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenant`,
+  EXPORT_FORM_PDF: `${WEB_BASE_URL}/form/<form_id>/submission/<submission_id>/export/pdf`,
 };
 
 export default API;

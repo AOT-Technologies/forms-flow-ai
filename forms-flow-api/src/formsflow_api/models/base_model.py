@@ -76,3 +76,8 @@ class BaseModel:
             # Corresponding to model.column_name apply operator with specific value
             filt = getattr(column, attr)(value)
             return filt
+
+    @staticmethod
+    def execute(statement):
+        """Execute the given statement, need to commit manually."""
+        db.session.execute(statement)

@@ -27,6 +27,47 @@ class ApplicationService:
     """This class manages application service."""
 
     @staticmethod
+    def get_start_task_payload(
+        application: Application, mapper: FormProcessMapper, form_url: str
+    ) -> Dict:
+        """Returns the payload for initiating the task."""
+        return {
+            "variables": {
+                "applicationId": {"value": application.id},
+                "formUrl": {"value": form_url},
+                "formName": {"value": mapper.form_name},
+                "submitterName": {"value": application.created_by},
+                "submissionDate": {"value": str(application.created)},
+                "tenantKey": {"value": mapper.tenant},
+            }
+        }
+
+    @staticmethod
+    def start_task(
+        mapper: FormProcessMapper, payload: Dict, token: str, application: Application
+    ) -> None:
+        """Trigger bpmn workflow to create a task."""
+        try:
+            if mapper.process_tenant:
+                camunda_start_task = BPMService.post_process_start_tenant(
+                    process_key=mapper.process_key,
+                    payload=payload,
+                    token=token,
+                    tenant_key=mapper.process_tenant,
+                )
+            else:
+                camunda_start_task = BPMService.post_process_start(
+                    process_key=mapper.process_key, payload=payload, token=token
+                )
+            application.update({"process_instance_id": camunda_start_task["id"]})
+        except TypeError as camunda_error:
+            response = {
+                "message": "Camunda workflow not able to create a task",
+                "error": camunda_error,
+            }
+            current_app.logger.critical(response)
+
+    @staticmethod
     @user_context
     def create_application(data, token, **kwargs):
         """Create new application."""
@@ -52,35 +93,11 @@ class ApplicationService:
             application.update({"process_instance_id": data["process_instance_id"]})
         # In normal cases, it's through this else case task is being created
         else:
-            payload = {
-                "variables": {
-                    "applicationId": {"value": application.id},
-                    "formUrl": {"value": data["form_url"]},
-                    "formName": {"value": mapper.form_name},
-                    "submitterName": {"value": application.created_by},
-                    "submissionDate": {"value": str(application.created)},
-                    "tenantKey": {"value": mapper.tenant},
-                }
-            }
-            try:
-                if mapper.process_tenant:
-                    camunda_start_task = BPMService.post_process_start_tenant(
-                        process_key=mapper.process_key,
-                        payload=payload,
-                        token=token,
-                        tenant_key=mapper.process_tenant,
-                    )
-                else:
-                    camunda_start_task = BPMService.post_process_start(
-                        process_key=mapper.process_key, payload=payload, token=token
-                    )
-                application.update({"process_instance_id": camunda_start_task["id"]})
-            except TypeError as camunda_error:
-                response = {
-                    "message": "Camunda workflow not able to create a task",
-                    "error": camunda_error,
-                }
-                current_app.logger.critical(response)
+            form_url = data["form_url"]
+            payload = ApplicationService.get_start_task_payload(
+                application, mapper, form_url
+            )
+            ApplicationService.start_task(mapper, payload, token, application)
         return application, HTTPStatus.CREATED
 
     @staticmethod

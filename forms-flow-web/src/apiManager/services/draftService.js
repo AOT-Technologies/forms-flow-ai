@@ -1,7 +1,7 @@
 import {
   httpPOSTRequest,
   httpPUTRequest,
-  httpPUTRequestWithoutToken
+  httpPUTRequestWithoutToken,
 } from "../httpRequestHandler";
 import API from "../endpoints";
 import { replaceUrl } from "../../helper/helper";
@@ -14,17 +14,13 @@ export const draftCreate = (data, ...rest) => {
     httpPOSTRequest(URL, data)
       .then((res) => {
         if (res.data) {
-          console.log("Draft created", res.data);
           dispatch(setDraftSubmission(res.data));
           done(null, res.data);
         } else {
-          console.log("Error creating draft", res);
           done("Error Posting data");
         }
       })
       .catch((error) => {
-        console.log("Error creating draft caught", error);
-
         done(error);
       });
   };

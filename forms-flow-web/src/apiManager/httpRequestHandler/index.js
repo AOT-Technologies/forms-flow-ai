@@ -43,13 +43,15 @@ export const httpGETBlobRequest = (
   });
 };
 
-export const httpPOSTRequest = (url, data, token, isBearer = true) => {
+export const httpPOSTRequest = (url, data, token, isBearer = true, headers = null) => {
   return axios.post(url, data, {
-    headers: {
-      Authorization: isBearer
-        ? `Bearer ${token || UserService.getToken()}`
-        : token,
-    },
+    headers: !headers
+      ? {
+          Authorization: isBearer
+            ? `Bearer ${token || UserService.getToken()}`
+            : token,
+        }
+      : headers,
   });
 };
 
@@ -99,7 +101,7 @@ export const httpDELETERequest = (url, token, isBearer = true) => {
 };
 
 /*export const httpPUTRequest = (url, data, token, isBearer=true) => {
-  return axios.put(url, data, 
+  return axios.put(url, data,
     { headers: { Authorization: isBearer ?`Bearer ${ token || UserService.getToken()}`: token } });
 };*/
 

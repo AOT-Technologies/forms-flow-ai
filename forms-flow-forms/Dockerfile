@@ -5,6 +5,7 @@
 # Use Node image, maintained by Docker:
 # hub.docker.com/r/_/node/
 FROM node:lts-alpine3.10
+ARG MAKEFLAGS=-j12
 
 # set working directory
 WORKDIR /forms-flow-forms/app

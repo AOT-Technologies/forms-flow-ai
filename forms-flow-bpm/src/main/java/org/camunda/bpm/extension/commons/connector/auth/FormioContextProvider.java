@@ -52,6 +52,7 @@ public class FormioContextProvider {
         paramMap.put("password", formioConfiguration.getPassword());
         Map<String, Map<String,String>> dataMap = new HashMap<>();
         dataMap.put("data", paramMap);
+        System.out.println(formioConfiguration.getAccessTokenUri());
 
         try{
             String token = webClient.post().uri(formioConfiguration.getAccessTokenUri())

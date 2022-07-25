@@ -36,9 +36,15 @@ formsflow.ai:
   formio:
     url: ${FORMIO_URL}
     security:
-      accessTokenUri: ${FORMIO_URL}/user/login
-      username: ${FORMIO_ROOT_EMAIL}
-      password: ${FORMIO_ROOT_PASSWORD}
+      # accessTokenUri: ${FORMIO_URL}/user/login
+      # username: ${FORMIO_ROOT_EMAIL}
+      # password: ${FORMIO_ROOT_PASSWORD}
+      # accessTokenUri: "http://forms.dark:3001/user/login"
+      # username: "admin@example.com" 
+      # password: "admin"
+      accessTokenUri: "http://forms-dev.everblue:3001/user/login"
+      username: "admin@example.com" 
+      password: "admin"
   camunda:
     spring:
       webclient:
@@ -106,11 +112,11 @@ server:
   servlet.context-path: /camunda
   session:
     cookie:
-      secure: false
+      secure: true
 
 # Camunda Rest API
 rest.security:
-  enabled: false
+  enabled: true
   provider: keycloak
   required-audience: camunda-rest-api
 

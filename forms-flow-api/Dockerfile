@@ -1,4 +1,5 @@
 #Author: Kurian Benoy
+ARG MAKEFLAGS=-j12
 FROM python:3.9-slim-buster
 
 WORKDIR /forms-flow-api/app

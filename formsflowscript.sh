@@ -8,7 +8,9 @@ fi
 
 email=$1
 password=$2
-host=http://forms:3001
+# host=http://forms-dev.everblue:3001
+# host=http://forms.dark:3001
+host=http://localhost:3001
 
 response=$(curl  -s -D - -o /dev/null "$host"/user/login -H 'Content-Type: application/json' --data '{"data": {"email" : "'$email'","password": "'$password'"}}'  | grep ^x-jwt-token*)
 token=${response:13}
@@ -64,3 +66,4 @@ do
 	echo "${role[$i]}"   -           "${id[$i]}"
 done
 echo -------------------------------------------
+

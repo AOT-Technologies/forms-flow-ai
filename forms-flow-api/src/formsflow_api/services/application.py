@@ -46,6 +46,7 @@ class ApplicationService:
                     "submissionDate": {"value": application.created.__str__()},
                 }
             }
+            print(payload)
             try:
                 camunda_start_task = BPMService.post_process_start(
                     process_key=mapper.process_key, payload=payload, token=token

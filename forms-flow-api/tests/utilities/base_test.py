@@ -468,4 +468,8 @@ def get_formio_form_request_payload():
 
 def get_formio_roles():
     """Return formio role id representation."""
-    return [{"id": 1, "role": "formsflowClient"}]
+    return [
+        {"roleId": 1, "type": "CLIENT"},
+        {"roleId": 2, "type": "REVIEWER"},
+        {"roleId": 3, "type": "DESIGNER"},
+    ]

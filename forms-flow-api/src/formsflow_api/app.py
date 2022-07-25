@@ -6,6 +6,7 @@ import json
 import logging
 import os
 from http import HTTPStatus
+from typing import Dict
 
 from flask import Flask, current_app, g, request
 from flask.logging import default_handler
@@ -142,10 +143,7 @@ def collect_role_ids(app):
         service = FormioService()
         app.logger.info("Establishing new connection to formio...")
         role_ids = FormioRoleSchema().load(service.get_role_ids(), many=True)
-        roles_enum = [item.value for item in FormioRoles]
-        role_ids_filtered = list(
-            filter(lambda item: item["role"] in roles_enum, role_ids)
-        )
+        role_ids_filtered = list(filter(None, map(standardization_fn, role_ids)))
         # Cache will be having infinite expiry
         if role_ids:
             cache.set(
@@ -175,3 +173,11 @@ def collect_user_resource_ids(app):
             app.logger.info("User resource ids saved to cache successfully.")
     except Exception as err:  # pylint: disable=broad-except
         app.logger.error(err)
+
+
+def standardization_fn(item: Dict) -> Dict or None:
+    """Updates the type value to enum key for standardization."""
+    if FormioRoles.contains(item["type"]):
+        item["type"] = FormioRoles(item["type"]).name
+        return item
+    return None

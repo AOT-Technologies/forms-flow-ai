@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Loading from "../../../containers/Loading";
 import ProcessDiagram from "../../BPMN/ProcessDiagramHook";
 import {
-  getFormIdSubmissionIdFromURL,
+  getFormIdSubmissionIdFromURL, getFormUrlWithFormIdSubmissionId,
   getProcessDataObjectFromList,
 } from "../../../apiManager/services/formatterService";
 import History from "../../Application/ApplicationHistory";
@@ -172,10 +172,12 @@ const ServiceFlowTaskDetails = React.memo(() => {
   const onFormSubmitCallback = (actionType = "") => {
     if (bpmTaskId) {
       dispatch(setBPMTaskDetailLoader(true));
+      const { formId, submissionId } = getFormIdSubmissionIdFromURL(task?.formUrl);
+      const formUrl = getFormUrlWithFormIdSubmissionId(formId, submissionId);
       dispatch(
         onBPMTaskFormSubmit(
           bpmTaskId,
-          getTaskSubmitFormReq(task?.formUrl, task?.applicationId, actionType),
+          getTaskSubmitFormReq(formUrl, task?.applicationId, actionType),
           (err) => {
             if (!err) {
               reloadTasks();

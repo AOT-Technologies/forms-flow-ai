@@ -56,8 +56,8 @@ const View = React.memo((props) => {
   const publicFormStatus = useSelector(
     (state) => state.formDelete.publicFormStatus
   );
-  
-  const isPublic = !props.isAuthenticated; 
+
+  const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
@@ -233,7 +233,7 @@ const doProcessActions = (submission, ownProps,) => {
     const data = getProcessReq(form, submission._id, "new", user);
     const tenantKey = getState().tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
-    
+
     if (!IsAuth) {
       // this is for anonymous
       dispatch(

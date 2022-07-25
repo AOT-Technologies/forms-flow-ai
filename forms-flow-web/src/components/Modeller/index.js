@@ -104,19 +104,28 @@ export default React.memo(() => {
                   />
                 </Grid>
 
-                <Button className="btn-create-new" onClick={() => handleCreateNew()}>Create New</Button>
-                
-                <div className="import-container">
+                <div className="create-import-container">
+
                   <span className="fontsize-16">
-                    {t("Or import a workflow from a local directory.")}
+                    {t("Or create new workflow or import a workflow from a local directory.")}
                   </span>
-                  <br/>
-                  <input 
-                    id="inputWorkflow"
-                    type="file" 
-                    accept=".bpmn" 
-                    onChange={e => handleChangeFile(e.target.files[0])} 
-                  />
+
+                  <div className="create-import-btns-container">
+
+                    <Button className="btn-create-new" onClick={() => handleCreateNew()}>Create New</Button>
+
+                    <span className="fontsize-16 or-txt">
+                    {t(" ")}
+                    </span>
+                    
+                    <input 
+                        id="inputWorkflow"
+                        type="file" 
+                        accept=".bpmn" 
+                        onChange={e => handleChangeFile(e.target.files[0])} 
+                      />
+
+                  </div>
                 </div>
 
                 {(processList.length && workflow?.value) || showModeller ? (

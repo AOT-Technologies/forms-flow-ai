@@ -43,7 +43,7 @@ import {
   ERROR_MSG
 } from "./constants/bpmnModellerConstants";
 
-//import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
 
 const EditModel = React.memo(
   ({ processKey, processInstanceId, tenant }) => {
@@ -146,7 +146,8 @@ const EditModel = React.memo(
       // Deployment Source
       form.append('deployment-source', 'Camunda Modeler');
       // Tenant ID
-      if (tenant) {
+      var isApplyAllTenants = document.getElementById("apply-all-tenant-checkbox").checked;
+      if (tenant && isApplyAllTenants) {
         form.append('tenant-id', tenant);
       }
       // Make sure that we do not re-deploy already existing deployment
@@ -293,14 +294,16 @@ const EditModel = React.memo(
         </div>
 
         <div className="deploy-container">
+          {/*
+            TODO: Implement multi-tenancy
+            {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" id="apply-all-tenant-checkbox"/>  Apply for all tenants</label> : null}
+          */}
+          {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" id="apply-all-tenant-checkbox"/>  Apply for all tenants</label> : null}
+
           <Button onClick={exportDiagram}>
             Deploy
           </Button>
-          {/*
-            TODO: Implement multi-tenancy
-            {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" />  public / multi-tenancy</label> : null}
-          */}
-          <label className="deploy-checkbox"><input type="checkbox" />  public / multi-tenancy</label>
+          
         </div>
 
       </>

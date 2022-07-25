@@ -20,6 +20,8 @@ import SubmissionError from "../../../../../containers/SubmissionError";
 import { getUserRolePermission } from "../../../../../helper/user";
 import {
   CLIENT,
+  CUSTOM_SUBMISSION_URL,
+  CUSTOM_SUBMISSION_ENABLE,
   MULTITENANCY_ENABLED,
 } from "../../../../../constants/constants";
 import {
@@ -32,6 +34,7 @@ import { updateApplicationEvent } from "../../../../../apiManager/services/appli
 import LoadingOverlay from "react-loading-overlay";
 import { toast } from "react-toastify";
 import { Translation, useTranslation } from "react-i18next";
+import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
 
 const Edit = React.memo((props) => {
   const { t } = useTranslation();
@@ -62,6 +65,7 @@ const Edit = React.memo((props) => {
     (state) => state.formDelete.isFormSubmissionLoading
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
+  const customSubmission = useSelector((state)=>state.formDelete.customSubmission);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   useEffect(() => {
     if (applicationStatus && !onFormSubmit) {
@@ -80,11 +84,17 @@ const Edit = React.memo((props) => {
     formId,
     onFormSubmit,
   ]);
+  let updatedSubmission ;
+  if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
+    updatedSubmission = customSubmission;
+  }else{
+    updatedSubmission = submission;
+  }
 
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
     return <Loading />;
   }
-
+  
   return (
     <div className="container">
       <div className="main-header">
@@ -105,7 +115,7 @@ const Edit = React.memo((props) => {
         <div className="ml-4 mr-4">
           <Form
             form={form}
-            submission={submission}
+            submission={updatedSubmission}
             url={url}
             hideComponents={hideComponents}
             onSubmit={(submission) =>
@@ -167,73 +177,79 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       redirectUrl
     ) => {
       dispatch(setFormSubmissionLoading(true));
-      dispatch(
-        saveSubmission(
-          "submission",
-          submission,
-          onFormSubmit ? formId : ownProps.match.params.formId,
-          (err, submission) => {
-            if (!err) {
-              if (
-                UPDATE_EVENT_STATUS.includes(
-                  applicationDetail.applicationStatus
-                )
-              ) {
-                const data = getProcessDataReq(applicationDetail);
-                dispatch(
-                  updateApplicationEvent(data, () => {
-                    dispatch(resetSubmissions("submission"));
-                    dispatch(setFormSubmissionLoading(false));
-                    if (onFormSubmit) {
-                      onFormSubmit();
-                    } else {
-                      toast.success(
-                        <Translation>
-                          {(t) => t("Submission Saved")}
-                        </Translation>
-                      );
-                      dispatch(
-                        push(
-                          // eslint-disable-next-line max-len
-                          `${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}`
-                        )
-                      );
-                    }
-                  })
-                );
-              } else {
+      const callBack =   (err, submission) => {
+        if (!err) {
+          if (
+            UPDATE_EVENT_STATUS.includes(
+              applicationDetail.applicationStatus
+            )
+          ) {
+            const data = getProcessDataReq(applicationDetail);
+            dispatch(
+              updateApplicationEvent(data, () => {
                 dispatch(resetSubmissions("submission"));
                 dispatch(setFormSubmissionLoading(false));
                 if (onFormSubmit) {
                   onFormSubmit();
                 } else {
                   toast.success(
-                    <Translation>{(t) => t("Submission Saved")}</Translation>
+                    <Translation>
+                      {(t) => t("Submission Saved")}
+                    </Translation>
                   );
                   dispatch(
                     push(
                       // eslint-disable-next-line max-len
-                      `${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}/edit`
+                      `${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}`
                     )
                   );
                 }
-              }
+              })
+            );
+          } else {
+            dispatch(resetSubmissions("submission"));
+            dispatch(setFormSubmissionLoading(false));
+            if (onFormSubmit) {
+              onFormSubmit();
             } else {
-              dispatch(setFormSubmissionLoading(false));
-              const ErrorDetails = {
-                modalOpen: true,
-                message: (
-                  <Translation>
-                    {(t) => t("Submission cannot be done.")}
-                  </Translation>
-                ),
-              };
-              toast.error(
-                <Translation>{(t) => t("Error while Submission.")}</Translation>
+              toast.success(
+                <Translation>{(t) => t("Submission Saved")}</Translation>
               );
-              dispatch(setFormSubmissionError(ErrorDetails));
+              dispatch(
+                push(
+                  // eslint-disable-next-line max-len
+                  `${redirectUrl}form/${ownProps.match.params.formId}/submission/${submission._id}/edit`
+                )
+              );
             }
           }
+        } else {
+          dispatch(setFormSubmissionLoading(false));
+          const ErrorDetails = {
+            modalOpen: true,
+            message: (
+              <Translation>
+                {(t) => t("Submission cannot be done.")}
+              </Translation>
+            ),
+          };
+          toast.error(
+            <Translation>{(t) => t("Error while Submission.")}</Translation>
+          );
+          dispatch(setFormSubmissionError(ErrorDetails));
+        }
+      };
+      if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
+        updateCustomSubmission(submission,
+          onFormSubmit ? formId : ownProps.match.params.formId,
+          callBack);
+      }
+      dispatch(
+        saveSubmission(
+          "submission",
+          submission,
+          onFormSubmit ? formId : ownProps.match.params.formId,
+          callBack
         )
       );
     },

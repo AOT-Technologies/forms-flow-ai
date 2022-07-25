@@ -10,6 +10,7 @@ import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
+import org.springframework.beans.factory.annotation.Value;
 
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.FormElement;
@@ -25,8 +26,7 @@ import javax.annotation.Resource;
 import javax.inject.Named;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 /**
@@ -44,6 +44,8 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
     private ObjectMapper bpmObjectMapper;
     @Autowired
     private HTTPServiceInvoker httpServiceInvoker;
+    @Autowired
+    private Properties integrationCredentialProperties;
 
     @Override
     public void notify(DelegateExecution execution) {
@@ -65,10 +67,17 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
 
     private void patchFormAttributes(DelegateExecution execution) throws IOException {
         String  formUrl= MapUtils.getString(execution.getVariables(),FORM_URL, null);
+        ResponseEntity<String> response = null;
+        Boolean enableCustomSubmission = Boolean.valueOf(integrationCredentialProperties.getProperty("forms.enableCustomSubmission"));
+
         if(StringUtils.isBlank(formUrl)) {
             LOGGER.error("Unable to read submission for Empty Url string");
         } else {
-            ResponseEntity<String> response = httpServiceInvoker.execute(getUrl(execution), HttpMethod.PATCH, getModifiedFormElements(execution));
+            if (enableCustomSubmission){
+                response = httpServiceInvoker.execute(getUrl(execution), HttpMethod.PATCH, getModifiedFormElementsCustomSubmission(execution));        
+            } else{
+               response = httpServiceInvoker.execute(getUrl(execution), HttpMethod.PATCH, getModifiedFormElements(execution));
+            }
             if (response.getStatusCodeValue() != HttpStatus.OK.value()) {
                 throw new FormioServiceException("Unable to get patch values for: " + formUrl + ". Message Body: " +
                         response.getBody());
@@ -90,6 +99,18 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
         }
 
         return elements;
+    }
+
+    private  Map<String, Map<String,String>> getModifiedFormElementsCustomSubmission(DelegateExecution execution) throws IOException {
+        Map<String,String> paramMap = new HashMap<>();
+        Map<String, Map<String,String>> dataMap = new HashMap<>();
+        List<String> injectableFields =  this.fields != null && this.fields.getValue(execution) != null ?
+                bpmObjectMapper.readValue(String.valueOf(this.fields.getValue(execution)),List.class): null;
+        for(String entry: injectableFields) {
+            paramMap.put(entry, String.valueOf(execution.getVariable(entry)));
+        }
+        dataMap.put("data", paramMap);
+        return dataMap;
     }
 
 

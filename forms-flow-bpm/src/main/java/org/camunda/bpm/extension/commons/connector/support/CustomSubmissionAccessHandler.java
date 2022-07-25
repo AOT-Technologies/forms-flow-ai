@@ -83,6 +83,6 @@ public class CustomSubmissionAccessHandler extends AbstractAccessHandler {
         if(StringUtils.contains(url,"/form/")) {
             return integrationCredentialProperties.getProperty("forms.custom_submission.url") + "/form/" + StringUtils.substringAfter(url, "/form/");
         }
-        return integrationCredentialProperties.getProperty("forms.custom_submission.url") +"/"+ StringUtils.substringAfterLast(url, "/");
+        return url;
     }
 }

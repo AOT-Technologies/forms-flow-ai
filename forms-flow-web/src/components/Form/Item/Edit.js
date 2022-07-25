@@ -58,9 +58,9 @@ const Edit = React.memo(() => {
     (state) => state.process.applicationCount
   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const formAccess = useSelector((state) => state.user?.formAccess);
-  const roleIds = useSelector((state) => state.user?.roleIds);
-  const submissionAccess = useSelector((state) => state.user?.submissionAccess);
+  const formAccess = useSelector((state) => state.user?.formAccess || []);
+  const roleIds = useSelector((state) => state.user?.roleIds || {});
+  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const saveText = <Translation>{(t) => t("Save Form")}</Translation>;
   const lang = useSelector((state) => state.user.lang);

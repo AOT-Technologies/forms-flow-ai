@@ -56,10 +56,10 @@ const Create = React.memo(() => {
   const errors = useSelector((state) => state.form.error);
   const lang = useSelector((state) => state.user.lang);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
-  const formAccess = useSelector((state) => state.user?.formAccess);
-  const roleIds = useSelector((state) => state.user?.roleIds);
+  const formAccess = useSelector((state) => state.user?.formAccess || []) ;
+  const roleIds = useSelector((state) => state.user?.roleIds || {}) ;
 
-  const submissionAccess = useSelector((state) => state.user?.submissionAccess);
+  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []) ;
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   const { t } = useTranslation();

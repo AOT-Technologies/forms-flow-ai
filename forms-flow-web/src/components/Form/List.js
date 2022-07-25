@@ -98,9 +98,9 @@ const List = React.memo((props) => {
   const designerPage = forms.pagination.page;
   const designerLimit = forms.limit;
   const designTotalForms = forms.pagination.total;
-  const formAccess = useSelector((state) => state.user?.formAccess);
+  const formAccess = useSelector((state) => state.user?.formAccess || []);
 
-  const submissionAccess = useSelector((state) => state.user?.submissionAccess);
+  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
 
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading

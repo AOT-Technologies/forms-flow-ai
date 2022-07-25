@@ -3,13 +3,16 @@
 .dashboard {
   background: $white;
   margin-top: 10px;
+
   & .line-hr {
     border-top: 1px solid $light-blue;
   }
+
   & .card-counter {
     width: 100%;
     margin: 25px 0px;
     transition: 1s;
+
     & .white-box {
       background: $white;
       border: 1px solid $light-blue;
@@ -17,65 +20,80 @@
       margin-bottom: 30px;
       font-size: larger;
       cursor: pointer;
-      &.active,&:hover{
-        background-color:  $dark-blue !important;
+
+      &.active,
+      &:hover {
+        background-color: $dark-blue  !important;
         color: $white;
+
         & .small-title {
           font-size: 16px;
           color: $white;
         }
       }
+
       & .box-title {
         margin: 0 0 12px;
         text-transform: uppercase;
         font-size: 18px;
         font-weight: bold;
       }
+
       & .two-part {
         display: flex;
         justify-content: space-between;
         font-size: 16px;
         font-weight: normal;
+
         & .counter {
           font-size: 38px;
         }
       }
     }
-    
+
   }
+
   & .progress {
     height: 12px;
   }
+
   & .progress-bar {
     transition: all 4s ease;
     transition-delay: 1s;
   }
+
   & .application-title {
     margin-bottom: -5px;
     color: $black;
   }
+
   & .dashboard-title {
     color: $black;
   }
+
   & .dashboard-icon-style {
     height: 27px;
     width: 27px;
     margin-bottom: 6px;
     margin-right: 5px;
   }
+
   & .app-title-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
+
   & .react-daterange-picker__wrapper {
     color: $black;
     padding: 5px;
     border: 1px solid $black;
     background: $white;
+
     & input {
       color: #036;
     }
+
     & select {
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -83,10 +101,12 @@
       text-overflow: "";
       color: #036;
     }
+
     & .react-daterange-picker__range-divider {
       margin: 0 15px;
     }
   }
+
   & .status-container {
     display: flex;
 
@@ -98,6 +118,7 @@
       border: 1px solid $black;
       padding: 30px;
       border-radius: 10px;
+
       & .legent {
         width: 50%;
         min-height: 45px;
@@ -108,25 +129,30 @@
           float: left;
           margin-right: 10px;
         }
+
         & .legent-text {
           text-transform: capitalize;
         }
       }
     }
   }
+
   & .form-card-counter {
     & .counter {
       font-size: 42px;
       text-align: center;
       font-weight: bold;
     }
+
     & .form-title {
       text-align: center;
       color: #9eabc0 !important;
     }
+
     .submission-counter {
       display: flex;
       justify-content: space-between;
+
       & .name {
         font-size: 28px;
         align-self: center;
@@ -137,39 +163,66 @@
         text-overflow: ellipsis;
       }
     }
+
     .small-title {
       font-size: 16px;
       color: black;
     }
   }
+
   .no-data-submission {
     margin-top: 5%;
   }
 }
-.form-select{
-  width:80px;
+
+.sort-span {
+  cursor: pointer;
+  border: 1px solid #0071EB;
+  border-radius: 0.25rem;
+  padding: 4px;
+  padding-left: 6px;
+  padding-top: 0px;
+  border-radius: 6px;
+  width: 35px;
+}
+
+.sort-span:hover {
+
+  background-color: #0071EB;
+
+  .fa-lg-hover {
+    color: white;
+  }
+}
+
+.form-select {
+  width: 80px;
   height: 35px;
   border-radius: 3px;
-  border-color:rgba(222,226,230);
+  border-color: rgba(222, 226, 230);
   color: #0056B3
-}  
-.date-select{
-  width:150px;
+}
+
+.date-select {
+  width: 150px;
   height: 45px;
   cursor: pointer;
 }
-.no_submission_main{
+
+.no_submission_main {
   min-width: 100%;
 }
-.no_sumbsmission{
-  margin-left:30rem;
-  height:60vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+
+.no_sumbsmission {
+  margin-left: 30rem;
+  height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-.dashboard_container{
+
+.dashboard_container {
   overflow-y: scroll;
   max-height: 100px;
 }

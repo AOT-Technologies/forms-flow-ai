@@ -231,8 +231,8 @@ export const DRAFT_POLLING_RATE = DRAFT_POLLING_RATE_FROM_ENV
   ? Number(DRAFT_POLLING_RATE_FROM_ENV)
   : null;
 const DRAFT_ENABLED_VARIABLE =
-  (window._env_ && window._env_.REACT_APP_MULTI_TENANCY_ENABLED) ||
-  process.env.REACT_APP_MULTI_TENANCY_ENABLED ||
+  (window._env_ && window._env_.REACT_APP_DRAFT_ENABLED) ||
+  process.env.REACT_APP_DRAFT_ENABLED ||
   false;
 export const DRAFT_ENABLED =
   DRAFT_ENABLED_VARIABLE === "true" || DRAFT_ENABLED_VARIABLE === true

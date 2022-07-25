@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import BpmnModeler  from "bpmn-js/lib/Modeler";
+import BpmnModeler from "bpmn-js/lib/Modeler";
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import "./Modeller.scss";
@@ -19,31 +19,31 @@ import {
   setWorkflowAssociation,
 } from "../../actions/processActions";
 
-import { 
+import {
   deployBpmnDiagram
 } from "../../apiManager/services/bpmServices";
 
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 
-import { 
-  BpmnPropertiesPanelModule, 
+import {
+  BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
   CamundaPlatformPropertiesProviderModule
- } from 'bpmn-js-properties-panel';
+} from 'bpmn-js-properties-panel';
 
 import CamundaExtensionModule from 'camunda-bpmn-moddle/lib';
 import camundaModdleDescriptors from 'camunda-bpmn-moddle/resources/camunda';
 import { is } from 'bpmn-js/lib/util/ModelUtil';
 
-import { 
-  DEFAULT_DEPLOYMENT_NAME, 
-  DEFAULT_PROCESS_ID, 
+import {
+  DEFAULT_DEPLOYMENT_NAME,
+  DEFAULT_PROCESS_ID,
   SUCCESS_MSG,
   ERROR_MSG
 } from "./constants/bpmnModellerConstants";
 
-//import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
 
 const EditModel = React.memo(
   ({ processKey, processInstanceId, tenant }) => {
@@ -56,7 +56,7 @@ const EditModel = React.memo(
 
     const containerRef = useCallback((node) => {
       if (node !== null) {
-        setBpmnModeller(new BpmnModeler ({ 
+        setBpmnModeller(new BpmnModeler({
           container: "#container",
           propertiesPanel: {
             parent: '#js-properties-panel'
@@ -113,14 +113,14 @@ const EditModel = React.memo(
     useEffect(() => {
       if (diagramXML && bpmnModeller) {
         bpmnModeller.importXML(diagramXML)
-        .then(({ warnings }) => {
-          if (warnings.length) {
-            console.log("Warnings", warnings);
-          }
-        })
-        .catch((err) => {
-          console.log("error", err);
-        });
+          .then(({ warnings }) => {
+            if (warnings.length) {
+              console.log("Warnings", warnings);
+            }
+          })
+          .catch((err) => {
+            console.log("error", err);
+          });
       }
 
     }, [diagramXML, bpmnModeller]);
@@ -152,7 +152,7 @@ const EditModel = React.memo(
       // Make sure that we do not re-deploy already existing deployment
       form.append('enable-duplicate-filtering', 'true');
       // Create 'bpmn file' using blob which includes the xml of the process 
-      const blob = new Blob([ xml ], { type: 'text/bpmn' });
+      const blob = new Blob([xml], { type: 'text/bpmn' });
       form.append('upload', blob, (names.processID + ".bpmn"));
 
       return form;
@@ -176,26 +176,26 @@ const EditModel = React.memo(
       // What if the workflow is of type 'bpmn:Collaboration'
       // bpmn:Collaboration -> businessObject -> participants -> [0] -> processRef -> name & id
       // For bpmn:Collaboration type
-      if (rootElement.length == 0){
+      if (rootElement.length == 0) {
         const collaborationElement = elementRegistry.filter(function (element) {
           return is(element, 'bpmn:Collaboration');
         });
 
-        if (collaborationElement[0] && collaborationElement[0].businessObject.participants){
-          if (collaborationElement[0].businessObject.participants[0].processRef.name){
+        if (collaborationElement[0] && collaborationElement[0].businessObject.participants) {
+          if (collaborationElement[0].businessObject.participants[0].processRef.name) {
             deploymentName = collaborationElement[0].businessObject.participants[0].processRef.name;
           }
-          if (collaborationElement[0].businessObject.participants[0].processRef.id){
+          if (collaborationElement[0].businessObject.participants[0].processRef.id) {
             processID = collaborationElement[0].businessObject.participants[0].processRef.id;
           }
         }
       }
       // For bpmn:Process type
-      else if (rootElement[0] && rootElement[0].businessObject){
-        if (rootElement[0].businessObject.name){
+      else if (rootElement[0] && rootElement[0].businessObject) {
+        if (rootElement[0].businessObject.name) {
           deploymentName = rootElement[0].businessObject.name;
         }
-        if (rootElement[0].businessObject.id){
+        if (rootElement[0].businessObject.id) {
           processID = rootElement[0].businessObject.id;
         }
       }
@@ -209,25 +209,25 @@ const EditModel = React.memo(
 
     };
 
-    const deployBPMN = (xml) =>{
+    const deployBPMN = (xml) => {
 
       const form = createBpmnForm(xml);
 
       deployBpmnDiagram(form)
-      .then((res) => {
-        if (res?.data) {
-          toast.success(t(SUCCESS_MSG));
-          // Reload the dropdown menu
-          updateBpmProcesses();
-        } else {
+        .then((res) => {
+          if (res?.data) {
+            toast.success(t(SUCCESS_MSG));
+            // Reload the dropdown menu
+            updateBpmProcesses();
+          } else {
+            toast.error(t(ERROR_MSG));
+            console.log('error');
+          }
+        })
+        .catch((error) => {
           toast.error(t(ERROR_MSG));
-          console.log('error');
-        }
-      })
-      .catch((error) => {
-        toast.error(t(ERROR_MSG));
-        console.log(error);
-      });
+          console.log(error);
+        });
 
     };
 
@@ -283,7 +283,7 @@ const EditModel = React.memo(
                 </button>
               </div>
             </div>
-            
+
           </div>
           {/*
             Stylesheet for the js-properties-panel has been imported in /public/index.html directory as a CDN.
@@ -296,11 +296,7 @@ const EditModel = React.memo(
           <Button onClick={exportDiagram}>
             Deploy
           </Button>
-          {/*
-            TODO: Implement multi-tenancy
-            {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" />  public / multi-tenancy</label> : null}
-          */}
-          <label className="deploy-checkbox"><input type="checkbox" />  public / multi-tenancy</label>
+          {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" /> Deploy the workflow as public  <div data-bs-toggle="tooltip" data-bs-placement="top" title="If not  checked only deployed to this particular tenant else public to all" className="coursor-pointer btn text-primary"><i className="fa fa-info-circle"></i></div></label> : null}
         </div>
 
       </>

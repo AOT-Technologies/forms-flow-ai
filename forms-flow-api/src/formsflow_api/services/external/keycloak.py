@@ -52,6 +52,8 @@ class KeycloakAdminAPIService:
         """
         url = f"{self.base_url}/{url_path}"
         response = self.session.request("GET", url)
+        current_app.logger.debug(f"keycloak Admin API get request URL: {url}")
+        current_app.logger.debug(f"Keycloak response: {response.json()}")
         response.raise_for_status()
 
         if response.ok:

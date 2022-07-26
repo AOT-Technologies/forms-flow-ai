@@ -112,7 +112,7 @@ export const getApplicationById = (applicationId, ...rest) => {
 };
 
 export const applicationCreate = (data, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[1] : () => {};
   const URL = API.APPLICATION_START;
   return (dispatch) => {
     httpPOSTRequest(URL, data)
@@ -132,7 +132,7 @@ export const applicationCreate = (data, ...rest) => {
 };
 
 export const publicApplicationCreate = (data, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
+  const done = rest.length ? rest[1] : () => {};
   const URL = API.PUBLIC_APPLICATION_START;
   return (dispatch) => {
     httpPOSTRequestWithoutToken(URL, data)

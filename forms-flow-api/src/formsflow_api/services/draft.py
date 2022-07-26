@@ -67,9 +67,12 @@ class DraftService:
         return draft
 
     @staticmethod
-    def get_draft(draft_id: int):
+    @user_context
+    def get_draft(draft_id: int, **kwargs):
         """Get submission."""
-        draft = Draft.find_by_id(draft_id=draft_id)
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
+        draft = Draft.find_by_id(draft_id=draft_id, user_id=user_id)
         if draft:
             draft_schema = DraftSchema()
             return draft_schema.dump(draft)
@@ -94,9 +97,13 @@ class DraftService:
             raise BusinessException(response, status)
 
     @staticmethod
-    def get_all_drafts():
+    @user_context
+    def get_all_drafts(**kwargs):
         """Get all drafts."""
-        draft = Draft.find_all_active()
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
+        # tenant_key = user.tenant_key
+        draft = Draft.find_all_active(user_id)
         draft_schema = DraftSchema()
         return draft_schema.dump(draft, many=True)
 

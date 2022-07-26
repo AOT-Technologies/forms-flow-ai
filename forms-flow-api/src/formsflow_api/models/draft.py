@@ -2,6 +2,7 @@
 
 
 from __future__ import annotations
+from sqlalchemy import and_
 
 import uuid
 
@@ -49,20 +50,33 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         self.commit()
 
     @classmethod
-    def find_by_id(cls, draft_id: int) -> Draft:
+    def find_by_id(cls, draft_id: int, user_id: str) -> Draft:
         """Find draft that matches the provided id."""
-        return cls.query.get(draft_id)
+        # return cls.query.get(draft_id)
+        result = (
+            cls.query.join(Application, Application.id == cls.application_id)
+            .filter(
+                and_(
+                    cls.status == str(DraftStatus.ACTIVE.value),
+                    Application.created_by == user_id,
+                    cls.id == draft_id,
+                )
+            )
+            .first()
+        )
+        return result
 
     @classmethod
-    def find_all(cls):
-        """Fetch all draft entries."""
-        return cls.query.order_by(Draft.id.desc()).all()
-
-    @classmethod
-    def find_all_active(cls):
+    def find_all_active(cls, user_name: str):
         """Fetch all active drafts."""
         result = (
-            cls.query.filter(cls.status == str(DraftStatus.ACTIVE.value))
+            cls.query.join(Application, Application.id == cls.application_id)
+            .filter(
+                and_(
+                    cls.status == str(DraftStatus.ACTIVE.value),
+                    Application.created_by == user_name,
+                )
+            )
             .order_by(Draft.id.desc())
             .all()
         )

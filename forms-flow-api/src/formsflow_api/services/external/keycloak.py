@@ -157,6 +157,9 @@ class KeycloakAdminAPIService:
                 url,
                 data=json.dumps(data),
             )
+            current_app.logger.debug(f"keycloak Admin API PUT request URL: {url}")
+            current_app.logger.debug(f"Keycloak Admin PUT API payload {data}")
+            current_app.logger.debug(f"Keycloak response: {response}")
         except Exception as err_code:
             raise f"Request to Keycloak Admin APIs failed., {err_code}"
         if response.status_code == 204:

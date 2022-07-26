@@ -7,7 +7,7 @@ from flask_jwt_oidc import AuthError
 from flask_restx import Api
 
 from formsflow_api.exceptions import BusinessException
-from formsflow_api.resources.form_process_mapper import API as FORM_API
+from formsflow_export_api.resources.form_process_mapper import API as FORM_API
 from formsflow_api.utils.constants import ALLOW_ALL_ORIGINS
 
 # This will add the Authorize button to the swagger docs

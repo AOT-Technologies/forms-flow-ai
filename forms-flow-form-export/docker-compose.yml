@@ -1,27 +1,11 @@
 version: '3.7'
 
 services:
-  forms-flow-webapi-db:
-    image: postgres:11
-    environment:
-      POSTGRES_USER: ${FORMSFLOW_API_DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${FORMSFLOW_API_DB_PASSWORD:-changeme}
-      POSTGRES_DB: ${FORMSFLOW_API_DB_NAME:-webapi}
-    ports:
-      - '6432:5432'
-    restart: unless-stopped
-    volumes:
-      - ./postgres/webapi:/var/lib/postgresql/data
-    networks:
-      - forms-flow-webapi-network
-
-  forms-flow-webapi:
+  forms-flow-export-api:
     build:
       context: ./
       dockerfile: Dockerfile
     restart: unless-stopped
-    links:
-      - forms-flow-webapi-db
     ports:
       - '5000:5000'
     volumes:

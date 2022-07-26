@@ -31,7 +31,7 @@ def read(filepath):
 REQUIREMENTS = read_requirements("requirements.txt")
 
 setup(
-    name="formsflow_api",
+    name="formsflow_export_api",
     packages=find_packages("src"),
     package_dir={"": "src"},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],

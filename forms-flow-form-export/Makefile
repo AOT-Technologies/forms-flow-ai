@@ -6,7 +6,7 @@
 MKFILE_PATH:=$(abspath $(lastword $(MAKEFILE_LIST)))
 CURRENT_ABS_DIR:=$(patsubst %/,%,$(dir $(MKFILE_PATH)))
 
-PROJECT_NAME:=formsflow_api
+PROJECT_NAME:=formsflow_export_api
 
 #################################################################################
 # COMMANDS -- Setup                                                             #

@@ -21,7 +21,7 @@ from formsflow_api.utils.pdf import get_pdf_from_html, pdf_response
 API = Namespace("Form", description="Form")
 
 
-@API.route("/<string:form_id>/submission/<string:submission_id>/render")
+@API.route("/<string:form_id>/submission/<string:submission_id>/render", methods=["GET"])
 class FormResourceRenderFormPdf(Resource):
     """Resource to render form and submission details as html."""
 

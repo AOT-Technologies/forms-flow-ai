@@ -164,13 +164,12 @@ export const RESOURCE_BUNDLES_FR = {
   "Form Completed" : "Formulaire complété",
   " No forms found":"Aucun formulaire trouvé",
   "Powered by ":"Alimenté par ",
-  "No applications found":"No applications found",
+  "No applications found":"Aucune application trouvée",
   "Successfully Updated":"Mise à jour réussie",
   "Failed":"Manquée",
   "Submission Failed.":"Изпращането не бе успешно.",
   "Press Enter key or click here to search":"Appuyez sur la touche Entrée ou cliquez ici pour rechercher",
   "Click to clear":"Cliquez pour effacer",
-  "Search":"Rechercher...",
   "Click here to back":"Cliquez ici pour revenir",
   "Enter the form machine name":"Entrez le nom de la machine de formulaire",
   'Enter the form title':"Entrez le titre du formulaire",
@@ -216,7 +215,21 @@ export const RESOURCE_BUNDLES_FR = {
   "Form deleted successfully":"Form deleted successfully",
   "Form process failed":"Le processus de formulaire a échoué",
   "Form unpublishing Failed":"Échec de la dépublication du formulaire",
-  "All groups have access to the dashboard":"Tous les groupes ont accès au tableau de bord"
+  "All groups have access to the dashboard":"Tous les groupes ont accès au tableau de bord",
+  "Export PDF":"Exporter PDF",
+  "Something went wrong. Please try again!":"Quelque chose s'est mal passé. Veuillez réessayer!",
+  "No Dashboards Found":"Aucun tableau de bord trouvé",
+  "Processes":"Processus",
+  "Please select an existing workflow.":"Veuillez sélectionner un workflow existant.",
+  "Create New":"Créer un nouveau",
+  "Or import a workflow from a local directory.":"Ou importez un flux de travail à partir d'un répertoire local."
+
+
+
+
+
+
+
 
 
 

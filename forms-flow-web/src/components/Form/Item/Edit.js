@@ -75,7 +75,6 @@ const Edit = React.memo(() => {
     setShow(false);
     saveFormData();
   };
-
   //remove tenatkey form path name
   useEffect(() => {
     if (form.path && MULTITENANCY_ENABLED) {
@@ -107,9 +106,9 @@ const Edit = React.memo(() => {
   }, [formData, form]);
 
   // set the anonymous value
-  const changeAnonymous = (setvalue) => {
+  const changeAnonymous = (setvalue,goBack) => {
     let latestValue =
-      setvalue !== undefined ? setvalue : !processListData.anonymous;
+      goBack ? setvalue : !processListData.anonymous;
     let newData = {
       ...processListData,
       anonymous: latestValue,
@@ -283,7 +282,7 @@ const Edit = React.memo(() => {
               <span
                 className="btn btn-secondary"
                 onClick={() => {
-                  changeAnonymous(prviousData.anonymous);
+                  changeAnonymous(prviousData.anonymous,true);
                   history.goBack();
                   dispatch(clearFormError("form", formData.formName));
                 }}

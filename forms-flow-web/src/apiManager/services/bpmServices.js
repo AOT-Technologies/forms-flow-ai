@@ -93,3 +93,10 @@ export const deployBpmnDiagram = (data, token, isBearer = true) => {
   return httpPOSTRequest(API.DEPLOY_BPM, data, token, isBearer, headers);
 
 };
+
+export const getDraftReqFormat = (form_id, data = {}) => {
+  return {
+    formId: form_id,
+    data: data,
+  };
+};

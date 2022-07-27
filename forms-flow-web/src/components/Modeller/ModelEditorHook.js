@@ -45,6 +45,8 @@ import {
 
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 
+import { getRootElement } from "./helpers/helper";
+
 const EditModel = React.memo(
   ({ processKey, processInstanceId, tenant }) => {
 
@@ -53,11 +55,12 @@ const EditModel = React.memo(
     const dispatch = useDispatch();
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
     const [bpmnModeller, setBpmnModeller] = useState(null);
+    const [applyAllTenants, setApplyAllTenants] = useState(false);
 
     const containerRef = useCallback((node) => {
       if (node !== null) {
         setBpmnModeller(new BpmnModeler ({ 
-          container: "#container",
+          container: "#canvas",
           propertiesPanel: {
             parent: '#js-properties-panel'
           },
@@ -125,6 +128,10 @@ const EditModel = React.memo(
 
     }, [diagramXML, bpmnModeller]);
 
+    const handleApplyAllTenants = () => {
+      setApplyAllTenants(!applyAllTenants);
+    };
+
     async function exportDiagram() {
       try {
         // Convert diagram to xml
@@ -146,8 +153,7 @@ const EditModel = React.memo(
       // Deployment Source
       form.append('deployment-source', 'Camunda Modeler');
       // Tenant ID
-      var isApplyAllTenants = document.getElementById("apply-all-tenant-checkbox").checked;
-      if (tenant && isApplyAllTenants) {
+      if (tenant && applyAllTenants) {
         form.append('tenant-id', tenant);
       }
       // Make sure that we do not re-deploy already existing deployment
@@ -168,36 +174,24 @@ const EditModel = React.memo(
 
       // Get elements from process panel, find the root element which contains the deployment name and process ID
       // Use the names assigned in the bpmn-js-properties-panel, otherwise keep the default names
-      const elementRegistry = bpmnModeller.get('elementRegistry');
-      const rootElement = elementRegistry.filter(function (element) {
-        return is(element, 'bpmn:Process');
-      });
+      const rootElement = getRootElement(bpmnModeller);
 
-      // TODO: clean this up, are there other types?
-      // What if the workflow is of type 'bpmn:Collaboration'
-      // bpmn:Collaboration -> businessObject -> participants -> [0] -> processRef -> name & id
-      // For bpmn:Collaboration type
-      if (rootElement.length == 0){
-        const collaborationElement = elementRegistry.filter(function (element) {
-          return is(element, 'bpmn:Collaboration');
-        });
-
-        if (collaborationElement[0] && collaborationElement[0].businessObject.participants){
-          if (collaborationElement[0].businessObject.participants[0].processRef.name){
-            deploymentName = collaborationElement[0].businessObject.participants[0].processRef.name;
-          }
-          if (collaborationElement[0].businessObject.participants[0].processRef.id){
-            processID = collaborationElement[0].businessObject.participants[0].processRef.id;
-          }
+      if (rootElement && rootElement.businessObject && is(rootElement, 'bpmn:Process')){
+        if (rootElement.businessObject.name){
+          deploymentName = rootElement.businessObject.name;
+        }
+        if (rootElement.businessObject.id){
+          processID = rootElement.businessObject.id;
         }
       }
-      // For bpmn:Process type
-      else if (rootElement[0] && rootElement[0].businessObject){
-        if (rootElement[0].businessObject.name){
-          deploymentName = rootElement[0].businessObject.name;
-        }
-        if (rootElement[0].businessObject.id){
-          processID = rootElement[0].businessObject.id;
+      else{
+        if (rootElement && rootElement.businessObject.participants){
+          if (rootElement.businessObject.participants[0].processRef.name){
+            deploymentName = rootElement.businessObject.participants[0].processRef.name;
+          }
+          if (rootElement.businessObject.participants[0].processRef.id){
+            processID = rootElement.businessObject.participants[0].processRef.id;
+          }
         }
       }
 
@@ -259,7 +253,7 @@ const EditModel = React.memo(
         <div className="bpmn-main-container">
           <div className="bpmn-viewer-container">
             <div
-              id="container"
+              id="canvas"
               ref={containerRef}
               className="bpm-modeller-container grab-cursor"
               style={{
@@ -298,7 +292,7 @@ const EditModel = React.memo(
             TODO: Implement multi-tenancy
             {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" id="apply-all-tenant-checkbox"/>  Apply for all tenants</label> : null}
           */}
-          {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" id="apply-all-tenant-checkbox"/>  Apply for all tenants</label> : null}
+          {!MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" onClick={handleApplyAllTenants}/>  Apply for all tenants</label> : null}
 
           <Button onClick={exportDiagram}>
             Deploy

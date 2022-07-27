@@ -95,7 +95,7 @@ export default React.memo(() => {
                     {t("Please select an existing workflow.")}
                   </span>
                   <Select
-                    dropdownHeight="135px"
+                    dropdownHeight="100px"
                     options={processList}
                     onChange={handleListChange}
                     values={

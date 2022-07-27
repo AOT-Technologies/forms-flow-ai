@@ -104,7 +104,7 @@ export default React.memo(() => {
                   />
                 </Grid>
 
-                <Button className="btn-create-new" onClick={() => handleCreateNew()}>Create New</Button>
+                <Button className="btn-create-new" onClick={() => handleCreateNew()}>{t("Create New")}</Button>
                 
                 <div className="import-container">
                   <span className="fontsize-16">

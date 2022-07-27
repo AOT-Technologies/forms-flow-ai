@@ -101,7 +101,11 @@ class Application(
     @classmethod
     def find_all_application_status(cls):
         """Find all application status."""
-        return cls.query.distinct(Application.application_status).all()
+        query = cls.query.join(
+            FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+        ).distinct(Application.application_status)
+        query = cls.tenant_authorization(query)
+        return query
 
     @classmethod
     def find_by_ids(cls, application_ids) -> Application:
@@ -455,6 +459,7 @@ class Application(
                 FormProcessMapper.version,
             )
         )
+        result_proxy = cls.tenant_authorization(result_proxy)
         if form_name:
             result_proxy = result_proxy.filter(
                 FormProcessMapper.form_name.ilike(f"%{form_name}%")
@@ -469,7 +474,6 @@ class Application(
             )
         pagination = result_proxy.paginate(page_no, limit)
         total_count = result_proxy.count()
-        result_proxy = cls.tenant_authorization(result_proxy)
         return pagination.items, total_count
 
     @classmethod
@@ -507,6 +511,7 @@ class Application(
                 FormProcessMapper.version,
             )
         )
+        result_proxy = cls.tenant_authorization(result_proxy)
         if form_name:
             result_proxy = result_proxy.filter(
                 FormProcessMapper.form_name.ilike(f"%{form_name}%")
@@ -521,7 +526,6 @@ class Application(
             )
         pagination = result_proxy.paginate(page_no, limit)
         total_count = result_proxy.count()
-        result_proxy = cls.tenant_authorization(result_proxy)
         return pagination.items, total_count
 
     @classmethod

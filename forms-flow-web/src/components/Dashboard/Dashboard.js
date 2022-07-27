@@ -86,7 +86,7 @@ const Dashboard = React.memo(() => {
     { value: '6', label: '6' },
     { value: '12', label: '12' },
     { value: '30', label: '30' },
-    { value: totalItems, label: totalItems }
+    { value: totalItems, label: 'All' }
   ];
 
   // Function to handle search text
@@ -179,7 +179,7 @@ const Dashboard = React.memo(() => {
         active={metricsDateRangeLoader || submissionStatusCountLoader}
         spinner
         text={t("Loading...")}
-       >
+      >
         <div className="container dashboard_container mb-4" id="main" role="complementary" >
           <div className="dashboard mb-2" >
             <div className="row ">
@@ -231,27 +231,24 @@ const Dashboard = React.memo(() => {
                   <div className="col">
                     <div className="input-group">
                       <span
+                        className="sort-span"
+                        onClick={handleSort}
                         style={{
                           cursor: "pointer",
                         }}>
                         <i
-                          onClick={handleSort}
-                          className="fa fa-long-arrow-up fa-lg mt-2"
+                          className="fa fa-long-arrow-up fa-lg mt-2 fa-lg-hover"
                           title="Sort by form name"
                           style={{
-                            cursor: "pointer",
-                            opacity: `${!isAscending ? 1 : 0.5}`,
+                            opacity: `${sortOrder === "asc" ? 1 : 0.5}`,
                           }}
                         />
                         <i
-                          onClick={handleSort}
-                          className="fa fa-long-arrow-down fa-lg mt-2 ml-1"
+                          className="fa fa-long-arrow-down fa-lg mt-2 ml-1 fa-lg-hover"
                           title="Sort by form name"
                           style={{
-                            cursor: "pointer",
-                            opacity: `${isAscending ? 1 : 0.5}`,
+                            opacity: `${sortOrder === "desc" ? 1 : 0.5}`,
                           }}
-                        //: `${!isAscending ? 0.5 : 1}`
                         />
                       </span>
                       <div className="form-outline ml-3">
@@ -311,7 +308,7 @@ const Dashboard = React.memo(() => {
                   </div>}
                 </div>
               )}
-              {submissionsList.length ? (
+              {submissionsList.length && !metricsDateRangeLoader ? (
                 <div className=" w-100 p-3 d-flex align-items-center">
                   <Pagination
                     activePage={activePage}
@@ -330,7 +327,7 @@ const Dashboard = React.memo(() => {
                   >
                     <option >{limit == totalItems ? 'All' : limit > 30 ? "All" : limit}</option>
                     {/* eslint max-len: ["error", { "code": 500 }] */}
-                    {options.map(({ value, label }, index) => label != limit && <option value={value == '' ? totalItems : value} key={index} >{label == totalItems ? "All" : label}</option>)}
+                    {options.map(({ value, label }, index) => label != limit && <option value={value == '' ? totalItems : value} key={index} >{label}</option>)}
                   </select>
 
                   <span>

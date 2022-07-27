@@ -60,6 +60,7 @@ const initKeycloak = (store, ...rest) => {
         store.dispatch(setLanguage(KeycloakData.tokenParsed.locale || "en"));
         //Set Cammunda/Formio Base URL
         setApiBaseUrlToLocalStorage();
+        // get formio roles
         store.dispatch(
           getFormioRoleIds((err, data) => {
             if (err) {
@@ -69,7 +70,9 @@ const initKeycloak = (store, ...rest) => {
               let roles = [];
               data.forEach((formioRole) => {
                 if (
-                  UserRoles.some((userRole) => userRole.includes(formioRole.type.toLowerCase()))
+                  UserRoles.some((userRole) =>
+                    userRole.includes(formioRole.type.toLowerCase())
+                  )
                 ) {
                   roles.push(formioRole.roleId);
                 }
@@ -78,22 +81,24 @@ const initKeycloak = (store, ...rest) => {
               const resourceDetails = data.find(
                 (i) => i.type === "RESOURCE_ID"
               );
+
               authenticateFormio(
                 email,
                 roles,
                 resourceDetails?.roleId,
                 KeycloakData.tokenParsed?.tenantKey
               );
+            
+              KeycloakData.loadUserInfo().then((res) =>
+                store.dispatch(setUserDetails(res))
+              );
+
+              // onAuthenticatedCallback();
+              done(null, KeycloakData);
             }
           })
         );
 
-        KeycloakData.loadUserInfo().then((res) =>
-          store.dispatch(setUserDetails(res))
-        );
-
-        // onAuthenticatedCallback();
-        done(null, KeycloakData);
         refreshToken(store);
       } else {
         doLogout();

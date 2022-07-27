@@ -39,11 +39,12 @@ export const getFormioRoleIds = (...rest) => {
   // if data is there no need to call api
   if (data) {
     return (dispatch) => {
+      // converting data
+      data = JSON.parse(data);
       if (MULTITENANCY_ENABLED) {
-        dispatch(setTenantData(JSON.parse(data)));
-        data = JSON.parse(data.form);
-      } else {
-        data = JSON.parse(data);
+        dispatch(setTenantData(data));
+        // if multi tenancy then roles taking form data.form and assign to data again
+        data = data.form;
       }
       dispatch(setRoleIds(data));
       dispatch(setAccessForForm(data));
@@ -51,30 +52,30 @@ export const getFormioRoleIds = (...rest) => {
     };
   } else {
     let url = MULTITENANCY_ENABLED ? API.GET_TENANT_DATA : API.FORMIO_ROLES;
-
-    return async (dispatch) => {
-      try {
-        const res = await httpGETRequest(url, {}, UserService.getToken(), true);
-        if (res.data) {
-          localStorage.setItem("roleIds", JSON.stringify(res.data.form));
-          dispatch(setRoleIds(res.data?.form));
-          dispatch(setAccessForForm(res.data?.form));
-          if (MULTITENANCY_ENABLED) {
-            dispatch(setTenantData(res.data));
+    return (dispatch) => {
+      httpGETRequest(url, {}, UserService.getToken(), true)
+        .then((res) => {
+          if (res.data) {
+            localStorage.setItem("roleIds", JSON.stringify(res.data.form));
+            dispatch(setRoleIds(res.data?.form));
+            dispatch(setAccessForForm(res.data?.form));
+            if (MULTITENANCY_ENABLED) {
+              dispatch(setTenantData(res.data));
+            }
+            done(null, res.data.form);
+          } else {
+            if (MULTITENANCY_ENABLED) {
+              dispatch(setTenantData({}));
+            }
+            done(res, null);
           }
-          done(null, res.data.form);
-        } else {
+        })
+        .catch((error) => {
           if (MULTITENANCY_ENABLED) {
             dispatch(setTenantData({}));
           }
-          done(res, null);
-        }
-      } catch (error) {
-        if (MULTITENANCY_ENABLED) {
-          dispatch(setTenantData({}));
-        }
-        done(error, null);
-      }
+          done(error, null);
+        });
     };
   }
 };

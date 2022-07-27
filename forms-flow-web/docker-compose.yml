@@ -8,9 +8,6 @@ services:
       dockerfile: Dockerfile
       args:
         - NODE_ENV=${NODE_ENV:-production}
-        - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE:-formsflow-client}
-        - REACT_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE:-formsflow-reviewer}
-        - REACT_APP_STAFF_DESIGNER_ROLE=${DESIGNER_ROLE:-formsflow-designer}
         - REACT_APP_API_SERVER_URL=${FORMIO_DEFAULT_PROJECT_URL}
         - REACT_APP_API_PROJECT_URL=${FORMIO_DEFAULT_PROJECT_URL}
         - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENTID:-forms-flow-web}

@@ -19,9 +19,7 @@ services:
 
   forms-flow-bpm:
     container_name: forms-flow-bpm
-    build:
-      context: ./../../forms-flow-bpm/
-      dockerfile: Dockerfile
+    image: formsflow/forms-flow-forms:v5.0.0-alpha
     restart: always
     links:
       - forms-flow-bpm-db

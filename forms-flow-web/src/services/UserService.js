@@ -51,7 +51,7 @@ const initKeycloak = (store, ...rest) => {
       window.location.origin + "/silent-check-sso.html",
     pkceMethod: "S256",
     checkLoginIframe: false,
-  }).then(async (authenticated) => {
+  }).then((authenticated) => {
     if (authenticated) {
       if (KeycloakData.resourceAccess[clientId]) {
         const UserRoles = KeycloakData.resourceAccess[clientId].roles;
@@ -60,18 +60,18 @@ const initKeycloak = (store, ...rest) => {
         store.dispatch(setLanguage(KeycloakData.tokenParsed.locale || "en"));
         //Set Cammunda/Formio Base URL
         setApiBaseUrlToLocalStorage();
-        await store.dispatch(
+        store.dispatch(
           getFormioRoleIds((err, data) => {
             if (err) {
               console.error(err);
             } else {
               // filter the role based on keyclok role
               let roles = [];
-              data.forEach((i) => {
+              data.forEach((formioRole) => {
                 if (
-                  UserRoles.some((role) => role.includes(i.type.toLowerCase()))
+                  UserRoles.some((userRole) => userRole.includes(formioRole.type.toLowerCase()))
                 ) {
-                  roles.push(i.roleId);
+                  roles.push(formioRole.roleId);
                 }
               });
               const email = KeycloakData.tokenParsed.email || "external";

@@ -52,31 +52,29 @@ export const getFormioRoleIds = (...rest) => {
   } else {
     let url = MULTITENANCY_ENABLED ? API.GET_TENANT_DATA : API.FORMIO_ROLES;
 
-    return (dispatch) => {
-      httpGETRequest(url, {}, UserService.getToken(), true)
-        .then((res) => {
-          if (res.data) {
-            localStorage.setItem("roleIds", JSON.stringify(res.data.form));
-            dispatch(setRoleIds(res.data?.form));
-            dispatch(setAccessForForm(res.data?.form));
-            if (MULTITENANCY_ENABLED) {
-              dispatch(setTenantData(res.data));
-            }
-            done(null, res.data.form);
-          } else {
-            if (MULTITENANCY_ENABLED) {
-              dispatch(setTenantData({}));
-            }
-            done(res, null);
+    return async (dispatch) => {
+      try {
+        const res = await httpGETRequest(url, {}, UserService.getToken(), true);
+        if (res.data) {
+          localStorage.setItem("roleIds", JSON.stringify(res.data.form));
+          dispatch(setRoleIds(res.data?.form));
+          dispatch(setAccessForForm(res.data?.form));
+          if (MULTITENANCY_ENABLED) {
+            dispatch(setTenantData(res.data));
           }
-        })
-        .catch((error) => {
-          console.log(error);
+          done(null, res.data.form);
+        } else {
           if (MULTITENANCY_ENABLED) {
             dispatch(setTenantData({}));
           }
-          done(error, null);
-        });
+          done(res, null);
+        }
+      } catch (error) {
+        if (MULTITENANCY_ENABLED) {
+          dispatch(setTenantData({}));
+        }
+        done(error, null);
+      }
     };
   }
 };

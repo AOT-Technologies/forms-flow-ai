@@ -51,7 +51,7 @@ const initKeycloak = (store, ...rest) => {
       window.location.origin + "/silent-check-sso.html",
     pkceMethod: "S256",
     checkLoginIframe: false,
-  }).then((authenticated) => {
+  }).then(async (authenticated) => {
     if (authenticated) {
       if (KeycloakData.resourceAccess[clientId]) {
         const UserRoles = KeycloakData.resourceAccess[clientId].roles;
@@ -60,29 +60,38 @@ const initKeycloak = (store, ...rest) => {
         store.dispatch(setLanguage(KeycloakData.tokenParsed.locale || "en"));
         //Set Cammunda/Formio Base URL
         setApiBaseUrlToLocalStorage();
-        
-        store.dispatch(getFormioRoleIds((err,data)=>{
-          if(err){
-            console.error(err);
-          }else{
-             // filter the role based on keyclok role
-             let roles = [];
-               data.forEach((i)=>{
-                if(UserRoles.some(role=> role.includes(i.type.toLowerCase()))){
+        await store.dispatch(
+          getFormioRoleIds((err, data) => {
+            if (err) {
+              console.error(err);
+            } else {
+              // filter the role based on keyclok role
+              let roles = [];
+              data.forEach((i) => {
+                if (
+                  UserRoles.some((role) => role.includes(i.type.toLowerCase()))
+                ) {
                   roles.push(i.roleId);
                 }
-               });
-                 const email = KeycloakData.tokenParsed.email || "external";
-                 const resourceDetails = data.find(i=> i.type === "RESOURCE_ID");
-                 authenticateFormio(email, roles, resourceDetails?.roleId, 
-                  KeycloakData.tokenParsed?.tenantKey);
-          }
-        }));
-   
+              });
+              const email = KeycloakData.tokenParsed.email || "external";
+              const resourceDetails = data.find(
+                (i) => i.type === "RESOURCE_ID"
+              );
+              authenticateFormio(
+                email,
+                roles,
+                resourceDetails?.roleId,
+                KeycloakData.tokenParsed?.tenantKey
+              );
+            }
+          })
+        );
+
         KeycloakData.loadUserInfo().then((res) =>
           store.dispatch(setUserDetails(res))
         );
-        
+
         // onAuthenticatedCallback();
         done(null, KeycloakData);
         refreshToken(store);
@@ -155,8 +164,7 @@ const getFormioToken = () => localStorage.getItem("formioToken");
   return KeycloakData.updateToken(5).then(successCallback).catch(doLogin);
 };*/
 
-
-const authenticateFormio = (user, roles,resourceId, tenantKey) => {
+const authenticateFormio = (user, roles, resourceId, tenantKey) => {
   let tenantData = {};
   if (tenantKey && MULTITENANCY_ENABLED) {
     tenantData = { tenantKey };

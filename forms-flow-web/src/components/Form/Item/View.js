@@ -224,7 +224,7 @@ const View = React.memo((props) => {
 });
 
 // eslint-disable-next-line no-unused-vars
-const doProcessActions = (submission, ownProps,) => {
+const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
     let user = getState().user.userDetail;
     let form = getState().form.form;

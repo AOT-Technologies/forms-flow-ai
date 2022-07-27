@@ -14,8 +14,9 @@ import { setFormSubmissionLoading } from "../../../../../actions/formActions";
 import LoadingOverlay from "react-loading-overlay";
 import { useTranslation } from "react-i18next";
 import { formio_resourceBundles } from "../../../../../resourceBundles/formio_resourceBundles";
+import { CUSTOM_SUBMISSION_URL, CUSTOM_SUBMISSION_ENABLE } from "../../../../../constants/constants";
+import { updateCustomSubmission } from "../../../../../apiManager/services/FormServices";
 import { DownloadPDFButton } from '../../../ExportAsPdf/downloadPdfButton';
-
 const View = React.memo((props) => {
   const { t } = useTranslation();
   const {
@@ -30,9 +31,20 @@ const View = React.memo((props) => {
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
+
+  const customSubmission = useSelector((state) => state.formDelete.customSubmission);
+
+  let updatedSubmission;
+  if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
+    updatedSubmission = customSubmission;
+  }else {
+    updatedSubmission = submission;
+  }
+
   if (isFormActive || (isSubActive && !isFormSubmissionLoading)) {
     return <Loading />;
   }
+
 
   return (
     <div className="container row task-container">
@@ -58,7 +70,7 @@ const View = React.memo((props) => {
         <div className="sub-container">
           <Form
             form={form}
-            submission={submission}
+            submission={updatedSubmission}
             url={url}
             hideComponents={hideComponents}
             onSubmit={onSubmit}
@@ -90,26 +102,32 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onSubmit: (submission) => {
       dispatch(setFormSubmissionLoading(true));
-      dispatch(
-        saveSubmission(
-          "submission",
-          submission,
-          ownProps.match.params.formId,
-          (err, submission) => {
-            if (!err) {
-              dispatch(resetSubmissions("submission"));
-              dispatch(setFormSubmissionLoading(false));
-              dispatch(
-                push(
-                  `/form/${ownProps.match.params.formId}/submission/${submission._id}`
-                )
-              );
-            } else {
-              dispatch(setFormSubmissionLoading(false));
-            }
-          }
-        )
-      );
+      const callBack = (err, submission) => {
+        if (!err) {
+          dispatch(resetSubmissions("submission"));
+          dispatch(setFormSubmissionLoading(false));
+          dispatch(
+            push(
+              `/form/${ownProps.match.params.formId}/submission/${submission._id}`
+            )
+          );
+        } else {
+          dispatch(setFormSubmissionLoading(false));
+        }
+      };
+      if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
+        updateCustomSubmission(submission,ownProps.match.params.formId,callBack);
+      }else{
+        dispatch(
+          saveSubmission(
+            "submission",
+            submission,
+            ownProps.match.params.formId,
+            callBack
+          )
+        );
+      }
+    
     },
   };
 };

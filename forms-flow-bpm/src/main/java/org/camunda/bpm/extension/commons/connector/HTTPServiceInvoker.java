@@ -8,6 +8,7 @@ import org.camunda.bpm.extension.commons.ro.res.IResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -30,6 +31,7 @@ public class HTTPServiceInvoker {
 	private static final String BPM_ACCESS_HANDLER = "bpmAccessHandler";
 	private static final String TEXT_ANALYZER_ACCESS_HANDLER = "textAnalyzerAccessHandler";
 	private static final String FORM_ACCESS_HANDLER = "formAccessHandler";
+    private static final String CUSTOM_SUBMISSION_ACCESS_HANDLER = "CustomSubmissionAccessHandler";
 
     private final Logger LOGGER = Logger.getLogger(HTTPServiceInvoker.class.getName());
 
@@ -59,15 +61,18 @@ public class HTTPServiceInvoker {
 
     private String getServiceId(String url) {
 
+        Boolean enableCustomSubmission = Boolean.valueOf(integrationCredentialProperties.getProperty("forms.enableCustomSubmission"));
  		if (isUrlValid(url, fetchUrlFromProperty(API_URL))) {
 			return APPLICATION_ACCESS_HANDLER;
 		} else if (isUrlValid(url, fetchUrlFromProperty(BPM_URL))) {
 			return BPM_ACCESS_HANDLER;
 		} else if (isUrlValid(url, fetchUrlFromProperty(ANALYSIS_URL))) {
 			return TEXT_ANALYZER_ACCESS_HANDLER;
+		} else if (enableCustomSubmission) {
+			return CUSTOM_SUBMISSION_ACCESS_HANDLER;
 		} else if (isUrlValid(url, fetchUrlFromProperty(FORMIO_URL))) {
 			return FORM_ACCESS_HANDLER;
-		}
+        } 
  		return "";
     }
 	

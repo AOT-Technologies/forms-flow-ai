@@ -37,7 +37,8 @@ import { setFormSubmitted } from "../../../actions/formActions";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
-import { MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { CUSTOM_SUBMISSION_URL, CUSTOM_SUBMISSION_ENABLE, MULTITENANCY_ENABLED } from "../../../constants/constants";
+import { postCustomSubmission } from "../../../apiManager/services/FormServices";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -212,7 +213,7 @@ const View = React.memo((props) => {
             }}
             hideComponents={hideComponents}
             onSubmit={(data) => {
-              onSubmit(data, form._id);
+              onSubmit(data, form._id, isPublic);
             }}
             onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
           />
@@ -223,7 +224,7 @@ const View = React.memo((props) => {
 });
 
 // eslint-disable-next-line no-unused-vars
-const doProcessActions = (submission, ownProps) => {
+const doProcessActions = (submission, ownProps,) => {
   return (dispatch, getState) => {
     let user = getState().user.userDetail;
     let form = getState().form.form;
@@ -312,29 +313,36 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onSubmit: (submission, formId) => {
+    onSubmit: (submission, formId, isPublic) => {
       dispatch(setFormSubmissionLoading(true));
-      dispatch(
-        saveSubmission("submission", submission, formId, (err, submission) => {
-          if (!err) {
-            dispatch(doProcessActions(submission, ownProps));
-          } else {
-            const ErrorDetails = {
-              modalOpen: true,
-              message: (
-                <Translation>
-                  {(t) => t("Submission cannot be done.")}
-                </Translation>
-              ),
-            };
-            toast.error(
-              <Translation>{(t) => t("Error while Submission.")}</Translation>
-            );
-            dispatch(setFormSubmissionLoading(false));
-            dispatch(setFormSubmissionError(ErrorDetails));
-          }
-        })
-      );
+      // this is callback function for submission
+      const callBack = (err, submission) => {
+        if (!err) {
+          dispatch(doProcessActions(submission, ownProps));
+        } else {
+          const ErrorDetails = {
+            modalOpen: true,
+            message: (
+              <Translation>
+                {(t) => t("Submission cannot be done.")}
+              </Translation>
+            ),
+          };
+          toast.error(
+            <Translation>{(t) => t("Error while Submission.")}</Translation>
+          );
+          dispatch(setFormSubmissionLoading(false));
+          dispatch(setFormSubmissionError(ErrorDetails));
+        }
+      };
+      if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+        postCustomSubmission(submission,formId,isPublic,callBack);
+      } else {
+        dispatch(
+          saveSubmission("submission", submission, formId,callBack)
+        );
+      }
+      
     },
     onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {

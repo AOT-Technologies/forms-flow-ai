@@ -33,3 +33,10 @@ export const setFormSearchLoading = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setCustomSubmission = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.CUSTOM_SUBMISSION,
+    payload: data,
+  });
+};

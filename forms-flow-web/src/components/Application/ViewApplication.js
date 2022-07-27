@@ -17,8 +17,9 @@ import View from "../Form/Item/Submission/Item/View";
 import { getForm, getSubmission } from "react-formio";
 import NotFound from "../NotFound";
 import { Translation } from "react-i18next";
-import { MULTITENANCY_ENABLED } from "../../constants/constants";
+import { CUSTOM_SUBMISSION_URL,CUSTOM_SUBMISSION_ENABLE, MULTITENANCY_ENABLED } from "../../constants/constants";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
+import { getCustomSubmission } from "../../apiManager/services/FormServices";
 
 const ViewApplication = React.memo(() => {
   const { applicationId } = useParams();
@@ -45,7 +46,11 @@ const ViewApplication = React.memo(() => {
         if (!err) {
           if (res.submissionId && res.formId) {
             dispatch(getForm("form", res.formId));
-            dispatch(getSubmission("submission", res.submissionId, res.formId));
+            if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE){
+              dispatch(getCustomSubmission(res.submissionId,res.formId));
+            }else{
+              dispatch(getSubmission("submission", res.submissionId, res.formId));
+            }
           }
         }
       })

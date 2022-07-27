@@ -1,5 +1,12 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
+const now = new Date();
+let firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+let lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 const initialState = {
+  submissionDate: [
+    firstDay,
+    lastDay
+  ],
   sortOrder: 'asc',
   totalItems: 0,
   isMetricsLoading: true,
@@ -27,13 +34,15 @@ const initialState = {
 
 const metrics = (state = initialState, action) => {
   switch (action.type) {
+    case ACTION_CONSTANTS.METRICS_SUBMISSION_DATE:
+      return { ...state, submissionDate: action.payload };
     case ACTION_CONSTANTS.IS_METRICS_LOADING:
       return { ...state, isMetricsLoading: action.payload };
     case ACTION_CONSTANTS.IS_METRICS_STATUS_LOADING:
       return { ...state, isMetricsStatusLoading: action.payload };
     case ACTION_CONSTANTS.METRICS_SUBMISSIONS:
       return { ...state, submissionsList: action.payload };
-      case ACTION_CONSTANTS.METRICS_SUBMISSIONS_COUNT:
+    case ACTION_CONSTANTS.METRICS_SUBMISSIONS_COUNT:
       return { ...state, totalItems: action.payload };
     case ACTION_CONSTANTS.METRICS_SUBMISSIONS_SEARCH:
       return { ...state, searchText: action.payload };

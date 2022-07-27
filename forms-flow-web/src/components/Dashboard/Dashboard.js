@@ -22,6 +22,7 @@ import {
   setMetricsSubmissionSearch,
   setMetricsSubmissionSort,
   SetSubmissionStatusCountLoader,
+  setMetricsDateChange,
 } from "../../actions/metricsActions";
 import LoadingOverlay from "@ronchalant/react-loading-overlay";
 import { Button } from "react-bootstrap";
@@ -62,6 +63,10 @@ const Dashboard = React.memo(() => {
   const metricsDateRangeLoader = useSelector(
     (state) => state.metrics.metricsDateRangeLoader
   );
+  const dateRange = useSelector((state) => state.metrics.submissionDate);
+
+  const [selectedLimitValue, setSelectedLimitValue] = useState(limit);
+
   let numberofSubmissionListFrom =
     activePage === 1 ? 1 : (activePage * limit) - limit + 1;
   let numberofSubmissionListTo = activePage === 1 ? limit : limit * activePage;
@@ -69,11 +74,7 @@ const Dashboard = React.memo(() => {
   const [isAscending, setIsAscending] = useState(false);
   const [searchBy, setSearchBy] = useState("created");
   const [sortsBy, setSortsBy] = useState("formName");
-
   const now = new Date();
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-  const [dateRange, setDateRange] = useState([firstDay, lastDay]);
   const [showSubmissionData, setSHowSubmissionData] = useState(
     submissionsList[0]
   );
@@ -114,6 +115,7 @@ const Dashboard = React.memo(() => {
   };
   // Function to handle page limit change for submission data
   const handleLimitChange = (limit) => {
+    setSelectedLimitValue(limit);
     dispatch(setMetricsSubmissionLimitChange(limit));
   };
   // Function to handle pageination page change for submission data
@@ -128,6 +130,7 @@ const Dashboard = React.memo(() => {
     const toDate = getFormattedDate(dateRange[1]);
     dispatch(setMetricsDateRangeLoading(true));
     setShowClearButton(searchText);
+    setSelectedLimitValue(limit);
     /*eslint max-len: ["error", { "code": 170 }]*/
     dispatch(fetchMetricsSubmissionCount(fromDate, toDate, searchBy, searchText, activePage, limit, sortsBy, sortOrder, (err, data) => { }));
   }, [dispatch, activePage, limit, sortsBy, sortOrder, dateRange, searchText, searchBy]);
@@ -163,7 +166,7 @@ const Dashboard = React.memo(() => {
   const onSetDateRange = (date) => {
     dispatch(setMetricsSubmissionLimitChange(6));
     dispatch(setMetricsDateRangeLoading(true));
-    setDateRange(date);
+    dispatch(setMetricsDateChange(date));
   };
   const noDefaultApplicationAvailable =
     !searchInputBox.current.value && !submissionsList.length ? true : false;
@@ -322,12 +325,11 @@ const Dashboard = React.memo(() => {
                   <select
                     title="Choose page limit"
                     onChange={(e) => handleLimitChange(e.target.value)}
+                    value={selectedLimitValue}
                     className="form-select mx-5 mb-3"
                     aria-label="Choose page limit"
                   >
-                    <option >{limit == totalItems ? 'All' : limit > 30 ? "All" : limit}</option>
-                    {/* eslint max-len: ["error", { "code": 500 }] */}
-                    {options.map(({ value, label }, index) => label != limit && <option value={value == '' ? totalItems : value} key={index} >{label}</option>)}
+                    {options.map(({ value, label }, index) => <option value={value} key={index} >{label}</option>)}
                   </select>
 
                   <span>

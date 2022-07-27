@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>i_Form_fa fa-search fa-lg</name>
+   <tag></tag>
+   <elementGuidId>55f4479e-cda6-42e5-929f-40c3934e12ac</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>XPATH</key>
+         <value>//div[@id='main']/div/section/div/div/ul/li/div/div/strong/div/div/div/button[2]/i</value>
+      </entry>
+      <entry>
+         <key>CSS</key>
+         <value>i.fa.fa-search.fa-lg</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>XPATH</selectorMethod>
+   <useRalativeImagePath>true</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>tag</name>
+      <type>Main</type>
+      <value>i</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>class</name>
+      <type>Main</type>
+      <value>fa fa-search fa-lg</value>
+   </webElementProperties>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>id(&quot;main&quot;)/div[@class=&quot;container&quot;]/section[@class=&quot;custom-grid grid-forms&quot;]/div[@class=&quot;_loading_overlay_wrapper css-79elbk&quot;]/div[1]/ul[@class=&quot;list-group list-group-striped&quot;]/li[@class=&quot;list-group-item list-group-header hidden-xs hidden-md&quot;]/div[@class=&quot;row&quot;]/div[@class=&quot;col col-md-6&quot;]/strong[1]/div[@class=&quot;container main_div&quot;]/div[@class=&quot;input_search&quot;]/div[@class=&quot;mb-3 input-group&quot;]/button[@class=&quot;btn btn-outline-primary&quot;]/i[@class=&quot;fa fa-search fa-lg&quot;]</value>
+   </webElementProperties>
+   <webElementXpaths>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:idRelative</name>
+      <type>Main</type>
+      <value>//div[@id='main']/div/section/div/div/ul/li/div/div/strong/div/div/div/button[2]/i</value>
+   </webElementXpaths>
+   <webElementXpaths>
+      <isSelected>false</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath:position</name>
+      <type>Main</type>
+      <value>//strong/div/div/div/button[2]/i</value>
+   </webElementXpaths>
+</WebElementEntity>

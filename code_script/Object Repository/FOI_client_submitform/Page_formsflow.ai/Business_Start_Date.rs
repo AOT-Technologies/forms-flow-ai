@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebElementEntity>
+   <description></description>
+   <name>Business_Start_Date</name>
+   <tag></tag>
+   <elementGuidId>cc0e0f73-ffca-4a08-a4e9-2755c0ebadfd</elementGuidId>
+   <selectorCollection>
+      <entry>
+         <key>BASIC</key>
+         <value>//*[@id=&quot;epjltz8&quot;]/div[1]/div/div/span/i</value>
+      </entry>
+   </selectorCollection>
+   <selectorMethod>BASIC</selectorMethod>
+   <useRalativeImagePath>false</useRalativeImagePath>
+   <webElementProperties>
+      <isSelected>true</isSelected>
+      <matchCondition>equals</matchCondition>
+      <name>xpath</name>
+      <type>Main</type>
+      <value>//*[@id=&quot;epjltz8&quot;]/div[1]/div/div/span/i</value>
+   </webElementProperties>
+</WebElementEntity>

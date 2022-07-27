@@ -2,12 +2,6 @@ window["_env_"] = {
   // To define project level configuration  possible values development,test, production
   NODE_ENV: "development",
   //Environment Variables for forms-flow-web
-
-  // KEYCLOAK-CLIENT-Roles
-
-  REACT_APP_CLIENT_ROLE: "formsflow-client",
-  REACT_APP_STAFF_DESIGNER_ROLE: "formsflow-designer",
-  REACT_APP_STAFF_REVIEWER_ROLE: "formsflow-reviewer",
   
   /*URL of forms-flow-forms
    Form-IO API-URL*/

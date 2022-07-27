@@ -215,31 +215,6 @@ parameters:
     description:
       Route to access Forms Flow AI Web site
     required: true
-  - name: REACT_APP_CLIENT_ID
-    displayName: REACT_APP_CLIENT_ID
-    description:
-      Route to access Forms Flow AI Web site
-    required: true
-  - name: REACT_APP_STAFF_REVIEWER_ID
-    displayName: REACT_APP_STAFF_REVIEWER_ID
-    description:
-      Route to access Forms Flow AI Web site
-    required: true
-  - name: REACT_APP_STAFF_DESIGNER_ID
-    displayName: REACT_APP_STAFF_DESIGNER_ID
-    description:
-      Route to access Forms Flow AI Web site
-    required: true
-  - name: REACT_APP_USER_RESOURCE_FORM_ID
-    displayName: REACT_APP_USER_RESOURCE_FORM_ID
-    description:
-      Route to access Forms Flow AI Web site
-    required: true
-  - name: REACT_APP_ANONYMOUS_ID
-    displayName: REACT_APPREACT_APP_ANONYMOUS_ID_CLIENT_ID
-    description:
-      Route to access Forms Flow AI Web site
-    required: true
   - name: REACT_APP_WEB_BASE_URL
     displayName: REACT_APP_WEB_BASE_URL
     description:

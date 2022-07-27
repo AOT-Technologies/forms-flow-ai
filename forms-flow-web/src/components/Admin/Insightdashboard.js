@@ -263,7 +263,9 @@ export const InsightDashboard = (props) => {
             pagination={pagination}
           />
         ) : (
-          <h3 className="text-center">No Dashboards Found</h3>
+          <h3 className="text-center">
+          <Translation>{(t) => t("No Dashboards Found")}</Translation>
+          </h3>
         )}
       </section>
     </>

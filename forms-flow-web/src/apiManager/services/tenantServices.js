@@ -1,6 +1,5 @@
 import { tenantDetail } from "../../constants/tenantConstant";
 import {
-  // setTenantData,
   setTenantDetails,
   setTenantID,
 } from "../../actions/tenantActions";
@@ -26,30 +25,3 @@ export const setTenantFromId = (tenantKey, ...rest) => {
     done(null, tenantDetail);
   };
 };
-
-// collects the tenant data from the admin API
-// export const getTenantData = (...rest) => {
-//   const done = rest.length ? rest[0] : () => {};
-//   let data = localStorage.getItem("tenantData");
-//   if (!data) {
-//     return (dispatch) => {
-//       httpGETRequest(API.GET_TENANT_DATA, {}, UserService.getToken(), true)
-//         .then((res) => {
-//           if (res.data) {
-//             dispatch(setRoleIds(res.data?.from));
-//             dispatch(setAccessForForm(res.data?.from));
-//             dispatch(setTenantData(res.data));
-//             done(null, res.data);
-//           } else {
-//             dispatch(setTenantData({}));
-//           }
-//         })
-//         .catch((error) => {
-//           console.log(error);
-//           dispatch(setTenantData({}));
-//         });
-//     };
-//   } else {
-//     return (dispatch) => dispatch(setTenantData(JSON.parse(data)));
-//   }
-// };

@@ -32,9 +32,6 @@ objects:
         // runtime-config.js vars
           window["_env_"] =  {
             "NODE_ENV": "production",
-            "REACT_APP_CLIENT_ROLE": "formsflow-client",
-            "REACT_APP_STAFF_DESIGNER_ROLE": "formsflow-designer",
-            "REACT_APP_STAFF_REVIEWER_ROLE": "formsflow-reviewer",
             "REACT_APP_API_SERVER_URL": "${REACT_APP_API_SERVER_URL}",
             "REACT_APP_API_PROJECT_URL": "${REACT_APP_API_PROJECT_URL}",
             "REACT_APP_CAMUNDA_API_URI": "${REACT_APP_CAMUNDA_API_URI}",

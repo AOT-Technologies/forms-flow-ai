@@ -1,8 +1,8 @@
 export const setFormAndSubmissionAccess = (type, data) => {
   let ROLE = {};
-  data.forEach((i) => {
-    if (i.type !== "RESOURCE_ID" || i.type !== "ANONYMOUS") {
-      ROLE[i.type] = i.roleId;
+  data.forEach((role) => {
+    if (role.type !== "RESOURCE_ID" || role.type !== "ANONYMOUS") {
+      ROLE[role.type] = role.roleId;
     }
   });
 

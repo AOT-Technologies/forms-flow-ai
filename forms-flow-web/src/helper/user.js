@@ -83,8 +83,8 @@ const getUserInsightsPermission = () => {
 
 const setUserRolesToObject = (response)=>{
   let roleObject = {};
-  response.forEach(i => {
-    roleObject[i.type] = i.roleId;
+  response.forEach(role => {
+    roleObject[role.type] = role.roleId;
   });
   return roleObject;
 };

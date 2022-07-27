@@ -9,8 +9,8 @@ from sqlalchemy import and_, func, or_
 from sqlalchemy.sql.expression import text
 
 from formsflow_api.utils import (
-    FILTER_MAPS,
     DRAFT_APPLICATION_STATUS,
+    FILTER_MAPS,
     validate_sort_order_and_order_by,
 )
 from formsflow_api.utils.user_context import UserContext, user_context
@@ -126,6 +126,7 @@ class Application(
         """Fetch all application."""
         query = cls.filter_conditions(**filters)
         query = cls.tenant_authorization(query=query)
+        query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
             table_name = "application"
@@ -190,6 +191,7 @@ class Application(
         """Fetch applications list based on searching parameters for Non-reviewer."""
         query = Application.filter_conditions(**filters)
         query = Application.tenant_authorization(query=query)
+        query = cls.filter_draft_applications(query=query)
         query = query.filter(Application.created_by == user_id)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -631,3 +633,10 @@ class Application(
                 FormProcessMapper.tenant == tenant_key
             )
         return tenant_auth_query
+
+    @classmethod
+    def filter_draft_applications(cls, query: BaseQuery):
+        """Modifies the query to filter draft applications."""
+        if not isinstance(query, BaseQuery):
+            raise TypeError("Query object must be of type BaseQuery")
+        return query.filter(cls.application_status != DRAFT_APPLICATION_STATUS)

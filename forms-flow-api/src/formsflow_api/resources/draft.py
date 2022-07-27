@@ -89,17 +89,9 @@ class DraftResourceById(Resource):
         """Get draft by id."""
         try:
             return DraftService.get_draft(draft_id), HTTPStatus.OK
-        except BusinessException:
-            response, status = (
-                {
-                    "type": "Invalid response data",
-                    "message": f"Invalid id - {draft_id}",
-                },
-                HTTPStatus.BAD_REQUEST,
-            )
-
-            current_app.logger.warning(response)
-            return response, status
+        except BusinessException as err:
+            current_app.logger.warning(err)
+            return err.error, err.status_code
 
     @staticmethod
     @auth.require

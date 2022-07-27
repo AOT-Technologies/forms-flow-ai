@@ -115,11 +115,7 @@ def get_application_create_payload(form_id: str = "1234"):
 
 def get_draft_create_payload(form_id: str = "1234"):
     """Return a payload for creating draft details."""
-    return {
-        "applicationStatus": "Draft",
-        "formId": form_id,
-        "data": {"name": "testing sample"}
-    }
+    return {"formId": form_id, "data": {"name": "testing sample"}}
 
 
 def get_form_service_payload():

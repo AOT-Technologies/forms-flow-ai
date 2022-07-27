@@ -84,9 +84,12 @@ class DraftService:
         raise BusinessException(response, status)
 
     @staticmethod
-    def update_draft(draft_id: int, data):
+    @user_context
+    def update_draft(draft_id: int, data, **kwargs):
         """Update draft."""
-        draft = Draft.find_by_id(draft_id=draft_id)
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
+        draft = Draft.find_by_id(draft_id, user_id)
         if draft:
             draft.update(data)
         else:
@@ -108,9 +111,12 @@ class DraftService:
         return draft_schema.dump(draft, many=True)
 
     @staticmethod
-    def make_submission_from_draft(data: Dict, draft_id: str, token):
+    @user_context
+    def make_submission_from_draft(data: Dict, draft_id: str, token, **kwargs):
         """Makes the draft into an application."""
-        draft = Draft.make_submission(draft_id, data)
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
+        draft = Draft.make_submission(draft_id, data, user_id)
         if not draft:
             response, status = {
                 "type": "Bad request error",

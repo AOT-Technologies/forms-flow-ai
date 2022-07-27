@@ -2,11 +2,10 @@
 
 
 from __future__ import annotations
-from sqlalchemy import and_
 
 import uuid
 
-from sqlalchemy import update
+from sqlalchemy import and_, update
 from sqlalchemy.dialects.postgresql import JSON, UUID
 
 from formsflow_api.utils.enums import DraftStatus
@@ -83,9 +82,10 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         return result
 
     @classmethod
-    def make_submission(cls, draft_id, data):
+    def make_submission(cls, draft_id, data, user_id):
         """Activates the application from the draft entry."""
-        draft = cls.query.get(draft_id)
+        # draft = cls.query.get(draft_id)
+        draft = cls.find_by_id(draft_id, user_id)
         if not draft:
             return None
         stmt = (

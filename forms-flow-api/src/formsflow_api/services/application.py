@@ -15,7 +15,7 @@ from formsflow_api.schemas import (
     FormProcessMapperSchema,
 )
 from formsflow_api.services.external import BPMService
-from formsflow_api.utils import NEW_APPLICATION_STATUS, DRAFT_APPLICATION_STATUS
+from formsflow_api.utils import DRAFT_APPLICATION_STATUS, NEW_APPLICATION_STATUS
 from formsflow_api.utils.user_context import UserContext, user_context
 
 from .form_process_mapper import FormProcessMapperService

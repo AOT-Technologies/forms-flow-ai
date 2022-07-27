@@ -77,9 +77,10 @@ const initKeycloak = (store, ...rest) => {
                   roles.push(formioRole.roleId);
                 }
               });
+
               const email = KeycloakData.tokenParsed.email || "external";
               const resourceDetails = data.find(
-                (i) => i.type === "RESOURCE_ID"
+                (role) => role.type === "RESOURCE_ID"
               );
 
               authenticateFormio(

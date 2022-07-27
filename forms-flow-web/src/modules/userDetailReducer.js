@@ -6,24 +6,24 @@ import {
 } from "../helper/user";
 import { LANGUAGE } from "../constants/constants";
 import { setFormAndSubmissionAccess } from "../helper/access";
+
 const getLanguages = localStorage.getItem("languages");
+
+const roleIdsFromLocalStorage = localStorage.getItem("roleIds")
+  ? JSON.parse(localStorage.getItem("roleIds"))
+  : undefined;
+
 const initialState = {
   bearerToken: "",
   roles: "",
-  roleIds: localStorage.getItem("roleIds")
-    ? setUserRolesToObject(JSON.parse(localStorage.getItem("roleIds")))
+  roleIds: roleIdsFromLocalStorage
+    ? setUserRolesToObject(roleIdsFromLocalStorage)
     : {},
-  formAccess: localStorage.getItem("roleIds")
-    ? setFormAndSubmissionAccess(
-        "formAccess",
-        JSON.parse(localStorage.getItem("roleIds"))
-      )
+  formAccess: roleIdsFromLocalStorage
+    ? setFormAndSubmissionAccess("formAccess", roleIdsFromLocalStorage)
     : [],
-  submissionAccess: localStorage.getItem("roleIds")
-    ? setFormAndSubmissionAccess(
-        "submissionAccess",
-        JSON.parse(localStorage.getItem("roleIds"))
-      )
+  submissionAccess: roleIdsFromLocalStorage
+    ? setFormAndSubmissionAccess("submissionAccess", roleIdsFromLocalStorage)
     : [],
   userDetail: null,
   isAuthenticated: false,

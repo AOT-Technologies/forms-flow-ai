@@ -1,3 +1,9 @@
+/**
+ * 
+ * @param {String} type 
+ * @param {Array} data 
+ * @returns {Array}
+ */
 export const setFormAndSubmissionAccess = (type, data) => {
   let ROLE = {};
   data.forEach((role) => {

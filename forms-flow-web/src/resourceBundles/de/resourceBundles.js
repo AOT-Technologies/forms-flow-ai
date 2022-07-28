@@ -223,7 +223,9 @@ export const RESOURCE_BUNDLES_DE = {
   "Processes":"Prozesse",
   "Please select an existing workflow.":"Bitte wählen Sie einen bestehenden Workflow aus.",
   "Create New":"Erstelle neu",
-  "Or import a workflow from a local directory.":"Oder importieren Sie einen Workflow aus einem lokalen Verzeichnis."
+  "Or import a workflow from a local directory.":"Oder importieren Sie einen Workflow aus einem lokalen Verzeichnis.",
+  "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo" 
+
 
 
 

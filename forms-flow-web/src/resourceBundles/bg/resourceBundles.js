@@ -221,7 +221,9 @@ export const RESOURCE_BUNDLES_BG = {
     "Processes":"процеси",
     "Please select an existing workflow.":"Моля, изберете съществуващ работен процес.",
     "Create New":"Създай нов",
-    "Or import a workflow from a local directory.":"Или импортирайте работен поток от локална директория."
+    "Or import a workflow from a local directory.":"Или импортирайте работен поток от локална директория.",
+    "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo" 
+
 
 
 

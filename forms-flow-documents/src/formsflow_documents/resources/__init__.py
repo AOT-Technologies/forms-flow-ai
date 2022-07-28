@@ -7,7 +7,7 @@ from flask_jwt_oidc import AuthError
 from flask_restx import Api
 
 from formsflow_api_utils.exceptions import BusinessException
-from formsflow_documents.resources.form_process_mapper import API as FORM_API
+from formsflow_documents.resources.form_export import API as FORM_API
 from formsflow_api_utils.utils.constants import ALLOW_ALL_ORIGINS
 
 # This will add the Authorize button to the swagger docs
@@ -15,9 +15,9 @@ from formsflow_api_utils.utils.constants import ALLOW_ALL_ORIGINS
 AUTHORIZATIONS = {"apikey": {"type": "apiKey", "in": "header", "name": "Authorization"}}
 
 API = Api(
-    title="formsflow.ai API",
+    title="formsflow.ai documents API",
     version="1.0",
-    description="The API for formsflow.ai. Checkout: formsflow.ai to know more",
+    description="The API for formsflow.ai to handle document realted services. Checkout: formsflow.ai to know more",
     security=["apikey"],
     authorizations=AUTHORIZATIONS,
     doc="/",

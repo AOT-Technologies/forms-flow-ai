@@ -49,7 +49,7 @@ import { getRootElement} from "./helpers/helper";
 
 import lintModule from 'bpmn-js-bpmnlint';
 import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css';
-import linterConfig from './packed-config';
+import linterConfig from './lint-rules/packed-config';
 
 const EditModel = React.memo(
   ({ processKey, processInstanceId, tenant, defaultProcessInfo }) => {

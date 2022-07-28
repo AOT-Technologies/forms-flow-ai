@@ -1,9 +1,15 @@
 """Test suite for 'draft' namespace API endpoints."""
 from formsflow_api.models import Application, Draft, FormProcessMapper
-from formsflow_api.utils import DRAFT_APPLICATION_STATUS
+from formsflow_api.utils import (
+    ANONYMOUS_USER,
+    DRAFT_APPLICATION_STATUS,
+    NEW_APPLICATION_STATUS,
+)
 from tests.utilities.base_test import (
+    get_anonymous_form_model_object,
     get_application_create_payload,
     get_draft_create_payload,
+    get_form_model_object,
     get_form_request_payload,
     get_token,
 )
@@ -156,3 +162,53 @@ def test_draft_tenant_authorization(app, client, session, jwt):
     )
     assert response.status_code == 403
     assert response.json == "Tenant authentication failed."
+
+
+def test_anonymous_drafts(app, client, session, jwt):
+    """Tests the anonymous draft endpoints."""
+    # creates an anonymous form first
+    form = FormProcessMapper(**get_anonymous_form_model_object())
+    form.save()
+    form_id = form.form_id
+    headers = {
+        "content-type": "application/json",
+    }
+    response = client.post(
+        "/draft/public/create", headers=headers, json=get_draft_create_payload(form_id)
+    )
+    assert response.status_code == 201
+    assert response.json.get("data") == get_draft_create_payload()["data"]
+    application = Application.find_by_id(response.json.get("applicationId"))
+    draft = Draft.query.get(response.json.get("id"))
+    assert draft is not None
+    assert application is not None
+    assert application.created_by == ANONYMOUS_USER
+    response = client.put(
+        f"/draft/public/{draft.id}/submit",
+        headers=headers,
+        json=get_application_create_payload(form_id),
+    )
+
+    assert response.status_code == 200
+    assert response.json.get("applicationStatus") == NEW_APPLICATION_STATUS
+    assert (
+        response.json.get("submissionId")
+        == get_application_create_payload()["submissionId"]
+    )
+    assert response.json.get("formId") == get_application_create_payload()["formId"]
+    assert response.json.get("createdBy") == ANONYMOUS_USER
+
+    form2 = FormProcessMapper(**get_form_model_object())
+    form2.save()
+    form_id2 = form2.form_id
+    headers = {
+        "content-type": "application/json",
+    }
+    response = client.post(
+        "/draft/public/create", headers=headers, json=get_draft_create_payload(form_id2)
+    )
+    assert response.status_code == 403
+    assert (
+        response.json
+        == f"Permission denied, formId - {get_form_model_object()['form_id']}."
+    )

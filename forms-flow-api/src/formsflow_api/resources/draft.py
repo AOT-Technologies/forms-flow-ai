@@ -163,3 +163,108 @@ class DraftSubmissionResource(Resource):
 
         except Exception as unexpected_error:
             raise unexpected_error
+
+
+@cors_preflight("POST, OPTIONS")
+@API.route("/public/create", methods=["POST", "OPTIONS"])
+class PublicDraftResource(Resource):
+    """Public endpoints to support anonymous forms."""
+
+    @staticmethod
+    @profiletime
+    def post():
+        """Create a new draft submission."""
+        try:
+            application_json = draft_json = request.get_json()
+            application_schema = ApplicationSchema()
+            draft_schema = DraftSchema()
+
+            application_dict_data = application_schema.load(application_json)
+            draft_dict_data = draft_schema.load(draft_json)
+            res = DraftService.create_new_draft(application_dict_data, draft_dict_data)
+            response = draft_schema.dump(res)
+            return (response, HTTPStatus.CREATED)
+        except BusinessException as err:
+            current_app.logger.warning(err)
+            response, status = err.error, err.status_code
+            return response, status
+        except BaseException as draft_err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid submission request passed",
+            }, HTTPStatus.BAD_REQUEST
+            current_app.logger.warning(response)
+            current_app.logger.warning(draft_err)
+            return response, status
+
+
+@cors_preflight("PUT, OPTIONS")
+@API.route("/public/<int:draft_id>/submit", methods=["PUT", "OPTIONS"])
+class PublicDraftResourceById(Resource):
+    """Public endpoints for anonymous draft."""
+
+    @staticmethod
+    @profiletime
+    def put(draft_id: int):
+        """Updates the application and draft entry to create a new submission."""
+        try:
+            payload = request.get_json()
+            application_schema = ApplicationSubmissionSchema()
+            dict_data = application_schema.load(payload)
+            dict_data["application_status"] = NEW_APPLICATION_STATUS
+            response = DraftService.make_submission_from_draft(dict_data, draft_id)
+            res = ApplicationSchema().dump(response)
+            return res, HTTPStatus.OK
+
+        except ValidationError as err:
+            current_app.logger.warning(err)
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data",
+            }, HTTPStatus.BAD_REQUEST
+            return response, status
+
+        except BusinessException as err:
+            # exception from draft service
+            current_app.logger.warning(err)
+            error, status = err.error, err.status_code
+            return error, status
+
+        except Exception as unexpected_error:
+            raise unexpected_error
+
+
+@cors_preflight("PUT, OPTIONS")
+@API.route("/public/<int:draft_id>", methods=["PUT", "OPTIONS"])
+class PublicDraftUpdateResourceById(Resource):
+    """Resource for updating the anonymous draft."""
+
+    @staticmethod
+    @profiletime
+    def put(draft_id: int):
+        """Update draft details."""
+        draft_json = request.get_json()
+        try:
+            draft_schema = DraftSchema()
+            dict_data = draft_schema.load(draft_json)
+            DraftService.update_draft(draft_id=draft_id, data=dict_data)
+            return (
+                f"Updated {draft_id} successfully",
+                HTTPStatus.OK,
+            )
+        except BusinessException as err:
+            # exception from draft service
+            current_app.logger.warning(err)
+            error, status = err.error, err.status_code
+            return error, status
+
+        except BaseException as submission_err:  # pylint: disable=broad-except
+            response, status = {
+                "type": "Bad request error",
+                "message": "Invalid request data",
+            }, HTTPStatus.BAD_REQUEST
+
+            current_app.logger.warning(response)
+            current_app.logger.warning(submission_err)
+
+            return response, status

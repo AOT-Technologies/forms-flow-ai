@@ -6,7 +6,8 @@ from typing import Dict
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import Application, Draft, FormProcessMapper
 from formsflow_api.schemas import DraftSchema
-from formsflow_api.utils import DRAFT_APPLICATION_STATUS
+from formsflow_api.utils import ANONYMOUS_USER, DRAFT_APPLICATION_STATUS
+from formsflow_api.utils.enums import FormProcessMapperStatus
 from formsflow_api.utils.user_context import UserContext, user_context
 
 from .application import ApplicationService
@@ -28,14 +29,12 @@ class DraftService:
 
     @classmethod
     @user_context
-    def create_new_draft(cls, application_payload, draft_payload, token, **kwargs):
+    def create_new_draft(cls, application_payload, draft_payload, token=None, **kwargs):
         """Creates a new draft entry and draft application."""
         user: UserContext = kwargs["user"]
-        user_id: str = user.user_name
+        user_id: str = user.user_name or ANONYMOUS_USER
         tenant_key = user.tenant_key
-        if token is not None:
-            # for anonymous form submission
-            application_payload["created_by"] = user_id
+        application_payload["created_by"] = user_id
         mapper = FormProcessMapper.find_form_by_form_id(application_payload["form_id"])
         if mapper is None:
             if tenant_key:
@@ -47,9 +46,19 @@ class DraftService:
                 f"Mapper does not exist with formId - {application_payload['form_id']}.",
                 HTTPStatus.BAD_REQUEST,
             )
+        if mapper.status == FormProcessMapperStatus.INACTIVE.value:
+            raise BusinessException(
+                f"Permission denied, formId - {application_payload['form_id']}.",
+                HTTPStatus.FORBIDDEN,
+            )
         if tenant_key is not None and mapper.tenant != tenant_key:
             raise BusinessException(
                 "Tenant authentication failed.", HTTPStatus.FORBIDDEN
+            )
+        if not token and not mapper.is_anonymous:
+            raise BusinessException(
+                f"Permission denied, formId - {application_payload['form_id']}.",
+                HTTPStatus.FORBIDDEN,
             )
         application_payload["form_process_mapper_id"] = mapper.id
 
@@ -88,7 +97,7 @@ class DraftService:
     def update_draft(draft_id: int, data, **kwargs):
         """Update draft."""
         user: UserContext = kwargs["user"]
-        user_id: str = user.user_name
+        user_id: str = user.user_name or ANONYMOUS_USER
         draft = Draft.find_by_id(draft_id, user_id)
         if draft:
             draft.update(data)
@@ -111,10 +120,10 @@ class DraftService:
 
     @staticmethod
     @user_context
-    def make_submission_from_draft(data: Dict, draft_id: str, token, **kwargs):
+    def make_submission_from_draft(data: Dict, draft_id: str, token=None, **kwargs):
         """Makes the draft into an application."""
         user: UserContext = kwargs["user"]
-        user_id: str = user.user_name
+        user_id: str = user.user_name or ANONYMOUS_USER
         draft = Draft.make_submission(draft_id, data, user_id)
         if not draft:
             response, status = {

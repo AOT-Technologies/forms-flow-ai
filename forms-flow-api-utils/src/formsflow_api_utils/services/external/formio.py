@@ -6,8 +6,8 @@ import jwt
 import requests
 from flask import current_app
 
-from formsflow_api.exceptions import BusinessException
-from formsflow_api.utils import cache
+from formsflow_api_utils.exceptions import BusinessException
+from formsflow_api_utils.utils import cache
 
 
 class FormioService:

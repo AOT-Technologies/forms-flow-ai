@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from seleniumwire import webdriver
-from formsflow_api.utils import CHROME_DRIVER_PATH
+from formsflow_api_utils.utils import CHROME_DRIVER_PATH
 
 
 def send_devtools(driver, cmd, params=None):

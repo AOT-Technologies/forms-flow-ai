@@ -26,7 +26,7 @@ def read_requirements(filename):
 REQUIREMENTS = read_requirements("requirements.txt")
 
 setuptools.setup(
-    name='formsflow_api',
+    name='formsflow_api_utils',
     version='1.0.0',
     author='AOT',
     description='Formsflow api related libraries.',

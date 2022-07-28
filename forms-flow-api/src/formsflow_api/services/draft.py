@@ -105,7 +105,6 @@ class DraftService:
         """Get all drafts."""
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
-        # tenant_key = user.tenant_key
         draft = Draft.find_all_active(user_id)
         draft_schema = DraftSchema()
         return draft_schema.dump(draft, many=True)

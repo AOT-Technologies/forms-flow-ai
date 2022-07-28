@@ -14,6 +14,7 @@ from .application import Application
 from .audit_mixin import AuditDateTimeMixin
 from .base_model import BaseModel
 from .db import db
+from .form_process_mapper import FormProcessMapper
 
 
 class Draft(AuditDateTimeMixin, BaseModel, db.Model):
@@ -54,6 +55,10 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         # return cls.query.get(draft_id)
         result = (
             cls.query.join(Application, Application.id == cls.application_id)
+            .join(
+                FormProcessMapper,
+                FormProcessMapper.id == Application.form_process_mapper_id,
+            )
             .filter(
                 and_(
                     cls.status == str(DraftStatus.ACTIVE.value),
@@ -61,15 +66,18 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
                     cls.id == draft_id,
                 )
             )
-            .first()
         )
-        return result
+        return FormProcessMapper.tenant_authorization(result).first()
 
     @classmethod
     def find_all_active(cls, user_name: str):
         """Fetch all active drafts."""
         result = (
             cls.query.join(Application, Application.id == cls.application_id)
+            .join(
+                FormProcessMapper,
+                Application.form_process_mapper_id == FormProcessMapper.id,
+            )
             .filter(
                 and_(
                     cls.status == str(DraftStatus.ACTIVE.value),
@@ -77,9 +85,8 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
                 )
             )
             .order_by(Draft.id.desc())
-            .all()
         )
-        return result
+        return FormProcessMapper.tenant_authorization(result).all()
 
     @classmethod
     def make_submission(cls, draft_id, data, user_id):

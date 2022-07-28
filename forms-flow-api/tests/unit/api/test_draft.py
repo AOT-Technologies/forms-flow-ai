@@ -1,5 +1,5 @@
 """Test suite for 'draft' namespace API endpoints."""
-from formsflow_api.models import Application, Draft
+from formsflow_api.models import Application, Draft, FormProcessMapper
 from formsflow_api.utils import DRAFT_APPLICATION_STATUS
 from tests.utilities.base_test import (
     get_application_create_payload,
@@ -126,3 +126,33 @@ def test_draft_submission_resource(app, client, session, jwt):
     assert draft.status == "0"
     assert draft.data == {}
     assert draft.application_id == response.json.get("id")
+
+
+def test_draft_tenant_authorization(app, client, session, jwt):
+    """Tests if the draft detail is tenant authorized."""
+    token = get_token(jwt, role="formsflow-designer", tenant_key="tenant1")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    rv = client.post("/form", headers=headers, json=get_form_request_payload())
+    form_id = rv.json.get("formId")
+    assert FormProcessMapper().find_form_by_form_id(form_id) is not None
+    assert FormProcessMapper().find_form_by_form_id(form_id).tenant == "tenant1"
+    response = client.post(
+        "/draft", headers=headers, json=get_draft_create_payload(form_id)
+    )
+    assert response.status_code == 201
+    draft_id = response.json.get("id")
+    rv = client.get(f"/draft/{draft_id}", headers=headers)
+    assert rv.status_code == 200
+
+    # tests if another tenant can get the draft created by different tenant
+    token = get_token(jwt, tenant_key="tenant2")
+    headers = {"Authorization": f"Bearer {token}", "content-type": "application/json"}
+    rv = client.get(f"/draft/{draft_id}", headers=headers)
+    assert rv.status_code == 400
+
+    # tests if a tenant can create a draft for a form created by different tenant
+    response = client.post(
+        "/draft", headers=headers, json=get_draft_create_payload(form_id)
+    )
+    assert response.status_code == 403
+    assert response.json == "Tenant authentication failed."

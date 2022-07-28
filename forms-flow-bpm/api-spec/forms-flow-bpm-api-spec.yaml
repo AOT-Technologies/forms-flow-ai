@@ -1739,7 +1739,7 @@ paths:
                     authorizationList:
                       - resourceId: ''
     parameters: []
-  /engine-rest-ext/tenant/authorization:
+  /engine-rest-ext/v1/tenant/authorization:
     get:
       summary: Your GET endpoint
       tags: []

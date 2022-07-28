@@ -5,23 +5,23 @@ from http import HTTPStatus
 from flask import current_app, make_response, render_template, request
 from flask_restx import Namespace, Resource
 
-from formsflow_api.exceptions import BusinessException
+from formsflow_api_utils.exceptions import BusinessException
 
-from formsflow_api.services import (
+from formsflow_api_utils.services import (
     FormioService,
 )
-from formsflow_api.utils import (
+from formsflow_api_utils.utils import (
     REVIEWER_GROUP,
     auth,
     cors_preflight,
     profiletime,
 )
-from formsflow_api.utils.pdf import get_pdf_from_html, pdf_response
+from formsflow_api_utils.utils.pdf import get_pdf_from_html, pdf_response
 
 API = Namespace("Form", description="Form")
 
 
-@API.route("/<string:form_id>/submission/<string:submission_id>/render")
+@API.route("/<string:form_id>/submission/<string:submission_id>/render", methods=["GET"])
 class FormResourceRenderFormPdf(Resource):
     """Resource to render form and submission details as html."""
 

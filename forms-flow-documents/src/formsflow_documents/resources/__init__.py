@@ -6,9 +6,9 @@ Uses restx namespaces to mount individual api endpoints into the service.
 from flask_jwt_oidc import AuthError
 from flask_restx import Api
 
-from formsflow_api.exceptions import BusinessException
-from formsflow_api.resources.form_process_mapper import API as FORM_API
-from formsflow_api.utils.constants import ALLOW_ALL_ORIGINS
+from formsflow_api_utils.exceptions import BusinessException
+from formsflow_documents.resources.form_process_mapper import API as FORM_API
+from formsflow_api_utils.utils.constants import ALLOW_ALL_ORIGINS
 
 # This will add the Authorize button to the swagger docs
 # oauth2 & openid may not yet be supported by restplus

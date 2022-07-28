@@ -2,7 +2,7 @@
 
 import logging
 from flask_script import Manager
-from formsflow_api import create_app
+from formsflow_documents import create_app
 
 
 APP = create_app()

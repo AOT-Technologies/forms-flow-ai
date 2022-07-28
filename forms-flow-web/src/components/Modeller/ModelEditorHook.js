@@ -173,6 +173,13 @@ const EditModel = React.memo(
       else if (document.getElementsByClassName(ERROR_CLASSNAME).length > 0) {
         return false;
       }
+
+      // Check for blank deployment name
+      if (!getDeploymentNames().deploymentName || getDeploymentNames().deploymentName == "" ){
+        toast.error(t("Deployment name is blank"));
+        return false;
+      }
+
       return true;
     };
 

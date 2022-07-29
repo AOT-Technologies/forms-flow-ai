@@ -1,9 +1,5 @@
 /* istanbul ignore file */
 import {
-  ROLES,
-  USER_RESOURCE_FORM_ID,
-  ANONYMOUS_USER,
-  ANONYMOUS_ID,
   FORMIO_JWT_SECRET,
   MULTITENANCY_ENABLED,
 } from "../constants/constants";
@@ -23,6 +19,7 @@ import {
 import { setLanguage } from "../actions/languageSetAction";
 import Keycloak from "keycloak-js";
 import { getTenantKeycloakJson } from "../apiManager/services/tenantServices";
+import { getFormioRoleIds } from "../apiManager/services/userservices";
 
 const jwt = require("jsonwebtoken");
 let KeycloakData, doLogin, doLogout;
@@ -63,21 +60,46 @@ const initKeycloak = (store, ...rest) => {
         store.dispatch(setLanguage(KeycloakData.tokenParsed.locale || "en"));
         //Set Cammunda/Formio Base URL
         setApiBaseUrlToLocalStorage();
+        // get formio roles
+        store.dispatch(
+          getFormioRoleIds((err, data) => {
+            if (err) {
+              console.error(err);
+            } else {
+              // filter the role based on keyclok role
+              let roles = [];
+              data.forEach((formioRole) => {
+                if (
+                  UserRoles.some((userRole) =>
+                    userRole.includes(formioRole.type.toLowerCase())
+                  )
+                ) {
+                  roles.push(formioRole.roleId);
+                }
+              });
 
-        let roles = [];
-        for (let i = 0; i < UserRoles.length; i++) {
-          const roleData = ROLES.find((x) => x.title === UserRoles[i]);
-          if (roleData) {
-            roles = roles.concat(roleData.id);
-          }
-        }
-        KeycloakData.loadUserInfo().then((res) =>
-          store.dispatch(setUserDetails(res))
+              const email = KeycloakData.tokenParsed.email || "external";
+              const resourceDetails = data.find(
+                (role) => role.type === "RESOURCE_ID"
+              );
+
+              authenticateFormio(
+                email,
+                roles,
+                resourceDetails?.roleId,
+                KeycloakData.tokenParsed?.tenantKey
+              );
+            
+              KeycloakData.loadUserInfo().then((res) =>
+                store.dispatch(setUserDetails(res))
+              );
+
+              // onAuthenticatedCallback();
+              done(null, KeycloakData);
+            }
+          })
         );
-        const email = KeycloakData.tokenParsed.email || "external";
-        authenticateFormio(email, roles, KeycloakData.tokenParsed?.tenantKey);
-        // onAuthenticatedCallback();
-        done(null, KeycloakData);
+
         refreshToken(store);
       } else {
         doLogout();
@@ -148,14 +170,7 @@ const getFormioToken = () => localStorage.getItem("formioToken");
   return KeycloakData.updateToken(5).then(successCallback).catch(doLogin);
 };*/
 
-const authenticateAnonymousUser = (store) => {
-  const user = ANONYMOUS_USER;
-  const roles = [ANONYMOUS_ID];
-  store.dispatch(setUserRole([user]));
-  authenticateFormio(user, roles);
-};
-
-const authenticateFormio = (user, roles, tenantKey) => {
+const authenticateFormio = (user, roles, resourceId, tenantKey) => {
   let tenantData = {};
   if (tenantKey && MULTITENANCY_ENABLED) {
     tenantData = { tenantKey };
@@ -164,7 +179,7 @@ const authenticateFormio = (user, roles, tenantKey) => {
     {
       external: true,
       form: {
-        _id: USER_RESOURCE_FORM_ID, // form.io form Id of user resource
+        _id: resourceId, // form.io form Id of user resource
       },
       user: {
         _id: user, // keep it like that
@@ -189,7 +204,6 @@ const UserService = {
   userLogout,
   getToken,
   getFormioToken,
-  authenticateAnonymousUser,
   setKeycloakJson,
 };
 

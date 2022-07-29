@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 import moment from "moment";
+import {AppConfig} from "../../config";
 
 export const taskSubmissionFormatter = (taskSubmissionData) => {
   const res = {};
@@ -81,18 +82,25 @@ export const getUserNamefromList = (userList, userId) => {
 //formURl is of https://base-url/form/:formId/submission/:submissionId
 // formURl is of https://base-url/public/form/:formId/submission/:submissionId
 export const getFormIdSubmissionIdFromURL = (formUrl) => {
-  let formString = "/form/";
-  let submissionString = "/submission/";
-  let firstPositionOfString = formUrl.indexOf("/form/");
-  let lastPositionOfString = formUrl.indexOf("/submission");
-  const formId = formUrl.substring(
-    firstPositionOfString + formString.length,
-    lastPositionOfString
-  );
-  let firstPositionOfSubmissionString =
-    formUrl.indexOf(submissionString) + submissionString.length;
-  const submissionId = formUrl.substring(firstPositionOfSubmissionString);
+  let formId, submissionId;
+  if(formUrl){
+    let formString = "/form/";
+    let submissionString = "/submission/";
+    let firstPositionOfString = formUrl.indexOf("/form/");
+    let lastPositionOfString = formUrl.indexOf("/submission");
+    formId = formUrl.substring(
+      firstPositionOfString + formString.length,
+      lastPositionOfString
+    );
+    let firstPositionOfSubmissionString =
+      formUrl.indexOf(submissionString) + submissionString.length;
+    submissionId = formUrl.substring(firstPositionOfSubmissionString);
+  }
   return { formId, submissionId };
+};
+
+export const getFormUrlWithFormIdSubmissionId = (formId, submissionId) => {
+  return `${AppConfig.projectUrl}/form/${formId}/submission/${submissionId}`;
 };
 
 export const getFormUrl = (formId, submissionId, redirectUrl) => {
@@ -154,7 +162,7 @@ export const listProcess = (processes) => {
       return {
         label: process.name,
         value: process.key,
-        tenant: process.tenantKey,
+        tenant: process.tenantId,
       };
     });
     return data;

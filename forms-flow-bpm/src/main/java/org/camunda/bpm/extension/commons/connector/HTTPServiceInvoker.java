@@ -22,6 +22,7 @@ import java.util.logging.Logger;
 @Component("httpServiceInvoker")
 public class HTTPServiceInvoker {
 	
+	private static final String FORMIO_URL = "formio.url";
 	private static final String API_URL = "api.url";
 	private static final String BPM_URL = "bpm.url";
 	private static final String ANALYSIS_URL = "analysis.url";
@@ -64,9 +65,10 @@ public class HTTPServiceInvoker {
 			return BPM_ACCESS_HANDLER;
 		} else if (isUrlValid(url, fetchUrlFromProperty(ANALYSIS_URL))) {
 			return TEXT_ANALYZER_ACCESS_HANDLER;
-		} else {
+		} else if (isUrlValid(url, fetchUrlFromProperty(FORMIO_URL))) {
 			return FORM_ACCESS_HANDLER;
 		}
+ 		return "";
     }
 	
 	private String fetchUrlFromProperty(String key) {

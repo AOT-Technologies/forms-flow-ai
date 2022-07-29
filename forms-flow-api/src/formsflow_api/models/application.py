@@ -27,8 +27,10 @@ class Application(
     form_process_mapper_id = db.Column(
         db.Integer, db.ForeignKey("form_process_mapper.id"), nullable=False
     )
-    form_url = db.Column(db.String(500), nullable=True)
     process_instance_id = db.Column(db.String(100), nullable=True)
+    # Submission id will be null for drafts
+    submission_id = db.Column(db.String(100), nullable=True)
+    latest_form_id = db.Column(db.String(100), nullable=False)
 
     @classmethod
     def create_from_dict(cls, application_info: dict) -> Application:
@@ -40,7 +42,8 @@ class Application(
             application.form_process_mapper_id = application_info[
                 "form_process_mapper_id"
             ]
-            application.form_url = application_info["form_url"]
+            application.submission_id = application_info["submission_id"]
+            application.latest_form_id = application_info["form_id"]
             application.save()
             return application
         return None
@@ -50,7 +53,8 @@ class Application(
         self.update_from_dict(
             [
                 "application_status",
-                "form_url",
+                "submission_id",
+                "latest_form_id",
                 "form_process_mapper_id",
                 "process_instance_id",
                 "modified_by",
@@ -75,7 +79,8 @@ class Application(
             FormProcessMapper.query.with_entities(
                 cls.id,
                 cls.application_status,
-                cls.form_url,
+                cls.submission_id,
+                cls.latest_form_id,
                 cls.form_process_mapper_id,
                 cls.process_instance_id,
                 cls.created_by,
@@ -96,7 +101,11 @@ class Application(
     @classmethod
     def find_all_application_status(cls):
         """Find all application status."""
-        return cls.query.distinct(Application.application_status).all()
+        query = cls.query.join(
+            FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+        ).distinct(Application.application_status)
+        query = cls.tenant_authorization(query)
+        return query
 
     @classmethod
     def find_by_ids(cls, application_ids) -> Application:
@@ -152,7 +161,8 @@ class Application(
         query = query.add_columns(
             cls.id,
             cls.application_status,
-            cls.form_url,
+            cls.submission_id,
+            cls.latest_form_id,
             cls.form_process_mapper_id,
             cls.process_instance_id,
             cls.created_by,
@@ -202,7 +212,8 @@ class Application(
             .add_columns(
                 cls.id,
                 cls.application_status,
-                cls.form_url,
+                cls.submission_id,
+                cls.latest_form_id,
                 cls.form_process_mapper_id,
                 cls.process_instance_id,
                 cls.created_by,
@@ -230,7 +241,7 @@ class Application(
             cls.query.join(
                 FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
             )
-            .filter(Application.form_url.like("%" + form_id + "%"))
+            .filter(cls.latest_form_id == form_id)
             .order_by(Application.id.desc())
         )
         if page_no == 0:
@@ -307,7 +318,8 @@ class Application(
             .add_columns(
                 cls.id,
                 cls.application_status,
-                cls.form_url,
+                cls.submission_id,
+                cls.latest_form_id,
                 cls.form_process_mapper_id,
                 cls.process_instance_id,
                 cls.created_by,
@@ -339,7 +351,8 @@ class Application(
             .add_columns(
                 cls.id,
                 cls.application_status,
-                cls.form_url,
+                cls.submission_id,
+                cls.latest_form_id,
                 cls.form_process_mapper_id,
                 cls.process_instance_id,
                 cls.created_by,
@@ -361,8 +374,7 @@ class Application(
             cls.query.join(
                 FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
             )
-            .filter(Application.form_url.like("%" + form_id + "%"))
-            .filter(Application.created_by == user_id)
+            .filter(and_(cls.latest_form_id == form_id, cls.created_by == user_id))
             .order_by(Application.id.desc())
         )
         if page_no == 0:
@@ -376,21 +388,16 @@ class Application(
     @classmethod
     def find_by_form_ids(cls, form_ids, page_no: int, limit: int):
         """Fetch application based on multiple form ids."""
+        result = cls.query.join(
+            FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+        )
         if page_no == 0:
-            result = cls.query.filter(
-                or_(
-                    Application.form_url.like("%" + form_id + "%")
-                    for form_id in form_ids
-                )
+            result.filter(
+                or_(cls.latest_form_id == form_id for form_id in form_ids)
             ).order_by(Application.id.desc())
         else:
-            result = (
-                cls.query.filter(
-                    or_(
-                        Application.form_url.like("%" + form_id + "%")
-                        for form_id in form_ids
-                    )
-                )
+            result.filter(
+                or_(cls.latest_form_id == form_id for form_id in form_ids)
                 .order_by(Application.id.desc())
                 .paginate(page_no, limit, False)
                 .items
@@ -402,7 +409,7 @@ class Application(
         """Fetch all application."""
         query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
-        ).filter(Application.form_url.like("%" + form_id + "%"))
+        ).filter(cls.latest_form_id == form_id)
         return cls.tenant_authorization(query=query).count()
 
     @classmethod
@@ -412,7 +419,7 @@ class Application(
             cls.query.join(
                 FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
             )
-            .filter(Application.form_url.like("%" + form_id + "%"))
+            .filter(cls.latest_form_id == form_id)
             .filter(Application.created_by == user_id)
         )
         return cls.tenant_authorization(query=query).count()
@@ -452,6 +459,7 @@ class Application(
                 FormProcessMapper.version,
             )
         )
+        result_proxy = cls.tenant_authorization(result_proxy)
         if form_name:
             result_proxy = result_proxy.filter(
                 FormProcessMapper.form_name.ilike(f"%{form_name}%")
@@ -466,7 +474,6 @@ class Application(
             )
         pagination = result_proxy.paginate(page_no, limit)
         total_count = result_proxy.count()
-        result_proxy = cls.tenant_authorization(result_proxy)
         return pagination.items, total_count
 
     @classmethod
@@ -504,6 +511,7 @@ class Application(
                 FormProcessMapper.version,
             )
         )
+        result_proxy = cls.tenant_authorization(result_proxy)
         if form_name:
             result_proxy = result_proxy.filter(
                 FormProcessMapper.form_name.ilike(f"%{form_name}%")
@@ -518,7 +526,6 @@ class Application(
             )
         pagination = result_proxy.paginate(page_no, limit)
         total_count = result_proxy.count()
-        result_proxy = cls.tenant_authorization(result_proxy)
         return pagination.items, total_count
 
     @classmethod

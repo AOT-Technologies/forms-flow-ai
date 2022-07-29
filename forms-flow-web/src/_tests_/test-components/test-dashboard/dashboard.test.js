@@ -33,7 +33,7 @@ function renderWithRouterMatch(
   };
 }
 
-it("Should render the dashboard without breaking", () => {
+it.skip("Should render the dashboard without breaking", () => {
   const spy = jest.spyOn(redux, "useSelector");
   spy.mockImplementation((callback) =>
     callback({

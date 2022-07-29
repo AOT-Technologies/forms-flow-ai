@@ -46,18 +46,9 @@ export const KEYCLOAK_URL =
   process.env.REACT_APP_KEYCLOAK_URL;
 export const KEYCLOAK_AUTH_URL = `${KEYCLOAK_URL}/auth`;
 
-export const CLIENT =
-  (window._env_ && window._env_.REACT_APP_CLIENT_ROLE) ||
-  process.env.REACT_APP_CLIENT_ROLE ||
-  "formsflow-client";
-export const STAFF_DESIGNER =
-  (window._env_ && window._env_.REACT_APP_STAFF_DESIGNER_ROLE) ||
-  process.env?.REACT_APP_STAFF_DESIGNER_ROLE ||
-  "formsflow-designer";
-export const STAFF_REVIEWER =
-  (window._env_ && window._env_.REACT_APP_STAFF_REVIEWER_ROLE) ||
-  process.env.REACT_APP_STAFF_REVIEWER_ROLE ||
-  "formsflow-reviewer";
+export const CLIENT = "formsflow-client";
+export const STAFF_DESIGNER = "formsflow-designer";
+export const STAFF_REVIEWER = "formsflow-reviewer";
 export const ANONYMOUS_USER = "anonymous";
 
 export const FORMIO_JWT_SECRET =
@@ -65,45 +56,8 @@ export const FORMIO_JWT_SECRET =
   process.env.REACT_APP_FORMIO_JWT_SECRET ||
   "--- change me now ---";
 
-export const USER_RESOURCE_FORM_ID =
-  (window._env_ && window._env_.REACT_APP_USER_RESOURCE_FORM_ID) ||
-  process.env.REACT_APP_USER_RESOURCE_FORM_ID;
 
-const CLIENT_ID =
-  (window._env_ && window._env_.REACT_APP_CLIENT_ID) ||
-  process.env.REACT_APP_CLIENT_ID;
-const STAFF_REVIEWER_ID =
-  (window._env_ && window._env_.REACT_APP_STAFF_REVIEWER_ID) ||
-  process.env.REACT_APP_STAFF_REVIEWER_ID;
-const STAFF_DESIGNER_ID =
-  (window._env_ && window._env_.REACT_APP_STAFF_DESIGNER_ID) ||
-  process.env.REACT_APP_STAFF_DESIGNER_ID;
-export const ANONYMOUS_ID =
-  (window._env_ && window._env_.REACT_APP_ANONYMOUS_ID) ||
-  process.env.REACT_APP_ANONYMOUS_ID;
-
-export const ROLES = [
-  {
-    id: CLIENT_ID,
-    title: CLIENT,
-  },
-  {
-    id: STAFF_REVIEWER_ID,
-    title: STAFF_REVIEWER,
-  },
-  {
-    id: STAFF_DESIGNER_ID,
-    title: STAFF_DESIGNER,
-  },
-];
-
-export const FORM_ACCESS = [
-  {
-    type: "read_all",
-    roles: [CLIENT_ID, STAFF_REVIEWER_ID, STAFF_DESIGNER_ID],
-  },
-];
-
+ 
 export const OPERATIONS = {
   insert: {
     action: "insert",
@@ -185,41 +139,4 @@ export const OPERATIONS = {
 
 export const PageSizes = [5, 10, 25, 50, 100, "all"];
 
-export const SUBMISSION_ACCESS = [
-  {
-    roles: [STAFF_DESIGNER_ID],
-    type: "create_all",
-  },
-  {
-    roles: [STAFF_REVIEWER_ID],
-    type: "read_all",
-  },
-  {
-    roles: [STAFF_REVIEWER_ID],
-    type: "update_all",
-  },
-  {
-    roles: [STAFF_DESIGNER_ID, STAFF_REVIEWER_ID],
-    type: "delete_all",
-  },
-  {
-    roles: [CLIENT_ID],
-    type: "create_own",
-  },
-  // {
-  //   roles: [CLIENT_ID],
-  //   type: "create_own",
-  // },
-  {
-    roles: [CLIENT_ID],
-    type: "read_own",
-  },
-  {
-    roles: [CLIENT_ID],
-    type: "update_own",
-  },
-  {
-    roles: [STAFF_REVIEWER_ID],
-    type: "delete_own",
-  },
-];
+ 

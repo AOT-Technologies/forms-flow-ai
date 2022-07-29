@@ -1,3 +1,18 @@
+/*
+
+Comment by Devin Bushey:
+
+This file is used for the bpmn-js-bpmnlint rules.
+
+It was created using the following command:
+bpmnlint-pack-config -c .bpmnlintrc -o bundled-config.js
+
+Refer to https://github.com/bpmn-io/bpmn-js-bpmnlint for documentation
+
+// TODO: Allow the user to modify these rules, possibly using the .env file
+
+*/
+
 /* eslint-disable */
 function getAugmentedNamespace(n) {
 	if (n.__esModule) return n;

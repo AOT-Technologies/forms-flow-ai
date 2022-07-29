@@ -237,24 +237,6 @@ const Create = React.memo((props) => {
             </div>
           </div>
           <div className="col-lg-4 col-md-4 col-sm-4">
-            <div id="form-group-tags" className="form-group">
-              <label htmlFor="tags" className="control-label">
-                Tags
-              </label>
-              <div className="input-group">
-                <input
-                  type="text"
-                  className="form-control"
-                  id="tags"
-                  placeholder="Enter tags"
-                  style={{ textTransform: "lowercase", width: "120px" }}
-                  value={form.tags || ""}
-                  onChange={(event) => handleChange("tags", event)}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-4 col-md-4 col-sm-4">
             <div
               id="form-group-anonymous"
               className="form-group"

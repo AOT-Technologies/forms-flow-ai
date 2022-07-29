@@ -110,16 +110,16 @@ const List = React.memo((props) => {
       dispatch(setFormCheckList([]));
     })
   }
-
+  
   const uploadClick = e => {
     dispatch(setFormUploadList([]));
     e.preventDefault();
     uploadFormNode.current?.click();
     return false;
   };
-
+   
   const resetForms = ()=>{
-    isDesigner ?  dispatch(indexForms('forms', 1, {query:{ ...forms.query, title__regex: "", tags:["mechanical"] }})) :
+  isDesigner ?  dispatch(indexForms('forms', 1, {query:{ ...forms.query, title__regex: "" }})) :
   dispatch(setBpmFormSearch(''));
   }
 
@@ -186,7 +186,7 @@ const List = React.memo((props) => {
     <>
       <FileModal modalOpen={showFormUploadModal} onClose={() => setShowFormUploadModal(false)}/>
       {
-        (forms.isActive || isBPMFormListLoading ) && !searchFormLoading  ?
+        (forms.isActive || isBPMFormListLoading ) && !searchFormLoading  ? 
         <div data-testid="Form-list-component-loader"><Loading/></div> :
           <div className="container">
                <Confirm
@@ -261,7 +261,7 @@ const List = React.memo((props) => {
                operations={operations}
                onPageSizeChanged={onPageSizeChanged}
              />: <span>
-                  <div
+                  <div 
                     className="container"
                     style={{
                     maxWidth:"900px",
@@ -270,8 +270,8 @@ const List = React.memo((props) => {
                     display:"flex",
                     flexDirection:"column",
                     alignItems:"center",
-                    justifyContent:"center"}}>
-                  <h3 >No forms found </h3>
+                    justifyContent:"center"}}> 
+                  <h3 >No forms found </h3> 
                  <Button variant="outline-primary" size="sm"
                  style={{
                    cursor:"pointer"}}
@@ -280,8 +280,8 @@ const List = React.memo((props) => {
                  Click here to go back
                 </Button>
                   </div>
-
-
+                 
+                    
                   </span>
               }
               </LoadingOverlay>
@@ -334,7 +334,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
         //   dispatch(push(`/form/${form._id}/edit`));
         //   break;
         case "delete":
-          dispatch(setIsApplicationCountLoading(true))
+          dispatch(setIsApplicationCountLoading(true)) 
           dispatch(getFormProcesses(form._id,(err,data)=>{
             const formDetails = {
               modalOpen: true,
@@ -346,13 +346,13 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
                 dispatch(setIsApplicationCountLoading(false));
                 dispatch(setFormDeleteStatus(formDetails));
               }));
-
+             
             }else{
               dispatch(setIsApplicationCountLoading(false));
                 dispatch(setFormDeleteStatus(formDetails));
             }
           }))
-
+          
           break;
         case "viewForm":
           dispatch(resetFormProcessData())
@@ -364,7 +364,7 @@ const mapDispatchToProps = (dispatch,state, ownProps) => {
     },
     onYes: (formId, forms,formData) => {
     if(formData.id){
-      dispatch(unPublishForm(formData.id))
+      dispatch(unPublishForm(formData.id)) 
       dispatch(
         deleteForm("form", formId, (err) => {
           if (!err) {

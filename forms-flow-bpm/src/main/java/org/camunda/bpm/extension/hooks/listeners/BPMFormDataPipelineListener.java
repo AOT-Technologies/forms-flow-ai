@@ -10,7 +10,6 @@ import org.camunda.bpm.engine.delegate.Expression;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.extension.commons.connector.HTTPServiceInvoker;
-import org.springframework.beans.factory.annotation.Value;
 
 import org.camunda.bpm.extension.hooks.exceptions.FormioServiceException;
 import org.camunda.bpm.extension.hooks.listeners.data.FormElement;
@@ -26,7 +25,11 @@ import javax.annotation.Resource;
 import javax.inject.Named;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.HashMap;
 
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 /**
@@ -74,6 +77,7 @@ public class BPMFormDataPipelineListener extends BaseListener implements TaskLis
             LOGGER.error("Unable to read submission for Empty Url string");
         } else {
             if (enableCustomSubmission){
+                //Form submission data to custom data store using custom url.
                 response = httpServiceInvoker.execute(getUrl(execution), HttpMethod.PATCH, getModifiedFormElementsCustomSubmission(execution));        
             } else{
                response = httpServiceInvoker.execute(getUrl(execution), HttpMethod.PATCH, getModifiedFormElements(execution));

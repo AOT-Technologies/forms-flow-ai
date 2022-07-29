@@ -21,12 +21,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import  com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.beans.factory.annotation.Value;
 
 
 import javax.annotation.Resource;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.APPLICATION_ID;
@@ -59,6 +63,7 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
             Boolean enableCustomSubmission = Boolean.valueOf(integrationCredentialProperties.getProperty("forms.enableCustomSubmission"));
             if(response.getStatusCode().value() == HttpStatus.OK.value() && response.getBody() != null) {
                 if (enableCustomSubmission) {
+                    //Form submission data to custom data store using custom url.
                     prepareAndPatchFormDataCustomSubmission(execution, (TextSentimentRequest) response.getBody());
                 }else{
                     prepareAndPatchFormData(execution, (TextSentimentRequest) response.getBody());
@@ -113,10 +118,10 @@ public class FormTextAnalysisDelegate implements JavaDelegate {
         Map<String, Map<String, Map<String, String>>> payload = new HashMap<>();
         if(textSentimentRequest.getData() != null) {
             for (TextSentimentData textSentimentData : textSentimentRequest.getData()) {
-                Map<String,String> sentiment_data = new HashMap<>();
-                sentiment_data.put("overallSentiment",
+                Map<String,String> sentimentData = new HashMap<>();
+                sentimentData.put("overallSentiment",
                         textSentimentData.getOverallSentiment());
-                dataMap.put(String.valueOf(textSentimentData.getElementId()), sentiment_data);
+                dataMap.put(String.valueOf(textSentimentData.getElementId()), sentimentData);
             }
             payload.put("data", dataMap);
         }

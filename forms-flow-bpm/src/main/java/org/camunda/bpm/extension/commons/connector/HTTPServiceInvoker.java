@@ -8,7 +8,6 @@ import org.camunda.bpm.extension.commons.ro.res.IResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.Resource;
 import java.io.IOException;
@@ -68,8 +67,8 @@ public class HTTPServiceInvoker {
 			return BPM_ACCESS_HANDLER;
 		} else if (isUrlValid(url, fetchUrlFromProperty(ANALYSIS_URL))) {
 			return TEXT_ANALYZER_ACCESS_HANDLER;
-		} else if (enableCustomSubmission) {
-			return CUSTOM_SUBMISSION_ACCESS_HANDLER;
+		} else if (enableCustomSubmission && StringUtils.contains(url, "/submission")) {
+                return CUSTOM_SUBMISSION_ACCESS_HANDLER;
 		} else if (isUrlValid(url, fetchUrlFromProperty(FORMIO_URL))) {
 			return FORM_ACCESS_HANDLER;
         } 

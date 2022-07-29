@@ -107,7 +107,7 @@ class Application(
         query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
         ).distinct(Application.application_status)
-        query = cls.tenant_authorization(query)
+        query = FormProcessMapper.tenant_authorization(query)
         return query
 
     @classmethod

@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import java.util.Map;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static org.camunda.bpm.extension.commons.utils.VariableConstants.FORM_URL;
@@ -44,19 +43,10 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
     @Autowired
     private FormSubmissionService formSubmissionService;
 
-    @Autowired
-    private Properties integrationCredentialProperties;
-
     @Override
     public void notify(DelegateTask delegateTask) {
         try {
-            String submissionId = "";
-           if (enableCustomSubmission()){
-               submissionId = createSubmission(getCustomUrl(delegateTask), getNewFormSubmissionUrl(delegateTask), delegateTask);
-           }
-           else {
-               submissionId = createSubmission(getFormUrl(delegateTask), getNewFormSubmissionUrl(delegateTask), delegateTask);
-           }
+            String submissionId = createSubmission(getFormUrl(delegateTask),getNewFormSubmissionUrl(delegateTask), delegateTask);
             if(StringUtils.isNotBlank(submissionId)) {
                 delegateTask.getExecution().setVariable(FORM_URL, getModifiedFormUrl(delegateTask,submissionId));
             }
@@ -171,13 +161,7 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
      * @return
      */
     private String getNewFormSubmissionUrl(DelegateTask delegateTask) throws IOException {
-        String formUrl = "";
-        if (enableCustomSubmission()){
-            formUrl = getCustomUrl(delegateTask);
-        }
-        else {
-            formUrl = getFormUrl(delegateTask);
-        }
+        String formUrl = getFormUrl(delegateTask);
         return StringUtils.replace(formUrl, StringUtils.substringBetween(formUrl, "form/", "/submission"), getFormId(delegateTask));
     }
 
@@ -202,24 +186,5 @@ public class FormConnectorListener extends BaseListener implements TaskListener 
         String formUrl = StringUtils.substringBefore(getFormUrl(delegateTask),"/form/");
         return formUrl+ "/form/" + getFormId(delegateTask) + "/submission/" + submissionId;
     }
-
-    /**
-     * Returns the custom submisson  url
-     * @param delegateTask
-     * @return
-     */
-    private String getCustomUrl(DelegateTask delegateTask) throws IOException {
-        String formUrl = StringUtils.substringAfter(getFormUrl(delegateTask),"/form/");
-        return integrationCredentialProperties.getProperty("forms.custom_submission.url") + "/form/" + formUrl;
-    }
-
-    /**
-     * Returns the custom submisson enabled or not
-     * @return
-     */
-    private Boolean enableCustomSubmission(){
-        return Boolean.valueOf(integrationCredentialProperties.getProperty("forms.enableCustomSubmission"));
-    }
-
 
 }

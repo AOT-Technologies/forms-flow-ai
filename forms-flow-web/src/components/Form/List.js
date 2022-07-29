@@ -16,10 +16,8 @@ import {
 } from "react-formio";
 import Loading from "../../containers/Loading";
 import {
-  FORM_ACCESS,
   MULTITENANCY_ENABLED,
   STAFF_DESIGNER,
-  SUBMISSION_ACCESS,
 } from "../../constants/constants";
 import "../Form/List.scss";
 import {
@@ -51,16 +49,12 @@ import { unPublishForm } from "../../apiManager/services/processServices";
 import { setBpmFormSearch } from "../../actions/formActions";
 import { checkAndAddTenantKey } from "../../helper/helper";
 import { formCreate } from "../../apiManager/services/FormServices";
-import {
-  designerColums,
-  getoptions,
-  userColumns,
-} from "./constants/table";
+import { designerColums, getoptions, userColumns } from "./constants/table";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import filterFactory from "react-bootstrap-table2-filter";
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
-import { ASCENDING,DESCENDING } from "./constants/formListConstants";
+import { ASCENDING, DESCENDING } from "./constants/formListConstants";
 
 const List = React.memo((props) => {
   const { t } = useTranslation();
@@ -104,6 +98,9 @@ const List = React.memo((props) => {
   const designerPage = forms.pagination.page;
   const designerLimit = forms.limit;
   const designTotalForms = forms.pagination.total;
+  const formAccess = useSelector((state) => state.user?.formAccess || []);
+
+  const submissionAccess = useSelector((state) => state.user?.submissionAccess || []);
 
   const searchFormLoading = useSelector(
     (state) => state.formCheckList.searchFormLoading
@@ -176,21 +173,21 @@ const List = React.memo((props) => {
   };
   const handlePageChange = (type, newState) => {
     dispatch(setFormSearchLoading(true));
-    let updatedQuery = {query:{...query}};
+    let updatedQuery = { query: { ...query } };
     if (type === "sort") {
       if (isDesigner) {
         updatedQuery.sort = `${isAscending ? "-" : ""}title`;
-      }else{
-        let updatedSort;
-      if (sortOrder === ASCENDING) {
-        updatedSort = DESCENDING;
-        dispatch(setBPMFormListSort(updatedSort));
       } else {
-        updatedSort = ASCENDING;
-        dispatch(setBPMFormListSort(updatedSort));
+        let updatedSort;
+        if (sortOrder === ASCENDING) {
+          updatedSort = DESCENDING;
+          dispatch(setBPMFormListSort(updatedSort));
+        } else {
+          updatedSort = ASCENDING;
+          dispatch(setBPMFormListSort(updatedSort));
+        }
       }
-      }
-    }else if (type === "filter") {
+    } else if (type === "filter") {
       let searchTitle = Object.keys(newState.filters).length
         ? newState.filters.title.filterVal
         : "";
@@ -206,7 +203,7 @@ const List = React.memo((props) => {
         indexForms(
           "forms",
           newState.page,
-          { limit: newState.sizePerPage ,...updatedQuery},
+          { limit: newState.sizePerPage, ...updatedQuery },
           () => {
             dispatch(setFormSearchLoading(false));
           }
@@ -236,8 +233,8 @@ const List = React.memo((props) => {
                 tags: ["common"],
                 ...tenantDetails,
               };
-              newFormData.access = FORM_ACCESS;
-              newFormData.submissionAccess = SUBMISSION_ACCESS;
+              newFormData.access = formAccess;
+              newFormData.submissionAccess = submissionAccess;
               formCreate(newFormData, (err) => {
                 Formio.cache = {}; //removing cache
                 if (err) {
@@ -317,7 +314,7 @@ const List = React.memo((props) => {
           }}
         >
           <h3>{t("No forms found")}</h3>
-         <p>{t("Please change the selected filters to view Forms")}</p>
+          <p>{t("Please change the selected filters to view Forms")}</p>
         </div>
       </span>
     );
@@ -365,7 +362,7 @@ const List = React.memo((props) => {
             }
             onNo={() => onNo()}
             onYes={(e) => {
-              onYes(e,formId, forms, formProcessData, path, formCheckList);
+              onYes(e, formId, forms, formProcessData, path, formCheckList);
             }}
           />
           <div className="flex-container">
@@ -451,7 +448,6 @@ const List = React.memo((props) => {
                           filter: true,
                           sort: true,
                         }}
-                      
                         Loading={isLoading}
                         filter={filterFactory()}
                         filterPosition={"top"}
@@ -537,7 +533,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
       dispatch(getInitForms(page, query));
     },
 
-    onYes: (e,formId, forms, formData, path, formCheckList) => {
+    onYes: (e, formId, forms, formData, path, formCheckList) => {
       e.currentTarget.disabled = true;
       dispatch(
         deleteForm("form", formId, (err) => {

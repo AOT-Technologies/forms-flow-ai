@@ -1,17 +1,37 @@
 import ACTION_CONSTANTS from "../actions/actionConstants";
-import { setShowApplications, setShowViewSubmissions } from "../helper/user";
+import {
+  setShowApplications,
+  setShowViewSubmissions,
+  setUserRolesToObject,
+} from "../helper/user";
 import { LANGUAGE } from "../constants/constants";
+import { setFormAndSubmissionAccess } from "../helper/access";
+
 const getLanguages = localStorage.getItem("languages");
+
+const roleIdsFromLocalStorage = localStorage.getItem("roleIds")
+  ? JSON.parse(localStorage.getItem("roleIds"))
+  : undefined;
+
 const initialState = {
   bearerToken: "",
   roles: "",
+  roleIds: roleIdsFromLocalStorage
+    ? setUserRolesToObject(roleIdsFromLocalStorage)
+    : {},
+  formAccess: roleIdsFromLocalStorage
+    ? setFormAndSubmissionAccess("formAccess", roleIdsFromLocalStorage)
+    : [],
+  submissionAccess: roleIdsFromLocalStorage
+    ? setFormAndSubmissionAccess("submissionAccess", roleIdsFromLocalStorage)
+    : [],
   userDetail: null,
   isAuthenticated: false,
   currentPage: "",
   showApplications: false,
   showViewSubmissions: false,
   lang: localStorage.getItem("lang") ? localStorage.getItem("lang") : LANGUAGE,
-  selectLanguages:getLanguages ? JSON.parse(getLanguages) : [],
+  selectLanguages: getLanguages ? JSON.parse(getLanguages) : [],
 };
 
 const user = (state = initialState, action) => {
@@ -39,7 +59,18 @@ const user = (state = initialState, action) => {
       return { ...state, lang: action.payload };
     case ACTION_CONSTANTS.SET_SELECT_LANGUAGES:
       localStorage.setItem("languages", JSON.stringify(action.payload));
-       return { ...state, selectLanguages: action.payload };
+      return { ...state, selectLanguages: action.payload };
+    case ACTION_CONSTANTS.ROLE_IDS:
+      return { ...state, roleIds: setUserRolesToObject(action.payload) };
+    case ACTION_CONSTANTS.ACCESS_ADDING:
+      return {
+        ...state,
+        formAccess: setFormAndSubmissionAccess("formAccess", action.payload),
+        submissionAccess: setFormAndSubmissionAccess(
+          "submissionAccess",
+          action.payload
+        ),
+      };
     default:
       return state;
   }

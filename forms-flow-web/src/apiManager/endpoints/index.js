@@ -46,7 +46,8 @@ const API = {
   EXPORT_FORM_PDF: `${WEB_BASE_URL}/form/<form_id>/submission/<submission_id>/export/pdf`,
   DRAFT_BASE:`${WEB_BASE_URL}/draft`,
   DRAFT_UPDATE:`${WEB_BASE_URL}/draft/<draft_id>`,
-  DRAFT_APPLICATION_CREATE: `${WEB_BASE_URL}/draft/<draft_id>/submit`
+  DRAFT_APPLICATION_CREATE: `${WEB_BASE_URL}/draft/<draft_id>/submit`,
+  FORMIO_ROLES: `${WEB_BASE_URL}/formio/roles`
 };
 
 export default API;

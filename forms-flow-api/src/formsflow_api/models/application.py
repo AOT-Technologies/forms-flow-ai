@@ -104,7 +104,11 @@ class Application(
     @classmethod
     def find_all_application_status(cls):
         """Find all application status."""
-        return cls.query.distinct(Application.application_status).all()
+        query = cls.query.join(
+            FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
+        ).distinct(Application.application_status)
+        query = cls.tenant_authorization(query)
+        return query
 
     @classmethod
     def find_by_ids(cls, application_ids) -> Application:

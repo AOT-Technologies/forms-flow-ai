@@ -32,19 +32,11 @@ objects:
         // runtime-config.js vars
           window["_env_"] =  {
             "NODE_ENV": "production",
-            "REACT_APP_CLIENT_ROLE": "formsflow-client",
-            "REACT_APP_STAFF_DESIGNER_ROLE": "formsflow-designer",
-            "REACT_APP_STAFF_REVIEWER_ROLE": "formsflow-reviewer",
-            "REACT_APP_CLIENT_ID": "${REACT_APP_CLIENT_ID}",
-            "REACT_APP_STAFF_REVIEWER_ID": "${REACT_APP_STAFF_REVIEWER_ID}",
-            "REACT_APP_STAFF_DESIGNER_ID": "${REACT_APP_STAFF_DESIGNER_ID}",
-            "REACT_APP_USER_RESOURCE_FORM_ID": "${REACT_APP_USER_RESOURCE_FORM_ID}",
             "REACT_APP_API_SERVER_URL": "${REACT_APP_API_SERVER_URL}",
             "REACT_APP_API_PROJECT_URL": "${REACT_APP_API_PROJECT_URL}",
             "REACT_APP_CAMUNDA_API_URI": "${REACT_APP_CAMUNDA_API_URI}",
             "REACT_APP_KEYCLOAK_CLIENT": "forms-flow-web",
             "REACT_APP_WEB_BASE_URL": "${REACT_APP_WEB_BASE_URL}",
-            "REACT_APP_ANONYMOUS_ID": "${REACT_APP_ANONYMOUS_ID}",
             "REACT_APP_WEBSOCKET_ENCRYPT_KEY": "{REACT_APP_WEBSOCKET_ENCRYPT_KEY}",
             "REACT_APP_KEYCLOAK_URL_REALM": "${REALM}",
             "REACT_APP_KEYCLOAK_URL": "${REACT_APP_KEYCLOAK_URL}",
@@ -219,31 +211,6 @@ parameters:
     value: /usr/share/nginx/html/config/
   - name: FFAWEB_URL
     displayName: FFAWEB_URL
-    description:
-      Route to access Forms Flow AI Web site
-    required: true
-  - name: REACT_APP_CLIENT_ID
-    displayName: REACT_APP_CLIENT_ID
-    description:
-      Route to access Forms Flow AI Web site
-    required: true
-  - name: REACT_APP_STAFF_REVIEWER_ID
-    displayName: REACT_APP_STAFF_REVIEWER_ID
-    description:
-      Route to access Forms Flow AI Web site
-    required: true
-  - name: REACT_APP_STAFF_DESIGNER_ID
-    displayName: REACT_APP_STAFF_DESIGNER_ID
-    description:
-      Route to access Forms Flow AI Web site
-    required: true
-  - name: REACT_APP_USER_RESOURCE_FORM_ID
-    displayName: REACT_APP_USER_RESOURCE_FORM_ID
-    description:
-      Route to access Forms Flow AI Web site
-    required: true
-  - name: REACT_APP_ANONYMOUS_ID
-    displayName: REACT_APPREACT_APP_ANONYMOUS_ID_CLIENT_ID
     description:
       Route to access Forms Flow AI Web site
     required: true

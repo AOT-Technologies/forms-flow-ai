@@ -216,7 +216,23 @@ export const RESOURCE_BUNDLES_DE = {
   "Form deleted successfully":"Form deleted successfully",
   "Form process failed":"Formularprozess fehlgeschlagen",
   "Form unpublishing Failed":"Das Aufheben der Veröffentlichung des Formulars ist fehlgeschlagen",
-  "All groups have access to the dashboard":"Alle Gruppen haben Zugriff auf das Dashboard"
+  "All groups have access to the dashboard":"Alle Gruppen haben Zugriff auf das Dashboard",
+  "Export PDF":"PDF exportieren",
+  "Something went wrong. Please try again!":"Etwas ist schief gelaufen. Bitte versuche es erneut!",
+  "No Dashboards Found":"Keine Dashboards gefunden",
+  "Processes":"Prozesse",
+  "Please select an existing workflow.":"Bitte wählen Sie einen bestehenden Workflow aus.",
+  "Create New":"Erstelle neu",
+  "Or import a workflow from a local directory.":"Oder importieren Sie einen Workflow aus einem lokalen Verzeichnis.",
+  "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo" 
+
+
+
+
+
+
+
+
 
 
 

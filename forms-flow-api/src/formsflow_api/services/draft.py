@@ -46,7 +46,9 @@ class DraftService:
                 f"Mapper does not exist with formId - {application_payload['form_id']}.",
                 HTTPStatus.BAD_REQUEST,
             )
-        if mapper.status == FormProcessMapperStatus.INACTIVE.value:
+        if (mapper.status == FormProcessMapperStatus.INACTIVE.value) or (
+            not token and not mapper.is_anonymous
+        ):
             raise BusinessException(
                 f"Permission denied, formId - {application_payload['form_id']}.",
                 HTTPStatus.FORBIDDEN,
@@ -54,11 +56,6 @@ class DraftService:
         if tenant_key is not None and mapper.tenant != tenant_key:
             raise BusinessException(
                 "Tenant authentication failed.", HTTPStatus.FORBIDDEN
-            )
-        if not token and not mapper.is_anonymous:
-            raise BusinessException(
-                f"Permission denied, formId - {application_payload['form_id']}.",
-                HTTPStatus.FORBIDDEN,
             )
         application_payload["form_process_mapper_id"] = mapper.id
 

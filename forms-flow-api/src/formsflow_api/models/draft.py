@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import uuid
 
-from sqlalchemy import update
+from sqlalchemy import and_, update
 from sqlalchemy.dialects.postgresql import JSON, UUID
 
 from formsflow_api.utils.enums import DraftStatus
@@ -14,6 +14,7 @@ from .application import Application
 from .audit_mixin import AuditDateTimeMixin
 from .base_model import BaseModel
 from .db import db
+from .form_process_mapper import FormProcessMapper
 
 
 class Draft(AuditDateTimeMixin, BaseModel, db.Model):
@@ -49,29 +50,49 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         self.commit()
 
     @classmethod
-    def find_by_id(cls, draft_id: int) -> Draft:
+    def find_by_id(cls, draft_id: int, user_id: str) -> Draft:
         """Find draft that matches the provided id."""
-        return cls.query.get(draft_id)
+        # return cls.query.get(draft_id)
+        result = (
+            cls.query.join(Application, Application.id == cls.application_id)
+            .join(
+                FormProcessMapper,
+                FormProcessMapper.id == Application.form_process_mapper_id,
+            )
+            .filter(
+                and_(
+                    cls.status == str(DraftStatus.ACTIVE.value),
+                    Application.created_by == user_id,
+                    cls.id == draft_id,
+                )
+            )
+        )
+        return FormProcessMapper.tenant_authorization(result).first()
 
     @classmethod
-    def find_all(cls):
-        """Fetch all draft entries."""
-        return cls.query.order_by(Draft.id.desc()).all()
-
-    @classmethod
-    def find_all_active(cls):
+    def find_all_active(cls, user_name: str):
         """Fetch all active drafts."""
         result = (
-            cls.query.filter(cls.status == str(DraftStatus.ACTIVE.value))
+            cls.query.join(Application, Application.id == cls.application_id)
+            .join(
+                FormProcessMapper,
+                Application.form_process_mapper_id == FormProcessMapper.id,
+            )
+            .filter(
+                and_(
+                    cls.status == str(DraftStatus.ACTIVE.value),
+                    Application.created_by == user_name,
+                )
+            )
             .order_by(Draft.id.desc())
-            .all()
         )
-        return result
+        return FormProcessMapper.tenant_authorization(result).all()
 
     @classmethod
-    def make_submission(cls, draft_id, data):
+    def make_submission(cls, draft_id, data, user_id):
         """Activates the application from the draft entry."""
-        draft = cls.query.get(draft_id)
+        # draft = cls.query.get(draft_id)
+        draft = cls.find_by_id(draft_id, user_id)
         if not draft:
             return None
         stmt = (

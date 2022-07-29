@@ -6,7 +6,8 @@ from typing import Dict
 from formsflow_api.exceptions import BusinessException
 from formsflow_api.models import Application, Draft, FormProcessMapper
 from formsflow_api.schemas import DraftSchema
-from formsflow_api.utils import DRAFT_APPLICATION_STATUS
+from formsflow_api.utils import ANONYMOUS_USER, DRAFT_APPLICATION_STATUS
+from formsflow_api.utils.enums import FormProcessMapperStatus
 from formsflow_api.utils.user_context import UserContext, user_context
 
 from .application import ApplicationService
@@ -28,14 +29,12 @@ class DraftService:
 
     @classmethod
     @user_context
-    def create_new_draft(cls, application_payload, draft_payload, token, **kwargs):
+    def create_new_draft(cls, application_payload, draft_payload, token=None, **kwargs):
         """Creates a new draft entry and draft application."""
         user: UserContext = kwargs["user"]
-        user_id: str = user.user_name
+        user_id: str = user.user_name or ANONYMOUS_USER
         tenant_key = user.tenant_key
-        if token is not None:
-            # for anonymous form submission
-            application_payload["created_by"] = user_id
+        application_payload["created_by"] = user_id
         mapper = FormProcessMapper.find_form_by_form_id(application_payload["form_id"])
         if mapper is None:
             if tenant_key:
@@ -46,6 +45,13 @@ class DraftService:
             raise BusinessException(
                 f"Mapper does not exist with formId - {application_payload['form_id']}.",
                 HTTPStatus.BAD_REQUEST,
+            )
+        if (mapper.status == FormProcessMapperStatus.INACTIVE.value) or (
+            not token and not mapper.is_anonymous
+        ):
+            raise BusinessException(
+                f"Permission denied, formId - {application_payload['form_id']}.",
+                HTTPStatus.FORBIDDEN,
             )
         if tenant_key is not None and mapper.tenant != tenant_key:
             raise BusinessException(
@@ -67,9 +73,12 @@ class DraftService:
         return draft
 
     @staticmethod
-    def get_draft(draft_id: int):
+    @user_context
+    def get_draft(draft_id: int, **kwargs):
         """Get submission."""
-        draft = Draft.find_by_id(draft_id=draft_id)
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
+        draft = Draft.find_by_id(draft_id=draft_id, user_id=user_id)
         if draft:
             draft_schema = DraftSchema()
             return draft_schema.dump(draft)
@@ -81,9 +90,12 @@ class DraftService:
         raise BusinessException(response, status)
 
     @staticmethod
-    def update_draft(draft_id: int, data):
+    @user_context
+    def update_draft(draft_id: int, data, **kwargs):
         """Update draft."""
-        draft = Draft.find_by_id(draft_id=draft_id)
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name or ANONYMOUS_USER
+        draft = Draft.find_by_id(draft_id, user_id)
         if draft:
             draft.update(data)
         else:
@@ -94,16 +106,22 @@ class DraftService:
             raise BusinessException(response, status)
 
     @staticmethod
-    def get_all_drafts():
+    @user_context
+    def get_all_drafts(**kwargs):
         """Get all drafts."""
-        draft = Draft.find_all_active()
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name
+        draft = Draft.find_all_active(user_id)
         draft_schema = DraftSchema()
         return draft_schema.dump(draft, many=True)
 
     @staticmethod
-    def make_submission_from_draft(data: Dict, draft_id: str, token):
+    @user_context
+    def make_submission_from_draft(data: Dict, draft_id: str, token=None, **kwargs):
         """Makes the draft into an application."""
-        draft = Draft.make_submission(draft_id, data)
+        user: UserContext = kwargs["user"]
+        user_id: str = user.user_name or ANONYMOUS_USER
+        draft = Draft.make_submission(draft_id, data, user_id)
         if not draft:
             response, status = {
                 "type": "Bad request error",

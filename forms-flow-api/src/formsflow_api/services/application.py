@@ -15,7 +15,7 @@ from formsflow_api.schemas import (
     FormProcessMapperSchema,
 )
 from formsflow_api.services.external import BPMService
-from formsflow_api.utils import NEW_APPLICATION_STATUS
+from formsflow_api.utils import DRAFT_APPLICATION_STATUS, NEW_APPLICATION_STATUS
 from formsflow_api.utils.user_context import UserContext, user_context
 
 from .form_process_mapper import FormProcessMapperService
@@ -239,7 +239,11 @@ class ApplicationService:
     def get_all_application_status():
         """Get all application status."""
         status_list = Application.find_all_application_status()
-        status_list = [x.application_status for x in status_list]
+        status_list = [
+            x.application_status
+            for x in status_list
+            if x.application_status != DRAFT_APPLICATION_STATUS
+        ]
         current_app.logger.debug(status_list)
         return {"applicationStatus": status_list}
 

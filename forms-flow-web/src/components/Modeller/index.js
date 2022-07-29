@@ -17,8 +17,9 @@ import {
   fetchAllBpmProcesses,
 } from "../../apiManager/services/processServices";
 
-import { DEFAULT_WORKFLOW, BLANK_PROCESS_XML } from "./constants/bpmnModellerConstants";
 import Button from "react-bootstrap/Button";
+
+import { createNewProcess } from "./helpers/helper";
 
 export default React.memo(() => {
     const { t } = useTranslation();
@@ -26,18 +27,19 @@ export default React.memo(() => {
     const process = useSelector((state) => state.process.processList);
     const processList = listProcess(process);
     const workflow = useSelector((state) => state.process.workflowAssociated);
-
+    const [defaultProcessInfo, setDefaultProcessInfo] = useState(createNewProcess());
     const [showModeller, setShowModeller] = useState(false);
     
-    // Populate workflows in dropdown on page load
+    // Populate workflows in dropdown on page load and show default workflow
     useEffect(() => {
       dispatch(fetchAllBpmProcesses());
     }, []);
 
     const handleListChange = (item) => {
+      setShowModeller(true);
       dispatch(setWorkflowAssociation(item[0]));
       // Clear the filename after the "Choose File" input button
-      if (item[0] !== DEFAULT_WORKFLOW){
+      if (item[0] !== defaultProcessInfo.defaultWorkflow){
         document.getElementById("inputWorkflow").value = "";
       }
     };
@@ -45,7 +47,7 @@ export default React.memo(() => {
     const handleFile = (e) => {
       const content = e.target.result;
       dispatch(setProcessDiagramXML(content));
-      dispatch(setWorkflowAssociation(DEFAULT_WORKFLOW));
+      dispatch(setWorkflowAssociation(defaultProcessInfo.defaultWorkflow));
       setShowModeller(true);
     };
     
@@ -53,11 +55,14 @@ export default React.memo(() => {
       let fileData = new FileReader();
       fileData.onloadend = handleFile;
       fileData.readAsText(file);
+      setShowModeller(true);
     };
     
     const handleCreateNew = () => {
-      dispatch(setProcessDiagramXML(BLANK_PROCESS_XML));
-      dispatch(setWorkflowAssociation(DEFAULT_WORKFLOW));
+      const newProcess = createNewProcess();
+      setDefaultProcessInfo(newProcess);
+      dispatch(setProcessDiagramXML(newProcess.defaultBlankProcessXML));
+      dispatch(setWorkflowAssociation(newProcess.defaultWorkflow));
       document.getElementById("inputWorkflow").value = "";
       setShowModeller(true);
     };
@@ -95,35 +100,45 @@ export default React.memo(() => {
                     {t("Please select an existing workflow.")}
                   </span>
                   <Select
-                    dropdownHeight="135px"
+                    dropdownHeight="100px"
                     options={processList}
                     onChange={handleListChange}
                     values={
-                      processList.length && workflow?.value ? [workflow] : []
+                      processList.length && workflow?.value && showModeller ? [workflow] : []
                     }
                   />
                 </Grid>
 
-                <Button className="btn-create-new" onClick={() => handleCreateNew()}>Create New</Button>
-                
-                <div className="import-container">
+                <div className="create-import-container">
+
                   <span className="fontsize-16">
-                    {t("Or import a workflow from a local directory.")}
+                    {t("Or create new workflow or import a workflow from a local directory.")}
                   </span>
-                  <br/>
-                  <input 
-                    id="inputWorkflow"
-                    type="file" 
-                    accept=".bpmn" 
-                    onChange={e => handleChangeFile(e.target.files[0])} 
-                  />
+
+                  <div className="create-import-btns-container">
+
+                    <Button className="btn-create-new" onClick={() => handleCreateNew()}>Create New</Button>
+
+                    <span className="fontsize-16 or-txt">
+                    {t(" ")}
+                    </span>
+                    
+                    <input 
+                        id="inputWorkflow"
+                        type="file" 
+                        accept=".bpmn" 
+                        onChange={e => handleChangeFile(e.target.files[0])} 
+                      />
+
+                  </div>
                 </div>
 
-                {(processList.length && workflow?.value) || showModeller ? (
+                {(processList.length && workflow?.value) && showModeller ? (
                   <div>
                     <EditModel
                       processKey={workflow?.value}
                       tenant={workflow?.tenant}
+                      defaultProcessInfo={defaultProcessInfo}
                     />
                   </div>
                 ) : null}

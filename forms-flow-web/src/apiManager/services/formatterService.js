@@ -162,7 +162,7 @@ export const listProcess = (processes) => {
       return {
         label: process.name,
         value: process.key,
-        tenant: process.tenantKey,
+        tenant: process.tenantId,
       };
     });
     return data;

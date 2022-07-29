@@ -170,7 +170,7 @@ const Dashboard = React.memo(() => {
   const noOfApplicationsAvailable = submissionsList?.length || 0;
   if (metricsLoadError) {
     return (
-      <LoadError text="The operation couldn't be completed. Please try after sometime" />
+      <LoadError text={t("The operation couldn't be completed. Please try after sometime")} />
     );
   }
   return (
@@ -331,11 +331,11 @@ const Dashboard = React.memo(() => {
                   </select>
 
                   <span>
-                    showing {numberofSubmissionListFrom} to{" "}
+                    {t("Showing")} {numberofSubmissionListFrom} {t("to")}{" "}
                     {numberofSubmissionListTo > totalItems
                       ? totalItems
                       : numberofSubmissionListTo}{" "}
-                    of {totalItems}
+                    {t("of")} {totalItems}
                   </span>
                 </div>
               ) : null}

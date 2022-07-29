@@ -9,7 +9,6 @@ import { CLIENT, STAFF_REVIEWER, STAFF_DESIGNER } from "../constants/constants";
 import Loading from "../containers/Loading";
 import NotFound from "./NotFound";
 import {
-  getTenantData,
   setTenantFromId,
 } from "../apiManager/services/tenantServices";
 
@@ -34,7 +33,6 @@ const PrivateRoute = React.memo((props) => {
       UserService.setKeycloakJson(tenantId, (clientId) => {
         UserService.initKeycloak(props.store, clientId, (err, res) => {
           dispatch(setUserAuth(res.authenticated));
-          dispatch(getTenantData());
         });
       });
     } else {

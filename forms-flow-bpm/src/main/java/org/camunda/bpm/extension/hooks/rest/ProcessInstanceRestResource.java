@@ -1,16 +1,21 @@
 package org.camunda.bpm.extension.hooks.rest;
 
-import org.camunda.bpm.extension.hooks.rest.dto.ActivityInstanceDto;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-public interface ProcessInstanceRestResource  extends RestResource{
+@Produces({MediaType.APPLICATION_JSON})
+public interface ProcessInstanceRestResource extends RestResource {
 
-    String PATH = "/process-instance/{id}";
+    String PATH = "/process-instance";
 
-    @GetMapping(value = "/activity-instances", produces = MediaType.APPLICATION_JSON)
-    EntityModel<ActivityInstanceDto> getActivityInstanceTree(@PathVariable("id") String id);
+    @GET
+    @Path("/{id}/activity-instances")
+    @Produces({MediaType.APPLICATION_JSON})
+    EntityModel<org.camunda.bpm.engine.rest.dto.runtime.ActivityInstanceDto> getActivityInstanceTree(@PathParam("id") String id);
+
 }

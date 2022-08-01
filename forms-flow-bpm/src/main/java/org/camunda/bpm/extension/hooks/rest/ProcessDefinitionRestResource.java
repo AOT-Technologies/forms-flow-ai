@@ -1,34 +1,36 @@
 package org.camunda.bpm.extension.hooks.rest;
 
-import org.camunda.bpm.extension.hooks.rest.dto.ProcessDefinitionDiagramDto;
-import org.camunda.bpm.extension.hooks.rest.dto.ProcessDefinitionDto;
-import org.camunda.bpm.extension.hooks.rest.dto.ProcessInstanceDto;
-import org.camunda.bpm.extension.hooks.rest.dto.StartProcessInstanceDto;
+import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDiagramDto;
+import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDto;
+import org.camunda.bpm.engine.rest.dto.runtime.ProcessInstanceDto;
+import org.camunda.bpm.engine.rest.dto.runtime.StartProcessInstanceDto;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.Map;
+import javax.ws.rs.core.UriInfo;
 
-public interface ProcessDefinitionRestResource extends RestResource{
+@Produces({MediaType.APPLICATION_JSON})
+public interface ProcessDefinitionRestResource {
 
     String PATH = "/process-definition";
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON)
-    CollectionModel<ProcessDefinitionDto> getProcessDefinition(@RequestParam  Map<String, Object> parameters);
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    CollectionModel<ProcessDefinitionDto> getProcessDefinitions(@Context UriInfo uriInfo, @QueryParam("firstResult") Integer firstResult, @QueryParam("maxResults") Integer maxResults);
 
-    @GetMapping(value = "/key/{key}/xml", produces = MediaType.APPLICATION_JSON)
-    EntityModel<ProcessDefinitionDiagramDto> getProcessDefinitionBpmn20Xml(
-            @RequestParam Map<String, Object> parameters,
-            @PathVariable("key") String key);
 
-    @PostMapping(value = "/key/{key}/start", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
+    @GET
+    @Path("/key/{key}/xml")
+    @Produces({MediaType.APPLICATION_JSON})
+    EntityModel<ProcessDefinitionDiagramDto> getProcessDefinitionBpmn20Xml(@PathParam("key") String key);
+
+    @POST
+    @Path("/key/{key}/start")
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
     EntityModel<ProcessInstanceDto> startProcessInstanceByKey(
-            @RequestParam Map<String, Object> parameters, @RequestBody StartProcessInstanceDto dto,
-            @PathVariable("key") String key);
+            @Context UriInfo context, StartProcessInstanceDto parameters, @PathParam("key") String key);
 }

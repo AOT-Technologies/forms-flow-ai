@@ -1,20 +1,23 @@
 package org.camunda.bpm.extension.hooks.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.camunda.bpm.extension.hooks.rest.dto.UserProfileDto;
+import org.camunda.bpm.engine.rest.dto.identity.UserProfileDto;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.ws.rs.GET;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.Map;
+import javax.ws.rs.core.UriInfo;
 
-@RequestMapping(RestResource.BASE_PATH+UserRestResource.PATH)
-public interface UserRestResource extends RestResource{
+@Produces({MediaType.APPLICATION_JSON})
+public interface UserRestResource extends RestResource {
 
     String PATH = "/user";
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON)
-    CollectionModel<UserProfileDto> queryUsers(@RequestParam Map<String, Object> parameters) throws JsonProcessingException;
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    CollectionModel<UserProfileDto> queryUsers(
+            @Context UriInfo uriInfo, @QueryParam("firstResult") Integer firstResult, @QueryParam("maxResults") Integer maxResults) throws JsonProcessingException;
 }

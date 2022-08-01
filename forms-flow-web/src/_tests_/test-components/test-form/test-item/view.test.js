@@ -1,6 +1,6 @@
 /* eslint-disable no-import-assign */
 import React from "react";
-import { render as rtlRender, screen,fireEvent } from "@testing-library/react";
+import { render as rtlRender, screen, fireEvent } from "@testing-library/react";
 import View from "../../../../components/Form/Item/View";
 import "@testing-library/jest-dom/extend-expect";
 import { Provider } from "react-redux";
@@ -11,7 +11,7 @@ import { mockstate } from "./constatnts-edit";
 import { publicApplicationCreate } from "../../../../apiManager/services/applicationServices";
 import thunk from "redux-thunk";
 import * as redux from "react-redux";
-import * as draftService from '../../../../apiManager/services/draftService';
+import * as draftService from "../../../../apiManager/services/draftService";
 import * as constants from "../../../../constants/constants";
 
 jest.mock("react-formio", () => ({
@@ -54,7 +54,7 @@ it("should render the View component without breaking", async () => {
       form: { isActive: false },
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "" },
-      draft:{draftSubmission:{}}
+      draft: { draftSubmission: {} },
     })
   );
   renderWithRouterMatch(View, {
@@ -73,7 +73,7 @@ it("should render the public View component without breaking ", async () => {
       form: { isActive: false },
       formDelete: { isFormSubmissionLoading: false },
       user: { lang: "" },
-      draft:{draftSubmission:{}}
+      draft: { draftSubmission: {} },
     })
   );
   const applicationCreate = jest.fn();
@@ -89,7 +89,7 @@ it("should render the public View component without breaking ", async () => {
   expect(applicationCreate).toHaveBeenCalled();
 });
 
-it("Should call the draft create when draft mode is on", ()=>{
+it("Should call the draft create when draft mode is on", () => {
   constants.DRAFT_ENABLED = true;
   const spy = jest.spyOn(redux, "useSelector");
   spy.mockImplementation((callback) =>
@@ -97,24 +97,23 @@ it("Should call the draft create when draft mode is on", ()=>{
       applications: { isPublicStatusLoading: false },
       form: { isActive: false },
       formDelete: { isFormSubmissionLoading: false },
-      user: { lang: "", isAuthenticated:true },
-      draft:{draftSubmission:{}}
+      user: { lang: "", isAuthenticated: true },
+      draft: { draftSubmission: {} },
     })
   );
   draftService.draftCreate = jest.fn();
   const serviceSpy = jest.spyOn(draftService, "draftCreate");
-  serviceSpy.mockImplementation((callback)=>callback);
+  serviceSpy.mockImplementation((callback) => callback);
 
   renderWithRouterMatch(View, {
     path: "/form/:formId",
     route: "/form/123",
   });
   expect(serviceSpy).toHaveBeenCalled();
-  expect(serviceSpy).toHaveBeenCalledWith({"data":{}, "formId":"123"});
-
+  expect(serviceSpy).toHaveBeenCalledWith({ data: {}, formId: "123" });
 });
 
-it("Should not call the draft create when draft mode is ff", ()=>{
+it("Should not call the draft create when draft mode is ff", () => {
   constants.DRAFT_ENABLED = false;
   const spy = jest.spyOn(redux, "useSelector");
   spy.mockImplementation((callback) =>
@@ -122,13 +121,13 @@ it("Should not call the draft create when draft mode is ff", ()=>{
       applications: { isPublicStatusLoading: false },
       form: { isActive: false },
       formDelete: { isFormSubmissionLoading: false },
-      user: { lang: "", isAuthenticated:true },
-      draft:{draftSubmission:{}}
+      user: { lang: "", isAuthenticated: true },
+      draft: { draftSubmission: {} },
     })
   );
   draftService.draftCreate = jest.fn();
   const serviceSpy = jest.spyOn(draftService, "draftCreate");
-  serviceSpy.mockImplementation((callback)=>callback);
+  serviceSpy.mockImplementation((callback) => callback);
 
   renderWithRouterMatch(View, {
     path: "/form/:formId",

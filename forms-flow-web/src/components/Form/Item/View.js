@@ -162,8 +162,9 @@ const View = React.memo((props) => {
   useInterval(
     () => {
       let payload = getDraftReqFormat(form, draftData?.data);
-      if (draftSubmissionId)
+      if (draftSubmissionId) {
         dispatch(draftUpdateMethod(payload, draftSubmissionId));
+      }
     },
     poll ? DRAFT_POLLING_RATE : null
   );

@@ -149,6 +149,9 @@ it("should render the item -> View component without breaking", () => {
       applications: {
         isPublicStatusLoading: true,
       },
+      draft:{
+        draftSubmission:{}
+      }
     })
   );
   renderWithRouterMatch(Index, {

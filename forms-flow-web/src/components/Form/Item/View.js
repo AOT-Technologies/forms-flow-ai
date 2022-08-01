@@ -38,6 +38,8 @@ import { checkIsObjectId } from "../../../apiManager/services/formatterService";
 import {
   draftCreate,
   draftUpdate,
+  publicDraftCreate,
+  publicDraftUpdate,
 } from "../../../apiManager/services/draftService";
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
 import {
@@ -90,13 +92,18 @@ const View = React.memo((props) => {
     form: { form, isActive, url },
   } = props;
   const dispatch = useDispatch();
+  /*
+  Selecting which endpoint to use based on authentication status,
+  public endpoint or authenticated endpoint.
+  */
+  const draftCreateMethod = isAuthenticated ? draftCreate : publicDraftCreate;
+  const draftUpdateMethod = isAuthenticated ? draftUpdate : publicDraftUpdate;
 
   const getPublicForm = useCallback(
     (form_id, isObjectId, formObj) => {
       dispatch(setPublicStatusLoading(true));
       dispatch(
-        // eslint-disable-next-line no-unused-vars
-        publicApplicationStatus(form_id, (err, res) => {
+        publicApplicationStatus(form_id, (err) => {
           dispatch(setPublicStatusLoading(false));
           if (!err) {
             if (isPublic) {
@@ -144,8 +151,7 @@ const View = React.memo((props) => {
   useEffect(() => {
     if (formId && DRAFT_ENABLED) {
       let payload = getDraftReqFormat(formId, draftData?.data);
-      console.log("**Initial draft", payload, draftCreate);
-      dispatch(draftCreate(payload));
+      dispatch(draftCreateMethod(payload));
     }
   }, [formId]);
 
@@ -156,7 +162,8 @@ const View = React.memo((props) => {
   useInterval(
     () => {
       let payload = getDraftReqFormat(form, draftData?.data);
-      if (draftSubmissionId) dispatch(draftUpdate(payload, draftSubmissionId));
+      if (draftSubmissionId)
+        dispatch(draftUpdateMethod(payload, draftSubmissionId));
     },
     poll ? DRAFT_POLLING_RATE : null
   );
@@ -271,14 +278,15 @@ const executeAuthSideEffects = (dispatch, redirectUrl) => {
 // eslint-disable-next-line no-unused-vars
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
-    let user = getState().user.userDetail;
-    let form = getState().form.form;
-    let isAuth = getState().user.isAuthenticated;
+    const state = getState();
+    let user = state.user.userDetail;
+    let form = state.form.form;
+    let isAuth = state.user.isAuthenticated;
     dispatch(resetSubmissions("submission"));
     const data = getProcessReq(form, submission._id, "new", user);
-    const tenantKey = getState().tenants?.tenantId;
+    const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
-    let draft_id = getState().draft.draftSubmission?.id;
+    let draft_id = state.draft.draftSubmission?.id;
     let isDraftCreated = draft_id ? true : false;
     const applicationCreateAPI = selectApplicationCreateAPI(
       isAuth,

@@ -46,13 +46,29 @@
 }
 
 .btn-create-new {
-  margin: 15px 0px 15px 0px;
+  height: 30px;
+  padding: 0rem 0.75rem
 }
 
 .deploy-checkbox{
-  margin-left: 15px;
+  margin-right: 15px;
 }
 
 .import-container{
   margin-bottom: 15px;
+}
+
+.create-import-container{
+  margin-top: 15px;
+}
+
+.create-import-btns-container{
+  margin-top: 7px;
+  margin-bottom: 15px;
+  display: flex;
+}
+
+.or-txt{
+  margin-left: 7px;
+  margin-right: 7px;
 }

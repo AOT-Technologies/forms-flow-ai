@@ -1,4 +1,5 @@
 import {
+  httpGETRequest,
   httpPOSTRequest,
   httpPOSTRequestWithoutToken,
   httpPUTRequest,
@@ -6,7 +7,7 @@ import {
 } from "../httpRequestHandler";
 import API from "../endpoints";
 import { replaceUrl } from "../../helper/helper";
-import { setDraftSubmission } from "../../actions/draftActions";
+import { setDraftlist, setDraftSubmission } from "../../actions/draftActions";
 
 export const draftCreate = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -113,6 +114,24 @@ export const publicDraftSubmit = (data, ...rest) => {
           done(null, res.data);
         } else {
           done("Error Posting data");
+        }
+      })
+      .catch((error) => {
+        done(error);
+      });
+  };
+};
+
+export const fetchDrafts = (data, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const URL = API.DRAFT_BASE;
+  return (dispatch) => {
+    httpGETRequest(URL)
+      .then((res) => {
+        if (res.data) {
+          dispatch(setDraftlist(res.data));
+        } else {
+          done("Error fetching data");
         }
       })
       .catch((error) => {

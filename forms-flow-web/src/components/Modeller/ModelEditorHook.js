@@ -49,7 +49,7 @@ import { getRootElement} from "./helpers/helper";
 
 import lintModule from 'bpmn-js-bpmnlint';
 import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css';
-import linterConfig from './packed-config';
+import linterConfig from './lint-rules/packed-config';
 
 const EditModel = React.memo(
   ({ processKey, processInstanceId, tenant, defaultProcessInfo }) => {
@@ -59,6 +59,7 @@ const EditModel = React.memo(
     const dispatch = useDispatch();
     const diagramXML = useSelector((state) => state.process.processDiagramXML);
     const [bpmnModeller, setBpmnModeller] = useState(null);
+    const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const [applyAllTenants, setApplyAllTenants] = useState(false);
     const [lintErrors, setLintErrors] = useState([]);
 
@@ -193,8 +194,8 @@ const EditModel = React.memo(
       // Deployment Source
       form.append('deployment-source', 'Camunda Modeler');
       // Tenant ID
-      if (tenant && applyAllTenants) {
-        form.append('tenant-id', tenant);
+      if (tenantKey && !applyAllTenants) {
+        form.append('tenant-id', tenantKey);
       }
       // Make sure that we do not re-deploy already existing deployment
       form.append('enable-duplicate-filtering', 'true');

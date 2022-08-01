@@ -1,6 +1,7 @@
 """This exposes BPM Service."""
 
 from enum import IntEnum
+from typing import Dict
 
 from flask import current_app
 
@@ -66,7 +67,9 @@ class BPMService(BaseBPMService):
         return cls.post_request(url, token, payload=payload)
 
     @classmethod
-    def post_process_start_tenant(cls, process_key, payload, token, tenant_key):
+    def post_process_start_tenant(
+        cls, process_key: str, payload: Dict, token: str, tenant_key: str
+    ):
         """Post process start based on tenant key."""
         url = (
             f"{cls._get_url_(BPMEndpointType.PROCESS_DEFINITION)}/"

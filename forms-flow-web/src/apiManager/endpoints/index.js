@@ -44,6 +44,12 @@ const API = {
   DEPLOY_BPM: `${BPM_BASE_URL}/deployment/create`,
   GET_TENANT_DATA: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenant`,
   EXPORT_FORM_PDF: `${WEB_BASE_URL}/form/<form_id>/submission/<submission_id>/export/pdf`,
+  DRAFT_BASE: `${WEB_BASE_URL}/draft`,
+  DRAFT_PUBLIC_CREATE: `${WEB_BASE_URL}/draft/public/create`,
+  DRAFT_UPDATE: `${WEB_BASE_URL}/draft/<draft_id>`,
+  DRAFT_UPDATE_PUBLIC: `${WEB_BASE_URL}/draft/public/<draft_id>`,
+  DRAFT_APPLICATION_CREATE: `${WEB_BASE_URL}/draft/<draft_id>/submit`,
+  DRAFT_APPLICATION_CREATE_PUBLIC: `${WEB_BASE_URL}/draft/public/<draft_id>/submit`,
   FORMIO_ROLES: `${WEB_BASE_URL}/formio/roles`
 };
 

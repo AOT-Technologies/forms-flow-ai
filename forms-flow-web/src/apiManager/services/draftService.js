@@ -7,7 +7,11 @@ import {
 } from "../httpRequestHandler";
 import API from "../endpoints";
 import { replaceUrl } from "../../helper/helper";
-import { setDraftlist, setDraftSubmission } from "../../actions/draftActions";
+import {
+  setDraftlist,
+  setDraftSubmission,
+  setDraftDetail,
+} from "../../actions/draftActions";
 
 export const draftCreate = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -136,6 +140,40 @@ export const fetchDrafts = (data, ...rest) => {
       })
       .catch((error) => {
         done(error);
+      });
+  };
+};
+
+export const getDraftById = (draftId, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  const apiUrlgetDraft = `${API.DRAFT_BASE}/${draftId}`;
+  return (dispatch) => {
+    httpGETRequest(apiUrlgetDraft)
+      .then((res) => {
+        if (res.data && Object.keys(res.data).length) {
+          const draft = res.data;
+          // const processData = getFormattedProcess(application);
+          dispatch(setDraftDetail(draft));
+          // dispatch(setApplicationProcess(processData));
+          // dispatch(setDraftDetailStatusCode(res.status));
+          done(null, draft);
+        } else {
+          // dispatch(serviceActionError(res));
+          dispatch(setDraftDetail({}));
+          // dispatch(setDraftDetailStatusCode(403));
+          done("No data");
+          // dispatch(setDraftDetailLoader(false));
+        }
+        done(null, res.data);
+        // dispatch(setDraftDetailLoader(false));
+      })
+      .catch((error) => {
+        console.log("Error", error);
+        // dispatch(serviceActionError(error));
+        dispatch(setDraftDetail({}));
+        // dispatch(setDraftDetailStatusCode(403));
+        done(error);
+        // dispatch(setDraftDetailLoader(false));
       });
   };
 };

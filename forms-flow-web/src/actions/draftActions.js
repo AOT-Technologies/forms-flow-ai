@@ -14,3 +14,10 @@ export const setDraftlist = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setDraftDetail = (data) => (dispatch) =>{
+  dispatch({
+    type: ACTION_CONSTANTS.DRAFT_DETAIL,
+    payload: data
+  });
+};

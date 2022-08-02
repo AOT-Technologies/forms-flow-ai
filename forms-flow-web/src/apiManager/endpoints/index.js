@@ -45,7 +45,7 @@ const API = {
   GET_TENANT_DATA: `${MT_ADMIN_BASE_URL}/${MT_ADMIN_BASE_URL_VERSION}/tenant`,
   EXPORT_FORM_PDF: `${WEB_BASE_URL}/form/<form_id>/submission/<submission_id>/export/pdf`,
   CUSTOM_SUBMISSION: `${CUSTOM_SUBMISSION_URL}/form/<form_id>/submission`,
-  PUBLIC_CUSTOM_SUBMISSION: `${CUSTOM_SUBMISSION_URL}/public/form/<form_id>/submission`
+  PUBLIC_CUSTOM_SUBMISSION: `${CUSTOM_SUBMISSION_URL}/public/form/<form_id>/submission`,
   DRAFT_BASE: `${WEB_BASE_URL}/draft`,
   DRAFT_PUBLIC_CREATE: `${WEB_BASE_URL}/draft/public/create`,
   DRAFT_UPDATE: `${WEB_BASE_URL}/draft/<draft_id>`,

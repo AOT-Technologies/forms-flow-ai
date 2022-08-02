@@ -108,6 +108,15 @@ const getpageList = (count) => {
   return list;
 };
 
+const customTotal = (from, to, size) => (
+  <span className="react-bootstrap-table-pagination-total" role="main">
+    <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
+    <Translation>{(t) => t("to")}</Translation> {to}{" "}
+    <Translation>{(t) => t("of")}</Translation> {size} <Translation>{(t) => t("Results")}</Translation>
+  </span>
+);
+
+
 export const getoptions = (pageNo, limit, totalForms) => {
   return {
     expandRowBgColor: "rgb(173,216,230)",
@@ -125,6 +134,7 @@ export const getoptions = (pageNo, limit, totalForms) => {
     sizePerPage: limit,
     page: pageNo,
     totalSize: totalForms,
+    paginationTotalRenderer: customTotal,
     sizePerPageList: getpageList(totalForms),
     sizePerPageRenderer: customDropUp,
   };

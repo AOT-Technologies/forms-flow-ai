@@ -44,7 +44,7 @@ import {
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
 import { postCustomSubmission } from "../../../apiManager/services/FormServices";
 import {
-  CUSTOM_SUBMISSION_URL, 
+  CUSTOM_SUBMISSION_URL,
   CUSTOM_SUBMISSION_ENABLE,
   MULTITENANCY_ENABLED,
   DRAFT_ENABLED,
@@ -263,8 +263,8 @@ const View = React.memo((props) => {
             hideComponents={hideComponents}
             onChange={(data) => setDraftData(data)}
             onSubmit={(data) => {
-              onSubmit(data, form._id, isPublic);
               setPoll(false);
+              onSubmit(data, form._id, isPublic);
             }}
             onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
           />
@@ -361,14 +361,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
           dispatch(setFormSubmissionError(ErrorDetails));
         }
       };
-      if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
-        postCustomSubmission(submission,formId,isPublic,callBack);
+      if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+        postCustomSubmission(submission, formId, isPublic, callBack);
       } else {
-        dispatch(
-          saveSubmission("submission", submission, formId,callBack)
-        );
+        dispatch(saveSubmission("submission", submission, formId, callBack));
       }
-      
     },
     onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {

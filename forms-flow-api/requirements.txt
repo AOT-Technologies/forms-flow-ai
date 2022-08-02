@@ -39,3 +39,4 @@ urllib3==1.26.8
 PyJWT==2.4.0
 selenium==3.141.0
 selenium-wire==3.0.0
+git+https://github.com/ratheesh-aot/forms-flow-ai.git@split-python-services#egg=formsflow_api_utils&subdirectory=forms-flow-api-utils

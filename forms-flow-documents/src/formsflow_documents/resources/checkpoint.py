@@ -19,6 +19,6 @@ class HealthCheckpointResource(Resource):
     def get():
         """Get the status of API."""
         return (
-            ({"message": "Welcome to formsflow.ai API"}),
+            ({"message": "Welcome to formsflow.ai documents API"}),
             HTTPStatus.OK,
         )

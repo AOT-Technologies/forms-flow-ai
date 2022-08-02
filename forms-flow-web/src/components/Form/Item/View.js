@@ -14,7 +14,10 @@ import { push } from "connected-react-router";
 import { Link, useParams } from "react-router-dom";
 import Loading from "../../../containers/Loading";
 import { useTranslation, Translation } from "react-i18next";
-import { getProcessReq } from "../../../apiManager/services/bpmServices";
+import {
+  getProcessReq,
+  getDraftReqFormat,
+} from "../../../apiManager/services/bpmServices";
 import { formio_resourceBundles } from "../../../resourceBundles/formio_resourceBundles";
 import {
   setFormFailureErrorData,
@@ -25,20 +28,30 @@ import {
   setMaintainBPMFormPagination,
 } from "../../../actions/formActions";
 import SubmissionError from "../../../containers/SubmissionError";
-import {
-  applicationCreate,
-  publicApplicationCreate,
-  publicApplicationStatus,
-} from "../../../apiManager/services/applicationServices";
+import { publicApplicationStatus } from "../../../apiManager/services/applicationServices";
 import LoadingOverlay from "react-loading-overlay";
 import { CUSTOM_EVENT_TYPE } from "../../ServiceFlow/constants/customEventTypes";
 import { toast } from "react-toastify";
 import { setFormSubmitted } from "../../../actions/formActions";
 import { fetchFormByAlias } from "../../../apiManager/services/bpmFormServices";
 import { checkIsObjectId } from "../../../apiManager/services/formatterService";
+import {
+  draftCreate,
+  draftUpdate,
+  publicDraftCreate,
+  publicDraftUpdate,
+} from "../../../apiManager/services/draftService";
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
-import { CUSTOM_SUBMISSION_URL, CUSTOM_SUBMISSION_ENABLE, MULTITENANCY_ENABLED } from "../../../constants/constants";
 import { postCustomSubmission } from "../../../apiManager/services/FormServices";
+import {
+  CUSTOM_SUBMISSION_URL, 
+  CUSTOM_SUBMISSION_ENABLE,
+  MULTITENANCY_ENABLED,
+  DRAFT_ENABLED,
+  DRAFT_POLLING_RATE,
+} from "../../../constants/constants";
+import useInterval from "../../../customHooks/useInterval";
+import selectApplicationCreateAPI from "./apiSelectHelper";
 
 const View = React.memo((props) => {
   const { t } = useTranslation();
@@ -56,14 +69,21 @@ const View = React.memo((props) => {
   const publicFormStatus = useSelector(
     (state) => state.formDelete.publicFormStatus
   );
-
+  const draftSubmissionId = useSelector(
+    (state) => state.draft.draftSubmission?.id
+  );
   const isPublic = !props.isAuthenticated;
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
+  /**
+   * `draftData` is used for keeping the uptodate form entry,
+   * this will get updated on every change the form is having.
+   */
+  const [draftData, setDraftData] = useState({});
 
   const { formId } = useParams();
   const [showPublicForm, setShowPublicForm] = useState("checking");
-
+  const [poll, setPoll] = useState(DRAFT_ENABLED);
   const {
     isAuthenticated,
     submission,
@@ -75,13 +95,18 @@ const View = React.memo((props) => {
     form: { form, isActive, url },
   } = props;
   const dispatch = useDispatch();
+  /*
+  Selecting which endpoint to use based on authentication status,
+  public endpoint or authenticated endpoint.
+  */
+  const draftCreateMethod = isAuthenticated ? draftCreate : publicDraftCreate;
+  const draftUpdateMethod = isAuthenticated ? draftUpdate : publicDraftUpdate;
 
   const getPublicForm = useCallback(
     (form_id, isObjectId, formObj) => {
       dispatch(setPublicStatusLoading(true));
       dispatch(
-        // eslint-disable-next-line no-unused-vars
-        publicApplicationStatus(form_id, (err, res) => {
+        publicApplicationStatus(form_id, (err) => {
           dispatch(setPublicStatusLoading(false));
           if (!err) {
             if (isPublic) {
@@ -122,6 +147,30 @@ const View = React.memo((props) => {
       );
     }
   }, [formId, dispatch, getPublicForm]);
+
+  /**
+   * Will create a draft application when the form is selected for entry.
+   */
+  useEffect(() => {
+    if (formId && DRAFT_ENABLED) {
+      let payload = getDraftReqFormat(formId, draftData?.data);
+      dispatch(draftCreateMethod(payload));
+    }
+  }, [formId]);
+
+  /**
+   * We will repeatedly update the current state to draft table
+   * on purticular interval
+   */
+  useInterval(
+    () => {
+      let payload = getDraftReqFormat(form, draftData?.data);
+      if (draftSubmissionId) {
+        dispatch(draftUpdateMethod(payload, draftSubmissionId));
+      }
+    },
+    poll ? DRAFT_POLLING_RATE : null
+  );
 
   useEffect(() => {
     if (isPublic) {
@@ -212,8 +261,10 @@ const View = React.memo((props) => {
               i18n: formio_resourceBundles,
             }}
             hideComponents={hideComponents}
+            onChange={(data) => setDraftData(data)}
             onSubmit={(data) => {
               onSubmit(data, form._id, isPublic);
+              setPoll(false);
             }}
             onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
           />
@@ -223,72 +274,47 @@ const View = React.memo((props) => {
   );
 });
 
+const executeAuthSideEffects = (dispatch, redirectUrl) => {
+  dispatch(setMaintainBPMFormPagination(true));
+  dispatch(push(`${redirectUrl}form`));
+};
+
 // eslint-disable-next-line no-unused-vars
 const doProcessActions = (submission, ownProps) => {
   return (dispatch, getState) => {
-    let user = getState().user.userDetail;
-    let form = getState().form.form;
-    let IsAuth = getState().user.isAuthenticated;
+    const state = getState();
+    let user = state.user.userDetail;
+    let form = state.form.form;
+    let isAuth = state.user.isAuthenticated;
     dispatch(resetSubmissions("submission"));
     const data = getProcessReq(form, submission._id, "new", user);
-    const tenantKey = getState().tenants?.tenantId;
+    const tenantKey = state.tenants?.tenantId;
     const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : `/`;
+    let draft_id = state.draft.draftSubmission?.id;
+    let isDraftCreated = draft_id ? true : false;
+    const applicationCreateAPI = selectApplicationCreateAPI(
+      isAuth,
+      isDraftCreated,
+      DRAFT_ENABLED
+    );
 
-    if (!IsAuth) {
-      // this is for anonymous
-      dispatch(
-        // eslint-disable-next-line no-unused-vars
-        publicApplicationCreate(data, (err, res) => {
-          if (!err) {
-            dispatch(setFormSubmissionLoading(false));
-            toast.success(
-              <Translation>{(t) => t("Submission Saved")}</Translation>
-            );
-            dispatch(setFormSubmitted(true));
-          } else {
-            //TO DO Update to show error message
-            dispatch(setFormSubmissionLoading(false));
-            toast.error(
-              <Translation>{(t) => t("Submission Failed.")}</Translation>
-            );
-            // dispatch(setFormSubmitted())
-            // dispatch(push(`/public/submitted`));
-          }
-        })
-      );
-    } else {
-      dispatch(
-        // eslint-disable-next-line no-unused-vars
-        applicationCreate(data, (err, res) => {
-          if (!err) {
-            if (IsAuth) {
-              dispatch(setFormSubmissionLoading(false));
-              dispatch(setMaintainBPMFormPagination(true));
-              /*dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))*/
-              toast.success(
-                <Translation>{(t) => t("Submission Saved")}</Translation>
-              );
-              dispatch(push(`${redirectUrl}form`));
-            } else {
-              dispatch(setFormSubmissionLoading(false));
-            }
-          } else {
-            //TO DO Update to show error message
-            if (IsAuth) {
-              dispatch(setFormSubmissionLoading(false));
-              dispatch(setMaintainBPMFormPagination(true));
-              //dispatch(push(`/form/${ownProps.match.params.formId}/submission/${submission._id}/edit`))
-              toast.success(
-                <Translation>{(t) => t("Submission Saved")}</Translation>
-              );
-              dispatch(push(`${redirectUrl}form`));
-            } else {
-              dispatch(setFormSubmissionLoading(false));
-            }
-          }
-        })
-      );
-    }
+    dispatch(
+      // eslint-disable-next-line no-unused-vars
+      applicationCreateAPI(data, draft_id ? draft_id : null, (err, res) => {
+        dispatch(setFormSubmissionLoading(false));
+        if (!err) {
+          toast.success(
+            <Translation>{(t) => t("Submission Saved")}</Translation>
+          );
+        } else {
+          toast.error(
+            <Translation>{(t) => t("Submission Failed.")}</Translation>
+          );
+        }
+        if (isAuth) executeAuthSideEffects(dispatch, redirectUrl);
+        else dispatch(setFormSubmitted(true));
+      })
+    );
   };
 };
 

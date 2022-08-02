@@ -221,7 +221,9 @@ export const RESOURCE_BUNDLES_EN = {
   "Processes":"Processes",
   "Please select an existing workflow.":"Please select an existing workflow.",
   "Create New":"Create New",
-  "Or import a workflow from a local directory.":"Or import a workflow from a local directory."
+  "Or import a workflow from a local directory.":"Or import a workflow from a local directory.",
+  "The operation couldn't be completed. Please try after sometime":"The operation couldn't be completed. Please try after sometime" 
+
 
 
 

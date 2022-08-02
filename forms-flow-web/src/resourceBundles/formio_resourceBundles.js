@@ -243,7 +243,9 @@ export const formio_resourceBundles = {
     "Processes":"Processes",
     "Please select an existing workflow.":"Please select an existing workflow.",
     "Create New":"Create New",
-    "Or import a workflow from a local directory.":"Or import a workflow from a local directory."
+    "Or import a workflow from a local directory.":"Or import a workflow from a local directory.",
+    "The operation couldn't be completed. Please try after sometime":"The operation couldn't be completed. Please try after sometime" 
+
 
 
 
@@ -1108,7 +1110,9 @@ export const formio_resourceBundles = {
     "Processes":"流程",
     "Please select an existing workflow.":"请选择现有工作流程。",
     "Create New":"创建新的",
-    "Or import a workflow from a local directory.":"或者从本地目录导入工作流。"
+    "Or import a workflow from a local directory.":"或者从本地目录导入工作流。",
+    "The operation couldn't be completed. Please try after sometime":"操作无法完成。请稍后再试" 
+
 
 
 
@@ -2029,7 +2033,9 @@ export const formio_resourceBundles = {
     "Processes":"процеси",
     "Please select an existing workflow.":"Моля, изберете съществуващ работен процес.",
     "Create New":"Създай нов",
-    "Or import a workflow from a local directory.":"Или импортирайте работен поток от локална директория."
+    "Or import a workflow from a local directory.":"Или импортирайте работен поток от локална директория.",
+    "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo" 
+
 
 
 
@@ -2946,7 +2952,9 @@ export const formio_resourceBundles = {
     "Processes":"Processos",
     "Please select an existing workflow.":"Selecione um fluxo de trabalho existente.",
     "Create New":"Crie um novo",
-    "Or import a workflow from a local directory.":"Ou importe um fluxo de trabalho de um diretório local."
+    "Or import a workflow from a local directory.":"Ou importe um fluxo de trabalho de um diretório local.",
+    "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo" 
+
 
 
 
@@ -3871,7 +3879,9 @@ export const formio_resourceBundles = {
     "Processes":"Processus",
     "Please select an existing workflow.":"Veuillez sélectionner un workflow existant.",
     "Create New":"Créer un nouveau",
-    "Or import a workflow from a local directory.":"Ou importez un flux de travail à partir d'un répertoire local."
+    "Or import a workflow from a local directory.":"Ou importez un flux de travail à partir d'un répertoire local.",
+    "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo" 
+
 
 
 
@@ -4800,7 +4810,9 @@ export const formio_resourceBundles = {
     "Processes":"Prozesse",
     "Please select an existing workflow.":"Bitte wählen Sie einen bestehenden Workflow aus.",
     "Create New":"Erstelle neu",
-    "Or import a workflow from a local directory.":"Oder importieren Sie einen Workflow aus einem lokalen Verzeichnis."
+    "Or import a workflow from a local directory.":"Oder importieren Sie einen Workflow aus einem lokalen Verzeichnis.",
+    "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo" 
+
 
 
 

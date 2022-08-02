@@ -8,8 +8,11 @@ from flask_sqlalchemy import BaseQuery
 from sqlalchemy import and_, func, or_
 from sqlalchemy.sql.expression import text
 
-from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
-from formsflow_api.utils.user_context import UserContext, user_context
+from formsflow_api.utils import (
+    DRAFT_APPLICATION_STATUS,
+    FILTER_MAPS,
+    validate_sort_order_and_order_by,
+)
 
 from .audit_mixin import AuditDateTimeMixin, AuditUserMixin
 from .base_model import BaseModel
@@ -70,7 +73,7 @@ class Application(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
         )
         query = query.filter(cls.id == application_id)
-        return cls.tenant_authorization(query=query).first()
+        return FormProcessMapper.tenant_authorization(query=query).first()
 
     @classmethod
     def find_auth_by_id(cls, application_id: int) -> Application:
@@ -95,7 +98,7 @@ class Application(
             .join(cls, FormProcessMapper.id == cls.form_process_mapper_id)
             .filter(Application.id == application_id)
         )
-        result = cls.tenant_authorization(query=result)
+        result = FormProcessMapper.tenant_authorization(query=result)
         return result.first()
 
     @classmethod
@@ -104,7 +107,7 @@ class Application(
         query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
         ).distinct(Application.application_status)
-        query = cls.tenant_authorization(query)
+        query = FormProcessMapper.tenant_authorization(query)
         return query
 
     @classmethod
@@ -125,7 +128,8 @@ class Application(
     ) -> Application:
         """Fetch all application."""
         query = cls.filter_conditions(**filters)
-        query = cls.tenant_authorization(query=query)
+        query = FormProcessMapper.tenant_authorization(query=query)
+        query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
             table_name = "application"
@@ -188,8 +192,9 @@ class Application(
         **filters,
     ) -> Application:
         """Fetch applications list based on searching parameters for Non-reviewer."""
-        query = Application.filter_conditions(**filters)
-        query = Application.tenant_authorization(query=query)
+        query = cls.filter_conditions(**filters)
+        query = FormProcessMapper.tenant_authorization(query=query)
+        query = cls.filter_draft_applications(query=query)
         query = query.filter(Application.created_by == user_id)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -226,7 +231,7 @@ class Application(
                 FormProcessMapper.process_tenant.label("process_tenant"),
             )
         )
-        result = cls.tenant_authorization(query=result)
+        result = FormProcessMapper.tenant_authorization(query=result)
         return result.one_or_none()
 
     @classmethod
@@ -245,10 +250,10 @@ class Application(
             .order_by(Application.id.desc())
         )
         if page_no == 0:
-            result = cls.tenant_authorization(query=result)
+            result = FormProcessMapper.tenant_authorization(query=result)
         else:
             result = (
-                cls.tenant_authorization(query=result)
+                FormProcessMapper.tenant_authorization(query=result)
                 .paginate(page_no, limit, False)
                 .items
             )
@@ -265,7 +270,7 @@ class Application(
         **filters,
     ):
         """Fetch applications list based on searching parameters for Reviewer."""
-        query = Application.filter_conditions(**filters)
+        query = cls.filter_conditions(**filters)
         query = query.filter(FormProcessMapper.form_name.in_(form_names))
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -289,7 +294,7 @@ class Application(
     ):
         """Fetch applications list based on searching parameters for Reviewer."""
         query = cls.filter_conditions(**filters)
-        query = cls.tenant_authorization(query=query)
+        query = FormProcessMapper.tenant_authorization(query=query)
         query = query.filter(FormProcessMapper.process_key.in_(process_key))
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -332,7 +337,7 @@ class Application(
                 FormProcessMapper.process_tenant.label("process_tenant"),
             )
         )
-        query = cls.tenant_authorization(query=query)
+        query = FormProcessMapper.tenant_authorization(query=query)
         return query.first()
 
     @classmethod
@@ -378,10 +383,12 @@ class Application(
             .order_by(Application.id.desc())
         )
         if page_no == 0:
-            result = cls.tenant_authorization(result)
+            result = FormProcessMapper.tenant_authorization(result)
         else:
             result = (
-                cls.tenant_authorization(result).paginate(page_no, limit, False).items
+                FormProcessMapper.tenant_authorization(result)
+                .paginate(page_no, limit, False)
+                .items
             )
         return result
 
@@ -410,7 +417,7 @@ class Application(
         query = cls.query.join(
             FormProcessMapper, cls.form_process_mapper_id == FormProcessMapper.id
         ).filter(cls.latest_form_id == form_id)
-        return cls.tenant_authorization(query=query).count()
+        return FormProcessMapper.tenant_authorization(query=query).count()
 
     @classmethod
     def find_all_by_form_id_user_count(cls, form_id, user_id: str):
@@ -422,7 +429,7 @@ class Application(
             .filter(cls.latest_form_id == form_id)
             .filter(Application.created_by == user_id)
         )
-        return cls.tenant_authorization(query=query).count()
+        return FormProcessMapper.tenant_authorization(query=query).count()
 
     @classmethod
     def find_aggregated_applications(  # pylint: disable=too-many-arguments
@@ -459,7 +466,7 @@ class Application(
                 FormProcessMapper.version,
             )
         )
-        result_proxy = cls.tenant_authorization(result_proxy)
+        result_proxy = FormProcessMapper.tenant_authorization(result_proxy)
         if form_name:
             result_proxy = result_proxy.filter(
                 FormProcessMapper.form_name.ilike(f"%{form_name}%")
@@ -511,7 +518,7 @@ class Application(
                 FormProcessMapper.version,
             )
         )
-        result_proxy = cls.tenant_authorization(result_proxy)
+        result_proxy = FormProcessMapper.tenant_authorization(result_proxy)
         if form_name:
             result_proxy = result_proxy.filter(
                 FormProcessMapper.form_name.ilike(f"%{form_name}%")
@@ -552,7 +559,7 @@ class Application(
             )
             .group_by(Application.application_status, FormProcessMapper.form_name)
         )
-        result_proxy = cls.tenant_authorization(result_proxy)
+        result_proxy = FormProcessMapper.tenant_authorization(result_proxy)
         return result_proxy
 
     @classmethod
@@ -579,7 +586,7 @@ class Application(
             )
             .group_by(FormProcessMapper.form_name, Application.application_status)
         )
-        result_proxy = cls.tenant_authorization(result_proxy)
+        result_proxy = FormProcessMapper.tenant_authorization(result_proxy)
         return result_proxy
 
     @classmethod
@@ -594,6 +601,7 @@ class Application(
                 FormProcessMapper.id == Application.form_process_mapper_id,
             )
             .filter(FormProcessMapper.id == form_process_mapper_id)
+            .filter(Application.application_status != DRAFT_APPLICATION_STATUS)
         )
         # returns a list of one element with count of applications
         return [dict(row) for row in result_proxy][0]["count"]
@@ -617,16 +625,8 @@ class Application(
         return query
 
     @classmethod
-    @user_context
-    def tenant_authorization(cls, query: BaseQuery, **kwargs):
-        """Modifies the query to include tenant check if needed."""
-        tenant_auth_query: BaseQuery = query
-        user: UserContext = kwargs["user"]
-        tenant_key: str = user.tenant_key
+    def filter_draft_applications(cls, query: BaseQuery):
+        """Modifies the query to filter draft applications."""
         if not isinstance(query, BaseQuery):
             raise TypeError("Query object must be of type BaseQuery")
-        if tenant_key is not None:
-            tenant_auth_query = tenant_auth_query.filter(
-                FormProcessMapper.tenant == tenant_key
-            )
-        return tenant_auth_query
+        return query.filter(cls.application_status != DRAFT_APPLICATION_STATUS)

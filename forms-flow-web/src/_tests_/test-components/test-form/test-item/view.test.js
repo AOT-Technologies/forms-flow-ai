@@ -13,6 +13,7 @@ import thunk from "redux-thunk";
 import * as redux from "react-redux";
 import * as draftService from "../../../../apiManager/services/draftService";
 import * as constants from "../../../../constants/constants";
+import * as customSubmission from "../../../../apiManager/services/FormServices";
 
 jest.mock("react-formio", () => ({
   ...jest.requireActual("react-formio"),
@@ -88,7 +89,39 @@ it("should render the public View component without breaking ", async () => {
   fireEvent.click(screen.getByText("Submit"));
   expect(applicationCreate).toHaveBeenCalled();
 });
+test.skip('custom submission skipped', () => {
+ 
+it("should call the custom submission when custom submission is on ", () => {
+  constants.CUSTOM_SUBMISSION_ENABLE = true;
+  constants.CUSTOM_SUBMISSION_URL = true;
+  const spy = jest.spyOn(redux, "useSelector");
+  spy.mockImplementation((callback) =>
+    callback({
+      applications: { isPublicStatusLoading: false },
+      form: { isActive: false },
+      formDelete: { isFormSubmissionLoading: false },
+      user: { lang: "" },
+      draft: { draftSubmission: {} },
+    })
+  );
+  customSubmission.postCustomSubmission = jest.fn();
+  const serviceSpy = jest.spyOn(customSubmission, "postCustomSubmission");
+  serviceSpy.mockImplementation((callback) => callback);
 
+  renderWithRouterMatch(View, {
+    path: "/form/:formId",
+    route: "/form/123",
+  });
+  fireEvent.click(screen.getByText("Submit"));
+  expect(serviceSpy).toHaveBeenCalled();
+  expect(serviceSpy).toHaveBeenCalledWith({
+    data: {},
+    formId: 1122,
+    isPublic: false,
+  });
+});
+
+});
 it("Should call the draft create when draft mode is on", () => {
   constants.DRAFT_ENABLED = true;
   const spy = jest.spyOn(redux, "useSelector");

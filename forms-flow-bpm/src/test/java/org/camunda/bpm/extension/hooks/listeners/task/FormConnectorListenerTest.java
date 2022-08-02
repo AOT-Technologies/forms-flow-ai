@@ -46,6 +46,9 @@ public class FormConnectorListenerTest {
 	private FormConnectorListener formConnectorListener;
 
 	@Mock
+	private Properties integrationCredentialProperties;
+
+	@Mock
 	private FormSubmissionService formSubmissionService;
 
 	@Mock

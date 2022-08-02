@@ -16,6 +16,19 @@ export const WEB_BASE_CUSTOM_URL =
   process.env.REACT_APP_WEB_BASE_CUSTOM_URL ||
   "";
 
+  export const CUSTOM_SUBMISSION_URL =
+  (window._env_ && window._env_.REACT_APP_CUSTOM_SUBMISSION_URL) ||
+  process.env.REACT_APP_CUSTOM_SUBMISSION_URL ||
+  "";
+   const CUSTOM_SUBMISSION_ENABLED_VARIABLE =
+  (window._env_ && window._env_.REACT_APP_CUSTOM_SUBMISSION_ENABLED) ||
+  process.env.REACT_APP_CUSTOM_SUBMISSION_ENABLED ||
+  "";
+  export const CUSTOM_SUBMISSION_ENABLE =
+  CUSTOM_SUBMISSION_ENABLED_VARIABLE === "true" ||
+  CUSTOM_SUBMISSION_ENABLED_VARIABLE === true
+    ? true
+    : false;
 //keycloak
 export const Keycloak_Client =
   (window._env_ && window._env_.REACT_APP_KEYCLOAK_CLIENT) ||

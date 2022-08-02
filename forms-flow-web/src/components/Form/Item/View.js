@@ -42,7 +42,10 @@ import {
   publicDraftUpdate,
 } from "../../../apiManager/services/draftService";
 import { setPublicStatusLoading } from "../../../actions/applicationActions";
+import { postCustomSubmission } from "../../../apiManager/services/FormServices";
 import {
+  CUSTOM_SUBMISSION_URL,
+  CUSTOM_SUBMISSION_ENABLE,
   MULTITENANCY_ENABLED,
   DRAFT_ENABLED,
   DRAFT_POLLING_RATE,
@@ -261,7 +264,7 @@ const View = React.memo((props) => {
             onChange={(data) => setDraftData(data)}
             onSubmit={(data) => {
               setPoll(false);
-              onSubmit(data, form._id);
+              onSubmit(data, form._id, isPublic);
             }}
             onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
           />
@@ -336,29 +339,33 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
   return {
-    onSubmit: (submission, formId) => {
+    onSubmit: (submission, formId, isPublic) => {
       dispatch(setFormSubmissionLoading(true));
-      dispatch(
-        saveSubmission("submission", submission, formId, (err, submission) => {
-          if (!err) {
-            dispatch(doProcessActions(submission, ownProps));
-          } else {
-            const ErrorDetails = {
-              modalOpen: true,
-              message: (
-                <Translation>
-                  {(t) => t("Submission cannot be done.")}
-                </Translation>
-              ),
-            };
-            toast.error(
-              <Translation>{(t) => t("Error while Submission.")}</Translation>
-            );
-            dispatch(setFormSubmissionLoading(false));
-            dispatch(setFormSubmissionError(ErrorDetails));
-          }
-        })
-      );
+      // this is callback function for submission
+      const callBack = (err, submission) => {
+        if (!err) {
+          dispatch(doProcessActions(submission, ownProps));
+        } else {
+          const ErrorDetails = {
+            modalOpen: true,
+            message: (
+              <Translation>
+                {(t) => t("Submission cannot be done.")}
+              </Translation>
+            ),
+          };
+          toast.error(
+            <Translation>{(t) => t("Error while Submission.")}</Translation>
+          );
+          dispatch(setFormSubmissionLoading(false));
+          dispatch(setFormSubmissionError(ErrorDetails));
+        }
+      };
+      if (CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+        postCustomSubmission(submission, formId, isPublic, callBack);
+      } else {
+        dispatch(saveSubmission("submission", submission, formId, callBack));
+      }
     },
     onCustomEvent: (customEvent, redirectUrl) => {
       switch (customEvent.type) {

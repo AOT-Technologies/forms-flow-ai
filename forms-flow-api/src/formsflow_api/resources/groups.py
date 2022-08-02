@@ -11,7 +11,7 @@ from formsflow_api.schemas import (
     KeycloakDashboardGroupSchema,
 )
 from formsflow_api.services.factory import KeycloakFactory
-from formsflow_api.utils import auth, cors_preflight, profiletime
+from formsflow_api_utils.utils import auth, cors_preflight, profiletime
 
 API = Namespace("groups", description="Keycloak wrapper APIs")
 

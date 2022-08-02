@@ -8,6 +8,7 @@ from flask_restx import Api
 
 from formsflow_api_utils.exceptions import BusinessException
 from formsflow_documents.resources.form_export import API as FORM_API
+from formsflow_documents.resources.checkpoint import API as CHECKPOINT_API
 from formsflow_api_utils.utils.constants import ALLOW_ALL_ORIGINS
 
 # This will add the Authorize button to the swagger docs
@@ -48,4 +49,4 @@ def handle_auth_error(error: AuthError):
     )
 
 API.add_namespace(FORM_API, path="/form")
-
+API.add_namespace(CHECKPOINT_API, path="/checkpoint")

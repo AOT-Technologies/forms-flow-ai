@@ -2,7 +2,7 @@
 
 Test-Suite to ensure that the logging setup is working as expected.
 """
-from formsflow_api.utils.logging import setup_logging
+from formsflow_api_utils.utils.logging import setup_logging
 
 
 def test_logging_with_missing_file(capsys):

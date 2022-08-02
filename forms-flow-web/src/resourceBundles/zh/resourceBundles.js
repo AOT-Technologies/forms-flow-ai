@@ -220,8 +220,10 @@ export const RESOURCE_BUNDLES_ZH = {
   "Processes":"流程",
   "Please select an existing workflow.":"请选择现有工作流程。",
   "Create New":"创建新的",
-  "Or import a workflow from a local directory.":"或者从本地目录导入工作流。",
-  "The operation couldn't be completed. Please try after sometime":"操作无法完成。请稍后再试" 
+  "Or create new workflow or import a workflow from a local directory.":"或创建新工作流或从本地目录导入工作流。",
+  "The operation couldn't be completed. Please try after sometime":"操作无法完成。请稍后再试",
+  "Select...":"选择..."
+
 
 
 

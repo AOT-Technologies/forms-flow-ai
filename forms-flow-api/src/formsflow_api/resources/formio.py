@@ -5,14 +5,14 @@ from http import HTTPStatus
 from flask import current_app
 from flask_restx import Namespace, Resource
 
-from formsflow_api.utils import (
+from formsflow_api_utils.utils import (
     auth,
     cache,
     cors_preflight,
     get_role_ids_from_user_groups,
     profiletime,
 )
-from formsflow_api.utils.user_context import UserContext, user_context
+from formsflow_api_utils.utils.user_context import UserContext, user_context
 
 API = Namespace("Formio", description="formio")
 

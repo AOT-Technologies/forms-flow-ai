@@ -7,13 +7,13 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - '5000:5000'
+      - '5006:5000'
     volumes:
       - ./:/app:rw
     environment:
       INSIGHT_API_KEY: ${INSIGHT_API_KEY}
       INSIGHT_API_URL: ${INSIGHT_API_URL}
-      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-webapi-db:5432/webapi}
+      DATABASE_URL: ${FORMSFLOW_API_DB_URL:-postgresql://postgres:changeme@forms-flow-exportapi-db:5432/exportapi}
       BPM_TOKEN_API: ${KEYCLOAK_URL}/auth/realms/${KEYCLOAK_URL_REALM:-forms-flow-ai}/protocol/openid-connect/token
       BPM_CLIENT_ID: ${KEYCLOAK_BPM_CLIENT_ID:-forms-flow-bpm}
       BPM_CLIENT_SECRET: ${KEYCLOAK_BPM_CLIENT_SECRET:-e4bdbd25-1467-4f7f-b993-bc4b1944c943}
@@ -34,10 +34,10 @@ services:
     stdin_open: true # -i
     tty: true # -t
     networks:
-      - forms-flow-webapi-network
+      - forms-flow-exportapi-network
 
 networks:
-  forms-flow-webapi-network:
+  forms-flow-exportapi-network:
     driver: 'bridge'
 
 volumes:

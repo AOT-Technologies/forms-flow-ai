@@ -32,7 +32,7 @@ setuptools.setup(
     description='Formsflow api related libraries.',
     long_description=read("README.md"),
     long_description_content_type="text/markdown",
-    url='https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-api',
+    url='https://github.com/AOT-Technologies/forms-flow-ai/tree/master/forms-flow-api-utils',
     packages=setuptools.find_packages("src"),
     package_dir={"": "src"},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],

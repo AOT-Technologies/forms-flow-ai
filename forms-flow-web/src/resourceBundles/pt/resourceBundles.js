@@ -221,8 +221,10 @@ export const RESOURCE_BUNDLES_PT = {
   "Processes":"Processos",
   "Please select an existing workflow.":"Selecione um fluxo de trabalho existente.",
   "Create New":"Crie um novo",
-  "Or import a workflow from a local directory.":"Ou importe um fluxo de trabalho de um diretório local.",
-  "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo" 
+  "Or create new workflow or import a workflow from a local directory.":"Ou crie um novo fluxo de trabalho ou importe um fluxo de trabalho de um diretório local.",
+  "The operation couldn't be completed. Please try after sometime":"A operação não pôde ser concluída. Por favor, tente depois de algum tempo",
+  "Select...":"Selecionar..."
+
 
 
 

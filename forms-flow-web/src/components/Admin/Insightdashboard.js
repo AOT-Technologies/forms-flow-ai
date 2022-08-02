@@ -219,12 +219,22 @@ export const InsightDashboard = (props) => {
     setSizePerPage(sizePerPage);
   };
 
+  const customTotal = (from, to, size) => (
+    <span className="react-bootstrap-table-pagination-total" role="main">
+      <Translation>{(t) => t("Showing")}</Translation> {from}{" "}
+      <Translation>{(t) => t("to")}</Translation> {to}{" "}
+      <Translation>{(t) => t("of")}</Translation> {size} <Translation>{(t) => t("Results")}</Translation>
+    </span>
+  );
+  
+
   const pagination = paginationFactory({
     showTotal: true,
     align: "left",
     sizePerPageList: getpageList(),
     page: activePage,
     sizePerPage: sizePerPage,
+    paginationTotalRenderer: customTotal,
     onPageChange: (page) => setActivePage(page),
     onSizePerPageChange: (size, page) => handleSizeChange(size, page),
   });

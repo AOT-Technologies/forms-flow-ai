@@ -78,6 +78,7 @@ jobs:
       FORMIO_ROOT_PASSWORD: test
       SKIP_IN_CI: "True"
       USE_DOCKER_MOCK: "True"
+      MULTI_TENANCY_ENABLED: "False"
 
     runs-on: ubuntu-20.04
 

@@ -402,15 +402,17 @@ class FormResourceRenderFormPdf(Resource):
         form_io_url = current_app.config.get("FORMIO_URL")
         form_io_token = formio_service.get_formio_access_token()
         form_url = form_io_url + "/form/" + form_id + "/submission/" + submission_id
-        form_info = {
-            "base_url": form_io_url,
-            "project_url": form_io_url,
-            "form_url": form_url,
-            "token": form_io_token,
+        template_params = {
+            "form" : {
+                "base_url": form_io_url,
+                "project_url": form_io_url,
+                "form_url": form_url,
+                "token": form_io_token,
+            }
         }
         headers = {"Content-Type": "text/html"}
         return make_response(
-            render_template("index.html", form=form_info), 200, headers
+            render_template("index.html", **template_params), 200, headers
         )
 
 

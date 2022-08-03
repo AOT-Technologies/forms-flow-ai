@@ -95,7 +95,7 @@ class DraftService:
         """Update draft."""
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name or ANONYMOUS_USER
-        draft = Draft.find_by_id(draft_id, user_id)
+        draft = Draft.get_by_id(draft_id, user_id)
         if draft:
             draft.update(data)
         else:
@@ -107,13 +107,18 @@ class DraftService:
 
     @staticmethod
     @user_context
-    def get_all_drafts(**kwargs):
+    def get_all_drafts(query_params,**kwargs):
         """Get all drafts."""
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
-        draft = Draft.find_all_active(user_id)
+        page_number=query_params.get("page_no")
+        limit=query_params.get("limit")
+        sort_by=query_params.get("sort_by", "id")
+        sort_order=query_params.get("sort_order", "desc")
+        form_name = query_params.get("form_name")
+        draft, count = Draft.find_all_active(user_id, page_number,limit,sort_by,sort_order, form_name=form_name)
         draft_schema = DraftSchema()
-        return draft_schema.dump(draft, many=True)
+        return draft_schema.dump(draft, many=True), count
 
     @staticmethod
     @user_context

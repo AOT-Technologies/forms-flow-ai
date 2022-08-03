@@ -54,7 +54,7 @@ def test_draft_list(app, client, session, jwt):
     response = client.get("/draft", headers=headers)
     assert response.status_code == 200
     assert response.json is not None
-    assert len(response.json) == 0
+    assert len(response.json["drafts"]) == 0
 
 
 def test_draft_detail_view(app, client, session, jwt):

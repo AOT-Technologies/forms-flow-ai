@@ -7,7 +7,9 @@ import uuid
 
 from sqlalchemy import and_, update
 from sqlalchemy.dialects.postgresql import JSON, UUID
+from sqlalchemy.sql.expression import text
 
+from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
 from formsflow_api.utils.enums import DraftStatus
 
 from .application import Application
@@ -50,9 +52,8 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         self.commit()
 
     @classmethod
-    def find_by_id(cls, draft_id: int, user_id: str) -> Draft:
-        """Find draft that matches the provided id."""
-        # return cls.query.get(draft_id)
+    def get_by_id(cls, draft_id: str, user_id: str) -> Draft:
+        """Retrieves the draft entry by id."""
         result = (
             cls.query.join(Application, Application.id == cls.application_id)
             .join(
@@ -70,10 +71,60 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         return FormProcessMapper.tenant_authorization(result).first()
 
     @classmethod
-    def find_all_active(cls, user_name: str):
+    def find_by_id(cls, draft_id: int, user_id: str) -> Draft:
+        """Find draft that matches the provided id."""
+        result = (
+            cls.query.with_entities(
+                FormProcessMapper.form_name,
+                FormProcessMapper.process_name,
+                FormProcessMapper.created_by,
+                FormProcessMapper.form_id,
+                cls.id,
+                cls.application_id,
+                cls.created,
+                cls.modified,
+                cls.data,
+            )
+            .join(Application, Application.id == cls.application_id)
+            .join(
+                FormProcessMapper,
+                FormProcessMapper.id == Application.form_process_mapper_id,
+            )
+            .filter(
+                and_(
+                    cls.status == str(DraftStatus.ACTIVE.value),
+                    Application.created_by == user_id,
+                    cls.id == draft_id,
+                )
+            )
+        )
+        return FormProcessMapper.tenant_authorization(result).first()
+
+    @classmethod
+    def find_all_active(  # pylint: disable=too-many-arguments
+        cls,
+        user_name: str,
+        page_number=None,
+        limit=None,
+        sort_by=None,
+        sort_order=None,
+        **filters,
+    ):
         """Fetch all active drafts."""
         result = (
-            cls.query.join(Application, Application.id == cls.application_id)
+            cls.filter_conditions(**filters)
+            .with_entities(
+                FormProcessMapper.form_name,
+                FormProcessMapper.process_name,
+                FormProcessMapper.created_by,
+                FormProcessMapper.form_id,
+                cls.id,
+                cls.application_id,
+                cls.created,
+                cls.modified,
+                cls.data,
+            )
+            .join(Application, Application.id == cls.application_id)
             .join(
                 FormProcessMapper,
                 Application.form_process_mapper_id == FormProcessMapper.id,
@@ -86,13 +137,20 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
             )
             .order_by(Draft.id.desc())
         )
-        return FormProcessMapper.tenant_authorization(result).all()
+        sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
+        if sort_by and sort_order:
+            result = result.order_by(text(f"draft.{sort_by} {sort_order}"))
+        result = FormProcessMapper.tenant_authorization(result)
+        total_count = result.count()
+        limit = total_count if limit is None else limit
+        result = result.paginate(page_number, limit)
+        return result.items, total_count
 
     @classmethod
     def make_submission(cls, draft_id, data, user_id):
         """Activates the application from the draft entry."""
         # draft = cls.query.get(draft_id)
-        draft = cls.find_by_id(draft_id, user_id)
+        draft = cls.get_by_id(draft_id, user_id)
         if not draft:
             return None
         stmt = (
@@ -107,3 +165,20 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         # The update statement will be commited by the following update
         draft.update({"status": DraftStatus.INACTIVE.value, "data": {}})
         return draft
+
+    @classmethod
+    def filter_conditions(cls, **filters):
+        """This method creates dynamic filter conditions based on the input param."""
+        filter_conditions = []
+        for key, value in filters.items():
+            if value:
+                filter_map = FILTER_MAPS[key]
+                condition = cls.create_filter_condition(
+                    model=FormProcessMapper,
+                    column_name=filter_map["field"],
+                    operator=filter_map["operator"],
+                    value=value,
+                )
+                filter_conditions.append(condition)
+        query = cls.query.filter(*filter_conditions) if filter_conditions else cls.query
+        return query

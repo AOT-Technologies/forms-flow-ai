@@ -113,6 +113,11 @@ def get_application_create_payload(form_id: str = "1234"):
     }
 
 
+def get_draft_create_payload(form_id: str = "1234"):
+    """Return a payload for creating draft details."""
+    return {"formId": form_id, "data": {"name": "testing sample"}}
+
+
 def get_form_service_payload():
     """Return a form Service payload object."""
     return {
@@ -473,3 +478,25 @@ def get_formio_roles():
         {"roleId": 2, "type": "REVIEWER"},
         {"roleId": 3, "type": "DESIGNER"},
     ]
+
+
+def get_anonymous_form_model_object():
+    """Return sample anonymous form process mapper model instance data."""
+    return {
+        "is_anonymous": True,
+        "form_id": "1234",
+        "form_name": "sample",
+        "status": "active",
+        "created_by": "test",
+    }
+
+
+def get_form_model_object():
+    """Return sample form process mapper model instance data."""
+    return {
+        "is_anonymous": False,
+        "form_id": "12345",
+        "form_name": "sample non anonymous",
+        "status": "active",
+        "created_by": "test",
+    }

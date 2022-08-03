@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import java.util.Properties;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -44,6 +45,9 @@ public class BPMFormDataPipelineListenerTest {
 
     @Mock
     private HTTPServiceInvoker httpServiceInvoker;
+
+    @Mock
+    private Properties integrationCredentialProperties;
 
     private Expression fields;
 

@@ -41,3 +41,11 @@ class FormioRoles(Enum):
     def contains(cls, item: str) -> bool:
         """Checks if the parameter exists in the enum."""
         return item in [entry.value for entry in cls]
+
+
+@unique
+class DraftStatus(Enum):
+    """Draft status and corresponding values."""
+
+    ACTIVE = 1
+    INACTIVE = 0

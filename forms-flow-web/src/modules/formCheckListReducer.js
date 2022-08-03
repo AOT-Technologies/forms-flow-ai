@@ -5,7 +5,7 @@ const initialState = {
   formUploadFormList: [],
   formUploadCounter: 0,
   designerFormLoading: false,
-  searchFormLoading:false
+  searchFormLoading:false,
 };
 
 const formCheckList = (state = initialState, action) => {

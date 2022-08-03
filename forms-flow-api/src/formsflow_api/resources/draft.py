@@ -10,7 +10,7 @@ from formsflow_api.schemas import (
     ApplicationSchema,
     ApplicationSubmissionSchema,
     DraftSchema,
-    FormProcessMapperListRequestSchema
+    FormProcessMapperListRequestSchema,
 )
 from formsflow_api.services import DraftService
 from formsflow_api.utils import (
@@ -36,10 +36,7 @@ class DraftResource(Resource):
         try:
             dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
             draft, count = DraftService.get_all_drafts(dict_data)
-            result = {
-                "drafts": draft,
-                "totalCount": count
-            }
+            result = {"drafts": draft, "totalCount": count}
             return (result, HTTPStatus.OK)
 
         except BaseException as submission_err:  # pylint: disable=broad-except

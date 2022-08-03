@@ -7,7 +7,9 @@ import uuid
 
 from sqlalchemy import and_, update
 from sqlalchemy.dialects.postgresql import JSON, UUID
+from sqlalchemy.sql.expression import text
 
+from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
 from formsflow_api.utils.enums import DraftStatus
 
 from .application import Application
@@ -15,8 +17,6 @@ from .audit_mixin import AuditDateTimeMixin
 from .base_model import BaseModel
 from .db import db
 from .form_process_mapper import FormProcessMapper
-from formsflow_api.utils import FILTER_MAPS, validate_sort_order_and_order_by
-from sqlalchemy.sql.expression import text
 
 
 class Draft(AuditDateTimeMixin, BaseModel, db.Model):
@@ -53,7 +53,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
 
     @classmethod
     def get_by_id(cls, draft_id: str, user_id: str) -> Draft:
-        """doc"""
+        """Retrieves the draft entry by id."""
         result = (
             cls.query.join(Application, Application.id == cls.application_id)
             .join(
@@ -83,7 +83,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
                 cls.application_id,
                 cls.created,
                 cls.modified,
-                cls.data
+                cls.data,
             )
             .join(Application, Application.id == cls.application_id)
             .join(
@@ -108,8 +108,8 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         limit=None,
         sort_by=None,
         sort_order=None,
-        **filters
-        ):
+        **filters,
+    ):
         """Fetch all active drafts."""
         result = (
             cls.filter_conditions(**filters)
@@ -122,7 +122,7 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
                 cls.application_id,
                 cls.created,
                 cls.modified,
-                cls.data
+                cls.data,
             )
             .join(Application, Application.id == cls.application_id)
             .join(

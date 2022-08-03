@@ -63,10 +63,11 @@ export const getProcessStatusList = (processId, taskId) => {
  *
  * @param  {...any} rest
  */
-export const fetchAllBpmProcesses = (...rest) => {
+export const fetchAllBpmProcesses = (excludeInternal = true, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpGETRequest(API.GET_BPM_PROCESS_LIST + "?latestVersion=true&excludeInternal=true", {}, UserService.getToken(), true)
+    // eslint-disable-next-line max-len
+    httpGETRequest(API.GET_BPM_PROCESS_LIST + `?latestVersion=true&excludeInternal=${excludeInternal}`, {}, UserService.getToken(), true)
       .then((res) => {
         if(res?.data?._embedded?.processDefinitionDtoList) {
           dispatch(setAllProcessList(res.data._embedded.processDefinitionDtoList));

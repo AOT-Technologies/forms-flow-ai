@@ -32,7 +32,7 @@ export default React.memo(() => {
     
     // Populate workflows in dropdown on page load and show default workflow
     useEffect(() => {
-      dispatch(fetchAllBpmProcesses());
+      dispatch(fetchAllBpmProcesses(false));
     }, []);
 
     const handleListChange = (item) => {
@@ -66,6 +66,10 @@ export default React.memo(() => {
       document.getElementById("inputWorkflow").value = "";
       setShowModeller(true);
     };
+
+    const handleHelp = () => {
+      window.open("https://camunda.com/bpmn/");
+    };
     
     return (
       <div className="container" id="main">
@@ -95,6 +99,7 @@ export default React.memo(() => {
           <Grid item xs={12} sm={12}>
             <Card variant="outlined" className="card-overflow">
               <CardContent>
+                <Button variant="info" className="help-btn" onClick={() => handleHelp()}>Help</Button>
                 <Grid item xs={12} sm={6}>
                   <span className="fontsize-16">
                     {t("Please select an existing workflow.")}

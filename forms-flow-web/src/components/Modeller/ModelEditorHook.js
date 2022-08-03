@@ -298,7 +298,7 @@ const EditModel = React.memo(
 
     const updateBpmProcesses = () => {
       // Update drop down with all processes
-      dispatch(fetchAllBpmProcesses());
+      dispatch(fetchAllBpmProcesses(false));
       // Show the updated workflow as the current value in the dropdown
       const updatedWorkflow = {
         label: getDeploymentNames().deploymentName,
@@ -350,18 +350,11 @@ const EditModel = React.memo(
             </div>
             
           </div>
-          {/*
-            Stylesheet for the js-properties-panel has been imported in /public/index.html directory as a CDN.
-            TODO: Import styles in this js page
-          */}
           <div className="properties-panel-parent" id="js-properties-panel"></div>
         </div>
 
         <div className="deploy-container">
-          {/*
-            TODO: Implement multi-tenancy
-            {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" id="apply-all-tenant-checkbox"/>  Apply for all tenants</label> : null}
-          */}
+          
           {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" onClick={handleApplyAllTenants}/>  Apply for all tenants</label> : null}
 
           <Button onClick={deployProcess}>

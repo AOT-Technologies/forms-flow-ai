@@ -159,6 +159,11 @@ export const checkIsObjectId = (data) => {
 export const listProcess = (processes) => {
   if (processes?.length > 0) {
     const data = processes.map((process) => {
+
+      if (process.name == null || process.name == ""){
+        process.name = "Undefined";
+      }
+      
       return {
         label: process.name,
         value: process.key,

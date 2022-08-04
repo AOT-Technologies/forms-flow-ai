@@ -15,6 +15,7 @@ import "./Modeller.scss";
 
 import {
   fetchAllBpmProcesses,
+  fetchAllBpmDeployments,
 } from "../../apiManager/services/processServices";
 
 import Button from "react-bootstrap/Button";
@@ -25,15 +26,23 @@ export default React.memo(() => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const process = useSelector((state) => state.process.processList);
-    const processList = listProcess(process);
+    const deployments = useSelector((state) => state.process.deploymentList);
     const workflow = useSelector((state) => state.process.workflowAssociated);
     const [defaultProcessInfo, setDefaultProcessInfo] = useState(createNewProcess());
     const [showModeller, setShowModeller] = useState(false);
+
+    // Combine executable (processes) and non-executable (deployments)
+    const [fullProcessList, setFullProcessList] = useState([]);
     
-    // Populate workflows in dropdown on page load and show default workflow
+    // Populate workflows in dropdown on page load
     useEffect(() => {
-      dispatch(fetchAllBpmProcesses(false));
+      dispatch(fetchAllBpmProcesses(true));
+      dispatch(fetchAllBpmDeployments());
     }, []);
+
+    useEffect(() => {
+      setFullProcessList(listProcess(process.concat(deployments)));
+    }, [process, deployments]);
 
     const handleListChange = (item) => {
       setShowModeller(true);
@@ -106,11 +115,11 @@ export default React.memo(() => {
                   </span>
                   <Select
                     placeholder={t("Select...")}
-                    dropdownHeight="100px"
-                    options={processList}
+                    dropdownHeight={showModeller ? "250px" : "100px"}
+                    options={fullProcessList}
                     onChange={handleListChange}
                     values={
-                      processList.length && workflow?.value && showModeller ? [workflow] : []
+                      fullProcessList.length && workflow?.value && showModeller ? [workflow] : []
                     }
                   />
                 </Grid>
@@ -138,9 +147,11 @@ export default React.memo(() => {
                   </div>
                 </div>
 
-                {(processList.length && workflow?.value) && showModeller ? (
+                {(fullProcessList.length && workflow?.value) && showModeller ? (
                   <div>
                     <EditModel
+                      isExecutable={workflow?.isExecutable}
+                      xml={workflow?.xml}
                       processKey={workflow?.value}
                       tenant={workflow?.tenant}
                       defaultProcessInfo={defaultProcessInfo}

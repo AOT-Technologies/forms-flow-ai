@@ -9,7 +9,7 @@ import Button from "react-bootstrap/Button";
 import {
   fetchDiagram,
   getProcessActivities,
-  fetchAllBpmProcesses
+  fetchAllBpmProcesses,
 } from "../../apiManager/services/processServices";
 
 import {
@@ -52,7 +52,7 @@ import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css';
 import linterConfig from './lint-rules/packed-config';
 
 const EditModel = React.memo(
-  ({ processKey, processInstanceId, tenant, defaultProcessInfo }) => {
+  ({ isExecutable, xml, processKey, processInstanceId, tenant, defaultProcessInfo }) => {
 
     const { t } = useTranslation();
 
@@ -103,10 +103,15 @@ const EditModel = React.memo(
     }, [bpmnModeller]);
 
     useEffect(() => {
-      if (processKey) {
+      if (processKey && isExecutable) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(fetchDiagram(processKey, tenant));
-      } else {
+      } 
+      else if (processKey && !isExecutable){
+        dispatch(setProcessDiagramLoading(true));
+        dispatch(setProcessDiagramXML(xml));
+      }
+      else {
         dispatch(setProcessDiagramLoading(false));
       }
       return () => {
@@ -298,7 +303,7 @@ const EditModel = React.memo(
 
     const updateBpmProcesses = () => {
       // Update drop down with all processes
-      dispatch(fetchAllBpmProcesses(false));
+      dispatch(fetchAllBpmProcesses(true));
       // Show the updated workflow as the current value in the dropdown
       const updatedWorkflow = {
         label: getDeploymentNames().deploymentName,

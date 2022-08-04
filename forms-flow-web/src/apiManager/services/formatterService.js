@@ -158,20 +158,49 @@ export const checkIsObjectId = (data) => {
 
 export const listProcess = (processes) => {
   if (processes?.length > 0) {
-    const data = processes.map((process) => {
+
+    // Remove duplicates (there may be duplicated between processes (executable) 
+    // and deployments (non-executable), 
+    // remove duplicate deployments)
+    const unique = uniqByKeepFirst(processes, x => x.name);
+  
+    const data = unique.map((process) => {
 
       if (process.name == null || process.name == ""){
-        process.name = "Undefined";
+        process.name = "Unnamed";
       }
-      
+
       return {
         label: process.name,
         value: process.key,
         tenant: process.tenantId,
+        isExecutable: process.isExecutable == null ? true : false,
+        xml: process.diagram
       };
+
     });
+
+    // Sort alphabetically
+    data.sort((a, b) => {
+      return compareStrings(a.label, b.label);
+    });
+
     return data;
   } else {
     return [];
   }
+};
+
+const uniqByKeepFirst = (a, key) => {
+  let seen = new Set();
+  return a.filter(item => {
+      let k = key(item);
+      return seen.has(k) ? false : seen.add(k);
+  });
+};
+
+const compareStrings = (a, b) => {
+  a = a.toLowerCase();
+  b = b.toLowerCase();
+  return (a < b) ? -1 : (a > b) ? 1 : 0;
 };

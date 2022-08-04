@@ -18,7 +18,7 @@ server:
 
 formsflow.ai:
   forms:
-    enableCustomSubmission: ${CUSTOM_SUBMISSION_ENABLED}
+    enableCustomSubmission: ${CUSTOM_SUBMISSION_ENABLED:false}
     custom_submission:
       url: ${CUSTOM_SUBMISSION_URL}
   bpm:

@@ -1,6 +1,10 @@
 import Index from "../../../components/Modeller/index";
 import React from "react";
-import { render as rtlRender, screen, fireEvent } from "@testing-library/react";
+import { 
+  render as rtlRender, 
+  screen, 
+  //fireEvent 
+} from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { Provider } from "react-redux";
 import { Router, Route } from "react-router";
@@ -9,10 +13,12 @@ import * as redux from "react-redux";
 import StoreService from "../../../services/StoreService";
 import { initialstate } from "./constants";
 
+/*
 import {
   setWorkflowAssociation,
   setProcessDiagramXML,
 } from "../../../actions/processActions";
+*/
 
 jest.mock("bpmn-js/lib/Modeler", () => ({
   BpmnModeler: {

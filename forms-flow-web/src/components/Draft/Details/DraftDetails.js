@@ -24,7 +24,7 @@ const DraftDetails = React.memo((props) => {
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="application-name">
-            {startCase(draft.draftName)}
+            {startCase(draft.DraftName)}
           </td>
         </tr>
         <tr>
@@ -33,7 +33,7 @@ const DraftDetails = React.memo((props) => {
           </td>
           <td className="border-0">:</td>
           <td className="border-0" id="created-by">
-            {draft.createdBy}
+            {draft.CreatedBy}
           </td>
         </tr>
 

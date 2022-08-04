@@ -6,12 +6,6 @@ import startCase from "lodash/startCase";
 import { Tabs, Tab } from "react-bootstrap";
 import Details from "./Details";
 import Loading from "../../containers/Loading";
-// import {
-//   setApplicationDetailLoader,
-//   setApplicationDetailStatusCode,
-// } from "../../actions/applicationActions";
-// import ProcessDiagram from "../BPMN/ProcessDiagramHook";
-// import History from "./ApplicationHistory";
 import View from "../Form/Item/Submission/Item/View";
 import { getForm, getSubmission } from "react-formio";
 import NotFound from "../NotFound";
@@ -22,26 +16,22 @@ import { getDraftById } from "../../apiManager/services/draftService";
 
 const ViewDraft = React.memo(() => {
   const { draftId } = useParams();
-  const draftDetail = useSelector((state) => state.draft.draftDetail);
+  const draftDetail = useSelector((state) => state.draft.submission);
   const draftDetailStatusCode = useSelector(
     (state) => state.draft.draftDetailStatusCode
   );
   const isDraftDetailLoading = useSelector(
     (state) => state.draft.isDraftDetailLoading
   );
-  //   const draftProcess = useSelector(
-  //     (state) => state.draft.draftProcess
-  //   );
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const dispatch = useDispatch();
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
 
   useEffect(() => {
-    // dispatch(setDraftDetailLoader(true));
     dispatch(
       getDraftById(draftId, (err, res) => {
         if (!err) {
-          if (res.submissionId && res.formId) {
+          if (res.id && res.formId) {
             dispatch(getForm("form", res.formId));
             dispatch(getSubmission("submission", res.submissionId, res.formId));
           }
@@ -84,7 +74,7 @@ const ViewDraft = React.memo(() => {
             <i className="fa fa-list-alt" aria-hidden="true" />
             &nbsp; <Translation>{(t) => t("Drafts")}</Translation> /
           </span>{" "}
-          {`${startCase(draftDetail.draftName)}`}
+          {`${startCase(draftDetail.DraftName)}`}
         </h3>
       </div>
       <br />
@@ -99,7 +89,7 @@ const ViewDraft = React.memo(() => {
           eventKey="form"
           title={<Translation>{(t) => t("Form")}</Translation>}
         >
-          <View page="application-detail" />
+          <View page="draft-detail" />
         </Tab>
         <Tab
           eventKey="process-diagram"

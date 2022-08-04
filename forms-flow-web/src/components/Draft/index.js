@@ -4,6 +4,7 @@ import { BASE_ROUTE } from "../../constants/constants";
 import DraftList from "./List";
 import "./Draft.scss";
 import ViewDraft from "./ViewDraft";
+import EditDraft from "./EditDraft";
 
 export default React.memo(() => {
   return (
@@ -16,6 +17,9 @@ export default React.memo(() => {
           </Route>
           <Route path={`${BASE_ROUTE}draft/:draftId/:notavailable`}>
             <Redirect exact to="/404" />
+          </Route>
+          <Route path={`${BASE_ROUTE}form/:formId/draft/:draftId/edit`}>
+            <EditDraft />
           </Route>
         </>
       </Switch>

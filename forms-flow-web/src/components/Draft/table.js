@@ -86,7 +86,7 @@ export const columns = (lastModified, callback, t, redirectUrl) => {
       }),
     },
     {
-      dataField: "applicationName",
+      dataField: "DraftName",
       text: <Translation>{(t) => t("Draft Name")}</Translation>,
       sort: true,
       headerClasses: "classApplicationName",

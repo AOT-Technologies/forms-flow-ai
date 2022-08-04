@@ -133,7 +133,7 @@ export const fetchDrafts = (data, ...rest) => {
     httpGETRequest(URL)
       .then((res) => {
         if (res.data) {
-          dispatch(setDraftlist(res.data));
+          dispatch(setDraftlist(res.data.drafts));
         } else {
           done("Error fetching data");
         }

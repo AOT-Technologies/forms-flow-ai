@@ -7,8 +7,8 @@ const initialState = {
   isDraftListLoading: true,
   draftCount: null,
   activePage: 1,
-  isDraftDetailLoading: false,
-  draftDetail: {},
+  isDraftDetailLoading: true,
+  submission: {},
 };
 
 const draftSubmission = (state = initialState, action) => {
@@ -18,7 +18,11 @@ const draftSubmission = (state = initialState, action) => {
     case ACTION_CONSTANTS.DRAFT_LIST:
       return { ...state, draftList: action.payload, isDraftListLoading: false };
     case ACTION_CONSTANTS.DRAFT_DETAIL:
-      return { ...state, draftDetail: action.payload };
+      return {
+        ...state,
+        submission: action.payload,
+        isDraftDetailLoading: false,
+      };
     default:
       return state;
   }

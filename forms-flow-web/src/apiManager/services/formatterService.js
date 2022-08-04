@@ -162,7 +162,7 @@ export const listProcess = (processes) => {
     // Remove duplicates (there may be duplicated between processes (executable) 
     // and deployments (non-executable), 
     // remove duplicate deployments)
-    const unique = uniqByKeepFirst(processes, x => x.name);
+    const unique = uniqByKeepFirst(processes, x => x ? x.name : null);
   
     const data = unique.map((process) => {
 

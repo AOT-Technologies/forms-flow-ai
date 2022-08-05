@@ -99,6 +99,9 @@ class _Config:  # pylint: disable=too-few-public-methods
         str(os.getenv("MULTI_TENANCY_ENABLED", default="false")).lower() == "true"
     )
 
+    # Formio JWT Secret
+    FORMIO_JWT_SECRET = os.getenv("FORMIO_JWT_SECRET", "---- change me now ---")
+
 
 class DevConfig(_Config):  # pylint: disable=too-few-public-methods
     """Development environment configuration."""

@@ -7,13 +7,13 @@ import { Router, Route } from "react-router";
 import { createMemoryHistory } from "history";
 import StoreService from "../../../services/StoreService";
 import * as redux from "react-redux";
-
+ 
 let store;
-
+ 
 beforeEach(() => {
   store = StoreService.configureStore();
 });
-
+ 
 function renderWithRouterMatch(
   ui,
   {
@@ -32,8 +32,8 @@ function renderWithRouterMatch(
     ),
   };
 }
-
-it.skip("Should render the dashboard without breaking", () => {
+ 
+it("Should render the dashboard without breaking", () => {
   const spy = jest.spyOn(redux, "useSelector");
   spy.mockImplementation((callback) =>
     callback({
@@ -69,6 +69,15 @@ it.skip("Should render the dashboard without breaking", () => {
         selectedMetricsId: 22,
         metricsLoadError: false,
         metricsStatusLoadError: false,
+        sortOrder: "asc",
+        searchText: "",
+        totalItems: 0,
+        pagination: {numPages: 0},
+        sort: "formName",
+        submissionStatusCountLoader: false,
+        metricsDateRangeLoader: false,
+        submissionDate:[],
+ 
       },
     })
   );
@@ -85,7 +94,7 @@ it.skip("Should render the dashboard without breaking", () => {
     screen.getByText("Freedom of Information and Protection of Privacy")
   ).toBeInTheDocument();
 });
-
+ 
 it("Should not render the dashboard in case of error", () => {
   const spy = jest.spyOn(redux, "useSelector");
   spy.mockImplementation((callback) =>
@@ -100,6 +109,7 @@ it("Should not render the dashboard in case of error", () => {
         selectedMetricsId: 22,
         metricsLoadError: true,
         metricsStatusLoadError: false,
+        submissionDate: []
       },
     })
   );
@@ -113,3 +123,5 @@ it("Should not render the dashboard in case of error", () => {
     )
   ).toBeInTheDocument();
 });
+ 
+

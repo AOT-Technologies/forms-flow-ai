@@ -5,23 +5,27 @@ import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import {
-  setApplicationListActivePage,
-  setCountPerpage,
-  setApplicationListLoader,
-} from "../../actions/applicationActions";
-
 import Loading from "../../containers/Loading";
 import Nodata from "../Nodata";
 import { useTranslation } from "react-i18next";
-import { columns, getoptions, defaultSortedBy } from "./table";
+import { columns, getoptions } from "./table";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import Alert from "react-bootstrap/Alert";
 import { Translation } from "react-i18next";
 
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
-import { fetchDrafts } from "../../apiManager/services/draftService";
+import {
+  fetchDrafts,
+  FilterDrafts,
+} from "../../apiManager/services/draftService";
+import Head from "../../containers/Head";
+import { push } from "connected-react-router";
+import {
+  setDraftListLoader,
+  setDraftListActivePage,
+  setCountPerpage,
+} from "../../actions/draftActions";
 
 export const DraftList = React.memo(() => {
   const { t } = useTranslation();
@@ -31,12 +35,15 @@ export const DraftList = React.memo(() => {
   const isDraftListLoading = useSelector(
     (state) => state.draft.isDraftListLoading
   );
+  const applicationCount = useSelector(
+    (state) => state.applications.applicationCount
+  );
   const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
   const page = useSelector((state) => state.draft.activePage);
   const iserror = useSelector((state) => state.draft.iserror);
   const error = useSelector((state) => state.draft.error);
-  // const [filtermode, setfiltermode] = React.useState(false);
+  const [filtermode, setfiltermode] = React.useState(false);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [lastModified, setLastModified] = React.useState(null);
@@ -83,23 +90,36 @@ export const DraftList = React.memo(() => {
   };
 
   const handlePageChange = (type, newState) => {
+    console.log(type, newState);
     if (type === "filter") {
-      //TODO
-      // setfiltermode(true);
+      setfiltermode(true);
       console.log("filter");
     } else if (type === "pagination") {
       if (countPerPage > 5) {
-        dispatch(setApplicationListLoader(true));
+        dispatch(setDraftListLoader(true));
       } else {
         setIsLoading(true);
       }
     }
     dispatch(setCountPerpage(newState.sizePerPage));
-    // dispatch(FilterApplications(newState));
-    dispatch(setApplicationListActivePage(newState.page));
+    dispatch(FilterDrafts(newState));
+    dispatch(setDraftListActivePage(newState.page));
   };
-
-  return drafts.length > 0 ? (
+  const headerList = () => {
+    return [
+      {
+        name: "Applications",
+        count: applicationCount,
+        onClick: () => dispatch(push(`${redirectUrl}application`)),
+      },
+      {
+        name: "Drafts",
+        count: draftCount,
+        onClick: () => dispatch(push(`${redirectUrl}draft`)),
+      },
+    ];
+  };
+  return drafts.length > 0 || filtermode ? (
     <ToolkitProvider
       bootstrap4
       keyField="id"
@@ -109,21 +129,7 @@ export const DraftList = React.memo(() => {
     >
       {(props) => (
         <div className="container" role="definition">
-          <div className="main-header">
-            <h3 className="application-head">
-              <i
-                className="fa fa-list"
-                style={{ marginTop: "5px" }}
-                aria-hidden="true"
-              />
-              <span className="application-text">
-                <Translation>{(t) => t("Drafts")}</Translation>
-              </span>
-              <div className="col-md-1 application-count" role="contentinfo">
-                ({draftCount})
-              </div>
-            </h3>
-          </div>
+          <Head items={headerList()} page="Drafts" />
           <br />
           <div>
             <BootstrapTable
@@ -139,7 +145,6 @@ export const DraftList = React.memo(() => {
               noDataIndication={() =>
                 !isLoading && getNoDataIndicationContent()
               }
-              defaultSorted={defaultSortedBy}
               overlay={overlayFactory({
                 spinner: <SpinnerSVG />,
                 styles: {

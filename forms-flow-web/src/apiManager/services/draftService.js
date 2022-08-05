@@ -11,7 +11,9 @@ import {
   setDraftlist,
   setDraftSubmission,
   setDraftDetail,
+  setDraftCount,
 } from "../../actions/draftActions";
+import moment from "moment";
 
 export const draftCreate = (data, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
@@ -126,14 +128,15 @@ export const publicDraftSubmit = (data, ...rest) => {
   };
 };
 
-export const fetchDrafts = (data, ...rest) => {
+export const fetchDrafts = (pageNo = 1, limit = 5, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
-  const URL = API.DRAFT_BASE;
+  const URL = `${API.DRAFT_BASE}?pageNo=${pageNo}&limit=${limit}&sortBy=id&sortOrder=desc`;
   return (dispatch) => {
     httpGETRequest(URL)
       .then((res) => {
         if (res.data) {
           dispatch(setDraftlist(res.data.drafts));
+          dispatch(setDraftCount(res.data?.totalCount || 0));
         } else {
           done("Error fetching data");
         }
@@ -174,6 +177,54 @@ export const getDraftById = (draftId, ...rest) => {
         // dispatch(setDraftDetailStatusCode(403));
         done(error);
         // dispatch(setDraftDetailLoader(false));
+      });
+  };
+};
+
+// Draft filter handler
+export const FilterDrafts = (params, ...rest) => {
+  const done = rest.length ? rest[0] : () => {};
+  return (dispatch) => {
+    const { DraftName, id, modified } = params.filters;
+    let url = `${API.DRAFT_BASE}?pageNo=${params.page}&limit=${params.sizePerPage}`;
+    if (DraftName && DraftName !== "") {
+      url += `&draftName=${DraftName?.filterVal}`;
+    }
+    if (id && id !== "") {
+      url += `&id=${id.filterVal}`;
+    }
+
+    if (modified && modified?.filterVal?.length === 2) {
+      let modifiedFrom = moment
+        .utc(modified.filterVal[0])
+        .format("YYYY-MM-DDTHH:mm:ssZ")
+        .replace("+", "%2B");
+      let modifiedTo = moment
+        .utc(modified.filterVal[1])
+        .format("YYYY-MM-DDTHH:mm:ssZ")
+        .replace("+", "%2B");
+      url += `&modifiedFrom=${modifiedFrom}&modifiedTo=${modifiedTo}`;
+    }
+
+    if (params.sortField !== null) {
+      url += `&sortBy=${params.sortField}&sortOrder=${params.sortOrder}`;
+    }
+
+    httpGETRequest(url)
+      .then((res) => {
+        if (res.data) {
+          const drafts = res.data.drafts || [];
+          dispatch(setDraftCount(res.data.totalCount || 0));
+          dispatch(setDraftlist(drafts));
+          done(null, drafts);
+        } else {
+          // dispatch(serviceActionError(res));
+        }
+        done(null, res.data);
+      })
+      .catch((error) => {
+        // dispatch(serviceActionError(error));
+        done(error);
       });
   };
 };

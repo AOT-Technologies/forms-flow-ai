@@ -332,3 +332,19 @@ margin-right: 1rem;
 .cursor-pointer{
   cursor: pointer;
 }
+
+.header-container{
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #ABABAB;
+}
+
+.head-item {
+  color: #ABABAB;
+  cursor: pointer;
+  padding-bottom: 4rem;
+}
+
+.head-active {
+  color: #212529;
+  border-bottom: 8px solid #007BFF;
+}

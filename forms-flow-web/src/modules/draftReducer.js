@@ -23,6 +23,14 @@ const draftSubmission = (state = initialState, action) => {
         submission: action.payload,
         isDraftDetailLoading: false,
       };
+    case ACTION_CONSTANTS.DRAFT_COUNT:
+      return { ...state, draftCount: action.payload };
+    case ACTION_CONSTANTS.DRAFT_LIST_LOADER:
+      return { ...state, isDraftListLoading: action.payload };
+    case ACTION_CONSTANTS.SET_DRAFT_LIST_ACTIVE_PAGE:
+      return { ...state, activePage: action.payload };
+    case ACTION_CONSTANTS.SET_DRAFT_COUNT_PER_PAGE:
+      return { ...state, countPerPage: action.payload };
     default:
       return state;
   }

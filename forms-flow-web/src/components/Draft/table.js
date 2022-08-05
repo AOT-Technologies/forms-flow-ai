@@ -36,7 +36,7 @@ const linkDraftDetail = (cell, row, redirectUrl) => {
 
 const linkDraft = (cell, row, redirectUrl) => {
   const url = `${redirectUrl}form/${row.formId}/draft/${row.id}/edit`;
-  const buttonText = <Translation>{(t) => t("Edit draft")}</Translation>;
+  const buttonText = <Translation>{(t) => t("Edit")}</Translation>;
   const icon = "fa fa-edit";
   return (
     <div onClick={() => window.open(url, "_blank")}>

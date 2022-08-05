@@ -12,6 +12,7 @@ def test_formio_roles(app, client, session, jwt):
         role_ids_filtered,
         timeout=0,
     )
+    cache.set("user_resource_id", "62cc9223b5cad9348f5880a9", timeout=0)
 
     # Requesting from client role
     token = get_token(jwt, role="formsflow-client")

@@ -16,3 +16,6 @@ class DraftSchema(Schema):
     data = fields.Dict(data_key="data", required=True)
     created = fields.Str()
     modified = fields.Str()
+    form_name = fields.Str(data_key="DraftName", dump_only=True)
+    form_id = fields.Str(data_key="formId", dump_only=True)
+    created_by = fields.Str(data_key="CreatedBy", dump_only=True)

@@ -333,18 +333,20 @@ margin-right: 1rem;
   cursor: pointer;
 }
 
-.header-container{
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #ABABAB;
-}
-
 .head-item {
   color: #ABABAB;
   cursor: pointer;
-  padding-bottom: 4rem;
+  padding-bottom: 3rem;
 }
 
 .head-active {
   color: #212529;
-  border-bottom: 8px solid #007BFF;
+  border-bottom: 4px solid #4d61fc;
+}
+.padding-left-60 {
+  margin-left: 60px;
+}
+.head-rule{
+  margin-top: -10px;
+  padding-top: -10px;
 }

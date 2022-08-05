@@ -111,11 +111,13 @@ export const DraftList = React.memo(() => {
         name: "Applications",
         count: applicationCount,
         onClick: () => dispatch(push(`${redirectUrl}application`)),
+        icon: "list"
       },
       {
         name: "Drafts",
         count: draftCount,
         onClick: () => dispatch(push(`${redirectUrl}draft`)),
+        icon: "edit"
       },
     ];
   };

@@ -9,24 +9,25 @@ const Head = React.memo((props) => {
         {items?.map((item, key) => (
           <div
             key={key}
-            className={`head-item ${item.name === page ? "head-active" : ""}`}
+            className={`head-item ${item.name === page ? "head-active" : ""} ${key > 0 ? 'padding-left-60' : '' }`}
           >
             <h3 onClick={item?.onClick} className="application-head">
               <i
-                className="fa fa-list"
+                className={`fa fa-${item?.icon}`}
                 style={{ marginTop: "5px" }}
                 aria-hidden="true"
               />
               <span className="application-text">
                 <Translation>{(t) => t(item?.name)}</Translation>
               </span>
-              <div className="col-md-1 application-count" role="contentinfo">
+              <div className="application-count" role="contentinfo">
                 ({item?.count})
               </div>
             </h3>
           </div>
         ))}
       </div>
+      <hr className="head-rule" />
     </div>
   );
 });

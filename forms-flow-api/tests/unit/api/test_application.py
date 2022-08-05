@@ -3,6 +3,7 @@ import pytest
 
 from tests.utilities.base_test import (
     get_application_create_payload,
+    get_draft_create_payload,
     get_form_request_payload,
     get_token,
 )
@@ -103,6 +104,24 @@ class TestApplicationResource:
             headers=headers,
         )
         assert response.status_code == 200
+
+    def test_application_list_with_no_draft(self, app, client, session, jwt):
+        """Application list should not contain draft applications."""
+        for role in ["formsflow-client", "formsflow-designer", "formsflow-reviewer"]:
+            token = get_token(jwt, role=role)
+            headers = {
+                "Authorization": f"Bearer {token}",
+                "content-type": "application/json",
+            }
+            rv = client.post("/form", headers=headers, json=get_form_request_payload())
+            form_id = rv.json.get("formId")
+            # creating a draft will create a draft application
+            client.post(
+                "/draft", headers=headers, json=get_draft_create_payload(form_id)
+            )
+
+            response = client.get("/application", headers=headers)
+            assert len(response.json["applications"]) == 0
 
 
 class TestApplicationDetailView:

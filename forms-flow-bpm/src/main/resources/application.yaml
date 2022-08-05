@@ -17,6 +17,10 @@ server:
         max-age: 1800
 
 formsflow.ai:
+  forms:
+    enableCustomSubmission: ${CUSTOM_SUBMISSION_ENABLED:false}
+    custom_submission:
+      url: ${CUSTOM_SUBMISSION_URL}
   api:
     url: ${FORMSFLOW_API_URL}
   analysis:

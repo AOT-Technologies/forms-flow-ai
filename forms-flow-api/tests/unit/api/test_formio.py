@@ -12,6 +12,7 @@ def test_formio_roles(app, client, session, jwt):
         role_ids_filtered,
         timeout=0,
     )
+    cache.set("user_resource_id", "62cc9223b5cad9348f5880a9", timeout=0)
 
     # Requesting from client role
     token = get_token(jwt, role="formsflow-client")
@@ -19,11 +20,10 @@ def test_formio_roles(app, client, session, jwt):
     response = client.get("/formio/roles", headers=headers)
 
     assert response.status_code == 200
-    assert response.json is not None
     assert response.json["form"][0]["roleId"] == 1
     assert response.json["form"][0]["type"] == FormioRoles.CLIENT.name
     assert response.json["form"][1]["type"] == FormioRoles.RESOURCE_ID.name
-    assert response.json["form"][1]["roleId"] is None
+    assert response.json["form"][1]["roleId"] == "62cc9223b5cad9348f5880a9"
 
     # Requesting from reviewer role
     token = get_token(jwt, role="formsflow-reviewer")
@@ -33,7 +33,7 @@ def test_formio_roles(app, client, session, jwt):
     assert response.json["form"][0]["roleId"] == 2
     assert response.json["form"][0]["type"] == FormioRoles.REVIEWER.name
     assert response.json["form"][1]["type"] == FormioRoles.RESOURCE_ID.name
-    assert response.json["form"][1]["roleId"] is None
+    assert response.json["form"][1]["roleId"] == "62cc9223b5cad9348f5880a9"
 
     # Requesting from designer role
     cache.set("user_resource_id", "123456789", timeout=0)

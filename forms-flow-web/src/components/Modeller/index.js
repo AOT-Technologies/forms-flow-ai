@@ -100,6 +100,7 @@ export default React.memo(() => {
                     {t("Please select an existing workflow.")}
                   </span>
                   <Select
+                    placeholder={t("Select...")}
                     dropdownHeight="100px"
                     options={processList}
                     onChange={handleListChange}
@@ -117,12 +118,11 @@ export default React.memo(() => {
 
                   <div className="create-import-btns-container">
 
-                    <Button className="btn-create-new" onClick={() => handleCreateNew()}>Create New</Button>
+                    <Button className="btn-create-new" onClick={() => handleCreateNew()}>{t("Create New")}</Button>
 
                     <span className="fontsize-16 or-txt">
                     {t(" ")}
                     </span>
-                    
                     <input 
                         id="inputWorkflow"
                         type="file" 

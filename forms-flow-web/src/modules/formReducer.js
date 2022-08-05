@@ -8,6 +8,7 @@ const initialState = {
   isFormWorkflowSaved: false,
   formSubmitted: false,
   publicFormStatus: null, //expected values sample {anonymous:false,status:'inactive'}
+  customSubmission:{}
 };
 
 const formDelete = (state = initialState, action) => {
@@ -26,6 +27,8 @@ const formDelete = (state = initialState, action) => {
       return { ...state, formSubmitted: action.payload };
     case ACTION_CONSTANTS.PUBLIC_FORM_STATUS:
       return { ...state, publicFormStatus: action.payload };
+    case ACTION_CONSTANTS.CUSTOM_SUBMISSION:
+      return { ...state, customSubmission: action.payload };
     default:
       return state;
   }

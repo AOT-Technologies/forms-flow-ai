@@ -42,7 +42,9 @@ objects:
             "REACT_APP_KEYCLOAK_URL": "${REACT_APP_KEYCLOAK_URL}",
             "REACT_APP_APPLICATION_NAME": "${REACT_APP_APPLICATION_NAME}",
             "REACT_APP_WEB_BASE_CUSTOM_URL": "${REACT_APP_WEB_BASE_CUSTOM_URL}",
-            "REACT_APP_USER_ACCESS_PERMISSIONS": "${REACT_APP_USER_ACCESS_PERMISSIONS}"
+            "REACT_APP_USER_ACCESS_PERMISSIONS": "${REACT_APP_USER_ACCESS_PERMISSIONS}",
+            "REACT_APP_DRAFT_ENABLED":"${REACT_APP_DRAFT_ENABLED}",
+            "REACT_APP_DRAFT_POLLING_RATE":"${REACT_APP_DRAFT_POLLING_RATE}"
           }
 
   -
@@ -259,4 +261,12 @@ parameters:
   - name: REACT_APP_WEB_BASE_CUSTOM_URL
     displayName: REACT_APP_WEB_BASE_CUSTOM_URL
     description: Clients can use this env variable to provide their custom URL
+    required: false
+  -name: REACT_APP_DRAFT_ENABLED
+    displayName: REACT_APP_DRAFT_ENABLED
+    description: Wheather or not to use the draft feature
+    required: false
+  -name: REACT_APP_DRAFT_POLLING_RATE
+    displayName: REACT_APP_DRAFT_POLLING_RATE
+    description: The interval in milliseconds for autosaving
     required: false

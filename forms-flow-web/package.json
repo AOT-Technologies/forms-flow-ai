@@ -45,6 +45,7 @@
     "create-react-class": "^15.7.0",
     "crypto-js": "^4.0.0",
     "formiojs": "^4.14.0",
+    "formsflow-formio-custom-elements": "^1.0.3",
     "i18next": "^21.6.6",
     "i18next-browser-languagedetector": "^6.1.2",
     "jsonwebtoken": "^8.5.1",

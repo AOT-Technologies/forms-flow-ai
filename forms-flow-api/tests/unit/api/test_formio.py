@@ -1,11 +1,9 @@
 """Test suit for formio role id cached endpoint."""
 from formsflow_api.utils import cache
 from formsflow_api.utils.enums import FormioRoles
-from tests import skip_in_ci
 from tests.utilities.base_test import get_formio_roles, get_token
 
 
-@skip_in_ci
 def test_formio_roles(app, client, session, jwt):
     """Passing case of role API."""
     role_ids_filtered = get_formio_roles()
@@ -14,6 +12,7 @@ def test_formio_roles(app, client, session, jwt):
         role_ids_filtered,
         timeout=0,
     )
+    cache.set("user_resource_id", "62cc9223b5cad9348f5880a9", timeout=0)
 
     # Requesting from client role
     token = get_token(jwt, role="formsflow-client")

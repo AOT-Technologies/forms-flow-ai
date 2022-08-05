@@ -1,5 +1,5 @@
 """Test suit for formio role id cached endpoint."""
-from formsflow_api.utils import cache
+from formsflow_api_utils.utils import cache
 from tests.utilities.base_test import get_formio_roles, get_token
 
 

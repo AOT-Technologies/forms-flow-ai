@@ -11,19 +11,12 @@ import org.camunda.bpm.extension.hooks.rest.TaskRestResource;
 import org.camunda.bpm.extension.hooks.rest.dto.UserIdDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.Link;
-import org.springframework.http.ResponseEntity;
 
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.util.List;
 import java.util.Map;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 public class TaskRestResourceImpl implements TaskRestResource {
 
@@ -41,21 +34,28 @@ public class TaskRestResourceImpl implements TaskRestResource {
     }
 
     @Override
-    public CollectionModel<TaskDto> queryTasks(TaskQueryDto query, Integer firstResult, Integer maxResults) {
-       List<TaskDto> dto = restService.queryTasks(query, firstResult, maxResults);
-       return CollectionModel.of(dto, linkTo(methodOn(TaskRestResourceImpl.class).queryTasks(query, firstResult, maxResults)).withSelfRel().withSelfRel());
+    public List<TaskDto>  queryTasks(TaskQueryDto query, Integer firstResult, Integer maxResults) {
+       return restService.queryTasks(query, firstResult, maxResults);
     }
 
     @Override
-    public EntityModel<CountResultDto> getTasksCount(UriInfo uriInfo) {
-        CountResultDto result = restService.getTasksCount(uriInfo);
-        return EntityModel.of(result, linkTo(methodOn(TaskRestResourceImpl.class).getTasksCount(uriInfo)).withSelfRel().withSelfRel());
+    public CountResultDto getTasksCount(UriInfo uriInfo) {
+        return restService.getTasksCount(uriInfo);
     }
 
     @Override
-    public EntityModel<Object> getTask(Request request, String id) {
-        Object getTask = restService.getTask(id).getTask(request);
-        return EntityModel.of(getTask, linkTo(methodOn(TaskRestResourceImpl.class).getTask(request, id)).withSelfRel().withSelfRel());
+    public CountResultDto queryTasksCount(TaskQueryDto query) {
+        return restService.queryTasksCount(query);
+    }
+
+    @Override
+    public Object getTask(Request request, String id) {
+        return restService.getTask(id).getTask(request);
+    }
+
+    @Override
+    public void updateTask(TaskDto task, String id) {
+        restService.getTask(id).updateTask(task);
     }
 
     @Override
@@ -79,9 +79,8 @@ public class TaskRestResourceImpl implements TaskRestResource {
     }
 
     @Override
-    public CollectionModel<IdentityLinkDto> getIdentityLinks(String type, String id) {
-        List<IdentityLinkDto> identityLinks = restService.getTask(id).getIdentityLinks(type);
-        return CollectionModel.of(identityLinks, linkTo(methodOn(TaskRestResourceImpl.class).getIdentityLinks(type, id)).withSelfRel().withSelfRel());
+    public List<IdentityLinkDto> getIdentityLinks(String type, String id) {
+        return restService.getTask(id).getIdentityLinks(type);
     }
 
     @Override
@@ -95,8 +94,7 @@ public class TaskRestResourceImpl implements TaskRestResource {
     }
 
     @Override
-    public EntityModel<Response> submit(CompleteTaskDto completeTaskDto, String id) {
-        Response response = restService.getTask(id).submit(completeTaskDto);
-        return EntityModel.of(response, linkTo(methodOn(TaskRestResourceImpl.class).submit(completeTaskDto, id)).withSelfRel().withSelfRel());
+    public Response submit(CompleteTaskDto completeTaskDto, String id) {
+       return restService.getTask(id).submit(completeTaskDto);
     }
 }

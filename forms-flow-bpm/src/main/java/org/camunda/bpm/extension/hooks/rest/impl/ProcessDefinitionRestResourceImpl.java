@@ -5,7 +5,6 @@ import org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDto;
 import org.camunda.bpm.engine.rest.dto.runtime.ProcessInstanceDto;
 import org.camunda.bpm.engine.rest.dto.runtime.StartProcessInstanceDto;
 import org.camunda.bpm.extension.hooks.rest.ProcessDefinitionRestResource;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
 import javax.ws.rs.core.UriInfo;
@@ -24,19 +23,13 @@ public class ProcessDefinitionRestResourceImpl implements ProcessDefinitionRestR
     }
 
     @Override
-    public CollectionModel<org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDto> getProcessDefinitions(UriInfo uriInfo, Integer firstResult, Integer maxResults) {
-        List<ProcessDefinitionDto> definitions = restService.getProcessDefinitions(uriInfo, firstResult, maxResults);
-        return CollectionModel.of(definitions,
-                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinitions(uriInfo, firstResult, maxResults)).withSelfRel().withSelfRel());
+    public List<ProcessDefinitionDto> getProcessDefinitions(UriInfo uriInfo, Integer firstResult, Integer maxResults) {
+        return restService.getProcessDefinitions(uriInfo, firstResult, maxResults);
     }
 
     @Override
-    public EntityModel<org.camunda.bpm.engine.rest.dto.repository.ProcessDefinitionDiagramDto> getProcessDefinitionBpmn20Xml(String key) {
-
-        ProcessDefinitionDiagramDto dto = restService.getProcessDefinitionByKey(key).getProcessDefinitionBpmn20Xml();
-
-        return EntityModel.of(dto,
-                linkTo(methodOn(ProcessDefinitionRestResourceImpl.class).getProcessDefinitionBpmn20Xml(key)).withSelfRel().withSelfRel());
+    public ProcessDefinitionDiagramDto getProcessDefinitionBpmn20Xml(String key) {
+        return restService.getProcessDefinitionByKey(key).getProcessDefinitionBpmn20Xml();
     }
 
     @Override

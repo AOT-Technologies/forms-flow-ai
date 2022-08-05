@@ -5,7 +5,6 @@ import org.camunda.bpm.engine.rest.dto.message.CorrelationMessageDto;
 import org.camunda.bpm.extension.hooks.rest.MessageRestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.EntityModel;
 
 import javax.ws.rs.core.Response;
 

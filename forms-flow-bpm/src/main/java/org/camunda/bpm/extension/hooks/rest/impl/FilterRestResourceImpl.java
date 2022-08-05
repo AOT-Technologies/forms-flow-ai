@@ -6,7 +6,6 @@ import org.camunda.bpm.engine.rest.dto.runtime.FilterDto;
 import org.camunda.bpm.extension.hooks.rest.FilterRestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
 import javax.ws.rs.core.Request;
@@ -27,10 +26,19 @@ public class FilterRestResourceImpl implements FilterRestResource {
     }
 
     @Override
-    public CollectionModel<FilterDto> getFilters(UriInfo uriInfo, Boolean itemCount, Integer firstResult, Integer maxResults) {
-        List<FilterDto> filters = restService.getFilters(uriInfo, itemCount, firstResult, maxResults);
-        return CollectionModel.of(filters,
-                linkTo(methodOn(FilterRestResourceImpl.class).getFilters(uriInfo, itemCount, firstResult, maxResults)).withSelfRel().withSelfRel());
+    public List<FilterDto> getFilters(UriInfo uriInfo, Boolean itemCount, Integer firstResult, Integer maxResults) {
+        return restService.getFilters(uriInfo, itemCount, firstResult, maxResults);
+    }
+
+    @Override
+    public EntityModel<FilterDto> getFilter(Boolean itemCount, String id) {
+        FilterDto dto = restService.getFilter(id).getFilter(itemCount);
+        return EntityModel.of(dto, linkTo(methodOn(FilterRestResourceImpl.class).getFilter(itemCount, id)).withSelfRel().withSelfRel());
+    }
+
+    @Override
+    public void updateFilter(FilterDto filterDto, String id) {
+         restService.getFilter(id).updateFilter(filterDto);
     }
 
     @Override

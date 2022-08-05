@@ -2,7 +2,6 @@ package org.camunda.bpm.extension.hooks.rest;
 
 import org.camunda.bpm.engine.rest.dto.repository.DeploymentDto;
 import org.camunda.bpm.engine.rest.mapper.MultipartFormData;
-import org.springframework.hateoas.EntityModel;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -12,7 +11,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
 
-@Produces({MediaType.APPLICATION_JSON})
+@Produces(MediaType.APPLICATION_JSON)
 public interface DeploymentRestResource extends RestResource {
 
     String PATH = "/deployment";
@@ -21,5 +20,5 @@ public interface DeploymentRestResource extends RestResource {
     @Path("/create")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    EntityModel<DeploymentDto> createDeployment(@Context UriInfo uriInfo, MultipartFormData multipartFormData);
+    DeploymentDto createDeployment(@Context UriInfo uriInfo, MultipartFormData multipartFormData);
 }

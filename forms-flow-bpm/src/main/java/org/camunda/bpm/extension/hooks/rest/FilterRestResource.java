@@ -3,7 +3,6 @@ package org.camunda.bpm.extension.hooks.rest;
 import org.camunda.bpm.engine.rest.dto.CountResultDto;
 import org.camunda.bpm.engine.rest.dto.runtime.FilterDto;
 import org.camunda.bpm.engine.rest.hal.Hal;
-import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 
 import javax.ws.rs.*;
@@ -11,17 +10,27 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import java.util.List;
 
-
-@Produces({MediaType.APPLICATION_JSON})
+@Produces(MediaType.APPLICATION_JSON)
 public interface FilterRestResource extends RestResource {
 
     String PATH = "/filter";
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    CollectionModel<FilterDto> getFilters(@Context UriInfo uriInfo, @QueryParam("itemCount") Boolean itemCount,
-                                          @QueryParam("firstResult") Integer firstResult, @QueryParam("maxResults") Integer maxResults);
+    List<FilterDto> getFilters(@Context UriInfo uriInfo, @QueryParam("itemCount") Boolean itemCount,
+                               @QueryParam("firstResult") Integer firstResult, @QueryParam("maxResults") Integer maxResults);
+
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    EntityModel<FilterDto> getFilter(@QueryParam("itemCount") Boolean itemCount, @PathParam("id") String id);
+
+    @PUT
+    @Path("/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    void updateFilter(FilterDto filterDto, @PathParam("id") String id);
 
     @GET
     @Path("/{id}/list")

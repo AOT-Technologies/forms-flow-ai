@@ -24,11 +24,9 @@ public class UserRestResourceImpl implements UserRestResource {
     }
 
     @Override
-    public CollectionModel<UserProfileDto> queryUsers(
+    public List<UserProfileDto> queryUsers(
             UriInfo uriInfo, Integer firstResult, Integer maxResults) {
 
-        List<org.camunda.bpm.engine.rest.dto.identity.UserProfileDto> response = restService.queryUsers(uriInfo, firstResult, maxResults);
-        return CollectionModel.of(response,
-                linkTo(methodOn(UserRestResourceImpl.class).queryUsers(uriInfo, firstResult, maxResults)).withSelfRel());
+        return restService.queryUsers(uriInfo, firstResult, maxResults);
     }
 }

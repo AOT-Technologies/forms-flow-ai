@@ -129,7 +129,9 @@ class Application(
         """Fetch all application."""
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
-        draft_count = query.filter(Application.application_status == DRAFT_APPLICATION_STATUS).count()
+        draft_count = query.filter(
+            Application.application_status == DRAFT_APPLICATION_STATUS
+        ).count()
         query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -196,7 +198,9 @@ class Application(
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
         query = query.filter(Application.created_by == user_id)
-        draft_count = query.filter(Application.application_status == DRAFT_APPLICATION_STATUS).count()
+        draft_count = query.filter(
+            Application.application_status == DRAFT_APPLICATION_STATUS
+        ).count()
         query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -298,7 +302,9 @@ class Application(
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
         query = query.filter(FormProcessMapper.process_key.in_(process_key))
-        draft_count = query.filter(Application.application_status == DRAFT_APPLICATION_STATUS).count()
+        draft_count = query.filter(
+            Application.application_status == DRAFT_APPLICATION_STATUS
+        ).count()
         query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:

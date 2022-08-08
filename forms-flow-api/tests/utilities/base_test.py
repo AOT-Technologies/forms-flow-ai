@@ -113,6 +113,11 @@ def get_application_create_payload(form_id: str = "1234"):
     }
 
 
+def get_draft_create_payload(form_id: str = "1234"):
+    """Return a payload for creating draft details."""
+    return {"formId": form_id, "data": {"name": "testing sample"}}
+
+
 def get_form_service_payload():
     """Return a form Service payload object."""
     return {
@@ -161,9 +166,7 @@ def get_formio_form_request_payload():
                 "tooltip": "",
                 "prefix": "",
                 "suffix": "",
-                "widget": {
-                    "type": "input"
-                },
+                "widget": {"type": "input"},
                 "inputMask": "",
                 "displayMask": "",
                 "allowMultipleMasks": "false",
@@ -208,7 +211,7 @@ def get_formio_form_request_payload():
                     "json": "",
                     "strictDateValidation": "false",
                     "multiple": "false",
-                    "unique": "false"
+                    "unique": "false",
                 },
                 "unique": "false",
                 "errorLabel": "",
@@ -216,12 +219,7 @@ def get_formio_form_request_payload():
                 "key": "textField",
                 "tags": [],
                 "properties": {},
-                "conditional": {
-                    "show": "null",
-                    "when": "null",
-                    "eq": "",
-                    "json": ""
-                },
+                "conditional": {"show": "null", "when": "null", "eq": "", "json": ""},
                 "customConditional": "",
                 "logic": [],
                 "attributes": {},
@@ -231,7 +229,7 @@ def get_formio_form_request_payload():
                     "left": "",
                     "top": "",
                     "width": "",
-                    "height": ""
+                    "height": "",
                 },
                 "type": "textfield",
                 "input": "true",
@@ -240,7 +238,7 @@ def get_formio_form_request_payload():
                 "addons": [],
                 "inputType": "text",
                 "id": "e2dprro",
-                "defaultValue": "null"
+                "defaultValue": "null",
             },
             {
                 "type": "button",
@@ -280,9 +278,7 @@ def get_formio_form_request_payload():
                 "customDefaultValue": "",
                 "calculateValue": "",
                 "calculateServer": "false",
-                "widget": {
-                    "type": "input"
-                },
+                "widget": {"type": "input"},
                 "attributes": {},
                 "validateOn": "change",
                 "validate": {
@@ -291,19 +287,15 @@ def get_formio_form_request_payload():
                     "customPrivate": "false",
                     "strictDateValidation": "false",
                     "multiple": "false",
-                    "unique": "false"
+                    "unique": "false",
                 },
-                "conditional": {
-                    "show": "null",
-                    "when": "null",
-                    "eq": ""
-                },
+                "conditional": {"show": "null", "when": "null", "eq": ""},
                 "overlay": {
                     "style": "",
                     "left": "",
                     "top": "",
                     "width": "",
-                    "height": ""
+                    "height": "",
                 },
                 "allowCalculateOverride": "false",
                 "encrypted": "false",
@@ -314,7 +306,7 @@ def get_formio_form_request_payload():
                 "addons": [],
                 "leftIcon": "",
                 "rightIcon": "",
-                "id": "eyhab3d"
+                "id": "eyhab3d",
             },
             {
                 "label": "applicationId",
@@ -339,7 +331,7 @@ def get_formio_form_request_payload():
                     "left": "",
                     "top": "",
                     "width": "",
-                    "height": ""
+                    "height": "",
                 },
                 "type": "hidden",
                 "input": "true",
@@ -360,9 +352,7 @@ def get_formio_form_request_payload():
                 "tabindex": "",
                 "disabled": "false",
                 "autofocus": "false",
-                "widget": {
-                    "type": "input"
-                },
+                "widget": {"type": "input"},
                 "validateOn": "change",
                 "validate": {
                     "required": "false",
@@ -370,13 +360,9 @@ def get_formio_form_request_payload():
                     "customPrivate": "false",
                     "strictDateValidation": "false",
                     "multiple": "false",
-                    "unique": "false"
+                    "unique": "false",
                 },
-                "conditional": {
-                    "show": "null",
-                    "when": "null",
-                    "eq": ""
-                },
+                "conditional": {"show": "null", "when": "null", "eq": ""},
                 "allowCalculateOverride": "false",
                 "showCharCount": "false",
                 "showWordCount": "false",
@@ -386,7 +372,7 @@ def get_formio_form_request_payload():
                 "defaultValue": "",
                 "dataGridLabel": "false",
                 "description": "",
-                "addons": []
+                "addons": [],
             },
             {
                 "label": "applicationStatus",
@@ -412,7 +398,7 @@ def get_formio_form_request_payload():
                     "left": "",
                     "top": "",
                     "width": "",
-                    "height": ""
+                    "height": "",
                 },
                 "type": "hidden",
                 "input": "true",
@@ -434,9 +420,7 @@ def get_formio_form_request_payload():
                 "tabindex": "",
                 "disabled": "false",
                 "autofocus": "false",
-                "widget": {
-                    "type": "input"
-                },
+                "widget": {"type": "input"},
                 "validateOn": "change",
                 "validate": {
                     "required": "false",
@@ -444,13 +428,9 @@ def get_formio_form_request_payload():
                     "customPrivate": "false",
                     "strictDateValidation": "false",
                     "multiple": "false",
-                    "unique": "false"
+                    "unique": "false",
                 },
-                "conditional": {
-                    "show": "null",
-                    "when": "null",
-                    "eq": ""
-                },
+                "conditional": {"show": "null", "when": "null", "eq": ""},
                 "allowCalculateOverride": "false",
                 "showCharCount": "false",
                 "showWordCount": "false",
@@ -458,65 +438,25 @@ def get_formio_form_request_payload():
                 "inputType": "hidden",
                 "id": "e6z1qd9",
                 "description": "",
-                "addons": []
-            }
+                "addons": [],
+            },
         ],
         "name": "testcreateform",
         "path": "testcreateform",
         "title": "testcreateform",
-        "tags": [
-            "common"
-        ],
+        "tags": ["common"],
         "submissionAccess": [
+            {"roles": ["628f0edf19cebb9cea4f1226"], "type": "create_all"},
+            {"roles": ["628f0edf19cebb9cea4f1232"], "type": "read_all"},
+            {"roles": ["628f0edf19cebb9cea4f1232"], "type": "update_all"},
             {
-                "roles": [
-                    "628f0edf19cebb9cea4f1226"
-                ],
-                "type": "create_all"
+                "roles": ["628f0edf19cebb9cea4f1226", "628f0edf19cebb9cea4f1232"],
+                "type": "delete_all",
             },
-            {
-                "roles": [
-                    "628f0edf19cebb9cea4f1232"
-                ],
-                "type": "read_all"
-            },
-            {
-                "roles": [
-                    "628f0edf19cebb9cea4f1232"
-                ],
-                "type": "update_all"
-            },
-            {
-                "roles": [
-                    "628f0edf19cebb9cea4f1226",
-                    "628f0edf19cebb9cea4f1232"
-                ],
-                "type": "delete_all"
-            },
-            {
-                "roles": [
-                    "628f0ee019cebb9cea4f1236"
-                ],
-                "type": "create_own"
-            },
-            {
-                "roles": [
-                    "628f0ee019cebb9cea4f1236"
-                ],
-                "type": "read_own"
-            },
-            {
-                "roles": [
-                    "628f0ee019cebb9cea4f1236"
-                ],
-                "type": "update_own"
-            },
-            {
-                "roles": [
-                    "628f0edf19cebb9cea4f1232"
-                ],
-                "type": "delete_own"
-            }
+            {"roles": ["628f0ee019cebb9cea4f1236"], "type": "create_own"},
+            {"roles": ["628f0ee019cebb9cea4f1236"], "type": "read_own"},
+            {"roles": ["628f0ee019cebb9cea4f1236"], "type": "update_own"},
+            {"roles": ["628f0edf19cebb9cea4f1232"], "type": "delete_own"},
         ],
         "access": [
             {
@@ -524,18 +464,39 @@ def get_formio_form_request_payload():
                 "roles": [
                     "628f0ee019cebb9cea4f1236",
                     "628f0edf19cebb9cea4f1232",
-                    "628f0edf19cebb9cea4f1226"
-                ]
+                    "628f0edf19cebb9cea4f1226",
+                ],
             }
-        ]
+        ],
     }
 
 
 def get_formio_roles():
     """Return formio role id representation."""
     return [
-        {
-            "id": 1,
-            "role": "formsflowClient"
-        }
+        {"roleId": 1, "type": "CLIENT"},
+        {"roleId": 2, "type": "REVIEWER"},
+        {"roleId": 3, "type": "DESIGNER"},
     ]
+
+
+def get_anonymous_form_model_object():
+    """Return sample anonymous form process mapper model instance data."""
+    return {
+        "is_anonymous": True,
+        "form_id": "1234",
+        "form_name": "sample",
+        "status": "active",
+        "created_by": "test",
+    }
+
+
+def get_form_model_object():
+    """Return sample form process mapper model instance data."""
+    return {
+        "is_anonymous": False,
+        "form_id": "12345",
+        "form_name": "sample non anonymous",
+        "status": "active",
+        "created_by": "test",
+    }

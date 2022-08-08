@@ -6,10 +6,10 @@ import { useDownloadFile } from "./useDownloadFile";
 import { ExportButton, ButtonState } from "./button";
 import { Alert, Container } from "react-bootstrap";
 import { replaceUrl } from "../../../helper/helper";
+import { Translation } from "react-i18next";
 
-export const DownloadPDFButton = React.memo(({form_id,
-    submission_id, title}) => {
-
+export const DownloadPDFButton = React.memo(
+  ({ form_id, submission_id, title }) => {
     const [buttonState, setButtonState] = useState(ButtonState.Primary);
     const [showAlert, setShowAlert] = useState(false);
 
@@ -17,49 +17,49 @@ export const DownloadPDFButton = React.memo(({form_id,
     const postDownloading = () => setButtonState(ButtonState.Primary);
 
     const onErrorDownloadFile = () => {
-        setButtonState(ButtonState.Primary);
-        setShowAlert(true);
-        setTimeout(() => {
-            setShowAlert(false);
-        }, 3000);
+      setButtonState(ButtonState.Primary);
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
     };
 
     const getFileName = () => {
-        return title + '_submission_' + form_id + ".pdf";
+      return title + "_submission_" + form_id + ".pdf";
     };
 
-    let apiUrlExportPdf = replaceUrl(
-        API.EXPORT_FORM_PDF,
-        "<form_id>",
-        form_id
-    );
+    let apiUrlExportPdf = replaceUrl(API.EXPORT_FORM_PDF, "<form_id>", form_id);
     apiUrlExportPdf = replaceUrl(
-        apiUrlExportPdf,
-        "<submission_id>",
-        submission_id
+      apiUrlExportPdf,
+      "<submission_id>",
+      submission_id
     );
 
     const downloadSamplePdfFile = () => {
-
-        return httpGETBlobRequest(apiUrlExportPdf);
-      };
+      return httpGETBlobRequest(apiUrlExportPdf);
+    };
 
     const { ref, url, download, name } = useDownloadFile({
-        apiDefinition: downloadSamplePdfFile,
-        preDownloading,
-        postDownloading,
-        onError: onErrorDownloadFile,
-        getFileName,
+      apiDefinition: downloadSamplePdfFile,
+      preDownloading,
+      postDownloading,
+      onError: onErrorDownloadFile,
+      getFileName,
     });
 
     return (
-        <Container className="d-flex flex-column">
-            <a href={url} download={name} className="hidden" ref={ref} />
-            <ExportButton label="Export PDF" labelLoading="Exporting.." buttonState={buttonState} onClick={download} />
-            <Alert variant="danger" show={showAlert}>
-                Something went wrong. Please try again!
-            </Alert>
-        </Container>
+      <Container className="d-flex flex-column">
+        <a href={url} download={name} className="hidden" ref={ref} />
+        <ExportButton
+          label={<Translation>{(t) => t("Export PDF")}</Translation>}
+          labelLoading={<Translation>{(t) => t("Exporting..")}</Translation>}
+          buttonState={buttonState}
+          onClick={download}
+        />
+        <Alert variant="danger" show={showAlert}>
+         {<Translation>{(t) => t("Something went wrong. Please try again!")}</Translation>}
+       </Alert>
+      </Container>
     );
-
-});
+  }
+);

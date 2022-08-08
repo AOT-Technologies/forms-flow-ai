@@ -43,23 +43,25 @@ export const httpGETBlobRequest = (
   });
 };
 
-export const httpPOSTRequest = (url, data, token, isBearer = true) => {
-  return axios.post(url, data, {
-    headers: {
-      Authorization: isBearer
-        ? `Bearer ${token || UserService.getToken()}`
-        : token,
-    },
-  });
-};
-
-export const httpPOSTRequestWithoutToken = (
+export const httpPOSTRequest = (
   url,
   data,
   token,
-  // eslint-disable-next-line no-unused-vars
-  isBearer = true
+  isBearer = true,
+  headers = null
 ) => {
+  return axios.post(url, data, {
+    headers: !headers
+      ? {
+          Authorization: isBearer
+            ? `Bearer ${token || UserService.getToken()}`
+            : token,
+        }
+      : headers,
+  });
+};
+
+export const httpPOSTRequestWithoutToken = (url, data) => {
   return axios.post(url, data, {
     headers: {
       "Content-Type": "application/json",
@@ -98,20 +100,10 @@ export const httpDELETERequest = (url, token, isBearer = true) => {
   });
 };
 
-/*export const httpPUTRequest = (url, data, token, isBearer=true) => {
-  return axios.put(url, data, 
-    { headers: { Authorization: isBearer ?`Bearer ${ token || UserService.getToken()}`: token } });
-};*/
-
-/*export const httpPOSTRequestWithoutToken = (url, data) => {
-  const config = {
+export const httpPUTRequestWithoutToken = (url, data) => {
+  return axios.put(url, data, {
     headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Content-Type": "application/json",
     },
-  };
-  return axios.post(url, qs.stringify(data), config);
+  });
 };
-
-export const httpGETRequestWithoutToken = (url, token) => {
-  return axios.get(url);
-};*/

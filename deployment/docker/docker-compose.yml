@@ -64,6 +64,8 @@ services:
       - IDENTITY_PROVIDER_MAX_RESULT_SIZE=${IDENTITY_PROVIDER_MAX_RESULT_SIZE:-250}
       - DATA_ANALYSIS_URL=${DATA_ANALYSIS_URL}
       - BPM_BASE_URL=${BPM_BASE_URL}
+      - CUSTOM_SUBMISSION_URL=${CUSTOM_SUBMISSION_URL}
+      - CUSTOM_SUBMISSION_ENABLED=${CUSTOM_SUBMISSION_ENABLED:-false}
     networks:
       - forms-flow-network
  
@@ -88,7 +90,7 @@ services:
 
   forms-flow-forms:
     container_name: forms-flow-forms
-    image: formsflow/forms-flow-forms:v4.0.6-alpha
+    image: formsflow/forms-flow-forms:v5.0.0-alpha
 
     # The app will restart until Mongo is listening
     restart: always
@@ -119,17 +121,9 @@ services:
       dockerfile: Dockerfile
       args:
         - NODE_ENV=${NODE_ENV:-production}
-        - REACT_APP_CLIENT_ROLE=${CLIENT_ROLE:-formsflow-client}
-        - REACT_APP_STAFF_REVIEWER_ROLE=${REVIEWER_ROLE:-formsflow-reviewer}
-        - REACT_APP_STAFF_DESIGNER_ROLE=${DESIGNER_ROLE:-formsflow-designer}
-        - REACT_APP_CLIENT_ID=${CLIENT_ROLE_ID}
-        - REACT_APP_STAFF_REVIEWER_ID=${REVIEWER_ROLE_ID}
-        - REACT_APP_STAFF_DESIGNER_ID=${DESIGNER_ROLE_ID}
-        - REACT_APP_USER_RESOURCE_FORM_ID=${USER_RESOURCE_ID}
         - REACT_APP_API_SERVER_URL=${FORMIO_DEFAULT_PROJECT_URL}
         - REACT_APP_API_PROJECT_URL=${FORMIO_DEFAULT_PROJECT_URL}
         - REACT_APP_KEYCLOAK_CLIENT=${KEYCLOAK_WEB_CLIENT_ID:-forms-flow-web}
-        - REACT_APP_ANONYMOUS_ID=${ANONYMOUS_ID}
         - REACT_APP_WEB_BASE_URL=${FORMSFLOW_API_URL}
         - REACT_APP_CAMUNDA_API_URI=${CAMUNDA_API_URL}
         - REACT_APP_WEBSOCKET_ENCRYPT_KEY=${WEBSOCKET_ENCRYPT_KEY:-giert989jkwrgb@DR55}
@@ -142,6 +136,10 @@ services:
         - REACT_APP_MULTI_TENANCY_ENABLED=${MULTI_TENANCY_ENABLED:-false}
         - REACT_APP_MT_ADMIN_BASE_URL=${MT_ADMIN_BASE_URL}
         - REACT_APP_MT_ADMIN_BASE_URL_VERSION=${MT_ADMIN_BASE_URL_VERSION}
+        - REACT_APP_CUSTOM_SUBMISSION_URL=${CUSTOM_SUBMISSION_URL}
+        - REACT_APP_CUSTOM_SUBMISSION_ENABLED=${CUSTOM_SUBMISSION_ENABLED:-false}
+        - REACT_APP_DRAFT_ENABLED=${DRAFT_ENABLED:-false}
+        - REACT_APP_DRAFT_POLLING_RATE=${DRAFT_POLLING_RATE:-15000}
     ports:
       - '3000:8080'
     tty: true

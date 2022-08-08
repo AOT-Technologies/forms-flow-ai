@@ -11,11 +11,14 @@ import { getUserRolePermission } from "../../../../../helper/user";
 import {
   BASE_ROUTE,
   CLIENT,
+  CUSTOM_SUBMISSION_URL,
+  CUSTOM_SUBMISSION_ENABLE,
   STAFF_REVIEWER,
 } from "../../../../../constants/constants";
 import { CLIENT_EDIT_STATUS } from "../../../../../constants/applicationConstants";
 import Loading from "../../../../../containers/Loading";
 import { clearSubmissionError } from "../../../../../actions/formActions";
+import { getCustomSubmission } from "../../../../../apiManager/services/FormServices";
 
 const Item = React.memo(() => {
   const { formId, submissionId } = useParams();
@@ -40,7 +43,11 @@ const Item = React.memo(() => {
 
   useEffect(() => {
     dispatch(clearSubmissionError("submission"));
-    dispatch(getSubmission("submission", submissionId, formId));
+    if(CUSTOM_SUBMISSION_URL && CUSTOM_SUBMISSION_ENABLE) {
+       dispatch(getCustomSubmission(submissionId,formId));
+    } else {
+      dispatch(getSubmission("submission", submissionId, formId));
+    }
   }, [submissionId, formId, dispatch]);
 
   useEffect(() => {

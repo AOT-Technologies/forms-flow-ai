@@ -28,4 +28,8 @@ public class VariableConstants {
 
     public static final String TEMPLATE = "template";
 
+    public static final String ANONYMOUS_USER = "Anonymous-user";
+    
+    public static final String SERVICE_ACCOUNT = "service-account-forms-flow-bpm";
+
 }

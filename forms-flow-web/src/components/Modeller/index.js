@@ -36,6 +36,8 @@ export default React.memo(() => {
     
     // Populate workflows in dropdown on page load
     useEffect(() => {
+      setShowModeller(false);
+      dispatch(setWorkflowAssociation(null));
       dispatch(fetchAllBpmProcesses(true));
       dispatch(fetchAllBpmDeployments());
     }, []);

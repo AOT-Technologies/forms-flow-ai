@@ -187,8 +187,7 @@ const doProcessActions = (submission, ownProps) => {
       DRAFT_ENABLED
     );
     dispatch(
-      // eslint-disable-next-line no-unused-vars
-      applicationCreateAPI(data, draft_id ? draft_id : null, (err, res) => {
+      applicationCreateAPI(data, draft_id ? draft_id : null, (err) => {
         dispatch(setFormSubmissionLoading(false));
         if (!err) {
           toast.success(

@@ -42,7 +42,7 @@ const createRootReducer = (history) =>
     formCheckList,
     dashboardReducer,
     tenants: tenantReducer,
-    draft:draftSubmission
+    draft: draftSubmission,
   });
 
 export default createRootReducer;

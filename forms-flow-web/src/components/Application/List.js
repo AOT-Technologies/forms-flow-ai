@@ -22,6 +22,7 @@ import { columns, getoptions, defaultSortedBy } from "./table";
 import { getUserRolePermission } from "../../helper/user";
 import {
   CLIENT,
+  DRAFT_ENABLED,
   MULTITENANCY_ENABLED,
   STAFF_REVIEWER,
 } from "../../constants/constants";
@@ -145,16 +146,23 @@ export const ApplicationList = React.memo(() => {
         name: "Applications",
         count: applicationCount,
         onClick: () => dispatch(push(`${redirectUrl}application`)),
-        icon: "list"
+        icon: "list",
       },
       {
         name: "Drafts",
         count: draftCount,
         onClick: () => dispatch(push(`${redirectUrl}draft`)),
-        icon: "edit"
+        icon: "edit",
       },
     ];
   };
+
+  let headOptions = headerList();
+
+  if (!DRAFT_ENABLED) {
+    headOptions.pop();
+  }
+
   return applicationCount > 0 || filtermode ? (
     <ToolkitProvider
       bootstrap4
@@ -171,7 +179,7 @@ export const ApplicationList = React.memo(() => {
     >
       {(props) => (
         <div className="container" role="definition">
-          <Head items={headerList()} page="Applications" />
+          <Head items={headOptions} page="Applications" />
           <br />
           <div>
             <BootstrapTable

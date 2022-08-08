@@ -41,7 +41,9 @@ export default React.memo(() => {
     }, []);
 
     useEffect(() => {
-      setFullProcessList(listProcess(deployments.concat(process)));
+      if (deployments){
+        setFullProcessList(listProcess(deployments.concat(process)));
+      }
     }, [process, deployments]);
 
     const handleListChange = (item) => {

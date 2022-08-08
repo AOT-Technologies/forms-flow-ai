@@ -5,67 +5,53 @@ import filterFactory from "react-bootstrap-table2-filter";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import ToolkitProvider from "react-bootstrap-table2-toolkit";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
-import {
-  setApplicationListActivePage,
-  setCountPerpage,
-  setApplicationListLoader,
-} from "../../actions/applicationActions";
-import {
-  getAllApplications,
-  FilterApplications,
-  getAllApplicationStatus,
-} from "../../apiManager/services/applicationServices";
 import Loading from "../../containers/Loading";
-import Nodata from "./nodata";
+import Nodata from "../Nodata";
 import { useTranslation } from "react-i18next";
-import { columns, getoptions, defaultSortedBy } from "./table";
-import { getUserRolePermission } from "../../helper/user";
-import {
-  CLIENT,
-  MULTITENANCY_ENABLED,
-  STAFF_REVIEWER,
-} from "../../constants/constants";
-import { CLIENT_EDIT_STATUS } from "../../constants/applicationConstants";
+import { columns, getoptions } from "./table";
+import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import Alert from "react-bootstrap/Alert";
 import { Translation } from "react-i18next";
 
 import overlayFactory from "react-bootstrap-table2-overlay";
 import { SpinnerSVG } from "../../containers/SpinnerSVG";
+import {
+  fetchDrafts,
+  FilterDrafts,
+} from "../../apiManager/services/draftService";
 import Head from "../../containers/Head";
 import { push } from "connected-react-router";
+import {
+  setDraftListLoader,
+  setDraftListActivePage,
+  setCountPerpage,
+} from "../../actions/draftActions";
 
-export const ApplicationList = React.memo(() => {
+export const DraftList = React.memo(() => {
   const { t } = useTranslation();
-  const applications = useSelector(
-    (state) => state.applications.applicationsList
-  );
-  const countPerPage = useSelector((state) => state.applications.countPerPage);
-  const applicationStatus = useSelector(
-    (state) => state.applications.applicationStatus
-  );
-  const isApplicationListLoading = useSelector(
-    (state) => state.applications.isApplicationListLoading
+  const drafts = useSelector((state) => state.draft.draftList);
+  const countPerPage = useSelector((state) => state.draft.countPerPage);
+
+  const isDraftListLoading = useSelector(
+    (state) => state.draft.isDraftListLoading
   );
   const applicationCount = useSelector(
     (state) => state.applications.applicationCount
   );
   const draftCount = useSelector((state) => state.draft.draftCount);
   const dispatch = useDispatch();
-  const userRoles = useSelector((state) => state.user.roles);
-  const page = useSelector((state) => state.applications.activePage);
-  const iserror = useSelector((state) => state.applications.iserror);
-  const error = useSelector((state) => state.applications.error);
+  const page = useSelector((state) => state.draft.activePage);
+  const iserror = useSelector((state) => state.draft.iserror);
+  const error = useSelector((state) => state.draft.error);
   const [filtermode, setfiltermode] = React.useState(false);
   const tenantKey = useSelector((state) => state.tenants?.tenantId);
   const redirectUrl = MULTITENANCY_ENABLED ? `/tenant/${tenantKey}/` : "/";
   const [lastModified, setLastModified] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(false);
+
   useEffect(() => {
     setIsLoading(false);
-  }, [applications]);
-  useEffect(() => {
-    dispatch(getAllApplicationStatus());
-  }, [dispatch]);
+  }, [drafts]);
 
   const useNoRenderRef = (currentValue) => {
     const ref = useRef(currentValue);
@@ -78,21 +64,10 @@ export const ApplicationList = React.memo(() => {
   const currentPage = useNoRenderRef(page);
 
   useEffect(() => {
-    dispatch(getAllApplications(currentPage.current, countPerPageRef.current));
+    dispatch(fetchDrafts(currentPage.current, countPerPageRef.current));
   }, [dispatch, currentPage, countPerPageRef]);
 
-  const isClientEdit = (applicationStatus) => {
-    if (
-      getUserRolePermission(userRoles, CLIENT) ||
-      getUserRolePermission(userRoles, STAFF_REVIEWER)
-    ) {
-      return CLIENT_EDIT_STATUS.includes(applicationStatus);
-    } else {
-      return false;
-    }
-  };
-
-  if (isApplicationListLoading) {
+  if (isDraftListLoading) {
     return <Loading />;
   }
   const getNoDataIndicationContent = () => {
@@ -100,15 +75,13 @@ export const ApplicationList = React.memo(() => {
       <div className="div-no-application">
         <label className="lbl-no-application">
           {" "}
-          <Translation>{(t) => t("No applications found")}</Translation>{" "}
+          <Translation>{(t) => t("No drafts found")}</Translation>{" "}
         </label>
         <br />
         <label className="lbl-no-application-desc">
           {" "}
           <Translation>
-            {(t) =>
-              t("Please change the selected filters to view applications")
-            }
+            {(t) => t("Please change the selected filters to view drafts")}
           </Translation>
         </label>
         <br />
@@ -117,28 +90,21 @@ export const ApplicationList = React.memo(() => {
   };
 
   const handlePageChange = (type, newState) => {
+    console.log(type, newState);
     if (type === "filter") {
       setfiltermode(true);
+      console.log("filter");
     } else if (type === "pagination") {
       if (countPerPage > 5) {
-        dispatch(setApplicationListLoader(true));
+        dispatch(setDraftListLoader(true));
       } else {
         setIsLoading(true);
       }
     }
     dispatch(setCountPerpage(newState.sizePerPage));
-    dispatch(FilterApplications(newState));
-    dispatch(setApplicationListActivePage(newState.page));
+    dispatch(FilterDrafts(newState));
+    dispatch(setDraftListActivePage(newState.page));
   };
-
-  const listApplications = (applications) => {
-    let totalApplications = applications.map((application) => {
-      application.isClientEdit = isClientEdit(application.applicationStatus);
-      return application;
-    });
-    return totalApplications;
-  };
-
   const headerList = () => {
     return [
       {
@@ -155,23 +121,17 @@ export const ApplicationList = React.memo(() => {
       },
     ];
   };
-  return applicationCount > 0 || filtermode ? (
+  return drafts.length > 0 || filtermode ? (
     <ToolkitProvider
       bootstrap4
       keyField="id"
-      data={listApplications(applications)}
-      columns={columns(
-        applicationStatus,
-        lastModified,
-        setLastModified,
-        t,
-        redirectUrl
-      )}
+      data={drafts}
+      columns={columns(lastModified, setLastModified, t, redirectUrl)}
       search
     >
       {(props) => (
         <div className="container" role="definition">
-          <Head items={headerList()} page="Applications" />
+          <Head items={headerList()} page="Drafts" />
           <br />
           <div>
             <BootstrapTable
@@ -179,7 +139,7 @@ export const ApplicationList = React.memo(() => {
               loading={isLoading}
               filter={filterFactory()}
               pagination={paginationFactory(
-                getoptions(applicationCount, page, countPerPage)
+                getoptions(draftCount, page, countPerPage)
               )}
               onTableChange={handlePageChange}
               filterPosition={"top"}
@@ -187,7 +147,6 @@ export const ApplicationList = React.memo(() => {
               noDataIndication={() =>
                 !isLoading && getNoDataIndicationContent()
               }
-              defaultSorted={defaultSortedBy}
               overlay={overlayFactory({
                 spinner: <SpinnerSVG />,
                 styles: {
@@ -213,4 +172,4 @@ export const ApplicationList = React.memo(() => {
   );
 });
 
-export default ApplicationList;
+export default DraftList;

@@ -1,7 +1,7 @@
 # Changelog for formsflow.ai
 
 Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upcoming Features`, `Known Issues`
-## 5.0.0 - 2022-05-26
+## 5.0.0 - 2022-08-08
 
 `Added`
 
@@ -13,6 +13,9 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added multi-tenancy support.
 * Added modal for submission details on metrics page.
 * Added support for wizard forms.
+* Added Export to PDF feature.
+* Added application status `draft`.
+* Added camunda web modeller.
 
 **forms-flow-forms**
 
@@ -22,6 +25,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 
 * Added multi-tenancy support.
 * Added support for default workflow with form.
+* API support for `draft` feature.
 
 **forms-flow-bpm**
 
@@ -181,7 +185,7 @@ Environment variables `KEYCLOAK_ADMIN_USERNAME` and `KEYCLOAK_ADMIN_PASSWORD` ar
 
 * Added docker based automated installation. For installation guide, check out [here](./deployment/docker/bundle).
 * Existing users should build forms-flow-bpm,forms-flow-webapi and forms-flow-web together.
-
+* Environment variables updated with dynamic role-id fetching. 
 ## 4.0.4 - 2021-12-27
 
 `Added`

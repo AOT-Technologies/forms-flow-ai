@@ -134,7 +134,7 @@ class ApplicationService:
         auth_list = auth_form_details.get("authorizationList") or {}
         resource_list = [group["resourceId"] for group in auth_list]
         if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
-            applications, get_all_applications_count = Application.find_all(
+            applications, get_all_applications_count, draft_count = Application.find_all(
                 page_no=page_no,
                 limit=limit,
                 application_id=application_id,
@@ -152,6 +152,7 @@ class ApplicationService:
             (
                 applications,
                 get_all_applications_count,
+                draft_count
             ) = Application.find_applications_by_process_key(
                 application_id=application_id,
                 application_name=application_name,
@@ -171,6 +172,7 @@ class ApplicationService:
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,
+            draft_count
         )
 
     @staticmethod
@@ -214,7 +216,7 @@ class ApplicationService:
         """Get all applications based on user."""
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
-        applications, get_all_applications_count = Application.find_all_by_user(
+        applications, get_all_applications_count, draft_count = Application.find_all_by_user(
             user_id=user_id,
             page_no=page_no,
             limit=limit,
@@ -233,6 +235,7 @@ class ApplicationService:
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,
+            draft_count,
         )
 
     @staticmethod

@@ -29,11 +29,6 @@ const createNewProcess = () => {
   const processID = "Process_" + getNewID();
   const definitionID = "Definitions_" + getNewID();
 
-  const defaultWorkflow = {
-    label: deploymentName,
-    value: processID
-  };
-
   const blankProcessXML = 
     `<?xml version="1.0" encoding="UTF-8"?>
     <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="${definitionID}" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
@@ -48,6 +43,12 @@ const createNewProcess = () => {
         </bpmndi:BPMNPlane>
       </bpmndi:BPMNDiagram>
     </bpmn:definitions>`;
+
+  const defaultWorkflow = {
+    label: deploymentName,
+    value: processID,
+    xml: blankProcessXML,
+  };
 
   return { 
     defaultDeploymentName: deploymentName, 

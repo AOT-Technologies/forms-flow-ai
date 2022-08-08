@@ -41,7 +41,7 @@ export default React.memo(() => {
     }, []);
 
     useEffect(() => {
-      setFullProcessList(listProcess(process.concat(deployments)));
+      setFullProcessList(listProcess(deployments.concat(process)));
     }, [process, deployments]);
 
     const handleListChange = (item) => {
@@ -119,7 +119,7 @@ export default React.memo(() => {
                     options={fullProcessList}
                     onChange={handleListChange}
                     values={
-                      fullProcessList.length && workflow?.value && showModeller ? [workflow] : []
+                      fullProcessList.length && workflow?.value ? [workflow] : []
                     }
                   />
                 </Grid>
@@ -155,6 +155,7 @@ export default React.memo(() => {
                       processKey={workflow?.value}
                       tenant={workflow?.tenant}
                       defaultProcessInfo={defaultProcessInfo}
+                      name={workflow?.label}
                     />
                   </div>
                 ) : null}

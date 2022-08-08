@@ -5,15 +5,17 @@ import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import "./Modeller.scss";
 import Button from "react-bootstrap/Button";
+import Col from 'react-bootstrap/Col';
+import Form from 'react-bootstrap/Form';
+import Row from 'react-bootstrap/Row';
 
 import {
   fetchDiagram,
-  getProcessActivities,
   fetchAllBpmProcesses,
+  fetchAllBpmDeployments
 } from "../../apiManager/services/processServices";
 
 import {
-  setProcessActivityData,
   setProcessDiagramLoading,
   setProcessDiagramXML,
   setWorkflowAssociation,
@@ -52,7 +54,14 @@ import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css';
 import linterConfig from './lint-rules/packed-config';
 
 const EditModel = React.memo(
-  ({ isExecutable, xml, processKey, processInstanceId, tenant, defaultProcessInfo }) => {
+  ({ 
+    isExecutable, 
+    xml, 
+    processKey, 
+    tenant, 
+    defaultProcessInfo, 
+    name 
+  }) => {
 
     const { t } = useTranslation();
 
@@ -62,6 +71,7 @@ const EditModel = React.memo(
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const [applyAllTenants, setApplyAllTenants] = useState(false);
     const [lintErrors, setLintErrors] = useState([]);
+    const [deploymentName, setDeploymentName] = useState(name);
 
     const containerRef = useCallback((node) => {
       if (node !== null) {
@@ -103,6 +113,9 @@ const EditModel = React.memo(
     }, [bpmnModeller]);
 
     useEffect(() => {
+
+      setDeploymentName(name);
+
       if (processKey && isExecutable) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(fetchDiagram(processKey, tenant));
@@ -119,15 +132,6 @@ const EditModel = React.memo(
         dispatch(setProcessDiagramXML(""));
       };
     }, [processKey, tenant, dispatch]);
-
-    useEffect(() => {
-      if (processInstanceId) {
-        dispatch(getProcessActivities(processInstanceId));
-      }
-      return () => {
-        dispatch(setProcessActivityData(null));
-      };
-    }, [processInstanceId, dispatch]);
 
     useEffect(() => {
       if (diagramXML && bpmnModeller) {
@@ -154,10 +158,17 @@ const EditModel = React.memo(
 
     async function deployProcess() {
       try {
-        if (!validateProcess()){
+        const isValidated = await validateProcess();
+        if (!isValidated){
           toast.error(t(ERROR_MSG));
         }
         else {
+          // Update diagram with deployment name from input box
+          const rootElement = getRootElement(bpmnModeller);
+          var modeling = bpmnModeller.get('modeling');
+          modeling.updateProperties(rootElement, {
+            name: deploymentName,
+          });
           // Convert diagram to xml
           const { xml } = await bpmnModeller.saveXML();
           // Deploy to Camunda
@@ -168,8 +179,8 @@ const EditModel = React.memo(
       }
     }
 
-    // If the BPMN Linting is active then check for linting errors, else check for Camunda API errors
-    const validateProcess = () => {
+    const validateProcess = async () => {
+      // If the BPMN Linting is active then check for linting errors, else check for Camunda API errors
       // Check for linting errors in the modeller view
       if (document.getElementsByClassName(ERROR_LINTING_CLASSNAME).length > 0) {
         validateBpmnLintErrors();
@@ -181,8 +192,8 @@ const EditModel = React.memo(
       }
 
       // Check for blank deployment name
-      if (!getDeploymentNames().deploymentName || getDeploymentNames().deploymentName == "" ){
-        toast.error(t("Deployment name is blank"));
+      if (!deploymentName || deploymentName == ""){
+        toast.error(t("Please enter a deployment name"));
         return false;
       }
 
@@ -192,10 +203,10 @@ const EditModel = React.memo(
     const createBpmnForm = (xml) => {
       const form = new FormData();
 
-      const names = getDeploymentNames();
+      const processId = getProcessId();
 
       // Deployment Name
-      form.append('deployment-name', names.deploymentName);
+      form.append('deployment-name', deploymentName);
       // Deployment Source
       form.append('deployment-source', 'Camunda Modeler');
       // Tenant ID
@@ -206,16 +217,15 @@ const EditModel = React.memo(
       form.append('enable-duplicate-filtering', 'true');
       // Create 'bpmn file' using blob which includes the xml of the process 
       const blob = new Blob([ xml ], { type: 'text/bpmn' });
-      form.append('upload', blob, (names.processID + ".bpmn"));
+      form.append('upload', blob, (processId + ".bpmn"));
 
       return form;
 
     };
 
-    const getDeploymentNames = () => {
+    const getProcessId = () => {
 
       // Default names
-      let deploymentName = defaultProcessInfo.deploymentName;
       let processID = defaultProcessInfo.processID;
 
       // Get elements from process panel, find the root element which contains the deployment name and process ID
@@ -223,28 +233,19 @@ const EditModel = React.memo(
       const rootElement = getRootElement(bpmnModeller);
 
       if (rootElement && is(rootElement, 'bpmn:Process') && rootElement.businessObject){
-        if (rootElement.businessObject.name){
-          deploymentName = rootElement.businessObject.name;
-        }
         if (rootElement.businessObject.id){
           processID = rootElement.businessObject.id;
         }
       }
       else{
         if (rootElement && is(rootElement, 'bpmn:Collaboration') && rootElement.businessObject.participants){
-          if (rootElement.businessObject.participants[0].processRef.name){
-            deploymentName = rootElement.businessObject.participants[0].processRef.name;
-          }
           if (rootElement.businessObject.participants[0].processRef.id){
             processID = rootElement.businessObject.participants[0].processRef.id;
           }
         }
       }
 
-      return {
-        deploymentName: deploymentName,
-        processID: processID
-      };
+      return processID;
 
     };
 
@@ -304,10 +305,11 @@ const EditModel = React.memo(
     const updateBpmProcesses = () => {
       // Update drop down with all processes
       dispatch(fetchAllBpmProcesses(true));
+      dispatch(fetchAllBpmDeployments());
       // Show the updated workflow as the current value in the dropdown
       const updatedWorkflow = {
-        label: getDeploymentNames().deploymentName,
-        value: getDeploymentNames().processID,
+        label: deploymentName,
+        value: getProcessId(),
       };
       dispatch(setWorkflowAssociation(updatedWorkflow));
     };
@@ -358,15 +360,28 @@ const EditModel = React.memo(
           <div className="properties-panel-parent" id="js-properties-panel"></div>
         </div>
 
-        <div className="deploy-container">
-          
-          {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" onClick={handleApplyAllTenants}/>  Apply for all tenants</label> : null}
-
-          <Button onClick={deployProcess}>
-            Deploy
-          </Button>
-          
-        </div>
+        <Form>
+          <Row className="deploy-container">
+            <Col className="deploy-btn">
+              <Button onClick={deployProcess}>
+                Deploy
+              </Button>
+            </Col>
+            <Col className="pl-0">
+              <Form.Control 
+                className="deploy-name" 
+                placeholder="Deployment Name"
+                value={deploymentName}
+                onChange={e => setDeploymentName(e.target.value)}
+              />
+            </Col>
+          </Row>
+          <Row className="mt-2">
+            <Col>
+              {MULTITENANCY_ENABLED ? <Form.Check type="checkbox" onClick={handleApplyAllTenants} label="Apply for all tenants" /> : null}
+            </Col>
+          </Row>
+        </Form>
 
       </>
 

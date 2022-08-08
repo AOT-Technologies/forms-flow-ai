@@ -55,6 +55,14 @@
   margin-right: 15px;
 }
 
+.deploy-btn{
+  flex-grow: inherit;
+}
+
+.deploy-name{
+  width: 300px;
+}
+
 .import-container{
   margin-bottom: 15px;
 }
@@ -82,4 +90,9 @@
 
 .help-btn{
   float: right;
+}
+
+.deploy-container{
+  display: flex;
+  justify-content: flex-start;
 }

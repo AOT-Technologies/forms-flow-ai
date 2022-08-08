@@ -49,3 +49,10 @@ export const setCountPerpage = (data) => (dispatch) => {
     payload: data,
   });
 };
+
+export const setDraftDetailStatusCode = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DRAFT_DETAIL_STATUS_CODE,
+    payload: data,
+  });
+};

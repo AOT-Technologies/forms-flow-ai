@@ -13,7 +13,7 @@ import { Translation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import { getDraftById } from "../../apiManager/services/draftService";
-import { push } from "connected-react-router";
+import { setDraftDetailStatusCode } from "../../actions/draftActions";
 
 const ViewDraft = React.memo(() => {
   const { draftId } = useParams();
@@ -36,11 +36,12 @@ const ViewDraft = React.memo(() => {
             dispatch(getForm("form", res.formId));
             dispatch(getSubmission("submission", res.submissionId, res.formId));
           }
-        }else{
-          dispatch(push(`${redirectUrl}404`));
         }
       })
     );
+    return () => {
+      dispatch(setDraftDetailStatusCode(""));
+    };
   }, [draftId, dispatch]);
 
   useEffect(() => {

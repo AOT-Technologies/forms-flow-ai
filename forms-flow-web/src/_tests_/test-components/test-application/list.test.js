@@ -30,6 +30,9 @@ test("Should render No Applications Found when initial state is passed", () => {
       user: {
         roles: ["formsflow-designer"],
       },
+      draft:{
+        draftCount: null
+      }
     })
   );
   render(<ApplicationList />);
@@ -44,6 +47,9 @@ test("Should render Loading state when loading state variable is truthy", () => 
       user: {
         roles: ["formsflow-designer"],
       },
+      draft:{
+        draftCount: null
+      }
     })
   );
   render(<ApplicationList />);
@@ -57,6 +63,9 @@ test("Should render the table with the data after data fetch is over with result
       user: {
         roles: ["formsflow-designer"],
       },
+      draft:{
+        draftCount: null
+      }
     })
   );
   render(<ApplicationList />);
@@ -76,6 +85,9 @@ test("Should render No results found when providing a filter value which is not 
       user: {
         roles: ["formsflow-designer"],
       },
+      draft:{
+        draftCount: null
+      }
     })
   );
   const statespy = jest.spyOn(React, "useState");

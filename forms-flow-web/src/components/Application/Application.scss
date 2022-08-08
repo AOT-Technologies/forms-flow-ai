@@ -1,8 +1,7 @@
 .application-head
 {
     font-weight: bold;
-    font-size:30px;
-    margin-left: 10px !important;
+    font-size:26px;
     display: flex;
 }
 .application-head-details
@@ -22,9 +21,8 @@
 .application-count
 {
     font-size: 20px;
-    margin-top: 7px;
-    margin-left: 1px !important;
-    margin-right: 25px !important;
+    margin-top: 5px;
+    margin-left: 5px;
 }
 .div-no-application
 {
@@ -50,6 +48,6 @@
     font-size: 14px;
   }
 .react-bootstrap-table {
-    min-height: 500px;
+    min-height: 450px;
     overflow: auto;
   }

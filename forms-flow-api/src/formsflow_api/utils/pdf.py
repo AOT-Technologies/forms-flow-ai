@@ -43,6 +43,9 @@ def get_pdf_from_html(
     def interceptor(request):
         request.headers["Authorization"] = args["auth_token"]
 
+    if args is None:
+        args = {}
+      
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
@@ -59,17 +62,17 @@ def get_pdf_from_html(
     )
     driver.set_window_size(1920, 1080)
 
-    if args["auth_token"] is not None:
+    if 'auth_token' in args:
         driver.request_interceptor = interceptor
 
-    if args["timezone"] is not None:
+    if 'timezone' in args:
         tz_params = {'timezoneId': args["timezone"]}
         driver.execute_cdp_cmd('Emulation.setTimezoneOverride', tz_params)
 
     driver.get(path)
 
     try:
-        if args["wait"] is not None:
+        if 'wait' in args:
             delay = 100  # seconds
             elem_loc = EC.presence_of_element_located((By.CLASS_NAME, args["wait"]))
             WebDriverWait(driver, delay).until(elem_loc)

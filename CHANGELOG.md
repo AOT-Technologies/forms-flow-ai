@@ -14,7 +14,7 @@ Mark  items as `Added`, `Changed`, `Fixed`, `Removed`, `Untested Features`, `Upc
 * Added modal for submission details on metrics page.
 * Added support for wizard forms.
 * Added Export to PDF feature.
-* Added application status `draft`.
+* Upcoming Feature: Draft feature to track unfinished application.
 * Added Processes page for camunda web modeller.
 * Added Form Adapter to support form submission data to other data stores than Mongo with custom data URLs.
 

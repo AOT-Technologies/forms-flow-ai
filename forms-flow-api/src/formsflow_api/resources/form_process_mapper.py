@@ -431,6 +431,7 @@ class FormResourceExportFormPdf(Resource):
         """PDF generation and rendering method."""
         try:
             if auth.has_one_of_roles([REVIEWER_GROUP, CLIENT_GROUP]):
+                timezone = request.args["timezone"]
                 token = request.headers.get("Authorization")
                 host_name = current_app.config.get("FORMSFLOW_API_URL")
                 url = (
@@ -444,7 +445,13 @@ class FormResourceExportFormPdf(Resource):
                 file_name = (
                     "Application_" + form_id + "_" + submission_id + "_export.pdf"
                 )
-                result = get_pdf_from_html(url, wait="completed", auth_token=token)
+
+                args = {
+                    "wait": "completed",
+                    "timezone" : timezone,
+                    "auth_token": token
+                }
+                result = get_pdf_from_html(url, args=args)
                 return pdf_response(result, file_name)
 
             response, status = (

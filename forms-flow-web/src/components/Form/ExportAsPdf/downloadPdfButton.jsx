@@ -28,15 +28,24 @@ export const DownloadPDFButton = React.memo(
       return title + "_submission_" + form_id + ".pdf";
     };
 
-    let apiUrlExportPdf = replaceUrl(API.EXPORT_FORM_PDF, "<form_id>", form_id);
-    apiUrlExportPdf = replaceUrl(
-      apiUrlExportPdf,
-      "<submission_id>",
-      submission_id
-    );
+    const getClientTimeZone = () => {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    };
+
+    const getExporturl = () => {
+      let apiUrlExportPdf = replaceUrl(API.EXPORT_FORM_PDF, "<form_id>", form_id);
+      apiUrlExportPdf = replaceUrl(
+        apiUrlExportPdf,
+        "<submission_id>",
+        submission_id
+      );
+      return apiUrlExportPdf;
+    };
 
     const downloadSamplePdfFile = () => {
-      return httpGETBlobRequest(apiUrlExportPdf);
+      const params = { timezone: getClientTimeZone() };
+      return httpGETBlobRequest(getExporturl(), params);
     };
 
     const { ref, url, download, name } = useDownloadFile({

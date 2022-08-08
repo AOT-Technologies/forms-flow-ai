@@ -36,12 +36,12 @@ def driver_path():
 
 
 def get_pdf_from_html(
-    path, chromedriver=driver_path(), p_options=None, wait=None, auth_token=None
+    path, chromedriver=driver_path(), p_options=None, args=None
 ):
     """Load url in chrome web driver and print as pdf."""
 
     def interceptor(request):
-        request.headers["Authorization"] = auth_token
+        request.headers["Authorization"] = args["auth_token"]
 
     options = Options()
     options.add_argument("--headless")
@@ -59,14 +59,19 @@ def get_pdf_from_html(
     )
     driver.set_window_size(1920, 1080)
 
-    if auth_token is not None:
+    if args["auth_token"] is not None:
         driver.request_interceptor = interceptor
+
+    if args["timezone"] is not None:
+        tz_params = {'timezoneId': args["timezone"]}
+        driver.execute_cdp_cmd('Emulation.setTimezoneOverride', tz_params)
+
     driver.get(path)
 
     try:
-        if wait is not None:
+        if args["wait"] is not None:
             delay = 100  # seconds
-            elem_loc = EC.presence_of_element_located((By.CLASS_NAME, wait))
+            elem_loc = EC.presence_of_element_located((By.CLASS_NAME, args["wait"]))
             WebDriverWait(driver, delay).until(elem_loc)
         calculated_print_options = {
             "landscape": False,

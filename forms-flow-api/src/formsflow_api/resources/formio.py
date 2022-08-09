@@ -54,13 +54,14 @@ class FormioResource(Resource):
             unique_user_id = (
                 user.email or f"{user.user_name}@formsflow.ai"
             )  # Email is not mandatory in keycloak
-            project_id: str = current_app.config.get("FORMIO_URL")
+            project_id: str = current_app.config.get("FORMIO_PROJECT_URL")
             payload: Dict[str, any] = {
                 "external": True,
                 "form": {"_id": _resource_id},
-                "project": {"_id": project_id},
                 "user": {"_id": unique_user_id, "roles": _role_ids},
             }
+            if project_id:
+                payload["project"] = {"_id": project_id}
             response.headers["x-jwt-token"] = jwt.encode(
                 payload=payload,
                 key=current_app.config.get("FORMIO_JWT_SECRET"),

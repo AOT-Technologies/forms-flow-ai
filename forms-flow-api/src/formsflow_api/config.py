@@ -90,6 +90,7 @@ class _Config:  # pylint: disable=too-few-public-methods
     FORMIO_URL = os.getenv("FORMIO_URL")
     FORMIO_USERNAME = os.getenv("FORMIO_ROOT_EMAIL")
     FORMIO_PASSWORD = os.getenv("FORMIO_ROOT_PASSWORD")
+    FORMIO_PROJECT_URL = os.getenv("FORMIO_PROJECT_URL") # For form.io enterprise
 
     # Keycloak client authorization enabled flag
     KEYCLOAK_ENABLE_CLIENT_AUTH = (

@@ -106,13 +106,13 @@ const EditModel = React.memo(
 
     useEffect(() => {
       setDeploymentName(name);
-
-      if (processKey && isExecutable) {
-        dispatch(setProcessDiagramLoading(true));
-        dispatch(fetchDiagram(processKey, tenant));
-      } else if (processKey && !isExecutable) {
+      // null deployment name assumes 'Create New' was clicked (fixes xml network error)
+      if ((processKey && !isExecutable) || !name) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(setProcessDiagramXML(xml));
+      } else if (processKey && isExecutable) {
+        dispatch(setProcessDiagramLoading(true));
+        dispatch(fetchDiagram(processKey, tenant));
       } else {
         dispatch(setProcessDiagramLoading(false));
       }
@@ -191,7 +191,7 @@ const EditModel = React.memo(
     const createBpmnForm = (xml) => {
       const form = new FormData();
 
-      const processId = getProcessId();
+      const processId = getPropertyPanelInfo().processID;
 
       // Deployment Name
       form.append("deployment-name", deploymentName);
@@ -210,9 +210,10 @@ const EditModel = React.memo(
       return form;
     };
 
-    const getProcessId = () => {
+    const getPropertyPanelInfo = () => {
       // Default names
       let processID = defaultProcessInfo.processID;
+      let isExecutable = defaultProcessInfo.isExecutable;
 
       // Get elements from process panel, find the root element which contains the deployment name and process ID
       // Use the names assigned in the bpmn-js-properties-panel, otherwise keep the default names
@@ -225,6 +226,7 @@ const EditModel = React.memo(
       ) {
         if (rootElement.businessObject.id) {
           processID = rootElement.businessObject.id;
+          isExecutable = rootElement.businessObject.isExecutable;
         }
       } else {
         if (
@@ -233,13 +235,16 @@ const EditModel = React.memo(
           rootElement.businessObject.participants
         ) {
           if (rootElement.businessObject.participants[0].processRef.id) {
-            processID =
-              rootElement.businessObject.participants[0].processRef.id;
+            processID = rootElement.businessObject.participants[0].processRef.id;
+            isExecutable = rootElement.businessObject.participants[0].processRef.isExecutable;
           }
         }
       }
 
-      return processID;
+      return {
+        processID : processID,
+        isExecutable : isExecutable
+      };
     };
 
     const deployXML = (xml) => {
@@ -298,7 +303,8 @@ const EditModel = React.memo(
       // Show the updated workflow as the current value in the dropdown
       const updatedWorkflow = {
         label: deploymentName,
-        value: getProcessId(),
+        value: getPropertyPanelInfo().processID,
+        isExecutable: getPropertyPanelInfo().isExecutable,
       };
       dispatch(setWorkflowAssociation(updatedWorkflow));
     };

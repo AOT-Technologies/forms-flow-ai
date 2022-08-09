@@ -46,7 +46,7 @@ export default React.memo(() => {
 
   useEffect(() => {
     if (deployments) {
-      setFullProcessList(listProcess(deployments.concat(process)));
+      setFullProcessList(listProcess(process.concat(deployments)));
     }
   }, [process, deployments]);
 

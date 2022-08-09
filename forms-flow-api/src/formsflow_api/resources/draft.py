@@ -9,8 +9,8 @@ from formsflow_api.exceptions import BusinessException
 from formsflow_api.schemas import (
     ApplicationSchema,
     ApplicationSubmissionSchema,
+    DraftListSchema,
     DraftSchema,
-    FormProcessMapperListRequestSchema,
 )
 from formsflow_api.services import DraftService
 from formsflow_api.utils import (
@@ -34,7 +34,7 @@ class DraftResource(Resource):
     def get():
         """Retrieves all drafts."""
         try:
-            dict_data = FormProcessMapperListRequestSchema().load(request.args) or {}
+            dict_data = DraftListSchema().load(request.args) or {}
             draft, count = DraftService.get_all_drafts(dict_data)
             result = {"drafts": draft, "totalCount": count}
             return (result, HTTPStatus.OK)

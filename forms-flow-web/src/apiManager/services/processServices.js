@@ -68,8 +68,8 @@ export const fetchAllBpmProcesses = (...rest) => {
   return (dispatch) => {
     httpGETRequest(API.GET_BPM_PROCESS_LIST + "?latestVersion=true&excludeInternal=true", {}, UserService.getToken(), true)
       .then((res) => {
-        if(res?.data?._embedded?.processDefinitionDtoList) {
-          dispatch(setAllProcessList(res.data._embedded.processDefinitionDtoList));
+        if(res?.data) {
+          dispatch(setAllProcessList(res.data));
           done(null, res.data);
         } else {
           dispatch(setAllProcessList([]));

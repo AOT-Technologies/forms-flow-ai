@@ -2,6 +2,10 @@ import ACTION_CONSTANTS from "../actions/actionConstants";
 
 const initialState = {
   draftSubmission: {},
+  draftSubmissionError: {
+    error: null,
+    message: null,
+  },
   draftList: [],
   countPerPage: 5,
   isDraftListLoading: true,
@@ -31,6 +35,11 @@ const draftSubmission = (state = initialState, action) => {
       return { ...state, activePage: action.payload };
     case ACTION_CONSTANTS.SET_DRAFT_COUNT_PER_PAGE:
       return { ...state, countPerPage: action.payload };
+    case ACTION_CONSTANTS.DRAFT_SUBMISSION_ERROR:
+      return {
+        ...state,
+        draftSubmissionError: { error: true, message: action.payload },
+      };
     default:
       return state;
   }

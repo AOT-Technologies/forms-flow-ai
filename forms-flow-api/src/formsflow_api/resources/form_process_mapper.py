@@ -403,7 +403,7 @@ class FormResourceRenderFormPdf(Resource):
         form_io_token = formio_service.get_formio_access_token()
         form_url = form_io_url + "/form/" + form_id + "/submission/" + submission_id
         template_params = {
-            "form" : {
+            "form": {
                 "base_url": form_io_url,
                 "project_url": form_io_url,
                 "form_url": form_url,
@@ -446,11 +446,7 @@ class FormResourceExportFormPdf(Resource):
                     "Application_" + form_id + "_" + submission_id + "_export.pdf"
                 )
 
-                args = {
-                    "wait": "completed",
-                    "timezone" : timezone,
-                    "auth_token": token
-                }
+                args = {"wait": "completed", "timezone": timezone, "auth_token": token}
                 result = get_pdf_from_html(url, args=args)
                 return pdf_response(result, file_name)
 

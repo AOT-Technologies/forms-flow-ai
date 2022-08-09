@@ -35,9 +35,7 @@ def driver_path():
 # pylint: disable=R1710
 
 
-def get_pdf_from_html(
-    path, chromedriver=driver_path(), p_options=None, args=None
-):
+def get_pdf_from_html(path, chromedriver=driver_path(), p_options=None, args=None):
     """Load url in chrome web driver and print as pdf."""
 
     def interceptor(request):
@@ -45,7 +43,7 @@ def get_pdf_from_html(
 
     if args is None:
         args = {}
-      
+
     options = Options()
     options.add_argument("--headless")
     options.add_argument("--disable-gpu")
@@ -62,17 +60,17 @@ def get_pdf_from_html(
     )
     driver.set_window_size(1920, 1080)
 
-    if 'auth_token' in args:
+    if "auth_token" in args:
         driver.request_interceptor = interceptor
 
-    if 'timezone' in args:
-        tz_params = {'timezoneId': args["timezone"]}
-        driver.execute_cdp_cmd('Emulation.setTimezoneOverride', tz_params)
+    if "timezone" in args:
+        tz_params = {"timezoneId": args["timezone"]}
+        driver.execute_cdp_cmd("Emulation.setTimezoneOverride", tz_params)
 
     driver.get(path)
 
     try:
-        if 'wait' in args:
+        if "wait" in args:
             delay = 100  # seconds
             elem_loc = EC.presence_of_element_located((By.CLASS_NAME, args["wait"]))
             WebDriverWait(driver, delay).until(elem_loc)

@@ -1,10 +1,6 @@
 import Index from "../../../components/Modeller/index";
 import React from "react";
-import { 
-  render as rtlRender, 
-  screen, 
-  //fireEvent 
-} from "@testing-library/react";
+import { render as rtlRender, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import { Provider } from "react-redux";
 import { Router, Route } from "react-router";
@@ -12,13 +8,6 @@ import { createMemoryHistory } from "history";
 import * as redux from "react-redux";
 import StoreService from "../../../services/StoreService";
 import { initialstate } from "./constants";
-
-/*
-import {
-  setWorkflowAssociation,
-  setProcessDiagramXML,
-} from "../../../actions/processActions";
-*/
 
 jest.mock("bpmn-js/lib/Modeler", () => ({
   BpmnModeler: {
@@ -30,32 +19,30 @@ jest.mock("bpmn-js/lib/Modeler", () => ({
     destroy: jest.fn,
     on: jest.fn,
     importXML: jest.fn,
-  }
+  },
 }));
 jest.mock("bpmn-js-properties-panel", () => ({
   BpmnPropertiesPanelModule: jest.fn,
   BpmnPropertiesProviderModule: jest.fn,
-  CamundaPlatformPropertiesProviderModule: jest.fn
+  CamundaPlatformPropertiesProviderModule: jest.fn,
 }));
 jest.mock("camunda-bpmn-moddle/lib", () => ({
-  CamundaExtensionModule: jest.fn
+  CamundaExtensionModule: jest.fn,
 }));
 jest.mock("camunda-bpmn-moddle/resources/camunda", () => ({
-  camundaModdleDescriptors: jest.fn
+  camundaModdleDescriptors: jest.fn,
 }));
 jest.mock("bpmn-js/lib/util/ModelUtil", () => ({
-  is: jest.fn
+  is: jest.fn,
 }));
 jest.mock("bpmn-js-bpmnlint", () => ({
-  lintModule: jest.fn(()=> <div>Test</div>)
+  lintModule: jest.fn(() => <div>Test</div>),
 }));
-
 
 let store;
 beforeEach(() => {
   store = StoreService.configureStore();
 });
-
 
 function renderWithRouterMatch(
   ui,
@@ -77,7 +64,6 @@ function renderWithRouterMatch(
 }
 
 test("Should render the modeller index component without breaking", async () => {
-
   const spy = jest.spyOn(redux, "useSelector");
   spy.mockImplementation((callback) => callback(initialstate));
   renderWithRouterMatch(Index, {
@@ -85,25 +71,8 @@ test("Should render the modeller index component without breaking", async () => 
     route: "/processes",
   });
   expect(screen.getByText("Processes")).toBeInTheDocument();
-  expect(screen.getByText("Please select an existing workflow.")).toBeInTheDocument();
+  expect(
+    screen.getByText("Please select an existing workflow.")
+  ).toBeInTheDocument();
   expect(screen.getByText("Create New")).toBeInTheDocument();
-
-  // TODO: How to properly implement BPMN Modeller mock
-  /*
-  const stateSpy = jest.spyOn(React, "useState");
-  stateSpy.mockImplementation(() => React.useState({ showModeller: false }));
-
-  const mockUseDispatch = jest.spyOn(redux, 'useDispatch');
-  mockUseDispatch.mockImplementation(() => {
-    setProcessDiagramXML(null);
-    setWorkflowAssociation(null);
-  });
-  
-  // Test Create New Buttons
-  const element = screen.getByText("Create New");
-  fireEvent.click(element);
-  
-  expect(screen.getByText("Deploy")).toBeInTheDocument();
-  */
-
 });

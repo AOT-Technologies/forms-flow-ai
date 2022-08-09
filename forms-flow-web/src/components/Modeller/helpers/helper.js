@@ -18,19 +18,16 @@ const getRootElement = (bpmnModeller) => {
   return rootElement[0];
 };
 
-
 const getNewID = () => {
   return (Math.random() + 1).toString(36).substring(2, 9);
 };
 
 const createNewProcess = () => {
-
   const deploymentName = "";
   const processID = "Process_" + getNewID();
   const definitionID = "Definitions_" + getNewID();
 
-  const blankProcessXML = 
-    `<?xml version="1.0" encoding="UTF-8"?>
+  const blankProcessXML = `<?xml version="1.0" encoding="UTF-8"?>
     <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="${definitionID}" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.17.0">
       <bpmn:process id="${processID}" isExecutable="true">
         <bpmn:startEvent id="StartEvent_1" />
@@ -50,14 +47,13 @@ const createNewProcess = () => {
     xml: blankProcessXML,
   };
 
-  return { 
-    defaultDeploymentName: deploymentName, 
+  return {
+    defaultDeploymentName: deploymentName,
     defaultProcessID: processID,
     defaultDefinitionID: definitionID,
     defaultWorkflow: defaultWorkflow,
-    defaultBlankProcessXML: blankProcessXML
+    defaultBlankProcessXML: blankProcessXML,
   };
-
 };
 
 export { getRootElement, createNewProcess };

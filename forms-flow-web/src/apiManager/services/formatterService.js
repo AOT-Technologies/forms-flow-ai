@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 import moment from "moment";
-import {AppConfig} from "../../config";
+import { AppConfig } from "../../config";
 
 export const taskSubmissionFormatter = (taskSubmissionData) => {
   const res = {};
@@ -83,7 +83,7 @@ export const getUserNamefromList = (userList, userId) => {
 // formURl is of https://base-url/public/form/:formId/submission/:submissionId
 export const getFormIdSubmissionIdFromURL = (formUrl) => {
   let formId, submissionId;
-  if(formUrl){
+  if (formUrl) {
     let formString = "/form/";
     let submissionString = "/submission/";
     let firstPositionOfString = formUrl.indexOf("/form/");
@@ -158,26 +158,22 @@ export const checkIsObjectId = (data) => {
 
 export const listProcess = (processes) => {
   if (processes?.length > 0) {
-
-    // Remove duplicates (there may be duplicated between processes (executable) 
-    // and deployments (non-executable), 
+    // Remove duplicates (there may be duplicated between processes (executable)
+    // and deployments (non-executable),
     // remove duplicate deployments)
-    const unique = uniqByKeepFirst(processes, x => x ? x.key : null);
-  
-    const data = unique.map((process) => {
+    const unique = uniqByKeepFirst(processes, (x) => (x ? x.key : null));
 
-      if (process.name == null || process.name == ""){
+    const data = unique.map((process) => {
+      if (process.name == null || process.name == "") {
         process.name = "Unnamed";
       }
-
       return {
         label: process.name,
         value: process.key,
         tenant: process.tenantId,
         isExecutable: process.isExecutable == null ? true : false,
-        xml: process.diagram
+        xml: process.diagram,
       };
-
     });
 
     // Sort alphabetically
@@ -193,14 +189,14 @@ export const listProcess = (processes) => {
 
 const uniqByKeepFirst = (a, key) => {
   let seen = new Set();
-  return a.filter(item => {
-      let k = key(item);
-      return seen.has(k) ? false : seen.add(k);
+  return a.filter((item) => {
+    let k = key(item);
+    return seen.has(k) ? false : seen.add(k);
   });
 };
 
 const compareStrings = (a, b) => {
   a = a.toLowerCase();
   b = b.toLowerCase();
-  return (a < b) ? -1 : (a > b) ? 1 : 0;
+  return a < b ? -1 : a > b ? 1 : 0;
 };

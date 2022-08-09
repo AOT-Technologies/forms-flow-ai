@@ -38,7 +38,7 @@ export const fetchDashboardsList = (dashboardsFromRedash) => {
 export const fetchDashboardDetails = (id, ...rest) => {
   const done = rest.length ? rest[0] : () => {};
   return (dispatch) => {
-    httpGETRequest(`${API.GET_DASHBOARDS}/${id}?return_dynamic_key=true`)
+    httpGETRequest(`${API.GET_DASHBOARDS}/${id}`)
       .then((res) => {
         if (res.data) {
           dispatch(getDashboardDetail(res.data));

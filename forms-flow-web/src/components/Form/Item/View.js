@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -80,6 +80,8 @@ const View = React.memo((props) => {
    * this will get updated on every change the form is having.
    */
   const [draftData, setDraftData] = useState({});
+  const draftRef = useRef();
+  const [isDraftCreated, setIsDraftCreated] = useState(false);
 
   const { formId } = useParams();
   const [showPublicForm, setShowPublicForm] = useState("checking");
@@ -148,13 +150,19 @@ const View = React.memo((props) => {
     }
   }, [formId, dispatch, getPublicForm]);
 
+  const saveDraft = (payload) => {
+    if (draftSubmissionId && isDraftCreated) {
+      dispatch(draftUpdateMethod(payload, draftSubmissionId));
+    }
+  };
+
   /**
    * Will create a draft application when the form is selected for entry.
    */
   useEffect(() => {
     if (formId && DRAFT_ENABLED) {
       let payload = getDraftReqFormat(formId, draftData?.data);
-      dispatch(draftCreateMethod(payload));
+      dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
   }, [formId]);
 
@@ -164,13 +172,21 @@ const View = React.memo((props) => {
    */
   useInterval(
     () => {
-      let payload = getDraftReqFormat(form, draftData?.data);
-      if (draftSubmissionId) {
-        dispatch(draftUpdateMethod(payload, draftSubmissionId));
-      }
+      let payload = getDraftReqFormat(formId, draftData?.data);
+      saveDraft(payload);
     },
     poll ? DRAFT_POLLING_RATE : null
   );
+
+  /**
+   * Save the current state when the component unmounts.
+   */
+  useEffect(() => {
+    return () => {
+      let payload = getDraftReqFormat(formId, draftRef.current?.data);
+      saveDraft(payload);
+    };
+  }, [formId, draftSubmissionId, isDraftCreated]);
 
   useEffect(() => {
     if (isPublic) {
@@ -261,7 +277,10 @@ const View = React.memo((props) => {
               i18n: formio_resourceBundles,
             }}
             hideComponents={hideComponents}
-            onChange={(data) => setDraftData(data)}
+            onChange={(data) => {
+              setDraftData(data);
+              draftRef.current = data;
+            }}
             onSubmit={(data) => {
               setPoll(false);
               onSubmit(data, form._id, isPublic);

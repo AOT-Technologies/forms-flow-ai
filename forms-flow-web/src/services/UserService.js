@@ -1,9 +1,5 @@
 /* istanbul ignore file */
 import {
-  FORMIO_JWT_SECRET,
-  MULTITENANCY_ENABLED,
-} from "../constants/constants";
-import {
   setUserRole,
   setUserToken,
   setUserDetails,
@@ -22,7 +18,6 @@ import Keycloak from "keycloak-js";
 import { getTenantKeycloakJson } from "../apiManager/services/tenantServices";
 import { getFormioRoleIds } from "../apiManager/services/userservices";
 
-const jwt = require("jsonwebtoken");
 let KeycloakData, doLogin, doLogout;
 
 const setKeycloakJson = (tenantKey = null, ...rest) => {
@@ -63,38 +58,14 @@ const initKeycloak = (store, ...rest) => {
         setApiBaseUrlToLocalStorage();
         // get formio roles
         store.dispatch(
-          getFormioRoleIds((err, data) => {
+          getFormioRoleIds((err) => {
             if (err) {
               console.error(err);
+              // doLogout();
             } else {
-              // filter the role based on keyclok role
-              let roles = [];
-              data.forEach((formioRole) => {
-                if (
-                  UserRoles.some((userRole) =>
-                    userRole.includes(formioRole.type.toLowerCase())
-                  )
-                ) {
-                  roles.push(formioRole.roleId);
-                }
-              });
-
-              const email = KeycloakData.tokenParsed.email || "external";
-              const resourceDetails = data.find(
-                (role) => role.type === "RESOURCE_ID"
-              );
-
-              authenticateFormio(
-                email,
-                roles,
-                resourceDetails?.roleId,
-                KeycloakData.tokenParsed?.tenantKey
-              );
-            
               KeycloakData.loadUserInfo().then((res) =>
                 store.dispatch(setUserDetails(res))
               );
-
               // onAuthenticatedCallback();
               done(null, KeycloakData);
             }
@@ -172,28 +143,7 @@ const getFormioToken = () => localStorage.getItem("formioToken");
   return KeycloakData.updateToken(5).then(successCallback).catch(doLogin);
 };*/
 
-const authenticateFormio = (user, roles, resourceId, tenantKey) => {
-  let tenantData = {};
-  if (tenantKey && MULTITENANCY_ENABLED) {
-    tenantData = { tenantKey };
-  }
-  const FORMIO_TOKEN = jwt.sign(
-    {
-      external: true,
-      form: {
-        _id: resourceId, // form.io form Id of user resource
-      },
-      user: {
-        _id: user, // keep it like that
-        roles: roles,
-      },
-      ...tenantData,
-    },
-    FORMIO_JWT_SECRET
-  ); // TODO Move JWT secret key to COME From ENV
-  //TODO remove this token from local Storage on logout and try to move to redux store as well
-  localStorage.setItem("formioToken", FORMIO_TOKEN);
-};
+ 
 
 // const KeycloakData= _kc;
 

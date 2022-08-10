@@ -7,13 +7,14 @@ import { Tabs, Tab } from "react-bootstrap";
 import Details from "./Details";
 import Loading from "../../containers/Loading";
 import View from "../Form/Item/Submission/Item/View";
-import { getForm, getSubmission } from "react-formio";
+import { getForm } from "react-formio";
 import NotFound from "../NotFound";
 import { Translation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import { getDraftById } from "../../apiManager/services/draftService";
 import { push } from "connected-react-router";
+import { setDraftDetail } from "../../actions/draftActions";
 
 const ViewDraft = React.memo(() => {
   const { draftId } = useParams();
@@ -34,13 +35,15 @@ const ViewDraft = React.memo(() => {
         if (!err) {
           if (res.id && res.formId) {
             dispatch(getForm("form", res.formId));
-            dispatch(getSubmission("submission", res.submissionId, res.formId));
           }
-        }else{
+        } else {
           dispatch(push(`${redirectUrl}404`));
         }
       })
     );
+    return () => {
+      dispatch(setDraftDetail({ isDraftDetailLoading: true }));
+    };
   }, [draftId, dispatch]);
 
   useEffect(() => {

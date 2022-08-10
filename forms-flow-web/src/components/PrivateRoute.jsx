@@ -1,7 +1,11 @@
 import React, { useEffect, Suspense, lazy, useMemo } from "react";
 import { Route, Switch, Redirect, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { BASE_ROUTE, MULTITENANCY_ENABLED } from "../constants/constants";
+import {
+  BASE_ROUTE,
+  DRAFT_ENABLED,
+  MULTITENANCY_ENABLED,
+} from "../constants/constants";
 import UserService from "../services/UserService";
 import { setUserAuth } from "../actions/bpmActions";
 import { CLIENT, STAFF_REVIEWER, STAFF_DESIGNER } from "../constants/constants";
@@ -102,13 +106,31 @@ const PrivateRoute = React.memo((props) => {
     [userRoles]
   );
 
+  const DraftRoute = useMemo(
+    () =>
+      ({ component: Component, ...rest }) =>
+        (
+          <Route
+            {...rest}
+            render={(props) =>
+              DRAFT_ENABLED ? (
+                <Component {...props} />
+              ) : (
+                <Redirect exact to="/404" />
+              )
+            }
+          />
+        ),
+    [userRoles]
+  );
+
   return (
     <>
       {isAuth ? (
         <Suspense fallback={<Loading />}>
           <Switch>
             <Route path={`${BASE_ROUTE}form`} component={Form} />
-            <Route path={`${BASE_ROUTE}draft`} component={Drafts} />
+            <DraftRoute path={`${BASE_ROUTE}draft`} component={Drafts} />
             <DesignerRoute path={`${BASE_ROUTE}admin`} component={Admin} />
             <DesignerRoute path={`${BASE_ROUTE}formflow`} component={Form} />
             <DesignerRoute

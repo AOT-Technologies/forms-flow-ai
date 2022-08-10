@@ -119,10 +119,3 @@ export const setResetProcess = (data) => (dispatch) => {
     payload: data,
   });
 };
-
-export const setFormStatusLoading = (data) => (dispatch) => {
-  dispatch({
-    type: ACTION_CONSTANTS.FORM_STATUS_LOADING,
-    payload: data,
-  });
-};

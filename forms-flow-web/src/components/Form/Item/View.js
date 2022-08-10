@@ -52,16 +52,10 @@ import {
 } from "../../../constants/constants";
 import useInterval from "../../../customHooks/useInterval";
 import selectApplicationCreateAPI from "./apiSelectHelper";
-import { getFormProcesses } from "../../../apiManager/services/processServices";
-import { setFormStatusLoading } from "../../../actions/processActions";
 
 const View = React.memo((props) => {
-  const [formStatus, setFormStatus] = useState("");
   const { t } = useTranslation();
   const lang = useSelector((state) => state.user.lang);
-  const formStatusLoading = useSelector(
-    (state) => state.process.formStatusLoading
-  );
   const isFormSubmissionLoading = useSelector(
     (state) => state.formDelete.isFormSubmissionLoading
   );
@@ -122,8 +116,6 @@ const View = React.memo((props) => {
             if (isPublic) {
               if (isObjectId) {
                 dispatch(getForm("form", form_id));
-                dispatch(setFormStatusLoading(false));
-
               } else {
                 dispatch(
                   setFormRequestData(
@@ -133,7 +125,6 @@ const View = React.memo((props) => {
                   )
                 );
                 dispatch(setFormSuccessData("form", formObj));
-                dispatch(setFormStatusLoading(false));
               }
             }
           }
@@ -142,8 +133,8 @@ const View = React.memo((props) => {
     },
     [dispatch, isPublic]
   );
+
   const getFormData = useCallback(() => {
-    
     const isObjectId = checkIsObjectId(formId);
     if (isObjectId) {
       getPublicForm(formId, isObjectId);
@@ -178,18 +169,6 @@ const View = React.memo((props) => {
       dispatch(draftCreateMethod(payload, setIsDraftCreated));
     }
   }, [validFormId]);
-
-  useEffect(() => {
-    dispatch(setFormStatusLoading(true));
-    dispatch(
-      getFormProcesses(formId, (err, data) => {
-        if (!err) {
-          setFormStatus(data.status);
-          dispatch(setFormStatusLoading(false));
-        }
-      })
-    );
-  }, []);
 
   /**
    * We will repeatedly update the current state to draft table
@@ -235,7 +214,7 @@ const View = React.memo((props) => {
     }
   }, [publicFormStatus]);
 
-  if (isActive || isPublicStatusLoading || formStatusLoading) {
+  if (isActive || isPublicStatusLoading) {
     return (
       <div data-testid="loading-view-component">
         <Loading />
@@ -259,6 +238,7 @@ const View = React.memo((props) => {
       </div>
     );
   }
+
   return (
     <div className="container overflow-y-auto">
       <div className="main-header">
@@ -292,8 +272,7 @@ const View = React.memo((props) => {
         className="col-12"
       >
         <div className="ml-4 mr-4">
-          {isPublic || formStatus === "active" ? (
-            <Form
+          <Form
             form={form}
             submission={submission}
             url={url}
@@ -312,26 +291,7 @@ const View = React.memo((props) => {
               onSubmit(data, form._id, isPublic);
             }}
             onCustomEvent={(evt) => onCustomEvent(evt, redirectUrl)}
-            />
-          ) : formStatus === "inactive" || !formStatus ? (
-            <span>
-              <div
-                className="container"
-                style={{
-                  maxWidth: "900px",
-                  margin: "auto",
-                  height: "50vh",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <h3>{t("Form not published")}</h3>
-                <p>{t("You can't submit this form until it is published")}</p>
-              </div>
-            </span>
-          ) : null}
+          />
         </div>
       </LoadingOverlay>
     </div>

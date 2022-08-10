@@ -17,6 +17,7 @@ const initialState = {
   applicationCountResponse: false,
   unPublishApiError: false,
   workflowAssociated: null, //{label:'Workflow Name', value:'workflow_process_key'}
+  formStatusLoading:false,
 };
 
 const process = (state = initialState, action) => {
@@ -73,6 +74,8 @@ const process = (state = initialState, action) => {
       };
     case ACTION_CONSTANTS.WORKFLOW_ASSOCIATION_CHANGED:
       return { ...state, workflowAssociated: action.payload };
+    case ACTION_CONSTANTS.FORM_STATUS_LOADING:
+      return { ...state, formStatusLoading: action.payload };
     default:
       return state;
   }

@@ -112,8 +112,8 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         user_name: str,
         page_number=None,
         limit=None,
-        sort_by=None,
-        sort_order=None,
+        sort_by="id",
+        sort_order="desc",
         **filters,
     ):
         """Fetch all active drafts."""
@@ -141,11 +141,11 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
                     Application.created_by == user_name,
                 )
             )
-            .order_by(Draft.id.desc())
         )
         sort_by, sort_order = validate_sort_order_and_order_by(sort_by, sort_order)
+        model_name = "form_process_mapper" if sort_by == "form_name" else "draft"
         if sort_by and sort_order:
-            result = result.order_by(text(f"draft.{sort_by} {sort_order}"))
+            result = result.order_by(text(f"{model_name}.{sort_by} {sort_order}"))
         result = FormProcessMapper.tenant_authorization(result)
         total_count = result.count()
         limit = total_count if limit is None else limit

@@ -116,8 +116,9 @@ export const publicDraftUpdate = (data, ...rest) => {
 };
 
 export const publicDraftSubmit = (data, ...rest) => {
-  const done = rest.length ? rest[0] : () => {};
-  const URL = API.DRAFT_APPLICATION_CREATE_PUBLIC;
+  const draftId = rest.length ? rest[0] : null;
+  const done = draftId && rest.length > 1 ? rest[1] : () => {};
+  const URL = replaceUrl(API.DRAFT_APPLICATION_CREATE_PUBLIC,"<draft_id>", draftId);
   return () => {
     httpPUTRequestWithoutToken(URL, data)
       .then((res) => {

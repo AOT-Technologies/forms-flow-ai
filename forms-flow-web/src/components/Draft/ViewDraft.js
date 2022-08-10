@@ -15,6 +15,7 @@ import { fetchAllBpmProcesses } from "../../apiManager/services/processServices"
 import { getDraftById } from "../../apiManager/services/draftService";
 import { push } from "connected-react-router";
 import { setDraftDetail } from "../../actions/draftActions";
+import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 
 const ViewDraft = React.memo(() => {
   const { draftId } = useParams();
@@ -97,11 +98,10 @@ const ViewDraft = React.memo(() => {
           eventKey="process-diagram"
           title={<Translation>{(t) => t("Process Diagram")}</Translation>}
         >
-          {/* <ProcessDiagram
-            processKey={applicationProcess.processKey}
-            processInstanceId={applicationDetail.processInstanceId}
-            tenant={applicationDetail.processTenant}
-          /> */}
+          <ProcessDiagram
+            processKey={draftDetail.processKey}
+            tenant={draftDetail?.processTenant}
+          />
         </Tab>
       </Tabs>
     </div>

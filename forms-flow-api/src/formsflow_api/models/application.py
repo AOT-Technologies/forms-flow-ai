@@ -129,9 +129,6 @@ class Application(
         """Fetch all application."""
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
-        draft_count = query.filter(
-            Application.application_status == DRAFT_APPLICATION_STATUS
-        ).count()
         query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -141,7 +138,7 @@ class Application(
             query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
-        return pagination.items, total_count, draft_count
+        return pagination.items, total_count
 
     @classmethod
     def filter_conditions(cls, **filters):
@@ -198,9 +195,6 @@ class Application(
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
         query = query.filter(Application.created_by == user_id)
-        draft_count = query.filter(
-            Application.application_status == DRAFT_APPLICATION_STATUS
-        ).count()
         query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -210,7 +204,7 @@ class Application(
             query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
-        return pagination.items, total_count, draft_count
+        return pagination.items, total_count
 
     @classmethod
     def find_id_by_user(cls, application_id: int, user_id: str) -> Application:
@@ -302,9 +296,6 @@ class Application(
         query = cls.filter_conditions(**filters)
         query = FormProcessMapper.tenant_authorization(query=query)
         query = query.filter(FormProcessMapper.process_key.in_(process_key))
-        draft_count = query.filter(
-            Application.application_status == DRAFT_APPLICATION_STATUS
-        ).count()
         query = cls.filter_draft_applications(query=query)
         order_by, sort_order = validate_sort_order_and_order_by(order_by, sort_order)
         if order_by and sort_order:
@@ -314,7 +305,7 @@ class Application(
             query = query.order_by(text(f"{table_name}.{order_by} {sort_order}"))
         total_count = query.count()
         pagination = query.paginate(page_no, limit)
-        return pagination.items, total_count, draft_count
+        return pagination.items, total_count
 
     @classmethod
     def find_auth_application_by_process_key(  # pylint: disable=too-many-arguments

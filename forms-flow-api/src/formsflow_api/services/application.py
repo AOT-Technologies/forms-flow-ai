@@ -6,9 +6,10 @@ from http import HTTPStatus
 from typing import Dict
 
 from flask import current_app
+from sqlalchemy import and_
 
 from formsflow_api.exceptions import BusinessException
-from formsflow_api.models import Application, FormProcessMapper
+from formsflow_api.models import Application, Draft, FormProcessMapper
 from formsflow_api.schemas import (
     AggregatedApplicationSchema,
     ApplicationSchema,
@@ -16,6 +17,7 @@ from formsflow_api.schemas import (
 )
 from formsflow_api.services.external import BPMService
 from formsflow_api.utils import DRAFT_APPLICATION_STATUS, NEW_APPLICATION_STATUS
+from formsflow_api.utils.enums import DraftStatus
 from formsflow_api.utils.user_context import UserContext, user_context
 
 from .form_process_mapper import FormProcessMapperService
@@ -134,11 +136,7 @@ class ApplicationService:
         auth_list = auth_form_details.get("authorizationList") or {}
         resource_list = [group["resourceId"] for group in auth_list]
         if auth_form_details.get("adminGroupEnabled") is True or "*" in resource_list:
-            (
-                applications,
-                get_all_applications_count,
-                draft_count,
-            ) = Application.find_all(
+            (applications, get_all_applications_count,) = Application.find_all(
                 page_no=page_no,
                 limit=limit,
                 application_id=application_id,
@@ -156,7 +154,6 @@ class ApplicationService:
             (
                 applications,
                 get_all_applications_count,
-                draft_count,
             ) = Application.find_applications_by_process_key(
                 application_id=application_id,
                 application_name=application_name,
@@ -172,7 +169,16 @@ class ApplicationService:
                 created_to=created_to,
                 process_key=resource_list,
             )
-
+        draft_count = (
+            Application.query.join(Draft, Application.id == Draft.application_id)
+            .filter(
+                and_(
+                    Application.application_status == DRAFT_APPLICATION_STATUS,
+                    Draft.status == str(DraftStatus.ACTIVE.value),
+                )
+            )
+            .count()
+        )
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,
@@ -220,11 +226,7 @@ class ApplicationService:
         """Get all applications based on user."""
         user: UserContext = kwargs["user"]
         user_id: str = user.user_name
-        (
-            applications,
-            get_all_applications_count,
-            draft_count,
-        ) = Application.find_all_by_user(
+        (applications, get_all_applications_count,) = Application.find_all_by_user(
             user_id=user_id,
             page_no=page_no,
             limit=limit,
@@ -239,7 +241,17 @@ class ApplicationService:
             created_from=created_from,
             created_to=created_to,
         )
-
+        draft_count = (
+            Application.query.join(Draft, Application.id == Draft.application_id)
+            .filter(
+                and_(
+                    Application.created_by == user_id,
+                    Application.application_status == DRAFT_APPLICATION_STATUS,
+                    Draft.status == str(DraftStatus.ACTIVE.value),
+                )
+            )
+            .count()
+        )
         return (
             application_schema.dump(applications, many=True),
             get_all_applications_count,

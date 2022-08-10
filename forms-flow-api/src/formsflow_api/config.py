@@ -90,6 +90,10 @@ class _Config:  # pylint: disable=too-few-public-methods
     FORMIO_URL = os.getenv("FORMIO_URL")
     FORMIO_USERNAME = os.getenv("FORMIO_ROOT_EMAIL")
     FORMIO_PASSWORD = os.getenv("FORMIO_ROOT_PASSWORD")
+    CUSTOM_SUBMISSION_URL = os.getenv("CUSTOM_SUBMISSION_URL", "")
+    CUSTOM_SUBMISSION_ENABLED = (
+        os.getenv("CUSTOM_SUBMISSION_ENABLED", "false").lower() == "true"
+    )
 
     # Keycloak client authorization enabled flag
     KEYCLOAK_ENABLE_CLIENT_AUTH = (

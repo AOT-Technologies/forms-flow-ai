@@ -43,3 +43,4 @@ class DraftListSchema(Schema):
         data_key="modifiedTo", format="%Y-%m-%dT%H:%M:%S+00:00"
     )
     sort_order = fields.Str(data_key="sortOrder", required=False)
+    order_by = fields.Str(data_key="sortBy", required=False)

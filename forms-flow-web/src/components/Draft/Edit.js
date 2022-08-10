@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { connect, useDispatch, useSelector } from "react-redux";
 import {
   selectRoot,
@@ -62,7 +62,7 @@ const View = React.memo((props) => {
    * this will get updated on every change the form is having.
    */
   const [draftData, setDraftData] = useState(draftSubmission?.data);
-
+  const draftRef = useRef();
   const { formId } = useParams();
   const [poll, setPoll] = useState(DRAFT_ENABLED);
   const {
@@ -77,6 +77,12 @@ const View = React.memo((props) => {
   } = props;
   const dispatch = useDispatch();
 
+  const saveDraft = (payload) => {
+    if (draftSubmission?.id) {
+      dispatch(draftUpdate(payload, draftSubmission?.id));
+    }
+  };
+
   /**
    * We will repeatedly update the current state to draft table
    * on purticular interval
@@ -84,12 +90,17 @@ const View = React.memo((props) => {
   useInterval(
     () => {
       let payload = getDraftReqFormat(formId, draftData);
-      if (draftSubmission?.id) {
-        dispatch(draftUpdate(payload, draftSubmission?.id));
-      }
+      saveDraft(payload);
     },
     poll ? DRAFT_POLLING_RATE : null
   );
+
+  useEffect(() => {
+    return () => {
+      let payload = getDraftReqFormat(formId, draftRef.current);
+      saveDraft(payload);
+    };
+  }, []);
 
   if (isActive || isPublicStatusLoading) {
     return (
@@ -151,7 +162,10 @@ const View = React.memo((props) => {
               i18n: formio_resourceBundles,
             }}
             hideComponents={hideComponents}
-            onChange={(formData) => setDraftData(formData.data)}
+            onChange={(formData) => {
+              setDraftData(formData.data);
+              draftRef.current = formData.data;
+            }}
             onSubmit={(data) => {
               setPoll(false);
               onSubmit(data, form._id, isPublic);

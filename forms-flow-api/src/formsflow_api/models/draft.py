@@ -79,6 +79,8 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
                 FormProcessMapper.process_name,
                 FormProcessMapper.created_by,
                 FormProcessMapper.form_id,
+                FormProcessMapper.process_key,
+                FormProcessMapper.process_name,
                 cls.id,
                 cls.application_id,
                 cls.created,
@@ -173,8 +175,13 @@ class Draft(AuditDateTimeMixin, BaseModel, db.Model):
         for key, value in filters.items():
             if value:
                 filter_map = FILTER_MAPS[key]
+                model_name = (
+                    Draft
+                    if not filter_map["field"] == "form_name"
+                    else FormProcessMapper
+                )
                 condition = cls.create_filter_condition(
-                    model=FormProcessMapper,
+                    model=model_name,
                     column_name=filter_map["field"],
                     operator=filter_map["operator"],
                     value=value,

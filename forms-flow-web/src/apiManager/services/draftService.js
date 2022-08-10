@@ -12,6 +12,7 @@ import {
   setDraftSubmission,
   setDraftDetail,
   setDraftCount,
+  setDraftSubmissionError,
   setDraftDetailStatusCode
 } from "../../actions/draftActions";
 import moment from "moment";
@@ -24,13 +25,15 @@ export const draftCreate = (data, ...rest) => {
       .then((res) => {
         if (res.data) {
           dispatch(setDraftSubmission(res.data));
-          done(null, res.data);
+          done(true);
         } else {
-          done("Error Posting data");
+          dispatch(setDraftSubmissionError("Error Posting data"));
+          done(false);
         }
       })
       .catch((error) => {
-        done(error);
+        dispatch(setDraftSubmissionError(error));
+        done(false);
       });
   };
 };
@@ -81,13 +84,15 @@ export const publicDraftCreate = (data, ...rest) => {
       .then((res) => {
         if (res.data) {
           dispatch(setDraftSubmission(res.data));
-          done(null, res.data);
+          done(true);
         } else {
-          done("Error Posting data");
+          dispatch(setDraftSubmissionError("Error Posting data"));
+          done(false);
         }
       })
       .catch((error) => {
-        done(error);
+        dispatch(setDraftSubmissionError(error));
+        done(false);
       });
   };
 };
@@ -189,7 +194,7 @@ export const FilterDrafts = (params, ...rest) => {
     const { DraftName, id, modified } = params.filters;
     let url = `${API.DRAFT_BASE}?pageNo=${params.page}&limit=${params.sizePerPage}`;
     if (DraftName && DraftName !== "") {
-      url += `&draftName=${DraftName?.filterVal}`;
+      url += `&DraftName=${DraftName?.filterVal}`;
     }
     if (id && id !== "") {
       url += `&id=${id.filterVal}`;

@@ -8,6 +8,13 @@ export const setDraftSubmission = (data) => (dispatch) => {
   });
 };
 
+export const setDraftSubmissionError = (data) => (dispatch) => {
+  dispatch({
+    type: ACTION_CONSTANTS.DRAFT_SUBMISSION_ERROR,
+    payload: data,
+  });
+};
+
 export const setDraftlist = (data) => (dispatch) => {
   dispatch({
     type: ACTION_CONSTANTS.DRAFT_LIST,

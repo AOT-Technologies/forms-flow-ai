@@ -13,7 +13,7 @@ import { Translation } from "react-i18next";
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 import { fetchAllBpmProcesses } from "../../apiManager/services/processServices";
 import { getDraftById } from "../../apiManager/services/draftService";
-import { push } from "connected-react-router";
+import { setDraftDetailStatusCode } from "../../actions/draftActions";
 import { setDraftDetail } from "../../actions/draftActions";
 import ProcessDiagram from "../BPMN/ProcessDiagramHook";
 
@@ -37,13 +37,12 @@ const ViewDraft = React.memo(() => {
           if (res.id && res.formId) {
             dispatch(getForm("form", res.formId));
           }
-        } else {
-          dispatch(push(`${redirectUrl}404`));
         }
       })
     );
     return () => {
       dispatch(setDraftDetail({ isDraftDetailLoading: true }));
+      dispatch(setDraftDetailStatusCode(""));
     };
   }, [draftId, dispatch]);
 

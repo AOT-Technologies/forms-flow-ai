@@ -418,7 +418,7 @@ const mapDispatchToProps = (dispatch) => {
     getAllProcesses: () => {
       dispatch(
         // eslint-disable-next-line no-unused-vars
-        fetchAllBpmProcesses((err, res) => {
+        fetchAllBpmProcesses(true, (err, res) => {
           if (err) {
             console.log(err);
           }

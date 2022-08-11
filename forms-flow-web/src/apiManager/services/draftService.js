@@ -13,6 +13,7 @@ import {
   setDraftDetail,
   setDraftCount,
   setDraftSubmissionError,
+  setDraftDetailStatusCode
 } from "../../actions/draftActions";
 import moment from "moment";
 
@@ -164,12 +165,12 @@ export const getDraftById = (draftId, ...rest) => {
           // const processData = getFormattedProcess(application);
           dispatch(setDraftDetail(draft));
           // dispatch(setApplicationProcess(processData));
-          // dispatch(setDraftDetailStatusCode(res.status));
+          dispatch(setDraftDetailStatusCode(res.status));
           done(null, draft);
         } else {
           // dispatch(serviceActionError(res));
           dispatch(setDraftDetail({}));
-          // dispatch(setDraftDetailStatusCode(403));
+          dispatch(setDraftDetailStatusCode(403));
           done("No data");
           // dispatch(setDraftDetailLoader(false));
         }
@@ -180,7 +181,7 @@ export const getDraftById = (draftId, ...rest) => {
         console.log("Error", error);
         // dispatch(serviceActionError(error));
         dispatch(setDraftDetail({}));
-        // dispatch(setDraftDetailStatusCode(403));
+        dispatch(setDraftDetailStatusCode(403));
         done(error);
         // dispatch(setDraftDetailLoader(false));
       });

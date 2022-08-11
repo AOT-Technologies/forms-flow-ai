@@ -1,59 +1,58 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import BpmnModeler  from "bpmn-js/lib/Modeler";
+import BpmnModeler from "bpmn-js/lib/Modeler";
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import "./Modeller.scss";
 import Button from "react-bootstrap/Button";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+import Row from "react-bootstrap/Row";
 
 import {
   fetchDiagram,
-  getProcessActivities,
-  fetchAllBpmProcesses
+  fetchAllBpmProcesses,
+  fetchAllBpmDeployments,
 } from "../../apiManager/services/processServices";
 
 import {
-  setProcessActivityData,
   setProcessDiagramLoading,
   setProcessDiagramXML,
   setWorkflowAssociation,
 } from "../../actions/processActions";
 
-import { 
-  deployBpmnDiagram
-} from "../../apiManager/services/bpmServices";
+import { deployBpmnDiagram } from "../../apiManager/services/bpmServices";
 
 import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 
-import { 
-  BpmnPropertiesPanelModule, 
+import {
+  BpmnPropertiesPanelModule,
   BpmnPropertiesProviderModule,
-  CamundaPlatformPropertiesProviderModule
- } from 'bpmn-js-properties-panel';
+  CamundaPlatformPropertiesProviderModule,
+} from "bpmn-js-properties-panel";
 
-import CamundaExtensionModule from 'camunda-bpmn-moddle/lib';
-import camundaModdleDescriptors from 'camunda-bpmn-moddle/resources/camunda';
-import { is } from 'bpmn-js/lib/util/ModelUtil';
+import CamundaExtensionModule from "camunda-bpmn-moddle/lib";
+import camundaModdleDescriptors from "camunda-bpmn-moddle/resources/camunda";
+import { is } from "bpmn-js/lib/util/ModelUtil";
 
-import { 
+import {
   SUCCESS_MSG,
   ERROR_MSG,
   ERROR_CLASSNAME,
-  ERROR_LINTING_CLASSNAME
+  ERROR_LINTING_CLASSNAME,
 } from "./constants/bpmnModellerConstants";
 
 import { MULTITENANCY_ENABLED } from "../../constants/constants";
 
-import { getRootElement} from "./helpers/helper";
+import { getRootElement } from "./helpers/helper";
 
-import lintModule from 'bpmn-js-bpmnlint';
-import 'bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css';
-import linterConfig from './lint-rules/packed-config';
+import lintModule from "bpmn-js-bpmnlint";
+import "bpmn-js-bpmnlint/dist/assets/css/bpmn-js-bpmnlint.css";
+import linterConfig from "./lint-rules/packed-config";
 
 const EditModel = React.memo(
-  ({ processKey, processInstanceId, tenant, defaultProcessInfo }) => {
-
+  ({ isExecutable, xml, processKey, tenant, defaultProcessInfo, name }) => {
     const { t } = useTranslation();
 
     const dispatch = useDispatch();
@@ -62,29 +61,32 @@ const EditModel = React.memo(
     const tenantKey = useSelector((state) => state.tenants?.tenantId);
     const [applyAllTenants, setApplyAllTenants] = useState(false);
     const [lintErrors, setLintErrors] = useState([]);
+    const [deploymentName, setDeploymentName] = useState(name);
 
     const containerRef = useCallback((node) => {
       if (node !== null) {
-        setBpmnModeller(new BpmnModeler ({ 
-          container: "#canvas",
-          propertiesPanel: {
-            parent: '#js-properties-panel'
-          },
-          linting: {
-            bpmnlint: linterConfig,
-            //active: true
-          },
-          additionalModules: [
-            BpmnPropertiesPanelModule,
-            BpmnPropertiesProviderModule,
-            CamundaPlatformPropertiesProviderModule,
-            CamundaExtensionModule,
-            lintModule
-          ],
-          moddleExtensions: {
-            camunda: camundaModdleDescriptors
-          }
-        }));
+        setBpmnModeller(
+          new BpmnModeler({
+            container: "#canvas",
+            propertiesPanel: {
+              parent: "#js-properties-panel",
+            },
+            linting: {
+              bpmnlint: linterConfig,
+              //active: true
+            },
+            additionalModules: [
+              BpmnPropertiesPanelModule,
+              BpmnPropertiesProviderModule,
+              CamundaPlatformPropertiesProviderModule,
+              CamundaExtensionModule,
+              lintModule,
+            ],
+            moddleExtensions: {
+              camunda: camundaModdleDescriptors,
+            },
+          })
+        );
       }
     }, []);
 
@@ -103,7 +105,12 @@ const EditModel = React.memo(
     }, [bpmnModeller]);
 
     useEffect(() => {
-      if (processKey) {
+      setDeploymentName(name);
+      // null deployment name assumes 'Create New' was clicked (fixes xml network error)
+      if ((processKey && !isExecutable) || !name) {
+        dispatch(setProcessDiagramLoading(true));
+        dispatch(setProcessDiagramXML(xml));
+      } else if (processKey && isExecutable) {
         dispatch(setProcessDiagramLoading(true));
         dispatch(fetchDiagram(processKey, tenant));
       } else {
@@ -116,31 +123,22 @@ const EditModel = React.memo(
     }, [processKey, tenant, dispatch]);
 
     useEffect(() => {
-      if (processInstanceId) {
-        dispatch(getProcessActivities(processInstanceId));
-      }
-      return () => {
-        dispatch(setProcessActivityData(null));
-      };
-    }, [processInstanceId, dispatch]);
-
-    useEffect(() => {
       if (diagramXML && bpmnModeller) {
-        bpmnModeller.importXML(diagramXML)
-        .then(({ warnings }) => {
-          if (warnings.length) {
-            console.log("Warnings", warnings);
-          }
-          // Add event listeners for bpmn linting
-          bpmnModeller.on('linting.completed', function (event) {
-            setLintErrors(event.issues);
+        bpmnModeller
+          .importXML(diagramXML)
+          .then(({ warnings }) => {
+            if (warnings.length) {
+              console.log("Warnings", warnings);
+            }
+            // Add event listeners for bpmn linting
+            bpmnModeller.on("linting.completed", function (event) {
+              setLintErrors(event.issues);
+            });
+          })
+          .catch((err) => {
+            console.log("error", err);
           });
-        })
-        .catch((err) => {
-          console.log("error", err);
-        });
       }
-
     }, [diagramXML, bpmnModeller]);
 
     const handleApplyAllTenants = () => {
@@ -149,10 +147,16 @@ const EditModel = React.memo(
 
     async function deployProcess() {
       try {
-        if (!validateProcess()){
+        const isValidated = await validateProcess();
+        if (!isValidated) {
           toast.error(t(ERROR_MSG));
-        }
-        else {
+        } else {
+          // Update diagram with deployment name from input box
+          const rootElement = getRootElement(bpmnModeller);
+          var modeling = bpmnModeller.get("modeling");
+          modeling.updateProperties(rootElement, {
+            name: deploymentName,
+          });
           // Convert diagram to xml
           const { xml } = await bpmnModeller.saveXML();
           // Deploy to Camunda
@@ -163,21 +167,21 @@ const EditModel = React.memo(
       }
     }
 
-    // If the BPMN Linting is active then check for linting errors, else check for Camunda API errors
-    const validateProcess = () => {
+    const validateProcess = async () => {
+      // If the BPMN Linting is active then check for linting errors, else check for Camunda API errors
       // Check for linting errors in the modeller view
       if (document.getElementsByClassName(ERROR_LINTING_CLASSNAME).length > 0) {
         validateBpmnLintErrors();
         return false;
-      } 
+      }
       // Check for input errors in the Process Panel
       else if (document.getElementsByClassName(ERROR_CLASSNAME).length > 0) {
         return false;
       }
 
       // Check for blank deployment name
-      if (!getDeploymentNames().deploymentName || getDeploymentNames().deploymentName == "" ){
-        toast.error(t("Deployment name is blank"));
+      if (!deploymentName) {
+        toast.error(t("Please enter a deployment name"));
         return false;
       }
 
@@ -187,105 +191,102 @@ const EditModel = React.memo(
     const createBpmnForm = (xml) => {
       const form = new FormData();
 
-      const names = getDeploymentNames();
+      const processId = getPropertyPanelInfo().processID;
 
       // Deployment Name
-      form.append('deployment-name', names.deploymentName);
+      form.append("deployment-name", deploymentName);
       // Deployment Source
-      form.append('deployment-source', 'Camunda Modeler');
+      form.append("deployment-source", "Camunda Modeler");
       // Tenant ID
       if (tenantKey && !applyAllTenants) {
-        form.append('tenant-id', tenantKey);
+        form.append("tenant-id", tenantKey);
       }
       // Make sure that we do not re-deploy already existing deployment
-      form.append('enable-duplicate-filtering', 'true');
-      // Create 'bpmn file' using blob which includes the xml of the process 
-      const blob = new Blob([ xml ], { type: 'text/bpmn' });
-      form.append('upload', blob, (names.processID + ".bpmn"));
+      form.append("enable-duplicate-filtering", "true");
+      // Create 'bpmn file' using blob which includes the xml of the process
+      const blob = new Blob([xml], { type: "text/bpmn" });
+      form.append("upload", blob, processId + ".bpmn");
 
       return form;
-
     };
 
-    const getDeploymentNames = () => {
-
+    const getPropertyPanelInfo = () => {
       // Default names
-      let deploymentName = defaultProcessInfo.deploymentName;
       let processID = defaultProcessInfo.processID;
+      let isExecutable = defaultProcessInfo.isExecutable;
 
       // Get elements from process panel, find the root element which contains the deployment name and process ID
       // Use the names assigned in the bpmn-js-properties-panel, otherwise keep the default names
       const rootElement = getRootElement(bpmnModeller);
 
-      if (rootElement && is(rootElement, 'bpmn:Process') && rootElement.businessObject){
-        if (rootElement.businessObject.name){
-          deploymentName = rootElement.businessObject.name;
-        }
-        if (rootElement.businessObject.id){
+      if (
+        rootElement &&
+        is(rootElement, "bpmn:Process") &&
+        rootElement.businessObject
+      ) {
+        if (rootElement.businessObject.id) {
           processID = rootElement.businessObject.id;
+          isExecutable = rootElement.businessObject.isExecutable;
         }
-      }
-      else{
-        if (rootElement && is(rootElement, 'bpmn:Collaboration') && rootElement.businessObject.participants){
-          if (rootElement.businessObject.participants[0].processRef.name){
-            deploymentName = rootElement.businessObject.participants[0].processRef.name;
-          }
-          if (rootElement.businessObject.participants[0].processRef.id){
+      } else {
+        if (
+          rootElement &&
+          is(rootElement, "bpmn:Collaboration") &&
+          rootElement.businessObject.participants
+        ) {
+          if (rootElement.businessObject.participants[0].processRef.id) {
             processID = rootElement.businessObject.participants[0].processRef.id;
+            isExecutable = rootElement.businessObject.participants[0].processRef.isExecutable;
           }
         }
       }
 
       return {
-        deploymentName: deploymentName,
-        processID: processID
+        processID : processID,
+        isExecutable : isExecutable
       };
-
     };
 
-    const deployXML = (xml) =>{
-
+    const deployXML = (xml) => {
       const form = createBpmnForm(xml);
 
       deployBpmnDiagram(form)
-      .then((res) => {
-        if (res?.data) {
-          toast.success(t(SUCCESS_MSG));
-          // Reload the dropdown menu
-          updateBpmProcesses();
-        } else {
-          toast.error(t(ERROR_MSG));
-        }
-      })
-      .catch((error) => {
-        showCamundaHTTTPErrors(error);
-      });
-
+        .then((res) => {
+          if (res?.data) {
+            toast.success(t(SUCCESS_MSG));
+            // Reload the dropdown menu
+            updateBpmProcesses();
+          } else {
+            toast.error(t(ERROR_MSG));
+          }
+        })
+        .catch((error) => {
+          showCamundaHTTTPErrors(error);
+        });
     };
 
     const showCamundaHTTTPErrors = (error) => {
       const errors = error.response.data.details;
-      for (var key in errors){
+      for (var key in errors) {
         var value = errors[key];
-        value.errors.forEach((x) =>{
+        value.errors.forEach((x) => {
           toast.error(t(x.message));
         });
-        value.warnings.forEach((x) =>{
+        value.warnings.forEach((x) => {
           toast.warn(t(x.message));
         });
       }
     };
 
     const validateBpmnLintErrors = () => {
-
       // only return false if there are errors, warnings are ok
       let hasErrors = false;
 
-      for (var key in lintErrors){
+      for (var key in lintErrors) {
         var err = lintErrors[key];
-        err.forEach((x) =>{
+        err.forEach((x) => {
           // Only toast errors, not warnings
-          if (x.category === "error"){
+          if (x.category === "error") {
             hasErrors = true;
             toast.error(t(x.message));
           }
@@ -293,16 +294,17 @@ const EditModel = React.memo(
       }
 
       return hasErrors ? false : true;
-
     };
 
     const updateBpmProcesses = () => {
       // Update drop down with all processes
-      dispatch(fetchAllBpmProcesses());
+      dispatch(fetchAllBpmProcesses(true));
+      dispatch(fetchAllBpmDeployments());
       // Show the updated workflow as the current value in the dropdown
       const updatedWorkflow = {
-        label: getDeploymentNames().deploymentName,
-        value: getDeploymentNames().processID,
+        label: deploymentName,
+        value: getPropertyPanelInfo().processID,
+        isExecutable: getPropertyPanelInfo().isExecutable,
       };
       dispatch(setWorkflowAssociation(updatedWorkflow));
     };
@@ -340,39 +342,58 @@ const EditModel = React.memo(
                 >
                   <i className="fa fa-retweet" aria-hidden="true" />
                 </button>
-                <button className="btn-zoom" title="Zoom In" onClick={() => zoom()}>
+                <button
+                  className="btn-zoom"
+                  title="Zoom In"
+                  onClick={() => zoom()}
+                >
                   <i className="fa fa-search-plus" aria-hidden="true" />
                 </button>
-                <button className="btn-zoom" title="Zoom Out" onClick={() => zoomOut()}>
+                <button
+                  className="btn-zoom"
+                  title="Zoom Out"
+                  onClick={() => zoomOut()}
+                >
                   <i className="fa fa-search-minus" aria-hidden="true" />
                 </button>
               </div>
             </div>
-            
           </div>
-          {/*
-            Stylesheet for the js-properties-panel has been imported in /public/index.html directory as a CDN.
-            TODO: Import styles in this js page
-          */}
-          <div className="properties-panel-parent" id="js-properties-panel"></div>
+          <div
+            className="properties-panel-parent"
+            id="js-properties-panel"
+          ></div>
         </div>
 
-        <div className="deploy-container">
-          {/*
-            TODO: Implement multi-tenancy
-            {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" id="apply-all-tenant-checkbox"/>  Apply for all tenants</label> : null}
-          */}
-          {MULTITENANCY_ENABLED ? <label className="deploy-checkbox"><input type="checkbox" onClick={handleApplyAllTenants}/>  Apply for all tenants</label> : null}
-
-          <Button onClick={deployProcess}>
-            Deploy
-          </Button>
-          
-        </div>
-
+        <Form>
+          <Row className="deploy-container">
+            <Col className="deploy-btn">
+              <Button onClick={deployProcess}>Deploy</Button>
+            </Col>
+            <Col className="pl-0">
+              <Form.Control
+                className="deploy-name"
+                placeholder="Deployment Name"
+                value={deploymentName}
+                onChange={(e) => setDeploymentName(e.target.value)}
+              />
+            </Col>
+          </Row>
+          <Row className="mt-2">
+            <Col>
+              {MULTITENANCY_ENABLED ? (
+                <Form.Check
+                  type="checkbox"
+                  onClick={handleApplyAllTenants}
+                  label="Apply for all tenants"
+                />
+              ) : null}
+            </Col>
+          </Row>
+        </Form>
       </>
-
     );
-  });
+  }
+);
 
 export default EditModel;

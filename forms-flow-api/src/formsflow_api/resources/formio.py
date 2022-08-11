@@ -1,8 +1,10 @@
 """API endpoints for managing formio resource."""
 
 from http import HTTPStatus
+from typing import Dict
 
-from flask import current_app
+import jwt
+from flask import after_this_request, current_app
 from flask_restx import Namespace, Resource
 
 from formsflow_api.utils import (
@@ -29,9 +31,46 @@ class FormioResource(Resource):
     @user_context
     def get(**kwargs):
         """Get role ids from cache."""
+        user: UserContext = kwargs["user"]
+        assert user.token_info is not None
+
+        @after_this_request
+        def add_jwt_token_as_header(response):
+            _role_ids = [
+                role["roleId"]
+                for role in list(
+                    filter(
+                        lambda item: item["type"] != FormioRoles.RESOURCE_ID.value,
+                        response.json.get("form"),
+                    )
+                )
+            ]
+            _resource_id = next(
+                role["roleId"]
+                for role in response.json.get("form")
+                if role["type"] == FormioRoles.RESOURCE_ID.value
+            )
+
+            unique_user_id = (
+                user.email or f"{user.user_name}@formsflow.ai"
+            )  # Email is not mandatory in keycloak
+            project_id: str = current_app.config.get("FORMIO_PROJECT_URL")
+            payload: Dict[str, any] = {
+                "external": True,
+                "form": {"_id": _resource_id},
+                "user": {"_id": unique_user_id, "roles": _role_ids},
+            }
+            if project_id:
+                payload["project"] = {"_id": project_id}
+            response.headers["x-jwt-token"] = jwt.encode(
+                payload=payload,
+                key=current_app.config.get("FORMIO_JWT_SECRET"),
+                algorithm="HS256",
+            )
+            return response
+
         try:
-            user: UserContext = kwargs["user"]
-            assert user.token_info is not None
+
             user_role = user.token_info["role"]
             role_ids = cache.get("formio_role_ids")
             roles = get_role_ids_from_user_groups(role_ids, user_role)
@@ -43,7 +82,7 @@ class FormioResource(Resource):
                     }
                 )
                 result = {"form": roles}
-                return (result, HTTPStatus.OK)
+                return result, HTTPStatus.OK
 
             return (
                 {"message": "Role ids not available on server"},

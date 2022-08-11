@@ -83,7 +83,7 @@ class DashboardDetail(Resource):
         else:
             # code run in case of no exception
             response = analytics_service.get_request(
-                url_path=f"dashboards/{dashboard_id}"
+                url_path=f"dashboards/{dashboard_id}?return_dynamic_key=true"
             )
             if response == "unauthorized":
                 return {"message": "Permission Denied"}, HTTPStatus.UNAUTHORIZED
